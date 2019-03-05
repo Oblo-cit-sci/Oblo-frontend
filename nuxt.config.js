@@ -35,15 +35,17 @@ module.exports = {
   ** Global CSS
   */
   css: [
-    '~/assets/style/app.styl'
+    '~/assets/style/app.styl',
+    'element-ui/lib/theme-chalk/index.css'
   ],
 
   /*
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '@/plugins/vuetify'
-  ],
+    '@/plugins/vuetify',
+    '~plugins/element-ui'
+],
 
   /*
   ** Nuxt.js modules
