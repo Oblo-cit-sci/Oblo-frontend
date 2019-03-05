@@ -1,0 +1,7 @@
+{
+ "none": 0,
+  "official": 1,
+  "representative": 2,
+  "teacher": 2,
+  "other": 3
+}

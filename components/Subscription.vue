@@ -5,7 +5,6 @@
         <button type="submit">Subscribe</button>
       </div>
     </FormSchema>
-    <!-- <pre class="model">{{ model }}</pre> -->
   </div>
 </template>
 
@@ -18,9 +17,9 @@
       model: {}
     }),
     created () {
-      console.log(this.$refs)
-      this.schema.then((schema) => this.$refs.formSchema.load(schema))
-
+      this.schema.then((schema) => this.$refs.formSchema.load(schema)).catch(function () {
+        console.log("component/Subscription: Promise Rejected");
+      });
     },
     methods: {
       reset () {

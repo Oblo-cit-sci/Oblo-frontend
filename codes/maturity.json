@@ -1,0 +1,10 @@
+{
+  "adult": {
+    "code": "A",
+    "comment": "16 years and older"
+  },
+  "minor": {
+    "code": "M",
+    "comment": "Younger than 16"
+  }
+}
