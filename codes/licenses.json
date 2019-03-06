@@ -1,0 +1,16 @@
+{
+  "BY": {
+    "short": "BY",
+    "full": "Creative Commons Attribution 4.0 International License",
+    "description": "Attribution alone",
+    "icon": "https://i.creativecommons.org/l/by/4.0/88x31.png",
+    "rel": "http://creativecommons.org/licenses/by/4.0/"
+  },
+  "BY-SA": {
+    "short": "BY-SA",
+    "full": "",
+    "description": "Attribution + ShareAlike",
+    "icon": "https://i.creativecommons.org/l/by-sa/4.0/88x31.png",
+    "rel":"http://creativecommons.org/licenses/by-sa/4.0/"
+  }
+}

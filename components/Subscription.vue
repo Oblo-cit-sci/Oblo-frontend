@@ -13,7 +13,7 @@
 
   export default {
     data: () => ({
-      schema: Promise.resolve(require('../schema/test')),
+      schema: Promise.resolve(require('../schema/newsletter')),
       model: {}
     }),
     created () {

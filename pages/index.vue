@@ -26,3 +26,14 @@ export default {
   }
 }
 </script>
+
+<style>
+
+  .form {
+    background-color: #424242;
+  }
+
+  input {
+    border-style: solid;
+  }
+</style>

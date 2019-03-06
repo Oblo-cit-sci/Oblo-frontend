@@ -28,7 +28,10 @@
     "lists": {
       "type": "string",
       "title": "List",
-      "enum": ["Daily New", "Promotion"],
+      "enum": [
+        "Daily New",
+        "Promotion"
+      ],
       "attrs": {
         "placeholder": "Select your list subscription",
         "title": "Please select your list subscription"
@@ -64,6 +67,24 @@
         "typeX": "password"
       }
     },
+    "aList2": {
+      "type": "array",
+      "title": "Array field select",
+      "minItems": 1,
+      "maxItems": 5,
+      "items": {
+        "enum": [
+          {
+            "value": "daily",
+            "label": "Daily New"
+          },
+          {
+            "value": "promotion",
+            "label": "Promotion"
+          }
+        ]
+      }
+    },
     "regex": {
       "type": "string",
       "title": "regex",
@@ -73,16 +94,28 @@
       "type": "array",
       "title": "Checkboxes",
       "anyOf": [
-        { "value": "daily", "label": "Daily News" },
-        { "value": "promotion", "label": "Promotion" }
+        {
+          "value": "daily",
+          "label": "Daily News"
+        },
+        {
+          "value": "promotion",
+          "label": "Promotion"
+        }
       ]
     },
     "groupedRadio": {
       "type": "array",
       "title": "Frequence",
       "oneOf": [
-        { "value": "daily", "label": "Daily News" },
-        { "value": "weekly", "label": "Weekly News" }
+        {
+          "value": "daily",
+          "label": "Daily News"
+        },
+        {
+          "value": "weekly",
+          "label": "Weekly News"
+        }
       ]
     },
     "agree": {
@@ -96,5 +129,10 @@
     }
   },
   "additionalProperties": false,
-  "required": ["name", "email", "lists", "aList"]
+  "required": [
+    "name",
+    "email",
+    "lists",
+    "aList"
+  ]
 }

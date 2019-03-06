@@ -17,6 +17,7 @@
     "cross-env": "^5.2.0",
     "element-ui": "^2.6.1",
     "express": "^4.16.4",
+    "fs": "0.0.1-security",
     "nuxt": "^2.4.0",
     "vuetify": "^1.5.2",
     "vuetify-loader": "^1.2.0"

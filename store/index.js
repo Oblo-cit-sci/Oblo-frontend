@@ -1,13 +1,17 @@
 export const state = () => ({
   counter: 0,
+  user: {
+    "public name" : "ramin",
+    "username": "ramin",
+    "location": "barcelona"
+  },
   global_role: "admin",
-  ui_text: {
-    "site": "Site",
-    "village": "Village",
-    "investigator": "Investigator",
-    "village_info_card": "Village Information Card",
-    "focus_group": "Focus Group Discussion"
-  }
+  actual_location: {
+    country: "",
+    site: "",
+  },
+  default_license: "",
+  default_privacy: ""
 });
 
 export const mutations = {
