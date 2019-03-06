@@ -65,6 +65,11 @@
             to: '/MyEntries'
           },
           {
+            icon: 'person',
+            title: 'Profile',
+            to: '/Actor/'+ this.$store.state.user.username
+          },
+          {
             icon: 'note_add',
             title: 'Create Entry',
             to: '/CreateEntry'

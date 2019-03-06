@@ -39,7 +39,7 @@
       is_personal: function () {
         //console.log(this.$root._route.params.profile);
         // console.log(this.$store.state.user.username);
-        console.log("+++", this.$route);
+
         return this.$route.params.profile === this.$store.state.user.username;
         // console.log(this.$root._route.params.profile);
       }
