@@ -7,14 +7,15 @@
           v-list-tile-action
             v-btn(@click="remove(treelevel)")
               v-icon block
-      v-btn(v-for="(option, index) in act_options" :key="option.code" color="info" @click="select(index)") {{option.name}}
-      div(v-if="selected_code !== 0") {{selected_code}}
+      v-list
+        v-list-tile(v-for="(option, index) in act_options" :key="option.code")
+          v-btn(color="info" @click="select(index)") {{option.name}}
+      div(v-if="selected_code !== 0") Code: {{selected_code}}
 </template>
 
 <script>
 
   let licci_tree = require("../codes/licci-tree");
-  console.log(licci_tree);
 
   export default {
     name: "TreeleafPicker",
