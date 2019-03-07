@@ -1,7 +1,7 @@
 {
-  "name": "nuxt-formschema",
+  "name": "LICCI-FE",
   "version": "1.0.0",
-  "description": "My striking Nuxt.js project",
+  "description": "A Nuxt.js project",
   "author": "Ramin S",
   "private": true,
   "scripts": {

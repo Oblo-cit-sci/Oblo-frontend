@@ -1,16 +1,15 @@
 <template lang="pug">
-  v-layout(column='' justify-center='' align-center='')
-    v-flex(xs12='' sm8='' md6='')
-      v-list(v-if="selection.length > 0")
-        v-list-tile(v-for="(node, treelevel) in selection" :key="node[1].code")
-          v-list-tile-content {{node[1].name}}
-          v-list-tile-action
-            v-btn(@click="remove(treelevel)")
-              v-icon block
-      v-list
-        v-list-tile(v-for="(option, index) in act_options" :key="option.code")
-          v-btn(color="info" @click="select(index)") {{option.name}}
-      div(v-if="selected_code !== 0") Code: {{selected_code}}
+  div
+    v-list(v-if="selection.length > 0")
+      v-list-tile(v-for="(node, treelevel) in selection" :key="node[1].code")
+        v-list-tile-content {{node[1].name}}
+        v-list-tile-action
+          v-btn(@click="remove(treelevel)")
+            v-icon block
+    v-list
+      v-list-tile(v-for="(option, index) in act_options" :key="option.code")
+        v-btn(color="info" @click="select(index)") {{option.name}}
+    div(v-if="selected_code !== 0") Code: {{selected_code}}
 </template>
 
 <script>
