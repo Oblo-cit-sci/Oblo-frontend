@@ -1,21 +1,17 @@
-<template>
-  <div>
-    <div v-if="selected_type !== null">
-      <v-btn color="warning" @click="select_back">back</v-btn>
-      <v-btn v-if="!create_entry" color="success" @click="show_create">create {{selected_type}}</v-btn>
-    </div>
-    <div v-for="a in actions" :key="a.title">
-      <v-btn color="info" @click="select(a.site)">{{a.title}}</v-btn>
-    </div>
-    <div v-show="create_entry">
-      <FormSchema class="form" ref="formSchema" v-model="model" @submit.prevent>
-        <div class="buttons">
-          <v-btn color="info" @click="cancel_create">cancel</v-btn>
-          <v-btn color="info" @click="create">create</v-btn>
-        </div>
-      </FormSchema>
-    </div>
-  </div>
+<template lang="pug">
+  div
+    div
+      div(v-if='selected_type!==null')
+        v-btn(color='warning' @click='select_back') back
+        v-btn(v-if='!create_entry' color='success' @click='show_create') create {{selected_type}}
+      div(v-if='!create_entry')
+        div(v-for='a in actions' :key='a.title')
+          v-btn(color='info' @click='select(a.site)') {{a.title}}
+      div(v-show='create_entry')
+        FormSchema.form(ref='formSchema' v-model='model' @submit.prevent='')
+        .buttons
+          v-btn(color='info' @click='cancel_create') cancel
+          v-btn(color='info' @click='create') create
 </template>
 
 <script>

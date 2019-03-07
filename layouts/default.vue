@@ -60,11 +60,6 @@
             to: '/'
           },
           {
-            icon: 'bubble_chart',
-            title: 'My Entries',
-            to: '/MyEntries'
-          },
-          {
             icon: 'person',
             title: 'Profile',
             to: '/Actor/'+ this.$store.state.user.username
