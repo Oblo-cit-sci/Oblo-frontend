@@ -12,6 +12,7 @@
         .buttons
           v-btn(color='info' @click='cancel_create') cancel
           v-btn(color='info' @click='create') create
+    datepicker
 </template>
 
 <script>
@@ -19,6 +20,7 @@
   import BasicTypes from '../lib/licci/all.js'
   import Translate from '../lib/licci/translations.js'
   import Definitions from '../lib/licci/definitions.js'
+  import Datepicker from '../components/Datepicker.vue'
 
   import FormSchema from '../lib/formschema/FormSchema.js'
 
@@ -135,7 +137,7 @@
         return action_btns;
       }
     },
-    components: { FormSchema }
+    components: { FormSchema, Datepicker }
   }
 </script>
 

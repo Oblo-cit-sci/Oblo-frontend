@@ -12,7 +12,7 @@
     <template v-slot:activator="{ on }">
       <v-text-field
         v-model="date"
-        label="Picker without buttons"
+        label="Creation date"
         prepend-icon="event"
         readonly
         v-on="on"
