@@ -62,7 +62,7 @@
           {
             icon: 'person',
             title: 'Profile',
-            to: '/Actor/'+ this.$store.state.user.username
+            to: '/Actor/' + this.$store.state.user.username
           },
           {
             icon: 'note_add',
@@ -73,6 +73,11 @@
             icon: 'list',
             title: 'Codes',
             to: '/Codes'
+          },
+          {
+            icon: 'list',
+            title: 'Tests',
+            to: '/Tests'
           }
         ],
         title: 'LICCI'

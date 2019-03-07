@@ -1,6 +1,6 @@
 <template lang="pug">
-  div
-    div
+  v-layout(column='' justify-center='' align-center='')
+    v-flex(xs12='' sm8='' md6='')
       div(v-if='selected_type!==null')
         v-btn(color='warning' @click='select_back') back
         v-btn(v-if='!create_entry' color='success' @click='show_create') create {{selected_type}}
