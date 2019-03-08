@@ -2,6 +2,8 @@
 
 A nuxt.js project
 
+[Detailed Overview of all features](https://licci.eu/vdocs/platform_reference)
+
 ## Build Setup
 
 ``` bash
