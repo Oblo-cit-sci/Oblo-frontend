@@ -1,0 +1,79 @@
+{
+  "sections": [{
+    "title": "Local livelihoods",
+    "aspects": [
+      {
+        "title": "main livelihood activities",
+        "type": "list",
+        "items": {
+          "type": "&/livelihood"
+        },
+        "attributes": {
+          "required": true,
+          "min": 1,
+          "extensible": true
+          /* or maybe that is just taken from the item.type */
+        }
+      },
+      {
+        "title": "livelihood Seasonalities",
+        "type": "map",
+        "items": {
+          "key-type": "./main livelihood activities",
+          "value-type": "list",
+          "value-items": ""
+        }
+      }
+    ]
+  },{
+    "title":"Local time-line",
+    "aspects": [
+      {
+        "title": "funding year",
+        "type": "date:year"
+      }, {
+        "title": "Demographic changes",
+        "type": "list",
+        "items": {
+          "type": "text"
+        }
+      }, {
+        "title": "markets interaction Trends",
+        "type": [
+          {
+            "title": "description of the trend",
+            "type": "text",
+            "required": true
+          },
+          {
+            "type":"date:year",
+            "required": true
+          },
+          {
+            "type":"date:month",
+            "required": false
+          }
+        ]
+      }, {
+
+      }
+        /*
+
+        Demographic changes, migration and habitation patterns
+        Trends in interaction with markets or changes in livelihood activities
+        Approximate dates/time periods when these events/trends started to happen
+
+    What have been important events in the community that everyone remembers?
+        Regarding memorable environmental events (e.g. floods, droughts, fires, earthquakes, hurricanes, etc)
+        Regarding social ‘markers’ (e.g., death / birth of residents, construction of buildings, parties / celebrations / rituals)
+        Regarding other important events (e.g., football, arrival of electricity, road building, etc.)
+
+    When did these events happen?
+        Date as precisely as possible the events mentioned above.
+
+
+        */
+
+    ]
+  }]
+}

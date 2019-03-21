@@ -48,11 +48,30 @@
 
 <script>
   export default {
+    created() {
+      if (this.$store.state.logged_in) {
+        this.items.push(
+          {
+            icon: 'list',
+            title: 'Logout',
+            to: '/logout'
+          }
+        )
+      } else {
+        this.items.push(
+          {
+            icon: 'list',
+            title: 'Login',
+            to: '/login'
+          })
+      }
+    },
     data() {
       return {
         drawer: false,
         clipped: false,
         miniVariant: false,
+        title: 'LICCI',
         items: [
           {
             icon: 'home',
@@ -62,7 +81,7 @@
           {
             icon: 'person',
             title: 'Profile',
-            to: '/Actor/' + this.$store.state.user.username
+            to: '/profile'
           },
           {
             icon: 'note_add',
@@ -79,8 +98,7 @@
             title: 'Tests',
             to: '/Tests'
           }
-        ],
-        title: 'LICCI'
+        ]
       }
     }
   }
