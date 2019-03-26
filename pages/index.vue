@@ -16,7 +16,7 @@ export default {
       //this.$router.push("login");
       //let res = await $axios.get('/user_data');
     } else {
-      console.log("logged in as ", store.state.user_data.username)
+      console.log("logged in as ", store.state.user_data.registered_name)
     }
   },
   components: {

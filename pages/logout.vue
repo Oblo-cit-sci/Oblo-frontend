@@ -6,9 +6,10 @@
     export default {
         name: "logout",
         created() {
-          this.$axios.get("/logout").then(() => {
+          this.$axios.get("/logout").then((res) => {
+            this.$store.commit("logout");
             this.$router.push("/")
-          }).catch(() => {
+          }).catch((req, res) => {
             console.log("logout ERROR");
             }
           )

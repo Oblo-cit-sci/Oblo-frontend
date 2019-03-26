@@ -48,22 +48,28 @@
 
 <script>
   export default {
+    computed: {
+      login_state() {
+        return this.$store.state.logged_in
+      }
+    },
     created() {
-      if (this.$store.state.logged_in) {
-        this.items.push(
-          {
-            icon: 'list',
-            title: 'Logout',
-            to: '/logout'
-          }
-        )
-      } else {
-        this.items.push(
-          {
-            icon: 'list',
-            title: 'Login',
-            to: '/login'
-          })
+      this.update_sidebar();
+    },
+    watch: {
+      login_state(newV, oldV){
+        this.update_sidebar();
+      }
+    },
+    methods: {
+      update_sidebar() {
+        if (!this.login_state) {
+          this.items.push(this.extra_items.login);
+          this.items.push(this.extra_items.register);
+        } else {
+          this.items.splice(5,2);
+          this.items.push(this.extra_items.logout);
+        }
       }
     },
     data() {
@@ -72,6 +78,23 @@
         clipped: false,
         miniVariant: false,
         title: 'LICCI',
+        extra_items: {
+          "login": {
+            icon: 'list',
+            title: 'Login',
+            to: '/login'
+          },
+          "register": {
+            icon: 'list',
+            title: 'Register',
+            to: '/register'
+          },
+          "logout": {
+            icon: 'list',
+            title: 'Logout',
+            to: '/logout'
+          }
+        },
         items: [
           {
             icon: 'home',

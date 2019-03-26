@@ -115,7 +115,7 @@
       },
       submit() {
         this.$axios.post("/register", {
-          username: this.username,
+          registered_name: this.username,
           email: this.email,
           password: this.password,
           defaultPrivacy: this.defaultPrivacy,
@@ -126,7 +126,8 @@
           if (data.status === "error/exists") {
             this.errorMsg = data.msg
           } else if (data.status === "ok") {
-            this.$store.commit("set_user_data",data.user_data);
+            this.$store.commit("login",data.result);
+           // this.$store.commit("set_user_data");
             this.$router.push("/")
           }
         }).catch((err) => {
