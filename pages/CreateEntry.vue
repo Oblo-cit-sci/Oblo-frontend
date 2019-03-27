@@ -37,8 +37,10 @@
         console.log("store.state.user_data.available_entries", store.state.user_data.available_entries);
         if(store.state.user_data.available_entries.length === 0) {
           const {data} = await $axios.get("/available_create_entries");
+          // console.log("d", data.result)
           if (data.status === "ok") {
-            store.commit("available_create_entries", data.results.entries)
+            store.commit("available_create_entries", data.result)
+            console.log(data.result.templates)
           }
 
         }
