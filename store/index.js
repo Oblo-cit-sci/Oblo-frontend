@@ -1,6 +1,11 @@
+let default_user_data = {
+  global_role: "visitor",
+  available_entries: [] // for creation
+}
+
 export const state = () => ({
   logged_in: false,
-  user_data: {}
+  user_data: default_user_data
 });
 
 export const mutations = {
@@ -10,7 +15,7 @@ export const mutations = {
   },
   logout(state) {
     state.logged_in = false;
-    state.user_data = {};
+    state.user_data = default_user_data;
   },
   set_user_data(state, user_data) {
     state.user_data = user_data;

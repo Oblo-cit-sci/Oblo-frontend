@@ -22,22 +22,26 @@
 
 
   import FormSchema from '../lib/formschema/FormSchema.js'
+  //import axios from "axios";
 
   // failed try to import eerything from a folder...
   // import t from '../lib/licci_c'
 
   //
 
-  const role_classes = {
-    "admin": BasicTypes.admin,
-    "editor": BasicTypes.editor,
-    "user": BasicTypes.user
-  };
+
 
   export default {
     name: "CreateEntry",
-    async fetch({store, params}) {
+    async fetch({store, $axios}) { // {store, params}
+        console.log("store.state.user_data.available_entries", store.state.user_data.available_entries);
+        if(store.state.user_data.available_entries.length === 0) {
+          const {data} = await $axios.get("/available_create_entries");
+          if (data.status === "ok") {
+            store.commit("available_create_entries", data.results.entries)
+          }
 
+        }
     },
     created() {
       // console.log("created");
@@ -75,7 +79,7 @@
       show_create() {
         this.create_entry = true;
         console.log(this.selected_type);
-        let test_schema = {
+        /*let test_schema = {
           "$schema": "http://json-schema.org/draft-04/schema#",
           "type": "object",
           "title": Translate.translate(BasicTypes[this.selected_type].title),//"Newsletter Subscription",
@@ -94,9 +98,9 @@
         },
           "additionalProperties": false,
           "required": ["name"]
-        };
-        this.schema = test_schema;
-        this.$refs.formSchema.load(this.schema);
+        }; */
+        // this.schema = test_schema;
+        //this.$refs.formSchema.load(this.schema);
       },
       cancel_create() {
         this.model = {};
@@ -124,15 +128,13 @@
         let action_btns = [];
         console.log("options from", this.selected_type);
         if(!this.selected_type) {
-          let global_role = this.$store.state.global_role;
+          let global_role = this.$store.state.user_data.global_role;
           console.log("using role default options", global_role);
-          action_btns = this.actions_from(role_classes[this.$store.state.global_role]);
+          action_btns = this.actions_from(global_role);
         } else {
           console.log(BasicTypes[this.selected_type]);
           action_btns = this.actions_from(BasicTypes[this.selected_type]);
         }
-        // console.log("final", action_btns);
-
         return action_btns;
       }
     },
