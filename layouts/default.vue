@@ -47,6 +47,55 @@
 </template>
 
 <script>
+
+
+  let all_items = [
+    {
+      icon: 'home',
+      title: 'Home',
+      to: '/'
+    },
+    {
+      icon: 'person',
+      title: 'Profile',
+      to: '/profile'
+    },
+    {
+      icon: 'note_add',
+      title: 'Create Entry',
+      to: '/CreateEntry'
+    },
+    {
+      icon: 'list',
+      title: 'Codes',
+      to: '/Codes'
+    },
+    {
+      icon: 'list',
+      title: 'Tests',
+      to: '/Tests'
+    },
+    {
+      icon: 'list',
+      title: 'Register',
+      to: '/register'
+    },
+    {
+      icon: 'list',
+      title: 'Login',
+      to: '/login'
+    },
+    {
+      icon: 'list',
+      title: 'Logout',
+      to: '/logout'
+    }
+  ];
+
+
+  let require_login = ["Profile", "Logout"];
+  let hide_on_login = ["Register","Login"];
+
   export default {
     computed: {
       login_state() {
@@ -63,12 +112,11 @@
     },
     methods: {
       update_sidebar() {
+        // not logged in
         if (!this.login_state) {
-          this.items.push(this.extra_items.login);
-          this.items.push(this.extra_items.register);
-        } else {
-          this.items.splice(5,2);
-          this.items.push(this.extra_items.logout);
+          this.items = all_items.filter(item => require_login.indexOf(item.title) === -1);
+        } else { // logged in
+          this.items = all_items.filter(item => hide_on_login.indexOf(item.title) === -1);
         }
       }
     },
@@ -78,50 +126,7 @@
         clipped: false,
         miniVariant: false,
         title: 'LICCI',
-        extra_items: {
-          "login": {
-            icon: 'list',
-            title: 'Login',
-            to: '/login'
-          },
-          "register": {
-            icon: 'list',
-            title: 'Register',
-            to: '/register'
-          },
-          "logout": {
-            icon: 'list',
-            title: 'Logout',
-            to: '/logout'
-          }
-        },
-        items: [
-          {
-            icon: 'home',
-            title: 'Home',
-            to: '/'
-          },
-          {
-            icon: 'person',
-            title: 'Profile',
-            to: '/profile'
-          },
-          {
-            icon: 'note_add',
-            title: 'Create Entry',
-            to: '/CreateEntry'
-          },
-          {
-            icon: 'list',
-            title: 'Codes',
-            to: '/Codes'
-          },
-          {
-            icon: 'list',
-            title: 'Tests',
-            to: '/Tests'
-          }
-        ]
+        items: all_items
       }
     }
   }

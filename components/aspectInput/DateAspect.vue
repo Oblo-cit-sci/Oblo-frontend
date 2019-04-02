@@ -11,25 +11,32 @@
   >
     <template v-slot:activator="{ on }">
       <v-text-field
-        v-model="date"
-        label="Creation date"
+        v-model="value"
+        :label="aspect.name"
         prepend-icon="event"
         readonly
         v-on="on"
       ></v-text-field>
     </template>
-    <v-date-picker v-model="date" no-title @input="menu = false"></v-date-picker>
+    <v-date-picker v-model="value" no-title @input="menu = false"></v-date-picker>
   </v-menu>
 </template>
 
 <script>
-  export default {
-    name: "Datepicker",
-    data: () => ({
-      date: new Date().toISOString().substr(0, 10),
-      menu: false,
-    })
-  }
+
+    export default {
+        name: "DateAspect",
+        props: ["aspect"],
+       components: {
+
+        },
+        data() {
+          return {
+            value: new Date().toISOString().substr(0, 10),
+            menu: false
+          }
+        }
+    }
 </script>
 
 <style scoped>
