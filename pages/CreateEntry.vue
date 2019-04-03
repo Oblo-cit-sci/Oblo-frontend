@@ -12,7 +12,6 @@
   export default {
     name: "CreateEntry",
     async fetch({store, $axios}) { // {store, params}
-      //console.log("CreateEntry.fetch");
       // TODO maybe a refetch after init to get new types...
     },
     data() {

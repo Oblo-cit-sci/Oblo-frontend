@@ -5,10 +5,13 @@
     v-list
       v-subheader General
 
-      v-list-tile
+      v-list-tile(three-line)
         v-list-tile-content
-          v-list-tile-title @{{$store.state.user_data.username}}
+          v-list-tile-title @{{$store.state.user_data.registered_name}}
           v-list-tile-sub-title username
+
+        v-list-tile-action
+          v-chip(outline disabled small) {{$store.state.user_data.global_role}}
 
       v-textarea(v-if="edit_mode", "outline", label="description" v-model="edits.description")
       v-list-tile(v-else)

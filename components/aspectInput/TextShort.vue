@@ -11,7 +11,20 @@
           return {
             value: ""
           }
-        }
+        },
+      created() {
+
+      },
+      watch: {
+          value() {
+            console.log("short text");
+            // this.aspect.attr.required
+              this.$emit("update", {
+                complete: this.value !== "",
+                aspect: this.aspect
+              } )
+          }
+      }
     }
 </script>
 

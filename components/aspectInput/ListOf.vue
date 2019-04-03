@@ -1,5 +1,5 @@
 <template lang="pug">
-  div select liccis {{aspect}}
+  div select liccis
     v-list
       v-list-tile(v-for="item in selected", :key="item.slug")
         v-list-tile-content
@@ -30,10 +30,9 @@
       }
     },
     created() {
-      console.log(this.aspect);
-
+      // build the fiven_options (all options available) from what is passed
       let passed_options = this.aspect.attr.options;
-
+      // a "*" means, lookup code and set the values as options
       if (typeof (passed_options) === "string") {
         if (passed_options.charAt(0) === "*") {
           passed_options = this.$store.state.codes[passed_options.substring(1)];
@@ -42,6 +41,7 @@
         }
       }
 
+      // transform the options into a wellformed object, containing title and slug
       for (let option of passed_options) {
         console.log("o", option);
         let optionType = typeof (option);
@@ -67,7 +67,7 @@
     },
     computed: {
       options() {
-
+      // filter selected options out
         let options = this.given_options.slice();
 
         // filter here. could be fiddled in into the conditions... but not clean.

@@ -4,15 +4,14 @@
       h1 {{entryType.title}}
       h3 {{entryType.description}}
       div(v-for="(aspect, index) in entryType.aspects" :key="index")
-        component(v-bind:is="aspectComponent(aspect)" v-bind:aspect="aspect")
-
+        component(v-bind:is="aspectComponent(aspect)"
+          v-bind:aspect="aspect"
+          v-on:update="aspect_value")
+      v-btn(v-bind:disabled="!complete" color="success" :loading="sending") submit
+      div {{!complete}}
 </template>
 
 <script>
-  /*
-
-v-treeview(v-bind:items="$store.state.tags")
-   */
 
   import Basic from "~~/components/aspectInput/Basic";
   import TextShort from "~~/components/aspectInput/TextShort";
@@ -34,8 +33,16 @@ v-treeview(v-bind:items="$store.state.tags")
     created() {
     },
     data() {
-      return {};
-    }, methods: {
+      return {
+        sending: false
+      };
+    },
+    computed: {
+      complete() {
+        return this.title !== "";
+      }
+    },
+    methods: {
       aspectComponent(aspect) {
         if (aspect.type === "str") {
           let attributes = aspect.attr || {};
@@ -57,6 +64,9 @@ v-treeview(v-bind:items="$store.state.tags")
           return ListOf
         }
         return Basic;
+      },
+      aspect_value(aspect) {
+        console.log("slug", aspect)
       }
     }
   }

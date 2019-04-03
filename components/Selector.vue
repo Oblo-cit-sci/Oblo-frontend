@@ -39,6 +39,8 @@
       }
     },
     created() {
+      console.log(this.options);
+
       if (this.selection === undefined) {
         this.select_sync = false;
       }
