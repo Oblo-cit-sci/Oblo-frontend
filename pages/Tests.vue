@@ -1,12 +1,12 @@
 <template lang="pug">
   v-layout(column='' justify-center='' align-center='')
     v-flex(xs12='' sm8='' md6='')
-      TreeleafPicker
-      Datepicker
+      TreeleafPicker(v-bind:tree="$store.state.tags")
 </template>
 
 <script>
 
+  // TreeleafPicker(:tree="store.state.tags")
   import TreeleafPicker from "../components/TreeleafPicker"
   import Datepicker from '../components/Datepicker.vue'
 

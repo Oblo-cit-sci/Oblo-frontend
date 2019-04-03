@@ -39,12 +39,17 @@ module.exports = {
     'element-ui/lib/theme-chalk/index.css'
   ],
 
+  router: {
+    middleware: 'init'
+  },
+
   /*
   ** Plugins to load before mounting the App
   */
   plugins: [
     '@/plugins/vuetify',
-    '~plugins/element-ui'
+    '~plugins/element-ui',
+    { src: '~/plugins/mapbox', mode: 'client' },
 ],
 
   /*

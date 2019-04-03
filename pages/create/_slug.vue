@@ -3,41 +3,27 @@
     v-flex(xs12='' sm8='' md6='')
       h1 {{entryType.title}}
       h3 {{entryType.description}}
-      div {{entryType}}
-
       div(v-for="(aspect, index) in entryType.aspects" :key="index")
         component(v-bind:is="aspectComponent(aspect)" v-bind:aspect="aspect")
+
 </template>
 
 <script>
   /*
 
-["title", {"attr": {"max": 5000}, "name": "description", "type": "str"}, {"name": "observation time", "type": "date"}, {"name": "licci", "type": "list"}]
+v-treeview(v-bind:items="$store.state.tags")
    */
-
 
   import Basic from "~~/components/aspectInput/Basic";
   import TextShort from "~~/components/aspectInput/TextShort";
   import TextLong from "~~/components/aspectInput/TextLong";
   import DateAspect from "~~/components/aspectInput/DateAspect";
-  //import DatePicker from "../../components/Datepicker";
-
-  const default_aspects = [
-    {"title": {"attr": {"max": 5000}, "type": "str"}}];
+  import Location from "~~/components/aspectInput/Location";
+  import ListOf from "~~/components/aspectInput/ListOf";
 
   export default {
     name: "slug",
-    components: {Basic, TextShort, TextLong},
-    // TODO this is temporary, for development
-    async fetch({store, $axios}) { // {store, params}
-      //console.log("CreateEntry.fetch store len", Object.keys(store.state.user_data.available_entries).length);
-      if (Object.keys(store.state.available_entries).length === 0) {
-        const {data} = await $axios.get("/available_create_entries");
-        if (data.status === "ok") {
-          store.commit("available_create_entries", data.result.templates);
-        }
-      }
-    },
+    components: {Basic, TextShort, TextLong, Location, ListOf},
     asyncData(context) {
       //console.log(context);
       return {
@@ -48,7 +34,7 @@
     created() {
     },
     data() {
-      return {aspects: default_aspects};
+      return {};
     }, methods: {
       aspectComponent(aspect) {
         if (aspect.type === "str") {
@@ -64,6 +50,11 @@
         } else if(aspect.type === "date") {
             console.log("date aspect");
             return DateAspect;
+        } else if(aspect.type === "gps") {
+          console.log("gps aspect");
+          return Location;
+        } else if(aspect.type === "list") {
+          return ListOf
         }
         return Basic;
       }

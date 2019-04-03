@@ -13,12 +13,7 @@
     name: "CreateEntry",
     async fetch({store, $axios}) { // {store, params}
       //console.log("CreateEntry.fetch");
-      if(Object.keys(store.state.available_entries).length === 0) {
-        const {data} = await $axios.get("/available_create_entries");
-        if (data.status === "ok") {
-          store.commit("available_create_entries", data.result.templates);
-        }
-      }
+      // TODO maybe a refetch after init to get new types...
     },
     data() {
       return {

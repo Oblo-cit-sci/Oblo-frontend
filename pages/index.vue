@@ -9,13 +9,15 @@ import Entrylist from '~/components/Entrylist.vue'
 
 
 export default {
-  async fetch({ store, $axios }) {
+  async fetch({ store }) {
     // TODO helper, replace with... nuxtServerInit Action or actually, shouldnt happen
     if(!store.state.logged_in) {
       console.log("WARNING: not logged in!")
     } else {
       console.log("logged in as ", store.state.user_data.registered_name)
     }
+  },
+  created (){
   },
   components: {
     Entrylist
