@@ -4,11 +4,13 @@
 </template>
 
 <script>
+    import AspectMixin from "./AspectMixin";
+
     export default {
         props: ["aspect"],
+        mixins: [AspectMixin],
         data() {
           return {
-            value: ""
           }
         },
         name: "TextLong"

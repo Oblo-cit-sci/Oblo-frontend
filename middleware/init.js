@@ -11,5 +11,14 @@ export default function (context) {
     }).catch((err) => {
       console.log("error getting initial data", err)
     })
+
+    context.$axios.get("/get_related_users").then((res) => {
+      // TODO check if OK
+      context.store.commit("set_related_users", res.data.result);
+    }).catch((err) => {
+      console.log("error getting related users", err)
+    })
+
+
   }
 }

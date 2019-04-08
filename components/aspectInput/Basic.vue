@@ -1,6 +1,7 @@
 <template lang="pug">
-    div ---
+    div ------
       div {{aspect}}
+      div ------
 </template>
 
 <script>

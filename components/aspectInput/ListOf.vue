@@ -1,21 +1,24 @@
 <template lang="pug">
-  div select liccis
-    v-list
-      v-list-tile(v-for="item in selected", :key="item.slug")
+  div {{aspect.name}}
+    v-list(v-if="value.length > 0")
+      v-list-tile(v-for="item in value", :key="item.slug")
         v-list-tile-content
           v-list-tile-title {{item.title}}
         v-list-tile-action
           v-btn(icon @click="remove(item)")
             v-icon(color="grey" lighten-1) close
-
-    div(v-if="allow_more") select from
+    div(v-if="create")
+      v-btn(@click="create_item()") Create
+    div(v-if="!create && allow_more") select from
       Selector(v-bind:options="options" v-on:selection="selection")
-    div(v-else) maximum reached
+    div(v-if="!create && !allow_more") maximum reached
 </template>
 
 <script>
 
   import Selector from "../Selector";
+  import {create_options} from "../../lib/common"
+  import AspectMixin from "./AspectMixin";
 
   var _ = require('lodash');
 
@@ -23,56 +26,47 @@
     name: "ListOf",
     components: {Selector},
     props: ["aspect"],
+    mixins: [AspectMixin],
     data() {
       return {
-        selected: [],
-        given_options: []
+        given_options: [],
+        create: false
       }
     },
     created() {
-      // build the fiven_options (all options available) from what is passed
+      this.value = [];
+      // build the given_options (all options available) from what is passed
       let passed_options = this.aspect.attr.options;
       // a "*" means, lookup code and set the values as options
       if (typeof (passed_options) === "string") {
-        if (passed_options.charAt(0) === "*") {
+        let type_char = passed_options.charAt(0);
+        if (type_char === "*") {
           passed_options = this.$store.state.codes[passed_options.substring(1)];
           // console.log("taking code for list", given_options.substring(1));
           console.log("code options", passed_options);
         }
-      }
-
-      // transform the options into a wellformed object, containing title and slug
-      for (let option of passed_options) {
-        console.log("o", option);
-        let optionType = typeof (option);
-        if (optionType === "string") {
-          this.given_options.push({
-            title: option,
-            slug: option
-          });
-        } else if (optionType === "object") {
-          if (!optionType.hasOwnProperty("title")) {
-            console.log("OPTIONS ARE MALFORME. MISSING TITLE:", option);
-          } else {
-            if (!optionType.hasOwnProperty("slug")) {
-              option.slug = option.title;
-            }
-          }
-          this.given_options.push(option);
-        } else {
-          console.log("OPTIONS ARE MALFORME. WRONG TYPE:", option, optionType);
+        if (type_char === "$") {
+          console.log("entry agregator");
+          this.create = true;
+          passed_options = [];
         }
       }
-
+      // transform the options into a wellformed object, containing title and slug
+      for (let option of passed_options) {
+        //console.log("o", option);
+        option = create_options(option);
+        if (option !== null)
+          this.given_options.push(option);
+      }
     },
     computed: {
       options() {
-      // filter selected options out
+        // filter selected options out
         let options = this.given_options.slice();
 
         // filter here. could be fiddled in into the conditions... but not clean.
         // remove options already inserted
-        let selected_slugs = _.map(this.selected, "slug");
+        let selected_slugs = _.map(this.value, "slug");
         options = options.filter(o => !selected_slugs.includes(o.slug));
         return options //this.aspect.attr.options
       },
@@ -80,18 +74,22 @@
         if (!this.aspect.attr.hasOwnProperty("max")) {
           return true
         } else {
-          return this.selected.length < this.aspect.attr.max
+          return this.value.length < this.aspect.attr.max
         }
       }
     },
     methods: {
       selection(item) {
-        this.selected.push(item)
+        console.log("select", this.value);
+        this.value = item;
       },
       remove(item) {
-        console.log(item);
         _.pull(this.selected, [item]);
-        this.selected.splice(item);
+        this.value.splice(item);
+      },
+      create_item() {
+        // this is when u want to add a village to a site, or household to a village
+        console.log("create");
       }
     }
   }

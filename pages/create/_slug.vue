@@ -7,22 +7,24 @@
         component(v-bind:is="aspectComponent(aspect)"
           v-bind:aspect="aspect"
           v-on:update="aspect_value")
-      v-btn(v-bind:disabled="!complete" color="success" :loading="sending") submit
-      div {{!complete}}
+      v-btn(v-bind:disabled="!complete" color="success" :loading="sending" @click="send") submit
+      div {{complete}}
 </template>
-
 <script>
 
   import Basic from "~~/components/aspectInput/Basic";
   import TextShort from "~~/components/aspectInput/TextShort";
+  import IntAspect from "~~/components/aspectInput/IntAspect";
   import TextLong from "~~/components/aspectInput/TextLong";
   import DateAspect from "~~/components/aspectInput/DateAspect";
   import Location from "~~/components/aspectInput/Location";
   import ListOf from "~~/components/aspectInput/ListOf";
+  import SelectUser from "~~/components/aspectInput/SelectUser";
+
 
   export default {
     name: "slug",
-    components: {Basic, TextShort, TextLong, Location, ListOf},
+    components: {Basic, TextShort, TextLong, Location, ListOf, IntAspect},
     asyncData(context) {
       //console.log(context);
       return {
@@ -31,10 +33,14 @@
       }
     },
     created() {
+      for(let aspect of this.entryType.aspects) {
+        this.aspects_values[aspect.name] = null;
+      }
     },
     data() {
       return {
-        sending: false
+        sending: false,
+        aspects_values: {},
       };
     },
     computed: {
@@ -48,17 +54,17 @@
           let attributes = aspect.attr || {};
           let max = attributes.max || 8000; // or make this explicit in python
           if (max < 100) {
-            console.log("TextShort aspect");
             return TextShort;
           } else {
-            console.log("TextLong aspect");
             return TextLong;
           }
+        } else if(aspect.type === "int") {
+          return IntAspect;
+        } else if(aspect.type === "@user") {
+          return SelectUser;
         } else if(aspect.type === "date") {
-            console.log("date aspect");
             return DateAspect;
         } else if(aspect.type === "gps") {
-          console.log("gps aspect");
           return Location;
         } else if(aspect.type === "list") {
           return ListOf
@@ -66,7 +72,19 @@
         return Basic;
       },
       aspect_value(aspect) {
-        console.log("slug", aspect)
+        this.aspects_values[aspect.aspect.name] = aspect.value || null;
+        console.log(this.aspects_values)
+      },
+      send() {
+        console.log("sending");
+        this.sending = true;
+        this.$axios.post("/create_entry", this.aspects_values).then((res) => {
+          this.sending = false;
+          this.$store.commit("set_snackbar", {message: res.data.msg, status: res.data.status})
+          this.$router.push("/");
+        }).catch((err) => {
+          console.log("error");
+        })
       }
     }
   }

@@ -1,7 +1,8 @@
 <template lang="pug">
   div(v-if="viewStyle === CLEAR_LIST")
     v-list(two-line)
-      v-list-tile(v-for="(item, slug) in options" :key="item.title" @click="sellect(item)")
+      v-list-tile(v-for="(item, slug) in options"
+        :key="item.title" @click="select(item)" v-bind:class="{ marked: marked(item.title) }")
         v-list-tile-content
           v-list-tile-title {{item.title}}
           v-list-tile-sub-title {{item.description}}
@@ -16,7 +17,9 @@
     pass the options, and a selection which should be synced.
     e.g.
     v-bind:options="input_options" v-bind:selection.sync="selection"
-    the options should be objects with a "title", optional "slug" and "description"
+
+    the options should be objects with a "title", optional "slug" and "description".
+    use the function create_option in the common.j
 
     parent component should have a method: selection
    */
@@ -35,11 +38,13 @@
       return {
         select_sync: true,
         viewStyle: CLEAR_LIST,
-
+        selected: null, // the title for highlighting
+        // this is for VUETIFY_SELECT- also see watch...
+        select_select: []
       }
     },
     created() {
-      console.log(this.options);
+      // console.log("Selector, option", this.options);
 
       if (this.selection === undefined) {
         this.select_sync = false;
@@ -60,17 +65,29 @@
       }
     },
     methods: {
-      sellect(item) {
+      select(item) {
+        this.selected = item.title;
+        console.log("select");
         if (this.select_sync) {
           this.$emit('update:selection', item.slug);
         } else {
           this.$emit("selection", item);
         }
+      },
+      marked(title) {
+        return title === this.selected
+      }
+    },
+    watch: {
+      select_select(new_val, old_val) {
+        this.$emit("selection", new_val);
       }
     }
   }
 </script>
 
 <style scoped>
-
+  .marked {
+    background: blueviolet;
+  }
 </style>

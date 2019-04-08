@@ -19,22 +19,25 @@
       ></v-text-field>
     </template>
     <v-date-picker v-model="value" no-title @input="menu = false"></v-date-picker>
+    {{value}}
   </v-menu>
 </template>
 
 <script>
 
+    import AspectMixin from "./AspectMixin";
+
     export default {
         name: "DateAspect",
         props: ["aspect"],
-       components: {
-
-        },
+        mixins: [AspectMixin],
         data() {
           return {
-            value: new Date().toISOString().substr(0, 10),
             menu: false
           }
+        },
+        created() {
+          this.value = new Date().toISOString().substr(0, 10);
         }
     }
 </script>

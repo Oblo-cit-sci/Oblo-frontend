@@ -38,16 +38,14 @@
         <nuxt/>
       </v-container>
     </v-content>
-    <v-footer
-      :fixed=true
-      app
-    >
-    </v-footer>
+    <GlobalSnackbar></GlobalSnackbar>
   </v-app>
 </template>
 
 <script>
 
+
+  import GlobalSnackbar from "../components/GlobalSnackbar";
 
   let all_items = [
     {
@@ -97,6 +95,7 @@
   let hide_on_login = ["Register","Login"];
 
   export default {
+    components: {GlobalSnackbar},
     computed: {
       login_state() {
         return this.$store.state.logged_in
@@ -118,6 +117,9 @@
         } else { // logged in
           this.items = all_items.filter(item => hide_on_login.indexOf(item.title) === -1);
         }
+      },
+      message() {
+        console.log("some message");
       }
     },
     data() {
