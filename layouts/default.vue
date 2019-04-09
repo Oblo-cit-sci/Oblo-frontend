@@ -117,9 +117,6 @@
         } else { // logged in
           this.items = all_items.filter(item => hide_on_login.indexOf(item.title) === -1);
         }
-      },
-      message() {
-        console.log("some message");
       }
     },
     data() {

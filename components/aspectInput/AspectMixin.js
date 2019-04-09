@@ -1,10 +1,12 @@
 export default {
+  //props: ["value"],
   data: function () {
     return {
-      value: null
+      //  _value: null
     }
   },
   watch: {
+    /*
     value() {
       //console.log("value change");
       this.$emit("update", {
@@ -13,6 +15,6 @@ export default {
         complete: this.value !== "",
         aspect: this.aspect || "no aspect"
       })
-    }
+    }*/
   }
 }

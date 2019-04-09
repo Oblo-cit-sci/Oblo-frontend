@@ -7,15 +7,12 @@
       div(v-for="(aspect, index) in entryType.aspects" :key="index")
         component(v-bind:is="aspectComponent(aspect)"
           v-bind:aspect="aspect"
-          v-on:update="aspect_value"
-          /* v-bind:value.sync="aspects_values[aspect.name]" */
-          )
+          v-bind:value.sync="aspects_values[aspect.name]")
       License
       Privacy
       v-btn(color="secondary" @click="save") save draft
       v-btn(v-bind:disabled="!complete" color="success" :loading="sending" @click="send") submit
       div {{complete}}
-      div {{aspects_values}}
 </template>
 <script>
 
@@ -30,7 +27,7 @@
   import License from "../../components/License";
   import Privacy from "../../components/Privacy";
 
-  //
+  //  //v-on:update:value="cool(aspect.name, $event)"
 
 
   export default {
@@ -43,18 +40,25 @@
       }
     },
     created() {
-      for (let aspect of this.entryType.aspects) {
-        this.aspects_values[aspect.name] = null;
-      }
-      if(this.$route.query.hasOwnProperty("draft_id")) {
-
+      if (this.$route.query.hasOwnProperty("draft_id")) {
+        const draft_id = this.$route.query.draft_id;
+        for (let aspect of this.entryType.aspects) {
+          console.log(aspect, this.$store.state.drafts[draft_id].aspects[aspect.name]);
+          this.aspects_values[aspect.name] = this.$store.state.drafts[draft_id].aspects[aspect.name];
+          console.log(this.aspects_values[aspect.name]);
+        }
+        console.log(this.aspects_values);
+      } else {
+        for (let aspect of this.entryType.aspects) {
+          this.aspects_values[aspect.name] = null;
+        }
       }
     },
     data() {
       return {
         sending: false,
-        aspects_values: {},
-      };
+        aspects_values: {}
+      }
     },
     computed: {
       complete() {
@@ -62,6 +66,11 @@
       }
     },
     methods: {
+      cool(aspect_name, value) {
+        //console.log("cool", aspect_name, value, this.aspects_values);
+        this.aspects_values[aspect_name] = value;
+        console.log("cool", aspect_name, value, this.aspects_values);
+      },
       aspectComponent(aspect) {
         if (aspect.type === "str") {
           let attributes = aspect.attr || {};
@@ -85,10 +94,10 @@
         }
         return Basic;
       },
-      aspect_value(aspect) {
+      /*aspect_value(aspect) {
         this.aspects_values[aspect.aspect.name] = aspect.value || null;
         // console.log(this.aspects_values)
-      },
+      },*/
       send() {
         this.sending = true;
         const data = {
