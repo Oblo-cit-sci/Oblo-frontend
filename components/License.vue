@@ -1,5 +1,6 @@
 <template lang="pug">
   div
+    h3 License & Visibility
     div(v-if="$store.getters.visitor")
       div as a visitor your contributions will be licensed under {{selectedLicense}}.
       div

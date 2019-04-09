@@ -1,13 +1,13 @@
 <template lang="pug">
   div
-    div {{aspect.name}}
+    h3 {{aspect.name}}
     Selector(v-bind:options="input_options" v-bind:selection.sync="selection")
-    div(v-if="Object.keys(value).length !== 0")
+    div(v-if="i_value != null")
       span Longitude:&nbsp;&nbsp;
-      span {{value.lon | format_float}}
+      span {{i_value.lon | format_float}}
       span &nbsp;&nbsp;&nbsp;&nbsp;
       span Latitude:&nbsp;&nbsp;
-      span {{value.lat | format_float}}
+      span {{i_value.lat | format_float}}
       div Error of {{$store.state.user_data.location_error}} included
 </template>
 
@@ -24,25 +24,25 @@
     name: "Location",
     components: {Selector},
     mixins: [AspectMixin],
-    props: ["aspect"],
     data() {
       return {
         input_options: [
           {title: "actual position", description: "", slug: ACTUAL_LOCATION},
           {title: "point on the map", description: "", slug: FROM_MAP}],
-        value: {},
         selection: null,
       }
     },
     watch: {
       selection() {
-        //console.log("selected location input method", this.selection);
-        if (this.selection === ACTUAL_LOCATION) {
+        console.log("selected location input method", this.selection);
+        if (this.selection.slug === ACTUAL_LOCATION) {
           get_location((location) => {
-            this.value = create_location_error(
+            this.i_value = create_location_error(
               location.coords.longitude,
               location.coords.latitude,
               this.$store.state.user_data.location_error);
+              console.log(this.i_value);
+              this.value_change(this.i_value);
           });
         } else if (this.selection === FROM_MAP) {
 

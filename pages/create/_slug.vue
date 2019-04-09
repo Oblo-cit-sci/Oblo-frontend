@@ -41,13 +41,13 @@
     },
     created() {
       if (this.$route.query.hasOwnProperty("draft_id")) {
-        const draft_id = this.$route.query.draft_id;
+        this.draft_id = this.$route.query.draft_id;
         for (let aspect of this.entryType.aspects) {
-          console.log(aspect, this.$store.state.drafts[draft_id].aspects[aspect.name]);
-          this.aspects_values[aspect.name] = this.$store.state.drafts[draft_id].aspects[aspect.name];
-          console.log(this.aspects_values[aspect.name]);
+          //console.log(aspect, this.$store.state.drafts[this.draft_id].aspects[aspect.name]);
+          this.aspects_values[aspect.name] = this.$store.state.drafts[this.draft_id].aspects[aspect.name];
+          //console.log(this.aspects_values[aspect.name]);
         }
-        console.log(this.aspects_values);
+        console.log(this.draft_id, this.aspects_values);
       } else {
         for (let aspect of this.entryType.aspects) {
           this.aspects_values[aspect.name] = null;
@@ -66,11 +66,6 @@
       }
     },
     methods: {
-      cool(aspect_name, value) {
-        //console.log("cool", aspect_name, value, this.aspects_values);
-        this.aspects_values[aspect_name] = value;
-        console.log("cool", aspect_name, value, this.aspects_values);
-      },
       aspectComponent(aspect) {
         if (aspect.type === "str") {
           let attributes = aspect.attr || {};
@@ -113,14 +108,16 @@
         })
       },
       save() { // draft
-        // console.log("saving id", this.$store.state.drafts.length);
+        if(!this.hasOwnProperty("draft_id")) {
+          this.draft_id =  this.$store.state.drafts.length;
+        }
         const data = {
           slug: this.slug,
-          draft_id: this.$store.state.drafts.length,
+          draft_id: this.draft_id,
           title: this.entryType.title + ": " + this.aspects_values.title,
           aspects: this.aspects_values
         };
-        this.$store.commit("set_snackbar", {message: "Draft saved", status: "ok"})
+        this.$store.commit("set_snackbar", {message: "Draft saved", status: "ok"});
         this.$store.commit("save_draft", data);
         this.$router.push("/");
       }

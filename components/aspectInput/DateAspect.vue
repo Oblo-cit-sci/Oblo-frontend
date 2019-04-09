@@ -11,35 +11,35 @@
   >
     <template v-slot:activator="{ on }">
       <v-text-field
-        v-model="value"
+        v-model="i_value"
         :label="aspect.name"
         prepend-icon="event"
         readonly
         v-on="on"
       ></v-text-field>
     </template>
-    <v-date-picker v-model="value" no-title @input="menu = false"></v-date-picker>
-    {{value}}
+    <v-date-picker v-model="i_value" no-title @input="menu = false;value_change(i_value)"></v-date-picker>
   </v-menu>
 </template>
 
 <script>
 
-    import AspectMixin from "./AspectMixin";
+  import AspectMixin from "./AspectMixin";
 
-    export default {
-        name: "DateAspect",
-        props: ["aspect"],
-        mixins: [AspectMixin],
-        data() {
-          return {
-            menu: false
-          }
-        },
-        created() {
-          this.value = new Date().toISOString().substr(0, 10);
-        }
+  export default {
+    name: "DateAspect",
+    mixins: [AspectMixin],
+    data() {
+      return {
+        menu: false
+      }
+    },
+    created() {
+      if (this.value === null) {
+        this.i_value = new Date().toISOString().substr(0, 10);
+      }
     }
+  }
 </script>
 
 <style scoped>

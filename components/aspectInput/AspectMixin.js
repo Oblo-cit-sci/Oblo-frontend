@@ -1,20 +1,16 @@
 export default {
-  //props: ["value"],
-  data: function () {
+  props: ["aspect", "value"],
+  data() {
     return {
-      //  _value: null
+      i_value: null
     }
   },
-  watch: {
-    /*
-    value() {
-      //console.log("value change");
-      this.$emit("update", {
-        value: this.value,
-        // TODO should be in that Aspect, probably a prop
-        complete: this.value !== "",
-        aspect: this.aspect || "no aspect"
-      })
-    }*/
+  created() {
+    this.i_value = this.value;
+  },
+  methods: {
+    value_change(event) {
+      this.$emit('update:value', event)
+    }
   }
 }

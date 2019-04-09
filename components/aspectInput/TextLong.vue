@@ -1,18 +1,13 @@
 <template lang="pug">
   div
-    v-textarea("outline" :label="aspect.name"  v-model="value")
+    v-textarea("outline" :label="aspect.name"  v-model="i_value" @input="value_change($event)")
 </template>
 
 <script>
     import AspectMixin from "./AspectMixin";
 
     export default {
-        props: ["aspect"],
         mixins: [AspectMixin],
-        data() {
-          return {
-          }
-        },
         name: "TextLong"
     }
 </script>

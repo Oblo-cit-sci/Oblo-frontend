@@ -73,7 +73,12 @@ export const mutations = {
     }
   },
   save_draft(state, draft_data) {
-    state.drafts.push(draft_data);
+    console.log("in", draft_data);
+    console.log("save draft", draft_data.draft_id, draft_data.draft_id === state.drafts.length);
+    if(draft_data.draft_id === state.drafts.length)
+      state.drafts.push(draft_data);
+    else
+      state.drafts[draft_data.draft_id] = draft_data;
   },
   // should be set with {message: str, status: ok|error}
   set_snackbar(state, snackbar) {
