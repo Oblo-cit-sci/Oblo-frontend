@@ -1,30 +1,21 @@
 <template lang="pug">
   div
-    v-text-field("outline" :label="aspect.name"  v-model="value" type="int")
+    v-text-field("outline" :label="aspect.name"  v-model="value"  mask="####")
 </template>
 
 <script>
+  import AspectMixin from "./AspectMixin";
+
   export default {
     name: "IntAspect",
     props: ["aspect"],
+    mixins: [AspectMixin],
     data() {
-      return {
-        value: 0
-      }
+      return {}
     },
     created() {
-
+      this.value = 0;
     },
-    watch: {
-      value() {
-        console.log("short text");
-        // this.aspect.attr.required
-        this.$emit("update", {
-          complete: this.value !== "",
-          aspect: this.aspect
-        } )
-      }
-    }
   }
 </script>
 

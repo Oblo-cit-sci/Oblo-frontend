@@ -1,9 +1,13 @@
 let default_user_data = {
   global_role: "visitor",
+  registered_name: "visitor", // TODO should also retrieve that... with a number index
   // https://stackoverflow.com/questions/1253499/simple-calculations-for-working-with-lat-lon-km-distance
  // of 1 degree will result in error of around 50km per coordinate -0.5, +0.5 degree change around the real location
   location_error: 2,
+  defaultLicense: "BY-NC-SA", // should come from the server
+  defaultPrivacy: "public"
 };
+
 
 export const state = () => ({
   logged_in: false,
@@ -14,7 +18,8 @@ export const state = () => ({
   tags: {}, // initially just the licci tree
   codes: {},
   related_users: [],
-  snackbar: {message:"", status:"ok"}
+  snackbar: {message:"", status:"ok"},
+  drafts: []
 });
 
 function extract_liccis(tree) {
@@ -38,6 +43,7 @@ export const mutations = {
 
     state.tags = data.licciTree;
     state.codes.liccis = extract_liccis(data.licciTree);
+    state.codes.licenses = data.licenses;
     //console.log(state.codes);
     for (let entry of data.entryTemplates) { // originally from available_create_entries
       state.available_entries[entry.slug] = entry
@@ -66,8 +72,19 @@ export const mutations = {
       state.available_entries[entry.slug] = entry
     }
   },
+  save_draft(state, draft_data) {
+    state.drafts.push(draft_data);
+  },
   // should be set with {message: str, status: ok|error}
   set_snackbar(state, snackbar) {
     state.snackbar = snackbar
   }
 };
+
+export const getters = {
+  visitor(state) {
+    console.log("visitor check");
+    return state.user_data.global_role === "visitor"
+  }
+};
+

@@ -35,8 +35,7 @@ module.exports = {
   ** Global CSS
   */
   css: [
-    '~/assets/style/app.styl',
-    'element-ui/lib/theme-chalk/index.css'
+    '~/assets/style/app.styl'
   ],
 
   router: {
@@ -48,7 +47,6 @@ module.exports = {
   */
   plugins: [
     '@/plugins/vuetify',
-    '~plugins/element-ui',
     { src: '~/plugins/mapbox', mode: 'client' },
 ],
 
