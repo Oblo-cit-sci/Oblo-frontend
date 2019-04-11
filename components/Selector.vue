@@ -62,11 +62,14 @@
     },
     computed: {
       simpleOptions() {
-        return _.map(this.options, o => o.slug);
+        return ld.map(this.options, o => o.slug);
       }
     },
     methods: {
       select(item) {
+        console.log(item);
+        if(item.slug && item.slug.startsWith("_"))
+          return;
         this.selected = item.title;
         // console.log("select. sync?", this.select_sync);
         if (this.select_sync) {

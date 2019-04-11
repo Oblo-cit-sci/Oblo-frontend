@@ -1,12 +1,16 @@
 <template lang="pug">
   div
-    v-list
-      v-list-tile(v-for="entry in recent", :key="entry.id")
-        div
-          span By {{entry.creator}}
-          br
-          div  data {{entry.data}}
-          v-divider
+    v-list(two-line subheader)
+      v-list-tile(v-for="entry in recent", :key="entry.id" @click="show(entry)")
+        v-list-tile-avatar
+          v-icon {{privacy_icon(entry.privacy)}}
+        v-list-tile-content
+          v-list-tile-title 😁 {{entry.creator}}
+          v-list-tile-sub-title {{entry.title}}
+
+        v-list-tile-action
+          v-img(:src="license_icon(entry.license)" height="30px" width="100px" style="margin-left:20px")
+      v-divider
 </template>
 
 <script>
@@ -17,6 +21,7 @@
     created() {
       recent_entries().then((res) => {
         this.recent = res.entries;
+        console.log(this.recent);
         //console.log("grabbed entries", this.recent);
       });
     },
@@ -25,6 +30,25 @@
         recent: {},
         date: new Date().toISOString().substr(0, 10),
         somedate: false
+      }
+    },
+    methods: {
+      show() {
+
+      },
+      privacy_icon(privacy) {
+        return "public"
+      },
+      license_icon(license) {
+        if (this.$store.state.codes.hasOwnProperty("licenses")) {
+          let license_data = this.$store.state.codes.licenses[license];
+          if (license_data !== undefined) {
+            return license_data.icon
+          } else {
+            console.log(license);
+          }
+        }
+        else return "";
       }
     }
   }

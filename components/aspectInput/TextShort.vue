@@ -1,7 +1,11 @@
 <template lang="pug">
   div
-    v-text-field("outline" :label="aspect.name"  v-model="i_value" @input="value_change($event)")
-    div {{i_value}}
+    v-text-field(
+      outline
+      :label="aspect.name"
+      placeholder=" "
+      v-model="i_value"
+      @input="value_change($event)")
 </template>
 
 <script>

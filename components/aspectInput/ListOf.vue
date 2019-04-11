@@ -1,7 +1,7 @@
 <template lang="pug">
   div {{aspect.name}}
-    v-list(v-if="value.length > 0")
-      v-list-tile(v-for="item in value", :key="item.slug")
+    v-list(v-if="i_value.length > 0")
+      v-list-tile(v-for="item in i_value", :key="item.slug")
         v-list-tile-content
           v-list-tile-title {{item.title}}
         v-list-tile-action
@@ -20,12 +20,11 @@
   import {create_options} from "../../lib/common"
   import AspectMixin from "./AspectMixin";
 
-  var _ = require('lodash');
+  var ld = require('lodash');
 
   export default {
     name: "ListOf",
     components: {Selector},
-    props: ["aspect"],
     mixins: [AspectMixin],
     data() {
       return {
@@ -34,7 +33,7 @@
       }
     },
     created() {
-      this.value = [];
+      this.i_value = [];
       // build the given_options (all options available) from what is passed
       let passed_options = this.aspect.attr.options;
       // a "*" means, lookup code and set the values as options
@@ -46,7 +45,7 @@
           console.log("code options", passed_options);
         }
         if (type_char === "$") {
-          console.log("entry agregator");
+          console.log("entry aggregator");
           this.create = true;
           passed_options = [];
         }
@@ -66,7 +65,7 @@
 
         // filter here. could be fiddled in into the conditions... but not clean.
         // remove options already inserted
-        let selected_slugs = _.map(this.value, "slug");
+        let selected_slugs = ld.map(this.i_value, "slug");
         options = options.filter(o => !selected_slugs.includes(o.slug));
         return options //this.aspect.attr.options
       },
@@ -74,18 +73,18 @@
         if (!this.aspect.attr.hasOwnProperty("max")) {
           return true
         } else {
-          return this.value.length < this.aspect.attr.max
+          return this.i_value.length < this.aspect.attr.max
         }
       }
     },
     methods: {
       selection(item) {
-        console.log("select", this.value);
-        this.value = item;
+        console.log("select", this.i_value);
+        this.i_value = item;
       },
       remove(item) {
-        _.pull(this.selected, [item]);
-        this.value.splice(item);
+        ld.pull(this.selected, [item]);
+        this.i_value.splice(item);
       },
       create_item() {
         // this is when u want to add a village to a site, or household to a village

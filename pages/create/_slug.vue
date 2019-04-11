@@ -101,7 +101,11 @@
         };
         this.$axios.post("/create_entry", data).then((res) => {
           this.sending = false;
-          this.$store.commit("set_snackbar", {message: res.data.msg, status: res.data.status})
+          this.$store.commit("set_snackbar", {message: res.data.msg, status: res.data.status});
+
+          if(this.hasOwnProperty("draft_id")) {
+            this.$store.commit("remove_draft", this.draft_id);
+          }
           this.$router.push("/");
         }).catch((err) => {
           console.log("error");

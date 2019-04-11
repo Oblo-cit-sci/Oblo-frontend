@@ -9,7 +9,8 @@
     v-list
       v-list-tile(v-for="(option, index) in act_options" :key="option.code")
         v-list-tile-action
-          v-btn(color="info" @click="select(index)" small left="true") {{option.name}}
+          v-btn(large left color="info" @click="select(index)" small width="100px") {{option.name}}&nbsp;&nbsp;
+            v-img(:src="licci_icon(option.name)" style="width:35px")
     div(v-if="selected_code !== 0") Code: {{selected_code}}
 </template>
 
@@ -36,6 +37,9 @@
       this.act_options = this.tree.children;
     },
     methods: {
+      licci_icon: function(licci) {
+        return "icons/"+licci.substring(0,1)+".png"
+      },
       select: function (index) {
         this.selection.push([index, this.act_options[index]]);
         this.selected_code = this.act_options[index].code;

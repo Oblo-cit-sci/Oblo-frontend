@@ -1,10 +1,7 @@
 <template lang="pug">
   v-layout(column='' justify-center='' align-center='')
     v-flex(xs12='' sm8='' md6='')
-      Selector(v-bind:options="$store.state.available_entries" v-bind:selection.sync="selection")
-      div(v-if="has_drafts")
-        Selector(v-bind:options="$store.state.drafts" v-bind:selection.sync="selection")
-      div {{$store.state.drafts}}
+      Selector(v-bind:options="options" v-bind:selection.sync="selection")
 </template>
 
 <script>
@@ -28,15 +25,26 @@
     watch: {
       selection() {
         let query = {};
-        if(this.selection.hasOwnProperty("draft_id")) {
+        if (this.selection.hasOwnProperty("draft_id")) {
           query.draft_id = this.selection.draft_id;
         }
-        this.$router.push({path:"create/"+this.selection.slug, query:query})
+        this.$router.push({path: "create/" + this.selection.slug, query: query})
       }
     },
     computed: {
-      has_drafts() {
-        return ld.size(this.$store.state.drafts) > 0
+      options() {
+        // TODO actually should be an array ... ld.castArray
+        let templates = this.$store.state.available_entries;
+        let drafts = this.$store.state.drafts;
+        if (ld.size(drafts) > 0) {
+          for (let d of drafts) {
+            templates["__drafts__"] = {"title": "Drafts", "slug": "_drafts"};
+            templates[d.title] = d;
+          }
+          return templates;
+        } else {
+          return templates
+        }
       }
     }
   }
