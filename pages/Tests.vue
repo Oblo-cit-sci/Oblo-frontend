@@ -1,18 +1,17 @@
 <template lang="pug">
   v-flex(xs12='' sm8='' md6='')
-    TreeleafPicker(v-bind:tree="$store.state.tags")
+    TreleafPicker2(:tree="$store.state.tags")
+
 </template>
 
 <script>
 
-  // TreeleafPicker(:tree="store.state.tags")
-  import TreeleafPicker from "../components/TreeleafPicker"
-  import Datepicker from '../components/Datepicker.vue'
+  import TreleafPicker2 from "../components/TreleafPicker2";
 
   export default {
     name: "Tests.vue",
     components: {
-      TreeleafPicker, Datepicker
+      TreleafPicker2
     }
   }
 </script>

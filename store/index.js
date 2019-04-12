@@ -40,17 +40,13 @@ const ld = require('lodash');
 export const mutations = {
   init(state, data) {
     console.log("store init");
-    //console.log(data);
-
     state.tags = data.licciTree;
     state.codes.liccis = extract_liccis(data.licciTree);
     state.codes.licenses = data.licenses;
-    //console.log(state.codes);
     for (let entry of data.entryTemplates) { // originally from available_create_entries
       state.available_entries[entry.slug] = entry
     }
     state.initialized = true;
-    //console.log("available entries", state.available_entries);
   },
   set_related_users(state, related_users) {
     state.related_users = related_users

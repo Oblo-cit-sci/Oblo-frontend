@@ -22,6 +22,7 @@
     use the function create_option in the common.js
 
     parent component should have a method: selection
+
    */
 
   const ld = require('lodash');
@@ -33,7 +34,14 @@
 
   export default {
     name: "Selector",
-    props: ["options", "selection"],
+    props: {
+      options: Array,
+      selection: Object,
+      highlight: {
+        type: Boolean,
+        default: true
+      }
+    },
     data() {
       return {
         select_sync: true,
@@ -51,13 +59,14 @@
       if (this.selection === undefined) {
         this.select_sync = false;
       }
-
-      if (ld.size(this.options)  < clearListThresh) {
-        this.viewStyle =  CLEAR_LIST;
+      if (ld.size(this.options) < clearListThresh) {
+        this.viewStyle = CLEAR_LIST;
       } else {
-        this.viewStyle =  VUETIFY_SELECT;
+        this.viewStyle = VUETIFY_SELECT;
         this.select_select = []
       }
+
+      console.log(this.highlight);
       // console.log("selector, sync:" , this.options, this.select_sync, this.viewStyle);
     },
     computed: {
@@ -67,8 +76,8 @@
     },
     methods: {
       select(item) {
-        console.log(item);
-        if(item.slug && item.slug.startsWith("_"))
+        // console.log(item);
+        if (item.slug && item.slug.startsWith("_"))
           return;
         this.selected = item.title;
         // console.log("select. sync?", this.select_sync);
@@ -79,7 +88,7 @@
         }
       },
       marked(title) {
-        return title === this.selected
+        return title === this.selected && this.highlight;
       }
     },
     watch: {

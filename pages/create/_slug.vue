@@ -113,7 +113,6 @@
       },
       save() { // draft
         if(!this.hasOwnProperty("draft_id")) {
-          console.log("new draft");
           this.draft_id =  this.$store.state.drafts.length;
         }
         const data = {
