@@ -19,7 +19,7 @@ export const state = () => ({
   codes: {},
   related_users: [],
   snackbar: {message:"", status:"ok"},
-  drafts: []
+  drafts: {}
 });
 
 function extract_liccis(tree) {
@@ -76,9 +76,9 @@ export const mutations = {
   save_draft(state, draft_data) {
     //console.log("in", draft_data);
     //console.log("save draft", draft_data.draft_id, draft_data.draft_id === state.drafts.length);
-    if(draft_data.draft_id === state.drafts.length)
-      state.drafts.push(draft_data);
-    else
+    /*if(!draft_data.hasOwnProperty(draft_id)) {
+      draft_data.draft_id = ld.size(state.drats);
+    }*/
       state.drafts[draft_data.draft_id] = draft_data;
   },
   remove_draft(state, draft_id) {

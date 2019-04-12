@@ -22,7 +22,6 @@
       recent_entries().then((res) => {
         this.recent = res.entries;
         console.log(this.recent);
-        //console.log("grabbed entries", this.recent);
       });
     },
     data: function () {

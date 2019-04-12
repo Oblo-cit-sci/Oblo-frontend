@@ -35,13 +35,16 @@
       options() {
         // TODO actually should be an array ... ld.castArray
         let templates = this.$store.state.available_entries;
+        console.log("CREATEE_T",templates);
         let drafts = this.$store.state.drafts;
+        console.log("CREATEE_",drafts);
         if (ld.size(drafts) > 0) {
-          for (let d of drafts) {
-            templates["__drafts__"] = {"title": "Drafts", "slug": "_drafts"};
-            templates[d.title] = d;
-          }
-          return templates;
+          return Object.assign({},
+            templates,
+            {"Drafts": {"title": "Drafts", "slug": "_drafts"}},
+            drafts
+            )
+
         } else {
           return templates
         }

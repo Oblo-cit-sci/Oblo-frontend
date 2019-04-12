@@ -113,6 +113,7 @@
       },
       save() { // draft
         if(!this.hasOwnProperty("draft_id")) {
+          console.log("new draft");
           this.draft_id =  this.$store.state.drafts.length;
         }
         const data = {
@@ -121,7 +122,7 @@
           title: this.entryType.title + ": " + this.aspects_values.title,
           aspects: this.aspects_values
         };
-        this.$store.commit("set_snackbar", {message: "Draft saved", status: "ok"});
+        this.$store.commit("set_snackbar", {message: "Draft saved", ok: true});
         this.$store.commit("save_draft", data);
         this.$router.push("/");
       }

@@ -24,9 +24,9 @@
           password: this.password,
         }).then(({data}) => {
           console.log(data);
-          if(data.status === "error") {
+          if(data.status === false) {
             this.errorMsg = data.msg
-          } else if(data.status === "ok") {
+          } else if(data.status === true) {
             this.$store.commit("set_user_data",data.user_data);
             this.$router.push("/")
           }

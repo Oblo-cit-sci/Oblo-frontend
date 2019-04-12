@@ -44,7 +44,6 @@
 
 <script>
 
-
   import GlobalSnackbar from "../components/GlobalSnackbar";
 
   let all_items = [

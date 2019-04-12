@@ -79,7 +79,7 @@
           console.log(data);
           if (data.status === "error") {
             this.errorMsg = data.msg
-          } else if (data.status === "ok") {
+          } else if (data.status === true) {
             console.log("update ok", data.user_data);
             this.$store.commit("set_user_data", data.user_data);
             this.edit_mode = false;

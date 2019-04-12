@@ -125,7 +125,7 @@
         }).then(({data}) => {
           if (data.status === "error/exists") {
             this.errorMsg = data.msg
-          } else if (data.status === "ok") {
+          } else if (data.status === true) {
             this.$store.commit("login",data.result);
            // this.$store.commit("set_user_data");
             this.$router.push("/")
