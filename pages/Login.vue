@@ -23,12 +23,12 @@
           username: this.username,
           password: this.password,
         }).then(({data}) => {
-          console.log(data);
-          if(data.status === false) {
-            this.errorMsg = data.msg
-          } else if(data.status === true) {
-            this.$store.commit("set_user_data",data.user_data);
+          console.log("login-data", data);
+          if(data.ok === true) {
+            this.$store.commit("login", data.user_data);
             this.$router.push("/")
+          } else {
+            this.errorMsg = data.msg
           }
         }).catch((err) => {
           console.log("err", err)

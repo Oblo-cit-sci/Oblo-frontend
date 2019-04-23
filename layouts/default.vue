@@ -95,18 +95,13 @@
 
   export default {
     components: {GlobalSnackbar},
-    computed: {
-      login_state() {
-        return this.$store.state.logged_in
-      }
-    },
     created() {
+      this.login_state = this.$store.state.logged_in;
       this.update_sidebar();
-    },
-    watch: {
-      login_state(newV, oldV){
+      this.$store.watch(state => state.logged_in, () => {
+        this.login_state = this.$store.state.logged_in;
         this.update_sidebar();
-      }
+      });
     },
     methods: {
       update_sidebar() {
@@ -120,6 +115,7 @@
     },
     data() {
       return {
+        login_state: false,
         drawer: false,
         clipped: false,
         miniVariant: false,

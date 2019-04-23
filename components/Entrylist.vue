@@ -1,7 +1,7 @@
 <template lang="pug">
   div
     v-list(two-line subheader)
-      v-list-tile(v-for="entry in recent", :key="entry.id" @click="show(entry)")
+      v-list-tile(v-for="entry in entries", :key="entry.id" @click="show(entry)")
         v-list-tile-avatar
           v-icon {{privacy_icon(entry.privacy)}}
         v-list-tile-content
@@ -14,15 +14,20 @@
 </template>
 
 <script>
-  import {recent_entries} from "../lib/common"
+  //import {recent_entries} from "../lib/common"
 
   export default {
     name: "Entrylist",
+    props: {
+      entries: Array
+    },
     created() {
+      /*
       recent_entries().then((res) => {
         this.recent = res.entries;
-        console.log(this.recent);
+        console.log("entries", this.recent);
       });
+       */
     },
     data: function () {
       return {
@@ -44,7 +49,6 @@
           if (license_data !== undefined) {
             return license_data.icon
           } else {
-            console.log(license);
           }
         }
         else return "";

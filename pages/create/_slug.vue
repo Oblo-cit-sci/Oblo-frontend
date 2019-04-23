@@ -27,27 +27,21 @@
   import License from "../../components/License";
   import Privacy from "../../components/Privacy";
 
-  //  //v-on:update:value="cool(aspect.name, $event)"
-
-
   export default {
     name: "slug",
     components: {Privacy, License, Basic, TextShort, TextLong, Location, ListOf, IntAspect},
     asyncData(context) {
       return {
         slug: context.params.slug,
-        entryType: context.store.state.available_entries[context.params.slug]
+        entryType: context.store.state.selected_creation_type
       }
     },
     created() {
       if (this.$route.query.hasOwnProperty("draft_id")) {
         this.draft_id = this.$route.query.draft_id;
         for (let aspect of this.entryType.aspects) {
-          //console.log(aspect, this.$store.state.drafts[this.draft_id].aspects[aspect.name]);
-          this.aspects_values[aspect.name] = this.$store.state.drafts[this.draft_id].aspects[aspect.name];
-          //console.log(this.aspects_values[aspect.name]);
+          this.aspects_values[aspect.name] = this.$store.state.drafts[this.draft_id].aspects_values[aspect.name];
         }
-        console.log(this.draft_id, this.aspects_values);
       } else {
         for (let aspect of this.entryType.aspects) {
           this.aspects_values[aspect.name] = null;
@@ -101,7 +95,8 @@
         };
         this.$axios.post("/create_entry", data).then((res) => {
           this.sending = false;
-          this.$store.commit("set_snackbar", {message: res.data.msg, status: res.data.status});
+          console.log(res.data);
+          this.$store.commit("set_snackbar", {message: res.data.msg, ok: res.data.status});
 
           if(this.hasOwnProperty("draft_id")) {
             this.$store.commit("remove_draft", this.draft_id);
@@ -112,17 +107,24 @@
         })
       },
       save() { // draft
+        let create = false;
         if(!this.hasOwnProperty("draft_id")) {
-          this.draft_id =  this.$store.state.drafts.length;
+          create = true;
+          this.draft_id = this.$store.state.drafts.length;
         }
-        const data = {
+        let draft_data = {
           slug: this.slug,
           draft_id: this.draft_id,
+          entryType: this.entryType,
           title: this.entryType.title + ": " + this.aspects_values.title,
-          aspects: this.aspects_values
+          aspects_values: this.aspects_values
         };
         this.$store.commit("set_snackbar", {message: "Draft saved", ok: true});
-        this.$store.commit("save_draft", data);
+        if(create) {
+          this.$store.commit("create_draft", draft_data);
+        } else {
+          this.$store.commit("save_draft", draft_data);
+        }
         this.$router.push("/");
       }
     }

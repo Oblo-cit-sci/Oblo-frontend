@@ -25,9 +25,17 @@
     watch: {
       selection() {
         let query = {};
+        // ignore "Drafts"
+        if (!this.selection.hasOwnProperty("slug"))
+          return;
         if (this.selection.hasOwnProperty("draft_id")) {
           query.draft_id = this.selection.draft_id;
+          this.$store.commit("select_creation_type", this.selection.entryType);
+        } else {
+          this.$store.commit("select_creation_type", this.selection);
         }
+        console.log("selection?", this.selection);
+
         this.$router.push({path: "create/" + this.selection.slug, query: query})
       }
     },
@@ -35,16 +43,15 @@
       options() {
         // TODO actually should be an array ... ld.castArray
         let templates = this.$store.state.available_entries;
-        console.log("CREATEE_T",templates);
+        console.log("CREATE Templates",templates);
         let drafts = this.$store.state.drafts;
-        console.log("CREATEE_",drafts);
+        console.log("CREATE Drafts",drafts);
         if (ld.size(drafts) > 0) {
-          return Object.assign({},
+          return ld.concat(
             templates,
-            {"Drafts": {"title": "Drafts", "slug": "_drafts"}},
+            {"title": "Drafts"},
             drafts
             )
-
         } else {
           return templates
         }

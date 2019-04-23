@@ -2,9 +2,9 @@ let default_user_data = {
   global_role: "visitor",
   registered_name: "visitor", // TODO should also retrieve that... with a number index
   // https://stackoverflow.com/questions/1253499/simple-calculations-for-working-with-lat-lon-km-distance
- // of 1 degree will result in error of around 50km per coordinate -0.5, +0.5 degree change around the real location
+  // of 1 degree will result in error of around 50km per coordinate -0.5, +0.5 degree change around the real location
   location_error: 2,
-  defaultLicense: "BY-NC-SA", // should come from the server
+  defaultLicense: "CC0", // should come from the server
   defaultPrivacy: "public"
 };
 
@@ -14,12 +14,17 @@ export const state = () => ({
   user_data: default_user_data,
   // comes by init
   initialized: false,
-  available_entries: {}, // types for creation
+  available_entries: [], // types for creation
   tags: {}, // initially just the licci tree
   codes: {},
   related_users: [],
-  snackbar: {message:"", status:"ok"},
-  drafts: {}
+  drafts: [],
+  // recent
+  recent_entries: [],
+  // momentary
+  snackbar: {message: "", status: "ok"},
+  // selected entry type (for creation)
+  selected_creation_type: undefined // will be the object from `available_entries`
 });
 
 function extract_liccis(tree) {
@@ -35,16 +40,17 @@ function extract_liccis(tree) {
   }
   return liccis;
 }
+
 const ld = require('lodash');
 
 export const mutations = {
   init(state, data) {
-    console.log("store init");
+    //console.log("store init");
     state.tags = data.licciTree;
     state.codes.liccis = extract_liccis(data.licciTree);
     state.codes.licenses = data.licenses;
     for (let entry of data.entryTemplates) { // originally from available_create_entries
-      state.available_entries[entry.slug] = entry
+      state.available_entries.push(entry);
     }
     state.initialized = true;
   },
@@ -69,17 +75,21 @@ export const mutations = {
       state.available_entries[entry.slug] = entry
     }
   },
+  set_entries(state, entries) {
+    console.log("setting entries");
+    state.recent_entries = entries;
+  },
+  select_creation_type(state, entry_type) {
+    state.selected_creation_type = entry_type;
+  },
+  create_draft(state, draft_data){
+    state.drafts.push(draft_data);
+  },
   save_draft(state, draft_data) {
-    //console.log("in", draft_data);
-    //console.log("save draft", draft_data.draft_id, draft_data.draft_id === state.drafts.length);
-    /*if(!draft_data.hasOwnProperty(draft_id)) {
-      draft_data.draft_id = ld.size(state.drats);
-    }*/
-      state.drafts[draft_data.draft_id] = draft_data;
+    state.drafts[draft_data.draft_id] = draft_data;
   },
   remove_draft(state, draft_id) {
-    
-    state.drats = ld.filter(state.drafts,(d) => d.draft_id !== draft_id);
+    state.drats = ld.filter(state.drafts, (d) => d.draft_id !== draft_id);
   },
   // should be set with {message: str, status: ok|error}
   set_snackbar(state, snackbar) {

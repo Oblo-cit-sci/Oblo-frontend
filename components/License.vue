@@ -5,8 +5,8 @@
       div as a visitor your contributions will be licensed under {{selectedLicense}}.
       div
         img.license-image(:src="licenseImagePath")
-      div Please set the name you want the attribution to be given to
-      TextShort(:aspect="{name:'Attribution name'}"  v-on:update="aspect_value")
+      // div Please set the name you want the attribution to be given to
+      // TextShort(:aspect="{name:'Attribution name'}"  v-on:update="aspect_value")
 </template>
 
 <script>
