@@ -10,6 +10,7 @@ export default {
   },
   methods: {
     value_change(event) {
+      console.log("event", event);
       this.$emit('update:value', event)
     }
   }

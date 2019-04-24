@@ -21,6 +21,7 @@ export const state = () => ({
   drafts: [],
   // recent
   recent_entries: [],
+  fetched_entries: {},
   // momentary
   snackbar: {message: "", status: "ok"},
   // selected entry type (for creation)
@@ -94,6 +95,9 @@ export const mutations = {
   // should be set with {message: str, status: ok|error}
   set_snackbar(state, snackbar) {
     state.snackbar = snackbar
+  },
+  add_fetched_entry(state, entry) {
+    state.fetched_entries[entry.uuid] = entry
   }
 };
 

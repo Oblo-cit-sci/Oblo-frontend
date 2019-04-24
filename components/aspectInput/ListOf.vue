@@ -79,8 +79,8 @@
     },
     methods: {
       selection(item) {
-        console.log("select", this.i_value);
         this.i_value = item;
+        this.$emit("update:value", this.i_value);
       },
       remove(item) {
         ld.pull(this.selected, [item]);

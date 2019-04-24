@@ -33,12 +33,11 @@
       return {
         recent: {},
         date: new Date().toISOString().substr(0, 10),
-        somedate: false
       }
     },
     methods: {
-      show() {
-
+      show(entry) {
+        this.$router.push("entry/"+entry.uuid)
       },
       privacy_icon(privacy) {
         return "public"

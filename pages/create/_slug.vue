@@ -12,7 +12,7 @@
       Privacy
       v-btn(color="secondary" @click="save") save draft
       v-btn(v-bind:disabled="!complete" color="success" :loading="sending" @click="send") submit
-      div {{complete}}
+      div {{aspects_values}}
 </template>
 <script>
 
