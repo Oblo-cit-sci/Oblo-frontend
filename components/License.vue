@@ -3,8 +3,10 @@
     h3 License & Visibility
     div(v-if="$store.getters.visitor")
       div as a visitor your contributions will be licensed under {{selectedLicense}}.
-      div
-        img.license-image(:src="licenseImagePath")
+    div(v-else)
+      div your default license is {{selectedLicense}}.
+    div
+      img.license-image(:src="licenseImagePath")
       // div Please set the name you want the attribution to be given to
       // TextShort(:aspect="{name:'Attribution name'}"  v-on:update="aspect_value")
 </template>
@@ -27,7 +29,7 @@
     },
     computed: {
       licenseImagePath() {
-        return this.$store.state.codes.licenses[this.$store.state.user_data.defaultLicense].icon
+        return this.$store.state.codes.licenses[this.selectedLicense].icon
       }
     },
     methods: {

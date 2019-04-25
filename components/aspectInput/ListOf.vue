@@ -1,9 +1,10 @@
 <template lang="pug">
-  div {{aspect.name}}
-    v-list(v-if="i_value.length > 0")
+  div
+    h3  {{aspect.name}}
+    v-list(v-if="has_items")
       v-list-tile(v-for="item in i_value", :key="item.slug")
         v-list-tile-content
-          v-list-tile-title {{item.title}}
+          v-list-tile-title {{item}}
         v-list-tile-action
           v-btn(icon @click="remove(item)")
             v-icon(color="grey" lighten-1) close
@@ -59,6 +60,9 @@
       }
     },
     computed: {
+      has_items() {
+        return   ld.size(this.i_value) > 0
+      },
       options() {
         // filter selected options out
         let options = this.given_options.slice();

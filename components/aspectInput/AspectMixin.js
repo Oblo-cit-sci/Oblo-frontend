@@ -2,7 +2,8 @@ export default {
   props: ["aspect", "value"],
   data() {
     return {
-      i_value: null
+      i_value: null,
+      edit: true
     }
   },
   created() {

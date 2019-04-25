@@ -1,15 +1,21 @@
 <template lang="pug">
   div
     div {{aspect.description}}
-    v-textarea(
-      outline
-      :counter="counter"
-      :label="aspect.name"
-      placeholder=" "
-      v-model="i_value"
-      :rules="[rules.required]"
-      persistent-hint=true
-      @input="value_change($event)")
+    div(v-if="edit")
+      v-textarea(
+        outline
+        :counter="counter"
+        :label="aspect.name"
+        placeholder=" "
+        v-model="i_value"
+        :rules="[rules.required]"
+        persistent-hint=true
+        @input="value_change($event)")
+    div(v-else)
+      v-textarea(
+        readonly solo flat no-resize auto-grow
+        :label="aspect.name"
+        :value="i_value")
 </template>
 
 <script>

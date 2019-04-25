@@ -44,15 +44,27 @@ function extract_liccis(tree) {
 
 const ld = require('lodash');
 
+/*
+// maps suck in Vue
+
+function array_to_map(data, key_val) {
+  let res = new Map();
+  for(let val of data) {
+    res[val[key_val]] = val;
+  }
+  return res; //new Map(ld.chain(data).keyBy(key_val).value());
+}
+*/
+
 export const mutations = {
   init(state, data) {
     //console.log("store init");
     state.tags = data.licciTree;
     state.codes.liccis = extract_liccis(data.licciTree);
     state.codes.licenses = data.licenses;
-    for (let entry of data.entryTemplates) { // originally from available_create_entries
-      state.available_entries.push(entry);
-    }
+    state.available_entries = data.entryTemplates;
+
+    console.log(state.available_entries);
     state.initialized = true;
   },
   set_related_users(state, related_users) {

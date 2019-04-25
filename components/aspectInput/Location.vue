@@ -34,7 +34,7 @@
     },
     watch: {
       selection() {
-        console.log("selected location input method", this.selection);
+        //console.log("selected location input method", this.selection);
         if (this.selection.slug === ACTUAL_LOCATION) {
           get_location((location) => {
             this.i_value = create_location_error(

@@ -1,7 +1,7 @@
 <template lang="pug">
   div(v-if="viewStyle === CLEAR_LIST")
     v-list(two-line)
-      v-list-tile(v-for="item in options"
+      v-list-tile(v-for="item of options"
         :key="item.title" @click="select(item)" v-bind:class="{ marked: marked(item.title) }")
         v-list-tile-content
           v-list-tile-title {{item.title}}
@@ -11,6 +11,7 @@
 </template>
 
 <script>
+
 
   /*
 
@@ -48,7 +49,7 @@
         viewStyle: CLEAR_LIST,
         selected: null, // the title for highlighting
         // this is for VUETIFY_SELECT- also see watch...
-        select_select: []
+        select_select: [],
       }
     },
     created() {
@@ -66,13 +67,13 @@
         this.select_select = []
       }
 
-      console.log(this.highlight);
+      // console.log(this.highlight);
       // console.log("selector, sync:" , this.options, this.select_sync, this.viewStyle);
     },
     computed: {
       simpleOptions() {
         return ld.map(this.options, o => o.slug);
-      }
+      },
     },
     methods: {
       select(item) {

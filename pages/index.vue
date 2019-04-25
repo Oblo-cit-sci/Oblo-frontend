@@ -30,7 +30,7 @@
       }
 
       recent_entries().then((res) => {
-        console.log("entries", res.result);
+        //console.log("entries", res.result);
         context.store.commit("set_entries", res.result);
       });
     },
