@@ -1,9 +1,15 @@
 export default {
-  props: ["aspect", "value"],
+  props: {
+    aspect: Object,
+    value: {},
+    edit: {
+      type: Boolean,
+      default: true
+    }
+  },
   data() {
     return {
       i_value: null,
-      edit: true
     }
   },
   created() {
@@ -11,7 +17,6 @@ export default {
   },
   methods: {
     value_change(event) {
-      console.log("event", event);
       this.$emit('update:value', event)
     }
   }

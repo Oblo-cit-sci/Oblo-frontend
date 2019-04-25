@@ -8,11 +8,10 @@
         component(v-bind:is="aspectComponent(aspect)"
           v-bind:aspect="aspect"
           v-bind:value.sync="aspects_values[aspect.name]")
-      License
-      Privacy
+      License(v-bind:selectedLicense.sync="license" :overwrite_default="draftLicense()")
+      Privacy(v-bind:selectedPrivacy.sync="privacy" :overwrite_default="draftPrivacy()")
       v-btn(color="secondary" @click="save") save draft
       v-btn(v-bind:disabled="!complete" color="success" :loading="sending" @click="send") submit
-      div {{aspects_values}}
 </template>
 <script>
 
@@ -20,12 +19,13 @@
   import TextShort from "~~/components/aspectInput/TextShort";
   import IntAspect from "~~/components/aspectInput/IntAspect";
   import TextLong from "~~/components/aspectInput/TextLong";
-  import DateAspect from "~~/components/aspectInput/DateAspect";
   import Location from "~~/components/aspectInput/Location";
   import ListOf from "~~/components/aspectInput/ListOf";
-  import SelectUser from "~~/components/aspectInput/SelectUser";
+
   import License from "../../components/License";
   import Privacy from "../../components/Privacy";
+
+  import { MAspectComponent } from "../../lib/client";
 
   export default {
     name: "slug",
@@ -39,19 +39,26 @@
     created() {
       if (this.$route.query.hasOwnProperty("draft_id")) {
         this.draft_id = this.$route.query.draft_id;
+        let draft = this.$store.state.drafts[this.draft_id];
         for (let aspect of this.entryType.aspects) {
-          this.aspects_values[aspect.name] = this.$store.state.drafts[this.draft_id].aspects_values[aspect.name];
+          this.aspects_values[aspect.name] = draft.aspects_values[aspect.name];
         }
+        this.license = draft.license;
       } else {
         for (let aspect of this.entryType.aspects) {
           this.aspects_values[aspect.name] = null;
         }
       }
     },
+    beforeMount() {
+      console.log("before", this.draft_id);
+    },
     data() {
       return {
         sending: false,
-        aspects_values: {}
+        aspects_values: {},
+        license: null,
+        privacy: null
       }
     },
     computed: {
@@ -60,33 +67,23 @@
       }
     },
     methods: {
-      aspectComponent(aspect) {
-        if (aspect.type === "str") {
-          let attributes = aspect.attr || {};
-          let max = attributes.max || 8000; // or make this explicit in python
-          if (max < 100) {
-            return TextShort;
-          } else {
-            return TextLong;
-          }
-        } else if (aspect.type === "int") {
-          console.log("int aspect");
-          return IntAspect;
-        } else if (aspect.type === "@user") {
-          return SelectUser;
-        } else if (aspect.type === "date") {
-          return DateAspect;
-        } else if (aspect.type === "gps") {
-          return Location;
-        } else if (aspect.type === "list") {
-          return ListOf
+      draftLicense() {
+        if (this.$route.query.hasOwnProperty("draft_id")) {
+          return this.$store.state.drafts[this.draft_id].license;
+        } else {
+          return undefined;
         }
-        return Basic;
       },
-      /*aspect_value(aspect) {
-        this.aspects_values[aspect.aspect.name] = aspect.value || null;
-        // console.log(this.aspects_values)
-      },*/
+      draftPrivacy() {
+        if (this.$route.query.hasOwnProperty("draft_id")) {
+          return this.$store.state.drafts[this.draft_id].privacy;
+        } else {
+          return undefined;
+        }
+      },
+      aspectComponent(aspect) {
+        return MAspectComponent(aspect);
+      },
       send() {
         this.sending = true;
         const data = {
@@ -117,6 +114,8 @@
           draft_id: this.draft_id,
           entryType: this.entryType,
           title: this.entryType.title + ": " + this.aspects_values.title,
+          license: this.license,
+          privacy: this.privacy,
           aspects_values: this.aspects_values
         };
         this.$store.commit("set_snackbar", {message: "Draft saved", ok: true});

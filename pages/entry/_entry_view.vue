@@ -15,12 +15,18 @@
           v-chip(v-for="tag in entry.tags" :key="tag.id") {{tag.title}}
             v-icon star
       ActorList(:actors="entry.actors")
+      div(v-for="(aspect, index) in entry_type_aspects.aspects" :key="index")
+        component(v-bind:is="aspectComponent(aspect)"
+          v-bind:aspect="aspect"
+          v-bind:value="entry.aspects[aspect.name]"
+          v-bind:edit=false)
 </template>
 
 <script>
 
   import ActorList from "../../components/ActorList";
 
+  import { MAspectComponent } from "../../lib/client";
 
   export default {
     name: "entryview",
@@ -28,13 +34,10 @@
     async fetch(context) {
       // maybe before_create, to see if it has been fetched already
       let uuid =  context.params.entry_view;
-
       if (context.store.state.fetched_entries) {
         let {data} = await context.$axios.get("/entry/"+uuid);
         context.store.commit("add_fetched_entry", data.result)
       }
-
-
     },
     asyncData(context) {
       return {
@@ -43,11 +46,19 @@
     },
     data() {
       return {
-        entry: null
+        entry: null,
+        entry_type_aspects:null
+      }
+    },
+    methods: {
+      aspectComponent(aspect) {
+        return MAspectComponent(aspect);
       }
     },
     created() {
-      this.entry = this.$store.state.fetched_entries[this.uuid]
+      this.entry = this.$store.state.fetched_entries[this.uuid];
+      let index = this.$store.state.entry_type_slug_index_dict[this.entry.parent_type];
+      this.entry_type_aspects = this.$store.state.available_entries[index];
     }
   }
 </script>

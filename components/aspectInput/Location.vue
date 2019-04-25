@@ -1,7 +1,8 @@
 <template lang="pug">
   div
     h3 {{aspect.name}}
-    Selector(v-bind:options="input_options" v-bind:selection.sync="selection")
+    div(v-if="edit")
+      Selector(v-bind:options="input_options" v-bind:selection.sync="selection")
     div(v-if="i_value != null")
       span Longitude:&nbsp;&nbsp;
       span {{i_value.lon | format_float}}

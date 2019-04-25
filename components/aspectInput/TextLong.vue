@@ -13,7 +13,7 @@
         @input="value_change($event)")
     div(v-else)
       v-textarea(
-        readonly solo flat no-resize auto-grow
+        readonly solo flat auto-grow
         :label="aspect.name"
         :value="i_value")
 </template>

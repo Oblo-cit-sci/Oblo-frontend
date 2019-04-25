@@ -20,7 +20,7 @@
     v-bind:options="input_options" v-bind:selection.sync="selection"
 
     the options should be objects with a "title", optional "slug" and "description".
-    use the function create_option in the common.js
+    use the function create_option in the common.js to validate
 
     parent component should have a method: selection
 
@@ -33,15 +33,25 @@
   let CLEAR_LIST = 0;
   let VUETIFY_SELECT = 1;
 
+  const view_map = {
+    "CLEAR_LIST": 0,
+    "VUETIFY_SELECT": 1
+  };
+
   export default {
     name: "Selector",
     props: {
-      options: Array,
+      options: Array | Object,
       selection: Object,
       highlight: {
         type: Boolean,
         default: true
-      }
+      },
+      force_view: {
+        type: String,
+        required: false,
+        default: undefined
+      } // either (CLEAR_LIST | VUETIFY_SELECT)
     },
     data() {
       return {
@@ -53,6 +63,7 @@
       }
     },
     created() {
+      //console.log(this.options);
       this.CLEAR_LIST = CLEAR_LIST;
       this.VUETIFY_SELECT = VUETIFY_SELECT;
       // console.log("Selector, option", this.options);
@@ -60,13 +71,21 @@
       if (this.selection === undefined) {
         this.select_sync = false;
       }
-      if (ld.size(this.options) < clearListThresh) {
-        this.viewStyle = CLEAR_LIST;
-      } else {
-        this.viewStyle = VUETIFY_SELECT;
-        this.select_select = []
-      }
 
+      // not used ATM
+      if(this.force_view) {
+        this.viewStyle = view_map[this.force_view];
+        console.log(this.force_view, this.viewStyle);
+        if(this.viewStyle === VUETIFY_SELECT)
+          this.select_select = [];
+      } else {
+        if (ld.size(this.options) < clearListThresh) {
+          this.viewStyle = CLEAR_LIST;
+        } else {
+          this.viewStyle = VUETIFY_SELECT;
+          this.select_select = []
+        }
+      }
       // console.log(this.highlight);
       // console.log("selector, sync:" , this.options, this.select_sync, this.viewStyle);
     },

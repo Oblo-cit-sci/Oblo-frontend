@@ -15,6 +15,7 @@ export const state = () => ({
   // comes by init
   initialized: false,
   available_entries: [], // types for creation
+  entry_type_slug_index_dict: {}, // cuz we dont have Map, which would be ideal...
   tags: {}, // initially just the licci tree
   codes: {},
   related_users: [],
@@ -44,17 +45,17 @@ function extract_liccis(tree) {
 
 const ld = require('lodash');
 
-/*
+
 // maps suck in Vue
 
-function array_to_map(data, key_val) {
-  let res = new Map();
-  for(let val of data) {
-    res[val[key_val]] = val;
+function array_to_val__id_dict(data, key_val) {
+  let res = {};
+  for(let index in data) {
+    let value = data[index];
+    res[value[key_val]] = parseInt(index);
   }
-  return res; //new Map(ld.chain(data).keyBy(key_val).value());
+  return res;
 }
-*/
 
 export const mutations = {
   init(state, data) {
@@ -64,7 +65,7 @@ export const mutations = {
     state.codes.licenses = data.licenses;
     state.available_entries = data.entryTemplates;
 
-    console.log(state.available_entries);
+    state.entry_type_slug_index_dict = array_to_val__id_dict(data.entryTemplates, "slug");
     state.initialized = true;
   },
   set_related_users(state, related_users) {
@@ -115,7 +116,7 @@ export const mutations = {
 
 export const getters = {
   visitor(state) {
-    console.log("visitor check");
+    //console.log("visitor check");
     return state.user_data.global_role === "visitor"
   }
 };
