@@ -64,6 +64,7 @@ export const mutations = {
     state.codes.liccis = extract_liccis(data.licciTree);
     state.codes.licenses = data.licenses;
     state.available_entries = data.entryTemplates;
+    state.related_users = data.related_users;
 
     state.entry_type_slug_index_dict = array_to_val__id_dict(data.entryTemplates, "slug");
     state.initialized = true;

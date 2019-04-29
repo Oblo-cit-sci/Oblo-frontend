@@ -4,7 +4,7 @@
       h1 {{entryType.title}}
       div {{entryType.description}}
       br
-      div(v-for="(aspect, index) in entryType.aspects" :key="index")
+      div(v-for="(aspect, index) in entryType.content.aspects" :key="index")
         component(v-bind:is="aspectComponent(aspect)"
           v-bind:aspect="aspect"
           v-bind:value.sync="aspects_values[aspect.name]")
@@ -25,12 +25,13 @@
   import License from "../../components/License";
   import Privacy from "../../components/Privacy";
 
-  import { MAspectComponent } from "../../lib/client";
+  import { MAspectComponent, complete_activities } from "../../lib/client";
 
   export default {
     name: "slug",
     components: {Privacy, License, Basic, TextShort, TextLong, Location, ListOf, IntAspect},
     asyncData(context) {
+      //console.log(context.store.state.selected_creation_type);
       return {
         slug: context.params.slug,
         entryType: context.store.state.selected_creation_type
@@ -40,12 +41,12 @@
       if (this.$route.query.hasOwnProperty("draft_id")) {
         this.draft_id = this.$route.query.draft_id;
         let draft = this.$store.state.drafts[this.draft_id];
-        for (let aspect of this.entryType.aspects) {
+        for (let aspect of this.entryType.content.aspects) {
           this.aspects_values[aspect.name] = draft.aspects_values[aspect.name];
         }
         this.license = draft.license;
       } else {
-        for (let aspect of this.entryType.aspects) {
+        for (let aspect of this.entryType.content.aspects) {
           this.aspects_values[aspect.name] = null;
         }
       }
@@ -86,10 +87,13 @@
       },
       send() {
         this.sending = true;
+
         const data = {
           entryType: this.slug,
-          aspects: this.aspects_values
+          aspects: this.aspects_values,
+          activities: complete_activities(this.entryType, this.aspects_values)
         };
+
         this.$axios.post("/create_entry", data).then((res) => {
           this.sending = false;
           console.log(res.data);

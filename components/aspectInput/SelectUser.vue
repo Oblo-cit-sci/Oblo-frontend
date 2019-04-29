@@ -1,22 +1,18 @@
 <template lang="pug">
   div
     h3 {{aspect.name}}
-    Selector(v-bind:options="users", v-bind:selection.sync="selection")
+    Selector(v-bind:options="users", v-on:selection="selection" minitems=1 maxitems=1)
 </template>
 
 <script>
   import Selector from "../Selector";
+  import AspectMixin from "./AspectMixin";
   import {create_options} from "../../lib/common"
 
   export default {
     name: "SelectUser",
-    props: ["aspect"],
+    mixins: [AspectMixin],
     components: {Selector},
-    data() {
-      return {
-        selection: null
-      }
-    },
     computed: {
       users() {
         let users = [];
@@ -41,7 +37,15 @@
         }
         return users;
       }
+    },
+    methods: {
+      selection(item) {
+        console.log("user selection", item);
+        this.i_value = item;
+        this.$emit("update:value", this.i_value);
+      },
     }
+
   }
 </script>
 

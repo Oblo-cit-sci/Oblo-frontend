@@ -34,7 +34,7 @@
         } else {
           this.$store.commit("select_creation_type", this.selection);
         }
-        console.log("selection?", this.selection);
+        //console.log("selection?", this.selection);
 
         this.$router.push({path: "create/" + this.selection.slug, query: query})
       }
