@@ -94,12 +94,14 @@
           this.select_select = []
         }
       }
+
+      console.log("Selector", this.options);
       // console.log(this.highlight);
       // console.log("selector, sync:" , this.options, this.select_sync, this.viewStyle);
     },
     computed: {
       simpleOptions() {
-        return ld.map(this.options, o => o.slug);
+        return ld.map(this.options, o => o.title);
       },
       multiple() {
         return this.max !== 1;

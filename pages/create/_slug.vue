@@ -54,7 +54,7 @@
       }
     },
     beforeMount() {
-      console.log("before", this.draft_id);
+      //console.log("before", this.draft_id);
     },
     data() {
       return {

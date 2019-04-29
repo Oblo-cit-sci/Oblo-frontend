@@ -8,7 +8,7 @@
     div(v-if=selectedLicense)
       img.license-image(:src="licenseImagePath")
     v-switch(v-model="use_alternative_license" :label="license_selection" color="red")
-    Selector(v-if="use_alternative_license" :options="licenseOptions()"
+    Selector(v-if="use_alternative_license" v-bind:options="licenseOptions"
       v-bind:selection.sync="selectedLicense")
 </template>
 
@@ -31,7 +31,8 @@
       return {
         selectedLicense: undefined,
         set_name: "",
-        use_alternative_license: false
+        use_alternative_license: false,
+        licenseOptions: []
       }
     },
     created() {
@@ -39,8 +40,13 @@
         this.set_to_default();
       else { // for drafts
         this.selectedLicense = this.overwrite_default;
-        this.use_alternative_license = this.selectedLicense.short !==  this.$store.state.user_data.defaultLicense;
+        this.use_alternative_license = this.selectedLicense.short !== this.$store.state.user_data.defaultLicense;
       }
+
+      for(let l in this.$store.state.codes.licenses) {
+        this.licenseOptions.push(this.$store.state.codes.licenses[l]);
+      }
+
     },
     computed: {
       licenseImagePath() {
@@ -57,10 +63,7 @@
     methods: {
       set_to_default() {
         this.selectedLicense = this.$store.state.codes.licenses[this.$store.state.user_data.defaultLicense];
-      },
-      licenseOptions() {
-        return ld.map(this.$store.state.codes.licenses);
-      },
+      }
     },
     watch: {
       use_alternative_license(new_val) {
