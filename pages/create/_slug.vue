@@ -7,7 +7,8 @@
       div(v-for="(aspect, index) in entryType.content.aspects" :key="index")
         component(v-bind:is="aspectComponent(aspect)"
           v-bind:aspect="aspect"
-          v-bind:value.sync="aspects_values[aspect.name]")
+          v-bind:value.sync="aspects_values[aspect.name]"
+          v-on:update-required="updateRequired")
       License(v-bind:selectedLicense.sync="license" :overwrite_default="draftLicense()")
       Privacy(v-bind:selectedPrivacy.sync="privacy" :overwrite_default="draftPrivacy()")
       v-btn(color="secondary" @click="save") save draft
@@ -25,7 +26,7 @@
   import License from "../../components/License";
   import Privacy from "../../components/Privacy";
 
-  import { MAspectComponent, complete_activities } from "../../lib/client";
+  import {MAspectComponent, complete_activities} from "../../lib/client";
 
   export default {
     name: "slug",
@@ -34,6 +35,7 @@
       //console.log(context.store.state.selected_creation_type);
       return {
         slug: context.params.slug,
+        // actually I dont want this here, rather use the store...
         entryType: context.store.state.selected_creation_type
       }
     },
@@ -59,15 +61,24 @@
         sending: false,
         aspects_values: {},
         license: null,
-        privacy: null
-      }
-    },
-    computed: {
-      complete() {
-        return this.title !== "";
+        privacy: null,
+        required_values: {},
+        complete: false
       }
     },
     methods: {
+      // seems to be ok for now, but check again with non string aspects...
+      updateRequired(aspect) {
+        this.required_values[aspect.title] = aspect.value;
+        for (let req_asp in this.required_values) {
+          let val = this.required_values[req_asp];
+          if (val === null || val === "") {
+            this.complete = false;
+            return;
+          }
+        }
+        this.complete = true
+      },
       draftLicense() {
         if (this.$route.query.hasOwnProperty("draft_id")) {
           return this.$store.state.drafts[this.draft_id].license;
@@ -99,7 +110,7 @@
           console.log(res.data);
           this.$store.commit("set_snackbar", {message: res.data.msg, ok: res.data.status});
 
-          if(this.hasOwnProperty("draft_id")) {
+          if (this.hasOwnProperty("draft_id")) {
             this.$store.commit("remove_draft", this.draft_id);
           }
           this.$router.push("/");
@@ -109,7 +120,7 @@
       },
       save() { // draft
         let create = false;
-        if(!this.hasOwnProperty("draft_id")) {
+        if (!this.hasOwnProperty("draft_id")) {
           create = true;
           this.draft_id = this.$store.state.drafts.length;
         }
@@ -123,7 +134,7 @@
           aspects_values: this.aspects_values
         };
         this.$store.commit("set_snackbar", {message: "Draft saved", ok: true});
-        if(create) {
+        if (create) {
           this.$store.commit("create_draft", draft_data);
         } else {
           this.$store.commit("save_draft", draft_data);

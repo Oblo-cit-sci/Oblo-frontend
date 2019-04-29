@@ -10,7 +10,7 @@
           v-list-tile-sub-title At {{entry.creation_timestamp}}
         v-list-tile(dense)
           v-list-tile-title Description
-        v-textarea(readonly solo flat no-resize auto-grow :value="entry.description")
+        v-textarea(readonly solo flat auto-grow :value="entry.description")
         v-flex(xs12 sm12 md12 text-xs-center)
           v-chip(v-for="tag in entry.tags" :key="tag.id") {{tag.title}}
             v-icon star

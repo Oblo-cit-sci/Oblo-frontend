@@ -1,7 +1,7 @@
 <template lang="pug">
   div
     h3 {{aspect.name}}
-    Selector(v-bind:options="users", v-on:selection="selection" minitems=1 maxitems=1)
+    Selector(v-bind:options="users", v-on:selection="selection" :min=1 :max=1)
 </template>
 
 <script>

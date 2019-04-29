@@ -7,7 +7,7 @@
           v-list-tile-title {{item.title}}
           v-list-tile-sub-title {{item.description}}
   div(v-else-if="viewStyle === VUETIFY_SELECT")
-    v-select(chips dense multiple v-model="select_select" :items="simpleOptions")
+    v-select(chips dense :multiple="multiple" v-model="select_select" :items="simpleOptions")
 </template>
 
 <script>
@@ -28,7 +28,7 @@
 
   const ld = require('lodash');
 
-  let clearListThresh = 10;
+  let clearListThresh = 5;
 
   let CLEAR_LIST = 0;
   let VUETIFY_SELECT = 1;
@@ -46,6 +46,14 @@
       highlight: {
         type: Boolean,
         default: true
+      },
+      min: {
+        type: Number,
+        default: 0
+      },
+      max: {
+        type: Number,
+        default: -1
       },
       force_view: {
         type: String,
@@ -93,6 +101,9 @@
       simpleOptions() {
         return ld.map(this.options, o => o.slug);
       },
+      multiple() {
+        return this.max !== 1;
+      }
     },
     methods: {
       select(item) {
