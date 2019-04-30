@@ -32,7 +32,7 @@
     name: "slug",
     components: {Privacy, License, Basic, TextShort, TextLong, Location, ListOf, IntAspect},
     asyncData(context) {
-      //console.log(context.store.state.selected_creation_type);
+      console.log(context.store.state.selected_creation_type);
       return {
         slug: context.params.slug,
         // actually I dont want this here, rather use the store...
@@ -102,6 +102,8 @@
         const data = {
           entryType: this.slug,
           aspects: this.aspects_values,
+          license_short: this.license.short,
+          privacy: this.privacy.title,
           activities: complete_activities(this.entryType, "send", this.aspects_values)
         };
 

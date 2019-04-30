@@ -36,7 +36,7 @@
     created() {
       this.i_value = [];
       // build the given_options (all options available) from what is passed
-      let passed_options = this.aspect.attr.options;
+      let passed_options = this.aspect.items;
       // a "*" means, lookup code and set the values as options
       if (typeof (passed_options) === "string") {
         let type_char = passed_options.charAt(0);

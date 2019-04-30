@@ -1,7 +1,7 @@
 <template lang="pug">
   v-layout(column='' justify-center='' align-center='')
     v-flex(xs12='' sm8='' md6='')
-      Selector(v-bind:options="options" v-bind:selection.sync="selection")
+      Selector(v-bind:options="options" v-bind:selection.sync="selection" force_view="CLEAR_LIST")
 </template>
 
 <script>
