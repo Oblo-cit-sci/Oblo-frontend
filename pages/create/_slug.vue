@@ -102,7 +102,7 @@
         const data = {
           entryType: this.slug,
           aspects: this.aspects_values,
-          activities: complete_activities(this.entryType, this.aspects_values)
+          activities: complete_activities(this.entryType, "send", this.aspects_values)
         };
 
         this.$axios.post("/create_entry", data).then((res) => {

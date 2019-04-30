@@ -9,6 +9,7 @@
           v-btn(icon @click="remove(index)")
             v-icon cancel
     v-divider(v-if="has_both()")
+    //v-subheader
     Selector(:options="act_options" v-on:selection="select" :highlight="false")
 </template>
 

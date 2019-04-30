@@ -10,29 +10,18 @@
   import {recent_entries} from "../lib/common"
 
   export default {
-    fetch(context) {
+    async fetch(context) {
       if (!context.store.state.initialized) {
-        /*
+
         let {data} = await context.$axios.get("/init");
         context.store.commit("init", data.result);
         if (data.result.user_data !== null) {
           context.store.commit("login", data.result.user_data);
         }
-        */
-        context.$axios.get("/init").then((res) => {
-          context.store.commit("init", res.data.result);
-          if (res.data.result.user_data !== null) {
-            context.store.commit("login", res.data.result.user_data);
-          }
-        }).catch((req, res) => {
-          console.log("error");
-        });
-      }
 
-      recent_entries().then((res) => {
-        //console.log("entries", res.result);
-        context.store.commit("set_entries", res.result);
-      });
+        let recent = await recent_entries();
+        context.store.commit("set_entries", recent.result);
+      }
     },
 
     components: {
