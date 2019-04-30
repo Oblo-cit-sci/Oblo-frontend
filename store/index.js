@@ -90,6 +90,10 @@ export const mutations = {
       state.available_entries[entry.slug] = entry
     }
   },
+  entrytype(state, newtype) {
+    state.available_entries.push(newtype);
+    state.entry_type_slug_index_dict[newtype.slug] = state.available_entries.length - 1;
+  },
   set_entries(state, entries) {
     console.log("setting entries");
     state.recent_entries = entries;
