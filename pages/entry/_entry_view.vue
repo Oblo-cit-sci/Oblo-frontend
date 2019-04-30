@@ -26,7 +26,7 @@
 
   import ActorList from "../../components/ActorList";
 
-  import { MAspectComponent } from "../../lib/client";
+  import { MAspectComponent, get_entrytpe_aspects } from "../../lib/client";
 
   export default {
     name: "entryview",
@@ -57,8 +57,7 @@
     },
     created() {
       this.entry = this.$store.state.fetched_entries[this.uuid];
-      let index = this.$store.state.entry_type_slug_index_dict[this.entry.parent_type];
-      this.entry_type_aspects = this.$store.state.available_entries[index];
+      this.entry_type_aspects = get_entrytpe_aspects(this.$store, this.entry.parent_type, this.$axios);
     }
   }
 </script>

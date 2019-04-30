@@ -9,7 +9,7 @@
       img.license-image(:src="licenseImagePath")
     v-switch(v-model="use_alternative_license" :label="license_selection" color="red")
     Selector(v-if="use_alternative_license" v-bind:options="licenseOptions"
-      v-bind:selection.sync="selectedLicense")
+      v-bind:selection.sync="selectedLicense" :min=1 :max=1)
 </template>
 
 <script>

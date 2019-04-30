@@ -119,6 +119,26 @@ export const getters = {
   visitor(state) {
     //console.log("visitor check");
     return state.user_data.global_role === "visitor"
+  },
+  entrytype_aspects(state, type_slug) {
+    return state.available_entries[state.entry_type_slug_index_dict[type_slug]];
   }
+
+  /*async entrytype_aspects(type_slug, state, axios) {
+    if(!state.entry_type_slug_index_dict.hasOwnProperty(type_slug)) {
+      let {data} = await axios.get("/entrytype", {
+        params: {
+          type_slug: type_slug
+        }
+      });
+      console.log(data);
+      state.available_entries.push(data.result);
+      return data.result;
+      //state.entry_type_slug_index_dict[]
+    } else {
+      let index = state.entry_type_slug_index_dict[this.entry.parent_type];
+      return state.available_entries[index];
+    }
+  }*/
 };
 

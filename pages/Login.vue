@@ -8,6 +8,8 @@
 </template>
 
 <script>
+  import {initialize} from "../lib/client";
+
   export default {
     name: "Login",
     data() {
@@ -23,8 +25,10 @@
           username: this.username,
           password: this.password,
         }).then(({data}) => {
-          console.log("login-data", data);
+          //console.log("login-data", data);
+          this.$store.commit("set_snackbar", {message: "You are logged in", ok: true});
           if(data.ok === true) {
+            initialize(this.$axios, this.$store).then((res) => {});
             this.$store.commit("login", data.user_data);
             this.$router.push("/")
           } else {

@@ -7,23 +7,14 @@
 <script>
   import Entrylist from '~/components/Entrylist.vue'
 
-  import {recent_entries} from "../lib/common"
+  import { initialize } from "~/lib/client"
 
   export default {
     async fetch(context) {
       if (!context.store.state.initialized) {
-
-        let {data} = await context.$axios.get("/init");
-        context.store.commit("init", data.result);
-        if (data.result.user_data !== null) {
-          context.store.commit("login", data.result.user_data);
-        }
-
-        let recent = await recent_entries();
-        context.store.commit("set_entries", recent.result);
+        await initialize(context.$axios, context.store);
       }
     },
-
     components: {
       Entrylist
     },
