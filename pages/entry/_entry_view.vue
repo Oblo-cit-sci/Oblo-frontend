@@ -12,14 +12,15 @@
           v-list-tile-title Description
         v-textarea(readonly solo flat auto-grow :value="entry.description")
         v-flex(xs12 sm12 md12 text-xs-center)
-          v-chip(v-for="tag in entry.tags" :key="tag.id") {{tag.title}}
+          v-chip(v-for="tag in entry.tags" :key="tag.id" @click="tag_select") {{tag.title}}
             v-icon star
       ActorList(:actors="entry.actors")
-      div(v-for="(aspect, index) in entry_type_aspects.aspects" :key="index")
-        component(v-bind:is="aspectComponent(aspect)"
-          v-bind:aspect="aspect"
-          v-bind:value="entry.aspects[aspect.name]"
-          v-bind:edit=false)
+      div(v-if="entry_type_aspects !== null")
+        div(v-for="(aspect, index) in entry_type_aspects.aspects" :key="index")
+          component(v-bind:is="aspectComponent(aspect)"
+            v-bind:aspect="aspect"
+            v-bind:value="entry.aspects[aspect.name]"
+            v-bind:edit=false)
       div
         v-btn(v-if="editable" color="success" @click="edit") Edit
 </template>
@@ -61,11 +62,17 @@
       },
       edit() {
         this.$router.push("/edit/"+ this.uuid);
+      },
+      tag_select() {
+        console.log("tag selected");
       }
     },
     created() {
       this.entry = this.$store.state.fetched_entries[this.uuid];
-      this.entry_type_aspects = get_entrytpe_aspects(this.$store, this.entry.parent_type, this.$axios);
+      get_entrytpe_aspects(this.$store, this.entry.parent_type, this.$axios).then((res) => {
+        console.log("CR", res);
+        this.entry_type_aspects = res;
+      })
 
       //console.log(this.$store.getters.name);
       const res = ld.find(ld.concat(this.entry.actors.owners, this.entry.actors.collaborators), (a) => {return a.registered_name === this.$store.getters.name; })

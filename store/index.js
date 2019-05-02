@@ -60,8 +60,8 @@ function array_to_val__id_dict(data, key_val) {
 export const mutations = {
   init(state, data) {
     //console.log("store init");
-    state.tags = data.licciTree;
-    state.codes.liccis = extract_liccis(data.licciTree);
+    state.codes.liccis = data.licciTree;
+    state.codes.liccis_flat = extract_liccis(data.licciTree);
     state.codes.licenses = data.licenses;
     state.available_entries = data.entryTemplates;
     state.related_users = data.related_users;
@@ -128,21 +128,5 @@ export const getters = {
     return state.user_data.registered_name;
   }
 
-  /*async entrytype_aspects(type_slug, state, axios) {
-    if(!state.entry_type_slug_index_dict.hasOwnProperty(type_slug)) {
-      let {data} = await axios.get("/entrytype", {
-        params: {
-          type_slug: type_slug
-        }
-      });
-      console.log(data);
-      state.available_entries.push(data.result);
-      return data.result;
-      //state.entry_type_slug_index_dict[]
-    } else {
-      let index = state.entry_type_slug_index_dict[this.entry.parent_type];
-      return state.available_entries[index];
-    }
-  }*/
 };
 

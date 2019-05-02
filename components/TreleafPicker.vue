@@ -1,23 +1,23 @@
 <template lang="pug">
-  div
+  .treeselect
     div
     v-list
-      v-list-tile(v-for="(node, index) of selection", :key="node.title")
+      v-list-tile(v-for="node of selection", :key="node.title")
         v-list-tile-content
           v-list-tile-title {{node.name}}
         v-list-tile-action
           v-btn(icon @click="remove(index)")
             v-icon cancel
     v-divider(v-if="has_both()")
-    //v-subheader
+    v-subheader#subheader(v-if="has_level_names") {{act_levelname}}
     Selector(:options="act_options" v-on:selection="select" :highlight="false")
+    v-btn(v-if="done_available" @click="done" color="success") Done
 </template>
 
 <script>
 
   /**
    * Tree object should at each level (each node) have a title (or name) and children key.
-   *
    */
 
   import Selector from "./Selector";
@@ -25,12 +25,13 @@
   const ld = require('lodash');
 
   export default {
-    name: "TreleafPicker2",
+    name: "TreleafPicker",
     components: {Selector},
     props: ["tree"],
     data: function () {
       return {
         selection: [], // indices of children
+        level_names: false
       }
     },
     computed: {
@@ -47,6 +48,21 @@
           node["id"] = parseInt(index);
         }
         return options;
+      },
+      done_available() {
+        return ld.size(this.act_options) === 0;
+      },
+      has_level_names() {
+        return this.level_names && ld.size(this.act_options) > 0;
+      },
+      act_levelname() {
+        return this.level_names[this.selection.length]
+      }
+    },
+    created() {
+      console.log("CREATED DIALOG")
+      if(this.tree.hasOwnProperty("level_names")) {
+        this.level_names = this.tree.level_names;
       }
     },
     methods: {
@@ -58,6 +74,10 @@
       },
       has_both() {
         return this.selection.length > 0 && this.act_options.length > 0;
+      },
+      done() {
+        this.$emit("selected", ld.last(this.selection));
+        this.selection = [];
       }
     }
   }
@@ -65,4 +85,12 @@
 
 <style scoped>
 
+  .treeselect {
+    text-transform: none;
+    background: white;
+  }
+
+  #subheader {
+    background: white;
+  }
 </style>
