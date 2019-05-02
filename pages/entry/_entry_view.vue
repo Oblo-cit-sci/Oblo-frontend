@@ -21,7 +21,7 @@
           v-bind:value="entry.aspects[aspect.name]"
           v-bind:edit=false)
       div
-        v-btn(v-if="editable" color="success") Edit
+        v-btn(v-if="editable" color="success" @click="edit") Edit
 </template>
 
 <script>
@@ -58,6 +58,9 @@
     methods: {
       aspectComponent(aspect) {
         return MAspectComponent(aspect);
+      },
+      edit() {
+        this.$router.push("/edit/"+ this.uuid);
       }
     },
     created() {
