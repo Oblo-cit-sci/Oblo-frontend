@@ -8,13 +8,13 @@
     div(v-if=selectedLicense)
       img.license-image(:src="licenseImagePath")
     v-switch(v-model="use_alternative_license" :label="license_selection" color="red")
-    Selector(v-if="use_alternative_license" v-bind:options="licenseOptions"
-      v-bind:selection.sync="selectedLicense" :min=1 :max=1)
+    SingleSelect(v-if="use_alternative_license" v-bind:options="licenseOptions"
+      v-bind:selection.sync="selectedLicenseShort")
 </template>
 
 <script>
   import TextShort from "./aspectInput/TextShort";
-  import Selector from "./Selector";
+  import SingleSelect from "./SingleSelect";
 
   const ld = require('lodash');
 
@@ -26,9 +26,10 @@
         required: false
       }
     },
-    components: {Selector, TextShort},
+    components: {SingleSelect, TextShort},
     data() {
       return {
+        selectedLicenseShort: null,
         selectedLicense: undefined,
         set_name: "",
         use_alternative_license: false,
@@ -42,11 +43,13 @@
         this.selectedLicense = this.overwrite_default;
         this.use_alternative_license = this.selectedLicense.short !== this.$store.state.user_data.defaultLicense;
       }
-
-      for(let l in this.$store.state.codes.licenses) {
-        this.licenseOptions.push(this.$store.state.codes.licenses[l]);
-      }
-
+      this.selectedLicenseShort = this.selectedLicense.short;
+      this.licenseOptions = ld.map(this.$store.state.codes.licenses, (l) => {
+        return {
+          text: l.title,
+          value: l.short
+        }
+      });
     },
     computed: {
       licenseImagePath() {
@@ -71,7 +74,9 @@
           this.set_to_default();
         }
       },
-      selectedLicense() {
+      selectedLicenseShort() {
+        console.log("License", this.selectedLicense);
+        this.selectedLicense = this.$store.state.codes.licenses[this.selectedLicenseShort];
         this.$emit("update:selectedLicense", this.selectedLicense)
       }
     }

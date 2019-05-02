@@ -7,7 +7,7 @@
           v-list-tile-title {{item.title}}
           v-list-tile-sub-title {{item.description}}
   div(v-else)
-    v-select(chips dense :multiple=false v-model="selected_item" :items="options" :item-text="itemtext")
+    v-select(chips dense :multiple=false v-model="selected_item" :items="options")
 </template>
 
 <script>
@@ -27,8 +27,8 @@
   export default {
     name: "SingleSelect",
     props: {
-      options: Array | Object,
-      selection: Object,
+      options: Array | Object ,
+      selection: String,
       highlight: {
         type: Boolean,
         default: true
@@ -49,9 +49,9 @@
     created() {
       this.CLEAR_LIST = CLEAR_LIST;
       this.VUETIFY_SELECT = VUETIFY_SELECT;
-
+      console.log("SSel passed", this.selection);
       if(this.selection) {
-        this.selected_item = selection;
+        this.selected_item = this.selection;
       }
 
       if(this.force_view) {
@@ -65,16 +65,12 @@
       }
     },
     methods: {
-      itemtext(license_obj) {
-        //console.log("item name for ", license_obj);
-        return license_obj.title;
-      },
       select(item) {
         // console.log(item);
         if (item.slug && item.slug.startsWith("_"))
           return;
         this.selected = item.title;
-        // console.log("select. sync?", this.select_sync);
+        console.log("select. sync?", this.select_sync);
         if (this.select_sync) {
           this.$emit('update:selection', item); // refactor to use the item
         } else {
@@ -85,6 +81,12 @@
         return title === this.selected && this.highlight;
       }
     },
+    watch: {
+      selected_item(new_val) {
+        //console.log("SingelSet", new_val);
+        this.$emit('update:selection', new_val); // refactor to use the item
+      }
+    }
   }
 </script>
 
