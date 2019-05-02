@@ -20,11 +20,15 @@
           v-bind:aspect="aspect"
           v-bind:value="entry.aspects[aspect.name]"
           v-bind:edit=false)
+      div
+        v-btn(v-if="editable" color="success") Edit
 </template>
 
 <script>
 
   import ActorList from "../../components/ActorList";
+
+  const ld = require('lodash');
 
   import { MAspectComponent, get_entrytpe_aspects } from "../../lib/client";
 
@@ -47,7 +51,8 @@
     data() {
       return {
         entry: null,
-        entry_type_aspects:null
+        entry_type_aspects:null,
+        editable: null
       }
     },
     methods: {
@@ -58,6 +63,11 @@
     created() {
       this.entry = this.$store.state.fetched_entries[this.uuid];
       this.entry_type_aspects = get_entrytpe_aspects(this.$store, this.entry.parent_type, this.$axios);
+
+      //console.log(this.$store.getters.name);
+      const res = ld.find(ld.concat(this.entry.actors.owners, this.entry.actors.collaborators), (a) => {return a.registered_name === this.$store.getters.name; })
+      this.editable = this.entry.editable && res !== undefined;
+      //console.log(res);
     }
   }
 </script>

@@ -124,8 +124,8 @@ export const getters = {
     //console.log("visitor check");
     return state.user_data.global_role === "visitor"
   },
-  entrytype_aspects(state, type_slug) {
-    return state.available_entries[state.entry_type_slug_index_dict[type_slug]];
+  name(state) {
+    return state.user_data.registered_name;
   }
 
   /*async entrytype_aspects(type_slug, state, axios) {

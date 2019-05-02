@@ -89,7 +89,6 @@
     }
   ];
 
-
   let require_login = ["Profile", "Logout"];
   let hide_on_login = ["Register","Login"];
 
@@ -125,3 +124,10 @@
     }
   }
 </script>
+
+<style>
+
+  input {
+    border-style: none !important;
+  }
+</style>
