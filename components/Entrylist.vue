@@ -9,12 +9,13 @@
           v-list-tile-sub-title {{entry.title}}
 
         v-list-tile-action
-          v-img(:src="license_icon(entry.license)" height="30px" width="100px" style="margin-left:20px")
+          v-img(:src="get_license_icon(entry.license)" height="30px" width="100px" style="margin-left:20px")
       v-divider
 </template>
 
 <script>
   //import {recent_entries} from "../lib/common"
+  import { license_icon } from "../lib/client"
 
   export default {
     name: "Entrylist",
@@ -42,15 +43,8 @@
       privacy_icon(privacy) {
         return "public"
       },
-      license_icon(license) {
-        if (this.$store.state.codes.hasOwnProperty("licenses")) {
-          let license_data = this.$store.state.codes.licenses[license];
-          if (license_data !== undefined) {
-            return license_data.icon
-          } else {
-          }
-        }
-        else return "";
+      get_license_icon(license) {
+        return license_icon(license, this.$store);
       }
     }
   }

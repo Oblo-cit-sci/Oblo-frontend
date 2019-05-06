@@ -8,6 +8,8 @@
         v-list-tile(@click="$router.push('/')")
           v-list-tile-title By {{entry.creator}}
           v-list-tile-sub-title At {{entry.creation_timestamp}}
+        v-list-tile
+          v-img(:src="license_icon(entry.license)"  class="subtilte_img")
         v-list-tile(dense)
           v-list-tile-title Description
         v-textarea(readonly solo flat auto-grow :value="entry.description")
@@ -59,6 +61,16 @@
     methods: {
       aspectComponent(aspect) {
         return MAspectComponent(aspect);
+      },
+      license_icon(license) {
+        if (this.$store.state.codes.hasOwnProperty("licenses")) {
+          let license_data = this.$store.state.codes.licenses[license];
+          if (license_data !== undefined) {
+            return license_data.icon
+          } else {
+          }
+        }
+        else return "";
       },
       edit() {
         this.$router.push("/edit/"+ this.uuid);
