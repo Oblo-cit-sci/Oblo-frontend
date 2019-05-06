@@ -31,8 +31,10 @@
           return;
         if (this.selection.hasOwnProperty("draft_id")) {
           query.draft_id = this.selection.draft_id;
+          // TODO depracated
           this.$store.commit("select_creation_type", this.selection.entryType);
         } else {
+          // TODO depracated
           this.$store.commit("select_creation_type", this.selection);
         }
         //console.log("selection?", this.selection);
@@ -43,10 +45,10 @@
     computed: {
       options() {
         // TODO actually should be an array ... ld.castArray
-        let templates = this.$store.state.available_entries;
-        console.log("CREATE Templates",templates);
+        let templates = ld.filter(this.$store.state.available_entries, (e) => e.content.meta.context === "global");
+        //console.log("CREATE Templates",templates);
         let drafts = this.$store.state.drafts;
-        console.log("CREATE Drafts",drafts);
+        //console.log("CREATE Drafts",drafts);
         if (ld.size(drafts) > 0) {
           return ld.concat(
             templates,

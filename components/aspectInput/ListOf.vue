@@ -92,7 +92,8 @@
       },
       create_item() {
         // this is when u want to add a village to a site, or household to a village
-        console.log("create");
+        let entry_type = this.aspect.items.substring(1);
+        this.$emit("create_related", entry_type);
       }
     }
   }

@@ -9,7 +9,8 @@
           v-list-tile-title By {{entry.creator}}
           v-list-tile-sub-title At {{entry.creation_timestamp}}
         v-list-tile
-          v-img(:src="license_icon(entry.license)"  class="subtilte_img")
+          v-list-tile-title
+            v-img(class="licenseIcon" :src="license_icon(entry.license)"  class="subtilte_img")
         v-list-tile(dense)
           v-list-tile-title Description
         v-textarea(readonly solo flat auto-grow :value="entry.description")
@@ -25,10 +26,12 @@
             v-bind:edit=false)
       div
         v-btn(v-if="editable" color="success" @click="edit") Edit
+
 </template>
 
 <script>
 
+    //
   import ActorList from "../../components/ActorList";
 
   const ld = require('lodash');
@@ -84,7 +87,7 @@
       get_entrytpe_aspects(this.$store, this.entry.parent_type, this.$axios).then((res) => {
         console.log("CR", res);
         this.entry_type_aspects = res;
-      })
+      });
 
       //console.log(this.$store.getters.name);
       const res = ld.find(ld.concat(this.entry.actors.owners, this.entry.actors.collaborators), (a) => {return a.registered_name === this.$store.getters.name; })
@@ -96,4 +99,8 @@
 
 <style scoped>
 
+    .licenseIcon {
+      width: 80px;
+      height: 30px;
+    }
 </style>
