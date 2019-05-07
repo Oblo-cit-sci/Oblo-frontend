@@ -70,7 +70,7 @@
         if (item.slug && item.slug.startsWith("_"))
           return;
         this.selected_slug = item.slug;
-        console.log("select. sync?", this.select_sync);
+        //console.log("select. sync?", this.select_sync);
         if (this.select_sync) {
           this.$emit('update:selection', this.selected_slug); // refactor to use the item
         } else {

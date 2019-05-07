@@ -5,7 +5,6 @@
       div(v-if="ref")
         span This entry is part of the draft: &nbsp;&nbsp;
         a(@click="back_to_ref") {{ref.entryType}}
-
       div {{entryType.description}}
       br
       div(v-for="(aspect, index) in entryType.content.aspects" :key="index")
@@ -31,28 +30,20 @@
   import TextLong from "~~/components/aspectInput/TextLong";
   import Location from "~~/components/aspectInput/Location";
   import ListOf from "~~/components/aspectInput/ListOf";
+  import AspectPageButton from "~~/components/aspectInput/AspectPageButton";
 
+  import ReferenceMixin from "~~/components/ReferenceMixin";
   import License from "../../components/License";
   import Privacy from "../../components/Privacy";
-  import Licci from "~~/components/aspectInput/special/Licci";
 
 
   import {MAspectComponent, complete_activities, get_entrytpe} from "../../lib/client";
 
   export default {
     name: "slug",
-    components: {Privacy, License, Basic, TextShort, TextLong, Location, ListOf, IntAspect, Licci},
+    components: {Privacy, License, Basic, TextShort, TextLong, Location, ListOf, IntAspect, AspectPageButton},
+    mixins: [ReferenceMixin],
     created() {
-      // check if the query has ref_draft_id or ref_uuid
-      if(this.$route.query.hasOwnProperty("ref_draft_id")) {
-        this.ref = {
-          type: "draft",
-          entryType: this.$store.state.drafts[this.$route.query.ref_draft_id].slug,
-          draft_id: this.$route.query.ref_draft_id
-        }
-      } else if (this.$route.query.hasOwnProperty("ref_uuid")) {
-        // TODO
-      }
       this.slug = this.$route.params.slug;
       this.entryType = get_entrytpe(this.slug, this.$store);
 
@@ -74,7 +65,6 @@
     },
     data() {
       return {
-        ref: null, // reference to a parent entry (draft or uuid) see "created"
         sending: false,
         aspects_values: {},
         license: null,
@@ -166,6 +156,7 @@
       save_back() {
         // this is for context entries
        // this.save();
+        // TODO
         this.back_to_ref()
       },
       create_related(entry_type) {
