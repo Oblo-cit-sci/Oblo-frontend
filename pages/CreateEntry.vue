@@ -1,12 +1,12 @@
 <template lang="pug">
   v-layout(column='' justify-center='' align-center='')
     v-flex(xs12='' sm8='' md6='')
-      SingleSelect(v-bind:options="options" v-bind:selection.sync="selection" force_view="CLEAR_LIST")
+      SingleSelect(v-bind:options="options" v-bind:selection.sync="selectedSlug" force_view="CLEAR_LIST")
 </template>
 
 <script>
 
-  import Selector from "~~/components/Selector";
+
   import SingleSelect from "../components/SingleSelect";
 
   const ld = require('lodash');
@@ -19,27 +19,29 @@
     },
     data() {
       return {
-        selection: null,
+        selectedItem: null,
+        selectedSlug: null,
       }
     },
-    components: {SingleSelect, Selector},
+    components: {SingleSelect},
     watch: {
-      selection() {
+      selectedSlug() {
         let query = {};
         // ignore "Drafts"
-        if (!this.selection.hasOwnProperty("slug"))
+        console.log(this.selectedSlug);
+        this.selectedItem = this.$store.state.available_entries[this.$store.state.entry_type_slug_index_dict[this.selectedSlug]];
+
+        if (!this.selectedItem.hasOwnProperty("slug"))
           return;
-        if (this.selection.hasOwnProperty("draft_id")) {
+        if (this.selectedItem.hasOwnProperty("draft_id")) {
           query.draft_id = this.selection.draft_id;
           // TODO depracated
-          this.$store.commit("select_creation_type", this.selection.entryType);
+          this.$store.commit("select_creation_type", this.selectedItem.entryType);
         } else {
           // TODO depracated
-          this.$store.commit("select_creation_type", this.selection);
+          this.$store.commit("select_creation_type", this.selectedItem);
         }
-        //console.log("selection?", this.selection);
-
-        this.$router.push({path: "create/" + this.selection.slug, query: query})
+        this.$router.push({path: "create/" + this.selectedItem.slug, query: query})
       }
     },
     computed: {

@@ -2,7 +2,7 @@
   .treeselect
     div
     v-list
-      v-list-tile(v-for="node of selection", :key="node.title")
+      v-list-tile(v-for="(node, index) of selection", :key="node.title")
         v-list-tile-content
           v-list-tile-title {{node.name}}
         v-list-tile-action
@@ -27,7 +27,7 @@
   export default {
     name: "TreleafPicker",
     components: {Selector},
-    props: ["tree"],
+    props: ["tree"], // OuterRef is for the LICCI aspect, cuz JS messes up loops and events (always takes the
     data: function () {
       return {
         selection: [], // indices of children
@@ -60,7 +60,8 @@
       }
     },
     created() {
-      console.log("CREATED DIALOG")
+      //console.log("CREATED DIALOG")
+      console.log("got OuterRef", this.OuterRef);
       if(this.tree.hasOwnProperty("level_names")) {
         this.level_names = this.tree.level_names;
       }

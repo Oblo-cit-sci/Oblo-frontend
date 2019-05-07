@@ -14,10 +14,14 @@
           v-bind:value.sync="aspects_values[aspect.name]"
           v-on:update-required="updateRequired"
           v-on:create_related="create_related($event)")
-      License(v-bind:selectedLicense.sync="license" :overwrite_default="draftLicense()")
-      Privacy(v-bind:selectedPrivacy.sync="privacy" :overwrite_default="draftPrivacy()")
-      v-btn(color="secondary" @click="save($event,'/')") save draft
-      v-btn(v-bind:disabled="!complete" color="success" :loading="sending" @click="send") submit
+      div(v-if="!ref")
+        License(v-bind:selectedLicense.sync="license" :overwrite_default="draftLicense()")
+        Privacy(v-bind:selectedPrivacy.sync="privacy" :overwrite_default="draftPrivacy()")
+        v-btn(color="secondary" @click="save($event,'/')") save draft
+        v-btn(v-bind:disabled="!complete" color="success" :loading="sending" @click="send") submit
+      div(v-else)
+        div License and Privacy are the same as the reference/parent entry
+        v-btn(color="secondary" @click="save_back") save & back
 </template>
 <script>
 
@@ -30,14 +34,15 @@
 
   import License from "../../components/License";
   import Privacy from "../../components/Privacy";
+  import Licci from "~~/components/aspectInput/special/Licci";
+
 
   import {MAspectComponent, complete_activities, get_entrytpe} from "../../lib/client";
 
   export default {
     name: "slug",
-    components: {Privacy, License, Basic, TextShort, TextLong, Location, ListOf, IntAspect},
+    components: {Privacy, License, Basic, TextShort, TextLong, Location, ListOf, IntAspect, Licci},
     created() {
-      console.log(this.$route);
       // check if the query has ref_draft_id or ref_uuid
       if(this.$route.query.hasOwnProperty("ref_draft_id")) {
         this.ref = {
@@ -158,6 +163,11 @@
         }
         return draft_data.draft_id;
       },
+      save_back() {
+        // this is for context entries
+       // this.save();
+        this.back_to_ref()
+      },
       create_related(entry_type) {
         let draft_id = this.save();
         console.log("slug", entry_type, draft_id);
@@ -166,7 +176,6 @@
         }});
       },
       back_to_ref() {
-        console.log("back to ref");
         if(this.ref.type === "draft") {
           this.$router.push({path: "/create/" + this.ref.entryType, query: {draft_id: this.ref.draft_id}})
         }

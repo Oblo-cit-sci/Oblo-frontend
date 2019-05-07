@@ -1,21 +1,28 @@
 <template lang="pug">
   v-flex(xs12='' sm8='' md6='')
-    TreleafPicker2(:tree="$store.state.liccis")
 
-    v-dialog(width="500")
-      template(v-slot:activator="{ on }")
-        v-btn(color="red lighten-2" dark v-on="on") Click Me
-      TreleafPicker2(:tree="$store.state.liccis" v-on:selected="selected")
+    v-text-field(v-model="searchLicci" flat clearable)
+    v-treeview(:items="options.children" item-key="name" :search="searchLicci" open-on-click activatable)
 </template>
 
 <script>
 
   import TreleafPicker2 from "../components/TreleafPicker";
+  import Licci from "../components/aspectInput/special/Licci";
 
   export default {
     name: "Tests",
     components: {
+      Licci,
       TreleafPicker2
+    },
+    created() {
+      this.options = this.$store.state.codes["liccis"];
+    },
+    data() {
+      return {
+        searchLicci: ""
+      }
     },
     methods: {
       selected(selected_val) {

@@ -34,7 +34,7 @@
       // a "*" means, lookup code and set the values as options
       if (typeof (passed_options) === "string") {
         let type_char = passed_options.charAt(0);
-        console.log("tree, cja", type_char, )
+        //console.log("tree, cja", type_char, )
         if (type_char === "*") {
           this.options = this.$store.state.codes[passed_options.substring(1)];
         }
@@ -42,7 +42,7 @@
     },
     methods: {
       selected(val) {
-        console.log("tree select", val);
+        //console.log("tree select", val);
         this.selection.push(val);
         this.dialogOpen = false;
       },

@@ -43,7 +43,7 @@
       return {
         select_sync: true,
         viewStyle: CLEAR_LIST,
-        selected_item: null, // the title for highlighting
+        selected_slug: null, // String the title for highlighting
       }
     },
     created() {
@@ -69,12 +69,12 @@
         // console.log(item);
         if (item.slug && item.slug.startsWith("_"))
           return;
-        this.selected = item.title;
+        this.selected_slug = item.slug;
         console.log("select. sync?", this.select_sync);
         if (this.select_sync) {
-          this.$emit('update:selection', item); // refactor to use the item
+          this.$emit('update:selection', this.selected_slug); // refactor to use the item
         } else {
-          this.$emit("selection", item);
+          this.$emit("selection", this.selected_slug);
         }
       },
       marked(title) {
