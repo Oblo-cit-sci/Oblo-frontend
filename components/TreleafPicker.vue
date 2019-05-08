@@ -61,7 +61,6 @@
     },
     created() {
       //console.log("CREATED DIALOG")
-      console.log("got OuterRef", this.OuterRef);
       if(this.tree.hasOwnProperty("level_names")) {
         this.level_names = this.tree.level_names;
       }

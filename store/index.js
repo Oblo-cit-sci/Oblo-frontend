@@ -14,19 +14,18 @@ export const state = () => ({
   user_data: default_user_data,
   // comes by init
   initialized: false,
-  available_entries: [], // types for creation
-  entry_type_slug_index_dict: {}, // cuz we dont have Map, which would be ideal...
+  // TODO use DICT!!!
+  entry_types: new Map(), // types for creation
+  //entry_type_slug_index_dict: {}, // cuz we dont have Map, which would be ideal...
   tags: {}, // initially just the licci tree
   codes: {},
   related_users: [],
-  drafts: [],
   // recent
   recent_entries: [],
   fetched_entries: {},
   // momentary
   snackbar: {message: "", status: "ok"},
   // selected entry type (for creation)
-  selected_creation_type: undefined // will be the object from `available_entries`
 });
 
 function extract_liccis(tree) {
@@ -50,7 +49,7 @@ const ld = require('lodash');
 
 function array_to_val__id_dict(data, key_val) {
   let res = {};
-  for(let index in data) {
+  for (let index in data) {
     let value = data[index];
     res[value[key_val]] = parseInt(index);
   }
@@ -63,10 +62,12 @@ export const mutations = {
     state.codes.liccis = data.licciTree;
     state.codes.liccis_flat = extract_liccis(data.licciTree);
     state.codes.licenses = data.licenses;
-    state.available_entries = data.entryTemplates;
+    state.entry_types = new Map(ld.map(data.entryTemplates, (e) => {
+      return [e.slug, e]
+    }));
     state.related_users = data.related_users;
 
-    state.entry_type_slug_index_dict = array_to_val__id_dict(data.entryTemplates, "slug");
+    //state.entry_type_slug_index_dict = array_to_val__id_dict(data.entryTemplates, "slug");
     state.initialized = true;
   },
   set_related_users(state, related_users) {
@@ -87,12 +88,12 @@ export const mutations = {
   available_entries(state, entryTemplates) {
     state.available_entries = {};
     for (let entry of entryTemplates) {
-      state.available_entries[entry.slug] = entry
+      state.entry_types[entry.slug] = entry
     }
   },
   entrytype(state, newtype) {
     state.available_entries.push(newtype);
-    state.entry_type_slug_index_dict[newtype.slug] = state.available_entries.length - 1;
+    //state.entry_type_slug_index_dict[newtype.slug] = state.available_entries.length - 1;
   },
   set_entries(state, entries) {
     console.log("setting entries");
@@ -100,15 +101,6 @@ export const mutations = {
   },
   select_creation_type(state, entry_type) {
     state.selected_creation_type = entry_type;
-  },
-  create_draft(state, draft_data){
-    state.drafts.push(draft_data);
-  },
-  save_draft(state, draft_data) {
-    state.drafts[draft_data.draft_id] = draft_data;
-  },
-  remove_draft(state, draft_id) {
-    state.drats = ld.filter(state.drafts, (d) => d.draft_id !== draft_id);
   },
   // should be set with {message: str, status: ok|error}
   set_snackbar(state, snackbar) {
@@ -126,7 +118,21 @@ export const getters = {
   },
   name(state) {
     return state.user_data.registered_name;
-  }
+  },
 
+  global_entry_types_as_array(state) {
+    let global_entry_types = [];
+    for (let entry of state.entry_types.values()) {
+      if (entry.content.meta.context === "global") {
+        global_entry_types.push(entry)
+      }
+    }
+    return global_entry_types;
+  },
+  entry_type(state, getters) {
+    return (type_slug) => {
+      return state.entry_types.get(type_slug)
+    };
+  }
 };
 

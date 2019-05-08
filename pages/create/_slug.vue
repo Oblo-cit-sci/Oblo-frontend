@@ -20,6 +20,7 @@
         v-btn(v-bind:disabled="!complete" color="success" :loading="sending" @click="send") submit
       div(v-else)
         div License and Privacy are the same as the reference/parent entry
+      div(v-if="ref")
         v-btn(color="secondary" @click="save_back") save & back
 </template>
 <script>
@@ -42,21 +43,39 @@
   export default {
     name: "slug",
     components: {Privacy, License, Basic, TextShort, TextLong, Location, ListOf, IntAspect, AspectPageButton},
-    mixins: [ReferenceMixin],
+    mixins: [ReferenceMixin], // in case of a context entry, to be able to get back to the parent
     created() {
       this.slug = this.$route.params.slug;
-      this.entryType = get_entrytpe(this.slug, this.$store);
 
+      this.entryType = this.$store.getters.entry_type(this.slug);
+      //this.entryType = get_entrytpe(this.slug, this.$store);
+      let aspects = this.entryType.content.aspects;
+
+      // DRAFT
       if (this.$route.query.hasOwnProperty("draft_id")) {
         this.draft_id = this.$route.query.draft_id;
-        let draft = this.$store.state.drafts[this.draft_id];
-        for (let aspect of this.entryType.content.aspects) {
+        let draft = this.$store.state.edrafts.drafts[this.draft_id];
+        for (let aspect of aspects) {
           this.aspects_values[aspect.name] = draft.aspects_values[aspect.name];
         }
         this.license = draft.license;
+        this.privacy = draft.privacy;
+
+      // NEW ENTRY
       } else {
-        for (let aspect of this.entryType.content.aspects) {
+        for (let aspect of aspects) {
+          // todo make a better default based on the aspect type
           this.aspects_values[aspect.name] = null;
+        }
+
+        this.init_draft();
+        for(let i in aspects) {
+          // todo this happens already in MAspectComponent
+          aspects[i].attr = aspects[i].attr || {};
+          if((aspects[i].attr.view || "inline") === "page") {
+            aspects[i].attr.draft_id = this.draft_id;
+            aspects[i].attr.aspect_index = i;
+          }
         }
       }
     },
@@ -127,49 +146,54 @@
           console.log("error");
         })
       },
-      save(event, goto) { // draft
-        let create = false;
-        if (!this.hasOwnProperty("draft_id")) {
-          create = true;
-          this.draft_id = this.$store.state.drafts.length;
+      create_draft_data() {
+        let draft_title = this.entryType.title + ": ";
+        if(this.aspects_values.title === "" || this.aspects_values.title === null){
+          draft_title += this.draft_id;
+        } else {
+          draft_title += this.aspects_values.title;
         }
-        let draft_data = {
+
+        return {
           slug: this.slug,
           draft_id: this.draft_id,
           entryType: this.entryType,
-          title: this.entryType.title + ": " + this.aspects_values.title,
+          title: draft_title,
           license: this.license,
           privacy: this.privacy,
           aspects_values: this.aspects_values
         };
+      },
+      init_draft() {
+        console.log("INIT!!!");
+        this.draft_id = this.$store.state.edrafts.next_id;
+        // todo maybe some redundant data here...
+        let draft_data = this.create_draft_data();
+        this.$store.commit("edrafts/create_draft", draft_data);
+        return this.draft_id;
+      },
+      autosave() {
+        let draft_data = this.create_draft_data();
+        this.$store.commit("edrafts/save_draft", draft_data);
+        return draft_data.draft_id;
+      },
+      save(event, goto) { // draft
+        this.autosave();
         this.$store.commit("set_snackbar", {message: "Draft saved", ok: true});
-        if (create) {
-          this.$store.commit("create_draft", draft_data);
-        } else {
-          this.$store.commit("save_draft", draft_data);
-        }
         if (goto !== undefined) {
           this.$router.push("/");
         }
-        return draft_data.draft_id;
       },
-      save_back() {
-        // this is for context entries
-       // this.save();
-        // TODO
-        this.back_to_ref()
-      },
-      create_related(entry_type) {
+      create_related(entry_type, aspect) {
+        // TODO rename
         let draft_id = this.save();
-        console.log("slug", entry_type, draft_id);
-        this.$router.push({path: "/create/" + entry_type, query: {
-          ref_draft_id: draft_id
-        }});
-      },
-      back_to_ref() {
-        if(this.ref.type === "draft") {
-          this.$router.push({path: "/create/" + this.ref.entryType, query: {draft_id: this.ref.draft_id}})
-        }
+        //console.log("slug", entry_type, draft_id);
+        this.$router.push({
+          path: "/create/" + entry_type, query: {
+            ref_draft_id: draft_id,
+            aspect_index: aspect_index
+          }
+        });
       }
     }
   }

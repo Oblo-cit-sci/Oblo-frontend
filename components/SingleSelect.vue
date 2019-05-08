@@ -2,7 +2,7 @@
   div(v-if="viewStyle === CLEAR_LIST")
     v-list(two-line)
       v-list-tile(v-for="item of options"
-        :key="item.title" @click="select(item)" v-bind:class="{ marked: marked(item.title) }")
+        :key="item.key" @click="select(item)" v-bind:class="{ marked: marked(item.title) }")
         v-list-tile-content
           v-list-tile-title {{item.title}}
           v-list-tile-sub-title {{item.description}}
@@ -12,6 +12,12 @@
 
 <script>
 
+  /*
+  OPTIONS NEED TO HAVE
+  title, key
+  and optional "description"
+
+   */
   const ld = require('lodash');
 
   let clearListThresh = 5;
@@ -27,8 +33,8 @@
   export default {
     name: "SingleSelect",
     props: {
-      options: Array | Object ,
-      selection: String,
+      options: Array ,
+      selection: Object,
       highlight: {
         type: Boolean,
         default: true
@@ -43,13 +49,16 @@
       return {
         select_sync: true,
         viewStyle: CLEAR_LIST,
-        selected_slug: null, // String the title for highlighting
+        selected_item: null, // for v-select
+        selected_key: null, // String the title for highlighting
       }
     },
     created() {
       this.CLEAR_LIST = CLEAR_LIST;
       this.VUETIFY_SELECT = VUETIFY_SELECT;
-      console.log("SSel passed", this.selection);
+      // console.log("SSel passed", this.selection);
+
+      // TODO check if still needed
       if(this.selection) {
         this.selected_item = this.selection;
       }
@@ -67,14 +76,14 @@
     methods: {
       select(item) {
         // console.log(item);
-        if (item.slug && item.slug.startsWith("_"))
+        if (item.key.startsWith("_"))
           return;
-        this.selected_slug = item.slug;
-        //console.log("select. sync?", this.select_sync);
+        this.selected_key = item.key;
         if (this.select_sync) {
-          this.$emit('update:selection', this.selected_slug); // refactor to use the item
+          //console.log("sync update");
+          this.$emit('update:selection', item); // refactor to use the item
         } else {
-          this.$emit("selection", this.selected_slug);
+          this.$emit("selection", item);
         }
       },
       marked(title) {
@@ -83,7 +92,7 @@
     },
     watch: {
       selected_item(new_val) {
-        //console.log("SingelSet", new_val);
+        //console.log("watch update");
         this.$emit('update:selection', new_val); // refactor to use the item
       }
     }

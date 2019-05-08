@@ -1,7 +1,7 @@
 <template lang="pug">
   v-layout(column='' justify-center='' align-center='')
     v-flex(xs12='' sm8='' md6='')
-      SingleSelect(v-bind:options="options" v-bind:selection.sync="selectedSlug" force_view="CLEAR_LIST")
+      SingleSelect(v-bind:options="options" v-bind:selection.sync="selectedItem" force_view="CLEAR_LIST")
 </template>
 
 <script>
@@ -20,46 +20,40 @@
     data() {
       return {
         selectedItem: null,
-        selectedSlug: null,
       }
     },
     components: {SingleSelect},
     watch: {
-      selectedSlug() {
+      selectedItem() {
+        let slug = "";
         let query = {};
-        // ignore "Drafts"
-        console.log(this.selectedSlug);
-        this.selectedItem = this.$store.state.available_entries[this.$store.state.entry_type_slug_index_dict[this.selectedSlug]];
-
-        if (!this.selectedItem.hasOwnProperty("slug"))
-          return;
-        if (this.selectedItem.hasOwnProperty("draft_id")) {
-          query.draft_id = this.selection.draft_id;
-          // TODO depracated
-          this.$store.commit("select_creation_type", this.selectedItem.entryType);
-        } else {
-          // TODO depracated
-          this.$store.commit("select_creation_type", this.selectedItem);
+        //console.log("SEL", this.selectedItem);
+        if (this.selectedItem.type === "etype")
+          slug = this.selectedItem.key;
+        else {
+          console.log("DRAFT");
+          slug = "";
         }
-        this.$router.push({path: "create/" + this.selectedItem.slug, query: query})
+        console.log(slug);
+        this.$router.push({path: "create/" + slug, query: query})
       }
     },
     computed: {
       options() {
         // TODO actually should be an array ... ld.castArray
-        let templates = ld.filter(this.$store.state.available_entries, (e) => e.content.meta.context === "global");
+        let options = this.$store.getters.global_entry_types_as_array;
+        options = ld.map(options, (o) => {return {title: o.title, key: o.slug, description: o.description, type:"etype"}});
         //console.log("CREATE Templates",templates);
-        let drafts = this.$store.state.drafts;
+        let drafts = ld.map(this.$store.state.edrafts.drafts, (d) => {return {title: draft.title, key: d.draft_id}});
         //console.log("CREATE Drafts",drafts);
         if (ld.size(drafts) > 0) {
-          return ld.concat(
-            templates,
-            {"title": "Drafts"},
+          options = ld.concat(
+            options,
+            {title: "Drafts", key: "_drafts", type:"draft"},
             drafts
-            )
-        } else {
-          return templates
+          )
         }
+        return options;
       }
     }
   }

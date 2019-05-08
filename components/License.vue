@@ -75,7 +75,7 @@
         }
       },
       selectedLicenseShort() {
-        console.log("License", this.selectedLicense);
+        //console.log("License", this.selectedLicense);
         this.selectedLicense = this.$store.state.codes.licenses[this.selectedLicenseShort];
         this.$emit("update:selectedLicense", this.selectedLicense)
       }

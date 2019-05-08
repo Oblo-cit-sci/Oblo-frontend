@@ -83,7 +83,7 @@
       // not used ATM
       if(this.force_view) {
         this.viewStyle = view_map[this.force_view];
-        console.log(this.force_view, this.viewStyle);
+        //console.log(this.force_view, this.viewStyle);
         if(this.viewStyle === VUETIFY_SELECT)
           this.select_select = [];
       } else {
@@ -95,7 +95,7 @@
         }
       }
 
-      console.log("Selector", this.options);
+      //console.log("Selector", this.options);
       // console.log(this.highlight);
       // console.log("selector, sync:" , this.options, this.select_sync, this.viewStyle);
     },
