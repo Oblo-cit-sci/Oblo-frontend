@@ -69,20 +69,6 @@
         }
         this.complete = true
       },
-      draftLicense() {
-        if (this.$route.query.hasOwnProperty("draft_id")) {
-          return this.$store.state.drafts[this.draft_id].license;
-        } else {
-          return undefined;
-        }
-      },
-      draftPrivacy() {
-        if (this.$route.query.hasOwnProperty("draft_id")) {
-          return this.$store.state.drafts[this.draft_id].privacy;
-        } else {
-          return undefined;
-        }
-      },
       aspectComponent(aspect) {
         return MAspectComponent(aspect);
       },

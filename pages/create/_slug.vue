@@ -14,8 +14,8 @@
           v-on:update-required="updateRequired"
           v-on:create_related="create_related($event)")
       div(v-if="!ref")
-        License(v-bind:selectedLicense.sync="license" :overwrite_default="license")
-        Privacy(v-bind:selectedPrivacy.sync="privacy" :overwrite_default="privacy")
+        License(v-bind:passedLicense.sync="license")
+        Privacy(v-bind:selectedPrivacy.sync="privacy")
         v-btn(color="secondary" @click="save($event,'/')") save draft
         v-btn(v-bind:disabled="!complete" color="success" :loading="sending" @click="send") submit
       div(v-else)
@@ -48,7 +48,6 @@
       this.slug = this.$route.params.slug;
 
       this.entryType = this.$store.getters.entry_type(this.slug);
-      //this.entryType = get_entrytpe(this.slug, this.$store);
       let aspects = this.entryType.content.aspects;
 
       // DRAFT
@@ -76,6 +75,9 @@
             aspects[i].attr.aspect_index = i;
           }
         }
+
+        //this.license = "";draft.license;
+        this.privacy = this.$store.state.user_data.defaultPrivacy;
       }
     },
     beforeMount() {
@@ -103,20 +105,6 @@
           }
         }
         this.complete = true
-      },
-      draftLicense() {
-        if (this.$route.query.hasOwnProperty("draft_id")) {
-          return this.$store.state.drafts[this.draft_id].license;
-        } else {
-          return undefined;
-        }
-      },
-      draftPrivacy() {
-        if (this.$route.query.hasOwnProperty("draft_id")) {
-          return this.$store.state.drafts[this.draft_id].privacy;
-        } else {
-          return undefined;
-        }
       },
       aspectComponent(aspect) {
         return MAspectComponent(aspect);

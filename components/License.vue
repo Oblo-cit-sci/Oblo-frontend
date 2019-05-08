@@ -9,12 +9,14 @@
       img.license-image(:src="licenseImagePath")
     v-switch(v-model="use_alternative_license" :label="license_selection" color="red")
     SingleSelect(v-if="use_alternative_license" v-bind:options="licenseOptions"
-      v-bind:selection.sync="selectedLicenseShort")
+      v-bind:selection.sync="selectedLicense")
 </template>
 
 <script>
   import TextShort from "./aspectInput/TextShort";
   import SingleSelect from "./SingleSelect";
+
+  import { license_icon } from "~~/lib/client";
 
   const ld = require('lodash');
 
@@ -24,15 +26,17 @@
       overwrite_default: { // for drafts
         type: Object,
         required: false
+      },
+      passedLicense: {
+        type: Object
       }
     },
     components: {SingleSelect, TextShort},
     data() {
       return {
-        selectedLicenseShort: null,
-        selectedLicense: undefined,
         set_name: "",
         use_alternative_license: false,
+        selectedLicense: null,
         licenseOptions: []
       }
     },
@@ -43,18 +47,16 @@
         this.selectedLicense = this.overwrite_default;
         this.use_alternative_license = this.selectedLicense.short !== this.$store.state.user_data.defaultLicense;
       }
-      //this.selectedLicenseShort = this.selectedLicense.short;
-      this.licenseOptions = ld.map(this.$store.state.codes.licenses, (l) => {
-        return {
-          text: l.title,
-          value: l.short
-        }
-      });
+      this.licenseOptions = ld.map(this.$store.state.codes.licenses, (l) => Object.assign({
+        text: l.title,
+        value: l.short
+      },l));
     },
     computed: {
       licenseImagePath() {
+        console.log("update img with", this.selectedLicense);
         if(this.selectedLicense) {
-          return this.$store.state.codes.licenses[this.selectedLicense.short].icon
+          return license_icon(this.selectedLicense.short, this.$store);
         } else {
           return null;
         }
@@ -77,7 +79,7 @@
       selectedLicenseShort() {
         //console.log("License", this.selectedLicense);
         this.selectedLicense = this.$store.state.codes.licenses[this.selectedLicenseShort];
-        this.$emit("update:selectedLicense", this.selectedLicense)
+        this.$emit("update:passedLicense", this.selectedLicense)
       }
     }
   }

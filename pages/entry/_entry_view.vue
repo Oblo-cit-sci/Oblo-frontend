@@ -36,7 +36,7 @@
 
   const ld = require('lodash');
 
-  import { MAspectComponent, get_entrytpe_aspects } from "../../lib/client";
+  import { MAspectComponent, get_entrytpe_aspects, license_icon } from "../../lib/client";
 
   export default {
     name: "entryview",
@@ -66,14 +66,7 @@
         return MAspectComponent(aspect);
       },
       license_icon(license) {
-        if (this.$store.state.codes.hasOwnProperty("licenses")) {
-          let license_data = this.$store.state.codes.licenses[license];
-          if (license_data !== undefined) {
-            return license_data.icon
-          } else {
-          }
-        }
-        else return "";
+        return license_icon(license, this.$store);
       },
       edit() {
         this.$router.push("/edit/"+ this.uuid);

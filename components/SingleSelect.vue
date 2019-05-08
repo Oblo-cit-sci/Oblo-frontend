@@ -7,7 +7,7 @@
           v-list-tile-title {{item.title}}
           v-list-tile-sub-title {{item.description}}
   div(v-else)
-    v-select(chips dense :multiple=false v-model="selected_item" :items="options")
+    v-select(chips dense :multiple=false v-model="selected_item" :items="options" return-object)
 </template>
 
 <script>
@@ -79,7 +79,7 @@
           return;
         this.selected_key = item.key;
         if (this.select_sync) {
-          //console.log("sync update");
+          console.log("sync update");
           this.$emit('update:selection', item); // refactor to use the item
         } else {
           this.$emit("selection", item);
@@ -91,7 +91,7 @@
     },
     watch: {
       selected_item(new_val) {
-        //console.log("watch update");
+        console.log("watch update", new_val);
         this.$emit('update:selection', new_val); // refactor to use the item
       }
     }
