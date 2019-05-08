@@ -75,8 +75,7 @@
     },
     methods: {
       select(item) {
-        // console.log(item);
-        if (item.key.startsWith("_"))
+        if (item.key === undefined)
           return;
         this.selected_key = item.key;
         if (this.select_sync) {

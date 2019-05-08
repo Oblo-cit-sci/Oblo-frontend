@@ -12,6 +12,9 @@
   const ld = require('lodash');
   // the available_entries
 
+  const ENTRY_TYPE = "etype";
+  const DRAFT = "draft";
+
   export default {
     name: "CreateEntry",
     async fetch({store, $axios}) { // {store, params}
@@ -28,13 +31,12 @@
         let slug = "";
         let query = {};
         //console.log("SEL", this.selectedItem);
-        if (this.selectedItem.type === "etype")
+        if (this.selectedItem.type === ENTRY_TYPE)
           slug = this.selectedItem.key;
         else {
-          console.log("DRAFT");
-          slug = "";
+          slug = this.selectedItem.etype;
+          query.draft_id = this.selectedItem.key;
         }
-        console.log(slug);
         this.$router.push({path: "create/" + slug, query: query})
       }
     },
@@ -42,14 +44,16 @@
       options() {
         // TODO actually should be an array ... ld.castArray
         let options = this.$store.getters.global_entry_types_as_array;
-        options = ld.map(options, (o) => {return {title: o.title, key: o.slug, description: o.description, type:"etype"}});
+        options = ld.map(options, (o) => {return {title: o.title, key: o.slug, description: o.description, type:ENTRY_TYPE}});
         //console.log("CREATE Templates",templates);
-        let drafts = ld.map(this.$store.state.edrafts.drafts, (d) => {return {title: draft.title, key: d.draft_id}});
+        let drafts = ld.map(this.$store.state.edrafts.drafts, (d) => {
+          return {title: d.title, key: d.draft_id, type:DRAFT, etype:d.slug}
+        });
         //console.log("CREATE Drafts",drafts);
         if (ld.size(drafts) > 0) {
           options = ld.concat(
             options,
-            {title: "Drafts", key: "_drafts", type:"draft"},
+            {title: "Drafts"},
             drafts
           )
         }

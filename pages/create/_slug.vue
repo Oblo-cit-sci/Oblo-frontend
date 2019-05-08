@@ -14,8 +14,8 @@
           v-on:update-required="updateRequired"
           v-on:create_related="create_related($event)")
       div(v-if="!ref")
-        License(v-bind:selectedLicense.sync="license" :overwrite_default="draftLicense()")
-        Privacy(v-bind:selectedPrivacy.sync="privacy" :overwrite_default="draftPrivacy()")
+        License(v-bind:selectedLicense.sync="license" :overwrite_default="license")
+        Privacy(v-bind:selectedPrivacy.sync="privacy" :overwrite_default="privacy")
         v-btn(color="secondary" @click="save($event,'/')") save draft
         v-btn(v-bind:disabled="!complete" color="success" :loading="sending" @click="send") submit
       div(v-else)
@@ -38,7 +38,7 @@
   import Privacy from "../../components/Privacy";
 
 
-  import {MAspectComponent, complete_activities, get_entrytpe} from "../../lib/client";
+  import {MAspectComponent, complete_activities} from "../../lib/client";
 
   export default {
     name: "slug",
@@ -67,7 +67,6 @@
           // todo make a better default based on the aspect type
           this.aspects_values[aspect.name] = null;
         }
-
         this.init_draft();
         for(let i in aspects) {
           // todo this happens already in MAspectComponent

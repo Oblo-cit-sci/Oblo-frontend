@@ -84,13 +84,7 @@ export const mutations = {
   set_user_data(state, user_data) {
     state.user_data = user_data;
   },
-  // not used atm: from call /available_create_entries, but maybe after init to update the
-  available_entries(state, entryTemplates) {
-    state.available_entries = {};
-    for (let entry of entryTemplates) {
-      state.entry_types[entry.slug] = entry
-    }
-  },
+
   entrytype(state, newtype) {
     state.available_entries.push(newtype);
     //state.entry_type_slug_index_dict[newtype.slug] = state.available_entries.length - 1;
@@ -99,9 +93,7 @@ export const mutations = {
     console.log("setting entries");
     state.recent_entries = entries;
   },
-  select_creation_type(state, entry_type) {
-    state.selected_creation_type = entry_type;
-  },
+
   // should be set with {message: str, status: ok|error}
   set_snackbar(state, snackbar) {
     state.snackbar = snackbar
@@ -119,7 +111,7 @@ export const getters = {
   name(state) {
     return state.user_data.registered_name;
   },
-
+  // entry-types
   global_entry_types_as_array(state) {
     let global_entry_types = [];
     for (let entry of state.entry_types.values()) {

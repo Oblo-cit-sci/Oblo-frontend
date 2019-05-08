@@ -43,7 +43,7 @@
         this.selectedLicense = this.overwrite_default;
         this.use_alternative_license = this.selectedLicense.short !== this.$store.state.user_data.defaultLicense;
       }
-      this.selectedLicenseShort = this.selectedLicense.short;
+      //this.selectedLicenseShort = this.selectedLicense.short;
       this.licenseOptions = ld.map(this.$store.state.codes.licenses, (l) => {
         return {
           text: l.title,
