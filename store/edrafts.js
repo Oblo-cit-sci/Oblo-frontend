@@ -14,8 +14,8 @@ export const mutations = {
   remove_draft(state, entry_id) {
     delete state.drafts[entry_id]
   },
-  set_draft_aspect_value(entry_id, aspect_index, value) { // for pageAspects and references entries to update the parent
-
+  set_draft_aspect_value(state, data ) { // for pageAspects and references entries to update the parent
+    state.drafts[data.draft_id].aspects_values[data.aspect_name] = data.value;
   }
 };
 

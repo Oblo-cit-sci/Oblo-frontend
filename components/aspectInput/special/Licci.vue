@@ -7,10 +7,10 @@
         div
           TextLong(v-bind:aspect="licciCommentAspect"
             v-bind:value.sync="licci.comment"
-            v-on:update-required="updateRequired")
-          v-btn(small :color="dirColor(licci,1)" @click="licci.direction = 1") Increase
+            v-on:update-required="update_value")
+          v-btn(small :color="dirColor(licci,1)" @click="set_direction(licci, 1)") Increase
             v-icon(right) arrow_upward
-          v-btn(small :color="dirColor(licci,-1)" @click="licci.direction = -1") Decrease
+          v-btn(small :color="dirColor(licci,-1)" @click="set_direction(licci, -1)") Decrease
             v-icon(right) arrow_downward
           br
           v-btn(@click.stop="openDriverDialogFor(licci)") add driver
@@ -32,7 +32,7 @@
                 v-icon clear
             TextLong(v-bind:aspect="licciCommentAspect"
               v-bind:value.sync="driver.comment"
-              v-on:update-required="updateRequired")
+              v-on:update-required="update_value")
           v-divider
     v-btn(@click.stop="LicciDialogOpen = true") add Licci
     v-dialog(width="500" v-model="LicciDialogOpen" lazy=true)
@@ -40,6 +40,8 @@
 </template>
 
 <script>
+
+  // TODO just use 1 Dialog for UI weirdness
 
   const ld = require("lodash");
   import TreleafPicker from "../../TreleafPicker";
@@ -50,11 +52,23 @@
     name: "Licci",
     components: {TextLong, TreleafPicker},
     mixins: [AspectMixin],
+    props: {
+      value: {
+        type: Object,
+        required: true
+      }
+    },
     data() {
       return {
         liccis: [],
         searchLicci: "",
-        licciCommentAspect:  {"attr": {"max": 400}, "name": "Comment", "type": "str", "description": ""},
+        licciCommentAspect: {
+          attr: {"max": 400},
+          name: "Comment",
+          type: "str",
+          description: "",
+          required: true
+        },
         LicciDialogOpen: false,
         DriverDialogOpen: false,
         addDriverForLicci: null,
@@ -74,14 +88,20 @@
           direction: 0,
           drivers: [],
           comment: ""
-        })
+        });
+        this.update_value();
       },
       addDriver(licci, name, id) {
         licci.drivers.push({
           driver: name,
           id: id,
           comment: ""
-        })
+        });
+        this.update_value();
+      },
+      set_direction(licci, direction) {
+        licci.direction = direction;
+        this.update_value();
       },
       openDriverDialogFor(licci) {
         console.log(licci);
@@ -100,11 +120,11 @@
       },
       dirColor(licci, dir) {
         //console.log(licci.direction, dir);
-        if(licci.direction === 0) {
+        if (licci.direction === 0) {
           return "red darken-1";
-        } else if(licci.direction === 1 && dir === 1) {
+        } else if (licci.direction === 1 && dir === 1) {
           return "green"
-        } else if(licci.direction === -1 && dir === -1) {
+        } else if (licci.direction === -1 && dir === -1) {
           return "green"
         }
       },
@@ -113,19 +133,21 @@
         this.removeLicciSelectIndex = index;
       },
       removeLicci(index) {
-        this.liccis.splice(index,1);
+        this.liccis.splice(index, 1);
         this.removeLicciDialogOpen = false;
+        this.update_value();
       },
       removeDriver(licci, DIndex) {
         licci.drivers.splice(DIndex);
+        this.update_value();
       },
-      updateRequired(bla) {
-        console.log("updateRequired", bla);
+      update_value() {
+        this.value_change({liccis: this.liccis});
       }
     },
     computed: {
       getRemoveLicci() {
-        if(this.removeLicciSelectIndex !== null)
+        if (this.removeLicciSelectIndex !== null)
           return this.liccis[this.removeLicciSelectIndex].licci;
         else
           return "";

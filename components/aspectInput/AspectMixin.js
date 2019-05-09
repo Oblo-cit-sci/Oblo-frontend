@@ -24,7 +24,7 @@ export default {
     value_change(event) {
       this.$emit('update:value', event);
       if(this.required) {
-        console.log("required value changed");
+        //console.log("required value changed");
         this.$emit('update-required',  {title: this.aspect.name, value: this.i_value})
       }
     }
