@@ -13,6 +13,7 @@
           :key="i"
           :to="item.to"
           router
+          nuxt
           exact
         >
           <v-list-tile-action>
@@ -31,7 +32,19 @@
     >
       <v-toolbar-side-icon @click="drawer = !drawer"/>
       <v-toolbar-title v-text="title"/>
-      <v-spacer/>
+      <v-spacer></v-spacer>
+      <div v-if="login_state">
+        <v-btn v-for="(item, i) in header_items"
+               :key="i"
+               :to="item.to"
+               flat
+               icon
+               router
+               nuxt
+               exact>
+        <v-icon>{{ item.icon }}</v-icon>
+        </v-btn>
+      </div>
     </v-toolbar>
     <v-content>
       <v-container>
@@ -90,7 +103,7 @@
   ];
 
   let require_login = ["Profile", "Logout"];
-  let hide_on_login = ["Register","Login"];
+  let hide_on_login = ["Register", "Login"];
 
   export default {
     components: {GlobalSnackbar},
@@ -119,7 +132,18 @@
         clipped: false,
         miniVariant: false,
         title: 'LICCI',
-        items: all_items
+        items: all_items,
+        header_items: [
+          {
+            icon: 'home',
+            to: '/'
+          },
+          {
+            icon: 'notifications',
+            title: '',
+            to: '/notifications'
+          },
+        ]
       }
     }
   }

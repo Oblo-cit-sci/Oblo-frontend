@@ -22,7 +22,6 @@
         div License and Privacy are the same as the reference/parent entry
       div(v-if="ref")
         v-btn(color="secondary" @click="save_back") save & back
-
 </template>
 
 <script>
@@ -41,8 +40,7 @@
 
   import {MAspectComponent, complete_activities} from "~~/lib/client";
 
- // import {create_draft_title} from "~~/lib/entry";
-
+  import Entry from "~~/lib/entry";
 
   export default {
     name: "entry_id",
@@ -70,13 +68,11 @@
 
       let draft_data = this.$store.state.edrafts.drafts[this.entry_id];
 
-      //this.title = draft_data.title,
       this.license = draft_data.license;
       this.privacy = draft_data.privacy;
       this.aspects_values = draft_data.aspects_values;
 
       this.entry_type = this.$store.getters.entry_type(this.type_slug);
-      //let aspects = this.entryType.content.aspects;
     },
     methods: {
       updateRequired(aspect) {
@@ -96,8 +92,9 @@
       store_data() {
         return {
           type_slug: this.type_slug,
+          draft_id: this.entry_id,
           entry_id: this.entry_id,
-          title: create_draft_title(this.entry_type.title, this.aspects_values.title, this.entry_id),
+          title: Entry.draft_title(this.entry_type.title, this.aspects_values.title, this.entry_id),
           aspects_values: this.aspects_values,
           license: this.license,
           privacy: this.privacy,

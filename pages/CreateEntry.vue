@@ -40,7 +40,7 @@
           slug = this.selectedItem.key;
           entry_id = this.create_entry(slug);
         } else {
-          slug = this.selectedItem.etype;
+          slug = this.selectedItem.type_slug;
           entry_id = this.selectedItem.key;
         }
         this.$router.push("create/" + slug + "/"+ entry_id)
@@ -51,12 +51,13 @@
         // TODO actually should be an array ... ld.castArray
         let options = this.$store.getters.global_entry_types_as_array;
         // todo could be getters in the store. doesnt require title in the draft data...
+        // todo clearer and unified
         options = ld.map(options, (o) => {
           return {title: o.title, key: o.slug, description: o.description, type: ENTRY_TYPE}
         });
         //console.log("CREATE Templates",templates);
         let drafts = ld.map(this.$store.state.edrafts.drafts, (d) => {
-          return {title: d.title, key: d.draft_id, type: DRAFT, etype: d.slug}
+          return {title: d.title, key: d.draft_id, type: DRAFT, type_slug: d.type_slug}
         });
         //console.log("CREATE Drafts",drafts);
         if (ld.size(drafts) > 0) {
@@ -73,12 +74,10 @@
       create_entry(type_slug) {
         let entry_type = this.$store.getters.entry_type(type_slug);
         let aspects = entry_type.content.aspects;
+        let draft_id = this.$store.state.edrafts.next_id;
 
-        //let aspects_values = {};
         for (let aspect_i in aspects) {
           let aspect = aspects[aspect_i];
-          // todo make a better default based on the aspect type
-         // aspects_values[aspect.name] = null;
         // todo this happens already in MAspectComponent
           aspect.attr = aspect.attr || {};
           if ((aspect.attr.view || "inline") === "page") {
@@ -87,26 +86,13 @@
           }
         }
 
-        let draft_id = this.$store.state.edrafts.next_id;
-
-        let draft_data = {
-          type_slug: type_slug,
-          entry_id: draft_id,
-          title: "", //create_draft_title(entry_type.title, aspects_values.title, draft_id),
-          license: this.$store.state.user_data.defaultLicense,
-          privacy: this.$store.state.user_data.defaultPrivacy,
-        //  aspects_values: aspects_values
-        };
-
         let entry = new Entry({
             entry_type: entry_type,
             draft_id: draft_id,
             license:  this.$store.state.user_data.defaultLicense,
             privacy: this.$store.state.user_data.defaultPrivacy,
-           // aspects_values: aspects_values
           });
         // todo maybe some redundant data here...
-        //let draft_data = this.create_draft_data(draft_id, );
         this.$store.commit("edrafts/create_draft", entry.get_store_data());
 
         return draft_id;

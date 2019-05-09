@@ -77,7 +77,6 @@
         }
       },
       selectedLicenseShort() {
-        //console.log("License", this.selectedLicense);
         this.selectedLicense = this.$store.state.codes.licenses[this.selectedLicenseShort];
         this.$emit("update:passedLicense", this.selectedLicenseShort)
       }
@@ -89,7 +88,7 @@
 
   .license-image {
     display: block;
-    height: 60px;
+    height: 40px;
     margin: 2% auto;
   }
 </style>
