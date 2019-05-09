@@ -28,7 +28,7 @@
         required: false
       },
       passedLicense: {
-        type: Object
+        type: String
       }
     },
     components: {SingleSelect, TextShort},
@@ -79,7 +79,7 @@
       selectedLicenseShort() {
         //console.log("License", this.selectedLicense);
         this.selectedLicense = this.$store.state.codes.licenses[this.selectedLicenseShort];
-        this.$emit("update:passedLicense", this.selectedLicense)
+        this.$emit("update:passedLicense", this.selectedLicenseShort)
       }
     }
   }
@@ -89,6 +89,7 @@
 
   .license-image {
     display: block;
+    height: 60px;
     margin: 2% auto;
   }
 </style>

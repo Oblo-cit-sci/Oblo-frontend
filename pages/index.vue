@@ -15,6 +15,9 @@
         await initialize(context.$axios, context.store);
       }
     },
+    created() {
+      //console.log(this.$store.getters);
+    },
     components: {
       Entrylist
     },

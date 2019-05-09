@@ -8,6 +8,9 @@
 
 
   import SingleSelect from "../components/SingleSelect";
+  //import { create_draft_title } from "~~/lib/entry";
+  import Entry from "../lib/entry";
+
 
   const ld = require('lodash');
   // the available_entries
@@ -31,23 +34,29 @@
         let slug = "";
         let query = {};
         //console.log("SEL", this.selectedItem);
-        if (this.selectedItem.type === ENTRY_TYPE)
+
+        let entry_id = null;
+        if (this.selectedItem.type === ENTRY_TYPE) {
           slug = this.selectedItem.key;
-        else {
+          entry_id = this.create_entry(slug);
+        } else {
           slug = this.selectedItem.etype;
-          query.draft_id = this.selectedItem.key;
+          entry_id = this.selectedItem.key;
         }
-        this.$router.push({path: "create/" + slug, query: query})
+        this.$router.push("create/" + slug + "/"+ entry_id)
       }
     },
     computed: {
       options() {
         // TODO actually should be an array ... ld.castArray
         let options = this.$store.getters.global_entry_types_as_array;
-        options = ld.map(options, (o) => {return {title: o.title, key: o.slug, description: o.description, type:ENTRY_TYPE}});
+        // todo could be getters in the store. doesnt require title in the draft data...
+        options = ld.map(options, (o) => {
+          return {title: o.title, key: o.slug, description: o.description, type: ENTRY_TYPE}
+        });
         //console.log("CREATE Templates",templates);
         let drafts = ld.map(this.$store.state.edrafts.drafts, (d) => {
-          return {title: d.title, key: d.draft_id, type:DRAFT, etype:d.slug}
+          return {title: d.title, key: d.draft_id, type: DRAFT, etype: d.slug}
         });
         //console.log("CREATE Drafts",drafts);
         if (ld.size(drafts) > 0) {
@@ -58,6 +67,49 @@
           )
         }
         return options;
+      }
+    },
+    methods: {
+      create_entry(type_slug) {
+        let entry_type = this.$store.getters.entry_type(type_slug);
+        let aspects = entry_type.content.aspects;
+
+        let aspects_values = {};
+        for (let aspect_i in aspects) {
+          let aspect = aspects[aspect_i];
+          // todo make a better default based on the aspect type
+          aspects_values[aspect.name] = null;
+        // todo this happens already in MAspectComponent
+          aspect.attr = aspect.attr || {};
+          if ((aspect.attr.view || "inline") === "page") {
+            aspect.attr.draft_id = this.draft_id;
+            aspect.attr.aspect_index = aspect_i;
+          }
+        }
+
+        let draft_id = this.$store.state.edrafts.next_id;
+
+        let draft_data = {
+          type_slug: type_slug,
+          entry_id: draft_id,
+          title: "", //create_draft_title(entry_type.title, aspects_values.title, draft_id),
+          license: this.$store.state.user_data.defaultLicense,
+          privacy: this.$store.state.user_data.defaultPrivacy,
+          aspects_values: aspects_values
+        };
+
+        let entry = new Entry({
+            entry_type: entry_type,
+            draft_id: draft_id,
+            license:  this.$store.state.user_data.defaultLicense,
+            privacy: this.$store.state.user_data.defaultPrivacy,
+            aspects_values: aspects_values
+          });
+        // todo maybe some redundant data here...
+        //let draft_data = this.create_draft_data(draft_id, );
+        this.$store.commit("edrafts/create_draft", entry.get_store_data());
+
+        return draft_id;
       }
     }
   }

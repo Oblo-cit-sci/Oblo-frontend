@@ -125,6 +125,11 @@ export const getters = {
     return (type_slug) => {
       return state.entry_types.get(type_slug)
     };
+  },
+  get_aspect(state, getters) {
+    return (type_slug, aspect_name) => {
+      return ld.find(state.entry_types.get(type_slug).content.aspects, (a) => a.name === aspect_name);
+    };
   }
 };
 

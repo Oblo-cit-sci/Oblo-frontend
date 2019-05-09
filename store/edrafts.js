@@ -9,13 +9,21 @@ export const mutations = {
     state.next_id++;
   },
   save_draft(state, draft_data) {
-    state.drafts[draft_data.draft_id] = draft_data;
+    state.drafts[draft_data.entry_id] = draft_data;
   },
-  remove_draft(state, draft_id) {
-    delete state.drafts[draft_id]
+  remove_draft(state, entry_id) {
+    delete state.drafts[entry_id]
   },
-  set_draft_aspect_value(draft_id, aspect_index, value) { // for pageAspects and references entries to update the parent
+  set_draft_aspect_value(entry_id, aspect_index, value) { // for pageAspects and references entries to update the parent
 
   }
+};
+
+const ld = require('lodash');
+
+export const getters = {
+  // cuz they are stored as array but we access by name
+  // todo Map solves this nicer
+  // HOW DO WE ACCESS THESE???
 };
 
