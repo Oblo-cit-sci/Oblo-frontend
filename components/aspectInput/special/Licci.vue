@@ -54,7 +54,7 @@
     mixins: [AspectMixin],
     props: {
       value: {
-        type: Object,
+        type: Array,
         required: true
       }
     },
@@ -79,6 +79,7 @@
     },
     created() {
       this.options = this.$store.state.codes["liccis"];
+      this.liccis = JSON.parse(JSON.stringify(this.value));
     },
     methods: {
       addLicci(name, id) {
@@ -142,7 +143,7 @@
         this.update_value();
       },
       update_value() {
-        this.value_change({liccis: this.liccis});
+        this.value_change(this.liccis);
       }
     },
     computed: {

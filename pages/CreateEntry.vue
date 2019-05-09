@@ -74,11 +74,11 @@
         let entry_type = this.$store.getters.entry_type(type_slug);
         let aspects = entry_type.content.aspects;
 
-        let aspects_values = {};
+        //let aspects_values = {};
         for (let aspect_i in aspects) {
           let aspect = aspects[aspect_i];
           // todo make a better default based on the aspect type
-          aspects_values[aspect.name] = null;
+         // aspects_values[aspect.name] = null;
         // todo this happens already in MAspectComponent
           aspect.attr = aspect.attr || {};
           if ((aspect.attr.view || "inline") === "page") {
@@ -95,7 +95,7 @@
           title: "", //create_draft_title(entry_type.title, aspects_values.title, draft_id),
           license: this.$store.state.user_data.defaultLicense,
           privacy: this.$store.state.user_data.defaultPrivacy,
-          aspects_values: aspects_values
+        //  aspects_values: aspects_values
         };
 
         let entry = new Entry({
@@ -103,7 +103,7 @@
             draft_id: draft_id,
             license:  this.$store.state.user_data.defaultLicense,
             privacy: this.$store.state.user_data.defaultPrivacy,
-            aspects_values: aspects_values
+           // aspects_values: aspects_values
           });
         // todo maybe some redundant data here...
         //let draft_data = this.create_draft_data(draft_id, );

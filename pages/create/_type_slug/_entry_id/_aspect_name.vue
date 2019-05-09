@@ -29,19 +29,19 @@
     },
     created() {
       // todo what if no draft
-      //let draft = this.$store.state.drafts[this.$route.query.ref_draft_id];
       let type_slug = this.$route.params.type_slug;
       this.aspect_name = this.$route.params.aspect_name;
       this.aspect = this.$store.getters.get_aspect(type_slug, this.aspect_name);
       if (this.aspect.attr.view !== "page") {
         console.log("HOW DID U GET HERE. PAGE VIEW FOR A NON PAGE ASPECT");
       }
-      this.aspect_value = {};
+
+      this.draft_id = this.$route.params.entry_id;
+      this.aspect_value = this.$store.state.edrafts.drafts[this.draft_id].aspects_values[this.aspect_name];
     },
     methods: {
       aspectComponent(aspect) {
         let at = MAspectComponent(aspect, true);
-        console.log(at);
         return at;
       },
       updateRequired() {
@@ -52,10 +52,11 @@
       },
       save_back() {
         this.$store.commit("edrafts/set_draft_aspect_value" , {
-          draft_id: this.$route.params.entry_id,
+          draft_id: this.draft_id,
           aspect_name: this.aspect_name,
           value: this.aspect_value
         });
+        this.$router.push("/create/" + this.$route.params.type_slug + "/" + this.$route.params.entry_id)
       }
     }
   }
