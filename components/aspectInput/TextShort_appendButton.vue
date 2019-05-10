@@ -5,6 +5,8 @@
       :label="aspect.name"
       placeholder=" "
       v-model="i_value"
+      :append-outer-icon="icon"
+      @click:append-outer="click_outer"
       @input="value_change($event)")
   div(v-else)
     v-text-field(
@@ -20,6 +22,19 @@
   export default {
     name: "TextShort",
     mixins: [AspectMixin],
+    props: {
+      icon: {
+        type: String,
+        required: true
+      },
+      id: {}
+    },
+    methods: {
+      click_outer() {
+        console.log("clicky")
+        this.$emit(this.icon, this.id);
+      }
+    }
   }
 </script>
 

@@ -3,37 +3,43 @@
     div(v-if="mode==='simple'")
       h3 {{aspect.name}}
       div {{aspect.description}}
-      div(v-for="(value, index) in values" :key="index")
-        component(v-bind:is="aspectComponent(item_aspect)"
+      div(v-for="(value, index) in i_value" :key="index")
+        component(v-bind:is="clearableAspectComponent(item_aspect)"
           v-bind:aspect="indexed_item_aspect(index)"
           v-bind:value.sync="value"
           v-on:update-required="updateRequired"
+          icon="clear",
+          :id="index",
+          v-on:clear="remove_value(index)",
           v-on:create_related="create_related($event)")
-        v-btn(:val_index="index" @click="remove_value($event, index)" icon color="warning")
-          v-icon clear
       div
-        v-btn(:disabled="!more_allowed" @click="add_value()" color="success") Add
-          v-icon(right) add
+        div
+          span(v-if="aspect.attr.min") min: {{aspect.attr.min}}, &nbsp;
+          span(v-if="aspect.attr.max") max: {{aspect.attr.max}}
+      v-btn(:disabled="!more_allowed" @click="add_value()" color="success") Add
+        v-icon(right) add
 </template>
 
 <script>
+
   import AspectMixin from "./AspectMixin";
   import {MAspectComponent} from "../../lib/client";
+  import {aspect_default_value} from "../../lib/entry";
 
   export default {
     name: "List",
     mixins: [AspectMixin],
     data() {
       return {
-        values: [],
         item_aspect: null,
-        mode: null
+        mode: null,
+        count: true
       }
     },
     created() {
       let item_type = this.aspect.items;
 
-      console.log(typeof (item_type))
+      // console.log(typeof (item_type))
       if (typeof (item_type) === "string") {
         switch (item_type) {
           case "str":
@@ -44,7 +50,6 @@
         }
         this.item_aspect = {
           attr: {},
-          name: this.aspect.name + " value",
           type: this.aspect.items,
           required: true
         }
@@ -55,25 +60,19 @@
         this.mode = "simple";
       }
 
-      console.log(this.mode);
     },
     methods: {
-      aspectComponent(aspect) {
-        return MAspectComponent(aspect);
+      clearableAspectComponent(aspect) {
+        return MAspectComponent(aspect, false, true);
       },
       add_value() {
-        //console.log("add");
-        this.values.push("");
+        this.i_value.push(aspect_default_value(this.item_aspect));
       },
-      remove_value(event, index) {
-        console.log(index);
-        console.log("b", this.values);
-        this.values.splice(index, 1);
-        console.log("a", this.values);
+      remove_value(index) {
+        this.i_value.splice(index, 1);
       },
       updateRequired(value) {
-        console.log("ar", value);
-        this.values[parseInt(value.title)] = value.value;
+        this.i_value[parseInt(value.title)] = value.value;
       },
       indexed_item_aspect(index) {
         let aspect = {...this.item_aspect};
@@ -83,7 +82,11 @@
     },
     computed: {
       more_allowed() {
-        return true
+        if(this.aspect.attr.max) {
+          return this.i_value.length <  this.aspect.attr.max;
+        } else {
+          return true;
+        }
       }
     }
   }
