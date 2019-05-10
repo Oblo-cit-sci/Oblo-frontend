@@ -31,7 +31,10 @@
   import IntAspect from "~~/components/aspectInput/IntAspect";
   import TextLong from "~~/components/aspectInput/TextLong";
   import Location from "~~/components/aspectInput/Location";
-  import ListOf from "~~/components/aspectInput/ListOf";
+  // TODO REFA
+  // import ListOf from "~~/components/aspectInput/ListOf";
+
+  import List from "~~/components/aspectInput/List";
   import AspectPageButton from "~~/components/aspectInput/AspectPageButton";
 
   import ReferenceMixin from "~~/components/ReferenceMixin";
@@ -44,7 +47,7 @@
 
   export default {
     name: "entry_id",
-    components: {Privacy, License, Basic, TextShort, TextLong, Location, ListOf, IntAspect, AspectPageButton},
+    components: {Privacy, License, Basic, TextShort, TextLong, Location, List, IntAspect, AspectPageButton},
     mixins: [ReferenceMixin], // in case of a context entry, to be able to get back to the parent
     data() {
       return {
