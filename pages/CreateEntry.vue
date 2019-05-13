@@ -92,6 +92,7 @@
             license:  this.$store.state.user_data.defaultLicense,
             privacy: this.$store.state.user_data.defaultPrivacy,
           });
+        console.log("TT", entry.license)
         // todo maybe some redundant data here...
         this.$store.commit("edrafts/create_draft", entry.get_store_data());
 

@@ -54,7 +54,7 @@
     watch: {
       selectedPrivacy(new_val) {
         console.log("selection privacy", new_val);
-        this.$emit("update:selectedPrivacy", new_val);
+        this.$emit("update:selectedPrivacy", new_val.title);
       }
     }
   }

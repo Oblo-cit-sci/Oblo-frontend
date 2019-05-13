@@ -31,6 +31,8 @@
   import IntAspect from "~~/components/aspectInput/IntAspect";
   import TextLong from "~~/components/aspectInput/TextLong";
   import Location from "~~/components/aspectInput/Location";
+  import CompositeAspect from "~~/components/aspectInput/CompositeAspect";
+
   // TODO REFA
   // import ListOf from "~~/components/aspectInput/ListOf";
 
@@ -47,7 +49,8 @@
 
   export default {
     name: "entry_id",
-    components: {Privacy, License, Basic, TextShort, TextLong, Location, List, IntAspect, AspectPageButton},
+    components: {Privacy, License, Basic, TextShort, TextLong, Location,
+      List, IntAspect, AspectPageButton, CompositeAspect},
     mixins: [ReferenceMixin], // in case of a context entry, to be able to get back to the parent
     data() {
       return {
@@ -69,16 +72,17 @@
       this.type_slug = this.$route.params.type_slug;
       this.entry_id = this.$route.params.entry_id; // draft_id or entry_uuid
 
-      let draft_data = this.$store.state.edrafts.drafts[this.entry_id];
+      let draft_data =  this.$store.state.edrafts.drafts[this.entry_id];
 
       this.license = draft_data.license;
       this.privacy = draft_data.privacy;
-      this.aspects_values = draft_data.aspects_values;
+      this.aspects_values = {... draft_data.aspects_values };
 
       this.entry_type = this.$store.getters.entry_type(this.type_slug);
     },
     methods: {
       updateRequired(aspect) {
+
         this.required_values[aspect.title] = aspect.value;
         for (let req_asp in this.required_values) {
           let val = this.required_values[req_asp];
@@ -87,7 +91,7 @@
             return;
           }
         }
-        this.complete = true
+        this.complete = true;
       },
       aspectComponent(aspect) {
         return MAspectComponent(aspect);
