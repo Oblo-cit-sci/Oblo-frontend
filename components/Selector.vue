@@ -109,7 +109,6 @@
     },
     methods: {
       select(item) {
-        // console.log(item);
         if (item.slug && item.slug.startsWith("_"))
           return;
         this.selected = item.title;

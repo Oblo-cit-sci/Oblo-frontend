@@ -1,8 +1,7 @@
 <template lang="pug">
   div
+    Title_Description(:="title_description()")
     div(v-if="mode==='simple'")
-      h3 {{aspect.name}}
-      div {{aspect.description}}
       div(v-for="(value, index) in i_value" :key="index")
         component(v-bind:is="clearableAspectComponent(item_aspect)"
           v-bind:aspect="indexed_item_aspect(index)"
@@ -25,9 +24,12 @@
   import AspectMixin from "./AspectMixin";
   import {MAspectComponent} from "../../lib/client";
   import {aspect_default_value} from "../../lib/entry";
+  import Title_Description from "../Title_Description";
 
+  //
   export default {
     name: "List",
+    components: {Title_Description},
     mixins: [AspectMixin],
     data() {
       return {

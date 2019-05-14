@@ -1,3 +1,12 @@
+/*
+  This is for pages that have a back to parent button
+  normal create pages have it, since they can be context-entries
+
+  but also aspect-pages
+  ....
+
+ */
+
 export default {
   created() {
     // mixin create comes before the component create, btw. or does it depend on the order of the mixin array and create fct?

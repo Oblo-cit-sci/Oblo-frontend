@@ -46,11 +46,16 @@
   import {MAspectComponent, complete_activities} from "~~/lib/client";
 
   import Entry from "~~/lib/entry";
+  import {create_and_store} from "../../../../lib/entry";
+
+  const ld = require("lodash");
 
   export default {
     name: "entry_id",
-    components: {Privacy, License, Basic, TextShort, TextLong, Location,
-      List, IntAspect, AspectPageButton, CompositeAspect},
+    components: {
+      Privacy, License, Basic, TextShort, TextLong, Location,
+      List, IntAspect, AspectPageButton, CompositeAspect
+    },
     mixins: [ReferenceMixin], // in case of a context entry, to be able to get back to the parent
     data() {
       return {
@@ -72,11 +77,11 @@
       this.type_slug = this.$route.params.type_slug;
       this.entry_id = this.$route.params.entry_id; // draft_id or entry_uuid
 
-      let draft_data =  this.$store.state.edrafts.drafts[this.entry_id];
+      let draft_data = this.$store.state.edrafts.drafts[this.entry_id];
 
       this.license = draft_data.license;
       this.privacy = draft_data.privacy;
-      this.aspects_values = {... draft_data.aspects_values };
+      this.aspects_values = {...draft_data.aspects_values};
 
       this.entry_type = this.$store.getters.entry_type(this.type_slug);
     },
@@ -134,6 +139,68 @@
           this.$router.push("/");
         }
       },
+      create_related(aspect) {
+        this.autosave();
+        console.log(aspect);
+
+        // TODO maybe move somewhere else...
+        // this
+        /*
+
+        page_aspect:
+	      /create/<type_slug/<draft_id/<aspect_name
+
+        context_entry:
+	      /create/<type_slug/<draft_id?(ref:draft_id|entry_id)=...&aspect=
+
+        */
+        // this is a duplicate of MAspectComponent in client
+        // TODO TEST with something
+        if((aspect.attr.view || "inline") === "page") {
+          // would only need a ref url-param if its in a list/map
+          this.$router.push({path: "/create/" + this.type_slug + "/"+ this.draft_id + "/" + aspect.name});
+        }
+        else if(aspect) {
+          // TODO fck typechar stuff is everywhere:
+          const is_list = aspect.type === "list";
+          let new_type_slug = "";
+
+          let ref = {
+            draft_id : this.entry_id, // TODO dangerous temp solution...
+            aspect_name: aspect.name,
+          };
+          if(is_list) {
+            new_type_slug = aspect.items.substring(1);
+          } else {
+            new_type_slug = aspect.type.substring(1);
+          }
+          console.log("TO TYPE", new_type_slug);
+          // TODO should be draft_id or entry_id
+          // but its still a bit messed up. it has entry_id, tho its a draft
+
+          if(is_list) {
+            ref.index = this.aspects_values[aspect.name].length;
+          }
+
+          const new_draft_id = create_and_store(new_type_slug, this.$store);
+          console.log("created with draft_id", new_draft_id);
+          this.$router.push({
+            path: "/create/" + new_type_slug + "/"+ new_draft_id,
+            query: {
+              draft_id : ref.draft_id,
+              aspect_name: ref.aspect_name,
+              index: ref.index
+            }});
+        }
+
+        //console.log("slug", entry_type, draft_id);
+        //const aspect =
+        //const pageAspect =
+        /*this.$router.push({path: "/create/" + entry_type, query: {
+            ref_draft_id: draft_id
+          }});
+        */
+      }
     }
   }
 </script>

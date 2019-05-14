@@ -1,6 +1,5 @@
 <template lang="pug">
   div
-    h3 {{aspect.name}}
     Selector(v-bind:options="users", v-on:selection="selection" :min=1 :max=1)
 </template>
 
@@ -8,11 +7,13 @@
   import Selector from "../Selector";
   import AspectMixin from "./AspectMixin";
   import {create_options} from "../../lib/common"
+  import Title_Description from "../Title_Description";
 
+  // Title_Description(:="title_description()")
   export default {
     name: "SelectUser",
     mixins: [AspectMixin],
-    components: {Selector},
+    components: {Title_Description, Selector},
     computed: {
       users() {
         let users = [];

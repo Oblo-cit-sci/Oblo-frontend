@@ -11,6 +11,11 @@
 
 <script>
 
+  /* this is the page for Aspect-Pages
+  *
+  *
+  */
+
   import Licci from "~~/components/aspectInput/special/Licci";
 
   import {MAspectComponent} from "~~/lib/client";

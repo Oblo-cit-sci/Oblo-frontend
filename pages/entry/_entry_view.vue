@@ -4,7 +4,7 @@
       v-list
         v-list-tile
           v-list-tile-title {{entry.title}}
-          v-list-tile-sub-title {{entry.parent_type}}
+          v-list-tile-sub-title {{entry_type.title}}
         v-list-tile(@click="$router.push('/')")
           v-list-tile-title By {{entry.creator}}
           v-list-tile-sub-title At {{entry.creation_timestamp}}
@@ -13,17 +13,19 @@
             v-img(class="licenseIcon" :src="license_icon(entry.license)"  class="subtilte_img")
         v-list-tile(dense)
           v-list-tile-title Description
-        v-textarea(readonly solo flat auto-grow :value="entry.description")
+        v-textarea(readonly solo flat  :value="entry.description")
         v-flex(xs12 sm12 md12 text-xs-center)
           v-chip(v-for="tag in entry.tags" :key="tag.id" @click="tag_select") {{tag.title}}
             v-icon star
       ActorList(:actors="entry.actors")
       div(v-if="entry_type_aspects !== null")
-        div(v-for="(aspect, index) in entry_type_aspects.aspects" :key="index")
+        div(v-for="(aspect, index) in entry_type_aspects" :key="index")
           component(v-bind:is="aspectComponent(aspect)"
             v-bind:aspect="aspect"
-            v-bind:value="entry.aspects[aspect.name]"
-            v-bind:edit=false)
+            v-bind:value="entry.content.aspects[aspect.name]"
+            :edit="false")
+      div(v-else)
+        div no aspects?
       div
         v-btn(v-if="editable" color="success" @click="edit") Edit
 
@@ -36,7 +38,7 @@
 
   const ld = require('lodash');
 
-  import { MAspectComponent, get_entrytpe_aspects, license_icon } from "../../lib/client";
+  import { MAspectComponentView, get_entrytpe, license_icon, strip_default_aspects } from "../../lib/client";
 
   export default {
     name: "entryview",
@@ -46,6 +48,7 @@
       let uuid =  context.params.entry_view;
       if (context.store.state.fetched_entries) {
         let {data} = await context.$axios.get("/entry/"+uuid);
+        // console.log("fetched", data);
         context.store.commit("add_fetched_entry", data.result)
       }
     },
@@ -57,13 +60,14 @@
     data() {
       return {
         entry: null,
-        entry_type_aspects:null,
+        entry_type: {},
+        entry_type_aspects: null,
         editable: null
       }
     },
     methods: {
       aspectComponent(aspect) {
-        return MAspectComponent(aspect);
+        return MAspectComponentView(aspect);
       },
       license_icon(license) {
         return license_icon(license, this.$store);
@@ -75,16 +79,21 @@
         console.log("tag selected");
       }
     },
-    created() {
+    beforeMount() {
       this.entry = this.$store.state.fetched_entries[this.uuid];
-      get_entrytpe_aspects(this.$store, this.entry.parent_type, this.$axios).then((res) => {
-        console.log("CR", res);
-        this.entry_type_aspects = res;
+      get_entrytpe(this.$store, this.entry.parent_type, this.$axios).then((res) => {
+        this.entry_type = res;
+        this.entry_type_aspects = {... this.entry_type.content.aspects};
+        this.entry_type_aspects = strip_default_aspects(this.entry_type_aspects);
+        //console.log("A", this.entry_type_aspects);
       });
 
       //console.log(this.$store.getters.name);
       const res = ld.find(ld.concat(this.entry.actors.owners, this.entry.actors.collaborators), (a) => {return a.registered_name === this.$store.getters.name; })
       this.editable = this.entry.editable && res !== undefined;
+    },
+    created() {
+
       //console.log(res);
     }
   }

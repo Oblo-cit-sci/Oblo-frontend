@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    h3  {{aspect.name}}
+    Title_Description(:title="title_description().title" :description="title_description().description")
     v-list(v-if="has_items")
       v-list-tile(v-for="item in i_value", :key="item.slug")
         v-list-tile-content
@@ -17,15 +17,19 @@
 
 <script>
 
+
+  // TODO this is a older, reused component. beware , clean, and abstract stuff with List...
+  // remove and merge
   import Selector from "../Selector";
   import {create_options} from "../../lib/common"
   import AspectMixin from "./AspectMixin";
+  import Title_Description from "../Title_Description";
 
   var ld = require('lodash');
 
   export default {
     name: "ListOf",
-    components: {Selector},
+    components: {Title_Description, Selector},
     mixins: [AspectMixin],
     data() {
       return {
@@ -93,7 +97,9 @@
       create_item() {
         // this is when u want to add a village to a site, or household to a village
         let entry_type = this.aspect.items.substring(1);
-        this.$emit("create_related", entry_type, this.aspect);
+        // TODO changed from
+        // this.$emit("create_related", entry_type, this.aspect);
+        this.$emit("create_related", this.aspect);
       }
     }
   }

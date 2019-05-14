@@ -86,7 +86,7 @@ export const mutations = {
   },
 
   entrytype(state, newtype) {
-    state.available_entries.push(newtype);
+    state.entry_types[newtype.type_slug] = newtype;
     //state.entry_type_slug_index_dict[newtype.slug] = state.available_entries.length - 1;
   },
   set_entries(state, entries) {

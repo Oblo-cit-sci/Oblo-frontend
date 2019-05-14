@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    h3 {{aspect.name}}
+    Title_Description(:title="title_description().title" :description="title_description().description")
     div(v-if="edit")
       Selector(v-bind:options="input_options" v-bind:selection.sync="selection")
     div(v-if="i_value != null")
@@ -14,16 +14,18 @@
 
 <script>
 
+  // TODO no clue why Title_Description, does not work like for "Url".vue
   import Selector from "~~/components/Selector";
   import { get_location, create_location_error} from "../../lib/common";
   import AspectMixin from "./AspectMixin";
+  import Title_Description from "../Title_Description";
 
   const ACTUAL_LOCATION = "act";
   const FROM_MAP = "map";
 
   export default {
     name: "Location",
-    components: {Selector},
+    components: {Title_Description, Selector},
     mixins: [AspectMixin],
     data() {
       return {
