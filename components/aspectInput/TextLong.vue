@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    div {{aspect.description}}
+    Title_Description(v-bind="title_description()")
     div(v-if="edit")
       v-textarea(
         outline
@@ -20,6 +20,7 @@
 
 <script>
   import AspectMixin from "./AspectMixin";
+  import Title_Description from "../Title_Description";
 
   /*
     add to v.textarea
@@ -28,6 +29,7 @@
    */
 
   export default {
+    components: {Title_Description},
     mixins: [AspectMixin],
     name: "TextLong",
     data() {

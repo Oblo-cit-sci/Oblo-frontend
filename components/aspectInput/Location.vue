@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    Title_Description(:title="title_description().title" :description="title_description().description")
+    Title_Description(v-bind="title_description()")
     div(v-if="edit")
       Selector(v-bind:options="input_options" v-bind:selection.sync="selection")
     div(v-if="i_value != null")

@@ -22,19 +22,13 @@ export default {
   },
   methods: {
     title_description() {
-      console.log("title-descr for ", this.aspect);
+      //console.log("title-descr for ", this.aspect);
       if (!this.aspect.hasOwnProperty("name")) {
         console.log("warning: aspect", this.aspect, "has no name")
       }
       if (!this.aspect.hasOwnProperty("description")) {
         console.log("warning: aspect", this.aspect, "has no description")
       }
-      console.log("ret:",
-        {
-          title: this.aspect.name || "",
-          description: this.aspect.description || ""
-        }
-      );
       return {
         title: this.aspect.name || "",
         description: this.aspect.description || ""

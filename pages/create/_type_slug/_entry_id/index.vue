@@ -2,10 +2,11 @@
   v-layout(column='' justify-center='' align-center='')
     v-flex(xs12='' sm8='' md6='')
       h1 {{entry_type.title}}
+      div {{entry_type.description}}
       div(v-if="ref")
         span This entry is part of the draft: &nbsp;&nbsp;
-        a(@click="back_to_ref") {{ref.entry_type}}
-      div {{entry_type.description}}
+        a(@click="back_to_ref") {{ref.parent_title}}
+
       br
       div(v-for="(aspect, index) in entry_type.content.aspects" :key="index")
         component(v-bind:is="aspectComponent(aspect)"
@@ -16,6 +17,7 @@
       div(v-if="!ref")
         License(v-bind:passedLicense.sync="license")
         Privacy(v-bind:selectedPrivacy.sync="privacy")
+        v-btn(@click="cancel_draft" color="error") cancel
         v-btn(color="secondary" @click="save($event,'/')") save draft
         v-btn(v-bind:disabled="!complete" color="success" :loading="sending" @click="send") submit
       div(v-else)
@@ -87,7 +89,6 @@
     },
     methods: {
       updateRequired(aspect) {
-
         this.required_values[aspect.title] = aspect.value;
         for (let req_asp in this.required_values) {
           let val = this.required_values[req_asp];
@@ -131,6 +132,11 @@
       },
       autosave() {
         this.$store.commit("edrafts/save_draft", this.store_data());
+      },
+      cancel_draft() {
+        // TODO maybe with confirmation
+        this.$store.commit("edrafts/remove_draft", this.entry_id);
+        this.$router.push("/");
       },
       save(event, goto) { // draft
         this.autosave();
@@ -192,14 +198,6 @@
               index: ref.index
             }});
         }
-
-        //console.log("slug", entry_type, draft_id);
-        //const aspect =
-        //const pageAspect =
-        /*this.$router.push({path: "/create/" + entry_type, query: {
-            ref_draft_id: draft_id
-          }});
-        */
       }
     }
   }

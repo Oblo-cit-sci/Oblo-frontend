@@ -14,7 +14,6 @@
 </template>
 
 <script>
-  //import {recent_entries} from "../lib/common"
   import { license_icon } from "../lib/client"
 
   export default {

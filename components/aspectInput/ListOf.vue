@@ -20,6 +20,10 @@
 
   // TODO this is a older, reused component. beware , clean, and abstract stuff with List...
   // remove and merge
+
+  // TODO now.
+  // need to know if the items are entries or aspects
+  // then let them be clicked, and let them be removed
   import Selector from "../Selector";
   import {create_options} from "../../lib/common"
   import AspectMixin from "./AspectMixin";
@@ -38,7 +42,7 @@
       }
     },
     created() {
-      this.i_value = [];
+      //this.i_value = [];
       // build the given_options (all options available) from what is passed
       let passed_options = this.aspect.items;
       // a "*" means, lookup code and set the values as options
