@@ -83,7 +83,7 @@
 
       this.license = draft_data.license;
       this.privacy = draft_data.privacy;
-      this.aspects_values = {...draft_data.aspects_values};
+      this.aspects_values =  JSON.parse(JSON.stringify(draft_data.aspects_values)); //{...draft_data.aspects_values};
 
       this.entry_type = this.$store.getters.entry_type(this.type_slug);
     },
