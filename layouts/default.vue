@@ -66,22 +66,27 @@
       to: '/'
     },
     {
-      icon: 'person',
-      title: 'Profile',
-      to: '/profile'
-    },
-    {
       icon: 'note_add',
       title: 'Create Entry',
       to: '/CreateEntry'
     },
     {
+      icon: "reorder",
+      title: "My Entries",
+      to: "personalentries"
+    },
+    {
+      icon: 'person',
+      title: 'Profile',
+      to: '/profile'
+    },
+    /*{
       icon: 'list',
       title: 'Codes',
       to: '/Codes'
-    },
+    },*/
     {
-      icon: 'list',
+      icon: 'computer',
       title: 'Tests',
       to: '/Tests'
     },
@@ -96,13 +101,13 @@
       to: '/login'
     },
     {
-      icon: 'list',
+      icon: 'motorcycle',
       title: 'Logout',
       to: '/logout'
     }
   ];
 
-  let require_login = ["Profile", "Logout"];
+  let require_login = ["Profile", "Logout", "My Entries"];
   let hide_on_login = ["Register", "Login"];
 
   export default {

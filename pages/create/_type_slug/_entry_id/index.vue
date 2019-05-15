@@ -119,7 +119,7 @@
 
         this.$axios.post("/create_entry", this.store_data()).then((res) => {
           this.sending = false;
-          console.log(res.data);
+          //console.log(res.data);
           this.$store.commit("set_snackbar", {message: res.data.msg, ok: res.data.status});
 
           if (this.hasOwnProperty("draft_id")) {
@@ -147,7 +147,7 @@
       },
       create_related(aspect) {
         this.autosave();
-        console.log(aspect);
+        //console.log(aspect);
 
         // TODO maybe move somewhere else...
         // this
@@ -180,7 +180,7 @@
           } else {
             new_type_slug = aspect.type.substring(1);
           }
-          console.log("TO TYPE", new_type_slug);
+          //console.log("TO TYPE", new_type_slug);
           // TODO should be draft_id or entry_id
           // but its still a bit messed up. it has entry_id, tho its a draft
 
@@ -189,7 +189,7 @@
           }
 
           const new_draft_id = create_and_store(new_type_slug, this.$store);
-          console.log("created with draft_id", new_draft_id);
+          //console.log("created with draft_id", new_draft_id);
           this.$router.push({
             path: "/create/" + new_type_slug + "/"+ new_draft_id,
             query: {
@@ -198,6 +198,9 @@
               index: ref.index
             }});
         }
+      },
+      goto_related(aspect, index) {
+
       }
     }
   }

@@ -32,7 +32,6 @@
       v-divider
 
       v-tabs(v-model="selected_tab" v-if="!edit_mode")
-        v-tab Entries
         v-tab follows
         v-tab following
         v-tab Groups

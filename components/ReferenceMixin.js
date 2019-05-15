@@ -7,6 +7,8 @@
 
  */
 
+import { CONTEXT_ENTRY } from "~~/lib/consts";
+
 export default {
   created() {
     // mixin create comes before the component create, btw. or does it depend on the order of the mixin array and create fct?
@@ -40,29 +42,29 @@ export default {
   },
   methods: {
     save_back() {
+      this.autosave();
       if(this.ref.type === "draft") {
         // TODO, here we actually need to know if we are in a AspectPage or ContextEntry
         // we use "aspect_name" cuz this must always be there
         let is_context_entry = this.$route.query.hasOwnProperty("aspect_name");
-        console.log("is_context_entry", is_context_entry);
+        //console.log("is_context_entry", is_context_entry);
         if(is_context_entry) {
           //let aspect_name = this.$route.query.param.aspect_name;
           let data = {
             draft_id: this.ref.draft_id,
             aspect_name: this.$route.query.aspect_name,
-            value: this.entry_id
+            value: {
+              type: CONTEXT_ENTRY,
+              draft_id: this.entry_id
+            }
           };
           if(this.ref.hasOwnProperty("index")) {
             data.index = this.ref.index;
           }
           this.$store.commit("edrafts/set_draft_aspect_value", data);
         }
-
-        // this would break for aspect-pages
-
+        // TODO this would break for aspect-pages
         // well AspectPage dont really have any query params,
-
-
       }
       this.back_to_ref()
     },

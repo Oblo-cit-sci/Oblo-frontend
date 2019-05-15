@@ -78,8 +78,9 @@
         if (item.key === undefined)
           return;
         this.selected_key = item.key;
+        // TODO fix, clean
         if (this.select_sync) {
-          console.log("sync update");
+          //console.log("sync update");
           this.$emit('update:selection', item); // refactor to use the item
         } else {
           this.$emit("selection", item);
@@ -91,7 +92,7 @@
     },
     watch: {
       selected_item(new_val) {
-        console.log("watch update", new_val);
+        //console.log("watch update", new_val);
         this.$emit('update:selection', new_val); // refactor to use the item
       }
     }

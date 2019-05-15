@@ -73,9 +73,11 @@ export const mutations = {
   set_related_users(state, related_users) {
     state.related_users = related_users
   },
-  login(state, user_data) {
+  login(state, data) {
+    //console.log("LOGIN");
+    console.log("store data", data.own_entries);
     state.logged_in = true;
-    state.user_data = user_data;
+    state.user_data = data.user_data;
   },
   logout(state) {
     state.logged_in = false;
@@ -90,7 +92,7 @@ export const mutations = {
     //state.entry_type_slug_index_dict[newtype.slug] = state.available_entries.length - 1;
   },
   set_entries(state, entries) {
-    console.log("setting entries");
+    //console.log("setting entries");
     state.recent_entries = entries;
   },
 
