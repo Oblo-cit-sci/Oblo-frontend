@@ -87,8 +87,7 @@
         }
       },
       marked(key) {
-        //console.log(key, this.selected_key, this.highlight)
-        return key === this.selected && this.highlight;
+        return key === this.selected_key && this.highlight;
       }
     },
     watch: {

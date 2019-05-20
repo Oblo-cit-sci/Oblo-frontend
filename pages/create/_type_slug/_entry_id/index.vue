@@ -6,7 +6,6 @@
       div(v-if="ref")
         span This entry is part of the draft: &nbsp;&nbsp;
         a(@click="back_to_ref") {{ref.parent_title}}
-
       br
       div(v-for="(aspect, index) in shown_aspects" :key="index")
         component(v-bind:is="aspectComponent(aspect)"

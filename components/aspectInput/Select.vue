@@ -1,7 +1,7 @@
 <template lang="pug">
   div
     Title_Description(v-bind="title_description()")
-    SingleSelect(:options="options" v-bind:selection="selection" v-on:update:selection="cool($event)")
+    SingleSelect(:options="options" v-bind:selection.sync="selection")
 </template>
 
 <script>
@@ -20,15 +20,12 @@
       }
     },
     created() {
-      //console.log(this.aspect.items)
       this.selection = this.i_value
       this.options = get_codes_as_options(this.$store.state, this.aspect.items)
     },
-    methods:{
-      cool(event) {
-        this.selection = event
-        this.i_value = this.selection.key;
-        this.value_change(this.i_value)
+    watch: {
+      selection() {
+        this.value_change(this.selection.key)
       }
     }
   }
