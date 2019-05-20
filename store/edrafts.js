@@ -21,6 +21,10 @@ export const mutations = {
     } else {
       state.drafts[data.draft_id].aspects_values[data.aspect_name] = data.value;
     }
+  },
+  add_reference(state, reference_info) {
+    let child = state.drafts[reference_info.draft_id]
+    child.ref = reference_info.ref
   }
 };
 

@@ -83,7 +83,7 @@
 
       this.license = draft_data.license;
       this.privacy = draft_data.privacy;
-      this.aspects_values =  JSON.parse(JSON.stringify(draft_data.aspects_values)); //{...draft_data.aspects_values};
+      this.aspects_values = JSON.parse(JSON.stringify(draft_data.aspects_values)); //{...draft_data.aspects_values};
 
       this.entry_type = this.$store.getters.entry_type(this.type_slug);
     },
@@ -162,20 +162,19 @@
         */
         // this is a duplicate of MAspectComponent in client
         // TODO TEST with something
-        if((aspect.attr.view || "inline") === "page") {
+        if ((aspect.attr.view || "inline") === "page") {
           // would only need a ref url-param if its in a list/map
-          this.$router.push({path: "/create/" + this.type_slug + "/"+ this.draft_id + "/" + aspect.name});
-        }
-        else if(aspect) {
+          this.$router.push({path: "/create/" + this.type_slug + "/" + this.draft_id + "/" + aspect.name});
+        } else if (aspect) {
           // TODO fck typechar stuff is everywhere:
           const is_list = aspect.type === "list";
           let new_type_slug = "";
 
           let ref = {
-            draft_id : this.entry_id, // TODO dangerous temp solution...
+            draft_id: this.entry_id, // TODO dangerous temp solution...
             aspect_name: aspect.name,
           };
-          if(is_list) {
+          if (is_list) {
             new_type_slug = aspect.items.substring(1);
           } else {
             new_type_slug = aspect.type.substring(1);
@@ -184,19 +183,26 @@
           // TODO should be draft_id or entry_id
           // but its still a bit messed up. it has entry_id, tho its a draft
 
-          if(is_list) {
-            ref.index = this.aspects_values[aspect.name].length;
-          }
 
           const new_draft_id = create_and_store(new_type_slug, this.$store);
+
+          let ref_data = {
+            draft_id: ref.draft_id,
+            aspect_name: ref.aspect_name,
+            index: ref.index
+          }
+          if (is_list) {
+            ref_data.index = this.aspects_values[aspect.name].length;
+          }
+
+          this.$store.commit("edrafts/add_reference", {
+            draft_id: new_draft_id,
+            ref: ref_data
+          });
           //console.log("created with draft_id", new_draft_id);
           this.$router.push({
-            path: "/create/" + new_type_slug + "/"+ new_draft_id,
-            query: {
-              draft_id : ref.draft_id,
-              aspect_name: ref.aspect_name,
-              index: ref.index
-            }});
+            path: "/create/" + new_type_slug + "/" + new_draft_id
+          });
         }
       },
       goto_related(aspect, index) {
