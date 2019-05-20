@@ -23,7 +23,7 @@
           // a list of lists (registered_name & public_name)
           let registered_name = u[0];
           let public_name = u[1];
-          if(this.$store.state.user_data.registered_name === registered_name)
+          if(this.$store.state.user.user_data.registered_name === registered_name)
             continue;
           users.push(create_options({
             title: registered_name,

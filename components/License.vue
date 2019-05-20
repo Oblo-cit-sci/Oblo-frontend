@@ -45,7 +45,7 @@
         this.set_to_default();
       else { // for drafts
         this.selectedLicense = this.overwrite_default;
-        this.use_alternative_license = this.selectedLicense.short !== this.$store.state.user_data.defaultLicense;
+        this.use_alternative_license = this.selectedLicense.short !== this.$store.state.user.user_data.defaultLicense;
       }
       this.licenseOptions = ld.map(this.$store.state.codes.licenses, (l) => Object.assign({
         text: l.title,
@@ -67,7 +67,7 @@
     },
     methods: {
       set_to_default() {
-        this.selectedLicense = this.$store.state.codes.licenses[this.$store.state.user_data.defaultLicense];
+        this.selectedLicense = this.$store.state.codes.licenses[this.$store.state.user.user_data.defaultLicense];
       }
     },
     watch: {

@@ -89,8 +89,8 @@
         let entry = new Entry({
             entry_type: entry_type,
             draft_id: draft_id,
-            license:  this.$store.state.user_data.defaultLicense,
-            privacy: this.$store.state.user_data.defaultPrivacy,
+            license:  this.$store.state.user.user_data.defaultLicense,
+            privacy: this.$store.state.user.user_data.defaultPrivacy,
           });
         // todo maybe some redundant data here...
         this.$store.commit("edrafts/create_draft", entry.get_store_data());

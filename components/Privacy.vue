@@ -4,7 +4,7 @@
     div(v-if="$store.getters.visitor")
       div
         span As a visitor your contributions will be
-        span.public_text_clr &nbsp{{ $store.state.user_data.defaultPrivacy }}&nbsp
+        span.public_text_clr &nbsp{{ $store.state.user.user_data.defaultPrivacy }}&nbsp
         span after being reviewed
     div(v-else)
       div you selected the privacy: {{selectedPrivacy.title}}.
@@ -38,7 +38,7 @@
         this.set_to_default();
       else { // for drafts
         this.selectedPrivacy = this.overwrite_default;
-        this.use_alternative_privacy = this.selectedPrivacy.title !==  this.$store.state.user_data.defaultPrivacy;
+        this.use_alternative_privacy = this.selectedPrivacy.title !==  this.$store.state.user.user_data.defaultPrivacy;
       }
     },
     computed: {
@@ -48,7 +48,7 @@
     },
     methods: {
       set_to_default() {
-        this.selectedPrivacy = {title: this.$store.state.user_data.defaultPrivacy};
+        this.selectedPrivacy = {title: this.$store.state.user.user_data.defaultPrivacy};
       }
     },
     watch: {

@@ -11,10 +11,10 @@ export default function (context) {
       context.$axios.get("/init").then((res) => {
         // TODO check if OK
         context.store.commit("init", res.data.result);
-        //console.log(res.data.result.user_data);
-        if (res.data.result.user_data !== undefined) {
+        //console.log(res.data.result.user.user_data);
+        if (res.data.result.user.user_data !== undefined) {
           console.log("middleware login")
-          context.store.commit("login", res.data.result.user_data);
+          context.store.commit("login", res.data.result.user.user_data);
         }
         //console.log(context.store.state.logged_in);
       }).catch((err) => {

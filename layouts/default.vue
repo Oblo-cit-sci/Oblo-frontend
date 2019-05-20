@@ -113,10 +113,10 @@
   export default {
     components: {GlobalSnackbar},
     created() {
-      this.login_state = this.$store.state.logged_in;
+      this.login_state = this.$store.state.user.logged_in;
       this.update_sidebar();
-      this.$store.watch(state => state.logged_in, () => {
-        this.login_state = this.$store.state.logged_in;
+      this.$store.watch(state => state.user.logged_in, () => {
+        this.login_state = this.$store.state.user.logged_in;
         this.update_sidebar();
       });
     },

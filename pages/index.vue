@@ -1,7 +1,7 @@
 <template lang="pug">
   v-layout(column='' justify-center='' align-center='')
     v-flex(xs12='' sm8='' md6='')
-      entrylist(:entries="$store.state.recent_entries")
+      entrylist(:entries="$store.state.entries.timeline_entries")
 </template>
 
 <script>
