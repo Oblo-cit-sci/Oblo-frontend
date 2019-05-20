@@ -2,7 +2,7 @@
   div
     h3 License
     div(v-if="$store.getters.visitor")
-      div as a visitor your contributions will be licensed under {{selectedLicense}}.
+      div as a visitor your contributions will be licensed under {{selectedLicense.title}}.
     div(v-else)
       div you selected the license: {{selectedLicense.title}}.
     div(v-if=selectedLicense)

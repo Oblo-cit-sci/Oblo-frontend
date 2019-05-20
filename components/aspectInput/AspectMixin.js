@@ -35,6 +35,7 @@ export default {
       }
     },
     value_change(event) {
+      //console.log("value-change")
       this.$emit('update:value', event);
       if (this.required) {
         //console.log("required value changed");

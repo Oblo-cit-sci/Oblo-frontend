@@ -56,12 +56,14 @@ function array_to_val__id_dict(data, key_val) {
 
 export const mutations = {
   init(state, data) {
-    state.codes.liccis = data.licciTree;
-    state.codes.liccis_flat = extract_liccis(data.licciTree);
-    state.codes.licenses = data.licenses;
+    //console.log("init", data.codes)
+    state.codes = {... data.codes}
+    state.codes.liccis_flat = extract_liccis(data.codes.liccis);
+
     state.entry_types = new Map(ld.map(data.entryTemplates, (e) => {
       return [e.slug, e]
     }));
+
     state.related_users = data.related_users;
 
     //state.entry_type_slug_index_dict = array_to_val__id_dict(data.entryTemplates, "slug");

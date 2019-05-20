@@ -22,7 +22,7 @@ export default {
 
       // TODO maybe simply copy?!
       this.ref = {... draft_data.ref}
-      let parent = null
+      let parent = {}
       if (this.ref.hasOwnProperty("draft_id")) {
         parent = this.$store.state.edrafts.drafts[this.ref.draft_id];
         this.ref.type = "draft"

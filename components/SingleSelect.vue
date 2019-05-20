@@ -2,7 +2,7 @@
   div(v-if="viewStyle === CLEAR_LIST")
     v-list(two-line)
       v-list-tile(v-for="item of options"
-        :key="item.key" @click="select(item)" v-bind:class="{ marked: marked(item.title) }")
+        :key="item.key" @click="select(item)" v-bind:class="{ marked: marked(item.key) }")
         v-list-tile-content
           v-list-tile-title {{item.title}}
           v-list-tile-sub-title {{item.description}}
@@ -86,8 +86,9 @@
           this.$emit("selection", item);
         }
       },
-      marked(title) {
-        return title === this.selected && this.highlight;
+      marked(key) {
+        //console.log(key, this.selected_key, this.highlight)
+        return key === this.selected && this.highlight;
       }
     },
     watch: {
@@ -100,5 +101,7 @@
 </script>
 
 <style scoped>
-
+  .marked {
+    background: khaki;
+  }
 </style>
