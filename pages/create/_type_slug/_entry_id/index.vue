@@ -191,30 +191,33 @@
           } else {
             new_type_slug = aspect.type.substring(1);
           }
-          //console.log("TO TYPE", new_type_slug);
           // TODO should be draft_id or entry_id
           // but its still a bit messed up. it has entry_id, tho its a draft
+          let is_context_entry = this.$store.state.entry_types.get(new_type_slug) !== undefined
 
+          if (is_context_entry) {
+            create_and_store(new_type_slug, this.$store);
+            let ref_data = {
+              draft_id: ref.draft_id,
+              aspect_name: ref.aspect_name,
+              index: ref.index
+            }
+            if (is_list) {
+              ref_data.index = this.aspects_values[aspect.name].length;
+            }
 
-          const new_draft_id = create_and_store(new_type_slug, this.$store);
-
-          let ref_data = {
-            draft_id: ref.draft_id,
-            aspect_name: ref.aspect_name,
-            index: ref.index
+            this.$store.commit("edrafts/add_reference", {
+              draft_id: new_draft_id,
+              ref: ref_data
+            });
+            this.$router.push({
+              path: "/create/" + new_type_slug + "/" + new_draft_id
+            })
+          } else {
+            this.$router.push({
+              path: "/create/" + this.type_slug + "/" + this.entry_id + "/" + aspect.name
+            })
           }
-          if (is_list) {
-            ref_data.index = this.aspects_values[aspect.name].length;
-          }
-
-          this.$store.commit("edrafts/add_reference", {
-            draft_id: new_draft_id,
-            ref: ref_data
-          });
-          //console.log("created with draft_id", new_draft_id);
-          this.$router.push({
-            path: "/create/" + new_type_slug + "/" + new_draft_id
-          });
         }
       },
     },

@@ -19,7 +19,6 @@
 
 <script>
 
-
   // TODO this is a older, reused component. beware , clean, and abstract stuff with List...
   // remove and merge
 

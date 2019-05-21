@@ -46,6 +46,9 @@
           case "str":
             this.mode = "simple";
             break;
+          case "composite":
+            this.mode = "page"
+            break
           default:
             console.log("unknown type for list", item_type);
         }
