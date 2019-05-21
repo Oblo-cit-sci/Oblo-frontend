@@ -18,7 +18,7 @@ export default {
     this.entry_id = this.$route.params.entry_id; // draft_id or entry_uuid
 
     let draft_data = this.$store.state.edrafts.drafts[this.entry_id];
-    if (draft_data.hasOwnProperty("ref")) {
+    if (draft_data.ref) {
 
       // TODO maybe simply copy?!
       this.ref = {... draft_data.ref}
@@ -43,16 +43,16 @@ export default {
   methods: {
     save_back() {
       this.autosave();
-      if (this.ref.type === "draft") {
+      if (this.ref.hasOwnProperty("draft_id")) {
         // TODO, here we actually need to know if we are in a AspectPage or ContextEntry
         // we use "aspect_name" cuz this must always be there
-        let is_context_entry = this.$route.query.hasOwnProperty("aspect_name");
+        let is_context_entry = this.ref.aspect_name;
         //console.log("is_context_entry", is_context_entry);
         if (is_context_entry) {
           //let aspect_name = this.$route.query.param.aspect_name;
           let data = {
             draft_id: this.ref.draft_id,
-            aspect_name: this.$route.query.aspect_name,
+            aspect_name: this.ref.aspect_name,
             value: {
               type: CONTEXT_ENTRY,
               draft_id: this.entry_id

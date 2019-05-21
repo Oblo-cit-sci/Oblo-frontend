@@ -3,7 +3,7 @@
     h3 {{aspect.name}}
     div {{aspect.description}}
 
-    div(v-for="(comp_type, index) in aspect.types" :key="index")
+    div(v-for="(comp_type, index) in aspect.components" :key="index")
       component(v-bind:is="AspectComponent(comp_type)"
         v-bind:aspect="comp_type"
         v-bind:value.sync="i_value[comp_type.name]"

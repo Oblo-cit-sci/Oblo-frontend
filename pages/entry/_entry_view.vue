@@ -10,7 +10,7 @@
           v-list-tile-sub-title At {{entry.creation_timestamp}}
         v-list-tile
           v-list-tile-title
-            v-img(class="licenseIcon" :src="license_icon(entry.license)"  class="subtilte_img")
+            v-img(:src="license_icon(entry.license)"  class="subtilte_img licenseIcon")
         v-list-tile(dense)
           v-list-tile-title Description
         v-textarea(readonly solo flat  :value="entry.description")
@@ -87,7 +87,6 @@
         this.entry_type_aspects = strip_default_aspects(this.entry_type_aspects);
         //console.log("A", this.entry_type_aspects);
       });
-
       //console.log(this.$store.getters.name);
       const res = ld.find(ld.concat(this.entry.actors.owners, this.entry.actors.collaborators), (a) => {return a.registered_name === this.$store.getters.name; })
       this.editable = this.entry.editable && res !== undefined;

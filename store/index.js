@@ -1,22 +1,8 @@
-/*let default_user_data = {
-  global_role: "visitor",
-  registered_name: "visitor", // TODO should also retrieve that... with a number index
-  // https://stackoverflow.com/questions/1253499/simple-calculations-for-working-with-lat-lon-km-distance
-  // of 1 degree will result in error of around 50km per coordinate -0.5, +0.5 degree change around the real location
-  location_error: 2,
-  defaultLicense: "CC0", // should come from the server
-  defaultPrivacy: "public"
-};*/
-
-
 export const state = () => ({
- // logged_in: false,
- // user_data: default_user_data,
   // comes by init
   initialized: false,
   // TODO use DICT!!!
   entry_types: new Map(), // types for creation
-  //entry_type_slug_index_dict: {}, // cuz we dont have Map, which would be ideal...
   tags: {}, // initially just the licci tree
   codes: {},
   // recent
@@ -43,21 +29,11 @@ function extract_liccis(tree) {
 const ld = require('lodash');
 
 
-// maps suck in Vue
-
-function array_to_val__id_dict(data, key_val) {
-  let res = {};
-  for (let index in data) {
-    let value = data[index];
-    res[value[key_val]] = parseInt(index);
-  }
-  return res;
-}
 
 export const mutations = {
   init(state, data) {
     //console.log("init", data.codes)
-    state.codes = {... data.codes}
+    state.codes = {...data.codes}
     state.codes.liccis_flat = extract_liccis(data.codes.liccis);
 
     state.entry_types = new Map(ld.map(data.entryTemplates, (e) => {
@@ -72,19 +48,6 @@ export const mutations = {
   set_related_users(state, related_users) {
     state.related_users = related_users
   },
-/*  login(state, data) {
-    //console.log("LOGIN");
-    console.log("store data", data.own_entries);
-    state.logged_in = true;
-    state.user_data = data.user_data;
-  },
-  logout(state) {
-    state.logged_in = false;
-    state.user_data = default_user_data;
-  },
-  set_user_data(state, user_data) {
-    state.user_data = user_data;
-  }, */
   entrytype(state, newtype) {
     state.entry_types[newtype.type_slug] = newtype;
     //state.entry_type_slug_index_dict[newtype.slug] = state.available_entries.length - 1;

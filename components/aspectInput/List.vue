@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    Title_Description(:="title_description()")
+    Title_Description(v-bind="title_description()")
     div(v-if="mode==='simple'")
       div(v-for="(value, index) in i_value" :key="index")
         component(v-bind:is="clearableAspectComponent(item_aspect)"
@@ -12,9 +12,8 @@
           v-on:clear="remove_value(index)",
           v-on:create_related="create_related($event)")
       div
-        div
-          span(v-if="aspect.attr.min") min: {{aspect.attr.min}}, &nbsp;
-          span(v-if="aspect.attr.max") max: {{aspect.attr.max}}
+        span(v-if="aspect.attr.min") min: {{aspect.attr.min}}, &nbsp;
+        span(v-if="aspect.attr.max") max: {{aspect.attr.max}}
       v-btn(:disabled="!more_allowed" @click="add_value()" color="success") Add
         v-icon(right) add
 </template>

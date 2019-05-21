@@ -83,6 +83,7 @@
         required_values: {},
         complete: false,
         has_pages: false,
+        ref: null,
 
         page: 0,
         last_page: false
@@ -126,7 +127,8 @@
           aspects_values: this.aspects_values,
           license: this.license,
           privacy: this.privacy,
-          activities: complete_activities(this.entry_type, "send", this.aspects_values)
+          activities: complete_activities(this.entry_type, "send", this.aspects_values),
+          ref: this.ref
         }
       },
       send() {

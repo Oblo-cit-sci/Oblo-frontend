@@ -22,6 +22,8 @@ export default {
   },
   methods: {
     title_description() {
+
+
       //console.log("title-descr for ", this.aspect);
       if (!this.aspect.hasOwnProperty("name")) {
         console.log("warning: aspect", this.aspect, "has no name")
