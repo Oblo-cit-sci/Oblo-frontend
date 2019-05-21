@@ -3,6 +3,9 @@
     v-flex(xs12='' sm8='' md6='')
       h1 {{entry_type.title}}
       div {{entry_type.description}}
+      div(v-if="has_pages")
+        h3 {{page_info.title}}
+        div {{page_info.description}}
       div(v-if="ref")
         span This entry is part of the draft: &nbsp;&nbsp;
         a(@click="back_to_ref") {{ref.parent_title}}
@@ -80,6 +83,7 @@
         required_values: {},
         complete: false,
         has_pages: false,
+
         page: 0,
         last_page: false
       }
@@ -96,12 +100,7 @@
 
       this.entry_type = this.$store.getters.entry_type(this.type_slug);
 
-      if (this.entry_type.content.meta.hasOwnProperty("pages")) {
-        this.has_pages = true;
-        //this.page = 0
-      } else {
-        this.has_pages = false
-      }
+      this.has_pages = this.entry_type.content.meta.hasOwnProperty("pages");
     },
     methods: {
       updateRequired(aspect) {
@@ -143,7 +142,7 @@
           }
           this.$router.push("/");
         }).catch((err) => {
-          console.log("error");
+          console.log("error", err);
         })
       },
       autosave() {
@@ -256,6 +255,9 @@
       },
       download_title() {
         return (this.aspects_values.title || "Survey " + this.entry_id).replace(" ", "_") + ".json"
+      },
+      page_info() {
+        return this.entry_type.content.meta.pages[this.page]
       }
     }
   }

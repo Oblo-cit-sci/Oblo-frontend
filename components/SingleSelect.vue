@@ -61,6 +61,7 @@
       // TODO check if still needed
       if(this.selection) {
         this.selected_item = this.selection;
+        this.selected_key = this.selection.key;
       }
 
       if(this.force_view) {
@@ -72,6 +73,7 @@
           this.viewStyle = VUETIFY_SELECT;
         }
       }
+
     },
     methods: {
       select(item) {

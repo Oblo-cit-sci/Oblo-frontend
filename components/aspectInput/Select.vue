@@ -10,6 +10,8 @@
   import Title_Description from "../Title_Description";
   import {get_codes_as_options} from "../../lib/client";
 
+  const ld = require("lodash")
+
   export default {
     name: "Select",
     mixins: [AspectMixin],
@@ -20,8 +22,10 @@
       }
     },
     created() {
-      this.selection = this.i_value
       this.options = get_codes_as_options(this.$store.state, this.aspect.items)
+      if(this.value !== null) {
+        this.selection = ld.find(this.options, (o) => {return o.key === this.i_value})
+      }
     },
     watch: {
       selection() {
