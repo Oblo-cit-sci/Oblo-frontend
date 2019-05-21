@@ -1,26 +1,23 @@
 <template lang="pug">
-  div
-    component(v-bind:is="aspectComponent(aspect)"
-      v-bind:aspect="aspect"
-      v-bind:value.sync="aspect_value"
-      v-on:update-required="updateRequired"
-      v-on:create_related="create_related($event)")
-    div
-      v-btn(color="secondary" @click="save_back") save & back
+  v-layout(column='' justify-center='' align-center='')
+    v-flex(xs12='' sm8='' md6='')
+      component(v-bind:is="aspectComponent(aspect)"
+        v-bind:aspect="aspect"
+        v-bind:value.sync="aspect_value"
+        v-on:update-required="updateRequired"
+        v-on:create_related="create_related($event)")
+      div
+        v-btn(color="secondary" @click="save_back") save & back
 </template>
 
 <script>
 
-  /* this is the page for Aspect-Pages
-  *
-  *
-  */
+  /* this is the page for Aspect-Pages */
 
   import Licci from "~~/components/aspectInput/special/Licci";
 
   import {MAspectComponent} from "~~/lib/client";
   import ReferenceMixin from "~~/components/ReferenceMixin";
-
 
   export default {
     name: "AspectPage",
@@ -36,18 +33,24 @@
       // todo what if no draft
       let type_slug = this.$route.params.type_slug;
       this.aspect_name = this.$route.params.aspect_name;
-      this.aspect = this.$store.getters.get_aspect(type_slug, this.aspect_name);
+      this.aspect = {... this.$store.getters.get_aspect(type_slug, this.aspect_name)}
       if (this.aspect.attr.view !== "page") {
-        console.log("HOW DID U GET HERE. PAGE VIEW FOR A NON PAGE ASPECT");
+        // not yet a complete disa  ster, it is maybe a list of composite
+        if(this.aspect.type === "list" && this.aspect.items === "composite") {
+          console.log("composite list")
+          this.aspect.type = "composite"
+        } else
+          console.log("HOW DID U GET HERE. PAGE VIEW FOR A NON PAGE ASPECT");
       }
-
+      console.log("final aspect", this.aspect)
       this.draft_id = this.$route.params.entry_id;
       this.aspect_value = this.$store.state.edrafts.drafts[this.draft_id].aspects_values[this.aspect_name];
+      console.log("creation done")
+
     },
     methods: {
       aspectComponent(aspect) {
-        let at = MAspectComponent(aspect, true);
-        return at;
+        return MAspectComponent(aspect, true);
       },
       updateRequired() {
         // TODO
