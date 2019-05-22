@@ -6,9 +6,9 @@
         component(v-bind:is="clearableAspectComponent(item_aspect)"
           v-bind:aspect="indexed_item_aspect(index)"
           v-bind:value.sync="value"
-          v-on:update-required="updateRequired"
-          icon="clear",
-          :id="index",
+
+          icon="clear"
+          :id="index"
           v-on:clear="remove_value(index)",
           v-on:create_related="create_related($event)")
     div(v-else)
@@ -19,7 +19,6 @@
           component(v-bind:is="clearableAspectComponent(item_aspect)"
             v-bind:aspect="indexed_item_aspect(index)"
             v-bind:value.sync="value"
-            v-on:update-required="updateRequired"
             icon="clear",
             :id="index",
             v-on:clear="remove_value(index)",
@@ -28,7 +27,8 @@
       span(v-if="aspect.attr.min") min: {{aspect.attr.min}}, &nbsp;
       span(v-if="aspect.attr.max") max: {{aspect.attr.max}}
     div(v-if="select")
-      div
+      MultiSelect(:options="options" :selection.sync="i_value")
+
     div(v-else)
       v-btn(:disabled="!more_allowed" @click="add_value()" color="success") Add
         v-icon(right) add
@@ -37,24 +37,27 @@
 <script>
 
   import AspectMixin from "./AspectMixin";
-  import {MAspectComponent} from "../../lib/client";
+  import {get_codes_as_options, MAspectComponent} from "../../lib/client";
   import {aspect_default_value} from "../../lib/entry";
   import Title_Description from "../Title_Description";
+  import MultiSelect from "../MultiSelect";
   const ld = require("lodash")
 
   //
   export default {
     name: "List",
-    components: {Title_Description},
+    components: {MultiSelect, Title_Description},
     mixins: [AspectMixin],
     data() {
       return {
         item_aspect: null,
         mode: null,
-        select: false, // select... instead of button
         count: true,
         // for composite
-        panelState: []
+        panelState: [],
+        // select, when code type (*)
+        select: false, // select... instead of button
+        options: []
       }
     },
     created() {
@@ -65,6 +68,7 @@
 
         if(item_type[0] === "*") {
           this.select = true
+          this.options = get_codes_as_options(this.$store.state, "*liccis_flat")
         } else {
           switch (item_type) {
             case "str":
@@ -97,6 +101,7 @@
       clearableAspectComponent(aspect) {
         return MAspectComponent(aspect, false, true);
       },
+      // for composite
       add_value() {
         console.log("adding value")
         this.i_value.push(aspect_default_value(this.item_aspect));
