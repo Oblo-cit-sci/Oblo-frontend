@@ -24,22 +24,13 @@
     },
     created() {
       for(let comp_index in this.aspect.components) {
-        console.log(comp_index)
-        console.log(this.aspect.components[comp_index])
         this.name2index[this.aspect.components[comp_index].name] = comp_index
       }
     },
     methods: {
       AspectComponent(aspect) {
         return MAspectComponent(aspect, false, false);
-      },
-      /*updateRequired(update_on) {
-        console.log("composite val update...", update_on)
-        // TODO everywhere. aspects have a "name" not title!!
-        let asp_index = this.name2index[update_on.title]
-        this.i_value[asp_index] = update_on.value
-        // nothn todo here
-      } */
+      }
     }
   }
 </script>

@@ -9,11 +9,15 @@
     div(v-else)
       div you selected the privacy: {{selectedPrivacy.title}}.
       v-switch(v-model="use_alternative_privacy" :label="privacy_selection" color="red")
-      Selector(v-if="use_alternative_privacy"  v-bind:options="privacy_options" v-bind:selection.sync="selectedPrivacy")
+      SingleSelect(v-if="use_alternative_privacy" :options="privacy_options" v-bind:selection.sync="selectedPrivacy")
 </template>
 
 <script>
-  import Selector from "./Selector";
+  import SingleSelect from "./SingleSelect";
+
+
+  const OPTIONS = ["public", "private"]
+  const ld = require("lodash")
 
   export default {
     name: "Privacy",
@@ -23,7 +27,7 @@
         required: false
       }
     },
-    components: {Selector},
+    components: {SingleSelect},
     data() {
       return {
         privacy_options: [
@@ -34,16 +38,22 @@
       }
     },
     created() {
-      if(!this.overwrite_default)
+      this.privacy_options = ld.map(OPTIONS, (o) => {
+        return {
+          title: o,
+          key: o
+        }
+      })
+      if (!this.overwrite_default)
         this.set_to_default();
       else { // for drafts
         this.selectedPrivacy = this.overwrite_default;
-        this.use_alternative_privacy = this.selectedPrivacy.title !==  this.$store.state.user.user_data.defaultPrivacy;
+        this.use_alternative_privacy = this.selectedPrivacy.title !== this.$store.state.user.user_data.defaultPrivacy;
       }
     },
     computed: {
       privacy_selection() {
-        return this.use_alternative_privacy ? "use different privacy" : "default privacy" ;
+        return this.use_alternative_privacy ? "use different privacy" : "default privacy";
       }
     },
     methods: {

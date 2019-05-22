@@ -27,8 +27,11 @@
     div
       span(v-if="aspect.attr.min") min: {{aspect.attr.min}}, &nbsp;
       span(v-if="aspect.attr.max") max: {{aspect.attr.max}}
-    v-btn(:disabled="!more_allowed" @click="add_value()" color="success") Add
-      v-icon(right) add
+    div(v-if="select")
+      div
+    div(v-else)
+      v-btn(:disabled="!more_allowed" @click="add_value()" color="success") Add
+        v-icon(right) add
 </template>
 
 <script>
@@ -48,6 +51,7 @@
       return {
         item_aspect: null,
         mode: null,
+        select: false, // select... instead of button
         count: true,
         // for composite
         panelState: []
@@ -56,17 +60,19 @@
     created() {
       let item_type = this.aspect.items;
 
-      //console.log("item_type", typeof (item_type))
+      console.log("item_type", typeof (item_type))
       if (typeof (item_type) === "string") {
-        switch (item_type) {
-          case "str":
-            this.mode = "simple";
-            break;
-          // case "composite":
-          //   this.mode = "page"
-          //   break
-          default:
-            console.log("unknown type for list", item_type);
+
+        if(item_type[0] === "*") {
+          this.select = true
+        } else {
+          switch (item_type) {
+            case "str":
+              this.mode = "simple";
+              break;
+            default:
+              console.log("unknown type for list", item_type);
+          }
         }
         this.item_aspect = {
           attr: {},
@@ -81,7 +87,7 @@
           this.mode = "composite"
         } else {
           this.item_aspect = this.aspect.items;
-          this.item_aspect.required = true;
+          //this.item_aspect.required = true;
           this.mode = "simple";
         }
       }
@@ -92,6 +98,7 @@
         return MAspectComponent(aspect, false, true);
       },
       add_value() {
+        console.log("adding value")
         this.i_value.push(aspect_default_value(this.item_aspect));
         ld.fill(this.panelState, false);
         this.panelState.push(true);

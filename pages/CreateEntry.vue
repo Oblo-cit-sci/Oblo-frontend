@@ -8,7 +8,6 @@
 
 
   import SingleSelect from "../components/SingleSelect";
-  //import { create_draft_title } from "~~/lib/entry";
   import Entry from "../lib/entry";
 
 
@@ -32,15 +31,15 @@
     watch: {
       selectedItem() {
         let slug = "";
-        //console.log("SEL", this.selectedItem);
+        console.log("SEL", this.selectedItem);
 
         let entry_id = null;
         if (this.selectedItem.type === ENTRY_TYPE) {
-          slug = this.selectedItem.key;
+          slug = this.selectedItem.value;
           entry_id = this.create_entry(slug);
         } else {
           slug = this.selectedItem.type_slug;
-          entry_id = this.selectedItem.key;
+          entry_id = this.selectedItem.value;
         }
         this.$router.push("create/" + slug + "/"+ entry_id)
       }
@@ -52,19 +51,19 @@
         // todo could be getters in the store. doesnt require title in the draft data...
         // todo clearer and unified
         options = ld.map(options, (o) => {
-          return {title: o.title, key: o.slug, description: o.description, type: ENTRY_TYPE}
+          return {text: o.title, value: o.slug, description: o.description, type: ENTRY_TYPE}
         });
         // this filters out all context-entries. cuz only context entries have a ref
         // could be an option
         let drafts = ld.filter(this.$store.state.edrafts.drafts, (d) => {return !d.ref})
         drafts = ld.map(drafts, (d) => {
-          return {title: d.title, key: d.draft_id, type: DRAFT, type_slug: d.type_slug}
+          return {text: d.title, value: d.draft_id, type: DRAFT, type_slug: d.type_slug}
         });
         //console.log("CREATE Drafts",drafts);
         if (ld.size(drafts) > 0) {
           options = ld.concat(
             options,
-            {title: "Drafts"},
+            {text: "Drafts"},
             drafts
           )
         }

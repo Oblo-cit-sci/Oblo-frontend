@@ -10,7 +10,7 @@
             v-icon cancel
     v-divider(v-if="has_both()")
     v-subheader#subheader(v-if="has_level_names") {{act_levelname}}
-    Selector(:options="act_options" v-on:selection="select" :highlight="false")
+    SingleSelect(:options="act_options" v-on:selection="select($event)" :select_sync="false" :highlight="false")
     v-btn(v-if="done_available" @click="done" color="success") Done
 </template>
 
@@ -20,13 +20,14 @@
    * Tree object should at each level (each node) have a title (or name) and children key.
    */
 
-  import Selector from "./Selector";
+  import SingleSelect from "./SingleSelect";
+  import {object_list2options, string_list2options} from "../lib/client";
 
   const ld = require('lodash');
 
   export default {
     name: "TreleafPicker",
-    components: {Selector},
+    components: {SingleSelect, Selector},
     props: ["tree"], // OuterRef is for the LICCI aspect, cuz JS messes up loops and events (always takes the
     data: function () {
       return {
@@ -47,7 +48,10 @@
           node["title"] = node["name"];
           node["id"] = parseInt(index);
         }
-        return options;
+
+        //options = ld.map(options, (o) => {return o.name})
+        console.log("AO", )
+        return object_list2options(options, "title", "title"); //string_list2options(options);
       },
       done_available() {
         return ld.size(this.act_options) === 0;
@@ -67,6 +71,7 @@
     },
     methods: {
       select(value) {
+        console.log(value)
         this.selection.push(value);
       },
       remove(index) {
