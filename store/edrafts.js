@@ -23,9 +23,7 @@ export const mutations = {
     }
   },
   add_reference(state, reference_info) {
-    console.log("reference_info", reference_info)
-    let child = state.drafts[reference_info.draft_id]
-    child.ref = reference_info.ref
+    state.drafts[reference_info.draft_id].ref = reference_info.ref
   }
 };
 

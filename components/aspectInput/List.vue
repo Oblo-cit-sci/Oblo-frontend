@@ -37,6 +37,7 @@
   import {MAspectComponent} from "../../lib/client";
   import {aspect_default_value} from "../../lib/entry";
   import Title_Description from "../Title_Description";
+  const ld = require("lodash")
 
   //
   export default {
@@ -72,10 +73,9 @@
           type: this.aspect.items,
           required: true
         }
-
       } else if (typeof (item_type) === "object") {
         console.log("object type", this.aspect.items)
-        if(this.aspect.items.type === "composite") {
+        if (this.aspect.items.type === "composite") {
           this.item_aspect = this.aspect.items;
           this.item_aspect.required = true;
           this.mode = "composite"
@@ -93,6 +93,8 @@
       },
       add_value() {
         this.i_value.push(aspect_default_value(this.item_aspect));
+        ld.fill(this.panelState, false);
+        this.panelState.push(true);
       },
       remove_value(index) {
         this.i_value.splice(index, 1);
@@ -108,8 +110,8 @@
     },
     computed: {
       more_allowed() {
-        if(this.aspect.attr.max) {
-          return this.i_value.length <  this.aspect.attr.max;
+        if (this.aspect.attr.max) {
+          return this.i_value.length < this.aspect.attr.max;
         } else {
           return true;
         }

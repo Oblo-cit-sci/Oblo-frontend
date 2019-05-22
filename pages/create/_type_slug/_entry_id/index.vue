@@ -14,7 +14,6 @@
         component(v-bind:is="aspectComponent(aspect)"
           v-bind:aspect="aspect"
           v-bind:value.sync="aspects_values[aspect.name]"
-          v-on:update-required="updateRequired"
           v-on:create_related="create_related($event)")
       Paginate(v-if="has_pages" v-bind:page.sync="page"
         :total="entry_type.content.meta.pages.length"
@@ -34,7 +33,7 @@
 
 <script>
 
-  // v-btn(v-if="can_download" color="warning") download
+
   import Basic from "~~/components/aspectInput/Basic";
   import TextShort from "~~/components/aspectInput/TextShort";
   import IntAspect from "~~/components/aspectInput/IntAspect";
@@ -171,8 +170,8 @@
         context_entry:
 	      /create/<type_slug/<draft_id?(ref:draft_id|entry_id)=...&aspect=
 
-        */
-        // this is a duplicate of MAspectComponent in client
+        // this is a duplicate of MAspectComponent in client,,,
+        // TODO : CHECK AND REDO THAT PART
 
         /*
           finding ref-type descriptor:
