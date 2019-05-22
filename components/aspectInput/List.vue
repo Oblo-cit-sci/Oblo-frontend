@@ -11,11 +11,24 @@
           :id="index",
           v-on:clear="remove_value(index)",
           v-on:create_related="create_related($event)")
-      div
-        span(v-if="aspect.attr.min") min: {{aspect.attr.min}}, &nbsp;
-        span(v-if="aspect.attr.max") max: {{aspect.attr.max}}
-      v-btn(:disabled="!more_allowed" @click="add_value()" color="success") Add
-        v-icon(right) add
+    div(v-else)
+      v-expansion-panel(expand v-model="panelState")
+        v-expansion-panel-content(v-for="(value, index) in i_value" :key="index")
+          template(v-slot:header)
+            div {{value.title || index}}
+          component(v-bind:is="clearableAspectComponent(item_aspect)"
+            v-bind:aspect="indexed_item_aspect(index)"
+            v-bind:value.sync="value"
+            v-on:update-required="updateRequired"
+            icon="clear",
+            :id="index",
+            v-on:clear="remove_value(index)",
+            v-on:create_related="create_related($event)")
+    div
+      span(v-if="aspect.attr.min") min: {{aspect.attr.min}}, &nbsp;
+      span(v-if="aspect.attr.max") max: {{aspect.attr.max}}
+    v-btn(:disabled="!more_allowed" @click="add_value()" color="success") Add
+      v-icon(right) add
 </template>
 
 <script>
@@ -34,21 +47,23 @@
       return {
         item_aspect: null,
         mode: null,
-        count: true
+        count: true,
+        // for composite
+        panelState: []
       }
     },
     created() {
       let item_type = this.aspect.items;
 
-      // console.log(typeof (item_type))
+      //console.log("item_type", typeof (item_type))
       if (typeof (item_type) === "string") {
         switch (item_type) {
           case "str":
             this.mode = "simple";
             break;
-          case "composite":
-            this.mode = "page"
-            break
+          // case "composite":
+          //   this.mode = "page"
+          //   break
           default:
             console.log("unknown type for list", item_type);
         }
@@ -59,9 +74,16 @@
         }
 
       } else if (typeof (item_type) === "object") {
-        this.item_aspect = this.aspect.items;
-        this.item_aspect.required = true;
-        this.mode = "simple";
+        console.log("object type", this.aspect.items)
+        if(this.aspect.items.type === "composite") {
+          this.item_aspect = this.aspect.items;
+          this.item_aspect.required = true;
+          this.mode = "composite"
+        } else {
+          this.item_aspect = this.aspect.items;
+          this.item_aspect.required = true;
+          this.mode = "simple";
+        }
       }
 
     },
