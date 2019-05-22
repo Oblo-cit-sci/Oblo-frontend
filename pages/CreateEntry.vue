@@ -32,7 +32,6 @@
     watch: {
       selectedItem() {
         let slug = "";
-        let query = {};
         //console.log("SEL", this.selectedItem);
 
         let entry_id = null;
@@ -55,8 +54,10 @@
         options = ld.map(options, (o) => {
           return {title: o.title, key: o.slug, description: o.description, type: ENTRY_TYPE}
         });
-        //console.log("CREATE Templates",templates);
-        let drafts = ld.map(this.$store.state.edrafts.drafts, (d) => {
+        // this filters out all context-entries. cuz only context entries have a ref
+        // could be an option
+        let drafts = ld.filter(this.$store.state.edrafts.drafts, (d) => {return !d.ref})
+        drafts = ld.map(drafts, (d) => {
           return {title: d.title, key: d.draft_id, type: DRAFT, type_slug: d.type_slug}
         });
         //console.log("CREATE Drafts",drafts);

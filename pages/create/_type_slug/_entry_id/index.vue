@@ -173,39 +173,34 @@
 
         */
         // this is a duplicate of MAspectComponent in client
-        // TODO TEST with something
-        if ((aspect.attr.view || "inline") === "page") {
-          // would only need a ref url-param if its in a list/map
-          this.$router.push({path: "/create/" + this.type_slug + "/" + this.draft_id + "/" + aspect.name});
-        } else if (aspect) {
-          // TODO fck typechar stuff is everywhere:
-          const is_list = aspect.type === "list";
-          let new_type_slug = "";
 
-          let ref = {
-            draft_id: this.entry_id, // TODO dangerous temp solution...
-            aspect_name: aspect.name,
-          };
-          if (is_list) {
-            new_type_slug = aspect.items.substring(1);
-          } else {
-            new_type_slug = aspect.type.substring(1);
-          }
-          // TODO should be draft_id or entry_id
-          // but its still a bit messed up. it has entry_id, tho its a draft
-          let is_context_entry = this.$store.state.entry_types.get(new_type_slug) !== undefined
+        /*
+          finding ref-type descriptor:
+            --- aspect_page or context_entry ---
+            AP: attr.view === page
+            List<AP>: items.attr.view === page
+            CE: type[0] = $
+            List<CE>: items.type[0] = $
+        */
 
-          if (is_context_entry) {
-            create_and_store(new_type_slug, this.$store);
+        let aspect_to_check = aspect
+        const is_list = aspect.type === "list"
+        if (is_list) {
+          aspect_to_check = aspect.items
+        }
+
+        if (typeof (aspect_to_check) === "string") {
+          // ******** CONTEXT_ENTRY
+          if (aspect_to_check[0] === "$") {
+            const new_type_slug = aspect_to_check.substring(1)
             let ref_data = {
-              draft_id: ref.draft_id,
-              aspect_name: ref.aspect_name,
-              index: ref.index
+              draft_id: this.entry_id,
+              aspect_name: aspect.name,
             }
             if (is_list) {
               ref_data.index = this.aspects_values[aspect.name].length;
             }
-
+            const new_draft_id = create_and_store(new_type_slug, this.$store);
             this.$store.commit("edrafts/add_reference", {
               draft_id: new_draft_id,
               ref: ref_data
@@ -214,9 +209,16 @@
               path: "/create/" + new_type_slug + "/" + new_draft_id
             })
           } else {
+            console.log("PROBLEM DERIVING REF TYPE FOR", aspect)
+          }
+        } else {
+          // ********  ASPECT_PAGE
+          if (aspect_to_check.attr.view === "page") {
             this.$router.push({
               path: "/create/" + this.type_slug + "/" + this.entry_id + "/" + aspect.name
             })
+          } else {
+            console.log("PROBLEM DERIVING REF TYPE FOR", aspect, "ACTUALLY THIS FUNCTION SHOULDNT BE CALLED")
           }
         }
       },
