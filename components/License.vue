@@ -2,7 +2,7 @@
   div
     h3 License
     div(v-if="$store.getters.visitor")
-      div as a visitor your contributions will be licensed under {{selectedLicense}}.
+      div as a visitor your contributions will be licensed under {{selectedLicense.title}}.
     div(v-else)
       div you selected the license: {{selectedLicense.title}}.
     div(v-if=selectedLicense)
@@ -45,7 +45,7 @@
         this.set_to_default();
       else { // for drafts
         this.selectedLicense = this.overwrite_default;
-        this.use_alternative_license = this.selectedLicense.short !== this.$store.state.user_data.defaultLicense;
+        this.use_alternative_license = this.selectedLicense.short !== this.$store.state.user.user_data.defaultLicense;
       }
       this.licenseOptions = ld.map(this.$store.state.codes.licenses, (l) => Object.assign({
         text: l.title,
@@ -54,7 +54,7 @@
     },
     computed: {
       licenseImagePath() {
-        console.log("update img with", this.selectedLicense);
+        //console.log("update img with", this.selectedLicense);
         if(this.selectedLicense) {
           return license_icon(this.selectedLicense.short, this.$store);
         } else {
@@ -67,7 +67,7 @@
     },
     methods: {
       set_to_default() {
-        this.selectedLicense = this.$store.state.codes.licenses[this.$store.state.user_data.defaultLicense];
+        this.selectedLicense = this.$store.state.codes.licenses[this.$store.state.user.user_data.defaultLicense];
       }
     },
     watch: {

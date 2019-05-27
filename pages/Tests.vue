@@ -1,9 +1,7 @@
 <template lang="pug">
   v-flex(xs12='' sm8='' md6='')
-
-    v-text-field(v-model="searchLicci" flat clearable)
-    v-treeview(:items="options.children" item-key="name" :search="searchLicci" open-on-click activatable)
-    List
+    div
+      v-autocomplete(:items="options" v-model="selected" multiple chips)
 </template>
 
 <script>
@@ -12,24 +10,27 @@
   import Licci from "../components/aspectInput/special/Licci";
   import List from "../components/aspectInput/List";
 
+  const ld = require("lodash")
+
   export default {
     name: "Tests",
-    components: {
-      List,
-      Licci,
-      TreleafPicker2
-    },
+    components: {},
     created() {
-      this.options = this.$store.state.codes["liccis"];
+      this.options = ld.map(this.$store.state.codes["liccis_flat"], (l) => { return {
+          text:l,
+          value: l
+        }})
+      this.selected = []
+      //this.options =this.$store.state.codes["liccis_flat"]
     },
     data() {
       return {
-        searchLicci: ""
+        options: [],
+        //selected: []
       }
     },
     methods: {
       selected(selected_val) {
-        console.log("YIPPI", selected_val);
       }
     }
   }

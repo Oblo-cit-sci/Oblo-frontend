@@ -1,41 +1,38 @@
 <template lang="pug">
   div
-    Selector(v-bind:options="users", v-on:selection="selection" :min=1 :max=1)
+    SingleSelect(:options="users" :selection.sync="i_value")
 </template>
 
 <script>
-  import Selector from "../Selector";
   import AspectMixin from "./AspectMixin";
-  import {create_options} from "../../lib/common"
   import Title_Description from "../Title_Description";
+  import SingleSelect from "../SingleSelect";
 
   // Title_Description(:="title_description()")
   export default {
     name: "SelectUser",
     mixins: [AspectMixin],
-    components: {Title_Description, Selector},
+    components: {SingleSelect, Title_Description},
     computed: {
       users() {
+        console.log("making users...")
         let users = [];
         //console.log("SelectUser, i store", this.$store.state.related_users);
         // TODO remove oneself from that list
         for (let u of this.$store.state.related_users) {
-          // a list of lists (registered_name & public_name)
+          // is it me?
           let registered_name = u[0];
           let public_name = u[1];
-          if(this.$store.state.user_data.registered_name === registered_name)
+          if(this.$store.state.user.user_data.registered_name === registered_name) {
             continue;
-          users.push(create_options({
-            title: registered_name,
-            slug: registered_name
-          }));
-          if (public_name !== registered_name) {
-              users.push(create_options({
-                title: public_name,
-                slug: registered_name
-              }));
           }
+
+          users.push({
+            text: public_name,
+            value: registered_name
+          });
         }
+        console.log(users)
         return users;
       }
     },

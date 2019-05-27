@@ -10,6 +10,8 @@
 <script>
   import {initialize} from "../lib/client";
 
+  import { LOGIN_WRONG_CREDENTIALS, LOGIN_ALREADY_LOGGED_IN} from "~~/lib/consts"
+
   export default {
     name: "Login",
     data() {
@@ -25,14 +27,17 @@
           username: this.username,
           password: this.password,
         }).then(({data}) => {
-          //console.log("login-data", data);
-          this.$store.commit("set_snackbar", {message: "You are logged in", ok: true});
-          if(data.ok === true) {
+
+
+          if(data.status === true || data.msg_ === LOGIN_ALREADY_LOGGED_IN) {
             initialize(this.$axios, this.$store).then((res) => {});
-            this.$store.commit("login", data.user_data);
-            this.$router.push("/")
+            this.$store.commit("user/login", data.result);
+            this.$store.commit("entries/set_own_entries", data.result.own_entries);
+            console.log("login-data", data);
+            this.$router.push("/");
+            this.$store.commit("set_snackbar", {message: "You are logged in", ok: data.status === true});
           } else {
-            this.errorMsg = data.msg
+            this.errorMsg = data.msg;
           }
         }).catch((err) => {
           console.log("err", err)

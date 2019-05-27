@@ -1,14 +1,13 @@
 <template lang="pug">
   v-layout(column='' justify-center='' align-center='')
     v-flex(xs12='' sm8='' md6='')
-      SingleSelect(v-bind:options="options" v-bind:selection.sync="selectedItem" force_view="CLEAR_LIST")
+      SingleSelect(v-bind:options="options" v-bind:selection.sync="selectedItem" force_view="CLEAR_LIST" :highlight="false")
 </template>
 
 <script>
 
 
   import SingleSelect from "../components/SingleSelect";
-  //import { create_draft_title } from "~~/lib/entry";
   import Entry from "../lib/entry";
 
 
@@ -32,16 +31,15 @@
     watch: {
       selectedItem() {
         let slug = "";
-        let query = {};
-        //console.log("SEL", this.selectedItem);
+        console.log("SEL", this.selectedItem);
 
         let entry_id = null;
         if (this.selectedItem.type === ENTRY_TYPE) {
-          slug = this.selectedItem.key;
+          slug = this.selectedItem.value;
           entry_id = this.create_entry(slug);
         } else {
           slug = this.selectedItem.type_slug;
-          entry_id = this.selectedItem.key;
+          entry_id = this.selectedItem.value;
         }
         this.$router.push("create/" + slug + "/"+ entry_id)
       }
@@ -53,17 +51,19 @@
         // todo could be getters in the store. doesnt require title in the draft data...
         // todo clearer and unified
         options = ld.map(options, (o) => {
-          return {title: o.title, key: o.slug, description: o.description, type: ENTRY_TYPE}
+          return {text: o.title, value: o.slug, description: o.description, type: ENTRY_TYPE}
         });
-        //console.log("CREATE Templates",templates);
-        let drafts = ld.map(this.$store.state.edrafts.drafts, (d) => {
-          return {title: d.title, key: d.draft_id, type: DRAFT, type_slug: d.type_slug}
+        // this filters out all context-entries. cuz only context entries have a ref
+        // could be an option
+        let drafts = ld.filter(this.$store.state.edrafts.drafts, (d) => {return !d.ref})
+        drafts = ld.map(drafts, (d) => {
+          return {text: d.title, value: d.draft_id, type: DRAFT, type_slug: d.type_slug}
         });
         //console.log("CREATE Drafts",drafts);
         if (ld.size(drafts) > 0) {
           options = ld.concat(
             options,
-            {title: "Drafts"},
+            {text: "Drafts"},
             drafts
           )
         }
@@ -89,8 +89,8 @@
         let entry = new Entry({
             entry_type: entry_type,
             draft_id: draft_id,
-            license:  this.$store.state.user_data.defaultLicense,
-            privacy: this.$store.state.user_data.defaultPrivacy,
+            license:  this.$store.state.user.user_data.defaultLicense,
+            privacy: this.$store.state.user.user_data.defaultPrivacy,
           });
         // todo maybe some redundant data here...
         this.$store.commit("edrafts/create_draft", entry.get_store_data());

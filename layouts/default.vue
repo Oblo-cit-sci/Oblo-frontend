@@ -66,22 +66,27 @@
       to: '/'
     },
     {
-      icon: 'person',
-      title: 'Profile',
-      to: '/profile'
-    },
-    {
       icon: 'note_add',
       title: 'Create Entry',
       to: '/CreateEntry'
     },
     {
+      icon: "reorder",
+      title: "My Entries",
+      to: "personalentries"
+    },
+    {
+      icon: 'person',
+      title: 'Profile',
+      to: '/profile'
+    },
+    /*{
       icon: 'list',
       title: 'Codes',
       to: '/Codes'
-    },
+    },*/
     {
-      icon: 'list',
+      icon: 'computer',
       title: 'Tests',
       to: '/Tests'
     },
@@ -96,22 +101,22 @@
       to: '/login'
     },
     {
-      icon: 'list',
+      icon: 'motorcycle',
       title: 'Logout',
       to: '/logout'
     }
   ];
 
-  let require_login = ["Profile", "Logout"];
+  let require_login = ["Profile", "Logout", "My Entries"];
   let hide_on_login = ["Register", "Login"];
 
   export default {
     components: {GlobalSnackbar},
     created() {
-      this.login_state = this.$store.state.logged_in;
+      this.login_state = this.$store.state.user.logged_in;
       this.update_sidebar();
-      this.$store.watch(state => state.logged_in, () => {
-        this.login_state = this.$store.state.logged_in;
+      this.$store.watch(state => state.user.logged_in, () => {
+        this.login_state = this.$store.state.user.logged_in;
         this.update_sidebar();
       });
     },

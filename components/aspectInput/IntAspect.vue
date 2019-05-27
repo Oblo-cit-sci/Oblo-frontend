@@ -1,7 +1,7 @@
 <template lang="pug">
   div
     Title_Description(v-bind="title_description()")
-    v-text-field("outline" single-line v-model="i_value" :suffix="suffix" mask="####")
+    v-text-field("outline" single-line  v-model="i_value"   :suffix="suffix" mask="####" )
 </template>
 
 <script>

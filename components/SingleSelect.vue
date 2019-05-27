@@ -2,9 +2,9 @@
   div(v-if="viewStyle === CLEAR_LIST")
     v-list(two-line)
       v-list-tile(v-for="item of options"
-        :key="item.key" @click="select(item)" v-bind:class="{ marked: marked(item.title) }")
+        :key="item.value" @click="select(item)" v-bind:class="{ marked: marked(item.value) }")
         v-list-tile-content
-          v-list-tile-title {{item.title}}
+          v-list-tile-title {{item.text}}
           v-list-tile-sub-title {{item.description}}
   div(v-else)
     v-select(chips dense :multiple=false v-model="selected_item" :items="options" return-object)
@@ -16,8 +16,8 @@
   OPTIONS NEED TO HAVE
   title, key
   and optional "description"
-
    */
+
   const ld = require('lodash');
 
   let clearListThresh = 5;
@@ -39,6 +39,10 @@
         type: Boolean,
         default: true
       },
+      select_sync: {
+        type: Boolean,
+        default: true
+      },
       force_view: {
         type: String,
         required: false,
@@ -47,7 +51,6 @@
     },
     data() {
       return {
-        select_sync: true,
         viewStyle: CLEAR_LIST,
         selected_item: null, // for v-select
         selected_key: null, // String the title for highlighting
@@ -61,6 +64,7 @@
       // TODO check if still needed
       if(this.selection) {
         this.selected_item = this.selection;
+        this.selected_key = this.selection.key;
       }
 
       if(this.force_view) {
@@ -72,32 +76,38 @@
           this.viewStyle = VUETIFY_SELECT;
         }
       }
+
     },
     methods: {
       select(item) {
-        if (item.key === undefined)
+        if (item.value === undefined)
           return;
-        this.selected_key = item.key;
+        this.selected_key = item.value;
+        // TODO fix, clean
         if (this.select_sync) {
-          console.log("sync update");
           this.$emit('update:selection', item); // refactor to use the item
         } else {
           this.$emit("selection", item);
         }
       },
-      marked(title) {
-        return title === this.selected && this.highlight;
+      marked(key) {
+        return key === this.selected_key && this.highlight;
       }
     },
     watch: {
       selected_item(new_val) {
-        console.log("watch update", new_val);
-        this.$emit('update:selection', new_val); // refactor to use the item
+        if (this.select_sync) {
+          this.$emit('update:selection', new_val); // refactor to use the item
+        } else {
+          this.$emit("selection", new_val);
+        }
       }
     }
   }
 </script>
 
 <style scoped>
-
+  .marked {
+    background: khaki;
+  }
 </style>

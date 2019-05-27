@@ -2,9 +2,13 @@
   div
     Title_Description(v-bind="title_description()")
     v-list(v-if="has_items")
-      v-list-tile(v-for="(item, index) in i_value", :key="item.slug")
-        v-list-tile-content
-          v-list-tile-title {{index}} {{item}}
+      v-list-tile(v-for="(item, index) in item_titles", :key="item.key")
+        v-list-tile-content(@click="(item)")
+          v-list-tile-title {{index}} &nbsp;
+            b {{item.title}}
+        v-list-tile-action
+          v-btn(icon @click="edit_item(item)")
+            v-icon edit
         v-list-tile-action
           v-btn(icon @click="remove(index)")
             v-icon(color="grey" lighten-1) close
@@ -15,7 +19,6 @@
 
 <script>
 
-
   // TODO this is a older, reused component. beware , clean, and abstract stuff with List...
   // remove and merge
 
@@ -25,6 +28,9 @@
 
   import AspectMixin from "./AspectMixin";
   import Title_Description from "../Title_Description";
+
+  import { CONTEXT_ENTRY } from "~~/lib/consts";
+  import {draft_url} from "../../lib/client";
 
   var ld = require('lodash');
 
@@ -42,6 +48,17 @@
         } else {
           return this.i_value.length < this.aspect.attr.max
         }
+      },
+      item_titles(){
+        return ld.map(this.i_value, (item) => {
+            if(item.type === CONTEXT_ENTRY) {
+              return {
+                title: this.$store.state.edrafts.drafts[item.draft_id].aspects_values.title,
+                key: item.draft_id,
+                type: CONTEXT_ENTRY
+              }
+            }
+        });
       }
     },
     methods: {
@@ -51,6 +68,11 @@
       },
       create_item() {
         this.$emit("create_related", this.aspect);
+      },
+      edit_item(item) {
+        if(item.type === CONTEXT_ENTRY) {
+          this.$router.push(draft_url(this.$store.state, item.key));
+        }
       }
     }
   }

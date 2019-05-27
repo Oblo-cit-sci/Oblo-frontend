@@ -10,7 +10,7 @@ export default {
   data() {
     return {
       i_value: null,
-      required: false
+      //required: false
     }
   },
   created() {
@@ -35,11 +35,8 @@ export default {
       }
     },
     value_change(event) {
+      console.log("value-change", event)
       this.$emit('update:value', event);
-      if (this.required) {
-        console.log("required value changed");
-        this.$emit('update-required', {title: this.aspect.name, value: this.i_value})
-      }
     }
   },
   watch: {

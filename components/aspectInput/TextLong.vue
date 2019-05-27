@@ -8,7 +8,6 @@
         auto-grow
         :counter="counter"
         placeholder=" "
-        v-model="i_value"
         persistent-hint=true
         @input="value_change($event)")
     div(v-else)
@@ -20,6 +19,9 @@
 <script>
   import AspectMixin from "./AspectMixin";
   import Title_Description from "../Title_Description";
+
+  // temp out..: v-model="i_value"
+
 
   /*
     add to v.textarea

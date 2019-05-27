@@ -9,7 +9,7 @@
       span &nbsp;&nbsp;&nbsp;&nbsp;
       span Latitude:&nbsp;&nbsp;
       span {{i_value.lat | format_float}}
-      div Error of {{$store.state.user_data.location_error}} included
+      div Error of {{$store.state.user.user_data.location_error}} included
 </template>
 
 <script>
@@ -43,7 +43,7 @@
             this.i_value = create_location_error(
               location.coords.longitude,
               location.coords.latitude,
-              this.$store.state.user_data.location_error);
+              this.$store.state.user.user_data.location_error);
               console.log(this.i_value);
               this.value_change(this.i_value);
           });
