@@ -43,7 +43,7 @@
         return "public"
       },
       get_license_icon(license) {
-        return license_icon(license, this.$store);
+        return license_icon(this.$axios, license, this.$store);
       }
     }
   }
