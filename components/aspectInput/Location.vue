@@ -2,7 +2,7 @@
   div
     Title_Description(v-bind="title_description()")
     div(v-if="edit")
-      Selector(v-bind:options="input_options" v-bind:selection.sync="selection")
+      SingleSelect(:options="input_options" v-bind:selection.sync="selection")
     div(v-if="i_value != null")
       span Longitude:&nbsp;&nbsp;
       span {{i_value.lon | format_float}}
@@ -15,23 +15,23 @@
 <script>
 
   // TODO no clue why Title_Description, does not work like for "Url".vue
-  import Selector from "~~/components/Selector";
   import { get_location, create_location_error} from "../../lib/common";
   import AspectMixin from "./AspectMixin";
   import Title_Description from "../Title_Description";
+  import SingleSelect from "../SingleSelect";
 
   const ACTUAL_LOCATION = "act";
   const FROM_MAP = "map";
 
   export default {
     name: "Location",
-    components: {Title_Description, Selector},
+    components: {SingleSelect, Title_Description},
     mixins: [AspectMixin],
     data() {
       return {
         input_options: [
-          {title: "actual position", description: "", slug: ACTUAL_LOCATION},
-          {title: "point on the map", description: "", slug: FROM_MAP}],
+          {text: "actual position", description: "", value: ACTUAL_LOCATION},
+          {text: "point on the map", description: "", value: FROM_MAP}],
         selection: null,
       }
     },

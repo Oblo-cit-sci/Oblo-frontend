@@ -12,7 +12,7 @@
   export default {
     name: "SelectUser",
     mixins: [AspectMixin],
-    components: {SingleSelect, Title_Description, Selector},
+    components: {SingleSelect, Title_Description},
     computed: {
       users() {
         console.log("making users...")

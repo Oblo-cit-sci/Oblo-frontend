@@ -1,14 +1,33 @@
 <template lang="pug">
   div
-    v-autocomplete
-
+    v-autocomplete(:items="options" v-model="selected" multiple chips)
 </template>
 
 <script>
   export default {
     name: "MultiSelect",
     props: {
-      options: Array
+      options: Array,
+      selection: Array,
+      select_sync: {
+        type: Boolean,
+        default: true
+      },
+    },
+    data() {
+      return {
+        selected: []
+      }
+    },
+    watch: {
+      selected(item) {
+        console.log("MS", item)
+        if (this.select_sync) {
+          this.$emit('update:selection', item); // refactor to use the item
+        } else {
+          this.$emit("selection", item);
+        }
+      }
     }
   }
 </script>

@@ -27,7 +27,7 @@
 
   export default {
     name: "TreleafPicker",
-    components: {SingleSelect, Selector},
+    components: {SingleSelect},
     props: ["tree"], // OuterRef is for the LICCI aspect, cuz JS messes up loops and events (always takes the
     data: function () {
       return {

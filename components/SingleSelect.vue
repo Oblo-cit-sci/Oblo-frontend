@@ -84,23 +84,23 @@
           return;
         this.selected_key = item.value;
         // TODO fix, clean
+        this.emitUp(item)
+
+      },
+      marked(key) {
+        return key === this.selected_key && this.highlight;
+      },
+      emitUp(item) {
         if (this.select_sync) {
           this.$emit('update:selection', item); // refactor to use the item
         } else {
           this.$emit("selection", item);
         }
-      },
-      marked(key) {
-        return key === this.selected_key && this.highlight;
       }
     },
     watch: {
-      selected_item(new_val) {
-        if (this.select_sync) {
-          this.$emit('update:selection', new_val); // refactor to use the item
-        } else {
-          this.$emit("selection", new_val);
-        }
+      selected_item(item) {
+        this.emitUp(item)
       }
     }
   }
