@@ -23,8 +23,8 @@
               v-card-title Remove Licci
               v-card-text Are you sure you want to remove the LICCI {{getRemoveLicci}}?
               v-card-actions
-                v-btn(flat color="warning") Don't delete it
-                v-btn(color="error") Yes, delete it
+                v-btn(flat color="warning" @click="removeLicciDialogOpen = false") Don't delete it
+                v-btn(color="error" @click="removeLicci()") Yes, delete it
           v-subheader Drivers
           div(v-for="(driver,DIndex) in licci.drivers" :key="driver.driver")
             h4
@@ -135,7 +135,8 @@
         this.removeLicciDialogOpen = true;
         this.removeLicciSelectIndex = index;
       },
-      removeLicci(index) {
+      removeLicci() {
+        let index = this.removeLicciSelectIndex
         this.liccis.splice(index, 1);
         this.removeLicciDialogOpen = false;
         this.update_value();

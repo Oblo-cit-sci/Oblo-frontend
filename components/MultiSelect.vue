@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    v-autocomplete(:items="options" v-model="selected" multiple chips)
+    v-autocomplete(:items="options" v-model="selected" single-line outline multiple chips)
 </template>
 
 <script>
