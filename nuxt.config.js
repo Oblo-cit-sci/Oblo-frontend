@@ -6,6 +6,10 @@ const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 module.exports = {
   mode: 'universal',
 
+  server: {
+    port: 8082,
+    host: "0.0.0.0"
+  },
   /*
   ** Headers of the page
   */
@@ -63,7 +67,7 @@ module.exports = {
   */
   axios: {
     // See https://github.com/nuxt-community/axios-module#options
-    baseURL: "http://localhost:5000",
+    baseURL: "http://158.109.161.247:8080",
     withCredentials: true,
     credentials: true,
     proxyHeaders: true,
