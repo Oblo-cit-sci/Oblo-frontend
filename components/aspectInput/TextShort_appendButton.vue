@@ -20,7 +20,7 @@
   import AspectMixin from "./AspectMixin";
 
   export default {
-    name: "TextShort",
+    name: "TextShort_appendButton",
     mixins: [AspectMixin],
     props: {
       icon: {

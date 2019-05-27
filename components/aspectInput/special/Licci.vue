@@ -15,7 +15,8 @@
           br
           v-btn(@click.stop="openDriverDialogFor(licci)") add driver
           v-dialog(width="500" v-model="DriverDialogOpen")
-            TreleafPicker(:tree="options" v-on:selected="SelectDriver($event)")
+            TreleafPicker(:tree="options" v-on:selected="SelectDriver($event)" :allows_extra="true"
+              extra_value_name="external driver")
           v-btn(color="warning" @click="openRemoveLicciDialog(index)") Remove Licci
           v-dialog(v-model="removeLicciDialogOpen" max-width="300px" lazy=true)
             v-card
@@ -74,7 +75,8 @@
         addDriverForLicci: null,
         removeLicciDialogOpen: false,
         removeLicciSelectIndex: null,
-        licciPanel: []
+        licciPanel: [],
+        extra_drivers: []
       }
     },
     created() {
@@ -139,7 +141,9 @@
         this.update_value();
       },
       removeDriver(licci, DIndex) {
-        licci.drivers.splice(DIndex);
+        console.log("DR", licci.drivers)
+        licci.drivers.splice(DIndex, 1);
+        console.log("DR", licci.drivers)
         this.update_value();
       },
       update_value() {

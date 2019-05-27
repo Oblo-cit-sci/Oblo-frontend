@@ -32,7 +32,6 @@ const ld = require('lodash');
 
 export const mutations = {
   init(state, data) {
-    //console.log("init", data.codes)
     state.codes = {...data.codes}
     state.codes.liccis_flat = extract_liccis(data.codes.liccis);
 

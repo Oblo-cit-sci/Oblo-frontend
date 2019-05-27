@@ -4,15 +4,15 @@
     div(v-if="edit")
       v-textarea(
         outline
+        single-line
+        auto-grow
         :counter="counter"
-        :label="aspect.name"
         placeholder=" "
         persistent-hint=true
         @input="value_change($event)")
     div(v-else)
       v-textarea(
-        readonly solo flat auto-grow
-        :label="aspect.name"
+        readonly outline single-line flat auto-grow
         :value="i_value")
 </template>
 

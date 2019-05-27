@@ -3,15 +3,13 @@
     Title_Description(v-bind="title_description()")
     div(v-if="edit")
       v-text-field(
-        outline
-        :label="aspect.name"
+        outline single-line
         placeholder=" "
         v-model="i_value"
         @input="value_change($event)")
     div(v-else)
       v-text-field(
-        readonly solo flat
-        :label="aspect.name"
+        readonly outline single-line flat
         :value="i_value"
         @input="value_change($event)")
 </template>

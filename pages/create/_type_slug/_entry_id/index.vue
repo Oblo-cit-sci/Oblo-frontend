@@ -1,6 +1,6 @@
 <template lang="pug">
   v-layout(column='' justify-center='' align-center='')
-    v-flex(xs12='' sm8='' md6='')
+    v-flex(xs12='' sm8='' md6='' class="column")
       h1 {{entry_type.title}}
       div {{entry_type.description}}
       div(v-if="has_pages")
@@ -270,5 +270,7 @@
 </script>
 
 <style scoped>
-
+  .column {
+    width: 70%;
+  }
 </style>

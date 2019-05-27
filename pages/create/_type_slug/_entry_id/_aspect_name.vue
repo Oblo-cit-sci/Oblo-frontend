@@ -1,6 +1,6 @@
 <template lang="pug">
   v-layout(column='' justify-center='' align-center='')
-    v-flex(xs12='' sm8='' md6='')
+    v-flex(xs12='' sm8='' md6='' class="column")
       component(v-bind:is="aspectComponent(aspect)"
         v-bind:aspect="aspect"
         v-bind:value.sync="aspect_value"
@@ -71,5 +71,7 @@
 </script>
 
 <style scoped>
-
+  .column {
+    width: 70%;
+  }
 </style>

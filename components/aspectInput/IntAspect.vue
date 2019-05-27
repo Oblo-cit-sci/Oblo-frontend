@@ -1,7 +1,7 @@
 <template lang="pug">
   div
     Title_Description(v-bind="title_description()")
-    v-text-field("outline" :label="aspect.name"  v-model="i_value"  mask="####" @input="value_change($event)")
+    v-text-field("outline" single-line  v-model="i_value"   :suffix="suffix" mask="####" )
 </template>
 
 <script>
@@ -11,14 +11,15 @@
   export default {
     name: "IntAspect",
     components: {Title_Description},
-    props: ["aspect"],
     mixins: [AspectMixin],
     data() {
-      return {}
+      return {suffix: "households"}
     },
-    created() {
-      this.value = 0;
-    },
+    watch: {
+      i_value(val) {
+        this.value_change(parseInt(val))
+      }
+    }
   }
 </script>
 
