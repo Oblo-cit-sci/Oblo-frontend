@@ -13,6 +13,7 @@
   import AspectMixin from "./AspectMixin";
   import Title_Description from "../Title_Description";
 
+
   export default {
     name: "IntAspect",
     components: {Title_Description},
