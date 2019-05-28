@@ -80,11 +80,6 @@
       title: 'Profile',
       to: '/profile'
     },
-    /*{
-      icon: 'list',
-      title: 'Codes',
-      to: '/Codes'
-    },*/
     {
       icon: 'computer',
       title: 'Tests',
