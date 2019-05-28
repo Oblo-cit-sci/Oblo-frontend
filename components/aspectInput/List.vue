@@ -5,8 +5,7 @@
       div(v-for="(value, index) in i_value" :key="index")
         component(v-bind:is="clearableAspectComponent(item_aspect)"
           v-bind:aspect="indexed_item_aspect(index)"
-          v-bind:value.sync="value"
-
+          v-bind:value.sync="i_value[index]"
           icon="clear"
           :id="index"
           v-on:clear="remove_value(index)",
@@ -28,7 +27,6 @@
       span(v-if="aspect.attr.max") max: {{aspect.attr.max}}
     div(v-if="select")
       MultiSelect(:options="options" :selection.sync="i_value")
-
     div(v-else)
       v-btn(:disabled="!more_allowed" @click="add_value()" color="success") Add
         v-icon(right) add
@@ -62,10 +60,8 @@
     },
     created() {
       let item_type = this.aspect.items;
-
-      console.log("item_type", typeof (item_type))
+      //console.log("item_type", typeof (item_type))
       if (typeof (item_type) === "string") {
-
         if(item_type[0] === "*") {
           this.select = true
           this.options = get_codes_as_options(this.$store.state, "*liccis_flat")
@@ -84,7 +80,7 @@
           required: true
         }
       } else if (typeof (item_type) === "object") {
-        console.log("object type", this.aspect.items)
+        //console.log("object type", this.aspect.items)
         if (this.aspect.items.type === "composite") {
           this.item_aspect = this.aspect.items;
           this.item_aspect.required = true;
@@ -103,7 +99,7 @@
       },
       // for composite
       add_value() {
-        console.log("adding value")
+        //console.log("adding value")
         this.i_value.push(aspect_default_value(this.item_aspect));
         ld.fill(this.panelState, false);
         this.panelState.push(true);

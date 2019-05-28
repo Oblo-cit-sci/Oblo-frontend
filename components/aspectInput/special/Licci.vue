@@ -72,14 +72,14 @@
           description: "",
           required: true
         },
-        sourceOptions: [],
+        sourceOptions: [], // TODO add SingleSelect
         LicciDialogOpen: false,
         DriverDialogOpen: false,
         addDriverForLicci: null,
         removeLicciDialogOpen: false,
         removeLicciSelectIndex: null,
         licciPanel: [],
-        extra_drivers: []
+        extra_drivers: [] // drivers given in text-input
       }
     },
     created() {
