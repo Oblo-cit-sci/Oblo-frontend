@@ -5,18 +5,12 @@
       div(v-if="!source_entry")
         SingleSelect(:options="entry_select_options" v-bind:selection.sync="selected_entry")
         v-btn(:disabled="!selected_entry" @click="source_select") select
-      div(else)
-        div {{source_entry}}
     div(v-if="mode==='simple'")
       div(v-for="(value, index) in keys" :key="index")
-        div {{value}}
-      div(v-for="(value, index) in i_value" :key="index")
-        component(v-bind:is="clearableAspectComponent(item_aspect)"
-          v-bind:aspect="indexed_item_aspect(index)"
-          v-bind:value.sync="i_value[index]"
-          icon="clear"
-          :id="index"
-          v-on:clear="remove_value(index)",
+        component(v-bind:is="aspectComponent(item_aspect)"
+          v-bind:aspect="name_index_item_aspect(value, index)"
+          v-bind:value.sync="indexed_value[index]"
+          :id="value"
           v-on:create_related="create_related($event)")
     div(v-else)
       v-expansion-panel(expand v-model="panelState")
@@ -31,29 +25,30 @@
             v-on:clear="remove_value(index)",
             v-on:create_related="create_related($event)")
     div
-      span(v-if="aspect.attr.min") min: {{aspect.attr.min}}, &nbsp;
+      span(v-if="aspect.attr.min") min: {{aspect.attr.min}}, &nbsp
       span(v-if="aspect.attr.max") max: {{aspect.attr.max}}
-    div(v-if="select")
-      MultiSelect(:options="options" :selection.sync="i_value")
-    div(v-else)
-      v-btn(:disabled="!more_allowed" @click="add_value()" color="success") Add
-        v-icon(right) add
+    div(v-if="!entry_select")
+      div(v-if="select")
+        MultiSelect(:options="options" :selection.sync="i_value")
+      div(v-else)
+        v-btn(:disabled="!more_allowed" @click="add_value()" color="success") Add
+          v-icon(right) add
 </template>
 
 <script>
 
-  import AspectMixin from "./AspectMixin";
+  import AspectMixin from "./AspectMixin"
   import {
     entries_as_options,
     get_codes_as_options,
     get_draft_by_id,
     get_entries_of_type,
     MAspectComponent
-  } from "../../lib/client";
-  import {aspect_default_value} from "../../lib/entry";
-  import Title_Description from "../Title_Description";
-  import MultiSelect from "../MultiSelect";
-  import SingleSelect from "../SingleSelect";
+  } from "../../lib/client"
+  import {aspect_default_value} from "../../lib/entry"
+  import Title_Description from "../Title_Description"
+  import MultiSelect from "../MultiSelect"
+  import SingleSelect from "../SingleSelect"
   const ld = require("lodash")
 
   //
@@ -76,11 +71,12 @@
         entry_select_options: [],
         selected_entry: null,
         source_entry: null,
-        //
+        // kindof a fake array, similar to i_value in a list, in order to make the item values work
+        indexed_value : []
       }
     },
     created() {
-      let item_type = this.aspect.items;
+      let item_type = this.aspect.items
       //console.log("item_type", typeof (item_type))
       if (typeof (item_type) === "string") {
         if(item_type[0] === "*") {
@@ -89,10 +85,10 @@
         } else {
           switch (item_type) {
             case "str":
-              this.mode = "simple";
-              break;
+              this.mode = "simple"
+              break
             default:
-              console.log("unknown type for list", item_type);
+              console.log("unknown type for list", item_type)
           }
         }
         this.item_aspect = {
@@ -103,13 +99,13 @@
       } else if (typeof (item_type) === "object") {
         //console.log("object type", this.aspect.items)
         if (this.aspect.items.type === "composite") {
-          this.item_aspect = this.aspect.items;
-          this.item_aspect.required = true;
+          this.item_aspect = this.aspect.items
+          this.item_aspect.required = true
           this.mode = "composite"
         } else {
-          this.item_aspect = this.aspect.items;
-          //this.item_aspect.required = true;
-          this.mode = "simple";
+          this.item_aspect = this.aspect.items
+          //this.item_aspect.required = true
+          this.mode = "simple"
         }
       }
     // KEYS
@@ -127,31 +123,33 @@
       }
     },
     methods: {
-      clearableAspectComponent(aspect) {
-        return MAspectComponent(aspect, false, true);
+      aspectComponent(aspect) {
+        return MAspectComponent(aspect, false)
       },
       // for composite
       add_value() {
         //console.log("adding value")
-        this.i_value.push(aspect_default_value(this.item_aspect));
-        ld.fill(this.panelState, false);
-        this.panelState.push(true);
+        this.i_value.push(aspect_default_value(this.item_aspect))
+        if(this.mode === "composite") {
+          ld.fill(this.panelState, false)
+          this.panelState.push(true)
+        }
       },
       remove_value(index) {
-        this.i_value.splice(index, 1);
+        this.i_value.splice(index, 1)
       },
       updateRequired(value) {
-        this.i_value[parseInt(value.title)] = value.value;
+        this.i_value[parseInt(value.title)] = value.value
       },
-      indexed_item_aspect(index) {
-        let aspect = {...this.item_aspect};
-        aspect.name = "" + index;
-        return aspect;
+      name_index_item_aspect(name, index) {
+        let aspect = {...this.item_aspect}
+        aspect.name = name
+        aspect.index = index
+        aspect.description = ""
+        return aspect
       },
       source_select() {
         this.source_entry =   get_draft_by_id(this.$store, this.selected_entry.value)
-        console.log("source", this.source_entry)
-        console.log("values", this.source_entry.aspects_values.values)
         this.init_map(this.source_entry.aspects_values.values)
         // todo, well not only drafts...
       },
@@ -159,6 +157,7 @@
           this.i_value = new Map()
           for(let key of keys) {
             this.i_value.set(key, aspect_default_value(this.item_aspect))
+            this.indexed_value.push(aspect_default_value(this.item_aspect))
             ld.fill(this.panelState, false)
             this.panelState.push(true)
           }
@@ -168,13 +167,23 @@
     computed: {
       more_allowed() {
         if (this.aspect.attr.max) {
-          return this.i_value.length < this.aspect.attr.max;
+          return this.i_value.length < this.aspect.attr.max
         } else {
-          return true;
+          return true
         }
       },
       keys() {
         return Array.from(this.i_value.keys())
+      }
+    },
+    watch : {
+      indexed_value() {
+        let index = 0
+        for(let key of this.i_value.keys()) {
+          this.i_value.set(key, this.indexed_value[index])
+          index++
+        }
+        this.value_change(this.i_value)
       }
     }
   }
