@@ -1,0 +1,159 @@
+<template lang="pug" xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
+  div
+    Title_Description(v-bind="title_description()")
+    div(v-if="entry_select")
+      div(v-if="!source")
+        SingleSelect(:options="entry_select_options" v-bind:selection.sync="selected_entry")
+        v-btn(:disabled="!selected_entry" @click="source_select") select
+      div(else)
+        div {{source}}
+    div(v-if="mode==='simple'")
+      div(v-for="(value, index) in i_value" :key="index")
+        component(v-bind:is="clearableAspectComponent(item_aspect)"
+          v-bind:aspect="indexed_item_aspect(index)"
+          v-bind:value.sync="i_value[index]"
+          icon="clear"
+          :id="index"
+          v-on:clear="remove_value(index)",
+          v-on:create_related="create_related($event)")
+    div(v-else)
+      v-expansion-panel(expand v-model="panelState")
+        v-expansion-panel-content(v-for="(value, index) in i_value" :key="index")
+          template(v-slot:header)
+            div {{value.title || index}}
+          component(v-bind:is="clearableAspectComponent(item_aspect)"
+            v-bind:aspect="indexed_item_aspect(index)"
+            v-bind:value.sync="value"
+            icon="clear",
+            :id="index",
+            v-on:clear="remove_value(index)",
+            v-on:create_related="create_related($event)")
+    div
+      span(v-if="aspect.attr.min") min: {{aspect.attr.min}}, &nbsp;
+      span(v-if="aspect.attr.max") max: {{aspect.attr.max}}
+    div(v-if="select")
+      MultiSelect(:options="options" :selection.sync="i_value")
+    div(v-else)
+      v-btn(:disabled="!more_allowed" @click="add_value()" color="success") Add
+        v-icon(right) add
+</template>
+
+<script>
+
+  import AspectMixin from "./AspectMixin";
+  import {entries_as_options, get_codes_as_options, get_entries_of_type, MAspectComponent} from "../../lib/client";
+  import {aspect_default_value} from "../../lib/entry";
+  import Title_Description from "../Title_Description";
+  import MultiSelect from "../MultiSelect";
+  import SingleSelect from "../SingleSelect";
+  const ld = require("lodash")
+
+  //
+  export default {
+    name: "Map",
+    components: {SingleSelect, MultiSelect, Title_Description},
+    mixins: [AspectMixin],
+    data() {
+      return {
+        item_aspect: null,
+        mode: null,
+        count: true,
+        // for composite
+        panelState: [],
+        // select, when code type (*)
+        select: false, // select... instead of button
+        options: [],
+        //
+        entry_select: false, // if keys: is not str...
+        entry_select_options: [],
+        selected_entry: null,
+        source: null,
+      }
+    },
+    created() {
+      let item_type = this.aspect.items;
+      //console.log("item_type", typeof (item_type))
+      if (typeof (item_type) === "string") {
+        if(item_type[0] === "*") {
+          this.select = true
+          this.options = get_codes_as_options(this.$store.state, "*liccis_flat")
+        } else {
+          switch (item_type) {
+            case "str":
+              this.mode = "simple";
+              break;
+            default:
+              console.log("unknown type for list", item_type);
+          }
+        }
+        this.item_aspect = {
+          attr: {},
+          type: this.aspect.items,
+          required: true
+        }
+      } else if (typeof (item_type) === "object") {
+        //console.log("object type", this.aspect.items)
+        if (this.aspect.items.type === "composite") {
+          this.item_aspect = this.aspect.items;
+          this.item_aspect.required = true;
+          this.mode = "composite"
+        } else {
+          this.item_aspect = this.aspect.items;
+          //this.item_aspect.required = true;
+          this.mode = "simple";
+        }
+      }
+    // KEYS
+      if(this.aspect.hasOwnProperty("keys")) {
+        if(this.aspect.keys === "valuelist") {
+          console.log("valueslist!")
+          this.entry_select = true
+          this.entry_select_options = entries_as_options(get_entries_of_type(this.$store, "valuelist"))
+
+          console.log(this.entry_select_options)
+        }
+      } else { // default is "str"
+        // allow creating keys (as Stringinputs)
+      }
+    },
+    methods: {
+      clearableAspectComponent(aspect) {
+        return MAspectComponent(aspect, false, true);
+      },
+      // for composite
+      add_value() {
+        //console.log("adding value")
+        this.i_value.push(aspect_default_value(this.item_aspect));
+        ld.fill(this.panelState, false);
+        this.panelState.push(true);
+      },
+      remove_value(index) {
+        this.i_value.splice(index, 1);
+      },
+      updateRequired(value) {
+        this.i_value[parseInt(value.title)] = value.value;
+      },
+      indexed_item_aspect(index) {
+        let aspect = {...this.item_aspect};
+        aspect.name = "" + index;
+        return aspect;
+      },
+      source_select() {
+        this.source = this.selected_entry
+      }
+    },
+    computed: {
+      more_allowed() {
+        if (this.aspect.attr.max) {
+          return this.i_value.length < this.aspect.attr.max;
+        } else {
+          return true;
+        }
+      }
+    }
+  }
+</script>
+
+<style scoped>
+
+</style>

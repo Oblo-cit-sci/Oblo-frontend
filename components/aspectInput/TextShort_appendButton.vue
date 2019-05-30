@@ -1,8 +1,9 @@
 <template lang="pug">
   div(v-if="edit")
+    div {{aspect.name}}
     v-text-field(
       outline
-      :label="aspect.name"
+      single-line
       v-model="i_value"
       :append-outer-icon="icon"
       @click:append-outer="click_outer"

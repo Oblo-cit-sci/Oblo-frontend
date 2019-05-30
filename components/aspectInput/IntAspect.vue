@@ -19,7 +19,7 @@
     components: {Title_Description},
     mixins: [AspectMixin],
     data() {
-      return {suffix: "households"}
+      return {suffix: this.aspect.attr.suffix || ""}
     },
     watch: {
       i_value(val) {

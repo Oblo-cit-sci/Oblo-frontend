@@ -15,6 +15,7 @@
           v-bind:aspect="aspect"
           v-bind:value.sync="aspects_values[aspect.name]"
           v-on:create_related="create_related($event)")
+
       Paginate(v-if="has_pages" v-bind:page.sync="page"
         :total="entry_type.content.meta.pages.length"
         v-on:lastpage="last_page = $event")
@@ -46,6 +47,8 @@
   // import ListOf from "~~/components/aspectInput/ListOf";
 
   import List from "~~/components/aspectInput/List";
+  import Map from "~~/components/aspectInput/Map";
+
   import AspectPageButton from "~~/components/aspectInput/AspectPageButton";
 
   import ReferenceMixin from "~~/components/ReferenceMixin";
@@ -64,7 +67,7 @@
     name: "entry_id",
     components: {
       Paginate, Privacy, License, Basic, TextShort, TextLong, Location,
-      List, IntAspect, AspectPageButton, CompositeAspect, Select
+      List, IntAspect, AspectPageButton, CompositeAspect, Select, Map
     },
     mixins: [ReferenceMixin], // in case of a context entry, to be able to get back to the parent
     data() {
