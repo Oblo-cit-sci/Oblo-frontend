@@ -2,12 +2,14 @@
   div
     Title_Description(v-bind="title_description()")
     div(v-if="entry_select")
-      div(v-if="!source")
+      div(v-if="!source_entry")
         SingleSelect(:options="entry_select_options" v-bind:selection.sync="selected_entry")
         v-btn(:disabled="!selected_entry" @click="source_select") select
       div(else)
-        div {{source}}
+        div {{source_entry}}
     div(v-if="mode==='simple'")
+      div(v-for="(value, index) in keys" :key="index")
+        div {{value}}
       div(v-for="(value, index) in i_value" :key="index")
         component(v-bind:is="clearableAspectComponent(item_aspect)"
           v-bind:aspect="indexed_item_aspect(index)"
@@ -41,7 +43,13 @@
 <script>
 
   import AspectMixin from "./AspectMixin";
-  import {entries_as_options, get_codes_as_options, get_entries_of_type, MAspectComponent} from "../../lib/client";
+  import {
+    entries_as_options,
+    get_codes_as_options,
+    get_draft_by_id,
+    get_entries_of_type,
+    MAspectComponent
+  } from "../../lib/client";
   import {aspect_default_value} from "../../lib/entry";
   import Title_Description from "../Title_Description";
   import MultiSelect from "../MultiSelect";
@@ -67,7 +75,8 @@
         entry_select: false, // if keys: is not str...
         entry_select_options: [],
         selected_entry: null,
-        source: null,
+        source_entry: null,
+        //
       }
     },
     created() {
@@ -104,6 +113,7 @@
         }
       }
     // KEYS
+      this.i_value = new Map()
       if(this.aspect.hasOwnProperty("keys")) {
         if(this.aspect.keys === "valuelist") {
           console.log("valueslist!")
@@ -139,7 +149,20 @@
         return aspect;
       },
       source_select() {
-        this.source = this.selected_entry
+        this.source_entry =   get_draft_by_id(this.$store, this.selected_entry.value)
+        console.log("source", this.source_entry)
+        console.log("values", this.source_entry.aspects_values.values)
+        this.init_map(this.source_entry.aspects_values.values)
+        // todo, well not only drafts...
+      },
+      init_map(keys) {
+          this.i_value = new Map()
+          for(let key of keys) {
+            this.i_value.set(key, aspect_default_value(this.item_aspect))
+            ld.fill(this.panelState, false)
+            this.panelState.push(true)
+          }
+          this.value_change(this.i_value)
       }
     },
     computed: {
@@ -149,6 +172,9 @@
         } else {
           return true;
         }
+      },
+      keys() {
+        return Array.from(this.i_value.keys())
       }
     }
   }
