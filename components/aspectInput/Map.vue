@@ -37,6 +37,12 @@
 
 <script>
 
+  /*
+    using an actual JS map, however, the values are just hacked in with a watch
+    cause of the bindings...
+    maybe just using 2 arrays one for keys, one for values would be more efficient...
+
+   */
   import AspectMixin from "./AspectMixin"
   import {
     entries_as_options,

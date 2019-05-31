@@ -1,6 +1,8 @@
 export const state = () => ({
   // comes by init
   initialized: false,
+  //
+  connected: false,
   // TODO use DICT!!!
   entry_types: new Map(), // types for creation
   tags: {}, // initially just the licci tree
@@ -27,8 +29,6 @@ function extract_liccis(tree) {
 }
 
 const ld = require('lodash');
-
-
 
 export const mutations = {
   init(state, data) {
@@ -57,6 +57,9 @@ export const mutations = {
   },
   add_fetched_entry(state, entry) {
     state.fetched_entries[entry.uuid] = entry
+  },
+  connection(state, connected) {
+    state.connected = connected
   }
 };
 

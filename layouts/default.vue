@@ -33,6 +33,7 @@
       <v-toolbar-side-icon @click="drawer = !drawer"/>
       <v-toolbar-title v-text="title"/>
       <v-spacer></v-spacer>
+      <v-icon>{{connected_icon}}</v-icon>
       <div v-if="login_state">
         <v-btn v-for="(item, i) in header_items"
                :key="i"
@@ -42,7 +43,7 @@
                router
                nuxt
                exact>
-        <v-icon>{{ item.icon }}</v-icon>
+          <v-icon>{{ item.icon }}</v-icon>
         </v-btn>
       </div>
     </v-toolbar>
@@ -114,6 +115,10 @@
         this.login_state = this.$store.state.user.logged_in;
         this.update_sidebar();
       });
+      this.$store.watch(state => state.connected, () => {
+        this.connected = this.$store.state.connected;
+        this.update_sidebar();
+      });
     },
     methods: {
       update_sidebar() {
@@ -128,6 +133,7 @@
     data() {
       return {
         login_state: false,
+        connected: false,
         drawer: false,
         clipped: false,
         miniVariant: false,
@@ -144,6 +150,15 @@
             to: '/notifications'
           },
         ]
+      }
+    },
+    computed: {
+      connected_icon() {
+        if (this.connected) {
+          return "wifi"
+        } else {
+          return "wifi_off"
+        }
       }
     }
   }
