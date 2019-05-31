@@ -21,7 +21,6 @@
     },
     watch: {
       selected(item) {
-        console.log("MS", item)
         if (this.select_sync) {
           this.$emit('update:selection', item); // refactor to use the item
         } else {
