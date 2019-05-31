@@ -39,12 +39,10 @@
       <v-spacer></v-spacer>
 
       <div>
-        <v-btn flat icon color="indigo" nuxt router exact to="export">
+        <v-btn flat icon color="indigo" nuxt router exact to="/export">
           <v-icon>get_app</v-icon>
         </v-btn>
       </div>
-
-
       <div v-if="login_state">
         <v-btn v-for="(item, i) in header_items"
                :key="i"
