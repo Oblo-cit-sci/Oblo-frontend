@@ -6,6 +6,11 @@ const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 module.exports = {
   mode: 'universal',
 
+  server: {
+    port: 3000, // default: 3000
+    host: '0.0.0.0', // default: localhost,
+    timing: false
+  },
   /*
   ** Headers of the page
   */
@@ -46,8 +51,9 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '@/plugins/vuetify',
+    '~/plugins/vuetify',
     { src: '~/plugins/mapbox', mode: 'client' },
+    '~/plugins/lodash.js',
 ],
 
   /*
@@ -82,12 +88,12 @@ module.exports = {
         import: ["~assets/style/variables.styl"]
       }
     },
-    
+
     /*
     ** You can extend webpack config here
     */
     extend(config, ctx) {
-      
+
     }
   }
 }

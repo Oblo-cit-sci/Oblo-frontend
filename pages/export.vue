@@ -62,22 +62,18 @@
       export_data() {
         let data = {}
         for(let select of this.selected) {
-          console.log(select)
           const option = ld.find(this.options, (o) => {return o.value === select})
           data = get_from_store_location(this.$store, option.location)
-          console.log(data)
         }
       }
     },
     computed: {
       dl_url() {
-        console.log("UUU")
         let data = {}
         for(let select of this.selected) {
           const option = ld.find(this.options, (o) => {return o.value === select})
           data[select] = get_from_store_location(this.$store, option.location)
         }
-        console.log(data)
         // TODO eventually: other method then encodeURIComponent https://stackoverflow.com/questions/695151/data-protocol-url-size-limitations
         // since some browser limit the size
         return "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data))

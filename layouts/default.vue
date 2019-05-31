@@ -32,15 +32,19 @@
       app
     >
       <v-toolbar-side-icon v-show="connected" @click="drawer = !drawer"/>
-      <v-btn v-show="!connected" flat icon  color="red" nuxt router exact to="/">
+      <v-btn v-show="!connected" flat icon color="red" nuxt router exact to="/">
         <v-icon>{{connected_icon}}</v-icon>
       </v-btn>
       <v-toolbar-title v-text="title"/>
       <v-spacer></v-spacer>
-
       <div>
         <v-btn flat icon color="indigo" nuxt router exact to="/export">
-          <v-icon>get_app</v-icon>
+          <v-badge bottom color="rgba(0,255,0,0.9)">
+            <template v-slot:badge>
+              <span>!</span>
+            </template>
+            <v-icon>get_app</v-icon>
+          </v-badge>
         </v-btn>
       </div>
       <div v-if="login_state">
