@@ -3,6 +3,7 @@ export const state = () => ({
   initialized: false,
   //
   connected: false,
+  dirty: false,
   // TODO use DICT!!!
   entry_types: new Map(), // types for creation
   tags: {}, // initially just the licci tree
@@ -42,7 +43,7 @@ export const mutations = {
     state.related_users = data.related_users;
 
     //state.entry_type_slug_index_dict = array_to_val__id_dict(data.entryTemplates, "slug");
-    state.initialized = true;
+    state.initialized = true
   },
   set_related_users(state, related_users) {
     state.related_users = related_users
@@ -98,3 +99,8 @@ export const getters = {
   }
 };
 
+export const actions = {
+  test(context, val) {
+    console.log("text store action", context, val)
+  }
+}

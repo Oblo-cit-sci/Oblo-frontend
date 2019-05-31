@@ -2,10 +2,12 @@
   <v-app>
     <v-navigation-drawer
       v-model="drawer"
+      v-show="connected"
       :mini-variant="miniVariant"
       :clipped="clipped"
       fixed
       app
+
     >
       <v-list>
         <v-list-tile
@@ -30,7 +32,7 @@
       true
       app
     >
-      <v-toolbar-side-icon @click="drawer = !drawer"/>
+      <v-toolbar-side-icon v-show="connected" @click="drawer = !drawer"/>
       <v-toolbar-title v-text="title"/>
       <v-spacer></v-spacer>
       <v-icon>{{connected_icon}}</v-icon>
@@ -58,7 +60,7 @@
 
 <script>
 
-  import GlobalSnackbar from "../components/GlobalSnackbar";
+  import GlobalSnackbar from "../components/GlobalSnackbar"
 
   let all_items = [
     {
@@ -101,32 +103,36 @@
       title: 'Logout',
       to: '/logout'
     }
-  ];
+  ]
 
-  let require_login = ["Profile", "Logout", "My Entries"];
-  let hide_on_login = ["Register", "Login"];
+  let require_login = ["Profile", "Logout", "My Entries"]
+  let hide_on_login = ["Register", "Login"]
 
   export default {
     components: {GlobalSnackbar},
     created() {
-      this.login_state = this.$store.state.user.logged_in;
-      this.update_sidebar();
+      this.login_state = this.$store.state.user.logged_in
+      this.update_sidebar()
+
       this.$store.watch(state => state.user.logged_in, () => {
-        this.login_state = this.$store.state.user.logged_in;
-        this.update_sidebar();
-      });
+        this.login_state = this.$store.state.user.logged_in
+        this.update_sidebar()
+      })
+
+      this.connected = this.$store.state.connected
       this.$store.watch(state => state.connected, () => {
-        this.connected = this.$store.state.connected;
-        this.update_sidebar();
-      });
+        this.connected = this.$store.state.connected
+        console.log(this.$store.state.connected)
+        this.update_sidebar()
+      })
     },
     methods: {
       update_sidebar() {
         // not logged in
         if (!this.login_state) {
-          this.items = all_items.filter(item => require_login.indexOf(item.title) === -1);
+          this.items = all_items.filter(item => require_login.indexOf(item.title) === -1)
         } else { // logged in
-          this.items = all_items.filter(item => hide_on_login.indexOf(item.title) === -1);
+          this.items = all_items.filter(item => hide_on_login.indexOf(item.title) === -1)
         }
       }
     },
@@ -167,6 +173,6 @@
 <style>
 
   input {
-    border-style: none !important;
+    border-style: none !important
   }
 </style>
