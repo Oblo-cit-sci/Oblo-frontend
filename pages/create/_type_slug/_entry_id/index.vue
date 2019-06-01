@@ -1,13 +1,11 @@
 <template lang="pug">
   v-layout(column='' justify-center='' align-center='')
     v-flex(xs12='' sm8='' md6='' class="column")
-      h1 {{entry_type.title}}
-      div {{entry_type.description}}
+      Title_Description(:title="entry_type.title" header_type="h1" :description="entry_type.description")
       div(v-if="has_pages")
-        h3 {{page_info.title}}
-        div {{page_info.description}}
+        Title_Description(:title="page_info.title" header_type="h3" :description="page_info.description")
       div(v-if="ref")
-        span This entry is part of the draft: &nbsp;&nbsp;
+        span This entry is part of the draft: &nbsp;
         a(@click="back_to_ref") {{ref.parent_title}}
       br
       div(v-for="(aspect, index) in shown_aspects" :key="index")
@@ -15,7 +13,6 @@
           v-bind:aspect="aspect"
           v-bind:value.sync="aspects_values[aspect.name]"
           v-on:create_related="create_related($event)")
-
       Paginate(v-if="has_pages" v-bind:page.sync="page"
         :total="entry_type.content.meta.pages.length"
         v-on:lastpage="last_page = $event")
@@ -60,12 +57,14 @@
   import Entry from "~~/lib/entry";
   import {create_and_store} from "../../../../lib/entry";
   import Paginate from "../../../../components/Paginate";
+  import Title_Description from "../../../../components/Title_Description";
 
   const ld = require("lodash");
 
   export default {
     name: "entry_id",
     components: {
+      Title_Description,
       Paginate, Privacy, License, Basic, TextShort, TextLong, Location,
       List, IntAspect, AspectPageButton, CompositeAspect, Select, Map
     },

@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    h3 {{title}}
+    component(v-bind:is="header_type") {{title}}
     div {{description}}
 </template>
 
@@ -12,8 +12,12 @@
         {
           type: String,
           required: true,
-          default: "MISSING"
+          default: ""
         },
+      header_type: {
+        type: String,
+        default: "h3"
+      },
       description: {
         type: String,
         default: ""
