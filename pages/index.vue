@@ -20,7 +20,9 @@
 
   export default {
     async fetch(context) {
+      console.log("index fetch")
       if (!context.store.state.initialized) {
+        console.log("index fetch init")
         await initialize(context.$axios, context.store)
       }
     },
@@ -30,12 +32,15 @@
       }
     },
     created() {
+      console.log("index create")
       //console.log(this.$store.getters);
+      console.log("index create", this.$store.state.initialized)
       this.initialized = this.$store.state.initialized
       this.$store.watch(state => state.initialized, () => {
         this.initialized = this.$store.state.initialized
+        console.log("index create watcher change", this.$store.state.initialized)
       })
-      this.$store.dispatch("test", "cool")
+      //this.$store.dispatch("test", "cool")
     },
     components: {
       Entrylist

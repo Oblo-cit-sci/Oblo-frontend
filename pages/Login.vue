@@ -1,7 +1,7 @@
 <template lang="pug">
   v-flex(xs12='' sm8='' md6='')
     v-form
-      v-text-field(v-model='username' label='Username' required='')
+      v-text-field(v-model='username' label='Username' required='' autofocus)
       v-text-field(v-model='password' type='password' label='Password' required='')
       v-btn(@click='login' color='success') Login
     v-alert(:value='errorMsg' type='error') {{errorMsg}}
@@ -10,7 +10,7 @@
 <script>
   import {initialize} from "../lib/client";
 
-  import { LOGIN_WRONG_CREDENTIALS, LOGIN_ALREADY_LOGGED_IN} from "~~/lib/consts"
+  import {LOGIN_WRONG_CREDENTIALS, LOGIN_ALREADY_LOGGED_IN} from "~~/lib/consts"
 
   export default {
     name: "Login",
@@ -28,9 +28,9 @@
           password: this.password,
         }).then(({data}) => {
 
-
-          if(data.status === true || data.msg_ === LOGIN_ALREADY_LOGGED_IN) {
-            initialize(this.$axios, this.$store).then((res) => {});
+          if (data.status === true || data.msg_ === LOGIN_ALREADY_LOGGED_IN) {
+            initialize(this.$axios, this.$store).then((res) => {
+            });
             this.$store.commit("user/login", data.result);
             this.$store.commit("entries/set_own_entries", data.result.own_entries);
             console.log("login-data", data);
