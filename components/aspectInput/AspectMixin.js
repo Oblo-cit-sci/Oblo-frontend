@@ -2,6 +2,7 @@ export default {
   props: {
     aspect: Object,
     value: {},
+    // simplification of mode
     edit: {
       type: Boolean,
       default: true

@@ -5,6 +5,7 @@
       v-text-field(
         outline
         single-line
+        hideDetails
         v-model="i_value"
         @input="value_change($event)")
     div(v-else)

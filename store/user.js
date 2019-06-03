@@ -9,7 +9,8 @@ let default_user_data = {
   // of 1 degree will result in error of around 50km per coordinate -0.5, +0.5 degree change around the real location
   location_error: 2,
   defaultLicense: "CC0", // should come from the server
-  defaultPrivacy: "public"
+  defaultPrivacy: "public",
+  location: ""
 }
 
 

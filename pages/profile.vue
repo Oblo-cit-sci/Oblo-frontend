@@ -1,7 +1,6 @@
 <template lang="pug">
   v-flex(xs12 sm8 md6)
-    v-text-field(v-if="edit_mode", "outline", label="public name" v-model="edits.public_name")
-    div(v-else) {{$store.state.user.user_data.public_name}}
+    Aspect(:aspect_descr="profile_aspects.public_name" :value.sync="edits.public_name" :edit="edit_mode")
     v-list
       v-subheader General
       v-list-tile(three-line)
@@ -10,16 +9,8 @@
           v-list-tile-sub-title username
         v-list-tile-action
           v-chip(outline disabled small) {{$store.state.user.user_data.global_role}}
-      v-textarea(v-if="edit_mode", "outline", label="description" v-model="edits.description")
-      v-list-tile(v-else)
-        v-list-tile-content
-          v-list-tile-title {{$store.state.user.user_data.description}}
-          v-list-tile-sub-title Description
-      v-text-field(v-if="edit_mode", "outline", label="location"  v-model="edits.location")
-      v-list-tile(v-else)
-        v-list-tile-content
-          v-list-tile-title {{$store.state.user.user_data.location}}
-          v-list-tile-sub-title Location
+      Aspect(:aspect_descr="profile_aspects.description" :value.sync="edits.description" :edit="edit_mode")
+      Aspect(:aspect_descr="profile_aspects.location" :value.sync="edits.location" :edit="edit_mode")
       v-divider
       v-subheader Interested topics
       Taglist(:tags="$store.state.user.user_data.interested_topics")
@@ -38,7 +29,11 @@
 
 <script>
 
+  // needs a server reroute plugin or module, that reroutes visitors back to index
+
   import Taglist from "../components/Taglist.vue"
+  import Aspect from "../components/Aspect";
+
   let editable = [
     "public_name", "description", "location", "interested_topics"
   ];
@@ -46,6 +41,7 @@
   export default {
     name: "profile",
     components: {
+      Aspect,
       Taglist
     },
     validate({params}) {
@@ -53,19 +49,36 @@
       // console.log(params.profile);
       return true;
     },
+    created() {
+      this.reset_edit_values()
+    },
     methods: {
+      reset_edit_values() {
+        for (let value of editable) {
+          this.edits[value] = {value: this.$store.state.user.user_data[value]}
+        }
+      },
       setEdit: function () {
         this.edit_mode = true
-        for (let value of editable) {
-          this.edits[value] = this.$store.state.user.user_data[value];
-        }
+        /*  for (let value of editable) {
+            this.edits[value] = this.$store.state.user.user_data[value];
+          }*/
       },
       cancelEdit: function () {
         this.edit_mode = false;
+        this.reset_edit_values()
+      },
+      raw_values() {
+
+        return this.$_.mapValues(this.edits, (value) => {
+          //console.log(k,this.edits[k])
+          return value.value
+        })
       },
       doneEdit: function () {
-        this.$axios.post("/update_profile", this.edits).then(({data}) => {
-          // console.log(data);
+        console.log("posting")
+        this.$axios.post("/update_profile", this.raw_values()).then(({data}) => {
+          console.log(data);
           if (!data.status) {
             this.errorMsg = data.msg
           } else if (data.status) {
@@ -82,11 +95,37 @@
       return {
         edit_mode: false,
         selected_tab: 0,
+        profile_aspects: {
+          public_name: {
+            name: "public name",
+            description: "",
+            type: "str",
+            attr: {
+              max: 40
+            }
+          },
+          description: {
+            name: "description",
+            description: "",
+            type: "str",
+            attr: {
+              max: 980
+            }
+          },
+          location: {
+            name: "location",
+            description: "main location",
+            type: "str",
+            attr: {
+              max: 80
+            }
+          }
+        },
         edits: {
-          public_name: "",
-          description: "",
-          location: "",
-          interested_topics: []
+          public_name: {},
+          description: {},
+          location: {},
+          interested_topics: {}
         }
       }
     }

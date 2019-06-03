@@ -10,6 +10,7 @@
 
 <script>
 
+
   /*
      License(v-bind:passedLicense.sync="license" v-if="has_license")
     Privacy(v-bind:selectedPrivacy.sync="privacy" v-if="has_privacy")
@@ -65,11 +66,8 @@ edit:
 
    */
 
-  const VIEW = "view"
-  const CREATE = "create"
-  const EDIT = "edit"
 
-  const DRAFT = "draft"
+  import {CREATE, EDIT, VIEW, DRAFT} from "../lib/consts";
 
   export default {
     name: "EntryActions",
