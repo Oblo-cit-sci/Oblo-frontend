@@ -13,18 +13,10 @@
           v-bind:aspect="aspect"
           v-bind:value.sync="aspects_values[aspect.name]"
           v-on:create_related="create_related($event)")
-      EntryActions(v-bind="entry_actions_props" :page.sync="page")
       div(v-if="!ref")
         License(v-bind:passedLicense.sync="license" v-if="has_license")
-        Privacy(v-bind:selectedPrivacy.sync="privacy" v-if="has_privacy")
-        v-btn(@click="cancel_draft" color="error") cancel
-        v-btn(color="secondary" @click="save($event,'/')") save draft
-        v-btn(v-if="can_submit" v-bind:disabled="!complete" color="success" :loading="sending" @click="send") submit
-        v-btn(:href="dl_url" :download="download_title" v-if="can_download" :disabled="!last_page" color="success" ) Download
-      div(v-else)
-        div License and Privacy are the same as the reference/parent entry
-      div(v-if="ref")
-        v-btn(color="secondary" @click="save_back") save & back
+      EntryActions(v-bind="entry_actions_props" :page.sync="page")
+
 </template>
 
 <script>
@@ -53,7 +45,7 @@
   import {MAspectComponent, complete_activities} from "~~/lib/client"
 
   import Entry from "~~/lib/entry"
-  import {create_and_store} from "../../../../lib/entry"
+  import {create_and_store, draft_title} from "../../../../lib/entry"
   import Paginate from "../../../../components/Paginate"
   import Title_Description from "../../../../components/Title_Description"
   import EntryActions from "../../../../components/EntryActions";
@@ -72,23 +64,29 @@
     mixins: [ReferenceMixin], // in case of a context entry, to be able to get back to the parent
     data() {
       return {
-        // for the store
+        // from the store should include
+        // type_slug, draft_id, entry_id, license, privacy, version, status, aspects_values, ref
+        entry: null,
+
+
         type_slug: null, // immu
+        // draft_id
         entry_id: null, // draft_id or entry_uuid
-        //title: null,
         license: null,  // just the short
         privacy: null, // string
         version: null,
         status: null,
         aspects_values: null,
-        //
-        entry_type: null, // the full shizzle for the type_slug
-        sending: false,
-        required_values: [],
-        complete: true,
-        has_pages: false,
         ref: null,
 
+        //
+        entry_type: null, // the full shizzle for the type_slug
+        required_values: [], // shortcut, but in entry_type
+
+        sending: false,
+        complete: true,
+
+        has_pages: false,
         page: 0,
         last_page: false
       }
@@ -146,7 +144,7 @@
           type_slug: this.type_slug,
           draft_id: this.entry_id,
           entry_id: this.entry_id,
-          title: Entry.draft_title(this.entry_type.title, this.aspects_values.title, this.entry_id),
+          title: draft_title(this.entry_type.title, this.aspects_values.title, this.entry_id),
           aspects_values: this.aspects_values,
           license: this.license,
           privacy: this.privacy,
@@ -171,7 +169,7 @@
           console.log("error", err)
         })
       },
-      autosave(version_increase = false) {
+      /*autosave(version_increase = false) {
         this.$store.commit("edrafts/save_draft", this.store_data(version_increase))
       },
       cancel_draft() {
@@ -185,7 +183,7 @@
         if (goto !== undefined) {
           this.$router.push("/")
         }
-      },
+      },*/
       create_related(aspect) {
         this.autosave()
         /*
@@ -215,7 +213,7 @@
 
         if (typeof (aspect_to_check) === "string") {
           // ******** CONTEXT_ENTRY
-          if (aspect_to_check[0] === "$") {
+          if (aspect_to_check[0] === "$"){
             const new_type_slug = aspect_to_check.substring(1)
             let ref_data = {
               draft_id: this.entry_id,

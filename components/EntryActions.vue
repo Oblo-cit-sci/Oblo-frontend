@@ -1,6 +1,5 @@
 <template lang="pug">
   div
-    div -----------
     Paginate(v-if="has_pages" v-bind:page.sync="i_page"
       :total="entry_type.content.meta.pages.length"
       v-on:lastpage="last_page = $event")
@@ -11,7 +10,6 @@
 
       v-btn(v-if="draft_edit" color="warning" @click="delete_draft") delete draft
 
-      v-btn(v-if="draft")
 
       v-btn(color="secondary" @click="save_draft()") save draft
 
@@ -19,23 +17,22 @@
       span(v-else)
         v-btn(v-if="connected" color="success" @click="submit") submit
       v-btn(v-if="private_local"  :href="dl_url" :download="download_title" :disabled="!last_page" color="success" ) download
-    div -----------
 </template>
 
 <script>
 
   /*
-     License(v-bind:passedLicense.sync="license" v-if="has_license")
-    Privacy(v-bind:selectedPrivacy.sync="privacy" v-if="has_privacy")
-    v-btn(@click="cancel_draft" color="error") cancel
-    v-btn(color="secondary" @click="save($event,'/')") save draft
-    v-btn(v-if="can_submit" v-bind:disabled="!complete" color="success" :loading="sending" @click="send") submit
-    v-btn(:href="dl_url" :download="download_title" v-if="can_download" :disabled="!last_page" color="success" ) Download
-    div(v-else)
-      div License and Privacy are the same as the reference/parent entry
-    div(v-if="ref")
-      v-btn(color="secondary" @click="save_back") save & back
+      div(v-if="!ref")
+        v-btn(@click="cancel_draft" color="error") cancel
+        v-btn(color="secondary" @click="save($event,'/')") save draft
+        v-btn(v-if="can_submit" v-bind:disabled="!complete" color="success" :loading="sending" @click="send") submit
+        v-btn(:href="dl_url" :download="download_title" v-if="can_download" :disabled="!last_page" color="success" ) Download
+      div(v-else)
+        div License and Privacy are the same as the reference/parent entry
+      div(v-if="ref")
+        v-btn(color="secondary" @click="save_back") save & back
   */
+
   /*
     drafts:
       - cancel
@@ -82,6 +79,8 @@ edit:
 
   import {CREATE, DRAFT, EDIT, PRIVATE_LOCAL, PUBLIC, VIEW} from "../lib/consts";
   import Paginate from "./Paginate";
+  import {draft_title} from "../lib/entry";
+  import {complete_activities} from "../lib/client";
 
   export default {
     name: "EntryActions",
@@ -107,6 +106,9 @@ edit:
       },
       page: {
         type: Number
+      },
+      entry: {
+        type: Object
       }
     },
     computed: {
@@ -149,24 +151,51 @@ edit:
       }
     },
     methods: {
+      // BUTTONS
       edit() {
         // for in mode = view
       },
       cancel() {
+        console.log(this.create, this.version)
+        if(this.create && this.version === 0) {
+          this.$store.commit("edrafts/remove_draft", this.entry_id);
+        }
         this.$router.push("/");
       },
       delete_draft() {
         this.$store.commit("edrafts/remove_draft", this.entry_id);
-        this.cancel()
+        this.$router.push("/");
+        // TODO test later if that is ok, not calling the commit twice
+        //this.cancel()
       },
-      save_draft() {
-
+      save_draft(goto) {
+        this.autosave(true)
+        this.$store.commit("set_snackbar", {message: "Draft saved", ok: true})
+        this.$router.push("/")
       },
       save() {
 
       },
       submit() {
 
+      },
+      // HELPER
+      store_data(version_increase = false) {
+        return {
+          type_slug: this.type_slug,
+          draft_id: this.entry_id,
+          entry_id: this.entry_id,
+          title: draft_title(this.entry_type.title, this.aspects_values.title, this.entry_id),
+          aspects_values: this.aspects_values,
+          license: this.license,
+          privacy: this.privacy,
+          activities: complete_activities(this.entry_type, "send", this.aspects_values),
+          ref: this.ref,
+          version: this.version + (version_increase ? 1 : 0)
+        }
+      },
+      autosave(version_increase = false){
+        this.$store.commit("edrafts/save_draft", this.store_data(version_increase))
       }
     },
     watch: {

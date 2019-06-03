@@ -8,7 +8,7 @@
 
 
   import SingleSelect from "../components/SingleSelect";
-  import Entry from "../lib/entry";
+  import {create_entry} from "../lib/entry";
 
 
   const ld = require('lodash');
@@ -86,14 +86,15 @@
           }
         }
 
-        let entry = new Entry({
-            entry_type: entry_type,
-            draft_id: draft_id,
-            license:  this.$store.state.user.user_data.defaultLicense,
-            privacy: this.$store.state.user.user_data.defaultPrivacy,
-          });
+        const entry = create_entry({
+          entry_type: entry_type,
+          draft_id: draft_id,
+          license:  this.$store.state.user.user_data.defaultLicense,
+          privacy: this.$store.state.user.user_data.defaultPrivacy,
+        })
+
         // todo maybe some redundant data here...
-        this.$store.commit("edrafts/create_draft", entry.get_store_data());
+        this.$store.commit("edrafts/create_draft", entry);
 
         return draft_id;
       }
