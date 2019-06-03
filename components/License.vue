@@ -56,7 +56,7 @@
       licenseImagePath() {
         //console.log("update img with", this.selectedLicense);
         if(this.selectedLicense) {
-          return license_icon(this.selectedLicense.short, this.$store);
+          return license_icon(this.$axios, this.selectedLicense.short, this.$store);
         } else {
           return null;
         }
