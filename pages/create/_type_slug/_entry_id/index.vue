@@ -5,7 +5,7 @@
       div(v-if="has_pages")
         Title_Description(:title="page_info.title" header_type="h3" :description="page_info.description")
       div(v-if="ref")
-        span This entry is part of the draft: &nbsp;
+        span This entry is part of the draft: &nbsp
         a(@click="back_to_ref") {{ref.parent_title}}
       br
       div(v-for="(aspect, index) in shown_aspects" :key="index")
@@ -32,34 +32,34 @@
 <script>
 
 
-  import Basic from "~~/components/aspectInput/Basic";
-  import TextShort from "~~/components/aspectInput/TextShort";
-  import IntAspect from "~~/components/aspectInput/IntAspect";
-  import TextLong from "~~/components/aspectInput/TextLong";
-  import Location from "~~/components/aspectInput/Location";
-  import CompositeAspect from "~~/components/aspectInput/CompositeAspect";
-  import Select from "~~/components/aspectInput/Select";
+  import Basic from "~~/components/aspectInput/Basic"
+  import TextShort from "~~/components/aspectInput/TextShort"
+  import IntAspect from "~~/components/aspectInput/IntAspect"
+  import TextLong from "~~/components/aspectInput/TextLong"
+  import Location from "~~/components/aspectInput/Location"
+  import CompositeAspect from "~~/components/aspectInput/CompositeAspect"
+  import Select from "~~/components/aspectInput/Select"
 
   // TODO REFA
-  // import ListOf from "~~/components/aspectInput/ListOf";
+  // import ListOf from "~~/components/aspectInput/ListOf"
 
-  import List from "~~/components/aspectInput/List";
-  import Map from "~~/components/aspectInput/Map";
+  import List from "~~/components/aspectInput/List"
+  import Map from "~~/components/aspectInput/Map"
 
-  import AspectPageButton from "~~/components/aspectInput/AspectPageButton";
+  import AspectPageButton from "~~/components/aspectInput/AspectPageButton"
 
-  import ReferenceMixin from "~~/components/ReferenceMixin";
-  import License from "~~/components/License";
-  import Privacy from "~~/components/Privacy";
+  import ReferenceMixin from "~~/components/ReferenceMixin"
+  import License from "~~/components/License"
+  import Privacy from "~~/components/Privacy"
 
-  import {MAspectComponent, complete_activities} from "~~/lib/client";
+  import {MAspectComponent, complete_activities} from "~~/lib/client"
 
-  import Entry from "~~/lib/entry";
-  import {create_and_store} from "../../../../lib/entry";
-  import Paginate from "../../../../components/Paginate";
-  import Title_Description from "../../../../components/Title_Description";
+  import Entry from "~~/lib/entry"
+  import {create_and_store} from "../../../../lib/entry"
+  import Paginate from "../../../../components/Paginate"
+  import Title_Description from "../../../../components/Title_Description"
 
-  const ld = require("lodash");
+  const ld = require("lodash")
 
   export default {
     name: "entry_id",
@@ -77,6 +77,7 @@
         //title: null,
         license: null,  // just the short
         privacy: null, // string
+        version: null,
         aspects_values: null,
         //
         entry_type: null, // the full shizzle for the type_slug
@@ -91,33 +92,34 @@
       }
     },
     created() {
-      this.type_slug = this.$route.params.type_slug;
-      this.entry_id = this.$route.params.entry_id; // draft_id or entry_uuid
+      this.type_slug = this.$route.params.type_slug
+      this.entry_id = this.$route.params.entry_id // draft_id or entry_uuid
 
-      let draft_data = this.$store.state.edrafts.drafts[this.entry_id];
+      let draft_data = this.$store.state.edrafts.drafts[this.entry_id]
 
-      this.license = draft_data.license;
-      this.privacy = draft_data.privacy;
-      this.aspects_values = JSON.parse(JSON.stringify(draft_data.aspects_values)); //{...draft_data.aspects_values};
+      this.version = draft_data.version
+      this.license = draft_data.license
+      this.privacy = draft_data.privacy
+      this.aspects_values = JSON.parse(JSON.stringify(draft_data.aspects_values)) //{...draft_data.aspects_values}
 
-      this.entry_type = this.$store.getters.entry_type(this.type_slug);
+      this.entry_type = this.$store.getters.entry_type(this.type_slug)
 
-      this.has_pages = this.entry_type.content.meta.hasOwnProperty("pages");
+      this.has_pages = this.entry_type.content.meta.hasOwnProperty("pages")
     },
     methods: {
       updateRequired(aspect) {
-        this.required_values[aspect.title] = aspect.value;
+        this.required_values[aspect.title] = aspect.value
         for (let req_asp in this.required_values) {
-          let val = this.required_values[req_asp];
+          let val = this.required_values[req_asp]
           if (val === null || val === "") {
-            this.complete = false;
-            return;
+            this.complete = false
+            return
           }
         }
-        this.complete = true;
+        this.complete = true
       },
       aspectComponent(aspect) {
-        return MAspectComponent(aspect);
+        return MAspectComponent(aspect)
       },
       store_data() {
         return {
@@ -133,38 +135,38 @@
         }
       },
       send() {
-        this.sending = true;
+        this.sending = true
 
         this.$axios.post("/create_entry", this.store_data()).then((res) => {
-          this.sending = false;
-          //console.log(res.data);
-          this.$store.commit("set_snackbar", {message: res.data.msg, ok: res.data.status});
+          this.sending = false
+          //console.log(res.data)
+          this.$store.commit("set_snackbar", {message: res.data.msg, ok: res.data.status})
 
           if (this.hasOwnProperty("draft_id")) {
-            this.$store.commit("remove_draft", this.draft_id);
+            this.$store.commit("remove_draft", this.draft_id)
           }
-          this.$router.push("/");
+          this.$router.push("/")
         }).catch((err) => {
-          console.log("error", err);
+          console.log("error", err)
         })
       },
       autosave() {
-        this.$store.commit("edrafts/save_draft", this.store_data());
+        this.$store.commit("edrafts/save_draft", this.store_data())
       },
       cancel_draft() {
         // TODO maybe with confirmation
-        this.$store.commit("edrafts/remove_draft", this.entry_id);
-        this.$router.push("/");
+        this.$store.commit("edrafts/remove_draft", this.entry_id)
+        this.$router.push("/")
       },
       save(event, goto) { // draft
-        this.autosave();
-        this.$store.commit("set_snackbar", {message: "Draft saved", ok: true});
+        this.autosave()
+        this.$store.commit("set_snackbar", {message: "Draft saved", ok: true})
         if (goto !== undefined) {
-          this.$router.push("/");
+          this.$router.push("/")
         }
       },
       create_related(aspect) {
-        this.autosave();
+        this.autosave()
         /*
         page_aspect:
 	      /create/<type_slug/<draft_id/<aspect_name
@@ -199,13 +201,13 @@
               aspect_name: aspect.name,
             }
             if (is_list) {
-              ref_data.index = this.aspects_values[aspect.name].length;
+              ref_data.index = this.aspects_values[aspect.name].length
             }
-            const new_draft_id = create_and_store(new_type_slug, this.$store);
+            const new_draft_id = create_and_store(new_type_slug, this.$store)
             this.$store.commit("edrafts/add_reference", {
               draft_id: new_draft_id,
               ref: ref_data
-            });
+            })
             this.$router.push({
               path: "/create/" + new_type_slug + "/" + new_draft_id
             })
@@ -259,7 +261,7 @@
       // maybe also consider:
       // https://github.com/edisdev/download-json-data/blob/develop/src/components/Download.vue
       dl_url() {
-        return "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.aspects_values))
+        return "data:text/jsoncharset=utf-8," + encodeURIComponent(JSON.stringify(this.aspects_values))
       },
       download_title() {
         return (this.aspects_values.title || "Survey " + this.entry_id).replace(" ", "_") + ".json"
@@ -273,6 +275,6 @@
 
 <style scoped>
   .column {
-    width: 70%;
+    width: 70%
   }
 </style>
