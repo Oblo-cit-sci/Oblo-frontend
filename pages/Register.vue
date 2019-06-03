@@ -75,8 +75,8 @@
       return {
         username: random_String(10),
         email: random_String(10) + "@gmail.com",
-        password: "COOOOOOL",
-        repeatPassword: "COOOOOOL",
+        password: "123456",
+        repeatPassword: "123456",
         emailRules: [
           v => !!v || 'E-mail is required',
           v => /.+@.+/.test(v) || 'E-mail must be valid'
@@ -123,12 +123,14 @@
         }, {
           withCredentials: true
         }).then(({data}) => {
-          if (data.status === "error/exists") {
-            this.errorMsg = data.msg
-          } else if (data.status === true) {
+          console.log("some data")
+          console.log(data)
+          if (data.status) {
             this.$store.commit("user/login",data.result);
-           // this.$store.commit("set_user_data");
             this.$router.push("/")
+          } else {
+            this.errorMsg = data.msg
+            this.$store.commoit("set_snackbar", {msg: data.msg, ok:true})
           }
         }).catch((err) => {
           console.log("err", err)

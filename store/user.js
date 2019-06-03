@@ -22,7 +22,7 @@ export const state = () => ({
 export const mutations = {
   login(state, data) {
     //console.log("LOGIN");
-    console.log("store data", data.own_entries);
+    //console.log("store data", data.own_entries);
     state.logged_in = true;
     state.user_data = data.user_data;
   },

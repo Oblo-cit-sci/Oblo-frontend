@@ -34,6 +34,7 @@ const ld = require('lodash');
 export const mutations = {
   init(state, data) {
     state.codes = {...data.codes}
+    //console.log(data)
     state.codes.liccis_flat = extract_liccis(data.codes.liccis);
 
     state.entry_types = new Map(ld.map(data.entryTemplates, (e) => {
@@ -101,6 +102,6 @@ export const getters = {
 
 export const actions = {
   test(context, val) {
-    console.log("text store action", context, val)
+   // console.log("text store action", context, val)
   }
 }
