@@ -1,9 +1,9 @@
 <template lang="pug">
   div(v-if="edit")
+    div {{aspect.name}}
     v-text-field(
       outline
-      :label="aspect.name"
-      placeholder=" "
+      single-line
       v-model="i_value"
       :append-outer-icon="icon"
       @click:append-outer="click_outer"
@@ -25,13 +25,11 @@
     props: {
       icon: {
         type: String,
-        required: true
       },
       id: {}
     },
     methods: {
       click_outer() {
-        console.log("clicky")
         this.$emit(this.icon, this.id);
       }
     }

@@ -1,6 +1,9 @@
 export const state = () => ({
   // comes by init
   initialized: false,
+  //
+  connected: false,
+  dirty: false,
   // TODO use DICT!!!
   entry_types: new Map(), // types for creation
   tags: {}, // initially just the licci tree
@@ -28,21 +31,16 @@ function extract_liccis(tree) {
 
 const ld = require('lodash');
 
-
-
 export const mutations = {
   init(state, data) {
     state.codes = {...data.codes}
     state.codes.liccis_flat = extract_liccis(data.codes.liccis);
-
     state.entry_types = new Map(ld.map(data.entryTemplates, (e) => {
       return [e.slug, e]
     }));
-
     state.related_users = data.related_users;
-
     //state.entry_type_slug_index_dict = array_to_val__id_dict(data.entryTemplates, "slug");
-    state.initialized = true;
+    state.initialized = true
   },
   set_related_users(state, related_users) {
     state.related_users = related_users
@@ -57,6 +55,9 @@ export const mutations = {
   },
   add_fetched_entry(state, entry) {
     state.fetched_entries[entry.uuid] = entry
+  },
+  connection(state, connected) {
+    state.connected = connected
   }
 };
 
@@ -95,3 +96,8 @@ export const getters = {
   }
 };
 
+export const actions = {
+  test(context, val) {
+    //console.log("text store action", context, val)
+  }
+}

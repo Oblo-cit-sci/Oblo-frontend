@@ -7,8 +7,7 @@
         single-line
         auto-grow
         :counter="counter"
-        placeholder=" "
-        persistent-hint=true
+        v-model="i_value"
         @input="value_change($event)")
     div(v-else)
       v-textarea(
@@ -20,14 +19,6 @@
   import AspectMixin from "./AspectMixin";
   import Title_Description from "../Title_Description";
 
-  // temp out..: v-model="i_value"
-
-
-  /*
-    add to v.textarea
-     :rules="[rules.required]"
-     and see the rule in data
-   */
 
   export default {
     components: {Title_Description},
@@ -36,9 +27,6 @@
     data() {
       return {
         counter:false,
-        /*rules: {
-          required: value => (this.required && (!!value)) || 'Required'
-        }*/
       }
     },
     created() {
@@ -47,8 +35,6 @@
         this.counter =  this.aspect.attr.max;
       }
     },
-    computed: {
-    }
   }
 </script>
 

@@ -2,6 +2,7 @@
   <v-app>
     <v-navigation-drawer
       v-model="drawer"
+      v-show="connected"
       :mini-variant="miniVariant"
       :clipped="clipped"
       fixed
@@ -30,9 +31,22 @@
       true
       app
     >
-      <v-toolbar-side-icon @click="drawer = !drawer"/>
+      <v-toolbar-side-icon v-show="connected" @click="drawer = !drawer"/>
+      <v-btn v-show="!connected" flat icon color="red" nuxt router exact to="/">
+        <v-icon>{{connected_icon}}</v-icon>
+      </v-btn>
       <v-toolbar-title v-text="title"/>
       <v-spacer></v-spacer>
+      <div>
+        <v-btn flat icon color="indigo" nuxt router exact to="/export">
+          <v-badge bottom color="rgba(0,255,0,0.9)">
+            <template v-slot:badge>
+              <span>!</span>
+            </template>
+            <v-icon>get_app</v-icon>
+          </v-badge>
+        </v-btn>
+      </div>
       <div v-if="login_state">
         <v-btn v-for="(item, i) in header_items"
                :key="i"
@@ -42,7 +56,7 @@
                router
                nuxt
                exact>
-        <v-icon>{{ item.icon }}</v-icon>
+          <v-icon>{{ item.icon }}</v-icon>
         </v-btn>
       </div>
     </v-toolbar>
@@ -57,7 +71,7 @@
 
 <script>
 
-  import GlobalSnackbar from "../components/GlobalSnackbar";
+  import GlobalSnackbar from "../components/GlobalSnackbar"
 
   let all_items = [
     {
@@ -80,11 +94,6 @@
       title: 'Profile',
       to: '/profile'
     },
-    /*{
-      icon: 'list',
-      title: 'Codes',
-      to: '/Codes'
-    },*/
     {
       icon: 'computer',
       title: 'Tests',
@@ -105,34 +114,43 @@
       title: 'Logout',
       to: '/logout'
     }
-  ];
+  ]
 
-  let require_login = ["Profile", "Logout", "My Entries"];
-  let hide_on_login = ["Register", "Login"];
+  let require_login = ["Profile", "Logout", "My Entries"]
+  let hide_on_login = ["Register", "Login"]
 
   export default {
     components: {GlobalSnackbar},
     created() {
-      this.login_state = this.$store.state.user.logged_in;
-      this.update_sidebar();
+      this.login_state = this.$store.state.user.logged_in
+      this.update_sidebar()
+
       this.$store.watch(state => state.user.logged_in, () => {
-        this.login_state = this.$store.state.user.logged_in;
-        this.update_sidebar();
-      });
+        this.login_state = this.$store.state.user.logged_in
+        this.update_sidebar()
+      })
+
+      this.connected = this.$store.state.connected
+      this.$store.watch(state => state.connected, () => {
+        this.connected = this.$store.state.connected
+        console.log(this.$store.state.connected)
+        this.update_sidebar()
+      })
     },
     methods: {
       update_sidebar() {
         // not logged in
         if (!this.login_state) {
-          this.items = all_items.filter(item => require_login.indexOf(item.title) === -1);
+          this.items = all_items.filter(item => require_login.indexOf(item.title) === -1)
         } else { // logged in
-          this.items = all_items.filter(item => hide_on_login.indexOf(item.title) === -1);
+          this.items = all_items.filter(item => hide_on_login.indexOf(item.title) === -1)
         }
       }
     },
     data() {
       return {
         login_state: false,
+        connected: false,
         drawer: false,
         clipped: false,
         miniVariant: false,
@@ -150,6 +168,15 @@
           },
         ]
       }
+    },
+    computed: {
+      connected_icon() {
+        if (this.connected) {
+          return "wifi"
+        } else {
+          return "wifi_off"
+        }
+      }
     }
   }
 </script>
@@ -157,6 +184,6 @@
 <style>
 
   input {
-    border-style: none !important;
+    border-style: none !important
   }
 </style>

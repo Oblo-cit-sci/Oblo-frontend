@@ -44,14 +44,16 @@
 
   // TODO just use 1 Dialog for UI weirdness
 
+  import Select from "../Select";
   const ld = require("lodash");
   import TreleafPicker from "../../TreleafPicker";
   import AspectMixin from "../AspectMixin";
   import TextLong from "../TextLong";
+  import {string_list2options} from "../../../lib/client";
 
   export default {
     name: "Licci",
-    components: {TextLong, TreleafPicker},
+    components: {Select, TextLong, TreleafPicker},
     mixins: [AspectMixin],
     props: {
       value: {
@@ -70,18 +72,20 @@
           description: "",
           required: true
         },
+        sourceOptions: [], // TODO add SingleSelect
         LicciDialogOpen: false,
         DriverDialogOpen: false,
         addDriverForLicci: null,
         removeLicciDialogOpen: false,
         removeLicciSelectIndex: null,
         licciPanel: [],
-        extra_drivers: []
+        extra_drivers: [] // drivers given in text-input
       }
     },
     created() {
       this.options = this.$store.state.codes["liccis"];
       this.liccis = JSON.parse(JSON.stringify(this.value));
+      this.sourceOptions = string_list2options(["interviewee", "investigator", "consensus"])
     },
     methods: {
       addLicci(name, id) {

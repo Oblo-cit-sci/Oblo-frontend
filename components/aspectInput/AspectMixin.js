@@ -15,10 +15,10 @@ export default {
   },
   created() {
     this.i_value = this.value;
-    if (this.aspect.required) {
+   /* if (this.aspect.required) {
       this.required = true;
-      this.$emit('update-required', {title: this.aspect.name, value: this.i_value})
-    }
+     // this.$emit('update-required', {title: this.aspect.name, value: this.i_value})
+    }*/
   },
   methods: {
     title_description() {

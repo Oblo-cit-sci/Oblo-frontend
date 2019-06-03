@@ -3,8 +3,8 @@
     Title_Description(v-bind="title_description()")
     div(v-if="edit")
       v-text-field(
-        outline single-line
-        placeholder=" "
+        outline
+        single-line
         v-model="i_value"
         @input="value_change($event)")
     div(v-else)

@@ -50,8 +50,9 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '@/plugins/vuetify',
+    '~/plugins/vuetify',
     { src: '~/plugins/mapbox', mode: 'client' },
+    '~/plugins/lodash.js',
 ],
 
   /*
@@ -86,12 +87,12 @@ module.exports = {
         import: ["~assets/style/variables.styl"]
       }
     },
-    
+
     /*
     ** You can extend webpack config here
     */
     extend(config, ctx) {
-      
+
     }
   }
 }
