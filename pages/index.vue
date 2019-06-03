@@ -21,6 +21,7 @@
   export default {
     async fetch(context) {
       if (!context.store.state.initialized) {
+        //console.log("FETCH INIT")
         await initialize(context.$axios, context.store)
       }
     },
