@@ -1,11 +1,25 @@
 <template lang="pug">
   div
-    div(v-if="view")
+    div -----------
+    Paginate(v-if="has_pages" v-bind:page.sync="i_page"
+      :total="entry_type.content.meta.pages.length"
+      v-on:lastpage="last_page = $event")
+    span(v-if="view")
       v-btn(color="secondary" @click="edit") edit
-    div(else)
+    span(else)
       v-btn(color="seconday" @click="cancel") cancel
+
       v-btn(v-if="draft_edit" color="warning" @click="delete_draft") delete draft
+
       v-btn(v-if="draft")
+
+      v-btn(color="secondary" @click="save_draft()") save draft
+
+      v-btn(v-if="private_local" color="success" @click="save") save
+      span(v-else)
+        v-btn(v-if="connected" color="success" @click="submit") submit
+      v-btn(v-if="private_local"  :href="dl_url" :download="download_title" :disabled="!last_page" color="success" ) download
+    div -----------
 </template>
 
 <script>
@@ -65,16 +79,15 @@ edit:
 
    */
 
-  const VIEW = "view"
-  const CREATE = "create"
-  const EDIT = "edit"
 
-  const DRAFT = "draft"
+  import {CREATE, DRAFT, EDIT, PRIVATE_LOCAL, PUBLIC, VIEW} from "../lib/consts";
+  import Paginate from "./Paginate";
 
   export default {
     name: "EntryActions",
+    components: {Paginate},
     props: {
-      ref: {
+      parent: {
         type: Object
       },
       mode: {
@@ -84,10 +97,16 @@ edit:
         type: Object
       },
       status: {
-        type: String
+        type: String // DRAFT, STORED, SUBMIT
       },
-      data: {
-        type: Object // should have version
+      version: {
+        type: Number
+      },
+      aspects_values: {
+        type: Object// should have version
+      },
+      page: {
+        type: Number
       }
     },
     computed: {
@@ -103,8 +122,30 @@ edit:
       draft_edit() {
         return this.mode === EDIT && this.status === DRAFT
       },
-      for_submit() {
-        return true
+      for_submit() { // or private local
+        return (this.entry_type.content.meta.privacy || PUBLIC) !== PRIVATE_LOCAL
+      },
+      private_local() {
+        return (this.entry_type.content.meta.privacy || PUBLIC) === PRIVATE_LOCAL
+      },
+      connected() {
+        return this.$store.state.connected
+      },
+      has_pages() {
+        return this.entry_type.content.meta.hasOwnProperty("pages")
+      },
+      dl_url() {
+        return "data:text/jsoncharset=utf-8," + encodeURIComponent(JSON.stringify(this.aspects_values))
+      },
+      download_title() {
+        // TODO WHAT?
+        return (this.aspects_values.title || "Survey " + this.entry_id).replace(" ", "_") + ".json"
+      },
+    },
+    data() {
+      return {
+        i_page: 0,
+        last_page: false
       }
     },
     methods: {
@@ -117,6 +158,20 @@ edit:
       delete_draft() {
         this.$store.commit("edrafts/remove_draft", this.entry_id);
         this.cancel()
+      },
+      save_draft() {
+
+      },
+      save() {
+
+      },
+      submit() {
+
+      }
+    },
+    watch: {
+      i_page(val) {
+        this.$emit("update:page", val)
       }
     }
   }

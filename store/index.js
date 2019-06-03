@@ -31,6 +31,7 @@ function extract_liccis(tree) {
 
 const ld = require('lodash');
 
+
 export const mutations = {
   init(state, data) {
     state.codes = {...data.codes}

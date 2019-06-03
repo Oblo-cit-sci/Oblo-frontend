@@ -35,7 +35,7 @@ export default {
       }
     },
     value_change(event) {
-      console.log("value-change", event)
+      //console.log("value-change", event)
       this.$emit('update:value', event);
     }
   },

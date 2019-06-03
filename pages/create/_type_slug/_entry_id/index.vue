@@ -13,9 +13,7 @@
           v-bind:aspect="aspect"
           v-bind:value.sync="aspects_values[aspect.name]"
           v-on:create_related="create_related($event)")
-      Paginate(v-if="has_pages" v-bind:page.sync="page"
-        :total="entry_type.content.meta.pages.length"
-        v-on:lastpage="last_page = $event")
+      EntryActions(v-bind="entry_actions_props" :page.sync="page")
       div(v-if="!ref")
         License(v-bind:passedLicense.sync="license" v-if="has_license")
         Privacy(v-bind:selectedPrivacy.sync="privacy" v-if="has_privacy")
@@ -58,12 +56,15 @@
   import {create_and_store} from "../../../../lib/entry"
   import Paginate from "../../../../components/Paginate"
   import Title_Description from "../../../../components/Title_Description"
+  import EntryActions from "../../../../components/EntryActions";
+  import {CREATE, EDIT} from "../../../../lib/consts";
 
   const ld = require("lodash")
 
   export default {
     name: "entry_id",
     components: {
+      EntryActions,
       Title_Description,
       Paginate, Privacy, License, Basic, TextShort, TextLong, Location,
       List, IntAspect, AspectPageButton, CompositeAspect, Select, Map
@@ -78,12 +79,13 @@
         license: null,  // just the short
         privacy: null, // string
         version: null,
+        status: null,
         aspects_values: null,
         //
         entry_type: null, // the full shizzle for the type_slug
         sending: false,
-        required_values: {},
-        complete: false,
+        required_values: [],
+        complete: true,
         has_pages: false,
         ref: null,
 
@@ -98,6 +100,7 @@
       let draft_data = this.$store.state.edrafts.drafts[this.entry_id]
 
       this.version = draft_data.version
+      this.status = draft_data.status // well for a draft....
       this.license = draft_data.license
       this.privacy = draft_data.privacy
       this.aspects_values = JSON.parse(JSON.stringify(draft_data.aspects_values)) //{...draft_data.aspects_values}
@@ -105,8 +108,13 @@
       this.entry_type = this.$store.getters.entry_type(this.type_slug)
 
       this.has_pages = this.entry_type.content.meta.hasOwnProperty("pages")
+
+      let required_aspects = this.$_.filter(this.entry_type.content.aspects, (a) => a.required || false)
+      this.required_values = this.$_.map(required_aspects, (a) => {return a.name})
+      // this.check_complete() // TODO bring back watcher, isnt triggered tho...
     },
     methods: {
+      // TODO Depracated
       updateRequired(aspect) {
         this.required_values[aspect.title] = aspect.value
         for (let req_asp in this.required_values) {
@@ -118,10 +126,22 @@
         }
         this.complete = true
       },
+      check_complete() {
+          for (let aspect_name of this.required_values) {
+            let val = this.aspects_values[aspect_name]
+            console.log("checking", aspect_name, val)
+            if (val === null || val === "") {
+              this.complete = false
+              console.log("fail")
+              return
+            }
+          }
+          this.complete = true
+      },
       aspectComponent(aspect) {
         return MAspectComponent(aspect)
       },
-      store_data() {
+      store_data(version_increase = false) {
         return {
           type_slug: this.type_slug,
           draft_id: this.entry_id,
@@ -131,7 +151,8 @@
           license: this.license,
           privacy: this.privacy,
           activities: complete_activities(this.entry_type, "send", this.aspects_values),
-          ref: this.ref
+          ref: this.ref,
+          version: this.version + (version_increase ? 1 : 0)
         }
       },
       send() {
@@ -150,8 +171,8 @@
           console.log("error", err)
         })
       },
-      autosave() {
-        this.$store.commit("edrafts/save_draft", this.store_data())
+      autosave(version_increase = false) {
+        this.$store.commit("edrafts/save_draft", this.store_data(version_increase))
       },
       cancel_draft() {
         // TODO maybe with confirmation
@@ -159,7 +180,7 @@
         this.$router.push("/")
       },
       save(event, goto) { // draft
-        this.autosave()
+        this.autosave(true)
         this.$store.commit("set_snackbar", {message: "Draft saved", ok: true})
         if (goto !== undefined) {
           this.$router.push("/")
@@ -268,6 +289,25 @@
       },
       page_info() {
         return this.entry_type.content.meta.pages[this.page]
+      },
+      mode() {
+        return this.version === 0 ? CREATE : EDIT
+      },
+      entry_actions_props() {
+        return {
+          parent: this.ref,
+          mode: this.mode,
+          entry_type: this.entry_type,
+          status: this.status,
+          version: this.version,
+          aspects_values: this.aspects_values
+        }
+      }
+    },
+    watch: {
+      aspects_values(new_values) {
+        console.log("update values")
+        this.check_complete()
       }
     }
   }

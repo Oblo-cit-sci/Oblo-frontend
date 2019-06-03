@@ -22,6 +22,7 @@
 
 <script>
 
+    // TODO remove v-on:update-required="updateRequired"
     /*
 
       kindof the 3. generation of List after ListOf and List.
