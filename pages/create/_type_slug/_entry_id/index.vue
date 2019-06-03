@@ -6,15 +6,16 @@
         Title_Description(:title="page_info.title" header_type="h3" :description="page_info.description")
       div(v-if="ref")
         span This entry is part of the draft: &nbsp
-        a(@click="back_to_ref") {{ref.parent_title}}
+        a(@click="back_to_ref") {{entry.ref.parent_title}}
       br
       div(v-for="(aspect, index) in shown_aspects" :key="index")
         component(v-bind:is="aspectComponent(aspect)"
           v-bind:aspect="aspect"
-          v-bind:value.sync="aspects_values[aspect.name]"
+          v-bind:value.sync="entry.aspects_values[aspect.name]"
           v-on:create_related="create_related($event)")
       div(v-if="!ref")
-        License(v-bind:passedLicense.sync="license" v-if="has_license")
+        License(v-bind:passedLicense.sync="entry.license" v-if="has_license")
+        Privacy(v-bind:passedPrivacy.sync="entry.privacy" v-if="has_privacy")
       EntryActions(v-bind="entry_actions_props" :page.sync="page")
 
 </template>
@@ -42,10 +43,9 @@
   import License from "~~/components/License"
   import Privacy from "~~/components/Privacy"
 
-  import {MAspectComponent, complete_activities} from "~~/lib/client"
+  import {MAspectComponent} from "~~/lib/client"
 
-  import Entry from "~~/lib/entry"
-  import {create_and_store, draft_title} from "../../../../lib/entry"
+  import {create_and_store} from "../../../../lib/entry"
   import Paginate from "../../../../components/Paginate"
   import Title_Description from "../../../../components/Title_Description"
   import EntryActions from "../../../../components/EntryActions";
@@ -68,7 +68,7 @@
         // type_slug, draft_id, entry_id, license, privacy, version, status, aspects_values, ref
         entry: null,
 
-
+        /*
         type_slug: null, // immu
         // draft_id
         entry_id: null, // draft_id or entry_uuid
@@ -78,7 +78,7 @@
         status: null,
         aspects_values: null,
         ref: null,
-
+        */
         //
         entry_type: null, // the full shizzle for the type_slug
         required_values: [], // shortcut, but in entry_type
@@ -93,8 +93,11 @@
     },
     created() {
       this.type_slug = this.$route.params.type_slug
+      // TODO carefull refactor later
       this.entry_id = this.$route.params.entry_id // draft_id or entry_uuid
 
+      this.entry = this.$store.state.edrafts.drafts[this.entry_id]
+      /*
       let draft_data = this.$store.state.edrafts.drafts[this.entry_id]
 
       this.version = draft_data.version
@@ -102,14 +105,16 @@
       this.license = draft_data.license
       this.privacy = draft_data.privacy
       this.aspects_values = JSON.parse(JSON.stringify(draft_data.aspects_values)) //{...draft_data.aspects_values}
-
+      */
+      console.log(this.type_slug)
       this.entry_type = this.$store.getters.entry_type(this.type_slug)
-
+      console.log(this.entry_type)
       this.has_pages = this.entry_type.content.meta.hasOwnProperty("pages")
 
       let required_aspects = this.$_.filter(this.entry_type.content.aspects, (a) => a.required || false)
       this.required_values = this.$_.map(required_aspects, (a) => {return a.name})
       // this.check_complete() // TODO bring back watcher, isnt triggered tho...
+      console.log(this.has_pages)
     },
     methods: {
       // TODO Depracated
@@ -126,7 +131,7 @@
       },
       check_complete() {
           for (let aspect_name of this.required_values) {
-            let val = this.aspects_values[aspect_name]
+            let val = this.entry.aspects_values[aspect_name]
             console.log("checking", aspect_name, val)
             if (val === null || val === "") {
               this.complete = false
@@ -139,6 +144,7 @@
       aspectComponent(aspect) {
         return MAspectComponent(aspect)
       },
+      /*
       store_data(version_increase = false) {
         return {
           type_slug: this.type_slug,
@@ -152,7 +158,7 @@
           ref: this.ref,
           version: this.version + (version_increase ? 1 : 0)
         }
-      },
+      },*/
       send() {
         this.sending = true
 
@@ -279,12 +285,12 @@
       },
       // maybe also consider:
       // https://github.com/edisdev/download-json-data/blob/develop/src/components/Download.vue
-      dl_url() {
+      /*dl_url() {
         return "data:text/jsoncharset=utf-8," + encodeURIComponent(JSON.stringify(this.aspects_values))
       },
       download_title() {
         return (this.aspects_values.title || "Survey " + this.entry_id).replace(" ", "_") + ".json"
-      },
+      }, */
       page_info() {
         return this.entry_type.content.meta.pages[this.page]
       },
@@ -293,12 +299,13 @@
       },
       entry_actions_props() {
         return {
-          parent: this.ref,
+          //parent: this.ref,
           mode: this.mode,
           entry_type: this.entry_type,
-          status: this.status,
-          version: this.version,
-          aspects_values: this.aspects_values
+          //status: this.status,
+          //version: this.version,
+          //aspects_values: this.aspects_values,
+          entry: this.entry
         }
       }
     },

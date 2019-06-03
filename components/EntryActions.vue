@@ -86,23 +86,11 @@ edit:
     name: "EntryActions",
     components: {Paginate},
     props: {
-      parent: {
-        type: Object
-      },
       mode: {
         type: String // view, create edit
       },
       entry_type: { // TODO maybe doesnt need to be the full thing
         type: Object
-      },
-      status: {
-        type: String // DRAFT, STORED, SUBMIT
-      },
-      version: {
-        type: Number
-      },
-      aspects_values: {
-        type: Object// should have version
       },
       page: {
         type: Number
@@ -122,7 +110,7 @@ edit:
 
       },
       draft_edit() {
-        return this.mode === EDIT && this.status === DRAFT
+        return this.mode === EDIT && this.entry.status === DRAFT
       },
       for_submit() { // or private local
         return (this.entry_type.content.meta.privacy || PUBLIC) !== PRIVATE_LOCAL
@@ -137,11 +125,11 @@ edit:
         return this.entry_type.content.meta.hasOwnProperty("pages")
       },
       dl_url() {
-        return "data:text/jsoncharset=utf-8," + encodeURIComponent(JSON.stringify(this.aspects_values))
+        return "data:text/jsoncharset=utf-8," + encodeURIComponent(JSON.stringify(this.entry.aspects_values))
       },
       download_title() {
         // TODO WHAT?
-        return (this.aspects_values.title || "Survey " + this.entry_id).replace(" ", "_") + ".json"
+        return (this.entry.aspects_values.title || "Survey " + this.entry.entry_id).replace(" ", "_") + ".json"
       },
     },
     data() {
@@ -156,14 +144,14 @@ edit:
         // for in mode = view
       },
       cancel() {
-        console.log(this.create, this.version)
-        if(this.create && this.version === 0) {
-          this.$store.commit("edrafts/remove_draft", this.entry_id);
+        console.log(this.create, this.entry.version)
+        if(this.create && this.entry.version === 0) {
+          this.$store.commit("edrafts/remove_draft", this.entry.entry_id);
         }
         this.$router.push("/");
       },
       delete_draft() {
-        this.$store.commit("edrafts/remove_draft", this.entry_id);
+        this.$store.commit("edrafts/remove_draft", this.entry.entry_id);
         this.$router.push("/");
         // TODO test later if that is ok, not calling the commit twice
         //this.cancel()
@@ -180,22 +168,11 @@ edit:
 
       },
       // HELPER
-      store_data(version_increase = false) {
-        return {
-          type_slug: this.type_slug,
-          draft_id: this.entry_id,
-          entry_id: this.entry_id,
-          title: draft_title(this.entry_type.title, this.aspects_values.title, this.entry_id),
-          aspects_values: this.aspects_values,
-          license: this.license,
-          privacy: this.privacy,
-          activities: complete_activities(this.entry_type, "send", this.aspects_values),
-          ref: this.ref,
-          version: this.version + (version_increase ? 1 : 0)
-        }
-      },
       autosave(version_increase = false){
-        this.$store.commit("edrafts/save_draft", this.store_data(version_increase))
+        if(version_increase) {
+          this.entry.version = this.entry.version + 1;
+        }
+        this.$store.commit("edrafts/save_draft",  this.entry)
       }
     },
     watch: {
