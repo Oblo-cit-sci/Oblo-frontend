@@ -43,6 +43,7 @@
           console.log("HOW DID U GET HERE. PAGE VIEW FOR A NON PAGE ASPECT");
       }
       console.log("final aspect", this.aspect)
+      // todo, nope, entry_id, nope
       this.draft_id = this.$route.params.entry_id;
       this.aspect_value = this.$store.state.edrafts.drafts[this.draft_id].aspects_values[this.aspect_name];
       console.log("creation done")

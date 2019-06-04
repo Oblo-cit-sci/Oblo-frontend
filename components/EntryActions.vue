@@ -5,81 +5,27 @@
       v-on:lastpage="last_page = $event")
     span(v-if="view")
       v-btn(color="secondary" @click="edit") edit
-    span(else)
+    span(v-else)
       v-btn(color="seconday" @click="cancel") cancel
 
-      v-btn(v-if="draft_edit" color="warning" @click="delete_draft") delete draft
+      span(v-if="!init")
+        v-btn(v-if="!private_local" color="warning" @click="delete_draft") delete draft
+        v-btn(v-else color="warning" @click="delete_draft") delete
 
+      v-btn(v-if="!private_local" color="secondary" @click="save_draft()") save draft
+      v-btn(v-else color="success" @click="save") save
 
-      v-btn(color="secondary" @click="save_draft()") save draft
+      v-btn(v-if="!private_local" color="success" @click="submit" :disable="connected") submit
+      v-btn(v-if="private_local"  :href="dl_url" :download="download_title" :disabled="disable_download" color="success" ) download
 
-      v-btn(v-if="private_local" color="success" @click="save") save
-      span(v-else)
-        v-btn(v-if="connected" color="success" @click="submit") submit
-      v-btn(v-if="private_local"  :href="dl_url" :download="download_title" :disabled="!last_page" color="success" ) download
 </template>
 
 <script>
 
-  /*
-      div(v-if="!ref")
-        v-btn(@click="cancel_draft" color="error") cancel
-        v-btn(color="secondary" @click="save($event,'/')") save draft
-        v-btn(v-if="can_submit" v-bind:disabled="!complete" color="success" :loading="sending" @click="send") submit
-        v-btn(:href="dl_url" :download="download_title" v-if="can_download" :disabled="!last_page" color="success" ) Download
-      div(v-else)
-        div License and Privacy are the same as the reference/parent entry
-      div(v-if="ref")
-        v-btn(color="secondary" @click="save_back") save & back
-  */
 
-  /*
-    drafts:
-      - cancel
-      - delete draft (after version 0)
-      - save (for private local or offline)
-      - submit (other)
-      : if has_pages
-        - next, prev
-
-     entries:
-      view:
-        - edit
-      edit:
-        - cancel
-        - delete entry
-        - save (pricate local or offline)
-        - submit (other)
-
-
-create:
-	= version: 0
-	= status: draft
-
-	! cancel
-
-	! save
-	  private-local?
-	    save-entry
-    else
-      offline?
-        save draft
-  not private-local? offline?
-    ! submit
-
-edit:
-	status = draft?
-    version > 0:
-      ! delete draft
-  not private local? offline?
-    ! delete entry
-
-   */
-
-
-  import {CREATE, DRAFT, EDIT, PRIVATE_LOCAL, PUBLIC, VIEW} from "../lib/consts";
+  import {CONTEXT_ENTRY, CREATE, DRAFT, EDIT, PRIVATE_LOCAL, PUBLIC, VIEW} from "../lib/consts";
   import Paginate from "./Paginate";
-  import {draft_title} from "../lib/entry";
+  import {delete_draft, save_draft, save_entry} from "../lib/entry";
   import {complete_activities} from "../lib/client";
 
   export default {
@@ -106,14 +52,11 @@ edit:
       create() {
         return this.mode === CREATE
       },
-      draft() {
-
+      init() {
+        return this.entry.version === 0
       },
       draft_edit() {
         return this.mode === EDIT && this.entry.status === DRAFT
-      },
-      for_submit() { // or private local
-        return (this.entry_type.content.meta.privacy || PUBLIC) !== PRIVATE_LOCAL
       },
       private_local() {
         return (this.entry_type.content.meta.privacy || PUBLIC) === PRIVATE_LOCAL
@@ -121,7 +64,7 @@ edit:
       connected() {
         return this.$store.state.connected
       },
-      has_pages() {
+      has_pages() { // todo duplicate
         return this.entry_type.content.meta.hasOwnProperty("pages")
       },
       dl_url() {
@@ -129,8 +72,11 @@ edit:
       },
       download_title() {
         // TODO WHAT?
-        return (this.entry.aspects_values.title || "Survey " + this.entry.entry_id).replace(" ", "_") + ".json"
+        return (this.entry.aspects_values.title || this.entry.type_slug + " " + this.entry.entry_id).replace(" ", "_") + ".json"
       },
+      disable_download() {
+        return this.has_pages && !this.last_page
+      }
     },
     data() {
       return {
@@ -144,35 +90,62 @@ edit:
         // for in mode = view
       },
       cancel() {
-        console.log(this.create, this.entry.version)
-        if(this.create && this.entry.version === 0) {
-          this.$store.commit("edrafts/remove_draft", this.entry.entry_id);
+        if(this.init) {
+          this.delete_draft()
+        } else {
+          this.back()
         }
-        this.$router.push("/");
       },
       delete_draft() {
-        this.$store.commit("edrafts/remove_draft", this.entry.entry_id);
-        this.$router.push("/");
-        // TODO test later if that is ok, not calling the commit twice
-        //this.cancel()
+        delete_draft(this.$store, this.entry)
+        this.$store.commit("set_snackbar", {message: "Draft deleted", ok: true})
+        this.back()
       },
-      save_draft(goto) {
-        this.autosave(true)
+      save_draft() {
+        save_draft(this.$store, this.entry, true)
         this.$store.commit("set_snackbar", {message: "Draft saved", ok: true})
-        this.$router.push("/")
+        this.back()
       },
       save() {
+        // todo not if it is an aspect page
+        save_entry(this.$store, this.entry)
 
+        if(this.entry.ref){
+          let ref = this.entry.ref
+          if (ref.hasOwnProperty("draft_id")) {
+            // TODO, here we actually need to know if we are in a AspectPage or ContextEntry
+            if (ref.aspect_name) {
+              let data = {
+                draft_id: ref.draft_id,
+                aspect_name: ref.aspect_name,
+                value: {
+                  type: CONTEXT_ENTRY,
+                  draft_id: this.entry.entry_id
+                }
+              };
+              if (ref.hasOwnProperty("index")) {
+                data.index = ref.index;
+              }
+              this.$store.commit("edrafts/set_draft_aspect_value", data);
+            }
+            // TODO this would break for aspect-pages
+            // well AspectPage dont really have any query params,
+          }
+        }
+        //
+        this.back()
       },
       submit() {
-
+        // todo
+        this.back()
       },
-      // HELPER
-      autosave(version_increase = false){
-        if(version_increase) {
-          this.entry.version = this.entry.version + 1;
-        }
-        this.$store.commit("edrafts/save_draft",  this.entry)
+      back() {
+          if(this.entry.ref) {
+            // draft or entry....
+            this.$router.push("/create/" + this.entry.ref.type_slug + "/" + this.entry.ref.draft_id)
+          } else {
+            this.$router.push("/")
+          }
       }
     },
     watch: {

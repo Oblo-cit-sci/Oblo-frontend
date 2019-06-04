@@ -4,7 +4,7 @@
       Title_Description(:title="entry_type.title" header_type="h1" :description="entry_type.description")
       div(v-if="has_pages")
         Title_Description(:title="page_info.title" header_type="h3" :description="page_info.description")
-      div(v-if="ref")
+      div(v-if="entry.ref")
         span This entry is part of the draft: &nbsp
         a(@click="back_to_ref") {{entry.ref.parent_title}}
       br
@@ -13,7 +13,7 @@
           v-bind:aspect="aspect"
           v-bind:value.sync="entry.aspects_values[aspect.name]"
           v-on:create_related="create_related($event)")
-      div(v-if="!ref")
+      div(v-if="!entry.ref")
         License(v-bind:passedLicense.sync="entry.license" v-if="has_license")
         Privacy(v-bind:passedPrivacy.sync="entry.privacy" v-if="has_privacy")
       EntryActions(v-bind="entry_actions_props" :page.sync="page")
@@ -31,9 +31,6 @@
   import CompositeAspect from "~~/components/aspectInput/CompositeAspect"
   import Select from "~~/components/aspectInput/Select"
 
-  // TODO REFA
-  // import ListOf from "~~/components/aspectInput/ListOf"
-
   import List from "~~/components/aspectInput/List"
   import Map from "~~/components/aspectInput/Map"
 
@@ -45,7 +42,7 @@
 
   import {MAspectComponent} from "~~/lib/client"
 
-  import {create_and_store} from "../../../../lib/entry"
+  import {autosave, create_and_store} from "../../../../lib/entry"
   import Paginate from "../../../../components/Paginate"
   import Title_Description from "../../../../components/Title_Description"
   import EntryActions from "../../../../components/EntryActions";
@@ -68,18 +65,6 @@
         // type_slug, draft_id, entry_id, license, privacy, version, status, aspects_values, ref
         entry: null,
 
-        /*
-        type_slug: null, // immu
-        // draft_id
-        entry_id: null, // draft_id or entry_uuid
-        license: null,  // just the short
-        privacy: null, // string
-        version: null,
-        status: null,
-        aspects_values: null,
-        ref: null,
-        */
-        //
         entry_type: null, // the full shizzle for the type_slug
         required_values: [], // shortcut, but in entry_type
 
@@ -96,27 +81,36 @@
       // TODO carefull refactor later
       this.entry_id = this.$route.params.entry_id // draft_id or entry_uuid
 
-      this.entry = this.$store.state.edrafts.drafts[this.entry_id]
-      /*
-      let draft_data = this.$store.state.edrafts.drafts[this.entry_id]
+      this.entry = JSON.parse(JSON.stringify(this.$store.state.edrafts.drafts[this.entry_id]))
 
-      this.version = draft_data.version
-      this.status = draft_data.status // well for a draft....
-      this.license = draft_data.license
-      this.privacy = draft_data.privacy
-      this.aspects_values = JSON.parse(JSON.stringify(draft_data.aspects_values)) //{...draft_data.aspects_values}
-      */
-      console.log(this.type_slug)
+      //console.log(this.type_slug)
       this.entry_type = this.$store.getters.entry_type(this.type_slug)
-      console.log(this.entry_type)
+      //console.log(this.entry_type)
       this.has_pages = this.entry_type.content.meta.hasOwnProperty("pages")
 
       let required_aspects = this.$_.filter(this.entry_type.content.aspects, (a) => a.required || false)
       this.required_values = this.$_.map(required_aspects, (a) => {
         return a.name
       })
+
+      if (this.entry.ref) {
+        // TODO maybe simply copy?!
+        let ref = this.entry.ref
+        let parent = {}
+        if (ref.hasOwnProperty("draft_id")) {
+          parent = this.$store.state.edrafts.drafts[ref.draft_id];
+          ref.type = "draft"
+        } else if (this.entry.ref.hasOwnProperty("entry_id")) {
+          ref.type = "entry"
+          // todo...
+        }
+
+        ref.type_slug = parent.type_slug
+        ref.parent_title = parent.title
+      }
+
       // this.check_complete() // TODO bring back watcher, isnt triggered tho...
-      console.log(this.has_pages)
+      //console.log(this.has_pages)
     },
     methods: {
       // TODO Depracated
@@ -147,21 +141,11 @@
       aspectComponent(aspect) {
         return MAspectComponent(aspect)
       },
-      /*
-      store_data(version_increase = false) {
-        return {
-          type_slug: this.type_slug,
-          draft_id: this.entry_id,
-          entry_id: this.entry_id,
-          title: draft_title(this.entry_type.title, this.aspects_values.title, this.entry_id),
-          aspects_values: this.aspects_values,
-          license: this.license,
-          privacy: this.privacy,
-          activities: complete_activities(this.entry_type, "send", this.aspects_values),
-          ref: this.ref,
-          version: this.version + (version_increase ? 1 : 0)
+      back_to_ref() {
+        if (this.entry.ref.type === "draft") {
+          this.$router.push("/create/" + this.entry.ref.type_slug + "/" + this.entry.ref.draft_id)
         }
-      },*/
+      },
       send() {
         this.sending = true
 
@@ -178,31 +162,10 @@
           console.log("error", err)
         })
       },
-      /*autosave(version_increase = false) {
-        this.$store.commit("edrafts/save_draft", this.store_data(version_increase))
-      // TODO kick out in dev
-      autosave() {
-        this.$store.commit("edrafts/save_draft", this.store_data())
-      },
-      // TODO kick out in dev
-      cancel_draft() {
-        // TODO maybe with confirmation
-        this.$store.commit("edrafts/remove_draft", this.entry_id)
-        this.$router.push("/")
-      },
-      // TODO kick out in dev
-      save(event, goto) { // draft
-        this.autosave(true)
-        this.$store.commit("set_snackbar", {message: "Draft saved", ok: true})
-        if (goto !== undefined) {
-          this.$router.push("/")
-        }
-      },*/
-
       // TODO obviously this needs to be refatored
       // can be passed down to aspect. it only needs the entry_id passed down
       create_related(aspect) {
-        this.autosave()
+        autosave(this.$store, this.entry)
         /*
         page_aspect:
 	      /create/<type_slug/<draft_id/<aspect_name
@@ -235,9 +198,10 @@
             let ref_data = {
               draft_id: this.entry_id,
               aspect_name: aspect.name,
+              //type_slug: this.entry.type_slug
             }
             if (is_list) {
-              ref_data.index = this.aspects_values[aspect.name].length
+              ref_data.index = this.entry.aspects_values[aspect.name].length
             }
             const new_draft_id = create_and_store(new_type_slug, this.$store)
             this.$store.commit("edrafts/add_reference", {
@@ -254,7 +218,7 @@
           // ********  ASPECT_PAGE
           if (aspect_to_check.attr.view === "page") {
             this.$router.push({
-              path: "/create/" + this.type_slug + "/" + this.entry_id + "/" + aspect.name
+              path: "/create/" + this.entry.type_slug + "/" + this.entry.entry_id + "/" + aspect.name
             })
           } else {
             console.log("PROBLEM DERIVING REF TYPE FOR", aspect, "ACTUALLY THIS FUNCTION SHOULDNT BE CALLED")
@@ -284,24 +248,11 @@
           return this.entry_type.content.meta.privacy !== "PRIVATE_LOCAL"
         } else return true
       },
-      can_submit() {
-        if (this.entry_type.content.meta.hasOwnProperty("privacy")) {
-          return this.entry_type.content.meta.privacy !== "PRIVATE_LOCAL"
-        } else return true
-      },
-      can_download() {
-        if (this.entry_type.content.meta.hasOwnProperty("privacy")) {
-          return this.entry_type.content.meta.privacy === "PRIVATE_LOCAL"
-        } else return false
-      },
       // maybe also consider:
       // https://github.com/edisdev/download-json-data/blob/develop/src/components/Download.vue
       /*dl_url() {
         return "data:text/jsoncharset=utf-8," + encodeURIComponent(JSON.stringify(this.aspects_values))
-      },
-      download_title() {
-        return (this.aspects_values.title || "Survey " + this.entry_id).replace(" ", "_") + ".json"
-      }, */
+      }*/
       page_info() {
         return this.entry_type.content.meta.pages[this.page]
       },
@@ -310,19 +261,15 @@
       },
       entry_actions_props() {
         return {
-          //parent: this.ref,
           mode: this.mode,
           entry_type: this.entry_type,
-          //status: this.status,
-          //version: this.version,
-          //aspects_values: this.aspects_values,
           entry: this.entry
         }
       }
     },
     watch: {
       aspects_values(new_values) {
-        console.log("update values")
+        //console.log("update values")
         this.check_complete()
       }
     }

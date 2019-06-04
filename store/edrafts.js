@@ -10,7 +10,7 @@ export const mutations = {
     console.log(state)
   },
   save_draft(state, draft_data) {
-    state.drafts[draft_data.entry_id] = draft_data;
+    state.drafts[draft_data.draft_id] = draft_data;
   },
   remove_draft(state, draft_id) {
     delete state.drafts[draft_id]

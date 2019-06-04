@@ -1,9 +1,9 @@
 <template lang="pug">
   v-flex(xs12='' sm8='' md6='')
     v-form
-      v-text-field(v-model='username' label='Username' required='' autofocus)
+      v-text-field(v-model='username' label='Username' required='' )
       v-text-field(v-model='password' type='password' label='Password' required='')
-      v-btn(@click='login' color='success') Login
+      v-btn(@click='login' color='success' autofocus) Login
     v-alert(:value='errorMsg' type='error') {{errorMsg}}
 </template>
 
@@ -16,8 +16,8 @@
     name: "Login",
     data() {
       return {
-        username: "",
-        password: "",
+        username: "admin",
+        password: "admin",
         errorMsg: ""
       }
     },

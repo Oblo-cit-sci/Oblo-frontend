@@ -16,14 +16,9 @@ export default {
   },
   created() {
     this.i_value = this.value;
-   /* if (this.aspect.required) {
-      this.required = true;
-     // this.$emit('update-required', {title: this.aspect.name, value: this.i_value})
-    }*/
   },
   methods: {
     title_description() {
-      //console.log("title-descr for ", this.aspect);
       if (!this.aspect.hasOwnProperty("name")) {
         console.log("warning: aspect", this.aspect, "has no name")
       }
@@ -36,7 +31,6 @@ export default {
       }
     },
     value_change(event) {
-      //console.log("value-change", event)
       this.$emit('update:value', event);
     }
   },
