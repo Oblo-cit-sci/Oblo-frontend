@@ -112,7 +112,9 @@
       this.has_pages = this.entry_type.content.meta.hasOwnProperty("pages")
 
       let required_aspects = this.$_.filter(this.entry_type.content.aspects, (a) => a.required || false)
-      this.required_values = this.$_.map(required_aspects, (a) => {return a.name})
+      this.required_values = this.$_.map(required_aspects, (a) => {
+        return a.name
+      })
       // this.check_complete() // TODO bring back watcher, isnt triggered tho...
       console.log(this.has_pages)
     },
@@ -130,16 +132,16 @@
         this.complete = true
       },
       check_complete() {
-          for (let aspect_name of this.required_values) {
-            let val = this.entry.aspects_values[aspect_name]
-            console.log("checking", aspect_name, val)
-            if (val === null || val === "") {
-              this.complete = false
-              console.log("fail")
-              return
-            }
+        for (let aspect_name of this.required_values) {
+          let val = this.entry.aspects_values[aspect_name]
+          console.log("checking", aspect_name, val)
+          if (val === null || val === "") {
+            this.complete = false
+            console.log("fail")
+            return
           }
-          this.complete = true
+        }
+        this.complete = true
       },
       // TODO goes out for Aspect component
       aspectComponent(aspect) {
@@ -196,7 +198,7 @@
           this.$router.push("/")
         }
       },*/
-      },
+
       // TODO obviously this needs to be refatored
       // can be passed down to aspect. it only needs the entry_id passed down
       create_related(aspect) {
@@ -228,7 +230,7 @@
 
         if (typeof (aspect_to_check) === "string") {
           // ******** CONTEXT_ENTRY
-          if (aspect_to_check[0] === "$"){
+          if (aspect_to_check[0] === "$") {
             const new_type_slug = aspect_to_check.substring(1)
             let ref_data = {
               draft_id: this.entry_id,
@@ -258,7 +260,7 @@
             console.log("PROBLEM DERIVING REF TYPE FOR", aspect, "ACTUALLY THIS FUNCTION SHOULDNT BE CALLED")
           }
         }
-      },
+      }
     },
     computed: {
       shown_aspects() {
