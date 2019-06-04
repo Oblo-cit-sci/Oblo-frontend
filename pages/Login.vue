@@ -27,13 +27,13 @@
           username: this.username,
           password: this.password,
         }).then(({data}) => {
-
-          if (data.status === true || data.msg_ === LOGIN_ALREADY_LOGGED_IN) {
+//console.log(data, data.status)
+          if (data.status || data.msg_ === LOGIN_ALREADY_LOGGED_IN) {
+            //console.log("LOGGIN DONE")
             initialize(this.$axios, this.$store).then((res) => {
             });
             this.$store.commit("user/login", data.result);
             this.$store.commit("entries/set_own_entries", data.result.own_entries);
-            console.log("login-data", data);
             this.$router.push("/");
             this.$store.commit("set_snackbar", {message: "You are logged in", ok: data.status === true});
           } else {

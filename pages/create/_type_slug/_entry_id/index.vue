@@ -141,6 +141,7 @@
           }
           this.complete = true
       },
+      // TODO goes out for Aspect component
       aspectComponent(aspect) {
         return MAspectComponent(aspect)
       },
@@ -177,12 +178,17 @@
       },
       /*autosave(version_increase = false) {
         this.$store.commit("edrafts/save_draft", this.store_data(version_increase))
+      // TODO kick out in dev
+      autosave() {
+        this.$store.commit("edrafts/save_draft", this.store_data())
       },
+      // TODO kick out in dev
       cancel_draft() {
         // TODO maybe with confirmation
         this.$store.commit("edrafts/remove_draft", this.entry_id)
         this.$router.push("/")
       },
+      // TODO kick out in dev
       save(event, goto) { // draft
         this.autosave(true)
         this.$store.commit("set_snackbar", {message: "Draft saved", ok: true})
@@ -190,6 +196,9 @@
           this.$router.push("/")
         }
       },*/
+      },
+      // TODO obviously this needs to be refatored
+      // can be passed down to aspect. it only needs the entry_id passed down
       create_related(aspect) {
         this.autosave()
         /*

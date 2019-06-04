@@ -9,7 +9,8 @@ let default_user_data = {
   // of 1 degree will result in error of around 50km per coordinate -0.5, +0.5 degree change around the real location
   location_error: 2,
   defaultLicense: "CC0", // should come from the server
-  defaultPrivacy: "public"
+  defaultPrivacy: "public",
+  location: ""
 }
 
 
@@ -22,7 +23,7 @@ export const state = () => ({
 export const mutations = {
   login(state, data) {
     //console.log("LOGIN");
-    console.log("store data", data.own_entries);
+    //console.log("store data", data.own_entries);
     state.logged_in = true;
     state.user_data = data.user_data;
   },
