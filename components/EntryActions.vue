@@ -9,15 +9,15 @@
       v-btn(color="seconday" @click="cancel") cancel
 
       span(v-if="!init")
-        v-btn(v-if="!private_local" color="warning" @click="delete_draft") delete draft
-        v-btn(v-else color="warning" @click="delete_draft") delete
+        v-btn(v-if="!private_local" color="warning" @click="show_delete") delete draft
+        v-btn(v-else color="warning" @click="show_delete") delete
 
       v-btn(v-if="!private_local" color="secondary" @click="save_draft()") save draft
       v-btn(v-else color="success" @click="save") save
 
       v-btn(v-if="!private_local" color="success" @click="submit" :disable="connected") submit
       v-btn(v-if="private_local"  :href="dl_url" :download="download_title" :disabled="disable_download" color="success" ) download
-    DecisionDialog(v-bind="remove_data_dialog" :open.sync="show_remove" v-on:action="delete_draft")
+    DecisionDialog(v-bind="remove_dialog_data" :open.sync="show_remove" v-on:action="delete_this")
 </template>
 
 <script>
@@ -25,12 +25,13 @@
 
   import {CONTEXT_ENTRY, CREATE, DRAFT, EDIT, PRIVATE_LOCAL, PUBLIC, VIEW} from "../lib/consts";
   import Paginate from "./Paginate";
-  import {delete_draft, save_draft, save_entry} from "../lib/entry";
+  import {delete_draft, delete_entry, save_draft, save_entry} from "../lib/entry";
   import {complete_activities} from "../lib/client";
+  import DecisionDialog from "./DecisionDialog";
 
   export default {
     name: "EntryActions",
-    components: {Paginate},
+    components: {DecisionDialog, Paginate},
     props: {
       mode: {
         type: String // view, create edit
@@ -55,8 +56,8 @@
       init() {
         return this.entry.version === 0
       },
-      draft_edit() {
-        return this.mode === EDIT && this.entry.status === DRAFT
+      is_draft() {
+        return this.entry.status === DRAFT
       },
       private_local() {
         return (this.entry_type.content.meta.privacy || PUBLIC) === PRIVATE_LOCAL
@@ -82,7 +83,12 @@
       return {
         i_page: 0,
         last_page: false,
-        show_remove: false
+        show_remove: false,
+        remove_dialog_data: {
+          id: "",
+          title: "Delete entry",
+          text: "Are you sure you want to delete this entry?"
+        }
       }
     },
     methods: {
@@ -91,16 +97,46 @@
         // for in mode = view
       },
       cancel() {
-        if(this.init) {
+        if (this.init) {
           this.delete_draft()
         } else {
           this.back()
         }
       },
+      show_delete() {
+        if (this.init){
+          // todo change title and text
+        } else {
+
+        }
+        this.show_remove = true
+      },
+      delete_this() {
+        // TODO make use of entry.delete_local_entry
+        if (this.entry.status === DRAFT)
+          this.delete_draft()
+        else {
+          this.delete_entry()
+        }
+      },
       delete_draft() {
         delete_draft(this.$store, this.entry)
         this.$store.commit("set_snackbar", {message: "Draft deleted", ok: true})
+
+        if (this.entry.ref) {
+
+        }
         this.back()
+      },
+      delete_entry() {
+        delete_entry(this.$store, this.entry)
+        this.$store.commit("set_snackbar", {message: "Entry deleted", ok: true})
+
+        if (this.entry.ref) {
+
+          this.$store.commit("edrafts/set_draft_aspect_value", data);
+        }
+          this.back()
       },
       save_draft() {
         save_draft(this.$store, this.entry, true)
@@ -111,7 +147,7 @@
         // todo not if it is an aspect page
         save_entry(this.$store, this.entry)
 
-        if(this.entry.ref){
+        if (this.entry.ref) {
           let ref = this.entry.ref
           if (ref.hasOwnProperty("draft_id")) {
             // TODO, here we actually need to know if we are in a AspectPage or ContextEntry
@@ -127,7 +163,7 @@
               if (ref.hasOwnProperty("index")) {
                 data.index = ref.index;
               }
-              // or entry...
+              // todo or entry...
               this.$store.commit("edrafts/set_draft_aspect_value", data);
             }
             // TODO this would break for aspect-pages
@@ -142,12 +178,12 @@
         this.back()
       },
       back() {
-          if(this.entry.ref) {
-            // draft or entry....
-            this.$router.push("/create/" + this.entry.ref.type_slug + "/" + this.entry.ref.draft_id)
-          } else {
-            this.$router.push("/")
-          }
+        if (this.entry.ref) {
+          // draft or entry....
+          this.$router.push("/create/" + this.entry.ref.type_slug + "/" + this.entry.ref.draft_id)
+        } else {
+          this.$router.push("/")
+        }
       }
     },
     watch: {

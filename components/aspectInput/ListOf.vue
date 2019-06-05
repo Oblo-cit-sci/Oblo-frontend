@@ -90,14 +90,10 @@
         this.show_remove = true
       },
       remove(index) {
-        console.log("index",index)
         index = parseInt(index)
-        console.log("index",index)
         const item = this.i_value[index]
-        console.log("item", item)
         delete_local_entry(this.$store, item)
         this.i_value.splice(parseInt(index), 1)
-
         this.value_change(this.i_value)
       },
       create_item() {
