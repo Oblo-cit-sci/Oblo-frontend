@@ -41,16 +41,16 @@
 
   import {MAspectComponent} from "~~/lib/client"
 
-  import {autosave, create_and_store} from "../../../../lib/entry"
-  import Paginate from "../../../../components/Paginate"
-  import Title_Description from "../../../../components/Title_Description"
-  import EntryActions from "../../../../components/EntryActions";
-  import {CREATE, EDIT} from "../../../../lib/consts";
+  import {autosave, create_and_store} from "../../lib/entry"
+  import Paginate from "../../components/Paginate"
+  import Title_Description from "../../components/Title_Description"
+  import EntryActions from "../../components/EntryActions";
+  import {CREATE, EDIT} from "../../lib/consts";
 
   const ld = require("lodash")
 
   export default {
-    name: "entry_id",
+    name: "local_id",
     components: {
       EntryActions,
       Title_Description,
@@ -63,27 +63,24 @@
         // from the store should include
         // type_slug, draft_id, entry_id, license, privacy, version, status, aspects_values, ref
         entry: null,
-
         entry_type: null, // the full shizzle for the type_slug
         required_values: [], // shortcut, but in entry_type
-
         sending: false,
         complete: true,
-
         has_pages: false,
         page: 0,
         last_page: false
       }
     },
     created() {
-      this.type_slug = this.$route.params.type_slug
-      // TODO carefull refactor later
-      this.entry_id = this.$route.params.entry_id // draft_id or entry_uuid
-
-      this.entry = JSON.parse(JSON.stringify(this.$store.state.edrafts.drafts[this.entry_id]))
-
+      console.log(this.$route.params)
+      let local_id = this.$route.params.local_id
+      console.log(local_id)
+      // todo can also be fetched
+      this.entry = JSON.parse(JSON.stringify(this.$store.state.entries.own_entries.get(local_id)))
+      //this.type_slug = this.$route.params.type_slug
       //console.log(this.type_slug)
-      this.entry_type = this.$store.getters.entry_type(this.type_slug)
+      this.entry_type = this.$store.getters.entry_type(this.entry.type_slug)
       //console.log(this.entry_type)
       this.has_pages = this.entry_type.content.meta.hasOwnProperty("pages")
 

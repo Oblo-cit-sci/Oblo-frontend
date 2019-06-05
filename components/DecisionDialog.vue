@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-dialog(v-model="open" max-width="300px" lazy=true)
+  v-dialog(v-bind:value="open" max-width="300px" lazy=true)
     v-card
       v-card-title {{title}}
       v-card-text {{text}}
@@ -12,7 +12,7 @@
   export default {
     name: "DecisionDialog",
     props: {
-      name: {type: String, required: true},
+      id: {required: true},
       open: {type: Boolean, default: false},
       title: {type: String, default: ""},
       text: {type: String, default: ""},
@@ -24,11 +24,11 @@
     methods: {
       cancel() {
         this.$emit("update:open", false)
-        this.$emit("action", {confirm: false, name: this.name})
+        //this.$emit("action", {confirm: false, id: this.name})
       },
       confirm() {
         this.$emit("update:open", false)
-        this.$emit("action", {confirm: true, name: this.name})
+        this.$emit("action", {confirm: true, id: this.id})
       }
     }
   }

@@ -28,7 +28,6 @@
         span(v-if="aspect.attr.max") max: {{aspect.attr.max}}
     div(v-if="select")
       MultiSelect(:options="options" :selection.sync="i_value")
-
     div(v-else)
       v-btn(:disabled="!more_allowed" @click="add_value()" color="success") Add
         v-icon(right) add

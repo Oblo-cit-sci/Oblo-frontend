@@ -17,7 +17,7 @@
 
       v-btn(v-if="!private_local" color="success" @click="submit" :disable="connected") submit
       v-btn(v-if="private_local"  :href="dl_url" :download="download_title" :disabled="disable_download" color="success" ) download
-
+    DecisionDialog(v-bind="remove_data_dialog" :open.sync="show_remove" v-on:action="delete_draft")
 </template>
 
 <script>
@@ -81,7 +81,8 @@
     data() {
       return {
         i_page: 0,
-        last_page: false
+        last_page: false,
+        show_remove: false
       }
     },
     methods: {
@@ -120,12 +121,13 @@
                 aspect_name: ref.aspect_name,
                 value: {
                   type: CONTEXT_ENTRY,
-                  draft_id: this.entry.entry_id
+                  local_id: this.entry.local_id
                 }
               };
               if (ref.hasOwnProperty("index")) {
                 data.index = ref.index;
               }
+              // or entry...
               this.$store.commit("edrafts/set_draft_aspect_value", data);
             }
             // TODO this would break for aspect-pages
