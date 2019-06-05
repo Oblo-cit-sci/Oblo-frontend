@@ -33,6 +33,7 @@ export default {
       }
     },
     value_change(event) {
+      //console.log("asp mix", event)
       this.$emit('update:value', event);
     }
   },

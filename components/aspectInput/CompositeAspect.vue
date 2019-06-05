@@ -10,8 +10,8 @@
 
 <script>
   import AspectMixin from "./AspectMixin";
-  import {MAspectComponent} from "../../lib/client";
   import Title_Description from "../Title_Description";
+  import {MAspectComponent} from "../../lib/entry";
 
   export default {
     name: "CompositeAspect",

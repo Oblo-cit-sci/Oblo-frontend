@@ -1,7 +1,7 @@
 <template lang="pug">
   div
-    component(v-bind:is="aspectComponent(aspect_descr)"
-      v-bind:aspect="aspect_descr"
+    component(v-bind:is="aspectComponent(aspect)"
+      v-bind:aspect="aspect"
       v-bind:value="raw_value"
       v-bind:extra="{}"
       :edit="edit"
@@ -9,9 +9,10 @@
 </template>
 
 <script>
-  import {MAspectComponent} from "../lib/client";
   import TextShort from "./aspectInput/TextShort";
-  import {aspect_default_value} from "../lib/entry";
+  import TextLong from "./aspectInput/TextLong";
+
+  import {aspect_default_value, MAspectComponent} from "../lib/entry";
 
   // todo pull this down from entry
   // v-on:create_related="create_related($event)")
@@ -19,14 +20,14 @@
   export default {
     name: "Aspect",
     components: {
-      TextShort
+      TextShort, TextLong
     },
     props: {
       edit: {
         type: Boolean,
         default: false
       },
-      aspect_descr: Object,
+      aspect: Object,
       value: Object // a wrapper, which  might encode "exceptional_value"
     },
     data() {
@@ -42,13 +43,14 @@
         if(this.value.regular || true)
           return this.value.value
         else {
-          return aspect_default_value(this.aspect_descr)
+          // todo some extra value
+          return aspect_default_value(this.aspect)
         }
       }
     },
     methods: {
       aspectComponent() {
-        return MAspectComponent(this.aspect_descr)
+        return MAspectComponent(this.aspect)
       }
     }
   }

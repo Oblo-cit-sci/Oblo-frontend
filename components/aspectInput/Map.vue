@@ -48,10 +48,8 @@
     entries_as_options,
     get_codes_as_options,
     get_draft_by_id,
-    get_entries_of_type,
-    MAspectComponent
-  } from "../../lib/client"
-  import {aspect_default_value} from "../../lib/entry"
+    get_entries_of_type} from "../../lib/client"
+  import {aspect_default_value, MAspectComponent} from "../../lib/entry"
   import Title_Description from "../Title_Description"
   import MultiSelect from "../MultiSelect"
   import SingleSelect from "../SingleSelect"

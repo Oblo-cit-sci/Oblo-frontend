@@ -36,8 +36,8 @@
 <script>
 
   import AspectMixin from "./AspectMixin";
-  import {get_codes_as_options, MAspectComponent} from "../../lib/client";
-  import {aspect_default_value} from "../../lib/entry";
+  import {get_codes_as_options} from "../../lib/client";
+  import {aspect_default_value, MAspectComponent} from "../../lib/entry";
   import Title_Description from "../Title_Description";
   import MultiSelect from "../MultiSelect";
   const ld = require("lodash")

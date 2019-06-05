@@ -42,18 +42,13 @@
     data() {
       return {
         menu: false,
-        i_value_str: ""
       }
     },
-    created() {
-      this.i_value_str = this.i_value.toLocaleString()
-    },
-    watch: {
-      i_value(val) {
-        this.i_value_str = val.toLocaleString()
+    computed: {
+      i_value_str() {
+        return this.i_value.toString().substring(0,10)
       }
     }
-
   }
 </script>
 

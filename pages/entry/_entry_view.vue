@@ -38,7 +38,8 @@
 
   const ld = require('lodash');
 
-  import { MAspectComponentView, get_entrytpe, license_icon, strip_default_aspects } from "../../lib/client";
+  import { get_entrytpe, license_icon, strip_default_aspects } from "../../lib/client";
+  import {MAspectComponentView} from "../../lib/client";
 
   export default {
     name: "entryview",

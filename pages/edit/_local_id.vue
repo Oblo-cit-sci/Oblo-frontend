@@ -39,7 +39,7 @@
   import License from "~~/components/License"
   import Privacy from "~~/components/Privacy"
 
-  import {MAspectComponent} from "~~/lib/client"
+  import {MAspectComponent} from "~~/lib/entry"
 
   import {autosave, create_and_store} from "../../lib/entry"
   import Paginate from "../../components/Paginate"

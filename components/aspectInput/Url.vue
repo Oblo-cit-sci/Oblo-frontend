@@ -18,8 +18,6 @@
 
 <script>
 
-
-
   import AspectMixin from "./AspectMixin";
   import Title_Description from "../Title_Description";
 

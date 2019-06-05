@@ -15,7 +15,7 @@
       v-btn(v-if="!private_local" color="secondary" @click="save_draft()") save draft
       v-btn(v-else color="success" @click="save") save
 
-      v-btn(v-if="!private_local" color="success" @click="submit" :disable="connected") submit
+      v-btn(v-if="!private_local" color="success" @click="submit" :disable="connected" :loading="sending") submit
       v-btn(v-if="private_local"  :href="dl_url" :download="download_title" :disabled="disable_download" color="success" ) download
     DecisionDialog(v-bind="remove_dialog_data" :open.sync="show_remove" v-on:action="delete_this")
 </template>
@@ -88,7 +88,8 @@
           id: "",
           title: "Delete entry",
           text: "Are you sure you want to delete this entry?"
-        }
+        },
+        sending: false
       }
     },
     methods: {
@@ -104,7 +105,7 @@
         }
       },
       show_delete() {
-        if (this.init){
+        if (this.init) {
           // todo change title and text
         } else {
 
@@ -136,7 +137,7 @@
 
           this.$store.commit("edrafts/set_draft_aspect_value", data);
         }
-          this.back()
+        this.back()
       },
       save_draft() {
         save_draft(this.$store, this.entry, true)
@@ -175,7 +176,21 @@
       },
       submit() {
         // todo
-        this.back()
+        this.sending = true
+        this.$axios.post("/create_entry", this.entry).then((res) => {
+          this.sending = false
+          //console.log(res.data)
+          this.$store.commit("set_snackbar", {message: res.data.msg, ok: res.data.status})
+
+          // just call function
+          if (this.hasOwnProperty("draft_id")) {
+            this.$store.commit("remove_draft", this.draft_id)
+          }
+          this.back()
+        }).catch((err) => {
+          console.log("error", err)
+        })
+
       },
       back() {
         if (this.entry.ref) {

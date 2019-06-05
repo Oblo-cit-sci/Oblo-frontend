@@ -9,10 +9,7 @@
         a(@click="back_to_ref") {{entry.ref.parent_title}}
       br
       div(v-for="(aspect, index) in shown_aspects" :key="index")
-        component(v-bind:is="aspectComponent(aspect)"
-          v-bind:aspect="aspect"
-          v-bind:value.sync="entry.aspects_values[aspect.name]"
-          v-on:create_related="create_related($event)")
+        Aspect(:aspect="aspect" v-bind:value.sync="entry.aspects_values[aspect.name]" :edit="true")
       div(v-if="!entry.ref")
         License(v-bind:passedLicense.sync="entry.license" v-if="has_license")
         Privacy(v-bind:passedPrivacy.sync="entry.privacy" v-if="has_privacy")
@@ -22,10 +19,14 @@
 
 <script>
 
+/*
+        component(v-bind:is="aspectComponent(aspect)"
+          v-bind:aspect="aspect"
+          v-bind:value.sync="entry.aspects_values[aspect.name]"
+          v-on:create_related="create_related($event)")
 
-  import Basic from "~~/components/aspectInput/Basic"
-  import TextShort from "~~/components/aspectInput/TextShort"
-  import TextLong from "~~/components/aspectInput/TextLong"
+ */
+
   import Location from "~~/components/aspectInput/Location"
   import CompositeAspect from "~~/components/aspectInput/CompositeAspect"
   import Select from "~~/components/aspectInput/Select"
@@ -39,22 +40,24 @@
   import License from "~~/components/License"
   import Privacy from "~~/components/Privacy"
 
-  import {MAspectComponent} from "~~/lib/client"
+  import {MAspectComponent} from "~~/lib/entry"
 
   import {autosave, create_and_store} from "../../../../lib/entry"
   import Paginate from "../../../../components/Paginate"
   import Title_Description from "../../../../components/Title_Description"
   import EntryActions from "../../../../components/EntryActions";
   import {CREATE, EDIT} from "../../../../lib/consts";
+  import Aspect from "../../../../components/Aspect";
 
   const ld = require("lodash")
 
   export default {
     name: "draft_id",
     components: {
+      Aspect,
       EntryActions,
       Title_Description,
-      Paginate, Privacy, License, Basic, TextShort, TextLong, Location,
+      Paginate, Privacy, License, Location,
       List, AspectPageButton, CompositeAspect, Select, Map
     },
     mixins: [ReferenceMixin], // in case of a context entry, to be able to get back to the parent
@@ -67,7 +70,6 @@
         entry_type: null, // the full shizzle for the type_slug
         required_values: [], // shortcut, but in entry_type
 
-        sending: false,
         complete: true,
 
         has_pages: false,
@@ -144,22 +146,6 @@
         if (this.entry.ref.type === "draft") {
           this.$router.push("/create/" + this.entry.ref.type_slug + "/" + this.entry.ref.draft_id)
         }
-      },
-      send() {
-        this.sending = true
-
-        this.$axios.post("/create_entry", this.store_data()).then((res) => {
-          this.sending = false
-          //console.log(res.data)
-          this.$store.commit("set_snackbar", {message: res.data.msg, ok: res.data.status})
-
-          if (this.hasOwnProperty("draft_id")) {
-            this.$store.commit("remove_draft", this.draft_id)
-          }
-          this.$router.push("/")
-        }).catch((err) => {
-          console.log("error", err)
-        })
       },
       // TODO obviously this needs to be refatored
       // can be passed down to aspect. it only needs the entry_id passed down

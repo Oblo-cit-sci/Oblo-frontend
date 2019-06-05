@@ -16,7 +16,7 @@
 
   import Licci from "~~/components/aspectInput/special/Licci";
 
-  import {MAspectComponent} from "~~/lib/client";
+  import {MAspectComponent} from "~~/lib/entry";
   import ReferenceMixin from "~~/components/ReferenceMixin";
 
   export default {

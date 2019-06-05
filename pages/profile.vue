@@ -1,6 +1,6 @@
 <template lang="pug">
   v-flex(xs12 sm8 md6)
-    Aspect(:aspect_descr="profile_aspects.public_name" :value.sync="edits.public_name" :edit="edit_mode")
+    Aspect(:aspect="profile_aspects.public_name" :value.sync="edits.public_name" :edit="edit_mode")
     v-list
       v-subheader General
       v-list-tile(three-line)
@@ -9,8 +9,8 @@
           v-list-tile-sub-title username
         v-list-tile-action
           v-chip(outline disabled small) {{$store.state.user.user_data.global_role}}
-      Aspect(:aspect_descr="profile_aspects.description" :value.sync="edits.description" :edit="edit_mode")
-      Aspect(:aspect_descr="profile_aspects.location" :value.sync="edits.location" :edit="edit_mode")
+      Aspect(:aspect="profile_aspects.description" :value.sync="edits.description" :edit="edit_mode")
+      Aspect(:aspect="profile_aspects.location" :value.sync="edits.location" :edit="edit_mode")
       v-divider
       v-subheader Interested topics
       Taglist(:tags="$store.state.user.user_data.interested_topics")
