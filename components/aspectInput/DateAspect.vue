@@ -12,7 +12,7 @@
     >
       <template v-slot:activator="{ on }">
         <v-text-field
-          v-model="i_value"
+          v-bind:value="i_value_str"
           :label="aspect.name"
           prepend-icon="event"
           readonly
@@ -41,14 +41,19 @@
     mixins: [AspectMixin],
     data() {
       return {
-        menu: false
+        menu: false,
+        i_value_str: ""
       }
     },
     created() {
-      if (this.value === null) {
-        this.i_value = new Date().toISOString().substr(0, 10);
+      this.i_value_str = this.i_value.toLocaleString()
+    },
+    watch: {
+      i_value(val) {
+        this.i_value_str = val.toLocaleString()
       }
     }
+
   }
 </script>
 

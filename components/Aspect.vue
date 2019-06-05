@@ -3,6 +3,7 @@
     component(v-bind:is="aspectComponent(aspect_descr)"
       v-bind:aspect="aspect_descr"
       v-bind:value="raw_value"
+      v-bind:extra="{}"
       :edit="edit"
       v-on:update:value="$emit('update:value', {value:$event})")
 </template>

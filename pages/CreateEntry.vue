@@ -31,8 +31,6 @@
     watch: {
       selectedItem() {
         let slug = "";
-        console.log("SEL", this.selectedItem);
-
         let entry_id = null;
         if (this.selectedItem.type === ENTRY_TYPE) {
           slug = this.selectedItem.value;

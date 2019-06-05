@@ -7,10 +7,8 @@ export default {
       type: Boolean,
       default: true
     },
-    hide: {
-      // todo implement
-      type: Array // can include "title", "description"
-    }
+    extra: Object,
+    hide: Array// todo implement
   },
   data() {
     return {

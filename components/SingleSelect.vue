@@ -59,7 +59,6 @@
     created() {
       this.CLEAR_LIST = CLEAR_LIST;
       this.VUETIFY_SELECT = VUETIFY_SELECT;
-      // console.log("SSel passed", this.selection);
 
       // TODO check if still needed
       if(this.selection) {
