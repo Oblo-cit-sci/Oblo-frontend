@@ -7,7 +7,6 @@
           component(v-bind:is="clearableAspectComponent(item_aspect)"
             v-bind:aspect="indexed_item_aspect(index)"
             v-bind:value.sync="value"
-
             icon="clear"
             :id="index"
             v-on:clear="remove_value(index)",
@@ -16,7 +15,7 @@
         v-expansion-panel(expand v-model="panelState")
           v-expansion-panel-content(v-for="(value, index) in i_value" :key="index")
             template(v-slot:header)
-              div {{value.title || index}}
+              div {{value.title || index + 1}}
             component(v-bind:is="clearableAspectComponent(item_aspect)"
               v-bind:aspect="indexed_item_aspect(index)"
               v-bind:value.sync="value"

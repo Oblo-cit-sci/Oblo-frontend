@@ -18,7 +18,6 @@
 
   import Basic from "~~/components/aspectInput/Basic";
   import TextShort from "~~/components/aspectInput/TextShort";
-  import IntAspect from "~~/components/aspectInput/IntAspect";
   import TextLong from "~~/components/aspectInput/TextLong";
   import Location from "~~/components/aspectInput/Location";
   import ListOf from "~~/components/aspectInput/ListOf";
@@ -30,7 +29,7 @@
 
   export default {
     name: "EntryEdit",
-    components: {Privacy, License, Basic, TextShort, TextLong, Location, ListOf, IntAspect},
+    components: {Privacy, License, Basic, TextShort, TextLong, Location, ListOf},
     created() {
 
       let uuid =  this.$route.params.entry;

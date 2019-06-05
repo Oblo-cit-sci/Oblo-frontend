@@ -25,7 +25,6 @@
 
   import Basic from "~~/components/aspectInput/Basic"
   import TextShort from "~~/components/aspectInput/TextShort"
-  import IntAspect from "~~/components/aspectInput/IntAspect"
   import TextLong from "~~/components/aspectInput/TextLong"
   import Location from "~~/components/aspectInput/Location"
   import CompositeAspect from "~~/components/aspectInput/CompositeAspect"
@@ -56,7 +55,7 @@
       EntryActions,
       Title_Description,
       Paginate, Privacy, License, Basic, TextShort, TextLong, Location,
-      List, IntAspect, AspectPageButton, CompositeAspect, Select, Map
+      List, AspectPageButton, CompositeAspect, Select, Map
     },
     mixins: [ReferenceMixin], // in case of a context entry, to be able to get back to the parent
     data() {

@@ -6,6 +6,10 @@ export default {
     edit: {
       type: Boolean,
       default: true
+    },
+    hide: {
+      // todo implement
+      type: Array // can include "title", "description"
     }
   },
   data() {

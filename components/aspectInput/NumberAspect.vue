@@ -5,8 +5,9 @@
       outline
       single-line
       v-model="i_value"
+      hideDetails
       :suffix="suffix"
-      mask="####" )
+      :mask="mask" )
 </template>
 
 <script>
@@ -15,11 +16,22 @@
 
 
   export default {
-    name: "IntAspect",
+    name: "NumberAspect",
     components: {Title_Description},
     mixins: [AspectMixin],
     data() {
-      return {suffix: this.aspect.attr.suffix || ""}
+      return {
+        mask: "",
+        suffix: this.aspect.attr.suffix || "",
+      }
+    },
+    created() {
+      if(this.aspect.type === "int") {
+        this.mask = "##########"
+      } else {
+        // todo. maybe use the type, prop but vuetify doesnt have any docs
+        this.mask = undefined // "############.##########"
+      }
     },
     watch: {
       i_value(val) {

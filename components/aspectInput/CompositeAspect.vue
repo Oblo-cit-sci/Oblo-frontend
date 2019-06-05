@@ -1,8 +1,6 @@
 <template lang="pug">
   div
-    h3 {{aspect.name}}
-    div {{aspect.description}}
-
+    Title_Description(v-bind="title_description()")
     div(v-for="(comp_type, index) in aspect.components" :key="index")
       component(v-bind:is="AspectComponent(comp_type)"
         v-bind:aspect="comp_type"
@@ -13,9 +11,11 @@
 <script>
   import AspectMixin from "./AspectMixin";
   import {MAspectComponent} from "../../lib/client";
+  import Title_Description from "../Title_Description";
 
   export default {
     name: "CompositeAspect",
+    components: {Title_Description},
     mixins: [AspectMixin],
     data() {
       return {
