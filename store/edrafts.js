@@ -34,7 +34,6 @@ const ld = require('lodash');
 /*
 export const getters = {
   // cuz they are stored as array but we access by name
-  // todo Map solves this nicer
   // HOW DO WE ACCESS THESE???
 
   drafts_by_slug(state, getters) {

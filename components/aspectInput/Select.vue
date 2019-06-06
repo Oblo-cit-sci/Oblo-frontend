@@ -17,11 +17,11 @@
     components: {SingleSelect},
     data() {
       return {
-        selection: null
+        selection: null,
+        options: []
       }
     },
     created() {
-      console.log("Select created")
       if (typeof this.aspect.items === "string") {
         if (this.aspect.items.startsWith("*")) {
           this.options = get_codes_as_options(this.$store.state, this.aspect.items)
@@ -30,16 +30,17 @@
         this.options = string_list2options(this.aspect.items)
       } else {
         console.log("ERROR cannot create options from aspect items", this.aspect.items)
-        this.options = []
       }
+      console.log("init select with val", this.value)
       if (this.value !== null) {
         this.selection = this.$_.find(this.options, (o) => {
-          return o.key === this.i_value
+          return o.value === this.value
         })
       }
     },
     watch: {
       selection() {
+        console.log("selection update", this.selection)
         if (this.selection === null)
           this.value_change(null)
         else

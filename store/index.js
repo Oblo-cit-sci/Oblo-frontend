@@ -4,7 +4,6 @@ export const state = () => ({
   //
   connected: false,
   dirty: false,
-  // TODO use DICT!!!
   entry_types: new Map(), // types for creation
   tags: {}, // initially just the licci tree
   codes: {},
@@ -72,6 +71,7 @@ export const getters = {
   },
   // entry-types
   global_entry_types_as_array(state) {
+    // todo generalize, e.g. array of 2val array ["context", "global"]
     let global_entry_types = [];
     for (let entry of state.entry_types.values()) {
       if (entry.content.meta.context === "global") {

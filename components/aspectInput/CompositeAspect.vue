@@ -1,8 +1,7 @@
 <template lang="pug">
   div
     div(v-for="(comp_type, index) in aspect.components" :key="index")
-      Aspect(:aspect="comp_type" v-bind:value.sync="i_value[index]" :edit="true")
-
+      Aspect(:aspect="comp_type" v-bind:value="i_value[index]" v-on:update:value="update_value($event, index)" :edit="true")
 </template>
 
 <script>
@@ -31,6 +30,11 @@
     methods: {
       AspectComponent(aspect) {
         return MAspectComponent(aspect, false, false);
+      },
+      update_value($event , index) {
+        this.i_value[index] = $event
+        console.log("comp update", this.aspect.name, $event, this.i_value)
+        //this.$emit("update:value",)
       }
     }
   }

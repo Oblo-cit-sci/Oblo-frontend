@@ -62,7 +62,7 @@
     created() {
       this.CLEAR_LIST = CLEAR_LIST;
       this.VUETIFY_SELECT = VUETIFY_SELECT;
-      console.log("SingleSelect created", this.options)
+      console.log("SingleSelect created", this.selection)
       // TODO check if still needed
       if (this.selection) {
         this.selected_item = this.selection;

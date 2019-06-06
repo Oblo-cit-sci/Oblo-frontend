@@ -130,6 +130,7 @@
     },
     watch : {
       i_value(val) {
+        console.log("list change", this.aspect.name, val, this.i_value)
         this.value_change(this.i_value)
       }
     }
