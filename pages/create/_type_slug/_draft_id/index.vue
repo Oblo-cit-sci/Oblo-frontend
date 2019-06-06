@@ -2,11 +2,11 @@
   v-layout(column='' justify-center='' align-center='')
     v-flex(xs12='' sm8='' md6='' class="column")
       Title_Description(:title="entry_type.title" header_type="h1" :description="entry_type.description")
-      div(v-if="has_pages")
-        Title_Description(:title="page_info.title" header_type="h3" :description="page_info.description")
       div(v-if="entry.ref")
         span This entry is part of the draft: &nbsp
         a(@click="back_to_ref") {{entry.ref.parent_title}}
+      div(v-if="has_pages")
+        Title_Description(:title="page_info.title" header_type="h3" :description="page_info.description")
       br
       div(v-for="(aspect, index) in shown_aspects" :key="index")
         Aspect(:aspect="aspect" v-bind:value.sync="entry.aspects_values[aspect.name]" :edit="true" v-on:create_ref="create_ref($event)")
@@ -14,7 +14,6 @@
         License(v-bind:passedLicense.sync="entry.license" v-if="has_license")
         Privacy(v-bind:passedPrivacy.sync="entry.privacy" v-if="has_privacy")
       EntryActions(v-bind="entry_actions_props" :page.sync="page")
-
 </template>
 
 <script>

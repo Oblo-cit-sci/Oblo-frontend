@@ -47,26 +47,28 @@
         type: String,
         required: false,
         default: undefined
-      } // either (CLEAR_LIST | VUETIFY_SELECT)
+      }, // either (CLEAR_LIST | VUETIFY_SELECT)
+      disabled: {
+        type: Boolean,
+        default: false
+      }
     },
     data() {
       return {
         viewStyle: CLEAR_LIST,
         selected_item: null, // for v-select
-        selected_key: null, // String the title for highlighting
       }
     },
     created() {
       this.CLEAR_LIST = CLEAR_LIST;
       this.VUETIFY_SELECT = VUETIFY_SELECT;
-
+      console.log("SingleSelect created", this.options)
       // TODO check if still needed
-      if(this.selection) {
+      if (this.selection) {
         this.selected_item = this.selection;
-        this.selected_key = this.selection.key;
       }
 
-      if(this.force_view) {
+      if (this.force_view) {
         this.viewStyle = view_map[this.force_view];
       } else {
         if (ld.size(this.options) < clearListThresh) {
@@ -79,15 +81,15 @@
     },
     methods: {
       select(item) {
+        if(this.disabled)
+          return
         if (item.value === undefined)
           return;
-        this.selected_key = item.value;
-        // TODO fix, clean
         this.emitUp(item)
-
       },
       marked(key) {
-        return key === this.selected_key && this.highlight;
+        if(this.selection)
+          return key === this.selection.value && this.highlight;
       },
       emitUp(item) {
         if (this.select_sync) {

@@ -5,6 +5,7 @@
         outline
         single-line
         hideDetails
+        :disabled="disabled"
         v-model="i_value"
         @input="value_change($event)")
     div(v-else)
