@@ -2,7 +2,8 @@
   div
     Paginate(v-if="has_pages" v-bind:page.sync="i_page"
       :total="entry_type.content.meta.pages.length"
-      v-on:lastpage="last_page = $event")
+      :page_select="entry_type.content.meta.pages"
+      v-on:lastpage="last_page = ($event)")
     span(v-if="view")
       v-btn(color="secondary" @click="edit") edit
     span(v-else)
@@ -69,7 +70,10 @@
         return this.entry_type.content.meta.hasOwnProperty("pages")
       },
       dl_url() {
-        return "data:text/jsoncharset=utf-8," + encodeURIComponent(JSON.stringify(this.entry.aspects_values))
+        if (this.private_local && this.last_page)
+          return "data:text/jsoncharset=utf-8," + encodeURIComponent(JSON.stringify(this.entry.aspects_values))
+        else
+          return ""
       },
       download_title() {
         // TODO WHAT?
@@ -132,9 +136,7 @@
       delete_entry() {
         delete_entry(this.$store, this.entry)
         this.$store.commit("set_snackbar", {message: "Entry deleted", ok: true})
-
         if (this.entry.ref) {
-
           this.$store.commit("edrafts/set_draft_aspect_value", data);
         }
         this.back()
@@ -199,6 +201,9 @@
         } else {
           this.$router.push("/")
         }
+      },
+      lastpage_reached($event) {
+        console.log("en action lastpage_reached", $event)
       }
     },
     watch: {
@@ -207,6 +212,7 @@
       }
     }
   }
+
 </script>
 
 <style scoped>

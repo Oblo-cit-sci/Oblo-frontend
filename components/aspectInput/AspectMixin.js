@@ -83,14 +83,13 @@ export default {
       }
     },
     value_change(event) {
-      //console.log("asp mix", event)
-      console.log("asp mix val change", this.aspect, event)
+      //console.log("asp mix val change", this.aspect, event)
       this.$emit('update:value', event);
     }
   },
   watch: {
     value(new_val) {
-      console.log("asp mix update", this.aspect, new_val)
+      //console.log("asp mix update", this.aspect, new_val)
       this.i_value = new_val;
     },
     disabled() {

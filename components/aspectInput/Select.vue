@@ -31,7 +31,7 @@
       } else {
         console.log("ERROR cannot create options from aspect items", this.aspect.items)
       }
-      console.log("init select with val", this.value)
+      //console.log("init select with val", this.value)
       if (this.value !== null) {
         this.selection = this.$_.find(this.options, (o) => {
           return o.value === this.value

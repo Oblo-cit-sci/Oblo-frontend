@@ -10,7 +10,6 @@
   // todo name2index still required?
 
   import AspectMixin from "./AspectMixin";
-  import {MAspectComponent} from "../../lib/entry";
   import Aspect from "../Aspect";
 
   export default {
@@ -19,21 +18,17 @@
     mixins: [AspectMixin],
     data() {
       return {
-        name2index: {}
-      }
-    },
-    created() {
-      for(let comp_index in this.aspect.components) {
-        this.name2index[this.aspect.components[comp_index].name] = comp_index
+        title: "XXX"
       }
     },
     methods: {
-      AspectComponent(aspect) {
-        return MAspectComponent(aspect, false, false);
-      },
       update_value($event , index) {
         this.i_value[index] = $event
-        console.log("comp update", this.aspect.name, $event, this.i_value)
+        //console.log("comp update", this.aspect.name, $event, this.i_value)
+        // todo here we want to eventually update the title, its nice in lists
+        // otherwise we could just sync value
+        // v-bind:value.sync="i_value[index]"
+        // ... no idea how/where it emits up
         //this.$emit("update:value",)
       }
     }

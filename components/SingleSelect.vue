@@ -14,7 +14,7 @@
 
   /*
   OPTIONS NEED TO HAVE
-  title, key
+  title, value
   and optional "description"
    */
 
@@ -62,7 +62,7 @@
     created() {
       this.CLEAR_LIST = CLEAR_LIST;
       this.VUETIFY_SELECT = VUETIFY_SELECT;
-      console.log("SingleSelect created", this.selection)
+      //console.log("SingleSelect created", this.selection)
       // TODO check if still needed
       if (this.selection) {
         this.selected_item = this.selection;
@@ -92,9 +92,11 @@
           return key === this.selection.value && this.highlight;
       },
       emitUp(item) {
+        console.log("emit", item, this.select_sync)
         if (this.select_sync) {
           this.$emit('update:selection', item); // refactor to use the item
         } else {
+          console.log("emit no sync")
           this.$emit("selection", item);
         }
       }
