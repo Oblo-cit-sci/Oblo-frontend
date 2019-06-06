@@ -1,13 +1,15 @@
 <template lang="pug">
   div
     div(v-for="(comp_type, index) in aspect.components" :key="index")
-      component(v-bind:is="AspectComponent(comp_type)"
-        v-bind:aspect="comp_type"
-        v-bind:value.sync="i_value[index]"
-        v-on:create_related="create_related($event)")
+      Aspect(:aspect="comp_type" v-bind:value.sync="i_value[index]" :edit="true")
+
 </template>
 
 <script>
+
+  // todo v-on:create_ref="create_ref($event)" in the Aspect
+  // todo name2index still required?
+
   import AspectMixin from "./AspectMixin";
   import {MAspectComponent} from "../../lib/entry";
   import Aspect from "../Aspect";

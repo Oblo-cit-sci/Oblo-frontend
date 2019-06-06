@@ -104,10 +104,10 @@
         this.panelState.push(true)
       },
       remove_value(index) {
-        console.log("remove index", index)
-        console.log(this.i_value)
+        //console.log("remove index", index)
+        //console.log(this.i_value)
         this.i_value.splice(index, 1)
-        console.log(this.i_value)
+        //console.log(this.i_value)
         this.value_change(this.i_value)
       },
       /*updateRequired(value) {
@@ -126,6 +126,11 @@
         } else {
           return true;
         }
+      }
+    },
+    watch : {
+      i_value(val) {
+        this.value_change(this.i_value)
       }
     }
   }

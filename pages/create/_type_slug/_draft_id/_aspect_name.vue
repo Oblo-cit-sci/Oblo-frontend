@@ -35,7 +35,7 @@
       this.aspect_name = this.$route.params.aspect_name;
       this.aspect = {... this.$store.getters.get_aspect(type_slug, this.aspect_name)}
       if (this.aspect.attr.view !== "page") {
-        // not yet a complete disa  ster, it is maybe a list of composite
+        // not yet a complete disaster, it is maybe a list of composite
         if(this.aspect.type === "list" && this.aspect.items === "composite") {
           console.log("composite list")
           this.aspect.type = "composite"
@@ -44,7 +44,7 @@
       }
       console.log("final aspect", this.aspect)
       // todo, nope, entry_id, nope
-      this.draft_id = this.$route.params.entry_id;
+      this.draft_id = this.$route.params.draft_id;
       this.aspect_value = this.$store.state.edrafts.drafts[this.draft_id].aspects_values[this.aspect_name];
       console.log("creation done")
 
