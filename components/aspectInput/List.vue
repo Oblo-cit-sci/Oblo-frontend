@@ -1,6 +1,5 @@
 <template lang="pug">
   div
-    Title_Description(v-bind="title_description()")
     div(v-if="!select")
       div(v-if="mode==='simple'")
         div(v-for="(value, index) in i_value" :key="index")
@@ -38,13 +37,12 @@
   import AspectMixin from "./AspectMixin";
   import {get_codes_as_options} from "../../lib/client";
   import {aspect_default_value, MAspectComponent} from "../../lib/entry";
-  import Title_Description from "../Title_Description";
   import MultiSelect from "../MultiSelect";
 
   //
   export default {
     name: "List",
-    components: {MultiSelect, Title_Description},
+    components: {MultiSelect},
     mixins: [AspectMixin],
     data() {
       return {

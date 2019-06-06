@@ -1,6 +1,5 @@
 <template lang="pug">
   div
-    Title_Description(v-bind="title_description()")
     div(v-if="edit")
       v-text-field(
         outline
@@ -21,7 +20,6 @@
 
   export default {
     name: "TextShort",
-    components: {Title_Description},
     mixins: [AspectMixin],
   }
 </script>

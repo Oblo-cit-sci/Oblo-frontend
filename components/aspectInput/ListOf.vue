@@ -1,6 +1,5 @@
 <template lang="pug">
   div
-    Title_Description(v-bind="title_description()")
     div(v-if="!select")
       v-list(v-if="has_items")
         v-list-tile(v-for="(item, index) in item_titles", :key="item.key")
@@ -31,7 +30,6 @@
   // then let them be clicked, and let them be removed
 
   import AspectMixin from "./AspectMixin";
-  import Title_Description from "../Title_Description";
 
   import { CONTEXT_ENTRY } from "~~/lib/consts";
   import DecisionDialog from "../DecisionDialog";
@@ -43,7 +41,7 @@
 
   export default {
     name: "ListOf",
-    components: {DecisionDialog, Title_Description},
+    components: {DecisionDialog},
     mixins: [AspectMixin],
     data() {
       return {

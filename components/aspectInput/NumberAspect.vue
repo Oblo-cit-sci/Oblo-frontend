@@ -1,6 +1,5 @@
 <template lang="pug">
   div
-    Title_Description(v-bind="title_description()")
     v-text-field(
       outline
       single-line
@@ -12,12 +11,9 @@
 
 <script>
   import AspectMixin from "./AspectMixin";
-  import Title_Description from "../Title_Description";
-
 
   export default {
     name: "NumberAspect",
-    components: {Title_Description},
     mixins: [AspectMixin],
     data() {
       return {

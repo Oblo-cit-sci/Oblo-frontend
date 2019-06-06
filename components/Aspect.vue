@@ -1,5 +1,6 @@
 <template lang="pug">
   div
+    Title_Description(v-bind="title_description()")
     component(v-bind:is="aspectComponent(aspect)"
       v-bind:aspect="aspect"
       v-bind:value="raw_value"
@@ -10,18 +11,15 @@
 </template>
 
 <script>
-  import TextShort from "./aspectInput/TextShort";
-  import TextLong from "./aspectInput/TextLong";
+
 
   import {aspect_default_value, MAspectComponent} from "../lib/entry";
-
-  // todo pull this down from entry
-  // v-on:create_related="create_related($event)")
+  import Title_Description from "./Title_Description";
 
   export default {
     name: "Aspect",
     components: {
-      TextShort, TextLong
+      Title_Description
     },
     props: {
       edit: {
@@ -50,6 +48,18 @@
       }
     },
     methods: {
+      title_description() {
+        if (!this.aspect.hasOwnProperty("name")) {
+          console.log("warning: aspect", this.aspect, "has no name")
+        }
+        if (!this.aspect.hasOwnProperty("description")) {
+          console.log("warning: aspect", this.aspect, "has no description")
+        }
+        return {
+          title: this.aspect.name || "",
+          description: this.aspect.description || ""
+        }
+      },
       aspectComponent() {
         return MAspectComponent(this.aspect)
       }
