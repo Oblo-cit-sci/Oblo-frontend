@@ -97,7 +97,7 @@
         this.value_change(this.i_value)
       },
       create_item() {
-        this.$emit("create_related", this.aspect)
+        this.$emit("create_ref", this.aspect)
       },
       edit_item(index) {
         const item = this.i_value[index]

@@ -5,6 +5,7 @@
       v-bind:value="raw_value"
       v-bind:extra="{}"
       :edit="edit"
+      v-on:create_ref="$emit('create_ref',$event)"
       v-on:update:value="$emit('update:value', {value:$event})")
 </template>
 

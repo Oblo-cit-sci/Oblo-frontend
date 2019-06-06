@@ -73,7 +73,7 @@
       },
       download_title() {
         // TODO WHAT?
-        return (this.entry.aspects_values.title || this.entry.type_slug + " " + this.entry.entry_id).replace(" ", "_") + ".json"
+        return (this.entry.aspects_values.title.value || this.entry.type_slug + " " + this.entry.local_id).replace(" ", "_") + ".json"
       },
       disable_download() {
         return this.has_pages && !this.last_page

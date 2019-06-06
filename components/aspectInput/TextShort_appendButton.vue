@@ -4,15 +4,11 @@
     v-text-field(
       outline
       single-line
+      hideDetails
+      :readOnly="!edit"
       v-model="i_value"
       :append-outer-icon="icon"
       @click:append-outer="click_outer"
-      @input="value_change($event)")
-  div(v-else)
-    v-text-field(
-      readonly solo flat
-      :label="aspect.name"
-      :value="i_value"
       @input="value_change($event)")
 </template>
 

@@ -9,7 +9,7 @@
         a(@click="back_to_ref") {{entry.ref.parent_title}}
       br
       div(v-for="(aspect, index) in shown_aspects" :key="index")
-        Aspect(:aspect="aspect" v-bind:value.sync="entry.aspects_values[aspect.name]" :edit="true")
+        Aspect(:aspect="aspect" v-bind:value.sync="entry.aspects_values[aspect.name]" :edit="true" v-on:create_ref="create_ref($event)")
       div(v-if="!entry.ref")
         License(v-bind:passedLicense.sync="entry.license" v-if="has_license")
         Privacy(v-bind:passedPrivacy.sync="entry.privacy" v-if="has_privacy")
@@ -149,7 +149,7 @@
       },
       // TODO obviously this needs to be refatored
       // can be passed down to aspect. it only needs the entry_id passed down
-      create_related(aspect) {
+      create_ref(aspect) {
         autosave(this.$store, this.entry)
         /*
         page_aspect:

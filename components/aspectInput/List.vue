@@ -6,7 +6,7 @@
         div(v-for="(value, index) in i_value" :key="index")
           component(v-bind:is="clearableAspectComponent(item_aspect)"
             v-bind:aspect="indexed_item_aspect(index)"
-            v-bind:value.sync="value"
+            v-bind:value.sync="i_value[index ]"
             icon="clear"
             :id="index"
             v-on:clear="remove_value(index)",
@@ -40,7 +40,6 @@
   import {aspect_default_value, MAspectComponent} from "../../lib/entry";
   import Title_Description from "../Title_Description";
   import MultiSelect from "../MultiSelect";
-  const ld = require("lodash")
 
   //
   export default {
@@ -62,7 +61,6 @@
     created() {
       let item_type = this.aspect.items;
 
-      console.log("item_type", typeof (item_type))
       if (typeof (item_type) === "string") {
 
         if(item_type[0] === "*") {
@@ -98,25 +96,29 @@
     },
     methods: {
       clearableAspectComponent(aspect) {
-        return MAspectComponent(aspect, false, true);
+        return MAspectComponent(aspect, false, true)
       },
       // for composite
       add_value() {
         console.log("adding value")
-        this.i_value.push(aspect_default_value(this.item_aspect));
-        ld.fill(this.panelState, false);
-        this.panelState.push(true);
+        this.i_value.push(aspect_default_value(this.item_aspect))
+        this.$_.fill(this.panelState, false)
+        this.panelState.push(true)
       },
       remove_value(index) {
-        this.i_value.splice(index, 1);
+        console.log("remove index", index)
+        console.log(this.i_value)
+        this.i_value.splice(index, 1)
+        console.log(this.i_value)
+        this.value_change(this.i_value)
       },
-      updateRequired(value) {
-        this.i_value[parseInt(value.title)] = value.value;
-      },
+      /*updateRequired(value) {
+        this.i_value[parseInt(value.title)] = value.value
+      },*/
       indexed_item_aspect(index) {
-        let aspect = {...this.item_aspect};
-        aspect.name = "" + index;
-        return aspect;
+        let aspect = {...this.item_aspect}
+        aspect.name = "" + index
+        return aspect
       }
     },
     computed: {
