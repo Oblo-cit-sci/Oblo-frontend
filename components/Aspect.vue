@@ -11,7 +11,7 @@
       v-bind:extra="{}"
       :edit="edit"
       :disabled="!use_regular"
-      v-on:create_ref="$emit('create_ref',$event)"
+      v-on:create_ref="$emit('create_ref', $event)"
       v-on:update:value="$emit('update:value', {value:$event})")
     div(v-if="!use_regular")
       Title_Description(v-bind="title_description(aspect.attr.alternative)")

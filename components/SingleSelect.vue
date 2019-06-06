@@ -62,7 +62,7 @@
     created() {
       this.CLEAR_LIST = CLEAR_LIST;
       this.VUETIFY_SELECT = VUETIFY_SELECT;
-
+      console.log("SingleSelect created", this.options)
       // TODO check if still needed
       if (this.selection) {
         this.selected_item = this.selection;
@@ -86,7 +86,6 @@
         if (item.value === undefined)
           return;
         this.emitUp(item)
-
       },
       marked(key) {
         if(this.selection)
