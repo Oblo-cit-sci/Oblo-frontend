@@ -1,3 +1,5 @@
+import {aspect_default_value} from "../../lib/entry";
+
 export default {
   props: {
     aspect: Object,
@@ -6,6 +8,10 @@ export default {
     edit: {
       type: Boolean,
       default: true
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     },
     extra: Object,
     hide: Array// todo implement
@@ -40,6 +46,9 @@ export default {
   watch: {
     value(new_val) {
       this.i_value = new_val;
+    },
+    disabled() {
+      this.i_value = aspect_default_value(this.aspect)
     }
   }
 }
