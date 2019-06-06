@@ -10,6 +10,7 @@
     div(v-else)
       v-text-field(
         readonly outline single-line flat
+        hideDetails
         :value="i_value"
         @input="value_change($event)")
 </template>

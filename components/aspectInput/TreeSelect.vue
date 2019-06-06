@@ -1,29 +1,26 @@
 <template lang="pug">
     div
-      h3 {{aspect.name}}
       v-flex(xs12 sm12 md12 text-xs-left)
-        v-chip(v-for="tag in selection" :key="tag.id" @click="tag_select(tag)") {{tag.title}}
-        v-btn(flat icon)
-          v-icon add
-      v-dialog(width="500" v-model="dialogOpen" lazy=true)
-        template(v-slot:activator="{ on }")
-          v-btn(color="red lighten-2" dark v-on="on") Add driver
-        TreleafPicker(:tree="options" v-on:selected="selected")
+        TextShort(:value="i_value.title" :edit="false")
+        v-dialog(width="500" v-model="dialogOpen" lazy=true)
+          template(v-slot:activator="{ on }")
+            v-btn(color="success" dark v-on="on") Select
+          TreleafPicker(:tree="options" v-on:selected="selected")
 </template>
 
 <script>
   import AspectMixin from "./AspectMixin";
   import TreleafPicker from "../TreleafPicker";
+  import TextShort from "./TextShort";
 
   export default {
     name: "TreeSelect",
-    components: {TreleafPicker},
+    components: {TextShort, TreleafPicker},
     mixins: [AspectMixin],
 
     data() {
       return {
         options: {},
-        selection: [],
         dialogOpen: false
       }
     },
@@ -42,8 +39,7 @@
     },
     methods: {
       selected(val) {
-        //console.log("tree select", val);
-        this.selection.push(val);
+        this.i_value = val;
         this.dialogOpen = false;
       },
       tag_select(sel) {
