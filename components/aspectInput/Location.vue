@@ -46,8 +46,8 @@
               console.log(this.i_value);
               this.value_change(this.i_value);
           });
-        } else if (this.selection === FROM_MAP) {
-
+        } else if (this.selection.value === FROM_MAP) {
+            this.$router.push("/map2")
         }
       }
     },
