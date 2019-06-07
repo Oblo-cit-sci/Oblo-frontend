@@ -4,6 +4,8 @@ TODO fucking IMPORT BREAKS EVERYTHING
 
  */
 
+// const ld = require("lodash")
+
 export function aspect_default_value(aspect) {
   console.log("aspect_default_value", aspect)
   if (aspect.type.startsWith("!")) {
@@ -32,6 +34,7 @@ export function aspect_default_value(aspect) {
       return {}
     case "composite":
       //console.log("aspect composite default", aspect)
+      console.log("this should crash! LODASH NOT IMPORTED in AspectMixin")
       return ld.map(aspect.components, (c) => aspect_wrapped_default_value(c))
     case "select":
       return null
