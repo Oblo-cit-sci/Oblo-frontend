@@ -46,7 +46,10 @@
     },
     computed: {
       i_value_str() {
-        return this.i_value.toString().substring(0,10)
+        if(this.i_value)
+          return this.i_value.toString().substring(0,10)
+        else
+          return ""
       }
     }
   }

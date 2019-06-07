@@ -1,6 +1,5 @@
 <template lang="pug">
   div
-    Title_Description(v-bind="title_description()")
     div(v-if="edit")
       SingleSelect(:options="input_options" v-bind:selection.sync="selection")
     div(v-if="i_value != null")
@@ -30,15 +29,15 @@
     data() {
       return {
         input_options: [
-          {text: "actual position", description: "", value: ACTUAL_LOCATION},
+          {text: "actual position", description: "Get your actual position from your GPS capable device (Switch your GPS on!)", value: ACTUAL_LOCATION},
           {text: "point on the map", description: "", value: FROM_MAP}],
         selection: null,
       }
     },
     watch: {
       selection() {
-        //console.log("selected location input method", this.selection);
-        if (this.selection.slug === ACTUAL_LOCATION) {
+        console.log("selected location input method", this.selection);
+        if (this.selection.value === ACTUAL_LOCATION) {
           get_location((location) => {
             this.i_value = create_location_error(
               location.coords.longitude,

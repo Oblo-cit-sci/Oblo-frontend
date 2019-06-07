@@ -53,6 +53,7 @@
     },
     computed: {
       raw_value() {
+        console.log("Aspect comp raw", this.aspect.name, this.value)
         if(this.value.regular || true)
           return this.value.value
         else {
