@@ -18,13 +18,13 @@
 
 <script>
 
-/*
-        component(v-bind:is="aspectComponent(aspect)"
-          v-bind:aspect="aspect"
-          v-bind:value.sync="entry.aspects_values[aspect.name]"
-          v-on:create_related="create_related($event)")
+  /*
+          component(v-bind:is="aspectComponent(aspect)"
+            v-bind:aspect="aspect"
+            v-bind:value.sync="entry.aspects_values[aspect.name]"
+            v-on:create_related="create_related($event)")
 
- */
+   */
 
   import Location from "~~/components/aspectInput/Location"
   import CompositeAspect from "~~/components/aspectInput/CompositeAspect"
@@ -41,7 +41,7 @@
 
   import {MAspectComponent} from "~~/lib/entry"
 
-  import {autosave, create_and_store} from "../../../../lib/entry"
+  import {autosave, create_and_store, get_local_entry} from "../../../../lib/entry"
   import Paginate from "../../../../components/Paginate"
   import Title_Description from "../../../../components/Title_Description"
   import EntryActions from "../../../../components/EntryActions";
@@ -107,6 +107,44 @@
 
         ref.type_slug = parent.type_slug
         ref.parent_title = parent.title
+
+        /* set aspect refs:
+            when an attribute has #
+            this doesnt belong here, especially cuz of the duplicate for edit/_local_id page
+        * */
+        for (let aspect of this.entry_type.content.aspects) {
+          if (aspect.attr.value) {
+            const val = aspect.attr.value
+            if (val.startsWith("#")) { // a reference attribute
+              let access = val.split(".")
+              let select = this.entry
+              let select_type = "entry"
+              let history = [select]
+              if (access[0].length > 1) { // first access is # and eventual one or more "/"
+                // for now we assume its all just "/" chars
+                for (let up of Array(access[0].length - 1).keys()) {
+                  select = get_local_entry(this.$store, select.ref)
+                  history.push(select)
+                }
+              }
+              access.splice(0, 1)
+              for (let c of access) {
+                if (select_type === "entry") {
+                  select = select.aspects_values[c]
+                  history.push(select)
+                  select_type = "aspect"
+                }
+                // todo
+                if (select_type === "aspect") {
+                  // here composite and list access
+                }
+              }
+              if(select_type === "aspect") {
+                this.entry.aspects_values[aspect.name] = JSON.parse(JSON.stringify(select))
+              }
+            }
+          }
+        }
       }
 
       // this.check_complete() // TODO bring back watcher, isnt triggered tho...
@@ -150,7 +188,7 @@
       // can be passed down to aspect. it only needs the entry_id passed down
       create_ref(aspect) {
         autosave(this.$store, this.entry)
-        console.log("creating ref for ", aspect)
+        //console.log("creating ref for ", aspect)
         /*
         page_aspect:
 	      /create/<type_slug/<draft_id/<aspect_name
@@ -186,9 +224,7 @@
               //type_slug: this.entry.type_slug
             }
             if (is_list) {
-              console.log("prep list index for", this.entry)
               ref_data.index = this.entry.aspects_values[aspect.name].value.length
-              console.log("setting index", this.entry.aspects_values[aspect.name], ref_data.index)
             }
 
             const new_draft_id = create_and_store(new_type_slug, this.$store, ref_data)

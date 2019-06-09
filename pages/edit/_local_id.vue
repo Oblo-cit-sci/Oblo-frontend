@@ -71,9 +71,9 @@
       }
     },
     created() {
-      console.log(this.$route.params)
+      //console.log(this.$route.params)
       let local_id = this.$route.params.local_id
-      console.log(local_id)
+      //console.log(local_id)
       // todo can also be fetched
       this.entry = JSON.parse(JSON.stringify(this.$store.state.entries.own_entries.get(local_id)))
       //this.type_slug = this.$route.params.type_slug
@@ -105,6 +105,40 @@
 
       // this.check_complete() // TODO bring back watcher, isnt triggered tho...
       //console.log(this.has_pages)
+
+      for (let aspect of this.entry_type.content.aspects) {
+        if (aspect.attr.value) {
+          const val = aspect.attr.value
+          if (val.startsWith("#")) { // a reference attribute
+            let access = val.split(".")
+            let select = this.entry
+            let select_type = "entry"
+            let history = [select]
+            if (access[0].length > 1) { // first access is # and eventual one or more "/"
+              // for now we assume its all just "/" chars
+              for (let up of Array(access[0].length - 1).keys()) {
+                select = get_local_entry(this.$store, select.ref)
+                history.push(select)
+              }
+            }
+            access.splice(0, 1)
+            for (let c of access) {
+              if (select_type === "entry") {
+                select = select.aspects_values[c]
+                history.push(select)
+                select_type = "aspect"
+              }
+              // todo
+              if (select_type === "aspect") {
+                // here composite and list access
+              }
+            }
+            if (select_type === "aspect") {
+              this.entry.aspects_values[aspect.name] = JSON.parse(JSON.stringify(select))
+            }
+          }
+        }
+      }
     },
     methods: {
       // TODO Depracated
@@ -122,7 +156,7 @@
       check_complete() {
         for (let aspect_name of this.required_values) {
           let val = this.entry.aspects_values[aspect_name]
-          console.log("checking", aspect_name, val)
+          //console.log("checking", aspect_name, val)
           if (val === null || val === "") {
             this.complete = false
             console.log("fail")
@@ -160,7 +194,6 @@
       // can be passed down to aspect. it only needs the entry_id passed down
       create_ref(aspect) {
         autosave(this.$store, this.entry)
-        console.log("creating ref for ", aspect)
         /*
         page_aspect:
 	      /create/<type_slug/<draft_id/<aspect_name
@@ -196,9 +229,7 @@
               //type_slug: this.entry.type_slug
             }
             if (is_list) {
-              console.log("prep list index for", this.entry)
               ref_data.index = this.entry.aspects_values[aspect.name].value.length
-              console.log("setting index", this.entry.aspects_values[aspect.name], ref_data.index)
             }
 
             const new_draft_id = create_and_store(new_type_slug, this.$store, ref_data)
