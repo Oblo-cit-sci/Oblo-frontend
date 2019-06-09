@@ -9,11 +9,11 @@
         Title_Description(:title="page_info.title" header_type="h3" :description="page_info.description")
       br
       div(v-for="(aspect) in shown_aspects" :key="aspect.name")
-        Aspect(:aspect="aspect" v-bind:value.sync="entry.aspects_values[aspect.name]" :edit="true" v-on:create_ref="create_ref($event)")
+        Aspect(:aspect="aspect" v-bind:value.sync="entry.aspects_values[aspect.name]" mode="edit" v-on:create_ref="create_ref($event)")
       div(v-if="!entry.ref && page === 0")
         License(v-bind:passedLicense.sync="entry.license" v-if="has_license")
         Privacy(v-bind:passedPrivacy.sync="entry.privacy" v-if="has_privacy")
-      EntryActions(v-bind="entry_actions_props" :page.sync="page")
+      EntryActions(v-bind="entry_actions_props" :page.sync="page" :has_pages="has_pages")
 </template>
 
 <script>
@@ -150,6 +150,7 @@
       // can be passed down to aspect. it only needs the entry_id passed down
       create_ref(aspect) {
         autosave(this.$store, this.entry)
+        console.log("creating ref for ", aspect)
         /*
         page_aspect:
 	      /create/<type_slug/<draft_id/<aspect_name
@@ -185,13 +186,12 @@
               //type_slug: this.entry.type_slug
             }
             if (is_list) {
-              ref_data.index = this.entry.aspects_values[aspect.name].length
+              console.log("prep list index for", this.entry)
+              ref_data.index = this.entry.aspects_values[aspect.name].value.length
+              console.log("setting index", this.entry.aspects_values[aspect.name], ref_data.index)
             }
-            const new_draft_id = create_and_store(new_type_slug, this.$store)
-            this.$store.commit("edrafts/add_reference", {
-              draft_id: new_draft_id,
-              ref: ref_data
-            })
+
+            const new_draft_id = create_and_store(new_type_slug, this.$store, ref_data)
             this.$router.push({
               path: "/create/" + new_type_slug + "/" + new_draft_id
             })

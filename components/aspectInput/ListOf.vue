@@ -5,7 +5,7 @@
         v-list-tile(v-for="(item, index) in item_titles", :key="item.key")
           v-list-tile-content(@click="(item)")
             v-list-tile-title {{index + 1}} &nbsp;
-              b {{item.title}}
+              b {{item.title.value}}
           v-list-tile-action
             v-btn(icon @click="edit_item(index)")
               v-icon edit
@@ -35,7 +35,7 @@
   import DecisionDialog from "../DecisionDialog";
   import {delete_local_entry, get_edit_route_for_ref, get_id, get_local_entry} from "../../lib/entry";
 
-  var ld = require('lodash');
+
 
   const SELECT_THRESH = 6
 
@@ -56,7 +56,7 @@
     },
     computed: {
       has_items() {
-        return ld.size(this.i_value) > 0
+        return this.$_.size(this.i_value) > 0
       },
       allow_more() {
         if (!this.aspect.attr.hasOwnProperty("max")) {
@@ -66,7 +66,7 @@
         }
       },
       item_titles(){
-        return ld.map(this.i_value, (item) => {
+        return this.$_.map(this.i_value, (item) => {
             // not necessarily local
             if(item.type === CONTEXT_ENTRY) {
               return {

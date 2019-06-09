@@ -18,9 +18,9 @@ export const mutations = {
   // data MUST have draft_id, aspect_name, value, OPTIONAL: index, ( and key)
   set_draft_aspect_value(state, data) { // for pageAspects and references entries to update the parent
     if (data.hasOwnProperty("index")) { // TODO or key
-      state.drafts[data.draft_id].aspects_values[data.aspect_name][data.index] = data.value;
+      state.drafts[data.draft_id].aspects_values[data.aspect_name].value[data.index] = data.value;
     } else {
-      state.drafts[data.draft_id].aspects_values[data.aspect_name] = data.value;
+      state.drafts[data.draft_id].aspects_values[data.aspect_name].value = data.value;
     }
   },
   add_reference(state, reference_info) {

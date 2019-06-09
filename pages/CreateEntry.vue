@@ -93,7 +93,6 @@
 
         // todo maybe some redundant data here...
         this.$store.commit("edrafts/create_draft", entry);
-
         return draft_id;
       }
     }

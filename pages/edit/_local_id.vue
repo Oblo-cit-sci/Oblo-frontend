@@ -2,22 +2,18 @@
   v-layout(column='' justify-center='' align-center='')
     v-flex(xs12='' sm8='' md6='' class="column")
       Title_Description(:title="entry_type.title" header_type="h1" :description="entry_type.description")
-      div(v-if="has_pages")
-        Title_Description(:title="page_info.title" header_type="h3" :description="page_info.description")
       div(v-if="entry.ref")
         span This entry is part of the draft: &nbsp
         a(@click="back_to_ref") {{entry.ref.parent_title}}
+      div(v-if="has_pages")
+        Title_Description(:title="page_info.title" header_type="h3" :description="page_info.description")
       br
-      div(v-for="(aspect, index) in shown_aspects" :key="index")
-        component(v-bind:is="aspectComponent(aspect)"
-          v-bind:aspect="aspect"
-          v-bind:value.sync="entry.aspects_values[aspect.name]"
-          v-on:create_related="create_related($event)")
-      div(v-if="!entry.ref")
+      div(v-for="(aspect) in shown_aspects" :key="aspect.name")
+        Aspect(:aspect="aspect" v-bind:value.sync="entry.aspects_values[aspect.name]" mode="edit" v-on:create_ref="create_ref($event)")
+      div(v-if="!entry.ref && page === 0")
         License(v-bind:passedLicense.sync="entry.license" v-if="has_license")
         Privacy(v-bind:passedPrivacy.sync="entry.privacy" v-if="has_privacy")
-      EntryActions(v-bind="entry_actions_props" :page.sync="page")
-
+      EntryActions(v-bind="entry_actions_props" :page.sync="page" :has_pages="has_pages")
 </template>
 
 <script>
@@ -46,12 +42,14 @@
   import Title_Description from "../../components/Title_Description"
   import EntryActions from "../../components/EntryActions";
   import {CREATE, EDIT} from "../../lib/consts";
+  import Aspect from "../../components/Aspect";
 
   const ld = require("lodash")
 
   export default {
     name: "local_id",
     components: {
+      Aspect,
       EntryActions,
       Title_Description,
       Paginate, Privacy, License, Basic, TextShort, TextLong, Location,
@@ -160,8 +158,9 @@
       },
       // TODO obviously this needs to be refatored
       // can be passed down to aspect. it only needs the entry_id passed down
-      create_related(aspect) {
+      create_ref(aspect) {
         autosave(this.$store, this.entry)
+        console.log("creating ref for ", aspect)
         /*
         page_aspect:
 	      /create/<type_slug/<draft_id/<aspect_name
@@ -192,18 +191,17 @@
           if (aspect_to_check[0] === "$") {
             const new_type_slug = aspect_to_check.substring(1)
             let ref_data = {
-              draft_id: this.entry_id,
+              draft_id: this.draft_id,
               aspect_name: aspect.name,
               //type_slug: this.entry.type_slug
             }
             if (is_list) {
-              ref_data.index = this.entry.aspects_values[aspect.name].length
+              console.log("prep list index for", this.entry)
+              ref_data.index = this.entry.aspects_values[aspect.name].value.length
+              console.log("setting index", this.entry.aspects_values[aspect.name], ref_data.index)
             }
-            const new_draft_id = create_and_store(new_type_slug, this.$store)
-            this.$store.commit("edrafts/add_reference", {
-              draft_id: new_draft_id,
-              ref: ref_data
-            })
+
+            const new_draft_id = create_and_store(new_type_slug, this.$store, ref_data)
             this.$router.push({
               path: "/create/" + new_type_slug + "/" + new_draft_id
             })
@@ -214,6 +212,7 @@
           // ********  ASPECT_PAGE
           if (aspect_to_check.attr.view === "page") {
             this.$router.push({
+              // TODO this wont run...
               path: "/create/" + this.entry.type_slug + "/" + this.entry.entry_id + "/" + aspect.name
             })
           } else {

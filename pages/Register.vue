@@ -14,44 +14,6 @@
 
 <script>
 
-
-  /*
-  HTML VERSION OF A LIST ALTERNATIVE FOR LICENSE SELECTION
-  JUST NEEDS CLASS FOR THE SELECTED
-  Default Privacy
-  <v-list dense>
-  <v-list-tile
-  @click="selectPrivacy('public')"
-    >
-    <v-list-tile-avatar>
-    <v-icon>public</v-icon>
-    </v-list-tile-avatar>
-    <v-list-tile-content>
-    <v-list-tile-title>Public</v-list-tile-title>
-    <v-list-tile-sub-title>Anyone can see your entries</v-list-tile-sub-title>
-  </v-list-tile-content>
-  </v-list-tile>
-  <v-list-tile
-  @click="selectPrivacy('private')"
-  active
-  >
-  <v-list-tile-avatar>
-  <v-icon>lock</v-icon>
-  </v-list-tile-avatar>
-  <v-list-tile-content>
-  <v-list-tile-title>Private</v-list-tile-title>
-  <v-list-tile-sub-title>Nobody can see your entries</v-list-tile-sub-title>
-  </v-list-tile-content>
-  </v-list-tile>
-  </v-list>
-  {{defaultPrivacy}}
-  */
-  /*
-        :error-messages="nameErrors"
-   @input="$v.name.$touch()"
-      @blur="$v.name.$touch()"
-   */
-
   import {required, minLength, sameAs} from 'vuelidate/lib/validators'
   import {validationMixin} from 'vuelidate'
 

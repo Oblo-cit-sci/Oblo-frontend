@@ -23,38 +23,39 @@
 
 <script>
 
-
-  import {aspect_default_value, MAspectComponent} from "../lib/entry";
-  import Title_Description from "./Title_Description";
-
   export default {
     name: "Aspect",
     components: {
       Title_Description
     },
     props: {
-      edit: {
-        type: Boolean,
-        default: false
+      mode: {
+        type: String,
+        default: "view"
       },
       aspect: Object,
       value: Object // a wrapper, which  might encode "exceptional_value"
     },
     data() {
       return {
-      //  i_value: {}
+        //  i_value: {}
+        edit: false,
         has_alternative: false,
         use_regular: true
       }
     },
     created() {
-      // boolean check is not required, since "false" is the default
       this.has_alternative = this.aspect.attr.hasOwnProperty("alternative")
+      if (this.aspect.attr.mode === "view") {
+        // sets always to VIEW, nothing really
+      } else { // edit
+        this.edit = true
+      }
     },
+    // boolean check is not required, since "false" is the default
     computed: {
       raw_value() {
-        console.log("Aspect comp raw", this.aspect.name, this.value)
-        if(this.value.regular || true)
+        if (this.value.regular || true)
           return this.value.value
         else {
           // todo some extra value
@@ -80,6 +81,10 @@
       }
     }
   }
+
+  import {aspect_default_value, MAspectComponent} from "../lib/entry";
+
+  import Title_Description from "./Title_Description";
 </script>
 
 <style scoped>

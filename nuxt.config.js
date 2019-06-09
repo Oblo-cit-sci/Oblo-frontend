@@ -17,7 +17,7 @@ module.exports = {
     title: pkg.name,
     meta: [
       { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      { name: 'viewport', content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' },
       { hid: 'description', name: 'description', content: pkg.description }
     ],
     link: [
@@ -68,7 +68,7 @@ module.exports = {
   */
   axios: {
     // See https://github.com/nuxt-community/axios-module#options
-    baseURL: "http://localhost:5000", // http://158.109.161.247:8080",
+    baseURL: "http://192.168.1.36:5000", //"http://localhost:5000", // http://158.109.161.247:8080",
     withCredentials: true,
     credentials: true,
     proxyHeaders: true,

@@ -1,16 +1,12 @@
 <template>
-  <div
-    class="map"
-  >
+  <div class="map">
     <no-ssr>
       <MglMap
         :access-token="accessToken"
         :map-style="mapStyle"
         @load="onMapLoaded"
         @touchend="touch($event)"
-        @click="touch($event)"
       >
-
         <MglMarker :coordinates="coordinates">
           <!--<MglPopup anchor="top">
             <VCard>
@@ -31,6 +27,8 @@
 </template>
 
 <script>
+
+  //         @click="touch($event)"
 
   //  <MglGeolocateControl ref="geolocateControl" />
 

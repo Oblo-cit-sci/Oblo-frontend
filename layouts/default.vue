@@ -113,6 +113,11 @@
       icon: 'motorcycle',
       title: 'Logout',
       to: '/logout'
+    },
+    {
+      icon: "build",
+      title: "debug",
+      to: "/StoreDebug"
     }
   ]
 

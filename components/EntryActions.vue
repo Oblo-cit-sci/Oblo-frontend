@@ -70,7 +70,7 @@
         return this.entry_type.content.meta.hasOwnProperty("pages")
       },
       dl_url() {
-        if (this.private_local && this.last_page)
+        if (this.private_local && (!this.has_pages || this.last_page))
           return "data:text/jsoncharset=utf-8," + encodeURIComponent(JSON.stringify(this.entry.aspects_values))
         else
           return ""
