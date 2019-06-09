@@ -1,21 +1,29 @@
 <template>
-    <div></div>
+  <div></div>
 </template>
 
 <script>
-    export default {
-        name: "logout",
-        created() {
-          this.$axios.get("/logout").then((res) => {
-            this.$store.commit("user/logout");
-            this.$store.commit("set_snackbar", {message: "You are logged out", ok: true});
-            this.$router.push("/")
-          }).catch((req, res) => {
-            console.log("logout ERROR");
-            }
-          )
+  export default {
+    name: "logout",
+    created() {
+      this.$axios.get("/logout").then((res) => {
+        this.done()
+      }).catch((err) => {
+        console.log("logout error", err.response);
+          if (err.response.status === 401) {
+            this.done()
+          }
         }
+      )
+    },
+    methods: {
+      done() {
+        this.$store.commit("user/logout");
+        this.$store.commit("set_snackbar", {message: "You are logged out", ok: true});
+        this.$router.push("/")
+      }
     }
+  }
 </script>
 
 <style scoped>
