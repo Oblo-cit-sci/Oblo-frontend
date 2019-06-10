@@ -6,6 +6,8 @@ TODO fucking IMPORT BREAKS EVERYTHING
 
 // const ld = require("lodash")
 
+import {VIEW} from "../../lib/consts";
+
 export function aspect_default_value(aspect) {
   console.log("aspect_default_value", aspect)
   if (aspect.type.startsWith("!")) {
@@ -56,6 +58,10 @@ export default {
     edit: {
       type: Boolean,
       default: true
+    },
+    mode: { // todo well, this is gonna be messy
+      type: String,
+      default: VIEW
     },
     disabled: {
       type: Boolean,

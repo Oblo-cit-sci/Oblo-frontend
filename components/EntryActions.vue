@@ -17,7 +17,7 @@
       v-btn(v-else color="success" @click="save") save
 
       v-btn(v-if="!private_local" color="success" @click="submit" :disable="connected" :loading="sending") submit
-      v-btn(v-if="private_local"  :href="dl_url" :download="download_title" :disabled="disable_download" color="success" ) download
+      v-btn(v-if="private_local"  :href="dl_url" :download="download_title" :disabled="disable_download" color="success" @click="dl") download
     DecisionDialog(v-bind="remove_dialog_data" :open.sync="show_remove" v-on:action="delete_this")
 </template>
 
@@ -127,7 +127,7 @@
       delete_draft() {
         delete_draft(this.$store, this.entry)
         this.$store.commit("set_snackbar", {message: "Draft deleted", ok: true})
-
+        // todo
         if (this.entry.ref) {
 
         }
@@ -193,6 +193,14 @@
           console.log("error", err)
         })
 
+      },
+      dl() {
+        // todo. again, abstract this away...
+        if(this.entry.status === DRAFT) {
+          this.$store.commit("edrafts/set_downloaded", this.entry.draft_id)
+        } else { // private local
+          this.$store.commit("entries/set_downloaded",this.entry.local_id)
+        }
       },
       back() {
         if (this.entry.ref) {

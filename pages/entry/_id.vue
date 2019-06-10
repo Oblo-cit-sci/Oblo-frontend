@@ -9,7 +9,7 @@
         Title_Description(:title="page_info.title" header_type="h3" :description="page_info.description")
       br
       div(v-for="(aspect) in shown_aspects" :key="aspect.name")
-        Aspect(:aspect="aspect" v-bind:value.sync="entry.aspects_values[aspect.name]" mode="edit" v-on:create_ref="create_ref($event)" :extra="create_extra(aspect)")
+        Aspect(:aspect="aspect" v-bind:value.sync="entry.content.aspects[aspect.name]" mode="view" v-on:create_ref="create_ref($event)")
       div(v-if="!entry.ref && page === 0")
         License(v-bind:passedLicense.sync="entry.license" v-if="has_license")
         Privacy(v-bind:passedPrivacy.sync="entry.privacy" v-if="has_privacy")
@@ -18,6 +18,9 @@
 
 <script>
 
+  import Basic from "~~/components/aspectInput/Basic"
+  import TextShort from "~~/components/aspectInput/TextShort"
+  import TextLong from "~~/components/aspectInput/TextLong"
   import Location from "~~/components/aspectInput/Location"
   import CompositeAspect from "~~/components/aspectInput/CompositeAspect"
   import Select from "~~/components/aspectInput/Select"
@@ -27,46 +30,42 @@
 
   import AspectPageButton from "~~/components/aspectInput/AspectPageButton"
 
+  import ReferenceMixin from "~~/components/ReferenceMixin"
   import License from "~~/components/License"
   import Privacy from "~~/components/Privacy"
 
   import {MAspectComponent} from "~~/lib/entry"
 
-  import {autosave, create_and_store, get_local_entry, entry_ref, get_ref_aspect} from "../../../../lib/entry"
-  import Paginate from "../../../../components/Paginate"
-  import Title_Description from "../../../../components/Title_Description"
-  import EntryActions from "../../../../components/EntryActions";
-  import {CREATE, EDIT} from "../../../../lib/consts";
-  import Aspect from "../../../../components/Aspect";
-  import EntryMixin from "../../../../components/EntryMixin";
-  import ReferenceMixin from "../../../../components/ReferenceMixin";
+  import {autosave, create_and_store, get_local_entry} from "../../lib/entry"
+  import Paginate from "../../components/Paginate"
+  import Title_Description from "../../components/Title_Description"
+  import EntryActions from "../../components/EntryActions";
+  import {CREATE, EDIT} from "../../lib/consts";
+  import Aspect from "../../components/Aspect";
+  import EntryMixin from "../../components/EntryMixin";
 
   const ld = require("lodash")
 
   export default {
-    name: "draft_id",
+    name: "local_id",
     components: {
       Aspect,
       EntryActions,
       Title_Description,
-      Paginate, Privacy, License, Location,
+      Paginate, Privacy, License, Basic, TextShort, TextLong, Location,
       List, AspectPageButton, CompositeAspect, Select, Map
     },
     mixins: [ReferenceMixin, EntryMixin], // in case of a context entry, to be able to get back to the parent
     data() {
       return {
-        draft_id: null,
       }
     },
     created() {
-      //this.type_slug = this.$route.params.type_slug
-      // TODO carefull refactor later
-      this.draft_id = this.$route.params.draft_id // draft_id or entry_uuid
-
-
+      let local_id = this.$route.params.local_id
 
       // this.check_complete() // TODO bring back watcher, isnt triggered tho...
       //console.log(this.has_pages)
+
     },
     methods: {
       // TODO Depracated
@@ -97,11 +96,26 @@
       aspectComponent(aspect) {
         return MAspectComponent(aspect)
       },
+      send() {
+        this.sending = true
+
+        this.$axios.post("/create_entry", this.store_data()).then((res) => {
+          this.sending = false
+          //console.log(res.data)
+          this.$store.commit("set_snackbar", {message: res.data.msg, ok: res.data.status})
+
+          if (this.hasOwnProperty("draft_id")) {
+            this.$store.commit("remove_draft", this.draft_id)
+          }
+          this.$router.push("/")
+        }).catch((err) => {
+          console.log("error", err)
+        })
+      },
       // TODO obviously this needs to be refatored
       // can be passed down to aspect. it only needs the entry_id passed down
       create_ref(aspect) {
         autosave(this.$store, this.entry)
-        //console.log("creating ref for ", aspect)
         /*
         page_aspect:
 	      /create/<type_slug/<draft_id/<aspect_name
@@ -121,53 +135,42 @@
             List<CE>: items.type[0] = $
         */
 
-        const aspect_to_check = get_ref_aspect(aspect)
+        let aspect_to_check = aspect
+        const is_list = aspect.type === "list"
+        if (is_list) {
+          aspect_to_check = aspect.items
+        }
 
-        if (typeof (aspect_to_check.aspect) === "string") {
+        if (typeof (aspect_to_check) === "string") {
           // ******** CONTEXT_ENTRY
-          if (aspect_to_check.aspect[0] === "$") {
+          if (aspect_to_check[0] === "$") {
+            const new_type_slug = aspect_to_check.substring(1)
             let ref_data = {
               draft_id: this.draft_id,
               aspect_name: aspect.name,
               //type_slug: this.entry.type_slug
             }
-            if(aspect_to_check.list) {
+            if (is_list) {
               ref_data.index = this.entry.aspects_values[aspect.name].value.length
             }
 
-            const new_type_slug = aspect_to_check.aspect.substring(1)
             const new_draft_id = create_and_store(new_type_slug, this.$store, ref_data)
             this.$router.push({
               path: "/create/" + new_type_slug + "/" + new_draft_id
             })
           } else {
-            console.log("PROBLEM DERIVING REF TYPE FOR", aspect.name)
+            console.log("PROBLEM DERIVING REF TYPE FOR", aspect)
           }
         } else {
           // ********  ASPECT_PAGE
-          if (aspect_to_check.aspect.attr.view === "page") {
+          if (aspect_to_check.attr.view === "page") {
             this.$router.push({
               // TODO this wont run...
-              path: "/create/" + this.entry.type_slug + "/" + this.entry.draft_id + "/" + aspect.name
+              path: "/create/" + this.entry.type_slug + "/" + this.entry.entry_id + "/" + aspect.name
             })
           } else {
-            console.log("PROBLEM DERIVING REF TYPE FOR", aspect.name, "ACTUALLY THIS FUNCTION SHOULDNT BE CALLED")
+            console.log("PROBLEM DERIVING REF TYPE FOR", aspect, "ACTUALLY THIS FUNCTION SHOULDNT BE CALLED")
           }
-        }
-      },
-      create_extra(asecpt_descr) {
-        console.log(asecpt_descr.name, asecpt_descr.attr)
-        if (asecpt_descr.attr.extra) {
-          let extra_props = {}
-          console.log("extra for ", asecpt_descr.name)
-          for (let e of asecpt_descr.attr.extra) {
-            if (e === "ref") {
-              extra_props[e] = entry_ref(this.entry)
-            }
-          }
-          return extra_props
-        } else {
-          return undefined
         }
       }
     },
@@ -201,7 +204,6 @@
       page_info() {
         return this.entry_type.content.meta.pages[this.page]
       },
-      // wrong, create should be for all that are not local/saved or submitted
       mode() {
         return this.version === 0 ? CREATE : EDIT
       },

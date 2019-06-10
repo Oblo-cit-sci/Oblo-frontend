@@ -25,7 +25,13 @@ export const mutations = {
   save_entry(state, entry) {
     state.own_entries.set(entry.local_id, entry)
   },
-  remove_entry(state, entry_id) {
-    state.own_entries.delete(entry_id)
+  remove_entry(state, local_id) {
+    state.own_entries.delete(local_id)
+  },
+  set_downloaded(state, local_id) {
+
+    let e = state.own_entries.get(local_id)
+    console.log("DL ", e, local_id)
+    e.downloaded_version = e.version
   }
 };

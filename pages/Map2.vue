@@ -24,6 +24,9 @@
         </v-btn>
       </MglMap>
     </no-ssr>
+    <div>
+      {{$store.state.mapmode}}
+    </div>
   </div>
 </template>
 
@@ -36,6 +39,8 @@
   //       <MglNavigationControl position="top-right" />
   // MglNavigationControl, MglGeojsonLayer
   import {MglMarker, MglPopup} from 'vue-mapbox';
+  import {get_edit_route_for_ref, get_local_entry} from "../lib/entry";
+  import {get_from_store_location} from "../lib/client";
   // MglNavigationControl, MglGeojsonLayer
   export default {
     name: "Map2",
@@ -81,7 +86,8 @@
         this.coordinates = [mapboxEvent.lngLat.lng, mapboxEvent.lngLat.lat]
       },
       done() {
-
+        const route = get_edit_route_for_ref(this.$store, this.$store.state.mapmode.ref)
+        this.$router.push(route)
       }
     },
     computed: {

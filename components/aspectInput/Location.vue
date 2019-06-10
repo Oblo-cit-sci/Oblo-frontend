@@ -13,7 +13,6 @@
 
 <script>
 
-  // TODO no clue why Title_Description, does not work like for "Url".vue
   import {get_location, create_location_error} from "../../lib/common";
   import AspectMixin from "./AspectMixin";
   import Title_Description from "../Title_Description";

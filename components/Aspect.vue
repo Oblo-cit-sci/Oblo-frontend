@@ -11,6 +11,7 @@
       v-bind:extra="extra"
       :edit="edit"
       :disabled="!use_regular"
+      :mode="mode"
       v-on:create_ref="$emit('create_ref', $event)"
       v-on:update:value="$emit('update:value', {value:$event})")
     div(v-if="!use_regular")
@@ -22,6 +23,8 @@
 </template>
 
 <script>
+
+  import {VIEW} from "../lib/consts";
 
   export default {
     name: "Aspect",
@@ -47,7 +50,7 @@
     },
     created() {
       this.has_alternative = this.aspect.attr.hasOwnProperty("alternative")
-      if (this.aspect.attr.mode === "view") {
+      if (this.aspect.attr.mode === VIEW || this.mode === VIEW) {
         // sets always to VIEW, nothing really
       } else { // edit
         this.edit = true

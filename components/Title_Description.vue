@@ -1,7 +1,11 @@
 <template lang="pug">
   div
     component(v-bind:is="header_type") {{title}}
-    div {{description}}
+    div(v-if="multiple_descriptions")
+      div(v-for="(description_part, index) in description" :key="index")
+          div(v-if="index===0") {{description_part}}
+          div(v-else class="secondary_descr") {{description_part}}
+    div(v-else) {{description}}
 </template>
 
 <script>
@@ -22,10 +26,19 @@
         type: String,
         default: ""
       }
+    },
+    computed: {
+      multiple_descriptions() {
+        return this.description.constructor === Array
+      }
     }
   }
 </script>
 
 <style scoped>
-
+  .secondary_descr {
+    font-size: 85%;
+    padding-left: 1%;
+    padding-right: 5%;
+  }
 </style>

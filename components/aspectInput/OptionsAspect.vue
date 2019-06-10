@@ -4,11 +4,13 @@
       div(v-for="(comp_type, index) in aspect.options" :key="index")
         v-radio(label="non" :value="index")
           template(v-slot:label)
-            Aspect(:aspect="comp_type" v-bind:value.sync="opt_values[index]" :edit="index === selected_option" :extra="extra")
+            Aspect(:aspect="comp_type" v-bind:value.sync="opt_values[index]" :edit="true" :extra="extra" :mode="mode")
       // v-bind:value="i_value[index]" v-on:update:value="update_value($event, index)" :edit="true")
 </template>
 
 <script>
+
+  // :edit="index === selected_option"
 
   /*
     this is when there are several input method aspects as options, and the user can choose one

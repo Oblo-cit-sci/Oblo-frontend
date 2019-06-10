@@ -3,12 +3,20 @@ import {get_local_entry} from "../lib/entry";
 
 export default {
   created() {
+    // todo nicer?
     const draft_id = this.$route.params.draft_id // draft_id or entry_uuid
+    const local_id = this.$route.params.local_id
+    const id = this.$route.params.id // comes from view
     if (draft_id) {
       this.entry = JSON.parse(JSON.stringify(this.$store.state.edrafts.drafts[draft_id]))
-    } else {
-      const local_id = this.$route.params.local_id
+    } else if (local_id){
       this.entry = JSON.parse(JSON.stringify(this.$store.state.entries.own_entries.get(local_id)))
+    } else if(id) {
+      // always own entries?
+      this.entry = JSON.parse(JSON.stringify(this.$store.state.entries.own_entries.get(id)))
+      console.log(this.entry)
+    } else {
+      console.log("NO ID on", this.$route.params, "HOW DID U GET HERE?")
     }
 
     //console.log(this.type_slug)
