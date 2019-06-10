@@ -37,7 +37,7 @@
 
   import {MAspectComponent} from "~~/lib/entry"
 
-  import {autosave, create_and_store} from "../../lib/entry"
+  import {autosave, create_and_store, get_local_entry} from "../../lib/entry"
   import Paginate from "../../components/Paginate"
   import Title_Description from "../../components/Title_Description"
   import EntryActions from "../../components/EntryActions";

@@ -84,11 +84,9 @@
           }
         }
 
-        const entry = create_entry({
+        const entry = create_entry(this.$store.state.user.user_data, {
           entry_type: entry_type,
           draft_id: draft_id,
-          license:  this.$store.state.user.user_data.defaultLicense,
-          privacy: this.$store.state.user.user_data.defaultPrivacy,
         })
 
         // todo maybe some redundant data here...
