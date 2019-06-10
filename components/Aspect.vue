@@ -8,7 +8,7 @@
     component(v-bind:is="aspectComponent(aspect)"
       v-bind:aspect="aspect"
       v-bind:value="raw_value"
-      v-bind:extra="{}"
+      v-bind:extra="extra"
       :edit="edit"
       :disabled="!use_regular"
       v-on:create_ref="$emit('create_ref', $event)"
@@ -34,7 +34,8 @@
         default: "view"
       },
       aspect: Object,
-      value: Object // a wrapper, which  might encode "exceptional_value"
+      value: Object, // a wrapper, which  might encode "exceptional_value"
+      extra: Object
     },
     data() {
       return {
@@ -82,7 +83,7 @@
     }
   }
 
-  import {aspect_default_value, MAspectComponent} from "../lib/entry";
+  import {aspect_default_value, entry_ref, get_local_entry, MAspectComponent} from "../lib/entry";
 
   import Title_Description from "./Title_Description";
 </script>

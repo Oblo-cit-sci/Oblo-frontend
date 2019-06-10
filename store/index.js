@@ -11,6 +11,7 @@ export const state = () => ({
   fetched_entries: {},
   // momentary
   snackbar: {message: "", status: "ok"},
+  mapmode: {}
   // selected entry type (for creation)
 });
 
@@ -58,6 +59,9 @@ export const mutations = {
   },
   connection(state, connected) {
     state.connected = connected
+  },
+  set_mapmode(state, mode) {
+    state.mapmode = mode
   }
 };
 

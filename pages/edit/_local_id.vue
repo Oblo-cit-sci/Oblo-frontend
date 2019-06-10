@@ -18,7 +18,6 @@
 
 <script>
 
-
   import Basic from "~~/components/aspectInput/Basic"
   import TextShort from "~~/components/aspectInput/TextShort"
   import TextLong from "~~/components/aspectInput/TextLong"
@@ -43,6 +42,7 @@
   import EntryActions from "../../components/EntryActions";
   import {CREATE, EDIT} from "../../lib/consts";
   import Aspect from "../../components/Aspect";
+  import EntryMixin from "../../components/EntryMixin";
 
   const ld = require("lodash")
 
@@ -55,90 +55,17 @@
       Paginate, Privacy, License, Basic, TextShort, TextLong, Location,
       List, AspectPageButton, CompositeAspect, Select, Map
     },
-    mixins: [ReferenceMixin], // in case of a context entry, to be able to get back to the parent
+    mixins: [ReferenceMixin, EntryMixin], // in case of a context entry, to be able to get back to the parent
     data() {
       return {
-        // from the store should include
-        // type_slug, draft_id, entry_id, license, privacy, version, status, aspects_values, ref
-        entry: null,
-        entry_type: null, // the full shizzle for the type_slug
-        required_values: [], // shortcut, but in entry_type
-        sending: false,
-        complete: true,
-        has_pages: false,
-        page: 0,
-        last_page: false
       }
     },
     created() {
-      //console.log(this.$route.params)
       let local_id = this.$route.params.local_id
-      //console.log(local_id)
-      // todo can also be fetched
-      this.entry = JSON.parse(JSON.stringify(this.$store.state.entries.own_entries.get(local_id)))
-      //this.type_slug = this.$route.params.type_slug
-      //console.log(this.type_slug)
-      this.entry_type = this.$store.getters.entry_type(this.entry.type_slug)
-      //console.log(this.entry_type)
-      this.has_pages = this.entry_type.content.meta.hasOwnProperty("pages")
-
-      let required_aspects = this.$_.filter(this.entry_type.content.aspects, (a) => a.required || false)
-      this.required_values = this.$_.map(required_aspects, (a) => {
-        return a.name
-      })
-
-      if (this.entry.ref) {
-        // TODO maybe simply copy?!
-        let ref = this.entry.ref
-        let parent = {}
-        if (ref.hasOwnProperty("draft_id")) {
-          parent = this.$store.state.edrafts.drafts[ref.draft_id];
-          ref.type = "draft"
-        } else if (this.entry.ref.hasOwnProperty("entry_id")) {
-          ref.type = "entry"
-          // todo...
-        }
-
-        ref.type_slug = parent.type_slug
-        ref.parent_title = parent.title
-      }
 
       // this.check_complete() // TODO bring back watcher, isnt triggered tho...
       //console.log(this.has_pages)
 
-      for (let aspect of this.entry_type.content.aspects) {
-        if (aspect.attr.value) {
-          const val = aspect.attr.value
-          if (val.startsWith("#")) { // a reference attribute
-            let access = val.split(".")
-            let select = this.entry
-            let select_type = "entry"
-            let history = [select]
-            if (access[0].length > 1) { // first access is # and eventual one or more "/"
-              // for now we assume its all just "/" chars
-              for (let up of Array(access[0].length - 1).keys()) {
-                select = get_local_entry(this.$store, select.ref)
-                history.push(select)
-              }
-            }
-            access.splice(0, 1)
-            for (let c of access) {
-              if (select_type === "entry") {
-                select = select.aspects_values[c]
-                history.push(select)
-                select_type = "aspect"
-              }
-              // todo
-              if (select_type === "aspect") {
-                // here composite and list access
-              }
-            }
-            if (select_type === "aspect") {
-              this.entry.aspects_values[aspect.name] = JSON.parse(JSON.stringify(select))
-            }
-          }
-        }
-      }
     },
     methods: {
       // TODO Depracated
@@ -168,11 +95,6 @@
       // TODO goes out for Aspect component
       aspectComponent(aspect) {
         return MAspectComponent(aspect)
-      },
-      back_to_ref() {
-        if (this.entry.ref.type === "draft") {
-          this.$router.push("/create/" + this.entry.ref.type_slug + "/" + this.entry.ref.draft_id)
-        }
       },
       send() {
         this.sending = true
