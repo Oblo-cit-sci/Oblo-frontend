@@ -71,13 +71,19 @@
       },
       dl_url() {
         if (this.private_local && (!this.has_pages || this.last_page))
-          return "data:text/jsoncharset=utf-8," + encodeURIComponent(JSON.stringify(this.entry.aspects_values))
+          return "data:text/jsoncharset=utf-8," + encodeURIComponent(JSON.stringify({
+            value: this.entry.aspects_values,
+            template: {
+              name: this.entry_type.slug,
+              version: this.entry_type.version,
+              language: this.entry_type.language
+            }}))
         else
           return ""
       },
       download_title() {
         // TODO WHAT?
-        return (this.entry.aspects_values.title.value || this.entry.type_slug + " " + this.entry.local_id).replace(" ", "_") + ".json"
+        return (this.entry.aspects_values.title.value || this.entry.type_slug + " " + this.entry.title).replace(" ", "_") + ".json"
       },
       disable_download() {
         return this.has_pages && !this.last_page
@@ -192,14 +198,13 @@
         }).catch((err) => {
           console.log("error", err)
         })
-
       },
       dl() {
         // todo. again, abstract this away...
-        if(this.entry.status === DRAFT) {
+        if (this.entry.status === DRAFT) {
           this.$store.commit("edrafts/set_downloaded", this.entry.draft_id)
         } else { // private local
-          this.$store.commit("entries/set_downloaded",this.entry.local_id)
+          this.$store.commit("entries/set_downloaded", this.entry.local_id)
         }
       },
       back() {

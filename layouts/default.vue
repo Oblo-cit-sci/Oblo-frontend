@@ -40,9 +40,9 @@
       <div>
         <v-btn flat icon color="indigo" nuxt router exact to="/export">
           <v-badge bottom color="rgba(0,255,0,0.9)">
-            <template v-slot:badge>
+            <!--<template v-slot:badge>
               <span>!</span>
-            </template>
+            </template> -->
             <v-icon>get_app</v-icon>
           </v-badge>
         </v-btn>

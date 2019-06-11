@@ -9,9 +9,9 @@ export default {
     const id = this.$route.params.id // comes from view
     if (draft_id) {
       this.entry = JSON.parse(JSON.stringify(this.$store.state.edrafts.drafts[draft_id]))
-    } else if (local_id){
+    } else if (local_id) {
       this.entry = JSON.parse(JSON.stringify(this.$store.state.entries.own_entries.get(local_id)))
-    } else if(id) {
+    } else if (id) {
       // always own entries?
       this.entry = JSON.parse(JSON.stringify(this.$store.state.entries.own_entries.get(id)))
       console.log(this.entry)
@@ -43,46 +43,45 @@ export default {
 
       ref.type_slug = parent.type_slug
       ref.parent_title = parent.title
-
-      /* set aspect refs:
-          when an attribute has #
-          this doesnt belong here, especially cuz of the duplicate for edit/_local_id page
-      * */
-      for (let aspect of this.entry_type.content.aspects) {
-        if (aspect.attr.value) {
-          const val = aspect.attr.value
-          if (val.startsWith("#")) { // a reference attribute
-            let access = val.split(".")
-            let select = this.entry
-            let select_type = "entry"
-            let history = [select]
-            if (access[0].length > 1) { // first access is # and eventual one or more "/"
-              // for now we assume its all just "/" chars
-              for (let up of Array(access[0].length - 1).keys()) {
-                select = get_local_entry(this.$store, select.ref)
-                history.push(select)
-              }
-            }
-            access.splice(0, 1)
-            for (let c of access) {
-              if (select_type === "entry") {
-                select = select.aspects_values[c]
-                history.push(select)
-                select_type = "aspect"
-              }
-              // todo
-              if (select_type === "aspect") {
-                // here composite and list access
-              }
-            }
-            if (select_type === "aspect") {
-              this.entry.aspects_values[aspect.name] = JSON.parse(JSON.stringify(select))
+    }
+    /* set aspect refs:
+        when an attribute has #
+        this doesnt belong here, especially cuz of the duplicate for edit/_local_id page
+    * */
+    for (let aspect of this.entry_type.content.aspects) {
+      if (aspect.attr.value) {
+        const val = aspect.attr.value
+        if (val.startsWith("#")) { // a reference attribute
+          let access = val.split(".")
+          let select = this.entry
+          let select_type = "entry"
+          let history = [select]
+          if (access[0].length > 1) { // first access is # and eventual one or more "/"
+            // for now we assume its all just "/" chars
+            for (let up of Array(access[0].length - 1).keys()) {
+              select = get_local_entry(this.$store, select.ref)
+              history.push(select)
             }
           }
+          access.splice(0, 1)
+          for (let c of access) {
+            if (select_type === "entry") {
+              select = select.aspects_values[c]
+              history.push(select)
+              select_type = "aspect"
+            }
+            // todo
+            if (select_type === "aspect") {
+              // here composite and list access
+            }
+          }
+          if (select_type === "aspect") {
+            this.entry.aspects_values[aspect.name] = JSON.parse(JSON.stringify(select))
+          }
+
         }
       }
     }
-
   },
   data() {
     return {

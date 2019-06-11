@@ -3,13 +3,13 @@
     div(v-if="!select")
       div(v-if="mode==='simple'")
         div(v-for="(value, index) in i_value" :key="index")
-          Aspect(v-bind:aspect="indexed_item_aspect(index)" v-bind:value.sync="i_value[index]" :edit="true")
+          Aspect(v-bind:aspect="indexed_item_aspect(index)" v-bind:value.sync="i_value[index]" :edit="true" :mode="mode")
       div(v-else)
         v-expansion-panel(expand v-model="panelState")
           v-expansion-panel-content(v-for="(value, index) in i_value" :key="index")
             template(v-slot:header)
               div {{value.title || index + 1}}
-            Aspect(v-bind:aspect="indexed_item_aspect(index)" v-bind:value.sync="value")
+            Aspect(v-bind:aspect="indexed_item_aspect(index)" v-bind:value.sync="value" :mode="mode")
       div
         span(v-if="aspect.attr.min") min: {{aspect.attr.min}}, &nbsp;
         span(v-if="aspect.attr.max") max: {{aspect.attr.max}}
@@ -22,29 +22,6 @@
 
 <script>
 
-
-  /*
-            component(v-bind:is="clearableAspectComponent(item_aspect)"
-            v-bind:aspect="indexed_item_aspect(index)"
-            v-bind:value.sync="i_value[index]"
-            icon="clear"
-            :id="index"
-            v-on:clear="remove_value(index)",
-            v-on:create_related="create_related($event)")
-
-Aspect(v-bind:aspect="indexed_item_aspect(index)" v-bind:value.sync="i_value[index]")
-
-/// 2nd
-
-            component(v-bind:is="clearableAspectComponent(item_aspect)"
-              v-bind:aspect="indexed_item_aspect(index)"
-              v-bind:value.sync="value"
-              icon="clear",
-              :id="index",
-              v-on:clear="remove_value(index)",
-              v-on:create_related="create_related($event)")
-
-   */
   import AspectMixin from "./AspectMixin";
   import {get_codes_as_options} from "../../lib/client";
   import {aspect_wrapped_default_value, MAspectComponent} from "../../lib/entry";
@@ -110,7 +87,6 @@ Aspect(v-bind:aspect="indexed_item_aspect(index)" v-bind:value.sync="i_value[ind
       },
       // for composite
       add_value() {
-        //console.log("adding value")
         this.i_value.push(aspect_wrapped_default_value(this.item_aspect))
         if(this.mode === "composite") {
           this.$_.fill(this.panelState, false)

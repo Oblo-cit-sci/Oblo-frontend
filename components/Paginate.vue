@@ -3,8 +3,8 @@
     v-btn(:disabled="has_prev_pages" @click="change_page(-1)") Previous Page
     v-btn(:disabled="last_page" @click="change_page(1)") Next Page
     span {{page + 1}} / {{total}}
-    div(v-if="page_select")
-      SingleSelect(:options="pages_options" :select_sync="false" v-on:selection="page_selected($event)")
+    //div(v-if="page_select")
+    //  SingleSelect(:options="pages_options" :select_sync="false" v-on:selection="page_selected($event)")
 </template>
 
 <script>

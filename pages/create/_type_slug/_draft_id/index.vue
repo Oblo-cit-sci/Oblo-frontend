@@ -30,7 +30,7 @@
   import License from "~~/components/License"
   import Privacy from "~~/components/Privacy"
 
-  import {MAspectComponent} from "~~/lib/entry"
+  import {MAspectComponent} from "../../../../lib/entry"
 
   import {autosave, create_and_store, get_local_entry, entry_ref, get_ref_aspect} from "../../../../lib/entry"
   import Paginate from "../../../../components/Paginate"

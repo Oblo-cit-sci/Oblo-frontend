@@ -16,7 +16,7 @@
   // v-flex(xs12='' sm8='' md6='')
   import Entrylist from '~/components/Entrylist.vue'
 
-  import {initialize} from "~/lib/client"
+  import {initialize} from "../lib/client"
 
   export default {
     async fetch(context) {
