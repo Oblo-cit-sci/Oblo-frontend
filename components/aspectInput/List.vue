@@ -1,7 +1,7 @@
 <template lang="pug">
   div
     div(v-if="!select")
-      div(v-if="mode==='simple'")
+      div(v-if="is_simple")
         div(v-for="(value, index) in i_value" :key="index")
           Aspect(v-bind:aspect="indexed_item_aspect(index)" v-bind:value.sync="i_value[index]" :edit="true" :mode="mode")
       div(v-else)
@@ -29,6 +29,10 @@
   import Aspect from "../Aspect";
 
   //
+
+  const SIMPLE = "simple"
+  const PANELS = "panels"
+
   export default {
     name: "List",
     components: {Aspect, MultiSelect},
@@ -36,13 +40,13 @@
     data() {
       return {
         item_aspect: null,
-        mode: null,
+        structure: null,
         count: true,
         // for composite
         panelState: [],
         // select, when code type (*)
         select: false, // select... instead of button
-        options: []
+        options: [],
       }
     },
     created() {
@@ -50,14 +54,17 @@
 
       if (typeof (item_type) === "string") {
 
-        if(item_type[0] === "*") {
+        if (item_type[0] === "*") {
           this.select = true
           this.options = get_codes_as_options(this.$store.state, "*liccis_flat")
         } else {
           switch (item_type) {
             case "str":
-              this.mode = "simple";
+              this.structure = SIMPLE
               break;
+            case "int":
+              this.structure = SIMPLE
+              break
             default:
               console.log("unknown type for list", item_type);
           }
@@ -72,14 +79,13 @@
         if (this.aspect.items.type === "composite") {
           this.item_aspect = this.aspect.items;
           this.item_aspect.required = true;
-          this.mode = "composite"
+          this.structure = PANELS
         } else {
           this.item_aspect = this.aspect.items;
           //this.item_aspect.required = true;
-          this.mode = "simple";
+          this.structure = "simple";
         }
       }
-
     },
     methods: {
       clearableAspectComponent(aspect) {
@@ -88,7 +94,7 @@
       // for composite
       add_value() {
         this.i_value.push(aspect_wrapped_default_value(this.item_aspect))
-        if(this.mode === "composite") {
+        if (this.structure === PANELS) {
           this.$_.fill(this.panelState, false)
           this.panelState.push(true)
         }
@@ -116,6 +122,9 @@
         } else {
           return true;
         }
+      },
+      is_simple() {
+        return this.structure === SIMPLE
       }
     }
     /*watch : {

@@ -51,13 +51,14 @@ export default {
       ref.parent_title = parent.title
     }
 
+    // todo this whole part... not used atm...
     //console.log(this.entry_type.content)
     for (let aspect of this.entry_type.content.aspects) {
-      console.log("extra", aspect)
+      //console.log("extra", aspect)
       //console.log(asecpt_descr.name, asecpt_descr.attr)
       let extra_props = {}
       if (aspect.attr.extra) {
-        //console.log("extra for ", asecpt_descr.name)
+        //console.log("extra for ", aspect.name)
         for (let e of aspect.attr.extra) {
           if (e === "ref") {
             extra_props[e] = entry_ref(this.entry)

@@ -24,6 +24,7 @@
     methods: {
       update_value($event , index) {
         this.i_value[index] = $event
+        this.value_change(this.i_value)
         //console.log("comp update", this.aspect.name, $event, this.i_value)
         // todo here we want to eventually update the title, its nice in lists
         // otherwise we could just sync value

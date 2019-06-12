@@ -57,11 +57,11 @@
               location.coords.longitude,
               location.coords.latitude,
               this.$store.state.user.user_data.location_error);
-            console.log(this.i_value);
+            //console.log(this.i_value);
             this.value_change(this.i_value);
           });
         } else if (this.selection.value === FROM_MAP) {
-          console.log(this.extra)
+          //console.log(this.extra)
           this.$store.commit("set_mapmode", {
             ref: this.extra.ref,
             select: "point",

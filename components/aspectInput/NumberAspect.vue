@@ -8,11 +8,13 @@
       :rules="[minmax]"
       v-on:update:error="error = $event"
       :mask="mask" )
-    div(v-if="error") ERROR
 </template>
 
 <script>
   import AspectMixin from "./AspectMixin";
+
+  const INT = "int"
+  const FLOAT = "float"
 
   export default {
     name: "NumberAspect",
@@ -21,6 +23,7 @@
       return {
         mask: "",
         suffix: this.aspect.attr.suffix || "",
+        num_type: null,
         error: false, // todo actually emit it up... and make validation on whole entry...
         minmax: value => {
           if (this.aspect.attr.min && value < this.aspect.attr.min)
@@ -32,16 +35,20 @@
       }
     },
     created() {
-      if (this.aspect.type === "int") {
+      this.num_type = this.aspect.type
+      if(!(this.num_type === INT || this.num_type === FLOAT)) {
+        console.log("NumberAspect-error type: aspect, type", this.aspect.name, this.aspect.type)
+      }
+      if (this.aspect.type === INT) {
         this.mask = "##########"
-      } else {
+      } /*else {
         // todo. maybe use the type, prop but vuetify doesnt have any docs
         this.mask = undefined // "############.##########"
-      }
+      }*/
     },
     watch: {
       i_value(val) {
-        this.value_change(parseInt(val))
+        this.value_change(this.num_type === INT ? parseInt(val) : parseFloat(val))
       }
     }
   }

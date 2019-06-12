@@ -4,7 +4,13 @@
       div(v-for="(comp_type, index) in aspect.options" :key="index")
         v-radio(label="non" :value="index")
           template(v-slot:label)
-            Aspect(:aspect="comp_type" v-bind:value.sync="opt_values[index]" :edit="true" :extra="extra" :mode="mode")
+            Aspect(
+              v-bind:aspect="comp_type"
+              v-bind:value="opt_values[index]"
+              v-on:update:value="optionUpdate($event, index)"
+              :edit="true"
+              :extra="extra"
+              :mode="mode")
 </template>
 
 <script>
@@ -36,22 +42,26 @@
       }
     },
     methods: {
-      update_value($event, index) {
-        //this.i_value[index] = $event
+      optionUpdate(event, index) {
+        //console.log("OP-Asp, update", event)
+        this.opt_values[index] = event
+        this.i_value = this.opt_values[this.selected_option]
+        this.value_change(this.i_value)
       }
     },
     watch: {
       selected_option(val) {
+        //console.log("option selected", val)
         //val = parseInt(val)
         for (let index in this.aspect.options) {
           if (parseInt(index) !== val) {
             this.opt_values[index] = aspect_wrapped_default_value(this.aspect.options[index])
+          } else {
+            // would be default...
           }
         }
       },
-      opt_values(val) {
-        this.value_change(this.opt_values[this.selected_option])
-      }
+
     }
   }
 </script>

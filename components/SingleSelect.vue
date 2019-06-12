@@ -57,6 +57,7 @@
       return {
         viewStyle: CLEAR_LIST,
         selected_item: null, // for v-select
+        simple_select: "b" // TEST SIMPLE
       }
     },
     created() {

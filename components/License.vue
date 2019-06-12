@@ -16,7 +16,7 @@
   import TextShort from "./aspectInput/TextShort";
   import SingleSelect from "./SingleSelect";
 
-  import { license_icon } from "~~/lib/client";
+  import {license_icon} from "~~/lib/client";
 
   const ld = require('lodash');
 
@@ -41,12 +41,14 @@
       }
     },
     created() {
-      if(!this.overwrite_default)
+      if (!this.overwrite_default)
         this.set_to_default();
       else { // for drafts
         this.selectedLicense = this.overwrite_default;
         this.use_alternative_license = this.selectedLicense.short !== this.$store.state.user.user_data.defaultLicense;
       }
+      this.selectedLicense.value = this.selectedLicense.short
+      this.selectedLicense.text = this.selectedLicense.title
       this.licenseOptions = ld.map(this.$store.state.codes.licenses, (l) => Object.assign({
         text: l.title,
         value: l.short
@@ -55,14 +57,14 @@
     computed: {
       licenseImagePath() {
         //console.log("update img with", this.selectedLicense);
-        if(this.selectedLicense) {
+        if (this.selectedLicense) {
           return license_icon(this.$axios, this.selectedLicense.short, this.$store);
         } else {
           return null;
         }
       },
       license_selection() {
-        return this.use_alternative_license ? "use different license" : "default license" ;
+        return this.use_alternative_license ? "use different license" : "default license";
       }
     },
     methods: {
@@ -72,7 +74,7 @@
     },
     watch: {
       use_alternative_license(new_val) {
-        if(!new_val) { // set back to default
+        if (!new_val) { // set back to default
           this.set_to_default();
         }
       },

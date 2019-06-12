@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    Title_Description(v-bind="title_description(aspect)" :disabled="!use_regular || condition_fail")
+    Title_Description(v-bind="title_description(aspect)" :disabled="disabled")
     v-switch(v-if="has_alternative"
       v-model="use_regular"
       :label="use_regular ? `regular value`:`alternative value`"
@@ -10,7 +10,7 @@
       v-bind:value="raw_value"
       v-bind:extra="extra"
       :edit="edit"
-      :disabled="!use_regular || condition_fail"
+      :disabled="disabled"
       :mode="mode"
       v-on:create_ref="$emit('create_ref', $event)"
       v-on:update:value="emit_up($event)")
@@ -72,18 +72,21 @@
         }
       },
       condition_fail() {
-        console.log("E U ", this.aspect.name, this.condition)
+        //console.log("E U ", this.aspect.name, this.condition)
 
         if(!this.condition || !this.condition.val) {
           return false
         } else {
-          console.log("checking")
+          //console.log("checking")
           return this.condition.val !== this.aspect.attr.condition.value
         }
         /*return this.extra !== undefined
         if(this.aspect.attr.hasOwnProperty("condition")) {
           console.log("condition check", this.aspect.name)
         }*/
+      },
+      disabled() {
+        return !this.use_regular || this.condition_fail
       }
     },
     methods: {
