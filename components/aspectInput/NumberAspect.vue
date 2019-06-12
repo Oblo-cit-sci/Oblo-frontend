@@ -4,9 +4,11 @@
       outline
       single-line
       v-model="i_value"
-      hideDetails
       :suffix="suffix"
+      :rules="[minmax]"
+      v-on:update:error="error = $event"
       :mask="mask" )
+    div(v-if="error") ERROR
 </template>
 
 <script>
@@ -19,10 +21,18 @@
       return {
         mask: "",
         suffix: this.aspect.attr.suffix || "",
+        error: false, // todo actually emit it up... and make validation on whole entry...
+        minmax: value => {
+          if (this.aspect.attr.min && value < this.aspect.attr.min)
+            return "value must be higher than " + this.aspect.attr.min
+          else if (this.aspect.attr.max && value > this.aspect.attr.max)
+            return "value must be lower than " + this.aspect.attr.max
+          else return true
+        }
       }
     },
     created() {
-      if(this.aspect.type === "int") {
+      if (this.aspect.type === "int") {
         this.mask = "##########"
       } else {
         // todo. maybe use the type, prop but vuetify doesnt have any docs

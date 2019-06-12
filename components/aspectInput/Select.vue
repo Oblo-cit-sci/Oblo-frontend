@@ -18,7 +18,8 @@
     data() {
       return {
         selection: null,
-        options: []
+        options: [],
+        code: null, // if not null: name, version
       }
     },
     created() {

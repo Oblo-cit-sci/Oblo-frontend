@@ -9,7 +9,17 @@
         Title_Description(:title="page_info.title" header_type="h3" :description="page_info.description")
       br
       div(v-for="(aspect) in shown_aspects" :key="aspect.name")
-        Aspect(:aspect="aspect" v-bind:value.sync="entry.aspects_values[aspect.name]" mode="edit" v-on:create_ref="create_ref($event)" :extra="create_extra(aspect)")
+        Aspect(
+          :aspect="aspect"
+          v-bind:value.sync="entry.aspects_values[aspect.name]"
+
+          :update_req="Object.keys(conditions).indexOf(aspect.name) > -1"
+          v-on:req="update_vall($event)"
+          :condition="condition_vals[aspect.name]"
+
+          mode="edit"
+          v-on:create_ref="create_ref($event)"
+          :extra="extras[aspect.name]")
       div(v-if="!entry.ref && page === 0")
         License(v-bind:passedLicense.sync="entry.license" v-if="has_license")
         Privacy(v-bind:passedPrivacy.sync="entry.privacy" v-if="has_privacy")
@@ -62,8 +72,6 @@
       //this.type_slug = this.$route.params.type_slug
       // TODO carefull refactor later
       this.draft_id = this.$route.params.draft_id // draft_id or entry_uuid
-
-
 
       // this.check_complete() // TODO bring back watcher, isnt triggered tho...
       //console.log(this.has_pages)
@@ -155,21 +163,17 @@
           }
         }
       },
-      create_extra(asecpt_descr) {
-        console.log(asecpt_descr.name, asecpt_descr.attr)
-        if (asecpt_descr.attr.extra) {
-          let extra_props = {}
-          console.log("extra for ", asecpt_descr.name)
-          for (let e of asecpt_descr.attr.extra) {
-            if (e === "ref") {
-              extra_props[e] = entry_ref(this.entry)
-            }
-          }
-          return extra_props
-        } else {
-          return undefined
+      update_vall(event) {
+        //console.log(this.extras)
+        //console.log("UVALL", event, Object.keys(this.conditions).indexOf(event.aspect) > -1)
+        if(Object.keys(this.conditions).indexOf(event.aspect) > -1){
+          console.log(this.conditions[event.aspect], this.conditions)
+          const target = this.conditions[event.aspect]
+          //this.extras[this.conditions[event.aspect]]["condition"] = {}
+          //this.extras[this.conditions[event.aspect]]["condition"][event.aspect] = event.value
+          this.condition_vals[target] = {val:event.value}
         }
-      }
+      },
     },
     computed: {
       shown_aspects() {
@@ -213,12 +217,6 @@
         }
       }
     },
-    watch: {
-      aspects_values(new_values) {
-        //console.log("update values")
-        this.check_complete()
-      }
-    }
   }
 </script>
 

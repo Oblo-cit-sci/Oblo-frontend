@@ -1,4 +1,5 @@
-import {get_local_entry} from "../lib/entry";
+import {entry_ref, get_local_entry} from "../lib/entry";
+import {check_conditions} from "../lib/client";
 
 
 export default {
@@ -14,7 +15,7 @@ export default {
     } else if (id) {
       // always own entries?
       this.entry = JSON.parse(JSON.stringify(this.$store.state.entries.own_entries.get(id)))
-      console.log(this.entry)
+      //console.log(this.entry)
     } else {
       console.log("NO ID on", this.$route.params, "HOW DID U GET HERE?")
     }
@@ -28,6 +29,12 @@ export default {
     this.required_values = this.$_.map(required_aspects, (a) => {
       return a.name
     })
+    this.conditions = check_conditions(this.entry_type)
+    this.condition_vals = {}
+    for(let target of Object.values(this.conditions)) {
+     this.condition_vals[target] = {val: null}
+    }
+    console.log("conditions", this.conditions, this.condition_vals)
 
     if (this.entry.ref) {
       // TODO maybe simply copy?!
@@ -40,10 +47,27 @@ export default {
         ref.type = "entry"
         // todo...
       }
-
       ref.type_slug = parent.type_slug
       ref.parent_title = parent.title
     }
+
+    //console.log(this.entry_type.content)
+    for (let aspect of this.entry_type.content.aspects) {
+      console.log("extra", aspect)
+      //console.log(asecpt_descr.name, asecpt_descr.attr)
+      let extra_props = {}
+      if (aspect.attr.extra) {
+        //console.log("extra for ", asecpt_descr.name)
+        for (let e of aspect.attr.extra) {
+          if (e === "ref") {
+            extra_props[e] = entry_ref(this.entry)
+          }
+        }
+      }
+      this.extras[aspect.name] = extra_props
+    }
+
+
     /* set aspect refs:
         when an attribute has #
         this doesnt belong here, especially cuz of the duplicate for edit/_local_id page
@@ -91,11 +115,13 @@ export default {
       entry_type: null, // the full shizzle for the type_slug
 
       required_values: [], // shortcut, but in entry_type
+      conditions: {}, // this contains  conditions between aspects (for now just conditions), key (sender), value: receiver
       sending: false,
       complete: true,
       has_pages: false,
       page: 0,
-      last_page: false
+      last_page: false,
+      extras: {}
     }
   },
   methods: {}

@@ -7,7 +7,7 @@
           v-list-tile-title {{item.text}}
           v-list-tile-sub-title {{item.description}}
   div(v-else)
-    v-select(chips dense :multiple=false v-model="selected_item" :items="options" return-object)
+    v-select(outline hideDetails singleLine dense :multiple=false v-model="selected_item" :items="options" return-object)
 </template>
 
 <script>
@@ -67,7 +67,6 @@
       if (this.selection) {
         this.selected_item = this.selection;
       }
-
       if (this.force_view) {
         this.viewStyle = view_map[this.force_view];
       } else {
@@ -92,7 +91,7 @@
           return key === this.selection.value && this.highlight;
       },
       emitUp(item) {
-        console.log("emit", item, this.select_sync)
+        //console.log("emit", item, this.select_sync)
         if (this.select_sync) {
           this.$emit('update:selection', item); // refactor to use the item
         } else {

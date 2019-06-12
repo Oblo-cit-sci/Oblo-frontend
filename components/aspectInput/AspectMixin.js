@@ -9,7 +9,7 @@ TODO fucking IMPORT BREAKS EVERYTHING
 import {VIEW} from "../../lib/consts";
 
 export function aspect_default_value(aspect) {
-  console.log("aspect_default_value", aspect)
+  //console.log("aspect_default_value", aspect)
   if (aspect.type.startsWith("!")) {
     return aspect.default
   }
