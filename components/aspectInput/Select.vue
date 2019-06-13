@@ -1,6 +1,7 @@
 <template lang="pug">
   div
-    SingleSelect(:options="options"
+    v-checkbox(v-if="select_check" v-model="check_box_value" :label="check_box_value ? this.options[1].text : this.options[0].text")
+    SingleSelect(v-else :options="options"
       v-bind:selection.sync="selection"
       :disabled="disabled")
 </template>
@@ -20,6 +21,8 @@
         selection: null,
         options: [],
         code: null, // if not null: name, version
+        select_check: false, // attr.select = "check"
+        check_box_value: null
       }
     },
     created() {
@@ -28,7 +31,15 @@
           this.options = get_codes_as_options(this.$store.state, this.aspect.items)
         }
       } else if (this.aspect.items instanceof Array) {
+        if (this.aspect.attr.hasOwnProperty("select") && this.aspect.attr.select === "check") {
+          this.select_check = true
+          this.check_box_value = false // or maybe a value/default...
+          if(this.aspect.items.length !== 2) {
+            console.log("Aspect ",this.aspect.name,"is a select with check but has not exactly 2 items")
+          }
+        }
         this.options = string_list2options(this.aspect.items)
+
       } else {
         console.log("ERROR cannot create options from aspect items", this.aspect.items)
       }
@@ -49,6 +60,10 @@
       },
       disabled() {
         this.selection = null
+      },
+      check_box_value(val) {
+        this.i_value = val ? this.options[1].value : this.options[0].value
+        this.value_change(this.i_value)
       }
     }
   }
