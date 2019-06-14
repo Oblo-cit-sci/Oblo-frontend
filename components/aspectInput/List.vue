@@ -51,9 +51,7 @@
     },
     created() {
       let item_type = this.aspect.items;
-
       if (typeof (item_type) === "string") {
-
         if (item_type[0] === "*") {
           this.select = true
           this.options = get_codes_as_options(this.$store.state, "*liccis_flat")

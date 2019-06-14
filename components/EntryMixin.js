@@ -1,5 +1,5 @@
 import {entry_ref, get_local_entry} from "../lib/entry";
-import {check_conditions} from "../lib/client";
+import {check_conditions, check_internallinks, resolve_aspect_ref} from "../lib/client";
 
 
 export default {
@@ -34,7 +34,8 @@ export default {
     for(let target of Object.values(this.conditions)) {
      this.condition_vals[target] = {val: null}
     }
-    console.log("conditions", this.conditions, this.condition_vals)
+    //console.log("conditions", this.conditions, this.condition_vals)
+    this.internal_links = check_internallinks(this.entry_type)
 
     if (this.entry.ref) {
       // TODO maybe simply copy?!
@@ -74,39 +75,12 @@ export default {
         this doesnt belong here, especially cuz of the duplicate for edit/_local_id page
     * */
     for (let aspect of this.entry_type.content.aspects) {
-      if (aspect.attr.value) {
-        const val = aspect.attr.value
-        if (val.startsWith("#")) { // a reference attribute
-          let access = val.split(".")
-          let select = this.entry
-          let select_type = "entry"
-          let history = [select]
-          if (access[0].length > 1) { // first access is # and eventual one or more "/"
-            // for now we assume its all just "/" chars
-            for (let up of Array(access[0].length - 1).keys()) {
-              select = get_local_entry(this.$store, select.ref)
-              history.push(select)
-            }
-          }
-          access.splice(0, 1)
-          for (let c of access) {
-            if (select_type === "entry") {
-              select = select.aspects_values[c]
-              history.push(select)
-              select_type = "aspect"
-            }
-            // todo
-            if (select_type === "aspect") {
-              // here composite and list access
-            }
-          }
-          if (select_type === "aspect") {
-            this.entry.aspects_values[aspect.name] = JSON.parse(JSON.stringify(select))
-          }
-
-        }
+      let value = resolve_aspect_ref(this.$store, this.entry, aspect)
+      if(value) {
+        this.entry.aspects_values[aspect.name] = value
       }
     }
+
   },
   data() {
     return {
