@@ -37,12 +37,12 @@
 
   import AspectPageButton from "~~/components/aspectInput/AspectPageButton"
 
-  import License from "~~/components/License"
+  import License from "../../../../components/License"
   import Privacy from "~~/components/Privacy"
 
   import {MAspectComponent} from "../../../../lib/entry"
 
-  import {autosave, create_and_store, get_local_entry, entry_ref, get_ref_aspect} from "../../../../lib/entry"
+  import {autosave, create_and_store, get_ref_aspect} from "../../../../lib/entry"
   import Paginate from "../../../../components/Paginate"
   import Title_Description from "../../../../components/Title_Description"
   import EntryActions from "../../../../components/EntryActions";
@@ -139,7 +139,7 @@
               aspect_name: aspect.name,
               //type_slug: this.entry.type_slug
             }
-            if(aspect_to_check.list) {
+            if (aspect_to_check.list) {
               ref_data.index = this.entry.aspects_values[aspect.name].value.length
             }
 
@@ -166,16 +166,27 @@
       update_vall(event) {
         //console.log(this.extras)
         //console.log("UVALL", event, Object.keys(this.conditions).indexOf(event.aspect) > -1)
-        if(Object.keys(this.conditions).indexOf(event.aspect) > -1){
+        if (Object.keys(this.conditions).indexOf(event.aspect) > -1) {
           console.log(this.conditions[event.aspect], this.conditions)
           const target = this.conditions[event.aspect]
           //this.extras[this.conditions[event.aspect]]["condition"] = {}
           //this.extras[this.conditions[event.aspect]]["condition"][event.aspect] = event.value
-          this.condition_vals[target] = {val:event.value}
+          this.condition_vals[target] = {val: event.value}
         }
       },
     },
     computed: {
+      has_license() {
+        const meta = this.entry_type.content.meta
+        if (meta.hasOwnProperty("privacy")) {
+          //console.log("private: no license")
+          return meta.privacy !== "PRIVATE_LOCAL"
+        } else if (meta.hasOwnProperty("has_license")) {
+          //console.log("has licrense val", meta.has_license)
+          return meta.has_license
+        } else
+          return true
+      },
       shown_aspects() {
         if (this.has_pages) {
           return ld.filter(this.entry_type.content.aspects, (a) => {
@@ -187,15 +198,13 @@
         }
         return this.entry_type.content.aspects
       },
-      has_license() {
-        if (this.entry_type.content.meta.hasOwnProperty("privacy")) {
-          return this.entry_type.content.meta.privacy !== "PRIVATE_LOCAL"
-        } else return true
-      },
       has_privacy() {
+        const meta = this.entry_type.content.meta
         if (this.entry_type.content.meta.hasOwnProperty("privacy")) {
           return this.entry_type.content.meta.privacy !== "PRIVATE_LOCAL"
-        } else return true
+        } else if (meta.hasOwnProperty("has_privacy")) {
+          return meta.has_privacy
+        }
       },
       // maybe also consider:
       // https://github.com/edisdev/download-json-data/blob/develop/src/components/Download.vue

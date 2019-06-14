@@ -185,19 +185,29 @@
       submit() {
         // todo
         this.sending = true
-        this.$axios.post("/create_entry", this.entry).then((res) => {
-          this.sending = false
-          //console.log(res.data)
-          this.$store.commit("set_snackbar", {message: res.data.msg, ok: res.data.status})
+        if(this.entry.status === DRAFT) {
+          this.$axios.post("/create_entry", this.entry).then((res) => {
+            this.sending = false
+            //console.log(res.data)
+            this.$store.commit("set_snackbar", {message: res.data.msg, ok: res.data.status})
 
-          // just call function
-          if (this.hasOwnProperty("draft_id")) {
-            this.$store.commit("remove_draft", this.draft_id)
-          }
-          this.back()
-        }).catch((err) => {
-          console.log("error", err)
-        })
+            // just call function
+            //console.log(this.entry)
+            save_entry(this.$store, this.entry)
+            /*
+            if (this.entry.hasOwnProperty("draft_id")) {
+              delete_draft(this.$store, this.entry)
+
+              //this.$store.commit("edrafts/remove_draft", this.draft_id)
+              this.$store.commit("entries/save_entry", this.entry)
+            }*/
+            this.back()
+          }).catch((err) => {
+            console.log("error", err)
+          })
+        } else {
+
+        }
       },
       dl() {
         // todo. again, abstract this away...
