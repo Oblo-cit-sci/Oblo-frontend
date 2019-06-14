@@ -1,15 +1,13 @@
 /*
-
 TODO fucking IMPORT BREAKS EVERYTHING
-
+//import {aspect_default_value} from "../../lib/entry";
  */
-
-// const ld = require("lodash")
 
 import {VIEW} from "../../lib/consts";
 
+// this must be a copy of entry.js
 export function aspect_default_value(aspect) {
-  //console.log("aspect_default_value", aspect)
+  //console.log("aspect_default_value", aspect.name, aspect)
   if (aspect.type.startsWith("!")) {
     return aspect.default
   }
@@ -35,10 +33,12 @@ export function aspect_default_value(aspect) {
     case "tree":
       return {}
     case "composite":
-      //console.log("aspect composite default", aspect)
-      console.log("this should crash! LODASH NOT IMPORTED in AspectMixin")
       return ld.map(aspect.components, (c) => aspect_wrapped_default_value(c))
+    case "options":
+      return aspect_wrapped_default_value(aspect.options[0])
     case "select":
+      return null
+    case "multiselect":
       return null
     default:
       console.log("Warning trying to ge default value of aspect of unknown type", aspect)
@@ -49,6 +49,7 @@ export function aspect_default_value(aspect) {
 export function aspect_wrapped_default_value(aspect) {
   return {value: aspect_default_value(aspect)}
 }
+
 
 export default {
   props: {
@@ -102,7 +103,9 @@ export default {
       this.i_value = new_val;
     },
     disabled() {
+      console.log("DISA")
       this.i_value = aspect_default_value(this.aspect)
+      //this.i_value = aspect_default_value(this.aspect)
     }
   }
 }

@@ -1,7 +1,14 @@
 <template lang="pug">
   div
     div(v-for="(comp_type, index) in aspect.components" :key="index")
-      Aspect(:aspect="comp_type" v-bind:value="i_value[index]" v-on:update:value="update_value($event, index)" :edit="true" :mode="mode")
+      Aspect(
+        :aspect="comp_type"
+        :value="i_value[index]"
+        v-on:update:value="update_value($event, index)"
+        :edit="true"
+        :mode="mode"
+        :extra="extra"
+        v-on:entryAction="$emit('entryAction',$event)")
 </template>
 
 <script>
@@ -18,7 +25,7 @@
     mixins: [AspectMixin],
     data() {
       return {
-        title: "XXX"
+        title: "XXX" // todo pass it up for nice title in lists...
       }
     },
     methods: {

@@ -61,9 +61,9 @@
             this.value_change(this.i_value);
           });
         } else if (this.selection.value === FROM_MAP) {
+          this.$emit("entryAction", {action:"autosave"})
           //console.log(this.extra)
           this.$store.commit("set_mapmode", {
-            ref: this.extra.ref,
             select: "point",
             aspect: this.aspect.name
           })

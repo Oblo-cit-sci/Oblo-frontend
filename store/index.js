@@ -11,7 +11,8 @@ export const state = () => ({
   fetched_entries: {},
   // momentary
   snackbar: {message: "", status: "ok"},
-  mapmode: {}
+  mapmode: {},
+  global_ref: {} // the last draft/entry
   // selected entry type (for creation)
 });
 
@@ -62,6 +63,9 @@ export const mutations = {
   },
   set_mapmode(state, mode) {
     state.mapmode = mode
+  },
+  set_global_ref(state, ref){
+    state.global_ref = ref
   }
 };
 

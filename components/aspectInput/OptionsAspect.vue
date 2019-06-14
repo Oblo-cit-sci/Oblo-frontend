@@ -10,7 +10,8 @@
               v-on:update:value="optionUpdate($event, index)"
               :edit="true"
               :extra="extra"
-              :mode="mode")
+              :mode="mode"
+              v-on:entryAction="$emit('entryAction',$event)")
 </template>
 
 <script>

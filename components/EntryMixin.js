@@ -1,6 +1,9 @@
-import {entry_ref, get_local_entry} from "../lib/entry";
+import {autosave, entry_ref } from "../lib/entry";
 import {check_conditions, check_internallinks, resolve_aspect_ref} from "../lib/client";
 
+
+const AUTOSAVE = "autosave"
+const entryActions = [AUTOSAVE]
 
 export default {
   created() {
@@ -19,6 +22,8 @@ export default {
     } else {
       console.log("NO ID on", this.$route.params, "HOW DID U GET HERE?")
     }
+    // set global ref, needed for deeply nested maps to know how to come back
+    this.$store.commit("set_global_ref", entry_ref(this.entry))
 
     //console.log(this.type_slug)
     this.entry_type = this.$store.getters.entry_type(this.entry.type_slug)
@@ -31,8 +36,8 @@ export default {
     })
     this.conditions = check_conditions(this.entry_type)
     this.condition_vals = {}
-    for(let target of Object.values(this.conditions)) {
-     this.condition_vals[target] = {val: null}
+    for (let target of Object.values(this.conditions)) {
+      this.condition_vals[target] = {val: null}
     }
     //console.log("conditions", this.conditions, this.condition_vals)
     this.internal_links = check_internallinks(this.entry_type)
@@ -76,7 +81,7 @@ export default {
     * */
     for (let aspect of this.entry_type.content.aspects) {
       let value = resolve_aspect_ref(this.$store, this.entry, aspect)
-      if(value) {
+      if (value) {
         this.entry.aspects_values[aspect.name] = value
       }
     }
@@ -99,5 +104,16 @@ export default {
       extras: {}
     }
   },
-  methods: {}
+  methods: {
+    entryAction(event) {
+      switch (event.action) {
+        case AUTOSAVE:
+          autosave(this.$store, this.entry)
+          break
+        default:
+          console.log("unknown entry action", event.action)
+          break
+      }
+    }
+  }
 }

@@ -143,6 +143,7 @@
         delete_entry(this.$store, this.entry)
         this.$store.commit("set_snackbar", {message: "Entry deleted", ok: true})
         if (this.entry.ref) {
+          // or entry
           this.$store.commit("edrafts/set_draft_aspect_value", data);
         }
         this.back()

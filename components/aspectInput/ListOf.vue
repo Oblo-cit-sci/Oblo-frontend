@@ -36,7 +36,6 @@
   import {delete_local_entry, get_edit_route_for_ref, get_id, get_local_entry} from "../../lib/entry";
 
 
-
   const SELECT_THRESH = 6
 
   export default {

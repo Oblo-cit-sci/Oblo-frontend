@@ -24,9 +24,6 @@
         </v-btn>
       </MglMap>
     </no-ssr>
-    <div>
-      {{$store.state.mapmode}}
-    </div>
   </div>
 </template>
 
@@ -86,7 +83,8 @@
         this.coordinates = [mapboxEvent.lngLat.lng, mapboxEvent.lngLat.lat]
       },
       done() {
-        const route = get_edit_route_for_ref(this.$store, this.$store.state.mapmode.ref)
+        //this.$store.
+        const route = get_edit_route_for_ref(this.$store, this.$store.state.global_ref)
         this.$router.push(route)
       }
     },

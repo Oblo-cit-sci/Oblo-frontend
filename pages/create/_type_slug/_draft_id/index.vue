@@ -12,11 +12,10 @@
         Aspect(
           :aspect="aspect"
           v-bind:value.sync="entry.aspects_values[aspect.name]"
-
           :update_req="Object.keys(conditions).indexOf(aspect.name) > -1"
           v-on:req="update_vall($event)"
+          v-on:entryAction="entryAction($event)"
           :condition="condition_vals[aspect.name]"
-
           mode="edit"
           v-on:create_ref="create_ref($event)"
           :extra="extras[aspect.name]")
@@ -28,14 +27,7 @@
 
 <script>
 
-  import Location from "~~/components/aspectInput/Location"
-  import CompositeAspect from "~~/components/aspectInput/CompositeAspect"
-  import Select from "~~/components/aspectInput/Select"
 
-  import List from "~~/components/aspectInput/List"
-  import Map from "~~/components/aspectInput/Map"
-
-  import AspectPageButton from "~~/components/aspectInput/AspectPageButton"
 
   import License from "../../../../components/License"
   import Privacy from "~~/components/Privacy"
@@ -43,7 +35,6 @@
   import {MAspectComponent} from "../../../../lib/entry"
 
   import {autosave, create_and_store, get_ref_aspect} from "../../../../lib/entry"
-  import Paginate from "../../../../components/Paginate"
   import Title_Description from "../../../../components/Title_Description"
   import EntryActions from "../../../../components/EntryActions";
   import {CREATE, EDIT} from "../../../../lib/consts";
@@ -59,8 +50,7 @@
       Aspect,
       EntryActions,
       Title_Description,
-      Paginate, Privacy, License, Location,
-      List, AspectPageButton, CompositeAspect, Select, Map
+      Privacy, License
     },
     mixins: [ReferenceMixin, EntryMixin], // in case of a context entry, to be able to get back to the parent
     data() {

@@ -1,10 +1,12 @@
 <template lang="pug">
     div
       v-flex(xs12 sm12 md12 text-xs-left)
-        TextShort(:value="i_value.title" :edit="false")
+        TextShort(
+          :value="i_value"
+          :edit="false"
+          prependIcon="add"
+          v-on:clickPrepend="dialogOpen = true")
         v-dialog(width="500" v-model="dialogOpen" lazy=true)
-          template(v-slot:activator="{ on }")
-            v-btn(color="success" dark v-on="on") Select
           TreleafPicker(:tree="options" v-on:selected="selected")
 </template>
 
@@ -17,7 +19,6 @@
     name: "TreeSelect",
     components: {TextShort, TreleafPicker},
     mixins: [AspectMixin],
-
     data() {
       return {
         options: {},
@@ -39,8 +40,9 @@
     },
     methods: {
       selected(val) {
-        this.i_value = val;
         this.dialogOpen = false;
+        this.i_value = val.value
+        this.value_change(this.i_value)
       },
       tag_select(sel) {
         console.log("tag:", sel)

@@ -6,21 +6,27 @@
         single-line
         :disabled="disabled"
         v-model="i_value"
+        :prependIcon="prependIcon"
+        @click:prepend="$emit('clickPrepend')"
         @input="value_change($event)")
     div(v-else)
       v-text-field(
         readonly outline single-line flat
         :value="i_value"
+        :prependIcon="prependIcon"
+        @click:prepend="$emit('clickPrepend')"
         @input="value_change($event)")
 </template>
 
 <script>
   import AspectMixin from "./AspectMixin";
-  import Title_Description from "../Title_Description";
 
   export default {
     name: "TextShort",
     mixins: [AspectMixin],
+    props: {
+      prependIcon: String
+    }
   }
 </script>
 

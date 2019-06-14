@@ -191,4 +191,12 @@
   input {
     border-style: none !important
   }
+
+  .v-text-field.v-text-field--enclosed {
+    margin: 1%
+  }
+
+  .v-text-field--outline {
+    margin: 1%
+  }
 </style>

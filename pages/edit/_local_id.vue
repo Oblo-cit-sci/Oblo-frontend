@@ -9,7 +9,12 @@
         Title_Description(:title="page_info.title" header_type="h3" :description="page_info.description")
       br
       div(v-for="(aspect) in shown_aspects" :key="aspect.name")
-        Aspect(:aspect="aspect" v-bind:value.sync="entry.aspects_values[aspect.name]" mode="edit" v-on:create_ref="create_ref($event)")
+        Aspect(
+          :aspect="aspect"
+          :value.sync="entry.aspects_values[aspect.name]"
+          mode="edit"
+          v-on:create_ref="create_ref($event)"
+          v-on:entryAction="entryAction($event)")
       div(v-if="!entry.ref && page === 0")
         License(v-bind:passedLicense.sync="entry.license" v-if="has_license")
         Privacy(v-bind:passedPrivacy.sync="entry.privacy" v-if="has_privacy")

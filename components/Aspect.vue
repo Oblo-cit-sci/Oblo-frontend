@@ -12,8 +12,9 @@
       :edit="edit"
       :disabled="disabled"
       :mode="mode"
-      v-on:create_ref="$emit('create_ref', $event)"
-      v-on:update:value="emit_up($event)")
+      v-on:create_ref="$emit('create_ref',$event)"
+      v-on:update:value="emit_up($event)"
+      v-on:entryAction="$emit('entryAction',$event)")
     div(v-if="!use_regular")
       Title_Description(v-bind="title_description(aspect.attr.alternative)")
       component(v-bind:is="aspectComponent(aspect.attr.alternative)"

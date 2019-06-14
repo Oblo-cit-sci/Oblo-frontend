@@ -3,18 +3,29 @@
     div(v-if="!select")
       div(v-if="is_simple")
         div(v-for="(value, index) in i_value" :key="index")
-          Aspect(v-bind:aspect="indexed_item_aspect(index)" v-bind:value.sync="i_value[index]" :edit="true" :mode="mode")
+          Aspect(
+            :aspect="indexed_item_aspect(index)"
+            :value.sync="i_value[index]"
+            :edit="true"
+            :mode="mode"
+            :extra="extra"
+            v-on:entryAction="$emit('entryAction',$event)")
       div(v-else)
         v-expansion-panel(expand v-model="panelState")
           v-expansion-panel-content(v-for="(value, index) in i_value" :key="index")
             template(v-slot:header)
               div {{value.title || index + 1}}
-            Aspect(v-bind:aspect="indexed_item_aspect(index)" v-bind:value.sync="value" :mode="mode")
+            Aspect(
+              :aspect="indexed_item_aspect(index)"
+              :value.sync="value"
+              :mode="mode"
+              :extra="extra"
+              v-on:entryAction="$emit('entryAction',$event)")
       div
         span(v-if="aspect.attr.min") min: {{aspect.attr.min}}, &nbsp;
         span(v-if="aspect.attr.max") max: {{aspect.attr.max}}
     div(v-if="select")
-      MultiSelect(:options="options" :selection.sync="i_value")
+      MultiSelect(:options="options" :selection="i_value")
     div(v-else)
       v-btn(:disabled="!more_allowed" @click="add_value()" color="success") Add
         v-icon(right) add
@@ -28,7 +39,7 @@
   import MultiSelect from "../MultiSelect";
   import Aspect from "../Aspect";
 
-  //
+  // todo, pass the extra in a more intelligent way down, not to all the same
 
   const SIMPLE = "simple"
   const PANELS = "panels"
@@ -54,7 +65,8 @@
       if (typeof (item_type) === "string") {
         if (item_type[0] === "*") {
           this.select = true
-          this.options = get_codes_as_options(this.$store.state, "*liccis_flat")
+          console.log("list multi-select", item_type)
+          this.options = get_codes_as_options(this.$store.state, item_type)
         } else {
           switch (item_type) {
             case "str":
