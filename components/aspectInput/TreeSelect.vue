@@ -4,7 +4,7 @@
         TextShort(
           :value="i_value"
           :edit="false"
-          prependIcon="add"
+          :prependIcon="prependIcon"
           v-on:clickPrepend="dialogOpen = true")
         v-dialog(width="500" v-model="dialogOpen" lazy=true)
           TreleafPicker(:tree="options" v-on:selected="selected" :keep_selection="true")
@@ -14,6 +14,7 @@
   import AspectMixin from "./AspectMixin";
   import TreleafPicker from "../TreleafPicker";
   import TextShort from "./TextShort";
+  import {EDIT} from "../../lib/consts";
 
   export default {
     name: "TreeSelect",
@@ -42,6 +43,11 @@
         this.dialogOpen = false;
         this.i_value = val.value
         this.value_change(this.i_value)
+      }
+    },
+    computed: {
+      prependIcon(){
+        return this.mode === EDIT ? 'add' : ''
       }
     }
   }
