@@ -97,6 +97,11 @@ export default {
       this.$emit('update:value', event);
     }
   },
+  computed: {
+    readOnly() {
+      return this.mode === VIEW
+    }
+  },
   watch: {
     value(new_val) {
       //console.log("asp mix update", this.aspect, new_val)

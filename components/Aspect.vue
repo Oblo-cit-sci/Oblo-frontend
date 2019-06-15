@@ -25,7 +25,7 @@
 
 <script>
 
-  import {VIEW} from "../lib/consts";
+  import {EDIT, VIEW} from "../lib/consts";
 
   export default {
     name: "Aspect",
@@ -118,6 +118,9 @@
         console.log("condition UP", condition_var, "vs.", this.aspect.attr.condition.value)
         this.condition_fail = condition_var.val !== this.aspect.attr.condition.value
       }*/
+      mode(val) {
+       this.edit = val === EDIT
+      }
     }
   }
 

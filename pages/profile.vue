@@ -1,19 +1,20 @@
 <template lang="pug">
   v-flex(xs12 sm8 md6)
-    Aspect(:aspect="profile_aspects.public_name" :value.sync="edits.public_name" :edit="edit_mode")
     v-list
-      v-subheader General
       v-list-tile(three-line)
         v-list-tile-content
           v-list-tile-title @{{$store.state.user.user_data.registered_name}}
           v-list-tile-sub-title username
         v-list-tile-action
           v-chip(outline disabled small) {{$store.state.user.user_data.global_role}}
-      Aspect(:aspect="profile_aspects.description" :value.sync="edits.description" :edit="edit_mode")
-      Aspect(:aspect="profile_aspects.location" :value.sync="edits.location" :edit="edit_mode")
+      v-subheader General
+      Aspect(:aspect="profile_aspects.public_name" :value.sync="edits.public_name" :edit="edit_mode" :mode="mode")
+      Aspect(:aspect="profile_aspects.description" :value.sync="edits.description" :edit="edit_mode" :mode="mode")
+      Aspect(:aspect="profile_aspects.location" :value.sync="edits.location" :edit="edit_mode" :mode="mode")
       v-divider
       v-subheader Interested topics
-      Taglist(:tags="$store.state.user.user_data.interested_topics")
+      //Taglist(:tags="$store.state.user.user_data.interested_topics")
+      Aspect(:aspect="profile_aspects.interested_topics" :value.sync="edits.interested_topics" :edit="edit_mode" :mode="mode")
       v-divider
       v-tabs(v-model="selected_tab" v-if="!edit_mode")
         v-tab follows
@@ -24,7 +25,6 @@
     div(v-else)
       v-btn(color="warning" @click="cancelEdit") Cancel
       v-btn(color="success" @click="doneEdit") Save
-
 </template>
 
 <script>
@@ -33,6 +33,7 @@
 
   import Taglist from "../components/Taglist.vue"
   import Aspect from "../components/Aspect";
+  import {EDIT, VIEW} from "../lib/consts";
 
   let editable = [
     "public_name", "description", "location", "interested_topics"
@@ -55,7 +56,12 @@
     methods: {
       reset_edit_values() {
         for (let value of editable) {
-          this.edits[value] = {value: this.$store.state.user.user_data[value]}
+          // todo test if this is required
+          if(value === "interested_topics") {
+            this.edits[value] = {value: [...this.$store.state.user.user_data[value]]}
+          } else {
+            this.edits[value] = {value: this.$store.state.user.user_data[value]}
+          }
         }
       },
       setEdit: function () {
@@ -69,16 +75,14 @@
         this.reset_edit_values()
       },
       raw_values() {
-
         return this.$_.mapValues(this.edits, (value) => {
           //console.log(k,this.edits[k])
           return value.value
         })
       },
       doneEdit: function () {
-        console.log("posting")
+        console.log("posting", this.raw_values())
         this.$axios.post("/update_profile", this.raw_values()).then(({data}) => {
-          console.log(data);
           if (!data.status) {
             this.errorMsg = data.msg
           } else if (data.status) {
@@ -119,6 +123,13 @@
             attr: {
               max: 80
             }
+          },
+          interested_topics: {
+            name: "interested_topics",
+            description: "LICCIs you are interested in",
+            type: "multiselect",
+            items: "*liccis_flat",
+            attr: {}
           }
         },
         edits: {
@@ -127,6 +138,11 @@
           location: {},
           interested_topics: {}
         }
+      }
+    },
+    computed: {
+      mode() {
+        return this.edit_mode ? EDIT : VIEW
       }
     }
   }

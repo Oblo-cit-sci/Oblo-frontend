@@ -1,6 +1,10 @@
 <template lang="pug">
   div
-    v-autocomplete(:items="options" v-model="selection" single-line outline chips multiple)
+    v-autocomplete(
+      :items="options"
+      v-model="selection"
+      :readonly="readOnly"
+      single-line outline chips multiple)
 </template>
 
 <script>
