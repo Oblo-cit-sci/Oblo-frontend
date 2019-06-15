@@ -6,6 +6,8 @@
       v-model="i_value"
       :suffix="suffix"
       :rules="[minmax]"
+      :disabled="disabled"
+      :readonly="!edit"
       v-on:update:error="error = $event"
       :mask="mask" )
 </template>

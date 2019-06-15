@@ -14,7 +14,13 @@
                 :mode="mode"
                 v-on:entryAction="$emit('entryAction',$event)")
     div(v-else)
-
+      Aspect(
+        v-bind:aspect="aspect.view_type"
+        v-bind:value="value"
+        :edit="false"
+        :extra="extra"
+        :mode="mode"
+        v-on:entryAction="$emit('entryAction',$event)")
 </template>
 
 <script>
