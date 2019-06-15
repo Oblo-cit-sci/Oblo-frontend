@@ -8,6 +8,7 @@
       div(v-if="has_pages")
         Title_Description(:title="page_info.title" header_type="h3" :description="page_info.description")
       br
+      Aspect(:aspect="owner_aspect" v-bind:value="{value: entry.actors.owners[0].username}" mode="view")
       div(v-for="(aspect) in shown_aspects" :key="aspect.name")
         Aspect(:aspect="aspect" v-bind:value.sync="entry.content.aspects[aspect.name]" mode="view" v-on:create_ref="create_ref($event)")
       div(v-if="!entry.ref && page === 0")
@@ -56,7 +57,15 @@
     },
     mixins: [ReferenceMixin, EntryMixin], // in case of a context entry, to be able to get back to the parent
     data() {
-      return {}
+      return {
+        owner_aspect: {
+          type: "str",
+          attr: {
+              max: 40
+            },
+          name: "owner"
+        }
+      }
     },
     created() {
       let local_id = this.$route.params.local_id

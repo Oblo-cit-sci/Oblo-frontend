@@ -5,7 +5,7 @@
       v-model="use_regular"
       :label="use_regular ? `regular value`:`alternative value`"
       color="primary")
-    component(v-bind:is="aspectComponent(aspect)"
+    component(v-bind:is="aspectComponent(aspect, mode)"
       v-bind:aspect="aspect"
       v-bind:value="raw_value"
       v-bind:extra="extra"
@@ -103,8 +103,9 @@
           description: aspect_descr.description || ""
         }
       },
-      aspectComponent(aspect_descr) {
-        return MAspectComponent(aspect_descr)
+      aspectComponent(aspect_descr, mode) {
+        // todo false, false are just default, ... better a config obj
+        return MAspectComponent(aspect_descr, false, false, mode)
       },
       emit_up(event) {
         this.$emit('update:value', {value:event})

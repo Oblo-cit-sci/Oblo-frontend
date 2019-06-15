@@ -1,17 +1,20 @@
 <template lang="pug">
   div
-    v-radio-group(v-model="selected_option" row)
-      div(v-for="(comp_type, index) in aspect.options" :key="index")
-        v-radio(label="non" :value="index")
-          template(v-slot:label)
-            Aspect(
-              v-bind:aspect="comp_type"
-              v-bind:value="opt_values[index]"
-              v-on:update:value="optionUpdate($event, index)"
-              :edit="true"
-              :extra="extra"
-              :mode="mode"
-              v-on:entryAction="$emit('entryAction',$event)")
+    div(v-if="edit")
+      v-radio-group(v-model="selected_option" row)
+        div(v-for="(comp_type, index) in aspect.options" :key="index")
+          v-radio(label="non" :value="index")
+            template(v-slot:label)
+              Aspect(
+                v-bind:aspect="comp_type"
+                v-bind:value="opt_values[index]"
+                v-on:update:value="optionUpdate($event, index)"
+                :edit="true"
+                :extra="extra"
+                :mode="mode"
+                v-on:entryAction="$emit('entryAction',$event)")
+    div(v-else)
+
 </template>
 
 <script>

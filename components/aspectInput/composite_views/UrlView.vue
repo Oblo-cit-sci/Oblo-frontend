@@ -1,15 +1,26 @@
 <template lang="pug">
   div
-    h3 {{aspect.name}}
-    a(:href="value.url" target="_blank") {{value.title}}
+    a(:href="url" target="_blank") {{title}}
 </template>
 
 <script>
   import AspectMixin from "../AspectMixin";
 
+  /*
+      //
+    //
+   */
   export default {
     name: "UrlView",
-    mixins: [AspectMixin]
+    mixins: [AspectMixin],
+    computed: {
+      title(){
+        return this.value[0].value
+      },
+      url() {
+        return this.value[1].value
+      }
+    }
   }
 </script>
 

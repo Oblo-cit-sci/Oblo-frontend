@@ -2,13 +2,15 @@
   div
     div(v-if="edit")
       SingleSelect(:options="input_options" v-bind:selection.sync="selection")
-    div(v-if="i_value != null")
+    div(v-else-if="i_value != null")
       span Longitude:&nbsp;&nbsp;
       span {{i_value.lon | format_float}}
       span &nbsp;&nbsp;&nbsp;&nbsp;
       span Latitude:&nbsp;&nbsp;
       span {{i_value.lat | format_float}}
       div Error of {{$store.state.user.user_data.location_error}} included
+    div(v-else)
+      div No location specified
 </template>
 
 <script>
