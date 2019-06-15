@@ -39,7 +39,8 @@
   const ld = require('lodash');
 
   import { get_entrytpe, license_icon, strip_default_aspects } from "../../lib/client";
-  import {MAspectComponentView} from "../../lib/client";
+    import Basic from "../../components/aspectInput/Basic";
+  //import {MAspectComponentView} from "../../lib/client";
 
   export default {
     name: "entryview",
@@ -68,7 +69,7 @@
     },
     methods: {
       aspectComponent(aspect) {
-        return MAspectComponentView(aspect);
+        return Basic //MAspectComponentView(aspect);
       },
       license_icon(license) {
         return license_icon(license, this.$store);

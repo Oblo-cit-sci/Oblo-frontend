@@ -5,9 +5,8 @@
         v-list-tile-avatar
           v-icon {{privacy_icon(entry.privacy)}}
         v-list-tile-content
-          v-list-tile-title 😁 {{entry.creator}}
+          v-list-tile-title {{entry.creator}}
           v-list-tile-sub-title {{entry.title}}
-
         v-list-tile-action
           v-img(:src="get_license_icon(entry.license)" height="30px" width="100px" style="margin-left:20px")
       v-divider
@@ -15,6 +14,7 @@
 
 <script>
   import { license_icon } from "../lib/client"
+  import {fetch_entry} from "../lib/entry";
 
   export default {
     name: "Entrylist",
@@ -37,7 +37,16 @@
     },
     methods: {
       show(entry) {
-        this.$router.push("entry/"+entry.uuid)
+        if(entry.local_id){
+          this.$router.push("entry/"+entry.local_id)
+        } else {
+          fetch_entry(this.$store, this.$axios, entry.uuid).then(entry => {
+            this.$router.push("entry/"+entry.uuid)
+          }).catch(res => {
+              // todo ENH: could also be an error msg from the server
+              this.$store.commit("set_error_snackbar", "Couldn't fetch entry")
+          })
+        }
       },
       privacy_icon(privacy) {
         return "public"

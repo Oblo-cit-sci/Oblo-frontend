@@ -29,9 +29,12 @@ export const mutations = {
     state.own_entries.delete(local_id)
   },
   set_downloaded(state, local_id) {
-
     let e = state.own_entries.get(local_id)
     console.log("DL ", e, local_id)
     e.downloaded_version = e.version
-  }
+  },
+  add_fetched_entry(state, entry) {
+    state.fetched_entries[entry.uuid] = entry
+    //console.log(state.fetched_entries)
+  },
 };

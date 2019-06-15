@@ -8,7 +8,7 @@ export const state = () => ({
   tags: {}, // initially just the licci tree
   codes: {},
   // recent
-  fetched_entries: {},
+  //fetched_entries: {},
   // momentary
   snackbar: {message: "", status: "ok"},
   mapmode: {},
@@ -51,12 +51,15 @@ export const mutations = {
     state.entry_types[newtype.type_slug] = newtype;
     //state.entry_type_slug_index_dict[newtype.slug] = state.available_entries.length - 1;
   },
-  // should be set with {message: str, status: ok|error}
+  // should be set with {message: str, ok: boolean}
   set_snackbar(state, snackbar) {
     state.snackbar = snackbar
   },
-  add_fetched_entry(state, entry) {
-    state.fetched_entries[entry.uuid] = entry
+  set_ok_snackbar(state, msg) {
+    state.snackbar = {message: msg, ok: true}
+  },
+  set_error_snackbar(state, msg) {
+    state.snackbar = {message: msg, ok: false}
   },
   connection(state, connected) {
     state.connected = connected

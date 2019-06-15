@@ -52,20 +52,16 @@
       Aspect,
       EntryActions,
       Title_Description,
-      Paginate, Privacy, License, Basic, TextShort, TextLong, Location,
-      List, AspectPageButton, CompositeAspect, Select, Map
+      Privacy, License,
     },
     mixins: [ReferenceMixin, EntryMixin], // in case of a context entry, to be able to get back to the parent
     data() {
-      return {
-      }
+      return {}
     },
     created() {
       let local_id = this.$route.params.local_id
-
       // this.check_complete() // TODO bring back watcher, isnt triggered tho...
       //console.log(this.has_pages)
-
     },
     methods: {
       // TODO Depracated
@@ -98,12 +94,10 @@
       },
       send() {
         this.sending = true
-
         this.$axios.post("/create_entry", this.store_data()).then((res) => {
           this.sending = false
           //console.log(res.data)
           this.$store.commit("set_snackbar", {message: res.data.msg, ok: res.data.status})
-
           if (this.hasOwnProperty("draft_id")) {
             this.$store.commit("remove_draft", this.draft_id)
           }

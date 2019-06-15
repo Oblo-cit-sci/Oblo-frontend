@@ -156,7 +156,6 @@
       save() {
         // todo not if it is an aspect page
         save_entry(this.$store, this.entry)
-
         if (this.entry.ref) {
           let ref = this.entry.ref
           if (ref.hasOwnProperty("draft_id")) {
