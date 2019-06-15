@@ -11,8 +11,8 @@
       div(v-for="(aspect) in shown_aspects" :key="aspect.name")
         Aspect(:aspect="aspect" v-bind:value.sync="entry.content.aspects[aspect.name]" mode="view" v-on:create_ref="create_ref($event)")
       div(v-if="!entry.ref && page === 0")
-        License(v-bind:passedLicense.sync="entry.license" v-if="has_license")
-        Privacy(v-bind:passedPrivacy.sync="entry.privacy" v-if="has_privacy")
+        License(v-bind:passedLicense.sync="entry.license" v-if="has_license" mode="view")
+        Privacy(v-bind:passedPrivacy.sync="entry.privacy" v-if="has_privacy" mode="view")
       EntryActions(v-bind="entry_actions_props" :page.sync="page" :has_pages="has_pages")
 </template>
 
@@ -40,7 +40,7 @@
   import Paginate from "../../components/Paginate"
   import Title_Description from "../../components/Title_Description"
   import EntryActions from "../../components/EntryActions";
-  import {CREATE, EDIT} from "../../lib/consts";
+  import {CREATE, EDIT, VIEW} from "../../lib/consts";
   import Aspect from "../../components/Aspect";
   import EntryMixin from "../../components/EntryMixin";
 
@@ -199,7 +199,7 @@
         return this.entry_type.content.meta.pages[this.page]
       },
       mode() {
-        return this.version === 0 ? CREATE : EDIT
+        return VIEW // this.version === 0 ? CREATE : EDIT
       },
       entry_actions_props() {
         return {

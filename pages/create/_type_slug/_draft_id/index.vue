@@ -62,7 +62,6 @@
       //this.type_slug = this.$route.params.type_slug
       // TODO carefull refactor later
       this.draft_id = this.$route.params.draft_id // draft_id or entry_uuid
-
       // this.check_complete() // TODO bring back watcher, isnt triggered tho...
       //console.log(this.has_pages)
     },
@@ -194,7 +193,7 @@
           return this.entry_type.content.meta.privacy !== "PRIVATE_LOCAL"
         } else if (meta.hasOwnProperty("has_privacy")) {
           return meta.has_privacy
-        }
+        } else return true
       },
       // maybe also consider:
       // https://github.com/edisdev/download-json-data/blob/develop/src/components/Download.vue

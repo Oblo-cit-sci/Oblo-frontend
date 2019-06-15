@@ -1,15 +1,21 @@
 <template lang="pug">
   div
     h3 License
-    div(v-if="$store.getters.visitor")
-      div as a visitor your contributions will be licensed under {{selectedLicense.title}}.
-    div(v-else)
-      div you selected the license: {{selectedLicense.title}}.
-    div(v-if=selectedLicense)
+    div(v-if="edit")
+      div(v-if="$store.getters.visitor")
+        div as a visitor your contributions will be licensed under {{selectedLicense.title}}.
+      div(v-else)
+        div you selected the license: {{selectedLicense.title}}.
       img.license-image(:src="licenseImagePath")
-    v-switch(v-model="use_alternative_license" :label="license_selection" color="red")
-    SingleSelect(v-if="use_alternative_license" v-bind:options="licenseOptions"
-      v-bind:selection.sync="selectedLicense")
+      div(v-if="!$store.getters.visitor")
+        v-switch(v-model="use_alternative_license" :label="license_selection" color="red")
+        SingleSelect(
+          v-if="use_alternative_license"
+          :options="licenseOptions"
+          :selection.sync="selectedLicense")
+    div(v-else)
+      div {{selectedLicense.title}}
+      img.license-image(:src="licenseImagePath")
 </template>
 
 <script>
@@ -17,18 +23,19 @@
   import SingleSelect from "./SingleSelect";
 
   import {license_icon} from "~~/lib/client";
+  import {EDIT} from "../lib/consts";
 
   const ld = require('lodash');
 
   export default {
     name: "License",
     props: {
-      overwrite_default: { // for drafts
-        type: Object,
-        required: false
-      },
       passedLicense: {
         type: String
+      },
+      mode: {
+        type: String,
+        default: EDIT
       }
     },
     components: {SingleSelect, TextShort},
@@ -37,52 +44,54 @@
         set_name: "",
         use_alternative_license: false,
         selectedLicense: null,
-        licenseOptions: []
+        licenseOptions: ld.map(this.$store.state.codes.licenses, (l) => Object.assign({
+          text: l.title,
+          value: l.short
+        }, l))
       }
     },
     created() {
-      if (!this.overwrite_default)
+      if (!this.passedLicense)
         this.set_to_default();
       else { // for drafts
-        this.selectedLicense = this.overwrite_default;
-        this.use_alternative_license = this.selectedLicense.short !== this.$store.state.user.user_data.defaultLicense;
+        this.selectedLicense = this.find_from_options(this.passedLicense)
+        this.use_alternative_license = this.selectedLicense.value !== this.$store.state.user.user_data.defaultLicense;
       }
-      this.selectedLicense.value = this.selectedLicense.short
-      this.selectedLicense.text = this.selectedLicense.title
-      this.licenseOptions = ld.map(this.$store.state.codes.licenses, (l) => Object.assign({
-        text: l.title,
-        value: l.short
-      },l));
     },
     computed: {
       licenseImagePath() {
         //console.log("update img with", this.selectedLicense);
         if (this.selectedLicense) {
-          return license_icon(this.$axios, this.selectedLicense.short, this.$store);
+          return license_icon(this.$axios, this.selectedLicense.value, this.$store);
         } else {
           return null;
         }
       },
       license_selection() {
         return this.use_alternative_license ? "use different license" : "default license";
+      },
+      edit() {
+        return this.mode === EDIT
       }
     },
     methods: {
       set_to_default() {
-        this.selectedLicense = this.$store.state.codes.licenses[this.$store.state.user.user_data.defaultLicense];
+        this.selectedLicense = this.find_from_options(this.$store.state.user.user_data.defaultLicense)
+      },
+      find_from_options(value) {
+        return this.$_.find(this.licenseOptions, (l) => l.value === value)
       }
     },
     watch: {
-      use_alternative_license(new_val) {
-        if (!new_val) { // set back to default
+      use_alternative_license(val) {
+        if (!val) { // set back to default
           this.set_to_default();
         }
       },
-      selectedLicenseShort() {
-        this.selectedLicense = this.$store.state.codes.licenses[this.selectedLicenseShort];
-        this.$emit("update:passedLicense", this.selectedLicenseShort)
+      selectedLicense(new_val) {
+        this.$emit("update:passedLicense", new_val.value)
       }
-    }
+    },
   }
 </script>
 
