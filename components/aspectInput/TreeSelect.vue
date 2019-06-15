@@ -7,7 +7,7 @@
           prependIcon="add"
           v-on:clickPrepend="dialogOpen = true")
         v-dialog(width="500" v-model="dialogOpen" lazy=true)
-          TreleafPicker(:tree="options" v-on:selected="selected")
+          TreleafPicker(:tree="options" v-on:selected="selected" :keep_selection="true")
 </template>
 
 <script>
@@ -25,7 +25,6 @@
         dialogOpen: false
       }
     },
-
     created() {
       // build the given_options (all options available) from what is passed
       let passed_options = this.aspect.items;
@@ -43,9 +42,6 @@
         this.dialogOpen = false;
         this.i_value = val.value
         this.value_change(this.i_value)
-      },
-      tag_select(sel) {
-        console.log("tag:", sel)
       }
     }
   }

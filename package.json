@@ -1,7 +1,7 @@
 {
-  "name": "LICCI-FE",
+  "name": "LICCI",
   "version": "1.0.0",
-  "description": "A Nuxt.js project",
+  "description": "Local Indicators of Climate change impacts",
   "author": "Ramin S",
   "private": true,
   "scripts": {

@@ -42,6 +42,10 @@
       },
       extra_value_name: {
         type: String
+      },
+      keep_selection: {
+        type: Boolean,
+        default: false
       }
     }, // OuterRef is for the LICCI aspect, cuz JS messes up loops and events (always takes the
     data: function () {
@@ -66,7 +70,6 @@
         }
 
         //options = ld.map(options, (o) => {return o.name})
-        console.log("AO", );
         return object_list2options(options, "title", "title"); //string_list2options(options);
       },
       done_available() {
@@ -90,7 +93,7 @@
     },
     created() {
       //console.log("CREATED DIALOG")
-      if(this.tree.hasOwnProperty("level_names")) {
+      if (this.tree.hasOwnProperty("level_names")) {
         this.level_names = this.tree.level_names;
       }
     },
@@ -108,14 +111,15 @@
       done() {
         this.$emit("selected", ld.last(this.selection));
         //console.log(this.selection)
-        this.selection = [];
+        if (!this.keep_selection)
+          this.selection = [];
       },
       done_extra() {
-        this.$emit("selected",{
+        this.$emit("selected", {
             name: this.extra_value,
             id: 0 // TODO, is that ok?
           }
-         )
+        )
         this.extra_value = ""
         this.selection = []
       }

@@ -37,16 +37,16 @@
       </v-btn>
       <v-toolbar-title v-text="title"/>
       <v-spacer></v-spacer>
-      <div>
-        <v-btn flat icon color="indigo" nuxt router exact to="/export">
+      <!--<div>
+        <v-btn flat icon nuxt router exact to="/export">
           <v-badge bottom color="rgba(0,255,0,0.9)">
-            <!--<template v-slot:badge>
+            <template v-slot:badge>
               <span>!</span>
-            </template> -->
+            </template>
             <v-icon>get_app</v-icon>
           </v-badge>
         </v-btn>
-      </div>
+      </div>-->
       <div v-if="login_state">
         <v-btn v-for="(item, i) in header_items"
                :key="i"
@@ -94,31 +94,31 @@
       title: 'Profile',
       to: '/profile'
     },
-    {
+    /*{
       icon: 'computer',
       title: 'Tests',
       to: '/Tests'
-    },
+    },*/
     {
-      icon: 'list',
+      icon: 'how_to_reg',
       title: 'Register',
       to: '/register'
     },
     {
-      icon: 'list',
+      icon: 'play_arrow',
       title: 'Login',
       to: '/login'
     },
     {
-      icon: 'motorcycle',
+      icon: 'keyboard_return',
       title: 'Logout',
       to: '/logout'
     },
-    {
+    /*{
       icon: "build",
       title: "debug",
       to: "/StoreDebug"
-    }
+    }*/
   ]
 
   let require_login = ["Profile", "Logout", "My Entries"]
@@ -163,14 +163,18 @@
         items: all_items,
         header_items: [
           {
+            icon: "",
+            to: "/export"
+          },
+          {
             icon: 'home',
             to: '/'
           },
-          {
+          /*{
             icon: 'notifications',
             title: '',
             to: '/notifications'
-          },
+          },*/
         ]
       }
     },

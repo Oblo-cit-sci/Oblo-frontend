@@ -31,7 +31,7 @@ export function aspect_default_value(aspect) {
     case "map":
       return []
     case "tree":
-      return {}
+      return null
     case "composite":
       return ld.map(aspect.components, (c) => aspect_wrapped_default_value(c))
     case "options":
@@ -103,9 +103,7 @@ export default {
       this.i_value = new_val;
     },
     disabled() {
-      console.log("DISA")
       this.i_value = aspect_default_value(this.aspect)
-      //this.i_value = aspect_default_value(this.aspect)
     }
   }
 }

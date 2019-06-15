@@ -35,10 +35,10 @@
     mixins: [validationMixin],
     data() {
       return {
-        username: random_String(10),
-        email: random_String(10) + "@gmail.com",
-        password: "123456",
-        repeatPassword: "123456",
+        username: "",
+        email: "",
+        password: "",
+        repeatPassword: "",
         emailRules: [
           v => !!v || 'E-mail is required',
           v => /.+@.+/.test(v) || 'E-mail must be valid'
@@ -69,8 +69,14 @@
       repeatPassword: {
         sameAsPassword: sameAs('password')
       }
-    }
-    , methods: {
+    },
+    methods: {
+      randomize() {
+        this.user = random_String(10)
+        this.email = random_String(10) + "licci.eu"
+        this.password = "123456"
+        this.repeatPassword = "123456"
+      },
       // use this as a function to select/highlight a privacy from the list
       selectPrivacy(pri) {
         this.defaultPrivacy = pri
