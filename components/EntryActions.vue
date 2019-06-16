@@ -4,19 +4,21 @@
       :total="entry_type.content.meta.pages.length"
       :page_select="entry_type.content.meta.pages"
       v-on:lastpage="last_page = ($event)")
-    span(v-if="view")
-      v-btn(color="secondary" @click="edit") edit
-    span(v-else)
-      v-btn(color="seconday" @click="cancel") cancel
+    section(v-if="owner")
+      span(v-if="view")
+        v-btn(color="secondary" @click="edit") edit
+      span(v-else)
+        v-btn(color="seconday" @click="cancel") cancel
 
       span(v-if="!init")
         v-btn(v-if="!private_local" color="warning" @click="show_delete") delete draft
         v-btn(v-else color="warning" @click="show_delete") delete
 
-      v-btn(v-if="!private_local" color="secondary" @click="save_draft()") save draft
-      v-btn(v-else color="success" @click="save") save
+      section(v-if="!submitted")
+        v-btn(v-if="!private_local" color="secondary" @click="save_draft") save draft
+        v-btn(v-else color="success" @click="save") save
 
-      v-btn(v-if="!private_local" color="success" @click="submit" :disable="connected" :loading="sending") submit
+      v-btn(v-if="!private_local && !view" color="success" @click="submit" :disable="connected" :loading="sending") {{submitted ? 'update' : 'submit'}}
       v-btn(v-if="private_local"  :href="dl_url" :download="download_title" :disabled="disable_download" color="success" @click="dl") download
     DecisionDialog(v-bind="remove_dialog_data" :open.sync="show_remove" v-on:action="delete_this")
 </template>
@@ -26,7 +28,14 @@
 
   import {CONTEXT_ENTRY, CREATE, DRAFT, EDIT, PRIVATE_LOCAL, PUBLIC, VIEW} from "../lib/consts";
   import Paginate from "./Paginate";
-  import {delete_draft, delete_entry, save_draft, save_entry} from "../lib/entry";
+  import {
+    current_user_is_owner,
+    delete_draft,
+    delete_entry,
+    get_edit_route_for_ref,
+    save_draft,
+    save_entry
+  } from "../lib/entry";
   import {complete_activities} from "../lib/client";
   import DecisionDialog from "./DecisionDialog";
 
@@ -87,6 +96,12 @@
       },
       disable_download() {
         return this.has_pages && !this.last_page
+      },
+      owner() {
+        return current_user_is_owner(this.$store, this.entry)
+      },
+      submitted() {
+        return this.entry.uuid !== undefined
       }
     },
     data() {
@@ -106,9 +121,12 @@
       // BUTTONS
       edit() {
         // for in mode = view
+        const route = get_edit_route_for_ref(this.$store, this.entry)
+        console.log(route)
+        this.$router.push(route)
       },
       cancel() {
-        if (this.init) {
+        if (this.init && !this.submitted) {
           this.delete_draft()
         } else {
           this.back()
@@ -183,8 +201,8 @@
         this.back()
       },
       submit() {
-        // todo
         this.sending = true
+        // would be the same as checking submitted
         if(this.entry.status === DRAFT) {
           this.$axios.post("/create_entry", this.entry).then((res) => {
             this.sending = false
@@ -206,7 +224,10 @@
             console.log("error", err)
           })
         } else {
-
+          // todo
+          console.log("updating entry")
+          this.sending = false
+          this.$store.commit("set_error_snackbar", "not yet implemented")
         }
       },
       dl() {

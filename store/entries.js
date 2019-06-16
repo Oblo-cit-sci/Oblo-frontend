@@ -18,6 +18,7 @@ export const mutations = {
     // todo, needs to converted to a map (from array)
     console.log("setting own entries with", own_entries)
     own_entries.forEach((e) => {
+      e.aspects_values = e.content.aspects
       e.local_id = e.uuid
       state.own_entries.set(e.uuid, e)
     })
@@ -37,4 +38,9 @@ export const mutations = {
     state.fetched_entries[entry.uuid] = entry
     //console.log(state.fetched_entries)
   },
+  clear(state) {
+    state.own_entries.clear()
+    state.fetched_entries = {}
+    state.timeline_entries = []
+  }
 };

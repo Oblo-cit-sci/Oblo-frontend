@@ -69,6 +69,10 @@ export const mutations = {
   },
   set_global_ref(state, ref){
     state.global_ref = ref
+  },
+  clear(state) {
+    state.global_ref = {}
+    state.initialized = false
   }
 };
 

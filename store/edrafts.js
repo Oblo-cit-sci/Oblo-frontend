@@ -29,6 +29,10 @@ export const mutations = {
   set_downloaded(state, draft_id) {
     console.log(state.drafts, draft_id)
     state.drafts[draft_id].downloaded_version = state.drafts[draft_id].version
+  },
+  clear(state){
+    state.drafts = {}
+    state.next_id = 0
   }
 };
 

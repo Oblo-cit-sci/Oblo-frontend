@@ -14,7 +14,7 @@
 
 <script>
   import { license_icon } from "../lib/client"
-  import {fetch_entry} from "../lib/entry";
+  import {current_user_is_owner, fetch_entry} from "../lib/entry";
 
   export default {
     name: "Entrylist",
@@ -37,15 +37,27 @@
     },
     methods: {
       show(entry) {
+        console.log(entry)
         if(entry.local_id){
+          console.log("going to local entry")
           this.$router.push("entry/"+entry.local_id)
         } else {
-          fetch_entry(this.$store, this.$axios, entry.uuid).then(entry => {
-            this.$router.push("entry/"+entry.uuid)
-          }).catch(res => {
+          // todo this is bad... overall refactoring of the own_entries, timeline entry stuff.
+          if(current_user_is_owner(this.$store, entry)) {
+            // todo hacky shortcut
+            console.log("hacky shortcut")
+            console.log(entry.uuid)
+            this.$router.push("/entry/"+entry.uuid)
+          } else {
+            console.log("fetching")
+            fetch_entry(this.$store, this.$axios, entry.uuid).then(entry => {
+              this.$router.push("/entry/"+entry.uuid)
+            }).catch(res => {
+              console.log(res)
               // todo ENH: could also be an error msg from the server
               this.$store.commit("set_error_snackbar", "Couldn't fetch entry")
-          })
+            })
+          }
         }
       },
       privacy_icon(privacy) {

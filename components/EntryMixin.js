@@ -9,6 +9,7 @@ export default {
   created() {
     // todo nicer?
     const draft_id = this.$route.params.draft_id // draft_id or entry_uuid
+    // replace local_id
     const local_id = this.$route.params.local_id
     const id = this.$route.params.id // comes from view
     if (draft_id !== undefined) {
@@ -16,8 +17,13 @@ export default {
     } else if (local_id) {
       this.entry = JSON.parse(JSON.stringify(this.$store.state.entries.own_entries.get(local_id)))
     } else if (id) {
-      // always own entries?
-      this.entry = JSON.parse(JSON.stringify(this.$store.state.entries.fetched_entries[id]))
+      console.log("entry id", id)
+      const entry_ref = this.$store.state.entries.own_entries.get(id)
+      console.log("got own entry ref", entry_ref)
+      if(entry_ref !== undefined)
+        this.entry = JSON.parse(JSON.stringify(entry_ref))
+      else
+        this.entry = JSON.parse(JSON.stringify(this.$store.state.entries.fetched_entries[id]))
       //console.log("load entry", this.entry)
     } else {
       console.log("NO ID on", this.$route.params, "HOW DID U GET HERE?")
