@@ -1,9 +1,9 @@
-import {autosave, entry_ref, fetch_entry} from "../lib/entry";
+import {autosave, entry_ref} from "../lib/entry";
 import {check_conditions, check_internallinks, resolve_aspect_ref} from "../lib/client";
+import {AUTOSAVE, GLOBAL_ASPECT_REF} from "../lib/consts";
 
 
-const AUTOSAVE = "autosave"
-const entryActions = [AUTOSAVE]
+
 
 export default {
   created() {
@@ -115,6 +115,10 @@ export default {
       switch (event.action) {
         case AUTOSAVE:
           autosave(this.$store, this.entry)
+          break
+        case GLOBAL_ASPECT_REF:
+          console.log("entrymixin action",event)
+          this.$store.commit("add_aspect_ref",event.value)
           break
         default:
           console.log("unknown entry action", event.action)

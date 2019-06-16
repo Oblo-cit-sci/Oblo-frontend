@@ -7,7 +7,7 @@
         v-on:update:value="update_value($event, index)"
         :edit="true"
         :mode="mode"
-        :extra="extra"
+        :extra="comp_extras"
         v-on:entryAction="$emit('entryAction',$event)")
 </template>
 
@@ -28,17 +28,35 @@
         title: "XXX" // todo pass it up for nice title in lists...
       }
     },
+    created() {
+      console.log("comp created", this.i_value)
+      if(!this.i_value) {
+
+      }
+      //aspect_wrapped_default_value(this.aspect.options[index])
+    },
     methods: {
       update_value($event , index) {
         this.i_value[index] = $event
         this.value_change(this.i_value)
-        //console.log("comp update", this.aspect.name, $event, this.i_value)
-        // todo here we want to eventually update the title, its nice in lists
-        // otherwise we could just sync value
-        // v-bind:value.sync="i_value[index]"
-        // ... no idea how/where it emits up
-        //this.$emit("update:value",)
       }
+    },
+    computed: {
+      comp_extras() {
+        return Object.assign(this.extra, {aspect_ref: this.aspect_ref})
+      }
+    },
+    watch: {
+      // unfortunately not triggered...
+      /*i_value(val) {
+        console.log("comp ival cahnge", val)
+        if(!this.edit)
+          console.log("composite value changed from above", val)
+      }*/
+      value(new_val) {
+        console.log("COMP val change", new_val)
+        this.i_value = new_val;
+      },
     }
   }
 </script>

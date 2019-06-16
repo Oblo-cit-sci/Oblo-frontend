@@ -66,6 +66,9 @@
         ]
       };
     },
+    created() {
+      console.log("hello map")
+    },
     methods: {
       layerClr(layer) {
         return this.layerVisiblities[layer] ? "#00DD1030" : "#77777720";
@@ -83,7 +86,21 @@
         this.coordinates = [mapboxEvent.lngLat.lng, mapboxEvent.lngLat.lat]
       },
       done() {
-        //this.$store.
+        let global_ref = this.$store.state.global_ref
+        this.$store.commit("edrafts/set_draft_aspect_value", {
+            draft_id: global_ref.draft_id,
+            aspect_name: global_ref.aspect_ref.substring(1),
+            value: {
+              value:
+                [
+                  {value: this.coordinates[0]},
+                  {
+                    value: this.coordinates[1]
+                  }
+                ]
+            }
+          }
+        )
         const route = get_edit_route_for_ref(this.$store, this.$store.state.global_ref)
         this.$router.push(route)
       }
@@ -93,7 +110,8 @@
         return this.coordinates[0].toString() + "   " + this.coordinates[1].toString()
       }
     }
-  };
+  }
+  ;
 </script>
 
 <style src="mapbox-gl/dist/mapbox-gl.css"></style>

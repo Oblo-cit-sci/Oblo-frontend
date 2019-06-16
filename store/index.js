@@ -70,6 +70,9 @@ export const mutations = {
   set_global_ref(state, ref){
     state.global_ref = ref
   },
+  add_aspect_ref(state, aspect_ref) {
+    state.global_ref.aspect_ref = aspect_ref
+  },
   clear(state) {
     state.global_ref = {}
     state.initialized = false

@@ -4,7 +4,7 @@
       :total="entry_type.content.meta.pages.length"
       :page_select="entry_type.content.meta.pages"
       v-on:lastpage="last_page = ($event)")
-    section(v-if="owner")
+    span(v-if="owner")
       span(v-if="view")
         v-btn(color="secondary" @click="edit") edit
       span(v-else)
@@ -14,7 +14,7 @@
         v-btn(v-if="!private_local" color="warning" @click="show_delete") delete draft
         v-btn(v-else color="warning" @click="show_delete") delete
 
-      section(v-if="!submitted")
+      span(v-if="!submitted")
         v-btn(v-if="!private_local" color="secondary" @click="save_draft") save draft
         v-btn(v-else color="success" @click="save") save
 

@@ -19,6 +19,7 @@
   import AspectMixin from "./AspectMixin";
   import Title_Description from "../Title_Description";
   import SingleSelect from "../SingleSelect";
+  import {GLOBAL_ASPECT_REF} from "../../lib/consts";
 
   const ACTUAL_LOCATION = "act";
   const FROM_MAP = "map";
@@ -54,21 +55,26 @@
       selection() {
         //console.log("selected location input method", this.selection);
         if (this.selection.value === ACTUAL_LOCATION) {
+          console.log("getting location")
           get_location((location) => {
-            this.i_value = create_location_error(
+            console.log("obtained device location", location)
+            const error_loc = create_location_error(
               location.coords.longitude,
               location.coords.latitude,
-              this.$store.state.user.user_data.location_error);
-            //console.log(this.i_value);
-            this.value_change(this.i_value);
+              this.$store.state.user.user_data.location_error)
+            this.i_value = {value:[{value:error_loc.lon}, {value:error_loc.lat}]}
+            console.log("calc loc", this.i_value)
+            this.value_change(this.i_value)
           });
         } else if (this.selection.value === FROM_MAP) {
+          this.$emit("entryAction", {action:GLOBAL_ASPECT_REF, value:this.aspect_ref})
           this.$emit("entryAction", {action:"autosave"})
-          //console.log(this.extra)
+          console.log("emitted")
           this.$store.commit("set_mapmode", {
             select: "point",
             aspect: this.aspect.name
           })
+          console.log("loc. store edit")
           this.$router.push("/map2")
         }
       }

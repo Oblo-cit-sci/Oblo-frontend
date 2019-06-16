@@ -51,7 +51,8 @@
         //  i_value: {}
         edit: false,
         has_alternative: false,
-        use_regular: true
+        use_regular: true,
+
       }
     },
     created() {
@@ -61,6 +62,7 @@
       } else { // edit
         this.edit = true
       }
+
     },
     // boolean check is not required, since "false" is the default
     computed: {

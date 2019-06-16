@@ -28,7 +28,7 @@
 <script>
 
   import License from "../../../../components/License"
-  import Privacy from "~~/components/Privacy"
+  import Privacy from "../../../../components/Privacy"
 
   import {MAspectComponent} from "../../../../lib/entry"
 

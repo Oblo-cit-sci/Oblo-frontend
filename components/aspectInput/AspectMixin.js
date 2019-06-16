@@ -74,10 +74,16 @@ export default {
   data() {
     return {
       i_value: null,
+      aspect_ref: null
     }
   },
   created() {
-    this.i_value = this.value;
+    this.i_value = this.value
+    try {
+      this.aspect_ref = (this.extra.aspect_ref || "") + "." + this.aspect.name
+    } catch(e) {
+      console.log("asp mixin debug, aspect passed", this.aspect)
+    }
   },
   methods: {
     title_description() {
@@ -104,7 +110,7 @@ export default {
   },
   watch: {
     value(new_val) {
-      //console.log("asp mix update", this.aspect, new_val)
+      console.log("val change", new_val)
       this.i_value = new_val;
     },
     disabled() {
