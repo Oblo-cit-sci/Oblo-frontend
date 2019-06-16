@@ -8,7 +8,7 @@
             :value.sync="i_value[index]"
             :edit="true"
             :mode="mode"
-            :extra="extra"
+            :extra="list_extras"
             v-on:entryAction="$emit('entryAction',$event)")
       div(v-else)
         v-expansion-panel(expand v-model="panelState")
@@ -19,7 +19,7 @@
               :aspect="indexed_item_aspect(index)"
               :value.sync="value"
               :mode="mode"
-              :extra="extra"
+              :extra="list_extras"
               v-on:entryAction="$emit('entryAction',$event)")
       div
         span(v-if="aspect.attr.min") min: {{aspect.attr.min}}, &nbsp;
@@ -85,7 +85,7 @@
           required: true
         }
       } else if (typeof (item_type) === "object") {
-        console.log("object type", this.aspect.items)
+        // console.log("object type", this.aspect.items)
         if (this.aspect.items.type === "composite") {
           this.item_aspect = this.aspect.items;
           this.item_aspect.required = true;
@@ -135,6 +135,9 @@
       },
       is_simple() {
         return this.structure === SIMPLE
+      },
+      list_extras() {
+        return Object.assign(this.extra, {aspect_ref: this.aspect_ref})
       }
     }
     /*watch : {

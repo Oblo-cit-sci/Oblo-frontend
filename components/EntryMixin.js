@@ -79,8 +79,6 @@ export default {
       }
       this.extras[aspect.name] = extra_props
     }
-
-
     /* set aspect refs:
         when an attribute has #
         this doesnt belong here, especially cuz of the duplicate for edit/_local_id page
@@ -91,7 +89,6 @@ export default {
         this.entry.aspects_values[aspect.name] = value
       }
     }
-
   },
   data() {
     return {
@@ -117,7 +114,7 @@ export default {
           autosave(this.$store, this.entry)
           break
         case GLOBAL_ASPECT_REF:
-          console.log("entrymixin action",event)
+          //console.log("entrymixin action",event)
           this.$store.commit("add_aspect_ref",event.value)
           break
         default:

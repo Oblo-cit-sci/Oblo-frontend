@@ -50,7 +50,7 @@
       for (let index in this.aspect.options) {
         this.opt_values[index] = aspect_wrapped_default_value(this.aspect.options[index])
       }
-      console.log("opt asp init with val", this.value)
+      //console.log("opt asp init with val", this.value)
     },
     methods: {
       optionUpdate(event, index) {
@@ -78,12 +78,15 @@
     },
     computed: {
       result_value() {
-        console.log("res?", this.value)
+        // TODO some horror that comes cuz in basic Obs.
+        // when there is a manual input it causes an emit chain, cuz its default vals
+        // that tirggers a mess
+        //console.log("res?", this.value)
         if (this.value !== null) {
          if(typeof(this.value) === "object") {
-           console.log("obj down")
+           //console.log("obj down")
            if(!this.value.value) {
-             console.log("obj val null")
+             //console.log("obj val null")
              return aspect_wrapped_default_value(this.aspect.view_type)
            }
            return this.value
@@ -97,7 +100,7 @@
     },
     watch: {
       selected_option(val) {
-        console.log("option selected", val)
+        //console.log("option selected", val)
         //val = parseInt(val)
         for (let index in this.aspect.options) {
           if (parseInt(index) !== val) {
@@ -109,7 +112,7 @@
         this.optionUpdate()
         this.i_value = this.opt_values[this.selected_option].value
         this.value_change(this.i_value)
-        console.log("sel ch", this.value)
+        //console.log("sel ch", this.value)
       },
     }
   }

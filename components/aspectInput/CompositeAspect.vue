@@ -28,13 +28,6 @@
         title: "XXX" // todo pass it up for nice title in lists...
       }
     },
-    created() {
-      console.log("comp created", this.i_value)
-      if(!this.i_value) {
-
-      }
-      //aspect_wrapped_default_value(this.aspect.options[index])
-    },
     methods: {
       update_value($event , index) {
         this.i_value[index] = $event
@@ -54,7 +47,7 @@
           console.log("composite value changed from above", val)
       }*/
       value(new_val) {
-        console.log("COMP val change", new_val)
+        //console.log("COMP val change", new_val)
         this.i_value = new_val;
       },
     }

@@ -31,7 +31,6 @@
 
   export default {
     name: "TreleafPicker",
-
     components: {TextShort, SingleSelect},
     props: {
       tree: {
@@ -99,7 +98,7 @@
     },
     methods: {
       select(value) {
-        console.log(value);
+        //console.log(value);
         this.selection.push(value);
       },
       remove(index) {

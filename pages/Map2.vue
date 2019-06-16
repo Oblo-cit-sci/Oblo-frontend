@@ -87,17 +87,17 @@
       },
       done() {
         let global_ref = this.$store.state.global_ref
-        this.$store.commit("edrafts/set_draft_aspect_value", {
+
+        const draft = this.$store.state.edrafts.drafts[global_ref.draft_id]
+        const entry_type = this.$store.getters.entry_type(draft.type_slug)
+
+        this.$store.commit("edrafts/set_draft_aspect_value_by_ref", {
             draft_id: global_ref.draft_id,
-            aspect_name: global_ref.aspect_ref.substring(1),
+            aspect_ref: global_ref.aspect_ref,
+            entry_type: entry_type,
             value: {
               value:
-                [
-                  {value: this.coordinates[0]},
-                  {
-                    value: this.coordinates[1]
-                  }
-                ]
+                [{value: this.coordinates[0]}, {value: this.coordinates[1]}]
             }
           }
         )

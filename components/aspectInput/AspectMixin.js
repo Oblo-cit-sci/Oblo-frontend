@@ -81,6 +81,7 @@ export default {
     this.i_value = this.value
     try {
       this.aspect_ref = (this.extra.aspect_ref || "") + "." + this.aspect.name
+      console.log("setting ref", this.aspect.name, this.aspect.type, this.aspect_ref)
     } catch(e) {
       console.log("asp mixin debug, aspect passed", this.aspect)
     }
@@ -110,7 +111,7 @@ export default {
   },
   watch: {
     value(new_val) {
-      console.log("val change", new_val)
+      //console.log("val change", new_val)
       this.i_value = new_val;
     },
     disabled() {

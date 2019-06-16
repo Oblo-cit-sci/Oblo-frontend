@@ -96,7 +96,7 @@
         if (this.select_sync) {
           this.$emit('update:selection', item); // refactor to use the item
         } else {
-          console.log("emit no sync")
+          //console.log("emit no sync")
           this.$emit("selection", item);
         }
       }
