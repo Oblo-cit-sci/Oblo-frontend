@@ -11,14 +11,14 @@
         v-btn(color="seconday" @click="cancel") cancel
 
       span(v-if="!init")
-        v-btn(v-if="!private_local" color="warning" @click="show_delete") delete draft
+        v-btn(v-if="!private_local && !in_context" color="warning" @click="show_delete") delete draft
         v-btn(v-else color="warning" @click="show_delete") delete
 
       span(v-if="!submitted")
-        v-btn(v-if="!private_local" color="secondary" @click="save_draft") save draft
+        v-btn(v-if="!private_local && !in_context" color="secondary" @click="save_draft") save draft
         v-btn(v-else color="success" @click="save") save
 
-      v-btn(v-if="!private_local && !view" color="success" @click="submit" :disable="connected" :loading="sending") {{submitted ? 'update' : 'submit'}}
+      v-btn(v-if="!private_local && !view && !in_context" color="success" @click="submit" :disable="connected" :loading="sending") {{submitted ? 'update' : 'submit'}}
       v-btn(v-if="private_local"  :href="dl_url" :download="download_title" :disabled="disable_download" color="success" @click="dl") download
     DecisionDialog(v-bind="remove_dialog_data" :open.sync="show_remove" v-on:action="delete_this")
 </template>
@@ -71,6 +71,9 @@
       },
       private_local() {
         return (this.entry_type.content.meta.privacy || PUBLIC) === PRIVATE_LOCAL
+      },
+      in_context() {
+        return this.entry_type.content.meta.hasOwnProperty("context")
       },
       connected() {
         return this.$store.state.connected
@@ -133,11 +136,6 @@
         }
       },
       show_delete() {
-        if (this.init) {
-          // todo change title and text
-        } else {
-
-        }
         this.show_remove = true
       },
       delete_this() {
@@ -162,18 +160,25 @@
         this.$store.commit("set_snackbar", {message: "Entry deleted", ok: true})
         if (this.entry.ref) {
           // or entry
-          this.$store.commit("edrafts/set_draft_aspect_value", data);
+          // todo
+          //this.$store.commit("edrafts/set_draft_aspect_value", data);
         }
         this.back()
       },
       save_draft() {
         save_draft(this.$store, this.entry, true)
+        this.add_entry_aspect()
         this.$store.commit("set_snackbar", {message: "Draft saved", ok: true})
         this.back()
       },
       save() {
         // todo not if it is an aspect page
         save_entry(this.$store, this.entry)
+        this.add_entry_aspect()
+        //
+        this.back()
+      },
+      add_entry_aspect() {
         if (this.entry.ref) {
           let ref = this.entry.ref
           if (ref.hasOwnProperty("draft_id")) {
@@ -197,8 +202,6 @@
             // well AspectPage dont really have any query params,
           }
         }
-        //
-        this.back()
       },
       submit() {
         this.sending = true

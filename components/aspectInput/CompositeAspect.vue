@@ -29,14 +29,16 @@
       }
     },
     methods: {
-      update_value($event , index) {
+      update_value($event, index) {
         this.i_value[index] = $event
         this.value_change(this.i_value)
       }
     },
     computed: {
       comp_extras() {
-        return Object.assign(this.extra, {aspect_ref: this.aspect_ref})
+        // needs this, otherwise it will mutate the extra, which messes up lists,...
+        const xtra_copy = JSON.parse(JSON.stringify((this.extra || {})))
+        return Object.assign(xtra_copy, {aspect_ref: this.aspect_ref})
       }
     },
     watch: {
@@ -55,7 +57,6 @@
 </script>
 
 <style scoped>
-
 </style>
 
 

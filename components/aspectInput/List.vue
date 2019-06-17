@@ -8,7 +8,7 @@
             :value.sync="i_value[index]"
             :edit="true"
             :mode="mode"
-            :extra="list_extras"
+            :extra="extra_down"
             v-on:entryAction="$emit('entryAction',$event)")
       div(v-else)
         v-expansion-panel(expand v-model="panelState")
@@ -19,7 +19,7 @@
               :aspect="indexed_item_aspect(index)"
               :value.sync="value"
               :mode="mode"
-              :extra="list_extras"
+              :extra="extra_down"
               v-on:entryAction="$emit('entryAction',$event)")
       div
         span(v-if="aspect.attr.min") min: {{aspect.attr.min}}, &nbsp;
@@ -58,6 +58,7 @@
         // select, when code type (*)
         select: false, // select... instead of button
         options: [],
+        extra_down: null
       }
     },
     created() {
@@ -96,6 +97,9 @@
           this.structure = "simple";
         }
       }
+
+      let extra_copy = JSON.parse(JSON.stringify(this.extra || {}))
+      this.extra_down  =  Object.assign(extra_copy, {aspect_ref: this.aspect_ref})
     },
     methods: {
       clearableAspectComponent(aspect) {
@@ -135,17 +139,8 @@
       },
       is_simple() {
         return this.structure === SIMPLE
-      },
-      list_extras() {
-        return Object.assign(this.extra, {aspect_ref: this.aspect_ref})
       }
     }
-    /*watch : {
-      i_value(val) {
-        this.value_change(this.i_value)
-        console.log("list change", this.aspect.name, val, this.i_value)
-      }
-    }*/
   }
 </script>
 

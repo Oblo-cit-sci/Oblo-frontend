@@ -80,8 +80,9 @@ export default {
   created() {
     this.i_value = this.value
     try {
+      //console.log(this.aspect.type, "new asp-mxn with", this.extra.aspect_ref, "adding", this.aspect.name)
       this.aspect_ref = (this.extra.aspect_ref || "") + "." + this.aspect.name
-      console.log("setting ref", this.aspect.name, this.aspect.type, this.aspect_ref)
+      //console.log("setting ref", this.aspect.name, this.aspect.type, this.aspect_ref, ">", this.extra.aspect_ref)
     } catch(e) {
       console.log("asp mixin debug, aspect passed", this.aspect)
     }

@@ -37,7 +37,7 @@ export const mutations = {
     //console.log(aspect_refs, select_type_obj)
     for(let ar_index in aspect_refs){
       let ar = aspect_refs[ar_index]
-      console.log(ar, ar_index, aspect_refs.length)
+      console.log(ar, ar_index, aspect_refs, aspect_refs.length)
       if (select_type === "entry") {
         if(parseInt(ar_index) === aspect_refs.length - 1) {
           console.log("last set, s", select)

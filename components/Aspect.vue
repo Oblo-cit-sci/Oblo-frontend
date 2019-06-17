@@ -1,5 +1,5 @@
 <template lang="pug">
-  div
+  div(:class="{ composite: aspect.type === 'composite'}")
     Title_Description(v-bind="title_description(aspect)" :disabled="disabled")
     v-switch(v-if="has_alternative"
       v-model="use_regular"
@@ -133,5 +133,9 @@
 </script>
 
 <style scoped>
+  .composite {
+    border-left: 2px #8080806b solid;
+    padding-left: 5px;
+  }
 
 </style>
