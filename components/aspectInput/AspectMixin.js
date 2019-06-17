@@ -35,7 +35,7 @@ export function aspect_default_value(aspect) {
     case "composite":
       return ld.map(aspect.components, (c) => aspect_wrapped_default_value(c))
     case "options":
-      return aspect_wrapped_default_value(aspect.options[0])
+      return null
     case "select":
       return null
     case "multiselect":

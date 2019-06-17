@@ -39,11 +39,17 @@ export const mutations = {
       let ar = aspect_refs[ar_index]
       console.log(ar, ar_index, aspect_refs.length)
       if (select_type === "entry") {
-        select = select.aspects_values[ar]
+        if(parseInt(ar_index) === aspect_refs.length - 1) {
+          console.log("last set, s", select)
+          select.aspects_values[ar] = data.value
+        } else {
+          select = select.aspects_values[ar]
+        }
+        //select = select.aspects_values[ar]
         //history.push(select)
         select_type = "aspect"
         select_type_obj = find_aspect_with_name(select_type_obj.content.aspects, ar)
-        //console.log("entry>", select, select_type, select_type_obj)
+        console.log("entry>", select, select_type, select_type_obj)
       } else if(select_type === "aspect") {
         // check list or composite or ...
         const aspect_type = select_type_obj.type
@@ -51,7 +57,7 @@ export const mutations = {
           select = select.value[parseInt(ar) - 1] // -1 cuz, it takes the name, all names start with 1 (for the user)
           select_type = "aspect"
           select_type_obj = select_type_obj.items
-          //console.log("aspect/list", select, select_type, select_type_obj)
+          console.log("aspect/list", select, select_type, select_type_obj)
         } else if(aspect_type === "composite") {
           const component_index = findex_aspect_index_with_name(select_type_obj.components, ar)
           if(parseInt(ar_index) === aspect_refs.length - 1) {
@@ -62,14 +68,14 @@ export const mutations = {
           }
           select_type = "aspect"
           select_type_obj = find_aspect_with_name(select_type_obj.components, ar)
-          //console.log("aspect/composite", select, select_type, select_type_obj)
+          console.log("aspect/composite", select, select_type, select_type_obj)
         } else {
           console.log("ERROR edrafts/set_draft_aspect_value_by_ref unknown type", aspect_type)
         }
       }
     }
     //select = data.value
-    console.log("result select", select, data.value)
+    console.log("result select", select,select_type, data.value)
     //select = data.value
     console.log(draft.aspects_values)
   },

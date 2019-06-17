@@ -47,8 +47,14 @@
       }
     },
     created() {
+      console.log("opt create", this.value)
       for (let index in this.aspect.options) {
         this.opt_values[index] = aspect_wrapped_default_value(this.aspect.options[index])
+      }
+      if(this.i_value === null) {
+        console.log("setting i_value to default")
+        this.i_value = aspect_default_value(this.aspect.view_type)
+        this.value_change(this.i_value)
       }
       //console.log("opt asp init with val", this.value)
     },
@@ -81,21 +87,42 @@
         // TODO some horror that comes cuz in basic Obs.
         // when there is a manual input it causes an emit chain, cuz its default vals
         // that tirggers a mess
-        //console.log("res?", this.value)
-        if (this.value !== null) {
-         if(typeof(this.value) === "object") {
-           //console.log("obj down")
-           if(!this.value.value) {
-             //console.log("obj val null")
-             return aspect_wrapped_default_value(this.aspect.view_type)
-           }
-           return this.value
-         } else {
-           return {value:this.value}
-         }
-        }
-        else
+
+
+        console.log("res?", this.value, this.i_value)
+        try {
+          if (this.i_value !== null) {
+            return {value: this.i_value}
+            /*if(this.value.hasOwnProperty("value") && this.value.value !== null) {
+              console.log("OptAsp- value.value")
+              return this.value.value*/
+          } else {
+            return aspect_wrapped_default_value(this.aspect.view_type)
+          }
+        } catch {
+          console.log("OptAsp: crash")
           return aspect_wrapped_default_value(this.aspect.view_type)
+        }
+        /*
+        if (this.value !== null) {
+          if (this.value.value !== null) {
+            if (typeof (this.value) === "object") {
+              console.log("obj down", this.value)
+              if (!this.value) {
+                console.log("obj val null")
+                return aspect_wrapped_default_value(this.aspect.view_type)
+              }
+            }
+            return this.value
+          } else {
+            console.log("wrapped val")
+            return {value: this.value}
+          }
+        } else {
+          console.log("optas. result_value null. viewtype?", this.aspect.view_type)
+          return aspect_wrapped_default_value(this.aspect.view_type)
+        }
+         */
       }
     },
     watch: {
