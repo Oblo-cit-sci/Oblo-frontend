@@ -43,6 +43,9 @@
     },
     computed: {
       comp_extras() {
+        console.log(this.aspect.name, this.extra, this.aspect_ref)
+        this.extra = this.extra || {}
+        this.aspect_ref = this.aspect_ref || {}
         return Object.assign(this.extra, {aspect_ref: this.aspect_ref})
       }
     },
