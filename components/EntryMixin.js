@@ -104,10 +104,6 @@ export default {
       page: 0,
       last_page: false,
       extras: {},
-      refs: {
-        parent: null,
-        children: []
-      } // new, will include parent, and children
     }
   },
   methods: {
