@@ -43,4 +43,4 @@ export const mutations = {
     state.fetched_entries = {}
     state.timeline_entries = []
   }
-};
+}

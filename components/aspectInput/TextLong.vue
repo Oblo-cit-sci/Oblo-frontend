@@ -7,11 +7,24 @@
         auto-grow
         :counter="counter"
         v-model="i_value"
+
+        :append-outer-icon="clearIcon"
+        @click:append-outer="$emit('entryAction', {action: 'clear'})"
+
         @input="value_change($event)")
     div(v-else)
       v-textarea(
-        readonly outline single-line flat auto-grow
+        readonly
+        outline
+        single-line
+        flat
+        auto-grow
+
+        :append-outer-icon="clearIcon"
+        @click:append-outer="$emit('entryAction', {action: 'clear'})"
+
         :value="i_value")
+
 </template>
 
 <script>

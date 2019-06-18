@@ -5,7 +5,6 @@
         :access-token="accessToken"
         :map-style="mapStyle"
         @load="onMapLoaded"
-
         @click="touch($event)"
       >
         <MglMarker :coordinates="coordinates">

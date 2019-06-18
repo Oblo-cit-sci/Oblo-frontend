@@ -87,8 +87,6 @@
         // TODO some horror that comes cuz in basic Obs.
         // when there is a manual input it causes an emit chain, cuz its default vals
         // that tirggers a mess
-
-
         console.log("res?", this.value, this.i_value)
         try {
           if (this.i_value !== null) {

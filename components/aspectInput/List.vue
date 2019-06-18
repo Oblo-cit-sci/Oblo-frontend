@@ -9,7 +9,8 @@
             :edit="true"
             :mode="mode"
             :extra="extra_down"
-            v-on:entryAction="$emit('entryAction',$event)")
+            v-on:entryAction="handleEntryAction($event, index)")
+            v-on:append-outer="remove_value(index)"
       div(v-else)
         v-expansion-panel(expand v-model="panelState")
           v-expansion-panel-content(v-for="(value, index) in i_value" :key="index")
@@ -21,6 +22,7 @@
               :mode="mode"
               :extra="extra_down"
               v-on:entryAction="$emit('entryAction',$event)")
+            v-btn(@click="remove_value(index)") remove
       div
         span(v-if="aspect.attr.min") min: {{aspect.attr.min}}, &nbsp;
         span(v-if="aspect.attr.max") max: {{aspect.attr.max}}
@@ -99,7 +101,14 @@
       }
 
       let extra_copy = JSON.parse(JSON.stringify(this.extra || {}))
-      this.extra_down  =  Object.assign(extra_copy, {aspect_ref: this.aspect_ref})
+      // probably not necessaery
+      /*if (extra_copy.hasOwnProperty("listitem")) {
+        delete extra_copy.listitem
+      }*/
+      this.extra_down = Object.assign(extra_copy, {
+        aspect_ref: this.aspect_ref,
+        listitem: this.is_simple // non-simple ones, have a button here
+      })
     },
     methods: {
       clearableAspectComponent(aspect) {
@@ -114,7 +123,7 @@
         }
       },
       remove_value(index) {
-        //console.log("remove index", index)
+        console.log("remove index", index)
         //console.log(this.i_value)
         this.i_value.splice(index, 1)
         //console.log(this.i_value)
@@ -127,6 +136,12 @@
         let aspect = {...this.item_aspect}
         aspect.name = "" + (index + 1)
         return aspect
+      }, handleEntryAction(event, index) {
+        if (event.action === "clear") {
+          this.remove_value(index)
+        } else {
+          $emit('entryAction', $event)
+        }
       }
     },
     computed: {

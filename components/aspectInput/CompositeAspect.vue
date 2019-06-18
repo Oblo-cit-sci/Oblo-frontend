@@ -36,8 +36,12 @@
     },
     computed: {
       comp_extras() {
+        console.log("comp extra ", this.extra)
         // needs this, otherwise it will mutate the extra, which messes up lists,...
         const xtra_copy = JSON.parse(JSON.stringify((this.extra || {})))
+        if(xtra_copy.hasOwnProperty("listitem")) {
+          delete xtra_copy.listitem
+        }
         return Object.assign(xtra_copy, {aspect_ref: this.aspect_ref})
       }
     },

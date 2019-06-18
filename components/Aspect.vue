@@ -62,7 +62,6 @@
       } else { // edit
         this.edit = true
       }
-
     },
     // boolean check is not required, since "false" is the default
     computed: {
@@ -107,7 +106,7 @@
       },
       aspectComponent(aspect_descr, mode) {
         // todo false, false are just default, ... better a config obj
-        return MAspectComponent(aspect_descr, false, false, mode)
+        return MAspectComponent(aspect_descr, false, mode)
       },
       emit_up(event) {
         this.$emit('update:value', {value:event})

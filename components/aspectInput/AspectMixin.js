@@ -68,20 +68,27 @@ export default {
       type: Boolean,
       default: false
     },
-    extra: Object,
+    extra: {
+      type: Object,
+      default: new Object()
+    },
     hide: Array// todo implement
   },
   data() {
     return {
       i_value: null,
-      aspect_ref: null
+      aspect_ref: null,
+      aspect_ref2: null
     }
   },
   created() {
     this.i_value = this.value
+
     try {
       //console.log(this.aspect.type, "new asp-mxn with", this.extra.aspect_ref, "adding", this.aspect.name)
       this.aspect_ref = (this.extra.aspect_ref || "") + "." + this.aspect.name
+      this.aspect_ref2 = this.$_.concat(this.$_.cloneDeep(this.extra.aspect_ref || []), ["aspect",this.aspect.name])
+
       //console.log("setting ref", this.aspect.name, this.aspect.type, this.aspect_ref, ">", this.extra.aspect_ref)
     } catch(e) {
       console.log("asp mixin debug, aspect passed", this.aspect)
@@ -108,6 +115,10 @@ export default {
   computed: {
     readOnly() {
       return this.mode === VIEW
+    },
+    clearIcon() {
+      console.log("AspMix - ", this.aspect.name, this.aspect.type, this.extra)
+      return (this.extra.listitem || false) ? "clear" : undefined //this.extra
     }
   },
   watch: {

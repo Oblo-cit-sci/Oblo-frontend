@@ -10,9 +10,9 @@
       span(v-else)
         v-btn(color="seconday" @click="cancel") cancel
 
-      span(v-if="!init")
-        v-btn(v-if="!private_local && !in_context" color="warning" @click="show_delete") delete draft
-        v-btn(v-else color="warning" @click="show_delete") delete
+      // TODO for the training we just DISABLE, otherwise it would be: :disabled="init"
+      v-btn(v-if="!private_local && !in_context" :disabled="true" color="warning" @click="show_delete") delete draft
+      v-btn(v-else color="warning" :disabled="true" @click="show_delete") delete
 
       span(v-if="!submitted")
         v-btn(v-if="!private_local && !in_context" color="secondary" @click="save_draft") save draft
@@ -26,7 +26,7 @@
 <script>
 
 
-  import {CONTEXT_ENTRY, CREATE, DRAFT, EDIT, PRIVATE_LOCAL, PUBLIC, VIEW} from "../lib/consts";
+  import {CONTEXT_ENTRY, CREATE, DRAFT, GLOBAL, PRIVATE_LOCAL, PUBLIC, VIEW} from "../lib/consts";
   import Paginate from "./Paginate";
   import {
     current_user_is_owner,
@@ -73,7 +73,8 @@
         return (this.entry_type.content.meta.privacy || PUBLIC) === PRIVATE_LOCAL
       },
       in_context() {
-        return this.entry_type.content.meta.hasOwnProperty("context")
+        console.log("Entry Action -  context? ", this.entry_type.content.meta)
+        return this.entry_type.content.meta.context !== GLOBAL
       },
       connected() {
         return this.$store.state.connected

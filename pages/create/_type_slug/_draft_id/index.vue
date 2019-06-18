@@ -96,7 +96,7 @@
       // can be passed down to aspect. it only needs the entry_id passed down
       create_ref(aspect) {
         autosave(this.$store, this.entry)
-        //console.log("creating ref for ", aspect)
+        console.log("page/create/index create_ref for ", aspect)
         /*
         page_aspect:
 	      /create/<type_slug/<draft_id/<aspect_name
@@ -132,6 +132,7 @@
 
             const new_type_slug = aspect_to_check.aspect.substring(1)
             const new_draft_id = create_and_store(new_type_slug, this.$store, ref_data)
+            this.refs.children
             this.$router.push({
               path: "/create/" + new_type_slug + "/" + new_draft_id
             })

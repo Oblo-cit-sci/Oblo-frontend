@@ -14,9 +14,6 @@
 
   // file-upload( :headers="headers" @change="onFileChange")
 
-
-
-
   export default {
     name: "Tests",
     components: {LoadFileButton, DecisionDialog},

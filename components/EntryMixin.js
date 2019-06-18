@@ -96,7 +96,6 @@ export default {
       // type_slug, draft_id, entry_id, license, privacy, version, status, aspects_values, ref
       entry: null,
       entry_type: null, // the full shizzle for the type_slug
-
       required_values: [], // shortcut, but in entry_type
       conditions: {}, // this contains  conditions between aspects (for now just conditions), key (sender), value: receiver
       sending: false,
@@ -104,7 +103,11 @@ export default {
       has_pages: false,
       page: 0,
       last_page: false,
-      extras: {}
+      extras: {},
+      refs: {
+        parent: null,
+        children: []
+      } // new, will include parent, and children
     }
   },
   methods: {
