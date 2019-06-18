@@ -73,7 +73,7 @@ export default {
     },
     extra: {
       type: Object,
-      default: new Object()
+      default: () => {return {}}
     },
     hide: Array// todo implement
   },
