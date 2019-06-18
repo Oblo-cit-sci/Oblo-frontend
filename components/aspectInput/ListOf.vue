@@ -65,9 +65,12 @@
         }
       },
       item_titles(){
+        console.log("listOf ", this.i_value)
         return this.$_.map(this.i_value, (item) => {
             // not necessarily local
             if(item.type === CONTEXT_ENTRY) {
+              console.log("listOf.item.titles", item)
+              console.log("listOf entry", get_local_entry(this.$store, item))
               return {
                 title: get_local_entry(this.$store, item).aspects_values.title,
                 key: get_id(this.$store, item),

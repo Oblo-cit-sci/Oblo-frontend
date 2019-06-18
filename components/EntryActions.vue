@@ -32,7 +32,7 @@
     current_user_is_owner,
     delete_draft,
     delete_entry, fill_in_child_refs_for_sending,
-    get_edit_route_for_ref,
+    get_edit_route_for_ref, get_ref_entries,
     save_draft,
     save_entry
   } from "../lib/entry";
@@ -213,11 +213,16 @@
         if(this.entry.status === DRAFT) {
 
           let sending_entry = JSON.parse(JSON.stringify(this.entry))
-          sending_entry = fill_in_child_refs_for_sending(this.$store, sending_entry)
-          console.log("sending entry- ref update", sending_entry)
 
+          // todo before. try out to pack multiple entries into one send
+          //sending_entry = fill_in_child_refs_for_sending(this.$store, sending_entry)
+          const all_entries = this.$_.concat([this.entry], get_ref_entries(this.$store, this.entry.refs.children))
 
-          this.$axios.post("/create_entry", sending_entry).then((res) => {
+          console.log("ref entries", all_entries)
+          //return
+          //console.log("sending entry- ref update", sending_entry)
+
+          this.$axios.post("/create_entry", all_entries).then((res) => {
             this.sending = false
             //console.log(res.data)
             this.$store.commit("set_snackbar", {message: res.data.msg, ok: res.data.status})
@@ -232,7 +237,7 @@
               //this.$store.commit("edrafts/remove_draft", this.draft_id)
               this.$store.commit("entries/save_entry", this.entry)
             }*/
-            this.back()
+            //this.back()
           }).catch((err) => {
             console.log("error", err)
           })
