@@ -38,9 +38,22 @@ export const mutations = {
     state.fetched_entries[entry.uuid] = entry
     //console.log(state.fetched_entries)
   },
+  add_ref_child(state, {local_id, ref_data}) {
+    console.log("store entries: adding ref to ", local_id, ref_data)
+    this.own_entries.get(local_id).children.push(ref_data)
+  },
   clear(state) {
     state.own_entries.clear()
     state.fetched_entries = {}
     state.timeline_entries = []
+  }
+}
+
+export const getters = {
+  get_entry(state, getters) {
+    return (local_id) => {
+      console.log("store entries get entry", state.own_entries, local_id)
+      return state.own_entries.get(local_id)
+    };
   }
 }

@@ -114,8 +114,6 @@ export const mutations = {
       }
     }
   }
-
-
    */
 
   add_reference(state, reference_info) {
@@ -128,7 +126,12 @@ export const mutations = {
   clear(state){
     state.drafts = {}
     state.next_id = 0
-  }
+  },
+  add_ref_child(state, {draft_id, ref_data}) {
+    console.log("store drafts: adding ref to ", draft_id, ref_data)
+    console.log(state.drafts)
+    state.drafts[draft_id].refs.children.push(ref_data)
+  },
 };
 
 

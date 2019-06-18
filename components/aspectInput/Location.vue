@@ -75,6 +75,7 @@
             this.value_change(this.i_value)
           });
         } else if (this.selection.value === FROM_MAP) {
+          console.log("from map")
           this.$emit("entryAction", {action:GLOBAL_ASPECT_REF, value:this.aspect_ref})
           this.$emit("entryAction", {action:"autosave"})
           //console.log("emitted")

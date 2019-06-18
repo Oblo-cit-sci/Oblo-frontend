@@ -31,11 +31,12 @@
   import {
     current_user_is_owner,
     delete_draft,
-    delete_entry,
+    delete_entry, fill_in_child_refs_for_sending,
     get_edit_route_for_ref,
     save_draft,
     save_entry
   } from "../lib/entry";
+
   import {complete_activities} from "../lib/client";
   import DecisionDialog from "./DecisionDialog";
 
@@ -205,10 +206,18 @@
         }
       },
       submit() {
-        this.sending = true
+        console.log("entryAction submit")
+        // todo bring back in after testing
+        //this.sending = true
         // would be the same as checking submitted
         if(this.entry.status === DRAFT) {
-          this.$axios.post("/create_entry", this.entry).then((res) => {
+
+          let sending_entry = JSON.parse(JSON.stringify(this.entry))
+          sending_entry = fill_in_child_refs_for_sending(this.$store, sending_entry)
+          console.log("sending entry- ref update", sending_entry)
+
+
+          this.$axios.post("/create_entry", sending_entry).then((res) => {
             this.sending = false
             //console.log(res.data)
             this.$store.commit("set_snackbar", {message: res.data.msg, ok: res.data.status})

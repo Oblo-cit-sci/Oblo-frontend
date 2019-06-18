@@ -57,8 +57,7 @@
       Aspect,
       EntryActions,
       Title_Description,
-      Paginate, Privacy, License, Basic, TextShort, TextLong, Location,
-      List, AspectPageButton, CompositeAspect, Select, Map
+      Paginate, Privacy, License
     },
     mixins: [ReferenceMixin, EntryMixin], // in case of a context entry, to be able to get back to the parent
     data() {
@@ -66,11 +65,8 @@
       }
     },
     created() {
-      let local_id = this.$route.params.local_id
-
       // this.check_complete() // TODO bring back watcher, isnt triggered tho...
       //console.log(this.has_pages)
-
     },
     methods: {
       // TODO Depracated
@@ -159,9 +155,11 @@
               ref_data.index = this.entry.aspects_values[aspect.name].value.length
             }
 
-            const new_draft_id = create_and_store(new_type_slug, this.$store, ref_data)
+            // TODO needs the local_ ref children stuff
+            console.log("WARNING pages/edit/local_id needs kids refs stuff")
+            const entry = create_and_store(new_type_slug, this.$store, ref_data)
             this.$router.push({
-              path: "/create/" + new_type_slug + "/" + new_draft_id
+              path: "/create/" + new_type_slug + "/" + entry.draft_id
             })
           } else {
             console.log("PROBLEM DERIVING REF TYPE FOR", aspect)

@@ -157,6 +157,8 @@
               ref_data.index = this.entry.aspects_values[aspect.name].value.length
             }
 
+            // TODO needs the local_ ref children stuff
+            console.log("WARNING pages/entry/id needs kids refs stuff")
             const new_draft_id = create_and_store(new_type_slug, this.$store, ref_data)
             this.$router.push({
               path: "/create/" + new_type_slug + "/" + new_draft_id

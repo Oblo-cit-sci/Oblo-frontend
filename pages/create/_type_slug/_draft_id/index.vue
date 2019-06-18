@@ -131,10 +131,28 @@
             }
 
             const new_type_slug = aspect_to_check.aspect.substring(1)
-            const new_draft_id = create_and_store(new_type_slug, this.$store, ref_data)
-            this.refs.children
+            const entry = create_and_store(new_type_slug, this.$store, ref_data)
+            console.log("index, create ref, kids?", this.entry.refs.children, "ref:", ref_data)
+
+            // THIS.ENTRY.REFS.KIDS > this is for this entry, good to know the kids when submitting
+            let local_ref_data = {
+              aspect_ref: aspect.name,
+              local_id: entry.local_id
+            }
+
+            if (aspect_to_check.list) {
+              local_ref_data.index = this.entry.aspects_values[aspect.name].value.length
+            }
+            // TODO this is different for drafts and entries (local_id) FIX IT BY REMOVING DRAFT LIST
+            this.$store.commit("edrafts/add_ref_child",
+              {
+                draft_id: this.entry.draft_id,
+                ref_data: local_ref_data}
+              )
+            //this.entry.refs.children.push(local_ref_data)
+            //
             this.$router.push({
-              path: "/create/" + new_type_slug + "/" + new_draft_id
+              path: "/create/" + new_type_slug + "/" + entry.draft_id
             })
           } else {
             console.log("PROBLEM DERIVING REF TYPE FOR", aspect.name)
