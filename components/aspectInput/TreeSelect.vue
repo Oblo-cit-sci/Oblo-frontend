@@ -2,8 +2,10 @@
     div
       v-flex(xs12 sm12 md12 text-xs-left)
         TextShort(
+          :aspect="text_repr_aspect"
           :value="i_value"
           :edit="false"
+
           :prependIcon="prependIcon"
           v-on:clickPrepend="dialogOpen = true")
         v-dialog(width="500" v-model="dialogOpen" lazy=true)
@@ -23,7 +25,14 @@
     data() {
       return {
         options: {},
-        dialogOpen: false
+        dialogOpen: false,
+        text_repr_aspect : {
+          name: "selected",
+          type: "str",
+          attr: {
+            max: 60
+          }
+        }
       }
     },
     created() {

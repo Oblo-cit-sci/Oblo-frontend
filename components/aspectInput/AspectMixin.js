@@ -53,7 +53,10 @@ export function aspect_wrapped_default_value(aspect) {
 
 export default {
   props: {
-    aspect: Object,
+    aspect: {
+      type: Object,
+      required: true
+    },
     value: {},
     // simplification of mode
     edit: {
