@@ -20,8 +20,8 @@
           Done
         </v-btn>
       </MglMap>
-      <v-btn :disabled="false" v-for="layerBtn in map_sources" :key="layerBtn.layerId" small @click="layer(layerBtn.layerId)"
-             :color="layerClr(layerBtn.layerId)">{{layerBtn.title}}
+      <v-btn v-for="layerBtn in map_sources" :key="layerBtn.id" small @click="layer(layerBtn.id, layerBtn.layers)"
+             :color="layerClr(layerBtn.id)"> {{layerBtn.title}}
       </v-btn>
     </no-ssr>
   </div>
@@ -56,31 +56,40 @@
         mapStyle: "mapbox://styles/ramin36/cjx2xkz2w030s1cmumgp6y1j8", //'mapbox://styles/mapbox/streets-v11', // your map style,
         coordinates: [0, 0],
         layerVisiblities: {
-          koepenGeiger: true,
-          "Weather stations": false
+          climate: true,
+          "stations": true
         },
         map_sources: [
           {
-            layerId: "climate type copy", title: "Koeppen-Geiger"
+            id: "climate", layers: ["climate type copy"], title: "Koeppen-Geiger"
+          },
+          {
+            id: "stations", layers: ["weather stations","weather stations age quality"], title: "Weather stations"
           }
         ]
       };
     },
     created() {
-      console.log("hello map")
     },
     methods: {
-      layerClr(layer) {
-        return this.layerVisiblities[layer] ? "#00DD1030" : "#77777720";
+      layerClr(l_id) {
+        return this.layerVisiblities[l_id] ? "#00DD1030" : "#77777720";
       },
       onMapLoaded(event) {
         this.map = event.map;
+        //console.log(this.map)
         //this.map.setLayoutProperty("", "visibility", "none");
       },
-      layer(layer) {
-        this.layerVisiblities[layer] = !this.layerVisiblities[layer];
-        var newVal = this.layerVisiblities[layer] ? "visible" : "none";
-        this.map.setLayoutProperty(layer, 'visibility', newVal);
+      layer(l_id, layers) {
+        this.layerVisiblities[l_id] = !this.layerVisiblities[l_id]
+        if(layers.constructor === Array) {
+          for(let l of layers) {
+            var newVal = this.layerVisiblities[l_id] ? "visible" : "none";
+            this.map.setLayoutProperty(l, 'visibility', newVal);
+          }
+        } else {
+          // todo, but basically the same
+        }
       },
       touch({mapboxEvent}) {
         this.coordinates = [mapboxEvent.lngLat.lng, mapboxEvent.lngLat.lat]
