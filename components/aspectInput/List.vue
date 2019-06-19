@@ -110,10 +110,11 @@
         listitem: this.is_simple // non-simple ones, have a button here
       })
 
-
-      for (let i = 0; i < this.aspect.attr.create || 0; i++) {
-        console.log(i)
-        this.add_value()
+      if(this.i_value.length === 0) {
+        for (let i = 0; i < this.aspect.attr.create || 0; i++) {
+          console.log(i)
+          this.add_value()
+        }
       }
     },
     methods: {

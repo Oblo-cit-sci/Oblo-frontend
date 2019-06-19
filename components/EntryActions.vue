@@ -176,9 +176,9 @@
       save() {
         // todo not if it is an aspect page
         save_entry(this.$store, this.entry)
-        this.add_entry_aspect()
+        let aspect_name = this.add_entry_aspect()
         //
-        this.back()
+        this.back(aspect_name)
       },
       add_entry_aspect() {
         if (this.entry.ref) {
@@ -203,10 +203,12 @@
             // TODO this would break for aspect-pages
             // well AspectPage dont really have any query params,
           }
+          return ref.aspect_name
         }
+        return null
       },
       submit() {
-        console.log("entryAction submit")
+        //console.log("entryAction submit")
         // todo bring back in after testing
         //this.sending = true
         // would be the same as checking submitted
@@ -256,10 +258,10 @@
           this.$store.commit("entries/set_downloaded", this.entry.local_id)
         }
       },
-      back() {
+      back(aspect_name) {
         if (this.entry.ref) {
           // draft or entry....
-          this.$router.push("/create/" + this.entry.ref.type_slug + "/" + this.entry.ref.draft_id)
+          this.$router.push("/create/" + this.entry.ref.type_slug + "/" + this.entry.ref.draft_id +  (aspect_name ? "?goTo=aspect_" + aspect_name : ""))
         } else {
           this.$router.push("/")
         }

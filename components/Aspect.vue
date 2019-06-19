@@ -1,5 +1,6 @@
 <template lang="pug">
-  div(:class="{ composite: aspect.type === 'composite'}")
+  div(
+    :class="[{ composite: aspect.type === 'composite', }]")
     Title_Description(
       v-bind="title_description(aspect)"
       :disabled="disabled"
@@ -54,8 +55,7 @@
         //  i_value: {}
         edit: false,
         has_alternative: false,
-        use_regular: true,
-
+        use_regular: true
       }
     },
     created() {

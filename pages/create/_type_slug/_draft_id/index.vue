@@ -25,6 +25,7 @@
           v-on:entryAction="entryAction($event)"
           :condition="condition_vals[aspect.name]"
           mode="edit"
+          :id="[aspect_class(aspect)]"
           v-on:create_ref="create_ref($event)"
           :extra="extras[aspect.name]")
       div(v-if="!entry.ref && page === 0")
@@ -48,6 +49,8 @@
   import EntryMixin from "../../../../components/EntryMixin";
   import ReferenceMixin from "../../../../components/ReferenceMixin";
 
+  import goTo from 'vuetify/lib/components/Vuetify/goTo'
+
   const ld = require("lodash")
 
   export default {
@@ -70,6 +73,18 @@
       this.draft_id = this.$route.params.draft_id // draft_id or entry_uuid
       // this.check_complete() // TODO bring back watcher, isnt triggered tho...
       //console.log(this.has_pages)
+
+      console.log("page/create/index ", this.entry.type_slug)
+    },
+    mounted() {
+      if (this.$route.query.goTo) {
+        setTimeout(() => {
+          goTo("#" + this.$route.query.goTo, {
+            duration: 1200,
+            easing: "easeOutCubic"
+          })
+        }, 300)
+      }
     },
     methods: {
       // TODO Depracated
@@ -96,6 +111,10 @@
         }
         this.complete = true
       },
+      aspect_class(aspect) {
+        return "aspect_" + aspect.name
+      },
+      // should actually be the whole ref string
       // TODO goes out for Aspect component
       aspectComponent(aspect) {
         return MAspectComponent(aspect)
@@ -155,8 +174,9 @@
             this.$store.commit("edrafts/add_ref_child",
               {
                 draft_id: this.entry.draft_id,
-                ref_data: local_ref_data}
-              )
+                ref_data: local_ref_data
+              }
+            )
             //this.entry.refs.children.push(local_ref_data)
             //
             this.$router.push({
