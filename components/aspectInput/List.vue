@@ -109,6 +109,12 @@
         aspect_ref: this.aspect_ref,
         listitem: this.is_simple // non-simple ones, have a button here
       })
+
+
+      for (let i = 0; i < this.aspect.attr.create || 0; i++) {
+        console.log(i)
+        this.add_value()
+      }
     },
     methods: {
       clearableAspectComponent(aspect) {

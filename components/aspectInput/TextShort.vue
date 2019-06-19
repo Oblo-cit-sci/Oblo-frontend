@@ -5,6 +5,7 @@
         outline
         single-line
         :disabled="disabled"
+        :placeholder="aspect.attr.placeholder"
         v-model="i_value"
 
         :prependIcon="prependIcon"
