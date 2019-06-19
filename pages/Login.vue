@@ -16,8 +16,8 @@
     name: "Login",
     data() {
       return {
-        username: "admin",
-        password: "admin",
+        username: "",
+        password: "",
         errorMsg: ""
       }
     },
