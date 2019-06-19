@@ -14,14 +14,15 @@
             </VCard>
           </MglPopup>-->
         </MglMarker>
-        <!--<v-btn :disabled="true" v-for="layerBtn in map_sources" :key="layerBtn.layerId" small @click="layer(layerBtn.layerId)"
-               :color="layerClr(layerBtn.layerId)">{{layerBtn.title}}
-        </v-btn> -->
+
         <v-text-field hideDetails readonly fullWidth :value="coordinate_string"></v-text-field>
         <v-btn small @click="done">
           Done
         </v-btn>
       </MglMap>
+      <v-btn :disabled="false" v-for="layerBtn in map_sources" :key="layerBtn.layerId" small @click="layer(layerBtn.layerId)"
+             :color="layerClr(layerBtn.layerId)">{{layerBtn.title}}
+      </v-btn>
     </no-ssr>
   </div>
 </template>
@@ -52,7 +53,7 @@
     data() {
       return {
         accessToken: "pk.eyJ1IjoicmFtaW4zNiIsImEiOiJjamJ0eGo0cWQxbHo1MzJyMnV0bzhydjhzIn0.-q0FF4Jtuhc-wboaSA2E_A", // your access token. Needed if you using Mapbox maps
-        mapStyle: "mapbox://styles/ramin36/cju64s1gh1d681fo65m14ytmx", //'mapbox://styles/mapbox/streets-v11', // your map style,
+        mapStyle: "mapbox://styles/ramin36/cjx2xkz2w030s1cmumgp6y1j8", //'mapbox://styles/mapbox/streets-v11', // your map style,
         coordinates: [0, 0],
         layerVisiblities: {
           koepenGeiger: true,
@@ -60,7 +61,7 @@
         },
         map_sources: [
           {
-            layerId: "koepenGeiger", title: "Koeppen-Geiger"
+            layerId: "climate type copy", title: "Koeppen-Geiger"
           }
         ]
       };
@@ -74,7 +75,7 @@
       },
       onMapLoaded(event) {
         this.map = event.map;
-        this.map.setLayoutProperty("Weather stations", "visibility", "none");
+        //this.map.setLayoutProperty("", "visibility", "none");
       },
       layer(layer) {
         this.layerVisiblities[layer] = !this.layerVisiblities[layer];
