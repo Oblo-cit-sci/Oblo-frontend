@@ -1,12 +1,19 @@
 <template lang="pug">
   v-layout(column='' justify-center='' align-center='')
     v-flex(xs12='' sm8='' md6='' class="column")
-      Title_Description(:title="entry_type.title" header_type="h1" :description="entry_type.description")
+      Title_Description(
+        :title="entry_type.title"
+        header_type="h1"
+        :description="entry_type.description"
+        mode="edit")
       div(v-if="entry.ref")
         span This entry is part of the draft: &nbsp
         a(@click="back_to_ref") {{entry.ref.parent_title}}
       div(v-if="has_pages")
-        Title_Description(:title="page_info.title" header_type="h3" :description="page_info.description")
+        Title_Description(
+          :title="page_info.title"
+          header_type="h3"
+          :description="page_info.description")
       br
       div(v-for="(aspect) in shown_aspects" :key="aspect.name")
         Aspect(

@@ -1,6 +1,10 @@
 <template lang="pug">
   div
-    v-checkbox(v-if="select_check" v-model="check_box_value" :label="check_box_value ? this.options[1].text : this.options[0].text")
+    v-checkbox(
+      v-if="select_check"
+      v-model="check_box_value"
+      :label="check_box_value ? this.options[1].text : this.options[0].text"
+      :readonly="readOnly")
     SingleSelect(v-else :options="options"
       v-bind:selection.sync="selection"
       :disabled="disabled")
@@ -17,7 +21,7 @@
     components: {SingleSelect},
     created() {
       if (this.select_check) {
-        this.check_box_value = false // or maybe a value/default...
+        this.check_box_value = this.value === this.options[1].value // or maybe a value/default...
         if (this.aspect.items.length !== 2) {
           console.log("Aspect ", this.aspect.name, "is a select with check but has not exactly 2 items")
         }

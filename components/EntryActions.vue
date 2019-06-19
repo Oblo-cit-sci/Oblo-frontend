@@ -11,7 +11,7 @@
         v-btn(color="seconday" @click="cancel") cancel
 
       // TODO for the training we just DISABLE, otherwise it would be: :disabled="init"
-      v-btn(v-if="!private_local && !in_context" :disabled="true" color="warning" @click="show_delete") delete draft
+      v-btn(v-if="!private_local && !in_context && !view" :disabled="true" color="warning" @click="show_delete") delete draft
       v-btn(v-else color="warning" :disabled="true" @click="show_delete") delete
 
       span(v-if="!submitted")
@@ -237,7 +237,7 @@
               //this.$store.commit("edrafts/remove_draft", this.draft_id)
               this.$store.commit("entries/save_entry", this.entry)
             }*/
-            //this.back()
+            this.back()
           }).catch((err) => {
             console.log("error", err)
           })

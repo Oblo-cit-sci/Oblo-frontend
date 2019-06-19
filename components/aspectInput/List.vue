@@ -22,13 +22,13 @@
               :mode="mode"
               :extra="extra_down"
               v-on:entryAction="$emit('entryAction',$event)")
-            v-btn(@click="remove_value(index)") remove
+            v-btn(v-if="!readOnly" @click="remove_value(index)") remove
       div
         span(v-if="aspect.attr.min") min: {{aspect.attr.min}}, &nbsp;
         span(v-if="aspect.attr.max") max: {{aspect.attr.max}}
     div(v-if="select")
       MultiSelect(:options="options" :selection="i_value")
-    div(v-else)
+    div(v-else-if="!readOnly")
       v-btn(:disabled="!more_allowed" @click="add_value()" color="success") Add
         v-icon(right) add
 </template>

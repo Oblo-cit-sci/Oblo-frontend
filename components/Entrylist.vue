@@ -14,13 +14,15 @@
 
 <script>
   import { license_icon } from "../lib/client"
-  import {current_user_is_owner, fetch_entry} from "../lib/entry";
+  import {current_user_is_owner} from "../lib/entry";
+  import EntryNavMixin from "./EntryNavMixin";
 
   export default {
     name: "Entrylist",
     props: {
       entries: Array
     },
+    mixins: [EntryNavMixin],
     created() {
       /*
       recent_entries().then((res) => {
@@ -50,13 +52,7 @@
             this.$router.push("/entry/"+entry.uuid)
           } else {
             console.log("fetching")
-            fetch_entry(this.$store, this.$axios, entry.uuid).then(entry => {
-              this.$router.push("/entry/"+entry.uuid)
-            }).catch(res => {
-              console.log(res)
-              // todo ENH: could also be an error msg from the server
-              this.$store.commit("set_error_snackbar", "Couldn't fetch entry")
-            })
+            this.fetch_and_nav(entry)
           }
         }
       },

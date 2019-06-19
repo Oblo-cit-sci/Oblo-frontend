@@ -1,6 +1,9 @@
 <template lang="pug">
   div(:class="{ composite: aspect.type === 'composite'}")
-    Title_Description(v-bind="title_description(aspect)" :disabled="disabled")
+    Title_Description(
+      v-bind="title_description(aspect)"
+      :disabled="disabled"
+      :mode="mode")
     v-switch(v-if="has_alternative"
       v-model="use_regular"
       :label="use_regular ? `regular value`:`alternative value`"

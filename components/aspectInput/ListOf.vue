@@ -3,18 +3,18 @@
     div(v-if="!select")
       v-list(v-if="has_items")
         v-list-tile(v-for="(item, index) in item_titles", :key="item.key")
-          v-list-tile-content(@click="(item)")
+          v-list-tile-content(@click="view_item(index)")
             v-list-tile-title {{index + 1}} &nbsp;
               b {{item.title.value}}
-          v-list-tile-action
+          v-list-tile-action(v-if="!readOnly")
             v-btn(icon @click="edit_item(index)")
               v-icon edit
-          v-list-tile-action
+          v-list-tile-action(v-if="!readOnly")
             v-btn(icon @click="open_remove(index)")
               v-icon(color="red" lighten-1) close
     div(v-else)
       div v-selelct
-    div(v-if="allow_more")
+    div(v-if="allow_more && !readOnly")
       v-btn(@click="create_item()") Create
     div(v-else) maximum reached
     DecisionDialog(v-bind="remove_data_dialog" :open.sync="show_remove" v-on:action="remove($event.id)")
@@ -34,6 +34,7 @@
   import { CONTEXT_ENTRY } from "~~/lib/consts";
   import DecisionDialog from "../DecisionDialog";
   import {delete_local_entry, get_edit_route_for_ref, get_id, get_local_entry} from "../../lib/entry";
+  import EntryNavMixin from "../EntryNavMixin";
 
 
   const SELECT_THRESH = 6
@@ -41,7 +42,7 @@
   export default {
     name: "ListOf",
     components: {DecisionDialog},
-    mixins: [AspectMixin],
+    mixins: [AspectMixin, EntryNavMixin],
     data() {
       return {
         show_remove: false,
@@ -104,6 +105,17 @@
         if(item.type === CONTEXT_ENTRY) {
           this.$router.push( get_edit_route_for_ref(this.$store, item))
         }
+      },
+      view_item(index) {
+        if(!this.readOnly)
+          return
+        console.log("view-item", index)
+        const entry = this.i_value[index]
+        // this method should either be only in readOnly mode
+        // or must generalize and eventually only open local entries
+        console.log(entry)
+        this.fetch_and_nav(entry.local_id)
+        //this.$router.push( get_edit_route_for_ref(this.$store, item))
       }
     }
   }

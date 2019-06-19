@@ -16,7 +16,7 @@ export const mutations = {
   },
   set_own_entries(state, own_entries) {
     // todo, needs to converted to a map (from array)
-    console.log("setting own entries with", own_entries)
+    //console.log("setting own entries with", own_entries)
     own_entries.forEach((e) => {
       e.aspects_values = e.content.aspects
       e.local_id = e.uuid

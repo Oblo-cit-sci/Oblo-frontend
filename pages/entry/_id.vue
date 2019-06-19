@@ -1,7 +1,10 @@
 <template lang="pug">
   v-layout(column='' justify-center='' align-center='')
     v-flex(xs12='' sm8='' md6='' class="column")
-      Title_Description(:title="entry_type.title" header_type="h1" :description="entry_type.description")
+      Title_Description(
+        :title="entry_type.title"
+        header_type="h1"
+        :description="entry_type.description")
       div(v-if="entry.ref")
         span This entry is part of the draft: &nbsp
         a(@click="back_to_ref") {{entry.ref.parent_title}}
@@ -19,17 +22,6 @@
 
 <script>
 
-  import Basic from "~~/components/aspectInput/Basic"
-  import TextShort from "~~/components/aspectInput/TextShort"
-  import TextLong from "~~/components/aspectInput/TextLong"
-  import Location from "~~/components/aspectInput/Location"
-  import CompositeAspect from "~~/components/aspectInput/CompositeAspect"
-  import Select from "~~/components/aspectInput/Select"
-
-  import List from "~~/components/aspectInput/List"
-  import Map from "~~/components/aspectInput/Map"
-
-  import AspectPageButton from "~~/components/aspectInput/AspectPageButton"
 
   import ReferenceMixin from "~~/components/ReferenceMixin"
   import License from "~~/components/License"

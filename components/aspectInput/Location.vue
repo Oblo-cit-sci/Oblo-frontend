@@ -25,7 +25,6 @@
 
   import {get_location, create_location_error} from "../../lib/common";
   import AspectMixin from "./AspectMixin";
-  import Title_Description from "../Title_Description";
   import SingleSelect from "../SingleSelect";
   import {GLOBAL_ASPECT_REF} from "../../lib/consts";
 
@@ -34,7 +33,7 @@
 
   export default {
     name: "Location",
-    components: {SingleSelect, Title_Description},
+    components: {SingleSelect},
     mixins: [AspectMixin],
     data() {
       return {
