@@ -24,19 +24,22 @@
               v-on:entryAction="$emit('entryAction',$event)")
             v-btn(v-if="!readOnly" @click="remove_value(index)") remove
       div
-        span(v-if="aspect.attr.min") min: {{aspect.attr.min}}, &nbsp;
-        span(v-if="aspect.attr.max") max: {{aspect.attr.max}}
+        span {{count_text}}, &nbsp
+        span(v-if="min===max && min !== null") required: {{min}}
+        span(v-else)
+          span(v-if="min") min: {{min}} &nbsp;
+          span(v-if="max") max: {{max}}
     div(v-if="select")
       MultiSelect(:options="options" :selection="i_value")
     div(v-else-if="!readOnly")
-      v-btn(:disabled="!more_allowed" @click="add_value()" color="success") Add
+      v-btn(:disabled="!more_allowed" @click="add_value()") Add {{aspect.attr.itemname}}
         v-icon(right) add
 </template>
 
 <script>
 
   import AspectMixin from "./AspectMixin";
-  import {get_codes_as_options} from "../../lib/client";
+  import {get_codes_as_options, resolve_aspect_ref} from "../../lib/client";
   import {aspect_wrapped_default_value, MAspectComponent} from "../../lib/entry";
   import MultiSelect from "../MultiSelect";
   import Aspect from "../Aspect";
@@ -60,7 +63,10 @@
         // select, when code type (*)
         select: false, // select... instead of button
         options: [],
-        extra_down: null
+        extra_down: null,
+        min: null,
+        max: null,
+        itemname: this.aspect.attr.itemname || "item"
       }
     },
     created() {
@@ -100,6 +106,15 @@
         }
       }
 
+      const attr = this.aspect.attr
+      for(let v of ["min", "max"]) {
+        if(attr[v] !== undefined) {
+          this[v] = attr[v]
+        } else if(attr.number !== undefined) {
+          this[v] = attr.number
+        }
+      }
+
       let extra_copy = JSON.parse(JSON.stringify(this.extra || {}))
       // probably not necessaery
       /*if (extra_copy.hasOwnProperty("listitem")) {
@@ -116,6 +131,7 @@
           this.add_value()
         }
       }
+
     },
     methods: {
       clearableAspectComponent(aspect) {
@@ -153,14 +169,18 @@
     },
     computed: {
       more_allowed() {
-        if (this.aspect.attr.max) {
-          return this.i_value.length < this.aspect.attr.max;
-        } else {
-          return true;
-        }
+        return !this.max || this.i_value.length < this.max
       },
       is_simple() {
         return this.structure === SIMPLE
+      },
+      count_text() {
+        const le = this.i_value.length
+        const attr = this.aspect.attr
+        const name = attr.itemname || "item"
+        const item_word = le === 1 ? name:
+          (attr.itemname_plural ||  name + "s")
+        return  +  le + " " + item_word
       }
     }
   }

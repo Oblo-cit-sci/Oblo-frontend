@@ -1,6 +1,7 @@
 import {autosave, entry_ref} from "../lib/entry";
 import {check_conditions, check_internallinks, resolve_aspect_ref} from "../lib/client";
 import {AUTOSAVE, GLOBAL_ASPECT_REF} from "../lib/consts";
+import goTo from "vuetify/lib/components/Vuetify/goTo";
 
 
 
@@ -89,6 +90,13 @@ export default {
         this.entry.aspects_values[aspect.name] = value
       }
     }
+
+    /*
+    if(this.aspect.attr.hasOwnProperty("build_from")) {
+      resolve_aspect_ref(this.$store, this.)
+      // resolve_aspect_ref
+    }*/
+
   },
   data() {
     return {
@@ -120,6 +128,12 @@ export default {
           console.log("unknown entry action", event.action)
           break
       }
+    }
+  },
+  watch: {
+    page(val) {
+      console.log("page", val)
+      goTo("h1")
     }
   }
 }

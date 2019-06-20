@@ -1,5 +1,6 @@
 <template lang="pug">
   div
+    Title_Description(header_type="h4" title="Navigate")
     v-btn(:disabled="has_prev_pages" @click="change_page(-1)") Previous Page
     v-btn(:disabled="last_page" @click="change_page(1)") Next Page
     span {{page + 1}} / {{total}}
@@ -10,9 +11,10 @@
 <script>
   import SingleSelect from "./SingleSelect";
   import {string_list2options} from "../lib/client";
+  import Title_Description from "./Title_Description";
   export default {
     name: "Paginate",
-    components: {SingleSelect},
+    components: {Title_Description, SingleSelect},
     props: {
       total: Number,
       page: Number,

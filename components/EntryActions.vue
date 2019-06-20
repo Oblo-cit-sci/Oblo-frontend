@@ -4,6 +4,7 @@
       :total="entry_type.content.meta.pages.length"
       :page_select="entry_type.content.meta.pages"
       v-on:lastpage="last_page = ($event)")
+    v-divider(class="wide_divider")
     span(v-if="owner")
       span(v-if="view")
         v-btn(color="secondary" @click="edit") edit
@@ -19,7 +20,8 @@
         v-btn(v-else color="success" @click="save") save
 
       v-btn(v-if="!private_local && !view && !in_context" color="success" @click="submit" :disable="connected" :loading="sending") {{submitted ? 'update' : 'submit'}}
-      v-btn(v-if="private_local"  :href="dl_url" :download="download_title" :disabled="disable_download" color="success" @click="dl") download
+      // v-if="private_local" todo for now, download for everyone
+      v-btn(:href="dl_url" :download="download_title" :disabled="disable_download" color="success" @click="dl") download
     DecisionDialog(v-bind="remove_dialog_data" :open.sync="show_remove" v-on:action="delete_this")
 </template>
 
@@ -97,7 +99,7 @@
       },
       download_title() {
         // TODO WHAT?
-        return (this.entry.aspects_values.title.value || this.entry.type_slug + " " + this.entry.title).replace(" ", "_") + ".json"
+        return (this.entry.type_slug + " " + this.entry.title).replace(" ", "_") + ".json"
       },
       disable_download() {
         return this.has_pages && !this.last_page
@@ -280,5 +282,8 @@
 </script>
 
 <style scoped>
-
+  .wide_divider {
+    margin-top: 2%;
+    margin-bottom: 2%;
+  }
 </style>

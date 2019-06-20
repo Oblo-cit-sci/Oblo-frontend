@@ -15,7 +15,7 @@
     div(v-else)
       div v-selelct
     div(v-if="allow_more && !readOnly")
-      v-btn(@click="create_item()") Create
+      v-btn(@click="create_item()") Create {{aspect.attr.itemname}}
     div(v-else) maximum reached
     DecisionDialog(v-bind="remove_data_dialog" :open.sync="show_remove" v-on:action="remove($event.id)")
 </template>
