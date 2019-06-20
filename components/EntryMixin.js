@@ -1,6 +1,6 @@
 import {autosave, entry_ref} from "../lib/entry";
 import {check_conditions, check_internallinks, resolve_aspect_ref} from "../lib/client";
-import {AUTOSAVE, GLOBAL_ASPECT_REF} from "../lib/consts";
+import {AUTOSAVE, GLOBAL_ASPECT_REF, TITLE_CHANGED} from "../lib/consts";
 import goTo from "vuetify/lib/components/Vuetify/goTo";
 
 
@@ -89,14 +89,20 @@ export default {
       if (value) {
         this.entry.aspects_values[aspect.name] = value
       }
+      // set the 1. aspect to is_title, which triggers a
+      // entryAction on each change titleChange
+      //
     }
 
+    const first_name = this.entry_type.content.aspects[0].name
+    console.log("EntryMixin create", this.entry_type.content.aspects[0].name)
+    this.extras[first_name]["is_title"] = true
+    //this.entry_type.content.aspects[0].extras["is_title"] = true
     /*
     if(this.aspect.attr.hasOwnProperty("build_from")) {
-      resolve_aspect_ref(this.$store, this.)
+x      resolve_aspect_ref(this.$store, this.)
       // resolve_aspect_ref
     }*/
-
   },
   data() {
     return {
@@ -123,6 +129,9 @@ export default {
         case GLOBAL_ASPECT_REF:
           //console.log("entrymixin action",event)
           this.$store.commit("add_aspect_ref",event.value)
+          break
+        case TITLE_CHANGED:
+          this.entry.title = event.value
           break
         default:
           console.log("unknown entry action", event.action)

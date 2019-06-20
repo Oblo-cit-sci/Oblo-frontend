@@ -5,7 +5,7 @@
         v-list-tile(v-for="(item, index) in item_titles", :key="item.key")
           v-list-tile-content(@click="view_item(index)")
             v-list-tile-title {{index + 1}} &nbsp;
-              b {{item.title.value}}
+              b {{item.title}}
           v-list-tile-action(v-if="!readOnly")
             v-btn(icon @click="edit_item(index)")
               v-icon edit
@@ -72,8 +72,9 @@
             if(item.type === CONTEXT_ENTRY) {
               console.log("listOf.item.titles", item)
               console.log("listOf entry", get_local_entry(this.$store, item))
+              console.log("listOf title", get_local_entry(this.$store, item).title)
               return {
-                title: get_local_entry(this.$store, item).aspects_values.title,
+                title: get_local_entry(this.$store, item).title,
                 key: get_id(this.$store, item),
                 type: CONTEXT_ENTRY
               }
@@ -86,7 +87,7 @@
     },
     methods: {
       open_remove(index) {
-        console.log("open remove index", index)
+        //console.log("open remove index", index)
         this.remove_data_dialog.id = index
         this.show_remove = true
       },

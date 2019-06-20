@@ -9,7 +9,8 @@
       v-model="use_regular"
       :label="use_regular ? `regular value`:`alternative value`"
       color="primary")
-    component(v-bind:is="aspectComponent(aspect, mode)"
+    component(
+      :is="aspectComponent(aspect, mode)"
       v-bind:aspect="aspect"
       v-bind:value="raw_value"
       v-bind:extra="extra"
@@ -23,13 +24,12 @@
       Title_Description(v-bind="title_description(aspect.attr.alternative)")
       component(v-bind:is="aspectComponent(aspect.attr.alternative)"
         v-bind:aspect="aspect.attr.alternative"
-        v-bind:value="raw_value"
         v-on:update:value="$emit('update:value', {value:$event})")
 </template>
 
 <script>
 
-  import {EDIT, VIEW} from "../lib/consts";
+  import {EDIT, ENTRYACTION, TITLE_CHANGED, VIEW} from "../lib/consts";
 
   export default {
     name: "Aspect",
@@ -43,7 +43,10 @@
       },
       aspect: Object,
       value: Object, // a wrapper, which  might encode "exceptional_value"
-      extra: Object,
+      extra: {
+        type: Object,
+        default: () => { return {}}
+      },
       condition: Object,
       update_req: { // if the aspect needs to be send up, cuz its "required" or needs to be passed to other aspects (conditions)
         type: Boolean,
@@ -115,6 +118,10 @@
         this.$emit('update:value', {value:event})
         if(this.update_req) {
           this.$emit('req', {aspect: this.aspect.name, value:event})
+        }
+        console.log("emit up")
+        if(this.extra.is_title || false) {
+          this.$emit(ENTRYACTION, {action: TITLE_CHANGED, value: event})
         }
       }
     },

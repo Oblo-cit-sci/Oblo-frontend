@@ -85,6 +85,7 @@ export default {
     }
   },
   created() {
+    console.log("ASP Mix create", this.value)
     this.i_value = this.value
 
     try {

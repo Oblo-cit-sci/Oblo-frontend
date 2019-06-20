@@ -11,7 +11,7 @@
 </template>
 
 <script>
-  import AspectMixin from "./AspectMixin"
+  import AspectMixin, {aspect_default_value} from "./AspectMixin"
   import SingleSelect from "../SingleSelect"
   import SelectMixin from "./SelectMixin";
 
@@ -20,6 +20,7 @@
     mixins: [AspectMixin, SelectMixin],
     components: {SingleSelect},
     created() {
+      console.log("select create", this.value)
       if (this.select_check) {
         this.check_box_value = this.value === this.options[1].value // or maybe a value/default...
         if (this.aspect.items.length !== 2) {
@@ -30,11 +31,17 @@
         this.selection = this.$_.find(this.options, (o) => {
           return o.value === this.value
         })
+        // something else got passed down... happens with alternative values
+        // when alternatives are non select values...
+        if(this.selection === undefined) {
+          this.selection = null
+        }
       }
     },
     watch: {
       selection() {
         //console.log("selection update", this.selection)
+        console.log("select", this.aspect, this.selection)
         if (this.selection === null)
           this.value_change(null)
         else
