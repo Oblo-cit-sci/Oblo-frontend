@@ -21,7 +21,7 @@
 
       v-btn(v-if="!private_local && !view && !in_context" color="success" @click="submit" :disable="connected" :loading="sending") {{submitted ? 'update' : 'submit'}}
       // v-if="private_local" todo for now, download for everyone
-      v-btn(:href="dl_url" :download="download_title" :disabled="disable_download" color="success" @click="dl") download
+      v-btn(:disabled="disable_download"  @click="download") download
     DecisionDialog(v-bind="remove_dialog_data" :open.sync="show_remove" v-on:action="delete_this")
 </template>
 
@@ -39,7 +39,7 @@
     save_entry
   } from "../lib/entry";
 
-  import {complete_activities} from "../lib/client";
+  import {complete_activities, export_data} from "../lib/client";
   import DecisionDialog from "./DecisionDialog";
 
   export default {
@@ -85,22 +85,6 @@
       has_pages() { // todo duplicate
         return this.entry_type.content.meta.hasOwnProperty("pages")
       },
-      dl_url() {
-        if (this.private_local && (!this.has_pages || this.last_page))
-          return "data:text/jsoncharset=utf-8," + encodeURIComponent(JSON.stringify({
-            value: this.entry.aspects_values,
-            template: {
-              name: this.entry_type.slug,
-              version: this.entry_type.version,
-              language: this.entry_type.language
-            }}))
-        else
-          return ""
-      },
-      download_title() {
-        // TODO WHAT?
-        return (this.entry.type_slug + " " + this.entry.title).replace(" ", "_") + ".json"
-      },
       disable_download() {
         return this.has_pages && !this.last_page
       },
@@ -110,7 +94,8 @@
       submitted() {
         return this.entry.uuid !== undefined
       }
-    },
+    }
+    ,
     data() {
       return {
         i_page: 0,
@@ -123,7 +108,8 @@
         },
         sending: false
       }
-    },
+    }
+    ,
     methods: {
       // BUTTONS
       edit() {
@@ -131,17 +117,20 @@
         const route = get_edit_route_for_ref(this.$store, this.entry)
         console.log(route)
         this.$router.push(route)
-      },
+      }
+      ,
       cancel() {
         if (this.init && !this.submitted) {
           this.delete_draft()
         } else {
           this.back()
         }
-      },
+      }
+      ,
       show_delete() {
         this.show_remove = true
-      },
+      }
+      ,
       delete_this() {
         // TODO make use of entry.delete_local_entry
         if (this.entry.status === DRAFT)
@@ -149,7 +138,8 @@
         else {
           this.delete_entry()
         }
-      },
+      }
+      ,
       delete_draft() {
         delete_draft(this.$store, this.entry)
         this.$store.commit("set_snackbar", {message: "Draft deleted", ok: true})
@@ -158,7 +148,7 @@
 
         }
         this.back()
-      },
+      } ,
       delete_entry() {
         delete_entry(this.$store, this.entry)
         this.$store.commit("set_snackbar", {message: "Entry deleted", ok: true})
@@ -214,7 +204,7 @@
         // todo bring back in after testing
         //this.sending = true
         // would be the same as checking submitted
-        if(this.entry.status === DRAFT) {
+        if (this.entry.status === DRAFT) {
 
           let sending_entry = JSON.parse(JSON.stringify(this.entry))
 
@@ -252,7 +242,19 @@
           this.$store.commit("set_error_snackbar", "not yet implemented")
         }
       },
-      dl() {
+      download_data() {
+        return {
+          entry: this.entry,
+          name: this.entry_type.slug,
+          version: this.entry_type.version,
+          language: this.entry_type.language
+        }
+      },
+      download_title() {
+        return (this.entry.type_slug + " " + this.entry.title).replace(" ", "_") + ".json"
+      },
+      download() {
+        export_data(this.download_data(), this.download_title())
         // todo. again, abstract this away...
         if (this.entry.status === DRAFT) {
           this.$store.commit("edrafts/set_downloaded", this.entry.draft_id)
@@ -263,7 +265,7 @@
       back(aspect_name) {
         if (this.entry.ref) {
           // draft or entry....
-          this.$router.push("/create/" + this.entry.ref.type_slug + "/" + this.entry.ref.draft_id +  (aspect_name ? "?goTo=aspect_" + aspect_name : ""))
+          this.$router.push("/create/" + this.entry.ref.type_slug + "/" + this.entry.ref.draft_id + (aspect_name ? "?goTo=aspect_" + aspect_name : ""))
         } else {
           this.$router.push("/")
         }

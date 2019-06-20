@@ -37,16 +37,16 @@
       </v-btn>
       <v-toolbar-title v-text="title"/>
       <v-spacer></v-spacer>
-      <!--<div>
+      <div>
         <v-btn flat icon nuxt router exact to="/export">
           <v-badge bottom color="rgba(0,255,0,0.9)">
-            <template v-slot:badge>
+            <!--<template v-slot:badge>
               <span>!</span>
-            </template>
+            </template>-->
             <v-icon>get_app</v-icon>
           </v-badge>
         </v-btn>
-      </div>-->
+      </div>
       <div v-if="login_state">
         <v-btn v-for="(item, i) in header_items"
                :key="i"

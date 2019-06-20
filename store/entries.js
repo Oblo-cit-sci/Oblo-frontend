@@ -52,7 +52,6 @@ export const mutations = {
 export const getters = {
   get_entry(state, getters) {
     return (local_id) => {
-      console.log("store entries get entry", state.own_entries, local_id)
       return state.own_entries.get(local_id)
     };
   }

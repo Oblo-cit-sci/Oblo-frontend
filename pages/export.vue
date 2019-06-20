@@ -8,13 +8,15 @@
       :label="option.text"
       :value="option.value"
       :messages   ="option.description")
-    v-btn(color="success" :href="dl_url" :download="download_title") export
+    v-btn(color="success" @click="blob_dl") export
 </template>
 
 <script>
 
-  import {get_from_store_location} from "../lib/client";
+  import {export_data, get_from_store_location, mapToJson, printDate} from "../lib/client";
   const ld = require("lodash")
+
+
 
   export default {
     name: "export",
@@ -48,7 +50,7 @@
             location: ["edrafts", "drafts"]
           }
         ],
-        selected: []
+        selected: [ "local", "drafts"]
       }
     },
     created() {
@@ -56,29 +58,29 @@
         this.disabled.push("profile")
         // kindof dangerous to use array index
         this.options[0].description = "You are a visitor"
+      } else {
+        this.selected.push("profile")
       }
+
     },
     methods: {
       export_data() {
         let data = {}
         for(let select of this.selected) {
           const option = ld.find(this.options, (o) => {return o.value === select})
-          data = get_from_store_location(this.$store, option.location)
+          let store_data = get_from_store_location(this.$store, option.location)
+          if(store_data.constructor === Map) {
+            store_data = mapToJson(store_data)
+          }
+          data[select] = store_data
         }
+        return data
+      },
+      blob_dl() {
+       const  filename = "export_" + printDate(new Date()) +".json"
+        export_data(this.export_data(), filename)
       }
     },
-    computed: {
-      dl_url() {
-        let data = {}
-        for(let select of this.selected) {
-          const option = ld.find(this.options, (o) => {return o.value === select})
-          data[select] = get_from_store_location(this.$store, option.location)
-        }
-        // TODO eventually: other method then encodeURIComponent https://stackoverflow.com/questions/695151/data-protocol-url-size-limitations
-        // since some browser limit the size
-        return "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data))
-      }
-    }
   }
 </script>
 
