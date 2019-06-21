@@ -6,10 +6,8 @@
 
 <script>
 
-
   import SingleSelect from "../components/SingleSelect";
   import {create_entry} from "../lib/entry";
-
 
   const ld = require('lodash');
   // the available_entries
@@ -31,15 +29,15 @@
     watch: {
       selectedItem() {
         let slug = "";
-        let entry_id = null;
+        let entry_uuid = null;
         if (this.selectedItem.type === ENTRY_TYPE) {
           slug = this.selectedItem.value;
-          entry_id = this.create_entry(slug);
+          entry_uuid = this.create_entry(slug);
         } else {
           slug = this.selectedItem.type_slug;
-          entry_id = this.selectedItem.value;
+          entry_uuid = this.selectedItem.value;
         }
-        this.$router.push("create/" + slug + "/"+ entry_id)
+        this.$router.push("entry/" + entry_uuid)
       }
     },
     computed: {
@@ -53,11 +51,13 @@
         });
         // this filters out all context-entries. cuz only context entries have a ref
         // could be an option
+        // TODO-1 ciao
+        /*
         let drafts = ld.filter(this.$store.state.edrafts.drafts, (d) => {return !d.ref})
         drafts = ld.map(drafts, (d) => {
           return {text: d.title, value: d.draft_id, type: DRAFT, type_slug: d.type_slug}
         });
-        //console.log("CREATE Drafts",drafts);
+        // TODO-1 ciao
         if (ld.size(drafts) > 0) {
           options = ld.concat(
             options,
@@ -65,33 +65,30 @@
             drafts
           )
         }
+         */
         return options;
       }
     },
     methods: {
       create_entry(type_slug) {
-        let entry_type = this.$store.getters.entry_type(type_slug);
-        let aspects = entry_type.content.aspects;
-        let draft_id = this.$store.state.edrafts.next_id;
-
+        // todo-1 ??
+        /*
         for (let aspect_i in aspects) {
           let aspect = aspects[aspect_i];
         // todo this happens already in MAspectComponent
           aspect.attr = aspect.attr || {};
           if ((aspect.attr.view || "inline") === "page") {
-            aspect.attr.draft_id = this.draft_id;
+            //aspect.attr.uuid =;
             aspect.attr.aspect_index = aspect_i;
           }
         }
+        */
 
-        const entry = create_entry(this.$store.state.user.user_data, {
-          entry_type: entry_type,
-          draft_id: draft_id,
-        })
+        const entry = create_entry(this.$store, type_slug)
 
         // todo maybe some redundant data here...
-        this.$store.commit("edrafts/create_draft", entry);
-        return draft_id;
+        this.$store.commit("entries/create", entry);
+        return entry.uuid;
       }
     }
   }

@@ -12,7 +12,7 @@ export const state = () => ({
   // momentary
   snackbar: {message: "", status: "ok"},
   mapmode: {},
-  global_ref: {} // the last draft/entry
+  global_ref: null // the last draft/entry
   // selected entry type (for creation)
 });
 

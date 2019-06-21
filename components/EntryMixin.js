@@ -8,33 +8,19 @@ import goTo from "vuetify/lib/components/Vuetify/goTo";
 
 export default {
   created() {
-    // todo nicer?
-    const draft_id = this.$route.params.draft_id // draft_id or entry_uuid
-    // replace local_id
-    const local_id = this.$route.params.local_id
-    const id = this.$route.params.id // comes from view
-    if (draft_id !== undefined) {
-      this.entry = JSON.parse(JSON.stringify(this.$store.state.edrafts.drafts[draft_id]))
-    } else if (local_id) {
-      this.entry = JSON.parse(JSON.stringify(this.$store.state.entries.own_entries.get(local_id)))
-    } else if (id) {
-      console.log("entry id", id)
-      const entry_ref = this.$store.state.entries.own_entries.get(id)
-      console.log("got own entry ref", entry_ref)
-      if(entry_ref !== undefined)
-        this.entry = JSON.parse(JSON.stringify(entry_ref))
-      else
-        this.entry = JSON.parse(JSON.stringify(this.$store.state.entries.fetched_entries[id]))
-      //console.log("load entry", this.entry)
-    } else {
-      console.log("NO ID on", this.$route.params, "HOW DID U GET HERE?")
-    }
+    this.uuid = this.$route.params.uuid
+    this.entry = JSON.parse(JSON.stringify(this.$store.state.entries.own_entries.get(this.uuid)))
     // set global ref, needed for deeply nested maps to know how to come back
-    this.$store.commit("set_global_ref", entry_ref(this.entry))
+    console.log("hi")
+    this.$store.commit("set_global_ref", {uuid: this.uuid})
+
+    // todo nicer?
+    console.log("hi")
 
     //console.log(this.type_slug)
     this.entry_type = this.$store.getters.entry_type(this.entry.type_slug)
-    //console.log(this.entry_type)
+    console.log(this.entry_type)
+    console.log("etype")
     this.has_pages = this.entry_type.content.meta.hasOwnProperty("pages")
 
     let required_aspects = this.$_.filter(this.entry_type.content.aspects, (a) => a.required || false)
@@ -46,9 +32,13 @@ export default {
     for (let target of Object.values(this.conditions)) {
       this.condition_vals[target] = {val: null}
     }
+    console.log("conditions...")
+    return
     //console.log("conditions", this.conditions, this.condition_vals)
     this.internal_links = check_internallinks(this.entry_type)
 
+    // TODO-1 fix refs...
+    /*
     if (this.entry.ref) {
       // TODO maybe simply copy?!
       let ref = this.entry.ref
@@ -63,6 +53,7 @@ export default {
       ref.type_slug = parent.type_slug
       ref.parent_title = parent.title
     }
+    */
 
     // todo this whole part... not used atm...
     //console.log(this.entry_type.content)
@@ -74,7 +65,7 @@ export default {
         //console.log("extra for ", aspect.name)
         for (let e of aspect.attr.extra) {
           if (e === "ref") {
-            extra_props[e] = entry_ref(this.entry)
+            extra_props[e] = { uuid: this.entry.uuid }
           }
         }
       }

@@ -4,6 +4,7 @@
 
 export const state = () => ({
   //
+  draft_no: 0,
   timeline_entries: [],
   // todo, for now we download all own entries
   own_entries: new Map(),
@@ -22,6 +23,11 @@ export const mutations = {
       e.local_id = e.uuid
       state.own_entries.set(e.uuid, e)
     })
+  },
+  create(state, entry) {
+    console.log(entry)
+    state.own_entries.set(entry.uuid,entry)
+    state.draft_no++;
   },
   save_entry(state, entry) {
     state.own_entries.set(entry.local_id, entry)

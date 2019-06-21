@@ -36,45 +36,94 @@
 
 <script>
 
-  import License from "../../../../components/License"
-  import Privacy from "../../../../components/Privacy"
+  import License from "../../components/License"
+  import Privacy from "../../components/Privacy"
 
-  import {MAspectComponent} from "../../../../lib/entry"
+  import {MAspectComponent} from "../../lib/entry"
 
-  import {autosave, create_and_store, get_ref_aspect} from "../../../../lib/entry"
-  import Title_Description from "../../../../components/Title_Description"
-  import EntryActions from "../../../../components/EntryActions";
-  import {CREATE, EDIT} from "../../../../lib/consts";
-  import Aspect from "../../../../components/Aspect";
-  import EntryMixin from "../../../../components/EntryMixin";
-  import ReferenceMixin from "../../../../components/ReferenceMixin";
+  import {autosave, create_and_store, get_ref_aspect} from "../../lib/entry"
+  import Title_Description from "../../components/Title_Description"
+  import EntryActions from "../../components/EntryActions";
+  import {CREATE, EDIT} from "../../lib/consts";
+  import Aspect from "../../components/Aspect";
+  import ReferenceMixin from "../../components/ReferenceMixin";
 
   import goTo from 'vuetify/lib/components/Vuetify/goTo'
+  import {check_conditions, check_internallinks, resolve_aspect_ref} from "../../lib/client";
 
   const ld = require("lodash")
 
   export default {
-    name: "draft_id",
+    name: "uuid",
     components: {
       Aspect,
       EntryActions,
       Title_Description,
       Privacy, License
     },
-    mixins: [ReferenceMixin, EntryMixin], // in case of a context entry, to be able to get back to the parent
     data() {
       return {
-        draft_id: null,
+        entry: null,
+        entry_type: null, // the full shizzle for the type_slug
+        required_values: [], // shortcut, but in entry_type
+        conditions: {}, // this contains  conditions between aspects (for now just conditions), key (sender), value: receiver
+        sending: false,
+        complete: true,
+        has_pages: false,
+        page: 0,
+        last_page: false,
+        extras: {},
       }
     },
     created() {
-      //this.type_slug = this.$route.params.type_slug
-      // TODO carefull refactor later
-      this.draft_id = this.$route.params.draft_id // draft_id or entry_uuid
-      // this.check_complete() // TODO bring back watcher, isnt triggered tho...
-      //console.log(this.has_pages)
+      this.uuid = this.$route.params.uuid
+      this.entry = JSON.parse(JSON.stringify(this.$store.state.entries.own_entries.get(this.uuid)))
+      // set global ref, needed for deeply nested maps to know how to come back
+      this.$store.commit("set_global_ref", {uuid: this.uuid})
 
-      console.log("page/create/index ", this.entry.type_slug)
+      this.entry_type = this.$store.getters.entry_type(this.entry.type_slug)
+
+      this.has_pages = this.entry_type.content.meta.hasOwnProperty("pages")
+
+      let required_aspects = this.$_.filter(this.entry_type.content.aspects, (a) => a.required || false)
+      this.required_values = this.$_.map(required_aspects, (a) => {
+        return a.name
+      })
+
+      this.conditions = check_conditions(this.entry_type)
+      this.condition_vals = {}
+      for (let target of Object.values(this.conditions)) {
+        this.condition_vals[target] = {val: null}
+      }
+      //console.log("conditions", this.conditions, this.condition_vals)
+      this.internal_links = check_internallinks(this.entry_type)
+
+      // todo this whole part... not used atm...
+      //console.log(this.entry_type.content)
+      for (let aspect of this.entry_type.content.aspects) {
+        //console.log("extra", aspect)
+        //console.log(asecpt_descr.name, asecpt_descr.attr)
+        let extra_props = {}
+        if (aspect.attr.extra) {
+          //console.log("extra for ", aspect.name)
+          for (let e of aspect.attr.extra) {
+            if (e === "ref") {
+              extra_props[e] = { uuid: this.entry.uuid }
+            }
+          }
+        }
+        this.extras[aspect.name] = extra_props
+      }
+      /* set aspect refs:
+          when an attribute has #
+          this doesnt belong here, especially cuz of the duplicate for edit/_local_id page
+      * */
+      for (let aspect of this.entry_type.content.aspects) {
+        let value = resolve_aspect_ref(this.$store, this.entry, aspect)
+        if (value) {
+          this.entry.aspects_values[aspect.name] = value
+        }
+      }
     },
     mounted() {
       if (this.$route.query.goTo) {
@@ -88,6 +137,23 @@
     },
     methods: {
       // TODO Depracated
+      entryAction(event) {
+        switch (event.action) {
+          case AUTOSAVE:
+            autosave(this.$store, this.entry)
+            break
+          case GLOBAL_ASPECT_REF:
+            //console.log("entrymixin action",event)
+            this.$store.commit("add_aspect_ref",event.value)
+            break
+          case TITLE_CHANGED:
+            this.entry.title = event.value
+            break
+          default:
+            console.log("unknown entry action", event.action)
+            break
+        }
+      },
       updateRequired(aspect) {
         this.required_values[aspect.title] = aspect.value
         for (let req_asp in this.required_values) {
@@ -144,14 +210,14 @@
         */
 
         const aspect_to_check = get_ref_aspect(aspect)
+        console.log(aspect_to_check)
 
         if (typeof (aspect_to_check.aspect) === "string") {
           // ******** CONTEXT_ENTRY
           if (aspect_to_check.aspect[0] === "$") {
             let ref_data = {
-              draft_id: this.draft_id,
+              uuid: this.uuid,
               aspect_name: aspect.name,
-              //type_slug: this.entry.type_slug
             }
             if (aspect_to_check.list) {
               ref_data.index = this.entry.aspects_values[aspect.name].value.length
@@ -246,11 +312,7 @@
         return "data:text/jsoncharset=utf-8," + encodeURIComponent(JSON.stringify(this.aspects_values))
       }*/
       page_info() {
-        if(this.has_pages) {
-          return this.entry_type.content.meta.pages[this.page]
-        } else {
-          return null
-        }
+        return this.entry_type.content.meta.pages[this.page]
       },
       // wrong, create should be for all that are not local/saved or submitted
       mode() {
@@ -264,6 +326,12 @@
         }
       }
     },
+    watch: {
+      page(val) {
+        console.log("page", val)
+        goTo("h1")
+      }
+    }
   }
 </script>
 
