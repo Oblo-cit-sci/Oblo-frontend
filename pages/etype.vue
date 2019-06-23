@@ -1,0 +1,73 @@
+<template lang="pug">
+  div
+    div Entry types
+    v-select(:items="etypes" v-model="selection.etype")
+    div
+      div Aspect
+      v-select(:items="aspects_options" :disabled="!selection.etype" v-model="selection.aspect")
+    v-textarea(v-model="input" solo autoGrow)
+    v-btn(@click="build") build
+    div(v-if="testmode")
+      Aspect(
+        :aspect="aspect"
+        v-bind:value.sync="aspects_value"
+        v-on:entryAction="entryAction($event)"
+        mode="edit"
+        :extra="{}")
+</template>
+
+<script>
+    import Aspect from "../components/Aspect";
+    export default {
+        name: "EntryTypeCreate",
+      components: {Aspect},
+      data() {
+          return {
+            input: "",
+            aspect: {},
+            testmode: false,
+            aspects_value: {value: null},
+            etypes: [],
+            selection: {etype: null, aspect:null}
+          }
+      },
+      created() {
+          this.etypes= this.$_.map(Array.from(this.$store.state.entry_types.values()),
+            (et) => {return {"text":et.title, "value": et.slug}})
+      },
+      methods: {
+        build() {
+          try {
+            const aspect = JSON.parse(this.input)
+            this.aspect = aspect
+            this.testmode = true
+          } catch(err) {
+            console.log(err)
+          }
+        }
+      },
+      computed: {
+        aspects_options() {
+          if(this.selection.etype) {
+            const etype = this.$store.getters.entry_type(this.selection.etype)
+            console.log(etype)
+            return this.$_.map(etype.content.aspects,
+              (asp) => {
+                return {"text":asp.name, "value": asp.name}
+              })
+          } else return []
+        }
+      },
+      watch: {
+        "selection.aspect"(aspect_name) {
+          const aspects = this.$store.getters.entry_type(this.selection.etype).content.aspects
+          const aspect_desc = this.$_.find(aspects, (a) => a.name === aspect_name)
+          this.input = JSON.stringify(aspect_desc, null, 2)
+        }
+      }
+    }
+</script>
+
+<style scoped>
+
+</style>

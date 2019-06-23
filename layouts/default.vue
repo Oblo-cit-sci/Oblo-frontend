@@ -94,11 +94,16 @@
       title: 'Profile',
       to: '/profile'
     },
-    /*{
+    {
       icon: 'computer',
       title: 'Tests',
       to: '/Tests'
-    },*/
+    },
+    {
+      icon: 'computer',
+      title: 'Types',
+      to: '/etype'
+    },
     {
       icon: 'how_to_reg',
       title: 'Register',
@@ -162,10 +167,10 @@
         title: 'LICCI',
         items: all_items,
         header_items: [
-          {
+          /*{
             icon: "",
             to: "/export"
-          },
+          },*/
           {
             icon: 'home',
             to: '/'
