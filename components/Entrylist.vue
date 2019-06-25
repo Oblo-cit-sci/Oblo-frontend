@@ -52,7 +52,7 @@
             this.$router.push("/entry/"+entry.uuid)
           } else {
             console.log("fetching")
-            this.fetch_and_nav(entry)
+            this.fetch_and_nav(entry.uuid)
           }
         }
       },

@@ -14,7 +14,6 @@
             </VCard>
           </MglPopup>-->
         </MglMarker>
-
         <v-text-field hideDetails readonly fullWidth :value="coordinate_string"></v-text-field>
         <v-btn small @click="done">
           Done
