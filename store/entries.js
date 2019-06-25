@@ -30,7 +30,7 @@ export const mutations = {
     state.draft_no++;
   },
   save_entry(state, entry) {
-    state.own_entries.set(entry.local_id, entry)
+    state.own_entries.set(entry.uuid, entry)
   },
   remove_entry(state, local_id) {
     state.own_entries.delete(local_id)
@@ -44,9 +44,12 @@ export const mutations = {
     state.fetched_entries[entry.uuid] = entry
     //console.log(state.fetched_entries)
   },
-  add_ref_child(state, {local_id, ref_data}) {
-    console.log("store entries: adding ref to ", local_id, ref_data)
-    this.own_entries.get(local_id).children.push(ref_data)
+  add_ref_child(state, {uuid, ref_data}) {
+    console.log("store entries: adding ref to ", uuid, ref_data)
+    state.own_entries.get(uuid).refs.children.push(ref_data)
+  },
+  set_ref_parent(state, {uuid, ref}) {
+    state.own_entries.get(uuid).refs.parent = ref
   },
   clear(state) {
     state.own_entries.clear()

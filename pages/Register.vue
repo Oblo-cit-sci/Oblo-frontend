@@ -1,7 +1,7 @@
 <template lang="pug">
   v-flex(xs12='' sm8='' md6='')
     v-form
-      Aspect(v-for="a of aspects" :aspect="a" :value="a.value" mode="edit")
+      Aspect(v-for="a of aspects" :aspect="a" :value="a.value" mode="edit" :key="a.name")
       v-select(v-model='defaultPrivacy' :items='defaultPrivacyOptions' label='Default Privacy')
       v-select(v-model='defaultLicense' :items='defaultLicenseOptions' label='Default License')
       v-img(:src='licenses[defaultLicense].icon' max-width='88')

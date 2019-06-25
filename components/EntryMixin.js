@@ -1,7 +1,8 @@
-import {autosave, entry_ref} from "../lib/entry";
+
+import {autosave} from "../lib/entry";
 import {check_conditions, check_internallinks, resolve_aspect_ref} from "../lib/client";
-import {AUTOSAVE, GLOBAL_ASPECT_REF, TITLE_CHANGED} from "../lib/consts";
 import goTo from "vuetify/lib/components/Vuetify/goTo";
+
 
 
 
@@ -109,25 +110,6 @@ x      resolve_aspect_ref(this.$store, this.)
       page: 0,
       last_page: false,
       extras: {},
-    }
-  },
-  methods: {
-    entryAction(event) {
-      switch (event.action) {
-        case AUTOSAVE:
-          autosave(this.$store, this.entry)
-          break
-        case GLOBAL_ASPECT_REF:
-          //console.log("entrymixin action",event)
-          this.$store.commit("add_aspect_ref",event.value)
-          break
-        case TITLE_CHANGED:
-          this.entry.title = event.value
-          break
-        default:
-          console.log("unknown entry action", event.action)
-          break
-      }
     }
   },
   watch: {

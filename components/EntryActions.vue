@@ -138,9 +138,8 @@
         else {
           this.delete_entry()
         }
-      }
-      ,
-      delete_draft() {
+      },
+      /*delete_draft() {
         delete_draft(this.$store, this.entry)
         this.$store.commit("set_snackbar", {message: "Draft deleted", ok: true})
         // todo
@@ -148,7 +147,7 @@
 
         }
         this.back()
-      } ,
+      } , */
       delete_entry() {
         delete_entry(this.$store, this.entry)
         this.$store.commit("set_snackbar", {message: "Entry deleted", ok: true})
@@ -159,12 +158,13 @@
         }
         this.back()
       },
+      /*
       save_draft() {
         save_draft(this.$store, this.entry, true)
         this.add_entry_aspect()
         this.$store.commit("set_snackbar", {message: "Draft saved", ok: true})
         this.back()
-      },
+      },*/
       save() {
         // todo not if it is an aspect page
         save_entry(this.$store, this.entry)

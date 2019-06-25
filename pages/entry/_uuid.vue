@@ -26,7 +26,6 @@
           :condition="condition_vals[aspect.name]"
           mode="edit"
           :id="[aspect_class(aspect)]"
-          v-on:create_ref="create_ref($event)"
           :extra="extras[aspect.name]")
       div(v-if="!entry.ref && page === 0")
         License(v-bind:passedLicense.sync="entry.license" v-if="has_license")
@@ -36,6 +35,8 @@
 
 <script>
 
+  // v-on:create_ref="create_ref($event)"
+
   import License from "../../components/License"
   import Privacy from "../../components/Privacy"
 
@@ -44,9 +45,8 @@
   import {autosave, create_and_store, get_ref_aspect} from "../../lib/entry"
   import Title_Description from "../../components/Title_Description"
   import EntryActions from "../../components/EntryActions";
-  import {CREATE, EDIT} from "../../lib/consts";
+  import {CREATE, EDIT, AUTOSAVE, CREATE_CONTEXT_ENTRY, GLOBAL_ASPECT_REF, TITLE_CHANGED} from "../../lib/consts";
   import Aspect from "../../components/Aspect";
-  import ReferenceMixin from "../../components/ReferenceMixin";
 
   import goTo from 'vuetify/lib/components/Vuetify/goTo'
   import {check_conditions, check_internallinks, resolve_aspect_ref} from "../../lib/client";
@@ -136,24 +136,6 @@
       }
     },
     methods: {
-      // TODO Depracated
-      entryAction(event) {
-        switch (event.action) {
-          case AUTOSAVE:
-            autosave(this.$store, this.entry)
-            break
-          case GLOBAL_ASPECT_REF:
-            //console.log("entrymixin action",event)
-            this.$store.commit("add_aspect_ref",event.value)
-            break
-          case TITLE_CHANGED:
-            this.entry.title = event.value
-            break
-          default:
-            console.log("unknown entry action", event.action)
-            break
-        }
-      },
       updateRequired(aspect) {
         this.required_values[aspect.title] = aspect.value
         for (let req_asp in this.required_values) {
@@ -164,6 +146,30 @@
           }
         }
         this.complete = true
+      },
+      entryAction(event) {
+        const action = event.action
+        const value = event.value
+        console.log("AUTO-SAVE", AUTOSAVE)
+        switch (action) {
+          case AUTOSAVE:
+            autosave(this.$store, this.entry)
+            break
+          case GLOBAL_ASPECT_REF:
+            //console.log("entrymixin action",event)
+            this.$store.commit("add_aspect_ref", value)
+            break
+          case TITLE_CHANGED:
+            this.entry.title = value
+            break
+          case CREATE_CONTEXT_ENTRY:
+            this.create_ref(value)
+            break
+          default:
+            console.log("unknown entry action", action, value)
+            break
+
+        }
       },
       check_complete() {
         for (let aspect_name of this.required_values) {
@@ -210,14 +216,13 @@
         */
 
         const aspect_to_check = get_ref_aspect(aspect)
-        console.log(aspect_to_check)
 
         if (typeof (aspect_to_check.aspect) === "string") {
           // ******** CONTEXT_ENTRY
           if (aspect_to_check.aspect[0] === "$") {
             let ref_data = {
               uuid: this.uuid,
-              aspect_name: aspect.name,
+              aspect_loc: aspect.name,
             }
             if (aspect_to_check.list) {
               ref_data.index = this.entry.aspects_values[aspect.name].value.length
@@ -229,24 +234,23 @@
 
             // THIS.ENTRY.REFS.KIDS > this is for this entry, good to know the kids when submitting
             let local_ref_data = {
-              aspect_ref: aspect.name,
-              local_id: entry.local_id
+              aspect_loc: aspect.name,
+              uuid: entry.uuid
             }
-
             if (aspect_to_check.list) {
               local_ref_data.index = this.entry.aspects_values[aspect.name].value.length
             }
             // TODO this is different for drafts and entries (local_id) FIX IT BY REMOVING DRAFT LIST
-            this.$store.commit("edrafts/add_ref_child",
+            this.$store.commit("entries/add_ref_child",
               {
-                draft_id: this.entry.draft_id,
+                uuid: this.entry.uuid,
                 ref_data: local_ref_data
               }
             )
             //this.entry.refs.children.push(local_ref_data)
             //
             this.$router.push({
-              path: "/create/" + new_type_slug + "/" + entry.draft_id
+              path: "/entry/" + entry.uuid
             })
           } else {
             console.log("PROBLEM DERIVING REF TYPE FOR", aspect.name)

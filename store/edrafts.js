@@ -116,9 +116,7 @@ export const mutations = {
   }
    */
 
-  add_reference(state, reference_info) {
-    state.drafts[reference_info.draft_id].ref = reference_info.ref
-  },
+
   set_downloaded(state, draft_id) {
     console.log(state.drafts, draft_id)
     state.drafts[draft_id].downloaded_version = state.drafts[draft_id].version
