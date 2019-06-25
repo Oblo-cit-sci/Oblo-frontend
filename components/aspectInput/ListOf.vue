@@ -2,7 +2,7 @@
   div
     div(v-if="!select")
       v-list(v-if="has_items")
-        v-list-tile(v-for="(item, index) in item_titles", :key="item.key")
+        v-list-tile(v-for="(item, index) in items", :key="item.key")
           v-list-tile-content(@click="view_item(index)")
             v-list-tile-title {{index + 1}} &nbsp;
               b {{item.title}}
@@ -31,7 +31,7 @@
 
   import AspectMixin from "./AspectMixin";
 
-  import {ENTRYACTION, CONTEXT_ENTRY, CREATE_CONTEXT_ENTRY} from "../../lib/consts";
+  import {ENTRYACTION, CONTEXT_ENTRY, CREATE_CONTEXT_ENTRY, INDEX} from "../../lib/consts";
   import DecisionDialog from "../DecisionDialog";
   import {delete_entry, get_edit_route_for_ref, get_id} from "../../lib/entry";
   import EntryNavMixin from "../EntryNavMixin";
@@ -51,7 +51,7 @@
           title: "Delete village",
           text: "Are you sure you want to delete this village?"
         },
-        entry_refs: [] // either drafts or entries
+        entry_refs: [], // either drafts or entries,
       }
     },
     computed: {
@@ -65,25 +65,22 @@
           return this.i_value.length < this.aspect.attr.max
         }
       },
-      item_titles(){
-        console.log("listOf ", this.i_value)
-        return this.$_.map(this.i_value, (item) => {
-            // not necessarily local
-            if(item.type === CONTEXT_ENTRY) {
-              console.log("listOf.item.titles", item)
-              console.log("listOf entry", get_local_entry(this.$store, item))
-              console.log("listOf title", get_local_entry(this.$store, item).title)
-              return {
-                title: get_local_entry(this.$store, item).title,
-                key: get_id(this.$store, item),
-                type: CONTEXT_ENTRY
-              }
-            }
-        });
-      },
       select() {
         return this.i_value > SELECT_THRESH
       },
+      items() {
+        return this.$_.map(this.value, (item) => {
+          console.log(item)
+          //if(item.type === CONTEXT_ENTRY) {
+            const entry = this.$store.getters["entries/get_entry"](item.value)
+            return {
+              title: entry.title,
+              key: item.value,
+              type: CONTEXT_ENTRY
+            }
+          //}
+        })
+      }
     },
     methods: {
       open_remove(index) {
@@ -103,7 +100,9 @@
         this.$emit(ENTRYACTION, {action: CREATE_CONTEXT_ENTRY,
           value: {
             aspect: this.aspect,
-            aspect_loc: this.$_.concat(this.extra.aspect_loc, {index: this.i_value.length})} })
+            // todo rather a push
+            aspect_loc: this.$_.concat(this.extra.aspect_loc,[[INDEX, this.i_value.length]] )}
+        })
       },
       edit_item(index) {
         const item = this.i_value[index]

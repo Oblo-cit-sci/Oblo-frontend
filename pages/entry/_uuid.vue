@@ -23,6 +23,7 @@
           :update_req="Object.keys(conditions).indexOf(aspect.name) > -1"
           v-on:req="update_vall($event)"
           v-on:entryAction="entryAction($event)"
+          :id="aspect_id(aspect.name)"
           :condition="condition_vals[aspect.name]"
           mode="edit"
           :extra="extras[aspect.name]")
@@ -39,9 +40,7 @@
   import License from "../../components/License"
   import Privacy from "../../components/Privacy"
 
-  import {MAspectComponent} from "../../lib/entry"
-
-  import {autosave, create_and_store, get_ref_aspect, set_entry_value} from "../../lib/entry"
+  import {autosave, create_and_store, get_ref_aspect, set_entry_value, aspect_loc_str, MAspectComponent, pack_value} from "../../lib/entry"
   import Title_Description from "../../components/Title_Description"
   import EntryActions from "../../components/EntryActions";
   import {
@@ -194,8 +193,8 @@
         }
         this.complete = true
       },
-      aspect_class(aspect) {
-        return "aspect_" + aspect.name
+      aspect_id(aspect_name) {
+        return aspect_loc_str(this.extras[aspect_name].aspect_loc)
       },
       // should actually be the whole ref string
       // TODO goes out for Aspect component
@@ -205,7 +204,7 @@
       // TODO obviously this needs to be refatored
       // can be passed down to aspect. it only needs the entry_id passed down
       create_ref({aspect, aspect_loc}) {
-        autosave(this.$store, this.entry)
+
         console.log("page/create/index create_ref for ", aspect)
         /*
         page_aspect:
@@ -233,20 +232,15 @@
           if (aspect_to_check.aspect[0] === "$") {
             let ref_data = {
               uuid: this.uuid,
-              // todo.1  wrong
-              aspect_loc: aspect.name,
+              aspect_loc: this.extras[aspect.name].aspect_loc,
             }
-            if (aspect_to_check.list) {
-              ref_data.index = this.entry.aspects_values[aspect.name].value.length
-            }
-
+            // todo dirty. taking out the $
             const new_type_slug = aspect_to_check.aspect.substring(1)
             const entry = create_and_store(new_type_slug, this.$store, ref_data)
-            console.log("index, create ref, kids?", this.entry.refs.children, "ref:", ref_data)
 
             // THIS.ENTRY.REFS.KIDS > this is for this entry, good to know the kids when submitting
             let local_ref_data = {
-              aspect_loc: aspect_loc,
+              aspect_loc: [aspect_loc],
               uuid: entry.uuid
             }
             // TODO this is different for drafts and entries (local_id) FIX IT BY REMOVING DRAFT LIST
@@ -257,12 +251,14 @@
               }
             )
             // todo.1
-            set_entry_value(entry, aspect_loc, entry.uuid)
-            //this.entry.refs.children.push(local_ref_data)
+            console.log(this.entry.aspects_values)
+            set_entry_value(this.entry, aspect_loc, pack_value(entry.uuid))
+            console.log(this.entry.aspects_values)
+            autosave(this.$store, this.entry)
             //
-            this.$router.push({
+          /*  this.$router.push({
               path: "/entry/" + entry.uuid
-            })
+            })*/
           } else {
             console.log("PROBLEM DERIVING REF TYPE FOR", aspect.name)
           }

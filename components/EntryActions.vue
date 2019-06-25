@@ -32,12 +32,7 @@
 
   import {CONTEXT_ENTRY, DRAFT, GLOBAL, PRIVATE_LOCAL, PUBLIC, SUBMITTED, VIEW} from "../lib/consts";
   import Paginate from "./Paginate";
-  import {
-    current_user_is_owner,
-    delete_entry,
-    get_edit_route_for_ref,
-    save_entry
-  } from "../lib/entry";
+  import { current_user_is_owner, delete_entry, aspect_loc_str, get_edit_route_for_ref, save_entry } from "../lib/entry";
 
   import {export_data} from "../lib/client";
   import DecisionDialog from "./DecisionDialog";
@@ -162,7 +157,6 @@
       save() {
         // todo not if it is an aspect page
         save_entry(this.$store, this.entry)
-
         //this.$store.commit("set_snackbar", {message: "Draft saved", ok: true})
         // let aspect_name = this.add_entry_aspect()
         this.back()
@@ -232,7 +226,7 @@
           })
         } else {
           // todo
-          console.log("updating entry")
+          //console.log("updating entry")
           this.sending = false
           this.$store.commit("set_error_snackbar", "not yet implemented")
         }
@@ -254,8 +248,8 @@
       },
       back() {
         if (this.in_context) {
-          const aspect_loc_str = this.entry.refs.parent.aspect_loc
-          this.$router.push("/entry/" + this.entry.refs.parent.uuid + (aspect_loc_str ? "?goTo=aspect_" + aspect_loc_str : ""))
+          const aspect_id = aspect_loc_str(this.entry.refs.parent.aspect_loc)
+          this.$router.push("/entry/" + this.entry.refs.parent.uuid + (aspect_loc_str ? "?goTo=" + aspect_id : ""))
         } else {
           this.$router.push("/")
         }
