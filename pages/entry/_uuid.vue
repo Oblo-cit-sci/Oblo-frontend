@@ -25,7 +25,6 @@
           v-on:entryAction="entryAction($event)"
           :condition="condition_vals[aspect.name]"
           mode="edit"
-          :id="[aspect_class(aspect)]"
           :extra="extras[aspect.name]")
       div(v-if="!entry.ref && page === 0")
         License(v-bind:passedLicense.sync="entry.license" v-if="has_license")
@@ -50,11 +49,13 @@
 
   import goTo from 'vuetify/lib/components/Vuetify/goTo'
   import {check_conditions, check_internallinks, resolve_aspect_ref} from "../../lib/client";
+  import ReferenceMixin from "../../components/ReferenceMixin";
 
   const ld = require("lodash")
 
   export default {
     name: "uuid",
+    mixins: [ReferenceMixin],
     components: {
       Aspect,
       EntryActions,
@@ -112,6 +113,7 @@
             }
           }
         }
+        extra_props.aspect_loc=[{aspect: aspect.name}]
         this.extras[aspect.name] = extra_props
       }
       /* set aspect refs:
@@ -291,7 +293,7 @@
           return true
       },
       parent_title() {
-        return "" // this.$store.getters this.entry.refs.parent.uuid
+        return this.$store.getters["entries/get_entry"](this.entry.refs.parent.uuid).title
       },
       shown_aspects() {
         if (this.has_pages) {

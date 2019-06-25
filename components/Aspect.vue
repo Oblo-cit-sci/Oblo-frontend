@@ -68,7 +68,7 @@
       } else { // edit
         this.edit = true
       }
-
+      this.extra_d = Object.assign(this.extra_d, this.extra)
     },
     // boolean check is not required, since "false" is the default
     computed: {

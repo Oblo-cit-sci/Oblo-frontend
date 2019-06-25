@@ -39,9 +39,7 @@ export default {
       this.back_to_ref()
     },
     back_to_ref() {
-      if (this.entry.ref.type === "draft") {
-        this.$router.push("/create/" + this.entry.ref.type_slug + "/" + this.entry.ref.draft_id)
-      }
+      this.$router.push("/entry/" + this.entry.refs.parent.uuid)
     },
   }
 }

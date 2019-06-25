@@ -50,7 +50,6 @@
         });
 
         let drafts = ld.filter(Array.from(this.$store.state.entries.entries.values()), e => {return e.status === DRAFT})
-        console.log("li-drafts", drafts)
         drafts = ld.map(drafts, d => {
           return {text: d.title, value: d.uuid, type: DRAFT}
         });

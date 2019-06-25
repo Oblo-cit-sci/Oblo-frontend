@@ -30,7 +30,7 @@
 <script>
 
 
-  import {CONTEXT_ENTRY,  DRAFT,  GLOBAL, PRIVATE_LOCAL, PUBLIC, SUBMITTED, VIEW} from "../lib/consts";
+  import {CONTEXT_ENTRY, DRAFT, GLOBAL, PRIVATE_LOCAL, PUBLIC, SUBMITTED, VIEW} from "../lib/consts";
   import Paginate from "./Paginate";
   import {
     current_user_is_owner,
@@ -39,7 +39,7 @@
     save_entry
   } from "../lib/entry";
 
-  import { export_data} from "../lib/client";
+  import {export_data} from "../lib/client";
   import DecisionDialog from "./DecisionDialog";
 
   export default {
@@ -73,7 +73,6 @@
         return (this.entry_type.content.meta.privacy || PUBLIC) === PRIVATE_LOCAL
       },
       in_context() {
-        //console.log("Entry Action -  context? ", this.entry_type.content.meta)
         return this.entry_type.content.meta.context !== GLOBAL
       },
       connected() {
@@ -89,10 +88,10 @@
         return current_user_is_owner(this.$store, this.entry)
       },
       save_word() {
-        if(this.private_local) {
-          return "save"
-        } else if(this.in_context) {
+        if (this.in_context) {
           return "save and back"
+        } else if (this.private_local) {
+          return "save"
         } else {
           return "save draft"
         }
@@ -160,19 +159,13 @@
         }
         this.back()
       },
-      /*
-      save_draft() {
-        save_draft(this.$store, this.entry, true)
-        this.add_entry_aspect()
-        this.$store.commit("set_snackbar", {message: "Draft saved", ok: true})
-        this.back()
-      },*/
       save() {
         // todo not if it is an aspect page
         save_entry(this.$store, this.entry)
-        let aspect_name = this.add_entry_aspect()
-        //
-        this.back(aspect_name)
+
+        //this.$store.commit("set_snackbar", {message: "Draft saved", ok: true})
+        // let aspect_name = this.add_entry_aspect()
+        this.back()
       },
       add_entry_aspect() {
         if (this.entry.ref) {
@@ -264,10 +257,10 @@
           this.$store.commit("entries/set_downloaded", this.entry.local_id)
         }
       },
-      back(aspect_name) {
-        if (this.entry.ref) {
-          // draft or entry....
-          this.$router.push("/create/" + this.entry.ref.type_slug + "/" + this.entry.ref.draft_id + (aspect_name ? "?goTo=aspect_" + aspect_name : ""))
+      back() {
+        if (this.in_context) {
+          const aspect_loc_str = this.entry.refs.parent.aspect_loc
+          this.$router.push("/entry/" + this.entry.refs.parent.uuid + (aspect_loc_str ? "?goTo=aspect_" + aspect_loc_str : ""))
         } else {
           this.$router.push("/")
         }

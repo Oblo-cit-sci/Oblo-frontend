@@ -7,7 +7,7 @@
         v-on:update:value="update_value($event, index)"
         :edit="true"
         :mode="mode"
-        :extra="comp_extras"
+        :extra="comp_extras(comp_type)"
         v-on:entryAction="$emit('entryAction',$event)")
 </template>
 
@@ -32,18 +32,20 @@
       update_value($event, index) {
         this.i_value[index] = $event
         this.value_change(this.i_value)
-      }
-    },
-    computed: {
-      comp_extras() {
+      },
+      comp_extras(comp_type) {
         // console.log("comp extra ", this.extra)
         // needs this, otherwise it will mutate the extra, which messes up lists,...
         const xtra_copy = JSON.parse(JSON.stringify((this.extra || {})))
         if(xtra_copy.hasOwnProperty("listitem")) {
           delete xtra_copy.listitem
         }
-        return Object.assign(xtra_copy, {aspect_ref: this.aspect_ref})
+        xtra_copy.aspect_loc.push({aspcet: comp_type.name})
+        return Object.assign(xtra_copy, )
       }
+    },
+    computed: {
+
     },
     watch: {
       // unfortunately not triggered...
