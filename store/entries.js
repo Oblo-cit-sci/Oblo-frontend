@@ -2,12 +2,16 @@
   this is for the own entries
  */
 
+import {create_title} from "../lib/entry";
+
+const ld = require("lodash")
+
 export const state = () => ({
   //
   draft_no: 0,
   timeline_entries: [],
   // todo, for now we download all own entries
-  own_entries: new Map(),
+  entries: new Map(),
   fetched_entries: {},
 });
 
@@ -15,28 +19,30 @@ export const mutations = {
   add_timeline_entries(state, entries) {
     state.timeline_entries = entries;
   },
-  set_own_entries(state, own_entries) {
+  set_entries(state, entries) {
     // todo, needs to converted to a map (from array)
-    //console.log("setting own entries with", own_entries)
-    own_entries.forEach((e) => {
+    //console.log("setting own entries with", entries)
+    /*
+    entries.forEach((e) => {
       e.aspects_values = e.content.aspects
       e.local_id = e.uuid
-      state.own_entries.set(e.uuid, e)
+      state.entries.set(e.uuid, e)
     })
+     */
   },
   create(state, entry) {
     console.log(entry)
-    state.own_entries.set(entry.uuid,entry)
+    state.entries.set(entry.uuid,entry)
     state.draft_no++;
   },
   save_entry(state, entry) {
-    state.own_entries.set(entry.uuid, entry)
+    state.entries.set(entry.uuid, entry)
   },
   remove_entry(state, local_id) {
-    state.own_entries.delete(local_id)
+    state.entries.delete(local_id)
   },
   set_downloaded(state, local_id) {
-    let e = state.own_entries.get(local_id)
+    let e = state.entries.get(local_id)
     console.log("DL ", e, local_id)
     e.downloaded_version = e.version
   },
@@ -46,22 +52,26 @@ export const mutations = {
   },
   add_ref_child(state, {uuid, ref_data}) {
     console.log("store entries: adding ref to ", uuid, ref_data)
-    state.own_entries.get(uuid).refs.children.push(ref_data)
+    state.entries.get(uuid).refs.children.push(ref_data)
   },
   set_ref_parent(state, {uuid, ref}) {
-    state.own_entries.get(uuid).refs.parent = ref
+    state.entries.get(uuid).refs.parent = ref
   },
   clear(state) {
-    state.own_entries.clear()
-    state.fetched_entries = {}
+    state.entries.clear()
     state.timeline_entries = []
   }
 }
 
 export const getters = {
   get_entry(state, getters) {
-    return (local_id) => {
-      return state.own_entries.get(local_id)
+    return (uuid) => {
+      return state.entries.get(uuid)
+    };
+  },
+  get_children(state, getters) {
+    return (entry) => {
+      return ld.map(entry.refs.children, ref => state.entries.get(ref.uuid))
     };
   }
 }

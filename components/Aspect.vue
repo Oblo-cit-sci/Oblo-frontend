@@ -17,7 +17,6 @@
       :edit="edit"
       :disabled="disabled"
       :mode="mode"
-      v-on:create_ref="$emit('create_ref',$event)"
       v-on:update:value="emit_up($event)"
       v-on:entryAction="$emit('entryAction',$event)")
     div(v-if="!use_regular")
@@ -121,7 +120,7 @@
         if(this.update_req) {
           this.$emit('req', {aspect: this.aspect.name, value:event})
         }
-        console.log("emit up")
+        // console.log("emit up")
         if(this.extra.is_title || false) {
           this.$emit(ENTRYACTION, {action: TITLE_CHANGED, value: event})
         }

@@ -36,7 +36,7 @@
     },
     computed: {
       comp_extras() {
-        console.log("comp extra ", this.extra)
+        // console.log("comp extra ", this.extra)
         // needs this, otherwise it will mutate the extra, which messes up lists,...
         const xtra_copy = JSON.parse(JSON.stringify((this.extra || {})))
         if(xtra_copy.hasOwnProperty("listitem")) {

@@ -45,6 +45,8 @@
     computed: {
       entries() {
         const registered_name = this.$store.state.user.user_data.registered_name;
+        // todo
+        /*
         return ld.filter(this.$store.state.entries.own_entries, (entry) => {
           for(let option of this.filter) {
             for(let actor of entry.actors[option]) {
@@ -54,6 +56,7 @@
           }
           return false;
         })
+         */
       }
     }
   }

@@ -15,11 +15,13 @@
       v-btn(v-if="!private_local && !in_context && !view" :disabled="true" color="warning" @click="show_delete") delete draft
       v-btn(v-else color="warning" :disabled="true" @click="show_delete") delete
 
-      span(v-if="!submitted")
-        v-btn(v-if="!private_local && !in_context" color="secondary" @click="save_draft") save draft
-        v-btn(v-else color="success" @click="save") save
-
-      v-btn(v-if="!private_local && !view && !in_context" color="success" @click="submit" :disable="connected" :loading="sending") {{submitted ? 'update' : 'submit'}}
+      v-btn(color="success" @click="save") {{save_word}}
+      v-btn(
+        v-if="!private_local && !view && !in_context"
+        color="success"
+        @click="submit"
+        :disable="connected"
+        :loading="sending") {{submitted ? 'update' : 'submit'}}
       // v-if="private_local" todo for now, download for everyone
       v-btn(:disabled="disable_download"  @click="download") download
     DecisionDialog(v-bind="remove_dialog_data" :open.sync="show_remove" v-on:action="delete_this")
@@ -28,18 +30,16 @@
 <script>
 
 
-  import {CONTEXT_ENTRY, CREATE, DRAFT, GLOBAL, PRIVATE_LOCAL, PUBLIC, VIEW} from "../lib/consts";
+  import {CONTEXT_ENTRY,  DRAFT,  GLOBAL, PRIVATE_LOCAL, PUBLIC, SUBMITTED, VIEW} from "../lib/consts";
   import Paginate from "./Paginate";
   import {
     current_user_is_owner,
-    delete_draft,
-    delete_entry, fill_in_child_refs_for_sending,
-    get_edit_route_for_ref, get_ref_entries,
-    save_draft,
+    delete_entry,
+    get_edit_route_for_ref,
     save_entry
   } from "../lib/entry";
 
-  import {complete_activities, export_data} from "../lib/client";
+  import { export_data} from "../lib/client";
   import DecisionDialog from "./DecisionDialog";
 
   export default {
@@ -63,20 +63,17 @@
       view() {
         return this.mode === VIEW
       },
-      create() {
-        return this.mode === CREATE
-      },
-      init() {
-        return this.entry.version === 0
-      },
       is_draft() {
         return this.entry.status === DRAFT
+      },
+      submitted() {
+        return this.entry.status === SUBMITTED
       },
       private_local() {
         return (this.entry_type.content.meta.privacy || PUBLIC) === PRIVATE_LOCAL
       },
       in_context() {
-        console.log("Entry Action -  context? ", this.entry_type.content.meta)
+        //console.log("Entry Action -  context? ", this.entry_type.content.meta)
         return this.entry_type.content.meta.context !== GLOBAL
       },
       connected() {
@@ -91,8 +88,14 @@
       owner() {
         return current_user_is_owner(this.$store, this.entry)
       },
-      submitted() {
-        return this.entry.uuid !== undefined
+      save_word() {
+        if(this.private_local) {
+          return "save"
+        } else if(this.in_context) {
+          return "save and back"
+        } else {
+          return "save draft"
+        }
       }
     }
     ,
@@ -129,8 +132,7 @@
       ,
       show_delete() {
         this.show_remove = true
-      }
-      ,
+      },
       delete_this() {
         // TODO make use of entry.delete_local_entry
         if (this.entry.status === DRAFT)
@@ -210,7 +212,7 @@
 
           // todo before. try out to pack multiple entries into one send
           //sending_entry = fill_in_child_refs_for_sending(this.$store, sending_entry)
-          const all_entries = this.$_.concat([this.entry], get_ref_entries(this.$store, this.entry.refs.children))
+          const all_entries = this.$_.concat([this.entry], this.$store.getter["entries/get_children"](this.entry))
 
           console.log("ref entries", all_entries)
           //return

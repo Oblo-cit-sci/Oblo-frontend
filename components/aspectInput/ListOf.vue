@@ -7,10 +7,10 @@
             v-list-tile-title {{index + 1}} &nbsp;
               b {{item.title}}
           v-list-tile-action(v-if="!readOnly")
-            v-btn(icon @click="edit_item(index)")
+            v-btn(@click="edit_item(index)" icon)
               v-icon edit
           v-list-tile-action(v-if="!readOnly")
-            v-btn(icon @click="open_remove(index)")
+            v-btn(@click="open_remove(index)" icon)
               v-icon(color="red" lighten-1) close
     div(v-else)
       div v-selelct
@@ -99,8 +99,7 @@
         this.value_change(this.i_value)
       },
       create_item() {
-        this.$emit(ENTRYACTION, {"action": CREATE_CONTEXT_ENTRY, value: this.aspect})
-        //this.$emit("create_ref", this.aspect)
+        this.$emit(ENTRYACTION, {action: CREATE_CONTEXT_ENTRY, value: this.aspect})
       },
       edit_item(index) {
         const item = this.i_value[index]

@@ -6,9 +6,9 @@
         header_type="h1"
         :description="entry_type.description"
         mode="edit")
-      div(v-if="entry.ref")
+      div(v-if="entry.refs.parent")
         span This entry is part of the draft: &nbsp
-        a(@click="back_to_ref") {{entry.ref.parent_title}}
+        a(@click="back_to_ref") {{parent_title}}
       div(v-if="has_pages")
         Title_Description(
           :title="page_info.title"
@@ -77,7 +77,7 @@
     },
     created() {
       this.uuid = this.$route.params.uuid
-      this.entry = JSON.parse(JSON.stringify(this.$store.state.entries.own_entries.get(this.uuid)))
+      this.entry = JSON.parse(JSON.stringify(this.$store.state.entries.entries.get(this.uuid)))
       // set global ref, needed for deeply nested maps to know how to come back
       this.$store.commit("set_global_ref", {uuid: this.uuid})
 
@@ -168,7 +168,6 @@
           default:
             console.log("unknown entry action", action, value)
             break
-
         }
       },
       check_complete() {
@@ -290,6 +289,9 @@
           return meta.has_license
         } else
           return true
+      },
+      parent_title() {
+        return "" // this.$store.getters this.entry.refs.parent.uuid
       },
       shown_aspects() {
         if (this.has_pages) {

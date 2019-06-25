@@ -47,12 +47,12 @@
       }
     },
     created() {
-      console.log("opt create", this.value)
+      //console.log("opt create", this.value)
       for (let index in this.aspect.options) {
         this.opt_values[index] = aspect_wrapped_default_value(this.aspect.options[index])
       }
       if(this.i_value === null) {
-        console.log("setting i_value to default")
+        //console.log("setting i_value to default")
         this.i_value = aspect_default_value(this.aspect.view_type)
         this.value_change(this.i_value)
       }
@@ -87,7 +87,7 @@
         // TODO some horror that comes cuz in basic Obs.
         // when there is a manual input it causes an emit chain, cuz its default vals
         // that tirggers a mess
-        console.log("res?", this.value, this.i_value)
+        // console.log("res?", this.value, this.i_value)
         try {
           if (this.i_value !== null) {
             return {value: this.i_value}

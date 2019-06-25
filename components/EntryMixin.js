@@ -10,7 +10,7 @@ import goTo from "vuetify/lib/components/Vuetify/goTo";
 export default {
   created() {
     this.uuid = this.$route.params.uuid
-    this.entry = JSON.parse(JSON.stringify(this.$store.state.entries.own_entries.get(this.uuid)))
+    this.entry = JSON.parse(JSON.stringify(this.$store.state.entries.entries.get(this.uuid)))
     // set global ref, needed for deeply nested maps to know how to come back
     console.log("hi")
     this.$store.commit("set_global_ref", {uuid: this.uuid})

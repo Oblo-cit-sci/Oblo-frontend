@@ -43,24 +43,24 @@
             description: "codes that are used in entry creations",
             location: ["codes"]
           },
-          {
+          /*{
             text: "Fetched entries",
             value: "fetched",
             description: "entries of your timeline that you viewed",
             location: ["entries", "fetched_entries"]
-          },
+          },*/
           {
             text: "Local entries",
             value: "local",
             description: "local/private entries",
-            location: ["entries", "own_entries"]
+            location: ["entries", "entries"]
           },
-          {
+        /*  {
             text: "drafts",
             value: "drafts",
             description: "drafted entries",
             location: ["edrafts", "drafts"]
-          }
+          } */
         ],
         selected: ["local", "drafts"]
       }
