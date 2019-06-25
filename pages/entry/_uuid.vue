@@ -41,10 +41,18 @@
 
   import {MAspectComponent} from "../../lib/entry"
 
-  import {autosave, create_and_store, get_ref_aspect} from "../../lib/entry"
+  import {autosave, create_and_store, get_ref_aspect, set_entry_value} from "../../lib/entry"
   import Title_Description from "../../components/Title_Description"
   import EntryActions from "../../components/EntryActions";
-  import {CREATE, EDIT, AUTOSAVE, CREATE_CONTEXT_ENTRY, GLOBAL_ASPECT_REF, TITLE_CHANGED} from "../../lib/consts";
+  import {
+    CREATE,
+    EDIT,
+    AUTOSAVE,
+    CREATE_CONTEXT_ENTRY,
+    GLOBAL_ASPECT_REF,
+    TITLE_CHANGED,
+    ASPECT
+  } from "../../lib/consts";
   import Aspect from "../../components/Aspect";
 
   import goTo from 'vuetify/lib/components/Vuetify/goTo'
@@ -105,6 +113,7 @@
         //console.log("extra", aspect)
         //console.log(asecpt_descr.name, asecpt_descr.attr)
         let extra_props = {}
+        /*
         if (aspect.attr.extra) {
           //console.log("extra for ", aspect.name)
           for (let e of aspect.attr.extra) {
@@ -113,7 +122,8 @@
             }
           }
         }
-        extra_props.aspect_loc=[{aspect: aspect.name}]
+        */
+        extra_props.aspect_loc=[[ASPECT, aspect.name]]
         this.extras[aspect.name] = extra_props
       }
       /* set aspect refs:
@@ -194,7 +204,7 @@
       },
       // TODO obviously this needs to be refatored
       // can be passed down to aspect. it only needs the entry_id passed down
-      create_ref(aspect) {
+      create_ref({aspect, aspect_loc}) {
         autosave(this.$store, this.entry)
         console.log("page/create/index create_ref for ", aspect)
         /*
@@ -223,6 +233,7 @@
           if (aspect_to_check.aspect[0] === "$") {
             let ref_data = {
               uuid: this.uuid,
+              // todo.1  wrong
               aspect_loc: aspect.name,
             }
             if (aspect_to_check.list) {
@@ -235,11 +246,8 @@
 
             // THIS.ENTRY.REFS.KIDS > this is for this entry, good to know the kids when submitting
             let local_ref_data = {
-              aspect_loc: aspect.name,
+              aspect_loc: aspect_loc,
               uuid: entry.uuid
-            }
-            if (aspect_to_check.list) {
-              local_ref_data.index = this.entry.aspects_values[aspect.name].value.length
             }
             // TODO this is different for drafts and entries (local_id) FIX IT BY REMOVING DRAFT LIST
             this.$store.commit("entries/add_ref_child",
@@ -248,6 +256,8 @@
                 ref_data: local_ref_data
               }
             )
+            // todo.1
+            set_entry_value(entry, aspect_loc, entry.uuid)
             //this.entry.refs.children.push(local_ref_data)
             //
             this.$router.push({

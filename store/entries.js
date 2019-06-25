@@ -30,6 +30,10 @@ export const mutations = {
     })
      */
   },
+  set_own_entries(state, entries) {
+    // todo.1
+    // just throw all the entries anyway
+  },
   create(state, entry) {
     //console.log(entry)
     state.entries.set(entry.uuid,entry)
@@ -77,5 +81,8 @@ export const getters = {
     return (entry) => {
       return ld.map(entry.refs.children, ref => state.entries.get(ref.uuid))
     };
+  },
+  get_own_entries(state) {
+    // todo
   }
 }

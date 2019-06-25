@@ -57,7 +57,7 @@
         if (ld.size(drafts) > 0) {
           options = ld.concat(
             options,
-            {text: "Drafts"},
+            {text: "Drafts", type:"category"},
             drafts
           )
         }

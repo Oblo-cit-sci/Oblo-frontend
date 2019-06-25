@@ -2,7 +2,9 @@
   div(v-if="viewStyle === CLEAR_LIST")
     v-list(two-line)
       v-list-tile(v-for="item of options"
-        :key="item.value" @click="select(item)" v-bind:class="{ marked: marked(item.value) }")
+        :key="item.value"
+        @click="select(item)"
+        :class="[{ marked: marked(item.value) }, {category: is_category(item)}]")
         v-list-tile-content
           v-list-tile-title {{item.text}}
           v-list-tile-sub-title {{item.description}}
@@ -77,7 +79,6 @@
           this.viewStyle = VUETIFY_SELECT;
         }
       }
-
     },
     methods: {
       select(item) {
@@ -90,6 +91,9 @@
       marked(key) {
         if(this.selection)
           return key === this.selection.value && this.highlight;
+      },
+      is_category(item) {
+        return item.type === "category"
       },
       emitUp(item) {
         //console.log("emit", item, this.select_sync)
@@ -113,5 +117,9 @@
 <style scoped>
   .marked {
     background: khaki;
+  }
+
+  .category {
+    background: lightgrey;
   }
 </style>

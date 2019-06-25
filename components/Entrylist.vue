@@ -1,7 +1,9 @@
 <template lang="pug">
   div
     v-list(two-line subheader)
-      v-list-tile(v-for="entry in entries", :key="entry.id" @click="show(entry)")
+      v-list-tile(v-for="entry in entries"
+        :key="entry.id"
+        @click="show(entry)")
         v-list-tile-avatar
           v-icon {{privacy_icon(entry.privacy)}}
         v-list-tile-content
@@ -61,6 +63,11 @@
       },
       get_license_icon(license) {
         return license_icon(this.$axios, license, this.$store);
+      },
+      listitemType(entry) {
+
+        console.log("listitemType", entry)
+        return true
       }
     }
   }
@@ -68,4 +75,7 @@
 
 <style scoped>
 
+  .catListItem {
+    background: lightgrey;
+  }
 </style>

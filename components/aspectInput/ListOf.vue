@@ -99,7 +99,11 @@
         this.value_change(this.i_value)
       },
       create_item() {
-        this.$emit(ENTRYACTION, {action: CREATE_CONTEXT_ENTRY, value: this.aspect})
+        console.log("ListOf.create, ",this.i_value, this.i_value.constructor)
+        this.$emit(ENTRYACTION, {action: CREATE_CONTEXT_ENTRY,
+          value: {
+            aspect: this.aspect,
+            aspect_loc: this.$_.concat(this.extra.aspect_loc, {index: this.i_value.length})} })
       },
       edit_item(index) {
         const item = this.i_value[index]

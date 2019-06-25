@@ -34,26 +34,15 @@
         this.value_change(this.i_value)
       },
       comp_extras(comp_type) {
-        // console.log("comp extra ", this.extra)
-        // needs this, otherwise it will mutate the extra, which messes up lists,...
-        const xtra_copy = JSON.parse(JSON.stringify((this.extra || {})))
+        let xtra_copy = JSON.parse(JSON.stringify((this.extra || {})))
         if(xtra_copy.hasOwnProperty("listitem")) {
           delete xtra_copy.listitem
         }
-        xtra_copy.aspect_loc.push({aspcet: comp_type.name})
-        return Object.assign(xtra_copy, )
+        xtra_copy.aspect_loc.push(["aspcet", comp_type.name])
+        return xtra_copy
       }
     },
-    computed: {
-
-    },
     watch: {
-      // unfortunately not triggered...
-      /*i_value(val) {
-        console.log("comp ival cahnge", val)
-        if(!this.edit)
-          console.log("composite value changed from above", val)
-      }*/
       value(new_val) {
         //console.log("COMP val change", new_val)
         this.i_value = new_val;

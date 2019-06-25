@@ -8,7 +8,7 @@
             :value.sync="i_value[index]"
             :edit="true"
             :mode="mode"
-            :extra="extra_down"
+            :extra="list_extra(index)"
             v-on:entryAction="handleEntryAction($event, index)")
             v-on:append-outer="remove_value(index)"
       div(v-else)
@@ -20,7 +20,7 @@
               :aspect="indexed_item_aspect(index)"
               :value.sync="value"
               :mode="mode"
-              :extra="extra_down"
+              :extra="list_extra(index)"
               v-on:entryAction="$emit('entryAction',$event)")
             v-btn(v-if="!readOnly" @click="remove_value(index)") remove
       div
@@ -63,7 +63,6 @@
         // select, when code type (*)
         select: false, // select... instead of button
         options: [],
-        extra_down: null,
         min: null,
         max: null,
         itemname: this.aspect.attr.itemname || "item"
@@ -115,15 +114,6 @@
         }
       }
 
-      let extra_copy = JSON.parse(JSON.stringify(this.extra || {}))
-      // probably not necessaery
-      /*if (extra_copy.hasOwnProperty("listitem")) {
-        delete extra_copy.listitem
-      }*/
-      this.extra_down = Object.assign(extra_copy, {
-        aspect_ref: this.aspect_ref,
-        listitem: this.is_simple // non-simple ones, have a button here
-      })
 
       if(this.i_value.length === 0) {
         for (let i = 0; i < this.aspect.attr.create || 0; i++) {
@@ -165,6 +155,11 @@
         } else {
           $emit('entryAction', $event)
         }
+      },
+      list_extra(index) {
+        let xtra_copy = JSON.parse(JSON.stringify(this.extra))
+        xtra_copy.aspect_loc.push(["index", index])
+        return xtra_copy
       }
     },
     computed: {
