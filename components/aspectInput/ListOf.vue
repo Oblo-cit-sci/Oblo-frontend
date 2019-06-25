@@ -33,7 +33,7 @@
 
   import {ENTRYACTION, CONTEXT_ENTRY, CREATE_CONTEXT_ENTRY} from "../../lib/consts";
   import DecisionDialog from "../DecisionDialog";
-  import {delete_local_entry, get_edit_route_for_ref, get_id, get_local_entry} from "../../lib/entry";
+  import {delete_entry, get_edit_route_for_ref, get_id} from "../../lib/entry";
   import EntryNavMixin from "../EntryNavMixin";
 
 
@@ -94,7 +94,7 @@
       remove(index) {
         index = parseInt(index)
         const item = this.i_value[index]
-        delete_local_entry(this.$store, item)
+        delete_entry(this.$store, item)
         this.i_value.splice(parseInt(index), 1)
         this.value_change(this.i_value)
       },
@@ -110,11 +110,11 @@
       view_item(index) {
         if(!this.readOnly)
           return
-        console.log("view-item", index)
+        //console.log("view-item", index)
         const entry = this.i_value[index]
         // this method should either be only in readOnly mode
         // or must generalize and eventually only open local entries
-        console.log(entry)
+        //console.log(entry)
         this.fetch_and_nav(entry.local_id)
         //this.$router.push( get_edit_route_for_ref(this.$store, item))
       }

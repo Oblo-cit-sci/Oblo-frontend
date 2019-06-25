@@ -31,12 +31,16 @@ export const mutations = {
      */
   },
   create(state, entry) {
-    console.log(entry)
+    //console.log(entry)
     state.entries.set(entry.uuid,entry)
     state.draft_no++;
   },
   save_entry(state, entry) {
     state.entries.set(entry.uuid, entry)
+  },
+  set_downladed(state, uuid) {
+    let entry = state.entries.get(uuid)
+    entry.downloads = entry.version
   },
   remove_entry(state, local_id) {
     state.entries.delete(local_id)

@@ -31,7 +31,8 @@ export default {
           if (this.ref.hasOwnProperty("index")) {
             data.index = this.ref.index;
           }
-          this.$store.commit("edrafts/set_draft_aspect_value", data);
+          // TODO.1
+         // this.$store.commit("edrafts/set_draft_aspect_value", data);
         }
         // TODO this would break for aspect-pages
         // well AspectPage dont really have any query params,

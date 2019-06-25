@@ -61,15 +61,12 @@
             drafts
           )
         }
-
         return options;
       }
     },
     methods: {
       create_entry(type_slug) {
-        const entry = create_entry(this.$store, type_slug)
-        this.$store.commit("entries/create", entry);
-        return entry.uuid;
+        return create_entry(this.$store, type_slug).uuid
       }
     }
   }

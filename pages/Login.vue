@@ -16,6 +16,35 @@
     name: "Login",
     data() {
       return {
+        aspects: [{
+          type: "str",
+          name: "Username",
+          attr: {
+            max: 30,
+            extra: {
+              "hint": 'At least 2 characters'
+            }
+          },
+          value: {
+            value: ""
+          }
+        },
+          {
+            type: "str",
+            name: "email",
+            attr: {
+              max: 40,
+              extra: {
+                rules: [
+                  v => !!v || 'E-mail is required',
+                  v => /.+@.+/.test(v) || 'E-mail must be valid'
+                ]
+              }
+            },
+            value: {
+              value: ""
+            }
+          }],
         username: "",
         password: "",
         errorMsg: ""

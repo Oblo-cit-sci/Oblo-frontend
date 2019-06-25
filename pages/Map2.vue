@@ -96,9 +96,11 @@
       done() {
         let global_ref = this.$store.state.global_ref
 
-        const draft = this.$store.state.edrafts.drafts[global_ref.draft_id]
+        // todo.1
+        //const draft = this.$store.state.edrafts.drafts[global_ref.draft_id]
         const entry_type = this.$store.getters.entry_type(draft.type_slug)
 
+        /*
         this.$store.commit("edrafts/set_draft_aspect_value_by_ref", {
             draft_id: global_ref.draft_id,
             aspect_ref: global_ref.aspect_ref,
@@ -109,6 +111,7 @@
             }
           }
         )
+         */
         const route = get_edit_route_for_ref(this.$store, this.$store.state.global_ref)
         this.$router.push(route)
       }

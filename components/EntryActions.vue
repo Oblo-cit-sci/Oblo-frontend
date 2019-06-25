@@ -185,7 +185,7 @@
                 data.index = ref.index;
               }
               // todo or entry...
-              this.$store.commit("edrafts/set_draft_aspect_value", data);
+             // this.$store.commit("edrafts/set_draft_aspect_value", data);
             }
             // TODO this would break for aspect-pages
             // well AspectPage dont really have any query params,
@@ -250,12 +250,7 @@
       },
       download() {
         export_data(this.download_data(), this.download_title())
-        // todo. again, abstract this away...
-        if (this.entry.status === DRAFT) {
-          this.$store.commit("edrafts/set_downloaded", this.entry.draft_id)
-        } else { // private local
-          this.$store.commit("entries/set_downloaded", this.entry.local_id)
-        }
+        this.$store.commit("entries/set_downloaded", this.entry.uuid)
       },
       back() {
         if (this.in_context) {

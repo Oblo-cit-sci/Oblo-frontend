@@ -6,8 +6,7 @@ export default {
       hint: undefined,
       rules: undefined
     }
-  }
-  ,
+  },
   created() {
     if (this.aspect.attr.hasOwnProperty("extra")) {
       const extra = this.aspect.attr.extra
@@ -20,5 +19,5 @@ export default {
         this.hideDetails = false
     }
   }
-  ,
 }
+

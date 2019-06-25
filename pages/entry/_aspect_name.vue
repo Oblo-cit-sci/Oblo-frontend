@@ -44,8 +44,9 @@
       }
       console.log("final aspect", this.aspect)
       // todo, nope, entry_id, nope
-      this.draft_id = this.$route.params.draft_id;
-      this.aspect_value = this.$store.state.edrafts.drafts[this.draft_id].aspects_values[this.aspect_name];
+      // todo.1
+      //this.draft_id = this.$route.params.draft_id;
+      //this.aspect_value = this.$store.state.edrafts.drafts[this.draft_id].aspects_values[this.aspect_name];
       console.log("creation done")
 
     },
@@ -60,11 +61,12 @@
         // TODO
       },
       save_back() {
-        this.$store.commit("edrafts/set_draft_aspect_value" , {
+        // todo.1
+        /*this.$store.commit("edrafts/set_draft_aspect_value" , {
           draft_id: this.draft_id,
           aspect_name: this.aspect_name,
           value: this.aspect_value
-        });
+        });*/
         this.$router.push("/create/" + this.$route.params.type_slug + "/" + this.$route.params.entry_id)
       }
     }
