@@ -58,9 +58,9 @@ export const mutations = {
     state.fetched_entries[entry.uuid] = entry
     //console.log(state.fetched_entries)
   },
-  add_ref_child(state, {uuid, ref_data}) {
-    console.log("store entries: adding ref to ", uuid, ref_data)
-    state.entries.get(uuid).refs.children.push(ref_data)
+  add_ref_child(state, {uuid, ref}) {
+    console.log("store entries: adding ref to ", uuid, ref)
+    state.entries.get(uuid).refs.children.push(ref)
   },
   set_ref_parent(state, {uuid, ref}) {
     state.entries.get(uuid).refs.parent = ref

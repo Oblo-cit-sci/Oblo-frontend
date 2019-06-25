@@ -36,10 +36,12 @@
 
   import {export_data} from "../lib/client";
   import DecisionDialog from "./DecisionDialog";
+  import EntryNavMixin from "./EntryNavMixin";
 
   export default {
     name: "EntryActions",
     components: {DecisionDialog, Paginate},
+    mixins: [EntryNavMixin],
     props: {
       mode: {
         type: String // view, create edit
@@ -66,9 +68,6 @@
       },
       private_local() {
         return (this.entry_type.content.meta.privacy || PUBLIC) === PRIVATE_LOCAL
-      },
-      in_context() {
-        return this.entry_type.content.meta.context !== GLOBAL
       },
       connected() {
         return this.$store.state.connected
@@ -246,16 +245,11 @@
         export_data(this.download_data(), this.download_title())
         this.$store.commit("entries/set_downloaded", this.entry.uuid)
       },
-      back() {
-        if (this.in_context) {
-          const aspect_id = aspect_loc_str(this.entry.refs.parent.aspect_loc)
-          this.$router.push("/entry/" + this.entry.refs.parent.uuid + (aspect_loc_str ? "?goTo=" + aspect_id : ""))
-        } else {
-          this.$router.push("/")
-        }
-      },
       lastpage_reached($event) {
         console.log("en action lastpage_reached", $event)
+      },
+      back() {
+        this.to_parent()
       }
     },
     watch: {

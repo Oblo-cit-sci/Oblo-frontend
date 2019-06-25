@@ -13,7 +13,7 @@
       :is="aspectComponent(aspect, mode)"
       v-bind:aspect="aspect"
       v-bind:value="raw_value"
-      :extra="extra_d"
+      :extra="extra"
       :edit="edit"
       :disabled="disabled"
       :mode="mode"
@@ -54,11 +54,9 @@
     },
     data() {
       return {
-        //  i_value: {}
         edit: false,
         has_alternative: false,
         use_regular: true,
-        extra_d: {}
       }
     },
     created() {
@@ -68,7 +66,6 @@
       } else { // edit
         this.edit = true
       }
-      this.extra_d = Object.assign(this.extra_d, this.extra)
     },
     // boolean check is not required, since "false" is the default
     computed: {

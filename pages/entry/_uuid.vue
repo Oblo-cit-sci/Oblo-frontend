@@ -8,7 +8,7 @@
         mode="edit")
       div(v-if="entry.refs.parent")
         span This entry is part of the draft: &nbsp
-        a(@click="back_to_ref") {{parent_title}}
+        a(@click="back_to_parent") {{parent_title}}
       div(v-if="has_pages")
         Title_Description(
           :title="page_info.title"
@@ -40,7 +40,14 @@
   import License from "../../components/License"
   import Privacy from "../../components/Privacy"
 
-  import {autosave, create_and_store, get_ref_aspect, set_entry_value, aspect_loc_str, MAspectComponent, pack_value} from "../../lib/entry"
+  import {
+    autosave,
+    create_and_store,
+    set_entry_value,
+    aspect_loc_str,
+    MAspectComponent,
+    pack_value
+  } from "../../lib/entry"
   import Title_Description from "../../components/Title_Description"
   import EntryActions from "../../components/EntryActions";
   import {
@@ -56,13 +63,13 @@
 
   import goTo from 'vuetify/lib/components/Vuetify/goTo'
   import {check_conditions, check_internallinks, resolve_aspect_ref} from "../../lib/client";
-  import ReferenceMixin from "../../components/ReferenceMixin";
+  import EntryNavMixin from "../../components/EntryNavMixin";
 
   const ld = require("lodash")
 
   export default {
     name: "uuid",
-    mixins: [ReferenceMixin],
+    mixins: [EntryNavMixin],
     components: {
       Aspect,
       EntryActions,
@@ -122,7 +129,7 @@
           }
         }
         */
-        extra_props.aspect_loc=[[ASPECT, aspect.name]]
+        extra_props.aspect_loc = [[ASPECT, aspect.name]]
         this.extras[aspect.name] = extra_props
       }
       /* set aspect refs:
@@ -203,76 +210,33 @@
       },
       // TODO obviously this needs to be refatored
       // can be passed down to aspect. it only needs the entry_id passed down
-      create_ref({aspect, aspect_loc}) {
-
-        console.log("page/create/index create_ref for ", aspect)
-        /*
-        page_aspect:
-	      /create/<type_slug/<draft_id/<aspect_name
-
-        context_entry:
-	      /create/<type_slug/<draft_id?(ref:draft_id|entry_id)=...&aspect=
-
-        // this is a duplicate of MAspectComponent in client,,,
-        // TODO : CHECK AND REDO THAT PART
-
-        /*
-          finding ref-type descriptor:
-            --- aspect_page or context_entry ---
-            AP: attr.view === page
-            List<AP>: items.attr.view === page
-            CE: type[0] = $
-            List<CE>: items.type[0] = $
-        */
-
-        const aspect_to_check = get_ref_aspect(aspect)
-
-        if (typeof (aspect_to_check.aspect) === "string") {
-          // ******** CONTEXT_ENTRY
-          if (aspect_to_check.aspect[0] === "$") {
-            let ref_data = {
-              uuid: this.uuid,
-              aspect_loc: this.extras[aspect.name].aspect_loc,
-            }
-            // todo dirty. taking out the $
-            const new_type_slug = aspect_to_check.aspect.substring(1)
-            const entry = create_and_store(new_type_slug, this.$store, ref_data)
-
-            // THIS.ENTRY.REFS.KIDS > this is for this entry, good to know the kids when submitting
-            let local_ref_data = {
-              aspect_loc: [aspect_loc],
-              uuid: entry.uuid
-            }
-            // TODO this is different for drafts and entries (local_id) FIX IT BY REMOVING DRAFT LIST
-            this.$store.commit("entries/add_ref_child",
-              {
-                uuid: this.entry.uuid,
-                ref_data: local_ref_data
-              }
-            )
-            // todo.1
-            console.log(this.entry.aspects_values)
-            set_entry_value(this.entry, aspect_loc, pack_value(entry.uuid))
-            console.log(this.entry.aspects_values)
-            autosave(this.$store, this.entry)
-            //
-          /*  this.$router.push({
-              path: "/entry/" + entry.uuid
-            })*/
-          } else {
-            console.log("PROBLEM DERIVING REF TYPE FOR", aspect.name)
-          }
-        } else {
-          // ********  ASPECT_PAGE
-          if (aspect_to_check.aspect.attr.view === "page") {
-            this.$router.push({
-              // TODO this wont run...
-              path: "/create/" + this.entry.type_slug + "/" + this.entry.draft_id + "/" + aspect.name
-            })
-          } else {
-            console.log("PROBLEM DERIVING REF TYPE FOR", aspect.name, "ACTUALLY THIS FUNCTION SHOULDNT BE CALLED")
-          }
+      create_ref({type_slug, aspect_loc}) {
+        let parent_ref_data = {
+          uuid: this.uuid,
+          aspect_loc: aspect_loc,
         }
+        // todo dirty. taking out the $
+        const entry = create_and_store(type_slug, this.$store, parent_ref_data)
+
+        // THIS.ENTRY.REFS.KIDS > this is for this entry, good to know the kids when submitting
+        let child_ref_data = {
+          aspect_loc: aspect_loc,
+          uuid: entry.uuid
+        }
+        this.$store.commit("entries/add_ref_child",
+          {
+            uuid: this.entry.uuid,
+            ref: child_ref_data
+          }
+        )
+        // todo.1
+        set_entry_value(this.entry, aspect_loc, pack_value(entry.uuid))
+        autosave(this.$store, this.entry)
+        this.$router.push({
+          path: "/entry/" + entry.uuid
+        })
+        // ********  ASPECT_PAGE
+        // TODO
       },
       update_vall(event) {
         //console.log(this.extras)
@@ -285,7 +249,11 @@
           this.condition_vals[target] = {val: event.value}
         }
       },
-    },
+      back_to_parent() {
+        this.to_parent()
+      }
+    }
+    ,
     computed: {
       has_license() {
         const meta = this.entry_type.content.meta
@@ -297,10 +265,12 @@
           return meta.has_license
         } else
           return true
-      },
+      }
+      ,
       parent_title() {
         return this.$store.getters["entries/get_entry"](this.entry.refs.parent.uuid).title
-      },
+      }
+      ,
       shown_aspects() {
         if (this.has_pages) {
           return ld.filter(this.entry_type.content.aspects, (a) => {
@@ -311,7 +281,8 @@
           })
         }
         return this.entry_type.content.aspects
-      },
+      }
+      ,
       has_privacy() {
         const meta = this.entry_type.content.meta
         if (this.entry_type.content.meta.hasOwnProperty("privacy")) {
@@ -319,7 +290,8 @@
         } else if (meta.hasOwnProperty("has_privacy")) {
           return meta.has_privacy
         } else return true
-      },
+      }
+      ,
       // maybe also consider:
       // https://github.com/edisdev/download-json-data/blob/develop/src/components/Download.vue
       /*dl_url() {
@@ -327,7 +299,8 @@
       }*/
       page_info() {
         return this.entry_type.content.meta.pages[this.page]
-      },
+      }
+      ,
       // wrong, create should be for all that are not local/saved or submitted
       mode() {
         return this.version === 0 ? CREATE : EDIT
@@ -339,7 +312,8 @@
           entry: this.entry
         }
       }
-    },
+    }
+    ,
     watch: {
       page(val) {
         console.log("page", val)

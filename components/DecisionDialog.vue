@@ -9,6 +9,9 @@
 </template>
 
 <script>
+
+  const colors=["error", "success"]
+
   export default {
     name: "DecisionDialog",
     props: {
@@ -16,10 +19,10 @@
       open: {type: Boolean, default: false},
       title: {type: String, default: ""},
       text: {type: String, default: ""},
-      confirm_text: {type: String, default: "Confirm"},
       cancel_text: {type: String, default: "Cancel"},
-      confirm_color: {type: String, default: "success"},
       cancel_color: {type: String, default: "error"},
+      confirm_text: {type: String, default: "Confirm"},
+      confirm_color: {type: String, default: "success"},
     },
     methods: {
       cancel() {
@@ -30,7 +33,7 @@
         this.$emit("update:open", false)
         this.$emit("action", {confirm: true, id: this.id})
       }
-    }
+    },
   }
 </script>
 

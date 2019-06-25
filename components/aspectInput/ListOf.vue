@@ -3,11 +3,11 @@
     div(v-if="!select")
       v-list(v-if="has_items")
         v-list-tile(v-for="(item, index) in items", :key="item.key")
-          v-list-tile-content(@click="view_item(index)")
+          v-list-tile-content(@click="open_item(item)")
             v-list-tile-title {{index + 1}} &nbsp;
               b {{item.title}}
           v-list-tile-action(v-if="!readOnly")
-            v-btn(@click="edit_item(index)" icon)
+            v-btn(@click="open_item(item)" icon)
               v-icon edit
           v-list-tile-action(v-if="!readOnly")
             v-btn(@click="open_remove(index)" icon)
@@ -31,9 +31,16 @@
 
   import AspectMixin from "./AspectMixin";
 
-  import {ENTRYACTION, CONTEXT_ENTRY, CREATE_CONTEXT_ENTRY, INDEX} from "../../lib/consts";
+  import {
+    ENTRYACTION,
+    CONTEXT_ENTRY,
+    CREATE_CONTEXT_ENTRY,
+    INDEX,
+    AUTOSAVE,
+    DELETE_CONTEXT_ENTRY
+  } from "../../lib/consts";
   import DecisionDialog from "../DecisionDialog";
-  import {delete_entry, get_edit_route_for_ref, get_id} from "../../lib/entry";
+  import {get_type_slug_from} from "../../lib/entry";
   import EntryNavMixin from "../EntryNavMixin";
 
 
@@ -49,7 +56,10 @@
         remove_data_dialog: {
           id: "",
           title: "Delete village",
-          text: "Are you sure you want to delete this village?"
+          text: "Are you sure you want to delete this village?",
+          confirm_text: "delete",
+          cancel_color: "success",
+          confirm_color: "error"
         },
         entry_refs: [], // either drafts or entries,
       }
@@ -72,12 +82,12 @@
         return this.$_.map(this.value, (item) => {
           console.log(item)
           //if(item.type === CONTEXT_ENTRY) {
-            const entry = this.$store.getters["entries/get_entry"](item.value)
-            return {
-              title: entry.title,
-              key: item.value,
-              type: CONTEXT_ENTRY
-            }
+          const entry = this.$store.getters["entries/get_entry"](item.value)
+          return {
+            title: entry.title,
+            key: item.value,
+            type: CONTEXT_ENTRY
+          }
           //}
         })
       }
@@ -91,35 +101,31 @@
       remove(index) {
         index = parseInt(index)
         const item = this.i_value[index]
-        delete_entry(this.$store, item)
         this.i_value.splice(parseInt(index), 1)
         this.value_change(this.i_value)
-      },
-      create_item() {
-        console.log("ListOf.create, ",this.i_value, this.i_value.constructor)
-        this.$emit(ENTRYACTION, {action: CREATE_CONTEXT_ENTRY,
-          value: {
-            aspect: this.aspect,
-            // todo rather a push
-            aspect_loc: this.$_.concat(this.extra.aspect_loc,[[INDEX, this.i_value.length]] )}
+        this.$emit(ENTRYACTION, {
+          action: DELETE_CONTEXT_ENTRY,
+          aspect_loc: ""
         })
       },
-      edit_item(index) {
-        const item = this.i_value[index]
-        if(item.type === CONTEXT_ENTRY) {
-          this.$router.push( get_edit_route_for_ref(this.$store, item))
-        }
+      create_item() {
+        console.log("ListOf.create, ", this.i_value, this.i_value.constructor)
+        this.$emit(ENTRYACTION, {
+          action: CREATE_CONTEXT_ENTRY,
+          value: {
+            type_slug: get_type_slug_from(this.aspect.items),
+            // todo rather a push
+            aspect_loc: this.$_.concat(this.extra.aspect_loc, [[INDEX, this.i_value.length]])
+          }
+        })
       },
-      view_item(index) {
-        if(!this.readOnly)
-          return
-        //console.log("view-item", index)
-        const entry = this.i_value[index]
-        // this method should either be only in readOnly mode
-        // or must generalize and eventually only open local entries
-        //console.log(entry)
-        this.fetch_and_nav(entry.local_id)
-        //this.$router.push( get_edit_route_for_ref(this.$store, item))
+      open_item(item) {
+        this.$emit(ENTRYACTION, {action: AUTOSAVE})
+        if(!this.has_entry(item.key))
+          this.fetch_and_nav(entry.uuid)
+        else {
+          this.$router.push("/entry/" + item.key)
+        }
       }
     }
   }

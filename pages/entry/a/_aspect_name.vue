@@ -17,12 +17,11 @@
   import Licci from "~~/components/aspectInput/special/Licci";
 
   import {MAspectComponent} from "~~/lib/entry";
-  import ReferenceMixin from "~~/components/ReferenceMixin";
 
   export default {
     name: "AspectPage",
     components: {Licci},
-    mixins: [ReferenceMixin],
+    mixins: [],
     data() {
       return {
         aspect: null,
