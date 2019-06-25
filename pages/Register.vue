@@ -1,10 +1,7 @@
 <template lang="pug">
   v-flex(xs12='' sm8='' md6='')
     v-form
-      v-text-field(v-model='username' label='Username' hint='At least 2 characters' required='')
-      v-text-field(v-model='email' :rules='emailRules' label='E-mail' required='')
-      v-text-field(v-model='password' type='password' hint='At least 6 characters' label='Password' required='')
-      v-text-field(v-model='repeatPassword' type='password' hint='At least 6 characters' label='Repeat Password' required='')
+      Aspect(v-for="a of aspects" :aspect="a" :value="a.value" mode="edit")
       v-select(v-model='defaultPrivacy' :items='defaultPrivacyOptions' label='Default Privacy')
       v-select(v-model='defaultLicense' :items='defaultLicenseOptions' label='Default License')
       v-img(:src='licenses[defaultLicense].icon' max-width='88')
@@ -18,6 +15,7 @@
   import {validationMixin} from 'vuelidate'
 
   import licenses from '@@/codes/licenses.json'
+  import Aspect from "../components/Aspect";
 
 
   function random_String(length) {
@@ -30,11 +28,74 @@
     return text;
   }
 
+  const register_aspects = {
+    registered_name: {
+      type: "str",
+      name: "Username",
+      attr: {
+        max: 30,
+        extra: {
+          "hint": 'At least 2 characters'
+        }
+      },
+      value: {
+        value: ""
+      }
+    },
+    email: {
+      type: "str",
+      name: "email",
+      attr: {
+        max: 40,
+        extra: {
+          rules: [
+            v => !!v || 'E-mail is required',
+            v => /.+@.+/.test(v) || 'E-mail must be valid'
+          ]
+        }
+      },
+      value: {
+        value: ""
+      }
+    },
+    password: {
+      type: "str",
+      name: "password",
+      attr: {
+        max: 40,
+        extra: {
+          hint: "At least 6 characters",
+          type: "password"
+        }
+      },
+      value: {
+        value: ""
+      }
+    },
+    password_repeat: {
+      type: "str",
+      name: "password_repeat",
+      attr: {
+        max: 40,
+        extra: {
+          type: "password"
+        }
+      },
+      value: {
+        value: ""
+      }
+    }
+  }
   export default {
     name: "Register",
+    components: {Aspect},
     mixins: [validationMixin],
     data() {
       return {
+        aspects: register_aspects,
+        input: this.$_.map(register_aspects, (r) => {
+          return {value: r.name}
+        }),
         username: "",
         email: "",
         password: "",
@@ -94,11 +155,11 @@
           console.log("some data")
           console.log(data)
           if (data.status) {
-            this.$store.commit("user/login",data.result);
+            this.$store.commit("user/login", data.result);
             this.$router.push("/")
           } else {
             this.errorMsg = data.msg
-            this.$store.commoit("set_snackbar", {msg: data.msg, ok:true})
+            this.$store.commoit("set_snackbar", {msg: data.msg, ok: true})
           }
         }).catch((err) => {
           console.log("err", err)

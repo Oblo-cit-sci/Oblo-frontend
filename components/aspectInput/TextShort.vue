@@ -4,10 +4,12 @@
       v-text-field(
         outline
         single-line
-        hide-details
+        :hide-details="hideDetails"
         :disabled="disabled"
         :placeholder="aspect.attr.placeholder"
         v-model="i_value"
+        :hint="hint"
+        :rules="rules"
 
         :prependIcon="prependIcon"
         @click:prepend="$emit('clickPrepend')"
@@ -35,14 +37,14 @@
 
 <script>
   import AspectMixin from "./AspectMixin";
+  import TextfieldAspect from "../TextfieldAspect";
 
   export default {
     name: "TextShort",
-    mixins: [AspectMixin],
+    mixins: [AspectMixin, TextfieldAspect],
     props: {
       prependIcon: String
     },
-
   }
 </script>
 
