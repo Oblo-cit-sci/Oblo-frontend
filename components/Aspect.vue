@@ -117,7 +117,6 @@
         return MAspectComponent(aspect_descr, false, mode)
       },
       emit_up(event) {
-        this.$emit('update:value', {value:event})
         if(this.update_req) {
           this.$emit('req', {aspect: this.aspect.name, value:event})
         }

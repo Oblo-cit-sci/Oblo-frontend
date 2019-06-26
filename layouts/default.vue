@@ -155,10 +155,8 @@
     methods: {
       update_sidebar() {
         // not logged in
-        console.log("layout", !this.login_state)
         if (!this.login_state) {
           this.items = all_items.filter(item => require_login.indexOf(item.title) === -1)
-          console.log("items", this.items)
           if (!this.connected) {
             this.items = this.items.filter(item => hide_no_login.indexOf(item.title) === -1)
           }

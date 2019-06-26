@@ -19,22 +19,20 @@
   import {initialize} from "../lib/client"
 
   export default {
-    async fetch(context) {
-      if (!context.store.state.initialized) {
-        //console.log("FETCH INIT")
-        await initialize(context.$axios, context.store)
-      } else {
-        console.log("already initialized")
-      }
-    },
     data() {
       return {
-        initialized: false
+        initialized: this.$store.state.initialized
       }
     },
     created() {
+      if (!this.$store.state.connected) {
+        initialize(this.$axios, this.$store)
+      } else {
+        //console.log("already connected")
+      }
       //console.log(this.$store.getters);
       this.initialized = this.$store.state.initialized
+      this.connected = this.$store.state.connected
       this.$store.watch(state => state.initialized, () => {
         this.initialized = this.$store.state.initialized
         console.log("index create watcher change", this.$store.state.initialized)

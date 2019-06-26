@@ -1,6 +1,5 @@
 <template lang="pug">
   div
-    div {{selected}}
     v-checkbox(
       v-for="(option, index) in options"
       :key="option.value"

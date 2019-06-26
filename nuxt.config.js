@@ -16,12 +16,12 @@ module.exports = {
   head: {
     title: pkg.name,
     meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' },
-      { hid: 'description', name: 'description', content: pkg.description }
+      {charset: 'utf-8'},
+      {name: 'viewport', content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'},
+      {hid: 'description', name: 'description', content: pkg.description}
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      {rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'},
       {
         rel: 'stylesheet',
         href:
@@ -33,7 +33,7 @@ module.exports = {
   /*
   ** Customize the progress-bar color
   */
-  loading: { color: '#fff' },
+  loading: {color: '#fff'},
 
   /*
   ** Global CSS
@@ -43,7 +43,8 @@ module.exports = {
   ],
 
   router: {
-    middleware: 'init'
+    middleware: 'init',
+    //base: "/licci/"
   },
 
   /*
@@ -51,9 +52,9 @@ module.exports = {
   */
   plugins: [
     '~/plugins/vuetify',
-    { src: '~/plugins/mapbox', mode: 'client' },
+    {src: '~/plugins/mapbox', mode: 'client'},
     '~/plugins/lodash.js',
-],
+  ],
 
   /*
   ** Nuxt.js modules
@@ -86,8 +87,15 @@ module.exports = {
       stylus: {
         import: ["~assets/style/variables.styl"]
       }
-    },
-
+    }, //,
+   /* minimize: true,
+    splitChunks: {
+      pages: false,
+      vendor: false,
+      commons: false,
+      runtime: false,
+      layouts: false
+    },*/
     /*
     ** You can extend webpack config here
     */
