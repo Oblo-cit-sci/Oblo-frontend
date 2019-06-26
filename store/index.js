@@ -1,3 +1,5 @@
+import {jsonToMap} from "../lib/client";
+
 export const state = () => ({
   // comes by init
   initialized: false,
@@ -36,11 +38,11 @@ const ld = require('lodash');
 export const mutations = {
   init(state, data) {
     state.codes = {...data.codes}
-    state.codes.liccis_flat = extract_liccis(data.codes.liccis);
-    state.entry_types = new Map(ld.map(data.entryTemplates, (e) => {
+    //state.codes.liccis_flat = extract_liccis(data.codes.liccis);
+    state.entry_types = new Map(data.entryTemplates) /* new Map(ld.map(data.entryTemplates, (e) => {
       return [e.slug, e]
-    }));
-    state.related_users = data.related_users;
+    }));*/
+    state.related_users = data.related_users || {};
     //state.entry_type_slug_index_dict = array_to_val__id_dict(data.entryTemplates, "slug");
     state.initialized = true
   },

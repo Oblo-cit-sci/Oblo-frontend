@@ -2,7 +2,7 @@
   <v-app>
     <v-navigation-drawer
       v-model="drawer"
-      v-show="connected"
+      v-show="initialized"
       :mini-variant="miniVariant"
       :clipped="clipped"
       fixed
@@ -31,8 +31,8 @@
       true
       app
     >
-      <v-toolbar-side-icon v-show="connected" @click="drawer = !drawer"/>
-      <v-btn v-show="!connected" flat icon color="red" nuxt router exact to="/">
+      <v-toolbar-side-icon v-show="initialized" @click="drawer = !drawer"/>
+      <v-btn v-show="!initialized" flat icon color="red" nuxt router exact to="/">
         <v-icon>{{connected_icon}}</v-icon>
       </v-btn>
       <v-toolbar-title v-text="title"/>
@@ -143,7 +143,12 @@
       this.connected = this.$store.state.connected
       this.$store.watch(state => state.connected, () => {
         this.connected = this.$store.state.connected
-        console.log(this.$store.state.connected)
+        this.update_sidebar()
+      })
+
+      this.initialized = this.$store.state.initialized
+      this.$store.watch(state => state.initialized, () => {
+        this.connected = this.$store.state.initialized
         this.update_sidebar()
       })
     },
@@ -161,6 +166,7 @@
       return {
         login_state: false,
         connected: false,
+        initialized: false,
         drawer: false,
         clipped: false,
         miniVariant: false,

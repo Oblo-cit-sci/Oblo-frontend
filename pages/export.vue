@@ -1,5 +1,6 @@
 <template lang="pug">
   div
+    div {{selected}}
     v-checkbox(
       v-for="(option, index) in options"
       :key="option.value"
@@ -55,14 +56,8 @@
             description: "local/private entries",
             location: ["entries", "entries"]
           },
-        /*  {
-            text: "drafts",
-            value: "drafts",
-            description: "drafted entries",
-            location: ["edrafts", "drafts"]
-          } */
         ],
-        selected: ["local", "drafts"]
+        selected: ["local"]
       }
     },
     created() {
@@ -73,7 +68,6 @@
       } else {
         this.selected.push("profile")
       }
-
     },
     methods: {
       export_data() {
@@ -82,6 +76,7 @@
           const option = ld.find(this.options, (o) => {
             return o.value === select
           })
+          console.log("export.", option, select)
           let store_data = get_from_store_location(this.$store, option.location)
           if (store_data.constructor === Map) {
             store_data = mapToJson(store_data)

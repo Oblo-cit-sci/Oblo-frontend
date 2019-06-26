@@ -12,7 +12,7 @@
         v-btn(color="seconday" @click="cancel") cancel
 
       // TODO for the training we just DISABLE, otherwise it would be: :disabled="init"
-      v-btn(v-if="!private_local && !in_context && !view" :disabled="true" color="warning" @click="show_delete") delete draft
+      v-btn(v-if="!private_local && !in_context && !view" color="warning" @click="show_delete") delete draft
       v-btn(v-else color="warning" :disabled="true" @click="show_delete") delete
 
       v-btn(color="success" @click="save") {{save_word}}
@@ -20,11 +20,11 @@
         v-if="!private_local && !view && !in_context"
         color="success"
         @click="submit"
-        :disable="connected"
+        :disabled="!connected"
         :loading="sending") {{submitted ? 'update' : 'submit'}}
       // v-if="private_local" todo for now, download for everyone
       v-btn(:disabled="disable_download"  @click="download") download
-    DecisionDialog(v-bind="remove_dialog_data" :open.sync="show_remove" v-on:action="delete_this")
+    DecisionDialog(v-bind="remove_dialog_data" :open.sync="show_remove" v-on:action="delete_entry")
 </template>
 
 <script>
@@ -125,14 +125,6 @@
       ,
       show_delete() {
         this.show_remove = true
-      },
-      delete_this() {
-        // TODO make use of entry.delete_local_entry
-        if (this.entry.status === DRAFT)
-          this.delete_draft()
-        else {
-          this.delete_entry()
-        }
       },
       delete_entry() {
         delete_entry(this.$store, this.entry)
