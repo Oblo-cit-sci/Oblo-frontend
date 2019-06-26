@@ -126,8 +126,8 @@
     }*/
   ]
 
-  let require_login = ["Profile", "Logout", "My Entries"]
-  let hide_on_login = ["Register", "Login"]
+  let require_login = ["Profile", "Logout"]
+  let hide_no_login = ["Register", "Login"] // if not connected out and if logged in out
 
   export default {
     components: {GlobalSnackbar},
@@ -155,10 +155,15 @@
     methods: {
       update_sidebar() {
         // not logged in
+        console.log("layout", !this.login_state)
         if (!this.login_state) {
           this.items = all_items.filter(item => require_login.indexOf(item.title) === -1)
+          console.log("items", this.items)
+          if (!this.connected) {
+            this.items = this.items.filter(item => hide_no_login.indexOf(item.title) === -1)
+          }
         } else { // logged in
-          this.items = all_items.filter(item => hide_on_login.indexOf(item.title) === -1)
+          this.items = all_items.filter(item => hide_no_login.indexOf(item.title) === -1)
         }
       }
     },

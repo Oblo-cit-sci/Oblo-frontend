@@ -10,7 +10,7 @@
           v-list-tile-title {{entry.creator}}
           v-list-tile-sub-title {{entry.title}}
         v-list-tile-action
-          v-img(:src="get_license_icon(entry.license)" height="30px" width="100px" style="margin-left:20px")
+          v-img.license-image(:src="get_license_icon(entry.license)")
       v-divider
 </template>
 
@@ -36,7 +36,7 @@
     data: function () {
       return {
         recent: {},
-        date: new Date().toISOString().substr(0, 10),
+        date: new Date().toISOString().substr(0, 10)
       }
     },
     methods: {
@@ -77,5 +77,10 @@
 
   .catListItem {
     background: lightgrey;
+  }
+
+  .license-image {
+    width: 20px;
+    overflow: visible;
   }
 </style>
