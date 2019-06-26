@@ -29,7 +29,7 @@
 
 <script>
 
-  import {EDIT, ENTRYACTION, TITLE_CHANGED, VIEW} from "../lib/consts";
+  import {EDIT, ENTRYACTION, TITLE_CHANGED, TITLE_UPDATE, VIEW} from "../lib/consts";
 
   export default {
     name: "Aspect",
@@ -110,7 +110,6 @@
         }
       },
       aspectAction(event) {
-        this.$emit('update:value', {value:event, title: event})
         this.$emit('aspectAction',event)
       },
       aspectComponent(aspect_descr, mode) {
