@@ -15,7 +15,7 @@
     div(v-else)
       div v-selelct
     div(v-if="allow_more && !readOnly")
-      v-btn(@click="create_item()") Create {{aspect.attr.itemname}}
+      v-btn(@click="create_item()" :color="requieres_more_color") Create {{aspect.attr.itemname}}
         v-icon(right) add
     div(v-else) maximum reached
     DecisionDialog(v-bind="remove_data_dialog" :open.sync="show_remove" v-on:action="remove($event.id)")
@@ -43,6 +43,7 @@
   import DecisionDialog from "../DecisionDialog";
   import {delete_entry, get_type_slug_from} from "../../lib/entry";
   import EntryNavMixin from "../EntryNavMixin";
+  import ListMixin from "../ListMixin";
 
 
   const SELECT_THRESH = 6
@@ -50,7 +51,7 @@
   export default {
     name: "ListOf",
     components: {DecisionDialog},
-    mixins: [AspectMixin, EntryNavMixin],
+    mixins: [AspectMixin, EntryNavMixin, ListMixin],
     data() {
       return {
         show_remove: false,
@@ -63,6 +64,9 @@
           confirm_color: "error"
         },
       }
+    },
+    created() {
+      this.set_min_max()
     },
     computed: {
       has_items() {

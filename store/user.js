@@ -2,6 +2,8 @@
   this is for the user (and maybe others)
  */
 
+const uuidv4 = require('uuid/v4')
+
 let default_user_data = {
   global_role: "visitor",
   registered_name: "visitor", // TODO should also retrieve that... with a number index
@@ -10,7 +12,8 @@ let default_user_data = {
   location_error: 2,
   defaultLicense: "CC0", // should come from the server
   defaultPrivacy: "public",
-  location: ""
+  location: "",
+  uid: uuidv4()
 }
 
 

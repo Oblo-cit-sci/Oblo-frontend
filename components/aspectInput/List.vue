@@ -32,7 +32,7 @@
     div(v-if="select")
       MultiSelect(:options="options" :selection="i_value")
     div(v-else-if="!readOnly")
-      v-btn(:disabled="!more_allowed" @click="add_value()") Add {{aspect.attr.itemname}}
+      v-btn(:disabled="!more_allowed" @click="add_value()" :color="requieres_more_color") Add {{aspect.attr.itemname}}
         v-icon(right) add
 </template>
 
@@ -43,6 +43,7 @@
   import {aspect_wrapped_default_value, MAspectComponent} from "../../lib/entry";
   import MultiSelect from "../MultiSelect";
   import Aspect from "../Aspect";
+  import ListMixin from "../ListMixin";
 
   // todo, pass the extra in a more intelligent way down, not to all the same
 
@@ -52,7 +53,7 @@
   export default {
     name: "List",
     components: {Aspect, MultiSelect},
-    mixins: [AspectMixin],
+    mixins: [AspectMixin, ListMixin],
     data() {
       return {
         item_aspect: null,
@@ -63,8 +64,6 @@
         // select, when code type (*)
         select: false, // select... instead of button
         options: [],
-        min: null,
-        max: null,
         itemname: this.aspect.attr.itemname || "item"
       }
     },
@@ -105,15 +104,7 @@
         }
       }
 
-      const attr = this.aspect.attr
-      for(let v of ["min", "max"]) {
-        if(attr[v] !== undefined) {
-          this[v] = attr[v]
-        } else if(attr.number !== undefined) {
-          this[v] = attr.number
-        }
-      }
-
+      this.set_min_max()
 
       if(this.i_value.length === 0) {
         for (let i = 0; i < this.aspect.attr.create || 0; i++) {

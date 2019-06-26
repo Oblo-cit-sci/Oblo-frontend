@@ -63,19 +63,6 @@
           }
         }
         return result_entries
-        // todo
-        /*
-          return ld.filter(this.$store.state.entries.own_entries, (entry) => {
-            for(let option of this.filter) {
-              for(let actor of entry.actors[option]) {
-                if(actor.registered_name === registered_name)
-                  return true;
-              }
-            }
-            return false;
-          })
-           */
-
       }
     }
   }

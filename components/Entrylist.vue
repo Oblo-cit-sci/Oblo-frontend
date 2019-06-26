@@ -26,12 +26,6 @@
     },
     mixins: [EntryNavMixin],
     created() {
-      /*
-      recent_entries().then((res) => {
-        this.recent = res.entries;
-        console.log("entries", this.recent);
-      });
-       */
     },
     data: function () {
       return {
