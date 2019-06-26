@@ -33,9 +33,7 @@
     methods: {
       update_value($event, index) {
         this.i_value[index] = $event
-
         if(index === 0) {
-          //this. = this.i_value[index]
           this.$emit(ASPECTACTION, {action:TITLE_UPDATE, value: this.i_value[index]})
         }
         this.value_change(this.i_value)

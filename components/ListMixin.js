@@ -3,7 +3,8 @@ export default {
   data(){
     return {
       min: null,
-      max: null
+      max: null,
+      item_name: this.aspect.attr.itemname || "item"
     }
   },
   methods: {
@@ -19,6 +20,9 @@ export default {
     }
   },
   computed: {
+    more_allowed() {
+      return !this.max || this.i_value.length < this.max
+    },
     requieres_more_color() {
       return this.min && this.i_value.length < this.min ? "success" : undefined
     }

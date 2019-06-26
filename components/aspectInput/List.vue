@@ -22,8 +22,7 @@
               :mode="mode"
               :extra="list_extra(index)"
               v-on:entryAction="$emit('entryAction',$event)"
-              v-on:aspectAction="aspectAction($event, index)"
-              )
+              v-on:aspectAction="aspectAction($event, index)")
             v-btn(v-if="!readOnly" @click="remove_value(index)") remove
       div
         span {{count_text}}, &nbsp
@@ -34,7 +33,7 @@
     div(v-if="select")
       MultiSelect(:options="options" :selection="i_value")
     div(v-else-if="!readOnly")
-      v-btn(:disabled="!more_allowed" @click="add_value()" :color="requieres_more_color") Add {{aspect.attr.itemname}}
+      v-btn(:disabled="!more_allowed" @click="add_value()" :color="requieres_more_color") Add {{item_name}}
         v-icon(right) add
 </template>
 
@@ -66,7 +65,6 @@
         // select, when code type (*)
         select: false, // select... instead of button
         options: [],
-        itemname: this.aspect.attr.itemname || "item",
         titles: []
       }
     },
@@ -141,6 +139,7 @@
       },*/
       indexed_item_aspect(index) {
         let aspect = {...this.item_aspect}
+        // could maybe be 0
         aspect.name = "" + (index + 1)
         return aspect
       }, handleEntryAction(event, index) {
@@ -162,9 +161,6 @@
       }
     },
     computed: {
-      more_allowed() {
-        return !this.max || this.i_value.length < this.max
-      },
       is_simple() {
         return this.structure === SIMPLE
       },
