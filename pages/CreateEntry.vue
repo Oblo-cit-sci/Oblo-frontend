@@ -7,7 +7,7 @@
 <script>
 
   import SingleSelect from "../components/SingleSelect";
-  import {create_entry} from "../lib/entry";
+  import {create_entry, has_parent} from "../lib/entry";
 
   const ld = require('lodash');
   // the available_entries
@@ -49,7 +49,8 @@
           return {text: o.title, value: o.slug, description: o.description, type: ENTRY_TYPE}
         });
 
-        let drafts = ld.filter(Array.from(this.$store.state.entries.entries.values()), e => {return e.status === DRAFT})
+        let drafts = ld.filter(Array.from(this.$store.state.entries.entries.values()),
+          e => {return e.status === DRAFT && !has_parent(e)})
         drafts = ld.map(drafts, d => {
           return {text: d.title, value: d.uuid, type: DRAFT}
         });

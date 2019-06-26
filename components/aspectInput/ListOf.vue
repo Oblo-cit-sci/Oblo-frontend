@@ -16,6 +16,7 @@
       div v-selelct
     div(v-if="allow_more && !readOnly")
       v-btn(@click="create_item()") Create {{aspect.attr.itemname}}
+        v-icon(right) add
     div(v-else) maximum reached
     DecisionDialog(v-bind="remove_data_dialog" :open.sync="show_remove" v-on:action="remove($event.id)")
 </template>
@@ -40,7 +41,7 @@
     DELETE_CONTEXT_ENTRY
   } from "../../lib/consts";
   import DecisionDialog from "../DecisionDialog";
-  import {get_type_slug_from} from "../../lib/entry";
+  import {delete_entry, get_type_slug_from} from "../../lib/entry";
   import EntryNavMixin from "../EntryNavMixin";
 
 
@@ -61,7 +62,6 @@
           cancel_color: "success",
           confirm_color: "error"
         },
-        entry_refs: [], // either drafts or entries,
       }
     },
     computed: {
@@ -80,7 +80,6 @@
       },
       items() {
         return this.$_.map(this.value, (item) => {
-          console.log(item)
           //if(item.type === CONTEXT_ENTRY) {
           const entry = this.$store.getters["entries/get_entry"](item.value)
           return {
@@ -100,24 +99,25 @@
       },
       remove(index) {
         index = parseInt(index)
-        const item = this.i_value[index]
+        const ref = this.i_value[index]
         this.i_value.splice(parseInt(index), 1)
         this.value_change(this.i_value)
         this.$emit(ENTRYACTION, {
           action: DELETE_CONTEXT_ENTRY,
-          aspect_loc: ""
+          value: {uuid: ref.value, aspect_loc: this.aspect_loc_for_index(index)}
         })
       },
       create_item() {
-        console.log("ListOf.create, ", this.i_value, this.i_value.constructor)
         this.$emit(ENTRYACTION, {
           action: CREATE_CONTEXT_ENTRY,
           value: {
             type_slug: get_type_slug_from(this.aspect.items),
-            // todo rather a push
-            aspect_loc: this.$_.concat(this.extra.aspect_loc, [[INDEX, this.i_value.length]])
+            aspect_loc: this.aspect_loc_for_index(this.i_value.length)
           }
         })
+      },
+      aspect_loc_for_index(index) {
+        return this.$_.concat(this.extra.aspect_loc, [[INDEX, index]])
       },
       open_item(item) {
         this.$emit(ENTRYACTION, {action: AUTOSAVE})

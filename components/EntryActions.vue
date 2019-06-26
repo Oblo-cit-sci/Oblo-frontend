@@ -134,15 +134,6 @@
           this.delete_entry()
         }
       },
-      /*delete_draft() {
-        delete_draft(this.$store, this.entry)
-        this.$store.commit("set_snackbar", {message: "Draft deleted", ok: true})
-        // todo
-        if (this.entry.ref) {
-
-        }
-        this.back()
-      } , */
       delete_entry() {
         delete_entry(this.$store, this.entry)
         this.$store.commit("set_snackbar", {message: "Entry deleted", ok: true})

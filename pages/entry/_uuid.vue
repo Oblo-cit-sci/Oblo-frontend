@@ -46,7 +46,7 @@
     set_entry_value,
     aspect_loc_str,
     MAspectComponent,
-    pack_value
+    pack_value, delete_entry
   } from "../../lib/entry"
   import Title_Description from "../../components/Title_Description"
   import EntryActions from "../../components/EntryActions";
@@ -57,7 +57,7 @@
     CREATE_CONTEXT_ENTRY,
     GLOBAL_ASPECT_REF,
     TITLE_CHANGED,
-    ASPECT
+    ASPECT, DELETE_CONTEXT_ENTRY
   } from "../../lib/consts";
   import Aspect from "../../components/Aspect";
 
@@ -168,13 +168,11 @@
       entryAction(event) {
         const action = event.action
         const value = event.value
-        console.log("AUTO-SAVE", AUTOSAVE)
         switch (action) {
           case AUTOSAVE:
             autosave(this.$store, this.entry)
             break
           case GLOBAL_ASPECT_REF:
-            //console.log("entrymixin action",event)
             this.$store.commit("add_aspect_ref", value)
             break
           case TITLE_CHANGED:
@@ -182,6 +180,9 @@
             break
           case CREATE_CONTEXT_ENTRY:
             this.create_ref(value)
+            break
+          case DELETE_CONTEXT_ENTRY:
+            this.delete_child(value)
             break
           default:
             console.log("unknown entry action", action, value)
@@ -215,28 +216,29 @@
           uuid: this.uuid,
           aspect_loc: aspect_loc,
         }
-        // todo dirty. taking out the $
+        autosave(this.$store, this.entry)
         const entry = create_and_store(type_slug, this.$store, parent_ref_data)
 
-        // THIS.ENTRY.REFS.KIDS > this is for this entry, good to know the kids when submitting
-        let child_ref_data = {
-          aspect_loc: aspect_loc,
-          uuid: entry.uuid
-        }
         this.$store.commit("entries/add_ref_child",
           {
-            uuid: this.entry.uuid,
-            ref: child_ref_data
+            uuid: this.uuid,
+            child_uuid: entry.uuid,
+            aspect_loc: aspect_loc
           }
         )
         // todo.1
         set_entry_value(this.entry, aspect_loc, pack_value(entry.uuid))
-        autosave(this.$store, this.entry)
+
         this.$router.push({
           path: "/entry/" + entry.uuid
         })
         // ********  ASPECT_PAGE
         // TODO
+      },
+      delete_child(ref) {
+        delete_entry(this.$store, ref.uuid)
+        delete this.entry.refs.children[ref.uuid]
+        autosave(this.$store, this.entry)
       },
       update_vall(event) {
         //console.log(this.extras)
@@ -252,8 +254,7 @@
       back_to_parent() {
         this.to_parent()
       }
-    }
-    ,
+    },
     computed: {
       has_license() {
         const meta = this.entry_type.content.meta

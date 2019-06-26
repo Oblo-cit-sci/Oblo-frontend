@@ -46,8 +46,8 @@ export const mutations = {
     let entry = state.entries.get(uuid)
     entry.downloads = entry.version
   },
-  remove_entry(state, local_id) {
-    state.entries.delete(local_id)
+  delete_entry(state, uuid) {
+    state.entries.delete(uuid)
   },
   set_downloaded(state, local_id) {
     let e = state.entries.get(local_id)
@@ -58,10 +58,15 @@ export const mutations = {
     state.fetched_entries[entry.uuid] = entry
     //console.log(state.fetched_entries)
   },
-  add_ref_child(state, {uuid, ref}) {
-    console.log("store entries: adding ref to ", uuid, ref)
-    state.entries.get(uuid).refs.children.push(ref)
+  add_ref_child(state, {uuid, child_uuid, aspect_loc}) {
+    let kids = state.entries.get(uuid).refs.children
+    let refs = kids[child_uuid] || []
+    kids[child_uuid] = ld.concat(refs, [aspect_loc])
   },
+  /*delete_ref_child(state, {uuid, child_uuid}) {
+    console.log("e.delete_ref_child", child_uuid)
+    delete state.entries.get(uuid).refs.children[child_uuid]
+  },*/
   set_ref_parent(state, {uuid, ref}) {
     state.entries.get(uuid).refs.parent = ref
   },
