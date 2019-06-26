@@ -20,7 +20,6 @@ export default {
   },
   computed: {
     requieres_more_color() {
-      console.log(this.min, this.i_value.length < this.min )
       return this.min && this.i_value.length < this.min ? "success" : undefined
     }
   }

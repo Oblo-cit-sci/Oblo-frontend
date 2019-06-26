@@ -227,6 +227,8 @@
           }
         )
         // todo.1
+        // here we must do something to avoid blinking cuz its inserterd before leaving
+        // TODO: NO IDEA HOW IT SETS THE STORE
         set_entry_value(this.entry, aspect_loc, pack_value(entry.uuid))
 
         this.$router.push({

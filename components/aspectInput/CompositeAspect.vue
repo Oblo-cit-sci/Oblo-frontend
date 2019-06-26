@@ -8,7 +8,8 @@
         :edit="true"
         :mode="mode"
         :extra="comp_extras(comp_type)"
-        v-on:entryAction="$emit('entryAction',$event)")
+        v-on:entryAction="$emit('entryAction',$event)"
+        v-on:aspectAction="aspectAction")
 </template>
 
 <script>
@@ -18,6 +19,7 @@
 
   import AspectMixin from "./AspectMixin";
   import Aspect from "../Aspect";
+  import {ASPECTACTION, TITLE_UPDATE} from "../../lib/consts";
 
   export default {
     name: "CompositeAspect",
@@ -31,6 +33,11 @@
     methods: {
       update_value($event, index) {
         this.i_value[index] = $event
+
+        if(index === 0) {
+          //this. = this.i_value[index]
+          this.$emit(ASPECTACTION, {action:TITLE_UPDATE, value: this.i_value[index]})
+        }
         this.value_change(this.i_value)
       },
       comp_extras(comp_type) {
@@ -39,7 +46,14 @@
           delete xtra_copy.listitem
         }
         xtra_copy.aspect_loc.push(["aspcet", comp_type.name])
+        if(xtra_copy.hasOwnProperty("clear")) {
+          delete xtra_copy[xtra_copy.clear]
+        }
         return xtra_copy
+      },
+      aspectAction(event) {
+        console.log("ASPECT ACTION", event)
+        $emit('aspectAction',$event)
       }
     },
     watch: {

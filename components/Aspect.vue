@@ -18,7 +18,8 @@
       :disabled="disabled"
       :mode="mode"
       v-on:update:value="emit_up($event)"
-      v-on:entryAction="$emit('entryAction',$event)")
+      v-on:entryAction="$emit('entryAction',$event)"
+      v-on:aspectAction="aspectAction($event)")
     div(v-if="!use_regular")
       Title_Description(v-bind="title_description(aspect.attr.alternative)")
       component(v-bind:is="aspectComponent(aspect.attr.alternative)"
@@ -104,9 +105,13 @@
           //console.log("warning: aspect", this.aspect, "has no description")
         }
         return {
-          title: aspect_descr.name || "",
+          title: !this.extra.no_title ? aspect_descr.name || "" : "",
           description: aspect_descr.description || ""
         }
+      },
+      aspectAction(event) {
+        this.$emit('update:value', {value:event, title: event})
+        this.$emit('aspectAction',event)
       },
       aspectComponent(aspect_descr, mode) {
         // todo false, false are just default, ... better a config obj

@@ -15,13 +15,15 @@
         v-expansion-panel(expand v-model="panelState")
           v-expansion-panel-content(v-for="(value, index) in i_value" :key="index")
             template(v-slot:header)
-              div {{value.title || index + 1}}
+              div {{titles[index]|| index + 1}}
             Aspect(
               :aspect="indexed_item_aspect(index)"
               :value.sync="value"
               :mode="mode"
               :extra="list_extra(index)"
-              v-on:entryAction="$emit('entryAction',$event)")
+              v-on:entryAction="$emit('entryAction',$event)"
+              v-on:aspectAction="aspectAction($event, index)"
+              )
             v-btn(v-if="!readOnly" @click="remove_value(index)") remove
       div
         span {{count_text}}, &nbsp
@@ -64,7 +66,8 @@
         // select, when code type (*)
         select: false, // select... instead of button
         options: [],
-        itemname: this.aspect.attr.itemname || "item"
+        itemname: this.aspect.attr.itemname || "item",
+        titles: []
       }
     },
     created() {
@@ -108,11 +111,9 @@
 
       if(this.i_value.length === 0) {
         for (let i = 0; i < this.aspect.attr.create || 0; i++) {
-          console.log(i)
           this.add_value()
         }
       }
-
     },
     methods: {
       clearableAspectComponent(aspect) {
@@ -121,6 +122,7 @@
       // for composite
       add_value() {
         this.i_value.push(aspect_wrapped_default_value(this.item_aspect))
+        this.titles.push(null)
         if (this.structure === PANELS) {
           this.$_.fill(this.panelState, false)
           this.panelState.push(true)
@@ -130,6 +132,7 @@
         console.log("remove index", index)
         //console.log(this.i_value)
         this.i_value.splice(index, 1)
+        this.titles.splice(index, 1)
         //console.log(this.i_value)
         this.value_change(this.i_value)
       },
@@ -150,7 +153,12 @@
       list_extra(index) {
         let xtra_copy = JSON.parse(JSON.stringify(this.extra))
         xtra_copy.aspect_loc.push(["index", index])
+        xtra_copy.no_title = true
+        xtra_copy.clear = "no_title"
         return xtra_copy
+      },
+      aspectAction(event, index) {
+        this.titles[index] = event.value.value
       }
     },
     computed: {
