@@ -41,7 +41,7 @@
     DELETE_CONTEXT_ENTRY
   } from "../../lib/consts";
   import DecisionDialog from "../DecisionDialog";
-  import {get_type_slug_from} from "../../lib/entry";
+  import {get_type_slug_from, set_entry_value} from "../../lib/entry";
   import EntryNavMixin from "../EntryNavMixin";
   import ListMixin from "../ListMixin";
 
@@ -54,6 +54,7 @@
     mixins: [AspectMixin, EntryNavMixin, ListMixin],
     data() {
       return {
+        item_type_slug: get_type_slug_from(this.aspect.items),
         show_remove: false,
         remove_data_dialog: {
           id: "",
@@ -84,7 +85,6 @@
             key: item.value,
             type: CONTEXT_ENTRY
           }
-          //}
         })
       }
     },
@@ -108,10 +108,11 @@
         this.$emit(ENTRYACTION, {
           action: CREATE_CONTEXT_ENTRY,
           value: {
-            type_slug: get_type_slug_from(this.aspect.items),
+            type_slug: this.item_type_slug,
             aspect_loc: this.aspect_loc_for_index(this.i_value.length)
           }
         })
+        this.update_indices()
       },
       aspect_loc_for_index(index) {
         return this.$_.concat(this.extra.aspect_loc, [[INDEX, index]])
@@ -122,6 +123,17 @@
           this.fetch_and_nav(entry.uuid)
         else {
           this.$router.push("/entry/" + item.key)
+        }
+      },
+      update_indices() {
+        let entry_type = this.$store.getters.entry_type(this.item_type_slug)
+        const idAspect = entry_type.content.meta.IDAspect
+        if(idAspect) {
+          for(let index in this.items) {
+            const item = this.items[index]
+            let entry = this.$store.getters["entries/get_entry"](item.key)
+            set_entry_value(entry, [["aspect", idAspect]], {value: 1 + parseInt(index)})
+          }
         }
       }
     }

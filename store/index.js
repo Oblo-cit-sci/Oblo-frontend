@@ -38,13 +38,24 @@ const ld = require('lodash');
 export const mutations = {
   init(state, data) {
     state.codes = {...data.codes}
-    //state.codes.liccis_flat = extract_liccis(data.codes.liccis);
-    state.entry_types = new Map(data.entryTemplates) /* new Map(ld.map(data.entryTemplates, (e) => {
-      return [e.slug, e]
-    }));*/
+    state.codes.liccis_flat = extract_liccis(data.codes.liccis);
+    state.entry_types = new Map(data.entryTemplates)
+
     state.related_users = data.related_users || {};
     //state.entry_type_slug_index_dict = array_to_val__id_dict(data.entryTemplates, "slug");
     state.initialized = true
+  },
+  backup_init(state, data) {
+    // calld in the middleware
+    if (state.initialized)
+      return
+    else {
+      console.log("loading backup data")
+      state.codes = {...data.codes}
+      state.codes.liccis_flat = extract_liccis(data.codes.liccis);
+      state.entry_types = new Map(data.entryTemplates)
+      state.initialized = true
+    }
   },
   set_related_users(state, related_users) {
     state.related_users = related_users
@@ -69,7 +80,7 @@ export const mutations = {
   set_mapmode(state, mode) {
     state.mapmode = mode
   },
-  set_global_ref(state, ref){
+  set_global_ref(state, ref) {
     state.global_ref = ref
   },
   add_aspect_ref(state, aspect_ref) {

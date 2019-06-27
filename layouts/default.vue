@@ -207,7 +207,6 @@
         }
       },
       userrole_icon() {
-        console.log(this.$store.getters.visitor)
         if (this.$store.getters.visitor) {
           return "person_outline"
         } else {

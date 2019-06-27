@@ -35,7 +35,6 @@
       this.connected = this.$store.state.connected
       this.$store.watch(state => state.initialized, () => {
         this.initialized = this.$store.state.initialized
-        console.log("index create watcher change", this.$store.state.initialized)
       })
       //this.$store.dispatch("test", "cool")
     },

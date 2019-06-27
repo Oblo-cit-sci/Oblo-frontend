@@ -40,7 +40,7 @@
 <script>
 
   import AspectMixin from "./AspectMixin";
-  import {get_codes_as_options, resolve_aspect_ref} from "../../lib/client";
+  import {get_codes_as_options} from "../../lib/client";
   import {aspect_wrapped_default_value, MAspectComponent} from "../../lib/entry";
   import MultiSelect from "../MultiSelect";
   import Aspect from "../Aspect";
@@ -70,10 +70,12 @@
     },
     created() {
       let item_type = this.aspect.items;
+      // todo. list, are extended lists by user, not select lists
+
       if (typeof (item_type) === "string") {
         if (item_type[0] === "*") {
           this.select = true
-          console.log("list multi-select", item_type)
+          //console.log("list multi-select", item_type)
           this.options = get_codes_as_options(this.$store.state, item_type)
         } else {
           switch (item_type) {
@@ -127,7 +129,7 @@
         }
       },
       remove_value(index) {
-        console.log("remove index", index)
+        //console.log("remove index", index)
         //console.log(this.i_value)
         this.i_value.splice(index, 1)
         this.titles.splice(index, 1)

@@ -12,16 +12,11 @@ export default {
     this.uuid = this.$route.params.uuid
     this.entry = JSON.parse(JSON.stringify(this.$store.state.entries.entries.get(this.uuid)))
     // set global ref, needed for deeply nested maps to know how to come back
-    console.log("hi")
     this.$store.commit("set_global_ref", {uuid: this.uuid})
 
-    // todo nicer?
-    console.log("hi")
 
     //console.log(this.type_slug)
     this.entry_type = this.$store.getters.entry_type(this.entry.type_slug)
-    console.log(this.entry_type)
-    console.log("etype")
     this.has_pages = this.entry_type.content.meta.hasOwnProperty("pages")
 
     let required_aspects = this.$_.filter(this.entry_type.content.aspects, (a) => a.required || false)
@@ -33,7 +28,6 @@ export default {
     for (let target of Object.values(this.conditions)) {
       this.condition_vals[target] = {val: null}
     }
-    console.log("conditions...")
     return
     //console.log("conditions", this.conditions, this.condition_vals)
     this.internal_links = check_internallinks(this.entry_type)
@@ -114,7 +108,6 @@ x      resolve_aspect_ref(this.$store, this.)
   },
   watch: {
     page(val) {
-      console.log("page", val)
       goTo("h1")
     }
   }

@@ -44,10 +44,10 @@
     },
     methods: {
       action(selected_val) {
-        console.log(selected_val)
+        //console.log(selected_val)
       },
       loaded(data) {
-        console.log("data received", data)
+        //console.log("data received", data)
       }
     }
   }

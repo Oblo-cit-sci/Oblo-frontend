@@ -35,7 +35,6 @@
     },
     methods: {
       show(entry) {
-        console.log(entry)
         if(entry.local_id){
           console.log("going to local entry")
           this.$router.push("entry/"+entry.local_id)
@@ -43,8 +42,6 @@
           // todo this is bad... overall refactoring of the own_entries, timeline entry stuff.
           if(current_user_is_owner(this.$store, entry)) {
             // todo hacky shortcut
-            console.log("hacky shortcut")
-            console.log(entry.uuid)
             this.$router.push("/entry/"+entry.uuid)
           } else {
             console.log("fetching")
@@ -59,8 +56,6 @@
         return license_icon(this.$axios, license, this.$store);
       },
       listitemType(entry) {
-
-        console.log("listitemType", entry)
         return true
       }
     }

@@ -36,7 +36,6 @@
       if (this.aspect.attr.view !== "page") {
         // not yet a complete disaster, it is maybe a list of composite
         if(this.aspect.type === "list" && this.aspect.items === "composite") {
-          console.log("composite list")
           this.aspect.type = "composite"
         } else
           console.log("HOW DID U GET HERE. PAGE VIEW FOR A NON PAGE ASPECT");

@@ -50,7 +50,6 @@
         aspects_options() {
           if(this.selection.etype) {
             const etype = this.$store.getters.entry_type(this.selection.etype)
-            console.log(etype)
             return this.$_.map(etype.content.aspects,
               (asp) => {
                 return {"text":asp.name, "value": asp.name}

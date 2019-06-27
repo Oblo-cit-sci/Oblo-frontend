@@ -63,7 +63,6 @@
             });
             this.$store.commit("user/login", data.result);
             // todo test, what is coming back...
-            console.log("own", data.result.own_entries)
             this.$store.commit("entries/set_own_entries", data.result.own_entries);
             this.$router.push("/");
             this.$store.commit("set_snackbar", {message: "You are logged in", ok: data.status === true});

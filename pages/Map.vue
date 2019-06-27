@@ -47,15 +47,12 @@
     },
     methods: {
       onMapLoaded(event) {
-
-        console.log(event.map);
         this.map = event.map;
         //this.map._canvas.height = window.height - 64 + "px";
         //this.map.resize()
 
       },
       switchLayer(layer) {
-        console.log(layer);
       },
       back() {
         this.is_on = false
