@@ -2,7 +2,6 @@
   this is for the own entries
  */
 
-import {create_title} from "../lib/entry";
 
 const ld = require("lodash")
 
@@ -36,7 +35,6 @@ export const mutations = {
   create(state, entry) {
     //console.log(entry)
     state.entries.set(entry.uuid,entry)
-    state.draft_no++;
   },
   save_entry(state, entry) {
     state.entries.set(entry.uuid, entry)

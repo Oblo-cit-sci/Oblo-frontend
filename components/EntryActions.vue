@@ -32,7 +32,7 @@
 
   import {CONTEXT_ENTRY, DRAFT, GLOBAL, PRIVATE_LOCAL, PUBLIC, SUBMITTED, VIEW} from "../lib/consts";
   import Paginate from "./Paginate";
-  import { current_user_is_owner, delete_entry, aspect_loc_str, get_edit_route_for_ref, save_entry } from "../lib/entry";
+  import {current_user_is_owner, delete_entry, aspect_loc_str, get_edit_route_for_ref, save_entry} from "../lib/entry";
 
   import {export_data} from "../lib/client";
   import DecisionDialog from "./DecisionDialog";
@@ -142,33 +142,7 @@
         //this.$store.commit("set_snackbar", {message: "Draft saved", ok: true})
         // let aspect_name = this.add_entry_aspect()
         this.back()
-      },
-      add_entry_aspect() {
-        if (this.entry.ref) {
-          let ref = this.entry.ref
-          if (ref.hasOwnProperty("draft_id")) {
-            // TODO, here we actually need to know if we are in a AspectPage or ContextEntry
-            if (ref.aspect_name) {
-              let data = {
-                draft_id: ref.draft_id,
-                aspect_name: ref.aspect_name,
-                value: {
-                  type: CONTEXT_ENTRY,
-                  local_id: this.entry.local_id
-                }
-              };
-              if (ref.hasOwnProperty("index")) {
-                data.index = ref.index;
-              }
-              // todo or entry...
-             // this.$store.commit("edrafts/set_draft_aspect_value", data);
-            }
-            // TODO this would break for aspect-pages
-            // well AspectPage dont really have any query params,
-          }
-          return ref.aspect_name
-        }
-        return null
+
       },
       submit() {
         //console.log("entryAction submit")

@@ -91,7 +91,7 @@ export const mutations = {
     state.initialized = false
   },
   update_draft_number(state, type_slug) {
-    const number = (state.draft_numbers[type_slug] || 0) + 1
+    const number = (state.draft_numbers[type_slug] || 1) + 1
     state.draft_numbers[type_slug] = number
   },
   connecting(state, conn) {
@@ -135,7 +135,7 @@ export const getters = {
   },
   draft_no(state, getters) {
     return (type_slug) => {
-      return state.draft_numbers[type_slug] || 0
+      return state.draft_numbers[type_slug] || 1
     };
   },
 

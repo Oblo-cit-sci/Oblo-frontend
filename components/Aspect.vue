@@ -121,10 +121,6 @@
       }
     },
     watch: {
-      /*condition(condition_var) {
-        console.log("condition UP", condition_var, "vs.", this.aspect.attr.condition.value)
-        this.condition_fail = condition_var.val !== this.aspect.attr.condition.value
-      }*/
       mode(val) {
        this.edit = val === EDIT
       }

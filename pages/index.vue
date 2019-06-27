@@ -48,9 +48,7 @@
     },
     methods: {
       initialize() {
-        initialize(this.$axios, this.$store).then(()=>{
-          console.log("init end")
-        })
+        initialize(this.$axios, this.$store)
       }
     }
   }

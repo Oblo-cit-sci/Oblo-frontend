@@ -30,6 +30,7 @@
     data() {
       return {
         options: [],
+        page: 1,
         dialog_props: {
           name: "delete",
           open: false,
