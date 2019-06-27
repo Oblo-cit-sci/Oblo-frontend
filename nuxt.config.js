@@ -44,7 +44,7 @@ module.exports = {
 
   router: {
     middleware: 'init',
-    //base: "/licci/"
+   // base: "/licci/"
   },
 
   /*
@@ -88,8 +88,9 @@ module.exports = {
         import: ["~assets/style/variables.styl"]
       }
     }, //,
-   /* minimize: true,
-    splitChunks: {
+    //minimize: true,
+    //splitChunks: false,
+   /* splitChunks: {
       pages: false,
       vendor: false,
       commons: false,

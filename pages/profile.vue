@@ -51,6 +51,7 @@
       return true;
     },
     created() {
+      console.log("profile created")
       this.reset_edit_values()
     },
     methods: {

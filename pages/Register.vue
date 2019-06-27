@@ -5,8 +5,9 @@
       v-select(v-model='defaultPrivacy' :items='defaultPrivacyOptions' label='Default Privacy')
       v-select(v-model='defaultLicense' :items='defaultLicenseOptions' label='Default License')
       v-img(:src='licenses[defaultLicense].icon' max-width='88')
-    v-btn(@click='submit' :disabled="submitStatus === 'PENDING' || $v.$invalid" color='success') Submit!
+    v-btn(@click='submit' :disabled="submitStatus === 'PENDING'" color='success') Submit!
     v-alert(:value='errorMsg' type='error') {{errorMsg}}
+    div {{this.aspects.registered_name.value}}
 </template>
 
 <script>
@@ -74,7 +75,7 @@
     },
     password_repeat: {
       type: "str",
-      name: "password_repeat",
+      name: "repeat password",
       attr: {
         max: 40,
         extra: {
@@ -93,17 +94,9 @@
     data() {
       return {
         aspects: register_aspects,
-        input: this.$_.map(register_aspects, (r) => {
+        /*input: this.$_.map(register_aspects, (r) => {
           return {value: r.name}
-        }),
-        username: "",
-        email: "",
-        password: "",
-        repeatPassword: "",
-        emailRules: [
-          v => !!v || 'E-mail is required',
-          v => /.+@.+/.test(v) || 'E-mail must be valid'
-        ],
+        }),*/
         // MUST MATCH THE ENUM values app.models.Privacy.Privacy
         defaultPrivacyOptions: ["public", "private"], // "followers_only",
         defaultPrivacy: "public",
@@ -143,14 +136,13 @@
         this.defaultPrivacy = pri
       },
       submit() {
+        console.log()
         this.$axios.post("/register", {
-          registered_name: this.username,
-          email: this.email,
-          password: this.password,
+          registered_name: this.aspects.registered_name.value.value,
+          email: this.aspects.email.value.value,
+          password: this.aspects.password.value.value,
           defaultPrivacy: this.defaultPrivacy,
           defaultLicense: this.defaultLicense
-        }, {
-          withCredentials: true
         }).then(({data}) => {
           console.log("some data")
           console.log(data)

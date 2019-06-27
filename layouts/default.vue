@@ -32,10 +32,16 @@
       app
     >
       <v-toolbar-side-icon v-show="initialized" @click="drawer = !drawer"/>
-      <v-btn v-show="!initialized" flat icon color="red" nuxt router exact to="/">
-        <v-icon>{{connected_icon}}</v-icon>
-      </v-btn>
       <v-toolbar-title v-text="title"/>
+      <v-spacer></v-spacer>
+      <div>
+        <v-btn flat icon nuxt to="/">
+          <v-icon>{{connected_icon}}</v-icon>
+        </v-btn>
+        <v-btn flat icon nuxt to="/profile">
+          <v-icon>{{userrole_icon}}</v-icon>
+        </v-btn>
+      </div>
       <v-spacer></v-spacer>
       <div>
         <v-btn flat icon nuxt router exact to="/export">
@@ -198,6 +204,14 @@
           return "wifi"
         } else {
           return "wifi_off"
+        }
+      },
+      userrole_icon() {
+        console.log(this.$store.getters.visitor)
+        if (this.$store.getters.visitor) {
+          return "person_outline"
+        } else {
+          return "person"
         }
       }
     }
