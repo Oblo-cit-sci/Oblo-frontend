@@ -8,7 +8,6 @@ const ld = require("lodash")
 
 export const state = () => ({
   //
-  draft_no: 0,
   timeline_entries: [],
   // todo, for now we download all own entries
   entries: new Map(),

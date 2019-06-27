@@ -14,7 +14,8 @@ export const state = () => ({
   // momentary
   snackbar: {message: "", status: "ok"},
   mapmode: {},
-  global_ref: null // the last draft/entry
+  global_ref: null, // the last draft/entry
+  draft_numbers: {}
   // selected entry type (for creation)
 });
 
@@ -89,6 +90,10 @@ export const mutations = {
   clear(state) {
     state.global_ref = {}
     state.initialized = false
+  },
+  update_draft_number(state, type_slug) {
+    const number = (state.draft_numbers[type_slug] || 0) + 1
+    state.draft_numbers[type_slug] = number
   }
 };
 
@@ -125,7 +130,14 @@ export const getters = {
     return (type_slug, aspect_name) => {
       return ld.find(state.entry_types.get(type_slug).content.aspects, (a) => a.name === aspect_name);
     };
-  }
+  },
+  draft_no(state, getters) {
+    return (type_slug) => {
+      return state.draft_numbers[type_slug] || 0
+    };
+  },
+
+
 };
 
 export const actions = {
