@@ -4,6 +4,7 @@ export const state = () => ({
   // comes by init
   initialized: false,
   //
+  _connecting: false,
   connected: false,
   dirty: false,
   entry_types: new Map(), // types for creation
@@ -48,9 +49,7 @@ export const mutations = {
   },
   backup_init(state, data) {
     // calld in the middleware
-    if (state.initialized)
-      return
-    else {
+    if (!state.initialized) {
       console.log("loading backup data")
       state.codes = {...data.codes}
       state.codes.liccis_flat = extract_liccis(data.codes.liccis);
@@ -94,6 +93,9 @@ export const mutations = {
   update_draft_number(state, type_slug) {
     const number = (state.draft_numbers[type_slug] || 0) + 1
     state.draft_numbers[type_slug] = number
+  },
+  connecting(state, conn) {
+    state._connecting = conn
   }
 };
 

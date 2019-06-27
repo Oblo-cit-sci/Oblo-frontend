@@ -3,16 +3,14 @@
     v-text-field(
       outline
       single-line
-      v-model="i_value"
+      v-on:input="input($event)"
       :suffix="suffix"
       :rules="[minmax]"
       :disabled="disabled"
       :readonly="!edit"
       v-on:update:error="error = $event"
-
       :append-outer-icon="clearIcon"
       @click:append-outer="$emit('entryAction', {action: 'clear'})"
-
       :mask="mask" )
 </template>
 
@@ -52,8 +50,8 @@
         this.mask = undefined // "############.##########"
       }*/
     },
-    watch: {
-      i_value(val) {
+    methods: {
+      input(val){
         this.value_change(this.num_type === INT ? parseInt(val) : parseFloat(val))
       }
     }

@@ -35,7 +35,7 @@
       <v-toolbar-title v-text="title"/>
       <v-spacer></v-spacer>
       <div>
-        <v-btn flat icon nuxt to="/">
+        <v-btn flat icon nuxt to="/" :loading="connecting">
           <v-icon>{{connected_icon}}</v-icon>
         </v-btn>
         <v-btn flat icon nuxt to="/profile">
@@ -141,6 +141,10 @@
       this.login_state = this.$store.state.user.logged_in
       this.update_sidebar()
 
+      this.$store.watch(state => state.connecting, () => {
+        this.connecting = this.$store.state.connecting
+      })
+
       this.$store.watch(state => state.user.logged_in, () => {
         this.login_state = this.$store.state.user.logged_in
         this.update_sidebar()
@@ -154,7 +158,7 @@
 
       this.initialized = this.$store.state.initialized
       this.$store.watch(state => state.initialized, () => {
-        this.connected = this.$store.state.initialized
+        this.initialized = this.$store.state.initialized
         this.update_sidebar()
       })
     },
@@ -174,6 +178,7 @@
     data() {
       return {
         login_state: false,
+        connecting: false,
         connected: false,
         initialized: false,
         drawer: false,

@@ -14,9 +14,6 @@
 
 <script>
 
-  // todo v-on:create_ref="create_ref($event)" in the Aspect
-  // todo name2index still required?
-
   import AspectMixin from "./AspectMixin";
   import Aspect from "../Aspect";
   import {ASPECTACTION, TITLE_UPDATE} from "../../lib/consts";
@@ -32,7 +29,9 @@
     },
     methods: {
       update_value($event, index) {
+        console.log("composite update value, index", index, $event)
         this.i_value[index] = $event
+        // todo use TitleAspect in meta
         if(index === 0) {
           this.$emit(ASPECTACTION, {action:TITLE_UPDATE, value: this.i_value[index]})
         }
