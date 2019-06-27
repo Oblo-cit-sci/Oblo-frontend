@@ -8,7 +8,7 @@
         mode="edit")
       div(v-if="entry.refs.parent")
         span This entry is part of the draft: &nbsp
-        a(@click="back_to_parent") {{parent_title}}
+        a(@click="to_parent") {{parent_title}}
       div(v-if="has_pages")
         Title_Description(
           :title="page_info.title"
@@ -20,8 +20,6 @@
         Aspect(
           :aspect="aspect"
           v-bind:value.sync="entry.aspects_values[aspect.name]"
-          :update_req="Object.keys(conditions).indexOf(aspect.name) > -1"
-          v-on:req="update_vall($event)"
           v-on:entryAction="entryAction($event)"
           :id="aspect_id(aspect.name)"
           :condition="condition_vals[aspect.name]"
@@ -154,17 +152,6 @@
       }
     },
     methods: {
-      updateRequired(aspect) {
-        this.required_values[aspect.title] = aspect.value
-        for (let req_asp in this.required_values) {
-          let val = this.required_values[req_asp]
-          if (val === null || val === "") {
-            this.complete = false
-            return
-          }
-        }
-        this.complete = true
-      },
       entryAction(event) {
         const action = event.action
         const value = event.value
@@ -242,7 +229,8 @@
         delete this.entry.refs.children[ref.uuid]
         autosave(this.$store, this.entry)
       },
-      update_vall(event) {
+      // todo bring back
+      check_conditions(event) {
         //console.log(this.extras)
         //console.log("UVALL", event, Object.keys(this.conditions).indexOf(event.aspect) > -1)
         if (Object.keys(this.conditions).indexOf(event.aspect) > -1) {
@@ -252,9 +240,6 @@
           //this.extras[this.conditions[event.aspect]]["condition"][event.aspect] = event.value
           this.condition_vals[target] = {val: event.value}
         }
-      },
-      back_to_parent() {
-        this.to_parent()
       }
     },
     computed: {

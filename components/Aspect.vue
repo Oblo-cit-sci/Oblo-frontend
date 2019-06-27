@@ -48,10 +48,6 @@
         default: () => { return {}}
       },
       condition: Object,
-      update_req: { // if the aspect needs to be send up, cuz its "required" or needs to be passed to other aspects (conditions)
-        type: Boolean,
-        default: false
-      }
     },
     data() {
       return {
@@ -118,9 +114,6 @@
       },
       emit_up(event) {
         this.$emit('update:value', {value:event})
-        if(this.update_req) {
-          this.$emit('req', {aspect: this.aspect.name, value:event})
-        }
         // console.log("emit up")
         if(this.extra.is_title || false) {
           this.$emit(ENTRYACTION, {action: TITLE_CHANGED, value: event})
