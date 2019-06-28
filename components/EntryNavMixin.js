@@ -7,7 +7,9 @@ export default {
       return this.$store.getters["entries/get_entry"](uuid)
     },
     fetch_and_nav(uuid) {
+      console.log("fetching")
       fetch_entry(this.$store, this.$axios, uuid).then(entry => {
+        console.log("got entry", entry)
         this.$router.push("/entry/" + uuid)
       }).catch(res => {
         // todo ENH: could also be an error msg from the server

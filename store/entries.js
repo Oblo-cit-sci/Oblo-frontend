@@ -10,7 +10,6 @@ export const state = () => ({
   timeline_entries: [],
   // todo, for now we download all own entries
   entries: new Map(),
-  fetched_entries: {},
 });
 
 export const mutations = {
@@ -51,10 +50,6 @@ export const mutations = {
     console.log("DL ", e, local_id)
     e.downloaded_version = e.version
   },
-  add_fetched_entry(state, entry) {
-    state.fetched_entries[entry.uuid] = entry
-    //console.log(state.fetched_entries)
-  },
   add_ref_child(state, {uuid, child_uuid, aspect_loc}) {
     let kids = state.entries.get(uuid).refs.children
     let refs = kids[child_uuid] || []
@@ -74,6 +69,11 @@ export const mutations = {
 }
 
 export const getters = {
+  has_entry(state, getters) {
+    return (uuid) => {
+      return state.entries.has(uuid)
+    };
+  },
   get_entry(state, getters) {
     return (uuid) => {
       return state.entries.get(uuid)

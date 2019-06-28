@@ -19,7 +19,8 @@
       div(v-for="(aspect) in shown_aspects" :key="aspect.name")
         Aspect(
           :aspect="aspect"
-          v-bind:value.sync="entry.aspects_values[aspect.name]"
+          v-bind:value="entry.aspects_values[aspect.name]"
+          v-on:update:value="update_value(aspect, $event)"
           v-on:entryAction="entryAction($event)"
           :id="aspect_id(aspect.name)"
           :condition="condition_vals[aspect.name]"
@@ -44,26 +45,24 @@
     set_entry_value,
     aspect_loc_str,
     MAspectComponent,
-    pack_value, delete_entry
+    pack_value, delete_entry, unpack
   } from "../../lib/entry"
   import Title_Description from "../../components/Title_Description"
   import EntryActions from "../../components/EntryActions";
   import {
-    CREATE,
     EDIT,
     AUTOSAVE,
     CREATE_CONTEXT_ENTRY,
     GLOBAL_ASPECT_REF,
     TITLE_CHANGED,
-    ASPECT, DELETE_CONTEXT_ENTRY
+    ASPECT, DELETE_CONTEXT_ENTRY, PUBLIC, PRIVATE_LOCAL
   } from "../../lib/consts";
   import Aspect from "../../components/Aspect";
 
   import goTo from 'vuetify/lib/components/Vuetify/goTo'
-  import {check_conditions, check_internallinks, resolve_aspect_ref} from "../../lib/client";
+  import {check_conditions, resolve_aspect_ref} from "../../lib/client";
   import EntryNavMixin from "../../components/EntryNavMixin";
 
-  const ld = require("lodash")
 
   export default {
     name: "uuid",
@@ -78,6 +77,7 @@
       return {
         entry: null,
         entry_type: null, // the full shizzle for the type_slug
+        titleAspect: null,
         required_values: [], // shortcut, but in entry_type
         conditions: {}, // this contains  conditions between aspects (for now just conditions), key (sender), value: receiver
         sending: false,
@@ -90,12 +90,15 @@
     },
     created() {
       this.uuid = this.$route.params.uuid
-      this.entry = JSON.parse(JSON.stringify(this.$store.state.entries.entries.get(this.uuid)))
+      const entry = this.$store.getters["entries/get_entry"](this.uuid)
+
+      this.entry = JSON.parse(JSON.stringify(entry))
+
       // set global ref, needed for deeply nested maps to know how to come back
       this.$store.commit("set_global_ref", {uuid: this.uuid})
 
       this.entry_type = this.$store.getters.entry_type(this.entry.type_slug)
-
+      this.titleAspect = this.entry_type.content.meta.titleAspect || this.entry_type.content.aspects[0].name
       this.has_pages = this.entry_type.content.meta.hasOwnProperty("pages")
 
       let required_aspects = this.$_.filter(this.entry_type.content.aspects, (a) => a.required || false)
@@ -108,8 +111,6 @@
       for (let target of Object.values(this.conditions)) {
         this.condition_vals[target] = {val: null}
       }
-      //console.log("conditions", this.conditions, this.condition_vals)
-      this.internal_links = check_internallinks(this.entry_type)
 
       // todo this whole part... not used atm...
       //console.log(this.entry_type.content)
@@ -162,6 +163,9 @@
           case GLOBAL_ASPECT_REF:
             this.$store.commit("add_aspect_ref", value)
             break
+          // todo maybe the server could set the titleAspect and itself
+          // would in that case emit up this action
+          // otherwise, now its unused, cuz the titleAspect is grabbed here
           case TITLE_CHANGED:
             this.entry.title = value
             break
@@ -187,6 +191,13 @@
           }
         }
         this.complete = true
+      },
+      update_value(aspect, value) {
+        console.log("UPDATE", aspect, value)
+        if(aspect.name === this.titleAspect) {
+          this.entry.title = unpack(value)
+        }
+        this.entry[aspect.name] = value
       },
       aspect_id(aspect_name) {
         return aspect_loc_str(this.extras[aspect_name].aspect_loc)
@@ -221,8 +232,6 @@
         this.$router.push({
           path: "/entry/" + entry.uuid
         })
-        // ********  ASPECT_PAGE
-        // TODO
       },
       delete_child(ref) {
         delete_entry(this.$store, ref.uuid)
@@ -253,49 +262,40 @@
           return meta.has_license
         } else
           return true
-      }
-      ,
+      },
       parent_title() {
+        // todo not necessarily available for remote entries. should be included?
         return this.$store.getters["entries/get_entry"](this.entry.refs.parent.uuid).title
-      }
-      ,
+      },
       shown_aspects() {
         if (this.has_pages) {
           return ld.filter(this.entry_type.content.aspects, (a) => {
-            /*console.log(a.name, a.attr.page, (this.page === 0 && (a.attr.page === 0 || a.attr.page === undefined) ||
-              (this.page > 0 && a.attr.page === this.page))) */
             return (this.page === 0 && (a.attr.page === 0 || a.attr.page === undefined) ||
               (this.page > 0 && a.attr.page === this.page))
           })
         }
         return this.entry_type.content.aspects
-      }
-      ,
+      },
       has_privacy() {
         const meta = this.entry_type.content.meta
-        if (this.entry_type.content.meta.hasOwnProperty("privacy")) {
-          return this.entry_type.content.meta.privacy !== "PRIVATE_LOCAL"
-        } else if (meta.hasOwnProperty("has_privacy")) {
-          return meta.has_privacy
-        } else return true
-      }
-      ,
+        // todo server should set it. then remove this check
+        if (this.entry_type.content.meta.privacy || PUBLIC) {
+          return this.entry_type.content.meta.privacy !== PRIVATE_LOCAL
+        } else
+          return meta.hasOwnProperty.has_privacy || true
+      },
       // maybe also consider:
       // https://github.com/edisdev/download-json-data/blob/develop/src/components/Download.vue
-      /*dl_url() {
-        return "data:text/jsoncharset=utf-8," + encodeURIComponent(JSON.stringify(this.aspects_values))
-      }*/
       page_info() {
-        return this.entry_type.content.meta.pages[this.page]
-      }
-      ,
-      // wrong, create should be for all that are not local/saved or submitted
-      mode() {
-        return this.version === 0 ? CREATE : EDIT
+        if(this.has_pages)
+          return this.entry_type.content.meta.pages[this.page]
+        else
+          return null
       },
+      // wrong, create should be for all that are not local/saved or submitted
       entry_actions_props() {
         return {
-          mode: this.mode,
+          mode: EDIT,
           entry_type: this.entry_type,
           entry: this.entry
         }
@@ -304,7 +304,6 @@
     ,
     watch: {
       page(val) {
-        console.log("page", val)
         goTo("h1")
       }
     }

@@ -7,7 +7,7 @@
         v-list-tile-avatar
           v-icon {{privacy_icon(entry.privacy)}}
         v-list-tile-content
-          v-list-tile-title {{entry.creator}}
+          v-list-tile-title {{creator(entry)}}
           v-list-tile-sub-title {{entry.title}}
         v-list-tile-action
           v-img.license-image(:src="get_license_icon(entry.license)")
@@ -15,7 +15,7 @@
 </template>
 
 <script>
-  import { license_icon } from "../lib/client"
+  import {CREATOR, entry_actor_relation, license_icon} from "../lib/client"
   import {current_user_is_owner} from "../lib/entry";
   import EntryNavMixin from "./EntryNavMixin";
 
@@ -35,19 +35,10 @@
     },
     methods: {
       show(entry) {
-        if(entry.local_id){
-          console.log("going to local entry")
-          this.$router.push("entry/"+entry.local_id)
-        } else {
-          // todo this is bad... overall refactoring of the own_entries, timeline entry stuff.
-          if(current_user_is_owner(this.$store, entry)) {
-            // todo hacky shortcut
-            this.$router.push("/entry/"+entry.uuid)
-          } else {
-            console.log("fetching")
-            this.fetch_and_nav(entry.uuid)
-          }
-        }
+        if(this.$store.getters["entries/has_entry"](entry.uuid))
+          this.$router.push("/entry/" + entry.uuid)
+        else
+          this.fetch_and_nav(entry.uuid)
       },
       privacy_icon(privacy) {
         return "public"
@@ -55,8 +46,13 @@
       get_license_icon(license) {
         return license_icon(this.$axios, license, this.$store);
       },
-      listitemType(entry) {
-        return true
+      creator(entry) {
+        //console.log("en list. creator", entry)
+        const public_name = entry.actors.creator.public_name
+        let relation = entry_actor_relation(entry, this.$store.getters.user)
+        if (relation === CREATOR.key)
+          return "Your Entry"
+        return public_name
       }
     }
   }

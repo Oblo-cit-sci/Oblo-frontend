@@ -150,32 +150,12 @@
         //this.sending = true
         // would be the same as checking submitted
         if (this.entry.status === DRAFT) {
-
-          let sending_entry = JSON.parse(JSON.stringify(this.entry))
-
-          // todo before. try out to pack multiple entries into one send
-          //sending_entry = fill_in_child_refs_for_sending(this.$store, sending_entry)
-          const all_entries = this.$_.concat([this.entry], this.$store.getter["entries/get_children"](this.entry))
-
-          console.log("ref entries", all_entries)
-          //return
-          //console.log("sending entry- ref update", sending_entry)
-
+          const all_entries = this.$_.concat([this.entry], this.$store.getters["entries/get_children"](this.entry))
           this.$axios.post("/create_entry", all_entries).then((res) => {
             this.sending = false
-            //console.log(res.data)
             this.$store.commit("set_snackbar", {message: res.data.msg, ok: res.data.status})
-
-            // just call function
-            //console.log(this.entry)
+            this.entry.status = SUBMITTED
             save_entry(this.$store, this.entry)
-            /*
-            if (this.entry.hasOwnProperty("draft_id")) {
-              delete_draft(this.$store, this.entry)
-
-              //this.$store.commit("edrafts/remove_draft", this.draft_id)
-              this.$store.commit("entries/save_entry", this.entry)
-            }*/
             this.back()
           }).catch((err) => {
             console.log("error", err)

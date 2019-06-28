@@ -1,17 +1,14 @@
-import {jsonToMap} from "../lib/client";
+import {EDIT, VIEW} from "../lib/consts";
 
 export const state = () => ({
   // comes by init
   initialized: false,
-  //
   _connecting: false,
   connected: false,
-  dirty: false,
+  mode: EDIT,
   entry_types: new Map(), // types for creation
-  tags: {}, // initially just the licci tree
   codes: {},
   // recent
-  //fetched_entries: {},
   // momentary
   snackbar: {message: "", status: "ok"},
   mapmode: {},
@@ -103,6 +100,9 @@ export const getters = {
   visitor(state) {
     //console.log("visitor check");
     return state.user.user_data.global_role === "visitor"
+  },
+  user(state) {
+    return state.user.user_data
   },
   name(state) {
     return state.user.user_data.registered_name;
