@@ -1,7 +1,9 @@
 <template lang="pug">
   div
     h3 Privacy
-    div(v-if="edit")
+    div(v-if="private_local")
+      div This entry is for private local usage and cannot be uploaded to the platform. It's intended to be download and sent to the data repository.
+    div(v-else-if="edit")
       div(v-if="$store.getters.visitor")
         div
           span As a visitor your contributions will be
@@ -20,12 +22,11 @@
 
 <script>
   import SingleSelect from "./SingleSelect";
-  import {string_list2options} from "../lib/client";
-  import {EDIT} from "../lib/consts";
+  import {string2option, string_list2options} from "../lib/client";
+  import {EDIT, PRIVATE, PRIVATE_LOCAL, PUBLIC} from "../lib/consts";
 
 
-  const OPTIONS = ["public", "private"]
-  const ld = require("lodash")
+  const OPTIONS = [PUBLIC, PRIVATE, PRIVATE_LOCAL]
 
   export default {
     name: "Privacy",
@@ -41,20 +42,14 @@
     components: {SingleSelect},
     data() {
       return {
-        privacy_options: string_list2options(["public", "private"]),
+        privacy_options: string_list2options(OPTIONS),
         selectedPrivacy: null,
         use_alternative_privacy: false
       }
     },
     created() {
-      if (!this.passedPrivacy)
-        this.set_to_default();
-      else { // for drafts
-        const p = this.passedPrivacy
-        this.selectedPrivacy = {text: p, value: p}
-        this.use_alternative_privacy = p !== this.$store.state.user.user_data.defaultPrivacy;
-      }
-
+        this.selectedPrivacy = string2option(this.passedPrivacy)
+        this.use_alternative_privacy = this.passedPrivacy !== this.$store.state.user.user_data.defaultPrivacy
     },
     computed: {
       privacy_selection() {
@@ -62,6 +57,9 @@
       },
       edit() {
         return this.mode === EDIT
+      },
+      private_local() {
+        return this.selectedPrivacy.value === PRIVATE_LOCAL
       }
     },
     methods: {

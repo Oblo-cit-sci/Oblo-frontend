@@ -43,7 +43,8 @@
         return "public"
       },
       get_license_icon(license) {
-        return license_icon(this.$axios, license, this.$store);
+        let licence_svg = this.$store.state.codes.licenses[license].svg
+        return license_icon(this.$axios, licence_svg, this.$store);
       },
       creator(entry) {
         const public_name = entry.actors.creator.public_name

@@ -22,7 +22,7 @@
   import TextShort from "./aspectInput/TextShort";
   import SingleSelect from "./SingleSelect";
 
-  import {license_icon} from "~~/lib/client";
+  import {license_icon} from "../lib/client";
   import {EDIT} from "../lib/consts";
 
   const ld = require('lodash');
@@ -60,16 +60,10 @@
     },
     computed: {
       licenseImagePath() {
-        //console.log("update img with", this.selectedLicense);
-        if (this.selectedLicense) {
-          if(!this.$store.state.connected) {
-            return "/" + this.selectedLicense.svg
-          } else {
-            return license_icon(this.$axios, this.selectedLicense.value, this.$store);
-          }
-        } else {
-          return null;
-        }
+        return this.selectedLicense ?
+          license_icon(this.$axios, this.selectedLicense.svg, this.$store)
+          :
+          null;
       },
       license_selection() {
         return this.use_alternative_license ? "use different license" : "default license";
