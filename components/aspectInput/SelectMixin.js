@@ -23,10 +23,5 @@ export default {
     } else {
       console.log("ERROR cannot create options from aspect items", this.aspect.items)
     }
-  },
-  methods: {
-    /*disabled() {
-      this.selection = null
-    }*/
   }
 }

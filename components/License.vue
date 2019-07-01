@@ -15,7 +15,7 @@
           :selection.sync="selectedLicense")
     div(v-else)
       div {{selectedLicense.title}}
-      img.license-image(:src="licenseImagePath")
+      img.license-image(:src="licenseImagePath" )
 </template>
 
 <script>
@@ -62,7 +62,11 @@
       licenseImagePath() {
         //console.log("update img with", this.selectedLicense);
         if (this.selectedLicense) {
-          return license_icon(this.$axios, this.selectedLicense.value, this.$store);
+          if(!this.$store.state.connected) {
+            return "/" + this.selectedLicense.svg
+          } else {
+            return license_icon(this.$axios, this.selectedLicense.value, this.$store);
+          }
         } else {
           return null;
         }
