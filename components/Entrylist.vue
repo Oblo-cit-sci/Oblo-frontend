@@ -7,8 +7,8 @@
         v-list-tile-avatar
           v-icon {{privacy_icon(entry.privacy)}}
         v-list-tile-content
-          v-list-tile-title {{creator(entry)}}
-          v-list-tile-sub-title {{entry.title}}
+          v-list-tile-title {{entry.title}}
+          v-list-tile-sub-title {{creator(entry)}}
         v-list-tile-action
           v-img.license-image(:src="get_license_icon(entry.license)")
       v-divider
@@ -16,7 +16,6 @@
 
 <script>
   import {CREATOR, entry_actor_relation, license_icon} from "../lib/client"
-  import {current_user_is_owner} from "../lib/entry";
   import EntryNavMixin from "./EntryNavMixin";
 
   export default {
@@ -47,11 +46,10 @@
         return license_icon(this.$axios, license, this.$store);
       },
       creator(entry) {
-        //console.log("en list. creator", entry)
         const public_name = entry.actors.creator.public_name
         let relation = entry_actor_relation(entry, this.$store.getters.user)
         if (relation === CREATOR.key)
-          return "Your Entry"
+          return "From yourself"
         return public_name
       }
     }

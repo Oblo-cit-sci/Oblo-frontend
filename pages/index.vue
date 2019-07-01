@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-layout(column='' justify-center='' align-center='')
+  v-layout(xs6  justify-space-around align-center)
     div(v-if="initialized")
       entrylist(:entries="$store.state.entries.timeline_entries")
     div(v-else-if="!connecting" style="width:60%")

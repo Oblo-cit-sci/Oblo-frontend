@@ -1,9 +1,8 @@
 <template lang="pug">
-  v-layout(xs6 justify-space-around align-center)
-    v-layout(row wrap)
+  v-layout(xs6 justify-space-around row wrap)
       v-flex(xs2 v-for="o in filter_options" :key="o.value")
         v-checkbox(v-model="filter" :label="o.label" :value="o.value")
-      v-flex(xs12)
+      v-flex(xs6 justify-center)
         entrylist(:entries="entries")
 </template>
 

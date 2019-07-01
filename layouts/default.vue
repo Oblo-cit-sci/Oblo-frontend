@@ -93,7 +93,7 @@
     {
       icon: "reorder",
       title: "My Entries",
-      to: "personalentries"
+      to: "/personalentries"
     },
     {
       icon: 'person',

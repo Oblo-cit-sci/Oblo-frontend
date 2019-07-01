@@ -45,6 +45,7 @@
   import MultiSelect from "../MultiSelect";
   import Aspect from "../Aspect";
   import ListMixin from "../ListMixin";
+  import {INDEX} from "../../lib/consts";
 
   // todo, pass the extra in a more intelligent way down, not to all the same
 
@@ -153,7 +154,7 @@
       },
       list_extra(index) {
         let xtra_copy = JSON.parse(JSON.stringify(this.extra))
-        xtra_copy.aspect_loc.push(["index", index])
+        xtra_copy.aspect_loc.push([INDEX, index])
         xtra_copy.no_title = true
         xtra_copy.clear = "no_title"
         return xtra_copy

@@ -113,21 +113,10 @@
       }
 
       // todo this whole part... not used atm...
-      //console.log(this.entry_type.content)
+      // console.log(this.entry_type.content)
+      // this is a aspect_loc building function, abstract and pull out
       for (let aspect of this.entry_type.content.aspects) {
-        //console.log("extra", aspect)
-        //console.log(asecpt_descr.name, asecpt_descr.attr)
         let extra_props = {}
-        /*
-        if (aspect.attr.extra) {
-          //console.log("extra for ", aspect.name)
-          for (let e of aspect.attr.extra) {
-            if (e === "ref") {
-              extra_props[e] = { uuid: this.entry.uuid }
-            }
-          }
-        }
-        */
         extra_props.aspect_loc = [[ASPECT, aspect.name]]
         this.extras[aspect.name] = extra_props
       }
@@ -164,9 +153,10 @@
             this.$store.commit("add_aspect_ref", value)
             break
           // todo maybe the server could set the titleAspect and itself
-          // would in that case emit up this action
+          // would in that case emit up this actiovaluen
           // otherwise, now its unused, cuz the titleAspect is grabbed here
           case TITLE_CHANGED:
+            console.log("WARNING maybe out TITLE_CHANGED entry action", value)
             this.entry.title = value
             break
           case CREATE_CONTEXT_ENTRY:
@@ -195,9 +185,10 @@
       update_value(aspect, value) {
         console.log("UPDATE", aspect, value)
         if(aspect.name === this.titleAspect) {
+          console.log(unpack(value))
           this.entry.title = unpack(value)
         }
-        this.entry[aspect.name] = value
+        this.entry.aspects_values[aspect.name] = value
       },
       aspect_id(aspect_name) {
         return aspect_loc_str(this.extras[aspect_name].aspect_loc)
