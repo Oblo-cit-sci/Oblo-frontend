@@ -10,6 +10,10 @@ let default_user_data = {
   global_role: VISITOR,
   public_name: VISITOR,
   registered_name: VISITOR, // TODO should also retrieve that... with a number index
+  description: "",
+  email: null,
+  email_validated: false,
+  interested_topics: [],
   // https://stackoverflow.com/questions/1253499/simple-calculations-for-working-with-lat-lon-km-distance
   // of 1 degree will result in error of around 50km per coordinate -0.5, +0.5 degree change around the real location
   location_error: 2,
@@ -18,6 +22,7 @@ let default_user_data = {
   location: "",
   uid: uuidv4()
 }
+
 
 
 export const state = () => ({
