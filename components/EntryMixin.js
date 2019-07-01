@@ -1,10 +1,6 @@
 
-import {autosave} from "../lib/entry";
 import {check_conditions, check_internallinks, resolve_aspect_ref} from "../lib/client";
 import goTo from "vuetify/lib/components/Vuetify/goTo";
-
-
-
 
 
 export default {
@@ -24,11 +20,13 @@ export default {
       return a.name
     })
     this.conditions = check_conditions(this.entry_type)
-    this.condition_vals = {}
+
+    /*this.condition_vals = {}
     for (let target of Object.values(this.conditions)) {
       this.condition_vals[target] = {val: null}
-    }
+    }*/
     return
+
     //console.log("conditions", this.conditions, this.condition_vals)
     this.internal_links = check_internallinks(this.entry_type)
 

@@ -23,9 +23,9 @@
           v-on:update:value="update_value(aspect, $event)"
           v-on:entryAction="entryAction($event)"
           :id="aspect_id(aspect.name)"
-          :condition="condition_vals[aspect.name]"
           mode="edit"
-          :extra="extras[aspect.name]")
+          :extra="extras[aspect.name]"
+          :extra_update="extras_update[aspect.name]")
       div(v-if="!entry.ref && page === 0")
         License(v-bind:passedLicense.sync="entry.license" v-if="has_license")
         Privacy(v-bind:passedPrivacy.sync="entry.privacy" v-if="has_privacy")
@@ -79,13 +79,13 @@
         entry_type: null, // the full shizzle for the type_slug
         titleAspect: null,
         required_values: [], // shortcut, but in entry_type
-        conditions: {}, // this contains  conditions between aspects (for now just conditions), key (sender), value: receiver
         sending: false,
         complete: true,
         has_pages: false,
         page: 0,
         last_page: false,
         extras: {},
+        extras_update: {}
       }
     },
     created() {
@@ -107,10 +107,14 @@
       })
 
       this.conditions = check_conditions(this.entry_type)
+      let condition_targets = this.$_.map(this.conditions, c => c.aspect)
+
+      /*
       this.condition_vals = {}
       for (let target of Object.values(this.conditions)) {
         this.condition_vals[target] = {val: null}
       }
+      */
 
       // todo this whole part... not used atm...
       // console.log(this.entry_type.content)
@@ -118,7 +122,13 @@
       for (let aspect of this.entry_type.content.aspects) {
         let extra_props = {}
         extra_props.aspect_loc = [[ASPECT, aspect.name]]
+        if (condition_targets.indexOf(aspect.name)) {
+          extra_props.condition = {
+            value: null
+          }
+        }
         this.extras[aspect.name] = extra_props
+        this.extras_update[aspect.name] = false
       }
       /* set aspect refs:
           when an attribute has #
@@ -183,10 +193,12 @@
         this.complete = true
       },
       update_value(aspect, value) {
-        console.log("UPDATE", aspect, value)
-        if(aspect.name === this.titleAspect) {
-          console.log(unpack(value))
+        if (aspect.name === this.titleAspect) {
           this.entry.title = unpack(value)
+        }
+        if (this.conditions.hasOwnProperty(aspect.name)) {
+          this.extras_update[this.conditions[aspect.name]] = !this.extras_update[this.conditions[aspect.name]]
+          this.extras[this.conditions[aspect.name]].condition.value = unpack(value)
         }
         this.entry.aspects_values[aspect.name] = value
       },
@@ -228,9 +240,9 @@
         delete_entry(this.$store, ref.uuid)
         delete this.entry.refs.children[ref.uuid]
         autosave(this.$store, this.entry)
-      },
+      }
       // todo bring back
-      check_conditions(event) {
+    /*check_conditions(event) {
         //console.log(this.extras)
         //console.log("UVALL", event, Object.keys(this.conditions).indexOf(event.aspect) > -1)
         if (Object.keys(this.conditions).indexOf(event.aspect) > -1) {
@@ -240,7 +252,7 @@
           //this.extras[this.conditions[event.aspect]]["condition"][event.aspect] = event.value
           this.condition_vals[target] = {val: event.value}
         }
-      }
+      }*/
     },
     computed: {
       has_license() {
@@ -278,7 +290,7 @@
       // maybe also consider:
       // https://github.com/edisdev/download-json-data/blob/develop/src/components/Download.vue
       page_info() {
-        if(this.has_pages)
+        if (this.has_pages)
           return this.entry_type.content.meta.pages[this.page]
         else
           return null

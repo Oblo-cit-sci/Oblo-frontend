@@ -45,15 +45,21 @@
       value: Object, // a wrapper, which  might encode "exceptional_value"
       extra: {
         type: Object,
-        default: () => { return {}}
+        default: () => {
+          return {}
+        }
       },
-      condition: Object,
+      extra_update: {
+        type: Boolean
+      }
     },
     data() {
       return {
         edit: false,
         has_alternative: false,
         use_regular: true,
+        condition: null,
+        condition_fail: false,
       }
     },
     created() {
@@ -63,6 +69,9 @@
       } else { // edit
         this.edit = true
       }
+      if (this.aspect.attr.hasOwnProperty("condition")) {
+        this.condition = this.aspect.attr.condition
+      }
     },
     // boolean check is not required, since "false" is the default
     computed: {
@@ -71,25 +80,16 @@
           return this.value.value
         else {
           // todo some extra value
-          return aspect_default_value(this.aspect)
+          return
         }
-      },
-      condition_fail() {
-        //console.log("E U ", this.aspect.name, this.condition)
-
-        if(!this.condition || !this.condition.val) {
-          return false
-        } else {
-          //console.log("checking")
-          return this.condition.val !== this.aspect.attr.condition.value
-        }
-        /*return this.extra !== undefined
-        if(this.aspect.attr.hasOwnProperty("condition")) {
-          console.log("condition check", this.aspect.name)
-        }*/
       },
       disabled() {
-        return !this.use_regular || this.condition_fail
+        let disabled = !this.use_regular || this.condition_fail
+        if(disabled) {
+          // TODO strange behaviour here. its emitting default up, but not sending it down
+          this.$emit('update:value', pack_value(aspect_default_value(this.aspect)))
+        }
+        return disabled
       }
     },
     methods: {
@@ -106,28 +106,48 @@
         }
       },
       aspectAction(event) {
-        this.$emit('aspectAction',event)
+        this.$emit('aspectAction', event)
       },
       aspectComponent(aspect_descr, mode) {
         // todo false, false are just default, ... better a config obj
         return MAspectComponent(aspect_descr, false, mode)
       },
       emit_up(event) {
-        this.$emit('update:value', {value:event})
+        this.$emit('update:value', {value: event})
         // console.log("emit up")
-        if(this.extra.is_title || false) {
+        if (this.extra.is_title || false) {
           this.$emit(ENTRYACTION, {action: TITLE_CHANGED, value: event})
         }
       }
     },
     watch: {
       mode(val) {
-       this.edit = val === EDIT
+        this.edit = val === EDIT
+      },
+      extra_update(val) {
+        if (this.condition) {
+          if (!this.extra.condition || !this.extra.condition.value) {
+            this.condition_fail = false
+          } else {
+            const compare = this.condition.compare || "equal"
+            console.log("condition check. with", compare, )
+            let v = null
+            switch (compare) {
+              case "equal":
+                v = this.extra.condition.value !== this.aspect.attr.condition.value
+                break
+              case "unequal":
+                v = this.extra.condition.value === this.aspect.attr.condition.value
+                break
+            }
+            this.condition_fail = v;
+          }
+        }
       }
     }
   }
 
-  import {aspect_default_value, entry_ref, get_local_entry, MAspectComponent} from "../lib/entry";
+  import {aspect_default_value, entry_ref, get_local_entry, MAspectComponent, pack_value} from "../lib/entry";
 
   import Title_Description from "./Title_Description";
 </script>
