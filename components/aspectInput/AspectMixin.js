@@ -1,55 +1,7 @@
-/*
-TODO fucking IMPORT BREAKS EVERYTHING
-//import {aspect_default_value} from "../../lib/entry";
- */
+
 
 import {VIEW} from "../../lib/consts";
-
-// this must be a copy of entry.js
-export function aspect_default_value(aspect) {
-  //console.log("aspect_default_value", aspect.name, aspect)
-  if (aspect.type.startsWith("!")) {
-    return aspect.default
-  }
-  switch (aspect.type) {
-    case "str":
-      return ""
-    case "int":
-      // todo could also check attr.min
-      return 0
-    case "float":
-      return 0
-    case "@user":
-      return null
-    case "date":
-      // TODO now?
-      return new Date()
-    case "gps":
-      return null
-    case "list":
-      return []
-    case "map":
-      return []
-    case "tree":
-      return null
-    case "composite":
-      return ld.map(aspect.components, (c) => aspect_wrapped_default_value(c))
-    case "options":
-      return null
-    case "select":
-      return null
-    case "multiselect":
-      return null
-    default:
-      console.log("Warning trying to ge default value of aspect of unknown type", aspect)
-      return null
-  }
-}
-
-export function aspect_wrapped_default_value(aspect) {
-  return {value: aspect_default_value(aspect)}
-}
-
+import {aspect_default_value} from "../../lib/entry";
 
 export default {
   props: {
@@ -133,7 +85,7 @@ export default {
       this.i_value = new_val;
     },
     disabled() {
-      this.i_value = aspect_default_value(this.aspect)
+      this.i_value = aspect_default_value(aspect)
     }
   }
 }

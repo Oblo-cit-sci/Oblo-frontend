@@ -11,9 +11,9 @@
 </template>
 
 <script>
-  import AspectMixin, {aspect_default_value} from "./AspectMixin"
   import SingleSelect from "../SingleSelect"
   import SelectMixin from "./SelectMixin";
+  import AspectMixin from "./AspectMixin";
 
   export default {
     name: "Select",

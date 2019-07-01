@@ -32,7 +32,7 @@
 
   import {CONTEXT_ENTRY, DRAFT, GLOBAL, PRIVATE_LOCAL, PUBLIC, SUBMITTED, VIEW} from "../lib/consts";
   import Paginate from "./Paginate";
-  import {current_user_is_owner, delete_entry, aspect_loc_str, get_edit_route_for_ref, save_entry} from "../lib/entry";
+  import {current_user_is_owner, delete_entry, save_entry} from "../lib/entry";
 
   import {export_data} from "../lib/client";
   import DecisionDialog from "./DecisionDialog";
