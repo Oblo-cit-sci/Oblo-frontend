@@ -24,12 +24,12 @@
       Title_Description(v-bind="title_description(aspect.attr.alternative)")
       component(v-bind:is="aspectComponent(aspect.attr.alternative)"
         v-bind:aspect="aspect.attr.alternative"
-        v-on:update:value="$emit('update:value', {value:$event})")
+        v-on:update:value="emit_up($event)")
 </template>
 
 <script>
 
-  import {EDIT, ENTRYACTION, TITLE_CHANGED, TITLE_UPDATE, VIEW} from "../lib/consts";
+  import {EDIT, ENTRYACTION, TITLE_CHANGED, VIEW} from "../lib/consts";
 
   export default {
     name: "Aspect",
@@ -63,6 +63,7 @@
       }
     },
     created() {
+      console.log("aspect " + this.aspect.name + " created with value", this.value)
       this.has_alternative = this.aspect.attr.hasOwnProperty("alternative")
       if (this.aspect.attr.mode === VIEW || this.mode === VIEW) {
         // sets always to VIEW, nothing really
@@ -85,7 +86,7 @@
       },
       disabled() {
         let disabled = !this.use_regular || this.condition_fail
-        if(disabled) {
+        if (disabled) {
           // TODO strange behaviour here. its emitting default up, but not sending it down
           this.$emit('update:value', pack_value(aspect_default_value(this.aspect)))
         }
@@ -126,13 +127,20 @@
       mode(val) {
         this.edit = val === EDIT
       },
+      use_regular(val) {
+        this.value.value = aspect_default_value(this.aspect)
+        if(!val) {
+          this.value.regular = false
+        } else {
+          delete this.value.regular
+        }
+      },
       extra_update(val) {
         if (this.condition) {
           if (!this.extra.condition || !this.extra.condition.value) {
             this.condition_fail = false
           } else {
             const compare = this.condition.compare || "equal"
-            console.log("condition check. with", compare, )
             let v = null
             switch (compare) {
               case "equal":

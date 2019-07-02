@@ -72,7 +72,6 @@
     created() {
       let item_type = this.aspect.items;
       // todo. list, are extended lists by user, not select lists
-
       if (typeof (item_type) === "string") {
         if (item_type[0] === "*") {
           this.select = true
