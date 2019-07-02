@@ -18,6 +18,7 @@
       :disabled="disabled"
       :mode="mode"
       v-on:update:value="emit_up($event)"
+      v-on:entryAction="$emit('entryAction',$event)"
       v-on:aspectAction="aspectAction($event)")
     div(v-if="!use_regular")
       Title_Description(v-bind="title_description(aspect.attr.alternative)")
@@ -30,7 +31,7 @@
 
   import {EDIT, ENTRYACTION, TITLE_CHANGED, VIEW} from "../lib/consts";
 
-  //       v-on:entryAction="$emit('entryAction',$event)"
+  //
 
   export default {
     name: "Aspect",

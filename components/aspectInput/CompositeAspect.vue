@@ -49,8 +49,7 @@
         return xtra_copy
       },
       aspectAction(event) {
-        //console.log("ASPECT ACTION", event)
-        $emit('aspectAction',$event)
+        this.$emit('aspectAction',event)
       }
     },
     watch: {
