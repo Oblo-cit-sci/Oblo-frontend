@@ -197,8 +197,10 @@
           this.entry.title = unpack(value)
         }
         if (this.conditions.hasOwnProperty(aspect.name)) {
+          console.log("condition triggered", aspect.name, value, ">", this.conditions[aspect.name])
           this.extras_update[this.conditions[aspect.name]] = !this.extras_update[this.conditions[aspect.name]]
           this.extras[this.conditions[aspect.name]].condition.value = unpack(value)
+          console.log(this.extras_update[this.conditions[aspect.name]])
         }
         this.entry.aspects_values[aspect.name] = value
       },
@@ -219,7 +221,6 @@
         }
         autosave(this.$store, this.entry)
         const entry = create_and_store(type_slug, this.$store, parent_ref_data)
-
         this.$store.commit("entries/add_ref_child",
           {
             uuid: this.uuid,

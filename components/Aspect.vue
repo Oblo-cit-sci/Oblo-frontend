@@ -18,7 +18,6 @@
       :disabled="disabled"
       :mode="mode"
       v-on:update:value="emit_up($event)"
-      v-on:entryAction="$emit('entryAction',$event)"
       v-on:aspectAction="aspectAction($event)")
     div(v-if="!use_regular")
       Title_Description(v-bind="title_description(aspect.attr.alternative)")
@@ -30,6 +29,8 @@
 <script>
 
   import {EDIT, ENTRYACTION, TITLE_CHANGED, VIEW} from "../lib/consts";
+
+  //       v-on:entryAction="$emit('entryAction',$event)"
 
   export default {
     name: "Aspect",
@@ -77,20 +78,10 @@
     // boolean check is not required, since "false" is the default
     computed: {
       raw_value() {
-        if (this.value.regular || true)
-          return this.value.value
-        else {
-          // todo some extra value
-          return
-        }
+        return this.value.value
       },
       disabled() {
-        let disabled = !this.use_regular || this.condition_fail
-        if (disabled) {
-          // TODO strange behaviour here. its emitting default up, but not sending it down
-          this.$emit('update:value', pack_value(aspect_default_value(this.aspect)))
-        }
-        return disabled
+        return !this.use_regular || this.condition_fail
       }
     },
     methods: {
@@ -114,10 +105,8 @@
         return MAspectComponent(aspect_descr, false, mode)
       },
       emit_up(event) {
-        //console.log(this.value)
         this.value.value = event
-        this.$emit('update:value', this.value)
-        // console.log("emit up")
+        this.$emit('update:value', Object.assign(this.$_.cloneDeep(this.value), {value : event}))
         if (this.extra.is_title || false) {
           this.$emit(ENTRYACTION, {action: TITLE_CHANGED, value: event})
         }
@@ -130,8 +119,10 @@
       use_regular(val) {
         this.value.value = aspect_default_value(this.aspect)
         if(!val) {
+          this.$emit('update:value',{value: this.value.value, regular: false})
           this.value.regular = false
         } else {
+          this.$emit('update:value',{value: this.value.value})
           delete this.value.regular
         }
       },
@@ -157,7 +148,7 @@
     }
   }
 
-  import {aspect_default_value, entry_ref, get_local_entry, MAspectComponent, pack_value} from "../lib/entry";
+  import {aspect_default_value, MAspectComponent, pack_value} from "../lib/entry";
 
   import Title_Description from "./Title_Description";
 </script>
