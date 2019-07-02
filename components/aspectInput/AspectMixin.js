@@ -85,7 +85,7 @@ export default {
       this.i_value = new_val;
     },
     disabled() {
-      this.i_value = aspect_default_value(aspect)
+      this.i_value = aspect_default_value(this.aspect)
     }
   }
 }
