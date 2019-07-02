@@ -5,7 +5,6 @@
           :aspect="text_repr_aspect"
           :value="i_value"
           :edit="false"
-
           :prependIcon="prependIcon"
           v-on:clickPrepend="dialogOpen = true")
         v-dialog(width="500" v-model="dialogOpen" lazy=true)

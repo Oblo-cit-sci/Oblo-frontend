@@ -29,7 +29,7 @@
     },
     methods: {
       update_value($event, index) {
-        console.log("composite update value, index", index, $event)
+        //console.log("composite update value, index", index, $event)
         this.i_value[index] = $event
         // todo use TitleAspect in meta
         if(index === 0) {

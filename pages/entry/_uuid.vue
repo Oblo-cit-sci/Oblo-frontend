@@ -27,8 +27,8 @@
           :extra="extras[aspect.name]"
           :extra_update="extras_update[aspect.name]")
       div(v-if="!entry.ref && page === 0")
-        License(v-bind:passedLicense.sync="entry.license" v-if="has_license")
-        Privacy(v-bind:passedPrivacy.sync="entry.privacy" v-if="has_privacy")
+        License(v-bind:passedLicense.sync="entry.license")
+        Privacy(v-bind:passedPrivacy.sync="entry.privacy")
       EntryActions(v-bind="entry_actions_props" :page.sync="page" :has_pages="has_pages")
 </template>
 

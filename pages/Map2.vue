@@ -28,16 +28,8 @@
 
 <script>
 
-  //         @click="touch($event)"
-
-  //  <MglGeolocateControl ref="geolocateControl" />
-
-  //       <MglNavigationControl position="top-right" />
-  // MglNavigationControl, MglGeojsonLayer
   import {MglMarker, MglPopup} from 'vue-mapbox';
-  import {get_edit_route_for_ref, get_local_entry} from "../lib/entry";
-  import {get_from_store_location} from "../lib/client";
-  // MglNavigationControl, MglGeojsonLayer
+
   export default {
     name: "Map2",
     components: {MglMarker, MglPopup},
@@ -112,7 +104,8 @@
           }
         )
          */
-        const route = get_edit_route_for_ref(this.$store, this.$store.state.global_ref)
+        // TODO , setting values from the map again...
+        //const route = get_edit_route_for_ref(this.$store, this.$store.state.global_ref)
         this.$router.push(route)
       }
     },

@@ -3,6 +3,7 @@
     v-text-field(
       outline
       single-line
+      :value="i_value"
       v-on:input="input($event)"
       :suffix="suffix"
       :rules="[minmax]"
