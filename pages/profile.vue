@@ -12,19 +12,19 @@
       Aspect(:aspect="profile_aspects.description" :value.sync="edits.description" :edit="edit_mode" :mode="mode")
       Aspect(:aspect="profile_aspects.location" :value.sync="edits.location" :edit="edit_mode" :mode="mode")
       v-divider
-      v-subheader Interested topics
       //Taglist(:tags="$store.state.user.user_data.interested_topics")
       Aspect(:aspect="profile_aspects.interested_topics" :value.sync="edits.interested_topics" :edit="edit_mode" :mode="mode")
       v-divider
-      v-tabs(v-model="selected_tab" v-if="!edit_mode")
-        v-tab follows
-        v-tab following
-        v-tab Groups
-        v-tab Roles
-    v-btn(v-if="!edit_mode" color="info" @click="setEdit") Edit
-    div(v-else)
-      v-btn(color="warning" @click="cancelEdit") Cancel
-      v-btn(color="success" @click="doneEdit") Save
+      //v-tabs(v-model="selected_tab" v-if="!edit_mode")
+        //v-tab follows
+        //v-tab following
+        //v-tab Groups
+        //v-tab Roles
+    div(v-if="!visitor")
+      v-btn(v-if="!edit_mode" color="info" @click="setEdit") Edit
+      div(v-else)
+        v-btn(color="warning" @click="cancelEdit") Cancel
+        v-btn(color="success" @click="doneEdit") Save
 </template>
 
 <script>
@@ -44,6 +44,10 @@
     components: {
       Aspect,
       Taglist
+    },
+    middleware(context) {
+      console.log("profile-middleware", context)
+      context.app.router.push("/visitor")
     },
     validate({params}) {
       // Must be a number
@@ -110,7 +114,7 @@
             }
           },
           description: {
-            name: "description",
+            name: "Description",
             description: "",
             type: "str",
             attr: {
@@ -118,7 +122,7 @@
             }
           },
           location: {
-            name: "location",
+            name: "Location",
             description: "main location",
             type: "str",
             attr: {
@@ -126,7 +130,7 @@
             }
           },
           interested_topics: {
-            name: "interested_topics",
+            name: "Interested topics",
             description: "LICCIs you are interested in",
             type: "multiselect",
             items: "*liccis_flat",
@@ -144,6 +148,9 @@
     computed: {
       mode() {
         return this.edit_mode ? EDIT : VIEW
+      },
+      visitor() {
+        return this.$store.getters.visitor
       }
     }
   }
