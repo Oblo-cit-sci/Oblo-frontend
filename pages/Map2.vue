@@ -29,6 +29,7 @@
 <script>
 
   import {MglMarker, MglPopup} from 'vue-mapbox';
+  import {access_token, licci_style_map} from "../lib/services/mapbox";
 
   export default {
     name: "Map2",
@@ -43,8 +44,8 @@
     },
     data() {
       return {
-        accessToken: "pk.eyJ1IjoicmFtaW4zNiIsImEiOiJjamJ0eGo0cWQxbHo1MzJyMnV0bzhydjhzIn0.-q0FF4Jtuhc-wboaSA2E_A", // your access token. Needed if you using Mapbox maps
-        mapStyle: "mapbox://styles/ramin36/cjx2xkz2w030s1cmumgp6y1j8", //'mapbox://styles/mapbox/streets-v11', // your map style,
+        accessToken: access_token, // your access token. Needed if you using Mapbox maps
+        mapStyle: licci_style_map, //'mapbox://styles/mapbox/streets-v11', // your map style,
         coordinates: [0, 0],
         layerVisiblities: {
           climate: true,

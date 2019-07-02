@@ -21,6 +21,7 @@
   import AspectMixin from "./AspectMixin";
   import SingleSelect from "../SingleSelect";
   import {AUTOSAVE, GLOBAL_ASPECT_REF} from "../../lib/consts";
+  import {rev_geocode} from "../../lib/services/mapbox";
 
   const ACTUAL_LOCATION = "act";
   const FROM_MAP = "map";
@@ -60,23 +61,16 @@
         if (this.selection.value === ACTUAL_LOCATION) {
           console.log("getting location")
           get_location((location) => {
-            //console.log("obtained device location", location)
+            console.log("obtained device location", location)
             const error_loc = create_location_error(
               location.coords.longitude,
               location.coords.latitude,
               this.$store.state.user.user_data.location_error)
-            console.log(encodeURI("https://api.mapbox.com/geocoding/v5/mapbox.places/-78.33398437500261 C50.49506928540663.json&cachebuster=1562022419854&autocomplete=true&types=country%2Cregion%2Cdistrict&language=ar"))
-            let access_token = "pk.eyJ1IjoicmFtaW4zNiIsImEiOiJjamJ0eGo0cWQxbHo1MzJyMnV0bzhydjhzIn0.-q0FF4Jtuhc-wboaSA2E_A"
-            this.$axios.get(encodeURI("https://api.mapbox.com/geocoding/v5/mapbox.places/" + location.coords.longitude + "," + location.coords.latitude) + ".json",
-              {
-                params: {
-                  access_token: access_token,
-                  types: ["country","region","district"]
-                }
-              }).then((res) => {
-                this.location_reverse_geo = res.data
-              var userLang = navigator.language
-              console.log(userLang)
+            rev_geocode(this.$axios, {lon: location.coords.longitude, lat: location.coords.latitude}).then((data) => {
+              //this.location_reverse_geo = data
+              console.log(data)
+            }).catch((err) => {
+              console.log("error: mapbox api error", err)
             })
             console.log(error_loc)
             this.i_value = [{value: error_loc.lon}, {value: error_loc.lat}]

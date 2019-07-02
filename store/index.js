@@ -1,4 +1,4 @@
-import {EDIT, VIEW} from "../lib/consts";
+import {EDIT, VIEW, VISITOR} from "../lib/consts";
 
 export const state = () => ({
   // comes by init
@@ -99,7 +99,7 @@ export const mutations = {
 export const getters = {
   visitor(state) {
     //console.log("visitor check");
-    return state.user.user_data.global_role === "visitor"
+    return state.user.user_data.global_role === VISITOR
   },
   user(state) {
     return state.user.user_data
