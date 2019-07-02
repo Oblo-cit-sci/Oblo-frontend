@@ -272,7 +272,7 @@
       },
       shown_aspects() {
         if (this.has_pages) {
-          return ld.filter(this.entry_type.content.aspects, (a) => {
+          return this.$_.filter(this.entry_type.content.aspects, (a) => {
             return (this.page === 0 && (a.attr.page === 0 || a.attr.page === undefined) ||
               (this.page > 0 && a.attr.page === this.page))
           })

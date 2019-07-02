@@ -6,9 +6,14 @@
           :value="i_value"
           :edit="false"
           :prependIcon="prependIcon"
-          v-on:clickPrepend="dialogOpen = true")
+          :disabled="disabled"
+          v-on:clickPrepend="openDialog()")
         v-dialog(width="500" v-model="dialogOpen" lazy=true)
-          TreleafPicker(:tree="options" v-on:selected="selected" :keep_selection="true")
+          TreleafPicker(
+            :tree="options"
+            v-on:selected="selected"
+            :disabled="disabled"
+            :keep_selection="true")
 </template>
 
 <script>
@@ -47,6 +52,11 @@
       }
     },
     methods: {
+      openDialog() {
+        if(!this.disabled) {
+          this.dialogOpen = true
+        }
+      },
       selected(val) {
         this.dialogOpen = false;
         this.i_value = val.value

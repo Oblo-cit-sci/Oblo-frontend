@@ -113,7 +113,9 @@
         return MAspectComponent(aspect_descr, false, mode)
       },
       emit_up(event) {
-        this.$emit('update:value', {value: event})
+        //console.log(this.value)
+        this.value.value = event
+        this.$emit('update:value', this.value)
         // console.log("emit up")
         if (this.extra.is_title || false) {
           this.$emit(ENTRYACTION, {action: TITLE_CHANGED, value: event})
