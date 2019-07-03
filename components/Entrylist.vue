@@ -1,16 +1,17 @@
 <template lang="pug">
   div
-    v-list(two-line subheader)
-      v-list-tile(v-for="entry in entries"
-        :key="entry.id"
-        @click="show(entry)")
-        v-list-tile-avatar
-          v-icon {{privacy_icon(entry.privacy)}}
-        v-list-tile-content
-          v-list-tile-title {{entry.title}}
-          v-list-tile-sub-title {{creator(entry)}}
-        v-list-tile-action
-          v-img.license-image(:src="get_license_icon(entry.license)")
+    v-layout(sm12 justify-start)
+      v-list(two-line subheader)
+        v-list-tile(v-for="entry in entries"
+          :key="entry.id"
+          @click="show(entry)")
+          v-list-tile-avatar
+            v-icon {{privacy_icon(entry.privacy)}}
+          v-list-tile-content
+            v-list-tile-title {{entry.title}}
+            v-list-tile-sub-title {{creator(entry)}}
+          v-list-tile-action
+            v-img.license-image(:src="get_license_icon(entry.license)")
       v-divider
 </template>
 

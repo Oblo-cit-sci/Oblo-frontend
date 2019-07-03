@@ -1,6 +1,6 @@
 <template lang="pug">
-  v-layout(column='' justify-center='' align-center='')
-    v-flex(xs12='' sm8='' md6='' class="column")
+  v-layout(column justify-center align-center)
+    v-flex(xs12 sm12 md12)
       Title_Description(
         :title="entry_type.title"
         header_type="h1"
@@ -315,7 +315,5 @@
 </script>
 
 <style scoped>
-  .column {
-    width: 70%
-  }
+
 </style>
