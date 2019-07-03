@@ -20,7 +20,6 @@
     mixins: [AspectMixin, SelectMixin],
     components: {SingleSelect},
     created() {
-      //console.log("select create", this.value)
       if (this.select_check) {
         this.check_box_value = this.value === this.options[1].value // or maybe a value/default...
         if (this.aspect.items.length !== 2) {

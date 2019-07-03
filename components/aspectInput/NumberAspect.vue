@@ -32,9 +32,9 @@
         error: false, // todo actually emit it up... and make validation on whole entry...
         minmax: value => {
           if (this.aspect.attr.min && value < this.aspect.attr.min)
-            return "value must be higher than " + this.aspect.attr.min
+            return "value must be higher than " + (this.aspect.attr.min - 1)
           else if (this.aspect.attr.max && value > this.aspect.attr.max)
-            return "value must be lower than " + this.aspect.attr.max
+            return "value must be lower than " + (this.aspect.attr.max + 1)
           else return true
         }
       }

@@ -1,6 +1,6 @@
 <template lang="pug">
   div(v-if="viewStyle === CLEAR_LIST")
-    v-list(two-line)
+    v-list(:two-line="has_some_description")
       v-list-tile(v-for="item of options"
         :key="item.value"
         @click="select(item)"
@@ -103,6 +103,11 @@
           //console.log("emit no sync")
           this.$emit("selection", item);
         }
+      }
+    },
+    computed: {
+      has_some_description() {
+        return this.$_.find(this.options, (o) => o.description && o.description !== "") !== undefined
       }
     },
     watch: {

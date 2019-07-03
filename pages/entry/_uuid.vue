@@ -1,6 +1,6 @@
 <template lang="pug">
   v-layout(column justify-center align-center)
-    v-flex(xs12 sm12 md12)
+    v-flex(xs8 sm12 md12)
       Title_Description(
         :title="entry_type.title"
         header_type="h1"
