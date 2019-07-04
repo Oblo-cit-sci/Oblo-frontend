@@ -45,7 +45,7 @@
     set_entry_value,
     aspect_loc_str,
     MAspectComponent,
-    pack_value, delete_entry, unpack
+    pack_value, delete_entry, unpack, get_TitleAspect
   } from "../../lib/entry"
   import Title_Description from "../../components/Title_Description"
   import EntryActions from "../../components/EntryActions";
@@ -98,7 +98,7 @@
       this.$store.commit("set_global_ref", {uuid: this.uuid})
 
       this.entry_type = this.$store.getters.entry_type(this.entry.type_slug)
-      this.titleAspect = this.entry_type.content.meta.titleAspect || this.entry_type.content.aspects[0].name
+      this.titleAspect = get_TitleAspect(this.entry_type)
       this.has_pages = this.entry_type.content.meta.hasOwnProperty("pages")
 
       let required_aspects = this.$_.filter(this.entry_type.content.aspects, (a) => a.required || false)
