@@ -106,6 +106,11 @@
       to: '/Tests'
     },
     {
+      icon: 'fa-map',
+      title: 'Map',
+      to: '/Map2'
+    },
+    {
       icon: 'computer',
       title: 'Types',
       to: '/etype'
