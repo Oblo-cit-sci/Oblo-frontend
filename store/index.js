@@ -46,7 +46,6 @@ export const mutations = {
   backup_init(state, data) {
     // calld in the middleware
     if (!state.initialized) {
-      console.log("loading backup data")
       state.codes = {...data.codes}
       state.codes.liccis_flat = extract_liccis(data.codes.liccis);
       state.entry_types = new Map(data.entryTemplates)
@@ -76,11 +75,11 @@ export const mutations = {
   set_mapmode(state, mode) {
     state.mapmode = mode
   },
-  set_global_ref(state, ref) {
-    state.global_ref = ref
+  set_global_ref(state, uuid) {
+    state.global_ref = {uuid: uuid}
   },
-  add_aspect_ref(state, aspect_ref) {
-    state.global_ref.aspect_ref = aspect_ref
+  add_aspect_loc(state, aspect_loc) {
+    state.global_ref.aspect_loc = aspect_loc
   },
   clear(state) {
     state.global_ref = {}

@@ -30,6 +30,7 @@
 
   import {MglMarker, MglPopup} from 'vue-mapbox';
   import {access_token, licci_style_map} from "../lib/services/mapbox";
+  import {pack_value} from "../lib/entry";
 
   export default {
     name: "Map2",
@@ -57,7 +58,7 @@
             id: "climate", layers: ["climate type copy"], title: "Koeppen-Geiger"
           },
           {
-            id: "stations", layers: ["weather stations","weather stations age quality"], title: "Weather stations"
+            id: "stations", layers: ["weather stations", "weather stations age quality"], title: "Weather stations"
           }
         ]
       };
@@ -75,8 +76,8 @@
       },
       layer(l_id, layers) {
         this.layerVisiblities[l_id] = !this.layerVisiblities[l_id]
-        if(layers.constructor === Array) {
-          for(let l of layers) {
+        if (layers.constructor === Array) {
+          for (let l of layers) {
             var newVal = this.layerVisiblities[l_id] ? "visible" : "none";
             this.map.setLayoutProperty(l, 'visibility', newVal);
           }
@@ -88,27 +89,14 @@
         this.coordinates = [mapboxEvent.lngLat.lng, mapboxEvent.lngLat.lat]
       },
       done() {
-        let global_ref = this.$store.state.global_ref
+        this.$store.commit("entries/set_entry_value", {
+          ...this.$store.state.global_ref,
+          value:
+            pack_value([{value: this.coordinates[0]}, {value: this.coordinates[1]}])
+        })
 
-        // todo.1
-        //const draft = this.$store.state.edrafts.drafts[global_ref.draft_id]
-        const entry_type = this.$store.getters.entry_type(draft.type_slug)
-
-        /*
-        this.$store.commit("edrafts/set_draft_aspect_value_by_ref", {
-            draft_id: global_ref.draft_id,
-            aspect_ref: global_ref.aspect_ref,
-            entry_type: entry_type,
-            value: {
-              value:
-                [{value: this.coordinates[0]}, {value: this.coordinates[1]}]
-            }
-          }
-        )
-         */
-        // TODO , setting values from the map again...
-        //const route = get_edit_route_for_ref(this.$store, this.$store.state.global_ref)
-        this.$router.push(route)
+        let route = "/entry/" + this.$store.state.global_ref.uuid
+         this.$router.push(route)
       }
     },
     computed: {

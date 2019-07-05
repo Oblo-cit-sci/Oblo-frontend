@@ -34,8 +34,6 @@ export default {
   data() {
     return {
       i_value: null,
-      aspect_ref: null,
-      aspect_ref2: null,
     }
   },
   created() {

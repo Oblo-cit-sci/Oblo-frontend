@@ -44,7 +44,7 @@ module.exports = {
 
   router: {
     middleware: 'init',
-    base: "/licci/"
+    base: "/app/"
   },
 
   /*
@@ -63,6 +63,7 @@ module.exports = {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
+    '~/modules/myCache'
   ],
   /*
   ** Axios module configuration

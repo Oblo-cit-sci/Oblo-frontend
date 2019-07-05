@@ -12,7 +12,7 @@
                 :edit="true"
                 :extra="extra"
                 :mode="mode"
-                v-on:entryAction="check_aspect_action($event)")
+                v-on:entryAction="$emit('entryAction', $event)")
     div(v-if="value")
       Aspect(
         v-bind:aspect="aspect.view_type"
@@ -72,15 +72,16 @@
           return false
         }
       },
-      check_aspect_action(event) {
+      /*check_aspect_action(event) {
         //console.log("opt acpect check action", event)
         if (event.action === GLOBAL_ASPECT_REF) {
-          event.value = this.aspect_ref
+          //event.value = this.aspect_ref
+
           this.$emit(ENTRYACTION, event)
         } else {
           this.$emit(ENTRYACTION, event)
         }
-      }
+      }*/
     },
     computed: {
       result_value() {

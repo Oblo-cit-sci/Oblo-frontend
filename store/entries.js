@@ -3,6 +3,8 @@
  */
 
 
+import {ASPECT} from "../lib/consts";
+
 const ld = require("lodash")
 
 export const state = () => ({
@@ -26,10 +28,6 @@ export const mutations = {
       state.entries.set(e.uuid, e)
     })
      */
-  },
-  set_own_entries(state, entries) {
-    // todo.1
-    // just throw all the entries anyway
   },
   create(state, entry) {
     //console.log(entry)
@@ -65,7 +63,29 @@ export const mutations = {
   clear(state) {
     state.entries.clear()
     state.timeline_entries = []
+  },
+  // this is a duplicate from entry... the whole navigation part...
+  set_entry_value(state, {uuid, aspect_loc, value}) {
+    let entry = state.entries.get(uuid)
+    let select = entry.aspects_values
+    const final_loc = aspect_loc.pop()
+    for(let loc of aspect_loc){
+      if(loc[0] === ASPECT) {
+        select = select[loc[1]]
+      }
+    }
+    if(final_loc[0] === ASPECT) {
+      //select.set(inal_loc[1]) = value
+      select[final_loc[1]] = value
+    } else { // INDEX
+      // push new value
+      if(select.value.length === final_loc[1]) {
+        select.value.push(value)
+      }
+    }
   }
+
+
 }
 
 export const getters = {

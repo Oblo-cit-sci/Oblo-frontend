@@ -94,8 +94,10 @@
 
       this.entry = JSON.parse(JSON.stringify(entry))
 
+      this.$store.commit("set_global_ref", this.uuid)
+
       // set global ref, needed for deeply nested maps to know how to come back
-      this.$store.commit("set_global_ref", {uuid: this.uuid})
+      //this.$store.commit("set_global_ref", {uuid: this.uuid})
 
       this.entry_type = this.$store.getters.entry_type(this.entry.type_slug)
       this.titleAspect = get_TitleAspect(this.entry_type)
@@ -160,7 +162,7 @@
             autosave(this.$store, this.entry)
             break
           case GLOBAL_ASPECT_REF:
-            this.$store.commit("add_aspect_ref", value)
+            this.$store.commit("add_aspect_loc", value)
             break
           // todo maybe the server could set the titleAspect and itself
           // would in that case emit up this actiovaluen

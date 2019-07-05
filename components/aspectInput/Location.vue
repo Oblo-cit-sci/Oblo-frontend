@@ -4,7 +4,6 @@
       SingleSelect(:options="input_options" v-bind:selection.sync="selection")
     div(v-else)
       div No location specified
-    div {{location_reverse_geo}}
 </template>
 
 <script>
@@ -38,7 +37,6 @@
       }
     },
     created() {
-      console.log("location created with", this.i_value)
       const select = this.aspect.attr.select || "position"
       if (select === "position") {
         this.input_options = [
@@ -53,8 +51,7 @@
           {text: "point on the map", description: "", value: FROM_MAP}
         ]
       }
-    }
-    ,
+    },
     watch: {
       selection() {
         //console.log("selected location input method", this.selection);
@@ -72,14 +69,11 @@
             }).catch((err) => {
               console.log("error: mapbox api error", err)
             })
-            console.log(error_loc)
             this.i_value = [{value: error_loc.lon}, {value: error_loc.lat}]
-            console.log("calc loc", this.i_value)
             this.value_change(this.i_value)
           });
         } else if (this.selection.value === FROM_MAP) {
-          console.log("from map")
-          this.$emit("entryAction", {action: GLOBAL_ASPECT_REF, value: this.aspect_ref})
+          this.$emit("entryAction", {action: GLOBAL_ASPECT_REF, value: this.extra.aspect_loc})
           this.$emit("entryAction", {action: AUTOSAVE})
           //console.log("emitted")
           this.$store.commit("set_mapmode", {
@@ -90,8 +84,7 @@
           this.$router.push("/map2")
         }
       }
-    }
-    ,
+    },
     filters: {
       format_float(value) {
         return value.toFixed(4);
