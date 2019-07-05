@@ -47,6 +47,7 @@
         accessToken: access_token, // your access token. Needed if you using Mapbox maps
         mapStyle: licci_style_map, //'mapbox://styles/mapbox/streets-v11', // your map style,
         coordinates: [0, 0],
+        entries: [],
         layerVisiblities: {
           climate: true,
           "stations": true

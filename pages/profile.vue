@@ -45,9 +45,10 @@
       Aspect,
       Taglist
     },
-    middleware(context) {
-      console.log("profile-middleware", context)
-      context.app.router.push("/visitor")
+    middleware(context){
+      if(context.store.getters.visitor) {
+        context.redirect("/visitor")
+      }
     },
     validate({params}) {
       // Must be a number
