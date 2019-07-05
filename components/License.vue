@@ -61,7 +61,7 @@
     computed: {
       licenseImagePath() {
         return this.selectedLicense ?
-          license_icon(this.$axios, this.selectedLicense.svg, this.$store)
+          license_icon(this.$router.options.base, this.$axios, this.selectedLicense.svg, this.$store)
           :
           null;
       },

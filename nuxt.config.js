@@ -44,7 +44,7 @@ module.exports = {
 
   router: {
     middleware: 'init',
-   // base: "/licci/"
+    base: "/licci/"
   },
 
   /*

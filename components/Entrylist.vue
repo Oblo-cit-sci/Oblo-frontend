@@ -45,7 +45,7 @@
       },
       get_license_icon(license) {
         let licence_svg = this.$store.state.codes.licenses[license].svg
-        return license_icon(this.$axios, licence_svg, this.$store);
+        return license_icon(this.$router.options.base, this.$axios, licence_svg, this.$store);
       },
       creator(entry) {
         const public_name = entry.actors.creator.public_name

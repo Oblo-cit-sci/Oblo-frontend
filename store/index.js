@@ -1,4 +1,4 @@
-import {EDIT, VIEW, VISITOR} from "../lib/consts";
+import {EDIT, VISITOR} from "../lib/consts";
 
 export const state = () => ({
   // comes by init
@@ -15,7 +15,7 @@ export const state = () => ({
   global_ref: null, // the last draft/entry
   draft_numbers: {}
   // selected entry type (for creation)
-});
+})
 
 function extract_liccis(tree) {
   let liccis = [];
@@ -28,11 +28,10 @@ function extract_liccis(tree) {
       }
     }
   }
-  return liccis;
+  return liccis
 }
 
-const ld = require('lodash');
-
+const ld = require('lodash')
 
 export const mutations = {
   init(state, data) {
@@ -105,7 +104,7 @@ export const getters = {
     return state.user.user_data
   },
   name(state) {
-    return state.user.user_data.registered_name;
+    return state.user.user_data.registered_name
   },
   // entry-types
   global_entry_types_as_array(state) {
@@ -116,27 +115,27 @@ export const getters = {
         global_entry_types.push(entry)
       }
     }
-    return global_entry_types;
+    return global_entry_types
   },
   entry_type(state, getters) {
     return (type_slug) => {
       return state.entry_types.get(type_slug)
-    };
+    }
   },
   get_aspect_index(state, getters) {
     return (type_slug, aspect_name) => {
-      return ld.findIndex(state.entry_types.get(type_slug).content.aspects, (a) => a.name === aspect_name);
-    };
+      return ld.findIndex(state.entry_types.get(type_slug).content.aspects, (a) => a.name === aspect_name)
+    }
   },
   get_aspect(state, getters) {
     return (type_slug, aspect_name) => {
-      return ld.find(state.entry_types.get(type_slug).content.aspects, (a) => a.name === aspect_name);
-    };
+      return ld.find(state.entry_types.get(type_slug).content.aspects, (a) => a.name === aspect_name)
+    }
   },
   draft_no(state, getters) {
     return (type_slug) => {
       return state.draft_numbers[type_slug] || 1
-    };
+    }
   },
 
 
