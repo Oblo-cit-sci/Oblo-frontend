@@ -7,17 +7,19 @@
         @load="onMapLoaded"
         @click="touch($event)"
       >
-        <MglMarker :coordinates="coordinates">
-          <!--<MglPopup anchor="top">
-            <VCard>
-              <div>Hello, I'm popup!</div>
-            </VCard>
-          </MglPopup>-->
-        </MglMarker>
-        <v-text-field hideDetails readonly fullWidth :value="coordinate_string"></v-text-field>
-        <v-btn small @click="done">
-          Done
-        </v-btn>
+        <div v-if="mode !== modes.SIMPLE_MODE">
+          <MglMarker :coordinates="coordinates">
+            <!--<MglPopup anchor="top">
+              <VCard>
+                <div>Hello, I'm popup!</div>
+              </VCard>
+            </MglPopup>-->
+          </MglMarker>
+          <v-text-field hideDetails readonly fullWidth :value="coordinate_string"></v-text-field>
+          <v-btn small @click="done">
+            Done
+          </v-btn>
+        </div>
       </MglMap>
       <v-btn v-for="layerBtn in map_sources" :key="layerBtn.id" small @click="layer(layerBtn.id, layerBtn.layers)"
              :color="layerClr(layerBtn.id)"> {{layerBtn.title}}
@@ -31,6 +33,8 @@
   import {MglMarker, MglPopup} from 'vue-mapbox';
   import {access_token, licci_style_map} from "../lib/services/mapbox";
   import {pack_value} from "../lib/entry";
+
+  const SIMPLE_MODE = 0
 
   export default {
     name: "Map2",
@@ -49,6 +53,8 @@
         mapStyle: licci_style_map, //'mapbox://styles/mapbox/streets-v11', // your map style,
         coordinates: [0, 0],
         entries: [],
+        mode: null,
+        modes: {SIMPLE_MODE: SIMPLE_MODE},
         layerVisiblities: {
           climate: true,
           "stations": true
@@ -64,6 +70,7 @@
       };
     },
     created() {
+      this.mode = this.$store.state.mapmode.select || SIMPLE_MODE
     },
     methods: {
       layerClr(l_id) {
@@ -96,7 +103,7 @@
         })
 
         let route = "/entry/" + this.$store.state.global_ref.uuid
-         this.$router.push(route)
+        this.$router.push(route)
       }
     },
     computed: {
