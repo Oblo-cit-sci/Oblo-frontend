@@ -1,5 +1,5 @@
 <template lang="pug">
-  div(v-if="viewStyle === CLEAR_LIST")
+  div(v-if="viewStyle === view_map.CLEAR_LIST")
     v-list(:two-line="has_some_description")
       v-list-tile(v-for="item of options"
         :key="item.value"
@@ -8,8 +8,10 @@
         v-list-tile-content
           v-list-tile-title {{item.text}}
           v-list-tile-sub-title {{item.description}}
-  div(v-else)
+  div(v-else-if="viewStyle === view_map.VUETIFY_SELECT")
     v-select(outline hideDetails singleLine dense :multiple=false v-model="selected_item" :items="options" return-object)
+  div(v-else)
+    v-autocomplete(outline hideDetails singleLine dense v-model="selected_item" :items="options" return-object)
 </template>
 
 <script>
@@ -22,14 +24,17 @@
 
   const ld = require('lodash');
 
-  let clearListThresh = 5;
+  let select_tresh = 5;
+  let autocomplet_thresh = 20
 
   let CLEAR_LIST = 0;
   let VUETIFY_SELECT = 1;
+  let AUTOCOMPLETE = 2
 
   const view_map = {
-    "CLEAR_LIST": 0,
-    "VUETIFY_SELECT": 1
+    "CLEAR_LIST": CLEAR_LIST,
+    "VUETIFY_SELECT": VUETIFY_SELECT,
+    "AUTOCOMPLETE":AUTOCOMPLETE
   };
 
   export default {
@@ -59,13 +64,11 @@
       return {
         viewStyle: CLEAR_LIST,
         selected_item: null, // for v-select
-        simple_select: "b" // TEST SIMPLE
+        simple_select: "b", // TEST SIMPLE
+        view_map: view_map
       }
     },
     created() {
-      this.CLEAR_LIST = CLEAR_LIST;
-      this.VUETIFY_SELECT = VUETIFY_SELECT;
-      //console.log("SingleSelect created", this.selection)
       // TODO check if still needed
       if (this.selection) {
         this.selected_item = this.selection;
@@ -73,10 +76,13 @@
       if (this.force_view) {
         this.viewStyle = view_map[this.force_view];
       } else {
-        if (ld.size(this.options) < clearListThresh) {
+        let sz = ld.size(this.options)
+        if (sz < select_tresh) {
           this.viewStyle = CLEAR_LIST;
-        } else {
+        } else if(sz < autocomplet_thresh) {
           this.viewStyle = VUETIFY_SELECT;
+        } else {
+          this.viewStyle = AUTOCOMPLETE
         }
       }
     },
