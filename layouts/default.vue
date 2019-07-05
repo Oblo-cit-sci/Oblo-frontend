@@ -100,21 +100,26 @@
       title: 'Profile',
       to: '/profile'
     },
-    /*{
+    {
       icon: 'computer',
       title: 'Tests',
       to: '/Tests'
-    },*/
+    },
+    {
+      icon: 'flip_to_front',
+      title: 'Entrytypes',
+      to: '/EntryType'
+    },
     {
       icon: 'fa-map',
       title: 'Map',
       to: '/Map2'
     },
-    /*{
+    {
       icon: 'computer',
       title: 'Types',
       to: '/etype'
-    },*/
+    },
     {
       icon: 'how_to_reg',
       title: 'Register',
@@ -139,6 +144,7 @@
 
   let require_login = ["Profile", "Logout"]
   let hide_no_login = ["Register", "Login"] // if not connected out and if logged in out
+  let show_inDev = ["Test", "Types"]
 
   export default {
     components: {GlobalSnackbar},
@@ -178,10 +184,14 @@
         } else { // logged in
           this.items = all_items.filter(item => hide_no_login.indexOf(item.title) === -1)
         }
+        if(!this.isDev) {
+          this.items = all_items.filter(item => show_inDev.indexOf(item.title) !== -1)
+        }
       }
     },
     data() {
       return {
+        isDev: this.$store.app.context.isDev,
         login_state: false,
         connecting: false,
         connected: false,
