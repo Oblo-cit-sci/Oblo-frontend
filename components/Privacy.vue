@@ -1,7 +1,7 @@
 <template lang="pug">
   div
     h3 Privacy
-    div(v-if="private_local")
+    div(v-if="!has_privacy")
       div This entry is for private local usage and cannot be uploaded to the platform. It's intended to be download and sent to the data repository.
     div(v-else-if="edit")
       div(v-if="$store.getters.visitor")
@@ -31,6 +31,9 @@
   export default {
     name: "Privacy",
     props: {
+      has_privacy: {
+        type: Boolean
+      },
       passedPrivacy: { // for drafts
         type: String,
       },
@@ -59,7 +62,7 @@
         return this.mode === EDIT
       },
       private_local() {
-        return this.selectedPrivacy.value === PRIVATE_LOCAL
+        return this.passedPrivacy === PRIVATE_LOCAL
       }
     },
     methods: {

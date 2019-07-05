@@ -27,8 +27,8 @@
           :extra="extras[aspect.name]"
           :extra_update="extras_update[aspect.name]")
       div(v-if="!entry.ref && page === 0")
-        License(v-bind:passedLicense.sync="entry.license")
-        Privacy(v-bind:passedPrivacy.sync="entry.privacy")
+        License(:passedLicense.sync="entry.license")
+        Privacy(:has_privacy="has_privacy" :passedPrivacy.sync="entry.privacy")
       EntryActions(v-bind="entry_actions_props" :page.sync="page" :has_pages="has_pages")
 </template>
 
@@ -85,7 +85,7 @@
         page: 0,
         last_page: false,
         extras: {},
-        extras_update: {}
+        extras_update: {},
       }
     },
     created() {
@@ -281,12 +281,12 @@
         return this.entry_type.content.aspects
       },
       has_privacy() {
-        const meta = this.entry_type.content.meta
-        // todo server should set it. then remove this check
-        if (this.entry_type.content.meta.privacy || PUBLIC) {
-          return this.entry_type.content.meta.privacy !== PRIVATE_LOCAL
-        } else
-          return meta.hasOwnProperty.has_privacy || true
+        const has_privacy = this.entry_type.content.meta.has_privacy
+        if(has_privacy === undefined || has_privacy === true) {
+          return true
+        } else{
+          return false
+        }
       },
       // maybe also consider:
       // https://github.com/edisdev/download-json-data/blob/develop/src/components/Download.vue
