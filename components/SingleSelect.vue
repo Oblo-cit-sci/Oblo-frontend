@@ -1,5 +1,5 @@
 <template lang="pug">
-  div(v-if="viewStyle === view_map.CLEAR_LIST")
+  div(v-if="view_clearlist")
     v-list(:two-line="has_some_description")
       v-list-tile(v-for="item of options"
         :key="item.value"
@@ -8,40 +8,44 @@
         v-list-tile-content
           v-list-tile-title {{item.text}}
           v-list-tile-sub-title {{item.description}}
-  div(v-else-if="viewStyle === view_map.VUETIFY_SELECT")
+  div(v-else-if="view_select")
     v-select(outline hideDetails singleLine dense :multiple=false v-model="selected_item" :items="options" return-object)
-  div(v-else)
+  div(v-else-if="view_autocomplete")
     v-autocomplete(outline hideDetails singleLine dense v-model="selected_item" :items="options" return-object)
+  div(v-else-if="view_radiogroup")
+    v-radio-group(:row="true"  v-model="selected_item")
+      v-radio(v-for="item of options" :key="item.key" :label="item.text" :value="item.value")
 </template>
 
 <script>
 
   /*
   OPTIONS NEED TO HAVE
-  title, value
+  txt, value
   and optional "description"
    */
-
-  const ld = require('lodash');
 
   let select_tresh = 5;
   let autocomplet_thresh = 20
 
-  let CLEAR_LIST = 0;
-  let VUETIFY_SELECT = 1;
-  let AUTOCOMPLETE = 2
+  const CLEAR_LIST = 0;
+  const SELECT = 1;
+  const AUTOCOMPLETE = 2
 
-  const view_map = {
-    "CLEAR_LIST": CLEAR_LIST,
-    "VUETIFY_SELECT": VUETIFY_SELECT,
-    "AUTOCOMPLETE":AUTOCOMPLETE
-  };
+  const RADIOGROUP = 4
+
+  export const VIEW_OPTIONS = {
+    CLEAR_LIST: CLEAR_LIST,
+    SELECT: SELECT,
+    AUTOCOMPLETE: AUTOCOMPLETE,
+    RADIOGROUP: RADIOGROUP
+  }
 
   export default {
     name: "SingleSelect",
     props: {
       options: Array,
-      selection: Object,
+      selection: [Object, String],
       highlight: {
         type: Boolean,
         default: true
@@ -52,35 +56,44 @@
       },
       force_view: {
         type: String,
-        required: false,
         default: undefined
       }, // either (CLEAR_LIST | VUETIFY_SELECT)
+      only_value: {
+        type: Boolean,
+      },
       disabled: {
         type: Boolean,
-        default: false
       }
     },
     data() {
       return {
         viewStyle: CLEAR_LIST,
         selected_item: null, // for v-select
-        simple_select: "b", // TEST SIMPLE
-        view_map: view_map
+        view_options: VIEW_OPTIONS,
+        radioselect_test: "view"
       }
     },
     created() {
-      // TODO check if still needed
       if (this.selection) {
-        this.selected_item = this.selection;
+        if(typeof this.selection === "string") {
+          this.only_value = true
+          this.selected_item = this.$_.find(this.options, (o) => { return o.value === this.selection})
+        } else {
+          this.selected_item = this.selection;
+        }
       }
       if (this.force_view) {
-        this.viewStyle = view_map[this.force_view];
+        this.viewStyle = this.view_options[this.force_view];
+        if(this.viewStyle === RADIOGROUP) {
+          this.only_value = true
+          this.selected_item = this.selection
+        }
       } else {
-        let sz = ld.size(this.options)
+        let sz = this.$_.size(this.options)
         if (sz < select_tresh) {
           this.viewStyle = CLEAR_LIST;
         } else if(sz < autocomplet_thresh) {
-          this.viewStyle = VUETIFY_SELECT;
+          this.viewStyle = SELECT;
         } else {
           this.viewStyle = AUTOCOMPLETE
         }
@@ -102,18 +115,33 @@
         return item.type === "category"
       },
       emitUp(item) {
+        // todo maybe just one emit?
+        // but item might already be string, ...
+        const event = this.only_value ? (typeof item === "string" ? item : item.value ): item
         //console.log("emit", item, this.select_sync)
         if (this.select_sync) {
-          this.$emit('update:selection', item); // refactor to use the item
+          this.$emit('update:selection', event); // refactor to use the item
         } else {
           //console.log("emit no sync")
-          this.$emit("selection", item);
+          this.$emit("selection", event);
         }
       }
     },
     computed: {
       has_some_description() {
         return this.$_.find(this.options, (o) => o.description && o.description !== "") !== undefined
+      },
+      view_clearlist() {
+        return this.viewStyle === CLEAR_LIST
+      },
+      view_select() {
+        return this.viewStyle === SELECT
+      },
+      view_autocomplete() {
+          return this.viewStyle === AUTOCOMPLETE
+      },
+      view_radiogroup() {
+        return this.viewStyle === RADIOGROUP
       }
     },
     watch: {
