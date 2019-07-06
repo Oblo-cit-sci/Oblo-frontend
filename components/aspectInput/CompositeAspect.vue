@@ -14,6 +14,24 @@
 
 <script>
 
+  /*
+    the trial to allow 2 (or maybe more aspects into one row: e.g. lon:lat, key:value.
+    doesnt stack, when rows get to narrow... :/
+      div
+      v-layout
+        v-flex(col-md6 v-for="(comp_type, index) in aspect.components" :key="index")
+          Aspect(
+            style="min-width='100px'"
+            :aspect="comp_type"
+            :value="i_value[index]"
+            v-on:update:value="update_value($event, index)"
+            :edit="true"
+            :mode="mode"
+            :extra="comp_extras(comp_type)"
+            v-on:entryAction="$emit('entryAction',$event)"
+            v-on:aspectAction="aspectAction")
+   */
+
   import AspectMixin from "./AspectMixin";
   import Aspect from "../Aspect";
   import {ASPECTACTION, TITLE_UPDATE} from "../../lib/consts";

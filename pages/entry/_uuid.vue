@@ -26,8 +26,8 @@
           mode="edit"
           :extra="extras[aspect.name]"
           :extra_update="extras_update[aspect.name]")
-      div(v-if="!entry.ref && page === 0")
-        License(:passedLicense.sync="entry.license")
+      div(v-if="page === 0")
+        License(:has_licence="has_license" :passedLicense.sync="entry.license" :mode="licence_mode")
         Privacy(:has_privacy="has_privacy" :passedPrivacy.sync="entry.privacy")
       EntryActions(v-bind="entry_actions_props" :page.sync="page" :has_pages="has_pages")
 </template>
@@ -55,7 +55,7 @@
     CREATE_CONTEXT_ENTRY,
     GLOBAL_ASPECT_REF,
     TITLE_CHANGED,
-    ASPECT, DELETE_CONTEXT_ENTRY, PUBLIC, PRIVATE_LOCAL
+    ASPECT, DELETE_CONTEXT_ENTRY, PUBLIC, PRIVATE_LOCAL, VIEW
   } from "../../lib/consts";
   import Aspect from "../../components/Aspect";
 
@@ -110,13 +110,6 @@
 
       this.conditions = check_conditions(this.entry_type)
       let condition_targets = this.$_.map(this.conditions, c => c.aspect)
-
-      /*
-      this.condition_vals = {}
-      for (let target of Object.values(this.conditions)) {
-        this.condition_vals[target] = {val: null}
-      }
-      */
 
       // todo same in page EntryType
       for (let aspect of this.entry_type.content.aspects) {
@@ -266,6 +259,11 @@
           return meta.has_license
         } else
           return true
+      },
+      licence_mode() {
+        if(this.entry.refs.parent) {
+          return VIEW
+        }
       },
       parent_title() {
         // todo not necessarily available for remote entries. should be included?

@@ -2,17 +2,19 @@
   div
     h3 License
     div(v-if="edit")
-      div(v-if="$store.getters.visitor")
+      div(v-if="!has_license")
+        div This entry is for private local usage and has no licence. It's intended to be download and sent to the data repository.
+      div(v-else-if="$store.getters.visitor")
         div as a visitor your contributions will be licensed under {{selectedLicense.title}}.
       div(v-else)
         div you selected the license: {{selectedLicense.title}}.
-      img.license-image(:src="licenseImagePath")
       div(v-if="!$store.getters.visitor")
         v-switch(v-model="use_alternative_license" :label="license_selection" color="red")
         SingleSelect(
           v-if="use_alternative_license"
           :options="licenseOptions"
           :selection.sync="selectedLicense")
+      img.license-image(:src="licenseImagePath")
     div(v-else)
       div {{selectedLicense.title}}
       img.license-image(:src="licenseImagePath" )
@@ -30,12 +32,19 @@
   export default {
     name: "License",
     props: {
+      has_license: {
+        type:Boolean,
+        default: true
+      },
       passedLicense: {
         type: String
       },
       mode: {
         type: String,
         default: EDIT
+      },
+      message: {
+        type: String
       }
     },
     components: {SingleSelect, TextShort},

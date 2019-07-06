@@ -1,10 +1,12 @@
 <template lang="pug">
   div(v-if="view_clearlist")
-    v-list(:two-line="has_some_description")
+    v-list(:three-line="has_some_description")
       v-list-tile(v-for="item of options"
         :key="item.value"
         @click="select(item)"
         :class="[{ marked: marked(item.value) }, {category: is_category(item)}]")
+        v-list-tile-avatar(v-if="has_some_icons")
+          v-icon {{item.icon}}
         v-list-tile-content
           v-list-tile-title {{item.text}}
           v-list-tile-sub-title {{item.description}}
@@ -130,6 +132,9 @@
     computed: {
       has_some_description() {
         return this.$_.find(this.options, (o) => o.description && o.description !== "") !== undefined
+      },
+      has_some_icons() {
+        return this.$_.find(this.options, (o) => o.icon && o.icon !== "") !== undefined
       },
       view_clearlist() {
         return this.viewStyle === CLEAR_LIST

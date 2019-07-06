@@ -16,7 +16,7 @@
 </template>
 
 <script>
-  import {CREATOR, entry_actor_relation, license_icon} from "../lib/client"
+  import {CREATOR, entry_actor_relation, license_icon, privacy_icon} from "../lib/client"
   import EntryNavMixin from "./EntryNavMixin";
 
   export default {
@@ -41,7 +41,7 @@
           this.fetch_and_nav(entry.uuid)
       },
       privacy_icon(privacy) {
-        return "public"
+        return privacy_icon(privacy)
       },
       get_license_icon(license) {
         let licence_svg = this.$store.state.codes.licenses[license].svg

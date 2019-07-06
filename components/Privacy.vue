@@ -22,7 +22,7 @@
 
 <script>
   import SingleSelect from "./SingleSelect";
-  import {string2option, string_list2options} from "../lib/client";
+  import {privacy_icon, string2option, string_list2options} from "../lib/client";
   import {EDIT, PRIVATE, PRIVATE_LOCAL, PUBLIC} from "../lib/consts";
 
 
@@ -45,7 +45,11 @@
     components: {SingleSelect},
     data() {
       return {
-        privacy_options: string_list2options(OPTIONS),
+        privacy_options: [
+          {text: PUBLIC, description: "This entry is visible to everyone", icon:privacy_icon(PUBLIC)},
+          {text: PRIVATE, description: "This entry is not shared with any expect with those your grant access", icon:privacy_icon(PRIVATE)},
+          {text: PRIVATE_LOCAL, description: "This entry stays on your device. Make sure to save it after changes", icon:privacy_icon(PRIVATE_LOCAL)}
+        ],
         selectedPrivacy: null,
         use_alternative_privacy: false
       }
