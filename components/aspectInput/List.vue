@@ -156,6 +156,7 @@
         xtra_copy.aspect_loc.push([INDEX, index])
         xtra_copy.no_title = true
         xtra_copy.clear = "no_title"
+        xtra_copy.listitem = true
         return xtra_copy
       },
       aspectAction(event, index) {

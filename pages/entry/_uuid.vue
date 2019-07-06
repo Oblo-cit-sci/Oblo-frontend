@@ -118,9 +118,7 @@
       }
       */
 
-      // todo this whole part... not used atm...
-      // console.log(this.entry_type.content)
-      // this is a aspect_loc building function, abstract and pull out
+      // todo same in page EntryType
       for (let aspect of this.entry_type.content.aspects) {
         let extra_props = {}
         extra_props.aspect_loc = [[ASPECT, aspect.name]]
