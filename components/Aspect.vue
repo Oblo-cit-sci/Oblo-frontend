@@ -7,7 +7,7 @@
       :mode="mode")
     v-switch(v-if="has_alternative"
       v-model="use_regular"
-      :label="use_regular ? `regular value`:`alternative value`"
+      :label="use_regular ? regular_value_text: alternative_value_text"
       color="primary")
     component(
       :is="aspectComponent(aspect, mode)"
@@ -83,6 +83,12 @@
       },
       disabled() {
         return !this.use_regular || this.condition_fail
+      },
+      regular_value_text() {
+        return this.aspect.attr["alternative-true"] || "regular value"
+      },
+      alternative_value_text() {
+        return this.aspect.attr["alternative-false"] || "alternative value"
       }
     },
     methods: {
