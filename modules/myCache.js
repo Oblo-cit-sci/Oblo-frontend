@@ -19,7 +19,7 @@ export default function myCache(moduleOptions) {
         }
       })
 
-      console.log("entry types: ", Array.from(Object.keys(data.entryTemplates)))
+      console.log("entry types ") //, Array.from(Object.keys(data.entryTemplates)))
       writeFile("lib/types.json", JSON.stringify(data.entryTemplates), "utf8", (err) => {
         if (err) {
           console.log("module myCache had problems saving file", err)

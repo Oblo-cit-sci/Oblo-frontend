@@ -1,6 +1,6 @@
 <template lang="pug">
     div
-      v-flex(xs12 sm12 md12 text-xs-left)
+      v-flex(text-xs-left)
         TextShort(
           :aspect="text_repr_aspect"
           :value="i_value"
@@ -50,6 +50,7 @@
           this.options = this.$store.state.codes[passed_options.substring(1)];
         }
       }
+      console.log("tree options", this.options)
     },
     methods: {
       openDialog() {

@@ -12,7 +12,7 @@
       div(v-if="has_pages")
         Title_Description(
           :title="page_info.title"
-          header_type="h3"
+          header_type="h2"
           :description="page_info.description"
           mode="edit")
       br
@@ -28,7 +28,7 @@
           :extra_update="extras_update[aspect.name]")
       div(v-if="page === 0")
         License(:has_licence="has_license" :passedLicense.sync="entry.license" :mode="licence_mode")
-        Privacy(:has_privacy="has_privacy" :passedPrivacy.sync="entry.privacy")
+        Privacy(:mode="privacy_mode" :passedPrivacy.sync="entry.privacy")
       EntryActions(v-bind="entry_actions_props" :page.sync="page" :has_pages="has_pages")
 </template>
 
@@ -249,6 +249,11 @@
       }*/
     },
     computed: {
+      privacy_mode() {
+        const privacy_set = this.entry_type.content.meta.privacy
+        return privacy_set ? VIEW : EDIT
+
+      },
       has_license() {
         const meta = this.entry_type.content.meta
         if (meta.hasOwnProperty("privacy")) {
@@ -277,14 +282,6 @@
           })
         }
         return this.entry_type.content.aspects
-      },
-      has_privacy() {
-        const has_privacy = this.entry_type.content.meta.has_privacy
-        if(has_privacy === undefined || has_privacy === true) {
-          return true
-        } else{
-          return false
-        }
       },
       // maybe also consider:
       // https://github.com/edisdev/download-json-data/blob/develop/src/components/Download.vue

@@ -93,8 +93,17 @@
         if (!aspect_descr.hasOwnProperty("description")) {
           //console.log("warning: aspect", this.aspect, "has no description")
         }
+
+        let title = ""
+        if (!this.extra.no_title) {
+          if (this.aspect.label !== undefined) {
+            title = this.aspect.label
+          } else {
+            title = this.aspect.name
+          }
+        }
         return {
-          title: !this.extra.no_title ? aspect_descr.name || "" : "",
+          title: title,
           description: aspect_descr.description || ""
         }
       },
@@ -107,7 +116,7 @@
       },
       emit_up(event) {
         this.value.value = event
-        this.$emit('update:value', Object.assign(this.$_.cloneDeep(this.value), {value : event}))
+        this.$emit('update:value', Object.assign(this.$_.cloneDeep(this.value), {value: event}))
         if (this.extra.is_title || false) {
           this.$emit(ENTRYACTION, {action: TITLE_CHANGED, value: event})
         }
@@ -119,11 +128,11 @@
       },
       use_regular(val) {
         this.value.value = aspect_default_value(this.aspect)
-        if(!val) {
-          this.$emit('update:value',{value: this.value.value, regular: false})
+        if (!val) {
+          this.$emit('update:value', {value: this.value.value, regular: false})
           this.value.regular = false
         } else {
-          this.$emit('update:value',{value: this.value.value})
+          this.$emit('update:value', {value: this.value.value})
           delete this.value.regular
         }
       },
