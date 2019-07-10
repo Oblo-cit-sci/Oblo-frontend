@@ -40,7 +40,7 @@
     watch: {
       selection() {
         //console.log("selection update", this.selection)
-        console.log("select", this.aspect, this.selection)
+        //console.log("select", this.aspect, this.selection)
         if (this.selection === null)
           this.value_change(null)
         else

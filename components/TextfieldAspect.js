@@ -4,7 +4,7 @@ export default {
     return {
       hideDetails: true,
       hint: undefined,
-      rules: undefined
+      rules: undefined,
     }
   },
   created() {

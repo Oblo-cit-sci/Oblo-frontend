@@ -1,14 +1,15 @@
 <template lang="pug">
     div
-      v-flex(xs12 sm12 md12 text-xs-left)
+      v-flex(text-xs-left)
         TextShort(
           :aspect="text_repr_aspect"
           :value="i_value"
           :edit="false"
           :prependIcon="prependIcon"
           :disabled="disabled"
-          v-on:clickPrepend="openDialog()")
-        v-dialog(width="500" v-model="dialogOpen" lazy=true)
+          v-on:clickPrepend="openDialog()"
+          v-on:focus="openDialog(true)")
+        v-dialog(width="500" v-model="dialogOpen" lazy=true :persistent="persistent")
           TreleafPicker(
             :tree="options"
             v-on:selected="selected"
@@ -30,6 +31,7 @@
       return {
         options: {},
         dialogOpen: false,
+        persistent: false,
         text_repr_aspect : {
           name: "selected",
           type: "str",
@@ -50,14 +52,21 @@
           this.options = this.$store.state.codes[passed_options.substring(1)];
         }
       }
+      console.log("tree options", this.options)
     },
     methods: {
-      openDialog() {
+      openDialog(short_persistence) {
         if(!this.disabled) {
           this.dialogOpen = true
+          // to fix issue of blue triggering a close of the dialog
+          if(short_persistence) {
+            this.persistent = true
+            setTimeout(() => this.persistent = false, 100)
+          }
         }
       },
       selected(val) {
+        console.log("selected")
         this.dialogOpen = false;
         this.i_value = val.value
         this.value_change(this.i_value)

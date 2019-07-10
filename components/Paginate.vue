@@ -4,8 +4,8 @@
     v-btn(:disabled="has_prev_pages" @click="change_page(-1)") Previous Page
     v-btn(:disabled="last_page" @click="change_page(1)") Next Page
     span {{page + 1}} / {{total}}
-    //div(v-if="page_select")
-    //  SingleSelect(:options="pages_options" :select_sync="false" v-on:selection="page_selected($event)")
+    div(v-if="allow_jump")
+      SingleSelect(:options="pages_options" :selection="selected_page" :select_sync="false" v-on:selection="page_selected($event)")
 </template>
 
 <script>
@@ -18,9 +18,13 @@
     props: {
       total: Number,
       page: Number,
-      page_select: {
+      pages: {
         type: Array,
         required: false
+      },
+      allow_jump: {
+        type: Boolean,
+        default: true
       }
     },
     computed: {
@@ -31,7 +35,11 @@
         return !(this.page > 0)
       },
       pages_options() {
-        return string_list2options(this.$_.map(this.page_select, (p) => {return p.title}))
+        return string_list2options(this.$_.map(this.pages, (p) => {return p.title}))
+      },
+      selected_page() {
+        console.log(this.pages, this.page, this.pages[this.page])
+        return this.pages[this.page].title
       }
     },
     methods: {
@@ -45,7 +53,9 @@
           this.$emit("lastpage", this.test_last_page(next_page))
       },
       page_selected(event) {
-        this.$emit("lastpage", this.last_page)
+        let page_select = this.$_.findIndex(this.pages, p => p.title === event.value)
+        this.$emit("update:page", page_select)
+        this.$emit("lastpage",this.test_last_page(page_select))
       }
     }
   }

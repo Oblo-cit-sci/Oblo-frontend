@@ -2,7 +2,7 @@
   div
     Paginate(v-if="has_pages" v-bind:page.sync="i_page"
       :total="entry_type.content.meta.pages.length"
-      :page_select="entry_type.content.meta.pages"
+      :pages="entry_type.content.meta.pages"
       v-on:lastpage="last_page = ($event)")
     v-divider(class="wide_divider")
     span(v-if="owner")

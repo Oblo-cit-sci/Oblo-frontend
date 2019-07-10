@@ -7,7 +7,7 @@
       :mode="mode")
     v-switch(v-if="has_alternative"
       v-model="use_regular"
-      :label="use_regular ? `regular value`:`alternative value`"
+      :label="use_regular ? regular_value_text: alternative_value_text"
       color="primary")
     component(
       :is="aspectComponent(aspect, mode)"
@@ -83,6 +83,12 @@
       },
       disabled() {
         return !this.use_regular || this.condition_fail
+      },
+      regular_value_text() {
+        return this.aspect.attr["alternative-true"] || "regular value"
+      },
+      alternative_value_text() {
+        return this.aspect.attr["alternative-false"] || "alternative value"
       }
     },
     methods: {
@@ -93,8 +99,17 @@
         if (!aspect_descr.hasOwnProperty("description")) {
           //console.log("warning: aspect", this.aspect, "has no description")
         }
+
+        let title = ""
+        if (!this.extra.no_title) {
+          if (this.aspect.label !== undefined) {
+            title = this.aspect.label
+          } else {
+            title = this.aspect.name
+          }
+        }
         return {
-          title: !this.extra.no_title ? aspect_descr.name || "" : "",
+          title: title,
           description: aspect_descr.description || ""
         }
       },
@@ -107,7 +122,7 @@
       },
       emit_up(event) {
         this.value.value = event
-        this.$emit('update:value', Object.assign(this.$_.cloneDeep(this.value), {value : event}))
+        this.$emit('update:value', Object.assign(this.$_.cloneDeep(this.value), {value: event}))
         if (this.extra.is_title || false) {
           this.$emit(ENTRYACTION, {action: TITLE_CHANGED, value: event})
         }
@@ -119,11 +134,11 @@
       },
       use_regular(val) {
         this.value.value = aspect_default_value(this.aspect)
-        if(!val) {
-          this.$emit('update:value',{value: this.value.value, regular: false})
+        if (!val) {
+          this.$emit('update:value', {value: this.value.value, regular: false})
           this.value.regular = false
         } else {
-          this.$emit('update:value',{value: this.value.value})
+          this.$emit('update:value', {value: this.value.value})
           delete this.value.regular
         }
       },

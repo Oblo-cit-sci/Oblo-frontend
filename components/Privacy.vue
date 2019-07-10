@@ -1,9 +1,7 @@
 <template lang="pug">
   div
     h3 Privacy
-    div(v-if="!has_privacy")
-      div This entry is for private local usage and cannot be uploaded to the platform. It's intended to be download and sent to the data repository.
-    div(v-else-if="edit")
+    div(v-if="edit")
       div(v-if="$store.getters.visitor")
         div
           span As a visitor your contributions will be
@@ -26,14 +24,16 @@
   import {EDIT, PRIVATE, PRIVATE_LOCAL, PUBLIC} from "../lib/consts";
 
 
+  /*
+  div(v-if="!has_privacy")
+      div This entry is for private local usage and cannot be uploaded to the platform. It's intended to be download and sent to the data repository.
+   */
+
   const OPTIONS = [PUBLIC, PRIVATE, PRIVATE_LOCAL]
 
   export default {
     name: "Privacy",
     props: {
-      has_privacy: {
-        type: Boolean
-      },
       passedPrivacy: { // for drafts
         type: String,
       },
