@@ -2,9 +2,7 @@
   div
     h3 License
     div(v-if="edit")
-      div(v-if="!has_license")
-        div This entry is for private local usage and has no licence. It's intended to be download and sent to the data repository.
-      div(v-else-if="$store.getters.visitor")
+      div(v-if="$store.getters.visitor")
         div as a visitor your contributions will be licensed under {{selectedLicense.title}}.
       div(v-else)
         div you selected the license: {{selectedLicense.title}}.
@@ -16,6 +14,8 @@
           :selection.sync="selectedLicense")
       img.license-image(:src="licenseImagePath")
     div(v-else)
+      div(v-if="set_to_None")
+        div This entry is for private local usage and has no licence. It's intended to be download and sent to the data repository.
       div {{selectedLicense.title}}
       img.license-image(:src="licenseImagePath" )
 </template>
@@ -25,17 +25,13 @@
   import SingleSelect from "./SingleSelect";
 
   import {license_icon} from "../lib/client";
-  import {EDIT} from "../lib/consts";
+  import {EDIT, VIEW} from "../lib/consts";
 
   const ld = require('lodash');
 
   export default {
     name: "License",
     props: {
-      has_license: {
-        type:Boolean,
-        default: true
-      },
       passedLicense: {
         type: String
       },
@@ -79,6 +75,9 @@
       },
       edit() {
         return this.mode === EDIT
+      },
+      set_to_None() {
+        return this.mode === VIEW && this.selectedLicense.value === "None"
       }
     },
     methods: {

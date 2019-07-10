@@ -15,7 +15,7 @@
           :options="privacy_options"
           :selection.sync="selectedPrivacy")
     div(v-else)
-      div This entry is {{selectedPrivacy.text}}
+      div This entry is {{selectedPrivacy.text}}. {{selectedPrivacy.description}}
 </template>
 
 <script>
@@ -55,7 +55,7 @@
       }
     },
     created() {
-        this.selectedPrivacy = string2option(this.passedPrivacy)
+        this.selectedPrivacy = this.$_.find(this.privacy_options, o => o.text === this.passedPrivacy)
         this.use_alternative_privacy = this.passedPrivacy !== this.$store.state.user.user_data.defaultPrivacy
     },
     computed: {

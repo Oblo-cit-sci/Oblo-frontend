@@ -27,7 +27,7 @@
           :extra="extras[aspect.name]"
           :extra_update="extras_update[aspect.name]")
       div(v-if="page === 0")
-        License(:has_licence="has_license" :passedLicense.sync="entry.license" :mode="licence_mode")
+        License(:passedLicense.sync="entry.license" :mode="licence_mode")
         Privacy(:mode="privacy_mode" :passedPrivacy.sync="entry.privacy")
       EntryActions(v-bind="entry_actions_props" :page.sync="page" :has_pages="has_pages")
       DecisionDialog(
@@ -300,8 +300,10 @@
           return true
       },
       licence_mode() {
-        if(this.entry.refs.parent) {
+        if(this.entry.refs.parent || this.entry.privacy === PRIVATE_LOCAL) {
           return VIEW
+        } else {
+          return EDIT
         }
       },
       parent_title() {

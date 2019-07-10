@@ -30,7 +30,17 @@
 <script>
 
 
-  import {CONTEXT_ENTRY, DRAFT, GLOBAL, PRIVATE_LOCAL, PUBLIC, SUBMITTED, VIEW} from "../lib/consts";
+  import {
+    AUTOSAVE,
+    CONTEXT_ENTRY,
+    DRAFT,
+    ENTRYACTION,
+    GLOBAL,
+    PRIVATE_LOCAL,
+    PUBLIC,
+    SUBMITTED,
+    VIEW
+  } from "../lib/consts";
   import Paginate from "./Paginate";
   import {current_user_is_owner, delete_entry, save_entry} from "../lib/entry";
 
@@ -138,11 +148,10 @@
       },
       save() {
         // todo not if it is an aspect page
-        save_entry(this.$store, this.entry)
-        //this.$store.commit("set_snackbar", {message: "Draft saved", ok: true})
-        // let aspect_name = this.add_entry_aspect()
+        //save_entry(this.$store, this.entry)
+        this.$emit(ENTRYACTION, {action: AUTOSAVE})
+        this.$store.commit("set_ok_snackbar", "Entry saved")
         this.back()
-
       },
       submit() {
         //console.log("entryAction submit")

@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-dialog(v-bind:value="open" max-width="300px" lazy=true)
+  v-dialog(v-bind:value="open" max-width="500" lazy=true v-on:update:value="$emit('update:open', false)")
     v-card
       v-card-title {{title}}
       v-card-text {{text}}

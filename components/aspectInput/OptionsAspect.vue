@@ -32,7 +32,7 @@
 
   import AspectMixin from "./AspectMixin"
   import Aspect from "../Aspect"
-  import {aspect_default_value, aspect_wrapped_default_value} from "../../lib/entry"
+  import {aspect_raw_default_value, aspect_wrapped_default_value} from "../../lib/entry"
   import {ENTRYACTION, GLOBAL_ASPECT_REF} from "../../lib/consts";
 
   export default {
@@ -53,7 +53,7 @@
       }
       if(this.i_value === null) {
         //console.log("setting i_value to default")
-        this.i_value = aspect_default_value(this.aspect.view_type)
+        this.i_value = aspect_raw_default_value(this.aspect.view_type)
         this.value_change(this.i_value)
       }
       //console.log("opt asp init with val", this.value)

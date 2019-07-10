@@ -48,7 +48,7 @@
     entries_as_options,
     get_codes_as_options,
     get_entries_of_type} from "../../lib/client"
-  import {aspect_default_value, MAspectComponent} from "../../lib/entry"
+  import {aspect_raw_default_value, MAspectComponent} from "../../lib/entry"
   import Title_Description from "../Title_Description"
   import MultiSelect from "../MultiSelect"
   import SingleSelect from "../SingleSelect"
@@ -132,7 +132,7 @@
       // for composite
       add_value() {
         //console.log("adding value")
-        this.i_value.push(aspect_default_value(this.item_aspect))
+        this.i_value.push(aspect_raw_default_value(this.item_aspect))
         if(this.mode === "composite") {
           ld.fill(this.panelState, false)
           this.panelState.push(true)
@@ -159,8 +159,8 @@
       init_map(keys) {
           this.i_value = new Map()
           for(let key of keys) {
-            this.i_value.set(key, aspect_default_value(this.item_aspect))
-            this.indexed_value.push(aspect_default_value(this.item_aspect))
+            this.i_value.set(key, aspect_raw_default_value(this.item_aspect))
+            this.indexed_value.push(aspect_raw_default_value(this.item_aspect))
             ld.fill(this.panelState, false)
             this.panelState.push(true)
           }

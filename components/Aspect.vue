@@ -13,8 +13,8 @@
     component(
       v-if="use_regular"
       :is="aspectComponent(aspect, mode)"
-      v-bind:aspect="aspect"
-      v-bind:value="raw_value"
+      :aspect="aspect"
+      :value="raw_value"
       :extra="extra"
       :edit="edit"
       :disabled="disabled || condition_fail || !use_regular"
@@ -28,7 +28,8 @@
         :is="aspectComponent(aspect.attr.alternative)"
         v-bind:aspect="aspect.attr.alternative"
         v-on:update:value="emit_up($event)"
-        :mode="mode")
+        :value="raw_value"
+        :mode="alt_mode")
 </template>
 
 <script>
@@ -73,6 +74,7 @@
       }
     },
     created() {
+      //console.log("aspect", this.aspect.name, this.value)
       //console.log("aspect " + this.aspect.name + " created with value", this.value)
       this.has_alternative = this.aspect.attr.hasOwnProperty("alternative")
       if (this.aspect.attr.mode === VIEW || this.mode === VIEW) {
@@ -100,6 +102,9 @@
       },
       alternative_value_text() {
         return this.aspect.attr["alternative-false"] || "alternative value"
+      },
+      alt_mode() {
+        return this.aspect.attr.alternative.attr.mode || this.mode
       }
     },
     methods: {
@@ -152,12 +157,21 @@
         this.edit = val === EDIT
       },
       use_regular(val) {
-        this.value.value = aspect_default_value(this.aspect)
         if (!val) {
-          this.$emit('update:value', {value: this.value.value, regular: false})
+          console.log("non reg")
+          console.log(this.aspect.attr.alternative)
+          if(this.aspect.attr.alternative.attr.value !== undefined) {
+            console.log("we gotta preset value")
+            this.i_value = this.aspect.attr.alternative.attr.value
+          } else {
+            this.i_value = aspect_raw_default_value(this.aspect.attr.alternative)
+          }
+          console.log("gonna emit up", this.i_value)
+          this.$emit('update:value', {value: this.i_value, regular: false})
           this.value.regular = false
         } else {
-          this.$emit('update:value', {value: this.value.value})
+          //this.value = aspect_default_value(this.aspect)
+          this.$emit('update:value', aspect_default_value(this.aspect))
           delete this.value.regular
         }
       },
@@ -183,7 +197,7 @@
     }
   }
 
-  import {aspect_default_value, MAspectComponent, pack_value} from "../lib/entry";
+  import {aspect_default_value, aspect_raw_default_value, MAspectComponent, pack_value} from "../lib/entry";
 
   import Title_Description from "./Title_Description";
 </script>

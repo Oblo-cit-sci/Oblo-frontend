@@ -1,7 +1,7 @@
 
 
 import {VIEW} from "../../lib/consts";
-import {aspect_default_value} from "../../lib/entry";
+import {aspect_raw_default_value} from "../../lib/entry";
 
 export default {
   props: {
@@ -83,7 +83,7 @@ export default {
       this.i_value = new_val;
     },
     disabled() {
-      this.i_value = aspect_default_value(this.aspect)
+      this.i_value = aspect_raw_default_value(this.aspect)
     }
   }
 }
