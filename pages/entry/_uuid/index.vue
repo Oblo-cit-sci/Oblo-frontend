@@ -30,14 +30,22 @@
         License(:has_licence="has_license" :passedLicense.sync="entry.license" :mode="licence_mode")
         Privacy(:has_privacy="has_privacy" :passedPrivacy.sync="entry.privacy")
       EntryActions(v-bind="entry_actions_props" :page.sync="page" :has_pages="has_pages")
+      DecisionDialog(
+        :open.sync="openSaveDialog"
+        @action="edit_or_save_dialog($event)"
+        id="unsaved_changes"
+        title="Unsaved changes"
+        text="You have unsaved changes"
+        cancel_text="Keep on editing"
+        confirm_text="Save and move on")
 </template>
 
 <script>
 
   // v-on:create_ref="create_ref($event)"
 
-  import License from "../../components/License"
-  import Privacy from "../../components/Privacy"
+  import License from "../../../components/License"
+  import Privacy from "../../../components/Privacy"
 
   import {
     autosave,
@@ -46,9 +54,9 @@
     aspect_loc_str,
     MAspectComponent,
     pack_value, delete_entry, unpack, get_TitleAspect
-  } from "../../lib/entry"
-  import Title_Description from "../../components/Title_Description"
-  import EntryActions from "../../components/EntryActions";
+  } from "../../../lib/entry"
+  import Title_Description from "../../../components/Title_Description"
+  import EntryActions from "../../../components/EntryActions";
   import {
     EDIT,
     AUTOSAVE,
@@ -56,18 +64,20 @@
     GLOBAL_ASPECT_REF,
     TITLE_CHANGED,
     ASPECT, DELETE_CONTEXT_ENTRY, PUBLIC, PRIVATE_LOCAL, VIEW
-  } from "../../lib/consts";
-  import Aspect from "../../components/Aspect";
+  } from "../../../lib/consts";
+  import Aspect from "../../../components/Aspect";
 
   import goTo from 'vuetify/lib/components/Vuetify/goTo'
-  import {check_conditions, resolve_aspect_ref} from "../../lib/client";
-  import EntryNavMixin from "../../components/EntryNavMixin";
+  import {check_conditions, resolve_aspect_ref} from "../../../lib/client";
+  import EntryNavMixin from "../../../components/EntryNavMixin";
+  import DecisionDialog from "../../../components/DecisionDialog";
 
 
   export default {
     name: "uuid",
     mixins: [EntryNavMixin],
     components: {
+      DecisionDialog,
       Aspect,
       EntryActions,
       Title_Description,
@@ -86,6 +96,10 @@
         last_page: false,
         extras: {},
         extras_update: {},
+        //
+        dirty: false,
+        openSaveDialog: false,
+        route_destination: null
       }
     },
     created() {
@@ -196,6 +210,7 @@
           console.log(this.extras_update[this.conditions[aspect.name]])
         }
         this.entry.aspects_values[aspect.name] = value
+        this.dirty = true
       },
       aspect_id(aspect_name) {
         return aspect_loc_str(this.extras[aspect_name].aspect_loc)
@@ -234,7 +249,7 @@
         delete_entry(this.$store, ref.uuid)
         delete this.entry.refs.children[ref.uuid]
         autosave(this.$store, this.entry)
-      }
+      },
       // todo bring back
     /*check_conditions(event) {
         //console.log(this.extras)
@@ -247,6 +262,24 @@
           this.condition_vals[target] = {val: event.value}
         }
       }*/
+      edit_or_save_dialog(event) {
+        if(event.confirm) {
+          autosave(this.$store, this.entry)
+          // TODO this should be everywhere, or managed by autosave
+          this.dirty = false
+          this.$router.push(this.route_destination.fullPath)
+        }
+      }
+    },
+    beforeRouteLeave(to, from, next) {
+      console.log("route leave")
+      if(this.dirty) {
+        next(false)
+        this.openSaveDialog = true
+        this.route_destination = to
+      } else {
+        next()
+      }
     },
     computed: {
       has_license() {
@@ -303,8 +336,7 @@
         }
       }
     }
-    ,
-    watch: {
+    ,watch: {
       page(val) {
         goTo("h1")
       }

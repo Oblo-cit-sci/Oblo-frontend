@@ -27,7 +27,7 @@
     methods: {
       cancel() {
         this.$emit("update:open", false)
-        //this.$emit("action", {confirm: false, id: this.name})
+        this.$emit("action", {confirm: false, id: this.id})
       },
       confirm() {
         this.$emit("update:open", false)

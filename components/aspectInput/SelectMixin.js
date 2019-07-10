@@ -15,6 +15,7 @@ export default {
       if (this.aspect.items.startsWith("*")) {
         this.options = get_codes_as_options(this.$store.state, this.aspect.items)
       }
+      console.log("options", this.options)
     } else if (this.aspect.items instanceof Array) {
       if (this.aspect.attr.hasOwnProperty("select") && this.aspect.attr.select === "check") {
         this.select_check = true

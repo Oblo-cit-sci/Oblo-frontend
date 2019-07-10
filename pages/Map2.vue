@@ -56,8 +56,8 @@
         mode: null,
         modes: {SIMPLE_MODE: SIMPLE_MODE},
         layerVisiblities: {
-          climate: true,
-          "stations": true
+          climate: false,
+          stations: false
         },
         map_sources: [
           {

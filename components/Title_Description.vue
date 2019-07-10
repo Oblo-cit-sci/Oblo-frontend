@@ -7,6 +7,7 @@
           div(v-if="index===0") {{description_part}}
           div(v-else class="secondary_descr") {{description_part}}
     div(v-else) {{first_description}}
+    div.pb-1
 </template>
 
 <script>

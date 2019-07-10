@@ -17,6 +17,8 @@
   div(v-else-if="view_radiogroup")
     v-radio-group(:row="true"  v-model="selected_item")
       v-radio(v-for="item of options" :key="item.key" :label="item.text" :value="item.value")
+  div(v-else-if="none")
+    div Nothing to select from
 </template>
 
 <script>
@@ -30,6 +32,7 @@
   let select_tresh = 5;
   let autocomplet_thresh = 20
 
+  const NONE = -1
   const CLEAR_LIST = 0;
   const SELECT = 1;
   const AUTOCOMPLETE = 2
@@ -37,6 +40,7 @@
   const RADIOGROUP = 4
 
   export const VIEW_OPTIONS = {
+    NONE: NONE,
     CLEAR_LIST: CLEAR_LIST,
     SELECT: SELECT,
     AUTOCOMPLETE: AUTOCOMPLETE,
@@ -92,10 +96,12 @@
         }
       } else {
         let sz = this.$_.size(this.options)
-        if (sz < select_tresh) {
-          this.viewStyle = CLEAR_LIST;
+        if (sz === 0) {
+          this.viewStyle = NONE
+        } else if (sz < select_tresh) {
+          this.viewStyle = CLEAR_LIST
         } else if(sz < autocomplet_thresh) {
-          this.viewStyle = SELECT;
+          this.viewStyle = SELECT
         } else {
           this.viewStyle = AUTOCOMPLETE
         }
@@ -147,6 +153,9 @@
       },
       view_radiogroup() {
         return this.viewStyle === RADIOGROUP
+      },
+      none() {
+        return this.viewStyle === NONE
       }
     },
     watch: {
