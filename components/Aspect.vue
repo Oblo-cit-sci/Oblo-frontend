@@ -4,7 +4,8 @@
     Title_Description(
       v-if="show_title_description"
       v-bind="title_description(aspect)"
-      :disabled="disabled"
+      :disabled="disabled || condition_fail"
+      :disabled_text="disabled_text"
       :mode="mode")
     v-switch(v-if="has_alternative"
       v-model="use_regular"
@@ -16,6 +17,7 @@
       :aspect="aspect"
       :value="raw_value"
       :extra="extra"
+      :extra_update=extra_update
       :edit="edit"
       :disabled="disabled || condition_fail || !use_regular"
       :mode="mode"
@@ -105,6 +107,14 @@
       },
       alt_mode() {
         return this.aspect.attr.alternative.attr.mode || this.mode
+      },
+      disabled_text() {
+        if(this.condition_fail) {
+          console.log("disabled_text text", this.aspect.attr.condition.disabled_text)
+          return this.aspect.attr.condition.disabled_text
+        } else {
+          return null
+        }
       }
     },
     methods: {
@@ -115,7 +125,6 @@
         if (!aspect_descr.hasOwnProperty("description")) {
           //console.log("warning: aspect", this.aspect, "has no description")
         }
-
         let title = ""
         if (!this.extra.no_title) {
           if (aspect_descr.label !== undefined) {
@@ -158,15 +167,12 @@
       },
       use_regular(val) {
         if (!val) {
-          console.log("non reg")
-          console.log(this.aspect.attr.alternative)
           if(this.aspect.attr.alternative.attr.value !== undefined) {
             console.log("we gotta preset value")
             this.i_value = this.aspect.attr.alternative.attr.value
           } else {
             this.i_value = aspect_raw_default_value(this.aspect.attr.alternative)
           }
-          console.log("gonna emit up", this.i_value)
           this.$emit('update:value', {value: this.i_value, regular: false})
           this.value.regular = false
         } else {
@@ -191,6 +197,9 @@
                 break
             }
             this.condition_fail = v;
+            if(this.condition_fail) {
+              this.$emit('update:value', aspect_default_value(this.aspect))
+            }
           }
         }
       }
@@ -204,8 +213,8 @@
 
 <style scoped>
   .composite {
-    border-left: 2px #8080806b solid;
-    padding-left: 5px;
+    #border-left: 2px #8080806b solid;
+    #padding-left: 5px;
   }
 
 </style>

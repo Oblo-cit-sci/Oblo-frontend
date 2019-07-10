@@ -6,7 +6,7 @@
       :label="check_box_value ? this.options[1].text : this.options[0].text"
       :readonly="readOnly")
     SingleSelect(v-else :options="options"
-      v-bind:selection.sync="selection"
+      :selection.sync="selection"
       :disabled="disabled")
 </template>
 
@@ -20,26 +20,35 @@
     mixins: [AspectMixin, SelectMixin],
     components: {SingleSelect},
     created() {
+      console.log("SELECT CREATE")
       if (this.select_check) {
         this.check_box_value = this.value === this.options[1].value // or maybe a value/default...
         if (this.aspect.items.length !== 2) {
           console.log("Aspect ", this.aspect.name, "is a select with check but has not exactly 2 items")
         }
       }
-      if (this.value !== null) {
-        this.selection = this.$_.find(this.options, (o) => {
-          return o.value === this.value
-        })
-        // something else got passed down... happens with alternative values
-        // when alternatives are non select values...
-        if(this.selection === undefined) {
+      this.set_selection()
+    },
+    methods: {
+      set_selection() {
+        if (this.value !== null) {
+          this.selection = this.$_.find(this.options, (o) => {
+            return o.value === this.value
+          })
+          if(this.selection === undefined) {
+            this.selection = null
+          }
+        }
+        else {
           this.selection = null
         }
       }
     },
     watch: {
+      value() {
+        this.set_selection()
+      },
       selection() {
-        //console.log("selection update", this.selection)
         //console.log("select", this.aspect, this.selection)
         if (this.selection === null)
           this.value_change(null)

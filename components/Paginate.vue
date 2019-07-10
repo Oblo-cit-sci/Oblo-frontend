@@ -5,7 +5,12 @@
     v-btn(:disabled="last_page" @click="change_page(1)") Next Page
     span {{page + 1}} / {{total}}
     div(v-if="allow_jump")
-      SingleSelect(:options="pages_options" :selection="selected_page" :select_sync="false" v-on:selection="page_selected($event)")
+      SingleSelect(
+        :options="pages_options"
+        :selection="selected_page"
+        :only_value="true"
+        :select_sync="false"
+        v-on:selection="page_selected($event)")
 </template>
 
 <script>
@@ -38,7 +43,7 @@
         return string_list2options(this.$_.map(this.pages, (p) => {return p.title}))
       },
       selected_page() {
-        console.log(this.pages, this.page, this.pages[this.page])
+        //console.log("pageinate", this.page, this.pages[this.page])
         return this.pages[this.page].title
       }
     },
@@ -47,13 +52,16 @@
         return test_page === this.total - 1
       },
       change_page(dir) {
+        //console.log("pagechange", dir)
         const next_page = this.page + dir
         this.$emit("update:page", next_page)
         if(this.test_last_page(this.page) !== this.test_last_page(next_page))
           this.$emit("lastpage", this.test_last_page(next_page))
       },
-      page_selected(event) {
-        let page_select = this.$_.findIndex(this.pages, p => p.title === event.value)
+      page_selected(page_title) {
+        // todo, this triggers when page opened. should be just be set and be silent untill ui
+        //console.log("page_selected", page_title)
+        let page_select = this.$_.findIndex(this.pages, p => p.title === page_title)
         this.$emit("update:page", page_select)
         this.$emit("lastpage",this.test_last_page(page_select))
       }

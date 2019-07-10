@@ -1,11 +1,11 @@
 <template lang="pug">
   div
     component(v-bind:is="header_type" v-bind:class="{ disabled: disabled }") {{title}}
-      span(v-if="disabled") &nbsp;(disabled)
+      span(v-if="disabled") &nbsp;({{disabled_text}})
     div(v-if="multiple_descriptions && !readOnly")
       div(v-for="(description_part, index) in description" :key="index")
-          div(v-if="index===0") {{description_part}}
-          div(v-else class="secondary_descr") {{description_part}}
+        div(v-if="index===0") {{description_part}}
+        div(v-else class="secondary_descr") {{description_part}}
     div(v-else) {{first_description}}
     div.pb-1
 </template>
@@ -34,6 +34,10 @@
         type: Boolean,
         default: false
       },
+      disabled_text: {
+        type: String,
+        default: "disabled"
+      },
       mode: {
         type: String,
         default: VIEW
@@ -47,7 +51,7 @@
         return this.mode === VIEW
       },
       first_description() {
-        if(this.multiple_descriptions)
+        if (this.multiple_descriptions)
           return this.description[0]
         else
           return this.description

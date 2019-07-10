@@ -288,17 +288,6 @@
         return privacy_set ? VIEW : EDIT
 
       },
-      has_license() {
-        const meta = this.entry_type.content.meta
-        if (meta.hasOwnProperty("privacy")) {
-          //console.log("private: no license")
-          return meta.privacy !== "PRIVATE_LOCAL"
-        } else if (meta.hasOwnProperty("has_license")) {
-          //console.log("has licrense val", meta.has_license)
-          return meta.has_license
-        } else
-          return true
-      },
       licence_mode() {
         if(this.entry.refs.parent || this.entry.privacy === PRIVATE_LOCAL) {
           return VIEW
@@ -322,6 +311,7 @@
       // maybe also consider:
       // https://github.com/edisdev/download-json-data/blob/develop/src/components/Download.vue
       page_info() {
+        console.log(this.entry_type, this.page, this.entry_type.content.meta.pages[this.page])
         if (this.has_pages)
           return this.entry_type.content.meta.pages[this.page]
         else
@@ -338,7 +328,7 @@
     }
     ,watch: {
       page(val) {
-        setTimeout(() => goTo("h1"), 20)
+        setTimeout(() => goTo("h1"), 30)
       }
     }
   }
