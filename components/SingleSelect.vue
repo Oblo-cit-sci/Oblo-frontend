@@ -80,7 +80,7 @@
       }
     },
     created() {
-      console.log("Selection create", this.selection)
+      //console.log("Selection create", this.selection)
       if (this.selection) {
         if(typeof this.selection === "string") {
           this.only_value = true

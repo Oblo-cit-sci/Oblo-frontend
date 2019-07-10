@@ -52,7 +52,7 @@
           this.options = this.$store.state.codes[passed_options.substring(1)];
         }
       }
-      console.log("tree options", this.options)
+      //console.log("tree options", this.options)
     },
     methods: {
       openDialog(short_persistence) {

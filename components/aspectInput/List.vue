@@ -45,7 +45,7 @@
   import MultiSelect from "../MultiSelect";
   import Aspect from "../Aspect";
   import ListMixin from "../ListMixin";
-  import {INDEX} from "../../lib/consts";
+  import {EDIT, INDEX} from "../../lib/consts";
 
   // todo, pass the extra in a more intelligent way down, not to all the same
 
@@ -117,7 +117,7 @@
     },
     methods: {
       clearableAspectComponent(aspect) {
-        return MAspectComponent(aspect, false, true)
+        return MAspectComponent(aspect, this.mode)
       },
       // for composite
       add_value() {

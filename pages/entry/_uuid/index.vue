@@ -164,6 +164,7 @@
         const value = event.value
         switch (action) {
           case AUTOSAVE:
+            this.dirty = false
             autosave(this.$store, this.entry)
             break
           case GLOBAL_ASPECT_REF:
@@ -183,7 +184,7 @@
             this.delete_child(value)
             break
           default:
-            console.log("unknown entry action", action, value)
+            console.log("unknown entry action", action, value, "event:",event)
             break
         }
       },
@@ -204,10 +205,10 @@
           this.entry.title = unpack(value)
         }
         if (this.conditions.hasOwnProperty(aspect.name)) {
-          console.log("condition triggered", aspect.name, value, ">", this.conditions[aspect.name])
-          this.extras_update[this.conditions[aspect.name]] = !this.extras_update[this.conditions[aspect.name]]
-          this.extras[this.conditions[aspect.name]].condition.value = unpack(value)
-          console.log(this.extras_update[this.conditions[aspect.name]])
+          for(let aspect of this.conditions[aspect.name]) {
+            this.extras_update[aspect] = !this.extras_update[aspect]
+            this.extras[aspect].condition.value = unpack(value)
+          }
         }
         this.entry.aspects_values[aspect.name] = value
         this.dirty = true
@@ -272,7 +273,7 @@
       }
     },
     beforeRouteLeave(to, from, next) {
-      console.log("route leave")
+      //console.log("route leave")
       if(this.dirty) {
         next(false)
         this.openSaveDialog = true
@@ -335,7 +336,7 @@
     }
     ,watch: {
       page(val) {
-        goTo("h1")
+        setTimeout(() => goTo("h1"), 20)
       }
     }
   }

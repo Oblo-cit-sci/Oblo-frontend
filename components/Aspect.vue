@@ -2,6 +2,7 @@
   div(
     :class="[{ composite: aspect.type === 'composite', }]")
     Title_Description(
+      v-if="show_title_description"
       v-bind="title_description(aspect)"
       :disabled="disabled"
       :mode="mode")
@@ -10,21 +11,24 @@
       :label="use_regular ? regular_value_text: alternative_value_text"
       color="primary")
     component(
+      v-if="use_regular"
       :is="aspectComponent(aspect, mode)"
       v-bind:aspect="aspect"
       v-bind:value="raw_value"
       :extra="extra"
       :edit="edit"
-      :disabled="disabled"
+      :disabled="disabled || !use_regular"
       :mode="mode"
       v-on:update:value="emit_up($event)"
       v-on:entryAction="$emit('entryAction',$event)"
       v-on:aspectAction="aspectAction($event)")
     div(v-if="!use_regular")
       Title_Description(v-bind="title_description(aspect.attr.alternative)")
-      component(v-bind:is="aspectComponent(aspect.attr.alternative)"
+      component(
+        :is="aspectComponent(aspect.attr.alternative)"
         v-bind:aspect="aspect.attr.alternative"
-        v-on:update:value="emit_up($event)")
+        v-on:update:value="emit_up($event)"
+        :mode="mode")
 </template>
 
 <script>
@@ -78,11 +82,17 @@
     },
     // boolean check is not required, since "false" is the default
     computed: {
+      show_title_description() {
+        if(this.extra.hasOwnProperty("show_title_descr")) {
+          return this.extra.show_title_descr
+        } else
+          return true
+      },
       raw_value() {
         return this.value.value
       },
       disabled() {
-        return !this.use_regular || this.condition_fail
+        return this.condition_fail
       },
       regular_value_text() {
         return this.aspect.attr["alternative-true"] || "regular value"
@@ -118,7 +128,7 @@
       },
       aspectComponent(aspect_descr, mode) {
         // todo false, false are just default, ... better a config obj
-        return MAspectComponent(aspect_descr, false, mode)
+        return MAspectComponent(aspect_descr, mode, this.extra)
       },
       emit_up(event) {
         this.value.value = event
