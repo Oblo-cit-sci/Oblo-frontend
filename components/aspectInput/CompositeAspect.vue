@@ -7,6 +7,7 @@
         v-on:update:value="update_value($event, index)"
         :edit="true"
         :mode="mode"
+        :disabled="disabled"
         :extra="comp_extras(comp_type)"
         v-on:entryAction="$emit('entryAction',$event)"
         v-on:aspectAction="aspectAction")
@@ -40,11 +41,6 @@
     name: "CompositeAspect",
     components: {Aspect},
     mixins: [AspectMixin],
-    data() {
-      return {
-        title: "XXX" // todo pass it up for nice title in lists...
-      }
-    },
     methods: {
       update_value($event, index) {
         //console.log("composite update value, index", index, $event)

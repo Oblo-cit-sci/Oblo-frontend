@@ -15,7 +15,7 @@
     div(v-else)
       div v-selelct
     div(v-if="more_allowed && !readOnly")
-      v-btn(@click="create_item()" :color="requieres_more_color") Create {{item_name}}
+      v-btn(@click="create_item()" :color="requieres_more_color") Add {{item_name}}
         v-icon(right) add
     div(v-else) maximum reached
     DecisionDialog(v-bind="remove_data_dialog" :open.sync="show_remove" v-on:action="remove($event.id)")

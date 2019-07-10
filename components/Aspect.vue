@@ -17,7 +17,7 @@
       v-bind:value="raw_value"
       :extra="extra"
       :edit="edit"
-      :disabled="disabled || !use_regular"
+      :disabled="disabled || condition_fail || !use_regular"
       :mode="mode"
       v-on:update:value="emit_up($event)"
       v-on:entryAction="$emit('entryAction',$event)"
@@ -46,6 +46,10 @@
       mode: {
         type: String,
         default: "view"
+      },
+      disabled:{
+        type: Boolean,
+        default: false
       },
       aspect: Object,
       value: Object, // a wrapper, which  might encode "exceptional_value"
@@ -91,9 +95,6 @@
       raw_value() {
         return this.value.value
       },
-      disabled() {
-        return this.condition_fail
-      },
       regular_value_text() {
         return this.aspect.attr["alternative-true"] || "regular value"
       },
@@ -112,10 +113,10 @@
 
         let title = ""
         if (!this.extra.no_title) {
-          if (this.aspect.label !== undefined) {
-            title = this.aspect.label
+          if (aspect_descr.label !== undefined) {
+            title = aspect_descr.label
           } else {
-            title = this.aspect.name
+            title = aspect_descr.name
           }
         }
         return {
@@ -131,6 +132,14 @@
         return MAspectComponent(aspect_descr, mode, this.extra)
       },
       emit_up(event) {
+        if(this.has_alternative && this.use_regular) {
+          if(this.aspect.attr.hasOwnProperty("alternative-activate-on-value")) {
+            if(event === this.aspect.attr["alternative-activate-on-value"]) {
+              this.use_regular = false
+              return
+            }
+          }
+        }
         this.value.value = event
         this.$emit('update:value', Object.assign(this.$_.cloneDeep(this.value), {value: event}))
         if (this.extra.is_title || false) {

@@ -46,14 +46,13 @@
       }
       if (this.aspect.type === INT) {
         this.mask = "##########"
-      } /*else {
-        // todo. maybe use the type, prop but vuetify doesnt have any docs
-        this.mask = undefined // "############.##########"
-      }*/
+      }
     },
     methods: {
       input(val){
-        this.value_change(this.num_type === INT ? parseInt(val) : parseFloat(val))
+        this.value_change(this.num_type === INT ?
+          parseInt(val) :
+          parseFloat(val.replace(",",".")))
       }
     }
   }

@@ -29,7 +29,7 @@
   and optional "description"
    */
 
-  let select_tresh = 5;
+  let select_tresh = 6;
   let autocomplet_thresh = 20
 
   const NONE = -1
