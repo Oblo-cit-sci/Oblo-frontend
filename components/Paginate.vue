@@ -1,10 +1,10 @@
 <template lang="pug">
   div
     Title_Description(header_type="h4" title="Navigate")
-    v-btn(:disabled="has_prev_pages" @click="change_page(-1)") Previous Page
-    v-btn(:disabled="last_page" @click="change_page(1)") Next Page
+    v-btn(:disabled="has_prev_pages" @click="change_page(-1)") {{prev_page_text}}
+    v-btn(:disabled="last_page" @click="change_page(1)") {{next_page_text}}
     span {{page + 1}} / {{total}}
-    div(v-if="allow_jump")
+    div(v-if="allow_jump && pages.length > 4")
       SingleSelect(
         :options="pages_options"
         :selection="selected_page"
@@ -23,6 +23,7 @@
     props: {
       total: Number,
       page: Number,
+      named_pages: Boolean,
       pages: {
         type: Array,
         required: false
@@ -44,7 +45,27 @@
       },
       selected_page() {
         return this.pages[this.page].title
-      }
+      },
+      prev_page_text() {
+        if(this.named_pages) {
+          if(this.page > 0) {
+            return this.pages[this.page - 1].title
+          } else {
+            return "No more pages"
+          }
+        }
+        return "Previous page"
+      },
+      next_page_text() {
+        if(this.named_pages) {
+          if(this.page < this.pages.length - 1) {
+            return this.pages[this.page + 1].title
+          } else {
+            return "No more pages"
+          }
+        }
+        return "Next page"
+      },
     },
     methods: {
       test_last_page(test_page) {

@@ -61,6 +61,7 @@
           // to fix issue of blue triggering a close of the dialog
           if(short_persistence) {
             this.persistent = true
+            console.log("short persisntence")
             setTimeout(() => this.persistent = false, 100)
           }
         }

@@ -1,7 +1,10 @@
 <template lang="pug">
   div
-    Paginate(v-if="has_pages" v-bind:page.sync="i_page"
+    Paginate(
+      v-if="has_pages"
+      :page.sync="i_page"
       :total="entry_type.content.meta.pages.length"
+      :named_pages="named_pages"
       :pages="entry_type.content.meta.pages"
       v-on:lastpage="last_page = ($event)")
     v-divider(class="wide_divider")
@@ -90,6 +93,9 @@
       },
       owner() {
         return current_user_is_owner(this.$store, this.entry)
+      },
+      named_pages() {
+        return this.entry_type.content.meta.hasOwnProperty("named_pages") || false
       },
       save_word() {
         if (this.in_context) {

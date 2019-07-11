@@ -16,8 +16,9 @@
     div(v-else)
       div(v-if="set_to_None")
         div This entry is for private local usage and has no licence. It's intended to be download and sent to the data repository.
-      div {{selectedLicense.title}}
-      img.license-image(:src="licenseImagePath" )
+      div(v-else)
+        div {{selectedLicense.title}}
+        img.license-image(:src="licenseImagePath" )
 </template>
 
 <script>

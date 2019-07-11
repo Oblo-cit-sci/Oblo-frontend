@@ -53,8 +53,9 @@
       },
       comp_extras(comp_type) {
         let xtra_copy = JSON.parse(JSON.stringify((this.extra || {})))
-        if(xtra_copy.hasOwnProperty("listitem")) {
-          delete xtra_copy.listitem
+        // composites in lista dont have title descriptions, their kids should
+        if(xtra_copy.hasOwnProperty("show_title_descr")) {
+          delete xtra_copy.show_title_descr
         }
         xtra_copy.aspect_loc.push(["aspcet", comp_type.name])
         if(xtra_copy.hasOwnProperty("clear")) {
