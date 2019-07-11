@@ -23,7 +23,7 @@
               :extra="list_extra(index)"
               v-on:entryAction="$emit('entryAction',$event)"
               v-on:aspectAction="aspectAction($event, index)")
-            v-btn(v-if="!readOnly" @click="remove_value(index)") remove
+            v-btn(v-if="!readOnly" @click="remove_value(index)") remove this {{item_name}}
       div
         span {{count_text}}, &nbsp
         span(v-if="min===max && min !== null") required: {{min}}
