@@ -29,7 +29,11 @@
       div(v-if="page === 0")
         License(:passedLicense.sync="entry.license" :mode="licence_mode")
         Privacy(:mode="privacy_mode" :passedPrivacy.sync="entry.privacy")
-      EntryActions(v-bind="entry_actions_props" :page.sync="page" :has_pages="has_pages")
+      EntryActions(
+        v-bind="entry_actions_props"
+        :page.sync="page"
+        :has_pages="has_pages"
+        v-on:entryAction="entryAction($event)")
       DecisionDialog(
         :open.sync="openSaveDialog"
         @action="edit_or_save_dialog($event)"
@@ -184,7 +188,7 @@
             this.delete_child(value)
             break
           default:
-            console.log("unknown entry action", action, value, "event:",event)
+            console.log("unknown entry action", action, value, "event:", event)
             break
         }
       },
@@ -205,7 +209,7 @@
           this.entry.title = unpack(value)
         }
         if (this.conditions.hasOwnProperty(aspect.name)) {
-          for(let aspect of this.conditions[aspect.name]) {
+          for (let aspect of this.conditions[aspect.name]) {
             this.extras_update[aspect] = !this.extras_update[aspect]
             this.extras[aspect].condition.value = unpack(value)
           }
@@ -252,19 +256,19 @@
         autosave(this.$store, this.entry)
       },
       // todo bring back
-    /*check_conditions(event) {
-        //console.log(this.extras)
-        //console.log("UVALL", event, Object.keys(this.conditions).indexOf(event.aspect) > -1)
-        if (Object.keys(this.conditions).indexOf(event.aspect) > -1) {
-          console.log(this.conditions[event.aspect], this.conditions)
-          const target = this.conditions[event.aspect]
-          //this.extras[this.conditions[event.aspect]]["condition"] = {}
-          //this.extras[this.conditions[event.aspect]]["condition"][event.aspect] = event.value
-          this.condition_vals[target] = {val: event.value}
-        }
-      }*/
+      /*check_conditions(event) {
+          //console.log(this.extras)
+          //console.log("UVALL", event, Object.keys(this.conditions).indexOf(event.aspect) > -1)
+          if (Object.keys(this.conditions).indexOf(event.aspect) > -1) {
+            console.log(this.conditions[event.aspect], this.conditions)
+            const target = this.conditions[event.aspect]
+            //this.extras[this.conditions[event.aspect]]["condition"] = {}
+            //this.extras[this.conditions[event.aspect]]["condition"][event.aspect] = event.value
+            this.condition_vals[target] = {val: event.value}
+          }
+        }*/
       edit_or_save_dialog(event) {
-        if(event.confirm) {
+        if (event.confirm) {
           autosave(this.$store, this.entry)
           // TODO this should be everywhere, or managed by autosave
           this.dirty = false
@@ -274,7 +278,7 @@
     },
     beforeRouteLeave(to, from, next) {
       //console.log("route leave")
-      if(this.dirty) {
+      if (this.dirty) {
         next(false)
         this.openSaveDialog = true
         this.route_destination = to
@@ -289,7 +293,7 @@
 
       },
       licence_mode() {
-        if(this.entry.refs.parent || this.entry.privacy === PRIVATE_LOCAL) {
+        if (this.entry.refs.parent || this.entry.privacy === PRIVATE_LOCAL) {
           return VIEW
         } else {
           return EDIT
@@ -325,10 +329,12 @@
           entry: this.entry
         }
       }
-    }
-    ,watch: {
+    }, watch: {
       page(val) {
-        setTimeout(() => goTo("h1"), 30)
+        setTimeout(() => goTo(".v-content"), {
+          duration: 200,
+          easing: "easeOutCubic"
+        })
       }
     }
   }

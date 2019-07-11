@@ -43,7 +43,6 @@
         return string_list2options(this.$_.map(this.pages, (p) => {return p.title}))
       },
       selected_page() {
-        //console.log("pageinate", this.page, this.pages[this.page])
         return this.pages[this.page].title
       }
     },

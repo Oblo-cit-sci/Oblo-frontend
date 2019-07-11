@@ -121,7 +121,7 @@
       edit() {
         // for in mode = view
         const route = get_edit_route_for_ref(this.$store, this.entry)
-        console.log(route)
+        //console.log(route)
         this.$router.push(route)
       }
       ,

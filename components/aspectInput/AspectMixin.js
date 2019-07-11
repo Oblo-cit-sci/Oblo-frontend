@@ -84,10 +84,6 @@ export default {
     },
     disabled() {
       this.i_value = aspect_raw_default_value(this.aspect)
-    },
-    extra_update(val) {
-      //
-      console.log("asp-mixin extra_update")
     }
   }
 }

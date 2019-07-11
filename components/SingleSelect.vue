@@ -82,18 +82,13 @@
     created() {
       //console.log("Selection create", this.selection)
       if (this.selection) {
-        if(typeof this.selection === "string") {
-          this.only_value = true
-          this.selected_item = this.$_.find(this.options, (o) => { return o.value === this.selection})
-        } else {
-          this.selected_item = this.selection;
-        }
+        this.set_selected_item()
       }
       if (this.force_view) {
         this.viewStyle = this.view_options[this.force_view];
-        if(this.viewStyle === RADIOGROUP) {
+        if (this.viewStyle === RADIOGROUP) {
           this.only_value = true
-          this.selected_item = this.selection
+          this.set_selected_item()
         }
       } else {
         let sz = this.$_.size(this.options)
@@ -101,7 +96,7 @@
           this.viewStyle = NONE
         } else if (sz < select_tresh) {
           this.viewStyle = CLEAR_LIST
-        } else if(sz < autocomplet_thresh) {
+        } else if (sz < autocomplet_thresh) {
           this.viewStyle = SELECT
         } else {
           this.viewStyle = AUTOCOMPLETE
@@ -110,14 +105,14 @@
     },
     methods: {
       select(item) {
-        if(this.disabled)
+        if (this.disabled)
           return
         if (item.value === undefined)
           return;
         this.emitUp(item)
       },
       marked(key) {
-        if(this.selection)
+        if (this.selection)
           return key === this.selection.value && this.highlight;
       },
       is_category(item) {
@@ -126,13 +121,27 @@
       emitUp(item) {
         // todo maybe just one emit?
         // but item might already be string, ...
-        const event = this.only_value ? (typeof item === "string" ? item : item.value ): item
+        const event = this.only_value ? (typeof item === "string" ? item : item.value) : item
         //console.log("emit", item, this.select_sync)
         if (this.select_sync) {
           this.$emit('update:selection', event); // refactor to use the item
         } else {
           //console.log("emit no sync")
           this.$emit("selection", event);
+        }
+      },
+      set_selected_item() {
+        if (this.only_value) {
+          this.selected_item = this.selection
+        } else {
+          if (typeof this.selection === "string") {
+            this.only_value = true
+            this.selected_item = this.$_.find(this.options, (o) => {
+              return o.value === this.selection
+            })
+          } else {
+            this.selected_item = this.selection;
+          }
         }
       }
     },
@@ -150,7 +159,7 @@
         return this.viewStyle === SELECT
       },
       view_autocomplete() {
-          return this.viewStyle === AUTOCOMPLETE
+        return this.viewStyle === AUTOCOMPLETE
       },
       view_radiogroup() {
         return this.viewStyle === RADIOGROUP
@@ -163,7 +172,9 @@
       selected_item(item) {
         this.emitUp(item)
       },
-
+      selection(val) {
+        this.set_selected_item()
+      }
     }
   }
 </script>

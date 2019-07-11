@@ -136,7 +136,7 @@
         this.defaultPrivacy = pri
       },
       submit() {
-        console.log()
+        //console.log()
         this.$axios.post("/register", {
           registered_name: this.aspects.registered_name.value.value,
           email: this.aspects.email.value.value,
@@ -144,8 +144,8 @@
           defaultPrivacy: this.defaultPrivacy,
           defaultLicense: this.defaultLicense
         }).then(({data}) => {
-          console.log("some data")
-          console.log(data)
+          //console.log("some data")
+          //console.log(data)
           if (data.status) {
             this.$store.commit("user/login", data.result);
             this.$router.push("/")

@@ -111,7 +111,7 @@
         this.update_value();
       },
       openDriverDialogFor(licci) {
-        console.log(licci);
+        //console.log(licci);
         this.addDriverForLicci = licci;
         this.DriverDialogOpen = true
       },
@@ -146,9 +146,9 @@
         this.update_value();
       },
       removeDriver(licci, DIndex) {
-        console.log("DR", licci.drivers)
+        //console.log("DR", licci.drivers)
         licci.drivers.splice(DIndex, 1);
-        console.log("DR", licci.drivers)
+        //console.log("DR", licci.drivers)
         this.update_value();
       },
       update_value() {

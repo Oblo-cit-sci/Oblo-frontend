@@ -51,7 +51,6 @@
       }
     },
     created() {
-      console.log()
       this.existing_types = object_list2options(Array.from(this.$store.state.entry_types.values()), "title", "slug", true)
     },
     methods: {

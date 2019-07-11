@@ -66,7 +66,7 @@
         }
       },
       selected(val) {
-        console.log("selected")
+        //console.log("selected")
         this.dialogOpen = false;
         this.i_value = val.value
         this.value_change(this.i_value)

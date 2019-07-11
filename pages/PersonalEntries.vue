@@ -54,7 +54,7 @@
         if (this.filter.length !== 1) {
           if (this.$_.last(this.filter) === "all") {
             this.filter = ["all"]
-            console.log(this.$store.state.entries)
+            //console.log(this.$store.state.entries)
           } else {
             if (this.filter[0] === "all") {
               this.filter.shift()

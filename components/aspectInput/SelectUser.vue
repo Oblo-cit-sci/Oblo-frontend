@@ -32,7 +32,7 @@
             value: registered_name
           });
         }
-        console.log(users)
+        //console.log(users)
         return users;
       }
     },

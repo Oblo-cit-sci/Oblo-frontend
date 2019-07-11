@@ -118,8 +118,6 @@
           console.log("valueslist!")
           this.entry_select = true
           this.entry_select_options = entries_as_options(get_entries_of_type(this.$store, "valuelist"))
-
-          console.log(this.entry_select_options)
         }
       } else { // default is "str"
         // allow creating keys (as Stringinputs)

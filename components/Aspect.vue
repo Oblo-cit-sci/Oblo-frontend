@@ -110,7 +110,7 @@
       },
       disabled_text() {
         if(this.condition_fail) {
-          console.log("disabled_text text", this.aspect.attr.condition.disabled_text)
+          //console.log("disabled_text text", this.aspect.attr.condition.disabled_text)
           return this.aspect.attr.condition.disabled_text
         } else {
           return null
@@ -168,7 +168,7 @@
       use_regular(val) {
         if (!val) {
           if(this.aspect.attr.alternative.attr.value !== undefined) {
-            console.log("we gotta preset value")
+            //console.log("we gotta preset value")
             this.i_value = this.aspect.attr.alternative.attr.value
           } else {
             this.i_value = aspect_raw_default_value(this.aspect.attr.alternative)
