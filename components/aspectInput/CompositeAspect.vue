@@ -46,25 +46,29 @@
         //console.log("composite update value, index", index, $event)
         this.i_value[index] = $event
         // todo use TitleAspect in meta
-        if(index === 0) {
-          this.$emit(ASPECTACTION, {action:TITLE_UPDATE, value: this.i_value[index]})
+        if (index === 0) {
+          this.$emit(ASPECTACTION, {action: TITLE_UPDATE, value: this.i_value[index]})
         }
         this.value_change(this.i_value)
       },
       comp_extras(comp_type) {
         let xtra_copy = JSON.parse(JSON.stringify((this.extra || {})))
         // composites in lista dont have title descriptions, their kids should
-        if(xtra_copy.hasOwnProperty("show_title_descr")) {
-          delete xtra_copy.show_title_descr
+        // todo not sure what we still need!!
+        if (xtra_copy.hasOwnProperty("clear")) {
+          delete xtra_copy.clear
+        }
+        if (xtra_copy.hasOwnProperty("no_title")) {
+          delete xtra_copy.no_title
+        }
+        if (xtra_copy.hasOwnProperty("listitem")) {
+          delete xtra_copy.listitem
         }
         xtra_copy.aspect_loc.push(["aspcet", comp_type.name])
-        if(xtra_copy.hasOwnProperty("clear")) {
-          delete xtra_copy[xtra_copy.clear]
-        }
         return xtra_copy
       },
       aspectAction(event) {
-        this.$emit('aspectAction',event)
+        this.$emit('aspectAction', event)
       }
     },
     watch: {

@@ -250,4 +250,9 @@
   .v-text-field--outline {
     margin: 1%
   }
+
+  .wide_divider {
+    margin-top: 2%;
+    margin-bottom: 2%;
+  }
 </style>

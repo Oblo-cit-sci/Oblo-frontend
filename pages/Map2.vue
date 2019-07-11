@@ -32,7 +32,7 @@
 
   import {MglMarker, MglPopup} from 'vue-mapbox';
   import {access_token, licci_style_map} from "../lib/services/mapbox";
-  import {pack_value} from "../lib/entry";
+  import {pack_value} from "../lib/aspect";
 
   const SIMPLE_MODE = 0
 

@@ -58,8 +58,8 @@
         show_remove: false,
         remove_data_dialog: {
           id: "",
-          title: "Delete village",
-          text: "Are you sure you want to delete this village?",
+          title: "Delete " + this.item_name,
+          text: "Are you sure you want to delete this " + this.item_name + "?",
           confirm_text: "delete",
           cancel_color: "success",
           confirm_color: "error"
@@ -119,7 +119,7 @@
       },
       open_item(item) {
         this.$emit(ENTRYACTION, {action: AUTOSAVE})
-        if(!this.has_entry(item.key))
+        if (!this.has_entry(item.key))
           this.fetch_and_nav(entry.uuid)
         else {
           this.$router.push("/entry/" + item.key)
@@ -127,12 +127,20 @@
       },
       update_indices() {
         let entry_type = this.$store.getters.entry_type(this.item_type_slug)
-        const idAspect = entry_type.content.meta.IDAspect
-        if(idAspect) {
-          for(let index in this.items) {
+        let idAspect = entry_type.content.meta.IDAspect
+        if (idAspect) {
+          for (let index in this.items) {
             const item = this.items[index]
-            let entry = this.$store.getters["entries/get_entry"](item.key)
-            set_entry_value(entry, [["aspect", idAspect]], {value: 1 + parseInt(index)})
+            //let entry = this.$store.getters["entries/get_entry"](item.key)
+            let a  = ["aspect", idAspect]
+            console.log(["aspect", idAspect], a)
+            let as = [a]
+            console.log("updating value", as, [["aspect", idAspect]], a, [a])
+            this.$store.commit("entries/set_entry_value", {
+              uuid: item.key,
+              aspect_loc: [["aspect", idAspect]],
+              value: {value: 1 + parseInt(index)}
+            })
           }
         }
       }

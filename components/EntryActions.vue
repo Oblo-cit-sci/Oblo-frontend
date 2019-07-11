@@ -1,5 +1,6 @@
 <template lang="pug">
   div
+    v-divider(class="wide_divider")
     Paginate(
       v-if="has_pages"
       :page.sync="i_page"
@@ -214,8 +215,5 @@
 </script>
 
 <style scoped>
-  .wide_divider {
-    margin-top: 2%;
-    margin-bottom: 2%;
-  }
+
 </style>

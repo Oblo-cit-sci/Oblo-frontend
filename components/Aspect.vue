@@ -125,16 +125,8 @@
         if (!aspect_descr.hasOwnProperty("description")) {
           //console.log("warning: aspect", this.aspect, "has no description")
         }
-        let title = ""
-        if (!this.extra.no_title) {
-          if (aspect_descr.label !== undefined) {
-            title = aspect_descr.label
-          } else {
-            title = aspect_descr.name
-          }
-        }
         return {
-          title: title,
+          title: this.extra.no_title ? "" : aspect_label(aspect_descr),
           description: aspect_descr.description || ""
         }
       },
@@ -206,9 +198,13 @@
     }
   }
 
-  import {aspect_default_value, aspect_raw_default_value, MAspectComponent, pack_value} from "../lib/entry";
+  import {
+    aspect_default_value,
+    aspect_raw_default_value,
+    MAspectComponent} from "../lib/entry";
 
   import Title_Description from "./Title_Description";
+  import {aspect_label, pack_value} from "../lib/aspect";
 </script>
 
 <style scoped>

@@ -27,6 +27,7 @@
           :extra="extras[aspect.name]"
           :extra_update="extras_update[aspect.name]")
       div(v-if="page === 0")
+        v-divider(class="wide_divider")
         License(:passedLicense.sync="entry.license" :mode="licence_mode")
         Privacy(:mode="privacy_mode" :passedPrivacy.sync="entry.privacy")
       EntryActions(
@@ -57,7 +58,7 @@
     set_entry_value,
     aspect_loc_str,
     MAspectComponent,
-    pack_value, delete_entry, unpack, get_TitleAspect
+    delete_entry, get_TitleAspect
   } from "../../../lib/entry"
   import Title_Description from "../../../components/Title_Description"
   import EntryActions from "../../../components/EntryActions";
@@ -75,6 +76,7 @@
   import {check_conditions, resolve_aspect_ref} from "../../../lib/client";
   import EntryNavMixin from "../../../components/EntryNavMixin";
   import DecisionDialog from "../../../components/DecisionDialog";
+  import {pack_value, unpack} from "../../../lib/aspect";
 
 
   export default {
@@ -112,6 +114,7 @@
 
       this.entry = JSON.parse(JSON.stringify(entry))
 
+      //console.log("entry index create", this.entry.aspects_values.)
       this.$store.commit("set_global_ref", this.uuid)
 
       // set global ref, needed for deeply nested maps to know how to come back

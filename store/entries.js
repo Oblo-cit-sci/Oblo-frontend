@@ -72,15 +72,24 @@ export const mutations = {
     for(let loc of aspect_loc){
       if(loc[0] === ASPECT) {
         select = select[loc[1]]
+        if(!select) {
+          console.log("error setting value", aspect_loc, loc)
+        }
       }
     }
     if(final_loc[0] === ASPECT) {
       //select.set(inal_loc[1]) = value
+      if(!select.hasOwnProperty(final_loc[1])) {
+        console.log("error setting value", aspect_loc, loc)
+      }
       select[final_loc[1]] = value
     } else { // INDEX
       // push new value
       if(select.value.length === final_loc[1]) {
+        // todo here could be a check if loc1 is length
         select.value.push(value)
+      } else {
+        select.value[final_loc[0]] = value
       }
     }
   }
