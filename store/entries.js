@@ -53,10 +53,10 @@ export const mutations = {
     let refs = kids[child_uuid] || []
     kids[child_uuid] = ld.concat(refs, [aspect_loc])
   },
-  /*delete_ref_child(state, {uuid, child_uuid}) {
+  delete_ref_child(state, {uuid, child_uuid}) {
     console.log("e.delete_ref_child", child_uuid)
     delete state.entries.get(uuid).refs.children[child_uuid]
-  },*/
+  },
   set_ref_parent(state, {uuid, ref}) {
     state.entries.get(uuid).refs.parent = ref
   },
@@ -115,5 +115,11 @@ export const getters = {
   },
   get_own_entries(state) {
     // todo
+  }
+}
+
+export const actions = {
+  delete_entry(state, uuid) {
+    console.log("action delete")
   }
 }

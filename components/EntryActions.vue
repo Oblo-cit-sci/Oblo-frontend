@@ -41,7 +41,7 @@
     ENTRYACTION,
     GLOBAL,
     PRIVATE_LOCAL,
-    PUBLIC,
+    PUBLIC, SAVE,
     SUBMITTED,
     VIEW
   } from "../lib/consts";
@@ -133,10 +133,11 @@
       }
       ,
       cancel() {
-        if (this.init && !this.submitted) {
-          this.delete_draft()
+        if (this.entry.version === 0 && !this.submitted) {
+          this.$store.dispatch("entries/delete_entry", this.entry.uuid)
+          //this.$store.commit("entries/delete_entry", entry.uuid)
         } else {
-          this.back()
+         // this.back()
         }
       }
       ,
@@ -156,7 +157,7 @@
       save() {
         // todo not if it is an aspect page
         //save_entry(this.$store, this.entry)
-        this.$emit(ENTRYACTION, {action: AUTOSAVE})
+        this.$emit(ENTRYACTION, {action: SAVE})
         this.$store.commit("set_ok_snackbar", "Entry saved")
         this.back()
       },

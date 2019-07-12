@@ -58,7 +58,7 @@
     set_entry_value,
     aspect_loc_str,
     MAspectComponent,
-    delete_entry, get_TitleAspect
+    delete_entry, get_TitleAspect, save_entry
   } from "../../../lib/entry"
   import Title_Description from "../../../components/Title_Description"
   import EntryActions from "../../../components/EntryActions";
@@ -68,7 +68,7 @@
     CREATE_CONTEXT_ENTRY,
     GLOBAL_ASPECT_REF,
     TITLE_CHANGED,
-    ASPECT, DELETE_CONTEXT_ENTRY, PUBLIC, PRIVATE_LOCAL, VIEW
+    ASPECT, DELETE_CONTEXT_ENTRY, PUBLIC, PRIVATE_LOCAL, VIEW, SAVE
   } from "../../../lib/consts";
   import Aspect from "../../../components/Aspect";
 
@@ -180,6 +180,8 @@
           // todo maybe the server could set the titleAspect and itself
           // would in that case emit up this actiovaluen
           // otherwise, now its unused, cuz the titleAspect is grabbed here
+          case SAVE:
+            save_entry(this.$store, this.entry)
           case TITLE_CHANGED:
             console.log("WARNING maybe out TITLE_CHANGED entry action", value)
             this.entry.title = value

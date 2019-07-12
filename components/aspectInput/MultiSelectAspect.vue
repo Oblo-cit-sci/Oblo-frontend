@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    v-autocomplete(
+    v-select(
       :items="options"
       v-model="selection"
       :readonly="readOnly"
@@ -15,17 +15,24 @@
     name: "MultiselectAspect",
     mixins: [AspectMixin, SelectMixin],
     created() {
-      // todo BOTH possibilites not tested
-      /*if (this.select_check) { // todo plan this
-        this.check_box_value = this.$_.fill(new Array(options.length), false) // or maybe a value/default...
-      }*/
-      if (this.value !== null) {
-        this.selection = this.$_.filter(this.options, (o) => {
-          return this.value.indexOf(o.value) > -1
-        })
+      console.log(this.value)
+      this.set_selection()
+    },
+    methods: {
+      set_selection() {
+        if (this.value !== null) {
+          this.selection = this.$_.filter(this.options, (o) => {
+            return this.value.indexOf(o.value) > -1
+          })
+        } else {
+          this.selection = null
+        }
       }
     },
     watch: {
+      value() {
+        //this.set_selection()
+      },
       selection() {
         if (this.selection === null)
           this.value_change(null)
@@ -33,7 +40,6 @@
           this.i_value = this.selection
           this.value_change(this.i_value)
         }
-
       }
     }
   }
