@@ -15,7 +15,6 @@
     name: "MultiselectAspect",
     mixins: [AspectMixin, SelectMixin],
     created() {
-      console.log(this.value)
       this.set_selection()
     },
     methods: {

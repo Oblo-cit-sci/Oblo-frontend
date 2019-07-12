@@ -36,7 +36,7 @@
 
 <script>
 
-  import {EDIT, ENTRYACTION, TITLE_CHANGED, VIEW} from "../lib/consts";
+  import {EDIT, ENTRYACTION, VIEW} from "../lib/consts";
 
   //
 
@@ -148,9 +148,6 @@
         }
         this.value.value = event
         this.$emit('update:value', Object.assign(this.$_.cloneDeep(this.value), {value: event}))
-        if (this.extra.is_title || false) {
-          this.$emit(ENTRYACTION, {action: TITLE_CHANGED, value: event})
-        }
       }
     },
     watch: {

@@ -67,7 +67,6 @@
     AUTOSAVE,
     CREATE_CONTEXT_ENTRY,
     GLOBAL_ASPECT_REF,
-    TITLE_CHANGED,
     ASPECT, DELETE_CONTEXT_ENTRY, PUBLIC, PRIVATE_LOCAL, VIEW, SAVE
   } from "../../../lib/consts";
   import Aspect from "../../../components/Aspect";
@@ -181,10 +180,8 @@
           // would in that case emit up this actiovaluen
           // otherwise, now its unused, cuz the titleAspect is grabbed here
           case SAVE:
+            this.dirty = false
             save_entry(this.$store, this.entry)
-          case TITLE_CHANGED:
-            console.log("WARNING maybe out TITLE_CHANGED entry action", value)
-            this.entry.title = value
             break
           case CREATE_CONTEXT_ENTRY:
             this.create_ref(value)
