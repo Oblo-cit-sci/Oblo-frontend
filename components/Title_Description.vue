@@ -1,6 +1,8 @@
 <template lang="pug">
-  div
-    component(v-bind:is="header_type" v-bind:class="{ disabled: disabled }") {{title}}
+  div(:class="{ disabled: disabled }")
+    component(
+      :is="header_type"
+      :class="{ disabled: disabled }") {{title}}
       span(v-if="disabled") &nbsp;({{disabled_text}})
     div(v-if="multiple_descriptions && !readOnly")
       div(v-for="(description_part, index) in description" :key="index")

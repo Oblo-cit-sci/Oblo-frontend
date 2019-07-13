@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-layout(column justify-center align-center)
+  v-layout(justify-center align-center)
     v-flex(sm12 md12)
       Title_Description(
         :title="entry_type.title"
@@ -292,7 +292,6 @@
       privacy_mode() {
         const privacy_set = this.entry_type.content.meta.privacy
         return privacy_set ? VIEW : EDIT
-
       },
       licence_mode() {
         if (this.entry.refs.parent || this.entry.privacy === PRIVATE_LOCAL) {

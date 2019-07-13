@@ -36,7 +36,7 @@
 
 <script>
 
-  import {EDIT, ENTRYACTION, VIEW} from "../lib/consts";
+  import {EDIT, VIEW} from "../lib/consts";
 
   //
 
@@ -113,7 +113,7 @@
           //console.log("disabled_text text", this.aspect.attr.condition.disabled_text)
           return this.aspect.attr.condition.disabled_text
         } else {
-          return null
+          return "disabled"
         }
       }
     },
