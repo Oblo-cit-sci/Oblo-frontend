@@ -1,6 +1,6 @@
 <template lang="pug">
-  v-layout(column='' justify-center='' align-center='')
-    v-flex(xs12='' sm8='' md6='' class="column")
+  v-layout(justify-center)
+    v-flex(xs12 md8)
       SingleSelect(v-bind:options="options" v-bind:selection.sync="selectedItem" force_view="CLEAR_LIST" :highlight="false")
 </template>
 

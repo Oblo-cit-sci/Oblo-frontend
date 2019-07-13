@@ -7,6 +7,7 @@
       v-on:input="input($event)"
       :suffix="suffix"
       :rules="[minmax]"
+      :hideDetails="typeof minmax(value) === 'boolean'"
       :disabled="disabled"
       :readonly="!edit"
       v-on:update:error="error = $event"

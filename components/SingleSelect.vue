@@ -1,6 +1,6 @@
 <template lang="pug">
   div(v-if="view_clearlist")
-    v-list(:three-line="has_some_description")
+    v-list(:three-line="has_some_description" :dense="!has_some_description" class="singleselect_list")
       v-list-tile(v-for="item of options"
         :key="item.value"
         @click="select(item)"
@@ -180,6 +180,10 @@
 </script>
 
 <style scoped>
+
+  .singleselect_list {
+    margin-bottom: 1%;
+  }
   .marked {
     background: khaki;
   }

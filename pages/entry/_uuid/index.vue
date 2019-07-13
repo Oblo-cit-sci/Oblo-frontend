@@ -1,14 +1,15 @@
 <template lang="pug">
   v-layout(justify-center align-center)
-    v-flex(sm12 md12)
+    v-flex(xs12 md12)
       Title_Description(
         :title="entry_type.title"
         header_type="h1"
         :description="entry_type.description"
         mode="edit")
       div(v-if="entry.refs.parent")
-        span This entry is part of the draft: &nbsp
+        span This entry is part of:&nbsp
         a(@click="to_parent") {{parent_title}}
+      v-divider(class="wide_divider")
       div(v-if="has_pages")
         Title_Description(
           :title="page_info.title"

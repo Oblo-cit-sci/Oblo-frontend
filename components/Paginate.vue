@@ -11,6 +11,7 @@
         :only_value="true"
         :select_sync="false"
         v-on:selection="page_selected($event)")
+    v-divider(class="wide_divider")
 </template>
 
 <script>

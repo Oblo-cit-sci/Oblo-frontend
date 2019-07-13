@@ -8,7 +8,6 @@
       :named_pages="named_pages"
       :pages="entry_type.content.meta.pages"
       v-on:lastpage="last_page = ($event)")
-    v-divider(class="wide_divider")
     span(v-if="owner")
       span(v-if="view")
         v-btn(color="secondary" @click="edit") edit

@@ -1,8 +1,7 @@
 <template lang="pug">
-  div(:class="{ disabled: disabled }")
+  div
     component(
-      :is="header_type"
-      :class="{ disabled: disabled }") {{title}}
+      :is="header_type") {{title}}
       span(v-if="disabled") &nbsp;({{disabled_text}})
     div(v-if="multiple_descriptions && !readOnly")
       div(v-for="(description_part, index) in description" :key="index")
@@ -69,7 +68,4 @@
     padding-right: 5%;
   }
 
-  .disabled {
-    opacity: 0.4;
-  }
 </style>

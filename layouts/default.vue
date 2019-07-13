@@ -254,4 +254,8 @@
     margin-top: 2%;
     margin-bottom: 2%;
   }
+
+  .disabled *{
+    opacity: 0.8;
+  }
 </style>

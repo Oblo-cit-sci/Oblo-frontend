@@ -1,36 +1,25 @@
 <template lang="pug">
   div
-    div(v-for="(comp_type, index) in aspect.components" :key="index")
-      Aspect(
-        :aspect="comp_type"
-        :value="i_value[index]"
-        v-on:update:value="update_value($event, index)"
-        :edit="true"
-        :mode="mode"
-        :disabled="disabled"
-        :extra="comp_extras(comp_type)"
-        v-on:entryAction="$emit('entryAction',$event)"
-        v-on:aspectAction="aspectAction")
+    v-layout(row wrap)
+      v-flex(
+        v-for="(comp_type, index) in aspect.components" :key="index"
+        :class="layoutClasses")
+        Aspect(
+          :aspect="comp_type"
+          :value="i_value[index]"
+          v-on:update:value="update_value($event, index)"
+          :edit="true"
+          :mode="mode"
+          :disabled="disabled"
+          :extra="comp_extras(comp_type)"
+          v-on:entryAction="$emit('entryAction',$event)"
+          v-on:aspectAction="aspectAction")
 </template>
 
 <script>
 
   /*
-    the trial to allow 2 (or maybe more aspects into one row: e.g. lon:lat, key:value.
-    doesnt stack, when rows get to narrow... :/
-      div
-      v-layout
-        v-flex(col-md6 v-for="(comp_type, index) in aspect.components" :key="index")
-          Aspect(
-            style="min-width='100px'"
-            :aspect="comp_type"
-            :value="i_value[index]"
-            v-on:update:value="update_value($event, index)"
-            :edit="true"
-            :mode="mode"
-            :extra="comp_extras(comp_type)"
-            v-on:entryAction="$emit('entryAction',$event)"
-            v-on:aspectAction="aspectAction")
+    the flexes could have "xs12 sm6 lg6"
    */
 
   import AspectMixin from "./AspectMixin";
@@ -69,6 +58,14 @@
       },
       aspectAction(event) {
         this.$emit('aspectAction', event)
+      }
+    },
+    computed: {
+      layoutClasses() {
+        if(this.aspect.components.length === 2) {
+          return "xs12 sm6 lg6"
+        } else
+          return "xs12 lg12"
       }
     },
     watch: {
