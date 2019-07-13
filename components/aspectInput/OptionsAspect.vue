@@ -41,22 +41,18 @@
     mixins: [AspectMixin],
     data() {
       return {
-        title: "XXX",
         selected_option: 0,
         opt_values: []
       }
     },
     created() {
-      //console.log("opt create", this.value)
       for (let index in this.aspect.options) {
         this.opt_values[index] = aspect_wrapped_default_value(this.aspect.options[index])
       }
       if(this.i_value === null) {
-        //console.log("setting i_value to default")
         this.i_value = aspect_raw_default_value(this.aspect.view_type)
-        this.value_change(this.i_value)
+        //this.value_change(this.i_value)
       }
-      //console.log("opt asp init with val", this.value)
     },
     methods: {
       optionUpdate(event, index) {
