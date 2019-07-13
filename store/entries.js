@@ -3,7 +3,7 @@
  */
 
 
-import {ASPECT} from "../lib/consts";
+import {ASPECT, DRAFT} from "../lib/consts";
 
 const ld = require("lodash")
 
@@ -31,7 +31,7 @@ export const mutations = {
   },
   create(state, entry) {
     //console.log(entry)
-    state.entries.set(entry.uuid,entry)
+    state.entries.set(entry.uuid, entry)
   },
   save_entry(state, entry) {
     state.entries.set(entry.uuid, entry)
@@ -69,23 +69,23 @@ export const mutations = {
     let entry = state.entries.get(uuid)
     let select = entry.aspects_values
     const final_loc = aspect_loc.pop()
-    for(let loc of aspect_loc){
-      if(loc[0] === ASPECT) {
+    for (let loc of aspect_loc) {
+      if (loc[0] === ASPECT) {
         select = select[loc[1]]
-        if(!select) {
+        if (!select) {
           console.log("error setting value", aspect_loc, loc)
         }
       }
     }
-    if(final_loc[0] === ASPECT) {
+    if (final_loc[0] === ASPECT) {
       //select.set(inal_loc[1]) = value
-      if(!select.hasOwnProperty(final_loc[1])) {
+      if (!select.hasOwnProperty(final_loc[1])) {
         console.log("error setting value", aspect_loc, loc)
       }
       select[final_loc[1]] = value
     } else { // INDEX
       // push new value
-      if(select.value.length === final_loc[1]) {
+      if (select.value.length === final_loc[1]) {
         // todo here could be a check if loc1 is length
         select.value.push(value)
       } else {
@@ -98,6 +98,21 @@ export const mutations = {
 }
 
 export const getters = {
+  all_entries(state, getters) {
+    return state.entries.values()
+  },
+  all_drafts(state) {
+    // as method prevents caching
+    return () => {
+      // todo fuck, how to run a filter over Map class
+      let result = []
+      for (let e of state.entries.values()) {
+        if (e.status === DRAFT)
+          result.push(e)
+      }
+      return result
+    }
+  },
   has_entry(state, getters) {
     return (uuid) => {
       return state.entries.has(uuid)

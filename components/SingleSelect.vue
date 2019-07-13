@@ -1,15 +1,17 @@
 <template lang="pug">
   div(v-if="view_clearlist")
     v-list(:three-line="has_some_description" :dense="!has_some_description" class="singleselect_list")
-      v-list-tile(v-for="item of options"
-        :key="item.value"
-        @click="select(item)"
-        :class="[{ marked: marked(item.value) }, {category: is_category(item)}]")
-        v-list-tile-avatar(v-if="has_some_icons")
-          v-icon {{item.icon}}
-        v-list-tile-content
-          v-list-tile-title {{item.text}}
-          v-list-tile-sub-title {{item.description}}
+      div(v-for="item of options")
+        v-subheader(v-if="is_category(item)") {{item.text}}
+        v-list-tile(v-else
+            :key="item.value"
+            @click="select(item)"
+            :class="{ marked: marked(item.value) }")
+            v-list-tile-avatar(v-if="has_some_icons")
+              v-icon {{item.icon}}
+            v-list-tile-content
+              v-list-tile-title {{item.text}}
+              v-list-tile-sub-title {{item.description}}
   div(v-else-if="view_select")
     v-select(outline hideDetails singleLine dense :multiple=false v-model="selected_item" :items="options" return-object)
   div(v-else-if="view_autocomplete")
@@ -190,5 +192,6 @@
 
   .category {
     background: lightgrey;
+    width: 100%;
   }
 </style>

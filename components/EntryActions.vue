@@ -132,12 +132,15 @@
       }
       ,
       cancel() {
-        if (this.entry.version === 0 && !this.submitted) {
+        /*if (this.entry.version === 0 && !this.submitted) {
           this.$store.dispatch("entries/delete_entry", this.entry.uuid)
           //this.$store.commit("entries/delete_entry", entry.uuid)
         } else {
-         // this.back()
-        }
+
+        }*/
+        // todo
+        this.$store.commit("set_error_snackbar", "sorry deletion doesnt work atm :)")
+        this.back()
       }
       ,
       show_delete() {
