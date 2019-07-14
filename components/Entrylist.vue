@@ -1,7 +1,7 @@
 <template lang="pug">
-  div
-    v-layout(sm12 justify-start)
-      v-list(two-line subheader)
+  v-layout(column)
+    v-flex(xs12 md6 lg4 justify-center)
+      v-list(two-line subheader dense)
         v-list-tile(v-for="entry in entries"
           :key="entry.id"
           @click="show(entry)")

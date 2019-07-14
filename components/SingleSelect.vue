@@ -1,6 +1,9 @@
 <template lang="pug">
   div(v-if="view_clearlist")
-    v-list(:three-line="has_some_description" :dense="!has_some_description" class="singleselect_list")
+    v-list(
+      :three-line="has_some_description"
+      :dense="true"
+      class="singleselect_list")
       div(v-for="item of options")
         v-subheader(v-if="is_category(item)") {{item.text}}
         v-list-tile(v-else

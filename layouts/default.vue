@@ -30,9 +30,15 @@
       :clipped-left="clipped"
       true
       app
+      dense
     >
       <v-toolbar-side-icon v-show="initialized" @click="drawer = !drawer"/>
-      <v-toolbar-title v-text="title"/>
+      <v-toolbar-title >
+      <span>
+        {{title}}
+      </span>
+        <span style="font-size: 0.6em">(v{{version}})</span>
+      </v-toolbar-title>
       <v-spacer></v-spacer>
       <div>
         <v-btn flat icon nuxt to="/" :loading="connecting">
@@ -79,7 +85,7 @@
 
   import GlobalSnackbar from "../components/GlobalSnackbar"
 
-  let all_items = [
+  const all_items = [
     {
       icon: 'home',
       title: 'Home',
@@ -146,9 +152,12 @@
   let hide_no_login = ["Register", "Login"] // if not connected out and if logged in out
   let show_inDev = ["Tests", "Types", "Entrytypes"]
 
+  const pkg = require('../package')
+
   export default {
     components: {GlobalSnackbar},
     created() {
+
       this.login_state = this.$store.state.user.logged_in
       this.update_sidebar()
 
@@ -199,6 +208,7 @@
         clipped: false,
         miniVariant: false,
         title: 'LICCI',
+        version: pkg.version,
         items: all_items,
         header_items: [
           /*{
