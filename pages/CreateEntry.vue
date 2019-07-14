@@ -56,10 +56,7 @@
             description: "Created " + format(d.creation_datetime)}
         });
         if(drafts.length > 0 ){
-          options.push(
-            {text: "Drafts", type: "category"},
-            ...drafts
-            )
+          options.push({text: "Drafts", type: "category"}, ...drafts)
         }
         return options;
       }

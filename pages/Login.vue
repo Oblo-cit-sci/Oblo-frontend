@@ -1,9 +1,8 @@
 <template lang="pug">
   v-flex(xs12='' sm8='' md6='')
     v-form
-      v-text-field(v-model='username' label='Username' required='' )
-      v-text-field(v-model='password' type='password' label='Password' required='')
-      v-btn(@click='login' color='success' autofocus) Login
+      Aspect(v-for="a of aspects" :aspect="a" :value="a.value" mode="edit" :key="a.name")
+    v-btn(@click='login' color='success' autofocus) Login
     v-alert(:value='errorMsg' type='error') {{errorMsg}}
 </template>
 
@@ -11,9 +10,12 @@
   import {initialize} from "../lib/client";
 
   import {LOGIN_WRONG_CREDENTIALS, LOGIN_ALREADY_LOGGED_IN} from "~~/lib/consts"
+  import Aspect from "../components/Aspect";
+  import {unpack} from "../lib/aspect";
 
   export default {
     name: "Login",
+    components: {Aspect},
     data() {
       return {
         aspects: [{
@@ -21,9 +23,6 @@
           name: "Username",
           attr: {
             max: 30,
-            extra: {
-              "hint": 'At least 2 characters'
-            }
           },
           value: {
             value: ""
@@ -31,32 +30,29 @@
         },
           {
             type: "str",
-            name: "email",
+            name: "Password",
             attr: {
               max: 40,
-              extra: {
-                rules: [
-                  v => !!v || 'E-mail is required',
-                  v => /.+@.+/.test(v) || 'E-mail must be valid'
-                ]
-              }
             },
             value: {
               value: ""
-            }
-          }],
+            },
+          }
+        ],
         username: "",
-        password: "",
-        errorMsg: ""
+        password:
+          "",
+        errorMsg:
+          ""
       }
-    },
+    }
+    ,
     methods: {
       login() {
         this.$axios.post("/login", {
-          username: this.username,
-          password: this.password,
+          username: unpack(this.aspects[0].value),
+          password: unpack(this.aspects[1].value),
         }).then(({data}) => {
-//console.log(data, data.status)
           if (data.status || data.msg_ === LOGIN_ALREADY_LOGGED_IN) {
             //console.log("LOGGIN DONE")
             initialize(this.$axios, this.$store).then((res) => {
