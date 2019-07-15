@@ -1,6 +1,6 @@
 
 
-import {VIEW} from "../../lib/consts";
+import {ASPECTACTION, TITLE_ASPECT, TITLE_UPDATE, VIEW} from "../../lib/consts";
 import {aspect_raw_default_value} from "../../lib/entry";
 
 export default {
@@ -66,7 +66,13 @@ export default {
     value_change(event) {
       //console.log("asp mix val change", this.aspect, event)
       this.$emit('update:value', event);
+      if(this.extra[TITLE_ASPECT]) {
+        this.$emit(ASPECTACTION, {action: TITLE_UPDATE, value: this.toString(event)})
+      }
     },
+    toString(value) {
+      return value || ""
+    }
   },
   computed: {
     readOnly() {
