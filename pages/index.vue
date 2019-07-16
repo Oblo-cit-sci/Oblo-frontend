@@ -21,7 +21,7 @@
       return {
         connecting: this.$store.state.connecting,
         connected: null,
-        initialized: true // todo hacky, should be in the middleware
+        initialized: true,
       }
     },
     created() {
