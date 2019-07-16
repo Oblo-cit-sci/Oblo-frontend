@@ -45,7 +45,7 @@
   import MultiSelect from "../MultiSelect";
   import Aspect from "../Aspect";
   import ListMixin from "../ListMixin";
-  import {EDIT, INDEX} from "../../lib/consts";
+  import {EDIT, INDEX, TITLE_UPDATE} from "../../lib/consts";
 
   // todo, pass the extra in a more intelligent way down, not to all the same
 
@@ -160,7 +160,9 @@
         return xtra_copy
       },
       aspectAction(event, index) {
-        this.titles[index] = event.value.value
+        if(event.action === TITLE_UPDATE) {
+          this.titles[index] = event.value
+        }
       }
     },
     computed: {

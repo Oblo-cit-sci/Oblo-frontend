@@ -24,20 +24,25 @@
 
   import AspectMixin from "./AspectMixin";
   import Aspect from "../Aspect";
-  import {ASPECTACTION, INT, FLOAT, TITLE_UPDATE} from "../../lib/consts";
+  import {ASPECTACTION, INT, FLOAT, TITLE_ASPECT} from "../../lib/consts";
 
   export default {
     name: "CompositeAspect",
     components: {Aspect},
     mixins: [AspectMixin],
+    data() {
+      return {
+        titleAspectName: this.aspect.attr.titleAspect || this.aspect.components[0].name
+      }
+    },
+    created() {
+      console.log(this.titleAspectName)
+    },
     methods: {
       update_value($event, index) {
         //console.log("composite update value, index", index, $event)
         this.i_value[index] = $event
         // todo use TitleAspect in meta
-        if (index === 0) {
-          this.$emit(ASPECTACTION, {action: TITLE_UPDATE, value: this.i_value[index]})
-        }
         this.value_change(this.i_value)
       },
       comp_extras(comp_type) {
@@ -54,21 +59,26 @@
           delete xtra_copy.listitem
         }
         xtra_copy.aspect_loc.push(["aspcet", comp_type.name])
+        if (comp_type.name === this.titleAspectName) {
+          xtra_copy[TITLE_ASPECT] = true
+        }
         return xtra_copy
       },
       aspectAction(event) {
-        this.$emit('aspectAction', event)
+        this.$emit(ASPECTACTION, event)
       }
     },
     computed: {
       layoutClasses() {
-        const comp_types = this.aspect.components.map(c => c.type)
-        if(this.aspect.components.length === 2
-          && (comp_types[0] === INT || comp_types[0] === FLOAT)
-        && comp_types[0] === comp_types[1]) {
-          return "xs12 sm6 lg6"
-        } else
-          return "xs12 lg12"
+        if (this.aspect.components.length === 2) {
+          const comp_types = this.aspect.components.map(c => c.type)
+          if (this.aspect.components.length === 2
+            && (comp_types[0] === INT || comp_types[0] === FLOAT)
+            && comp_types[0] === comp_types[1]) {
+            return "xs12 sm6 lg6"
+          } else
+            return "xs12 lg12"
+        }
       }
     },
     watch: {

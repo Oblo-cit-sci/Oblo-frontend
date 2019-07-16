@@ -26,6 +26,9 @@
         } else {
           this.selection = null
         }
+      },
+      toString(value) {
+        return value.join(", ") || ""
       }
     },
     watch: {

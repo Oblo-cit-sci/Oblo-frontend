@@ -36,7 +36,7 @@
 
 <script>
 
-  import {EDIT, VIEW} from "../lib/consts";
+  import {ASPECTACTION, EDIT, VIEW} from "../lib/consts";
 
   //
 
@@ -131,7 +131,7 @@
         }
       },
       aspectAction(event) {
-        this.$emit('aspectAction', event)
+        this.$emit(ASPECTACTION, event)
       },
       aspectComponent(aspect_descr, mode) {
         // todo false, false are just default, ... better a config obj
