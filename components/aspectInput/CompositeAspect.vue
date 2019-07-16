@@ -73,9 +73,11 @@
         if (this.aspect.components.length === 2) {
           const comp_types = this.aspect.components.map(c => c.type)
           if ((comp_types[0] === INT || comp_types[0] === FLOAT) && comp_types[0] === comp_types[1]) {
+            console.log("composite next to each other")
             return "xs12 sm6 lg6"
           }
         }
+        console.log("composite columns")
         return "xs12 lg12"
       }
     },

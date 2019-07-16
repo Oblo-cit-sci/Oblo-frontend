@@ -78,6 +78,7 @@
     created() {
       //console.log("aspect", this.aspect.name, this.value)
       //console.log("aspect " + this.aspect.name + " created with value", this.value)
+      console.log("Aspect", this.value, this.value.regular)
       this.has_alternative = this.aspect.attr.hasOwnProperty("alternative")
       if (this.aspect.attr.mode === VIEW || this.mode === VIEW) {
         // sets always to VIEW, nothing really
@@ -86,6 +87,10 @@
       }
       if (this.aspect.attr.hasOwnProperty("condition")) {
         this.condition = this.aspect.attr.condition
+      }
+
+      if(this.value.hasOwnProperty("regular")) {
+        this.use_regular = this.value.regular
       }
     },
     // boolean check is not required, since "false" is the default

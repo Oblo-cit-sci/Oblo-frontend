@@ -13,9 +13,7 @@
             v-on:append-outer="remove_value(index)"
       div(v-else)
         v-expansion-panel(expand v-model="panelState")
-          v-expansion-panel-content(
-            v-for="(value, index) in i_value"
-            :key="index")
+          v-expansion-panel-content(v-for="(value, index) in i_value" :key="index")
             template(v-slot:header)
               div {{titles[index]|| index + 1}}
             Aspect(
