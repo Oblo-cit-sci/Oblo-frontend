@@ -46,12 +46,14 @@
       }
     },
     created() {
+      if(!this.aspect.hasOwnProperty("view_type")) {
+        console.log("Options Aspect without view_type... that is not gonna fly")
+      }
       for (let index in this.aspect.options) {
         this.opt_values[index] = aspect_wrapped_default_value(this.aspect.options[index])
       }
       if(this.i_value === null) {
         this.i_value = aspect_raw_default_value(this.aspect.view_type)
-        //this.value_change(this.i_value)
       }
     },
     methods: {
@@ -68,16 +70,6 @@
           return false
         }
       },
-      /*check_aspect_action(event) {
-        //console.log("opt acpect check action", event)
-        if (event.action === GLOBAL_ASPECT_REF) {
-          //event.value = this.aspect_ref
-
-          this.$emit(ENTRYACTION, event)
-        } else {
-          this.$emit(ENTRYACTION, event)
-        }
-      }*/
     },
     computed: {
       result_value() {
