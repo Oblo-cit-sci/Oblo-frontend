@@ -76,7 +76,7 @@
   import {check_conditions, resolve_aspect_ref} from "../../../lib/client";
   import EntryNavMixin from "../../../components/EntryNavMixin";
   import DecisionDialog from "../../../components/DecisionDialog";
-  import {pack_value, unpack} from "../../../lib/aspect";
+  import {aspect_loc_str2arr, pack_value, unpack} from "../../../lib/aspect";
 
 
   export default {
@@ -149,9 +149,12 @@
           this doesnt belong here, especially cuz of the duplicate for edit/_local_id page
       * */
       for (let aspect of this.entry_type.content.aspects) {
+        //console.log("index aspect", aspect)
         let value = resolve_aspect_ref(this.$store, this.entry, aspect)
-        if (value) {
+        //console.log("index value", value)
+        if (value !== undefined) {
           this.entry.aspects_values[aspect.name] = value
+          //value_ref = aspect_loc_str2arr(aspect.attr.value)
         }
       }
     },

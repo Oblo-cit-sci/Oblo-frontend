@@ -18,9 +18,7 @@
 
 <script>
   import AspectMixin from "./AspectMixin";
-
-  const INT = "int"
-  const FLOAT = "float"
+  import {INT, FLOAT} from "../../lib/consts";
 
   export default {
     name: "NumberAspect",
@@ -46,7 +44,7 @@
         console.log("NumberAspect-error type: aspect, type", this.aspect.name, this.aspect.type)
       }
       if (this.aspect.type === INT) {
-        this.mask = "##########"
+        this.mask = "################"
       }
     },
     methods: {

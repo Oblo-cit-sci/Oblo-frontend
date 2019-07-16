@@ -24,7 +24,7 @@
 
   import AspectMixin from "./AspectMixin";
   import Aspect from "../Aspect";
-  import {ASPECTACTION, TITLE_UPDATE} from "../../lib/consts";
+  import {ASPECTACTION, INT, FLOAT, TITLE_UPDATE} from "../../lib/consts";
 
   export default {
     name: "CompositeAspect",
@@ -62,7 +62,10 @@
     },
     computed: {
       layoutClasses() {
-        if(this.aspect.components.length === 2) {
+        const comp_types = this.aspect.components.map(c => c.type)
+        if(this.aspect.components.length === 2
+          && (comp_types[0] === INT || comp_types[0] === FLOAT)
+        && comp_types[0] === comp_types[1]) {
           return "xs12 sm6 lg6"
         } else
           return "xs12 lg12"
