@@ -27,6 +27,7 @@
         :loading="sending") {{submitted ? 'update' : 'submit'}}
       // v-if="private_local" todo for now, download for everyone
       v-btn(:disabled="disable_download"  @click="download") download
+      v-btn(v-if="upload_option" @click="upload_to_repo") Upload to the repo
     DecisionDialog(v-bind="remove_dialog_data" :open.sync="show_remove" v-on:action="delete_entry")
 </template>
 
@@ -34,11 +35,8 @@
 
 
   import {
-    AUTOSAVE,
-    CONTEXT_ENTRY,
     DRAFT,
     ENTRYACTION,
-    GLOBAL,
     PRIVATE_LOCAL,
     PUBLIC, SAVE,
     SUBMITTED,
@@ -50,6 +48,8 @@
   import {export_data} from "../lib/client";
   import DecisionDialog from "./DecisionDialog";
   import EntryNavMixin from "./EntryNavMixin";
+
+  import axios from "axios"
 
   export default {
     name: "EntryActions",
@@ -105,6 +105,9 @@
         } else {
           return "save draft"
         }
+      },
+      upload_option() {
+        return this.entry_type.content.activities.hasOwnProperty("upload")
       }
     }
     ,
@@ -129,8 +132,31 @@
         const route = get_edit_route_for_ref(this.$store, this.entry)
         //console.log(route)
         this.$router.push(route)
-      }
-      ,
+      },
+      upload_to_repo() {
+        const url = this.entry_type.content.activities.upload.url
+        const user_key = this.$store.getters.user_key
+
+        if(!user_key) {
+          this.$store.commit("set_error_snackbar", "No user key. Go to the settings and paste the user key given by the LICCI core team")
+          return
+        }
+        let export_data = {...this.entry, user_key: user_key}
+
+        console.log(url, user_key, export_data)
+        axios.post(url, export_data, {
+          headers: {
+            "accept": "*",
+            "Access-Control-Allow-Headers": "*",
+            'Access-Control-Allow-Origin': '*',
+          }
+        }).then(res => {
+          this.$store.commit("set_status_snackbar", res.data)
+        }).catch(err => {
+          console.log(err)
+          this.$store.commit("set_error_snackbar", "Something went horribly wrong")
+        })
+      },
       cancel() {
         /*if (this.entry.version === 0 && !this.submitted) {
           this.$store.dispatch("entries/delete_entry", this.entry.uuid)

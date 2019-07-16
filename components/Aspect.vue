@@ -38,8 +38,6 @@
 
   import {ASPECTACTION, EDIT, VIEW} from "../lib/consts";
 
-  //
-
   export default {
     name: "Aspect",
     components: {
@@ -78,7 +76,6 @@
     created() {
       //console.log("aspect", this.aspect.name, this.value)
       //console.log("aspect " + this.aspect.name + " created with value", this.value)
-      console.log("Aspect", this.value, this.value.regular)
       this.has_alternative = this.aspect.attr.hasOwnProperty("alternative")
       if (this.aspect.attr.mode === VIEW || this.mode === VIEW) {
         // sets always to VIEW, nothing really

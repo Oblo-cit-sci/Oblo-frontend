@@ -13,7 +13,10 @@ export const state = () => ({
   snackbar: {message: "", status: "ok"},
   mapmode: {},
   global_ref: null, // the last draft/entry
-  draft_numbers: {}
+  draft_numbers: {},
+  meta: {
+    repository: {}
+  }
   // selected entry type (for creation)
 })
 
@@ -63,6 +66,9 @@ export const mutations = {
   set_snackbar(state, snackbar) {
     state.snackbar = snackbar
   },
+  set_status_snackbar(state, {status, msg}) {
+    state.snackbar = {message: msg, ok: status}
+  },
   set_ok_snackbar(state, msg) {
     state.snackbar = {message: msg, ok: true}
   },
@@ -91,6 +97,9 @@ export const mutations = {
   },
   connecting(state, conn) {
     state._connecting = conn
+  },
+  add_meta(state, data) {
+    state.meta = {... state.meta, ...data}
   }
 };
 
@@ -136,8 +145,9 @@ export const getters = {
       return state.draft_numbers[type_slug] || 1
     }
   },
-
-
+  user_key(state) {
+    return state.meta.repository.user_key || ""
+  }
 };
 
 export const actions = {

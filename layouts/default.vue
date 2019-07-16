@@ -141,6 +141,11 @@
       title: 'Logout',
       to: '/logout'
     },
+    {
+      icon: 'settings',
+      title: 'Settings',
+      to: '/settings'
+    }
     /*{
       icon: "build",
       title: "debug",
