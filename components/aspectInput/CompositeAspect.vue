@@ -72,13 +72,11 @@
       layoutClasses() {
         if (this.aspect.components.length === 2) {
           const comp_types = this.aspect.components.map(c => c.type)
-          if (this.aspect.components.length === 2
-            && (comp_types[0] === INT || comp_types[0] === FLOAT)
-            && comp_types[0] === comp_types[1]) {
+          if ((comp_types[0] === INT || comp_types[0] === FLOAT) && comp_types[0] === comp_types[1]) {
             return "xs12 sm6 lg6"
-          } else
-            return "xs12 lg12"
+          }
         }
+        return "xs12 lg12"
       }
     },
     watch: {
