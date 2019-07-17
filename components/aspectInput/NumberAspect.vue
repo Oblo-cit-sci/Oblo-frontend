@@ -6,10 +6,11 @@
       :value="i_value"
       v-on:input="input($event)"
       :suffix="suffix"
-      :rules="[minmax]"
-      :hideDetails="typeof minmax(value) === 'boolean'"
       :disabled="disabled"
       :readonly="!edit"
+      type="number"
+      :min="min"
+      :max="max"
       v-on:update:error="error = $event"
       :append-outer-icon="clearIcon"
       @click:append-outer="$emit('entryAction', {action: 'clear'})"
@@ -29,13 +30,8 @@
         suffix: this.aspect.attr.suffix || "",
         num_type: null,
         error: false, // todo actually emit it up... and make validation on whole entry...
-        minmax: value => {
-          if (this.aspect.attr.min && value < this.aspect.attr.min)
-            return "value must be higher than " + (this.aspect.attr.min - 1)
-          else if (this.aspect.attr.max && value > this.aspect.attr.max)
-            return "value must be lower than " + (this.aspect.attr.max + 1)
-          else return true
-        }
+        min: this.aspect.attr.min,
+        max: this.aspect.attr.max,
       }
     },
     created() {
