@@ -4,8 +4,10 @@
 
 
 import {ASPECT, DRAFT} from "../lib/consts";
+import {pack_value} from "../lib/aspect";
 
 const ld = require("lodash")
+
 
 export const state = () => ({
   //
@@ -40,7 +42,7 @@ export const mutations = {
     let entry = state.entries.get(uuid)
     entry.downloads = entry.version
   },
-  delete_entry(state, uuid) {
+  delete_single_entry(state, uuid) {
     state.entries.delete(uuid)
   },
   set_downloaded(state, local_id) {
@@ -54,8 +56,7 @@ export const mutations = {
     kids[child_uuid] = ld.concat(refs, [aspect_loc])
   },
   delete_ref_child(state, {uuid, child_uuid}) {
-    console.log("e.delete_ref_child", child_uuid)
-    delete state.entries.get(uuid).refs.children[child_uuid]
+
   },
   set_ref_parent(state, {uuid, ref}) {
     state.entries.get(uuid).refs.parent = ref
@@ -130,11 +131,49 @@ export const getters = {
   },
   get_own_entries(state) {
     // todo
+  },
+  get_entry_value(state, getters) {
+    return ({uuid, aspect_loc}) => {
+      let entry = state.entries.get(uuid)
+      let select = entry.aspects_values
+      for (let loc of aspect_loc) {
+        if (loc[0] === ASPECT) {
+          select = select[loc[1]]
+          if (!select) {
+            console.log("error setting value", aspect_loc, loc)
+          }
+        }
+      }
+      return select
+    }
   }
 }
 
 export const actions = {
-  delete_entry(state, uuid) {
-    console.log("action delete")
+  delete_entry(context, uuid) {
+    const entry = context.state.entries.get(uuid)
+    if (entry) {
+      // TODO just TEMP, for easier testing
+      context.commit("delete_single_entry", uuid)
+
+      for (let child_uuid in entry.refs.children) {
+        context.commit("delete_single_entry", child_uuid)
+      }
+
+      if (entry.refs.parent) {
+        const parent = entry.refs.parent
+        const aspect = context.getters.get_entry_value(parent)
+        // ListOf
+        if(Array.isArray(aspect.value)) {
+          const filtered_value = aspect.value.filter(av => av.value !== uuid)
+          context.commit("set_entry_value", {
+            ...parent,
+            value: pack_value(filtered_value)
+          } )
+        }
+      }
+    } else {
+      console.log("store: entries DELETE tries to delete some entry that doesnt exist!")
+    }
   }
 }

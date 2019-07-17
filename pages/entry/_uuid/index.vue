@@ -34,6 +34,7 @@
       EntryActions(
         v-bind="entry_actions_props"
         :page.sync="page"
+        :dirty.sync="dirty"
         :has_pages="has_pages"
         v-on:entryAction="entryAction($event)")
       DecisionDialog(
@@ -77,6 +78,7 @@
   import EntryNavMixin from "../../../components/EntryNavMixin";
   import DecisionDialog from "../../../components/DecisionDialog";
   import {aspect_loc_str2arr, pack_value, unpack} from "../../../lib/aspect";
+  import {ENTRIES_DELETE_ENTRY} from "../../../lib/store_consts";
 
 
   export default {
@@ -250,14 +252,15 @@
         // todo.1
         // here we must do something to avoid blinking cuz its inserterd before leaving
         // TODO: NO IDEA HOW IT SETS THE STORE
-        set_entry_value(this.entry, aspect_loc, pack_value(entry.uuid))
+        //set_entry_value(this.entry, aspect_loc, pack_value(entry.uuid))
+        this.$store.commit("")
 
         this.$router.push({
           path: "/entry/" + entry.uuid
         })
       },
       delete_child(ref) {
-        delete_entry(this.$store, ref.uuid)
+        this.$store.dispatch(ENTRIES_DELETE_ENTRY, ref.uuid)
         delete this.entry.refs.children[ref.uuid]
         autosave(this.$store, this.entry)
       },

@@ -12,13 +12,13 @@
       span(v-if="view")
         v-btn(color="secondary" @click="edit") edit
       span(v-else)
-        v-btn(color="seconday" @click="cancel") cancel
+        v-btn(color="seconday" @click="show_cancel") cancel
 
       // TODO for the training we just DISABLE, otherwise it would be: :disabled="init"
       v-btn(v-if="!private_local && !in_context && !view" color="warning" @click="show_delete") delete draft
-      v-btn(v-else color="warning" :disabled="true" @click="show_delete") delete
+      v-btn(v-else color="warning" :disabled="initial_version" @click="show_delete") delete
 
-      v-btn(color="success" @click="save") {{save_word}}
+      v-btn(:disabled="!dirty" color="success" @click="save") {{save_word}}
       v-btn(
         v-if="!private_local && !view && !in_context"
         color="success"
@@ -28,7 +28,7 @@
       // v-if="private_local" todo for now, download for everyone
       v-btn(:disabled="disable_download"  @click="download") download
       v-btn(v-if="upload_option" @click="upload_to_repo") Upload to the repo
-    DecisionDialog(v-bind="remove_dialog_data" :open.sync="show_remove" v-on:action="delete_entry")
+    DecisionDialog(v-bind="dialog_data" :open.sync="dialog_visible" v-on:action="dialog_action($event)")
 </template>
 
 <script>
@@ -43,13 +43,14 @@
     VIEW
   } from "../lib/consts";
   import Paginate from "./Paginate";
-  import {current_user_is_owner, delete_entry, save_entry} from "../lib/entry";
+  import {current_user_is_owner, save_entry} from "../lib/entry";
 
   import {export_data} from "../lib/client";
   import DecisionDialog from "./DecisionDialog";
   import EntryNavMixin from "./EntryNavMixin";
 
   import axios from "axios"
+  import {ENTRIES_DELETE_ENTRY} from "../lib/store_consts";
 
   export default {
     name: "EntryActions",
@@ -67,6 +68,9 @@
       },
       entry: {
         type: Object
+      },
+      dirty: {
+        type: Boolean
       }
     },
     computed: {
@@ -108,36 +112,45 @@
       },
       upload_option() {
         return this.entry_type.content.activities.hasOwnProperty("upload")
+      },
+      initial_version() {
+        return this.entry.version === 0
       }
-    }
-    ,
+    },
     data() {
       return {
         i_page: 0,
         last_page: false,
-        show_remove: false,
-        remove_dialog_data: {
-          id: "",
+        dialog_visible: false,
+        delete_dialog_data: {
+          id: "delete",
           title: "Delete entry",
-          text: "Are you sure you want to delete this entry?"
+          text: "Are you sure you want to delete this entry?",
+          cancel_color: "",
+          confirm_color: "error",
+          confirm_text: "delete"
         },
+        cancel_dialog_data: {
+          id: "cancel",
+          title: "Dismiss changes",
+          text: "Are you sure you want to dismiss your changes?",
+          cancel_color: "",
+          confirm_color: "error",
+          cancel_text: "keep on editing",
+          confirm_text: "dismiss"
+        },
+        dialog_data: {id: "none"},
         sending: false
       }
-    }
-    ,
+    },
     methods: {
       // BUTTONS
-      edit() {
-        // for in mode = view
-        const route = get_edit_route_for_ref(this.$store, this.entry)
-        //console.log(route)
-        this.$router.push(route)
-      },
+
       upload_to_repo() {
         const url = this.entry_type.content.activities.upload.url
         const user_key = this.$store.getters.user_key
 
-        if(!user_key) {
+        if (!user_key) {
           this.$store.commit("set_error_snackbar", "No user key. Go to the settings and paste the user key given by the LICCI core team")
           return
         }
@@ -157,29 +170,33 @@
           this.$store.commit("set_error_snackbar", "Something went horribly wrong")
         })
       },
-      cancel() {
-        /*if (this.entry.version === 0 && !this.submitted) {
-          this.$store.dispatch("entries/delete_entry", this.entry.uuid)
-          //this.$store.commit("entries/delete_entry", entry.uuid)
+      show_cancel() {
+        if (this.dirty) {
+          this.show_dialog(this.cancel_dialog_data)
         } else {
-
-        }*/
-        // todo
-        this.$store.commit("set_error_snackbar", "sorry deletion doesnt work atm :)")
-        this.back()
-      }
-      ,
+          this.delete_entry()
+          this.back()
+        }
+      },
       show_delete() {
-        this.show_remove = true
+        this.show_dialog(this.delete_dialog_data)
+      },
+      show_dialog(dialog_data) {
+        this.dialog_data = dialog_data
+        this.dialog_visible = true
+      },
+      dialog_action(event) {
+        if(event.confirm) {
+          if (event.id === this.cancel_dialog_data.id) {
+            this.back()
+          } else if(event.id === this.delete_dialog_data.id) {
+            this.delete_entry()
+          }
+        }
       },
       delete_entry() {
-        delete_entry(this.$store, this.entry)
+        this.$store.dispatch(ENTRIES_DELETE_ENTRY, this.entry.uuid)
         this.$store.commit("set_snackbar", {message: "Entry deleted", ok: true})
-        if (this.entry.ref) {
-          // or entry
-          // todo
-          //this.$store.commit("edrafts/set_draft_aspect_value", data);
-        }
         this.back()
       },
       save() {
@@ -231,6 +248,7 @@
         console.log("en action lastpage_reached", $event)
       },
       back() {
+        this.$emit("update:dirty", false)
         this.to_parent()
       }
     },
