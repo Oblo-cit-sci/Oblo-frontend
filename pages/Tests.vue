@@ -1,13 +1,15 @@
 <template lang="pug">
   v-flex(xs12='' sm8='' md6='')
-    DecisionDialog(v-bind="dialog_props" v-bind:open.sync="dialog_props.open" @action="action($event)")
-    v-btn(@click="dialog_props.open = true") open
     LoadFileButton(@fileload="loaded($event)")
+    v-btn(@click="add") add
+    v-btn(@click="mut") mut
+    v-btn(@click="del") del
+    div(v-for="(e, index) in tempM")
+      div {{index}} {{e}}
 </template>
 
 <script>
 
-  import DecisionDialog from "../components/DecisionDialog";
   import LoadFileButton from "../components/LoadFileButton";
 
   const ld = require("lodash")
@@ -16,36 +18,30 @@
 
   export default {
     name: "Tests",
-    components: {LoadFileButton, DecisionDialog},
+    components: {LoadFileButton},
     created() {
-      this.options = ld.map(this.$store.state.codes["liccis_flat"], (l) => {
-        return {
-          text: l,
-          value: l
-        }
-      })
-      this.selected = []
-      //this.options =this.$store.state.codes["liccis_flat"]
     },
     data() {
       return {
-        options: [],
-        page: 1,
-        dialog_props: {
-          name: "delete",
-          open: false,
-          title: "do something",
-          text: "really?",
-          confirm_text: "jupp",
-          cancel_text: "noooo"
-        },
-      //
-
+        next: 10
+      }
+    },
+    computed: {
+      tempM() {
+        return this.$store.getters["test/tempM"]
       }
     },
     methods: {
-      action(selected_val) {
-        //console.log(selected_val)
+      add(){
+        this.next++;
+        this.$store.dispatch("test/add",this.next)
+      },
+      mut() {
+        this.next++
+        this.$store.dispatch("test/mut",this.next)
+      },
+      del() {
+        this.$store.dispatch("test/del")
       },
       loaded(data) {
         //console.log("data received", data)

@@ -134,7 +134,7 @@ export const getters = {
 }
 
 export const actions = {
-  delete_entry(state, uuid) {
+  delete_entry(context, uuid) {
     console.log("action delete")
   }
 }
