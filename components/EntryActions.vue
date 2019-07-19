@@ -7,7 +7,7 @@
       :total="entry_type.content.meta.pages.length"
       :named_pages="named_pages"
       :pages="entry_type.content.meta.pages"
-      v-on:lastpage="last_page = ($event)")
+      @lastpage="last_page = ($event)")
     span(v-if="owner")
       span(v-if="view")
         v-btn(color="secondary" @click="edit") edit
