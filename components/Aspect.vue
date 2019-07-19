@@ -15,6 +15,7 @@
       v-if="use_regular"
       :is="aspectComponent(aspect, mode)"
       :aspect="aspect"
+      :aspect_loc="aspect_loc"
       :value="raw_value"
       :extra="extra"
       :extra_update=extra_update
@@ -53,11 +54,15 @@
         default: false
       },
       aspect: Object,
-      value: Object, // a wrapper, which  might encode "exceptional_value"
-      extra: {
+      aspect_loc:
+        { type: Array, required: true },
+        //value: Object, // a wrapper, which  might encode "exceptional_value"
+        extra: {
         type: Object,
         default: () => {
-          return {}
+          return {
+            aspect_loc: []
+          }
         }
       },
       extra_update: {
@@ -76,6 +81,7 @@
     created() {
       //console.log("aspect", this.aspect.name, this.value)
       //console.log("aspect " + this.aspect.name + " created with value", this.value)
+
       this.has_alternative = this.aspect.attr.hasOwnProperty("alternative")
       if (this.aspect.attr.mode === VIEW || this.mode === VIEW) {
         // sets always to VIEW, nothing really
@@ -89,9 +95,14 @@
       if(this.value.hasOwnProperty("regular")) {
         this.use_regular = this.value.regular
       }
+
     },
     // boolean check is not required, since "false" is the default
     computed: {
+      value() {
+        //console.log("Aspect value", this.aspect.name)
+        return this.$store.getters["test/value"](this.aspect_loc)
+      },
       show_title_description() {
         if(this.extra.hasOwnProperty("show_title_descr")) {
           return this.extra.show_title_descr
@@ -149,7 +160,8 @@
           }
         }
         this.value.value = event
-        this.$emit('update:value', Object.assign(this.$_.cloneDeep(this.value), {value: event}))
+        //this.$emit('update:value', Object.assign(this.$_.cloneDeep(this.value), {value: event}))
+        this.$store.dispatch("test/set_entry_value", {aspect_loc: this.aspect_loc, value: this.value})
       }
     },
     watch: {

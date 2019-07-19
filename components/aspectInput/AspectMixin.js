@@ -23,10 +23,15 @@ export default {
       type: Boolean,
       default: false
     },
+    aspect_loc: {
+      type: Array // for composites and lists pass it down...
+    },
     extra: {
       type: Object,
       default: () => {
-        return {}
+        return {
+          aspect_loc: []
+        }
       }
     },
     hide: Array// todo implement
@@ -40,15 +45,6 @@ export default {
     //console.log("ASP Mix create", this.value)
     this.i_value = this.value
 
-    try {
-      //console.log(this.aspect.type, "new asp-mxn with", this.extra.aspect_ref, "adding", this.aspect.name)
-      this.aspect_ref = (this.extra.aspect_ref || "") + "." + this.aspect.name
-      this.aspect_ref2 = this.$_.concat(this.$_.cloneDeep(this.extra.aspect_ref || []), ["aspect", this.aspect.name])
-
-      //console.log("setting ref", this.aspect.name, this.aspect.type, this.aspect_ref, ">", this.extra.aspect_ref)
-    } catch (e) {
-      console.log("asp mixin debug, aspect passed", this.aspect)
-    }
   },
   methods: {
     title_description() {

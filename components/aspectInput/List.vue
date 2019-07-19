@@ -18,7 +18,7 @@
               div {{titles[index]|| index + 1}}
             Aspect(
               :aspect="indexed_item_aspect(index)"
-              :value.sync="value"
+              :value.sync="i_value"
               :mode="mode"
               :extra="list_extra(index)"
               v-on:entryAction="$emit('entryAction',$event)"

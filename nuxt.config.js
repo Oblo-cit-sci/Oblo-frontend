@@ -52,7 +52,6 @@ module.exports = {
   */
   plugins: [
     '~/plugins/vuetify',
-    {src: '~/plugins/mapbox', mode: 'client'},
     '~/plugins/lodash.js',
   ],
 
