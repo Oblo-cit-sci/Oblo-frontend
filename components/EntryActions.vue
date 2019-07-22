@@ -145,7 +145,6 @@
     },
     methods: {
       // BUTTONS
-
       upload_to_repo() {
         const url = this.entry_type.content.activities.upload.url
         const user_key = this.$store.getters.user_key
@@ -155,7 +154,6 @@
           return
         }
         let export_data = {...this.entry, user_key: user_key}
-
         //console.log(url, user_key, export_data)
         axios.post(url, export_data, {
           headers: {
@@ -175,7 +173,7 @@
           this.show_dialog(this.cancel_dialog_data)
         } else {
           this.delete_entry()
-          this.back()
+          this.back(false)
         }
       },
       show_delete() {
@@ -198,7 +196,7 @@
       delete_entry() {
         this.$store.dispatch(ENTRIES_DELETE_ENTRY, this.entry.uuid)
         this.$store.commit("set_snackbar", {message: "Entry deleted", ok: true})
-        this.back()
+        this.back(false)
       },
       save() {
         // todo not if it is an aspect page
@@ -248,9 +246,9 @@
       lastpage_reached($event) {
         console.log("en action lastpage_reached", $event)
       },
-      back() {
+      back(to_last_element = true) {
         this.$emit("update:dirty", false)
-        this.to_parent()
+        this.to_parent(to_last_element)
       }
     },
     watch: {
