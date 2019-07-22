@@ -39,9 +39,9 @@
       if(!(this.num_type === INT || this.num_type === FLOAT)) {
         console.log("NumberAspect-error type: aspect, type", this.aspect.name, this.aspect.type)
       }
-      if (this.aspect.type === INT) {
+      /*if (this.aspect.type === INT) {
         this.mask = "################"
-      }
+      }*/
     },
     methods: {
       input(val){
