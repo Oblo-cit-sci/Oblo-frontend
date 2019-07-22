@@ -41,10 +41,10 @@
     DELETE_CONTEXT_ENTRY
   } from "../../lib/consts";
   import DecisionDialog from "../DecisionDialog";
-  import {get_type_slug_from, set_entry_value} from "../../lib/entry";
+  import {get_type_slug_from} from "../../lib/entry";
   import EntryNavMixin from "../EntryNavMixin";
   import ListMixin from "../ListMixin";
-
+  import {ENTRIES_GET_ENTRY} from "../../lib/store_consts";
 
   const SELECT_THRESH = 6
 
@@ -79,10 +79,11 @@
       items() {
         return this.$_.map(this.value, (item) => {
           //if(item.type === CONTEXT_ENTRY) {
-          const entry = this.$store.getters["entries/get_entry"](item.value)
+          //console.log("listOf get entry fom item value", item)
+          const entry = this.$store.getters[ENTRIES_GET_ENTRY](item)
           return {
             title: entry.title,
-            key: item.value,
+            key: item,
             type: CONTEXT_ENTRY
           }
         })
@@ -135,7 +136,7 @@
             let a  = ["aspect", idAspect]
             console.log(["aspect", idAspect], a)
             let as = [a]
-            console.log("updating value", as, [["aspect", idAspect]], a, [a])
+            //console.log("updating value", as, [["aspect", idAspect]], a, [a])
             this.$store.commit("entries/set_entry_value", {
               uuid: item.key,
               aspect_loc: [["aspect", idAspect]],

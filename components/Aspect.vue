@@ -74,20 +74,24 @@
       }
     },
     created() {
-      //console.log("aspect", this.aspect.name, this.value)
-      //console.log("aspect " + this.aspect.name + " created with value", this.value)
-      this.has_alternative = this.aspect.attr.hasOwnProperty("alternative")
-      if (this.aspect.attr.mode === VIEW || this.mode === VIEW) {
-        // sets always to VIEW, nothing really
-      } else { // edit
-        this.edit = true
-      }
-      if (this.aspect.attr.hasOwnProperty("condition")) {
-        this.condition = this.aspect.attr.condition
-      }
+      try {
+        //console.log("aspect", this.aspect.name, this.value)
+        //console.log("aspect " + this.aspect.name + " created with value", this.value)
+        this.has_alternative = this.aspect.attr.hasOwnProperty("alternative")
+        if (this.aspect.attr.mode === VIEW || this.mode === VIEW) {
+          // sets always to VIEW, nothing really
+        } else { // edit
+          this.edit = true
+        }
+        if (this.aspect.attr.hasOwnProperty("condition")) {
+          this.condition = this.aspect.attr.condition
+        }
 
-      if(this.value.hasOwnProperty("regular")) {
-        this.use_regular = this.value.regular
+        if (this.value.hasOwnProperty("regular")) {
+          this.use_regular = this.value.regular
+        }
+      } catch (e) {
+        console.log("DEV, crash on Aspect", this.aspect.name, this.aspect, this.value)
       }
     },
     // boolean check is not required, since "false" is the default
@@ -99,6 +103,7 @@
           return true
       },
       raw_value() {
+        //console.log("raw value of", this.aspect.name, this.value)
         return this.value.value
       },
       regular_value_text() {
@@ -144,12 +149,14 @@
           if(this.aspect.attr.hasOwnProperty("alternative-activate-on-value")) {
             if(event === this.aspect.attr["alternative-activate-on-value"]) {
               this.use_regular = false
+              console.log("weird stop in aspect...")
               return
             }
           }
         }
         this.value.value = event
-        this.$emit('update:value', Object.assign(this.$_.cloneDeep(this.value), {value: event}))
+        const up_value = Object.assign(this.$_.cloneDeep(this.value), {value: event})
+        this.$emit('update:value', up_value)
       }
     },
     watch: {
@@ -208,8 +215,8 @@
 
 <style scoped>
   .composite {
-    #border-left: 2px #8080806b solid;
-    #padding-left: 5px;
+    border-left: 1px #8080806b solid;
+    padding-left: 5px;
   }
 
 </style>

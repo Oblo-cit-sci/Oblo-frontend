@@ -78,7 +78,7 @@
   import EntryNavMixin from "../../../components/EntryNavMixin";
   import DecisionDialog from "../../../components/DecisionDialog";
   import {aspect_loc_str2arr, pack_value, unpack} from "../../../lib/aspect";
-  import {ENTRIES_DELETE_ENTRY} from "../../../lib/store_consts";
+  import {ENTRIES_ADD_CHILD, ENTRIES_DELETE_ENTRY, ENTRIES_SET_ENTRY_VALUE} from "../../../lib/store_consts";
 
 
   export default {
@@ -171,7 +171,11 @@
       }
     },
     methods: {
+      log() {
+        console.log("HIII")
+      },
       entryAction(event) {
+        console.log("entry action")
         const action = event.action
         const value = event.value
         switch (action) {
@@ -242,18 +246,13 @@
         }
         autosave(this.$store, this.entry)
         const entry = create_and_store(type_slug, this.$store, parent_ref_data)
-        this.$store.commit("entries/add_ref_child",
-          {
-            uuid: this.uuid,
-            child_uuid: entry.uuid,
-            aspect_loc: aspect_loc
-          }
-        )
-        // todo.1
-        // here we must do something to avoid blinking cuz its inserterd before leaving
-        // TODO: NO IDEA HOW IT SETS THE STORE
-        //set_entry_value(this.entry, aspect_loc, pack_value(entry.uuid))
-        this.$store.commit("")
+
+        this.$store.dispatch(ENTRIES_ADD_CHILD, {
+          uuid: this.entry.uuid,
+          aspect_loc: aspect_loc,
+          child_uuid: entry.uuid,
+          value: entry.uuid
+        })
 
         this.$router.push({
           path: "/entry/" + entry.uuid

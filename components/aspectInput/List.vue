@@ -5,7 +5,8 @@
         div(v-for="(value, index) in i_value" :key="index")
           Aspect(
             :aspect="indexed_item_aspect(index)"
-            :value.sync="i_value[index]"
+            :value="i_value[index]"
+            v-on:update:value="update_value($event, index)"
             :edit="true"
             :mode="mode"
             :extra="list_extra(index)"
@@ -18,7 +19,8 @@
               div {{titles[index]|| index + 1}}
             Aspect(
               :aspect="indexed_item_aspect(index)"
-              :value.sync="value"
+              :value="i_value[index]"
+              @update:value="update_value($event, index)"
               :mode="mode"
               :extra="list_extra(index)"
               v-on:entryAction="$emit('entryAction',$event)"
@@ -46,6 +48,7 @@
   import Aspect from "../Aspect";
   import ListMixin from "../ListMixin";
   import {EDIT, INDEX, TITLE_UPDATE} from "../../lib/consts";
+  import {pack_value} from "../../lib/aspect";
 
   // todo, pass the extra in a more intelligent way down, not to all the same
 
@@ -70,6 +73,7 @@
       }
     },
     created() {
+      //console.log("LIST ", this.aspect.name, this.aspect, this.value)
       let item_type = this.aspect.items;
       // todo. list, are extended lists by user, not select lists
       if (typeof (item_type) === "string") {
@@ -116,6 +120,12 @@
       }
     },
     methods: {
+      update_value($event, index) {
+        //console.log("composite update value, index", index, $event)
+        this.i_value[index] = $event
+        // todo use TitleAspect in meta
+        this.value_change(this.i_value)
+      },
       clearableAspectComponent(aspect) {
         return MAspectComponent(aspect, this.mode)
       },
@@ -127,18 +137,14 @@
           this.$_.fill(this.panelState, false)
           this.panelState.push(true)
         }
+        this.value_change(this.i_value)
       },
       remove_value(index) {
-        //console.log("remove index", index)
-        //console.log(this.i_value)
         this.i_value.splice(index, 1)
         this.titles.splice(index, 1)
         //console.log(this.i_value)
         this.value_change(this.i_value)
       },
-      /*updateRequired(value) {
-        this.i_value[parseInt(value.title)] = value.value
-      },*/
       indexed_item_aspect(index) {
         let aspect = {...this.item_aspect}
         // could maybe be 0

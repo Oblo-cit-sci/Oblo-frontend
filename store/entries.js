@@ -5,6 +5,7 @@
 
 import {ASPECT, DRAFT} from "../lib/consts";
 import {pack_value} from "../lib/aspect";
+import {ENTRIES_SET_ENTRY_VALUE} from "../lib/store_consts";
 
 const ld = require("lodash")
 
@@ -50,13 +51,14 @@ export const mutations = {
     console.log("DL ", e, local_id)
     e.downloaded_version = e.version
   },
-  add_ref_child(state, {uuid, child_uuid, aspect_loc}) {
+  add_ref_child(state, {uuid, aspect_loc, child_uuid}) {
+    //console.log("add_ref_child", uuid, aspect_loc, child_uuid)
     let kids = state.entries.get(uuid).refs.children
     let refs = kids[child_uuid] || []
     kids[child_uuid] = ld.concat(refs, [aspect_loc])
   },
   delete_ref_child(state, {uuid, child_uuid}) {
-
+    state.entries.get(uuid).refs.children.delete(child_uuid)
   },
   set_ref_parent(state, {uuid, ref}) {
     state.entries.get(uuid).refs.parent = ref
@@ -69,8 +71,9 @@ export const mutations = {
   set_entry_value(state, {uuid, aspect_loc, value}) {
     let entry = state.entries.get(uuid)
     let select = entry.aspects_values
-    const final_loc = aspect_loc.pop()
-    for (let loc of aspect_loc) {
+    const _aspect_loc = Array.from(aspect_loc)
+    const final_loc = _aspect_loc.pop()
+    for (let loc of _aspect_loc) {
       if (loc[0] === ASPECT) {
         select = select[loc[1]]
         if (!select) {
@@ -81,7 +84,7 @@ export const mutations = {
     if (final_loc[0] === ASPECT) {
       //select.set(inal_loc[1]) = value
       if (!select.hasOwnProperty(final_loc[1])) {
-        console.log("error setting value", aspect_loc, loc)
+        console.log("error setting value", aspect_loc, final_loc[1])
       }
       select[final_loc[1]] = value
     } else { // INDEX
@@ -94,8 +97,6 @@ export const mutations = {
       }
     }
   }
-
-
 }
 
 export const getters = {
@@ -119,8 +120,9 @@ export const getters = {
       return state.entries.has(uuid)
     };
   },
-  get_entry(state, getters) {
+  get_entry(state) {
     return (uuid) => {
+      //console.log("entries get_entry", state.entries, uuid)
       return state.entries.get(uuid)
     };
   },
@@ -137,12 +139,19 @@ export const getters = {
       let entry = state.entries.get(uuid)
       let select = entry.aspects_values
       for (let loc of aspect_loc) {
+        console.log("L", loc, select)
         if (loc[0] === ASPECT) {
           select = select[loc[1]]
           if (!select) {
             console.log("error setting value", aspect_loc, loc)
           }
+        } else { // index, --- but bascially the same
+          select = select.value[loc[1]]
+          if (!select) {
+            console.log("error setting value", aspect_loc, loc)
+          }
         }
+      console.log("S", select)
       }
       return select
     }
@@ -150,7 +159,12 @@ export const getters = {
 }
 
 export const actions = {
+  add_child(context, uuid_n_aspect_loc_n_child) {
+    context.commit("set_entry_value", uuid_n_aspect_loc_n_child)
+    context.commit("add_ref_child",uuid_n_aspect_loc_n_child)
+  },
   delete_entry(context, uuid) {
+    console.log("delete entry-...")
     const entry = context.state.entries.get(uuid)
     if (entry) {
       // TODO just TEMP, for easier testing
@@ -162,12 +176,20 @@ export const actions = {
 
       if (entry.refs.parent) {
         const parent = entry.refs.parent
-        const aspect = context.getters.get_entry_value(parent)
+        console.log("delete in parent", parent)
+        let parent_no_index = JSON.parse(JSON.stringify(parent))
+
+        if(ld.last(parent_no_index.aspect_loc)[0] === "index") {
+          parent_no_index.aspect_loc.pop()
+          console.log("popping")
+        }
+        const aspect = context.getters.get_entry_value(parent_no_index)
+        console.log("delete in parent, aspect", aspect)
         // ListOf
         if(Array.isArray(aspect.value)) {
-          const filtered_value = aspect.value.filter(av => av.value !== uuid)
+          const filtered_value = aspect.value.filter(av => av !== uuid)
           context.commit("set_entry_value", {
-            ...parent,
+            ...parent_no_index,
             value: pack_value(filtered_value)
           } )
         }
