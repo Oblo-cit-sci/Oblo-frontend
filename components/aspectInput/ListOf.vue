@@ -2,7 +2,7 @@
   div
     div(v-if="!select")
       v-list(v-if="has_items")
-        v-list-tile(v-for="(item, index) in items", :key="item.key")
+        v-list-tile(v-for="(item, index) in items", :key="item.key" :id="aspect_loc_str(index)")
           v-list-tile-content(@click="open_item(item)")
             v-list-tile-title {{index + 1}} &nbsp;
               b {{item.title}}
@@ -41,10 +41,11 @@
     DELETE_CONTEXT_ENTRY
   } from "../../lib/consts";
   import DecisionDialog from "../DecisionDialog";
-  import {get_type_slug_from} from "../../lib/entry";
+  import {aspect_loc_str, get_type_slug_from} from "../../lib/entry";
   import EntryNavMixin from "../EntryNavMixin";
   import ListMixin from "../ListMixin";
   import {ENTRIES_GET_ENTRY} from "../../lib/store_consts";
+  import {aspect_loc_str2arr} from "../../lib/aspect";
 
   const SELECT_THRESH = 6
 
@@ -117,6 +118,9 @@
       },
       aspect_loc_for_index(index) {
         return this.$_.concat(this.extra.aspect_loc, [[INDEX, index]])
+      },
+      aspect_loc_str(index){
+        return aspect_loc_str(this.aspect_loc_for_index(index))
       },
       open_item(item) {
         this.$emit(ENTRYACTION, {action: AUTOSAVE})

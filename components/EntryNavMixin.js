@@ -36,7 +36,7 @@ export default {
             page: page
           }
         })
-        console.log(this.entry.refs.parent.aspect_loc)
+        //console.log(this.entry.refs.parent.aspect_loc)
         //this.$router.push("/entry/" + this.entry.refs.parent.uuid + (aspect_id ? "?goTo=" + aspect_id : ""))
       } else {
         this.$router.push("/")
