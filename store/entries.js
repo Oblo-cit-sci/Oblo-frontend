@@ -134,6 +134,20 @@ export const getters = {
   get_own_entries(state) {
     // todo
   },
+  get_recursive_entries(state, getters) {
+    return uuid => {
+      const entry = getters.get_entry(uuid)
+      let entries = [entry]
+      const child_keys = Object.keys(entry.refs.children)
+      const child_entries_list = ld.map(child_keys, uuid => getters.get_recursive_entries(uuid))
+      child_entries_list.forEach(ce_list => {
+        ce_list.forEach(c_entry => {
+          entries.push(c_entry)
+        })
+      })
+      return entries
+    }
+  },
   get_entry_value(state, getters) {
     return ({uuid, aspect_loc}) => {
       let entry = state.entries.get(uuid)
@@ -159,7 +173,7 @@ export const getters = {
 export const actions = {
   add_child(context, uuid_n_aspect_loc_n_child) {
     context.commit("set_entry_value", uuid_n_aspect_loc_n_child)
-    context.commit("add_ref_child",uuid_n_aspect_loc_n_child)
+    context.commit("add_ref_child", uuid_n_aspect_loc_n_child)
   },
   delete_entry(context, uuid) {
     //console.log("delete entry-...")
@@ -176,17 +190,17 @@ export const actions = {
         const parent = entry.refs.parent
         let parent_no_index = JSON.parse(JSON.stringify(parent))
 
-        if(ld.last(parent_no_index.aspect_loc)[0] === "index") {
+        if (ld.last(parent_no_index.aspect_loc)[0] === "index") {
           parent_no_index.aspect_loc.pop()
         }
         const aspect = context.getters.get_entry_value(parent_no_index)
         // ListOf
-        if(Array.isArray(aspect.value)) {
+        if (Array.isArray(aspect.value)) {
           const filtered_value = aspect.value.filter(av => av !== uuid)
           context.commit("set_entry_value", {
             ...parent_no_index,
             value: pack_value(filtered_value)
-          } )
+          })
         }
       }
     } else {
