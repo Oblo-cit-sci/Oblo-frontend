@@ -36,7 +36,7 @@
         :page.sync="page"
         :dirty.sync="dirty"
         :has_pages="has_pages"
-        v-on:entryAction="entryAction($event)")
+        @entryAction="entryAction($event)")
       DecisionDialog(
         :open.sync="openSaveDialog"
         @action="edit_or_save_dialog($event)"
@@ -100,7 +100,7 @@
         sending: false,
         complete: true,
         has_pages: false,
-        page: 0,
+        page: this.$route.query.page | 0,
         last_page: false,
         extras: {},
         extras_update: {},
@@ -111,12 +111,12 @@
       }
     },
     created() {
+
       this.uuid = this.$route.params.uuid
       const entry = this.$store.getters["entries/get_entry"](this.uuid)
 
       this.entry = JSON.parse(JSON.stringify(entry))
 
-      //console.log("entry index create", this.entry.aspects_values.)
       this.$store.commit("set_global_ref", this.uuid)
 
       // set global ref, needed for deeply nested maps to know how to come back
@@ -323,7 +323,7 @@
       // maybe also consider:
       // https://github.com/edisdev/download-json-data/blob/develop/src/components/Download.vue
       page_info() {
-        console.log(this.entry_type, this.page, this.entry_type.content.meta.pages[this.page])
+        //console.log(this.entry_type, this.page, this.entry_type.content.meta.pages[this.page])
         if (this.has_pages)
           return this.entry_type.content.meta.pages[this.page]
         else
@@ -337,7 +337,8 @@
           entry: this.entry
         }
       }
-    }, watch: {
+    },
+    watch: {
       page(val) {
         setTimeout(() => goTo(".v-content"), {
           duration: 200,

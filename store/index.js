@@ -99,7 +99,7 @@ export const mutations = {
     state._connecting = conn
   },
   add_meta(state, data) {
-    state.meta = {... state.meta, ...data}
+    state.meta = {...state.meta, ...data}
   }
 };
 
@@ -128,6 +128,14 @@ export const getters = {
   entry_type(state, getters) {
     return (type_slug) => {
       return state.entry_types.get(type_slug)
+    }
+  },
+  get_aspect_def(state, getters, root_state, root_getter) {
+    return ({type_slug, aspect_name}) => {
+      let type = root_getter.entry_type(type_slug)
+      return type.content.aspects.find(a => {
+        return a.name === aspect_name
+      })
     }
   },
   get_aspect_index(state, getters) {

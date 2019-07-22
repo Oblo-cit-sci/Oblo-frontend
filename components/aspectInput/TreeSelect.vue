@@ -1,15 +1,16 @@
 <template lang="pug">
     div
       v-flex(text-xs-left)
-        TextShort(
-          :aspect="text_repr_aspect"
-          :value="i_value"
-          :edit="false"
-          :prependIcon="prependIcon"
+        v-autocomplete(
+          outline
+          single-line
           :disabled="disabled"
-          v-on:clickPrepend="openDialog()"
-          v-on:focus="openDialog(true)")
-        v-dialog(width="500" v-model="dialogOpen" lazy=true :persistent="persistent")
+          :items="flat_options"
+          v-model="i_value"
+          @change="emit"
+          :prependIcon="prependIcon"
+          @click:prepend="openDialog()")
+        v-dialog(width="500" v-model="dialogOpen" lazy=true)
           TreleafPicker(
             :tree="options"
             v-on:selected="selected"
@@ -22,6 +23,7 @@
   import TreleafPicker from "../TreleafPicker";
   import TextShort from "./TextShort";
   import {EDIT} from "../../lib/consts";
+  import {flatten_tree_to_options} from "../../lib/client";
 
   export default {
     name: "TreeSelect",
@@ -30,15 +32,8 @@
     data() {
       return {
         options: {},
+        flat_options: [],
         dialogOpen: false,
-        persistent: false,
-        text_repr_aspect : {
-          name: "selected",
-          type: "str",
-          attr: {
-            max: 60
-          }
-        }
       }
     },
     created() {
@@ -52,6 +47,10 @@
           this.options = this.$store.state.codes[passed_options.substring(1)];
         }
       }
+
+      // flat_options
+      this.flat_options = flatten_tree_to_options(this.options)
+      //console.log("flat options", this.flat_options)
       //console.log("tree options", this.options)
     },
     methods: {
@@ -59,16 +58,13 @@
         if(!this.disabled) {
           this.dialogOpen = true
           // to fix issue of blue triggering a close of the dialog
-          if(short_persistence) {
-            this.persistent = true
-            setTimeout(() => this.persistent = false, 100)
-          }
         }
       },
       selected(val) {
-        //console.log("selected")
         this.dialogOpen = false;
         this.i_value = val.value
+      },
+      emit() {
         this.value_change(this.i_value)
       }
     },
