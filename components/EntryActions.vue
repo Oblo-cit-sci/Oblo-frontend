@@ -188,6 +188,7 @@
       dialog_action(event) {
         if(event.confirm) {
           if (event.id === this.cancel_dialog_data.id) {
+            this.delete_entry()
             this.back()
           } else if(event.id === this.delete_dialog_data.id) {
             this.delete_entry()

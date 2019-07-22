@@ -139,7 +139,6 @@ export const getters = {
       let entry = state.entries.get(uuid)
       let select = entry.aspects_values
       for (let loc of aspect_loc) {
-        console.log("L", loc, select)
         if (loc[0] === ASPECT) {
           select = select[loc[1]]
           if (!select) {
@@ -151,7 +150,6 @@ export const getters = {
             console.log("error setting value", aspect_loc, loc)
           }
         }
-      console.log("S", select)
       }
       return select
     }
@@ -164,7 +162,7 @@ export const actions = {
     context.commit("add_ref_child",uuid_n_aspect_loc_n_child)
   },
   delete_entry(context, uuid) {
-    console.log("delete entry-...")
+    //console.log("delete entry-...")
     const entry = context.state.entries.get(uuid)
     if (entry) {
       // TODO just TEMP, for easier testing
@@ -176,15 +174,12 @@ export const actions = {
 
       if (entry.refs.parent) {
         const parent = entry.refs.parent
-        console.log("delete in parent", parent)
         let parent_no_index = JSON.parse(JSON.stringify(parent))
 
         if(ld.last(parent_no_index.aspect_loc)[0] === "index") {
           parent_no_index.aspect_loc.pop()
-          console.log("popping")
         }
         const aspect = context.getters.get_entry_value(parent_no_index)
-        console.log("delete in parent, aspect", aspect)
         // ListOf
         if(Array.isArray(aspect.value)) {
           const filtered_value = aspect.value.filter(av => av !== uuid)

@@ -57,13 +57,9 @@
       return {
         item_type_slug: get_type_slug_from(this.aspect.items),
         show_remove: false,
-        remove_data_dialog: {
+        remove_item_select: {
           id: "",
-          title: "Delete " + this.item_name,
-          text: "Are you sure you want to delete this " + this.item_name + "?",
-          confirm_text: "delete",
-          cancel_color: "success",
-          confirm_color: "error"
+          title: ""
         },
       }
     },
@@ -88,22 +84,35 @@
             type: CONTEXT_ENTRY
           }
         })
+      },
+      remove_data_dialog() {
+        return {
+          id: this.remove_item_select.id,
+          title: "Delete " + this.remove_item_select.title,
+          text: "Are you sure you want to delete this " + this.remove_item_select.title + "?",
+          confirm_text: "delete",
+          cancel_color: "success",
+          confirm_color: "error"
+        }
       }
     },
     methods: {
       open_remove(index) {
         //console.log("open remove index", index)
+        console.log(index, this.items[index])
         this.remove_data_dialog.id = index
+        this.remove_item_name = this.items[index].title
         this.show_remove = true
       },
       remove(index) {
         index = parseInt(index)
         const ref = this.i_value[index]
+        console.log("remove index", index)
         this.i_value.splice(parseInt(index), 1)
         this.value_change(this.i_value)
         this.$emit(ENTRYACTION, {
           action: DELETE_CONTEXT_ENTRY,
-          value: {uuid: ref.value, aspect_loc: this.aspect_loc_for_index(index)}
+          value: {uuid: ref, aspect_loc: this.aspect_loc_for_index(index)}
         })
       },
       create_item() {
@@ -119,7 +128,7 @@
       aspect_loc_for_index(index) {
         return this.$_.concat(this.extra.aspect_loc, [[INDEX, index]])
       },
-      aspect_loc_str(index){
+      aspect_loc_str(index) {
         return aspect_loc_str(this.aspect_loc_for_index(index))
       },
       open_item(item) {
@@ -137,7 +146,7 @@
           for (let index in this.items) {
             const item = this.items[index]
             //let entry = this.$store.getters["entries/get_entry"](item.key)
-            let a  = ["aspect", idAspect]
+            let a = ["aspect", idAspect]
             console.log(["aspect", idAspect], a)
             let as = [a]
             //console.log("updating value", as, [["aspect", idAspect]], a, [a])

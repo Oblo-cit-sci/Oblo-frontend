@@ -92,13 +92,13 @@ module.exports = {
     }, //,
     //minimize: true,
     //splitChunks: false,
-   /* splitChunks: {
+    splitChunks: {
       pages: false,
       vendor: false,
       commons: false,
       runtime: false,
       layouts: false
-    },*/
+    },
     /*
     ** You can extend webpack config here
     */
