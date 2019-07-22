@@ -33,7 +33,8 @@ export default {
           },
           query: {
             goTo: (aspect_id ? aspect_id : ""),
-            page: page
+            page: page,
+            dirty: true
           }
         })
         //console.log(this.entry.refs.parent.aspect_loc)

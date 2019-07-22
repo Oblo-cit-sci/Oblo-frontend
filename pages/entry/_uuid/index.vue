@@ -119,6 +119,9 @@
 
       this.$store.commit("set_global_ref", this.uuid)
 
+      if(this.$route.query.hasOwnProperty("dirty")) {
+        this.dirty = true
+      }
       // set global ref, needed for deeply nested maps to know how to come back
       //this.$store.commit("set_global_ref", {uuid: this.uuid})
 

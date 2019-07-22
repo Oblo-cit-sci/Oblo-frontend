@@ -1,7 +1,7 @@
 <template lang="pug">
   v-layout(column)
     v-flex(xs12 md6 lg4 justify-center)
-      v-list(two-line subheader dense)
+      v-list(three-line subheader dense)
         v-list-tile(v-for="entry in entries"
           :key="entry.id"
           @click="show(entry)")
@@ -10,6 +10,7 @@
           v-list-tile-content
             v-list-tile-title {{entry.title}}
             v-list-tile-sub-title {{creator(entry)}}
+            v-list-tile-sub-title {{type_name(entry)}}
           v-list-tile-action
             v-img.license-image(:src="get_license_icon(entry.license)")
       v-divider
@@ -53,6 +54,9 @@
         if (relation === CREATOR.key)
           return "From yourself"
         return public_name
+      },
+      type_name(entry) {
+        return this.$store.getters.entry_type(entry.type_slug).title
       }
     }
   }

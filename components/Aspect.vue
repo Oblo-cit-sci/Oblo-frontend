@@ -19,7 +19,7 @@
       :extra="extra"
       :extra_update=extra_update
       :edit="edit"
-      :disabled="disabled || condition_fail || !use_regular"
+      :disabled="disable"
       :mode="mode"
       v-on:update:value="emit_up($event)"
       v-on:entryAction="$emit('entryAction',$event)"
@@ -114,6 +114,9 @@
       },
       alt_mode() {
         return this.aspect.attr.alternative.attr.mode || this.mode
+      },
+      disable() {
+        return this.disabled || this.condition_fail || !this.use_regular || this.aspect.attr.disabled
       },
       disabled_text() {
         if(this.condition_fail) {
