@@ -155,7 +155,7 @@
 
   let require_login = ["Profile", "Logout"]
   let hide_no_login = ["Register", "Login"] // if not connected out and if logged in out
-  let show_inDev = ["Tests", "Types", "Entrytypes"]
+  let show_inDev = ["Tests", "Types", "Entrytypes", "Aspectbuild"]
 
   const pkg = require('../package')
 

@@ -156,11 +156,11 @@
         }
         let export_data = {...this.entry, user_key: user_key}
 
-        console.log(url, user_key, export_data)
+        //console.log(url, user_key, export_data)
         axios.post(url, export_data, {
           headers: {
             "accept": "*",
-            "Access-Control-Allow-Headers": "*",
+            "Access-Control-Allow-Headers": "accept",
             'Access-Control-Allow-Origin': '*',
           }
         }).then(res => {

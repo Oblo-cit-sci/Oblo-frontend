@@ -89,9 +89,7 @@ module.exports = {
       stylus: {
         import: ["~assets/style/variables.styl"]
       }
-    }, //,
-    //minimize: true,
-    //splitChunks: false,
+    },
     splitChunks: {
       pages: false,
       vendor: false,
