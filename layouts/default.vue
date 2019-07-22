@@ -114,7 +114,7 @@
     {
       icon: 'flip_to_front',
       title: 'Entrytypes',
-      to: '/EntryType'
+      to: '/CreateEntrytype'
     },
     {
       icon: 'fa-map',
@@ -123,8 +123,8 @@
     },
     {
       icon: 'computer',
-      title: 'Types',
-      to: '/etype'
+      title: 'Aspectbuild',
+      to: '/AspectBuild'
     },
     {
       icon: 'how_to_reg',
