@@ -2,18 +2,14 @@
   this is for the own entries
  */
 
-
 import {ASPECT, DRAFT} from "../lib/consts";
 import {pack_value} from "../lib/aspect";
-import {ENTRIES_SET_ENTRY_VALUE} from "../lib/store_consts";
 
 const ld = require("lodash")
 
 
 export const state = () => ({
-  //
   timeline_entries: [],
-  // todo, for now we download all own entries
   entries: new Map(),
 });
 

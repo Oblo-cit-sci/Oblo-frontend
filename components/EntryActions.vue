@@ -154,7 +154,7 @@
           return
         }*/
         const entries = this.$store.getters["entries/get_recursive_entries"](this.entry.uuid)
-        let export_data = {entries:{...entries}, user_key: user_key}
+        let export_data = {entries: {...entries}, user_key: user_key}
         //console.log(url, user_key, export_data)
         axios.post(url, export_data, {
           headers: {
@@ -185,11 +185,11 @@
         this.dialog_visible = true
       },
       dialog_action(event) {
-        if(event.confirm) {
+        if (event.confirm) {
           if (event.id === this.cancel_dialog_data.id) {
             this.delete_entry()
             this.back()
-          } else if(event.id === this.delete_dialog_data.id) {
+          } else if (event.id === this.delete_dialog_data.id) {
             this.delete_entry()
           }
         }
@@ -229,19 +229,19 @@
           this.$store.commit("set_error_snackbar", "not yet implemented")
         }
       },
-      download_data() {
+      /*download_data() {
         return {
           entry: this.entry,
           name: this.entry_type.slug,
           version: this.entry_type.version,
           language: this.entry_type.language
-        }
-      },
+        }*/
       download_title() {
         return (this.entry.type_slug + " " + this.entry.title).replace(" ", "_") + ".json"
       },
       download() {
-        export_data(this.download_data(), this.download_title())
+        const entries = this.$store.getters["entries/get_recursive_entries"](this.entry.uuid)
+        export_data(entries, this.download_title())
         this.$store.commit("entries/set_downloaded", this.entry.uuid)
       },
       lastpage_reached($event) {
