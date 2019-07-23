@@ -163,6 +163,9 @@
         xtra_copy.no_title = true
         xtra_copy.clear = "no_title"
         xtra_copy.listitem = true
+        if(xtra_copy.hasOwnProperty("titleAspect")) {
+          delete xtra_copy.titleAspect
+        }
         return xtra_copy
       },
       aspectAction(event, index) {

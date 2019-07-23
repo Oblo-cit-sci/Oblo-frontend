@@ -56,9 +56,7 @@
           delete xtra_copy.listitem
         }
         xtra_copy.aspect_loc.push(["aspcet", comp_type.name])
-        if (comp_type.name === this.titleAspectName) {
-          xtra_copy[TITLE_ASPECT] = true
-        }
+        xtra_copy[TITLE_ASPECT] = comp_type.name === this.titleAspectName
         return xtra_copy
       },
       aspectAction(event) {

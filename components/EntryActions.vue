@@ -3,7 +3,8 @@
     v-divider(class="wide_divider")
     Paginate(
       v-if="has_pages"
-      :page.sync="i_page"
+      :page="page"
+      @update:page="$emit('update:page', $event)"
       :total="entry_type.content.meta.pages.length"
       :named_pages="named_pages"
       :pages="entry_type.content.meta.pages"
@@ -119,7 +120,6 @@
     },
     data() {
       return {
-        i_page: 0,
         last_page: false,
         dialog_visible: false,
         delete_dialog_data: {
@@ -145,17 +145,16 @@
     },
     methods: {
       // BUTTONS
-
       upload_to_repo() {
         const url = this.entry_type.content.activities.upload.url
         const user_key = this.$store.getters.user_key
 
-        if (!user_key) {
+        /*if (!user_key) {
           this.$store.commit("set_error_snackbar", "No user key. Go to the settings and paste the user key given by the LICCI core team")
           return
-        }
-        let export_data = {...this.entry, user_key: user_key}
-
+        }*/
+        const entries = this.$store.getters["entries/get_recursive_entries"](this.entry.uuid)
+        let export_data = {entries:{...entries}, user_key: user_key}
         //console.log(url, user_key, export_data)
         axios.post(url, export_data, {
           headers: {
@@ -175,7 +174,7 @@
           this.show_dialog(this.cancel_dialog_data)
         } else {
           this.delete_entry()
-          this.back()
+          this.back(false)
         }
       },
       show_delete() {
@@ -198,7 +197,7 @@
       delete_entry() {
         this.$store.dispatch(ENTRIES_DELETE_ENTRY, this.entry.uuid)
         this.$store.commit("set_snackbar", {message: "Entry deleted", ok: true})
-        this.back()
+        this.back(false)
       },
       save() {
         // todo not if it is an aspect page
@@ -248,14 +247,9 @@
       lastpage_reached($event) {
         console.log("en action lastpage_reached", $event)
       },
-      back() {
+      back(to_last_element = true) {
         this.$emit("update:dirty", false)
-        this.to_parent()
-      }
-    },
-    watch: {
-      i_page(val) {
-        this.$emit("update:page", val)
+        this.to_parent(to_last_element)
       }
     }
   }
