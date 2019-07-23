@@ -53,6 +53,7 @@ module.exports = {
   plugins: [
     '~/plugins/vuetify',
     {src: '~/plugins/mapbox', mode: 'client'},
+    { src: '~/plugins/vuex-persist', mode: 'client'  },
     '~/plugins/lodash.js',
   ],
 
