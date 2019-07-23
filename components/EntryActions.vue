@@ -149,10 +149,10 @@
         const url = this.entry_type.content.activities.upload.url
         const user_key = this.$store.getters.user_key
 
-        /*if (!user_key) {
+        if (!user_key) {
           this.$store.commit("set_error_snackbar", "No user key. Go to the settings and paste the user key given by the LICCI core team")
           return
-        }*/
+        }
         const entries = this.$store.getters["entries/get_recursive_entries"](this.entry.uuid)
         let export_data = {entries:{...entries}, user_key: user_key}
         //console.log(url, user_key, export_data)
