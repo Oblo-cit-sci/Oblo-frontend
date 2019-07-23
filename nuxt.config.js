@@ -53,6 +53,7 @@ module.exports = {
   plugins: [
     '~/plugins/vuetify',
     {src: '~/plugins/mapbox', mode: 'client'},
+    { src: '~/plugins/vuex-persist', mode: 'client'  },
     '~/plugins/lodash.js',
   ],
 
@@ -90,13 +91,13 @@ module.exports = {
         import: ["~assets/style/variables.styl"]
       }
     },
-    splitChunks: {
+    /*splitChunks: {
       pages: false,
       vendor: false,
       commons: false,
       runtime: false,
       layouts: false
-    },
+    },*/
     /*
     ** You can extend webpack config here
     */

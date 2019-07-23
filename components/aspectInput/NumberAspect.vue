@@ -11,7 +11,7 @@
       type="number"
       :min="min"
       :max="max"
-      :rules="[minmax, valid_num_type]"
+      v-on:update:error="error = $event"
       :append-outer-icon="clearIcon"
       @click:append-outer="$emit('entryAction', {action: 'clear'})"
       :mask="mask" )

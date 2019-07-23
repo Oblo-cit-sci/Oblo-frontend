@@ -35,7 +35,8 @@ export default {
             uuid: this.entry.refs.parent.uuid
           },
           query: {
-            page: page
+            page: page,
+            dirty: true
           }
         }
 
