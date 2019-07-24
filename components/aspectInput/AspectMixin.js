@@ -1,6 +1,6 @@
 
 
-import {ASPECTACTION, TITLE_ASPECT, TITLE_UPDATE, VIEW} from "../../lib/consts";
+import {ASPECTACTION, EDIT, TITLE_ASPECT, TITLE_UPDATE, VIEW} from "../../lib/consts";
 import {aspect_raw_default_value} from "../../lib/entry";
 
 export default {
@@ -11,10 +11,6 @@ export default {
     },
     value: {},
     // simplification of mode
-    edit: {
-      type: Boolean,
-      default: true
-    },
     mode: { // todo well, this is gonna be messy
       type: String,
       default: VIEW
@@ -28,41 +24,14 @@ export default {
       default: () => {
         return {}
       }
-    },
-    hide: Array// todo implement
+    }
   },
   data() {
     return {
-      i_value: null,
-    }
-  },
-  created() {
-    //console.log("ASP Mix create", this.value)
-    this.i_value = this.value
-
-    try {
-      //console.log(this.aspect.type, "new asp-mxn with", this.extra.aspect_ref, "adding", this.aspect.name)
-      this.aspect_ref = (this.extra.aspect_ref || "") + "." + this.aspect.name
-      this.aspect_ref2 = this.$_.concat(this.$_.cloneDeep(this.extra.aspect_ref || []), ["aspect", this.aspect.name])
-
-      //console.log("setting ref", this.aspect.name, this.aspect.type, this.aspect_ref, ">", this.extra.aspect_ref)
-    } catch (e) {
-      console.log("asp mixin debug, aspect passed", this.aspect)
+      i_value: this.value,
     }
   },
   methods: {
-    title_description() {
-      if (!this.aspect.hasOwnProperty("name")) {
-        //console.log("warning: aspect", this.aspect, "has no name")
-      }
-      if (!this.aspect.hasOwnProperty("description")) {
-        //console.log("warning: aspect", this.aspect, "has no description")
-      }
-      return {
-        title: this.aspect.name || "",
-        description: this.aspect.description || ""
-      }
-    },
     value_change(event) {
       //console.log("asp mix val change", this.aspect, event)
       this.$emit('update:value', event);
@@ -75,6 +44,9 @@ export default {
     }
   },
   computed: {
+    edit() {
+      return this.mode === EDIT
+    },
     readOnly() {
       return this.mode === VIEW
     },

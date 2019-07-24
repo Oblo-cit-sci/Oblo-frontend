@@ -1,6 +1,5 @@
 <template lang="pug" xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
   div
-    Title_Description(v-bind="title_description()")
     div(v-if="entry_select")
       div(v-if="!source_entry")
         SingleSelect(:options="entry_select_options" v-bind:selection.sync="selected_entry")

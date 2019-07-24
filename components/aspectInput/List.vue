@@ -7,7 +7,6 @@
             :aspect="indexed_item_aspect(index)"
             :value="i_value[index]"
             v-on:update:value="update_value($event, index)"
-            :edit="true"
             :mode="mode"
             :extra="list_extra(index)"
             v-on:entryAction="handleEntryAction($event, index)")
@@ -47,7 +46,7 @@
   import MultiSelect from "../MultiSelect";
   import Aspect from "../Aspect";
   import ListMixin from "../ListMixin";
-  import {EDIT, INDEX, TITLE_UPDATE} from "../../lib/consts";
+  import {INDEX, TITLE_UPDATE} from "../../lib/consts";
   import {pack_value} from "../../lib/aspect";
 
   // todo, pass the extra in a more intelligent way down, not to all the same

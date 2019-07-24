@@ -7,7 +7,7 @@
       v-on:input="input($event)"
       :suffix="suffix"
       :disabled="disabled"
-      :readonly="!edit"
+      :readonly="readOnly"
       type="number"
       :min="min"
       :max="max"

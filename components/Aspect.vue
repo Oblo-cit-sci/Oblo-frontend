@@ -132,9 +132,6 @@
         if (!aspect_descr.hasOwnProperty("name")) {
           //console.log("warning: aspect", aspect_descr, "has no name")
         }
-        if (!aspect_descr.hasOwnProperty("description")) {
-          //console.log("warning: aspect", this.aspect, "has no description")
-        }
         return {
           title: this.extra.no_title ? "" : aspect_label(aspect_descr),
           description: aspect_descr.description || ""

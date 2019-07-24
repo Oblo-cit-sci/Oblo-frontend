@@ -48,7 +48,7 @@
         }
       }
 
-      // flat_options
+      // flat_options // TODO maybe store them...
       this.flat_options = flatten_tree_to_options(this.options)
       //console.log("flat options", this.flat_options)
       //console.log("tree options", this.options)
@@ -57,7 +57,6 @@
       openDialog(short_persistence) {
         if(!this.disabled) {
           this.dialogOpen = true
-          // to fix issue of blue triggering a close of the dialog
         }
       },
       selected(val) {
@@ -70,7 +69,7 @@
     },
     computed: {
       prependIcon(){
-        return this.mode === EDIT ? 'add' : ''
+        return this.edit ? 'add' : ''
       }
     }
   }

@@ -8,7 +8,6 @@
           :aspect="comp_type"
           :value="i_value[index]"
           v-on:update:value="update_value($event, index)"
-          :edit="true"
           :mode="mode"
           :disabled="disabled"
           :extra="comp_extras(comp_type)"

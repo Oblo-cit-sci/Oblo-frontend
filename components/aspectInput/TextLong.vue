@@ -1,30 +1,16 @@
 <template lang="pug">
   div
-    div(v-if="edit")
-      v-textarea(
-        outline
-        single-line
-        auto-grow
-        :counter="counter"
-        v-model="i_value"
+    v-textarea(
+      outline
+      single-line
+      auto-grow
+      :counter="counter"
+      v-model="i_value"
+      :readOnly="readOnly"
+      :append-outer-icon="clearIcon"
+      @click:append-outer="$emit('entryAction', {action: 'clear'})"
 
-        :append-outer-icon="clearIcon"
-        @click:append-outer="$emit('entryAction', {action: 'clear'})"
-
-        @input="value_change($event)")
-    div(v-else)
-      v-textarea(
-        readonly
-        outline
-        single-line
-        flat
-        auto-grow
-
-        :append-outer-icon="clearIcon"
-        @click:append-outer="$emit('entryAction', {action: 'clear'})"
-
-        :value="i_value")
-
+      @input="value_change($event)")
 </template>
 
 <script>
