@@ -174,11 +174,8 @@
       }
     },
     methods: {
-      log() {
-        console.log("HIII")
-      },
       entryAction(event) {
-        console.log("entry action")
+        //console.log("entry action")
         const action = event.action
         const value = event.value
         switch (action) {

@@ -183,11 +183,9 @@
         },
         watch: {
             selected_item(item) {
-                console.log("SS set selected item", item)
                 this.emitUp(item)
             },
             selection(val) {
-                console.log("SS selection", val)
                 this.set_selected_item()
             }
         }

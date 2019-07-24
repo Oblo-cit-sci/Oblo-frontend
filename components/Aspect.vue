@@ -19,7 +19,7 @@
       :value="raw_value"
       :extra="extra"
       :extra_update=extra_update
-      :disabled="disable"
+      :disabled="regular_disable"
       :mode="mode"
       v-on:update:value="emit_up($event)"
       v-on:entryAction="$emit('entryAction',$event)"
@@ -78,12 +78,13 @@
         data() {
             return {
                 has_alternative: false,
-                use_regular: true,
+                use_regular: this.value.hasOwnProperty("regular") ? this.value.regular : true,
                 condition: null,
                 condition_fail: false,
             }
         },
         created() {
+            //console.log(this.aspect.name, this.value, this.use_regular)
             try {
                 //console.log("aspect", this.aspect.name, this.value)
                 //console.log("aspect " + this.aspect.name + " created with value", this.value)
@@ -93,9 +94,6 @@
                     this.condition = this.aspect.attr.condition
                 }
 
-                if (this.value.hasOwnProperty("regular")) {
-                    this.use_regular = this.value.regular
-                }
             } catch (e) {
                 console.log("DEV, crash on Aspect", this.aspect.name, this.aspect, this.value)
             }
@@ -125,7 +123,10 @@
                 return this.aspect.attr.alternative.attr.mode || this.mode
             },
             disable() {
-                return this.disabled || this.condition_fail || !this.use_regular || this.aspect.attr.disabled
+                return this.disabled || this.condition_fail  || this.aspect.attr.disabled
+            },
+            regular_disable() {
+                return this.disable || !this.use_regular
             },
             disabled_text() {
                 if (this.condition_fail) {
@@ -154,6 +155,7 @@
                 return MAspectComponent(aspect_descr, mode, this.extra)
             },
             emit_up(event) {
+                //console.log("aspect emit up", event)
                 if (this.has_alternative && this.use_regular) {
                     if (this.aspect.attr.hasOwnProperty("alternative-activate-on-value")) {
                         if (event === this.aspect.attr["alternative-activate-on-value"]) {
@@ -169,21 +171,16 @@
             }
         },
         watch: {
-
             use_regular(val) {
                 if (!val) {
-                    if (this.aspect.attr.alternative.attr.value !== undefined) {
-                        //console.log("we gotta preset value")
-                        this.i_value = this.aspect.attr.alternative.attr.value
+                    const fixed_value = this.aspect.attr.alternative.attr.value
+                    if (fixed_value !== undefined) {
+                        this.$emit('update:value', {value: fixed_value, regular: false})
                     } else {
-                        this.i_value = aspect_raw_default_value(this.aspect.attr.alternative)
+                        this.$emit('update:value', {value: aspect_raw_default_value(this.aspect.attr.alternative), regular: false})
                     }
-                    this.$emit('update:value', {value: this.i_value, regular: false})
-                    this.value.regular = false
                 } else {
-                    //this.value = aspect_default_value(this.aspect)
                     this.$emit('update:value', aspect_default_value(this.aspect))
-                    delete this.value.regular
                 }
             },
             extra_update(val) {
