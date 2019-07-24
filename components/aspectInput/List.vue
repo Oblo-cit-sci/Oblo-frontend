@@ -47,7 +47,6 @@
   import Aspect from "../Aspect";
   import ListMixin from "../ListMixin";
   import {INDEX, TITLE_UPDATE} from "../../lib/consts";
-  import {pack_value} from "../../lib/aspect";
 
   // todo, pass the extra in a more intelligent way down, not to all the same
 
@@ -106,7 +105,7 @@
         } else {
           this.item_aspect = this.aspect.items;
           //this.item_aspect.required = true;
-          this.structure = "simple";
+          this.structure = SIMPLE
         }
       }
 
@@ -162,6 +161,7 @@
         xtra_copy.no_title = true
         xtra_copy.clear = "no_title"
         xtra_copy.listitem = true
+        xtra_copy.itemname = this.aspect.attr.itemname || "item"
         if(xtra_copy.hasOwnProperty("titleAspect")) {
           delete xtra_copy.titleAspect
         }

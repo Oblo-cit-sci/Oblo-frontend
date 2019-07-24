@@ -5,6 +5,7 @@
           outline
           single-line
           :disabled="disabled"
+          hideDetails
           :items="flat_options"
           v-model="i_value"
           @change="emit"
