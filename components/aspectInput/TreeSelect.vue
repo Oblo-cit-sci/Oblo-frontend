@@ -48,7 +48,6 @@
           this.options = this.$store.state.codes[passed_options.substring(1)];
         }
       }
-
       // flat_options // TODO maybe store them...
       this.flat_options = flatten_tree_to_options(this.options)
       //console.log("flat options", this.flat_options)
@@ -63,6 +62,7 @@
       selected(val) {
         this.dialogOpen = false;
         this.i_value = val.value
+        this.emit()
       },
       emit() {
         this.value_change(this.i_value)
