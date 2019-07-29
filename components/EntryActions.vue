@@ -211,8 +211,7 @@
             },
             submit() {
                 //console.log("entryAction submit")
-                // todo bring back in after testing
-                //this.sending = true
+                this.sending = true
                 // would be the same as checking submitted
                 if (this.entry.status === DRAFT) {
                     const all_entries = this.$_.concat([this.entry], this.$store.getters["entries/get_children"](this.entry))
@@ -226,11 +225,9 @@
                         console.log("error", err)
                     })
                 } else {
-                    // todo
-                    //console.log("updating entry")
-                    this.sending = false
                     this.$store.commit("set_error_snackbar", "not yet implemented")
                 }
+                this.sending = false
             },
             /*download_data() {
               return {
