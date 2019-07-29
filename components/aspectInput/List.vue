@@ -11,6 +11,7 @@
             :extra="list_extra(index)"
             v-on:entryAction="handleEntryAction($event, index)")
             v-on:append-outer="remove_value(index)"
+          v-btn(v-if="requires_delete" small @click="remove_value(index)") delete {{extra.itemname}}
       div(v-else)
         v-expansion-panel(expand v-model="panelState")
           v-expansion-panel-content(v-for="(value, index) in i_value" :key="index")
@@ -24,7 +25,7 @@
               :extra="list_extra(index)"
               v-on:entryAction="$emit('entryAction',$event)"
               v-on:aspectAction="aspectAction($event, index)")
-            v-btn(v-if="!readOnly" @click="remove_value(index)") remove this {{item_name}}
+            v-btn(v-if="requires_delete" small @click="remove_value(index)") delete {{item_name}}
       div
         span {{count_text}}, &nbsp
         span(v-if="min===max && min !== null") required: {{min}}
@@ -62,6 +63,7 @@
         item_aspect: null,
         structure: null,
         count: true,
+        item_name:  this.aspect.attr.itemname || "item",
         // for composite
         panelState: [],
         // select, when code type (*)
@@ -161,7 +163,9 @@
         xtra_copy.no_title = true
         xtra_copy.clear = "no_title"
         xtra_copy.listitem = true
-        xtra_copy.itemname = this.aspect.attr.itemname || "item"
+
+        //xtra_copy.structure = this.structure
+        xtra_copy.itemname = this.item_name
         if(xtra_copy.hasOwnProperty("titleAspect")) {
           delete xtra_copy.titleAspect
         }
@@ -180,10 +184,16 @@
       count_text() {
         const le = this.i_value.length
         const attr = this.aspect.attr
-        const name = attr.itemname || "item"
+        const name = this.item_name
         const item_word = le === 1 ? name:
           (attr.itemname_plural ||  name + "s")
         return  +  le + " " + item_word
+      },
+      requires_delete() {
+        let itemtype = this.aspect.items.type
+        if(itemtype === "str" || itemtype === "int" || itemtype === "float")
+          return false
+        return true
       }
     }
   }

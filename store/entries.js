@@ -44,7 +44,7 @@ export const mutations = {
   },
   set_downloaded(state, local_id) {
     let e = state.entries.get(local_id)
-    console.log("DL ", e, local_id)
+    //console.log("DL ", e, local_id)
     e.downloaded_version = e.version
   },
   add_ref_child(state, {uuid, aspect_loc, child_uuid}) {
