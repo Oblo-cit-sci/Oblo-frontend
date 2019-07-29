@@ -37,9 +37,11 @@
     methods: {
       update_value($event, index) {
         //console.log("composite update value, index", index, $event)
-        this.i_value[index] = $event
+        let res = JSON.parse(JSON.stringify(this.i_value))
+        res[index] = $event
         // todo use TitleAspect in meta
-        this.value_change(this.i_value)
+        //console.log("composite update i_value", res)
+        this.value_change(res)
       },
       comp_extras(comp_type) {
         let xtra_copy = JSON.parse(JSON.stringify((this.extra || {})))
@@ -72,12 +74,6 @@
         }
         return "xs12 lg12"
       }
-    },
-    watch: {
-      value(new_val) {
-        //console.log("COMP val change", new_val)
-        this.i_value = new_val;
-      },
     }
   }
 </script>
