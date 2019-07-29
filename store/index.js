@@ -100,6 +100,9 @@ export const mutations = {
   },
   add_meta(state, data) {
     state.meta = {...state.meta, ...data}
+  },
+  clear_draft_numbers(state) {
+    state.draft_numbers = {}
   }
 };
 
@@ -161,5 +164,12 @@ export const getters = {
 export const actions = {
   test(context, val) {
     //console.log("text store action", context, val)
+  },
+  clear_entries({commit}) {
+    console.log("clear action")
+    // this.$store.commit()
+    commit("entries/clear")
+    commit("clear_draft_numbers")
   }
+
 }

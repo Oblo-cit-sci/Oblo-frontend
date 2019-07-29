@@ -72,7 +72,7 @@
                 }
             },
             clear_entries() {
-                this.$store.commit("entries/clear")
+                this.$store.dispatch("clear_entries")
             }
         }
     }
