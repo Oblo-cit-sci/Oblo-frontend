@@ -43,7 +43,7 @@
         VIEW
     } from "../lib/consts";
     import Paginate from "./Paginate";
-    import {current_user_is_owner, save_entry} from "../lib/entry";
+    import {current_user_is_owner, has_pages, save_entry} from "../lib/entry";
 
     import {export_data} from "../lib/client";
     import DecisionDialog from "./DecisionDialog";
@@ -89,8 +89,8 @@
             connected() {
                 return this.$store.state.connected
             },
-            has_pages() { // todo duplicate
-                return this.entry_type.content.meta.hasOwnProperty("pages")
+            has_pages() {
+                return has_pages(this.entry_type)
             },
             disable_download() {
                 return this.has_pages && !this.last_page

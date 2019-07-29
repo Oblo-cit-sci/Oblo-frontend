@@ -60,7 +60,7 @@
         aspect_loc_str,
         MAspectComponent,
         get_TitleAspect,
-        save_entry
+        save_entry, has_pages
     } from "../../../lib/entry"
     import Title_Description from "../../../components/Title_Description"
     import EntryActions from "../../../components/EntryActions";
@@ -127,7 +127,7 @@
 
             this.entry_type = this.$store.getters.entry_type(this.entry.type_slug)
             this.titleAspect = get_TitleAspect(this.entry_type)
-            this.has_pages = this.entry_type.content.meta.hasOwnProperty("pages")
+            this.has_pages = has_pages(this.entry_type)
 
             let required_aspects = this.$_.filter(this.entry_type.content.aspects, (a) => a.required || false)
             this.required_values = this.$_.map(required_aspects, (a) => {

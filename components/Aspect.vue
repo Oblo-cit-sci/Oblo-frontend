@@ -146,7 +146,6 @@
         this.$emit(ASPECTACTION, event)
       },
       aspectComponent(aspect_descr, mode) {
-        // todo false, false are just default, ... better a config obj
         return MAspectComponent(aspect_descr, mode, this.extra)
       },
       emit_up(event) {
