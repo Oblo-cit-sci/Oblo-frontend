@@ -9,7 +9,7 @@
 <script>
   import {initialize} from "../lib/client";
 
-  import {LOGIN_WRONG_CREDENTIALS, LOGIN_ALREADY_LOGGED_IN} from "~~/lib/consts"
+  import {LOGIN_ALREADY_LOGGED_IN} from "~~/lib/consts"
   import Aspect from "../components/Aspect";
   import {unpack} from "../lib/aspect";
 
