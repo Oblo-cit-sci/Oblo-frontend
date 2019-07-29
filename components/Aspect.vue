@@ -32,8 +32,6 @@
         v-on:update:value="emit_up($event)"
         :value="raw_value"
         :mode="alt_mode")
-    div(v-if="listitem_icons")
-      v-btn(small @click="$emit('entryAction', {action: 'clear'})") delete {{extra.itemname}}
 </template>
 
 <script>
@@ -100,9 +98,6 @@
     },
     // boolean check is not required, since "false" is the default
     computed: {
-      listitem_icons() {
-        return (this.extra.listitem || false)
-      },
       show_title_description() {
         if (this.extra.hasOwnProperty("show_title_descr")) {
           return this.extra.show_title_descr
