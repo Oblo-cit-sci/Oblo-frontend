@@ -66,7 +66,7 @@
     AUTOSAVE,
     CREATE_CONTEXT_ENTRY,
     GLOBAL_ASPECT_REF,
-    ASPECT, DELETE_CONTEXT_ENTRY, PUBLIC, PRIVATE_LOCAL, VIEW, SAVE
+    ASPECT, DELETE_CONTEXT_ENTRY, PRIVATE_LOCAL, VIEW, SAVE
   } from "../../../lib/consts";
   import Aspect from "../../../components/Aspect";
 
