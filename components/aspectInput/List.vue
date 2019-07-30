@@ -141,7 +141,6 @@
       }
     },
     updated() {
-      console.log("updated", this.goto_new)
       if (this.goto_new) {
         setTimeout(() => {
             goTo(this.goto_new, {

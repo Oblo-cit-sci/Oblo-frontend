@@ -153,7 +153,6 @@
         return MAspectComponent(aspect_descr, mode, this.extra)
       },
       emit_up(event) {
-        //console.log("aspect emit up", this.aspect.name, event, "val", this.value)
         if (this.has_alternative && this.use_regular) {
           if (this.aspect.attr.hasOwnProperty("alternative-activate-on-value")) {
             if (event === this.aspect.attr["alternative-activate-on-value"]) {
@@ -163,7 +162,6 @@
             }
           }
         }
-        //this.value.value = event
         const up_value = Object.assign(this.$_.cloneDeep(this.value), {value: event})
 
         if(!this.use_regular) {
