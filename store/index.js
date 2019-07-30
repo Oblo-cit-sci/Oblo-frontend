@@ -166,8 +166,6 @@ export const actions = {
     //console.log("text store action", context, val)
   },
   clear_entries({commit}) {
-    console.log("clear action")
-    // this.$store.commit()
     commit("entries/clear")
     commit("clear_draft_numbers")
   }

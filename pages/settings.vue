@@ -12,9 +12,14 @@
       mode="edit")
     h3 Import data
     LoadFileButton(@fileload="load_file($event)")
+    br
     h3 Clear entries
-    v-btn(@click="show_clear_entries") Clear
-    DecisionDialog(v-bind="dialog_data" :open.sync="show_dialog" @action="dialog_action($event)")
+    div delete all entries. Make sure that you made backups of the entries you made
+    v-btn(@click="show_clear_entries" color="error") Clear
+    DecisionDialog(
+      v-bind="dialog_data"
+      :open.sync="show_dialog"
+      @action="dialog_action($event)")
 </template>
 
 <script>
@@ -33,7 +38,9 @@
                 },
                 clear_dialog_data: {
                     id: "clear entries",
-                    title: "Are you sure you want to clear all entries? Did you make a backup via Export?"
+                    title: "Are you sure you want to clear all entries? Did you make a backup via Export?",
+                    cancel_color: "",
+                    confirm_color: "error"
                 },
                 user_key_aspect: {
                     name: "User key",
