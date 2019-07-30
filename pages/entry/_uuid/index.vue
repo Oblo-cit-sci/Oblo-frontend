@@ -23,7 +23,6 @@
           v-bind:value="entry.aspects_values[aspect.name]"
           v-on:update:value="update_value(aspect, $event)"
           v-on:entryAction="entryAction($event)"
-          :id="aspect_id(aspect.name)"
           mode="edit"
           :extra="extras[aspect.name]"
           :extra_update="extras_update[aspect.name]")
@@ -217,6 +216,7 @@
         this.complete = true
       },
       update_value(aspect, value) {
+        //console.log("index update value", aspect.name, value.value)
         if (aspect.name === this.titleAspect) {
           this.entry.title = unpack(value)
         }
@@ -228,9 +228,6 @@
         }
         this.entry.aspects_values[aspect.name] = value
         this.dirty = true
-      },
-      aspect_id(aspect_name) {
-        return aspect_loc_str(this.extras[aspect_name].aspect_loc)
       },
       // should actually be the whole ref string
       // TODO goes out for Aspect component
@@ -339,10 +336,10 @@
     },
     watch: {
       page(val) {
-        setTimeout(() => goTo(".v-content"), {
+        setTimeout(() => goTo(".v-content", {
           duration: 200,
           easing: "easeOutCubic"
-        })
+        }))
       }
     }
   }

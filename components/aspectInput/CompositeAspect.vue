@@ -36,12 +36,15 @@
     },
     methods: {
       update_value($event, index) {
-        //console.log("composite update value, index", index, $event)
-        let res = JSON.parse(JSON.stringify(this.i_value))
-        res[index] = $event
+        // todo, why!!!
+        //console.log("comp update_value", this.i_value.map(v => v.value))
+
+        //let res = JSON.parse(JSON.stringify(this.i_value))
+        this.i_value[index] = $event
+        //console.log(this.i_value.map(v => v.value))
         // todo use TitleAspect in meta
         //console.log("composite update i_value", res)
-        this.value_change(res)
+        this.value_change(this.i_value)
       },
       comp_extras(comp_type) {
         let xtra_copy = JSON.parse(JSON.stringify((this.extra || {})))

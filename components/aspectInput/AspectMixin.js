@@ -57,6 +57,7 @@ export default {
   },
   watch: {
     value(new_val) {
+      //console.log("asp mix watch value", new_val)
       this.i_value = new_val;
     },
     disabled() {
