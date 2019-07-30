@@ -16,7 +16,7 @@
         v-btn(color="seconday" @click="show_cancel") cancel
 
       // TODO for the training we just DISABLE, otherwise it would be: :disabled="init"
-      v-btn(v-else color="warning" :disabled="initial_version" @click="show_delete") delete
+      v-btn(color="warning" :disabled="initial_version" @click="show_delete") delete
 
       v-btn(:disabled="!dirty" color="success" @click="save") {{save_word}}
       v-btn(
