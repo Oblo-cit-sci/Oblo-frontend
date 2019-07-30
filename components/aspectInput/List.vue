@@ -13,8 +13,14 @@
             v-on:append-outer="remove_value(index)"
           v-btn(v-if="requires_delete" small @click="remove_value(index)") delete {{extra.itemname}}
       div(v-else)
-        v-expansion-panel(expand v-model="panelState")
-          v-expansion-panel-content(v-for="(value, index) in i_value" :key="index")
+        v-expansion-panel(
+          expand
+          v-model="panelState")
+          v-expansion-panel-content(
+            v-for="(value, index) in i_value"
+            :key="index"
+            :id="panel_id(index)"
+            )
             template(v-slot:header)
               div {{titles[index]|| index + 1}}
             Aspect(
@@ -43,11 +49,13 @@
 
   import AspectMixin from "./AspectMixin";
   import {get_codes_as_options} from "../../lib/client";
-  import {aspect_wrapped_default_value, MAspectComponent} from "../../lib/entry";
+  import {aspect_loc_str, aspect_wrapped_default_value, MAspectComponent} from "../../lib/entry";
   import MultiSelect from "../MultiSelect";
   import Aspect from "../Aspect";
   import ListMixin from "../ListMixin";
   import {INDEX, TITLE_UPDATE} from "../../lib/consts";
+
+  import goTo from 'vuetify/lib/components/Vuetify/goTo'
 
   // todo, pass the extra in a more intelligent way down, not to all the same
 
@@ -63,13 +71,14 @@
         item_aspect: null,
         structure: null,
         count: true,
-        item_name:  this.aspect.attr.itemname || "item",
+        item_name: this.aspect.attr.itemname || "item",
         // for composite
         panelState: [],
         // select, when code type (*)
         select: false, // select... instead of button
         options: [],
-        titles: []
+        titles: [],
+        goto_new: null
       }
     },
     created() {
@@ -104,6 +113,18 @@
           this.item_aspect = this.aspect.items;
           this.item_aspect.required = true;
           this.structure = PANELS
+          //console.log(this.titles.length)
+          // get the titleAspect
+          // TODO duplicate from composite
+          let titleAspectName = this.item_aspect.attr.titleAspect || this.item_aspect.components[0].name
+          //
+          // fill in the values of the titleAspect
+          for (let item_index in this.i_value) {
+            let list_items = this.i_value[item_index].value
+            let title_comp_value = this.$_.find(list_items, list_item => list_item.name === titleAspectName).value
+            this.titles.push(title_comp_value)
+            this.panelState.push(false)
+          }
         } else {
           this.item_aspect = this.aspect.items;
           //this.item_aspect.required = true;
@@ -113,10 +134,24 @@
 
       this.set_min_max()
 
-      if(this.i_value.length === 0) {
+      if (this.i_value.length === 0) {
         for (let i = 0; i < this.aspect.attr.create || 0; i++) {
           this.add_value()
         }
+      }
+    },
+    updated() {
+      console.log("updated", this.goto_new)
+      if (this.goto_new) {
+        setTimeout(() => {
+            goTo(this.goto_new, {
+              duration: 400,
+              easing: "easeOutCubic",
+              offset: 80,
+            })
+            this.goto_new = null
+          }, 200
+        )
       }
     },
     methods: {
@@ -136,8 +171,12 @@
         if (this.structure === PANELS) {
           this.$_.fill(this.panelState, false)
           this.panelState.push(true)
+          let scroll_destination = "L-" + aspect_loc_str(this.$_.concat(this.extra.aspect_loc, [["index", this.i_value.length - 1]]))
+          this.goto_new = "#" + scroll_destination
         }
         this.value_change(this.i_value)
+        // scroll to new tab
+
       },
       remove_value(index) {
         this.i_value.splice(index, 1)
@@ -166,15 +205,18 @@
 
         //xtra_copy.structure = this.structure
         xtra_copy.itemname = this.item_name
-        if(xtra_copy.hasOwnProperty("titleAspect")) {
+        if (xtra_copy.hasOwnProperty("titleAspect")) {
           delete xtra_copy.titleAspect
         }
         return xtra_copy
       },
       aspectAction(event, index) {
-        if(event.action === TITLE_UPDATE) {
+        if (event.action === TITLE_UPDATE) {
           this.titles[index] = event.value
         }
+      },
+      panel_id(index) {
+        return "L-" + aspect_loc_str(this.$_.concat(this.extra.aspect_loc, [["index", index]]))
       }
     },
     computed: {
@@ -185,13 +227,13 @@
         const le = this.i_value.length
         const attr = this.aspect.attr
         const name = this.item_name
-        const item_word = le === 1 ? name:
-          (attr.itemname_plural ||  name + "s")
-        return  +  le + " " + item_word
+        const item_word = le === 1 ? name :
+          (attr.itemname_plural || name + "s")
+        return +le + " " + item_word
       },
       requires_delete() {
         let itemtype = this.aspect.items.type
-        if(itemtype === "str" || itemtype === "int" || itemtype === "float")
+        if (itemtype === "str" || itemtype === "int" || itemtype === "float")
           return false
         return true
       }
@@ -201,7 +243,7 @@
 
 <style scoped>
 
-  .panel_content{
+  .panel_content {
     width: 98%;
     margin: auto;
   }

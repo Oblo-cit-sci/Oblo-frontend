@@ -1,6 +1,7 @@
 <template lang="pug">
   div(
-    :class="[{ composite: aspect.type === 'composite',  disabled: disabled || condition_fail}]")
+    :class="[{ composite: aspect.type === 'composite',  disabled: disabled || condition_fail}]"
+    :id="aspect_id")
     Title_Description(
       v-if="show_title_description"
       v-bind="title_description(aspect)"
@@ -39,7 +40,7 @@
   import {ASPECTACTION} from "../lib/consts";
 
   import {
-    aspect_default_value,
+    aspect_default_value, aspect_loc_str,
     aspect_raw_default_value,
     MAspectComponent
   } from "../lib/entry";
@@ -130,7 +131,10 @@
         } else {
           return "disabled"
         }
-      }
+      },
+      aspect_id() {
+        return aspect_loc_str(this.extra.aspect_loc)
+      },
     },
     methods: {
       title_description(aspect_descr) {
