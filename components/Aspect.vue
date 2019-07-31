@@ -1,6 +1,6 @@
 <template lang="pug">
   div(
-    :class="[{ composite: aspect.type === 'composite',  disabled: disabled || condition_fail}]"
+    :class="[{ composite: aspect.type === 'composite',  disabled: disable}]"
     :id="aspect_id")
     Title_Description(
       v-if="show_title_description"
@@ -119,7 +119,7 @@
         return this.aspect.attr.alternative.attr.mode || this.mode
       },
       disable() {
-        return this.disabled || this.condition_fail || this.aspect.attr.disabled
+        return this.disabled || this.condition_fail || this.aspect.attr.disable
       },
       regular_disable() {
         return this.disable || !this.use_regular
