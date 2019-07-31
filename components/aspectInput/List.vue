@@ -149,7 +149,7 @@
               offset: 80,
             })
             this.goto_new = null
-          }, 200
+          }, 300
         )
       }
     },
