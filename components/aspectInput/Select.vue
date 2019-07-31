@@ -34,6 +34,7 @@
         }
       }
       this.set_selection()
+      this.init = false
     },
     methods: {
       set_selection() {
