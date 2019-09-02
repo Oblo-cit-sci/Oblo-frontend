@@ -1,6 +1,6 @@
 {
   "name": "LICCI",
-  "version": "0.6.8",
+  "version": "0.6.9",
   "description": "Local Indicators of Climate change impacts",
   "author": "Ramin S",
   "private": true,
@@ -33,9 +33,11 @@
     "vuex-persist": "^2.0.1"
   },
   "devDependencies": {
+    "node-sass": "^4.12.0",
     "nodemon": "^1.18.9",
     "pug": "^2.0.3",
     "pug-plain-loader": "^1.0.0",
+    "sass-loader": "^8.0.0",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.2"
   }

@@ -18,7 +18,7 @@
       v-btn(@click="create_item()" :color="requieres_more_color") Add {{item_name}}
         v-icon(right) add
     div(v-else) maximum reached
-    DecisionDialog(v-bind="remove_data_dialog" :open.sync="show_remove" v-on:action="remove($event.id)")
+    DecisionDialog(v-bind="remove_data_dialog" :open.sync="show_remove" v-on:action="remove($event)")
 </template>
 
 <script>
@@ -101,19 +101,20 @@
         //console.log("open remove index", index)
         console.log(index, this.items[index])
         this.remove_data_dialog.id = index
-        this.remove_item_name = this.items[index].title
+        //this.remove_item_name = this.items[index].title
         this.show_remove = true
       },
-      remove(index) {
-        index = parseInt(index)
-        const ref = this.i_value[index]
-        console.log("remove index", index)
-        this.i_value.splice(parseInt(index), 1)
-        this.value_change(this.i_value)
-        this.$emit(ENTRYACTION, {
-          action: DELETE_CONTEXT_ENTRY,
-          value: {uuid: ref, aspect_loc: this.aspect_loc_for_index(index)}
-        })
+      remove(action) {
+        if (action.confirm) {
+          let index = parseInt(action.id)
+          const ref = this.i_value[index]
+          this.i_value.splice(parseInt(index), 1)
+          this.value_change(this.i_value)
+          this.$emit(ENTRYACTION, {
+            action: DELETE_CONTEXT_ENTRY,
+            value: {uuid: ref, aspect_loc: this.aspect_loc_for_index(index)}
+          })
+        }
       },
       create_item() {
         this.$emit(ENTRYACTION, {
