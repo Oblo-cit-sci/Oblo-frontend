@@ -95,7 +95,6 @@
     },
     methods: {
       open_remove(index) {
-        console.log(index, this.items[index])
         this.remove_data_dialog.id = index
         this.show_remove = true
       },
