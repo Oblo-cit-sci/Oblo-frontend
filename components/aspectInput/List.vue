@@ -69,8 +69,8 @@
     data() {
       return {
         item_aspect: null,
-        structure: null,
-        count: true,
+        structure: null, // SIMPLE OR PANELS
+        //count: true,
         item_name: this.aspect.attr.itemname || "item",
         // for composite
         panelState: [],
@@ -113,9 +113,6 @@
           this.item_aspect = this.aspect.items;
           this.item_aspect.required = true;
           this.structure = PANELS
-          //console.log(this.titles.length)
-          // get the titleAspect
-          // TODO duplicate from composite
           let titleAspectName = this.item_aspect.attr.titleAspect || this.item_aspect.components[0].name
           //
           // fill in the values of the titleAspect

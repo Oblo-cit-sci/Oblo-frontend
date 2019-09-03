@@ -188,7 +188,6 @@
           //console.log("aspect use reg: emit up: ", aspect_raw_default_value(this.aspect))
           this.emit_up(aspect_raw_default_value(this.aspect))
         }
-
       },
       extra_update(val) {
         if (this.condition) {
