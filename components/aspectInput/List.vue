@@ -20,7 +20,7 @@
             v-for="(value, index) in i_value"
             :key="index"
             :id="panel_id(index)"
-            )
+          )
             template(v-slot:header)
               div {{titles[index]|| index + 1}}
             Aspect(
@@ -56,6 +56,7 @@
   import {INDEX, TITLE_UPDATE} from "../../lib/consts";
 
   import goTo from 'vuetify/lib/components/Vuetify/goTo'
+  import {aspect_loc_str2arr} from "../../lib/aspect";
 
   // todo, pass the extra in a more intelligent way down, not to all the same
 
@@ -136,6 +137,15 @@
           this.add_value()
         }
       }
+      //console.log(this.aspect.attr.info_ref)
+      /*if (this.aspect.attr.info_ref) {
+        console.log("LIST-create.info_ref", this.aspect.attr.info_ref)
+        let aspect_loc = aspect_loc_str2arr(this.aspect.attr.info_ref)
+        this.reference_values = this.$store.getters["entries/get_entry_value"]("", aspect_loc, this.entry)
+        for (let i = 0; i < this.reference_values.length; i++) {
+          console.log(this.reference_values[i])
+        }
+      }*/
     },
     updated() {
       if (this.goto_new) {
