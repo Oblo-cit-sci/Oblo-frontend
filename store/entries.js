@@ -2,7 +2,7 @@
   this is for the own entries
  */
 
-import {ASPECT, DRAFT} from "../lib/consts";
+import {ASPECT, COLLECT, DRAFT, ENTRY, INDEX} from "../lib/consts";
 import {pack_value} from "../lib/aspect";
 
 const ld = require("lodash")
@@ -145,23 +145,54 @@ export const getters = {
     }
   },
   get_entry_value(state, getters) {
-    return ({uuid, aspect_loc}) => {
-      let entry = state.entries.get(uuid)
+    // entry parameter: another hack that shouldnt be there. during the creation, the entry is not in the store yet.
+    //
+    return ({uuid, aspect_loc, entry}) => {
+      console.log(uuid, aspect_loc, entry)
+      if (!entry) {
+        console.log("getting entry from the store")
+        entry = getters.get_entry(uuid)
+      }
       let select = entry.aspects_values
       for (let loc of aspect_loc) {
-        if (loc[0] === ASPECT) {
-          select = select[loc[1]]
-          if (!select) {
-            console.log("error setting value", aspect_loc, loc)
-          }
-        } else { // index, --- but bascially the same
-          select = select.value[loc[1]]
-          if (!select) {
-            console.log("error setting value", aspect_loc, loc)
-          }
+        console.log("e-c", entry)
+        switch (loc[0]) {
+          case ENTRY:
+            let parent_uuid = entry.refs.parent.uuid
+            entry = getters.get_entry(parent_uuid)
+            console.log("parent", entry.title)
+            select = entry.aspects_values
+            break
+          case ASPECT:
+            select = select[loc[1]]
+            break
+          case INDEX:
+            select = select.value[parseInt(loc[1])]
+            break
+          case COLLECT:
+            console.log("COLLECT")
+            if(select.value.constructor !== Array) {
+              console.log("aspect-loc COLLECT(_) only runs over arrays")
+              return undefined
+            } else {
+              // SHOULD BE THE FINAL
+              console.log(select)
+              console.log(select.value)
+              return select.value.map(el => {
+                console.log("el", el, el.value[parseInt(loc[1])])
+                return {value: el.value[parseInt(loc[1])].value}
+              })
+            }
+            break
+          default:
+            select = select.value[loc[1]]
         }
+        if (!select) {
+          console.log("error getting value", aspect_loc, loc)
+        }
+        console.log("new select", select)
       }
-      return select
+      return select.value
     }
   }
 }
@@ -189,10 +220,10 @@ export const actions = {
         if (ld.last(parent_no_index.aspect_loc)[0] === "index") {
           parent_no_index.aspect_loc.pop()
         }
-        const aspect = context.getters.get_entry_value(parent_no_index)
+        const value = context.getters.get_entry_value(parent_no_index)
         // ListOf
-        if (Array.isArray(aspect.value)) {
-          const filtered_value = aspect.value.filter(av => av !== uuid)
+        if (Array.isArray(value)) {
+          const filtered_value = value.filter(av => av !== uuid)
           context.commit("set_entry_value", {
             ...parent_no_index,
             value: pack_value(filtered_value)

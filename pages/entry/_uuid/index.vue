@@ -152,11 +152,10 @@
           this doesnt belong here, especially cuz of the duplicate for edit/_local_id page
       * */
       for (let aspect of this.entry_type.content.aspects) {
-        //console.log("index aspect", aspect)
         let value = resolve_aspect_ref(this.$store, this.entry, aspect)
-        //console.log("index value", value)
         if (value !== undefined) {
-          this.entry.aspects_values[aspect.name] = value
+          console.log("uuid.index value", value)
+          this.entry.aspects_values[aspect.name].value = value
           //value_ref = aspect_loc_str2arr(aspect.attr.value)
         }
       }

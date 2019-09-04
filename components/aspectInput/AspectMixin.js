@@ -52,7 +52,7 @@ export default {
     },
     clearIcon() {
       //console.log("AspMix - ", this.aspect.name, this.aspect.type, this.extra)
-      return (this.extra.listitem || false) ? "clear" : undefined //this.extra
+      return ((this.extra.listitem && this.mode === EDIT) || false) ? "clear" : undefined //this.extra
     }
   },
   watch: {

@@ -195,7 +195,7 @@
       list_extra(index) {
         let xtra_copy = JSON.parse(JSON.stringify(this.extra))
         xtra_copy.aspect_loc.push([INDEX, index])
-        xtra_copy.no_title = true
+        xtra_copy.no_title = this.structure === PANELS
         xtra_copy.clear = "no_title"
         xtra_copy.listitem = true
 

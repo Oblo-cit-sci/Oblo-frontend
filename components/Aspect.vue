@@ -7,7 +7,7 @@
       v-bind="title_description(aspect)"
       :disabled="disable"
       :disabled_text="disabled_text"
-      :mode="mode")
+      :mode="real_mode")
     v-switch(v-if="has_alternative"
       v-model="use_regular"
       hideDetails
@@ -21,7 +21,7 @@
       :extra="extra"
       :extra_update=extra_update
       :disabled="regular_disable"
-      :mode="mode"
+      :mode="real_mode"
       v-on:update:value="emit_up($event)"
       v-on:entryAction="$emit('entryAction',$event)"
       v-on:aspectAction="aspectAction($event)")
@@ -104,6 +104,12 @@
           return this.extra.show_title_descr
         } else
           return true
+      },
+      real_mode() {
+        if(this.aspect.attr.mode !== undefined) {
+          return this.aspect.attr.mode
+        } else
+          return this.mode
       },
       raw_value() {
         //console.log("raw value of", this.aspect.name, this.value)
@@ -206,7 +212,7 @@
             }
             this.condition_fail = v;
             if (this.condition_fail) {
-              this.$emit('update:value', aspect_default_value(this.aspect))
+              this.$emit('update:value', aspect_default_value(this.$store, this.aspect))
             }
           }
         }
