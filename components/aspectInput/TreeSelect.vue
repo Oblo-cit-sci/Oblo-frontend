@@ -7,6 +7,7 @@
           :edit="false"
           :prependIcon="prependIcon"
           :disabled="disabled"
+          :aspect_loc="aspect_loc"
           v-on:clickPrepend="openDialog()"
           v-on:focus="openDialog(true)")
         v-dialog(width="500" v-model="dialogOpen" lazy=true :persistent="persistent")

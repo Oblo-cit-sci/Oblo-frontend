@@ -1,4 +1,4 @@
-import {ASPECT, COMPONENT} from "../lib/consts";
+import {ASPECT, COMPONENT, ENTRY, INDEX} from "../lib/consts";
 
 const ld = require("lodash")
 
@@ -82,12 +82,14 @@ export const getters = {
       console.log("value?", aspect_loc)
       for (let loc of aspect_loc) {
         console.log("loc", select, loc)
-        if (loc[0] === "entry") {
+        if (loc[0] === ENTRY) {
           select = state.edit.get(loc[1]).aspects_values
         } else if(loc[0] === ASPECT) {
           select = select[loc[1]]
 
         } else if(loc[0] === COMPONENT) {
+          select = select.value[loc[1]]
+        } else if(loc[0] === INDEX) {
           select = select.value[loc[1]]
         }
         console.log("se--l", select)

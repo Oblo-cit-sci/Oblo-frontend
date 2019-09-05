@@ -1,6 +1,7 @@
 <template lang="pug">
   div(
     :class="[{ composite: aspect.type === 'composite',  disabled: disabled || condition_fail}]")
+    div {{aspect_loc}}
     Title_Description(
       v-if="show_title_description"
       v-bind="title_description(aspect)"

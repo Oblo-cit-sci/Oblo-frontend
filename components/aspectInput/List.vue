@@ -8,6 +8,7 @@
             :value.sync="i_value[index]"
             :edit="true"
             :mode="mode"
+            :aspect_loc="item_aspect_loc(index)"
             :extra="list_extra(index)"
             v-on:entryAction="handleEntryAction($event, index)")
             v-on:append-outer="remove_value(index)"
@@ -21,6 +22,7 @@
               :value.sync="i_value"
               :mode="mode"
               :extra="list_extra(index)"
+              :aspect_loc="item_aspect_loc(index)"
               v-on:entryAction="$emit('entryAction',$event)"
               v-on:aspectAction="aspectAction($event, index)")
             v-btn(v-if="!readOnly" @click="remove_value(index)") remove this {{item_name}}
@@ -39,151 +41,156 @@
 
 <script>
 
-  import AspectMixin from "./AspectMixin";
-  import {get_codes_as_options} from "../../lib/client";
-  import {aspect_wrapped_default_value, MAspectComponent} from "../../lib/entry";
-  import MultiSelect from "../MultiSelect";
-  import Aspect from "../Aspect";
-  import ListMixin from "../ListMixin";
-  import {EDIT, INDEX, TITLE_UPDATE} from "../../lib/consts";
+    import AspectMixin from "./AspectMixin";
+    import {get_codes_as_options} from "../../lib/client";
+    import {aspect_wrapped_default_value, MAspectComponent} from "../../lib/entry";
+    import MultiSelect from "../MultiSelect";
+    import Aspect from "../Aspect";
+    import ListMixin from "../ListMixin";
+    import {EDIT, INDEX, TITLE_UPDATE} from "../../lib/consts";
 
-  // todo, pass the extra in a more intelligent way down, not to all the same
+    // todo, pass the extra in a more intelligent way down, not to all the same
 
-  const SIMPLE = "simple"
-  const PANELS = "panels"
+    const SIMPLE = "simple"
+    const PANELS = "panels"
 
-  export default {
-    name: "List",
-    components: {Aspect, MultiSelect},
-    mixins: [AspectMixin, ListMixin],
-    data() {
-      return {
-        item_aspect: null,
-        structure: null,
-        count: true,
-        // for composite
-        panelState: [],
-        // select, when code type (*)
-        select: false, // select... instead of button
-        options: [],
-        titles: []
-      }
-    },
-    created() {
-      let item_type = this.aspect.items;
-      // todo. list, are extended lists by user, not select lists
-      if (typeof (item_type) === "string") {
-        if (item_type[0] === "*") {
-          this.select = true
-          //console.log("list multi-select", item_type)
-          this.options = get_codes_as_options(this.$store.state, item_type)
-        } else {
-          switch (item_type) {
-            case "str":
-              this.structure = SIMPLE
-              break;
-            case "int":
-              this.structure = SIMPLE
-              break
-            default:
-              console.log("unknown type for list", item_type);
-          }
-        }
-        this.item_aspect = {
-          attr: {},
-          type: this.aspect.items,
-          required: true
-        }
-      } else if (typeof (item_type) === "object") {
-        // console.log("object type", this.aspect.items)
-        if (this.aspect.items.type === "composite") {
-          this.item_aspect = this.aspect.items;
-          this.item_aspect.required = true;
-          this.structure = PANELS
-        } else {
-          this.item_aspect = this.aspect.items;
-          //this.item_aspect.required = true;
-          this.structure = "simple";
-        }
-      }
+    export default {
+        name: "List",
+        components: {Aspect, MultiSelect},
+        mixins: [AspectMixin, ListMixin],
+        data() {
+            return {
+                item_aspect: null,
+                structure: null,
+                count: true,
+                // for composite
+                panelState: [],
+                // select, when code type (*)
+                select: false, // select... instead of button
+                options: [],
+                titles: []
+            }
+        },
+        created() {
+            let item_type = this.aspect.items;
+            // todo. list, are extended lists by user, not select lists
+            if (typeof (item_type) === "string") {
+                if (item_type[0] === "*") {
+                    this.select = true
+                    //console.log("list multi-select", item_type)
+                    this.options = get_codes_as_options(this.$store.state, item_type)
+                } else {
+                    switch (item_type) {
+                        case "str":
+                            this.structure = SIMPLE
+                            break;
+                        case "int":
+                            this.structure = SIMPLE
+                            break
+                        default:
+                            console.log("unknown type for list", item_type);
+                    }
+                }
+                this.item_aspect = {
+                    attr: {},
+                    type: this.aspect.items,
+                    required: true
+                }
+            } else if (typeof (item_type) === "object") {
+                // console.log("object type", this.aspect.items)
+                if (this.aspect.items.type === "composite") {
+                    this.item_aspect = this.aspect.items;
+                    this.item_aspect.required = true;
+                    this.structure = PANELS
+                } else {
+                    this.item_aspect = this.aspect.items;
+                    //this.item_aspect.required = true;
+                    this.structure = "simple";
+                }
+            }
 
-      this.set_min_max()
+            this.set_min_max()
 
-      if(this.i_value.length === 0) {
-        for (let i = 0; i < this.aspect.attr.create || 0; i++) {
-          this.add_value()
+            if (this.i_value.length === 0) {
+                for (let i = 0; i < this.aspect.attr.create || 0; i++) {
+                    this.add_value()
+                }
+            }
+        },
+        methods: {
+            clearableAspectComponent(aspect) {
+                return MAspectComponent(aspect, this.mode)
+            },
+            // for composite
+            add_value() {
+                this.i_value.push(aspect_wrapped_default_value(this.item_aspect))
+                this.titles.push(null)
+                if (this.structure === PANELS) {
+                    this.$_.fill(this.panelState, false)
+                    this.panelState.push(true)
+                }
+            },
+            remove_value(index) {
+                //console.log("remove index", index)
+                //console.log(this.i_value)
+                this.i_value.splice(index, 1)
+                this.titles.splice(index, 1)
+                //console.log(this.i_value)
+                this.value_change(this.i_value)
+            },
+            /*updateRequired(value) {
+              this.i_value[parseInt(value.title)] = value.value
+            },*/
+            indexed_item_aspect(index) {
+                let aspect = {...this.item_aspect}
+                // could maybe be 0
+                aspect.name = "" + (index + 1)
+                return aspect
+            }, handleEntryAction(event, index) {
+                if (event.action === "clear") {
+                    this.remove_value(index)
+                } else {
+                    $emit('entryAction', $event)
+                }
+            },
+            list_extra(index) {
+                console.log(this.extra)
+                let xtra_copy = JSON.parse(JSON.stringify(this.extra))
+                //xtra_copy.aspect_loc.push()
+                xtra_copy.no_title = true
+                xtra_copy.clear = "no_title"
+                xtra_copy.listitem = true
+                return xtra_copy
+            },
+            aspectAction(event, index) {
+                if (event.action === TITLE_UPDATE) {
+                    this.titles[index] = event.value
+                }
+            },
+            item_aspect_loc(index) {
+                console.log("List.items_aspect_loc", index, this.aspect_loc)
+                return this.$_.concat(this.aspect_loc, [[INDEX, index]])
+            }
+        },
+        computed: {
+            is_simple() {
+                return this.structure === SIMPLE
+            },
+            count_text() {
+                const le = this.i_value.length
+                const attr = this.aspect.attr
+                const name = attr.itemname || "item"
+                const item_word = le === 1 ? name :
+                    (attr.itemname_plural || name + "s")
+                return +le + " " + item_word
+            }
         }
-      }
-    },
-    methods: {
-      clearableAspectComponent(aspect) {
-        return MAspectComponent(aspect, this.mode)
-      },
-      // for composite
-      add_value() {
-        this.i_value.push(aspect_wrapped_default_value(this.item_aspect))
-        this.titles.push(null)
-        if (this.structure === PANELS) {
-          this.$_.fill(this.panelState, false)
-          this.panelState.push(true)
-        }
-      },
-      remove_value(index) {
-        //console.log("remove index", index)
-        //console.log(this.i_value)
-        this.i_value.splice(index, 1)
-        this.titles.splice(index, 1)
-        //console.log(this.i_value)
-        this.value_change(this.i_value)
-      },
-      /*updateRequired(value) {
-        this.i_value[parseInt(value.title)] = value.value
-      },*/
-      indexed_item_aspect(index) {
-        let aspect = {...this.item_aspect}
-        // could maybe be 0
-        aspect.name = "" + (index + 1)
-        return aspect
-      }, handleEntryAction(event, index) {
-        if (event.action === "clear") {
-          this.remove_value(index)
-        } else {
-          $emit('entryAction', $event)
-        }
-      },
-      list_extra(index) {
-        let xtra_copy = JSON.parse(JSON.stringify(this.extra))
-        xtra_copy.aspect_loc.push([INDEX, index])
-        xtra_copy.no_title = true
-        xtra_copy.clear = "no_title"
-        xtra_copy.listitem = true
-        return xtra_copy
-      },
-      aspectAction(event, index) {
-        if(event.action === TITLE_UPDATE) {
-          this.titles[index] = event.value
-        }
-      }
-    },
-    computed: {
-      is_simple() {
-        return this.structure === SIMPLE
-      },
-      count_text() {
-        const le = this.i_value.length
-        const attr = this.aspect.attr
-        const name = attr.itemname || "item"
-        const item_word = le === 1 ? name:
-          (attr.itemname_plural ||  name + "s")
-        return  +  le + " " + item_word
-      }
     }
-  }
 </script>
 
 <style scoped>
 
-  .panel_content{
+  .panel_content {
     width: 98%;
     margin: auto;
   }

@@ -24,7 +24,8 @@ export default {
       default: false
     },
     aspect_loc: {
-      type: Array // for composites and lists pass it down...
+      type: Array, // for composites and lists pass it down...
+      required: true
     },
     extra: {
       type: Object,
