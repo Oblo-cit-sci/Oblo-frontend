@@ -8,8 +8,6 @@
             :aspect_loc="aspect_locs[aspect.name]"
             mode="edit"
             :extra="extras[aspect.name]")
-    div {{entry}}
-
 </template>
 
 <script>
@@ -39,7 +37,6 @@
     components: {Aspect},
     created() {
       this.uuid = this.$route.params.uuid
-
       for (let aspect of this.aspects) {
         //let extra_props = {}
         this.extras[aspect.name] = {}
@@ -49,11 +46,10 @@
     },
     computed: {
       entry() {
-        console.log("compute e called")
-        return this.$store.getters["test/entry"](this.uuid)
+        //console.log("compute e called")
+        return this.$store.getters["entries/entry"](this.uuid)
       },
       aspects() {
-        console.log("compute et called")
         const entry_type = this.$store.getters.entry_type(this.entry.type_slug)
         return entry_type.content.aspects
       }

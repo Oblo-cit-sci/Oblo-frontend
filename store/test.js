@@ -3,9 +3,6 @@ import {ASPECT, COMPONENT, ENTRY, INDEX} from "../lib/consts";
 const ld = require("lodash")
 
 export const state = () => ({
-  //
-  //entries: new Map(),
-  tempM: new Map([["kslakl", 3]]),
   edit: new Map()
 });
 
@@ -38,7 +35,7 @@ export const mutations = {
       if (loc[0] === "entry") {
         select = state.edit.get(loc[1]).aspects_values
       }
-      console.log(select)
+      //console.log(select)
       if(loc === final_loc) {
         break
       }
@@ -70,13 +67,13 @@ export const getters = {
   tempM(state) {
     return state.tempM
   },
-  entry(state, getters) {
+  entry(state) {
     return (uuid) => {
-      console.log("getter called")
+      //console.log("getter called")
       return state.edit.get(uuid)
     }
   },
-  value(state, getters) {
+  value(state) {
     return(aspect_loc) => {
       let select = null
       console.log("value?", aspect_loc)
@@ -101,23 +98,23 @@ export const getters = {
 }
 
 export const actions = {
-  add(context, val) {
-    context.commit("add", val)
-    context.commit("update")
+  add({commit}, val) {
+    commit("add", val)
+    commit("update")
   },
-  mut(context, val) {
-    context.commit("mut", val)
-    context.commit("update")
+  mut({commit}, val) {
+    commit("mut", val)
+    commit("update")
   },
-  del(context) {
-    context.commit("del")
-    context.commit("update")
+  del({commit}) {
+    commit("del")
+    commit("update")
   },
-  create(context, entry) {
-    context.commit("create", entry)
+  create({commit}, entry) {
+    commit("create", entry)
   },
-  set_entry_value(context, data) {
-    context.commit("_set_entry_value", data)
-    context.commit("update")
+  set_entry_value({commit}, data) {
+    commit("_set_entry_value", data)
+    commit("update")
   }
 }

@@ -1,9 +1,7 @@
 /*
   this is for the own entries
  */
-
-
-import {ASPECT, DRAFT} from "../lib/consts";
+import {ASPECT, COMPONENT, DRAFT, ENTRY, INDEX} from "../lib/consts";
 
 const ld = require("lodash")
 
@@ -30,7 +28,6 @@ export const mutations = {
      */
   },
   create(state, entry) {
-    //console.log(entry)
     state.entries.set(entry.uuid, entry)
   },
   save_entry(state, entry) {
@@ -64,8 +61,51 @@ export const mutations = {
     state.entries.clear()
     state.timeline_entries = []
   },
+  update(state) {
+    state.entries = new Map(state.entries.entries())
+  },
+  _set_entry_value(state, {aspect_loc, value}) {
+    let select = null
+    const final_loc = ld.last(aspect_loc)
+    for (let loc of aspect_loc) {
+      console.log("set", loc, select)
+      if(loc === final_loc) {
+        break
+      } else if (loc[0] === ENTRY) {
+        select = state.entries.get(loc[1]).aspects_values
+      } else if(loc[0] === ASPECT){
+        select = select[loc[1]]
+      } else if(loc[0] === COMPONENT){
+        select = select[loc[1]]
+      } else {
+        console.log("ERR", loc)
+      }
+    }
+
+    if (final_loc[0] === ASPECT) {
+      //select.set(inal_loc[1]) = value
+      if (!select.hasOwnProperty(final_loc[1])) {
+        console.log("error setting value", aspect_loc, loc)
+      }
+      select[final_loc[1]] = value
+    } else if (final_loc[0] === COMPONENT) {
+      select[final_loc[1]] = value
+    }
+
+    /*
+        } else { // INDEX
+          // push new value
+          if (select.value.length === final_loc[1]) {
+            // todo here could be a check if loc1 is length
+            select.value.push(value)
+          } else {
+            select.value[final_loc[0]] = value
+          }
+        }
+        */
+  }
   // this is a duplicate from entry... the whole navigation part...
-  set_entry_value(state, {uuid, aspect_loc, value}) {
+  /*set_entry_value(state, {uuid, aspect_loc, value}) {
     let entry = state.entries.get(uuid)
     let select = entry.aspects_values
     const final_loc = aspect_loc.pop()
@@ -92,9 +132,7 @@ export const mutations = {
         select.value[final_loc[0]] = value
       }
     }
-  }
-
-
+  }*/
 }
 
 export const getters = {
@@ -130,11 +168,42 @@ export const getters = {
   },
   get_own_entries(state) {
     // todo
+  },
+  entry(state) {
+    return (uuid) => {
+      //console.log("getter called")
+      return state.entries.get(uuid)
+    }
+  },
+  value(state) {
+    return(aspect_loc) => {
+      let select = null
+      console.log("value?", aspect_loc)
+      for (let loc of aspect_loc) {
+        if (loc[0] === ENTRY) {
+          select = state.entries.get(loc[1]).aspects_values
+        } else if(loc[0] === ASPECT) {
+          select = select[loc[1]]
+
+        } else if(loc[0] === COMPONENT) {
+          select = select.value[loc[1]]
+        } else if(loc[0] === INDEX) {
+          select = select.value[loc[1]]
+        }
+        //console.log("se--l", select)
+      }
+      console.log("res", select)
+      return select
+    }
   }
 }
 
 export const actions = {
   delete_entry(context, uuid) {
     console.log("action delete")
+  },
+  set_entry_value({commit}, data) {
+    commit("_set_entry_value", data)
+    commit("update")
   }
 }

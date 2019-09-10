@@ -102,7 +102,7 @@
     computed: {
       value() {
         //console.log("Aspect value", this.aspect.name)
-        return this.$store.getters["test/value"](this.aspect_loc)
+        return this.$store.getters["entries/value"](this.aspect_loc)
       },
       show_title_description() {
         if(this.extra.hasOwnProperty("show_title_descr")) {
@@ -162,7 +162,7 @@
         }
         this.value.value = event
         //this.$emit('update:value', Object.assign(this.$_.cloneDeep(this.value), {value: event}))
-        this.$store.dispatch("test/set_entry_value", {aspect_loc: this.aspect_loc, value: this.value})
+        this.$store.dispatch("entries/set_entry_value", {aspect_loc: this.aspect_loc, value: this.value})
       }
     },
     watch: {

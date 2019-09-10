@@ -131,16 +131,10 @@
                 }
             },
             remove_value(index) {
-                //console.log("remove index", index)
-                //console.log(this.i_value)
                 this.i_value.splice(index, 1)
                 this.titles.splice(index, 1)
-                //console.log(this.i_value)
                 this.value_change(this.i_value)
             },
-            /*updateRequired(value) {
-              this.i_value[parseInt(value.title)] = value.value
-            },*/
             indexed_item_aspect(index) {
                 let aspect = {...this.item_aspect}
                 // could maybe be 0
@@ -154,7 +148,6 @@
                 }
             },
             list_extra(index) {
-                console.log(this.extra)
                 let xtra_copy = JSON.parse(JSON.stringify(this.extra))
                 //xtra_copy.aspect_loc.push()
                 xtra_copy.no_title = true

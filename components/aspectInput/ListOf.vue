@@ -41,7 +41,7 @@
     DELETE_CONTEXT_ENTRY
   } from "../../lib/consts";
   import DecisionDialog from "../DecisionDialog";
-  import {get_type_slug_from, set_entry_value} from "../../lib/entry";
+  import {create_entry, get_type_slug_from, set_entry_value} from "../../lib/entry";
   import EntryNavMixin from "../EntryNavMixin";
   import ListMixin from "../ListMixin";
 
@@ -105,13 +105,38 @@
         })
       },
       create_item() {
-        this.$emit(ENTRYACTION, {
+        /*this.$emit(ENTRYACTION, {
           action: CREATE_CONTEXT_ENTRY,
           value: {
             type_slug: this.item_type_slug,
             aspect_loc: this.aspect_loc_for_index(this.i_value.length)
           }
-        })
+        })*/
+
+          let parent_ref_data = {
+              uuid: this.entry_uuid(),
+              aspect_loc: this.aspect_loc,
+          }
+          //autosave(this.$store, this.entry)
+
+          //const entry = create_and_store(this.item_type_slug, this.$store, parent_ref_data)
+          const entry = create_entry(this.$store, this.item_type_slug)
+          this.$store.commit("entries/add_ref_child",
+              {
+                  uuid: this.entry_uuid(),
+                  child_uuid: entry.uuid,
+                  aspect_loc: this.aspect_loc
+              }
+          )
+          // todo.1
+          // here we must do something to avoid blinking cuz its inserterd before leaving
+          // TODO: NO IDEA HOW IT SETS THE STORE
+          //set_entry_value(this.entry, this.aspect_loc, pack_value(entry.uuid))
+
+          this.$router.push({
+              path: "/entry/" + entry.uuid
+          })
+
         this.update_indices()
       },
       aspect_loc_for_index(index) {
