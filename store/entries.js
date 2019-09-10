@@ -76,6 +76,9 @@ export const mutations = {
   _set_entry_value(state, {aspect_loc, value}) {
     let select = null
     const final_loc = ld.last(aspect_loc)
+
+    //let main_aspect = ld.take(aspect_loc, 2)
+
     for (let loc of aspect_loc) {
       if (loc === final_loc) {
         break
@@ -85,31 +88,22 @@ export const mutations = {
         select = select[loc[1]]
       } else if (loc[0] === COMPONENT) {
         select = select[loc[1]]
+      } else if (loc[0] === INDEX) {
+        select = select[loc[1]]
       } else {
-        console.log("ERR", loc)
+        console.log("ERROR store.entries. location", loc)
       }
     }
-    console.log("final,", final_loc, "select", select)
+    //console.log("final,", final_loc, "select", select)
     if (final_loc[0] === ASPECT) {
       select[final_loc[1]] = value
-      if (!select.hasOwnProperty(final_loc[1])) {
-        console.log("error setting value", aspect_loc, loc)
-      }
     } else if (final_loc[0] === COMPONENT) {
       select[final_loc[1]] = value
+    } else if (final_loc[0] === INDEX) {
+      select[final_loc[1]] = value
+    } else {
+      console.log("ERROR store.entries. final location", final_loc)
     }
-
-    /*
-        } else { // INDEX
-          // push new value
-          if (select.value.length === final_loc[1]) {
-            // todo here could be a check if loc1 is length
-            select.value.push(value)
-          } else {
-            select.value[final_loc[0]] = value
-          }
-        }
-        */
   }
 }
 
@@ -167,11 +161,14 @@ export const getters = {
           select = state.entries.get(loc[1]).aspects_values
         } else if (loc[0] === ASPECT) {
           select = select[loc[1]]
-
         } else if (loc[0] === COMPONENT) {
-          select = select.value[loc[1]]
+          //console.log("get from component", select, loc)
+          select = select[loc[1]]
         } else if (loc[0] === INDEX) {
-          select = select.value[loc[1]]
+          //console.log("get from index", select)
+          select = select[loc[1]]
+        } else {
+          console.log("cannot get value", select)
         }
         //console.log("se--l", select)
       }

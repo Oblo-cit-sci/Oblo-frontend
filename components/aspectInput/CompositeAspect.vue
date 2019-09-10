@@ -16,18 +16,9 @@
 
 <script>
 
-    /*
-    :extra="comp_extras(comp_type)"
-
-      the flexes could have "xs12 sm6 lg6"
-
-      v-on:update:value="update_value($event, index)"
-
-     */
-
     import AspectMixin from "./AspectMixin";
     import Aspect from "../Aspect";
-    import {ASPECTACTION, INT, FLOAT, TITLE_ASPECT, ASPECT, COMPONENT} from "../../lib/consts";
+    import {ASPECTACTION, INT, FLOAT, TITLE_ASPECT, COMPONENT} from "../../lib/consts";
 
     export default {
         name: "CompositeAspect",

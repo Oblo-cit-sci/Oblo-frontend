@@ -88,18 +88,13 @@
         created() {
             try {
                 this.has_alternative = this.aspect.attr.hasOwnProperty("alternative")
-
                 if (this.aspect.attr.hasOwnProperty("condition")) {
                     this.condition = this.aspect.attr.condition
                 }
-
                 if (!this.aspect_loc) {
                     console.log("Aspect.created: no aspect_loc defined for", this.aspect.name, "emitting up results")
                 }
-
-                console.log("created", this.value)
                 this.use_regular = this.value.hasOwnProperty("regular") ? this.value.regular : true
-                console.log("created", this.use_regular)
             } catch (e) {
                 console.log("DEV, crash on Aspect", this.aspect.name, this.aspect, this.value)
             }

@@ -147,9 +147,7 @@
             },
             // for composite
             add_value() {
-
                 this.value_change(this.$_.concat(this.i_value, [aspect_wrapped_default_value(this.item_aspect)]))
-
                 //this.i_value.push(aspect_wrapped_default_value(this.item_aspect))
                 this.titles.push(null)
                 if (this.structure === PANELS) {
@@ -204,6 +202,10 @@
                 const item_word = le === 1 ? name :
                     (attr.itemname_plural || name + "s")
                 return +le + " " + item_word
+            },
+            requires_delete() {
+                let itemtype = this.aspect.items.type
+                return !(itemtype === "str" || itemtype === "int" || itemtype === "float");
             }
         }
     }
