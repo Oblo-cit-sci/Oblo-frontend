@@ -64,9 +64,15 @@ export const mutations = {
     state.entries.clear()
     state.timeline_entries = []
   },
-  update(state) {
+  /*update(state, {uuid}) {
     state.entries = new Map(state.entries.entries())
-  },
+    // TODO TEMP TO TEST EDIT
+    console.log("UPDATE", state.entries.get(uuid), state.edit, state.entries.get(uuid).aspects_values.title.value)
+    if(state.edit === null)
+      state.edit = state.entries.get(uuid)
+    else
+      state.edit = null //
+  },*/
   _set_entry_value(state, {aspect_loc, value}) {
     let select = null
     const final_loc = ld.last(aspect_loc)
@@ -83,7 +89,7 @@ export const mutations = {
         console.log("ERR", loc)
       }
     }
-
+    console.log("final,", final_loc, "select", select)
     if (final_loc[0] === ASPECT) {
       select[final_loc[1]] = value
       if (!select.hasOwnProperty(final_loc[1])) {
@@ -92,10 +98,6 @@ export const mutations = {
     } else if (final_loc[0] === COMPONENT) {
       select[final_loc[1]] = value
     }
-
-    // TODO TEMP TO TEST EDIT
-    console.log(state.entries.get(aspect_loc[0][1]))
-    state.edit = JSON.parse(JSON.stringify(state.entries.get(aspect_loc[0][1])))
 
     /*
         } else { // INDEX
@@ -160,7 +162,6 @@ export const getters = {
   value(state) {
     return (aspect_loc) => {
       let select = null
-      console.log("value?", aspect_loc)
       for (let loc of aspect_loc) {
         if (loc[0] === ENTRY) {
           select = state.entries.get(loc[1]).aspects_values
@@ -174,7 +175,7 @@ export const getters = {
         }
         //console.log("se--l", select)
       }
-      console.log("res", select)
+      console.log("store.entries, value?",aspect_loc, "res:", select)
       return select
     }
   },
@@ -243,14 +244,15 @@ export const getters = {
 export const actions = {
   set_entry_value({commit}, data) {
     commit("_set_entry_value", data)
-    commit("update")
+    //commit("update", {uuid:data.aspect_loc[0][1]})
   },
   add_child(context, uuid_n_aspect_loc_n_child) {
+    console.log("store.entries: add child")
     context.commit("set_entry_value", uuid_n_aspect_loc_n_child)
     context.commit("add_ref_child", uuid_n_aspect_loc_n_child)
   },
   delete_entry(context, uuid) {
-    //console.log("delete entry-...")
+    console.log("store.entries.delete entry-...")
     const entry = context.state.entries.get(uuid)
     if (entry) {
       // TODO just TEMP, for easier testing

@@ -47,8 +47,6 @@
         confirm_text="Save and move on")
       div {{entry}}
       div ------
-      div {{entry_edit}}
-      div ------
 </template>
 
 <script>
@@ -61,10 +59,9 @@
     import {
         autosave,
         create_and_store,
-        set_entry_value,
         aspect_loc_str,
         MAspectComponent,
-        delete_entry, get_TitleAspect, save_entry
+        get_TitleAspect, save_entry
     } from "../../../lib/entry"
     import Title_Description from "../../../components/Title_Description"
     import EntryActions from "../../../components/EntryActions";
@@ -257,7 +254,6 @@
                 // here we must do something to avoid blinking cuz its inserterd before leaving
                 // TODO: NO IDEA HOW IT SETS THE STORE
                 set_entry_value(this.entry, aspect_loc, pack_value(entry.uuid))
-
             }
         },
         computed: {
@@ -268,9 +264,6 @@
             entry() {
                 //console.log("compute e called")
                 return this.$store.getters["entries/entry"](this.uuid)
-            },
-            entry_edit() {
-                return this.$store.getters["entries/edit"]()
             },
             shown_aspects() {
                 if (this.has_pages) {

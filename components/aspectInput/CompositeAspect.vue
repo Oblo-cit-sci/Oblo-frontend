@@ -7,7 +7,6 @@
         Aspect(
           :aspect="comp_type"
           :aspect_loc="aspect_locs[comp_type.name]"
-          v-on:update:value="update_value($event, index)"
           :mode="mode"
           :disabled="disabled"
           :extra="comp_extras(comp_type)"
@@ -21,6 +20,9 @@
     :extra="comp_extras(comp_type)"
 
       the flexes could have "xs12 sm6 lg6"
+
+      v-on:update:value="update_value($event, index)"
+
      */
 
     import AspectMixin from "./AspectMixin";
@@ -40,8 +42,6 @@
         created() {
             console.log(this.titleAspectName)
             for (let component of this.aspect.components) {
-                //let extra_props = {}
-                //this.extras[component.name] = {}
                 this.aspect_locs[component.name] = this.$_.concat(this.aspect_loc, [[COMPONENT, component.name]])
             }
         },
@@ -70,13 +70,9 @@
                 if (xtra_copy.hasOwnProperty("listitem")) {
                     delete xtra_copy.listitem
                 }
-                xtra_copy.aspect_loc.push([COMPONENT, comp_type.name])
                 if (comp_type.name === this.titleAspectName) {
                     xtra_copy[TITLE_ASPECT] = true
                 }
-                xtra_copy.aspect_loc.push(["aspcet", comp_type.name])
-                xtra_copy[TITLE_ASPECT] = comp_type.name === this.titleAspectName
-
                 return xtra_copy
             },
             aspectAction(event) {

@@ -8,7 +8,6 @@ export default {
       required: true
     },
     value: {},
-    // simplification of mode
     mode: { // todo well, this is gonna be messy
       type: String,
       default: VIEW

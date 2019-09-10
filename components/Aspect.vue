@@ -2,7 +2,6 @@
   div(
     :class="[{ composite: aspect.type === 'composite',  disabled: disable}]"
     :id="aspect_id")
-    div {{aspect_loc}}
     Title_Description(
       v-if="show_title_description"
       v-bind="title_description(aspect)"
@@ -24,7 +23,7 @@
       :extra_update=extra_update
       :disabled="regular_disable"
       :mode="real_mode"
-      v-on:update_value="emit_up($event)"
+      v-on:update_value="update_value($event)"
       v-on:entryAction="$emit('entryAction',$event)"
       v-on:aspectAction="aspectAction($event)")
     div(v-if="!use_regular")
@@ -32,7 +31,7 @@
       component(
         :is="aspectComponent(aspect.attr.alternative)"
         v-bind:aspect="aspect.attr.alternative"
-        v-on:update_value="emit_up($event)"
+        v-on:update_value="update_value($event)"
         :value="raw_value"
         :mode="alt_mode")
 </template>
@@ -94,11 +93,13 @@
                     this.condition = this.aspect.attr.condition
                 }
 
-                if(!this.aspect_loc) {
+                if (!this.aspect_loc) {
                     console.log("Aspect.created: no aspect_loc defined for", this.aspect.name, "emitting up results")
                 }
 
+                console.log("created", this.value)
                 this.use_regular = this.value.hasOwnProperty("regular") ? this.value.regular : true
+                console.log("created", this.use_regular)
             } catch (e) {
                 console.log("DEV, crash on Aspect", this.aspect.name, this.aspect, this.value)
             }
@@ -121,7 +122,6 @@
                     return this.mode
             },
             raw_value() {
-                //console.log("raw value of", this.aspect.name, this.value)
                 return this.value.value
             },
             regular_value_text() {
@@ -166,8 +166,8 @@
             aspectComponent(aspect_descr, mode) {
                 return MAspectComponent(aspect_descr, mode, this.extra)
             },
-            emit_up(event) {
-                console.log("aspect.emit_up", event, this.value)
+            update_value(event) {
+                console.log("aspect.emit_up", this.aspect_loc, this.value, event)
                 if (this.has_alternative && this.use_regular) {
                     if (this.aspect.attr.hasOwnProperty("alternative-activate-on-value")) {
                         if (event === this.aspect.attr["alternative-activate-on-value"]) {
@@ -178,36 +178,40 @@
                     }
                 }
 
-                const up_value = Object.assign(this.$_.cloneDeep(this.value), {value: event})
+                //console.log("this val", this.value)
+                let up_value = {value: event}
+                //const up_value = Object.assign(this.$_.cloneDeep(this.value), {value: event})
 
                 if (!this.use_regular) {
                     up_value.regular = false
                 } else {
                     delete up_value.regular
                 }
-                console.log("storing", up_value)
+                //console.log("storing", up_value)
                 this.$store.dispatch("entries/set_entry_value", {aspect_loc: this.aspect_loc, value: up_value})
             }
         },
         watch: {
-            use_regular(val) {
-                //console.log("reg /", this.aspect.name, val)
+            use_regular(val, old_val) {
+                // catch created. keep this!
+                if (old_val === null) {
+                    return
+                }
                 if (!val) {
                     const fixed_value = this.aspect.attr.alternative.attr.value
                     if (fixed_value !== undefined) {
                         this.emit_up(fixed_value)
                     } else {
-                        //console.log("aspect use reg: emit up: ", aspect_raw_default_value(this.aspect.attr.alternative))
                         this.emit_up(aspect_raw_default_value(this.aspect.attr.alternative))
                     }
                 } else {
                     //console.log("aspect use reg: emit up: ", aspect_raw_default_value(this.aspect))
                     //this.emit_up(aspect_raw_default_value(this.aspect))
+
                     this.$store.dispatch("entries/set_entry_value", {
                         aspect_loc: this.aspect_loc,
                         value: aspect_raw_default_value(this.aspect)
                     })
-
                 }
             },
             extra_update(val) {

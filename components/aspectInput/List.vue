@@ -50,14 +50,12 @@
 
     import AspectMixin from "./AspectMixin";
     import {get_codes_as_options} from "../../lib/client";
-    import {aspect_loc_str, aspect_wrapped_default_value, MAspectComponent} from "../../lib/entry";
+    import {aspect_wrapped_default_value, MAspectComponent} from "../../lib/entry";
     import MultiSelect from "../MultiSelect";
     import Aspect from "../Aspect";
     import ListMixin from "../ListMixin";
     import {EDIT, INDEX, TITLE_UPDATE} from "../../lib/consts";
 
-    import goTo from 'vuetify/lib/components/Vuetify/goTo'
-    import {aspect_loc_str2arr} from "../../lib/aspect";
 
     // todo, pass the extra in a more intelligent way down, not to all the same
 
@@ -149,7 +147,10 @@
             },
             // for composite
             add_value() {
-                this.i_value.push(aspect_wrapped_default_value(this.item_aspect))
+
+                this.value_change(this.$_.concat(this.i_value, [aspect_wrapped_default_value(this.item_aspect)]))
+
+                //this.i_value.push(aspect_wrapped_default_value(this.item_aspect))
                 this.titles.push(null)
                 if (this.structure === PANELS) {
                     this.$_.fill(this.panelState, false)
@@ -164,9 +165,9 @@
                 //console.log(this.i_value)
                 this.value_change(this.i_value)
             },
-            /*updateRequired(value) {
-              this.i_value[parseInt(value.title)] = value.value
-            },*/
+            item_aspect_loc(index) {
+                return this.$_.concat(this.aspect_loc, [[INDEX, index]])
+            },
             indexed_item_aspect(index) {
                 let aspect = {...this.item_aspect}
                 // could maybe be 0
@@ -181,7 +182,6 @@
             },
             list_extra(index) {
                 let xtra_copy = JSON.parse(JSON.stringify(this.extra))
-                xtra_copy.aspect_loc.push([INDEX, index])
                 xtra_copy.no_title = true
                 xtra_copy.clear = "no_title"
                 xtra_copy.listitem = true
