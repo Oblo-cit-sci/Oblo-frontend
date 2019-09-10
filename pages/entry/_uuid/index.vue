@@ -45,6 +45,10 @@
         text="You have unsaved changes"
         cancel_text="Keep on editing"
         confirm_text="Save and move on")
+      div {{entry}}
+      div ------
+      div {{entry_edit}}
+      div ------
 </template>
 
 <script>
@@ -264,6 +268,9 @@
             entry() {
                 //console.log("compute e called")
                 return this.$store.getters["entries/entry"](this.uuid)
+            },
+            entry_edit() {
+                return this.$store.getters["entries/edit"]()
             },
             shown_aspects() {
                 if (this.has_pages) {

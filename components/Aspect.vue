@@ -32,7 +32,7 @@
       component(
         :is="aspectComponent(aspect.attr.alternative)"
         v-bind:aspect="aspect.attr.alternative"
-        v-on:update:value="emit_up($event)"
+        v-on:update_value="emit_up($event)"
         :value="raw_value"
         :mode="alt_mode")
 </template>
@@ -83,13 +83,11 @@
                 has_alternative: false,
                 condition: null,
                 condition_fail: false,
+                use_regular: null
             }
         },
         created() {
-            //console.log(this.aspect.name, this.value, this.use_regular)
             try {
-                //console.log("aspect", this.aspect.name, this.value)
-                //console.log("aspect " + this.aspect.name + " created with value", this.value)
                 this.has_alternative = this.aspect.attr.hasOwnProperty("alternative")
 
                 if (this.aspect.attr.hasOwnProperty("condition")) {
@@ -99,6 +97,8 @@
                 if(!this.aspect_loc) {
                     console.log("Aspect.created: no aspect_loc defined for", this.aspect.name, "emitting up results")
                 }
+
+                this.use_regular = this.value.hasOwnProperty("regular") ? this.value.regular : true
             } catch (e) {
                 console.log("DEV, crash on Aspect", this.aspect.name, this.aspect, this.value)
             }
@@ -106,11 +106,7 @@
         // boolean check is not required, since "false" is the default
         computed: {
             value() {
-                //console.log("Aspect value", this.aspect.name)
                 return this.$store.getters["entries/value"](this.aspect_loc)
-            },
-            use_regular() {
-                return this.value.hasOwnProperty("regular") ? this.value.regular : true
             },
             show_title_description() {
                 if (this.extra.hasOwnProperty("show_title_descr")) {
@@ -145,7 +141,6 @@
             },
             disabled_text() {
                 if (this.condition_fail) {
-                    //console.log("disabled_text text", this.aspect.attr.condition.disabled_text)
                     return this.aspect.attr.condition.disabled_text
                 } else {
                     return "disabled"
@@ -172,7 +167,7 @@
                 return MAspectComponent(aspect_descr, mode, this.extra)
             },
             emit_up(event) {
-
+                console.log("aspect.emit_up", event, this.value)
                 if (this.has_alternative && this.use_regular) {
                     if (this.aspect.attr.hasOwnProperty("alternative-activate-on-value")) {
                         if (event === this.aspect.attr["alternative-activate-on-value"]) {
@@ -190,7 +185,7 @@
                 } else {
                     delete up_value.regular
                 }
-
+                console.log("storing", up_value)
                 this.$store.dispatch("entries/set_entry_value", {aspect_loc: this.aspect_loc, value: up_value})
             }
         },

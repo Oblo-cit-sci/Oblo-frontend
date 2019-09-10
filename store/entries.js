@@ -11,6 +11,7 @@ const ld = require("lodash")
 export const state = () => ({
   timeline_entries: [],
   entries: new Map(),
+  edit: null
 });
 
 export const mutations = {
@@ -30,6 +31,7 @@ export const mutations = {
   },
   create(state, entry) {
     state.entries.set(entry.uuid, entry)
+    state.edit = entry
   },
   save_entry(state, entry) {
     state.entries.set(entry.uuid, entry)
@@ -69,14 +71,13 @@ export const mutations = {
     let select = null
     const final_loc = ld.last(aspect_loc)
     for (let loc of aspect_loc) {
-      console.log("set", loc, select)
-      if(loc === final_loc) {
+      if (loc === final_loc) {
         break
       } else if (loc[0] === ENTRY) {
         select = state.entries.get(loc[1]).aspects_values
-      } else if(loc[0] === ASPECT){
+      } else if (loc[0] === ASPECT) {
         select = select[loc[1]]
-      } else if(loc[0] === COMPONENT){
+      } else if (loc[0] === COMPONENT) {
         select = select[loc[1]]
       } else {
         console.log("ERR", loc)
@@ -84,14 +85,17 @@ export const mutations = {
     }
 
     if (final_loc[0] === ASPECT) {
-      //select.set(inal_loc[1]) = value
+      select[final_loc[1]] = value
       if (!select.hasOwnProperty(final_loc[1])) {
         console.log("error setting value", aspect_loc, loc)
       }
-      select[final_loc[1]] = value
     } else if (final_loc[0] === COMPONENT) {
       select[final_loc[1]] = value
     }
+
+    // TODO TEMP TO TEST EDIT
+    console.log(state.entries.get(aspect_loc[0][1]))
+    state.edit = JSON.parse(JSON.stringify(state.entries.get(aspect_loc[0][1])))
 
     /*
         } else { // INDEX
@@ -105,36 +109,6 @@ export const mutations = {
         }
         */
   }
-  // this is a duplicate from entry... the whole navigation part...
-  /*set_entry_value(state, {uuid, aspect_loc, value}) {
-    let entry = state.entries.get(uuid)
-    let select = entry.aspects_values
-    const final_loc = aspect_loc.pop()
-    for (let loc of aspect_loc) {
-      if (loc[0] === ASPECT) {
-        select = select[loc[1]]
-        if (!select) {
-          console.log("error setting value", aspect_loc, loc)
-        }
-      }
-    }
-    if (final_loc[0] === ASPECT) {
-      //select.set(inal_loc[1]) = value
-      if (!select.hasOwnProperty(final_loc[1])) {
-        console.log("error setting value", aspect_loc, loc)
-      }
-      select[final_loc[1]] = value
-    } else { // INDEX
-      // push new value
-      if (select.value.length === final_loc[1]) {
-        // todo here could be a check if loc1 is length
-        select.value.push(value)
-      } else {
-        select.value[final_loc[0]] = value
-      }
-    }
-  }
-  } */
 }
 
 export const getters = {
@@ -178,19 +152,24 @@ export const getters = {
       return state.entries.get(uuid)
     }
   },
+  edit(state) {
+    return () => {
+      return state.edit
+    }
+  },
   value(state) {
-    return(aspect_loc) => {
+    return (aspect_loc) => {
       let select = null
       console.log("value?", aspect_loc)
       for (let loc of aspect_loc) {
         if (loc[0] === ENTRY) {
           select = state.entries.get(loc[1]).aspects_values
-        } else if(loc[0] === ASPECT) {
+        } else if (loc[0] === ASPECT) {
           select = select[loc[1]]
 
-        } else if(loc[0] === COMPONENT) {
+        } else if (loc[0] === COMPONENT) {
           select = select.value[loc[1]]
-        } else if(loc[0] === INDEX) {
+        } else if (loc[0] === INDEX) {
           select = select.value[loc[1]]
         }
         //console.log("se--l", select)
@@ -238,7 +217,7 @@ export const getters = {
             select = select.value[parseInt(loc[1])]
             break
           case COLLECT:
-            if(select.value.constructor !== Array) {
+            if (select.value.constructor !== Array) {
               console.log("aspect-loc COLLECT(_) only runs over arrays")
               return undefined
             } else {
