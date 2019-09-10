@@ -24,7 +24,7 @@
       :extra_update=extra_update
       :disabled="regular_disable"
       :mode="real_mode"
-      v-on:update:value="emit_up($event)"
+      v-on:update_value="emit_up($event)"
       v-on:entryAction="$emit('entryAction',$event)"
       v-on:aspectAction="aspectAction($event)")
     div(v-if="!use_regular")
@@ -66,7 +66,7 @@
             },
             aspect: Object,
             aspect_loc:
-                {type: Array, required: true},
+                {type: Array},
             //value: Object, // a wrapper, which  might encode "exceptional_value"
             extra: {
                 type: Object,
@@ -96,6 +96,9 @@
                     this.condition = this.aspect.attr.condition
                 }
 
+                if(!this.aspect_loc) {
+                    console.log("Aspect.created: no aspect_loc defined for", this.aspect.name, "emitting up results")
+                }
             } catch (e) {
                 console.log("DEV, crash on Aspect", this.aspect.name, this.aspect, this.value)
             }
@@ -169,6 +172,7 @@
                 return MAspectComponent(aspect_descr, mode, this.extra)
             },
             emit_up(event) {
+
                 if (this.has_alternative && this.use_regular) {
                     if (this.aspect.attr.hasOwnProperty("alternative-activate-on-value")) {
                         if (event === this.aspect.attr["alternative-activate-on-value"]) {
@@ -178,6 +182,7 @@
                         }
                     }
                 }
+
                 const up_value = Object.assign(this.$_.cloneDeep(this.value), {value: event})
 
                 if (!this.use_regular) {
@@ -185,9 +190,8 @@
                 } else {
                     delete up_value.regular
                 }
-                //console.log("aspect emit up- ", up_value)
-                //this.$emit('update:value', up_value)
-                this.$store.dispatch("entries/set_entry_value", {aspect_loc: this.aspect_loc, value: this.up_value})
+
+                this.$store.dispatch("entries/set_entry_value", {aspect_loc: this.aspect_loc, value: up_value})
             }
         },
         watch: {

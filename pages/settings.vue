@@ -5,11 +5,11 @@
     h3 Upload to the LICCI Repo (temporary option)
     div During the main data collection period of LICCI partners, partners can upload collected data to the LICCI data repository
     br
-    Aspect(:aspect="user_key_aspect"
+    TextShort(
+      :aspect="user_key_aspect"
       :value="user_key"
-      v-on:update:value="update_value($event)"
-      :edit="true"
-      mode="edit")
+      mode="edit"
+      v-on:update_value="update_value($event)")
     h3 Import data
     LoadFileButton(@fileload="load_file($event)")
     br
@@ -23,14 +23,17 @@
 </template>
 
 <script>
+
+
     import Aspect from "../components/Aspect";
     import {pack_value} from "../lib/aspect";
     import LoadFileButton from "../components/LoadFileButton";
     import DecisionDialog from "../components/DecisionDialog";
+  import TextShort from "../components/aspectInput/TextShort";
 
     export default {
         name: "settings",
-        components: {DecisionDialog, LoadFileButton, Aspect},
+        components: {TextShort, DecisionDialog, LoadFileButton, Aspect},
         data() {
             return {
                 dialog_data: {
@@ -50,8 +53,7 @@
                         max: 40
                     }
                 },
-                show_dialog: false,
-                user_key: pack_value("")
+                show_dialog: false
             }
         },
         methods: {
@@ -62,7 +64,7 @@
             update_value(event) {
                 this.$store.commit("add_meta", {
                     repository: {
-                        user_key: event.value
+                        user_key: event
                     }
                 })
             },
@@ -80,6 +82,11 @@
             },
             clear_entries() {
                 this.$store.dispatch("clear_entries")
+            }
+        },
+        computed: {
+            user_key() {
+                return this.$store.getters["user_key"]
             }
         }
     }

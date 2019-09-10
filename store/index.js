@@ -99,6 +99,7 @@ export const mutations = {
     state._connecting = conn
   },
   add_meta(state, data) {
+    //console.log("store, add_meta", state.meta, data)
     state.meta = {...state.meta, ...data}
   },
   clear_draft_numbers(state) {
