@@ -13,7 +13,10 @@
 <script>
 
   // TODO this seems to
-  const actor_type_order = ["owner", "reviewers", "explicit_access", "collaborators"];
+  //import {OWNERS} from "../lib/client";
+  //import {EDITOR} from "../lib/consts";
+
+  //const actor_type_order = [OWNERS, EDITOR, "explicit_access", "collaborators"];
 
   const ld = require('lodash');
 

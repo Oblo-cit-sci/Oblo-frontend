@@ -41,23 +41,26 @@
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <div>
-        <v-btn flat icon nuxt to="/" :loading="connecting">
+        <v-btn flat icon  :loading="connecting">
+          <!-- nuxt to="/" -->
           <v-icon>{{connected_icon}}</v-icon>
         </v-btn>
-        <v-btn flat icon nuxt to="/profile">
+        <v-btn flat icon >
+          <!-- nuxt to="/profile" -->
           <v-icon>{{userrole_icon}}</v-icon>
         </v-btn>
       </div>
       <v-spacer></v-spacer>
       <div>
+        <!--
         <v-btn flat icon nuxt router exact to="/export">
           <v-badge bottom color="rgba(0,255,0,0.9)">
-            <!--<template v-slot:badge>
+            <template v-slot:badge>
               <span>!</span>
-            </template>-->
+            </template>
             <v-icon>get_app</v-icon>
           </v-badge>
-        </v-btn>
+        </v-btn> -->
       </div>
       <div v-if="login_state">
         <v-btn v-for="(item, i) in header_items"
@@ -114,7 +117,7 @@
     {
       icon: 'flip_to_front',
       title: 'Entrytypes',
-      to: '/EntryType'
+      to: '/CreateEntrytype'
     },
     {
       icon: 'fa-map',
@@ -123,8 +126,8 @@
     },
     {
       icon: 'computer',
-      title: 'Types',
-      to: '/etype'
+      title: 'Aspectbuild',
+      to: '/AspectBuild'
     },
     {
       icon: 'how_to_reg',
@@ -155,7 +158,7 @@
 
   let require_login = ["Profile", "Logout"]
   let hide_no_login = ["Register", "Login"] // if not connected out and if logged in out
-  let show_inDev = ["Tests", "Types", "Entrytypes"]
+  let show_inDev = ["Tests", "Types", "Entrytypes", "Aspectbuild"]
 
   const pkg = require('../package')
 

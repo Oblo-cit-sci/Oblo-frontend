@@ -3,12 +3,14 @@
  */
 import {ASPECT, COMPONENT, DRAFT, ENTRY, INDEX} from "../lib/consts";
 
+import {ASPECT, COLLECT, DRAFT, ENTRY, INDEX} from "../lib/consts";
+import {pack_value} from "../lib/aspect";
+
 const ld = require("lodash")
 
+
 export const state = () => ({
-  //
   timeline_entries: [],
-  // todo, for now we download all own entries
   entries: new Map(),
 });
 
@@ -37,22 +39,22 @@ export const mutations = {
     let entry = state.entries.get(uuid)
     entry.downloads = entry.version
   },
-  delete_entry(state, uuid) {
+  delete_single_entry(state, uuid) {
     state.entries.delete(uuid)
   },
   set_downloaded(state, local_id) {
     let e = state.entries.get(local_id)
-    console.log("DL ", e, local_id)
+    //console.log("DL ", e, local_id)
     e.downloaded_version = e.version
   },
-  add_ref_child(state, {uuid, child_uuid, aspect_loc}) {
+  add_ref_child(state, {uuid, aspect_loc, child_uuid}) {
+    //console.log("add_ref_child", uuid, aspect_loc, child_uuid)
     let kids = state.entries.get(uuid).refs.children
     let refs = kids[child_uuid] || []
     kids[child_uuid] = ld.concat(refs, [aspect_loc])
   },
   delete_ref_child(state, {uuid, child_uuid}) {
-    console.log("e.delete_ref_child", child_uuid)
-    delete state.entries.get(uuid).refs.children[child_uuid]
+    state.entries.get(uuid).refs.children.delete(child_uuid)
   },
   set_ref_parent(state, {uuid, ref}) {
     state.entries.get(uuid).refs.parent = ref
@@ -132,7 +134,8 @@ export const mutations = {
         select.value[final_loc[0]] = value
       }
     }
-  }*/
+  }
+  } */
 }
 
 export const getters = {
@@ -156,8 +159,9 @@ export const getters = {
       return state.entries.has(uuid)
     };
   },
-  get_entry(state, getters) {
+  get_entry(state) {
     return (uuid) => {
+      //console.log("entries get_entry", state.entries, uuid)
       return state.entries.get(uuid)
     };
   },
@@ -195,6 +199,66 @@ export const getters = {
       console.log("res", select)
       return select
     }
+  },
+  get_recursive_entries(state, getters) {
+    return uuid => {
+      const entry = getters.get_entry(uuid)
+      let entries = [entry]
+      const child_keys = Object.keys(entry.refs.children)
+      const child_entries_list = ld.map(child_keys, uuid => getters.get_recursive_entries(uuid))
+      child_entries_list.forEach(ce_list => {
+        ce_list.forEach(c_entry => {
+          entries.push(c_entry)
+        })
+      })
+      return entries
+    }
+  },
+  get_entry_value(state, getters) {
+    // entry parameter: another hack that shouldnt be there. during the creation, the entry is not in the store yet.
+    //
+    return ({uuid, aspect_loc, entry}) => {
+      //console.log(uuid, aspect_loc, entry)
+      if (!entry) {
+        //console.log("getting entry from the store")
+        entry = getters.get_entry(uuid)
+      }
+      let select = entry.aspects_values
+      for (let loc of aspect_loc) {
+        switch (loc[0]) {
+          case ENTRY:
+            let parent_uuid = entry.refs.parent.uuid
+            entry = getters.get_entry(parent_uuid)
+            //console.log("parent", entry.title)
+            select = entry.aspects_values
+            break
+          case ASPECT:
+            select = select[loc[1]]
+            break
+          case INDEX:
+            select = select.value[parseInt(loc[1])]
+            break
+          case COLLECT:
+            if(select.value.constructor !== Array) {
+              console.log("aspect-loc COLLECT(_) only runs over arrays")
+              return undefined
+            } else {
+              // SHOULD BE THE FINAL
+              return select.value.map(el => {
+                //console.log("el", el, el.value[parseInt(loc[1])])
+                return {value: el.value[parseInt(loc[1])].value}
+              })
+            }
+          default:
+            select = select.value[loc[1]]
+        }
+        if (!select) {
+          console.log("error getting value", aspect_loc, loc)
+        }
+        //console.log("new select", select)
+      }
+      return select.value
+    }
   }
 }
 
@@ -205,5 +269,40 @@ export const actions = {
   set_entry_value({commit}, data) {
     commit("_set_entry_value", data)
     commit("update")
+  add_child(context, uuid_n_aspect_loc_n_child) {
+    context.commit("set_entry_value", uuid_n_aspect_loc_n_child)
+    context.commit("add_ref_child", uuid_n_aspect_loc_n_child)
+  },
+  delete_entry(context, uuid) {
+    //console.log("delete entry-...")
+    const entry = context.state.entries.get(uuid)
+    if (entry) {
+      // TODO just TEMP, for easier testing
+      context.commit("delete_single_entry", uuid)
+
+      for (let child_uuid in entry.refs.children) {
+        context.commit("delete_single_entry", child_uuid)
+      }
+
+      if (entry.refs.parent) {
+        const parent = entry.refs.parent
+        let parent_no_index = JSON.parse(JSON.stringify(parent))
+
+        if (ld.last(parent_no_index.aspect_loc)[0] === "index") {
+          parent_no_index.aspect_loc.pop()
+        }
+        const value = context.getters.get_entry_value(parent_no_index)
+        // ListOf
+        if (Array.isArray(value)) {
+          const filtered_value = value.filter(av => av !== uuid)
+          context.commit("set_entry_value", {
+            ...parent_no_index,
+            value: pack_value(filtered_value)
+          })
+        }
+      }
+    } else {
+      console.log("store: entries DELETE tries to delete some entry that doesnt exist!")
+    }
   }
 }

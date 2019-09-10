@@ -63,7 +63,6 @@
         //console.log(this.opt_values[this.selected_option])
         if (this.opt_values[this.selected_option].value) {
           this.i_value = this.opt_values[this.selected_option].value
-          console.log("opt upt", this.i_value, this.value)
           this.value_change(this.i_value)
           return true
         } else {

@@ -29,6 +29,7 @@
     name: "TextShort",
     mixins: [AspectMixin, TextfieldAspect],
     props: {
+        // probably not used atm
       prependIcon: String
     },
   }

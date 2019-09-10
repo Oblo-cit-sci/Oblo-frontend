@@ -39,7 +39,8 @@ module.exports = {
   ** Global CSS
   */
   css: [
-    '~/assets/style/app.styl'
+    '~/assets/style/app.styl',
+    '~/assets/style/main.scss'
   ],
 
   router: {
@@ -52,6 +53,8 @@ module.exports = {
   */
   plugins: [
     '~/plugins/vuetify',
+    {src: '~/plugins/mapbox', mode: 'client'},
+    { src: '~/plugins/vuex-persist', mode: 'client'  },
     '~/plugins/lodash.js',
   ],
 
@@ -88,10 +91,8 @@ module.exports = {
       stylus: {
         import: ["~assets/style/variables.styl"]
       }
-    }, //,
-    //minimize: true,
-    //splitChunks: false,
-   /* splitChunks: {
+    },
+    /*splitChunks: {
       pages: false,
       vendor: false,
       commons: false,

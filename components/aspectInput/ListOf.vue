@@ -2,7 +2,7 @@
   div
     div(v-if="!select")
       v-list(v-if="has_items")
-        v-list-tile(v-for="(item, index) in items", :key="item.key")
+        v-list-tile(v-for="(item, index) in items", :key="item.key" :id="aspect_loc_str(index)")
           v-list-tile-content(@click="open_item(item)")
             v-list-tile-title {{index + 1}} &nbsp;
               b {{item.title}}
@@ -18,7 +18,7 @@
       v-btn(@click="create_item()" :color="requieres_more_color") Add {{item_name}}
         v-icon(right) add
     div(v-else) maximum reached
-    DecisionDialog(v-bind="remove_data_dialog" :open.sync="show_remove" v-on:action="remove($event.id)")
+    DecisionDialog(v-bind="remove_data_dialog" :open.sync="show_remove" v-on:action="remove($event)")
 </template>
 
 <script>
@@ -38,13 +38,13 @@
     CREATE_CONTEXT_ENTRY,
     INDEX,
     AUTOSAVE,
-    DELETE_CONTEXT_ENTRY
+    DELETE_CONTEXT_ENTRY, ASPECT
   } from "../../lib/consts";
   import DecisionDialog from "../DecisionDialog";
-  import {create_entry, get_type_slug_from, set_entry_value} from "../../lib/entry";
+  import {aspect_loc_str, get_type_slug_from} from "../../lib/entry";
   import EntryNavMixin from "../EntryNavMixin";
   import ListMixin from "../ListMixin";
-
+  import {ENTRIES_GET_ENTRY} from "../../lib/store_consts";
 
   const SELECT_THRESH = 6
 
@@ -56,13 +56,9 @@
       return {
         item_type_slug: get_type_slug_from(this.aspect.items),
         show_remove: false,
-        remove_data_dialog: {
+        remove_item_select: {
           id: "",
-          title: "Delete " + this.item_name,
-          text: "Are you sure you want to delete this " + this.item_name + "?",
-          confirm_text: "delete",
-          cancel_color: "success",
-          confirm_color: "error"
+          title: ""
         },
       }
     },
@@ -78,31 +74,41 @@
       },
       items() {
         return this.$_.map(this.value, (item) => {
-          //if(item.type === CONTEXT_ENTRY) {
-          const entry = this.$store.getters["entries/get_entry"](item.value)
+          const entry = this.$store.getters[ENTRIES_GET_ENTRY](item)
           return {
             title: entry.title,
-            key: item.value,
+            key: item,
             type: CONTEXT_ENTRY
           }
         })
+      },
+      remove_data_dialog() {
+        return {
+          id: this.remove_item_select.id,
+          title: "Delete " + this.remove_item_select.title,
+          text: "Are you sure you want to delete this " + this.remove_item_select.title + "?",
+          confirm_text: "delete",
+          cancel_color: "success",
+          confirm_color: "error"
+        }
       }
     },
     methods: {
       open_remove(index) {
-        //console.log("open remove index", index)
         this.remove_data_dialog.id = index
         this.show_remove = true
       },
-      remove(index) {
-        index = parseInt(index)
-        const ref = this.i_value[index]
-        this.i_value.splice(parseInt(index), 1)
-        this.value_change(this.i_value)
-        this.$emit(ENTRYACTION, {
-          action: DELETE_CONTEXT_ENTRY,
-          value: {uuid: ref.value, aspect_loc: this.aspect_loc_for_index(index)}
-        })
+      remove(action) {
+        if (action.confirm) {
+          let index = parseInt(action.id)
+          const ref = this.i_value[index]
+          this.i_value.splice(parseInt(index), 1)
+          this.value_change(this.i_value)
+          this.$emit(ENTRYACTION, {
+            action: DELETE_CONTEXT_ENTRY,
+            value: {uuid: ref, aspect_loc: this.aspect_loc_for_index(index)}
+          })
+        }
       },
       create_item() {
         /*this.$emit(ENTRYACTION, {
@@ -142,6 +148,9 @@
       aspect_loc_for_index(index) {
         return this.$_.concat(this.extra.aspect_loc, [[INDEX, index]])
       },
+      aspect_loc_str(index) {
+        return aspect_loc_str(this.aspect_loc_for_index(index))
+      },
       open_item(item) {
         this.$emit(ENTRYACTION, {action: AUTOSAVE})
         if (!this.has_entry(item.key))
@@ -157,13 +166,12 @@
           for (let index in this.items) {
             const item = this.items[index]
             //let entry = this.$store.getters["entries/get_entry"](item.key)
-            let a  = ["aspect", idAspect]
-            console.log(["aspect", idAspect], a)
-            let as = [a]
-            console.log("updating value", as, [["aspect", idAspect]], a, [a])
+            let a = [ASPECT, idAspect]
+            console.log([ASPECT, idAspect], a)
+            //console.log("updating value", as, [["aspect", idAspect]], a, [a])
             this.$store.commit("entries/set_entry_value", {
               uuid: item.key,
-              aspect_loc: [["aspect", idAspect]],
+              aspect_loc: [[ASPECT, idAspect]],
               value: {value: 1 + parseInt(index)}
             })
           }

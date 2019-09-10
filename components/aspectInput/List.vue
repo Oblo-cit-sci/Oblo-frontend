@@ -12,9 +12,16 @@
             :extra="list_extra(index)"
             v-on:entryAction="handleEntryAction($event, index)")
             v-on:append-outer="remove_value(index)"
+          v-btn(v-if="requires_delete" small @click="remove_value(index)") delete {{extra.itemname}}
       div(v-else)
-        v-expansion-panel(expand v-model="panelState")
-          v-expansion-panel-content(v-for="(value, index) in i_value" :key="index")
+        v-expansion-panel(
+          expand
+          v-model="panelState")
+          v-expansion-panel-content(
+            v-for="(value, index) in i_value"
+            :key="index"
+            :id="panel_id(index)"
+          )
             template(v-slot:header)
               div {{titles[index]|| index + 1}}
             Aspect(
@@ -25,7 +32,7 @@
               :aspect_loc="item_aspect_loc(index)"
               v-on:entryAction="$emit('entryAction',$event)"
               v-on:aspectAction="aspectAction($event, index)")
-            v-btn(v-if="!readOnly" @click="remove_value(index)") remove this {{item_name}}
+            v-btn(v-if="requires_delete" small @click="remove_value(index)") delete {{item_name}}
       div
         span {{count_text}}, &nbsp
         span(v-if="min===max && min !== null") required: {{min}}
@@ -43,11 +50,14 @@
 
     import AspectMixin from "./AspectMixin";
     import {get_codes_as_options} from "../../lib/client";
-    import {aspect_wrapped_default_value, MAspectComponent} from "../../lib/entry";
+    import {aspect_loc_str, aspect_wrapped_default_value, MAspectComponent} from "../../lib/entry";
     import MultiSelect from "../MultiSelect";
     import Aspect from "../Aspect";
     import ListMixin from "../ListMixin";
     import {EDIT, INDEX, TITLE_UPDATE} from "../../lib/consts";
+
+    import goTo from 'vuetify/lib/components/Vuetify/goTo'
+    import {aspect_loc_str2arr} from "../../lib/aspect";
 
     // todo, pass the extra in a more intelligent way down, not to all the same
 
@@ -102,6 +112,22 @@
                     this.item_aspect = this.aspect.items;
                     this.item_aspect.required = true;
                     this.structure = PANELS
+                    let titleAspectName = null
+                    if (!this.aspect.attr.indexTitle) {
+                        titleAspectName = this.item_aspect.attr.titleAspect || this.item_aspect.components[0].name
+                    }
+                    //
+                    // fill in the values of the titleAspect
+                    for (let item_index in this.i_value) {
+                        if (!this.aspect.attr.indexTitle) {
+                            let list_items = this.i_value[item_index].value
+                            let title_comp_value = this.$_.find(list_items, list_item => list_item.name === titleAspectName).value
+                            this.titles.push(title_comp_value)
+                        } else {
+                            this.titles.push(this.indexTitle(item_index))
+                        }
+                        this.panelState.push(false)
+                    }
                 } else {
                     this.item_aspect = this.aspect.items;
                     //this.item_aspect.required = true;
@@ -131,10 +157,16 @@
                 }
             },
             remove_value(index) {
+                //console.log("remove index", index)
+                //console.log(this.i_value)
                 this.i_value.splice(index, 1)
                 this.titles.splice(index, 1)
+                //console.log(this.i_value)
                 this.value_change(this.i_value)
             },
+            /*updateRequired(value) {
+              this.i_value[parseInt(value.title)] = value.value
+            },*/
             indexed_item_aspect(index) {
                 let aspect = {...this.item_aspect}
                 // could maybe be 0
@@ -149,7 +181,7 @@
             },
             list_extra(index) {
                 let xtra_copy = JSON.parse(JSON.stringify(this.extra))
-                //xtra_copy.aspect_loc.push()
+                xtra_copy.aspect_loc.push([INDEX, index])
                 xtra_copy.no_title = true
                 xtra_copy.clear = "no_title"
                 xtra_copy.listitem = true
@@ -159,10 +191,6 @@
                 if (event.action === TITLE_UPDATE) {
                     this.titles[index] = event.value
                 }
-            },
-            item_aspect_loc(index) {
-                console.log("List.items_aspect_loc", index, this.aspect_loc)
-                return this.$_.concat(this.aspect_loc, [[INDEX, index]])
             }
         },
         computed: {

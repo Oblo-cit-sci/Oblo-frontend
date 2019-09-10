@@ -1,7 +1,7 @@
 <template lang="pug">
   v-flex(xs12='' sm8='' md6='')
     v-form
-      Aspect(v-for="a of aspects" :aspect="a" :value="a.value" mode="edit" :key="a.name")
+      Aspect(v-for="a of aspects" :aspect="a" :value.sync="a.value" mode="edit" :key="a.name")
     v-btn(@click='login' color='success' autofocus) Login
     v-alert(:value='errorMsg' type='error') {{errorMsg}}
 </template>
@@ -9,7 +9,7 @@
 <script>
   import {initialize} from "../lib/client";
 
-  import {LOGIN_WRONG_CREDENTIALS, LOGIN_ALREADY_LOGGED_IN} from "~~/lib/consts"
+  import {LOGIN_ALREADY_LOGGED_IN} from "~~/lib/consts"
   import Aspect from "../components/Aspect";
   import {unpack} from "../lib/aspect";
 

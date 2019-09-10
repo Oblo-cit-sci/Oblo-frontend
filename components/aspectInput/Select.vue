@@ -19,6 +19,13 @@
     name: "Select",
     mixins: [AspectMixin, SelectMixin],
     components: {SingleSelect},
+    // todo. init is a hack to prevent the first set_selection call to trigger a value_change
+    data() {
+      return {
+        init: true
+
+      }
+    },
     created() {
       if (this.select_check) {
         this.check_box_value = this.value === this.options[1].value // or maybe a value/default...
@@ -27,6 +34,7 @@
         }
       }
       this.set_selection()
+      this.init = false
     },
     methods: {
       set_selection() {
@@ -34,11 +42,10 @@
           this.selection = this.$_.find(this.options, (o) => {
             return o.value === this.value
           })
-          if(this.selection === undefined) {
+          if (this.selection === undefined) {
             this.selection = null
           }
-        }
-        else {
+        } else {
           this.selection = null
         }
       }
@@ -48,6 +55,10 @@
         this.set_selection()
       },
       selection() {
+        if(this.init) {
+          this.init = false
+          return
+        }
         //console.log("select", this.aspect, this.selection)
         if (this.selection === null)
           this.value_change(null)

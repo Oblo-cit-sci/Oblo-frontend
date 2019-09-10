@@ -1,16 +1,18 @@
 <template lang="pug">
     div
       v-flex(text-xs-left)
-        TextShort(
-          :aspect="text_repr_aspect"
-          :value="i_value"
-          :edit="false"
-          :prependIcon="prependIcon"
+        v-autocomplete(
+          outline
+          single-line
           :disabled="disabled"
+          hideDetails
+          :items="flat_options"
+          v-model="i_value"
+          @change="emit"
           :aspect_loc="aspect_loc"
-          v-on:clickPrepend="openDialog()"
-          v-on:focus="openDialog(true)")
-        v-dialog(width="500" v-model="dialogOpen" lazy=true :persistent="persistent")
+          :prependIcon="prependIcon"
+          @click:prepend="openDialog()")
+        v-dialog(width="500" v-model="dialogOpen" lazy=true)
           TreleafPicker(
             :tree="options"
             v-on:selected="selected"
@@ -23,6 +25,7 @@
   import TreleafPicker from "../TreleafPicker";
   import TextShort from "./TextShort";
   import {EDIT} from "../../lib/consts";
+  import {flatten_tree_to_options} from "../../lib/client";
 
   export default {
     name: "TreeSelect",
@@ -31,15 +34,8 @@
     data() {
       return {
         options: {},
+        flat_options: [],
         dialogOpen: false,
-        persistent: false,
-        text_repr_aspect : {
-          name: "selected",
-          type: "str",
-          attr: {
-            max: 60
-          }
-        }
       }
     },
     created() {
@@ -53,29 +49,29 @@
           this.options = this.$store.state.codes[passed_options.substring(1)];
         }
       }
+      // flat_options // TODO maybe store them...
+      this.flat_options = flatten_tree_to_options(this.options)
+      //console.log("flat options", this.flat_options)
       //console.log("tree options", this.options)
     },
     methods: {
       openDialog(short_persistence) {
         if(!this.disabled) {
           this.dialogOpen = true
-          // to fix issue of blue triggering a close of the dialog
-          if(short_persistence) {
-            this.persistent = true
-            setTimeout(() => this.persistent = false, 100)
-          }
         }
       },
       selected(val) {
-        //console.log("selected")
         this.dialogOpen = false;
         this.i_value = val.value
+        this.emit()
+      },
+      emit() {
         this.value_change(this.i_value)
       }
     },
     computed: {
       prependIcon(){
-        return this.mode === EDIT ? 'add' : ''
+        return this.edit ? 'add' : ''
       }
     }
   }

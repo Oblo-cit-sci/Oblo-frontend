@@ -13,43 +13,44 @@
 
 <script>
 
-  import Entrylist from '~/components/Entrylist.vue'
-  import {initialize} from "../lib/client"
+    import Entrylist from '~/components/Entrylist.vue'
+    import {initialize} from "../lib/client"
 
-  export default {
-    data() {
-      return {
-        connecting: this.$store.state.connecting,
-        connected: null,
-        initialized: true,
-      }
-    },
-    created() {
-      // todo
-      // maybe in the middleware
-      if (!this.$store.state.initialized) {
-        this.initialize()
-      }
-      // doesnt do anything
-      this.$store.watch(state => state.connecting, () => {
-        this.connecting = this.$store.state.connecting
-      })
+    export default {
+        data() {
+            return {
+                connecting: false,
+                connected: null,
+                initialized: this.$store.state.initialized,
+            }
+        },
+        created() {
+            // todo
+            // maybe in the middleware
+            if (!this.initialized) {
+                this.connecting = true
+                this.initialize()
+            }
+            // doesnt do anything
+            this.$store.watch(state => state.connecting, () => {
+                this.connecting = this.$store.state.connecting
+            })
 
-      this.connected = this.$store.state.connected
-      this.initialized = this.$store.state.initialized
-      this.$store.watch(state => state.initialized, () => {
-        this.initialized = this.$store.state.initialized
-      })
-    },
-    components: {
-      Entrylist
-    },
-    methods: {
-      initialize() {
-        initialize(this.$axios, this.$store)
-      }
+            this.connected = this.$store.state.connected
+            this.initialized = this.$store.state.initialized
+            this.$store.watch(state => state.initialized, () => {
+                this.initialized = this.$store.state.initialized
+            })
+        },
+        components: {
+            Entrylist
+        },
+        methods: {
+            initialize() {
+                initialize(this.$axios, this.$store)
+            }
+        }
     }
-  }
 </script>
 
 <style>

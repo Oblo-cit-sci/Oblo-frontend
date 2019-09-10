@@ -31,7 +31,7 @@
   import {ASPECT} from "../lib/consts";
 
   export default {
-    name: "EntryType",
+    name: "CreateEntryType",
     components: {Aspect, SingleSelect, Title_Description},
     mixins: [],
     data() {
@@ -82,8 +82,6 @@
           this.extras[aspect.name] = extra_props
           this.extras_update[aspect.name] = false
         }
-
-        console.log(this.entry_type)
       }
     }
   }
