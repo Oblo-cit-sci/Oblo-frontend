@@ -114,13 +114,20 @@
           this.item_aspect = this.aspect.items;
           this.item_aspect.required = true;
           this.structure = PANELS
-          let titleAspectName = this.item_aspect.attr.titleAspect || this.item_aspect.components[0].name
+          let titleAspectName = null
+          if(!this.aspect.attr.indexTitle) {
+            titleAspectName = this.item_aspect.attr.titleAspect || this.item_aspect.components[0].name
+          }
           //
           // fill in the values of the titleAspect
           for (let item_index in this.i_value) {
-            let list_items = this.i_value[item_index].value
-            let title_comp_value = this.$_.find(list_items, list_item => list_item.name === titleAspectName).value
-            this.titles.push(title_comp_value)
+            if(!this.aspect.attr.indexTitle) {
+              let list_items = this.i_value[item_index].value
+              let title_comp_value = this.$_.find(list_items, list_item => list_item.name === titleAspectName).value
+              this.titles.push(title_comp_value)
+            } else {
+              this.titles.push(this.indexTitle(item_index))
+            }
             this.panelState.push(false)
           }
         } else {
@@ -218,11 +225,19 @@
       },
       aspectAction(event, index) {
         if (event.action === TITLE_UPDATE) {
-          this.titles[index] = event.value
+          //console.log("LIST.aspectAction title update", event, index)
+          if(!this.aspect.attr.indexTitle) {
+            this.titles[index] = event.value
+          } else {
+            this.titles[index] = this.indexTitle(index)
+          }
         }
       },
       panel_id(index) {
         return "L-" + aspect_loc_str(this.$_.concat(this.extra.aspect_loc, [["index", index]]))
+      },
+      indexTitle(index) {
+        return this.aspect.attr.itemname + " " +  (parseInt(index) + 1).toString()
       }
     },
     computed: {
