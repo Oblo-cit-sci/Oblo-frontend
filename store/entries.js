@@ -162,15 +162,15 @@ export const getters = {
         } else if (loc[0] === ASPECT) {
           select = select[loc[1]]
         } else if (loc[0] === COMPONENT) {
-          //console.log("get from component", select, loc)
-          select = select[loc[1]]
+          console.log("get from component", select, loc)
+          select = select.value[loc[1]]
         } else if (loc[0] === INDEX) {
-          //console.log("get from index", select)
-          select = select[loc[1]]
+          console.log("get from index", select)
+          select = select.value[loc[1]]
         } else {
           console.log("cannot get value", select)
         }
-        //console.log("se--l", select)
+        console.log("se--l", select)
       }
       console.log("store.entries, value?",aspect_loc, "res:", select)
       return select

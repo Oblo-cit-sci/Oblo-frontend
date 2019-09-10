@@ -96,7 +96,8 @@
                 }
                 this.use_regular = this.value.hasOwnProperty("regular") ? this.value.regular : true
             } catch (e) {
-                console.log("DEV, crash on Aspect", this.aspect.name, this.aspect, this.value)
+                console.log("DEV, crash on Aspect", this.aspect.name, this.aspect)
+                console.log(e)
             }
         },
         // boolean check is not required, since "false" is the default
@@ -147,6 +148,7 @@
         },
         methods: {
             title_description(aspect_descr) {
+                console.log("title_description", aspect_descr)
                 if (!aspect_descr.hasOwnProperty("name")) {
                     //console.log("warning: aspect", aspect_descr, "has no name")
                 }
