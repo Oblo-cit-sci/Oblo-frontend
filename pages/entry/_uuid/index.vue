@@ -113,7 +113,6 @@
         },
 
         created() {
-
             this.uuid = this.$route.params.uuid
             //console.log("entry index create", this.entry.aspects_values.)
             this.$store.commit("set_global_ref", this.uuid)

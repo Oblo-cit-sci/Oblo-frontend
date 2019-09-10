@@ -155,6 +155,7 @@ export const getters = {
   },
   value(state) {
     return (aspect_loc) => {
+
       let select = null
       for (let loc of aspect_loc) {
         if (loc[0] === ENTRY) {
@@ -168,7 +169,7 @@ export const getters = {
           //console.log("get from index", select)
           select = select.value[loc[1]]
         } else {
-          console.log("cannot get value", select)
+          console.log("cannot get value", select, "with loc", loc)
         }
         //console.log("se--l", select)
       }

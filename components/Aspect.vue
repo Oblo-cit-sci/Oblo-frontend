@@ -81,7 +81,6 @@
             return {
                 has_alternative: false,
                 condition: null,
-                condition_fail: false,
                 use_regular: null
             }
         },
@@ -102,6 +101,33 @@
         },
         // boolean check is not required, since "false" is the default
         computed: {
+            condition_fail() {
+                console.log("condition_fail?", this.aspect, this.aspect.name, this.condition)
+                if (!this.condition) {
+                    return false
+                } else {
+                    console.log("checking", this.aspect.name)
+                    let e = this.$store.getters["entries/entry"](this.aspect_loc[0][1])
+                    console.log("dep on location", this.$_.concat([this.aspect_loc[0]], this.condition.aspect))
+                    let condition_value = this.$store.getters["entries/value"](
+                        this.$_.concat([this.aspect_loc[0]], this.condition.aspect)).value
+
+                    console.log("cond-value", condition_value)
+                    console.log(condition_value)
+                    let v = null
+                    const compare = this.condition.compare || "equal"
+
+                    switch (compare) {
+                        case "equal":
+                            v = condition_value !== this.aspect.attr.condition.value
+                            break
+                        case "unequal":
+                            v = condition_value === this.aspect.attr.condition.value
+                            break
+                    }
+                    return v
+                }
+            },
             value() {
                 return this.$store.getters["entries/value"](this.aspect_loc)
             },
@@ -130,6 +156,7 @@
                 return this.aspect.attr.alternative.attr.mode || this.mode
             },
             disable() {
+                console.log("aspect.disable", this.aspect.name)
                 return this.disabled || this.condition_fail || this.aspect.attr.disable
             },
             regular_disable() {
@@ -164,7 +191,7 @@
                 return MAspectComponent(aspect_descr, mode, this.extra)
             },
             update_value(event) {
-                console.log("aspect.emit_up", this.aspect_loc, this.value, event)
+                //console.log("aspect.emit_up", this.aspect_loc, this.value, event)
                 if (this.has_alternative && this.use_regular) {
                     if (this.aspect.attr.hasOwnProperty("alternative-activate-on-value")) {
                         if (event === this.aspect.attr["alternative-activate-on-value"]) {
@@ -217,6 +244,9 @@
                         this.condition_fail = false
                     } else {
                         const compare = this.condition.compare || "equal"
+                        console.log("CONDITION")
+                        //this.$store.getters["entries/value"]()
+                        /*
                         let v = null
                         switch (compare) {
                             case "equal":
@@ -226,7 +256,9 @@
                                 v = this.extra.condition.value === this.aspect.attr.condition.value
                                 break
                         }
+                        */
                         this.condition_fail = v;
+
                         if (this.condition_fail) {
                             this.$emit('update:value', aspect_default_value(this.$store, this.aspect))
                         }
