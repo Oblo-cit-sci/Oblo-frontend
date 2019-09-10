@@ -170,7 +170,7 @@ export const getters = {
         } else {
           console.log("cannot get value", select)
         }
-        console.log("se--l", select)
+        //console.log("se--l", select)
       }
       console.log("store.entries, value?",aspect_loc, "res:", select)
       return select

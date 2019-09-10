@@ -148,7 +148,7 @@
         },
         methods: {
             title_description(aspect_descr) {
-                console.log("title_description", aspect_descr)
+                //console.log("title_description", aspect_descr)
                 if (!aspect_descr.hasOwnProperty("name")) {
                     //console.log("warning: aspect", aspect_descr, "has no name")
                 }
@@ -197,9 +197,9 @@
                 if (!val) {
                     const fixed_value = this.aspect.attr.alternative.attr.value
                     if (fixed_value !== undefined) {
-                        this.emit_up(fixed_value)
+                        this.update_value(fixed_value)
                     } else {
-                        this.emit_up(aspect_raw_default_value(this.aspect.attr.alternative))
+                        this.update_value(aspect_raw_default_value(this.aspect.attr.alternative))
                     }
                 } else {
                     //console.log("aspect use reg: emit up: ", aspect_raw_default_value(this.aspect))

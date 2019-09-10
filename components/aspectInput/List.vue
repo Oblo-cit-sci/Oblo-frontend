@@ -119,7 +119,8 @@
                     for (let item_index in this.i_value) {
                         if (!this.aspect.attr.indexTitle) {
                             let list_items = this.i_value[item_index].value
-                            let title_comp_value = this.$_.find(list_items, list_item => list_item.name === titleAspectName).value
+                            console.log("list_items", list_items)
+                            let title_comp_value = this.$_.find(list_items, (list_item, key) => key === titleAspectName).value
                             this.titles.push(title_comp_value)
                         } else {
                             this.titles.push(this.indexTitle(item_index))
@@ -148,7 +149,6 @@
             // for composite
             add_value() {
                 this.value_change(this.$_.concat(this.i_value, [aspect_wrapped_default_value(this.item_aspect)]))
-                //this.i_value.push(aspect_wrapped_default_value(this.item_aspect))
                 this.titles.push(null)
                 if (this.structure === PANELS) {
                     this.$_.fill(this.panelState, false)
@@ -156,12 +156,8 @@
                 }
             },
             remove_value(index) {
-                //console.log("remove index", index)
-                //console.log(this.i_value)
-                this.i_value.splice(index, 1)
+                this.value_change(this.$_.filter(this.i_value, (val,i) => {return index !== i}))
                 this.titles.splice(index, 1)
-                //console.log(this.i_value)
-                this.value_change(this.i_value)
             },
             item_aspect_loc(index) {
                 return this.$_.concat(this.aspect_loc, [[INDEX, index]])
