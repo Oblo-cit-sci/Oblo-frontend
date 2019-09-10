@@ -31,7 +31,7 @@
             }
         },
         created() {
-            console.log(this.titleAspectName)
+            //console.log(this.titleAspectName)
             for (let component of this.aspect.components) {
                 this.aspect_locs[component.name] = this.$_.concat(this.aspect_loc, [[COMPONENT, component.name]])
             }

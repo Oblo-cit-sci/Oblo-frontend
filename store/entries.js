@@ -87,9 +87,9 @@ export const mutations = {
       } else if (loc[0] === ASPECT) {
         select = select[loc[1]]
       } else if (loc[0] === COMPONENT) {
-        select = select[loc[1]]
+        select = select.value[loc[1]]
       } else if (loc[0] === INDEX) {
-        select = select[loc[1]]
+        select = select.value[loc[1]]
       } else {
         console.log("ERROR store.entries. location", loc)
       }
@@ -98,9 +98,9 @@ export const mutations = {
     if (final_loc[0] === ASPECT) {
       select[final_loc[1]] = value
     } else if (final_loc[0] === COMPONENT) {
-      select[final_loc[1]] = value
+      select.value[final_loc[1]] = value
     } else if (final_loc[0] === INDEX) {
-      select[final_loc[1]] = value
+      select.value[final_loc[1]] = value
     } else {
       console.log("ERROR store.entries. final location", final_loc)
     }

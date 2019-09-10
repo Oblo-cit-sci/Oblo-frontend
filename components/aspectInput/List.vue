@@ -50,7 +50,7 @@
 
     import AspectMixin from "./AspectMixin";
     import {get_codes_as_options} from "../../lib/client";
-    import {aspect_wrapped_default_value, MAspectComponent} from "../../lib/entry";
+    import {aspect_loc_str, aspect_wrapped_default_value, MAspectComponent} from "../../lib/entry";
     import MultiSelect from "../MultiSelect";
     import Aspect from "../Aspect";
     import ListMixin from "../ListMixin";
@@ -189,7 +189,10 @@
                 if (event.action === TITLE_UPDATE) {
                     this.titles[index] = event.value
                 }
-            }
+            },
+            panel_id(index) {
+                return "L-" + aspect_loc_str(this.$_.concat(this.aspect_loc, [[INDEX, index]]))
+            },
         },
         computed: {
             is_simple() {
