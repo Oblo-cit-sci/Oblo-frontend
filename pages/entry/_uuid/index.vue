@@ -69,7 +69,7 @@
         AUTOSAVE,
         CREATE_CONTEXT_ENTRY,
         GLOBAL_ASPECT_REF,
-        ASPECT, DELETE_CONTEXT_ENTRY, PUBLIC, PRIVATE_LOCAL, VIEW, SAVE
+        ASPECT, DELETE_CONTEXT_ENTRY, PUBLIC, PRIVATE_LOCAL, VIEW, SAVE, ENTRY
     } from "../../../lib/consts";
     import Aspect from "../../../components/Aspect";
 
@@ -92,35 +92,28 @@
         },
         data() {
             return {
-                entry: null,
                 entry_type: null, // the full shizzle for the type_slug
                 titleAspect: null,
                 required_values: [], // shortcut, but in entry_type
                 sending: false,
                 complete: true,
                 has_pages: false,
-                page: 0,
                 last_page: false,
                 extras: {},
                 page: this.$route.query.page | 0,
                 extras_update: {},
-                uuid: null
-                aspect_locs: {}
+                uuid: null,
+                aspect_locs: {},
                 //
                 dirty: false,
                 openSaveDialog: false,
                 route_destination: null
             }
         },
-        components: {Aspect},
+
         created() {
 
             this.uuid = this.$route.params.uuid
-            this.extras[aspect.name] = {}
-            this.aspect_locs[aspect.name] = [[ENTRY, this.uuid], [ASPECT, aspect.name]]
-
-
-
             //console.log("entry index create", this.entry.aspects_values.)
             this.$store.commit("set_global_ref", this.uuid)
 
@@ -142,7 +135,8 @@
             // todo same in page EntryType
             for (let aspect of this.entry_type.content.aspects) {
                 let extra_props = {}
-                extra_props.aspect_loc = [[ASPECT, aspect.name]]
+
+                this.aspect_locs[aspect.name] = [[ENTRY, this.uuid], [ASPECT, aspect.name]]
                 if (condition_targets.indexOf(aspect.name)) {
                     extra_props.condition = {
                         value: null
@@ -173,16 +167,6 @@
                         easing: "easeOutCubic"
                     })
                 }, 300)
-            }
-        },
-        computed: {
-            entry() {
-                //console.log("compute e called")
-                return this.$store.getters["entries/entry"](this.uuid)
-            },
-            aspects() {
-                const entry_type = this.$store.getters.entry_type(this.entry.type_slug)
-                return entry_type.content.aspects
             }
         },
         methods: {
@@ -270,11 +254,16 @@
                 // TODO: NO IDEA HOW IT SETS THE STORE
                 set_entry_value(this.entry, aspect_loc, pack_value(entry.uuid))
 
+            }
         },
         computed: {
-      entry() {
-        //console.log("compute e called")
-        return this.$store.getters["entries/entry"](this.uuid)
+            aspects() {
+                const entry_type = this.$store.getters.entry_type(this.entry.type_slug)
+                return entry_type.content.aspects
+            },
+            entry() {
+                //console.log("compute e called")
+                return this.$store.getters["entries/entry"](this.uuid)
             },
             shown_aspects() {
                 if (this.has_pages) {
@@ -284,6 +273,21 @@
                     })
                 }
                 return this.entry_type.content.aspects
+            },
+            privacy_mode() {
+                const privacy_set = this.entry_type.content.meta.privacy
+                return privacy_set ? VIEW : EDIT
+            },
+            licence_mode() {
+                if (this.entry.refs.parent || this.entry.privacy === PRIVATE_LOCAL) {
+                    return VIEW
+                } else {
+                    return EDIT
+                }
+            },
+            parent_title() {
+                // todo not necessarily available for remote entries. should be included?
+                return this.$store.getters["entries/get_entry"](this.entry.refs.parent.uuid).title
             },
             // maybe also consider:
             // https://github.com/edisdev/download-json-data/blob/develop/src/components/Download.vue

@@ -34,8 +34,6 @@ export default {
     return {
       i_value: this.value,
     }
-      i_value: null,
-    }
   },
   created() {
     //console.log("ASP Mix create", this.value)

@@ -1,9 +1,8 @@
 /*
   this is for the own entries
  */
-import {ASPECT, COMPONENT, DRAFT, ENTRY, INDEX} from "../lib/consts";
+import {ASPECT, COLLECT, COMPONENT, DRAFT, ENTRY, INDEX} from "../lib/consts";
 
-import {ASPECT, COLLECT, DRAFT, ENTRY, INDEX} from "../lib/consts";
 import {pack_value} from "../lib/aspect";
 
 const ld = require("lodash")
@@ -263,12 +262,10 @@ export const getters = {
 }
 
 export const actions = {
-  delete_entry(context, uuid) {
-    console.log("action delete")
-  },
   set_entry_value({commit}, data) {
     commit("_set_entry_value", data)
     commit("update")
+  },
   add_child(context, uuid_n_aspect_loc_n_child) {
     context.commit("set_entry_value", uuid_n_aspect_loc_n_child)
     context.commit("add_ref_child", uuid_n_aspect_loc_n_child)
