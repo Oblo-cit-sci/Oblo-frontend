@@ -15,6 +15,7 @@
   import {create_entry, has_parent} from "../lib/entry";
 
   import { format } from 'timeago.js';
+  import {ENTRIES_DRAFTS} from "../lib/store_consts";
 
   const ENTRY_TYPE = "etype";
   const DRAFT = "draft";
@@ -44,7 +45,7 @@
             }
         });
 
-        let drafts = this.$_.filter(this.$store.getters["entries/all_drafts"](),
+        let drafts = this.$_.filter(this.$store.getters[ENTRIES_DRAFTS](),
           e => {
             return !has_parent(e)
           })

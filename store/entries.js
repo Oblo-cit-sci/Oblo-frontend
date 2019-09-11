@@ -4,6 +4,7 @@
 import {ASPECT, COLLECT, COMPONENT, DRAFT, ENTRY, INDEX} from "../lib/consts";
 
 import {pack_value} from "../lib/aspect";
+import {ENTRIES_DELETE_ENTRY} from "../lib/store_consts";
 
 const ld = require("lodash")
 
@@ -171,7 +172,7 @@ export const getters = {
           //console.log("get from index", select)
           select = select.value[loc[1]]
         } else {
-          console.log("cannot get value at:", select, "with loc:", loc, loc[0] === ASPECT)
+          console.log("cannot get value at:", select, "with loc:", loc, loc[0] === ASPECT, 'background: #222; color: #bada55')
         }
         /*
                   case COLLECT:
@@ -189,7 +190,7 @@ export const getters = {
 
         //console.log("se--l", select)
       }
-      console.log("store.entries, value?", aspect_loc, "res:", select)
+      //console.log("store.entries, value?", aspect_loc, "res:", select)
       return select
     }
   },
@@ -227,10 +228,10 @@ export const actions = {
     const entry = context.state.entries.get(uuid)
     if (entry) {
       // TODO just TEMP, for easier testing
-      context.commit("delete_entry", uuid)
+      context.commit(ENTRIES_DELETE_ENTRY, uuid)
 
       for (let child_uuid in entry.refs.children) {
-        context.commit("delete_entry", child_uuid)
+        context.commit(ENTRIES_DELETE_ENTRY, child_uuid)
       }
 
       if (entry.refs.parent) {
