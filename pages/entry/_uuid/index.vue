@@ -213,7 +213,7 @@
             },
             parent_title() {
                 // todo not necessarily available for remote entries. should be included?
-                return this.$store.getters["entries/get_entry"](this.entry.refs.parent).title
+                return this.$store.getters["entries/get_entry"](this.entry.refs.parent.uuid).title
             },
             // maybe also consider:
             // https://github.com/edisdev/download-json-data/blob/develop/src/components/Download.vue

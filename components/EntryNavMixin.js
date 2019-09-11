@@ -1,5 +1,6 @@
 import {aspect_loc_str, fetch_entry} from "../lib/entry";
 import {GLOBAL} from "../lib/consts";
+import {ENTRIES_GET_ENTRY} from "../lib/store_consts";
 
 export default {
   methods: {
@@ -18,8 +19,8 @@ export default {
     },
     to_parent(to_last_element = true) {
       if (this.in_context) {
-
-        let parent_entry_type_slug = this.$store.getters["entries/get_entry"](this.entry.refs.parent.uuid).type_slug
+        console.log("to_parrnt", this.$store.getters[ENTRIES_GET_ENTRY](this.entry.refs.parent.uuid))
+        let parent_entry_type_slug = this.$store.getters[ENTRIES_GET_ENTRY](this.entry.refs.parent.uuid).type_slug
 
         // TODO this loc stuff will work different in the future
         const aspect_def = this.$store.getters["get_aspect_def"]({
@@ -50,6 +51,11 @@ export default {
       } else {
         this.$router.push("/")
       }
+    },
+    to_entry(uuid) {
+      this.$router.push({
+        path: "/entry/" + uuid
+      })
     }
   },
   computed: {

@@ -61,6 +61,7 @@ export const mutations = {
   delete_ref_child(state, {uuid, child_uuid}) {
     state.entries.get(uuid).refs.children.delete(child_uuid)
   },
+  // todo, showldnt be needed
   set_ref_parent(state, {uuid, ref}) {
     state.entries.get(uuid).refs.parent = ref
   },

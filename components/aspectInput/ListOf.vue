@@ -44,7 +44,7 @@
         mixins: [AspectMixin, EntryNavMixin, ListMixin],
         data() {
             return {
-                item_type_slug: get_type_slug_from(this.aspect.items),
+                item_type_slug: this.aspect.items,
                 show_remove: false,
                 remove_item_select: {
                     id: "",
@@ -101,15 +101,17 @@
                 }
             },
             create_item() {
-                const entry = create_entry(this.$store, this.item_type_slug, {}, this.entry_uuid())
+                const stripped_aspect_loc = this.$_.drop(this.aspect_loc)
+                const entry = create_entry(this.$store, this.item_type_slug, {}, {
+                    uuid: this.entry_uuid(),
+                    aspect_loc: stripped_aspect_loc
+                })
                 this.$store.commit(ENTRIES_ADD_REF_CHILD, {
                     uuid: this.entry_uuid(),
                     child_uuid: entry.uuid,
-                    aspect_loc: this.aspect_loc
+                    aspect_loc: stripped_aspect_loc
                 })
-                this.$router.push({
-                    path: "/entry/" + entry.uuid
-                })
+                this.to_entry(entry.uuid)
                 this.value_change(this.$_.concat(this.i_value, [entry.uuid]))
                 this.update_indices()
             },
