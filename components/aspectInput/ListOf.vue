@@ -22,9 +22,7 @@
 </template>
 
 <script>
-
     import AspectMixin from "./AspectMixin";
-
     import {
         ENTRYACTION,
         CONTEXT_ENTRY,
@@ -55,7 +53,6 @@
             }
         },
         created() {
-            console.log("ListOf")
             this.set_min_max()
         },
         computed: {
@@ -104,25 +101,16 @@
                 }
             },
             create_item() {
-
-                let parent_ref_data = {
+                const entry = create_entry(this.$store, this.item_type_slug, {}, this.entry_uuid())
+                this.$store.commit(ENTRIES_ADD_REF_CHILD, {
                     uuid: this.entry_uuid(),
-                    aspect_loc: this.aspect_loc,
-                }
-                const entry = create_entry(this.$store, this.item_type_slug, parent_ref_data)
-                this.$store.commit(ENTRIES_ADD_REF_CHILD,
-                    {
-                        uuid: this.entry_uuid(),
-                        child_uuid: entry.uuid,
-                        aspect_loc: this.aspect_loc
-                    }
-                )
-
+                    child_uuid: entry.uuid,
+                    aspect_loc: this.aspect_loc
+                })
                 this.$router.push({
                     path: "/entry/" + entry.uuid
                 })
                 this.value_change(this.$_.concat(this.i_value, [entry.uuid]))
-                //set_entry_value(this.entry, this.aspect_loc, pack_value(entry.uuid))
                 this.update_indices()
             },
             aspect_loc_for_index(index) {
@@ -146,9 +134,6 @@
                     for (let index in this.items) {
                         const item = this.items[index]
                         //let entry = this.$store.getters["entries/get_entry"](item.key)
-                        let a = [ASPECT, idAspect]
-                        console.log([ASPECT, idAspect], a)
-                        //console.log("updating value", as, [["aspect", idAspect]], a, [a])
                         this.$store.commit(ENTRIES_SET_ENTRY_VALUE, {
                             uuid: item.key,
                             aspect_loc: [[ASPECT, idAspect]],

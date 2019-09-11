@@ -111,19 +111,16 @@
                     //console.log("dep on location", this.$_.concat([this.aspect_loc[0]], this.condition.aspect))
                     let condition_value = this.$store.getters["entries/value"](
                         this.$_.concat([this.aspect_loc[0]], this.condition.aspect)).value
-                    //console.log("cond-value", condition_value)
-                    let v = null
+                    if(condition_value === null) {
+                        return false
+                    }
                     const compare = this.condition.compare || "equal"
-
                     switch (compare) {
                         case "equal":
-                            v = condition_value !== this.aspect.attr.condition.value
-                            break
+                            return condition_value !== this.aspect.attr.condition.value
                         case "unequal":
-                            v = condition_value === this.aspect.attr.condition.value
-                            break
+                            return condition_value === this.aspect.attr.condition.value
                     }
-                    return v
                 }
             },
             value: function () {
@@ -175,7 +172,7 @@
                 }
             },
             aspect_id() {
-                return aspect_loc_str(this.extra.aspect_loc)
+                return aspect_loc_str(this.aspect_loc)
             },
         },
         methods: {

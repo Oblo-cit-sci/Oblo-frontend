@@ -23,8 +23,7 @@
           :aspect_loc="aspect_locs[aspect.name]"
           v-on:entryAction="entryAction($event)"
           :id="aspect_id(aspect.name)"
-          mode="edit"
-          :extra="extras[aspect.name]")
+          mode="edit")
       div(v-if="page === 0")
         v-divider(class="wide_divider")
         License(:passedLicense.sync="entry.license" :mode="licence_mode")
@@ -55,7 +54,6 @@
 
     import {
         autosave,
-        create_and_store,
         aspect_loc_str,
         MAspectComponent,
         get_TitleAspect, save_entry, create_entry
@@ -71,9 +69,9 @@
     import Aspect from "../../../components/Aspect";
 
     //import goTo from 'vuetify/lib/components/Vuetify/goTo'
-    import {check_conditions} from "../../../lib/client";
     import EntryNavMixin from "../../../components/EntryNavMixin";
     import DecisionDialog from "../../../components/DecisionDialog";
+    import {ENTRIES_GET_ENTRY} from "../../../lib/store_consts";
 
 
     export default {
@@ -95,7 +93,6 @@
                 complete: true,
                 has_pages: false,
                 last_page: false,
-                extras: {},
                 page: this.$route.query.page | 0,
                 uuid: null,
                 aspect_locs: {},
@@ -105,7 +102,6 @@
                 route_destination: null
             }
         },
-
         created() {
             this.uuid = this.$route.params.uuid
             //console.log("entry index create", this.entry.aspects_values.)
@@ -120,20 +116,9 @@
                 return a.name
             })
 
-            this.conditions = check_conditions(this.entry_type)
-            let condition_targets = this.$_.map(this.conditions, c => c.aspect)
-
             // todo same in page EntryType
             for (let aspect of this.entry_type.content.aspects) {
-                let extra_props = {}
-
                 this.aspect_locs[aspect.name] = [[ENTRY, this.uuid], [ASPECT, aspect.name]]
-                if (condition_targets.indexOf(aspect.name)) {
-                    extra_props.condition = {
-                        value: null
-                    }
-                }
-                this.extras[aspect.name] = extra_props
             }
         },
         mounted() {
@@ -187,8 +172,9 @@
                 }
                 this.complete = true
             },
+            // todo maybe kickout, since its also in Aspect
             aspect_id(aspect_name) {
-                return aspect_loc_str(this.extras[aspect_name].aspect_loc)
+                return aspect_loc_str(this.aspect_locs[aspect_name])
             },
             // should actually be the whole ref string
             // TODO goes out for Aspect component
@@ -203,7 +189,7 @@
             },
             entry() {
                 //console.log("compute e called")
-                return this.$store.getters["entries/entry"](this.uuid)
+                return this.$store.getters[ENTRIES_GET_ENTRY](this.uuid)
             },
             shown_aspects() {
                 if (this.has_pages) {
@@ -227,7 +213,7 @@
             },
             parent_title() {
                 // todo not necessarily available for remote entries. should be included?
-                return this.$store.getters["entries/get_entry"](this.entry.refs.parent.uuid).title
+                return this.$store.getters["entries/get_entry"](this.entry.refs.parent).title
             },
             // maybe also consider:
             // https://github.com/edisdev/download-json-data/blob/develop/src/components/Download.vue
