@@ -34,11 +34,9 @@
                 }
             }
             this.set_selection()
-            this.init = false
         },
         methods: {
             set_selection() {
-                console.log("Select-set_selection")
                 if (this.value !== null) {
                     this.selection = this.$_.find(this.options, (o) => {
                         return o.value === this.value
@@ -48,18 +46,19 @@
                     }
                 } else {
                     this.selection = null
+                    this.init = false
                 }
             }
         },
         watch: {
-            value(val, old_val) {
-                console.log("Select-watch.value")
+            value() {
+                //console.log("Select-watch.value")
                 this.set_selection()
             },
             selection() {
-                console.log("Select-selection")
+                //console.log("Select-selection", this.selection, "/",val, "/",prev_val, !prev_val)
                 if (this.init) {
-                    this.init = false
+                    this.init=true
                     return
                 }
                 //console.log("select", this.aspect, this.selection)
@@ -69,7 +68,7 @@
                     this.value_change(this.selection.value)
             },
             check_box_value(val) {
-                console.log("Select-watch.check_box_value")
+                //console.log("Select-watch.check_box_value")
                 this.i_value = val ? this.options[1].value : this.options[0].value
                 this.value_change(this.i_value)
             }

@@ -85,7 +85,6 @@
         },
         created() {
             try {
-                console.log(this.aspect.name)
                 this.has_alternative = this.aspect.attr.hasOwnProperty("alternative")
                 if (this.aspect.attr.hasOwnProperty("condition")) {
                     this.condition = this.aspect.attr.condition

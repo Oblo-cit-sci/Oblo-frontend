@@ -33,7 +33,7 @@
   import AspectMixin from "./AspectMixin"
   import Aspect from "../Aspect"
   import {ENTRYACTION, GLOBAL_ASPECT_REF} from "../../lib/consts";
-  import {aspect_raw_default_value, aspect_wrapped_default_value} from "../../lib/aspect";
+  import {aspect_raw_default_value, packed_aspect_default_value} from "../../lib/aspect";
 
   export default {
     name: "OptionsAspect",
@@ -50,7 +50,7 @@
         console.log("Options Aspect without view_type... that is not gonna fly")
       }
       for (let index in this.aspect.options) {
-        this.opt_values[index] = aspect_wrapped_default_value(this.aspect.options[index])
+        this.opt_values[index] = packed_aspect_default_value(this.aspect.options[index])
       }
       if(this.i_value === null) {
         this.i_value = aspect_raw_default_value(this.aspect.view_type)
@@ -83,11 +83,11 @@
               console.log("OptAsp- value.value")
               return this.value.value*/
           } else {
-            return aspect_wrapped_default_value(this.aspect.view_type)
+            return packed_aspect_default_value(this.aspect.view_type)
           }
         } catch {
           console.log("OptAsp: crash")
-          return aspect_wrapped_default_value(this.aspect.view_type)
+          return packed_aspect_default_value(this.aspect.view_type)
         }
         /*
         if (this.value !== null) {
@@ -96,7 +96,7 @@
               console.log("obj down", this.value)
               if (!this.value) {
                 console.log("obj val null")
-                return aspect_wrapped_default_value(this.aspect.view_type)
+                return packed_aspect_default_value(this.aspect.view_type)
               }
             }
             return this.value
@@ -106,7 +106,7 @@
           }
         } else {
           console.log("optas. result_value null. viewtype?", this.aspect.view_type)
-          return aspect_wrapped_default_value(this.aspect.view_type)
+          return packed_aspect_default_value(this.aspect.view_type)
         }
          */
       }
@@ -117,7 +117,7 @@
         //val = parseInt(val)
         for (let index in this.aspect.options) {
           if (parseInt(index) !== val) {
-            this.opt_values[index] = aspect_wrapped_default_value(this.aspect.options[index])
+            this.opt_values[index] = packed_aspect_default_value(this.aspect.options[index])
           } else {
             // would be default...
           }

@@ -54,7 +54,7 @@
     import Aspect from "../Aspect";
     import ListMixin from "../ListMixin";
     import {EDIT, INDEX, TITLE_UPDATE} from "../../lib/consts";
-    import {aspect_loc_str, aspect_wrapped_default_value, MAspectComponent} from "../../lib/aspect";
+    import {aspect_loc_str, packed_aspect_default_value, MAspectComponent} from "../../lib/aspect";
 
 
     // todo, pass the extra in a more intelligent way down, not to all the same
@@ -148,7 +148,7 @@
             },
             // for composite
             add_value() {
-                this.value_change(this.$_.concat(this.i_value, [aspect_wrapped_default_value(this.item_aspect)]))
+                this.value_change(this.$_.concat(this.i_value, [packed_aspect_default_value(this.item_aspect)]))
                 this.titles.push(null)
                 if (this.structure === PANELS) {
                     this.$_.fill(this.panelState, false)
