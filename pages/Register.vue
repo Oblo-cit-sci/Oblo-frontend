@@ -151,7 +151,7 @@
             this.$router.push("/")
           } else {
             this.errorMsg = data.msg
-            this.$store.commoit("set_snackbar", {msg: data.msg, ok: true})
+            this.$store.commoit("SNACKBAR", {msg: data.msg, ok: true})
           }
         }).catch((err) => {
           console.log("err", err)

@@ -19,7 +19,7 @@
     methods: {
       done() {
         this.$store.commit("user/logout");
-        this.$store.commit("set_snackbar", {message: "You are logged out", ok: true});
+        this.ok_snackbar("You are logged out")
         this.$store.commit("entries/clear")
         this.$store.commit("clear")
         this.$router.push("/")

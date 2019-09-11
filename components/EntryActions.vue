@@ -51,11 +51,12 @@
 
     import axios from "axios"
     import {ENTRIES_DELETE_ENTRY} from "../lib/store_consts";
+    import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
 
     export default {
         name: "EntryActions",
         components: {DecisionDialog, Paginate},
-        mixins: [EntryNavMixin],
+        mixins: [EntryNavMixin, TriggerSnackbarMixin],
         props: {
             mode: {
                 type: String // view, create edit
@@ -149,7 +150,7 @@
                 const user_key = this.$store.getters.user_key
 
                 if (!user_key) {
-                    this.$store.commit("set_error_snackbar", "No user key. Go to the settings and paste the user key given by the LICCI core team")
+                    this.error_snackbar("No user key. Go to the settings and paste the user key given by the LICCI core team")
                     return
                 }
                 const entries = this.$store.getters["entries/get_recursive_entries"](this.entry.uuid)
@@ -162,20 +163,17 @@
                         'Access-Control-Allow-Origin': '*',
                     }
                 }).then(res => {
-                    this.$store.commit("set_status_snackbar", res.data)
+                    this.snackbar(res.data.status, res.data.msg)
                 }).catch(err => {
                     console.log(err)
-                    this.$store.commit("set_error_snackbar", "Something went horribly wrong")
+                    this.error_snackbar("Something went horribly wrong")
                 })
             },
             show_cancel() {
                 if (this.dirty) {
                     this.show_dialog(this.cancel_dialog_data)
                 } else {
-                    if (this.entry.version === 0) {
-                        this.delete_entry()
-                    }
-                    this.back(false)
+                    this.cancel_edit()
                 }
             },
             show_delete() {
@@ -188,7 +186,7 @@
             dialog_action(event) {
                 if (event.confirm) {
                     if (event.id === this.cancel_dialog_data.id) {
-                        if(this.entry.version === 0) {
+                        if (this.entry.version === 0) {
                             this.delete_entry()
                         }
                         this.back()
@@ -197,16 +195,25 @@
                     }
                 }
             },
+            cancel_edit() {
+                console.log("cancel_edit")
+                if (this.entry.version === 0) {
+                    console.log("jupp")
+                    this.$store.dispatch(ENTRIES_DELETE_ENTRY, this.entry.uuid)
+                    this.ok_snackbar("Creation canceled")
+                    this.back(false)
+                }
+            },
             delete_entry() {
                 this.$store.dispatch(ENTRIES_DELETE_ENTRY, this.entry.uuid)
-                this.$store.commit("set_snackbar", {message: "Entry deleted", ok: true})
+                this.ok_snackbar("Entry deleted")
                 this.back(false)
             },
             save() {
                 // todo not if it is an aspect page
                 //save_entry(this.$store, this.entry)
                 this.$emit(ENTRYACTION, {action: SAVE})
-                this.$store.commit("set_ok_snackbar", "Entry saved")
+                this.ok_snackbar("Entry saved")
                 this.back()
             },
             submit() {
@@ -217,7 +224,7 @@
                     const all_entries = this.$_.concat([this.entry], this.$store.getters["entries/get_children"](this.entry))
                     this.$axios.post("/create_entry", all_entries).then((res) => {
                         this.sending = false
-                        this.$store.commit("set_snackbar", {message: res.data.msg, ok: res.data.status})
+                        this.snackbar(res.data.status, res.data.msg)
                         this.entry.status = SUBMITTED
                         save_entry(this.$store, this.entry)
                         this.back()
@@ -225,7 +232,7 @@
                         console.log("error", err)
                     })
                 } else {
-                    this.$store.commit("set_error_snackbar", "not yet implemented")
+                    this.error_snackbar("not yet implemented")
                 }
                 this.sending = false
             },

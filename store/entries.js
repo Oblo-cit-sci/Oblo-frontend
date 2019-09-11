@@ -8,6 +8,7 @@ import {ENTRIES_DELETE_ENTRY} from "../lib/store_consts";
 
 const ld = require("lodash")
 
+const DELETE_ENTRY = "delete_entry"
 
 export const state = () => ({
   timeline_entries: [],
@@ -230,10 +231,10 @@ export const actions = {
     const entry = context.state.entries.get(uuid)
     if (entry) {
       // TODO just TEMP, for easier testing
-      context.commit(ENTRIES_DELETE_ENTRY, uuid)
+      context.commit(DELETE_ENTRY, uuid)
 
       for (let child_uuid in entry.refs.children) {
-        context.commit(ENTRIES_DELETE_ENTRY, child_uuid)
+        context.commit(DELETE_ENTRY, child_uuid)
       }
 
       if (entry.refs.parent) {

@@ -4,8 +4,11 @@
 </template>
 
 <script>
+  import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
+
   export default {
     name: "GlobalSnackbar",
+    mixins: [TriggerSnackbarMixin],
     data() {
       return {
         show: false,
@@ -14,13 +17,13 @@
       }
     },
     created: function () {
-      this.$store.watch(state => state.snackbar.message, () => {
+      this.$store.watch(state => state.snackbar.trigger, () => {
           let snackbar = this.$store.state.snackbar;
-          if (snackbar.message !== "") {
+          if (snackbar.trigger) {
             this.show = true
             this.message = snackbar.message
             this.color = snackbar.ok === true ? "success" : "error"
-            this.$store.commit('set_snackbar', {message: "", status: true})
+            this.reset_trigger()
           }
         }
       )

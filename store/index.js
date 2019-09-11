@@ -1,4 +1,5 @@
 import {EDIT, VISITOR} from "../lib/consts";
+import {SNACKBAR_RESET} from "../lib/store_consts";
 
 export const state = () => ({
   // comes by init
@@ -10,7 +11,7 @@ export const state = () => ({
   codes: {},
   // recent
   // momentary
-  snackbar: {message: "", status: "ok"},
+  snackbar: {message: "", status: "ok", trigger: false},
   mapmode: {},
   global_ref: null, // the last draft/entry
   draft_numbers: {},
@@ -63,17 +64,11 @@ export const mutations = {
     //state.entry_type_slug_index_dict[newtype.slug] = state.available_entries.length - 1;
   },
   // should be set with {message: str, ok: boolean}
-  set_snackbar(state, snackbar) {
-    state.snackbar = snackbar
+  snackbar(state, snackbar) {
+    state.snackbar = Object.assign(snackbar, {trigger:true})
   },
-  set_status_snackbar(state, {status, msg}) {
-    state.snackbar = {message: msg, ok: status}
-  },
-  set_ok_snackbar(state, msg) {
-    state.snackbar = {message: msg, ok: true}
-  },
-  set_error_snackbar(state, msg) {
-    state.snackbar = {message: msg, ok: false}
+  snackbar_reset(state) {
+    state.snackbar.trigger = false
   },
   connection(state, connected) {
     state.connected = connected
