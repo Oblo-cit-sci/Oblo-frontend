@@ -85,6 +85,7 @@
         },
         created() {
             try {
+                console.log(this.aspect.name)
                 this.has_alternative = this.aspect.attr.hasOwnProperty("alternative")
                 if (this.aspect.attr.hasOwnProperty("condition")) {
                     this.condition = this.aspect.attr.condition
@@ -106,14 +107,11 @@
                 if (!this.condition) {
                     return false
                 } else {
-                    console.log("checking", this.aspect.name)
-                    let e = this.$store.getters["entries/entry"](this.aspect_loc[0][1])
-                    console.log("dep on location", this.$_.concat([this.aspect_loc[0]], this.condition.aspect))
+                    //console.log("checking", this.aspect.name)
+                    //console.log("dep on location", this.$_.concat([this.aspect_loc[0]], this.condition.aspect))
                     let condition_value = this.$store.getters["entries/value"](
                         this.$_.concat([this.aspect_loc[0]], this.condition.aspect)).value
-
-                    console.log("cond-value", condition_value)
-                    console.log(condition_value)
+                    //console.log("cond-value", condition_value)
                     let v = null
                     const compare = this.condition.compare || "equal"
 
@@ -164,7 +162,6 @@
                 return this.aspect.attr.alternative.attr.mode || this.mode
             },
             disable() {
-                //_console.log("aspect.disable", this.aspect.name)
                 return this.disabled || this.condition_fail || this.aspect.attr.disable
             },
             regular_disable() {
@@ -217,7 +214,7 @@
         },
         watch: {
             use_regular(val, old_val) {
-                // catch created. keep this!
+                // catch from created. keep this!
                 if (old_val === null) {
                     return
                 }
@@ -229,8 +226,6 @@
                         this.update_value(aspect_raw_default_value(this.aspect.attr.alternative))
                     }
                 } else {
-                    //console.log("aspect use reg: emit up: ", aspect_raw_default_value(this.aspect))
-                    //this.emit_up(aspect_raw_default_value(this.aspect))
                     this.$store.dispatch(ENTRIES_SET_ENTRY_VALUE, {
                         aspect_loc: this.aspect_loc,
                         value: aspect_raw_default_value(this.aspect)

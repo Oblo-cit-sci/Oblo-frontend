@@ -21,8 +21,6 @@
         Aspect(
           :aspect="aspect"
           :aspect_loc="aspect_locs[aspect.name]"
-          v-bind:value="entry.aspects_values[aspect.name]"
-          v-on:update:value="update_value(aspect, $event)"
           v-on:entryAction="entryAction($event)"
           :id="aspect_id(aspect.name)"
           mode="edit"
@@ -51,7 +49,7 @@
 <script>
 
     // v-on:create_ref="create_ref($event)"
-
+  // v-bind:value="entry.aspects_values[aspect.name]"
     import License from "../../../components/License"
     import Privacy from "../../../components/Privacy"
 
@@ -60,24 +58,22 @@
         create_and_store,
         aspect_loc_str,
         MAspectComponent,
-        get_TitleAspect, save_entry
+        get_TitleAspect, save_entry, create_entry
     } from "../../../lib/entry"
     import Title_Description from "../../../components/Title_Description"
     import EntryActions from "../../../components/EntryActions";
     import {
         EDIT,
         AUTOSAVE,
-        CREATE_CONTEXT_ENTRY,
         GLOBAL_ASPECT_REF,
         ASPECT, DELETE_CONTEXT_ENTRY, PUBLIC, PRIVATE_LOCAL, VIEW, SAVE, ENTRY
     } from "../../../lib/consts";
     import Aspect from "../../../components/Aspect";
 
     //import goTo from 'vuetify/lib/components/Vuetify/goTo'
-    import {check_conditions, resolve_aspect_ref} from "../../../lib/client";
+    import {check_conditions} from "../../../lib/client";
     import EntryNavMixin from "../../../components/EntryNavMixin";
     import DecisionDialog from "../../../components/DecisionDialog";
-    import {aspect_loc_str2arr, pack_value, unpack} from "../../../lib/aspect";
 
 
     export default {
@@ -114,9 +110,6 @@
             this.uuid = this.$route.params.uuid
             //console.log("entry index create", this.entry.aspects_values.)
             this.$store.commit("set_global_ref", this.uuid)
-
-            // set global ref, needed for deeply nested maps to know how to come back
-            //this.$store.commit("set_global_ref", {uuid: this.uuid})
 
             this.entry_type = this.$store.getters.entry_type(this.entry.type_slug)
             this.titleAspect = get_TitleAspect(this.entry_type)
@@ -173,9 +166,7 @@
                         this.dirty = false
                         save_entry(this.$store, this.entry)
                         break
-                    case CREATE_CONTEXT_ENTRY:
-                        this.create_ref(value)
-                        break
+
                     case DELETE_CONTEXT_ENTRY:
                         this.delete_child(value)
                         break
@@ -196,18 +187,6 @@
                 }
                 this.complete = true
             },
-            update_value(aspect, value) {
-                if (aspect.name === this.titleAspect) {
-                    this.entry.title = unpack(value)
-                }
-                if (this.conditions.hasOwnProperty(aspect.name)) {
-                    for (let aspect of this.conditions[aspect.name]) {
-                        this.extras[aspect].condition.value = unpack(value)
-                    }
-                }
-                this.entry.aspects_values[aspect.name] = value
-                this.dirty = true
-            },
             aspect_id(aspect_name) {
                 return aspect_loc_str(this.extras[aspect_name].aspect_loc)
             },
@@ -216,27 +195,6 @@
             aspectComponent(aspect) {
                 return MAspectComponent(aspect)
             },
-            // TODO obviously this needs to be refatored
-            // can be passed down to aspect. it only needs the entry_id passed down
-            create_ref({type_slug, aspect_loc}) {
-                let parent_ref_data = {
-                    uuid: this.uuid,
-                    aspect_loc: aspect_loc,
-                }
-                autosave(this.$store, this.entry)
-                const entry = create_and_store(type_slug, this.$store, parent_ref_data)
-                this.$store.commit("entries/add_ref_child",
-                    {
-                        uuid: this.uuid,
-                        child_uuid: entry.uuid,
-                        aspect_loc: aspect_loc
-                    }
-                )
-                // todo.1
-                // here we must do something to avoid blinking cuz its inserterd before leaving
-                // TODO: NO IDEA HOW IT SETS THE STORE
-                set_entry_value(this.entry, aspect_loc, pack_value(entry.uuid))
-            }
         },
         computed: {
             aspects() {

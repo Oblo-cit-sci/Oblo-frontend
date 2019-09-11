@@ -19,7 +19,6 @@ export default {
     to_parent(to_last_element = true) {
       if (this.in_context) {
 
-
         let parent_entry_type_slug = this.$store.getters["entries/get_entry"](this.entry.refs.parent.uuid).type_slug
 
         // TODO this loc stuff will work different in the future

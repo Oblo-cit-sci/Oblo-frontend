@@ -23,13 +23,6 @@
 
 <script>
 
-    // TODO this is a older, reused component. beware , clean, and abstract stuff with List...
-    // remove and merge
-
-    // TODO now.
-    // need to know if the items are entries or aspects
-    // then let them be clicked, and let them be removed
-
     import AspectMixin from "./AspectMixin";
 
     import {
@@ -43,7 +36,7 @@
     import {aspect_loc_str, create_entry, get_type_slug_from} from "../../lib/entry";
     import EntryNavMixin from "../EntryNavMixin";
     import ListMixin from "../ListMixin";
-    import {ENTRIES_GET_ENTRY, ENTRIES_SET_ENTRY_VALUE} from "../../lib/store_consts";
+    import {ENTRIES_ADD_REF_CHILD, ENTRIES_GET_ENTRY, ENTRIES_SET_ENTRY_VALUE} from "../../lib/store_consts";
 
     const SELECT_THRESH = 6
 
@@ -62,6 +55,7 @@
             }
         },
         created() {
+            console.log("ListOf")
             this.set_min_max()
         },
         computed: {
@@ -115,9 +109,8 @@
                     uuid: this.entry_uuid(),
                     aspect_loc: this.aspect_loc,
                 }
-                //const entry = create_and_store(this.item_type_slug, this.$store, parent_ref_data)
-                const entry = create_entry(this.$store, this.item_type_slug)
-                this.$store.commit("entries/add_ref_child",
+                const entry = create_entry(this.$store, this.item_type_slug, parent_ref_data)
+                this.$store.commit(ENTRIES_ADD_REF_CHILD,
                     {
                         uuid: this.entry_uuid(),
                         child_uuid: entry.uuid,

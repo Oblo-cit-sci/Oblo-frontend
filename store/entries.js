@@ -146,6 +146,7 @@ export const getters = {
   get_own_entries(state) {
     // todo
   },
+  // TODO REMOVE
   entry(state) {
     return (uuid) => {
       //console.log("getter called")
