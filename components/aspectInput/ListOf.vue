@@ -43,7 +43,7 @@
     import {aspect_loc_str, create_entry, get_type_slug_from} from "../../lib/entry";
     import EntryNavMixin from "../EntryNavMixin";
     import ListMixin from "../ListMixin";
-    import {ENTRIES_GET_ENTRY} from "../../lib/store_consts";
+    import {ENTRIES_GET_ENTRY, ENTRIES_SET_ENTRY_VALUE} from "../../lib/store_consts";
 
     const SELECT_THRESH = 6
 
@@ -156,7 +156,7 @@
                         let a = [ASPECT, idAspect]
                         console.log([ASPECT, idAspect], a)
                         //console.log("updating value", as, [["aspect", idAspect]], a, [a])
-                        this.$store.commit("entries/set_entry_value", {
+                        this.$store.commit(ENTRIES_SET_ENTRY_VALUE, {
                             uuid: item.key,
                             aspect_loc: [[ASPECT, idAspect]],
                             value: {value: 1 + parseInt(index)}

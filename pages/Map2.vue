@@ -109,7 +109,7 @@
         this.coordinates = [mapboxEvent.lngLat.lng, mapboxEvent.lngLat.lat]
       },
       done() {
-        this.$store.commit("entries/set_entry_value", {
+        this.$store.commit(ENTRIES_SET_ENTRY_VALUE, {
           ...this.$store.state.global_ref,
           value:
             pack_value([{value: this.coordinates[0]}, {value: this.coordinates[1]}])

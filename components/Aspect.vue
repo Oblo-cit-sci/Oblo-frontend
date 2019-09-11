@@ -20,7 +20,6 @@
       :aspect_loc="aspect_loc"
       :value="raw_value"
       :extra="extra"
-      :extra_update=extra_update
       :disabled="regular_disable"
       :mode="real_mode"
       v-on:update_value="update_value($event)"
@@ -38,16 +37,18 @@
 
 <script>
 
-    import {ASPECTACTION} from "../lib/consts";
+    import {ASPECTACTION, VIEW} from "../lib/consts";
 
     import {
-        aspect_default_value, aspect_loc_str,
+        aspect_loc_str,
         aspect_raw_default_value,
         MAspectComponent
     } from "../lib/entry";
 
     import Title_Description from "./Title_Description";
-    import {aspect_label} from "../lib/aspect";
+    import {aspect_label, aspect_loc_str2arr} from "../lib/aspect";
+    import {ENTRIES_SET_ENTRY_VALUE, ENTRIES_VALUE} from "../lib/store_consts";
+    import {aspect_loc_uuid, complete_aspect_loc} from "../lib/client";
 
     export default {
         name: "Aspect",
@@ -73,9 +74,7 @@
                     return {}
                 }
             },
-            extra_update: {
-                type: Boolean
-            }
+
         },
         data() {
             return {
@@ -94,6 +93,7 @@
                     console.log("Aspect.created: no aspect_loc defined for", this.aspect.name, "emitting up results")
                 }
                 this.use_regular = this.value.hasOwnProperty("regular") ? this.value.regular : true
+
             } catch (e) {
                 console.log("DEV, crash on Aspect", this.aspect.name, this.aspect)
                 console.log(e)
@@ -102,7 +102,7 @@
         // boolean check is not required, since "false" is the default
         computed: {
             condition_fail() {
-                console.log("condition_fail?", this.aspect, this.aspect.name, this.condition)
+                //console.log("condition_fail?", this.aspect, this.aspect.name, this.condition)
                 if (!this.condition) {
                     return false
                 } else {
@@ -128,8 +128,13 @@
                     return v
                 }
             },
-            value() {
-                return this.$store.getters["entries/value"](this.aspect_loc)
+            value: function () {
+                if (this.aspect.attr.ref_value) {
+                    let location_array = complete_aspect_loc(aspect_loc_uuid(this.aspect_loc), aspect_loc_str2arr(this.aspect.attr.ref_value))
+                    return this.$store.getters[ENTRIES_VALUE](location_array)
+                } else {
+                    return this.$store.getters["entries/value"](this.aspect_loc)
+                }
             },
             show_title_description() {
                 if (this.extra.hasOwnProperty("show_title_descr")) {
@@ -138,6 +143,9 @@
                     return true
             },
             real_mode() {
+                if(this.aspect.attr.ref_value) {
+                    return VIEW
+                }
                 if (this.aspect.attr.mode !== undefined) {
                     return this.aspect.attr.mode
                 } else
@@ -156,7 +164,7 @@
                 return this.aspect.attr.alternative.attr.mode || this.mode
             },
             disable() {
-                console.log("aspect.disable", this.aspect.name)
+                //_console.log("aspect.disable", this.aspect.name)
                 return this.disabled || this.condition_fail || this.aspect.attr.disable
             },
             regular_disable() {
@@ -174,14 +182,11 @@
             },
         },
         methods: {
-            title_description(aspect_descr) {
+            title_description(aspect) {
                 //console.log("title_description", aspect_descr)
-                if (!aspect_descr.hasOwnProperty("name")) {
-                    //console.log("warning: aspect", aspect_descr, "has no name")
-                }
                 return {
-                    title: this.extra.no_title ? "" : aspect_label(aspect_descr),
-                    description: aspect_descr.description || ""
+                    title: this.extra.no_title ? "" : aspect_label(aspect),
+                    description: aspect.description || ""
                 }
             },
             aspectAction(event) {
@@ -201,18 +206,13 @@
                         }
                     }
                 }
-
-                //console.log("this val", this.value)
                 let up_value = {value: event}
-                //const up_value = Object.assign(this.$_.cloneDeep(this.value), {value: event})
-
                 if (!this.use_regular) {
                     up_value.regular = false
                 } else {
                     delete up_value.regular
                 }
-                //console.log("storing", up_value)
-                this.$store.dispatch("entries/set_entry_value", {aspect_loc: this.aspect_loc, value: up_value})
+                this.$store.dispatch(ENTRIES_SET_ENTRY_VALUE, {aspect_loc: this.aspect_loc, value: up_value})
             }
         },
         watch: {
@@ -231,38 +231,10 @@
                 } else {
                     //console.log("aspect use reg: emit up: ", aspect_raw_default_value(this.aspect))
                     //this.emit_up(aspect_raw_default_value(this.aspect))
-
-                    this.$store.dispatch("entries/set_entry_value", {
+                    this.$store.dispatch(ENTRIES_SET_ENTRY_VALUE, {
                         aspect_loc: this.aspect_loc,
                         value: aspect_raw_default_value(this.aspect)
                     })
-                }
-            },
-            extra_update(val) {
-                if (this.condition) {
-                    if (!this.extra.condition || !this.extra.condition.value) {
-                        this.condition_fail = false
-                    } else {
-                        const compare = this.condition.compare || "equal"
-                        console.log("CONDITION")
-                        //this.$store.getters["entries/value"]()
-                        /*
-                        let v = null
-                        switch (compare) {
-                            case "equal":
-                                v = this.extra.condition.value !== this.aspect.attr.condition.value
-                                break
-                            case "unequal":
-                                v = this.extra.condition.value === this.aspect.attr.condition.value
-                                break
-                        }
-                        */
-                        this.condition_fail = v;
-
-                        if (this.condition_fail) {
-                            this.$emit('update:value', aspect_default_value(this.$store, this.aspect))
-                        }
-                    }
                 }
             }
         }

@@ -18,8 +18,7 @@
         v-on:entryAction="entryAction($event)"
         :id="aspect_id(aspect.name)"
         mode="edit"
-        :extra="extras[aspect.name]"
-        :extra_update="extras_update[aspect.name]")
+        :extra="extras[aspect.name]")
 </template>
 
 <script>
@@ -45,9 +44,7 @@
         entry_type: null,
         aspects: [],
         entry: null,
-        //aspects_values: {},
         extras: {},
-        extras_update: {}
       }
     },
     created() {
@@ -80,7 +77,6 @@
             }
           }*/
           this.extras[aspect.name] = extra_props
-          this.extras_update[aspect.name] = false
         }
       }
     }

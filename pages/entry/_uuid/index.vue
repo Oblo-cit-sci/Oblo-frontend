@@ -26,8 +26,7 @@
           v-on:entryAction="entryAction($event)"
           :id="aspect_id(aspect.name)"
           mode="edit"
-          :extra="extras[aspect.name]"
-          :extra_update="extras_update[aspect.name]")
+          :extra="extras[aspect.name]")
       div(v-if="page === 0")
         v-divider(class="wide_divider")
         License(:passedLicense.sync="entry.license" :mode="licence_mode")
@@ -74,7 +73,7 @@
     } from "../../../lib/consts";
     import Aspect from "../../../components/Aspect";
 
-    import goTo from 'vuetify/lib/components/Vuetify/goTo'
+    //import goTo from 'vuetify/lib/components/Vuetify/goTo'
     import {check_conditions, resolve_aspect_ref} from "../../../lib/client";
     import EntryNavMixin from "../../../components/EntryNavMixin";
     import DecisionDialog from "../../../components/DecisionDialog";
@@ -102,7 +101,6 @@
                 last_page: false,
                 extras: {},
                 page: this.$route.query.page | 0,
-                extras_update: {},
                 uuid: null,
                 aspect_locs: {},
                 //
@@ -143,20 +141,6 @@
                     }
                 }
                 this.extras[aspect.name] = extra_props
-                this.extras_update[aspect.name] = false
-            }
-            /* set aspect refs:
-                when an attribute has #
-                this doesnt belong here, especially cuz of the duplicate for edit/_local_id page
-            * */
-            for (let aspect of this.entry_type.content.aspects) {
-                //console.log("index aspect", aspect)
-                let value = resolve_aspect_ref(this.$store, this.entry, aspect)
-                //console.log("index value", value)
-                if (value !== undefined) {
-                    this.entry.aspects_values[aspect.name] = value
-                    //value_ref = aspect_loc_str2arr(aspect.attr.value)
-                }
             }
         },
         mounted() {
@@ -218,7 +202,6 @@
                 }
                 if (this.conditions.hasOwnProperty(aspect.name)) {
                     for (let aspect of this.conditions[aspect.name]) {
-                        this.extras_update[aspect] = !this.extras_update[aspect]
                         this.extras[aspect].condition.value = unpack(value)
                     }
                 }

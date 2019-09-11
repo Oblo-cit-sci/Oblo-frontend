@@ -11,7 +11,7 @@ const ld = require("lodash")
 export const state = () => ({
   timeline_entries: [],
   entries: new Map(),
-  edit: null
+  edit: new Map(),
 });
 
 export const mutations = {
@@ -36,11 +36,14 @@ export const mutations = {
   save_entry(state, entry) {
     state.entries.set(entry.uuid, entry)
   },
+  _cancel_entry_edit(state, uuid) {
+    state.edit.delete(uuid)
+  },
   set_downladed(state, uuid) {
     let entry = state.entries.get(uuid)
     entry.downloads = entry.version
   },
-  delete_single_entry(state, uuid) {
+  delete_entry(state, uuid) {
     state.entries.delete(uuid)
   },
   set_downloaded(state, local_id) {
@@ -155,7 +158,6 @@ export const getters = {
   },
   value(state) {
     return (aspect_loc) => {
-
       let select = null
       for (let loc of aspect_loc) {
         if (loc[0] === ENTRY) {
@@ -169,11 +171,25 @@ export const getters = {
           //console.log("get from index", select)
           select = select.value[loc[1]]
         } else {
-          console.log("cannot get value", select, "with loc", loc)
+          console.log("cannot get value at:", select, "with loc:", loc, loc[0] === ASPECT)
         }
+        /*
+                  case COLLECT:
+            if (select.value.constructor !== Array) {
+              console.log("aspect-loc COLLECT(_) only runs over arrays")
+              return undefined
+            } else {
+              // SHOULD BE THE FINAL
+              return select.value.map(el => {
+                //console.log("el", el, el.value[parseInt(loc[1])])
+                return {value: el.value[parseInt(loc[1])].value}
+              })
+            }
+         */
+
         //console.log("se--l", select)
       }
-      console.log("store.entries, value?",aspect_loc, "res:", select)
+      console.log("store.entries, value?", aspect_loc, "res:", select)
       return select
     }
   },
@@ -190,74 +206,31 @@ export const getters = {
       })
       return entries
     }
-  },
-  get_entry_value(state, getters) {
-    // entry parameter: another hack that shouldnt be there. during the creation, the entry is not in the store yet.
-    //
-    return ({uuid, aspect_loc, entry}) => {
-      //console.log(uuid, aspect_loc, entry)
-      if (!entry) {
-        //console.log("getting entry from the store")
-        entry = getters.get_entry(uuid)
-      }
-      let select = entry.aspects_values
-      for (let loc of aspect_loc) {
-        switch (loc[0]) {
-          case ENTRY:
-            let parent_uuid = entry.refs.parent.uuid
-            entry = getters.get_entry(parent_uuid)
-            //console.log("parent", entry.title)
-            select = entry.aspects_values
-            break
-          case ASPECT:
-            select = select[loc[1]]
-            break
-          case INDEX:
-            select = select.value[parseInt(loc[1])]
-            break
-          case COLLECT:
-            if (select.value.constructor !== Array) {
-              console.log("aspect-loc COLLECT(_) only runs over arrays")
-              return undefined
-            } else {
-              // SHOULD BE THE FINAL
-              return select.value.map(el => {
-                //console.log("el", el, el.value[parseInt(loc[1])])
-                return {value: el.value[parseInt(loc[1])].value}
-              })
-            }
-          default:
-            select = select.value[loc[1]]
-        }
-        if (!select) {
-          console.log("error getting value", aspect_loc, loc)
-        }
-        //console.log("new select", select)
-      }
-      return select.value
-    }
   }
 }
 
 export const actions = {
   set_entry_value({commit}, data) {
     commit("_set_entry_value", data)
-    //commit("update", {uuid:data.aspect_loc[0][1]})
   },
   add_child(context, uuid_n_aspect_loc_n_child) {
     console.log("store.entries: add child")
     context.commit("set_entry_value", uuid_n_aspect_loc_n_child)
     context.commit("add_ref_child", uuid_n_aspect_loc_n_child)
   },
+  cancel_entry_edit({commit}, uuid) {
+    commit("cancel_entry_edit", uuid)
+
+  },
   delete_entry(context, uuid) {
     console.log("store.entries.delete entry-...")
     const entry = context.state.entries.get(uuid)
     if (entry) {
       // TODO just TEMP, for easier testing
-      context.commit("delete_single_entry", uuid)
+      context.commit("delete_entry", uuid)
 
       for (let child_uuid in entry.refs.children) {
-        context.commit("delete_single_entry", child_uuid)
+        context.commit("delete_entry", child_uuid)
       }
 
       if (entry.refs.parent) {
