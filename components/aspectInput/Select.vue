@@ -11,19 +11,20 @@
 </template>
 
 <script>
-    import SingleSelect from "../SingleSelect"
     import SelectMixin from "./SelectMixin";
     import AspectMixin from "./AspectMixin";
 
     export default {
         name: "Select",
         mixins: [AspectMixin, SelectMixin],
-        components: {SingleSelect},
         // todo. init is a hack to prevent the first set_selection call to trigger a value_change
         data() {
             return {
                 init: true
             }
+        },
+        beforeCreate: function () {
+            this.$options.components.SingleSelect = require('../SingleSelect.vue').default
         },
         created() {
             if (this.select_check) {

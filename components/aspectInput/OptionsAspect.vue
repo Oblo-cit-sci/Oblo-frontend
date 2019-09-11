@@ -32,8 +32,8 @@
 
   import AspectMixin from "./AspectMixin"
   import Aspect from "../Aspect"
-  import {aspect_raw_default_value, aspect_wrapped_default_value} from "../../lib/entry"
   import {ENTRYACTION, GLOBAL_ASPECT_REF} from "../../lib/consts";
+  import {aspect_raw_default_value, aspect_wrapped_default_value} from "../../lib/aspect";
 
   export default {
     name: "OptionsAspect",

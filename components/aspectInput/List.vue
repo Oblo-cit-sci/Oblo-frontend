@@ -50,11 +50,11 @@
 
     import AspectMixin from "./AspectMixin";
     import {get_codes_as_options} from "../../lib/client";
-    import {aspect_loc_str, aspect_wrapped_default_value, MAspectComponent} from "../../lib/entry";
     import MultiSelect from "../MultiSelect";
     import Aspect from "../Aspect";
     import ListMixin from "../ListMixin";
     import {EDIT, INDEX, TITLE_UPDATE} from "../../lib/consts";
+    import {aspect_loc_str, aspect_wrapped_default_value, MAspectComponent} from "../../lib/aspect";
 
 
     // todo, pass the extra in a more intelligent way down, not to all the same

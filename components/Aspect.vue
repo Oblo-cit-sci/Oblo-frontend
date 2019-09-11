@@ -39,14 +39,14 @@
 
     import {ASPECTACTION, VIEW} from "../lib/consts";
 
+    import Title_Description from "./Title_Description";
     import {
+        aspect_label,
         aspect_loc_str,
+        aspect_loc_str2arr,
         aspect_raw_default_value,
         MAspectComponent
-    } from "../lib/entry";
-
-    import Title_Description from "./Title_Description";
-    import {aspect_label, aspect_loc_str2arr} from "../lib/aspect";
+    } from "../lib/aspect";
     import {ENTRIES_SET_ENTRY_VALUE, ENTRIES_VALUE} from "../lib/store_consts";
     import {aspect_loc_uuid, complete_aspect_loc} from "../lib/client";
 

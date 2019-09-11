@@ -31,10 +31,11 @@
         DELETE_CONTEXT_ENTRY, ASPECT
     } from "../../lib/consts";
     import DecisionDialog from "../DecisionDialog";
-    import {aspect_loc_str, create_entry, get_type_slug_from} from "../../lib/entry";
+    import {create_entry, get_type_slug_from} from "../../lib/entry";
     import EntryNavMixin from "../EntryNavMixin";
     import ListMixin from "../ListMixin";
     import {ENTRIES_ADD_REF_CHILD, ENTRIES_GET_ENTRY, ENTRIES_SET_ENTRY_VALUE} from "../../lib/store_consts";
+    import {aspect_loc_str} from "../../lib/aspect";
 
     const SELECT_THRESH = 6
 

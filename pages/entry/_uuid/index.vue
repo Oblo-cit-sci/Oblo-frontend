@@ -54,8 +54,6 @@
 
     import {
         autosave,
-        aspect_loc_str,
-        MAspectComponent,
         get_TitleAspect, save_entry, create_entry
     } from "../../../lib/entry"
     import Title_Description from "../../../components/Title_Description"
@@ -72,6 +70,7 @@
     import EntryNavMixin from "../../../components/EntryNavMixin";
     import DecisionDialog from "../../../components/DecisionDialog";
     import {ENTRIES_GET_ENTRY} from "../../../lib/store_consts";
+    import {aspect_loc_str, MAspectComponent} from "../../../lib/aspect";
 
 
     export default {

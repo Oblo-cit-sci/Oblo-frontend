@@ -1,5 +1,5 @@
 import {ASPECTACTION, EDIT, TITLE_ASPECT, TITLE_UPDATE, VIEW} from "../../lib/consts";
-import {aspect_raw_default_value} from "../../lib/entry";
+import {aspect_raw_default_value} from "../../lib/aspect";
 
 export default {
   props: {

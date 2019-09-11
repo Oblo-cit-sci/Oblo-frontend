@@ -1,6 +1,7 @@
-import {aspect_loc_str, fetch_entry} from "../lib/entry";
+import {fetch_entry} from "../lib/entry";
 import {GLOBAL} from "../lib/consts";
 import {ENTRIES_GET_ENTRY} from "../lib/store_consts";
+import {aspect_loc_str} from "../lib/aspect";
 
 export default {
   methods: {
@@ -19,7 +20,6 @@ export default {
     },
     to_parent(to_last_element = true) {
       if (this.in_context) {
-        console.log("to_parrnt", this.$store.getters[ENTRIES_GET_ENTRY](this.entry.refs.parent.uuid))
         let parent_entry_type_slug = this.$store.getters[ENTRIES_GET_ENTRY](this.entry.refs.parent.uuid).type_slug
 
         // TODO this loc stuff will work different in the future
