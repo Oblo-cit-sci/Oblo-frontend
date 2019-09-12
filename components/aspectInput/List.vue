@@ -53,7 +53,7 @@
     import MultiSelect from "../MultiSelect";
     import Aspect from "../Aspect";
     import ListMixin from "../ListMixin";
-    import {EDIT, INDEX, TITLE_UPDATE} from "../../lib/consts";
+    import {INDEX, TITLE_UPDATE} from "../../lib/consts";
     import {aspect_loc_str, packed_aspect_default_value, MAspectComponent} from "../../lib/aspect";
 
 
@@ -133,9 +133,15 @@
                     this.structure = "simple";
                 }
             }
-
+            if (this.extra.ref_length) {
+                if (this.extra.ref_length !== this.value.length) {
+                    const diff = this.extra.ref_length - this.value.length
+                    this.add_value(diff)
+                }
+                this.min = this.extra.ref_length
+                this.max = this.extra.ref_length
+            }
             this.set_min_max()
-
             if (this.i_value.length === 0) {
                 for (let i = 0; i < this.aspect.attr.create || 0; i++) {
                     this.add_value()
@@ -146,17 +152,27 @@
             clearableAspectComponent(aspect) {
                 return MAspectComponent(aspect, this.mode)
             },
-            // for composite
-            add_value() {
-                this.value_change(this.$_.concat(this.i_value, [packed_aspect_default_value(this.item_aspect)]))
-                this.titles.push(null)
-                if (this.structure === PANELS) {
-                    this.$_.fill(this.panelState, false)
-                    this.panelState.push(true)
+// for composite
+            add_value(n = 1) {
+                let additional = []
+                this.$_.fill(this.panelState, false)
+                for (let i = 0; i < n; i++) {
+                    additional.push(packed_aspect_default_value(this.item_aspect))
+                    this.titles.push(null)
+                    if (this.structure === PANELS) {
+                        this.panelState.push(true)
+                    }
                 }
+                //console.log("resulting list:", this.$_.concat(this.i_value, additional))
+                this.value_change(this.$_.concat(this.i_value, additional))
+            },
+            indexTitle(index) {
+                return this.aspect.attr.itemname + " " + (parseInt(index) + 1).toString()
             },
             remove_value(index) {
-                this.value_change(this.$_.filter(this.i_value, (val,i) => {return index !== i}))
+                this.value_change(this.$_.filter(this.i_value, (val, i) => {
+                    return index !== i
+                }))
                 this.titles.splice(index, 1)
             },
             item_aspect_loc(index) {
@@ -164,7 +180,7 @@
             },
             indexed_item_aspect(index) {
                 let aspect = {...this.item_aspect}
-                // could maybe be 0
+// could maybe be 0
                 aspect.name = "" + (index + 1)
                 return aspect
             }, handleEntryAction(event, index) {

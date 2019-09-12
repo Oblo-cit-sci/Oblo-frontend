@@ -95,7 +95,7 @@
                 this.use_regular = this.value.hasOwnProperty("regular") ? this.value.regular : true
 
             } catch (e) {
-                console.log("DEV, crash on Aspect", this.aspect.name, this.aspect)
+                console.log("DEV, crash on Aspect", this.aspect.name, this.aspect, this.aspect_loc)
                 console.log(e)
             }
         },
@@ -126,6 +126,11 @@
                 if (this.aspect.attr.ref_value) {
                     let location_array = complete_aspect_loc(aspect_loc_uuid(this.aspect_loc), aspect_loc_str2arr(this.aspect.attr.ref_value))
                     return this.$store.getters[ENTRIES_VALUE](location_array)
+                } else if(this.aspect.attr.ref_length) { // this is for lists
+                    let location_array = complete_aspect_loc(aspect_loc_uuid(this.aspect_loc), aspect_loc_str2arr(this.aspect.attr.ref_length))
+                    const fixed_length = this.$store.getters[ENTRIES_VALUE](location_array).value.length
+                    this.extra["ref_length"] = fixed_length
+                    return this.$store.getters["entries/value"](this.aspect_loc)
                 } else {
                     return this.$store.getters["entries/value"](this.aspect_loc)
                 }

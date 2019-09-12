@@ -66,7 +66,7 @@
     } from "../../../lib/consts";
     import Aspect from "../../../components/Aspect";
 
-    //import goTo from 'vuetify/lib/components/Vuetify/goTo'
+    import goTo from 'vuetify/lib/components/Vuetify/goTo'
     import EntryNavMixin from "../../../components/EntryNavMixin";
     import DecisionDialog from "../../../components/DecisionDialog";
     import {ENTRIES_GET_ENTRY} from "../../../lib/store_consts";

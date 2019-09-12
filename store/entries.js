@@ -163,38 +163,45 @@ export const getters = {
   value(state) {
     return (aspect_loc) => {
       let select = null
-      for (let loc of aspect_loc) {
-        if (loc[0] === ENTRY) {
-          select = state.entries.get(loc[1]).aspects_values
-        } else if (loc[0] === ASPECT) {
-          select = select[loc[1]]
-        } else if (loc[0] === COMPONENT) {
-          //console.log("get from component", select, loc)
-          select = select.value[loc[1]]
-        } else if (loc[0] === INDEX) {
-          //console.log("get from index", select)
-          select = select.value[loc[1]]
-        } else {
-          console.log("cannot get value at:", select, "with loc:", loc, loc[0] === ASPECT, 'background: #222; color: #bada55')
-        }
-        /*
-                  case COLLECT:
-            if (select.value.constructor !== Array) {
-              console.log("aspect-loc COLLECT(_) only runs over arrays")
-              return undefined
-            } else {
-              // SHOULD BE THE FINAL
-              return select.value.map(el => {
-                //console.log("el", el, el.value[parseInt(loc[1])])
-                return {value: el.value[parseInt(loc[1])].value}
-              })
-            }
-         */
 
-        //console.log("se--l", select)
-      }
-      //console.log("store.entries, value?", aspect_loc, "res:", select)
-      return select
+        for (let loc of aspect_loc) {
+          try {
+          if (loc[0] === ENTRY) {
+            select = state.entries.get(loc[1]).aspects_values
+          } else if (loc[0] === ASPECT) {
+            select = select[loc[1]]
+          } else if (loc[0] === COMPONENT) {
+            //console.log("get from component", select, loc)
+            select = select.value[loc[1]]
+          } else if (loc[0] === INDEX) {
+            //console.log("get from index", select)
+            select = select.value[loc[1]]
+          } else {
+            console.log("cannot get value at:", select, "with loc:", loc, loc[0] === ASPECT, 'background: #222; color: #bada55')
+          }
+          /*
+                    case COLLECT:
+              if (select.value.constructor !== Array) {
+                console.log("aspect-loc COLLECT(_) only runs over arrays")
+                return undefined
+              } else {
+                // SHOULD BE THE FINAL
+                return select.value.map(el => {
+                  //console.log("el", el, el.value[parseInt(loc[1])])
+                  return {value: el.value[parseInt(loc[1])].value}
+                })
+              }
+           */
+
+          //console.log("se--l", select)
+          } catch(e) {
+            console.log("Exception in entries.value aspect_loc", aspect_loc, "select:", select, "loc", loc)
+            console.log(e)
+            return null
+          }
+        }
+        //console.log("store.entries, value?", aspect_loc, "res:", select)
+        return select
     }
   },
   get_recursive_entries(state, getters) {
