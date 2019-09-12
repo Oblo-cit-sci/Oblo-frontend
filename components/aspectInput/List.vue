@@ -33,6 +33,11 @@
               v-on:entryAction="$emit('entryAction',$event)"
               v-on:aspectAction="aspectAction($event, index)")
             v-btn(v-if="requires_delete" small @click="remove_value(index)") delete {{item_name}}
+            span
+              v-btn(small @click="move(index, -1)") move up
+                v-icon(right) keyboard_arrow_up
+              v-btn(down small @click="move(index, 1)") move down
+                v-icon(right) keyboard_arrow_down
       div
         span {{count_text}}, &nbsp
         span(v-if="min===max && min !== null") required: {{min}}
@@ -136,7 +141,12 @@
             if (this.extra.ref_length) {
                 if (this.extra.ref_length !== this.value.length) {
                     const diff = this.extra.ref_length - this.value.length
-                    this.add_value(diff)
+                    if(diff > 0)
+                      this.add_value(diff)
+                    else if(diff < 0) {
+                        // remove some from the end
+                        // todo
+                    }
                 }
                 this.min = this.extra.ref_length
                 this.max = this.extra.ref_length
@@ -152,7 +162,6 @@
             clearableAspectComponent(aspect) {
                 return MAspectComponent(aspect, this.mode)
             },
-// for composite
             add_value(n = 1) {
                 let additional = []
                 this.$_.fill(this.panelState, false)
@@ -163,7 +172,6 @@
                         this.panelState.push(true)
                     }
                 }
-                //console.log("resulting list:", this.$_.concat(this.i_value, additional))
                 this.value_change(this.$_.concat(this.i_value, additional))
             },
             indexTitle(index) {
@@ -174,13 +182,31 @@
                     return index !== i
                 }))
                 this.titles.splice(index, 1)
+                if (this.structure === PANELS) {
+                    this.panelState.splice(index, 1)
+                }
+            },
+            move(index, direction) {
+                const to_move = this.i_value[index]
+                const without = this.$_.filter(this.i_value, (e, i) =>  i !== index)
+                const new_left = this.$_.take(without, index + direction)
+                const new_right = this.$_.takeRight(without, without.length - (index + direction))
+                this.value_change(this.$_.concat(new_left, to_move, new_right))
+                // fix panelstates todo
+                if(this.structure === PANELS) {
+                    //this.$_.fill(this.panelState, false)
+                    //this.panelState[index+direction] = true
+                }
+                // fix titles
+                let temp = this.titles[index]
+                this.titles[index] = this.titles[index + direction]
+                this.titles[index + direction] = temp
             },
             item_aspect_loc(index) {
                 return this.$_.concat(this.aspect_loc, [[INDEX, index]])
             },
             indexed_item_aspect(index) {
                 let aspect = {...this.item_aspect}
-// could maybe be 0
                 aspect.name = "" + (index + 1)
                 return aspect
             }, handleEntryAction(event, index) {
