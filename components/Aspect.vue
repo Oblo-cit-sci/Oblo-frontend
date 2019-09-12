@@ -188,6 +188,7 @@
                 }
             },
             aspectAction(event) {
+                console.log("aspect-acion yeah", event)
                 this.$emit(ASPECTACTION, event)
             },
             aspectComponent(aspect_descr, mode) {

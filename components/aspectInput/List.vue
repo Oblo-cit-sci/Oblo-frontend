@@ -33,10 +33,10 @@
               v-on:entryAction="$emit('entryAction',$event)"
               v-on:aspectAction="aspectAction($event, index)")
             v-btn(v-if="requires_delete" small @click="remove_value(index)") delete {{item_name}}
-            span
-              v-btn(small @click="move(index, -1)") move up
+            span(v-if="moveable")
+              v-btn(:disabled="index === 0" small @click="move(index, -1)") move up
                 v-icon(right) keyboard_arrow_up
-              v-btn(down small @click="move(index, 1)") move down
+              v-btn(:disabled="index === i_value.length - 1"  down small @click="move(index, 1)") move down
                 v-icon(right) keyboard_arrow_down
       div
         span {{count_text}}, &nbsp
@@ -78,7 +78,6 @@
                 count: true,
                 // for composite
                 panelState: [],
-                // select, when code type (*)
                 select: false, // select... instead of button
                 options: [],
                 titles: []
@@ -235,6 +234,9 @@
         computed: {
             is_simple() {
                 return this.structure === SIMPLE
+            },
+            moveable() {
+              return this.aspect.attr.moveable || false
             },
             count_text() {
                 const le = this.i_value.length
