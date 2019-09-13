@@ -1,7 +1,7 @@
 /*
   this is for the own entries
  */
-import {ASPECT, COLLECT, COMPONENT, DRAFT, ENTRY, INDEX} from "../lib/consts";
+import {ASPECT, COLLECT, COMPONENT, DRAFT, ENTRY, INDEX, PARENT} from "../lib/consts";
 
 import {pack_value} from "../lib/aspect";
 import {ENTRIES_DELETE_ENTRY} from "../lib/store_consts";
@@ -163,11 +163,18 @@ export const getters = {
   value(state) {
     return (aspect_loc) => {
       let select = null
-
         for (let loc of aspect_loc) {
           try {
           if (loc[0] === ENTRY) {
             select = state.entries.get(loc[1]).aspects_values
+          } else if(loc[0] === PARENT) {
+            const number_of_levels = parseInt(loc[1])
+            // start from the 1.
+            let entry = state.entries.get(aspect_loc[0][1])
+            for(let i=0; i < number_of_levels; i++) {
+              entry = state.entries.get(entry.refs.parent.uuid)
+            }
+            select = entry.aspects_values
           } else if (loc[0] === ASPECT) {
             select = select[loc[1]]
           } else if (loc[0] === COMPONENT) {
@@ -194,6 +201,9 @@ export const getters = {
            */
 
           //console.log("se--l", select)
+            if(select === undefined) {
+              return null
+            }
           } catch(e) {
             console.log("Exception in entries.value aspect_loc", aspect_loc, "select:", select, "loc", loc)
             console.log(e)

@@ -92,7 +92,13 @@
                 if (!this.aspect_loc) {
                     console.log("Aspect.created: no aspect_loc defined for", this.aspect.name, "emitting up results")
                 }
-                this.use_regular = this.value.hasOwnProperty("regular") ? this.value.regular : true
+
+                try {
+                    this.use_regular = this.value.hasOwnProperty("regular") ? this.value.regular : true
+                } catch (e) {
+                    console.log("no value")
+                    this.use_regular = true
+                }
 
             } catch (e) {
                 console.log("DEV, crash on Aspect", this.aspect.name, this.aspect, this.aspect_loc)
@@ -125,6 +131,7 @@
             value: function () {
                 if (this.aspect.attr.ref_value) {
                     let location_array = complete_aspect_loc(aspect_loc_uuid(this.aspect_loc), aspect_loc_str2arr(this.aspect.attr.ref_value))
+                    console.log("value ref,  ",this.aspect.name, location_array)
                     return this.$store.getters[ENTRIES_VALUE](location_array)
                 } else if(this.aspect.attr.ref_length) { // this is for lists
                     let location_array = complete_aspect_loc(aspect_loc_uuid(this.aspect_loc), aspect_loc_str2arr(this.aspect.attr.ref_length))
@@ -151,7 +158,12 @@
                     return this.mode
             },
             raw_value() {
-                return this.value.value
+                if(!this.value) {
+                    return aspect_raw_default_value(this.aspect)
+                } else {
+                    return this.value.value
+                }
+
             },
             regular_value_text() {
                 return this.aspect.attr["alternative-true"] || "regular value"
