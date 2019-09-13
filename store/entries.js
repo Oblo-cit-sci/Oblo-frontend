@@ -1,7 +1,7 @@
 /*
   this is for the own entries
  */
-import {ASPECT, COLLECT, COMPONENT, DRAFT, ENTRY, INDEX, PARENT} from "../lib/consts";
+import {ASPECT, COLLECT, COMPONENT, DRAFT, ENTRY, INDEX, LINKED_INDEX, PARENT} from "../lib/consts";
 
 import {pack_value} from "../lib/aspect";
 import {ENTRIES_DELETE_ENTRY} from "../lib/store_consts";
@@ -181,6 +181,9 @@ export const getters = {
             //console.log("get from component", select, loc)
             select = select.value[loc[1]]
           } else if (loc[0] === INDEX) {
+            //console.log("get from index", select)
+            select = select.value[loc[1]]
+          } else if (loc[0] === LINKED_INDEX) {
             //console.log("get from index", select)
             select = select.value[loc[1]]
           } else {
