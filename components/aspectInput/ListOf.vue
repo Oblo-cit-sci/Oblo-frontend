@@ -105,12 +105,14 @@
                 const stripped_aspect_loc = this.$_.drop(this.aspect_loc)
                 const entry = create_entry(this.$store, this.item_type_slug, {}, {
                     uuid: this.entry_uuid(),
-                    aspect_loc: stripped_aspect_loc
+                    aspect_loc: stripped_aspect_loc,
+                    index: this.i_value.length
                 })
                 this.$store.commit(ENTRIES_ADD_REF_CHILD, {
                     uuid: this.entry_uuid(),
                     child_uuid: entry.uuid,
-                    aspect_loc: stripped_aspect_loc
+                    aspect_loc: stripped_aspect_loc,
+                    index: this.i_value.length
                 })
                 this.to_entry(entry.uuid)
                 this.value_change(this.$_.concat(this.i_value, [entry.uuid]))

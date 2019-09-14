@@ -2,9 +2,10 @@
   this is for the own entries
  */
 import {ASPECT, COLLECT, COMPONENT, DRAFT, ENTRY, INDEX, LINKED_INDEX, PARENT} from "../lib/consts";
+import {complete_aspect_loc} from "../lib/client";
+import {select_aspect_loc} from "../lib/entry";
 
-import {pack_value} from "../lib/aspect";
-import {ENTRIES_DELETE_ENTRY} from "../lib/store_consts";
+
 
 const ld = require("lodash")
 
@@ -59,8 +60,15 @@ export const mutations = {
     let refs = kids[child_uuid] || []
     kids[child_uuid] = ld.concat(refs, [aspect_loc])
   },
-  delete_ref_child(state, {uuid, child_uuid}) {
-    state.entries.get(uuid).refs.children.delete(child_uuid)
+  delete_ref_child(state, {uuid, child_uuid}, c) {
+    state.entries.get(uuid).refs.children[child_uuid].forEach(ref => {
+      let aspect_loc = complete_aspect_loc(uuid, ref)
+      console.log("delete_ref_child", aspect_loc)
+      console.log(state)
+      //let value = state.gettes.value(aspect_loc)
+      //console.log("delete_ref_child.value", value)
+      delete state.entries.get(uuid).refs.children[child_uuid]
+    })
   },
   // todo, showldnt be needed
   set_ref_parent(state, {uuid, ref}) {
@@ -80,26 +88,8 @@ export const mutations = {
       state.edit = null //
   },*/
   _set_entry_value(state, {aspect_loc, value}) {
-    let select = null
+    let select = select_aspect_loc(state.entries,aspect_loc, true)
     const final_loc = ld.last(aspect_loc)
-
-    //let main_aspect = ld.take(aspect_loc, 2)
-
-    for (let loc of aspect_loc) {
-      if (loc === final_loc) {
-        break
-      } else if (loc[0] === ENTRY) {
-        select = state.entries.get(loc[1]).aspects_values
-      } else if (loc[0] === ASPECT) {
-        select = select[loc[1]]
-      } else if (loc[0] === COMPONENT) {
-        select = select.value[loc[1]]
-      } else if (loc[0] === INDEX) {
-        select = select.value[loc[1]]
-      } else {
-        console.log("ERROR store.entries. location", loc)
-      }
-    }
     //console.log("final,", final_loc, "select", select)
     if (final_loc[0] === ASPECT) {
       select[final_loc[1]] = value
@@ -162,60 +152,13 @@ export const getters = {
   },
   value(state) {
     return (aspect_loc) => {
-      let select = null
-        for (let loc of aspect_loc) {
-          try {
-          if (loc[0] === ENTRY) {
-            select = state.entries.get(loc[1]).aspects_values
-          } else if(loc[0] === PARENT) {
-            const number_of_levels = parseInt(loc[1])
-            // start from the 1.
-            let entry = state.entries.get(aspect_loc[0][1])
-            for(let i=0; i < number_of_levels; i++) {
-              entry = state.entries.get(entry.refs.parent.uuid)
-            }
-            select = entry.aspects_values
-          } else if (loc[0] === ASPECT) {
-            select = select[loc[1]]
-          } else if (loc[0] === COMPONENT) {
-            //console.log("get from component", select, loc)
-            select = select.value[loc[1]]
-          } else if (loc[0] === INDEX) {
-            //console.log("get from index", select)
-            select = select.value[loc[1]]
-          } else if (loc[0] === LINKED_INDEX) {
-            //console.log("get from index", select)
-            select = select.value[loc[1]]
-          } else {
-            console.log("cannot get value at:", select, "with loc:", loc, loc[0] === ASPECT, 'background: #222; color: #bada55')
-          }
-          /*
-                    case COLLECT:
-              if (select.value.constructor !== Array) {
-                console.log("aspect-loc COLLECT(_) only runs over arrays")
-                return undefined
-              } else {
-                // SHOULD BE THE FINAL
-                return select.value.map(el => {
-                  //console.log("el", el, el.value[parseInt(loc[1])])
-                  return {value: el.value[parseInt(loc[1])].value}
-                })
-              }
-           */
-
-          //console.log("se--l", select)
-            if(select === undefined) {
-              return null
-            }
-          } catch(e) {
-            console.log("Exception in entries.value aspect_loc", aspect_loc, "select:", select, "loc", loc)
-            console.log(e)
-            return null
-          }
-        }
-        //console.log("store.entries, value?", aspect_loc, "res:", select)
-        return select
+      let select = select_aspect_loc(state.entries, aspect_loc)
+      //console.log("store.entries, value?", aspect_loc, "res:", select)
+      return select
     }
+  },
+  delete_ref_value(state, {uuid, child_uuid}) {
+
   },
   get_recursive_entries(state, getters) {
     return uuid => {
@@ -237,11 +180,11 @@ export const actions = {
   set_entry_value({commit}, data) {
     commit("_set_entry_value", data)
   },
-  add_child(context, uuid_n_aspect_loc_n_child) {
+  /*add_child(context, uuid_n_aspect_loc_n_child) {
     console.log("store.entries: add child")
     context.commit("set_entry_value", uuid_n_aspect_loc_n_child)
     context.commit("add_ref_child", uuid_n_aspect_loc_n_child)
-  },
+  },*/
   cancel_entry_edit({commit}, uuid) {
     commit("cancel_entry_edit", uuid)
 
@@ -259,21 +202,27 @@ export const actions = {
 
       if (entry.refs.parent) {
         const parent = entry.refs.parent
-        let parent_no_index = JSON.parse(JSON.stringify(parent))
-
-        if (ld.last(parent_no_index.aspect_loc)[0] === "index") {
-          parent_no_index.aspect_loc.pop()
-        }
-        const value = context.getters.get_entry_value(parent_no_index)
-        // ListOf
-        if (Array.isArray(value)) {
-          const filtered_value = value.filter(av => av !== uuid)
-          context.commit("set_entry_value", {
-            ...parent_no_index,
-            value: pack_value(filtered_value)
-          })
-        }
+        context.commit("delete_ref_child", {uuid: parent.uuid, child_uuid: uuid})
+        console.log(context)
+        //context.getters["value"]
+        //context.commit("delete_ref_value", {uuid: parent.uuid, child_uuid: uuid})
       }
+      //context.getters("value")
+      /*let parent_no_index = JSON.parse(JSON.stringify(parent))
+
+      if (ld.last(parent_no_index.aspect_loc)[0] === "index") {
+        parent_no_index.aspect_loc.pop()
+      }
+      const value = context.getters.get_entry_value(parent_no_index)
+      // ListOf
+      if (Array.isArray(value)) {
+        const filtered_value = value.filter(av => av !== uuid)
+        context.commit("set_entry_value", {
+          ...parent_no_index,
+          value: pack_value(filtered_value)
+        })
+
+       */
     } else {
       console.log("store: entries DELETE tries to delete some entry that doesnt exist!")
     }
