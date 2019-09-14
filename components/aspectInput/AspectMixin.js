@@ -47,9 +47,6 @@ export default {
     toString(value) {
       return value || ""
     },
-    entry_uuid() {
-      return this.aspect_loc[0][1];
-    }
   },
   computed: {
     edit() {

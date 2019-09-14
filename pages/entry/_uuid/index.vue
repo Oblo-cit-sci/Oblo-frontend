@@ -62,7 +62,7 @@
         EDIT,
         AUTOSAVE,
         GLOBAL_ASPECT_REF,
-        ASPECT, DELETE_CONTEXT_ENTRY, PUBLIC, PRIVATE_LOCAL, VIEW, SAVE, ENTRY
+        ASPECT, DELETE_CONTEXT_ENTRY, PUBLIC, PRIVATE_LOCAL, VIEW, ENTRY
     } from "../../../lib/consts";
     import Aspect from "../../../components/Aspect";
 
@@ -96,7 +96,6 @@
                 uuid: null,
                 aspect_locs: {},
                 //
-                dirty: false,
                 openSaveDialog: false,
                 route_destination: null
             }
@@ -137,7 +136,7 @@
                 const value = event.value
                 switch (action) {
                     case AUTOSAVE:
-                        this.dirty = false
+                        //this.dirty = false
                         autosave(this.$store, this.entry)
                         break
                     case GLOBAL_ASPECT_REF:
@@ -146,11 +145,11 @@
                     // todo maybe the server could set the titleAspect and itself
                     // would in that case emit up this actiovaluen
                     // otherwise, now its unused, cuz the titleAspect is grabbed here
-                    case SAVE:
-                        this.dirty = false
+                    /*case SAVE:
+                        //this.dirty = false
                         save_entry(this.$store, this.entry)
                         break
-
+                    */
                     case DELETE_CONTEXT_ENTRY:
                         this.delete_child(value)
                         break
@@ -209,6 +208,9 @@
                 } else {
                     return EDIT
                 }
+            },
+            dirty() {
+              return this.entry.local.dirty || false
             },
             parent_title() {
                 // todo not necessarily available for remote entries. should be included?

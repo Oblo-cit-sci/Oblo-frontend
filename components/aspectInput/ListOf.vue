@@ -31,7 +31,7 @@
         DELETE_CONTEXT_ENTRY, ASPECT
     } from "../../lib/consts";
     import DecisionDialog from "../DecisionDialog";
-    import {create_entry, get_type_slug_from} from "../../lib/entry";
+    import {create_entry, get_type_slug_from, get_uuid} from "../../lib/entry";
     import EntryNavMixin from "../EntryNavMixin";
     import ListMixin from "../ListMixin";
     import {ENTRIES_ADD_REF_CHILD, ENTRIES_GET_ENTRY, ENTRIES_SET_ENTRY_VALUE} from "../../lib/store_consts";
@@ -104,12 +104,12 @@
             create_item() {
                 const stripped_aspect_loc = this.$_.drop(this.aspect_loc)
                 const entry = create_entry(this.$store, this.item_type_slug, {}, {
-                    uuid: this.entry_uuid(),
+                    uuid: get_uuid(this.aspect_loc),
                     aspect_loc: stripped_aspect_loc,
                     index: this.i_value.length
                 })
                 this.$store.commit(ENTRIES_ADD_REF_CHILD, {
-                    uuid: this.entry_uuid(),
+                    uuid: get_uuid(this.aspect_loc),
                     child_uuid: entry.uuid,
                     aspect_loc: stripped_aspect_loc,
                     index: this.i_value.length

@@ -3,7 +3,7 @@
  */
 import {ASPECT, COLLECT, COMPONENT, DRAFT, ENTRY, INDEX, LINKED_INDEX, PARENT} from "../lib/consts";
 import {complete_aspect_loc} from "../lib/client";
-import {select_aspect_loc} from "../lib/entry";
+import {get_uuid, select_aspect_loc} from "../lib/entry";
 
 
 
@@ -14,7 +14,6 @@ const DELETE_ENTRY = "delete_entry"
 export const state = () => ({
   timeline_entries: [],
   entries: new Map(),
-  edit: new Map(),
 });
 
 export const mutations = {
@@ -100,7 +99,13 @@ export const mutations = {
     } else {
       console.log("ERROR store.entries. final location", final_loc)
     }
-  }
+  },
+  set_dirty(state, uuid) {
+      state.entries.get(uuid).local.dirty = true
+  },
+  set_clean(state, uuid) {
+    state.entries.get(uuid).local.dirty = false
+  },
 }
 
 export const getters = {
@@ -126,7 +131,6 @@ export const getters = {
   },
   get_entry(state) {
     return (uuid) => {
-      //console.log("entries get_entry", state.entries, uuid)
       return state.entries.get(uuid)
     };
   },
@@ -179,6 +183,7 @@ export const getters = {
 export const actions = {
   set_entry_value({commit}, data) {
     commit("_set_entry_value", data)
+    commit("set_dirty", get_uuid(data.aspect_loc))
   },
   /*add_child(context, uuid_n_aspect_loc_n_child) {
     console.log("store.entries: add child")

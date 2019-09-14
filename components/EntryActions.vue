@@ -38,7 +38,7 @@
         DRAFT,
         ENTRYACTION,
         PRIVATE_LOCAL,
-        PUBLIC, SAVE,
+        PUBLIC,
         SUBMITTED,
         VIEW
     } from "../lib/consts";
@@ -70,53 +70,6 @@
             entry: {
                 type: Object
             },
-            dirty: {
-                type: Boolean
-            }
-        },
-        computed: {
-            view() {
-                return this.mode === VIEW
-            },
-            is_draft() {
-                return this.entry.status === DRAFT
-            },
-            submitted() {
-                return this.entry.status === SUBMITTED
-            },
-            private_local() {
-                return (this.entry_type.content.meta.privacy || PUBLIC) === PRIVATE_LOCAL
-            },
-            connected() {
-                return this.$store.state.connected
-            },
-            has_pages() {
-                return has_pages(this.entry_type)
-            },
-            disable_download() {
-                return this.has_pages && !this.last_page
-            },
-            owner() {
-                return current_user_is_owner(this.$store, this.entry)
-            },
-            named_pages() {
-                return this.entry_type.content.meta.hasOwnProperty("named_pages") || false
-            },
-            save_word() {
-                if (this.in_context) {
-                    return "save and back"
-                } else if (this.private_local) {
-                    return "save"
-                } else {
-                    return "save draft"
-                }
-            },
-            upload_option() {
-                return this.entry_type.content.activities.hasOwnProperty("upload")
-            },
-            initial_version() {
-                return this.entry.version === 0
-            }
         },
         data() {
             return {
@@ -212,7 +165,7 @@
             save() {
                 // todo not if it is an aspect page
                 //save_entry(this.$store, this.entry)
-                this.$emit(ENTRYACTION, {action: SAVE})
+                //this.$emit(ENTRYACTION, {action: SAVE})
                 this.ok_snackbar("Entry saved")
                 this.back()
             },
@@ -255,8 +208,56 @@
                 console.log("en action lastpage_reached", $event)
             },
             back(to_last_element = true) {
-                this.$emit("update:dirty", false)
+                //this.$emit("update:dirty", false)
+                this.$store.commit("entries/set_clean",this.entry.uuid)
                 this.to_parent(to_last_element)
+            }
+        },
+        computed: {
+            view() {
+                return this.mode === VIEW
+            },
+            dirty() {
+                return this.entry.local.dirty
+            },
+            is_draft() {
+                return this.entry.status === DRAFT
+            },
+            submitted() {
+                return this.entry.status === SUBMITTED
+            },
+            private_local() {
+                return (this.entry_type.content.meta.privacy || PUBLIC) === PRIVATE_LOCAL
+            },
+            connected() {
+                return this.$store.state.connected
+            },
+            has_pages() {
+                return has_pages(this.entry_type)
+            },
+            disable_download() {
+                return this.has_pages && !this.last_page
+            },
+            owner() {
+                return current_user_is_owner(this.$store, this.entry)
+            },
+            named_pages() {
+                return this.entry_type.content.meta.hasOwnProperty("named_pages") || false
+            },
+            save_word() {
+                if (this.in_context) {
+                    return "save and back"
+                } else if (this.private_local) {
+                    return "save"
+                } else {
+                    return "save draft"
+                }
+            },
+            upload_option() {
+                return this.entry_type.content.activities.hasOwnProperty("upload")
+            },
+            initial_version() {
+                return this.entry.version === 0
             }
         }
     }

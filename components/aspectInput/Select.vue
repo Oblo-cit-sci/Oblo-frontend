@@ -58,7 +58,7 @@
             selection() {
                 //console.log("Select-selection", this.selection, "/",val, "/",prev_val, !prev_val)
                 if (this.init) {
-                    this.init=true
+                    this.init = false
                     return
                 }
                 //console.log("select", this.aspect, this.selection)
