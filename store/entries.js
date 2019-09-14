@@ -6,7 +6,6 @@ import {complete_aspect_loc} from "../lib/client";
 import {get_uuid, select_aspect_loc} from "../lib/entry";
 
 
-
 const ld = require("lodash")
 
 const DELETE_ENTRY = "delete_entry"
@@ -87,7 +86,7 @@ export const mutations = {
       state.edit = null //
   },*/
   _set_entry_value(state, {aspect_loc, value}) {
-    let select = select_aspect_loc(state.entries,aspect_loc, true)
+    let select = select_aspect_loc(state.entries, aspect_loc, true)
     const final_loc = ld.last(aspect_loc)
     //console.log("final,", final_loc, "select", select)
     if (final_loc[0] === ASPECT) {
@@ -101,11 +100,16 @@ export const mutations = {
     }
   },
   set_dirty(state, uuid) {
-      state.entries.get(uuid).local.dirty = true
+    state.entries.get(uuid).local.dirty = true
   },
   set_clean(state, uuid) {
     state.entries.get(uuid).local.dirty = false
   },
+  _save_entry(state, uuid) {
+    let entry = getters.get_entry(uuid)
+    entry.version += 1
+    entry.local.prev = null
+  }
 }
 
 export const getters = {
@@ -193,6 +197,8 @@ export const actions = {
   cancel_entry_edit({commit}, uuid) {
     commit("cancel_entry_edit", uuid)
 
+  },
+  save_entry(context, uuid) {
   },
   delete_entry(context, uuid) {
     console.log("store.entries.delete entry-...")

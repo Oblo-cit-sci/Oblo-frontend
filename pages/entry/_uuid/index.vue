@@ -22,7 +22,6 @@
           :aspect="aspect"
           :aspect_loc="aspect_locs[aspect.name]"
           v-on:entryAction="entryAction($event)"
-          :id="aspect_id(aspect.name)"
           mode="edit")
       div(v-if="page === 0")
         v-divider(class="wide_divider")
@@ -135,10 +134,10 @@
                 const action = event.action
                 const value = event.value
                 switch (action) {
-                    case AUTOSAVE:
+                    /*case AUTOSAVE:
                         //this.dirty = false
                         autosave(this.$store, this.entry)
-                        break
+                        break*/
                     case GLOBAL_ASPECT_REF:
                         this.$store.commit("add_aspect_loc", value)
                         break
@@ -171,9 +170,10 @@
                 this.complete = true
             },
             // todo maybe kickout, since its also in Aspect
-            aspect_id(aspect_name) {
+            /*aspect_id(aspect_name) {
+                console.log("ASP_LOC STR", aspect_loc_str(this.aspect_locs[aspect_name]))
                 return aspect_loc_str(this.aspect_locs[aspect_name])
-            },
+            },*/
             // should actually be the whole ref string
             // TODO goes out for Aspect component
             aspectComponent(aspect) {

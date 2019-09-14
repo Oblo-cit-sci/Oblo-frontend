@@ -188,7 +188,7 @@
                 }
             },
             aspect_id() {
-                return aspect_loc_str(this.aspect_loc)
+                return aspect_loc_str(this.$_.tail(this.aspect_loc))
             },
         },
         methods: {

@@ -151,7 +151,6 @@
             cancel_edit() {
                 console.log("cancel_edit")
                 if (this.entry.version === 0) {
-                    console.log("jupp")
                     this.$store.dispatch(ENTRIES_DELETE_ENTRY, this.entry.uuid)
                     this.ok_snackbar("Creation canceled")
                     this.back(false)
