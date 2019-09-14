@@ -19,7 +19,6 @@
   import {get_location, create_location_error} from "../../lib/common";
   import AspectMixin from "./AspectMixin";
   import SingleSelect from "../SingleSelect";
-  import {AUTOSAVE, GLOBAL_ASPECT_REF} from "../../lib/consts";
   import {rev_geocode} from "../../lib/services/mapbox";
 
   const ACTUAL_LOCATION = "act";
@@ -73,8 +72,7 @@
             this.value_change(this.i_value)
           });
         } else if (this.selection.value === FROM_MAP) {
-          this.$emit("entryAction", {action: GLOBAL_ASPECT_REF, value: this.extra.aspect_loc})
-          this.$emit("entryAction", {action: AUTOSAVE})
+          //this.$emit("entryAction", {action: GLOBAL_ASPECT_REF, value: this.extra.aspect_loc})
           //console.log("emitted")
           this.$store.commit("set_mapmode", {
             select: "point",

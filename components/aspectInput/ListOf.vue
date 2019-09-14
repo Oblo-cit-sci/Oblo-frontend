@@ -24,11 +24,9 @@
 <script>
     import AspectMixin from "./AspectMixin";
     import {
-        ENTRYACTION,
         CONTEXT_ENTRY,
         INDEX,
-        AUTOSAVE,
-        DELETE_CONTEXT_ENTRY, ASPECT
+        ASPECT
     } from "../../lib/consts";
     import DecisionDialog from "../DecisionDialog";
     import {create_entry, get_type_slug_from, get_uuid} from "../../lib/entry";
@@ -95,10 +93,11 @@
                     const ref = this.i_value[index]
                     this.i_value.splice(parseInt(index), 1)
                     this.value_change(this.i_value)
-                    this.$emit(ENTRYACTION, {
+                    // TODO
+                    /*this.$emit(ENTRYACTION, {
                         action: DELETE_CONTEXT_ENTRY,
                         value: {uuid: ref, aspect_loc: this.aspect_loc_for_index(index)}
-                    })
+                    })*/
                 }
             },
             create_item() {
@@ -125,7 +124,6 @@
                 return aspect_loc_str(this.aspect_loc_for_index(index))
             },
             open_item(item) {
-                this.$emit(ENTRYACTION, {action: AUTOSAVE})
                 if (!this.has_entry(item.key))
                     this.fetch_and_nav(entry.uuid)
                 else {

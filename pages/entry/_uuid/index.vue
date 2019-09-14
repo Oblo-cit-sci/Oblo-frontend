@@ -38,6 +38,7 @@
         id="unsaved_changes"
         title="Unsaved changes"
         text="You have unsaved changes"
+        cancel_color="accent"
         cancel_text="Keep on editing"
         confirm_text="Save and move on")
       div {{entry}}
@@ -52,24 +53,21 @@
     import Privacy from "../../../components/Privacy"
 
     import {
-        autosave,
-        get_TitleAspect, save_entry, create_entry
+        get_TitleAspect
     } from "../../../lib/entry"
     import Title_Description from "../../../components/Title_Description"
     import EntryActions from "../../../components/EntryActions";
     import {
         EDIT,
-        AUTOSAVE,
-        GLOBAL_ASPECT_REF,
-        ASPECT, DELETE_CONTEXT_ENTRY, PUBLIC, PRIVATE_LOCAL, VIEW, ENTRY
+        ASPECT, PRIVATE_LOCAL, VIEW, ENTRY
     } from "../../../lib/consts";
     import Aspect from "../../../components/Aspect";
 
     import goTo from 'vuetify/lib/components/Vuetify/goTo'
     import EntryNavMixin from "../../../components/EntryNavMixin";
     import DecisionDialog from "../../../components/DecisionDialog";
-    import {ENTRIES_GET_ENTRY} from "../../../lib/store_consts";
-    import {aspect_loc_str, MAspectComponent} from "../../../lib/aspect";
+    import {ENTRIES_GET_ENTRY, ENTRIES_SAVE_ENTRY} from "../../../lib/store_consts";
+    import {MAspectComponent} from "../../../lib/aspect";
 
 
     export default {
@@ -96,7 +94,7 @@
                 aspect_locs: {},
                 //
                 openSaveDialog: false,
-                route_destination: null
+                router_next: null
             }
         },
         created() {
@@ -128,19 +126,31 @@
                 }, 300)
             }
         },
+        beforeRouteLeave(to, from, next) {
+          if(this.entry.local.dirty) {
+              this.openSaveDialog = true
+              this.router_next = next
+          }  else {
+              next()
+          }
+        },
         methods: {
+            edit_or_save_dialog(event) {
+                if (event.confirm) {
+                    this.$store.dispatch(ENTRIES_SAVE_ENTRY, this.uuid)
+                    this.router_next()
+                } else {
+                    this.router_next = null
+                }
+            },
             entryAction(event) {
                 //console.log("entry action")
                 const action = event.action
                 const value = event.value
                 switch (action) {
-                    /*case AUTOSAVE:
-                        //this.dirty = false
-                        autosave(this.$store, this.entry)
-                        break*/
-                    case GLOBAL_ASPECT_REF:
+                  /*  case GLOBAL_ASPECT_REF:
                         this.$store.commit("add_aspect_loc", value)
-                        break
+                        break */
                     // todo maybe the server could set the titleAspect and itself
                     // would in that case emit up this actiovaluen
                     // otherwise, now its unused, cuz the titleAspect is grabbed here
@@ -149,9 +159,9 @@
                         save_entry(this.$store, this.entry)
                         break
                     */
-                    case DELETE_CONTEXT_ENTRY:
+                    /*case DELETE_CONTEXT_ENTRY:
                         this.delete_child(value)
-                        break
+                        break */
                     default:
                         console.log("unknown entry action", action, value, "event:", event)
                         break

@@ -106,7 +106,7 @@ export const mutations = {
     state.entries.get(uuid).local.dirty = false
   },
   _save_entry(state, uuid) {
-    let entry = getters.get_entry(uuid)
+    let entry = state.entries.get(uuid)
     entry.version += 1
     entry.local.prev = null
   }
@@ -145,18 +145,6 @@ export const getters = {
   },
   get_own_entries(state) {
     // todo
-  },
-  // TODO REMOVE
-  entry(state) {
-    return (uuid) => {
-      //console.log("getter called")
-      return state.entries.get(uuid)
-    }
-  },
-  edit(state) {
-    return () => {
-      return state.edit
-    }
   },
   value(state) {
     return (aspect_loc) => {
@@ -199,6 +187,7 @@ export const actions = {
 
   },
   save_entry(context, uuid) {
+    context.commit("_save_entry", uuid)
   },
   delete_entry(context, uuid) {
     console.log("store.entries.delete entry-...")

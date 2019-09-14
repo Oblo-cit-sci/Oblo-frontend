@@ -32,7 +32,6 @@
 
   import AspectMixin from "./AspectMixin"
   import Aspect from "../Aspect"
-  import {ENTRYACTION, GLOBAL_ASPECT_REF} from "../../lib/consts";
   import {aspect_raw_default_value, packed_aspect_default_value} from "../../lib/aspect";
 
   export default {

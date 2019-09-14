@@ -36,14 +36,13 @@
 
     import {
         DRAFT,
-        ENTRYACTION,
         PRIVATE_LOCAL,
         PUBLIC,
         SUBMITTED,
         VIEW
     } from "../lib/consts";
     import Paginate from "./Paginate";
-    import {current_user_is_owner, has_pages, save_entry} from "../lib/entry";
+    import {current_user_is_owner, has_pages} from "../lib/entry";
 
     import {export_data} from "../lib/client";
     import DecisionDialog from "./DecisionDialog";
