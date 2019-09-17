@@ -52,7 +52,6 @@
         },
         watch: {
             value() {
-                //console.log("Select-watch.value")
                 this.set_selection()
             },
             selection() {

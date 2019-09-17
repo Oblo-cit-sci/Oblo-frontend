@@ -220,6 +220,7 @@
                 xtra_copy.no_title = true
                 xtra_copy.clear = "no_title"
                 xtra_copy.listitem = true
+                xtra_copy.list_index = index
                 return xtra_copy
             },
             aspectAction(event, index) {

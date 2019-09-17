@@ -26,10 +26,10 @@
     import {
         CONTEXT_ENTRY,
         INDEX,
-        ASPECT
+        ASPECT, ENTRY
     } from "../../lib/consts";
     import DecisionDialog from "../DecisionDialog";
-    import {create_entry, get_type_slug_from, get_uuid} from "../../lib/entry";
+    import {create_entry, get_uuid} from "../../lib/entry";
     import EntryNavMixin from "../EntryNavMixin";
     import ListMixin from "../ListMixin";
     import {ENTRIES_ADD_REF_CHILD, ENTRIES_GET_ENTRY, ENTRIES_SET_ENTRY_VALUE} from "../../lib/store_consts";
@@ -137,9 +137,8 @@
                     for (let index in this.items) {
                         const item = this.items[index]
                         //let entry = this.$store.getters["entries/get_entry"](item.key)
-                        this.$store.commit(ENTRIES_SET_ENTRY_VALUE, {
-                            uuid: item.key,
-                            aspect_loc: [[ASPECT, idAspect]],
+                        this.$store.commit("entries/_set_entry_value", {
+                            aspect_loc: [[ENTRY, item.key], [ASPECT, idAspect]],
                             value: {value: 1 + parseInt(index)}
                         })
                     }

@@ -37,7 +37,7 @@
 
 <script>
 
-    import {ASPECTACTION, VIEW} from "../lib/consts";
+    import {ASPECTACTION, LIST_INDEX, VIEW} from "../lib/consts";
 
     import Title_Description from "./Title_Description";
     import {
@@ -114,8 +114,11 @@
                 } else {
                     //console.log("checking", this.aspect.name)
                     //console.log("dep on location", this.$_.concat([this.aspect_loc[0]], this.condition.aspect))
-                    let condition_value = this.$store.getters["entries/value"](
-                        this.$_.concat([this.aspect_loc[0]], this.condition.aspect)).value
+                    let aspect_location = complete_aspect_loc(
+                        aspect_loc_uuid(this.aspect_loc),
+                        aspect_loc_str2arr(this.condition.aspect),
+                        this.extra[LIST_INDEX])
+                    let condition_value = this.$store.getters["entries/value"](aspect_location).value
                     if(condition_value === null) {
                         return false
                     }
@@ -130,9 +133,12 @@
             },
             value: function () {
                 if (this.aspect.attr.ref_value) {
-                    let location_array = complete_aspect_loc(aspect_loc_uuid(this.aspect_loc), aspect_loc_str2arr(this.aspect.attr.ref_value))
-                    console.log("value ref,  ",this.aspect.name, location_array)
-                    return this.$store.getters[ENTRIES_VALUE](location_array)
+                    let aspect_location = complete_aspect_loc(
+                        aspect_loc_uuid(this.aspect_loc),
+                        aspect_loc_str2arr(this.aspect.attr.ref_value),
+                        this.extra[LIST_INDEX])
+                    //console.log("value ref,  ",this.aspect.name, location_array)
+                    return this.$store.getters[ENTRIES_VALUE](aspect_location)
                 } else if(this.aspect.attr.ref_length) { // this is for lists
                     let location_array = complete_aspect_loc(aspect_loc_uuid(this.aspect_loc), aspect_loc_str2arr(this.aspect.attr.ref_length))
                     const fixed_length = this.$store.getters[ENTRIES_VALUE](location_array).value.length
