@@ -8,8 +8,8 @@
       v-model="i_value"
       :readOnly="readOnly"
       :append-outer-icon="clearIcon"
+      :disabled="disabled"
       @click:append-outer="$emit('entryAction', {action: 'clear'})"
-
       @input="value_change($event)")
 </template>
 
