@@ -13,12 +13,12 @@
       span(v-if="view")
         v-btn(color="secondary" @click="edit") edit
       span(v-else)
-        v-btn(color="seconday" @click="show_cancel") cancel
+        v-btn(v-if="NOT_TRAINING" color="seconday" @click="show_cancel") cancel
 
       // TODO for the training we just DISABLE, otherwise it would be: :disabled="init"
-      v-btn(color="warning" :disabled="initial_version" @click="show_delete") delete
+      v-btn(v-if="NOT_TRAINING" color="warning" :disabled="initial_version" @click="show_delete") delete
 
-      v-btn(:disabled="!dirty" color="success" @click="save") {{save_word}}
+      v-btn( color="success" @click="save") {{save_word}}
       v-btn(
         v-if="!private_local && !view && !in_context"
         color="success"
@@ -72,6 +72,7 @@
         },
         data() {
             return {
+                NOT_TRAINING: false,
                 last_page: false,
                 dialog_visible: false,
                 delete_dialog_data: {
@@ -243,7 +244,9 @@
                 return this.entry_type.content.meta.hasOwnProperty("named_pages") || false
             },
             save_word() {
-                if (this.in_context) {
+                if(!this.dirty) {
+                    return "back"
+                } else if (this.in_context) {
                     return "save and back"
                 } else if (this.private_local) {
                     return "save"
