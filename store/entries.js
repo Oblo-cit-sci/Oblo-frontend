@@ -86,10 +86,10 @@ export const mutations = {
       state.edit = null //
   },*/
   _set_entry_value(state, {aspect_loc, value}) {
-    //console.log("set entry value", aspect_loc, value)
+    console.log("set entry value", aspect_loc, value)
     let select = select_aspect_loc(state.entries, aspect_loc, true)
     const final_loc = ld.last(aspect_loc)
-    //console.log("final,", final_loc, "select", select, "value", value)
+    console.log("final,", final_loc, "select", select, "value", value)
     if (final_loc[0] === ASPECT) {
       select[final_loc[1]] = value
     } else if (final_loc[0] === COMPONENT) {
@@ -99,7 +99,7 @@ export const mutations = {
     } else {
       console.log("ERROR store.entries. final location", final_loc)
     }
-    //console.log(select)
+    console.log("result", select, state)
   },
   set_dirty(state, uuid) {
     state.entries.get(uuid).local.dirty = true
@@ -205,7 +205,7 @@ export const actions = {
       if (entry.refs.parent) {
         const parent = entry.refs.parent
         context.commit("delete_ref_child", {uuid: parent.uuid, child_uuid: uuid})
-        console.log(context)
+        //console.log(context)
         //context.getters["value"]
         //context.commit("delete_ref_value", {uuid: parent.uuid, child_uuid: uuid})
       }

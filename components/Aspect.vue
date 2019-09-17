@@ -37,7 +37,7 @@
 
 <script>
 
-    import {ASPECTACTION, LIST_INDEX, VIEW} from "../lib/consts";
+    import {ASPECTACTION, ENTRY, LIST_INDEX, VIEW} from "../lib/consts";
 
     import Title_Description from "./Title_Description";
     import {
@@ -47,7 +47,7 @@
         aspect_raw_default_value,
         MAspectComponent
     } from "../lib/aspect";
-    import {ENTRIES_SET_ENTRY_VALUE, ENTRIES_VALUE} from "../lib/store_consts";
+    import {ENTRIES_GET_ENTRY, ENTRIES_SET_ENTRY_VALUE, ENTRIES_VALUE} from "../lib/store_consts";
     import {aspect_loc_uuid, complete_aspect_loc} from "../lib/client";
 
     export default {
@@ -119,7 +119,7 @@
                         aspect_loc_str2arr(this.condition.aspect),
                         this.extra[LIST_INDEX])
                     let condition_value = this.$store.getters["entries/value"](aspect_location).value
-                    if(condition_value === null) {
+                    if (condition_value === null) {
                         return false
                     }
                     const compare = this.condition.compare || "equal"
@@ -132,6 +132,16 @@
                 }
             },
             value: function () {
+                if (this.aspect.attr.IDAspect) {
+                    let this_uuid = aspect_loc_uuid(this.aspect_loc)
+                    let parent_uuid = this.$store.getters[ENTRIES_GET_ENTRY](this_uuid).refs.parent.uuid
+                    let parent = this.$store.getters[ENTRIES_GET_ENTRY](parent_uuid)
+                    let child_ref = parent.refs.children[this_uuid][0]
+                    let that_ref_value = this.$store.getters[ENTRIES_VALUE](complete_aspect_loc(parent_uuid, child_ref))
+                    let index = this.$_.findIndex(that_ref_value.value, (v) => {return  v === this_uuid})
+                    console.log("IDAspect", this.aspect.name, index)
+                    return {value: index + 1}
+                }
                 if (this.aspect.attr.ref_value) {
                     let aspect_location = complete_aspect_loc(
                         aspect_loc_uuid(this.aspect_loc),
@@ -139,7 +149,7 @@
                         this.extra[LIST_INDEX])
                     //console.log("value ref,  ",this.aspect.name, location_array)
                     return this.$store.getters[ENTRIES_VALUE](aspect_location)
-                } else if(this.aspect.attr.ref_length) { // this is for lists
+                } else if (this.aspect.attr.ref_length) { // this is for lists
                     let location_array = complete_aspect_loc(aspect_loc_uuid(this.aspect_loc), aspect_loc_str2arr(this.aspect.attr.ref_length))
                     const fixed_length = this.$store.getters[ENTRIES_VALUE](location_array).value.length
                     this.extra["ref_length"] = fixed_length
@@ -155,7 +165,7 @@
                     return true
             },
             real_mode() {
-                if(this.aspect.attr.ref_value) {
+                if (this.aspect.attr.ref_value) {
                     return VIEW
                 }
                 if (this.aspect.attr.mode !== undefined) {
@@ -164,7 +174,7 @@
                     return this.mode
             },
             raw_value() {
-                if(!this.value) {
+                if (!this.value) {
                     return aspect_raw_default_value(this.aspect)
                 } else {
                     return this.value.value

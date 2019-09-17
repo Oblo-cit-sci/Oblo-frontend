@@ -37,7 +37,7 @@ export default {
   },
   methods: {
     value_change(event) {
-      console.log("asp mix val change", this.aspect, event)
+      //console.log("asp mix val change", this.aspect, event)
       this.$emit('update_value', event);
       if(this.extra[TITLE_ASPECT]) {
         //console.log("sendup-")

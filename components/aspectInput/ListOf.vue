@@ -115,7 +115,6 @@
                 })
                 this.to_entry(entry.uuid)
                 this.value_change(this.$_.concat(this.i_value, [entry.uuid]))
-                this.update_indices()
             },
             aspect_loc_for_index(index) {
                 return this.$_.concat(this.aspect_loc, [[INDEX, index]])
@@ -128,20 +127,6 @@
                     this.fetch_and_nav(entry.uuid)
                 else {
                     this.$router.push("/entry/" + item.key)
-                }
-            },
-            update_indices() {
-                let entry_type = this.$store.getters.entry_type(this.item_type_slug)
-                let idAspect = entry_type.content.meta.IDAspect
-                if (idAspect) {
-                    for (let index in this.items) {
-                        const item = this.items[index]
-                        //let entry = this.$store.getters["entries/get_entry"](item.key)
-                        this.$store.commit("entries/_set_entry_value", {
-                            aspect_loc: [[ENTRY, item.key], [ASPECT, idAspect]],
-                            value: {value: 1 + parseInt(index)}
-                        })
-                    }
                 }
             }
         }
