@@ -2,7 +2,7 @@
   div
     h1 Settings
     br
-    h3 Upload to the LICCI Repo (temporary option)
+    h3 User key: Upload to the LICCI Repo (temporary option)
     div During the main data collection period of LICCI partners, partners can upload collected data to the LICCI data repository
     br
     TextShort(

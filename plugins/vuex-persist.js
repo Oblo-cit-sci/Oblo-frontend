@@ -11,7 +11,8 @@ export default ({store}) => {
         codes: state.codes,
         draft_numbers: state.draft_numbers,
         entry_types: state.entry_types,
-        user_data: state.user_data
+        user_data: state.user_data,
+        meta: state.meta
       }
     ),
   }).plugin(store)

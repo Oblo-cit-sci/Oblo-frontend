@@ -41,8 +41,6 @@
         cancel_color="accent"
         cancel_text="Keep on editing"
         confirm_text="Save and move on")
-      div ---
-      div {{entry}}
 </template>
 
 <script>

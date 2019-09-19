@@ -123,7 +123,6 @@
                     for (let item_index in this.i_value) {
                         if (!this.aspect.attr.indexTitle) {
                             let list_items = this.i_value[item_index].value
-                            console.log("list_items", list_items)
                             let title_comp_value = this.$_.find(list_items, (list_item, key) => key === titleAspectName).value
                             this.titles.push(title_comp_value)
                         } else {
@@ -133,7 +132,6 @@
                     }
                 } else {
                     this.item_aspect = this.aspect.items;
-                    //this.item_aspect.required = true;
                     this.structure = "simple";
                 }
             }
@@ -160,7 +158,6 @@
         },
         methods: {
             clearableAspectComponent(aspect) {
-                console.log("List.clearableAspectComponent", aspect)
                 return MAspectComponent(aspect, this.mode)
             },
             add_value(n = 1) {

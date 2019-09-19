@@ -84,7 +84,6 @@
         },
         created() {
             try {
-                console.log("created", this.aspect)
                 this.has_alternative = this.aspect.attr.hasOwnProperty("alternative")
                 if (this.aspect.attr.hasOwnProperty("condition")) {
                     this.condition = this.aspect.attr.condition
@@ -112,8 +111,6 @@
                 if (!this.condition) {
                     return false
                 } else {
-                    //console.log("checking", this.aspect.name)
-                    //console.log("dep on location", this.$_.concat([this.aspect_loc[0]], this.condition.aspect))
                     let aspect_location = complete_aspect_loc(
                         aspect_loc_uuid(this.aspect_loc),
                         aspect_loc_str2arr(this.condition.aspect),
@@ -214,11 +211,7 @@
         },
         methods: {
             title_description(aspect) {
-                //console.log("title_description", aspect)
-                /* this catches a bug, that appears, when creating an activty on hh survey
-                  which is an alternative value (other activity),
-                  and then going to the pebble game on the ind survey
-                 */
+                // todo. probably not needed anymore
                 if(!aspect) {
                     return {
                         title:"",
@@ -231,11 +224,9 @@
                 }
             },
             aspectAction(event) {
-                console.log("aspect-acion yeah", event)
                 this.$emit(ASPECTACTION, event)
             },
             aspectComponent(aspect, mode) {
-                console.log("Aspect.aspectComponent", aspect)
                 return MAspectComponent(aspect, mode, this.extra)
             },
             update_value(event) {
