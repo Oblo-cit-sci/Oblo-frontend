@@ -1,15 +1,14 @@
 <template lang="pug">
   div
     v-text-field(
-      :readonly="readOnly"
       outline
       single-line
-      :hide-details="hideDetails"
+      :readonly="readOnly"
       :disabled="disabled"
+      :hide-details="hideDetails"
       :placeholder="aspect.attr.placeholder"
       :hint="hint"
       :rules="rules"
-
       :prependIcon="prependIcon"
       @click:prepend="$emit('clickPrepend')"
 

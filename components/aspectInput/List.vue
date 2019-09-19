@@ -46,7 +46,7 @@
           span(v-if="max") max: {{max}}
     div(v-if="select")
       MultiSelect(:options="options" :selection="i_value")
-    div(v-else-if="!readOnly")
+    div(v-else-if="!readOnly && !fixed_length")
       v-btn(:disabled="!more_allowed" @click="add_value()" :color="requieres_more_color") Add {{item_name}}
         v-icon(right) add
 </template>
@@ -147,6 +147,7 @@
                         // todo
                     }
                 }
+                this.$_.fill(this.panelState, false)
                 this.min = this.extra.ref_length
                 this.max = this.extra.ref_length
             }
@@ -159,6 +160,7 @@
         },
         methods: {
             clearableAspectComponent(aspect) {
+                console.log("List.clearableAspectComponent", aspect)
                 return MAspectComponent(aspect, this.mode)
             },
             add_value(n = 1) {
@@ -193,7 +195,7 @@
                 this.value_change(this.$_.concat(new_left, to_move, new_right))
                 // fix panelstates todo
                 if(this.structure === PANELS) {
-                    //this.$_.fill(this.panelState, false)
+                    this.$_.fill(this.panelState, false)
                     //this.panelState[index+direction] = true
                 }
                 // fix titles
@@ -235,6 +237,9 @@
         computed: {
             is_simple() {
                 return this.structure === SIMPLE
+            },
+            fixed_length() {
+              return  this.extra.ref_length !== undefined
             },
             moveable() {
               return this.aspect.attr.moveable || false

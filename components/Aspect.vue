@@ -74,7 +74,6 @@
                     return {}
                 }
             },
-
         },
         data() {
             return {
@@ -85,6 +84,7 @@
         },
         created() {
             try {
+                console.log("created", this.aspect)
                 this.has_alternative = this.aspect.attr.hasOwnProperty("alternative")
                 if (this.aspect.attr.hasOwnProperty("condition")) {
                     this.condition = this.aspect.attr.condition
@@ -148,7 +148,12 @@
                         aspect_loc_str2arr(this.aspect.attr.ref_value),
                         this.extra[LIST_INDEX])
                     //console.log("value ref,  ",this.aspect.name, location_array)
-                    return this.$store.getters[ENTRIES_VALUE](aspect_location)
+                    let value = this.$store.getters[ENTRIES_VALUE](aspect_location)
+                    console.log("received value",value)
+                    if(value.hasOwnProperty("regular")) {
+                        delete value["regular"]
+                    }
+                    return value
                 } else if (this.aspect.attr.ref_length) { // this is for lists
                     let location_array = complete_aspect_loc(aspect_loc_uuid(this.aspect_loc), aspect_loc_str2arr(this.aspect.attr.ref_length))
                     const fixed_length = this.$store.getters[ENTRIES_VALUE](location_array).value.length
@@ -209,7 +214,17 @@
         },
         methods: {
             title_description(aspect) {
-                //console.log("title_description", aspect_descr)
+                //console.log("title_description", aspect)
+                /* this catches a bug, that appears, when creating an activty on hh survey
+                  which is an alternative value (other activity),
+                  and then going to the pebble game on the ind survey
+                 */
+                if(!aspect) {
+                    return {
+                        title:"",
+                        description: ""
+                    }
+                }
                 return {
                     title: this.extra.no_title ? "" : aspect_label(aspect),
                     description: aspect.description || ""
@@ -219,8 +234,9 @@
                 console.log("aspect-acion yeah", event)
                 this.$emit(ASPECTACTION, event)
             },
-            aspectComponent(aspect_descr, mode) {
-                return MAspectComponent(aspect_descr, mode, this.extra)
+            aspectComponent(aspect, mode) {
+                console.log("Aspect.aspectComponent", aspect)
+                return MAspectComponent(aspect, mode, this.extra)
             },
             update_value(event) {
                 //console.log("aspect.emit_up", this.aspect_loc, this.value, event)

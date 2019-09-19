@@ -1,7 +1,7 @@
 /*
   this is for the own entries
  */
-import {ASPECT, COLLECT, COMPONENT, DRAFT, ENTRY, INDEX, LINKED_INDEX, PARENT} from "../lib/consts";
+import {ASPECT, COLLECT, COMPONENT, DRAFT, ENTRY, INDEX} from "../lib/consts";
 import {complete_aspect_loc} from "../lib/client";
 import {get_uuid, select_aspect_loc} from "../lib/entry";
 
