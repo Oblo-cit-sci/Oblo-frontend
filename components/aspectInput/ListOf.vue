@@ -25,8 +25,7 @@
     import AspectMixin from "./AspectMixin";
     import {
         CONTEXT_ENTRY,
-        INDEX,
-        ASPECT, ENTRY
+        INDEX
     } from "../../lib/consts";
     import DecisionDialog from "../DecisionDialog";
     import {create_entry, get_uuid} from "../../lib/entry";

@@ -10,15 +10,14 @@
           :mode="mode"
           :disabled="disabled"
           :extra="comp_extras(comp_type)"
-          v-on:entryAction="$emit('entryAction',$event)"
-          v-on:aspectAction="aspectAction")
+          v-on:entryAction="$emit('entryAction',$event)")
 </template>
 
 <script>
 
     import AspectMixin from "./AspectMixin";
     import Aspect from "../Aspect";
-    import {ASPECTACTION, INT, FLOAT, TITLE_ASPECT, COMPONENT} from "../../lib/consts";
+    import {INT, FLOAT, TITLE_ASPECT, COMPONENT} from "../../lib/consts";
 
     export default {
         name: "CompositeAspect",
@@ -26,12 +25,10 @@
         mixins: [AspectMixin],
         data() {
             return {
-                titleAspectName: this.aspect.attr.titleAspect || this.aspect.components[0].name,
                 aspect_locs: {}
             }
         },
         created() {
-            //console.log(this.titleAspectName)
             for (let component of this.aspect.components) {
                 this.aspect_locs[component.name] = this.$_.concat(this.aspect_loc, [[COMPONENT, component.name]])
             }
@@ -61,13 +58,7 @@
                 if (xtra_copy.hasOwnProperty("listitem")) {
                     delete xtra_copy.listitem
                 }
-                if (comp_type.name === this.titleAspectName) {
-                    xtra_copy[TITLE_ASPECT] = true
-                }
                 return xtra_copy
-            },
-            aspectAction(event) {
-                this.$emit(ASPECTACTION, event)
             }
         },
         computed: {

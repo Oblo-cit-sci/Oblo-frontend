@@ -30,8 +30,7 @@
               :mode="mode"
               :extra="list_extra(index)"
               :aspect_loc="item_aspect_loc(index)"
-              v-on:entryAction="$emit('entryAction',$event)"
-              v-on:aspectAction="aspectAction($event, index)")
+              v-on:entryAction="$emit('entryAction',$event)")
             v-btn(v-if="requires_delete" small @click="remove_value(index)") delete {{item_name}}
             span(v-if="moveable")
               v-btn(:disabled="index === 0" small @click="move(index, -1)") move up
@@ -80,7 +79,6 @@
                 panelState: [],
                 select: false, // select... instead of button
                 options: [],
-                titles: []
             }
         },
         created() {
@@ -114,20 +112,8 @@
                     this.item_aspect = this.aspect.items;
                     this.item_aspect.required = true;
                     this.structure = PANELS
-                    let titleAspectName = null
-                    if (!this.aspect.attr.indexTitle) {
-                        titleAspectName = this.item_aspect.attr.titleAspect || this.item_aspect.components[0].name
-                    }
-                    //
                     // fill in the values of the titleAspect
                     for (let item_index in this.i_value) {
-                        if (!this.aspect.attr.indexTitle) {
-                            let list_items = this.i_value[item_index].value
-                            let title_comp_value = this.$_.find(list_items, (list_item, key) => key === titleAspectName).value
-                            this.titles.push(title_comp_value)
-                        } else {
-                            this.titles.push(this.indexTitle(item_index))
-                        }
                         this.panelState.push(false)
                     }
                 } else {
@@ -138,9 +124,9 @@
             if (this.extra.ref_length) {
                 if (this.extra.ref_length !== this.value.length) {
                     const diff = this.extra.ref_length - this.value.length
-                    if(diff > 0)
-                      this.add_value(diff)
-                    else if(diff < 0) {
+                    if (diff > 0)
+                        this.add_value(diff)
+                    else if (diff < 0) {
                         // remove some from the end
                         // todo
                     }
@@ -165,40 +151,31 @@
                 this.$_.fill(this.panelState, false)
                 for (let i = 0; i < n; i++) {
                     additional.push(packed_aspect_default_value(this.item_aspect))
-                    this.titles.push(null)
                     if (this.structure === PANELS) {
                         this.panelState.push(true)
                     }
                 }
                 this.value_change(this.$_.concat(this.i_value, additional))
             },
-            indexTitle(index) {
-                return this.aspect.attr.itemname + " " + (parseInt(index) + 1).toString()
-            },
             remove_value(index) {
                 this.value_change(this.$_.filter(this.i_value, (val, i) => {
                     return index !== i
                 }))
-                this.titles.splice(index, 1)
                 if (this.structure === PANELS) {
                     this.panelState.splice(index, 1)
                 }
             },
             move(index, direction) {
                 const to_move = this.i_value[index]
-                const without = this.$_.filter(this.i_value, (e, i) =>  i !== index)
+                const without = this.$_.filter(this.i_value, (e, i) => i !== index)
                 const new_left = this.$_.take(without, index + direction)
                 const new_right = this.$_.takeRight(without, without.length - (index + direction))
                 this.value_change(this.$_.concat(new_left, to_move, new_right))
                 // fix panelstates todo
-                if(this.structure === PANELS) {
+                if (this.structure === PANELS) {
                     this.$_.fill(this.panelState, false)
                     //this.panelState[index+direction] = true
                 }
-                // fix titles
-                let temp = this.titles[index]
-                this.titles[index] = this.titles[index + direction]
-                this.titles[index + direction] = temp
             },
             item_aspect_loc(index) {
                 return this.$_.concat(this.aspect_loc, [[INDEX, index]])
@@ -222,11 +199,7 @@
                 xtra_copy.list_index = index
                 return xtra_copy
             },
-            aspectAction(event, index) {
-                if (event.action === TITLE_UPDATE) {
-                    this.titles[index] = event.value
-                }
-            },
+
             panel_id(index) {
                 return "L-" + aspect_loc_str(this.$_.concat(this.aspect_loc, [[INDEX, index]]))
             },
@@ -236,10 +209,10 @@
                 return this.structure === SIMPLE
             },
             fixed_length() {
-              return  this.extra.ref_length !== undefined
+                return this.extra.ref_length !== undefined
             },
             moveable() {
-              return this.aspect.attr.moveable || false
+                return this.aspect.attr.moveable || false
             },
             count_text() {
                 const le = this.i_value.length
@@ -252,6 +225,20 @@
             requires_delete() {
                 let itemtype = this.aspect.items.type
                 return !(itemtype === "str" || itemtype === "int" || itemtype === "float");
+            },
+            titles() {
+                let titles = new Array(this.i_value.length)
+                if (this.aspect.attr.indexTitle) {
+                    for (let i = 0; i < titles.length; i++) {
+                        titles[i] = this.aspect.attr.itemname + " " + (parseInt(i) + 1).toString()
+                    }
+                } else {
+                    let titleAspectName = this.item_aspect.attr.titleAspect || this.item_aspect.components[0].name
+                    for (let i = 0; i < titles.length; i++) {
+                        titles[i] = this.i_value[i].value[titleAspectName].value
+                    }
+                }
+                return titles
             }
         }
     }

@@ -23,8 +23,7 @@
       :disabled="regular_disable"
       :mode="real_mode"
       v-on:update_value="update_value($event)"
-      v-on:entryAction="$emit('entryAction',$event)"
-      v-on:aspectAction="aspectAction($event)")
+      v-on:entryAction="$emit('entryAction',$event)")
     div(v-if="!use_regular")
       Title_Description(v-bind="title_description(aspect.attr.alternative)")
       component(
@@ -37,7 +36,7 @@
 
 <script>
 
-    import {ASPECTACTION, ENTRY, LIST_INDEX, VIEW} from "../lib/consts";
+    import {LIST_INDEX, VIEW} from "../lib/consts";
 
     import Title_Description from "./Title_Description";
     import {
@@ -222,9 +221,6 @@
                     title: this.extra.no_title ? "" : aspect_label(aspect),
                     description: aspect.description || ""
                 }
-            },
-            aspectAction(event) {
-                this.$emit(ASPECTACTION, event)
             },
             aspectComponent(aspect, mode) {
                 return MAspectComponent(aspect, mode, this.extra)
