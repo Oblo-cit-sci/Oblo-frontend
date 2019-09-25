@@ -3,16 +3,20 @@
     h1 Settings
     br
     h3 User key: Upload to the LICCI Repo (temporary option)
-    div During the main data collection period of LICCI partners, partners can upload collected data to the LICCI data repository
-    br
+    div During the main data collection period of LICCI partners, partners can upload collected data to the LICCI data repository. AUTOMATICALLY SAVED
     TextShort(
       :aspect="user_key_aspect"
       :value="user_key"
       mode="edit"
       v-on:update_value="update_value($event)")
+    v-btn(@click="test_save") Test and save
+    br
+    v-divider
     h3 Import data
+    div Import data from a previously exported (downloaded) json file
     LoadFileButton(@fileload="load_file($event)")
     br
+    v-divider
     h3 Clear entries
     div delete all entries. Make sure that you made backups of the entries you made
     v-btn(@click="show_clear_entries" color="error") Clear
@@ -30,10 +34,12 @@
     import LoadFileButton from "../components/LoadFileButton";
     import DecisionDialog from "../components/DecisionDialog";
   import TextShort from "../components/aspectInput/TextShort";
+    import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
 
     export default {
         name: "settings",
         components: {TextShort, DecisionDialog, LoadFileButton, Aspect},
+        mixins: [TriggerSnackbarMixin],
         data() {
             return {
                 dialog_data: {
@@ -57,6 +63,23 @@
             }
         },
         methods: {
+            test_save() {
+                let data = {user_key: this.$store.state.meta.repository.user_key}
+                console.log(data)
+                this.$axios.post("https://licci.uab.cat/cgi-bin/test_user.py", data, {
+                    headers: {
+                        "accept": "*",
+                        "Access-Control-Allow-Headers": "accept",
+                        'Access-Control-Allow-Origin': '*',
+                    }
+                }).then(res => {
+                    this.snackbar(res.data.status, res.data.msg)
+                    this.$router.push("/")
+                }).catch(err => {
+                    console.log(err)
+                    this.error_snackbar("Something went horribly wrong")
+                })
+            },
             show_clear_entries() {
                 this.show_dialog = true
                 this.dialog_data = this.clear_dialog_data

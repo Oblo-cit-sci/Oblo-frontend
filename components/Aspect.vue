@@ -143,9 +143,9 @@
                         aspect_loc_uuid(this.aspect_loc),
                         aspect_loc_str2arr(this.aspect.attr.ref_value),
                         this.extra[LIST_INDEX])
-                    console.log("value ref,  ",this.aspect.name, aspect_location)
+                    // console.log("value ref,  ",this.aspect.name, aspect_location)
                     let value = this.$store.getters[ENTRIES_VALUE](aspect_location)
-                    console.log("received value",value)
+                    // console.log("received value",value)
                     if(value.hasOwnProperty("regular")) {
                         delete value["regular"]
                     }

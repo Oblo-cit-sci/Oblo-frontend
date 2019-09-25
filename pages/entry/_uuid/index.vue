@@ -41,6 +41,7 @@
         cancel_color="accent"
         cancel_text="Keep on editing"
         confirm_text="Save and move on")
+      div {{entry.aspects_values}}
 </template>
 
 <script>

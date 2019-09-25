@@ -35,7 +35,6 @@
   .input-file {
     opacity: 0; /* invisible but it's there! */
     width: 100%;
-    height: 200px;
     position: absolute;
   }
 </style>
