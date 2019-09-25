@@ -17,7 +17,7 @@
 
     import AspectMixin from "./AspectMixin";
     import Aspect from "../Aspect";
-    import {INT, FLOAT, TITLE_ASPECT, COMPONENT} from "../../lib/consts";
+    import {INT, FLOAT, COMPONENT} from "../../lib/consts";
 
     export default {
         name: "CompositeAspect",
