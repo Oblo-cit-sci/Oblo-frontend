@@ -94,7 +94,7 @@
                 try {
                     this.use_regular = this.value.hasOwnProperty("regular") ? this.value.regular : true
                 } catch (e) {
-                    console.log("no value")
+                    console.log("Aspect.created, ERROR, no value for aspect", this.aspect.name)
                     this.use_regular = true
                 }
 
@@ -143,7 +143,7 @@
                         aspect_loc_uuid(this.aspect_loc),
                         aspect_loc_str2arr(this.aspect.attr.ref_value),
                         this.extra[LIST_INDEX])
-                    //console.log("value ref,  ",this.aspect.name, location_array)
+                    console.log("value ref,  ",this.aspect.name, aspect_location)
                     let value = this.$store.getters[ENTRIES_VALUE](aspect_location)
                     console.log("received value",value)
                     if(value.hasOwnProperty("regular")) {
@@ -180,7 +180,6 @@
                 } else {
                     return this.value.value
                 }
-
             },
             regular_value_text() {
                 return this.aspect.attr["alternative-true"] || "regular value"

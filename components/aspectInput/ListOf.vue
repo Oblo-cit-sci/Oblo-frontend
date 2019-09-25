@@ -97,6 +97,7 @@
                         action: DELETE_CONTEXT_ENTRY,
                         value: {uuid: ref, aspect_loc: this.aspect_loc_for_index(index)}
                     })*/
+                    this.value
                 }
             },
             create_item() {

@@ -156,6 +156,8 @@
                     }
                 }
                 this.value_change(this.$_.concat(this.i_value, additional))
+                // we need this, otherwise the list wont update (if its not composite)
+                this.value
             },
             remove_value(index) {
                 this.value_change(this.$_.filter(this.i_value, (val, i) => {
@@ -199,7 +201,6 @@
                 xtra_copy.list_index = index
                 return xtra_copy
             },
-
             panel_id(index) {
                 return "L-" + aspect_loc_str(this.$_.concat(this.aspect_loc, [[INDEX, index]]))
             },
