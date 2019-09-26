@@ -45,7 +45,7 @@ module.exports = {
 
   router: {
     middleware: 'init',
-    base: "/app/"
+    base: "/app-beta/"
   },
 
   /*
@@ -92,13 +92,6 @@ module.exports = {
         import: ["~assets/style/variables.styl"]
       }
     },
-    /*splitChunks: {
-      pages: false,
-      vendor: false,
-      commons: false,
-      runtime: false,
-      layouts: false
-    },*/
     /*
     ** You can extend webpack config here
     */

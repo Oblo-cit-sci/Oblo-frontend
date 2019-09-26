@@ -41,7 +41,7 @@
         cancel_color="accent"
         cancel_text="Keep on editing"
         confirm_text="Save and move on")
-      div {{entry.aspects_values}}
+      div(id="hidden_aspects_values") {{entry}}
 </template>
 
 <script>
@@ -142,6 +142,7 @@
                     this.router_next = null
                 }
             },
+
             entryAction(event) {
                 //console.log("entry action")
                 const action = event.action
@@ -228,7 +229,7 @@
             // maybe also consider:
             // https://github.com/edisdev/download-json-data/blob/develop/src/components/Download.vue
             page_info() {
-                console.log(this.entry_type, this.page, this.entry_type.content.meta.pages[this.page])
+                //console.log(this.entry_type, this.page, this.entry_type.content.meta.pages[this.page])
                 if (this.has_pages)
                     return this.entry_type.content.meta.pages[this.page]
                 else
@@ -255,4 +256,7 @@
 
 <style scoped>
 
+  #hidden_aspects_values {
+    display:none
+  }
 </style>

@@ -96,6 +96,7 @@ export const mutations = {
       select.value[final_loc[1]] = value
     } else if (final_loc[0] === INDEX) {
       select.value[final_loc[1]] = value
+      select.value
     } else {
       console.log("ERROR store.entries. final location", final_loc)
     }
@@ -115,7 +116,7 @@ export const mutations = {
 }
 
 export const getters = {
-  all_entries(state, getters) {
+  all_entries(state) {
     return state.entries.values()
   },
   all_drafts(state) {
@@ -151,7 +152,6 @@ export const getters = {
   value(state) {
     return (aspect_loc) => {
       let select = select_aspect_loc(state.entries, aspect_loc)
-      //console.log("store.entries, value?", aspect_loc, "res:", select)
       return select
     }
   },
@@ -175,9 +175,9 @@ export const getters = {
 }
 
 export const actions = {
-  set_entry_value({commit}, data) {
-    commit("_set_entry_value", data)
-    commit("set_dirty", get_uuid(data.aspect_loc))
+  set_entry_value(context, data) {
+    context.commit("_set_entry_value", data)
+    context.commit("set_dirty", get_uuid(data.aspect_loc))
   },
   /*add_child(context, uuid_n_aspect_loc_n_child) {
     console.log("store.entries: add child")
@@ -186,7 +186,6 @@ export const actions = {
   },*/
   cancel_entry_edit({commit}, uuid) {
     commit("cancel_entry_edit", uuid)
-
   },
   save_entry(context, uuid) {
     context.commit("_save_entry", uuid)

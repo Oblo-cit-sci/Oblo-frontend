@@ -158,7 +158,10 @@
                 this.value_change(this.$_.concat(this.i_value, additional))
                 // we need this, otherwise the list wont update (if its not composite)
                 // added to Aspect component...
-                this.value
+                setTimeout(() => {
+                    this.i_value = this.value
+                }, 50)
+
                 //console.log("ADDING")
                 //console.log(this.value)
 
