@@ -242,6 +242,7 @@
                     delete up_value.regular
                 }
                 this.$store.dispatch(ENTRIES_SET_ENTRY_VALUE, {aspect_loc: this.aspect_loc, value: up_value})
+                this.value
             }
         },
         watch: {

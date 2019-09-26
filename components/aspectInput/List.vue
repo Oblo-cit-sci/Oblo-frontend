@@ -157,8 +157,11 @@
                 }
                 this.value_change(this.$_.concat(this.i_value, additional))
                 // we need this, otherwise the list wont update (if its not composite)
-                console.log("ADDING")
-                console.log(this.value)
+                // added to Aspect component...
+                this.value
+                //console.log("ADDING")
+                //console.log(this.value)
+
             },
             remove_value(index) {
                 this.value_change(this.$_.filter(this.i_value, (val, i) => {
