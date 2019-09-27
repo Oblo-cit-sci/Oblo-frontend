@@ -3,7 +3,7 @@
  */
 import {ASPECT, COLLECT, COMPONENT, DRAFT, ENTRY, INDEX} from "../lib/consts";
 import {complete_aspect_loc} from "../lib/client";
-import { select_aspect_loc} from "../lib/entry";
+import {select_aspect_loc} from "../lib/entry";
 
 
 const ld = require("lodash")
@@ -65,12 +65,13 @@ export const mutations = {
   delete_ref_child(state, {uuid, child_uuid}, c) {
     state.entries.get(uuid).refs.children[child_uuid].forEach(ref => {
       let aspect_loc = complete_aspect_loc(uuid, ref)
-      console.log("delete_ref_child", aspect_loc)
-      console.log(state)
       //let value = state.gettes.value(aspect_loc)
       //console.log("delete_ref_child.value", value)
       delete state.entries.get(uuid).refs.children[child_uuid]
     })
+  },
+  delete_edit_ref_child(state, child_uuid) {
+    delete state.edit.refs.children[child_uuid]
   },
   // todo, showldnt be needed
   set_ref_parent(state, {uuid, ref}) {

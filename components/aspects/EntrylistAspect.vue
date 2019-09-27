@@ -33,7 +33,7 @@
     import ListMixin from "../ListMixin";
     import {
         EDIT_UUID,
-        ENTRIES_EDIT_ADD_REF_CHILD,
+        ENTRIES_EDIT_ADD_REF_CHILD, ENTRIES_EDIT_DELETE_REF_CHILD,
         ENTRIES_GET_ENTRY,
     } from "../../lib/store_consts";
     import {aspect_loc_str} from "../../lib/aspect";
@@ -93,12 +93,14 @@
             remove(action) {
                 if (action.confirm) {
                     let index = parseInt(action.id)
+                    let child_uuid = this.i_value[index]
+                    this.$store.commit(ENTRIES_EDIT_DELETE_REF_CHILD, child_uuid)
                     const mod_value = this.$_.filter(this.i_value, (_, i) => { return i !== index})
                     this.value_change(mod_value)
                 }
             },
             create_item() {
-                const index_aspect_loc = this.$_.concat(this.$_.drop(this.aspect_loc), [[ENTRY_INDEX, this.i_value.length]])
+                const index_aspect_loc = this.aspect_loc_for_index(this.i_value.length)
                 console.log(index_aspect_loc)
                 const entry = create_entry(this.$store, this.item_type_slug, {}, {
                     uuid: this.$store.getters[EDIT_UUID],
@@ -109,10 +111,10 @@
                     aspect_loc: index_aspect_loc,
                 })
                 this.value_change(this.$_.concat(this.i_value, [entry.uuid]))
-                //this.to_entry(entry.uuid)
+                this.to_entry(entry.uuid)
             },
             aspect_loc_for_index(index) {
-                return this.$_.concat(this.aspect_loc, [[INDEX, index]])
+                return this.$_.concat(this.$_.drop(this.aspect_loc), [[ENTRY_INDEX, index]])
             },
             aspect_loc_str(index) {
                 return aspect_loc_str(this.aspect_loc_for_index(index))

@@ -9,8 +9,6 @@
         v-btn(@click="initialize") Try again
         div(style="margin-top:5%") or load your offline data from your device
         v-btn Load your data
-    div
-      v-alert(value="true" type="warning" id="temp_alert") Version update. It is recommended to delete all existing entries (menu / settings / CLEAR). Due to a software issue, entries created with previous version do not update their values properly (e.g. when adding items to a list)
 </template>
 
 <script>
