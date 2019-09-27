@@ -1,5 +1,5 @@
-import entry_types from "../lib/types";
-import codes from "../lib/codes"
+import entry_types from "../lib/data_backups/types";
+import codes from "../lib/data_backups/codes"
 
 export default function (context) {
   //context.userAgent = process.server ? context.req.headers['user-agent'] : navigator.userAgent;

@@ -13,7 +13,7 @@ export default function myCache(moduleOptions) {
       let data = res.data.result
 
       console.log("storing codes: ", Array.from(Object.keys(data.codes)))
-      writeFile("lib/codes.json", JSON.stringify(data.codes), "utf8", (err) => {
+      writeFile("lib/data_backups/codes.json", JSON.stringify(data.codes), "utf8", (err) => {
         if (err) {
           console.log("module myCache had problems saving file", err)
         }
@@ -25,7 +25,7 @@ export default function myCache(moduleOptions) {
         entrytypes.push(a[1].title)
       }
       console.log("entry types ", entrytypes)
-      writeFile("lib/types.json", JSON.stringify(data.entryTemplates), "utf8", (err) => {
+      writeFile("lib/data_backups/types.json", JSON.stringify(data.entryTemplates), "utf8", (err) => {
         if (err) {
           console.log("module myCache had problems saving file", err)
         }
