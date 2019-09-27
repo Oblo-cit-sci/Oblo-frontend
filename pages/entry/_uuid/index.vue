@@ -56,7 +56,7 @@
     import EntryActions from "../../../components/EntryActions";
     import {
         EDIT,
-        ASPECT, PRIVATE_LOCAL, VIEW, ENTRY
+        ASPECT, PRIVATE_LOCAL, VIEW
     } from "../../../lib/consts";
     import Aspect from "../../../components/Aspect";
 

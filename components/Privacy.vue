@@ -56,6 +56,10 @@
     },
     created() {
         this.selectedPrivacy = this.$_.find(this.privacy_options, o => o.text === this.passedPrivacy)
+        if(!this.selectedPrivacy) {
+            console.log("Entry.Privacy ERROR, unknown privacy option", this.passedPrivacy)
+            this.selectedPrivacy = this.privacy_options[0] // PUBLIC
+        }
         this.use_alternative_privacy = this.passedPrivacy !== this.$store.state.user.user_data.defaultPrivacy
     },
     computed: {
