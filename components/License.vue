@@ -22,7 +22,7 @@
 </template>
 
 <script>
-  import TextShort from "./aspectInput/TextShortAspect";
+  import TextShort from "./aspects/TextShortAspect";
   import SingleSelect from "./SingleSelect";
 
   import {license_icon} from "../lib/client";

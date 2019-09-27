@@ -44,7 +44,7 @@
         aspect_loc_str,
         aspect_loc_str2arr,
         aspect_raw_default_value,
-        MAspectComponent, pack_value
+        get_aspect_component, pack_value
     } from "../lib/aspect";
     import {ENTRIES_GET_ENTRY, ENTRIES_SET_ENTRY_VALUE, ENTRIES_VALUE} from "../lib/store_consts";
     import {aspect_loc_uuid, complete_aspect_loc} from "../lib/client";
@@ -185,6 +185,13 @@
                     return this.value.value
                 }
             },
+            aspect_label() {
+                if (this.aspect.label !== undefined) {
+                    return this.aspect.label
+                } else {
+                    return this.aspect.name
+                }
+            },
             regular_value_text() {
                 return this.aspect.attr["alternative-true"] || "regular value"
             },
@@ -221,12 +228,12 @@
                     }
                 }
                 return {
-                    title: this.extra.no_title ? "" : aspect_label(aspect),
+                    title: this.extra.no_title ? "" : this.aspect_label,
                     description: aspect.description || ""
                 }
             },
             aspectComponent(aspect, mode) {
-                return MAspectComponent(aspect, mode, this.extra)
+                return get_aspect_component(aspect, mode, this.extra)
             },
             update_value(event) {
                 //console.log("aspect.emit_up", this.aspect_loc, this.value, event)

@@ -66,7 +66,7 @@
     import EntryNavMixin from "../../../components/EntryNavMixin";
     import DecisionDialog from "../../../components/DecisionDialog";
     import {ENTRIES_GET_EDIT, ENTRIES_GET_ENTRY, ENTRIES_SAVE_ENTRY, ENTRIES_SET_EDIT} from "../../../lib/store_consts";
-    import {MAspectComponent} from "../../../lib/aspect";
+    import {get_aspect_component} from "../../../lib/aspect";
 
 
     export default {
@@ -191,7 +191,7 @@
             // should actually be the whole ref string
             // TODO goes out for Aspect component
             aspectComponent(aspect) {
-                return MAspectComponent(aspect)
+                return get_aspect_component(aspect)
             },
         },
         computed: {

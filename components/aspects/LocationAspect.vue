@@ -16,7 +16,7 @@
         div Error of {{$store.state.user.user_data.location_error}} included
    */
 
-  import {get_location, create_location_error} from "../../lib/common";
+  import {get_location, create_location_error} from "../../lib/location";
   import AspectMixin from "./AspectMixin";
   import SingleSelect from "../SingleSelect";
   import {rev_geocode} from "../../lib/services/mapbox";

@@ -55,7 +55,7 @@
     import Aspect from "../Aspect";
     import ListMixin from "../ListMixin";
     import {INDEX, TITLE_UPDATE} from "../../lib/consts";
-    import {aspect_loc_str, packed_aspect_default_value, MAspectComponent} from "../../lib/aspect";
+    import {aspect_loc_str, packed_aspect_default_value, get_aspect_component} from "../../lib/aspect";
 
 
     // todo, pass the extra in a more intelligent way down, not to all the same
@@ -141,7 +141,7 @@
         },
         methods: {
             clearableAspectComponent(aspect) {
-                return MAspectComponent(aspect, this.mode)
+                return get_aspect_component(aspect, this.mode)
             },
             add_value(n = 1) {
                 let additional = []
