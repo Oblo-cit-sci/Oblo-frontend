@@ -6,7 +6,7 @@
 
 <script>
     export default {
-        name: "Basic",
+        name: "BasicAspect",
         props: ["aspect"]
     }
 </script>

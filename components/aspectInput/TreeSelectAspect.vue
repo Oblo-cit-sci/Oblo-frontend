@@ -23,12 +23,12 @@
 <script>
   import AspectMixin from "./AspectMixin";
   import TreleafPicker from "../TreleafPicker";
-  import TextShort from "./TextShort";
+  import TextShort from "./TextShortAspect";
   import {EDIT} from "../../lib/consts";
   import {flatten_tree_to_options} from "../../lib/client";
 
   export default {
-    name: "TreeSelect",
+    name: "TreeSelectAspect",
     components: {TextShort, TreleafPicker},
     mixins: [AspectMixin],
     data() {

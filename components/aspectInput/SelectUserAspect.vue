@@ -10,7 +10,7 @@
 
   // Title_Description(:="title_description()")
   export default {
-    name: "SelectUser",
+    name: "SelectUserAspect",
     mixins: [AspectMixin],
     components: {SingleSelect, Title_Description},
     computed: {

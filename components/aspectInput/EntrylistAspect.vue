@@ -37,7 +37,7 @@
     const SELECT_THRESH = 6
 
     export default {
-        name: "ListOf",
+        name: "EntrylistAspect",
         components: {DecisionDialog},
         mixins: [AspectMixin, EntryNavMixin, ListMixin],
         data() {

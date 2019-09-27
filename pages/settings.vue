@@ -33,7 +33,7 @@
     import {pack_value} from "../lib/aspect";
     import LoadFileButton from "../components/LoadFileButton";
     import DecisionDialog from "../components/DecisionDialog";
-  import TextShort from "../components/aspectInput/TextShort";
+  import TextShort from "../components/aspectInput/TextShortAspect";
     import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
 
     export default {

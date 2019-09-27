@@ -44,11 +44,11 @@
 
   // TODO just use 1 Dialog for UI weirdness
 
-  import Select from "../Select";
+  import Select from "../SelectAspect";
   const ld = require("lodash");
   import TreleafPicker from "../../TreleafPicker";
   import AspectMixin from "../AspectMixin";
-  import TextLong from "../TextLong";
+  import TextLong from "../TextLongAspect";
   import {string_list2options} from "../../../lib/client";
 
   export default {

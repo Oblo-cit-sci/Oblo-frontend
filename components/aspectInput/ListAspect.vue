@@ -64,7 +64,7 @@
     const PANELS = "panels"
 
     export default {
-        name: "List",
+        name: "ListAspect",
         components: {Aspect},
         mixins: [AspectMixin, ListMixin],
         data() {

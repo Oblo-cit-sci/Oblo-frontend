@@ -15,7 +15,7 @@
     import AspectMixin from "./AspectMixin";
 
     export default {
-        name: "Select",
+        name: "SelectAspect",
         mixins: [AspectMixin, SelectMixin],
         // todo. init is a hack to prevent the first set_selection call to trigger a value_change
         data() {

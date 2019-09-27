@@ -25,7 +25,7 @@
   const FROM_MAP = "map";
 
   export default {
-    name: "Location",
+    name: "LocationAspect",
     components: {SingleSelect},
     mixins: [AspectMixin],
     data() {

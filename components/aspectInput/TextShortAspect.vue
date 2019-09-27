@@ -25,7 +25,7 @@
   import TextfieldAspect from "../TextfieldAspect";
 
   export default {
-    name: "TextShort",
+    name: "TextShortAspect",
     mixins: [AspectMixin, TextfieldAspect],
     props: {
         // probably not used atm
