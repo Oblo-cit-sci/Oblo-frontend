@@ -13,6 +13,7 @@ const DELETE_ENTRY = "delete_entry"
 export const state = () => ({
   timeline_entries: [],
   entries: new Map(),
+  edit: null
 });
 
 export const mutations = {
@@ -86,8 +87,8 @@ export const mutations = {
       state.edit = null //
   },*/
   _set_entry_value(state, {aspect_loc, value}) {
-    //console.log("set entry value", aspect_loc, value)
-    let select = select_aspect_loc(state.entries, aspect_loc, true)
+    console.log("set entry value", aspect_loc, value)
+    let select = select_aspect_loc(state, aspect_loc, true)
     const final_loc = ld.last(aspect_loc)
     //console.log("final,", final_loc, "select", select, "value", value)
     if (final_loc[0] === ASPECT) {
@@ -96,22 +97,32 @@ export const mutations = {
       select.value[final_loc[1]] = value
     } else if (final_loc[0] === INDEX) {
       select.value[final_loc[1]] = value
-      select.value
     } else {
       console.log("ERROR store.entries. final location", final_loc)
     }
     //console.log("result", select, state)
   },
-  set_dirty(state, uuid) {
-    state.entries.get(uuid).local.dirty = true
+  set_edit_dirty(state) {
+    state.edit.local.dirty = true
   },
-  set_clean(state, uuid) {
-    state.entries.get(uuid).local.dirty = false
+  set_edit_clean(state) {
+    state.edit.local.dirty = false
   },
   _save_entry(state, uuid) {
     let entry = state.entries.get(uuid)
     entry.version += 1
     entry.local.prev = null
+  },
+  update(state) {
+    const a = state.edit
+    state.edit.aspects_values = a.aspects_values
+  },
+  set_edit(state, uuid) {
+    state.edit = state.entries.get(uuid)
+  },
+  save_edit(state) {
+    if(state.edit)
+    state.entries.set(state.edit.uuid,state.edit)
   }
 }
 
@@ -141,7 +152,7 @@ export const getters = {
       return state.entries.get(uuid)
     };
   },
-  get_children(state, getters) {
+  get_children(state) {
     return (entry) => {
       return ld.map(entry.refs.children, ref => state.entries.get(ref.uuid))
     };
@@ -149,10 +160,12 @@ export const getters = {
   get_own_entries(state) {
     // todo
   },
+  get_edit(state) {
+    return state.edit
+  },
   value(state) {
     return (aspect_loc) => {
-      let select = select_aspect_loc(state.entries, aspect_loc)
-      return select
+      return select_aspect_loc(state, aspect_loc)
     }
   },
   delete_ref_value(state, {uuid, child_uuid}) {
@@ -177,7 +190,8 @@ export const getters = {
 export const actions = {
   set_entry_value(context, data) {
     context.commit("_set_entry_value", data)
-    context.commit("set_dirty", get_uuid(data.aspect_loc))
+    context.commit("set_edit_dirty")
+   // context.commit("update")
   },
   /*add_child(context, uuid_n_aspect_loc_n_child) {
     console.log("store.entries: add child")
@@ -187,8 +201,13 @@ export const actions = {
   cancel_entry_edit({commit}, uuid) {
     commit("cancel_entry_edit", uuid)
   },
-  save_entry(context, uuid) {
-    context.commit("_save_entry", uuid)
+  save_entry(context) {
+    context.commit("save_edit")
+    //context.commit("_save_entry", uuid)
+  },
+  set_edit(context, uuid) {
+    context.commit("save_edit")
+    context.commit("set_edit", uuid)
   },
   delete_entry(context, uuid) {
     console.log("store.entries.delete entry-...")

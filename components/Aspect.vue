@@ -44,7 +44,7 @@
         aspect_loc_str,
         aspect_loc_str2arr,
         aspect_raw_default_value,
-        MAspectComponent
+        MAspectComponent, pack_value
     } from "../lib/aspect";
     import {ENTRIES_GET_ENTRY, ENTRIES_SET_ENTRY_VALUE, ENTRIES_VALUE} from "../lib/store_consts";
     import {aspect_loc_uuid, complete_aspect_loc} from "../lib/client";
@@ -128,7 +128,10 @@
                 }
             },
             value: function () {
+                console.log("value", this.aspect.name)
                 if (this.aspect.attr.IDAspect) {
+                    // this is not the proper way.
+                    // the IDAspect, should actually be set, during creation,...
                     let this_uuid = aspect_loc_uuid(this.aspect_loc)
                     let parent_uuid = this.$store.getters[ENTRIES_GET_ENTRY](this_uuid).refs.parent.uuid
                     let parent = this.$store.getters[ENTRIES_GET_ENTRY](parent_uuid)
@@ -175,7 +178,8 @@
                     return this.mode
             },
             raw_value() {
-                if (!this.value) {
+
+                if (!this.value) { // failsafe
                     return aspect_raw_default_value(this.aspect)
                 } else {
                     return this.value.value
@@ -235,14 +239,13 @@
                         }
                     }
                 }
-                let up_value = {value: event}
+                let up_value = pack_value(event)
                 if (!this.use_regular) {
                     up_value.regular = false
                 } else {
                     delete up_value.regular
                 }
                 this.$store.dispatch(ENTRIES_SET_ENTRY_VALUE, {aspect_loc: this.aspect_loc, value: up_value})
-                this.value
             }
         },
         watch: {

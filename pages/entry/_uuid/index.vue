@@ -65,7 +65,7 @@
     import goTo from 'vuetify/lib/components/Vuetify/goTo'
     import EntryNavMixin from "../../../components/EntryNavMixin";
     import DecisionDialog from "../../../components/DecisionDialog";
-    import {ENTRIES_GET_ENTRY, ENTRIES_SAVE_ENTRY} from "../../../lib/store_consts";
+    import {ENTRIES_GET_EDIT, ENTRIES_GET_ENTRY, ENTRIES_SAVE_ENTRY, ENTRIES_SET_EDIT} from "../../../lib/store_consts";
     import {MAspectComponent} from "../../../lib/aspect";
 
 
@@ -97,10 +97,13 @@
             }
         },
         created() {
+            console.log("created")
             this.uuid = this.$route.params.uuid
             //console.log("entry index create", this.entry.aspects_values.)
             this.$store.commit("set_global_ref", this.uuid)
-
+            console.log("entry",this.entry,"state", this.$store.state.entries)
+            this.$store.dispatch(ENTRIES_SET_EDIT, this.uuid)
+            console.log("entry",this.entry,"state", this.$store.state.entries)
             this.entry_type = this.$store.getters.entry_type(this.entry.type_slug)
             this.titleAspect = get_TitleAspect(this.entry_type)
             this.has_pages = this.entry_type.content.meta.hasOwnProperty("pages")
@@ -111,8 +114,9 @@
             })
 
             // todo same in page EntryType
+
             for (let aspect of this.entry_type.content.aspects) {
-                this.aspect_locs[aspect.name] = [[ENTRY, this.uuid], [ASPECT, aspect.name]]
+                this.aspect_locs[aspect.name] = [[EDIT, ""], [ASPECT, aspect.name]]
             }
         },
         mounted() {
@@ -197,7 +201,7 @@
             },
             entry() {
                 //console.log("compute e called")
-                return this.$store.getters[ENTRIES_GET_ENTRY](this.uuid)
+                return this.$store.getters[ENTRIES_GET_EDIT]
             },
             shown_aspects() {
                 if (this.has_pages) {
