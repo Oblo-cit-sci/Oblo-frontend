@@ -12,13 +12,7 @@
 
 <script>
 
-  // TODO this seems to
-  //import {OWNERS} from "../lib/client";
-  //import {EDITOR} from "../lib/consts";
 
-  //const actor_type_order = [OWNERS, EDITOR, "explicit_access", "collaborators"];
-
-  const ld = require('lodash');
 
   export default {
     props: {"actors": Object},
@@ -30,7 +24,7 @@
     },
     methods: {
       has_actors(actor_list) {
-        return ld.size(actor_list) > 0
+        return this.$_.size(actor_list) > 0
       }
     }
 

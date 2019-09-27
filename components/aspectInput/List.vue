@@ -1,51 +1,49 @@
 <template lang="pug">
   div
-    div(v-if="!select")
-      div(v-if="is_simple")
-        div(v-for="(value, index) in i_value" :key="index")
+    div(v-if="is_simple")
+      div(v-for="(value, index) in i_value" :key="index")
+        Aspect(
+          :aspect="indexed_item_aspect(index)"
+          :value.sync="i_value[index]"
+          :edit="true"
+          :mode="mode"
+          :aspect_loc="item_aspect_loc(index)"
+          :extra="list_extra(index)"
+          v-on:entryAction="handleEntryAction($event, index)")
+          v-on:append-outer="remove_value(index)"
+        v-btn(v-if="requires_delete" small @click="remove_value(index)") delete {{extra.itemname}}
+    div(v-else)
+      v-expansion-panel(
+        expand
+        v-model="panelState")
+        v-expansion-panel-content(
+          v-for="(value, index) in i_value"
+          :key="index"
+          :id="panel_id(index)"
+        )
+          template(v-slot:header)
+            div {{titles[index]|| index + 1}}
           Aspect(
             :aspect="indexed_item_aspect(index)"
-            :value.sync="i_value[index]"
-            :edit="true"
+            :value.sync="i_value"
             :mode="mode"
-            :aspect_loc="item_aspect_loc(index)"
             :extra="list_extra(index)"
-            v-on:entryAction="handleEntryAction($event, index)")
-            v-on:append-outer="remove_value(index)"
-          v-btn(v-if="requires_delete" small @click="remove_value(index)") delete {{extra.itemname}}
-      div(v-else)
-        v-expansion-panel(
-          expand
-          v-model="panelState")
-          v-expansion-panel-content(
-            v-for="(value, index) in i_value"
-            :key="index"
-            :id="panel_id(index)"
-          )
-            template(v-slot:header)
-              div {{titles[index]|| index + 1}}
-            Aspect(
-              :aspect="indexed_item_aspect(index)"
-              :value.sync="i_value"
-              :mode="mode"
-              :extra="list_extra(index)"
-              :aspect_loc="item_aspect_loc(index)"
-              v-on:entryAction="$emit('entryAction',$event)")
-            v-btn(v-if="requires_delete" small @click="remove_value(index)") delete {{item_name}}
-            span(v-if="moveable")
-              v-btn(:disabled="index === 0" small @click="move(index, -1)") move up
-                v-icon(right) keyboard_arrow_up
-              v-btn(:disabled="index === i_value.length - 1"  down small @click="move(index, 1)") move down
-                v-icon(right) keyboard_arrow_down
-      div
-        span {{count_text}}, &nbsp
-        span(v-if="min===max && min !== null") required: {{min}}
-        span(v-else)
-          span(v-if="min") min: {{min}} &nbsp;
-          span(v-if="max") max: {{max}}
-    div(v-if="select")
-      MultiSelect(:options="options" :selection="i_value")
-    div(v-else-if="!readOnly && !fixed_length")
+            :aspect_loc="item_aspect_loc(index)"
+            v-on:entryAction="$emit('entryAction',$event)")
+          v-btn(v-if="requires_delete" small @click="remove_value(index)") delete {{item_name}}
+          span(v-if="moveable")
+            v-btn(:disabled="index === 0" small @click="move(index, -1)") move up
+              v-icon(right) keyboard_arrow_up
+            v-btn(:disabled="index === i_value.length - 1"  down small @click="move(index, 1)") move down
+              v-icon(right) keyboard_arrow_down
+    div
+      span {{count_text}}, &nbsp
+      span(v-if="min===max && min !== null") required: {{min}}
+      span(v-else)
+        span(v-if="min") min: {{min}} &nbsp;
+        span(v-if="max") max: {{max}}
+
+    div(v-if="!readOnly && !fixed_length")
       v-btn(:disabled="!more_allowed" @click="add_value()" :color="requieres_more_color") Add {{item_name}}
         v-icon(right) add
 </template>
@@ -54,7 +52,6 @@
 
     import AspectMixin from "./AspectMixin";
     import {get_codes_as_options} from "../../lib/client";
-    import MultiSelect from "../MultiSelect";
     import Aspect from "../Aspect";
     import ListMixin from "../ListMixin";
     import {INDEX, TITLE_UPDATE} from "../../lib/consts";
@@ -68,7 +65,7 @@
 
     export default {
         name: "List",
-        components: {Aspect, MultiSelect},
+        components: {Aspect},
         mixins: [AspectMixin, ListMixin],
         data() {
             return {

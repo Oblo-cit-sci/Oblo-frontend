@@ -44,10 +44,7 @@ export default {
           const aspect_id = aspect_loc_str(this.entry.refs.parent.aspect_loc)
           route.query.goTo = (aspect_id ? aspect_id : "")
         }
-
         this.$router.push(route)
-        //console.log(this.entry.refs.parent.aspect_loc)
-        //this.$router.push("/entry/" + this.entry.refs.parent.uuid + (aspect_id ? "?goTo=" + aspect_id : ""))
       } else {
         this.$router.push("/")
       }
