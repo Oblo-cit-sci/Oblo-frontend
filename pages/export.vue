@@ -13,7 +13,8 @@
 
 <script>
 
-  import {export_data, get_from_store_location, mapToJson, printDate} from "../lib/client";
+  import {get_from_store_location, mapToJson, printDate} from "../lib/client";
+  import {export_data} from "../lib/import_export";
 
   const ld = require("lodash")
 

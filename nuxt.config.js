@@ -6,6 +6,9 @@ const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 module.exports = {
   mode: 'universal',
 
+  env: {
+    NODE_ENV: process.env.NODE_ENV || true
+  },
   server: {
     port: 8082,
     host: "0.0.0.0"

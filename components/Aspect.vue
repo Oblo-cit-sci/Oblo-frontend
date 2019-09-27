@@ -128,7 +128,7 @@
                 }
             },
             value: function () {
-                console.log("value", this.aspect.name)
+                //console.log("value", this.aspect.name)
                 if (this.aspect.attr.IDAspect) {
                     // this is not the proper way.
                     // the IDAspect, should actually be set, during creation,...

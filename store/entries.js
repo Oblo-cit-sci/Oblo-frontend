@@ -3,7 +3,7 @@
  */
 import {ASPECT, COLLECT, COMPONENT, DRAFT, ENTRY, INDEX} from "../lib/consts";
 import {complete_aspect_loc} from "../lib/client";
-import {get_uuid, select_aspect_loc} from "../lib/entry";
+import { select_aspect_loc} from "../lib/entry";
 
 
 const ld = require("lodash")
@@ -33,7 +33,6 @@ export const mutations = {
   },
   create(state, entry) {
     state.entries.set(entry.uuid, entry)
-    state.edit = entry
   },
   save_entry(state, entry) {
     state.entries.set(entry.uuid, entry)
@@ -53,8 +52,12 @@ export const mutations = {
     //console.log("DL ", e, local_id)
     e.downloaded_version = e.version
   },
+  add_edit_ref_child(state, {aspect_loc, child_uuid}) {
+    let kids = state.edit.refs.children
+    let refs = kids[child_uuid] || []
+    kids[child_uuid] = ld.concat(refs, [aspect_loc])
+  },
   add_ref_child(state, {uuid, aspect_loc, child_uuid}) {
-    //console.log("add_ref_child", uuid, aspect_loc, child_uuid)
     let kids = state.entries.get(uuid).refs.children
     let refs = kids[child_uuid] || []
     kids[child_uuid] = ld.concat(refs, [aspect_loc])
@@ -121,14 +124,19 @@ export const mutations = {
     state.edit = state.entries.get(uuid)
   },
   save_edit(state) {
-    if(state.edit)
-    state.entries.set(state.edit.uuid,state.edit)
-  }
+    if (state.edit)
+      state.entries.set(state.edit.uuid, state.edit)
+  },
 }
 
 export const getters = {
   all_entries(state) {
     return state.entries.values()
+  },
+  edit_uuid(state) {
+    if (state.edit)
+      return state.edit.uuid
+    else return ""
   },
   all_drafts(state) {
     // as method prevents caching
@@ -165,6 +173,7 @@ export const getters = {
   },
   value(state) {
     return (aspect_loc) => {
+      console.log("value", aspect_loc)
       return select_aspect_loc(state, aspect_loc)
     }
   },
@@ -191,7 +200,7 @@ export const actions = {
   set_entry_value(context, data) {
     context.commit("_set_entry_value", data)
     context.commit("set_edit_dirty")
-   // context.commit("update")
+    // context.commit("update")
   },
   /*add_child(context, uuid_n_aspect_loc_n_child) {
     console.log("store.entries: add child")

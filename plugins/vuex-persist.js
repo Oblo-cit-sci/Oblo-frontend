@@ -17,3 +17,5 @@ export default ({store}) => {
     ),
   }).plugin(store)
 }
+
+

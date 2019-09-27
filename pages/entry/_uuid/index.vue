@@ -46,8 +46,6 @@
 
 <script>
 
-    // v-on:create_ref="create_ref($event)"
-  // v-bind:value="entry.aspects_values[aspect.name]"
     import License from "../../../components/License"
     import Privacy from "../../../components/Privacy"
 
@@ -65,7 +63,7 @@
     import goTo from 'vuetify/lib/components/Vuetify/goTo'
     import EntryNavMixin from "../../../components/EntryNavMixin";
     import DecisionDialog from "../../../components/DecisionDialog";
-    import {ENTRIES_GET_EDIT, ENTRIES_GET_ENTRY, ENTRIES_SAVE_ENTRY, ENTRIES_SET_EDIT} from "../../../lib/store_consts";
+    import {ENTRIES_GET_EDIT, ENTRIES_SAVE_ENTRY, ENTRIES_SET_EDIT} from "../../../lib/store_consts";
     import {get_aspect_component} from "../../../lib/aspect";
 
 
@@ -97,13 +95,10 @@
             }
         },
         created() {
-            console.log("created")
             this.uuid = this.$route.params.uuid
             //console.log("entry index create", this.entry.aspects_values.)
             this.$store.commit("set_global_ref", this.uuid)
-            console.log("entry",this.entry,"state", this.$store.state.entries)
             this.$store.dispatch(ENTRIES_SET_EDIT, this.uuid)
-            console.log("entry",this.entry,"state", this.$store.state.entries)
             this.entry_type = this.$store.getters.entry_type(this.entry.type_slug)
             this.titleAspect = get_TitleAspect(this.entry_type)
             this.has_pages = this.entry_type.content.meta.hasOwnProperty("pages")
@@ -113,10 +108,8 @@
                 return a.name
             })
 
-            // todo same in page EntryType
-
             for (let aspect of this.entry_type.content.aspects) {
-                this.aspect_locs[aspect.name] = [[EDIT, ""], [ASPECT, aspect.name]]
+                this.aspect_locs[aspect.name] = [[EDIT, this.uuid], [ASPECT, aspect.name]]
             }
         },
         mounted() {
@@ -261,6 +254,6 @@
 <style scoped>
 
   #hidden_aspects_values {
-    display:none
+    /*display:none*/
   }
 </style>

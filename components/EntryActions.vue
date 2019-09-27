@@ -44,13 +44,13 @@
     import Paginate from "./Paginate";
     import {current_user_is_owner, has_pages} from "../lib/entry";
 
-    import {export_data} from "../lib/client";
     import DecisionDialog from "./DecisionDialog";
     import EntryNavMixin from "./EntryNavMixin";
 
     import axios from "axios"
     import {ENTRIES_DELETE_ENTRY} from "../lib/store_consts";
     import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
+    import {export_data} from "../lib/import_export";
 
     export default {
         name: "EntryActions",
@@ -208,7 +208,7 @@
             },
             back(to_last_element = true) {
                 //this.$emit("update:dirty", false)
-                this.$store.commit("entries/set_clean",this.entry.uuid)
+                this.$store.commit("entries/set_edit_clean",this.entry.uuid)
                 this.to_parent(to_last_element)
             }
         },

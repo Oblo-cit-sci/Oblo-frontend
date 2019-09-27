@@ -79,6 +79,7 @@
             }
         },
         created() {
+            //console.log("LA created")
             let item_type = this.aspect.items;
             // todo. list, are extended lists by user, not select lists
             if (typeof (item_type) === "string") {

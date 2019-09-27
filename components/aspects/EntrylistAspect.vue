@@ -24,14 +24,18 @@
 <script>
     import AspectMixin from "./AspectMixin";
     import {
-        CONTEXT_ENTRY,
+        CONTEXT_ENTRY, ENTRY_INDEX,
         INDEX
     } from "../../lib/consts";
     import DecisionDialog from "../DecisionDialog";
-    import {create_entry, get_uuid} from "../../lib/entry";
+    import {create_entry} from "../../lib/entry";
     import EntryNavMixin from "../EntryNavMixin";
     import ListMixin from "../ListMixin";
-    import {ENTRIES_ADD_REF_CHILD, ENTRIES_GET_ENTRY, ENTRIES_SET_ENTRY_VALUE} from "../../lib/store_consts";
+    import {
+        EDIT_UUID,
+        ENTRIES_EDIT_ADD_REF_CHILD,
+        ENTRIES_GET_ENTRY,
+    } from "../../lib/store_consts";
     import {aspect_loc_str} from "../../lib/aspect";
 
     const SELECT_THRESH = 6
@@ -89,32 +93,23 @@
             remove(action) {
                 if (action.confirm) {
                     let index = parseInt(action.id)
-                    const ref = this.i_value[index]
-                    this.i_value.splice(parseInt(index), 1)
-                    this.value_change(this.i_value)
-                    // TODO
-                    /*this.$emit(ENTRYACTION, {
-                        action: DELETE_CONTEXT_ENTRY,
-                        value: {uuid: ref, aspect_loc: this.aspect_loc_for_index(index)}
-                    })*/
-                    this.value
+                    const mod_value = this.$_.filter(this.i_value, (_, i) => { return i !== index})
+                    this.value_change(mod_value)
                 }
             },
             create_item() {
-                const stripped_aspect_loc = this.$_.drop(this.aspect_loc)
+                const index_aspect_loc = this.$_.concat(this.$_.drop(this.aspect_loc), [[ENTRY_INDEX, this.i_value.length]])
+                console.log(index_aspect_loc)
                 const entry = create_entry(this.$store, this.item_type_slug, {}, {
-                    uuid: get_uuid(this.aspect_loc),
-                    aspect_loc: stripped_aspect_loc,
-                    index: this.i_value.length
+                    uuid: this.$store.getters[EDIT_UUID],
+                    aspect_loc: index_aspect_loc,
                 })
-                this.$store.commit(ENTRIES_ADD_REF_CHILD, {
-                    uuid: get_uuid(this.aspect_loc),
+                this.$store.commit(ENTRIES_EDIT_ADD_REF_CHILD, {
                     child_uuid: entry.uuid,
-                    aspect_loc: stripped_aspect_loc,
-                    index: this.i_value.length
+                    aspect_loc: index_aspect_loc,
                 })
-                this.to_entry(entry.uuid)
                 this.value_change(this.$_.concat(this.i_value, [entry.uuid]))
+                //this.to_entry(entry.uuid)
             },
             aspect_loc_for_index(index) {
                 return this.$_.concat(this.aspect_loc, [[INDEX, index]])
