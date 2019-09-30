@@ -175,7 +175,6 @@
 
             },
             remove_value(index) {
-                console.log("remove_value")
                 this.value_change(this.$_.filter(this.i_value, (val, i) => {
                     return index !== i
                 }))
@@ -186,7 +185,6 @@
             move(index_direction) {
                 const index = index_direction[0]
                 const direction= index_direction[1]
-                console.log("move", index, direction)
                 const to_move = this.i_value[index]
                 const without = this.$_.filter(this.i_value, (e, i) => i !== index)
                 const new_left = this.$_.take(without, index + direction)

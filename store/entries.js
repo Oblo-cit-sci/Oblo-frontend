@@ -91,7 +91,7 @@ export const mutations = {
       state.edit = null //
   },*/
   _set_entry_value(state, {aspect_loc, value}) {
-    console.log("set entry value", aspect_loc, value)
+    //console.log("set entry value", aspect_loc, value)
     let select = select_aspect_loc(state, aspect_loc, true)
     const final_loc = ld.last(aspect_loc)
     //console.log("final,", final_loc, "select", select, "value", value)
