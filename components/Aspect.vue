@@ -36,10 +36,11 @@
 
 <script>
 
-    import {LIST_INDEX, VIEW} from "../lib/consts";
+    import {LIST_INDEX, REGULAR, VIEW} from "../lib/consts";
 
     import Title_Description from "./Title_Description";
     import {
+        aspect_default_value,
         aspect_label,
         aspect_loc_str,
         aspect_loc_str2arr,
@@ -78,7 +79,7 @@
             return {
                 has_alternative: false,
                 condition: null,
-                use_regular: null
+                use_regular: true
             }
         },
         created() {
@@ -90,14 +91,12 @@
                 if (!this.aspect_loc) {
                     console.log("Aspect.created: no aspect_loc defined for", this.aspect.name, "emitting up results")
                 }
-
                 try {
                     this.use_regular = this.value.hasOwnProperty("regular") ? this.value.regular : true
                 } catch (e) {
-                    console.log("Aspect.created, ERROR, no value for aspect", this.aspect.name)
+                    console.log("Aspect.created, ERROR, no value for aspect:", this.aspect.name)
                     this.use_regular = true
                 }
-
             } catch (e) {
                 console.log("DEV, crash on Aspect", this.aspect.name, this.aspect, this.aspect_loc)
                 console.log(e)
@@ -130,28 +129,34 @@
             value: function () {
                 //console.log("value", this.aspect.name)
                 if (this.aspect.attr.IDAspect) {
-                    // this is not the proper way.
-                    // the IDAspect, should actually be set, during creation,...
                     let this_uuid = aspect_loc_uuid(this.aspect_loc)
-                    let parent_uuid = this.$store.getters[ENTRIES_GET_ENTRY](this_uuid).refs.parent.uuid
-                    let parent = this.$store.getters[ENTRIES_GET_ENTRY](parent_uuid)
-                    let child_ref = parent.refs.children[this_uuid][0]
-                    let that_ref_value = this.$store.getters[ENTRIES_VALUE](complete_aspect_loc(parent_uuid, child_ref))
-                    let index = this.$_.findIndex(that_ref_value.value, (v) => {return  v === this_uuid})
-                    console.log("IDAspect", this.aspect.name, index)
+                    let entry = this.$store.getters[ENTRIES_GET_ENTRY](this_uuid)
+                    let index = this.$_.last(entry.refs.parent.aspect_loc)[1]
                     return {value: index + 1}
                 }
                 if (this.aspect.attr.ref_value) {
+                    if (this.aspect.attr.ref_update === "create") {
+                        // console.log("ref-create", this.aspect_loc)
+                        let value = this.$store.getters["entries/value"](this.aspect_loc)
+                        // console.log("stored value", value, "default", aspect_default_value(this.$store, this.aspect))
+                        // console.log(value !== aspect_default_value(this.$store, this.aspect))
+                        if (!this.$_.isEqual(value, aspect_default_value(this.$store, this.aspect))) {
+                            return value
+                        }
+                    }
+                    // console.log("calculating and setting")
                     let aspect_location = complete_aspect_loc(
                         aspect_loc_uuid(this.aspect_loc),
                         aspect_loc_str2arr(this.aspect.attr.ref_value),
                         this.extra[LIST_INDEX])
                     // console.log("value ref,  ",this.aspect.name, aspect_location)
                     let value = this.$store.getters[ENTRIES_VALUE](aspect_location)
-                    // console.log("received value",value)
-                    if(value.hasOwnProperty("regular")) {
-                        delete value["regular"]
+                    // console.log("received value", value)
+                    // console.log("my stored value", this.$store.getters["entries/value"](this.aspect_loc))
+                    if (value.hasOwnProperty(REGULAR)) {
+                        delete value[REGULAR]
                     }
+                    this.update_value(value.value)
                     return value
                 } else if (this.aspect.attr.ref_length) { // this is for lists
                     let location_array = complete_aspect_loc(aspect_loc_uuid(this.aspect_loc), aspect_loc_str2arr(this.aspect.attr.ref_length))
@@ -178,7 +183,6 @@
                     return this.mode
             },
             raw_value() {
-
                 if (!this.value) { // failsafe
                     return aspect_raw_default_value(this.aspect)
                 } else {
@@ -199,6 +203,7 @@
                 return this.aspect.attr["alternative-false"] || "alternative value"
             },
             alt_mode() {
+                console.log(this.aspect)
                 return this.aspect.attr.alternative.attr.mode || this.mode
             },
             disable() {
@@ -221,9 +226,9 @@
         methods: {
             title_description(aspect) {
                 // todo. probably not needed anymore
-                if(!aspect) {
+                if (!aspect) {
                     return {
-                        title:"",
+                        title: "",
                         description: ""
                     }
                 }
@@ -236,7 +241,7 @@
                 return get_aspect_component(aspect, mode, this.extra)
             },
             update_value(event) {
-                //console.log("aspect.emit_up", this.aspect_loc, this.value, event)
+                //console.log("aspect.update_value", event, "reg ?", this.use_regular)
                 if (this.has_alternative && this.use_regular) {
                     if (this.aspect.attr.hasOwnProperty("alternative-activate-on-value")) {
                         if (event === this.aspect.attr["alternative-activate-on-value"]) {

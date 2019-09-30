@@ -9,7 +9,7 @@
         @selection="select_exisisting($event)"
         :only_value="true")
     div Select mode
-      SingleSelect(:options="mode_options"  :selection="mode" force_view="RADIOGROUP" :only_value="true")
+      SingleSelect(:options="mode_options"  :selection="mode" force_view="radiogroup" :only_value="true")
     div(v-for="aspect in aspects" :key="aspect.name")
       Aspect(
         :aspect="aspect"

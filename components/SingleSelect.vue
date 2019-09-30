@@ -40,18 +40,18 @@
     let autocomplet_thresh = 20
 
     const NONE = -1
-    const CLEAR_LIST = 0;
-    const SELECT = 1;
-    const AUTOCOMPLETE = 2
+    const CLEAR_LIST = "list";
+    const SELECT = "select";
+    const AUTOCOMPLETE = "autocomplete"
 
-    const RADIOGROUP = 4
+    const RADIOGROUP = "radiogroup"
 
     export const VIEW_OPTIONS = {
-        NONE: NONE,
-        CLEAR_LIST: CLEAR_LIST,
-        SELECT: SELECT,
-        AUTOCOMPLETE: AUTOCOMPLETE,
-        RADIOGROUP: RADIOGROUP
+        none: NONE,
+        list: CLEAR_LIST,
+        select: SELECT,
+        autocomplete: AUTOCOMPLETE,
+        radiogroup: RADIOGROUP
     }
 
     export default {
@@ -96,6 +96,9 @@
                 if (this.viewStyle === RADIOGROUP) {
                     this.only_value = true
                     this.set_selected_item(false)
+                }
+                if(!this.viewStyle) {
+                    console.log("Error unknown force_view", this.force_view, "should be from:", this.view_options)
                 }
             } else {
                 let sz = this.$_.size(this.options)

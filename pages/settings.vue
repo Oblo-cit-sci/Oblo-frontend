@@ -74,7 +74,9 @@
                     }
                 }).then(res => {
                     this.snackbar(res.data.status, res.data.msg)
-                    this.$router.push("/")
+                    if(res.data.status){
+                        this.$router.push("/")
+                    }
                 }).catch(err => {
                     console.log(err)
                     this.error_snackbar("Something went horribly wrong")
