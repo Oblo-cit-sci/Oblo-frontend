@@ -212,8 +212,8 @@ export const actions = {
     commit("cancel_entry_edit", uuid)
   },
   save_entry(context) {
+    context.commit("calc_edit_meta_aspects")
     context.commit("save_edit")
-    //context.commit("_save_entry", uuid)
   },
   set_edit(context, uuid) {
     context.commit("save_edit")

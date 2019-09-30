@@ -49,9 +49,6 @@
     import License from "../../../components/License"
     import Privacy from "../../../components/Privacy"
 
-    import {
-        get_TitleAspect
-    } from "../../../lib/entry"
     import Title_Description from "../../../components/Title_Description"
     import EntryActions from "../../../components/EntryActions";
     import {
@@ -80,7 +77,6 @@
         data() {
             return {
                 entry_type: null, // the full shizzle for the type_slug
-                titleAspect: null,
                 required_values: [], // shortcut, but in entry_type
                 sending: false,
                 complete: true,
@@ -100,7 +96,6 @@
             this.$store.commit("set_global_ref", this.uuid)
             this.$store.dispatch(ENTRIES_SET_EDIT, this.uuid)
             this.entry_type = this.$store.getters.entry_type(this.entry.type_slug)
-            this.titleAspect = get_TitleAspect(this.entry_type)
             this.has_pages = this.entry_type.content.meta.hasOwnProperty("pages")
 
             let required_aspects = this.$_.filter(this.entry_type.content.aspects, (a) => a.required || false)
@@ -123,12 +118,12 @@
             }
         },
         beforeRouteLeave(to, from, next) {
-          if(this.entry.local.dirty) {
-              this.openSaveDialog = true
-              this.router_next = next
-          }  else {
-              next()
-          }
+            if (this.entry.local.dirty) {
+                this.openSaveDialog = true
+                this.router_next = next
+            } else {
+                next()
+            }
         },
         methods: {
             edit_or_save_dialog(event) {
@@ -137,31 +132,6 @@
                     this.router_next()
                 } else {
                     this.router_next = null
-                }
-            },
-
-            entryAction(event) {
-                //console.log("entry action")
-                const action = event.action
-                const value = event.value
-                switch (action) {
-                  /*  case GLOBAL_ASPECT_REF:
-                        this.$store.commit("add_aspect_loc", value)
-                        break */
-                    // todo maybe the server could set the titleAspect and itself
-                    // would in that case emit up this actiovaluen
-                    // otherwise, now its unused, cuz the titleAspect is grabbed here
-                    /*case SAVE:
-                        //this.dirty = false
-                        save_entry(this.$store, this.entry)
-                        break
-                    */
-                    /*case DELETE_CONTEXT_ENTRY:
-                        this.delete_child(value)
-                        break */
-                    default:
-                        console.log("unknown entry action", action, value, "event:", event)
-                        break
                 }
             },
             check_complete() {
@@ -217,7 +187,7 @@
                 }
             },
             dirty() {
-              return this.entry.local.dirty || false
+                return this.entry.local.dirty || false
             },
             parent_title() {
                 // todo not necessarily available for remote entries. should be included?
