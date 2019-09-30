@@ -7,6 +7,7 @@
       :readonly="readOnly")
     SingleSelect(v-else :options="options"
       :selection.sync="selection"
+      :force_view="force_view"
       :disabled="disabled")
 </template>
 
@@ -48,6 +49,11 @@
                     this.selection = null
                     this.init = false
                 }
+            }
+        },
+        computed: {
+            force_view() {
+                return this.aspect.attr.force_view
             }
         },
         watch: {

@@ -11,7 +11,14 @@
           :extra="list_extra(index)"
           v-on:entryAction="handleEntryAction($event, index)")
           v-on:append-outer="remove_value(index)"
-        v-btn(v-if="requires_delete" small @click="remove_value(index)") delete {{extra.itemname}}
+        ListitemActions(
+          :requires_delete="requires_delete"
+          :itemname="extra.itemname"
+          :moveable="moveable"
+          :index="index"
+          :listlength="i_value.length - 1"
+          v-on:remove_value="remove_value($event)"
+          v-on:move="move($event)")
     div(v-else)
       v-expansion-panel(
         expand
@@ -30,12 +37,14 @@
             :extra="list_extra(index)"
             :aspect_loc="item_aspect_loc(index)"
             v-on:entryAction="$emit('entryAction',$event)")
-          v-btn(v-if="requires_delete" small @click="remove_value(index)") delete {{item_name}}
-          span(v-if="moveable")
-            v-btn(:disabled="index === 0" small @click="move(index, -1)") move up
-              v-icon(right) keyboard_arrow_up
-            v-btn(:disabled="index === i_value.length - 1"  down small @click="move(index, 1)") move down
-              v-icon(right) keyboard_arrow_down
+          ListitemActions(
+            :requires_delete="requires_delete"
+            :itemname="extra.itemname"
+            :moveable="moveable"
+            :index="index"
+            :listlength="i_value.length - 1"
+            v-on:remove_value="remove_value($event)"
+            v-on:move="move($event)")
     div
       span {{count_text}}, &nbsp
       span(v-if="min===max && min !== null") required: {{min}}
@@ -56,6 +65,7 @@
     import ListMixin from "../ListMixin";
     import {INDEX, TITLE_UPDATE} from "../../lib/consts";
     import {aspect_loc_str, packed_aspect_default_value, get_aspect_component} from "../../lib/aspect";
+    import ListitemActions from "../ListitemActions";
 
 
     // todo, pass the extra in a more intelligent way down, not to all the same
@@ -65,7 +75,7 @@
 
     export default {
         name: "ListAspect",
-        components: {Aspect},
+        components: {ListitemActions, Aspect},
         mixins: [AspectMixin, ListMixin],
         data() {
             return {
@@ -165,6 +175,7 @@
 
             },
             remove_value(index) {
+                console.log("remove_value")
                 this.value_change(this.$_.filter(this.i_value, (val, i) => {
                     return index !== i
                 }))
@@ -172,7 +183,10 @@
                     this.panelState.splice(index, 1)
                 }
             },
-            move(index, direction) {
+            move(index_direction) {
+                const index = index_direction[0]
+                const direction= index_direction[1]
+                console.log("move", index, direction)
                 const to_move = this.i_value[index]
                 const without = this.$_.filter(this.i_value, (e, i) => i !== index)
                 const new_left = this.$_.take(without, index + direction)
@@ -200,7 +214,7 @@
             },
             list_extra(index) {
                 let xtra_copy = JSON.parse(JSON.stringify(this.extra))
-                xtra_copy.no_title = true
+                xtra_copy.no_title = false
                 xtra_copy.clear = "no_title"
                 xtra_copy.listitem = true
                 xtra_copy.list_index = index

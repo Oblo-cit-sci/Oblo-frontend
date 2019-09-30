@@ -174,7 +174,7 @@ export const getters = {
   },
   value(state) {
     return (aspect_loc) => {
-      console.log("value", aspect_loc)
+      //console.log("value", aspect_loc)
       return select_aspect_loc(state, aspect_loc)
     }
   },

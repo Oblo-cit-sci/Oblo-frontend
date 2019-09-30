@@ -3,7 +3,7 @@
     v-flex(xs12 md8)
       SingleSelect(
         :options="options"
-        force_view="CLEAR_LIST"
+        force_view="list"
         :select_sync="false"
         v-on:selection="selection($event)"
         :highlight="false")
