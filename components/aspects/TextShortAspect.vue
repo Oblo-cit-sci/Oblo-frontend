@@ -15,7 +15,6 @@
       :append-outer-icon="clearIcon"
       @click:append-outer="$emit('entryAction', {action: 'clear'})"
 
-      @focus="$emit('focus')"
       :value="i_value"
       @input="value_change($event)")
 </template>

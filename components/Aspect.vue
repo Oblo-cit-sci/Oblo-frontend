@@ -1,7 +1,7 @@
 <template lang="pug">
   div(
     :class="[{ composite: aspect.type === 'composite',  disabled: disable}]"
-    :id="aspect_id")
+    :id="aspect_id" v-if="enabled_visible")
     Title_Description(
       v-if="show_title_description"
       v-bind="title_description(aspect)"
@@ -59,10 +59,6 @@
             mode: {
                 type: String,
                 default: "view"
-            },
-            disabled: {
-                type: Boolean,
-                default: false
             },
             aspect: Object,
             aspect_loc:
@@ -173,6 +169,9 @@
                 } else
                     return true
             },
+            enabled_visible() {
+              return !this.disable || !this.aspect.attr.hide_on_disabled
+            },
             real_mode() {
                 if (this.aspect.attr.ref_value) {
                     return VIEW
@@ -207,7 +206,7 @@
                 return this.aspect.attr.alternative.attr.mode || this.mode
             },
             disable() {
-                return this.disabled || this.condition_fail || this.aspect.attr.disable
+                return this.condition_fail || this.aspect.attr.disable
             },
             regular_disable() {
                 return this.disable || !this.use_regular
