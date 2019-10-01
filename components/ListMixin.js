@@ -20,8 +20,9 @@ export default {
     }
   },
   computed: {
+
     more_allowed() {
-      return (!this.max || this.i_value.length < this.max) && !this.disabled
+      return (!this.max || this.i_value.length < this.max) && !this.disabled && !this.aspect.attr.ref_size
     },
     requieres_more_color() {
       return this.min && this.i_value.length < this.min ? "success" : undefined

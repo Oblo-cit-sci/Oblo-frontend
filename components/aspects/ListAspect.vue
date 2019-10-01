@@ -169,10 +169,6 @@
                 setTimeout(() => {
                     this.i_value = this.value
                 }, 50)
-
-                //console.log("ADDING")
-                //console.log(this.value)
-
             },
             remove_value(index) {
                 this.value_change(this.$_.filter(this.i_value, (val, i) => {

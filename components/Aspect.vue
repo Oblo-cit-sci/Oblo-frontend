@@ -151,7 +151,7 @@
                         this.extra[LIST_INDEX])
                     // console.log("value ref,  ",this.aspect.name, aspect_location)
                     let value = this.$store.getters[ENTRIES_VALUE](aspect_location)
-                    // console.log("received value", value)
+                    console.log("Aspect.value ref_value: received value", value)
                     // console.log("my stored value", this.$store.getters["entries/value"](this.aspect_loc))
                     if (value.hasOwnProperty(REGULAR)) {
                         delete value[REGULAR]
@@ -162,9 +162,9 @@
                     let location_array = complete_aspect_loc(aspect_loc_uuid(this.aspect_loc), aspect_loc_str2arr(this.aspect.attr.ref_length))
                     const fixed_length = this.$store.getters[ENTRIES_VALUE](location_array).value.length
                     this.extra["ref_length"] = fixed_length
-                    return this.$store.getters["entries/value"](this.aspect_loc)
+                    return this.$store.getters[ENTRIES_VALUE](this.aspect_loc)
                 } else {
-                    return this.$store.getters["entries/value"](this.aspect_loc)
+                    return this.$store.getters[ENTRIES_VALUE](this.aspect_loc)
                 }
             },
             show_title_description() {
