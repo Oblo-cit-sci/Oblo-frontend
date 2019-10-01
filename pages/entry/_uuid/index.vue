@@ -41,7 +41,6 @@
         cancel_color="accent"
         cancel_text="Keep on editing"
         confirm_text="Save and move on")
-      div(id="hidden_aspects_values") {{entry}}
 </template>
 
 <script>

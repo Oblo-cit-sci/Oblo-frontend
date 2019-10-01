@@ -109,11 +109,12 @@
                         aspect_loc_uuid(this.aspect_loc),
                         aspect_loc_str2arr(this.condition.aspect),
                         this.extra[LIST_INDEX])
-                    let condition_value = this.$store.getters["entries/value"](aspect_location).value
-                    if (condition_value === null) {
+                    let condition_value = this.$store.getters["entries/value"](aspect_location)
+                    if(!condition_value)
                         return false
-                    }
-                    const compare = this.condition.compare || "equal"
+                    else
+                        condition_value = condition_value.value
+                const compare = this.condition.compare || "equal"
                     switch (compare) {
                         case "equal":
                             return condition_value !== this.aspect.attr.condition.value
