@@ -12,6 +12,9 @@
     v-btn(@click="test_save") Test and save
     br
     v-divider
+    h3 Export data
+    div Export all your entries
+    v-btn(@click="export_entries") Export
     h3 Import data
     div Import data from a previously exported (downloaded) json file
     LoadFileButton(@fileload="load_file($event)")
@@ -35,6 +38,7 @@
     import DecisionDialog from "../components/DecisionDialog";
   import TextShort from "../components/aspects/TextShortAspect";
     import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
+    import {export_data} from "../lib/import_export";
 
     export default {
         name: "settings",
@@ -81,6 +85,10 @@
                     console.log(err)
                     this.error_snackbar("Something went horribly wrong")
                 })
+            },
+            export_entries() {
+                const entries =Array.from(this.$store.state.entries.entries.values())
+                export_data(entries, "all_licci_entries.json")
             },
             show_clear_entries() {
                 this.show_dialog = true

@@ -197,6 +197,7 @@
                 language: this.entry_type.language
               }*/
             download_title() {
+                // todo title, wont update in real time
                 return (this.entry.type_slug + " " + this.entry.title).replace(" ", "_") + ".json"
             },
             download() {
