@@ -41,10 +41,9 @@
     import Title_Description from "./Title_Description";
     import {
         aspect_default_value,
-        aspect_label,
         aspect_loc_str,
         aspect_loc_str2arr,
-        aspect_raw_default_value,
+        aspect_raw_default_value, check_condition_value,
         get_aspect_component, pack_value
     } from "../lib/aspect";
     import {ENTRIES_GET_ENTRY, ENTRIES_SET_ENTRY_VALUE, ENTRIES_VALUE} from "../lib/store_consts";
@@ -74,16 +73,12 @@
         data() {
             return {
                 has_alternative: false,
-                condition: null,
                 use_regular: true
             }
         },
         created() {
             try {
                 this.has_alternative = this.aspect.attr.hasOwnProperty("alternative")
-                if (this.aspect.attr.hasOwnProperty("condition")) {
-                    this.condition = this.aspect.attr.condition
-                }
                 if (!this.aspect_loc) {
                     console.log("Aspect.created: no aspect_loc defined for", this.aspect.name, "emitting up results")
                 }
@@ -102,25 +97,16 @@
         computed: {
             condition_fail() {
                 //console.log("condition_fail?", this.aspect, this.aspect.name, this.condition)
-                if (!this.condition) {
-                    return false
-                } else {
+                // todo this getting of the value, could mayeb also go into the helper...
+                if (this.aspect.attr.hasOwnProperty("condition")) {
                     let aspect_location = complete_aspect_loc(
                         aspect_loc_uuid(this.aspect_loc),
-                        aspect_loc_str2arr(this.condition.aspect),
+                        aspect_loc_str2arr(this.aspect.attr.condition.aspect),
                         this.extra[LIST_INDEX])
                     let condition_value = this.$store.getters["entries/value"](aspect_location)
-                    if(!condition_value)
-                        return false
-                    else
-                        condition_value = condition_value.value
-                const compare = this.condition.compare || "equal"
-                    switch (compare) {
-                        case "equal":
-                            return condition_value !== this.aspect.attr.condition.value
-                        case "unequal":
-                            return condition_value === this.aspect.attr.condition.value
-                    }
+                    return !check_condition_value(condition_value, this.aspect.attr.condition)
+                } else {
+                    return false
                 }
             },
             value: function () {
@@ -171,7 +157,7 @@
                     return true
             },
             enabled_visible() {
-              return !this.disable || !this.aspect.attr.hide_on_disabled
+                return !this.disable || !this.aspect.attr.hide_on_disabled
             },
             real_mode() {
                 if (this.aspect.attr.ref_value) {
@@ -222,7 +208,8 @@
             aspect_id() {
                 return aspect_loc_str(this.$_.tail(this.aspect_loc))
             },
-        },
+        }
+        ,
         methods: {
             title_description(aspect) {
                 // todo. probably not needed anymore
@@ -236,10 +223,12 @@
                     title: this.extra.no_title ? "" : this.aspect_label,
                     description: aspect.description || ""
                 }
-            },
+            }
+            ,
             aspectComponent(aspect, mode) {
                 return get_aspect_component(aspect, mode, this.extra)
-            },
+            }
+            ,
             update_value(event) {
                 //console.log("aspect.update_value", event, "reg ?", this.use_regular)
                 if (this.has_alternative && this.use_regular) {
@@ -259,7 +248,8 @@
                 }
                 this.$store.dispatch(ENTRIES_SET_ENTRY_VALUE, {aspect_loc: this.aspect_loc, value: up_value})
             }
-        },
+        }
+        ,
         watch: {
             use_regular(val, old_val) {
                 // catch from created. keep this!

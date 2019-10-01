@@ -87,6 +87,8 @@
         },
         methods: {
             open_remove(index) {
+                if(this.disabled)
+                    return
                 this.remove_data_dialog.id = index
                 this.show_remove = true
             },
@@ -100,8 +102,9 @@
                 }
             },
             create_item() {
+                if(this.disabled)
+                    return
                 const index_aspect_loc = this.aspect_loc_for_index(this.i_value.length)
-                console.log(index_aspect_loc)
                 const entry = create_entry(this.$store, this.item_type_slug, {}, {
                     uuid: this.$store.getters[EDIT_UUID],
                     aspect_loc: index_aspect_loc,
@@ -120,6 +123,8 @@
                 return aspect_loc_str(this.aspect_loc_for_index(index))
             },
             open_item(item) {
+                if(this.disabled)
+                    return
                 if (!this.has_entry(item.key))
                     this.fetch_and_nav(entry.uuid)
                 else {
