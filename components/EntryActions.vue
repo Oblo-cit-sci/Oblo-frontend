@@ -164,7 +164,8 @@
             save() {
                 // todo not if it is an aspect page
                 //save_entry(this.$store, this.entry)
-                //this.$emit(ENTRYACTION, {action: SAVE})
+
+                this.$store.dispatch("entries/save_entry")
                 this.ok_snackbar("Entry saved")
                 this.back()
             },

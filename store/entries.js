@@ -1,9 +1,10 @@
 /*
   this is for the own entries
  */
-import {ASPECT, COLLECT, COMPONENT, DRAFT, ENTRY, INDEX} from "../lib/consts";
+import {ASPECT, COLLECT, COMPONENT, DRAFT, EDIT, ENTRY, INDEX} from "../lib/consts";
 import {complete_aspect_loc} from "../lib/client";
-import {select_aspect_loc} from "../lib/entry";
+import {get_entry_titleAspect, select_aspect_loc} from "../lib/entry";
+import {aspect_loc_str2arr} from "../lib/aspect";
 
 
 const ld = require("lodash")
@@ -79,6 +80,7 @@ export const mutations = {
   },
   clear(state) {
     state.entries.clear()
+    state.edit = null
     state.timeline_entries = []
   },
   /*update(state, {uuid}) {
@@ -125,9 +127,13 @@ export const mutations = {
     state.edit = state.entries.get(uuid)
   },
   save_edit(state) {
-    if (state.edit)
+    if (state.edit) {
       state.entries.set(state.edit.uuid, state.edit)
+    }
   },
+  update_edit_title(state, title) {
+    state.edit.title = title
+  }
 }
 
 export const getters = {
@@ -194,6 +200,45 @@ export const getters = {
       })
       return entries
     }
+  },
+  get_type_of_entry(state, getters) {
+    return uuid => {
+      let entry = getters.get_entry(uuid)
+      if (!entry) {
+        console.log("No entry for uuid", uuid)
+        return null
+      }
+      return getters.get_entry_type(entry.type_slug)
+    }
+  },
+  get_entry_type(state, getters, root_state) {
+    return slug => {
+      const entry_type = root_state.entry_types.get(slug)
+      if (!entry_type) {
+        console.log("No entry type for slug", slug)
+        return null
+      } else {
+        return entry_type
+      }
+    }
+  },
+  get_entry_title: function (state, getters) {
+    return uuid => {
+      const entry = getters.get_entry(uuid)
+      const type = getters.get_entry_type(entry.type_slug)
+      let titleAspect = get_entry_titleAspect(type)
+      if (!titleAspect) {
+        console.log("entries.get_entry_title TODO, use default title for type")
+        return ""
+      }
+      const title = select_aspect_loc(state, ld.concat([[EDIT, uuid]], aspect_loc_str2arr(titleAspect)))
+      if (title)
+        return title.value
+      else {
+        console.log("entries.get_entry_title TODO, use default title for type")
+        return ""
+      }
+    }
   }
 }
 
@@ -211,8 +256,11 @@ export const actions = {
   cancel_entry_edit({commit}, uuid) {
     commit("cancel_entry_edit", uuid)
   },
+  // rename to save edit entry
   save_entry(context) {
-    context.commit("calc_edit_meta_aspects")
+    const entry_title = context.getters["get_entry_title"](context.state.edit.uuid)
+    if(entry_title)
+      context.commit("update_edit_title", entry_title)
     context.commit("save_edit")
   },
   set_edit(context, uuid) {

@@ -26,6 +26,7 @@ export default {
         // getting the options from a value (type: list)
         let aspect_location = complete_aspect_loc(aspect_loc_uuid(this.aspect_loc),aspect_loc_str2arr(this.aspect.items))
         let value = this.$store.getters[ENTRIES_VALUE](aspect_location).value
+        console.log("building options from val", value)
         this.options = object_list2options(value,"text", "value")
       }
     } else if (this.aspect.items instanceof Array) {
