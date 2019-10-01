@@ -30,7 +30,7 @@
 
     /*
     OPTIONS NEED TO HAVE
-    txt, value
+    text, value
     and optional "description"
      */
 

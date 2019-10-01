@@ -1,133 +1,53 @@
 <template lang="pug">
   div
-    div(v-if="edit")
-      v-radio-group(v-model="selected_option" row)
-        div(v-for="(comp_type, index) in aspect.options" :key="index")
-          v-radio(label="non" :value="index")
-            template(v-slot:label)
-              Aspect(
-                v-bind:aspect="comp_type"
-                v-bind:value="opt_values[index]"
-                v-on:update:value="optionUpdate($event, index)"
-                :edit="true"
-                :extra="extra"
-                :mode="mode"
-                v-on:entryAction="$emit('entryAction', $event)")
-    div(v-if="value")
+    div(v-if="edit && !selected_aspect")
+      SingleSelect(
+        :options="options"
+        :selection.sync="selected_option"
+        :select_sync="true"
+        :only_value="true")
+    div(v-if="selected_option")
       Aspect(
-        v-bind:aspect="aspect.view_type"
-        :value="result_value"
-        :edit="false"
+        v-bind:aspect="selected_aspect"
+        :aspect_loc="aspect_loc"
         :extra="extra"
-        mode="view"
-        v-on:entryAction="$emit('entryAction',$event)")
+        mode="edit")
 </template>
 
 <script>
 
 
-  /*
-    this is when there are several input method aspects as options, and the user can choose one
-   */
+    import AspectMixin from "./AspectMixin"
+    import Aspect from "../Aspect"
+    import {packed_aspect_default_value} from "../../lib/aspect";
+    import SingleSelect from "../SingleSelect";
+    import {string_list2options} from "../../lib/client";
 
-  import AspectMixin from "./AspectMixin"
-  import Aspect from "../Aspect"
-  import {aspect_raw_default_value, packed_aspect_default_value} from "../../lib/aspect";
-
-  export default {
-    name: "OptionsAspect",
-    components: {Aspect},
-    mixins: [AspectMixin],
-    data() {
-      return {
-        selected_option: 0,
-        opt_values: []
-      }
-    },
-    created() {
-      if(!this.aspect.hasOwnProperty("view_type")) {
-        console.log("Options Aspect without view_type... that is not gonna fly")
-      }
-      for (let index in this.aspect.options) {
-        this.opt_values[index] = packed_aspect_default_value(this.aspect.options[index])
-      }
-      if(this.i_value === null) {
-        this.i_value = aspect_raw_default_value(this.aspect.view_type)
-      }
-    },
-    methods: {
-      optionUpdate(event, index) {
-        //console.log("OP-Asp, update", event, this.selected_option)
-        this.opt_values[index] = event
-        //console.log(this.opt_values[this.selected_option])
-        if (this.opt_values[this.selected_option].value) {
-          this.i_value = this.opt_values[this.selected_option].value
-          this.value_change(this.i_value)
-          return true
-        } else {
-          return false
-        }
-      },
-    },
-    computed: {
-      result_value() {
-        // TODO some horror that comes cuz in basic Obs.
-        // when there is a manual input it causes an emit chain, cuz its default vals
-        // that tirggers a mess
-        // console.log("res?", this.value, this.i_value)
-        try {
-          if (this.i_value !== null) {
-            return {value: this.i_value}
-            /*if(this.value.hasOwnProperty("value") && this.value.value !== null) {
-              console.log("OptAsp- value.value")
-              return this.value.value*/
-          } else {
-            return packed_aspect_default_value(this.aspect.view_type)
-          }
-        } catch {
-          console.log("OptAsp: crash")
-          return packed_aspect_default_value(this.aspect.view_type)
-        }
-        /*
-        if (this.value !== null) {
-          if (this.value.value !== null) {
-            if (typeof (this.value) === "object") {
-              console.log("obj down", this.value)
-              if (!this.value) {
-                console.log("obj val null")
-                return packed_aspect_default_value(this.aspect.view_type)
-              }
+    export default {
+        name: "OptionsAspect",
+        components: {SingleSelect, Aspect},
+        mixins: [AspectMixin],
+        data() {
+            return {
+                selected_option: null,
+                opt_values: [],
+                options: string_list2options(this.$_.map(this.aspect.options, o => o.name))
             }
-            return this.value
-          } else {
-            console.log("wrapped val")
-            return {value: this.value}
-          }
-        } else {
-          console.log("optas. result_value null. viewtype?", this.aspect.view_type)
-          return packed_aspect_default_value(this.aspect.view_type)
+        },
+        created() {
+            for (let index in this.aspect.options) {
+                this.opt_values[index] = packed_aspect_default_value(this.aspect.options[index])
+            }
+        },
+        methods: {
+
+        },
+        computed: {
+            selected_aspect() {
+                return this.aspect.options.find(o => o.name === this.selected_option)
+            }
         }
-         */
-      }
-    },
-    watch: {
-      selected_option(val) {
-        //console.log("option selected", val)
-        //val = parseInt(val)
-        for (let index in this.aspect.options) {
-          if (parseInt(index) !== val) {
-            this.opt_values[index] = packed_aspect_default_value(this.aspect.options[index])
-          } else {
-            // would be default...
-          }
-        }
-        this.optionUpdate()
-        this.i_value = this.opt_values[this.selected_option].value
-        this.value_change(this.i_value)
-        //console.log("sel ch", this.value)
-      },
     }
-  }
 </script>
 
 <style scoped>
