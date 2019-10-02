@@ -5,7 +5,6 @@
       single-line
       :readonly="readOnly"
       :disabled="disabled"
-      :hide-details="hideDetails"
       :placeholder="aspect.attr.placeholder"
       :hint="hint"
       :rules="rules"
