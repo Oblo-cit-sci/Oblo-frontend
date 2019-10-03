@@ -59,7 +59,7 @@
         v-icon(right) add
       ListPagination(
         v-if="has_pagination"
-        :total="i_value.length / PAGINATION_TRESH"
+        :total="Math.ceil(i_value.length / PAGINATION_TRESH)"
         :page="page"
         :pages="pages"
         :allow_jump="allow_jump"
@@ -112,7 +112,7 @@
             }
         },
         created() {
-            //console.log("LA created")
+            console.log("LA created", this.value)
             let item_type = this.aspect.items;
             // todo. list, are extended lists by user, not select lists
             if (typeof (item_type) === "string") {
@@ -151,6 +151,8 @@
                 }
             }
             // not sure if this would still be an extra or attr...
+
+            console.log("EXTRA", this.extra, "VAL", this.value)
             if (this.extra.ref_length) {
                 if (this.extra.ref_length !== this.value.length) {
                     const diff = this.extra.ref_length - this.value.length
@@ -165,6 +167,7 @@
                 this.min = this.extra.ref_length
                 this.max = this.extra.ref_length
             }
+
             this.set_min_max()
             if (this.i_value.length === 0) {
                 for (let i = 0; i < this.aspect.attr.create || 0; i++) {

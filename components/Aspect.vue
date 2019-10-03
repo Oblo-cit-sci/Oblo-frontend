@@ -44,7 +44,7 @@
         aspect_loc_str,
         aspect_loc_str2arr,
         aspect_raw_default_value, check_condition_value,
-        get_aspect_component, pack_value
+        get_aspect_component, pack_value, packed_aspect_default_value
     } from "../lib/aspect";
     import {ENTRIES_GET_ENTRY, ENTRIES_SET_ENTRY_VALUE, ENTRIES_VALUE} from "../lib/store_consts";
     import {aspect_loc_uuid, complete_aspect_loc} from "../lib/client";
@@ -169,9 +169,12 @@
                     return this.mode
             },
             raw_value() {
+                console.log("raw_value", this.value)
                 if (!this.value) { // failsafe
+                    console.log("no val")
                     return aspect_raw_default_value(this.aspect)
                 } else {
+                    console.log("val")
                     return this.value.value
                 }
             },
@@ -208,8 +211,7 @@
             aspect_id() {
                 return aspect_loc_str(this.$_.tail(this.aspect_loc))
             },
-        }
-        ,
+        },
         methods: {
             title_description(aspect) {
                 // todo. probably not needed anymore
@@ -223,12 +225,10 @@
                     title: this.extra.no_title ? "" : this.aspect_label,
                     description: aspect.description || ""
                 }
-            }
-            ,
+            },
             aspectComponent(aspect, mode) {
                 return get_aspect_component(aspect, mode, this.extra)
-            }
-            ,
+            },
             update_value(event) {
                 //console.log("aspect.update_value", event, "reg ?", this.use_regular)
                 if (this.has_alternative && this.use_regular) {
@@ -248,8 +248,7 @@
                 }
                 this.$store.dispatch(ENTRIES_SET_ENTRY_VALUE, {aspect_loc: this.aspect_loc, value: up_value})
             }
-        }
-        ,
+        },
         watch: {
             use_regular(val, old_val) {
                 // catch from created. keep this!
@@ -261,12 +260,12 @@
                     if (fixed_value !== undefined) {
                         this.update_value(fixed_value)
                     } else {
-                        this.update_value(aspect_raw_default_value(this.aspect.attr.alternative))
+                        this.update_value(packed_aspect_default_value(this.aspect.attr.alternative))
                     }
                 } else {
                     this.$store.dispatch(ENTRIES_SET_ENTRY_VALUE, {
                         aspect_loc: this.aspect_loc,
-                        value: aspect_raw_default_value(this.aspect)
+                        value: packed_aspect_default_value(this.aspect)
                     })
                 }
             }
