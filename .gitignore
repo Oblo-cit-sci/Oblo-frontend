@@ -1,5 +1,6 @@
 pages/test/*
 
+appbeta/
 
 # Created by .ignore support plugin (hsz.mobi)
 ### Node template
@@ -87,4 +88,4 @@ dist
 # Service worker
 sw.*
 
-app-beta/
+
