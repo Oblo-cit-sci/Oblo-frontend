@@ -1,6 +1,6 @@
 {
   "name": "LICCI",
-  "version": "0.6.13",
+  "version": "0.6.13a",
   "description": "Local Indicators of Climate change impacts",
   "author": "Ramin S",
   "private": true,
@@ -10,7 +10,7 @@
     "start": "cross-env NODE_ENV=production node server/index.js",
     "generate": "nuxt generate",
     "localtest": "nuxt build --spa --pwa; rm -r app; mkdir app; cp -r dist/* app; python3 -m http.server",
-    "localbetatest": "nuxt build --spa --pwa; rm -r app-beta; mkdir app-beta; cp -r dist/* app-beta; python3 -m http.server"
+    "localbetatest": "nuxt build --spa --pwa; rm -r appbeta; mkdir appbeta; cp -r dist/* appbeta; python3 -m http.server"
   },
   "dependencies": {
     "@formschema/native": "^2.0.0-alpha.2",
