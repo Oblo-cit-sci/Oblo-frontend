@@ -162,7 +162,6 @@
                 return entry_type.content.aspects
             },
             entry() {
-                //console.log("compute e called")
                 return this.$store.getters[ENTRIES_GET_EDIT]
             },
             shown_aspects() {

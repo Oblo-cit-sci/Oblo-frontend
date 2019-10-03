@@ -38,7 +38,7 @@
             :aspect_loc="item_aspect_loc(index)"
             v-on:entryAction="$emit('entryAction',$event)")
           ListitemActions(
-            :requires_delete="requires_delete"
+            :requires_delete="requires_delete && !fixed_length"
             :itemname="extra.itemname"
             :moveable="moveable"
             :index="index"
@@ -55,6 +55,8 @@
     div(v-if="!readOnly && !fixed_length")
       v-btn(:disabled="!more_allowed" @click="add_value()" :color="requieres_more_color") Add {{item_name}}
         v-icon(right) add
+      .v-text-field__details
+        .v-messages
 </template>
 
 <script>
@@ -112,13 +114,11 @@
                 this.item_aspect = {
                     attr: {},
                     type: this.aspect.items,
-                    required: true
                 }
             } else if (typeof (item_type) === "object") {
-                // console.log("object type", this.aspect.items)
-                if (this.aspect.items.type === "composite") {
+                //console.log("object type", this.aspect.items)
+                if (this.aspect.items.type === "composite" || this.aspect.attr.force_panels) {
                     this.item_aspect = this.aspect.items;
-                    this.item_aspect.required = true;
                     this.structure = PANELS
                     // fill in the values of the titleAspect
                     for (let item_index in this.i_value) {
@@ -129,6 +129,7 @@
                     this.structure = "simple";
                 }
             }
+            // not sure if this would still be an extra or attr...
             if (this.extra.ref_length) {
                 if (this.extra.ref_length !== this.value.length) {
                     const diff = this.extra.ref_length - this.value.length
@@ -207,12 +208,13 @@
                 }
             },
             list_extra(index) {
-                let xtra_copy = JSON.parse(JSON.stringify(this.extra))
-                xtra_copy.no_title = false
-                xtra_copy.clear = "no_title"
-                xtra_copy.listitem = true
-                xtra_copy.list_index = index
-                return xtra_copy
+                let extra = {
+                    no_title: false,
+                    clear:false,
+                    listitem:true,
+                    list_index: index
+                }
+                return extra
             },
             panel_id(index) {
                 return "L-" + aspect_loc_str(this.$_.concat(this.aspect_loc, [[INDEX, index]]))
@@ -242,7 +244,7 @@
             },
             titles() {
                 let titles = new Array(this.i_value.length)
-                if (this.aspect.attr.indexTitle) {
+                if (this.aspect.attr.indexTitle || this.aspect.attr.force_panels) { // indexTitle or non-complex panels
                     for (let i = 0; i < titles.length; i++) {
                         titles[i] = this.aspect.attr.itemname + " " + (parseInt(i) + 1).toString()
                     }
