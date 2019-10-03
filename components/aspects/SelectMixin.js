@@ -1,8 +1,7 @@
 import {
   aspect_loc_uuid,
   complete_aspect_loc,
-  get_codes_as_options,
-  object_list2options,
+  get_codes_as_options, object_list2options,
   string_list2options
 } from "../../lib/client"
 import {aspect_loc_str2arr, delim2str} from "../../lib/aspect";
@@ -26,8 +25,9 @@ export default {
         // getting the options from a value (type: list)
         let aspect_location = complete_aspect_loc(aspect_loc_uuid(this.aspect_loc),aspect_loc_str2arr(this.aspect.items))
         let value = this.$store.getters[ENTRIES_VALUE](aspect_location).value
-        console.log("building options from val", value)
-        this.options = object_list2options(value,"text", "value")
+        //console.log("building options from val", value)
+        this.options = object_list2options(value, "value", "value")
+        //console.log(this.options)
       }
     } else if (this.aspect.items instanceof Array) {
       if (this.aspect.attr.hasOwnProperty("select") && this.aspect.attr.select === "check") {

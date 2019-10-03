@@ -97,7 +97,7 @@
                     this.only_value = true
                     this.set_selected_item(false)
                 }
-                if(!this.viewStyle) {
+                if (!this.viewStyle) {
                     console.log("Error unknown force_view", this.force_view, "should be from:", this.view_options)
                 }
             } else {
@@ -124,8 +124,7 @@
             icon_path(item) {
                 if (item.icon) {
                     return server_icon_path(this.$axios, item.icon)
-                }
-            else return ""
+                } else return ""
             },
             marked(key) {
                 if (this.selection)
@@ -147,6 +146,7 @@
                 }
             },
             set_selected_item() {
+                //console.log("set_selected_item", this.selected_item, this.only_value, this.selection)
                 if (this.only_value) {
                     this.selected_item = this.selection
                 } else {
@@ -187,6 +187,14 @@
         watch: {
             selected_item(item) {
                 this.emitUp(item)
+                /* console.log("emitup", item)
+                if (typeof item === "object") {
+                    this.emitUp(item.value)
+                } else if (typeof item === "string") {
+                    this.emitUp(item)
+                } else {
+                  console.log("SingleSelect. unknown type to emit up")
+                }*/
             },
             selection(val) {
                 this.set_selected_item()
