@@ -26,8 +26,7 @@
 <script>
     import AspectMixin from "./AspectMixin";
     import {
-        CONTEXT_ENTRY, ENTRY_INDEX,
-        INDEX
+        ENTRY_INDEX
     } from "../../lib/consts";
     import DecisionDialog from "../DecisionDialog";
     import {create_entry} from "../../lib/entry";
@@ -39,6 +38,7 @@
         ENTRIES_GET_ENTRY,
     } from "../../lib/store_consts";
     import {aspect_loc_str} from "../../lib/aspect";
+    import {no_duplicate_string, no_duplicate_texts} from "../../lib/client";
 
     const SELECT_THRESH = 6
 
@@ -67,14 +67,12 @@
                 return this.i_value > SELECT_THRESH
             },
             items() {
-                return this.$_.map(this.value, (item) => {
-                    const entry = this.$store.getters[ENTRIES_GET_ENTRY](item)
-                    return {
-                        title: entry.title,
-                        key: item,
-                        type: CONTEXT_ENTRY
-                    }
+                let entries = this.$_.map(this.value, e => {
+                    const entry = this.$store.getters[ENTRIES_GET_ENTRY](e)
+                    return {title: entry.title, uuid: e}
                 })
+                no_duplicate_texts(entries, "title")
+                return entries
             },
             remove_data_dialog() {
                 return {

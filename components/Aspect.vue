@@ -169,12 +169,9 @@
                     return this.mode
             },
             raw_value() {
-                console.log("raw_value", this.value)
                 if (!this.value) { // failsafe
-                    console.log("no val")
                     return aspect_raw_default_value(this.aspect)
                 } else {
-                    console.log("val")
                     return this.value.value
                 }
             },

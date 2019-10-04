@@ -2,7 +2,7 @@
   div
     div(v-if="is_simple")
       div(v-for="(value, index) in i_value" :key="index")
-        div(v-if="aspect_is_on_page(index)")
+        div(v-if="aspect_is_on_page(index)" :id="panel_id(index)")
           Aspect(
             :aspect="indexed_item_aspect(index)"
             :value.sync="value"
@@ -10,7 +10,6 @@
             :mode="mode"
             :aspect_loc="item_aspect_loc(index)"
             :extra="list_extra(index)"
-            :id="panel_id(index)"
             v-on:entryAction="handleEntryAction($event, index)"
             v-on:append-outer="remove_value(index)")
           ListitemActions(
@@ -112,7 +111,7 @@
             }
         },
         created() {
-            console.log("LA created", this.value)
+            //console.log("LA created", this.value)
             let item_type = this.aspect.items;
             // todo. list, are extended lists by user, not select lists
             if (typeof (item_type) === "string") {
@@ -152,7 +151,6 @@
             }
             // not sure if this would still be an extra or attr...
 
-            console.log("EXTRA", this.extra, "VAL", this.value)
             if (this.extra.ref_length) {
                 if (this.extra.ref_length !== this.value.length) {
                     const diff = this.extra.ref_length - this.value.length
@@ -204,11 +202,11 @@
                     }
                 }
                 this.value_change(this.$_.concat(this.i_value, additional))
-                // we need this, otherwise the list wont update (if its not composite)
-                // added to Aspect component...
-                // setTimeout(() => {
-                //     this.i_value = this.value
-                // }, 50)
+
+                if(Math.ceil(this.i_value.length / PAGINATION_TRESH) !== Math.ceil((this.i_value.length + n)/ PAGINATION_TRESH)) {
+                    console.log("page change")
+                    this.set_page(this.pages.length)
+                }
             },
             remove_value(index) {
                 this.value_change(this.$_.filter(this.i_value, (val, i) => {
@@ -261,7 +259,7 @@
         },
         computed: {
             has_pagination() {
-                return this.i_value.length >= PAGINATION_TRESH || this.aspect.attr.pagination
+                return this.i_value.length > PAGINATION_TRESH || this.aspect.attr.pagination
             },
             pages() {
                 let pages = []

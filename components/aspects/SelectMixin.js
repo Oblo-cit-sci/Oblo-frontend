@@ -27,9 +27,7 @@ export default {
         let value = this.$store.getters[ENTRIES_VALUE](aspect_location).value
         //console.log("building options from val", value)
         this.options = object_list2options(value, "value", "value")
-        console.log(".",this.options)
-        this.options = no_duplicate_texts(this.options)
-        console.log("x",this.options)
+        no_duplicate_texts(this.options)
       }
     } else if (this.aspect.items instanceof Array) {
       if (this.aspect.attr.hasOwnProperty("select") && this.aspect.attr.select === "check") {
