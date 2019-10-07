@@ -9,6 +9,9 @@ module.exports = {
   env: {
     NODE_ENV: process.env.NODE_ENV || true
   },
+  config: {
+    aspect_select_debug: true
+  },
   server: {
     port: 8082,
     host: "0.0.0.0"
