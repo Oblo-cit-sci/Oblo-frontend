@@ -125,10 +125,10 @@
             open_item(item) {
                 if(this.disabled)
                     return
-                if (!this.has_entry(item.key))
+                if (!this.has_entry(item.uuid))
                     this.fetch_and_nav(entry.uuid)
                 else {
-                    this.$router.push("/entry/" + item.key)
+                    this.$router.push("/entry/" + item.uuid)
                 }
             }
         }

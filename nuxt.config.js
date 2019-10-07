@@ -65,11 +65,14 @@ module.exports = {
   ** Nuxt.js modules
   */
   modules: [
-    // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
     '@nuxtjs/font-awesome',
-    '~/modules/myCache'
+    '~/modules/myCache',
+
+  ],
+  buildModules: [
+    '~/modules/store_version'
   ],
   /*
   ** Axios module configuration

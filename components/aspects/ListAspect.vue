@@ -23,8 +23,9 @@
     div(v-else)
       v-expansion-panel(
         expand
-        v-model="panelState")
+        v-model="act_panel_state")
         v-expansion-panel-content(
+          v-if="aspect_is_on_page(index)"
           v-for="(value, index) in i_value"
           :key="index"
           :id="panel_id(index)"
@@ -77,7 +78,7 @@
     import Aspect from "../Aspect";
     import ListMixin from "../ListMixin";
     import {INDEX} from "../../lib/consts";
-    import {aspect_loc_str, packed_aspect_default_value, get_aspect_component} from "../../lib/aspect";
+    import {aspect_loc_str, packed_aspect_default_value, get_aspect_component, pack_value} from "../../lib/aspect";
     import ListitemActions from "../ListitemActions";
     import Paginate from "../Paginate";
     import goTo from 'vuetify/lib/components/Vuetify/goTo'
@@ -87,7 +88,7 @@
     const SIMPLE = "simple"
     const PANELS = "panels"
 
-    const PAGINATION_TRESH = 10
+    const PAGINATION_TRESH = 3
 
     export default {
         name: "ListAspect",
@@ -183,12 +184,14 @@
             set_page(page) {
                 this.page = page
                 try {
-                    const item_no = (this.page * PAGINATION_TRESH)-1
-                    goTo("#" + this.panel_id(item_no), {
-                        duration: 200,
-                        easing: "easeOutCubic"
-                    })
-                } catch(e) {
+                    const item_no = parseInt(page * PAGINATION_TRESH)
+                    setTimeout(() => {
+                        goTo("#" + this.panel_id(item_no), {
+                            duration: 200,
+                            easing: "easeOutCubic"
+                        })
+                    }, 50)
+                } catch (e) {
                     console.log(e)
                 }
             },
@@ -203,10 +206,10 @@
                 }
                 this.value_change(this.$_.concat(this.i_value, additional))
 
-                if(Math.ceil(this.i_value.length / PAGINATION_TRESH) !== Math.ceil((this.i_value.length + n)/ PAGINATION_TRESH)) {
-                    console.log("page change")
-                    this.set_page(this.pages.length)
-                }
+                setTimeout(() => {
+                    this.set_page(this.pages.length - 1)
+                }, 50)
+
             },
             remove_value(index) {
                 this.value_change(this.$_.filter(this.i_value, (val, i) => {
@@ -256,6 +259,9 @@
             panel_id(index) {
                 return "L-" + aspect_loc_str(this.$_.slice(this.$_.concat(this.aspect_loc, [[INDEX, index]]), 1))
             },
+            index_on_act_page(index) {
+                return index >= this.page * PAGINATION_TRESH && index < (this.page + 1) * PAGINATION_TRESH
+            }
         },
         computed: {
             has_pagination() {
@@ -267,6 +273,9 @@
                     pages.push({})
                 }
                 return pages
+            },
+            act_panel_state() {
+                return this.$_.filter(this.panelState, (e, index) => this.index_on_act_page(index))
             },
             is_simple() {
                 return this.structure === SIMPLE

@@ -237,7 +237,7 @@
                 return has_pages(this.entry_type)
             },
             disable_download() {
-                return this.has_pages && !this.last_page
+                return false; // this.has_pages && !this.last_page
             },
             owner() {
                 return current_user_is_owner(this.$store, this.entry)

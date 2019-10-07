@@ -23,7 +23,7 @@
     export default {
         name: "Entrylist",
         props: {
-            entries: Array
+            entries: Array,
         },
         mixins: [EntryNavMixin],
         created() {

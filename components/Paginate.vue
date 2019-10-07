@@ -3,7 +3,7 @@
     Title_Description(header_type="h4" title="Navigate")
     v-btn(:disabled="!more_prev_pages" @click="change_page(-1)") {{prev_page_text}}
     v-btn(:disabled="!more_follow_page" @click="change_page(1)") {{next_page_text}}
-    span {{page + 1}} / {{total}}
+    span {{page_index}} / {{number_of_pages}}
     div(v-if="allow_jump && pages.length > 4")
       SingleSelect(
         :options="pages_options"

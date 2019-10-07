@@ -86,6 +86,7 @@
                     this.use_regular = this.value.hasOwnProperty("regular") ? this.value.regular : true
                 } catch (e) {
                     console.log("Aspect.created, ERROR, no value for aspect:", this.aspect.name)
+                    this.update_value(aspect_default_value(this.aspect))
                     this.use_regular = true
                 }
             } catch (e) {
@@ -123,7 +124,7 @@
                         let value = this.$store.getters["entries/value"](this.aspect_loc)
                         // console.log("stored value", value, "default", aspect_default_value(this.$store, this.aspect))
                         // console.log(value !== aspect_default_value(this.$store, this.aspect))
-                        if (!this.$_.isEqual(value, aspect_default_value(this.$store, this.aspect))) {
+                        if (!this.$_.isEqual(value, aspect_default_value(this.aspect))) {
                             return value
                         }
                     }

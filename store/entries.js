@@ -17,6 +17,7 @@ export const state = () => ({
   edit: null
 });
 
+// commmit
 export const mutations = {
   add_timeline_entries(state, entries) {
     state.timeline_entries = entries;
@@ -136,6 +137,7 @@ export const mutations = {
   }
 }
 
+// store.getters["entries/gettername"]
 export const getters = {
   all_entries(state) {
     return state.entries.values()
@@ -242,6 +244,7 @@ export const getters = {
   }
 }
 
+// dispatch
 export const actions = {
   set_entry_value(context, data) {
     context.commit("_set_entry_value", data)
