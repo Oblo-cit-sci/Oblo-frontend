@@ -46,6 +46,7 @@ export default {
         }
         this.$router.push(route)
       } else {
+        console.log("leaving...")
         this.$router.push("/")
       }
     },
