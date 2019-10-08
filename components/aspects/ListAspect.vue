@@ -274,8 +274,11 @@
                 }
                 return pages
             },
-            act_panel_state() {
-                return this.$_.filter(this.panelState, (e, index) => this.index_on_act_page(index))
+            act_panel_state: {
+                get() {
+                    return this.$_.filter(this.panelState, (e, index) => this.index_on_act_page(index))
+                },
+                set(val) {} // we need this, or vue warns...
             },
             is_simple() {
                 return this.structure === SIMPLE

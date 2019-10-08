@@ -73,7 +73,7 @@
         data() {
             return {
                 has_alternative: false,
-                use_regular: true
+                use_regular:  null // leave it null, to catch create triggering watcher
             }
         },
         created() {
@@ -86,7 +86,7 @@
                     this.use_regular = this.value.hasOwnProperty("regular") ? this.value.regular : true
                 } catch (e) {
                     console.log("Aspect.created, ERROR, no value for aspect:", this.aspect.name)
-                    this.update_value(aspect_default_value(this.aspect))
+                    this.update_value(aspect_raw_default_value(this.aspect))
                     this.use_regular = true
                 }
             } catch (e) {
@@ -111,7 +111,6 @@
                 }
             },
             value: function () {
-                //console.log("value", this.aspect.name)
                 if (this.aspect.attr.IDAspect) {
                     let this_uuid = aspect_loc_uuid(this.aspect_loc)
                     let entry = this.$store.getters[ENTRIES_GET_ENTRY](this_uuid)
@@ -253,18 +252,16 @@
                 if (old_val === null) {
                     return
                 }
+                // use alternative aspect
                 if (!val) {
                     const fixed_value = this.aspect.attr.alternative.attr.value
                     if (fixed_value !== undefined) {
                         this.update_value(fixed_value)
                     } else {
-                        this.update_value(packed_aspect_default_value(this.aspect.attr.alternative))
+                        this.update_value(aspect_raw_default_value(this.aspect.attr.alternative))
                     }
                 } else {
-                    this.$store.dispatch(ENTRIES_SET_ENTRY_VALUE, {
-                        aspect_loc: this.aspect_loc,
-                        value: packed_aspect_default_value(this.aspect)
-                    })
+                    this.update_value(aspect_raw_default_value(this.aspect))
                 }
             }
         }
