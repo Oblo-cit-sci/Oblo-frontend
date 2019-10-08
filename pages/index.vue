@@ -1,7 +1,7 @@
 <template lang="pug">
   v-layout(xs6  justify-space-around align-center)
     div(v-if="initialized")
-      entrylist(:entrytypes="['plant', 'landrace']"  :entries="$store.state.entries.timeline_entries")
+      entrylist(:entries="$store.state.entries.timeline_entries")
     div(v-else-if="!connecting" style="width:60%")
       v-alert(type="error" value="true" style="width:100%") Not initialized
       div(style="margin-top:10%")
