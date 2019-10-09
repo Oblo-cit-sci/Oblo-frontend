@@ -2,16 +2,16 @@
   v-layout(column)
     v-flex(xs12 md6 lg4 justify-center)
       v-list(three-line subheader dense)
-        v-list-tile(v-for="entry in entries"
+        v-list-item(v-for="entry in entries"
           :key="entry.id"
           @click="show(entry)")
-          v-list-tile-avatar
+          v-list-item-avatar
             v-icon {{privacy_icon(entry.privacy)}}
-          v-list-tile-content
-            v-list-tile-title {{entry.title}}
-            v-list-tile-sub-title {{creator(entry)}}
-            v-list-tile-sub-title {{type_name(entry)}}
-          v-list-tile-action
+          v-list-item-content
+            v-list-item-title {{entry.title}}
+            v-list-item-subtitle {{creator(entry)}}
+            v-list-item-subtitle {{type_name(entry)}}
+          v-list-item-action
             v-img.license-image(:src="get_license_icon(entry.license)")
       v-divider
 </template>
@@ -69,7 +69,7 @@
   }
 
   .license-image {
-    width: 20px;
+    width: 60px;
     overflow: visible;
   }
 </style>
