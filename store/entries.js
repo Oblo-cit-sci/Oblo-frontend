@@ -2,7 +2,6 @@
   this is for the own entries
  */
 import {ASPECT, COLLECT, COMPONENT, DRAFT, EDIT, ENTRY, INDEX} from "../lib/consts";
-import {complete_aspect_loc} from "../lib/client";
 import {get_entry_titleAspect, select_aspect_loc} from "../lib/entry";
 import {aspect_loc_str2arr} from "../lib/aspect";
 
@@ -10,6 +9,8 @@ import {aspect_loc_str2arr} from "../lib/aspect";
 const ld = require("lodash")
 
 const DELETE_ENTRY = "delete_entry"
+const DELETE_EDIT_ENTRY = "delete_edit_entry"
+const DELETE_REF_CHILD = "delete_ref_child"
 
 export const state = () => ({
   timeline_entries: [],
@@ -17,6 +18,7 @@ export const state = () => ({
   edit: null
 });
 
+// commmit
 export const mutations = {
   add_timeline_entries(state, entries) {
     state.timeline_entries = entries;
@@ -38,14 +40,14 @@ export const mutations = {
   save_entry(state, entry) {
     state.entries.set(entry.uuid, entry)
   },
-  _cancel_entry_edit(state, uuid) {
-    state.edit.delete(uuid)
+  delete_edit_entry(state, uuid) {
+    state.edit = null
   },
   set_downladed(state, uuid) {
     let entry = state.entries.get(uuid)
     entry.downloads = entry.version
   },
-  delete_entry(state, uuid) {
+  delete_entry(state, uuid) { // DELETE_ENTRY
     state.entries.delete(uuid)
   },
   set_downloaded(state, local_id) {
@@ -54,22 +56,7 @@ export const mutations = {
     e.downloaded_version = e.version
   },
   add_edit_ref_child(state, {aspect_loc, child_uuid}) {
-    let kids = state.edit.refs.children
-    let refs = kids[child_uuid] || []
-    kids[child_uuid] = ld.concat(refs, [aspect_loc])
-  },
-  add_ref_child(state, {uuid, aspect_loc, child_uuid}) {
-    let kids = state.entries.get(uuid).refs.children
-    let refs = kids[child_uuid] || []
-    kids[child_uuid] = ld.concat(refs, [aspect_loc])
-  },
-  delete_ref_child(state, {uuid, child_uuid}, c) {
-    state.entries.get(uuid).refs.children[child_uuid].forEach(ref => {
-      let aspect_loc = complete_aspect_loc(uuid, ref)
-      //let value = state.gettes.value(aspect_loc)
-      //console.log("delete_ref_child.value", value)
-      delete state.entries.get(uuid).refs.children[child_uuid]
-    })
+    state.edit.refs.children[child_uuid] = aspect_loc
   },
   delete_edit_ref_child(state, child_uuid) {
     delete state.edit.refs.children[child_uuid]
@@ -108,11 +95,18 @@ export const mutations = {
     }
     //console.log("result", select, state)
   },
+  _remove_entry_value_index(state, aspect_loc) {
+    let select = select_aspect_loc(state, aspect_loc, true)
+    const final_loc = ld.last(aspect_loc)
+    ld.remove(select.value, (_, index) => index === final_loc[1])
+  },
   set_edit_dirty(state) {
     state.edit.local.dirty = true
   },
-  set_edit_clean(state) {
-    state.edit.local.dirty = false
+  set_edit_clean(state) { // ENTRIES_SET_EDIT_CLEAN
+    if (state.edit) {
+      state.edit.local.dirty = false
+    }
   },
   _save_entry(state, uuid) {
     let entry = state.entries.get(uuid)
@@ -136,6 +130,7 @@ export const mutations = {
   }
 }
 
+// store.getters["entries/gettername"]
 export const getters = {
   all_entries(state) {
     return state.entries.values()
@@ -242,6 +237,7 @@ export const getters = {
   }
 }
 
+// dispatch
 export const actions = {
   set_entry_value(context, data) {
     context.commit("_set_entry_value", data)
@@ -259,7 +255,7 @@ export const actions = {
   // rename to save edit entry
   save_entry(context) {
     const entry_title = context.getters["get_entry_title"](context.state.edit.uuid)
-    if(entry_title)
+    if (entry_title)
       context.commit("update_edit_title", entry_title)
     context.commit("save_edit")
   },
@@ -267,24 +263,32 @@ export const actions = {
     context.commit("save_edit")
     context.commit("set_edit", uuid)
   },
-  delete_entry(context, uuid) {
-    console.log("store.entries.delete entry-...")
+  delete_ref_child(context, {uuid, child_uuid}) { // DELETE_REF_CHILD
+    let aspect_loc = context.state.entries.get(uuid).refs.children[child_uuid]
+    delete context.state.entries.get(uuid).refs.children[child_uuid]
+    context.commit("_remove_entry_value_index", ld.concat([[ENTRY, uuid]], aspect_loc))
+
+  },
+  delete_entry(context, uuid) { // ENTRIES_DELETE_ENTRY
     const entry = context.state.entries.get(uuid)
     if (entry) {
       // TODO just TEMP, for easier testing
-      context.commit(DELETE_ENTRY, uuid)
 
       for (let child_uuid in entry.refs.children) {
-        context.commit(DELETE_ENTRY, child_uuid)
+        context.dispatch(DELETE_ENTRY, child_uuid)
       }
 
       if (entry.refs.parent) {
         const parent = entry.refs.parent
-        context.commit("delete_ref_child", {uuid: parent.uuid, child_uuid: uuid})
+        context.dispatch(DELETE_REF_CHILD, {uuid: parent.uuid, child_uuid: uuid})
         //console.log(context)
         //context.getters["value"]
         //context.commit("delete_ref_value", {uuid: parent.uuid, child_uuid: uuid})
       }
+
+      context.commit(DELETE_ENTRY, uuid)
+      context.commit(DELETE_EDIT_ENTRY)
+
       //context.getters("value")
       /*let parent_no_index = JSON.parse(JSON.stringify(parent))
 

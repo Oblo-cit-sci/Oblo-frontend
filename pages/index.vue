@@ -13,7 +13,7 @@
 
 <script>
 
-    import Entrylist from '~/components/Entrylist.vue'
+    import Entrylist from '../components/Entrylist.vue'
     import {fix_entries, initialize} from "../lib/client"
 
     export default {

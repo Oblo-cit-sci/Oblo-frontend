@@ -2,7 +2,7 @@
   div
     div(v-if="is_simple")
       div(v-for="(value, index) in i_value" :key="index")
-        div(v-if="aspect_is_on_page(index)")
+        div(v-if="aspect_is_on_page(index)" :id="panel_id(index)")
           Aspect(
             :aspect="indexed_item_aspect(index)"
             :value.sync="value"
@@ -10,7 +10,6 @@
             :mode="mode"
             :aspect_loc="item_aspect_loc(index)"
             :extra="list_extra(index)"
-            :id="panel_id(index)"
             v-on:entryAction="handleEntryAction($event, index)"
             v-on:append-outer="remove_value(index)")
           ListitemActions(
@@ -24,8 +23,9 @@
     div(v-else)
       v-expansion-panels(
         multiple
-        v-model="panelState")
+        v-model="act_panel_state")
         v-expansion-panel(
+          v-if="aspect_is_on_page(index)"
           v-for="(value, index) in i_value"
           :key="index"
           :id="panel_id(index)"
@@ -78,7 +78,7 @@
     import Aspect from "../Aspect";
     import ListMixin from "../ListMixin";
     import {INDEX} from "../../lib/consts";
-    import {aspect_loc_str, packed_aspect_default_value, get_aspect_component} from "../../lib/aspect";
+    import {aspect_loc_str, packed_aspect_default_value, get_aspect_component, pack_value} from "../../lib/aspect";
     import ListitemActions from "../ListitemActions";
     import Paginate from "../Paginate";
     import goTo from 'vuetify/lib/services/goto'
@@ -88,7 +88,7 @@
     const SIMPLE = "simple"
     const PANELS = "panels"
 
-    const PAGINATION_TRESH = 10
+    const PAGINATION_TRESH = 3
 
     export default {
         name: "ListAspect",
@@ -112,7 +112,7 @@
             }
         },
         created() {
-            console.log("LA created", this.value)
+            //console.log("LA created", this.value)
             let item_type = this.aspect.items;
             // todo. list, are extended lists by user, not select lists
             if (typeof (item_type) === "string") {
@@ -149,7 +149,6 @@
             }
             // not sure if this would still be an extra or attr...
 
-            console.log("EXTRA", this.extra, "VAL", this.value)
             if (this.extra.ref_length) {
                 if (this.extra.ref_length !== this.value.length) {
                     const diff = this.extra.ref_length - this.value.length
@@ -181,12 +180,14 @@
             set_page(page) {
                 this.page = page
                 try {
-                    const item_no = (this.page * PAGINATION_TRESH)-1
-                    goTo("#" + this.panel_id(item_no), {
-                        duration: 200,
-                        easing: "easeOutCubic"
-                    })
-                } catch(e) {
+                    const item_no = parseInt(page * PAGINATION_TRESH)
+                    setTimeout(() => {
+                        goTo("#" + this.panel_id(item_no), {
+                            duration: 200,
+                            easing: "easeOutCubic"
+                        })
+                    }, 50)
+                } catch (e) {
                     console.log(e)
                 }
             },
@@ -199,11 +200,11 @@
                     }
                 }
                 this.value_change(this.$_.concat(this.i_value, additional))
-                // we need this, otherwise the list wont update (if its not composite)
-                // added to Aspect component...
-                // setTimeout(() => {
-                //     this.i_value = this.value
-                // }, 50)
+
+                setTimeout(() => {
+                    this.set_page(this.pages.length - 1)
+                }, 50)
+
             },
             remove_value(index) {
                 this.value_change(this.$_.filter(this.i_value, (val, i) => {
@@ -223,8 +224,7 @@
                 this.value_change(this.$_.concat(new_left, to_move, new_right))
                 // fix panelstates todo
                 if (this.structure === PANELS) {
-                    this.panelState = []
-                    //this.$_.fill(this.panelState, false)
+                    this.$_.fill(this.panelState, false)
                     //this.panelState[index+direction] = true
                 }
             },
@@ -254,10 +254,13 @@
             panel_id(index) {
                 return "L-" + aspect_loc_str(this.$_.slice(this.$_.concat(this.aspect_loc, [[INDEX, index]]), 1))
             },
+            index_on_act_page(index) {
+                return index >= this.page * PAGINATION_TRESH && index < (this.page + 1) * PAGINATION_TRESH
+            }
         },
         computed: {
             has_pagination() {
-                return this.i_value.length >= PAGINATION_TRESH || this.aspect.attr.pagination
+                return this.i_value.length > PAGINATION_TRESH || this.aspect.attr.pagination
             },
             pages() {
                 let pages = []
@@ -265,6 +268,12 @@
                     pages.push({})
                 }
                 return pages
+            },
+            act_panel_state: {
+                get() {
+                    return this.$_.filter(this.panelState, (e, index) => this.index_on_act_page(index))
+                },
+                set(val) {} // we need this, or vue warns...
             },
             is_simple() {
                 return this.structure === SIMPLE

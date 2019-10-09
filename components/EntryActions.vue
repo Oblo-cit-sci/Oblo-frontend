@@ -16,7 +16,7 @@
         v-btn(v-if="NOT_TRAINING" color="seconday" @click="show_cancel") cancel
 
       // TODO for the training we just DISABLE, otherwise it would be: :disabled="init"
-      v-btn(v-if="NOT_TRAINING" color="warning" :disabled="initial_version" @click="show_delete") delete
+      v-btn(color="warning" @click="show_delete") delete
 
       v-btn( color="success" @click="save") {{save_word}}
       v-btn(
@@ -48,7 +48,7 @@
     import EntryNavMixin from "./EntryNavMixin";
 
     import axios from "axios"
-    import {ENTRIES_DELETE_ENTRY} from "../lib/store_consts";
+    import {ENTRIES_DELETE_ENTRY, ENTRIES_SET_EDIT_CLEAN} from "../lib/store_consts";
     import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
     import {export_data} from "../lib/import_export";
 
@@ -210,7 +210,7 @@
             },
             back(to_last_element = true) {
                 //this.$emit("update:dirty", false)
-                this.$store.commit("entries/set_edit_clean",this.entry.uuid)
+                this.$store.commit(ENTRIES_SET_EDIT_CLEAN,this.entry.uuid)
                 this.to_parent(to_last_element)
             }
         },
@@ -237,7 +237,7 @@
                 return has_pages(this.entry_type)
             },
             disable_download() {
-                return this.has_pages && !this.last_page
+                return false; // this.has_pages && !this.last_page
             },
             owner() {
                 return current_user_is_owner(this.$store, this.entry)
@@ -247,7 +247,7 @@
             },
             save_word() {
                 if(!this.dirty) {
-                    return "back"
+                    return "save" // TODO "back"
                 } else if (this.in_context) {
                     return "save and back"
                 } else if (this.private_local) {

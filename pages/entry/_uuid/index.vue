@@ -116,14 +116,17 @@
                 }, 300)
             }
         },
-        beforeRouteLeave(to, from, next) {
+        /*beforeRouteLeave(to, from, next) {
+            // temporary, we dont care abou dirtyness
+            next()
+            /*
             if (this.entry.local.dirty) {
                 this.openSaveDialog = true
                 this.router_next = next
             } else {
                 next()
             }
-        },
+        } */
         methods: {
             edit_or_save_dialog(event) {
                 if (event.confirm) {

@@ -35,7 +35,7 @@ export default {
     },
     pages_options() {
       return string_list2options(this.$_.map(
-        this.filter_page_active(this.pages), (p) => {
+        this.active_pages, (p) => {
           return p.title
         }))
     },
@@ -61,6 +61,24 @@ export default {
         }
       }
       return this.default_next_page_text
+    },
+    active_pages() {
+      return this.$_.filter(this.pages, p => {
+        if (p.condition) {
+          let aspect_loc = this.$_.concat([[EDIT, this.$store.state.entries.edit.uuid]], aspect_loc_str2arr(p.condition.aspect))
+          let value = select_aspect_loc(this.$store.state.entries, aspect_loc)
+          return check_condition_value(value, p.condition)
+        } else {
+          return true
+        }
+      })
+    },
+    number_of_pages() {
+      return this.active_pages.length
+    },
+    page_index() {
+      const title = this.pages[this.page].title
+      return 1 + this.$_.findIndex(this.active_pages, p => p.title === title)
     }
   },
   methods: {
@@ -88,21 +106,10 @@ export default {
       this.$emit("lastpage", this.test_last_page(page_select))
     },
     get_active_page_after(page) {
-      return this.filter_page_active(this.$_.slice(this.pages, page + 1))
+      return this.$_.slice(this.active_pages, page + 1)
     },
     get_active_pages_before(page) {
-      return this.filter_page_active(this.$_.slice(this.pages, null, page))
-    },
-    filter_page_active(pages) {
-      return this.$_.filter(pages, p => {
-        if (p.condition) {
-          let aspect_loc = this.$_.concat([[EDIT, this.$store.state.entries.edit.uuid]], aspect_loc_str2arr(p.condition.aspect))
-          let value = select_aspect_loc(this.$store.state.entries, aspect_loc)
-          return check_condition_value(value, p.condition)
-        } else {
-          return true
-        }
-      })
+      return this.$_.slice(this.active_pages, null, page)
     },
     mask_pages_active() {
       return this.$_.map(this.pages, p => {
