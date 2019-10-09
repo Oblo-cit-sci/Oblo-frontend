@@ -2,14 +2,14 @@
   div
     div(v-if="!select")
       v-list(v-if="has_items")
-        v-list-tile(v-for="(item, index) in items", :key="item.key" :id="aspect_loc_str(index)")
-          v-list-tile-content(@click="open_item(item)")
-            v-list-tile-title {{index + 1}} &nbsp;
+        v-list-item(v-for="(item, index) in items", :key="item.key" :id="aspect_loc_str(index)")
+          v-list-item-content(@click="open_item(item)")
+            v-list-item-title {{index + 1}} &nbsp;
               b {{item.title}}
-          v-list-tile-action(v-if="!readOnly")
+          v-list-item-action(v-if="!readOnly")
             v-btn(@click="open_item(item)" icon)
               v-icon edit
-          v-list-tile-action(v-if="!readOnly")
+          v-list-item-action(v-if="!readOnly")
             v-btn(@click="open_remove(index)" icon)
               v-icon(color="red" lighten-1) close
     div(v-else)
