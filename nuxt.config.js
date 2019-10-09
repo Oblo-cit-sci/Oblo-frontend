@@ -1,5 +1,5 @@
 const pkg = require('./package')
-
+const colors = require('vuetify/es5/util/colors')
 
 const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 
@@ -65,14 +65,35 @@ module.exports = {
   */
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
-    '@nuxtjs/vuetify',
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
     '@nuxtjs/font-awesome',
     '~/modules/myCache'
   ],
+
+  
+  buildModules: [
+    '@nuxtjs/vuetify'
+  ],
+  
+    /*
+   ** Vuetify options
+   ** Doc: https://github.com/nuxt-community/vuetify-module
+   */
   vuetify: {
-    /* module options */
+    theme: {
+      themes: {
+        light: {
+          primary: colors.default.blue.darken2,
+          accent: colors.default.grey.darken3,
+          secondary: colors.default.amber.darken4,
+          info: colors.default.teal.lighten1,
+          warning: colors.default.amber.base,
+          error: colors.default.deepOrange.accent4,
+          success: colors.default.green.accent4
+        },
+      },
+    }
   },
   /*
   ** Axios module configuration
