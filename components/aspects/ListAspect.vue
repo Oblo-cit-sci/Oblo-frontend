@@ -81,7 +81,7 @@
     import {aspect_loc_str, packed_aspect_default_value, get_aspect_component} from "../../lib/aspect";
     import ListitemActions from "../ListitemActions";
     import Paginate from "../Paginate";
-    import goTo from 'vuetify/lib/components/Vuetify/goTo'
+    import goTo from 'vuetify/lib/services/goto'
 
     import ListPagination from "../ListPagination";
 

@@ -1,38 +1,40 @@
 <template>
   <v-app>
-    <v-navigation-drawer
+    <v-navigation-drawer 
+      app
       v-model="drawer"
       v-show="initialized"
       :mini-variant="miniVariant"
       :clipped="clipped"
-      fixed
-      app
+      fixed 
     >
       <v-list>
-        <v-list-tile
-          v-for="(item, i) in items"
-          :key="i"
-          :to="item.to"
-          router
-          nuxt
-          exact
-        >
-          <v-list-tile-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title v-text="item.title"/>
-          </v-list-tile-content>
-        </v-list-tile>
+        <v-list-item-group>
+          <v-list-item
+            v-for="(item, i) in items"
+            :key="i"
+            :to="item.to"
+            router
+            nuxt
+            exact
+          >
+            <v-list-item-icon>
+              <v-icon v-text="item.icon"></v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title v-text="item.title"></v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar
+    <v-app-bar
       :clipped-left="clipped"
       true
       app
       dense
     >
-      <v-toolbar-side-icon v-show="initialized" @click="drawer = !drawer"/>
+      <v-app-bar-nav-icon v-show="initialized" @click="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title >
       <span>
         {{title}}
@@ -41,11 +43,11 @@
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <div>
-        <v-btn flat icon  :loading="connecting">
+        <v-btn text icon  :loading="connecting">
           <!-- nuxt to="/" -->
           <v-icon>{{connected_icon}}</v-icon>
         </v-btn>
-        <v-btn flat icon >
+        <v-btn text icon >
           <!-- nuxt to="/profile" -->
           <v-icon>{{userrole_icon}}</v-icon>
         </v-btn>
@@ -66,7 +68,7 @@
         <v-btn v-for="(item, i) in header_items"
                :key="i"
                :to="item.to"
-               flat
+               text
                icon
                router
                nuxt
@@ -74,7 +76,7 @@
           <v-icon>{{ item.icon }}</v-icon>
         </v-btn>
       </div>
-    </v-toolbar>
+    </v-app-bar>
     <v-content>
       <v-container>
         <nuxt/>

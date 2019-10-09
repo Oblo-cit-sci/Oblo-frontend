@@ -55,7 +55,6 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '~/plugins/vuetify',
     {src: '~/plugins/mapbox', mode: 'client'},
     { src: '~/plugins/vuex-persist', mode: 'client'  },
     '~/plugins/lodash.js',
@@ -66,11 +65,15 @@ module.exports = {
   */
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
+    '@nuxtjs/vuetify',
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
     '@nuxtjs/font-awesome',
     '~/modules/myCache'
   ],
+  vuetify: {
+    /* module options */
+  },
   /*
   ** Axios module configuration
   */
