@@ -22,23 +22,23 @@
             v-on:remove_value="remove_value($event)"
             v-on:move="move($event)")
     div(v-else)
-      v-expansion-panel(
+      v-expansion-panels(
         expand
         v-model="panelState")
-        v-expansion-panel-content(
+        v-expansion-panel(
           v-for="(value, index) in i_value"
           :key="index"
           :id="panel_id(index)"
         )
-          template(v-slot:header)
-            div {{titles[index]|| index + 1}}
-          Aspect(
-            :aspect="indexed_item_aspect(index)"
-            :value.sync="i_value"
-            :mode="mode"
-            :extra="list_extra(index)"
-            :aspect_loc="item_aspect_loc(index)"
-            v-on:entryAction="$emit('entryAction',$event)")
+          v-expansion-panel-header {{titles[index]|| index + 1}}
+          v-expansion-panel-content
+            Aspect(
+              :aspect="indexed_item_aspect(index)"
+              :value.sync="i_value"
+              :mode="mode"
+              :extra="list_extra(index)"
+              :aspect_loc="item_aspect_loc(index)"
+              v-on:entryAction="$emit('entryAction',$event)")
           ListitemActions(
             :requires_delete="requires_delete && !fixed_length"
             :itemname="extra.itemname"

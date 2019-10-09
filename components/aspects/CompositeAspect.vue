@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    v-layout(row wrap)
+    v-layout(wrap)
       v-flex(
         v-for="(comp_type, index) in aspect.components" :key="index"
         :class="layoutClasses")

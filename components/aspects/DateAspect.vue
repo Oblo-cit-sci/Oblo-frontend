@@ -4,10 +4,8 @@
       v-model="menu"
       :close-on-content-click="false"
       :nudge-right="40"
-      lazy
       transition="scale-transition"
       offset-y
-      full-width
       min-width="290px"
     >
       <template v-slot:activator="{ on }">

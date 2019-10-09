@@ -1,7 +1,7 @@
 <template lang="pug">
   div
     v-textarea(
-      outline
+      outlined
       single-line
       :readonly="readOnly"
       :disabled="disabled"

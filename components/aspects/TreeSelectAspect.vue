@@ -2,7 +2,7 @@
     div
       v-flex(text-xs-left)
         v-autocomplete(
-          outline
+          outlined
           single-line
           :disabled="disabled"
           :items="flat_options"

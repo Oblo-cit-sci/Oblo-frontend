@@ -4,7 +4,7 @@
       :items="options"
       v-model="selection"
       :readonly="readOnly"
-      single-line outline chips multiple)
+      single-line outlined chips multiple)
 </template>
 
 <script>
