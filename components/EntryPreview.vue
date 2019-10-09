@@ -1,42 +1,45 @@
 <template lang="pug">
-  v-layout(row wrap justify-start)
-    v-flex(row v-for="entry in entries"
-      :key="entry.id" 
-      xs12 lg6)
-      //- TODO: fill the card with the correct entry attributes
-      v-card(class="previewCard")
-        v-layout()
-          v-flex(xs6)
+  v-row(wrap justify-start)
+    v-col(v-for="entry in entries"
+      :key="entry.id" class="col-lg-6 col-xs-12")
+      v-card(
+        class="mx-auto"
+        outlined)
+      
+        v-list-item(three-line)
+          v-list-item-avatar(
+            tile
+            size= "150"
+            color="grey")
             v-img(
               src="http://c1.peakpx.com/wallpaper/704/532/870/vegetables-fresh-food-tomato-red-wallpaper-preview.jpg"
-              height="auto"
-              width="auto"
-              alt="cover-image")
-          v-flex(xs6) 
-            v-card-text(class="pa-0 text-sm-right")
-              p(class="text-xs-right ma-0 pa-0 pr-2 pt-1") {{date}}
-            v-card-title(primary-title)
-              div(class="title") {{entry.title}}
-            v-card-text(class="pt-0")
+              alt="item"
+              aspect-ratio="1")
+          v-list-item-content
+            div(class="overline ma-0") 
+              p(class="ma-0 float-right") {{date}}
+            v-list-item-title(class="headline mb-1") {{entry.title}}
+            v-list-item-subtitle 
               v-icon(
-                large
-                left) {{privacy_icon(entry.privacy)}}
-              span(class="font-weight-light") {{entry.license}}
-        v-layout()
-          v-flex(xs12)
-            v-card-actions(class="pb-3")
-              v-chip(outlined color="green darken-3") {{entry.software_version}}
-              v-chip(outlined color="green darken-3") {{entry.type_slug}}
-              v-chip(outlined color="green darken-3") {{entry.status}}
-        
-            v-divider(light) 
+                small
+                left) {{privacy_icon(entry.privacy)}} 
+              p(class="mt-4") {{entry.type_slug}}
+              p(class="font-weight-light") {{entry.license}}
 
-            v-card-actions(class="pa-3")
-              v-spacer
-              div(class="text-xs-right")
-                v-btn(outlined class="ma-2" color="grey darken-1" @click="show(entry)") Details
-                v-btn(outlined class="ma-2" color="grey darken-1" @click="show(entry)") Edit
-                v-btn(outlined class="ma-2" color="grey darken-1") Download
+        v-card-actions(class="pb-3")
+          v-chip(outlined class="ma-2"
+            small color="green darken-3") {{entry.software_version}}
+          v-chip(outlined class="ma-2"
+            small color="green darken-3") {{entry.type_slug}}
+          v-chip(outlined class="ma-2"
+            small color="green darken-3") {{entry.status}}
+        
+        v-divider(light) 
+
+        v-card-actions
+          v-btn(text outlined @click="show(entry)") Details
+          v-btn(text outlined @click="show(entry)") Edit
+          v-btn(text outlined) Download
 </template>
 
 <script>

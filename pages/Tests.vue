@@ -1,15 +1,18 @@
 <template lang="pug">
-  v-flex(xs12='' sm8='' md6='')
-    LoadFileButton(@fileload="loaded($event)")
-    v-btn(@click="add") add
-    v-btn(@click="mut") mut
-    v-btn(@click="del") del
-    div(v-for="(e, index) in tempM")
-      div {{index}} {{e}}
+  v-container(fluid)
+    v-row
+      v-col(xs12 sm8 md12)
+        LoadFileButton(@fileload="loaded($event)")
+        v-btn(@click="add") add
+        v-btn(@click="mut") mut
+        v-btn(@click="del") del
+        div(v-for="(e, index) in tempM")
+          div {{index}} {{e}}
+    Entrypreview(:entries="entries")
 </template>
 
 <script>
-
+  import Entrypreview from "../components/EntryPreview";
   import LoadFileButton from "../components/LoadFileButton";
 
   const ld = require("lodash")
@@ -18,7 +21,7 @@
 
   export default {
     name: "Tests",
-    components: {LoadFileButton},
+    components: {LoadFileButton, Entrypreview},
     created() {
     },
     data() {
@@ -29,6 +32,11 @@
     computed: {
       tempM() {
         return this.$store.getters["test/tempM"]
+      },
+      entries() {
+        const registered_name = this.$store.state.user.user_data.registered_name;
+        let result_entries = Array.from(this.$store.state.entries.entries.values())
+        return result_entries
       }
     },
     methods: {
