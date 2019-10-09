@@ -25,18 +25,18 @@
         v-layout()
           v-flex(xs12)
             v-card-actions(class="pb-3")
-              v-chip(outline color="green darken-3") {{entry.software_version}}
-              v-chip(outline color="green darken-3") {{entry.type_slug}}
-              v-chip(outline color="green darken-3") {{entry.status}}
+              v-chip(outlined color="green darken-3") {{entry.software_version}}
+              v-chip(outlined color="green darken-3") {{entry.type_slug}}
+              v-chip(outlined color="green darken-3") {{entry.status}}
         
             v-divider(light) 
 
             v-card-actions(class="pa-3")
               v-spacer
               div(class="text-xs-right")
-                v-btn(outline class="ma-2" color="grey darken-1" @click="show(entry)") Details
-                v-btn(outline class="ma-2" color="grey darken-1" @click="show(entry)") Edit
-                v-btn(outline class="ma-2" color="grey darken-1") Download
+                v-btn(outlined class="ma-2" color="grey darken-1" @click="show(entry)") Details
+                v-btn(outlined class="ma-2" color="grey darken-1" @click="show(entry)") Edit
+                v-btn(outlined class="ma-2" color="grey darken-1") Download
 </template>
 
 <script>

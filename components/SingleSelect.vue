@@ -16,11 +16,11 @@
             v-list-item-title {{item.text}}
             v-list-item-subtitle {{item.description}}
   div(v-else-if="view_select")
-    v-select(outline hideDetails singleLine dense :multiple=false v-model="selected_item" :items="options" return-object)
+    v-select(outlined hideDetails singleLine dense :multiple=false v-model="selected_item" :items="options" return-object)
     .v-text-field__details
       .v-messages
   div(v-else-if="view_autocomplete")
-    v-autocomplete(outline hideDetails singleLine dense v-model="selected_item" :items="options" return-object)
+    v-autocomplete(outlined hideDetails singleLine dense v-model="selected_item" :items="options" return-object)
   div(v-else-if="view_radiogroup")
     v-radio-group(:row="true"  v-model="selected_item")
       v-radio(v-for="item of options" :key="item.key" :label="item.text" :value="item.value")
@@ -189,6 +189,14 @@
         watch: {
             selected_item(item) {
                 this.emitUp(item)
+                /* console.log("emitup", item)
+                if (typeof item === "object") {
+                    this.emitUp(item.value)
+                } else if (typeof item === "string") {
+                    this.emitUp(item)
+                } else {
+                  console.log("SingleSelect. unknown type to emit up")
+                }*/
             },
             selection(val) {
                 this.set_selected_item()
