@@ -1,11 +1,11 @@
 <template lang="pug">
   v-flex(xs12 sm8 md6)
     v-list
-      v-list-tile(three-line)
-        v-list-tile-content
-          v-list-tile-title @{{$store.state.user.user_data.registered_name}}
-          v-list-tile-sub-title username
-        v-list-tile-action
+      v-list-item(three-line)
+        v-list-item-content
+          v-list-item-title @{{$store.state.user.user_data.registered_name}}
+          v-list-item-subtitle username
+        v-list-item-action
           v-chip(outlined disabled small) {{$store.state.user.user_data.global_role}}
       v-subheader General
       Aspect(:aspect="profile_aspects.public_name" :value.sync="edits.public_name" :edit="edit_mode" :mode="mode")

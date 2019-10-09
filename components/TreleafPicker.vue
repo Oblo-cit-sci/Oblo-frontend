@@ -2,10 +2,10 @@
   .treeselect
     div
     v-list
-      v-list-tile(v-for="(node, index) of selection", :key="node.title")
-        v-list-tile-content
-          v-list-tile-title {{node.name}}
-        v-list-tile-action
+      v-list-item(v-for="(node, index) of selection", :key="node.title")
+        v-list-item-content
+          v-list-item-title {{node.name}}
+        v-list-item-action
           v-btn(icon @click="remove(index)")
             v-icon cancel
     v-divider(v-if="has_both()")
