@@ -6,15 +6,15 @@
       class="singleselect_list")
       div(v-for="item of options")
         v-subheader(v-if="is_category(item)") {{item.text}}
-        v-list-tile(v-else
+        v-list-item(v-else
         :key="item.value"
           @click="select(item)"
           :class="{ marked: marked(item.value) }")
-          v-list-tile-avatar(v-if="has_some_icons" tile)
+          v-list-item-avatar(v-if="has_some_icons" tile)
             v-img(:src="icon_path(item)")
-          v-list-tile-content
-            v-list-tile-title {{item.text}}
-            v-list-tile-sub-title {{item.description}}
+          v-list-item-content
+            v-list-item-title {{item.text}}
+            v-list-item-subtitle {{item.description}}
   div(v-else-if="view_select")
     v-select(outline hideDetails singleLine dense :multiple=false v-model="selected_item" :items="options" return-object)
   div(v-else-if="view_autocomplete")
