@@ -23,7 +23,7 @@
             v-on:move="move($event)")
     div(v-else)
       v-expansion-panels(
-        expand
+        multiple
         v-model="panelState")
         v-expansion-panel(
           v-for="(value, index) in i_value"
@@ -142,9 +142,6 @@
                     this.item_aspect = this.aspect.items;
                     this.structure = PANELS
                     // fill in the values of the titleAspect
-                    for (let item_index in this.i_value) {
-                        this.panelState.push(false)
-                    }
                 } else {
                     this.item_aspect = this.aspect.items;
                     this.structure = "simple";
@@ -163,7 +160,6 @@
                         // todo
                     }
                 }
-                this.$_.fill(this.panelState, false)
                 this.min = this.extra.ref_length
                 this.max = this.extra.ref_length
             }
@@ -196,11 +192,10 @@
             },
             add_value(n = 1) {
                 let additional = []
-                this.$_.fill(this.panelState, false)
                 for (let i = 0; i < n; i++) {
                     additional.push(packed_aspect_default_value(this.item_aspect))
                     if (this.structure === PANELS) {
-                        this.panelState.push(true)
+                        this.panelState = [this.value.length]
                     }
                 }
                 this.value_change(this.$_.concat(this.i_value, additional))
@@ -215,7 +210,7 @@
                     return index !== i
                 }))
                 if (this.structure === PANELS) {
-                    this.panelState.splice(index, 1)
+                    this.panelState = []
                 }
             },
             move(index_direction) {
@@ -228,7 +223,8 @@
                 this.value_change(this.$_.concat(new_left, to_move, new_right))
                 // fix panelstates todo
                 if (this.structure === PANELS) {
-                    this.$_.fill(this.panelState, false)
+                    this.panelState = []
+                    //this.$_.fill(this.panelState, false)
                     //this.panelState[index+direction] = true
                 }
             },
