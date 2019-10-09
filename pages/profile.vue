@@ -6,7 +6,7 @@
           v-list-tile-title @{{$store.state.user.user_data.registered_name}}
           v-list-tile-sub-title username
         v-list-tile-action
-          v-chip(outline disabled small) {{$store.state.user.user_data.global_role}}
+          v-chip(outlined disabled small) {{$store.state.user.user_data.global_role}}
       v-subheader General
       Aspect(:aspect="profile_aspects.public_name" :value.sync="edits.public_name" :edit="edit_mode" :mode="mode")
       Aspect(:aspect="profile_aspects.description" :value.sync="edits.description" :edit="edit_mode" :mode="mode")

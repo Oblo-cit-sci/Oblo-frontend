@@ -4,8 +4,8 @@
       v-card-title {{title}}
       v-card-text {{text}}
       v-card-actions
-        v-btn(flat :color="cancel_color" @click="cancel") {{cancel_text}}
-        v-btn(flat :color="confirm_color" @click="confirm") {{confirm_text}}
+        v-btn(text :color="cancel_color" @click="cancel") {{cancel_text}}
+        v-btn(text :color="confirm_color" @click="confirm") {{confirm_text}}
 </template>
 
 <script>
