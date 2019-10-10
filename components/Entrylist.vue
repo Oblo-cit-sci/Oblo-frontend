@@ -56,7 +56,13 @@
                 return public_name
             },
             type_name(entry) {
-                return this.$store.getters.entry_type(entry.type_slug).title
+                // todo this should be a getter. and eventually include a fetch,... never know...
+                let entry_type = this.$store.getters.entry_type(entry.type_slug)
+                if(entry_type) {
+                  return entry_type.title
+                }  else {
+                  return entry.type_slug
+                }
             }
         }
     }

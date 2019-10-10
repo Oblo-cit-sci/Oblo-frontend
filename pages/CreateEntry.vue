@@ -2,64 +2,36 @@
   v-layout(justify-center)
     v-flex(xs12 md8)
       EntryCreateList(
-        :options="options"
-        @selection="selection($event)")
+        :entrytypes_entries="entrytypes"
+        :draft_entries="drafts")
 </template>
 
 <script>
 
-  import {create_entry, has_parent} from "../lib/entry";
 
-  import { format } from 'timeago.js';
-  import {ENTRIES_DRAFTS} from "../lib/store_consts";
-  import EntryCreateList from "../components/EntryCreateList";
+    import {format} from 'timeago.js';
+    import {ENTRIES_DRAFTS} from "../lib/store_consts";
+    import EntryCreateList from "../components/EntryCreateList";
 
-  const ENTRY_TYPE = "etype";
-  const DRAFT = "draft";
+    const ENTRY_TYPE = "etype";
+    const DRAFT = "draft";
 
-  export default {
-    name: "CreateEntry",
-    components: {EntryCreateList},
-    methods: {
-      selection({type, value}) {
-        let uuid = null
-        if (type === ENTRY_TYPE) {
-          uuid = create_entry(this.$store, value).uuid
-        } else {
-          uuid = value;
-        }
-        this.$router.push("entry/" + uuid)
-      }
-    },
-    computed: {
-      options() {
-        let options = this.$_.map(this.$store.getters.global_entry_types_as_array, o => {
-          return {
-            text: o.title,
-            value: o.slug,
-            type: ENTRY_TYPE,
-            description: o.description,
+    export default {
+        name: "CreateEntry",
+        components: {EntryCreateList},
+        methods: {
+        },
+        computed: {
+            entrytypes() {
+                return this.$store.getters.global_entry_types_as_array
+            },
+            drafts() {
+                let drafts = this.$store.getters[ENTRIES_DRAFTS]
+                let slugs = this.$_.map(this.entrytypes, et => et.slug)
+                return this.$_.filter(drafts, e => this.$_.includes(slugs,e.type_slug))
             }
-        });
-
-        let drafts = this.$_.filter(this.$store.getters[ENTRIES_DRAFTS](),
-          e => {
-            return !has_parent(e)
-          })
-        drafts = this.$_.map(drafts, d => {
-          return {
-            text: d.title,
-            value: d.uuid,
-            type: DRAFT,
-            description: "Created " + format(d.creation_datetime)}
-        });
-        if(drafts.length > 0 ){
-          options.push({text: "Drafts", type: "category"}, ...drafts)
         }
-        return options;
-      }
     }
-  }
 </script>
 
 <style scoped>

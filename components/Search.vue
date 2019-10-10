@@ -29,7 +29,6 @@
             return {
                 searching: false,
                 keyword: '',
-                entries: Array.from(this.$store.state.entries.entries.values()) // on init show last entries created
             }
         },
         watch: {
