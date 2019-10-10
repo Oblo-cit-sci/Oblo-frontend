@@ -1,28 +1,25 @@
 <template lang="pug">
   v-layout(justify-center)
     v-flex(xs12 md8)
-      SingleSelect(
+      EntryCreateList(
         :options="options"
-        force_view="list"
-        :select_sync="false"
-        v-on:selection="selection($event)"
-        :highlight="false")
+        @selection="selection($event)")
 </template>
 
 <script>
 
-  import SingleSelect from "../components/SingleSelect";
   import {create_entry, has_parent} from "../lib/entry";
 
   import { format } from 'timeago.js';
   import {ENTRIES_DRAFTS} from "../lib/store_consts";
+  import EntryCreateList from "../components/EntryCreateList";
 
   const ENTRY_TYPE = "etype";
   const DRAFT = "draft";
 
   export default {
     name: "CreateEntry",
-    components: {SingleSelect},
+    components: {EntryCreateList},
     methods: {
       selection({type, value}) {
         let uuid = null
