@@ -12,7 +12,7 @@
             size= "150"
             color="grey")
             v-img(
-              src="http://c1.peakpx.com/wallpaper/704/532/870/vegetables-fresh-food-tomato-red-wallpaper-preview.jpg"
+              src=""
               alt="item"
               aspect-ratio="1")
           v-list-item-content
@@ -20,19 +20,22 @@
               p(class="ma-0 float-right") {{date}}
             v-list-item-title(class="headline mb-1") {{entry.title}}
             v-list-item-subtitle 
+              p(class="mt-2 mb-0") {{entry.actors.creator.public_name}}
+              p(class="mt-2 mb-0") location
               v-icon(
                 small
-                left) {{privacy_icon(entry.privacy)}} 
-              p(class="mt-4") {{entry.type_slug}}
-              p(class="font-weight-light") {{entry.license}}
+                left class="mt-2 mb-0") {{privacy_icon(entry.privacy)}} 
+              p(class="mt-2 mb-0 font-weight-light") {{entry.license}}
+              p(class="mt-2") {{entry.type_slug}}   
 
-        v-card-actions(class="pb-3")
-          v-chip(outlined class="ma-2"
-            small color="green darken-3") {{entry.software_version}}
-          v-chip(outlined class="ma-2"
-            small color="green darken-3") {{entry.type_slug}}
-          v-chip(outlined class="ma-2"
-            small color="green darken-3") {{entry.status}}
+        v-card-actions(class="pb-3")      
+          v-chip-group(column)
+            v-chip(outlined class="ma-2"
+              small color="green darken-3") {{entry.software_version}}
+            v-chip(outlined class="ma-2"
+              small color="green darken-3") {{entry.type_slug}}
+            v-chip(outlined class="ma-2"
+              small color="green darken-3") {{entry.status}}
         
         v-divider(light) 
 
