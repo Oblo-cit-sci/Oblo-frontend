@@ -44,10 +44,6 @@
                 return  Array.from(this.$store.state.entries.entries.values())
             }
         },
-
-        mounted: function () {
-            this.entries = Array.from(this.$store.state.entries.entries.values());
-        },
         methods: {
             getEntries: function () {
                 console.log("Entries updated with the new search");
@@ -73,3 +69,4 @@
 <style scoped>
 
 </style>
+
