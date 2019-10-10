@@ -124,7 +124,7 @@ export const getters = {
     }
     return global_entry_types
   },
-  entry_type(state, getters) {
+  entry_type(state) {
     return (type_slug) => {
       return state.entry_types.get(type_slug)
     }

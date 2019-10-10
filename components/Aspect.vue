@@ -18,7 +18,7 @@
       :is="aspectComponent(aspect, mode)"
       :aspect="aspect"
       :aspect_loc="aspect_loc"
-      :value="raw_value"
+      :mvalue="value"
       :extra="extra"
       :disabled="regular_disable"
       :mode="real_mode"
@@ -30,7 +30,7 @@
         :is="aspectComponent(aspect.attr.alternative)"
         v-bind:aspect="aspect.attr.alternative"
         v-on:update_value="update_value($event)"
-        :value="raw_value"
+        :mvalue="value"
         :mode="alt_mode")
 </template>
 
@@ -168,13 +168,13 @@
                 } else
                     return this.mode
             },
-            raw_value() {
+            /*raw_value() {
                 if (!this.value) { // failsafe
                     return aspect_raw_default_value(this.aspect)
                 } else {
                     return this.value.value
                 }
-            },
+            },*/
             aspect_label() {
                 if (this.aspect.label !== undefined) {
                     return this.aspect.label

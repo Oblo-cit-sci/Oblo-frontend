@@ -3,8 +3,8 @@
     div(v-if="edit && !selected_aspect")
       SingleSelect(
         :options="options"
-        :selection.sync="selected_option"
-        :select_sync="true"
+        :select_sync="false"
+        v-on:selection="option_selected($event)"
         :only_value="true")
     div(v-if="selected_option")
       Aspect(
@@ -16,12 +16,13 @@
 
 <script>
 
-
     import AspectMixin from "./AspectMixin"
     import Aspect from "../Aspect"
-    import {packed_aspect_default_value} from "../../lib/aspect";
+    import {aspect_default_value, aspect_raw_default_value, packed_aspect_default_value} from "../../lib/aspect";
     import SingleSelect from "../SingleSelect";
     import {string_list2options} from "../../lib/client";
+    import {ENTRIES_SET_ENTRY_VALUE} from "../../lib/store_consts";
+    import {OPTION} from "../../lib/consts";
 
     export default {
         name: "OptionsAspect",
@@ -30,21 +31,30 @@
         data() {
             return {
                 selected_option: null,
+                selected_aspect: null,
                 opt_values: [],
                 options: string_list2options(this.$_.map(this.aspect.options, o => o.name))
             }
         },
         created() {
-            for (let index in this.aspect.options) {
-                this.opt_values[index] = packed_aspect_default_value(this.aspect.options[index])
+            console.log(this.mvalue)
+            if (this.mvalue.hasOwnProperty(OPTION)) {
+                this.option_selected(this.mvalue.option, false)
             }
         },
         methods: {
-
-        },
-        computed: {
-            selected_aspect() {
-                return this.aspect.options.find(o => o.name === this.selected_option)
+            option_selected(option, selected = true) {
+                this.selected_option = option
+                this.selected_aspect = this.$_.find(this.aspect.options, o => o.name === option)
+                if (selected) {
+                    let value = aspect_default_value(this.selected_aspect)
+                    value.option = option
+                    this.$store.dispatch(ENTRIES_SET_ENTRY_VALUE, {
+                        aspect_loc: this.aspect_loc,
+                        value: value
+                    })
+                }
+                //this.value_change(aspect_raw_default_value(this.selected_aspect))
             }
         }
     }

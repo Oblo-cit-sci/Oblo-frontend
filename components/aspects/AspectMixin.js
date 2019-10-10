@@ -7,10 +7,12 @@ export default {
       type: Object,
       required: true
     },
-    value: {},
     mode: { // todo well, this is gonna be messy
       type: String,
       default: VIEW
+    },
+    mvalue: {
+      type: Object
     },
     disabled: {
       type: Boolean,
@@ -53,6 +55,9 @@ export default {
     clearIcon() {
       //console.log("AspMix - ", this.aspect.name, this.aspect.type, this.extra)
       return ((this.extra.listitem && this.mode === EDIT) || false) ? "clear" : undefined //this.extra
+    },
+    value() {
+      return this.mvalue.value
     }
   },
   watch: {

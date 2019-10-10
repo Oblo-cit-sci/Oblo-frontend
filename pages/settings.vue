@@ -6,7 +6,7 @@
     div During the main data collection period of LICCI partners, partners can upload collected data to the LICCI data repository. AUTOMATICALLY SAVED
     TextShort(
       :aspect="user_key_aspect"
-      :value="user_key"
+      :mvalue="user_key"
       mode="edit"
       v-on:update_value="update_value($event)")
     v-btn(@click="test_save") Test and save
@@ -119,7 +119,7 @@
         },
         computed: {
             user_key() {
-                return this.$store.getters["user_key"]
+                return pack_value(this.$store.getters["user_key"])
             }
         }
     }
