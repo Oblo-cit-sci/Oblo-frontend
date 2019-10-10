@@ -39,14 +39,14 @@
               :extra="list_extra(index)"
               :aspect_loc="item_aspect_loc(index)"
               v-on:entryAction="$emit('entryAction',$event)")
-          ListitemActions(
-            :requires_delete="requires_delete && !fixed_length"
-            :itemname="extra.itemname"
-            :moveable="moveable"
-            :index="index"
-            :listlength="i_value.length - 1"
-            v-on:remove_value="remove_value($event)"
-            v-on:move="move($event)")
+            ListitemActions(
+              :requires_delete="requires_delete && !fixed_length"
+              :itemname="extra.itemname"
+              :moveable="moveable"
+              :index="index"
+              :listlength="i_value.length - 1"
+              v-on:remove_value="remove_value($event)"
+              v-on:move="move($event)")
     div
       span {{count_text}}, &nbsp
       span(v-if="min===max && min !== null") required: {{min}}
