@@ -8,12 +8,14 @@
         v-btn(@click="del") del
         div(v-for="(e, index) in tempM")
           div {{index}} {{e}}
-    Entrypreview(:entries="entries")
+    Search()
+    //Entrypreview(:entries="entries")
 </template>
 
 <script>
   import Entrypreview from "../components/EntryPreview";
   import LoadFileButton from "../components/LoadFileButton";
+  import Search from "../components/Search";
 
   const ld = require("lodash")
 
@@ -21,7 +23,7 @@
 
   export default {
     name: "Tests",
-    components: {LoadFileButton, Entrypreview},
+    components: {LoadFileButton, Entrypreview, Search},
     created() {
     },
     data() {

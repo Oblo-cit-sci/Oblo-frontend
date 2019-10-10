@@ -36,7 +36,7 @@
                     if (this.aspect.attr.min !== undefined && value < this.aspect.attr.min) {
                         return "value must be at least " + (this.aspect.attr.min)
                     } else if (this.aspect.attr.max !== undefined && value > this.aspect.attr.max) {
-                        return "value must be lower then " + (this.aspect.attr.max)
+                        return "value cannot be higher then " + (this.aspect.attr.max)
                     } else return true
                 },
                 valid_num_type: value => {
