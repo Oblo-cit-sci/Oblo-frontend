@@ -1,7 +1,6 @@
 const pkg = require('./package')
 const colors = require('vuetify/es5/util/colors')
 
-const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 
 module.exports = {
   mode: 'universal',
@@ -71,11 +70,11 @@ module.exports = {
     '~/modules/myCache'
   ],
 
-  
+
   buildModules: [
     '@nuxtjs/vuetify'
   ],
-  
+
     /*
    ** Vuetify options
    ** Doc: https://github.com/nuxt-community/vuetify-module
@@ -113,7 +112,6 @@ module.exports = {
   */
   build: {
     transpile: ['vuetify/lib'],
-    plugins: [new VuetifyLoaderPlugin()],
     loaders: {
       stylus: {
         import: ["~assets/style/variables.styl"]
