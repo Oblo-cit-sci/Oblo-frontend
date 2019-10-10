@@ -9,7 +9,7 @@
         div(v-for="(e, index) in tempM")
           div {{index}} {{e}}
     Search()
-    Entrypreview(:entries="entries")
+    //Entrypreview(:entries="entries")
 </template>
 
 <script>
