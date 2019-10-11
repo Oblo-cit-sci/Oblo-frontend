@@ -125,8 +125,12 @@ export const getters = {
     return global_entry_types
   },
   entry_type(state) {
-    return (type_slug) => {
-      return state.entry_types.get(type_slug)
+    return (entry_or_type_slug) => {
+      if(typeof  entry_or_type_slug === "object") {
+        return state.entry_types.get(entry_or_type_slug.type_slug)
+      } else {
+        return state.entry_types.get(entry_or_type_slug)
+      }
     }
   },
   entrytypes_of_domain(state) {

@@ -135,6 +135,9 @@ export const getters = {
   all_entries(state) {
     return state.entries.values()
   },
+  all_entries_array(state) {
+    return Array.from(state.entries.values())
+  },
   edit_uuid(state) {
     if (state.edit)
       return state.edit.uuid

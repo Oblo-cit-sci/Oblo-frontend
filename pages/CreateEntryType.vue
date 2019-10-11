@@ -8,9 +8,23 @@
         :select_sync="false"
         @selection="select_exisisting($event)"
         :only_value="true")
-    div Select mode
-      SingleSelect(:options="mode_options"  :selection="mode" force_view="radiogroup" :only_value="true")
-    EntryAspectView(:entry="entry")
+    div(v-if="entry")
+      div Select mode
+        SingleSelect(:options="mode_options"  :select_sync="true" :selection.sync="mode" force_view="radiogroup" :only_value="true")
+      div(v-if="mode==='view'")
+        EntryAspectView(:entry="entry")
+      div(v-else-if="mode==='edit'")
+        div(v-for="(a, index) in aspects" :key="a.aspect.name")
+          Title_Description(:title="a.aspect.name + ' (' + a.aspect.type + ')'")
+          v-btn(@click="delete_aspect(a)" small icon)
+            v-icon {{a.del ? 'mdi-undo' : 'mdi-delete-outline'}}
+          v-textarea(v-if="!a.del"
+            :rules="[jsonparse]"
+            @click:append="undo(index)"
+            append-icon="mdi-undo"
+            outlined auto-grow
+            v-model="a.value"
+            :background-color="dirty[index] ? 'amber lighten-1' : ''")
 </template>
 
 <script>
@@ -19,6 +33,8 @@
     import {object_list2options, string_list2options} from "../lib/client";
     import {create_entry} from "../lib/entry";
     import EntryAspectView from "../components/EntryAspectView";
+    import {mapGetters} from "vuex"
+
 
     export default {
         name: "CreateEntryType",
@@ -30,6 +46,7 @@
                 mode_options: string_list2options(['edit', 'view', 'mixed']),
                 mode: "view",
                 entry: null,
+                aspects: []
             }
         },
         created() {
@@ -38,9 +55,40 @@
         methods: {
             select_exisisting(event) {
                 this.entry = create_entry(this.$store, event)
+                this.aspects = this.$_.map(this.entry_type.content.aspects, a => {
+                    return {
+                        aspect: a,
+                        value: JSON.stringify(a, null, 2),
+                        orig_ref: JSON.stringify(a).replace(/\s/g, ""),
+                        del: false
+                    }
+                })
+            },
+            undo(index) {
+                this.aspects[index].value = JSON.stringify(this.entry_type.content.aspects[index], null, 2)
+            },
+            jsonparse(value) {
+                try {
+                    JSON.parse(value)
+                } catch (e) {
+                    return e.message
+                }
+                return true
+            },
+            delete_aspect(aspect) {
+              aspect.del = !aspect.del
             }
         },
-        computed: {}
+        computed: {
+            entry_type() {
+                return this.$store.getters["entry_type"](this.entry)
+            },
+            dirty() {
+                return this.$_.map(this.aspects, a => {
+                    return a.value.replace(/\s/g, "") !== a.orig_ref
+                })
+            }
+        }
     }
 </script>
 
