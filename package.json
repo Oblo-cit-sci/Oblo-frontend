@@ -1,6 +1,6 @@
 {
   "name": "LICCI",
-  "version": "0.6.14c",
+  "version": "0.6.14d",
   "description": "Local Indicators of Climate change impacts",
   "author": "Ramin S",
   "private": true,
@@ -14,7 +14,6 @@
     "upload": "sudo python3 /media/ra/hd/projects/2019/liccibackend/helpers/app_upload.py"
   },
   "dependencies": {
-    "@formschema/native": "^2.0.0-alpha.2",
     "@nuxtjs/axios": "^5.6.0",
     "@nuxtjs/font-awesome": "^1.0.4",
     "@nuxtjs/pwa": "^2.6.0",
