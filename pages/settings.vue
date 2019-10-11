@@ -69,7 +69,6 @@
         methods: {
             test_save() {
                 let data = {user_key: this.$store.state.meta.repository.user_key}
-                console.log(data)
                 this.$axios.post("https://licci.uab.cat/cgi-bin/test_user.py", data, {
                     headers: {
                         "accept": "*",
@@ -106,6 +105,9 @@
                     event.data.forEach(entry => {
                         this.$store.commit("entries/save_entry", entry)
                     })
+                    this.ok_snackbar("Entries imported")
+                } else {
+                    this.error_snackbar("Something went wrong")
                 }
             },
             dialog_action(event) {

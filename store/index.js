@@ -1,5 +1,5 @@
 import {EDIT, VISITOR} from "../lib/consts";
-import {SNACKBAR_RESET} from "../lib/store_consts";
+import {entries_domain_filter} from "../lib/search";
 
 export const state = () => ({
   // comes by init
@@ -127,6 +127,11 @@ export const getters = {
   entry_type(state) {
     return (type_slug) => {
       return state.entry_types.get(type_slug)
+    }
+  },
+  entrytypes_of_domain(state) {
+    return domain => {
+      return entries_domain_filter(Array.from(state.entry_types.values()), domain)
     }
   },
   get_aspect_def(state, getters, root_state, root_getter) {

@@ -1,20 +1,26 @@
 <template lang="pug">
-  v-layout(xs6  justify-space-around align-center)
-    div(v-if="initialized")
-      entrylist(:entries="$store.state.entries.timeline_entries")
-    div(v-else-if="!connecting" style="width:60%")
-      v-alert(type="error" value="true" style="width:100%") Not initialized
-      div(style="margin-top:10%")
-        div check your network settings and retry again...
-        v-btn(@click="initialize") Try again
-        div(style="margin-top:5%") or load your offline data from your device
-        v-btn Load your data
+  v-container(fluid)
+    v-row(align="center" justify="center")
+      v-col(:cols="10")
+        div(v-if="initialized")
+            DomainCard(v-for="domain in domains" :key="domain.title" v-bind="domain")
+        div(v-else-if="!connecting" style="width:60%")
+          v-alert(type="error" value="true" style="width:100%") Not initialized
+          div(style="margin-top:10%")
+            div check your network settings and retry again...
+            v-btn(@click="initialize") Try again
+            div(style="margin-top:5%") or load your offline data from your device
+            v-btn Load your data
 </template>
 
 <script>
 
+    // div(v-if="initialized")
+    //   entrylist(:entries="$store.state.entries.timeline_entries")
+
     import Entrylist from '../components/Entrylist.vue'
-    import {fix_entries, initialize} from "../lib/client"
+    import {initialize} from "../lib/client"
+    import DomainCard from "../components/DomainCard";
 
     export default {
         data() {
@@ -22,6 +28,17 @@
                 connecting: false,
                 connected: null,
                 initialized: this.$store.state.initialized,
+                domains: [{
+                    title: "LICCI",
+                    to: "/domain/licci",
+                    img_src: "images/licci.jpg",
+                    text: "Local Indicators of Climate Change Impacts - The Contribution of Local Knowledge to Climate Change Research"
+                }, {
+                    title: "CONECT-e",
+                    to: "/domain/conecte",
+                    img_src: "images/conecte.jpg",
+                    text: "Compartiendo el CONocimiento ECológico Tradicional - Una plataforma interactiva de recogida y transmisión de conocimientos tradicionales relativos a plantas, animales, hongos, variedades tradicionales de cultivos o ecosistemas"
+                }]
             }
         },
         created() {
@@ -45,7 +62,7 @@
 
         },
         components: {
-            Entrylist
+            Entrylist, DomainCard
         },
         methods: {
             initialize() {

@@ -19,7 +19,7 @@
 <script>
     import axios from "axios";
     import Entrypreview from "../components/EntryPreview";
-    
+
     const ld = require('lodash');
 
     export default {
@@ -29,7 +29,6 @@
             return {
                 searching: false,
                 keyword: '',
-                entries: Array.from(this.$store.state.entries.entries.values()) // on init show last entries created
             }
         },
         watch: {
@@ -40,17 +39,16 @@
             }
         },
         computed: {
-        },
-
-        mounted: function () {
-            this.entries = Array.from(this.$store.state.entries.entries.values());    
+            entries() {
+                return  Array.from(this.$store.state.entries.entries.values())
+            }
         },
         methods: {
             getEntries: function () {
                 console.log("Entries updated with the new search");
                 //this.searching = true;
                 //var vm = this
-                
+
                 //axios.get('', {
                   //  params: {
                     //    keyword:keyword
@@ -68,5 +66,6 @@
 </script>
 
 <style scoped>
-   
+
 </style>
+

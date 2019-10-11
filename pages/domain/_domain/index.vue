@@ -1,21 +1,26 @@
 <template lang="pug">
-  div {{$route.params.domain}}
-
+    EntryCreateList(
+      :entrytypes_entries="entrytypes_entries"
+      @selection="")
 </template>
 
 <script>
+
+    import EntryCreateList from "../../../components/EntryCreateList";
+    import {global_context_filter} from "../../../lib/search";
+
 export default {
       name: "index",
+      components: {EntryCreateList},
       data() {
           return {
 
           }
       },
-      created() {
-
-      },
       computed: {
-
+          entrytypes_entries() {
+            return global_context_filter(this.$store.getters["entrytypes_of_domain"](this.$route.params.domain))
+        }
       },
       methods: {
 
