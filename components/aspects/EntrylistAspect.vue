@@ -58,6 +58,10 @@
         },
         created() {
             this.set_min_max()
+            if (!this.$store.getters["entry_type"](this.item_type_slug)) {
+                console.log("Warning- aspect: ", this.aspect.name, "referrers to a typename that does not exist: ", this.item_type_slug)
+                console.log("TODO disable this aspect")
+            }
         },
         computed: {
             has_items() {
@@ -87,7 +91,7 @@
         },
         methods: {
             open_remove(index) {
-                if(this.disabled)
+                if (this.disabled)
                     return
                 this.remove_data_dialog.id = index
                 this.show_remove = true
@@ -97,12 +101,14 @@
                     let index = parseInt(action.id)
                     let child_uuid = this.i_value[index]
                     this.$store.commit(ENTRIES_EDIT_DELETE_REF_CHILD, child_uuid)
-                    const mod_value = this.$_.filter(this.i_value, (_, i) => { return i !== index})
+                    const mod_value = this.$_.filter(this.i_value, (_, i) => {
+                        return i !== index
+                    })
                     this.value_change(mod_value)
                 }
             },
             create_item() {
-                if(this.disabled)
+                if (this.disabled)
                     return
                 const index_aspect_loc = this.aspect_loc_for_index(this.i_value.length)
                 const entry = create_entry(this.$store, this.item_type_slug, {}, {
@@ -123,7 +129,7 @@
                 return aspect_loc_str(this.aspect_loc_for_index(index))
             },
             open_item(item) {
-                if(this.disabled)
+                if (this.disabled)
                     return
                 if (!this.has_entry(item.uuid))
                     this.fetch_and_nav(entry.uuid)
