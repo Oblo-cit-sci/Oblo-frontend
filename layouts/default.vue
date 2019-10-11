@@ -1,5 +1,42 @@
-<template>
-  <v-app>
+<template lang="pug">
+  v-app
+    v-navigation-drawer(app='' v-model='drawer' v-show='initialized' :mini-variant='miniVariant' :clipped='clipped' fixed='')
+      v-list
+        v-list-item-group
+          v-list-item(v-for='(item, i) in items' :key='i' :to='item.to' router='' nuxt='' exact='')
+            v-list-item-icon
+              v-icon(v-text='item.icon')
+            v-list-item-content
+              v-list-item-title(v-text='item.title')
+    v-app-bar(:clipped-left='clipped' true='' app='' dense='')
+      v-app-bar-nav-icon(v-show='initialized' @click='drawer = !drawer')
+      v-toolbar-title
+        span
+          | {{title}}
+        span(style='font-size: 0.6em') (v{{version}})
+      v-spacer
+      div
+        v-btn(text='' icon='' :loading='connecting')
+          // nuxt to="/"
+          v-icon {{connected_icon}}
+        v-btn(text='' icon='')
+          // nuxt to="/profile"
+          v-icon {{userrole_icon}}
+      v-spacer
+      div(v-if='login_state')
+        v-btn(v-for='(item, i) in header_items' :key='i' :to='item.to' text='' icon='' router='' nuxt='' exact='')
+          v-icon {{ item.icon }}
+    v-content
+      v-container
+        nuxt
+    globalsnackbar
+</template>
+
+
+<script>
+
+  /*
+    <v-app>
     <v-navigation-drawer
       app
       v-model="drawer"
@@ -53,17 +90,6 @@
         </v-btn>
       </div>
       <v-spacer></v-spacer>
-      <div>
-        <!--
-        <v-btn flat icon nuxt router exact to="/export">
-          <v-badge bottom color="rgba(0,255,0,0.9)">
-            <template v-slot:badge>
-              <span>!</span>
-            </template>
-            <v-icon>get_app</v-icon>
-          </v-badge>
-        </v-btn> -->
-      </div>
       <div v-if="login_state">
         <v-btn v-for="(item, i) in header_items"
                :key="i"
@@ -84,9 +110,7 @@
     </v-content>
     <GlobalSnackbar></GlobalSnackbar>
   </v-app>
-</template>
-
-<script>
+  */
 
   import GlobalSnackbar from "../components/GlobalSnackbar"
 

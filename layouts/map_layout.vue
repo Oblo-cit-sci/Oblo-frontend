@@ -1,45 +1,39 @@
-<template>
-  <v-app>
-    <v-navigation-drawer
+<template lang="pug">
+  v-app
+    v-btn(style="bottom:2%" fixed dark fab bottom right color="blue" @click="drawer = !drawer")
+      v-icon mdi-menu
+    v-navigation-drawer(
       app
       v-model="drawer"
       :mini-variant="false"
       :clipped="true"
       :hide-overlay="true"
       temporary
-      width="500"
-      fixed
-    />
-    <v-content>
-      <v-container id="fullContainer">
-        <nuxt/>
-      </v-container>
-    </v-content>
-    <v-btn
-      style="bottom:2%"
-      fixed
-      dark
-      fab
-      bottom
-      right
-      color="blue"
-      @click="drawer = !drawer"
-    >
-      <v-icon>mdi-menu</v-icon>
-    </v-btn>
-    <GlobalSnackbar></GlobalSnackbar>
-  </v-app>
+      width="400"
+      fixed)
+    v-content
+      v-container(id="fullContainer")
+        nuxt
+    GlobalSnackbar
 </template>
 
 <script>
 
     import GlobalSnackbar from "../components/GlobalSnackbar"
 
+    const menu = [
+        {
+            icon: 'home',
+            title: 'Home',
+            to: '/'
+        },
+    ]
     export default {
         components: {GlobalSnackbar},
         data() {
             return {
-                drawer: false
+                drawer: false,
+                menu_items: menu
             }
         }
     }

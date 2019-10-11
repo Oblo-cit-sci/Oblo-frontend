@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-layout class="map row">
-      <no-ssr>
+      <client-only>
 
         <MglMap :style="mapCssStyle"
                 :access-token="accessToken"
@@ -23,7 +23,7 @@
             </v-btn>
           </div>
         </MglMap>
-      </no-ssr>
+      </client-only>
     </v-layout>
   </div>
 </template>
