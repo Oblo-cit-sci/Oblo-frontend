@@ -15,6 +15,7 @@ const DELETE_REF_CHILD = "delete_ref_child"
 export const state = () => ({
   timeline_entries: [],
   entries: new Map(),
+  search_entries: new Map(),
   edit: null
 });
 
@@ -234,7 +235,11 @@ export const getters = {
         return ""
       }
     }
+  },
+  get_search_entries: function(state) {
+    return(state.entries)
   }
+
 }
 
 // dispatch
