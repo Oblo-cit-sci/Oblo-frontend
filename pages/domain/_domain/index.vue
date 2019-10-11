@@ -1,17 +1,20 @@
 <template lang="pug">
-    EntryCreateList(
-      :entrytypes_entries="entrytypes_entries"
-      @selection="")
+    v-container(fluid)
+        EntryCreateList(
+            :entrytypes_entries="entrytypes_entries"
+            @selection="")
+        Search
 </template>
 
 <script>
 
     import EntryCreateList from "../../../components/EntryCreateList";
     import {global_context_filter} from "../../../lib/search";
+    import Search from "../../../components/Search";
 
 export default {
       name: "index",
-      components: {EntryCreateList},
+      components: {EntryCreateList, Search},
       data() {
           return {
 

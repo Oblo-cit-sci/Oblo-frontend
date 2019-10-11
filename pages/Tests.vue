@@ -8,8 +8,6 @@
         v-btn(@click="del") del
         div(v-for="(e, index) in tempM")
           div {{index}} {{e}}
-    Search()
-    //Entrypreview(:entries="entries")
 </template>
 
 <script>
@@ -37,7 +35,7 @@
       },
       entries() {
         const registered_name = this.$store.state.user.user_data.registered_name;
-        let result_entries = Array.from(this.$store.state.entries.entries.values())
+        let result_entries = Array.from(this.$store.state.index.global_entries.values())
         return result_entries
       }
     },

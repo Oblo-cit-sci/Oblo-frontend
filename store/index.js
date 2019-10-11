@@ -17,7 +17,8 @@ export const state = () => ({
   draft_numbers: {},
   meta: {
     repository: {}
-  }
+  },
+  global_entries: new Map() //entries from api
   // selected entry type (for creation)
 })
 
@@ -41,8 +42,8 @@ export const mutations = {
   init(state, data) {
     state.codes = {...data.codes}
     state.codes.liccis_flat = extract_liccis(data.codes.liccis);
-    state.entry_types = new Map(data.entryTemplates)
-
+    state.entry_types = new Map(data.entryTemplates);
+    //state.global_entries = new Map(data.entries);
     state.related_users = data.related_users || {};
     //state.entry_type_slug_index_dict = array_to_val__id_dict(data.entryTemplates, "slug");
     state.initialized = true
@@ -53,6 +54,7 @@ export const mutations = {
       state.codes = {...data.codes}
       state.codes.liccis_flat = extract_liccis(data.codes.liccis);
       state.entry_types = new Map(data.entryTemplates)
+      state.global_entries = new Map(data.entries);
       state.initialized = true
     }
   },

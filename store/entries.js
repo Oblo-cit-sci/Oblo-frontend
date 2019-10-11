@@ -15,7 +15,6 @@ const DELETE_REF_CHILD = "delete_ref_child"
 export const state = () => ({
   timeline_entries: [],
   entries: new Map(),
-  search_entries: new Map(),
   edit: null
 });
 
