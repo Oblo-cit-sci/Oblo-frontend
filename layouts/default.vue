@@ -1,12 +1,12 @@
 <template>
   <v-app>
-    <v-navigation-drawer 
+    <v-navigation-drawer
       app
       v-model="drawer"
       v-show="initialized"
       :mini-variant="miniVariant"
       :clipped="clipped"
-      fixed 
+      fixed
     >
       <v-list>
         <v-list-item-group>
@@ -124,7 +124,7 @@
     {
       icon: 'fa-map',
       title: 'Map',
-      to: '/Map2'
+      to: '/Map'
     },
     {
       icon: 'computer',
