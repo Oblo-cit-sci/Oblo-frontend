@@ -1,8 +1,8 @@
 <template lang="pug">
-  v-card(outlined :width="550"  :to="to" nuxt :ripple="false")
-    v-img(:src="img_src" max-height="200")
-      v-card-title(class="align-end fill-height") {{title}}
-    v-card-text {{text}}
+    v-card(class="mb-10" outlined :width="550"  :to="to" nuxt :ripple="false")
+        v-img(:src="img_src" max-height="auto")
+            v-card-title(class="align-end fill-height shadow") {{title}}
+        v-card-text {{text}}
 </template>
 
 <script>
@@ -37,5 +37,8 @@
 </script>
 
 <style scoped>
-
+   .shadow {
+       text-shadow: 3px 3px 2px black; 
+       color: whitesmoke;
+   }
 </style>
