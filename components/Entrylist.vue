@@ -19,6 +19,7 @@
 <script>
     import {CREATOR, entry_actor_relation, license_icon, privacy_icon} from "../lib/client"
     import EntryNavMixin from "./EntryNavMixin";
+    import {ENTRIES_HAS_ENTRY} from "../lib/store_consts"
 
     export default {
         name: "Entrylist",
@@ -36,7 +37,7 @@
         },
         methods: {
             show(entry) {
-                if (this.$store.getters["entries/has_entry"](entry.uuid))
+                if (this.$store.getters[ENTRIES_HAS_ENTRY](entry.uuid))
                     this.$router.push("/entry/" + entry.uuid)
                 else
                     this.fetch_and_nav(entry.uuid)
@@ -69,10 +70,6 @@
 </script>
 
 <style scoped>
-
-  .catListItem {
-    background: lightgrey;
-  }
 
   .license-image {
     width: 60px;

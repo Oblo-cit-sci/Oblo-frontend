@@ -5,7 +5,7 @@
       v-card(
         class="mx-auto"
         outlined)
-      
+
         v-list-item(three-line)
           v-list-item-avatar(
             tile
@@ -16,13 +16,13 @@
               alt="item"
               aspect-ratio="1")
           v-list-item-content
-            div(class="overline ma-0") 
+            div(class="overline ma-0")
               p(class="ma-0 float-right") {{date}}
             v-list-item-title(class="headline mb-1") {{entry.title}}
-            v-list-item-subtitle 
+            v-list-item-subtitle
               v-icon(
                 small
-                left) {{privacy_icon(entry.privacy)}} 
+                left) {{privacy_icon(entry.privacy)}}
               p(class="mt-4") {{entry.type_slug}}
               p(class="font-weight-light") {{entry.license}}
 
@@ -33,8 +33,8 @@
             small color="green darken-3") {{entry.type_slug}}
           v-chip(outlined class="ma-2"
             small color="green darken-3") {{entry.status}}
-        
-        v-divider(light) 
+
+        v-divider(light)
 
         v-card-actions
           v-btn(text outlined @click="show(entry)") Details
@@ -45,6 +45,7 @@
 <script>
   import {CREATOR, entry_actor_relation, license_icon, privacy_icon} from "../lib/client"
   import EntryNavMixin from "./EntryNavMixin";
+  import {ENTRIES_HAS_ENTRY} from "../lib/store_consts";
 
   export default {
     name: "Entrypreview",
@@ -62,7 +63,7 @@
     },
     methods: {
       show(entry) {
-        if(this.$store.getters["entries/has_entry"](entry.uuid))
+        if(this.$store.getters[ENTRIES_HAS_ENTRY](entry.uuid))
           this.$router.push("/entry/" + entry.uuid)
         else
           this.fetch_and_nav(entry.uuid)

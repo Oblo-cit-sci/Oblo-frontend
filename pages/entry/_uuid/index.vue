@@ -59,7 +59,7 @@
     import goTo from 'vuetify/lib/services/goto'
     import EntryNavMixin from "../../../components/EntryNavMixin";
     import DecisionDialog from "../../../components/DecisionDialog";
-    import {ENTRIES_GET_EDIT, ENTRIES_SAVE_ENTRY, ENTRIES_SET_EDIT} from "../../../lib/store_consts";
+    import {ENTRIES_GET_EDIT, ENTRIES_GET_ENTRY, ENTRIES_SAVE_ENTRY, ENTRIES_SET_EDIT} from "../../../lib/store_consts";
     import {get_aspect_component} from "../../../lib/aspect";
 
 
@@ -192,7 +192,7 @@
             },
             parent_title() {
                 // todo not necessarily available for remote entries. should be included?
-                return this.$store.getters["entries/get_entry"](this.entry.refs.parent.uuid).title
+                return this.$store.getters[ENTRIES_GET_ENTRY](this.entry.refs.parent.uuid).title
             },
             // maybe also consider:
             // https://github.com/edisdev/download-json-data/blob/develop/src/components/Download.vue

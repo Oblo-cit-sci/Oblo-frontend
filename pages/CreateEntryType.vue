@@ -34,6 +34,7 @@
     import {create_entry} from "../lib/entry";
     import EntryAspectView from "../components/EntryAspectView";
     import {mapGetters} from "vuex"
+    import {ENTRY_TYPE} from "../lib/store_consts";
 
 
     export default {
@@ -81,7 +82,7 @@
         },
         computed: {
             entry_type() {
-                return this.$store.getters["entry_type"](this.entry)
+                return this.$store.getters[ENTRY_TYPE](this.entry)
             },
             dirty() {
                 return this.$_.map(this.aspects, a => {

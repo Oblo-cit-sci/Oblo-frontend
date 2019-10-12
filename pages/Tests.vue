@@ -32,9 +32,6 @@
       }
     },
     computed: {
-      tempM() {
-        return this.$store.getters["test/tempM"]
-      },
       entries() {
         const registered_name = this.$store.state.user.user_data.registered_name;
         let result_entries = Array.from(this.$store.state.entries.entries.values())

@@ -8,6 +8,7 @@
 
     import EntryCreateList from "../../../components/EntryCreateList";
     import {global_context_filter} from "../../../lib/search";
+    import {ENTRYTYPES_OF_DOMAIN} from "../../../lib/store_consts";
 
 export default {
       name: "index",
@@ -19,7 +20,7 @@ export default {
       },
       computed: {
           entrytypes_entries() {
-            return global_context_filter(this.$store.getters["entrytypes_of_domain"](this.$route.params.domain))
+            return global_context_filter(this.$store.getters[ENTRYTYPES_OF_DOMAIN](this.$route.params.domain))
         }
       },
       methods: {

@@ -35,10 +35,10 @@
     import {
         EDIT_UUID,
         ENTRIES_EDIT_ADD_REF_CHILD, ENTRIES_EDIT_DELETE_REF_CHILD,
-        ENTRIES_GET_ENTRY,
+        ENTRIES_GET_ENTRY, ENTRY_TYPE,
     } from "../../lib/store_consts";
     import {aspect_loc_str} from "../../lib/aspect";
-    import {no_duplicate_string, no_duplicate_texts} from "../../lib/client";
+    import {no_duplicate_texts} from "../../lib/client";
 
     const SELECT_THRESH = 6
 
@@ -58,7 +58,7 @@
         },
         created() {
             this.set_min_max()
-            if (!this.$store.getters["entry_type"](this.item_type_slug)) {
+            if (!this.$store.getters[ENTRY_TYPE](this.item_type_slug)) {
                 console.log("Warning- aspect: ", this.aspect.name, "referrers to a typename that does not exist: ", this.item_type_slug)
                 console.log("TODO disable this aspect")
             }
