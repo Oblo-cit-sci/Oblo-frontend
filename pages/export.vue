@@ -13,8 +13,9 @@
 
 <script>
 
-  import {get_from_store_location, mapToJson, printDate} from "../lib/client";
   import {export_data} from "../lib/import_export";
+  import {get_from_store_location} from "../lib/aspect";
+  import {mapToJson, printDate} from "../lib/util";
 
   const ld = require("lodash")
 

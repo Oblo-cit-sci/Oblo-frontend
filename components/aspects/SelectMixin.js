@@ -1,8 +1,4 @@
-import {
-  aspect_loc_uuid,
-  complete_aspect_loc
-} from "../../lib/client"
-import {aspect_loc_str2arr, delim2str} from "../../lib/aspect";
+import {aspect_loc_str2arr, aspect_loc_uuid, complete_aspect_loc, delim2str} from "../../lib/aspect";
 import {ENTRIES_VALUE} from "../../lib/store_consts";
 import {get_codes_as_options, no_duplicate_texts, object_list2options, string_list2options} from "../../lib/options";
 
