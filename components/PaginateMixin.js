@@ -1,7 +1,7 @@
 import {aspect_loc_str2arr, check_condition_value} from "../lib/aspect";
 import {select_aspect_loc} from "../lib/entry";
-import {string_list2options} from "../lib/client";
 import {EDIT} from "../lib/consts";
+import {string_list2options} from "../lib/options";
 
 export default {
   name: "PaginateMixin",

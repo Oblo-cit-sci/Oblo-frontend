@@ -52,7 +52,6 @@ export const mutations = {
       state.codes = {...data.codes}
       state.codes.liccis_flat = extract_liccis(data.codes.liccis);
       state.entry_types = new Map(data.entryTemplates)
-      state.global_entries = new Map(data.entries);
       state.initialized = true
     }
   },

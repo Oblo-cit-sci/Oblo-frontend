@@ -15,16 +15,16 @@
             div(class="overline ma-0")
               p(class="ma-0 float-right") {{date}}
             v-list-item-title(class="headline mb-1") {{entry.title}}
-            v-list-item-subtitle 
+            v-list-item-subtitle
               p(class="mt-2 mb-0") {{entry.actors.creator.public_name}}
               p(class="mt-2 mb-0") location
               v-icon(
                 small
-                left class="mt-2 mb-0") {{privacy_icon(entry.privacy)}} 
+                left class="mt-2 mb-0") {{privacy_icon(entry.privacy)}}
               p(class="mt-2 mb-0 font-weight-light") {{entry.license}}
-              p(class="mt-2") {{entry.type_slug}}   
+              p(class="mt-2") {{entry.type_slug}}
 
-        v-card-actions(class="pb-3")      
+        v-card-actions(class="pb-3")
           v-chip-group(column)
             v-chip(outlined class="ma-2"
               small color="green darken-3") {{entry.software_version}}
@@ -32,8 +32,8 @@
               small color="green darken-3") {{entry.type_slug}}
             v-chip(outlined class="ma-2"
               small color="green darken-3") {{entry.status}}
-        
-        v-divider(light) 
+
+        v-divider(light)
 
         v-card-actions
           v-btn(text outlined @click="show(entry)") Details
@@ -42,9 +42,11 @@
 </template>
 
 <script>
-  import {CREATOR, entry_actor_relation, license_icon, privacy_icon} from "../lib/client"
+  import {license_icon} from "../lib/client"
   import EntryNavMixin from "./EntryNavMixin";
   import {ENTRIES_HAS_ENTRY} from "../lib/store_consts";
+  import {CREATOR, entry_actor_relation} from "../lib/actors";
+  import {privacy_icon} from "../lib/util";
 
   export default {
     name: "Entrypreview",

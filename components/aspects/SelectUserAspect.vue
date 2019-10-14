@@ -1,12 +1,15 @@
 <template lang="pug">
   div
-    SingleSelect(:options="users" :selection.sync="i_value")
+
+
 </template>
 
 <script>
   import AspectMixin from "./AspectMixin";
   import Title_Description from "../Title_Description";
   import SingleSelect from "../SingleSelect";
+
+  // SingleSelect(:options="users" :selection="value")
 
   // Title_Description(:="title_description()")
   export default {
@@ -38,9 +41,7 @@
     },
     methods: {
       selection(item) {
-        console.log("user selection", item);
-        this.i_value = item;
-        this.$emit("update:value", this.i_value);
+          // TODO,, ....
       },
     }
 

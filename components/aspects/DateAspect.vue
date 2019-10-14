@@ -10,19 +10,21 @@
     >
       <template v-slot:activator="{ on }">
         <v-text-field
-          v-bind:value="i_value_str"
+          v-bind:value="value_str"
+          outlined
+          single-line
           :label="aspect.name"
           prepend-icon="event"
           readonly
           v-on="on"
         ></v-text-field>
       </template>
-      <v-date-picker v-model="i_value" no-title @input="menu = false;value_change(i_value)"></v-date-picker>
+      <v-date-picker value="value" @change="value_change($event)" no-title @input="menu = false"></v-date-picker>
     </v-menu>
   </div>
   <div v-else>
     <v-text-field
-      :value="i_value"
+      :value="value"
       :label="aspect.name"
       prepend-icon="event"
       readonly  solo flat
@@ -42,10 +44,15 @@
         menu: false,
       }
     },
+      created() {
+        if(!this.value) {
+            this.value_change(new Date().toISOString())
+        }
+      },
     computed: {
-      i_value_str() {
-        if(this.i_value)
-          return this.i_value.toString().substring(0,10)
+      value_str() {
+        if(this.value)
+          return this.value.toString().substring(0,10)
         else
           return ""
       }
