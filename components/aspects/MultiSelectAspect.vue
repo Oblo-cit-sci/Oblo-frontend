@@ -39,8 +39,7 @@
         if (this.selection === null)
           this.value_change(null)
         else {
-          this.i_value = this.selection
-          this.value_change(this.i_value)
+          this.value_change(this.selection)
         }
       }
     }

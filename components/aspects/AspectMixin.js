@@ -29,13 +29,9 @@ export default {
     }
   },
   data() {
-    return {
-      i_value: this.value,
-    }
+    return {}
   },
   created() {
-    //console.log("ASP Mix create", this.value)
-    this.i_value = this.value
   },
   methods: {
     value_change(event) {
@@ -60,14 +56,6 @@ export default {
       return this.mvalue.value
     }
   },
-  watch: {
-    value(new_val) {
-      //console.log("asp mix watch value", new_val)
-      this.i_value = new_val;
-    },
-    disabled() {
-      this.i_value = aspect_raw_default_value(this.aspect)
-    }
-  }
+  watch: {}
 }
 

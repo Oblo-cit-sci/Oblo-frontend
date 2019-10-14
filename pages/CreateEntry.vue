@@ -9,7 +9,6 @@
 <script>
 
 
-    import {format} from 'timeago.js';
     import {ENTRIES_DRAFTS} from "../lib/store_consts";
     import EntryCreateList from "../components/EntryCreateList";
 

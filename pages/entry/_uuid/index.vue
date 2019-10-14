@@ -79,10 +79,11 @@
                 required_values: [], // shortcut, but in entry_type
                 sending: false,
                 complete: true,
+                // todo abstact aspect-pagination
                 has_pages: false,
                 last_page: false,
                 page: this.$route.query.page | 0,
-                uuid: null,
+                uuid: null,  // todo , make computed
                 aspect_locs: {},
                 //
                 openSaveDialog: false,
@@ -92,7 +93,6 @@
         created() {
             this.uuid = this.$route.params.uuid
             //console.log("entry index create", this.entry.aspects_values.)
-            this.$store.commit("set_global_ref", this.uuid)
             this.$store.dispatch(ENTRIES_SET_EDIT, this.uuid)
             this.entry_type = this.$store.getters.entry_type(this.entry.type_slug)
             this.has_pages = this.entry_type.content.meta.hasOwnProperty("pages")
@@ -212,7 +212,7 @@
                 }
             }
         }, watch: {
-            page(val) {
+            page() {
                 setTimeout(() => goTo(".v-content"), {
                     duration: 200,
                     easing: "easeOutCubic"

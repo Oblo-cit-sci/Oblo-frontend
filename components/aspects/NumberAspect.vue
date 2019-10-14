@@ -3,7 +3,7 @@
     v-text-field(
       outlined
       single-line
-      :value="i_value"
+      :value="value"
       v-on:input="input($event)"
       :suffix="suffix"
       :disabled="disabled"
