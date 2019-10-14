@@ -1,11 +1,7 @@
 <template lang="pug">
-  v-row(wrap justify-start)
-    v-col(v-for="entry in entries"
-      :key="entry.id" class="col-lg-6 col-xs-12")
       v-card(
         class="mx-auto"
         outlined)
-
         v-list-item(three-line)
           v-list-item-avatar(
             tile
@@ -53,7 +49,7 @@
   export default {
     name: "Entrypreview",
     props: {
-      entries: Array
+      entry: {}
     },
     mixins: [EntryNavMixin],
     created() {

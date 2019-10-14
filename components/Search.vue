@@ -1,5 +1,5 @@
 <template lang="pug">
-    v-container
+    v-container(fluid)
         v-row(wrap justify-start)
             v-col(cols="12")
                 v-text-field(
@@ -11,7 +11,10 @@
                     @click:append-outer="getEntries"
                     clearable
                     :loading="searching")
-        Entrypreview(:entries="entries")
+        v-row(wrap justify-start)
+            v-col(v-for="entry in entries"
+                :key="entry.id" class="col-lg-6 col-xs-12")
+                Entrypreview(:entry="entry")
 </template>
 
 <script>
