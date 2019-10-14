@@ -30,21 +30,22 @@
         },
         watch: {
             // whenever text-field changes, this function will run
+            //TODO: minimum of 4 characters
             keyword: function (newKeyword, oldKeyword) {
-                //missing debounce function here
+                //TODO: missing debounce function here
                 this.getEntries();
             }
         },
         computed: {
             entries() {
-                return  Array.from(this.$store.state.global_entries.values());
+                return  Array.from(this.$store.getters['search/get_entries'].values());
             }
         },
         methods: {
             getEntries() {
                 console.log("Entries updated with the new search");
                 //Call 
-                search_entries(this.$axios, this.$store);
+                search_entries(this.$axios, this.$store, this.keyword);
             },
             appendIconCallback () {
                 alert('click:append')
