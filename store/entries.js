@@ -238,7 +238,11 @@ export const getters = {
         return ""
       }
     }
+  },
+  get_search_entries: function(state) {
+    return(state.entries)
   }
+
 }
 
 // dispatch
