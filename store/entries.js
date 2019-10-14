@@ -4,6 +4,7 @@
 import {ASPECT, COLLECT, COMPONENT, DRAFT, EDIT, ENTRY, INDEX} from "../lib/consts";
 import {get_entry_titleAspect, select_aspect_loc} from "../lib/entry";
 import {aspect_loc_str2arr} from "../lib/aspect";
+import {ENTRIES_GET_ENTRY, GET_ENTRY_TITLE} from "../lib/store_consts";
 
 
 const ld = require("lodash")
@@ -130,10 +131,13 @@ export const mutations = {
   }
 }
 
-// store.getters["entries/gettername"]
+
 export const getters = {
   all_entries(state) {
     return state.entries.values()
+  },
+  all_entries_array(state) {
+    return Array.from(state.entries.values())
   },
   edit_uuid(state) {
     if (state.edit)
@@ -152,7 +156,7 @@ export const getters = {
       return result
     }
   },
-  has_entry(state, getters) {
+  has_entry(state) { // ENTRIES_GET_ENTRY
     return (uuid) => {
       return state.entries.has(uuid)
     };
@@ -258,7 +262,7 @@ export const actions = {
   },
   // rename to save edit entry
   save_entry(context) {
-    const entry_title = context.getters["get_entry_title"](context.state.edit.uuid)
+    const entry_title = context.getters[GET_ENTRY_TITLE](context.state.edit.uuid)
     if (entry_title)
       context.commit("update_edit_title", entry_title)
     context.commit("save_edit")
@@ -285,9 +289,6 @@ export const actions = {
       if (entry.refs.parent) {
         const parent = entry.refs.parent
         context.dispatch(DELETE_REF_CHILD, {uuid: parent.uuid, child_uuid: uuid})
-        //console.log(context)
-        //context.getters["value"]
-        //context.commit("delete_ref_value", {uuid: parent.uuid, child_uuid: uuid})
       }
 
       context.commit(DELETE_ENTRY, uuid)

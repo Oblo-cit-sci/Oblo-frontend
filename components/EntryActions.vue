@@ -48,7 +48,12 @@
     import EntryNavMixin from "./EntryNavMixin";
 
     import axios from "axios"
-    import {ENTRIES_DELETE_ENTRY, ENTRIES_SET_EDIT_CLEAN} from "../lib/store_consts";
+    import {
+        ENTRIES_DELETE_ENTRY,
+        ENTRIES_GET_CHILDREN,
+        ENTRIES_GET_RECURSIVE_ENTRIES,
+        ENTRIES_SET_EDIT_CLEAN
+    } from "../lib/store_consts";
     import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
     import {export_data} from "../lib/import_export";
 
@@ -106,7 +111,7 @@
                     this.error_snackbar("No user key. Go to the settings and paste the user key given by the LICCI core team")
                     return
                 }
-                const entries = this.$store.getters["entries/get_recursive_entries"](this.entry.uuid)
+                const entries = this.$store.getters[ENTRIES_GET_RECURSIVE_ENTRIES](this.entry.uuid)
                 let export_data = {entries: {...entries}, user_key: user_key}
                 //console.log(url, user_key, export_data)
                 axios.post(url, export_data, {
@@ -174,7 +179,7 @@
                 this.sending = true
                 // would be the same as checking submitted
                 if (this.entry.status === DRAFT) {
-                    const all_entries = this.$_.concat([this.entry], this.$store.getters["entries/get_children"](this.entry))
+                    const all_entries = this.$_.concat([this.entry], this.$store.getters[ENTRIES_GET_CHILDREN](this.entry))
                     this.$axios.post("/create_entry", all_entries).then((res) => {
                         this.sending = false
                         this.snackbar(res.data.status, res.data.msg)
@@ -201,7 +206,7 @@
                 return (this.entry.type_slug + " " + this.entry.title).replace(" ", "_") + ".json"
             },
             download() {
-                const entries = this.$store.getters["entries/get_recursive_entries"](this.entry.uuid)
+                const entries = this.$store.getters[ENTRIES_GET_RECURSIVE_ENTRIES](this.entry.uuid)
                 export_data(entries, this.download_title())
                 this.$store.commit("entries/set_downloaded", this.entry.uuid)
             },

@@ -39,8 +39,6 @@
                     }
                 })
 
-                console.log(this.draft_entries)
-
                 let drafts = this.$_.map(this.draft_entries, d => {
                     return {
                         text: d.title,

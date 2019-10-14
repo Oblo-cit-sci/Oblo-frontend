@@ -104,7 +104,7 @@
                         aspect_loc_uuid(this.aspect_loc),
                         aspect_loc_str2arr(this.aspect.attr.condition.aspect),
                         this.extra[LIST_INDEX])
-                    let condition_value = this.$store.getters["entries/value"](aspect_location)
+                    let condition_value = this.$store.getters[ENTRIES_VALUE](aspect_location)
                     return !check_condition_value(condition_value, this.aspect.attr.condition)
                 } else {
                     return false
@@ -120,7 +120,7 @@
                 if (this.aspect.attr.ref_value) {
                     if (this.aspect.attr.ref_update === "create") {
                         // console.log("ref-create", this.aspect_loc)
-                        let value = this.$store.getters["entries/value"](this.aspect_loc)
+                        let value = this.$store.getters[ENTRIES_VALUE](this.aspect_loc)
                         // console.log("stored value", value, "default", aspect_default_value(this.$store, this.aspect))
                         // console.log(value !== aspect_default_value(this.$store, this.aspect))
                         if (!this.$_.isEqual(value, aspect_default_value(this.aspect))) {

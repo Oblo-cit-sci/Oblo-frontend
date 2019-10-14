@@ -39,6 +39,7 @@
   import TextShort from "../components/aspects/TextShortAspect";
     import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
     import {export_data} from "../lib/import_export";
+    import {USER_KEY} from "../lib/store_consts";
 
     export default {
         name: "settings",
@@ -121,7 +122,7 @@
         },
         computed: {
             user_key() {
-                return pack_value(this.$store.getters["user_key"])
+                return pack_value(this.$store.getters[USER_KEY])
             }
         }
     }

@@ -1,18 +1,19 @@
 import {fetch_entry} from "../lib/entry";
 import {GLOBAL} from "../lib/consts";
-import {ENTRIES_GET_ENTRY} from "../lib/store_consts";
+import {ENTRIES_GET_ENTRY, GET_ASPECT_DEF} from "../lib/store_consts";
 import {aspect_loc_str} from "../lib/aspect";
 
 export default {
   methods: {
+    // why does has_entry call get entry
     has_entry(uuid) {
-      return this.$store.getters["entries/get_entry"](uuid)
+      return this.$store.getters[ENTRIES_GET_ENTRY](uuid)
     },
     fetch_and_nav(uuid) {
       fetch_entry(this.$store, this.$axios, uuid).then(entry => {
         console.log("got entry", entry)
         this.$router.push("/entry/" + uuid)
-      }).catch(res => {
+      }).catch(() => {
         // todo ENH: could also be an error msg from the server
         this.$store.commit("set_error_snackbar", "Couldn't fetch entry")
       })
@@ -22,7 +23,7 @@ export default {
         let parent_entry_type_slug = this.$store.getters[ENTRIES_GET_ENTRY](this.entry.refs.parent.uuid).type_slug
 
         // TODO this loc stuff will work different in the future
-        const aspect_def = this.$store.getters["get_aspect_def"]({
+        const aspect_def = this.$store.getters[GET_ASPECT_DEF]({
           type_slug: parent_entry_type_slug,
           aspect_name: this.entry.refs.parent.aspect_loc[0][1]
         })
