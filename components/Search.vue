@@ -1,25 +1,22 @@
 <template lang="pug">
     v-container
         v-row(wrap justify-start)
-            v-col(cols="12" md="10")
+            v-col(cols="12")
                 v-text-field(
                     v-model="keyword"
-                    clearable
                     label="Buscar"
                     single-line
-                    hide-details)
-            v-col(cols="12" md="2")
-                v-btn(
-                    color="success"
-                    @click="getEntries"
-                    :loading="searching") BUSCAR
+                    hide-details
+                    append-outer-icon="search"
+                    @click:append-outer="getEntries"
+                    clearable)
         Entrypreview(:entries="entries")
 </template>
 
 <script>
     import axios from "axios";
     import Entrypreview from "../components/EntryPreview";
-
+    import {search_entries} from "../lib/client";
     const ld = require('lodash');
 
     export default {
@@ -33,34 +30,27 @@
         },
         watch: {
             // whenever text-field changes, this function will run
+            //TODO: minimum of 4 characters
             keyword: function (newKeyword, oldKeyword) {
-                //missing debounce function here
+                //TODO: missing debounce function here
                 this.getEntries();
             }
         },
         computed: {
             entries() {
-                return  Array.from(this.$store.state.entries.entries.values())
+                return  Array.from(this.$store.getters['search/get_entries'].values());
             }
         },
         methods: {
-            getEntries: function () {
+            getEntries() {
                 console.log("Entries updated with the new search");
-                //this.searching = true;
-                //var vm = this
-
-                //axios.get('', {
-                  //  params: {
-                    //    keyword:keyword
-                    //}
-                //}).then(function (response) {
-                  //  vm.searching = false;
-                    //console.log("data",response)
-                //}).catch(function (error) {
-                    //vm.searching = false;
-                    //console.log("error",error)
-                //})
+                //Call 
+                search_entries(this.$axios, this.$store, this.keyword);
+            },
+            appendIconCallback () {
+                alert('click:append')
             }
+        
         }
   }
 </script>
