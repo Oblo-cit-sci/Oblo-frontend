@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    v-text-field(
+    v-text-field(v-if="!readOnly"
       outlined
       single-line
       :readonly="readOnly"
@@ -16,6 +16,11 @@
 
       :value="value"
       @input="value_change($event)")
+    // dummy readOnly, but I dont like that you can still focus it...
+    v-text-field(v-else
+      :value="value"
+      readonly
+      hide-details)
 </template>
 
 <script>
