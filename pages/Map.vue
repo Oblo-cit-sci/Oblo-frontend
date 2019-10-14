@@ -45,6 +45,7 @@
     import {MglMarker, MglPopup} from 'vue-mapbox';
     import {access_token, licci_style_map} from "../lib/services/mapbox";
     import {pack_value} from "../lib/aspect";
+    import {ENTRIES_SET_ENTRY_VALUE} from "../lib/store_consts";
 
     const SIMPLE_MODE = 0
 
@@ -113,6 +114,10 @@
                 this.coordinates = [mapboxEvent.lngLat.lng, mapboxEvent.lngLat.lat]
             },
             done() {
+                /*
+                todo
+                SET EDIT
+                entry nav mixin
                 this.$store.commit(ENTRIES_SET_ENTRY_VALUE, {
                     ...this.$store.state.global_ref,
                     value:
@@ -121,6 +126,7 @@
 
                 let route = "/entry/" + this.$store.state.global_ref.uuid
                 this.$router.push(route)
+                 */
             }
         },
         computed: {

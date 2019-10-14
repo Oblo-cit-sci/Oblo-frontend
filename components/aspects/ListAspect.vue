@@ -1,7 +1,7 @@
 <template lang="pug">
   div
     div(v-if="is_simple")
-      div(v-for="(value, index) in i_value" :key="index")
+      div(v-for="(value, index) in value" :key="index")
         div(v-if="aspect_is_on_page(index)" :id="panel_id(index)")
           Aspect(
             :aspect="indexed_item_aspect(index)"
@@ -17,7 +17,7 @@
             :itemname="extra.itemname"
             :moveable="moveable"
             :index="index"
-            :listlength="i_value.length - 1"
+            :listlength="value.length - 1"
             v-on:remove_value="remove_value($event)"
             v-on:move="move($event)")
     div(v-else)
@@ -26,7 +26,7 @@
         v-model="act_panel_state")
         v-expansion-panel(
           v-if="aspect_is_on_page(index)"
-          v-for="(value, index) in i_value"
+          v-for="(value, index) in value"
           :key="index"
           :id="panel_id(index)"
         )
@@ -34,7 +34,6 @@
           v-expansion-panel-content
             Aspect(
               :aspect="indexed_item_aspect(index)"
-              :value.sync="i_value"
               :mode="mode"
               :extra="list_extra(index)"
               :aspect_loc="item_aspect_loc(index)"
@@ -44,22 +43,21 @@
               :itemname="extra.itemname"
               :moveable="moveable"
               :index="index"
-              :listlength="i_value.length - 1"
+              :listlength="value.length - 1"
               v-on:remove_value="remove_value($event)"
               v-on:move="move($event)")
-    div
-      span {{count_text}}, &nbsp
-      span(v-if="min===max && min !== null") required: {{min}}
-      span(v-else)
-        span(v-if="min") min: {{min}} &nbsp;
-        span(v-if="max") max: {{max}}
+    MinMaxIndicators(
+      :aspect="aspect"
+      :length="this.value.length"
+      :min="this.min"
+      :max="this.max")
 
     div(v-if="!readOnly && !fixed_length")
       v-btn(:disabled="!more_allowed" @click="add_value()" :color="requieres_more_color") Add {{item_name}}
         v-icon(right) add
       ListPagination(
         v-if="has_pagination"
-        :total="Math.ceil(i_value.length / PAGINATION_TRESH)"
+        :total="Math.ceil(value.length / PAGINATION_TRESH)"
         :page="page"
         :pages="pages"
         :allow_jump="allow_jump"
@@ -78,10 +76,11 @@
     import Aspect from "../Aspect";
     import ListMixin from "../ListMixin";
     import {INDEX} from "../../lib/consts";
-    import {aspect_loc_str, packed_aspect_default_value, get_aspect_component, pack_value} from "../../lib/aspect";
+    import {aspect_loc_str, packed_aspect_default_value, get_aspect_component} from "../../lib/aspect";
     import ListitemActions from "../ListitemActions";
     import Paginate from "../Paginate";
     import goTo from 'vuetify/lib/services/goto'
+    import MinMaxIndicators from '../list_components/MinMaxIndicators'
 
     import ListPagination from "../ListPagination";
 
@@ -92,7 +91,7 @@
 
     export default {
         name: "ListAspect",
-        components: {ListPagination, Paginate, ListitemActions, Aspect},
+        components: {ListPagination, Paginate, ListitemActions, Aspect, MinMaxIndicators},
         mixins: [AspectMixin, ListMixin],
         data() {
             return {
@@ -164,7 +163,7 @@
             }
 
             this.set_min_max()
-            if (this.i_value.length === 0) {
+            if (this.value.length === 0) {
                 for (let i = 0; i < this.aspect.attr.create || 0; i++) {
                     this.add_value()
                 }
@@ -199,7 +198,7 @@
                         this.panelState = [this.value.length]
                     }
                 }
-                this.value_change(this.$_.concat(this.i_value, additional))
+                this.value_change(this.$_.concat(this.value, additional))
 
                 setTimeout(() => {
                     this.set_page(this.pages.length - 1)
@@ -207,7 +206,7 @@
 
             },
             remove_value(index) {
-                this.value_change(this.$_.filter(this.i_value, (val, i) => {
+                this.value_change(this.$_.filter(this.value, (val, i) => {
                     return index !== i
                 }))
                 if (this.structure === PANELS) {
@@ -217,8 +216,8 @@
             move(index_direction) {
                 const index = index_direction[0]
                 const direction = index_direction[1]
-                const to_move = this.i_value[index]
-                const without = this.$_.filter(this.i_value, (e, i) => i !== index)
+                const to_move = this.value[index]
+                const without = this.$_.filter(this.value, (e, i) => i !== index)
                 const new_left = this.$_.take(without, index + direction)
                 const new_right = this.$_.takeRight(without, without.length - (index + direction))
                 this.value_change(this.$_.concat(new_left, to_move, new_right))
@@ -243,13 +242,12 @@
                 }
             },
             list_extra(index) {
-                let extra = {
-                    no_title: false,
+                return {
+                    no_title: this.aspect.attr.hasOwnProperty("no_titles") ? this.aspect.attr.no_titles : false,
                     clear: false,
                     listitem: true,
                     list_index: index
                 }
-                return extra
             },
             panel_id(index) {
                 return "L-" + aspect_loc_str(this.$_.slice(this.$_.concat(this.aspect_loc, [[INDEX, index]]), 1))
@@ -260,11 +258,11 @@
         },
         computed: {
             has_pagination() {
-                return this.i_value.length > PAGINATION_TRESH || this.aspect.attr.pagination
+                return this.value.length > PAGINATION_TRESH || this.aspect.attr.pagination
             },
             pages() {
                 let pages = []
-                for (let i = 0; i < this.i_value.length / PAGINATION_TRESH; i++) {
+                for (let i = 0; i < this.value.length / PAGINATION_TRESH; i++) {
                     pages.push({})
                 }
                 return pages
@@ -284,20 +282,12 @@
             moveable() {
                 return this.aspect.attr.moveable || false
             },
-            count_text() {
-                const le = this.i_value.length
-                const attr = this.aspect.attr
-                const name = attr.itemname || "item"
-                const item_word = le === 1 ? name :
-                    (attr.itemname_plural || name + "s")
-                return +le + " " + item_word
-            },
             requires_delete() {
                 let itemtype = this.aspect.items.type
                 return !(itemtype === "str" || itemtype === "int" || itemtype === "float");
             },
             titles() {
-                let titles = new Array(this.i_value.length)
+                let titles = new Array(this.value.length)
                 if (this.aspect.attr.indexTitle || this.aspect.attr.force_panels) { // indexTitle or non-complex panels
                     for (let i = 0; i < titles.length; i++) {
                         titles[i] = this.aspect.attr.itemname + " " + (parseInt(i) + 1).toString()
@@ -305,7 +295,7 @@
                 } else {
                     let titleAspectName = this.item_aspect.attr.titleAspect || this.item_aspect.components[0].name
                     for (let i = 0; i < titles.length; i++) {
-                        titles[i] = this.i_value[i].value[titleAspectName].value
+                        titles[i] = this.value[i].value[titleAspectName].value
                     }
                 }
                 return titles
@@ -316,8 +306,8 @@
 
 <style scoped>
 
-  .panel_content {
+  /**.panel_content {
     width: 98%;
     margin: auto;
-  }
+  }*/
 </style>

@@ -6,15 +6,14 @@
           single-line
           :disabled="disabled"
           :items="flat_options"
-          v-model="i_value"
-          @change="emit"
+          @change="emit($event)"
           :aspect_loc="aspect_loc"
           :prependIcon="prependIcon"
           @click:prepend="openDialog()")
         v-dialog(width="500" v-model="dialogOpen")
           TreleafPicker(
             :tree="options"
-            v-on:selected="selected"
+            v-on:selected="selected($event)"
             :disabled="disabled"
             :keep_selection="true")
 </template>
@@ -61,16 +60,15 @@
       },
       selected(val) {
         this.dialogOpen = false;
-        this.i_value = val.value
-        this.emit()
+        this.emit(val)
       },
-      emit() {
-        this.value_change(this.i_value)
+      emit(val) {
+        this.value_change(val)
       }
     },
     computed: {
       prependIcon(){
-        return this.edit ? 'add' : ''
+        return this.edit ? 'mdi-file-tree' : ''
       }
     }
   }

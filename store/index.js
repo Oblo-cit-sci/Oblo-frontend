@@ -17,7 +17,7 @@ export const state = () => ({
   draft_numbers: {},
   meta: {
     repository: {}
-  }
+  },
   // selected entry type (for creation)
 })
 
@@ -40,7 +40,7 @@ const ld = require('lodash')
 export const mutations = {
   init(state, data) {
     state.codes = {...data.codes}
-    state.codes.liccis_flat = extract_liccis(data.codes.liccis);
+    state.codes.liccis_flat = extract_liccis(data.codes.liccis)
     state.entry_types = new Map(data.entryTemplates)
 
     state.related_users = data.related_users || {};

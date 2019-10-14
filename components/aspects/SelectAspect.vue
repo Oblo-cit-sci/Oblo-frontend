@@ -73,9 +73,7 @@
                     this.value_change(this.selection.value)
             },
             check_box_value(val) {
-                //console.log("Select-watch.check_box_value")
-                this.i_value = val ? this.options[1].value : this.options[0].value
-                this.value_change(this.i_value)
+                this.value_change(val ? this.options[1].value : this.options[0].value)
             }
         }
     }

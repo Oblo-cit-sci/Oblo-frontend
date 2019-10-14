@@ -65,10 +65,10 @@
         },
         computed: {
             has_items() {
-                return this.$_.size(this.i_value) > 0
+                return this.$_.size(this.value) > 0
             },
             select() {
-                return this.i_value > SELECT_THRESH
+                return this.value > SELECT_THRESH
             },
             items() {
                 let entries = this.$_.map(this.value, e => {
@@ -99,9 +99,9 @@
             remove(action) {
                 if (action.confirm) {
                     let index = parseInt(action.id)
-                    let child_uuid = this.i_value[index]
+                    let child_uuid = this.value[index]
                     this.$store.commit(ENTRIES_EDIT_DELETE_REF_CHILD, child_uuid)
-                    const mod_value = this.$_.filter(this.i_value, (_, i) => {
+                    const mod_value = this.$_.filter(this.value, (_, i) => {
                         return i !== index
                     })
                     this.value_change(mod_value)
@@ -110,7 +110,7 @@
             create_item() {
                 if (this.disabled)
                     return
-                const index_aspect_loc = this.aspect_loc_for_index(this.i_value.length)
+                const index_aspect_loc = this.aspect_loc_for_index(this.value.length)
                 const entry = create_entry(this.$store, this.item_type_slug, {}, {
                     uuid: this.$store.getters[EDIT_UUID],
                     aspect_loc: index_aspect_loc,
@@ -119,7 +119,7 @@
                     child_uuid: entry.uuid,
                     aspect_loc: index_aspect_loc,
                 })
-                this.value_change(this.$_.concat(this.i_value, [entry.uuid]))
+                this.value_change(this.$_.concat(this.value, [entry.uuid]))
                 this.to_entry(entry.uuid)
             },
             aspect_loc_for_index(index) {
