@@ -24,7 +24,7 @@
   import TreleafPicker from "../TreleafPicker";
   import TextShort from "./TextShortAspect";
   import {EDIT} from "../../lib/consts";
-  import {flatten_tree_to_options} from "../../lib/client";
+  import {flatten_tree_to_options} from "../../lib/options";
 
   export default {
     name: "TreeSelectAspect",

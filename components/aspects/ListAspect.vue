@@ -74,7 +74,6 @@
 <script>
 
     import AspectMixin from "./AspectMixin";
-    import {get_codes_as_options} from "../../lib/client";
     import Aspect from "../Aspect";
     import ListMixin from "../ListMixin";
     import {INDEX} from "../../lib/consts";
@@ -84,6 +83,7 @@
     import goTo from 'vuetify/lib/services/goto'
 
     import ListPagination from "../ListPagination";
+    import {get_codes_as_options} from "../../lib/options";
 
     const SIMPLE = "simple"
     const PANELS = "panels"

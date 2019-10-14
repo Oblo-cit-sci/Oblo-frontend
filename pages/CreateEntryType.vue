@@ -30,11 +30,11 @@
 <script>
     import Title_Description from "../components/Title_Description";
     import SingleSelect from "../components/SingleSelect";
-    import {object_list2options, string_list2options} from "../lib/client";
     import {create_entry} from "../lib/entry";
     import EntryAspectView from "../components/EntryAspectView";
     import {mapGetters} from "vuex"
     import {ENTRY_TYPE} from "../lib/store_consts";
+    import {object_list2options, string_list2options} from "../lib/options";
 
 
     export default {

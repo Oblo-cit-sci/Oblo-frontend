@@ -24,8 +24,8 @@
      */
 
     import SingleSelect from "./SingleSelect";
-    import {object_list2options} from "../lib/client";
     import TextShort from "./aspects/TextShortAspect";
+    import {object_list2options} from "../lib/options";
 
     const ld = require('lodash');
 

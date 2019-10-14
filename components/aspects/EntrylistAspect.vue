@@ -38,7 +38,7 @@
         ENTRIES_GET_ENTRY, ENTRY_TYPE,
     } from "../../lib/store_consts";
     import {aspect_loc_str} from "../../lib/aspect";
-    import {no_duplicate_texts} from "../../lib/client";
+    import {no_duplicate_texts} from "../../lib/options";
 
     const SELECT_THRESH = 6
 

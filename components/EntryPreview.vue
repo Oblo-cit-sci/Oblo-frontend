@@ -5,7 +5,6 @@
       v-card(
         class="mx-auto"
         outlined)
-
         v-list-item(three-line)
           v-list-item-avatar(
             tile
