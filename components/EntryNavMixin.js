@@ -9,10 +9,10 @@ export default {
     has_entry(uuid) {
       return this.$store.getters[ENTRIES_GET_ENTRY](uuid)
     },
-    fetch_and_nav(uuid) {
+    fetch_and_nav(uuid, mode = VIEW) {
       fetch_entry(this.$store, this.$axios, uuid).then(entry => {
-        console.log("got entry", entry)
-        this.$router.push("/entry/" + uuid)
+        console.log("downloading entry", entry)
+        this.to_entry(uuid, mode)
       }).catch(() => {
         // todo ENH: could also be an error msg from the server
         this.$store.commit("set_error_snackbar", "Couldn't fetch entry")
@@ -22,42 +22,34 @@ export default {
       if (this.in_context) {
         let parent_entry_type_slug = this.$store.getters[ENTRIES_GET_ENTRY](this.entry.refs.parent.uuid).type_slug
 
+        const uuid = this.entry.refs.parent.uuid
+
         // TODO this loc stuff will work different in the future
         const aspect_def = this.$store.getters[GET_ASPECT_DEF]({
           type_slug: parent_entry_type_slug,
           aspect_name: this.entry.refs.parent.aspect_loc[0][1]
         })
-        const page = aspect_def.attr.page
-
-        let route = {
-          name: "entry-uuid",
-          params: {
-            uuid: this.entry.refs.parent.uuid
-          },
-          query: {
-            page: page,
-            mode: mode
-          }
+        let query = {
+          page:  aspect_def.attr.page,
         }
-
         if (to_last_element) {
           const aspect_id = aspect_loc_str(this.entry.refs.parent.aspect_loc)
-          route.query.goTo = (aspect_id ? aspect_id : "")
+          query.goTo = (aspect_id ? aspect_id : "")
         }
-        this.$router.push(route)
+        this.to_entry(uuid, mode, query)
       } else {
-        console.log("leaving...")
         this.$router.push("/")
       }
     },
-    to_entry(uuid, mode = 'view') {
+    to_entry(uuid, mode = VIEW, query = {}) {
       let route = {
         name: "entry-uuid",
         params: {
           uuid: uuid
         },
         query: {
-          mode: mode
+          mode: mode,
+          ...query
         }
       }
       this.$router.push(route)

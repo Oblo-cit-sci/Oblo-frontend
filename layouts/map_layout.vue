@@ -11,6 +11,7 @@
       temporary
       width="400"
       fixed)
+      v-btn(to="/" nuxt) back
       v-row(wrap justify-center)
         v-col(cols=12 v-for="entry in entries"
           :key="entry.id" class="col-sm-12 col-xs-12")
@@ -44,7 +45,6 @@
         },
         computed: {
             ...mapGetters({entries: "entries/all_entries_array"})
-
         }
     }
 </script>

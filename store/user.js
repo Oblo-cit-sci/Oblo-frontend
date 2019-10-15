@@ -20,18 +20,27 @@ let default_user_data = {
   defaultLicense: "CC0", // should come from the server
   defaultPrivacy: "public",
   location: "",
-  uid: uuidv4()
+  uid: null
 }
 
 
 export const state = () => ({
-  logged_in: false,
+  logged_in: false, // todo should go somewhere else, so persist doesnt mess it up.
   user_data: default_user_data,
 })
 
 export const getters = {
   logged_in(state) {
     return state.logged_in
+  },
+  registered_name(state) {
+    return state.user_data.registered_name
+  },
+  user_data(state) {
+    return state.user_data
+  },
+  user_uid(state) {
+    return state.user_data.uid
   }
 }
 
@@ -49,4 +58,17 @@ export const mutations = {
   set_user_data(state, user_data) {
     state.user_data = user_data;
   },
+  _rnd_uid(state) {
+    state.user_data.uid = uuidv4()
+  }
 }
+
+export const actions = {
+  guarantee_uuid(context) {
+    if(!context.state.user_data.uid) {
+      context.commit("_rnd_uid")
+    }
+  }
+}
+
+

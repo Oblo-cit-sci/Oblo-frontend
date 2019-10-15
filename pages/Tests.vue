@@ -3,21 +3,29 @@
     v-row
       v-col(xs12 sm8 md12)
         div test
+      v-col(cols=12 v-for="entry in entries"
+        :key="entry.id" class="col-sm-12 col-xs-12")
+        Entrypreview(:entry="entry")
 </template>
 
 <script>
+
+    import {mapGetters} from "vuex";
+    import Entrypreview from "../components/EntryPreview";
 
     const ld = require("lodash")
 
     export default {
         name: "Tests",
-        components: {},
+        components: {Entrypreview},
         created() {
         },
         data() {
             return {}
         },
-        computed: {},
+        computed: {
+            ...mapGetters({entries: "entries/all_entries_array"})
+        },
         methods: {}
     }
 </script>

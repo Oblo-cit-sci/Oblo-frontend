@@ -10,9 +10,9 @@ export default ({store}) => {
         entries: state.entries,
         codes: state.codes,
         draft_numbers: state.draft_numbers,
-        entry_types: state.entry_types,
-        user_data: state.user_data,
+        //entry_types: state.entry_types,
         meta: state.meta,
+        user: state.user
       }
     ),
   }).plugin(store)
