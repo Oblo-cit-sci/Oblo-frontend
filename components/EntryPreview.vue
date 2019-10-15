@@ -1,7 +1,5 @@
 <template lang="pug">
-  v-card(
-    class="mx-auto"
-    outlined)
+  v-card(class="mx-auto" outlined)
     v-row(class="ma-2")
       v-col(cols="12" class="col-md-8 col-sm-12 entry-meta")
         div(class="overline") {{entry_date}}
@@ -41,7 +39,7 @@
             small
             label
             class="mr-2 mb-2") {{entry.type_slug}}
-      v-col(cols="12" class="col-md-4 col-sm-12 entry-image")
+      v-col(v-if="show_image" cols="12" class="col-md-4 col-sm-12 entry-image")
         div(class="float-md-right float-sm-left entry-display-size")
           v-avatar(
             v-if="entry.image"
@@ -51,7 +49,7 @@
             v-img(
               src="https://article.images.consumerreports.org/f_auto/prod/content/dam/CRO%20Images%202018/Health/June/CR-Health-InlineHero-Foods-That-Are-Healthier-Cooked-09-17"
               alt="item")
-    v-row(class="ma-2")
+    v-row(v-if="show_tags" class="ma-2")
       div(class="ml-4 mb-2")
         span(class="pr-4 text-truncate caption") # {{entry.type_slug}}
         span(class="pr-4 text-truncate caption") # {{entry.status}}
@@ -70,7 +68,7 @@
     import {ENTRIES_HAS_ENTRY, ENTRIES_USER_RIGHTS} from "../lib/store_consts";
     import {CREATOR, entry_actor_relation} from "../lib/actors";
     import {privacy_icon, printDate} from "../lib/util";
-    import {DRAFT, EDIT} from "../lib/consts";
+    import {EDIT} from "../lib/consts";
 
     export default {
         name: "Entrypreview",
@@ -116,6 +114,12 @@
                 } else {
                     return "details"
                 }
+            },
+            show_image() {
+                return true
+            },
+            show_tags() {
+                return true
             }
         }
     }

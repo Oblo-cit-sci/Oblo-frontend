@@ -178,7 +178,7 @@ export const getters = {
   get_parent(state, getters) { // ENTRIES_GET_PARENT
     return entry => {
       //console.log("getter", entry, entry.refs)
-      return getters["get_entry"](entry.refs.parent.uuid)
+      return getters.get_entry(entry.refs.parent.uuid)
     }
   },
   value(state, getters) {
@@ -239,7 +239,7 @@ export const getters = {
       }
       // todo maybe it would be cleaner to add "entry "+uuid , so that  aspect_loc_str2arr/is wrapped around
       const title = select_aspect_loc(state, loc_prepend(ENTRY, uuid, aspect_loc_str2arr(titleAspect)))
-      console.log("get_entry_title", title)
+      //console.log("get_entry_title", title)
       if (title.value)
         return title.value
       else {
@@ -283,7 +283,7 @@ export const actions = {
   },
   save_child_n_ref(context, {uuid, child, aspect_loc, child_uuid}) { // ENTRIES_SAVE_CHILD_N_REF
     if (!uuid) {
-      uuid = context.getters["edit_uuid"]
+      uuid = context.getters.edit_uuid
     }
     context.dispatch("save_entry", uuid)
     context.commit("save_entry", child)
@@ -300,7 +300,7 @@ export const actions = {
   // rename to save edit entry
   // todo: purpose/name: update meta or something like that?
   save_entry(context, uuid = context.state.edit.uuid) {
-    const entry_title = context.getters["get_entry_title"](uuid)
+    const entry_title = context.getters.get_entry_title(uuid)
     context.commit("update_title", {uuid, title: entry_title})
   },
   set_edit(context, uuid) {
@@ -311,7 +311,7 @@ export const actions = {
     delete context.state.entries.get(uuid).refs.children[child_uuid]
     context.commit("_remove_entry_value_index", ld.concat([[ENTRY, uuid]], aspect_loc))
   },
-  delete_entry(context, uuid) { // ENTRIES_DELETE_ENTRY
+  delete_entry: function (context, uuid) { // ENTRIES_DELETE_ENTRY
     const entry = context.state.entries.get(uuid)
     if (entry) {
       // TODO just TEMP, for easier testing
@@ -328,22 +328,7 @@ export const actions = {
       context.commit(DELETE_ENTRY, uuid)
       context.commit(DELETE_EDIT_ENTRY)
 
-      //context.getters("value")
-      /*let parent_no_index = JSON.parse(JSON.stringify(parent))
 
-      if (ld.last(parent_no_index.aspect_loc)[0] === "index") {
-        parent_no_index.aspect_loc.pop()
-      }
-      const value = context.getters.get_entry_value(parent_no_index)
-      // ListOf
-      if (Array.isArray(value)) {
-        const filtered_value = value.filter(av => av !== uuid)
-        context.commit("set_entry_value", {
-          ...parent_no_index,
-          value: pack_value(filtered_value)
-        })
-
-       */
     } else {
       console.log("store: entries DELETE tries to delete some entry that doesnt exist!")
     }
