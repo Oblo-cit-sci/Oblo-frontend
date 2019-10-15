@@ -10,6 +10,6 @@ export const mutations = {
 
 export const getters = {
     get_entries(state) {
-        return state.entries
+        return Array.from(state.entries.values())
     }
 }

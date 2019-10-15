@@ -18,10 +18,10 @@
 </template>
 
 <script>
-    import axios from "axios";
+
+    import { mapGetters} from "vuex"
     import Entrypreview from "../components/EntryPreview";
     import {search_entries} from "../lib/client";
-    const ld = require('lodash');
 
     export default {
         name: "Search",
@@ -41,9 +41,7 @@
             }
         },
         computed: {
-            entries() {
-                return  Array.from(this.$store.getters['search/get_entries'].values());
-            }
+            ...mapGetters({entries: 'search/get_entries'}),
         },
         methods: {
             getEntries() {

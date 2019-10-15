@@ -9,25 +9,24 @@
       :named_pages="named_pages"
       :pages="entry_type.content.meta.pages"
       @lastpage="more_follow_page = ($event)")
+      // todo this can come back
     span(v-if="owner")
       span(v-if="view")
         v-btn(color="secondary" @click="edit") edit
       span(v-else)
-        v-btn(v-if="NOT_TRAINING" color="seconday" @click="show_cancel") cancel
+        v-btn(color="warning" @click="show_delete") delete
 
-      // TODO for the training we just DISABLE, otherwise it would be: :disabled="init"
-      v-btn(color="warning" @click="show_delete") delete
-
-      v-btn( color="success" @click="save") {{save_word}}
-      v-btn(
-        v-if="!private_local && !view && !in_context"
-        color="success"
-        @click="submit"
-        :disabled="!connected"
-        :loading="sending") {{submitted ? 'update' : 'submit'}}
+        v-btn( color="success" @click="save") {{save_word}}
+        v-btn(
+          v-if="!private_local && !view && !in_context"
+          color="success"
+          @click="submit"
+          :disabled="!connected"
+          :loading="sending") {{submitted ? 'update' : 'submit'}}
+        v-btn(v-if="upload_option" @click="upload_to_repo") Upload to the repo
       // v-if="private_local" todo for now, download for everyone
       v-btn(:disabled="disable_download"  @click="download") download
-      v-btn(v-if="upload_option" @click="upload_to_repo") Upload to the repo
+
     DecisionDialog(v-bind="dialog_data" :open.sync="dialog_visible" v-on:action="dialog_action($event)")
 </template>
 
@@ -35,7 +34,7 @@
 
 
     import {
-        DRAFT,
+        DRAFT, EDIT,
         PRIVATE_LOCAL,
         PUBLIC,
         SUBMITTED,
@@ -102,6 +101,9 @@
             }
         },
         methods: {
+            edit() {
+              this.$emit(EDIT)
+            },
             // BUTTONS
             upload_to_repo() {
                 const url = this.entry_type.content.activities.upload.url

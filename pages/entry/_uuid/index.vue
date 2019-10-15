@@ -22,7 +22,7 @@
           :aspect="aspect"
           :aspect_loc="aspect_locs[aspect.name]"
           v-on:entryAction="entryAction($event)"
-          mode="edit")
+          :mode="mode")
       div(v-if="page === 0")
         v-divider(class="wide_divider")
         License(:passedLicense.sync="entry.license" :mode="licence_mode")
@@ -31,7 +31,8 @@
         v-bind="entry_actions_props"
         :page.sync="page"
         :has_pages="has_pages"
-        v-on:entryAction="entryAction($event)")
+        v-on:entryAction="entryAction($event)"
+        v-on:edit="mode='edit'")
       DecisionDialog(
         :open.sync="openSaveDialog"
         @action="edit_or_save_dialog($event)"
@@ -167,6 +168,14 @@
             entry() {
                 return this.$store.getters[ENTRIES_GET_EDIT]
             },
+            mode: {
+                get() {
+                    return this.$route.query.mode || VIEW
+                },
+                set(mode) {
+                    this.to_entry(this.uuid, mode)
+                }
+            },
             shown_aspects() {
                 if (this.has_pages) {
                     return this.$_.filter(this.entry_type.content.aspects, (a) => {
@@ -206,7 +215,7 @@
             // wrong, create should be for all that are not local/saved or submitted
             entry_actions_props() {
                 return {
-                    mode: EDIT,
+                    mode: this.mode,
                     entry_type: this.entry_type,
                     entry: this.entry
                 }

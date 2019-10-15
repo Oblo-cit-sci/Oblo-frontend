@@ -12,6 +12,8 @@
 
     import SingleSelect from "./SingleSelect";
     import {create_entry} from "../lib/entry";
+    import {EDIT} from "../lib/consts";
+    import EntryNavMixin from "./EntryNavMixin";
 
     const ENTRY_TYPE = "etype";
     const DRAFT = "draft";
@@ -19,6 +21,7 @@
     export default {
         name: "EntryCreateList",
         components: {SingleSelect},
+        mixins: [EntryNavMixin],
         props: {
             entrytypes_entries: {
                 type: Array,
@@ -61,7 +64,7 @@
                 } else {
                     uuid = value;
                 }
-                this.$router.push("/entry/" + uuid)
+                this.to_entry(uuid, EDIT)
             }
         }
     }
