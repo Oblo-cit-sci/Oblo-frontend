@@ -1,5 +1,5 @@
 <template lang="pug">
-    v-container
+    v-container(fluid)
         v-row(wrap justify-start)
             v-col(cols="12")
                 v-text-field(
@@ -9,8 +9,12 @@
                     hide-details
                     append-outer-icon="search"
                     @click:append-outer="getEntries"
-                    clearable)
-        Entrypreview(:entries="entries")
+                    clearable
+                    :loading="searching")
+        v-row(wrap justify-center)
+            v-col(cols=12 v-for="entry in entries"
+                :key="entry.id" class="col-sm-6 col-xs-12")
+                Entrypreview(:entry="entry")
 </template>
 
 <script>
@@ -25,15 +29,15 @@
         data() {
             return {
                 searching: false,
-                keyword: '',
+                keyword: ''
             }
         },
         watch: {
-            // whenever text-field changes, this function will run
-            //TODO: minimum of 4 characters
             keyword: function (newKeyword, oldKeyword) {
-                //TODO: missing debounce function here
-                this.getEntries();
+                if(this.keyword !== null && this.keyword.length >= 4) {
+                    this.searching = true
+                    this.$_.debounce(this.getEntries, 500)()
+                }
             }
         },
         computed: {
@@ -41,14 +45,15 @@
         },
         methods: {
             getEntries() {
-                console.log("Entries updated with the new search");
-                //Call
-                search_entries(this.$axios, this.$store, this.keyword);
-            },
-            appendIconCallback () {
-                alert('click:append')
+                this.searching = true
+                search_entries(this.$axios, this.$store, this.keyword)
+                    .then(res => {
+                        this.searching = false
+                    }).catch(err => {
+                        console.log('Error getting entries')
+                        this.searching = false
+                    })
             }
-
         }
   }
 </script>

@@ -1,15 +1,13 @@
 /*
   this is for the own entries
  */
-import {ASPECT, COMPONENT, DRAFT, EDIT, ENTRY, INDEX} from "../lib/consts";
+import {ASPECT, COLLECT, COMPONENT, DRAFT, EDIT, ENTRY, INDEX} from "../lib/consts";
 import {get_entry_titleAspect, select_aspect_loc} from "../lib/entry";
 import {aspect_loc_str2arr, loc_prepend} from "../lib/aspect";
-import {ENTRIES_GET_ENTRY_TITLE} from "../lib/store_consts";
 
 
 const ld = require("lodash")
 
-const GET_EDIT = "get_edit"
 const DELETE_ENTRY = "delete_entry"
 const DELETE_EDIT_ENTRY = "delete_edit_entry"
 const DELETE_REF_CHILD = "delete_ref_child"
