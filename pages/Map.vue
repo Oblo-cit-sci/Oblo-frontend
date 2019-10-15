@@ -2,7 +2,6 @@
   <div>
     <v-layout class="map row">
       <client-only>
-
         <MglMap :style="mapCssStyle"
                 :access-token="accessToken"
                 :map-style="mapStyle"

@@ -4,7 +4,7 @@
 import {ASPECT, COLLECT, COMPONENT, DRAFT, EDIT, ENTRY, INDEX} from "../lib/consts";
 import {get_entry_titleAspect, select_aspect_loc} from "../lib/entry";
 import {aspect_loc_str2arr} from "../lib/aspect";
-import {ENTRIES_GET_ENTRY, GET_ENTRY_TITLE} from "../lib/store_consts";
+import {GET_ENTRY_TITLE} from "../lib/store_consts";
 
 
 const ld = require("lodash")
