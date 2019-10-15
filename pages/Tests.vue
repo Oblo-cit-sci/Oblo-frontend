@@ -2,57 +2,24 @@
   v-container(fluid)
     v-row
       v-col(xs12 sm8 md12)
-        LoadFileButton(@fileload="loaded($event)")
-        v-btn(@click="add") add
-        v-btn(@click="mut") mut
-        v-btn(@click="del") del
-        div(v-for="(e, index) in tempM")
-          div {{index}} {{e}}
+        div test
 </template>
 
 <script>
-  import Entrypreview from "../components/EntryPreview";
-  import LoadFileButton from "../components/LoadFileButton";
-  import Search from "../components/Search";
 
-  const ld = require("lodash")
+    const ld = require("lodash")
 
-  // file-upload( :headers="headers" @change="onFileChange")
-
-  export default {
-    name: "Tests",
-    components: {LoadFileButton, Entrypreview, Search},
-    created() {
-    },
-    data() {
-      return {
-        next: 10
-      }
-    },
-    computed: {
-      entries() {
-        const registered_name = this.$store.state.user.user_data.registered_name;
-        let result_entries = Array.from(this.$store.state.index.global_entries.values())
-        return result_entries
-      }
-    },
-    methods: {
-      add(){
-        this.next++;
-        this.$store.dispatch("test/add",this.next)
-      },
-      mut() {
-        this.next++
-        this.$store.dispatch("test/mut",this.next)
-      },
-      del() {
-        this.$store.dispatch("test/del")
-      },
-      loaded(data) {
-        //console.log("data received", data)
-      }
+    export default {
+        name: "Tests",
+        components: {},
+        created() {
+        },
+        data() {
+            return {}
+        },
+        computed: {},
+        methods: {}
     }
-  }
 </script>
 
 <style scoped>

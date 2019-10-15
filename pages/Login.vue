@@ -13,6 +13,7 @@
     import Aspect from "../components/Aspect";
     import {unpack} from "../lib/aspect";
     import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
+    import {STR} from "../lib/consts";
 
     export default {
         name: "Login",
@@ -21,7 +22,7 @@
         data() {
             return {
                 aspects: [{
-                    type: "str",
+                    type: STR,
                     name: "Username",
                     attr: {
                         max: 30,
@@ -31,7 +32,7 @@
                     }
                 },
                     {
-                        type: "str",
+                        type: STR,
                         name: "Password",
                         attr: {
                             max: 40,

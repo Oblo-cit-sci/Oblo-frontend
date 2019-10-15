@@ -39,7 +39,7 @@
   import TextShort from "../components/aspects/TextShortAspect";
     import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
     import {export_data} from "../lib/import_export";
-    import {USER_KEY} from "../lib/store_consts";
+    import {ENTRIES_SAVE_ENTRY, USER_KEY} from "../lib/store_consts";
 
     export default {
         name: "settings",
@@ -104,7 +104,7 @@
             load_file(event) {
                 if (event.ok) {
                     event.data.forEach(entry => {
-                        this.$store.commit("entries/save_entry", entry)
+                        this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
                     })
                     this.ok_snackbar("Entries imported")
                 } else {

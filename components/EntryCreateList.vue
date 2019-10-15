@@ -14,6 +14,7 @@
     import {create_entry} from "../lib/entry";
     import {EDIT} from "../lib/consts";
     import EntryNavMixin from "./EntryNavMixin";
+    import {ENTRIES_SAVE_ENTRY} from "../lib/store_consts";
 
     const ENTRY_TYPE = "etype";
     const DRAFT = "draft";
@@ -60,9 +61,11 @@
             selection({type, value}) {
                 let uuid = null
                 if (type === ENTRY_TYPE) {
-                    uuid = create_entry(this.$store, value).uuid
+                    const entry = create_entry(this.$store, value)
+                    this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
+                    uuid = entry.uuid
                 } else {
-                    uuid = value;
+                    uuid = value
                 }
                 this.to_entry(uuid, EDIT)
             }

@@ -1,5 +1,5 @@
 import {fetch_entry} from "../lib/entry";
-import {GLOBAL} from "../lib/consts";
+import {GLOBAL, VIEW} from "../lib/consts";
 import {ENTRIES_GET_ENTRY, GET_ASPECT_DEF} from "../lib/store_consts";
 import {aspect_loc_str} from "../lib/aspect";
 
@@ -18,7 +18,7 @@ export default {
         this.$store.commit("set_error_snackbar", "Couldn't fetch entry")
       })
     },
-    to_parent(to_last_element = true) {
+    to_parent(to_last_element = true, mode = VIEW) {
       if (this.in_context) {
         let parent_entry_type_slug = this.$store.getters[ENTRIES_GET_ENTRY](this.entry.refs.parent.uuid).type_slug
 
@@ -36,7 +36,7 @@ export default {
           },
           query: {
             page: page,
-            dirty: true
+            mode: mode
           }
         }
 
@@ -66,6 +66,6 @@ export default {
   computed: {
     in_context() {
       return this.entry_type.content.meta.context !== GLOBAL
-    },
+    }
   }
 }

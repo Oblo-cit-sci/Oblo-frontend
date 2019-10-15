@@ -86,8 +86,7 @@ export const mutations = {
     state.initialized = false
   },
   update_draft_number(state, type_slug) {
-    const number = (state.draft_numbers[type_slug] || 1) + 1
-    state.draft_numbers[type_slug] = number
+    state.draft_numbers[type_slug] = (state.draft_numbers[type_slug] || 1) + 1
   },
   connecting(state, conn) {
     state._connecting = conn
@@ -162,6 +161,15 @@ export const getters = {
   },
   user_key(state) {
     return state.meta.repository.user_key || ""
+  },
+  initialized(state) {
+    return state.initialized
+  },
+  connecting(state) {
+    return state._connecting
+  },
+  connected(state) {
+    return state.connected
   }
 };
 

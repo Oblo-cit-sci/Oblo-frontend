@@ -2,7 +2,7 @@
   v-layout(justify-center align-center)
     v-flex(xs12 md12)
       Title_Description(
-        :title="entry_type.title"
+        :title="page_title"
         header_type="h1"
         :description="entry_type.description"
         mode="edit")
@@ -30,18 +30,13 @@
       EntryActions(
         v-bind="entry_actions_props"
         :page.sync="page"
-        :has_pages="has_pages"
         v-on:entryAction="entryAction($event)"
         v-on:edit="mode='edit'")
       DecisionDialog(
         :open.sync="openSaveDialog"
         @action="edit_or_save_dialog($event)"
-        id="unsaved_changes"
-        title="Unsaved changes"
-        text="You have unsaved changes"
-        cancel_color="accent"
-        cancel_text="Keep on editing"
-        confirm_text="Save and move on")
+        v-bind="unsaved_changes_dialog")
+
 </template>
 
 <script>
@@ -60,10 +55,18 @@
     import goTo from 'vuetify/lib/services/goto'
     import EntryNavMixin from "../../../components/EntryNavMixin";
     import DecisionDialog from "../../../components/DecisionDialog";
-    import {ENTRIES_GET_EDIT, ENTRIES_GET_ENTRY, ENTRIES_SAVE_ENTRY, ENTRIES_SET_EDIT} from "../../../lib/store_consts";
-    import {get_aspect_component} from "../../../lib/aspect";
+    import {
+        ENTRIES_GET_EDIT,
+        ENTRIES_GET_PARENT,
+        ENTRIES_SAVE_ENTRY,
+        ENTRIES_SET_EDIT, ENTRIES_VALUE, GET_ENTRY_TITLE
+    } from "../../../lib/store_consts";
+    import {get_aspect_vue_component} from "../../../lib/aspect"
+    import {unsaved_changes_default_dialog} from "../../../lib/dialogs"
 
-
+    /**
+     * @vue-data {Object} entry_type - Initial counter's value
+     */
     export default {
         name: "uuid",
         mixins: [EntryNavMixin],
@@ -88,6 +91,7 @@
                 aspect_locs: {},
                 //
                 openSaveDialog: false,
+                unsaved_changes_dialog: unsaved_changes_default_dialog,
                 router_next: null
             }
         },
@@ -104,7 +108,7 @@
             })
 
             for (let aspect of this.entry_type.content.aspects) {
-                this.aspect_locs[aspect.name] = [[EDIT, this.uuid], [ASPECT, aspect.name]]
+                this.aspect_locs[aspect.name] = [this.aspect_loc, [ASPECT, aspect.name]]
             }
         },
         mounted() {
@@ -117,8 +121,9 @@
                 }, 300)
             }
         },
-        /*beforeRouteLeave(to, from, next) {
+        beforeRouteLeave(to, from, next) {
             // temporary, we dont care abou dirtyness
+            this.$store.dispatch()
             next()
             /*
             if (this.entry.local.dirty) {
@@ -126,8 +131,8 @@
                 this.router_next = next
             } else {
                 next()
-            }
-        } */
+            }*/
+        },
         methods: {
             edit_or_save_dialog(event) {
                 if (event.confirm) {
@@ -157,17 +162,10 @@
             // should actually be the whole ref string
             // TODO goes out for Aspect component
             aspectComponent(aspect) {
-                return get_aspect_component(aspect)
+                return get_aspect_vue_component(aspect)
             },
         },
         computed: {
-            aspects() {
-                const entry_type = this.$store.getters.entry_type(this.entry.type_slug)
-                return entry_type.content.aspects
-            },
-            entry() {
-                return this.$store.getters[ENTRIES_GET_EDIT]
-            },
             mode: {
                 get() {
                     return this.$route.query.mode || VIEW
@@ -175,6 +173,22 @@
                 set(mode) {
                     this.to_entry(this.uuid, mode)
                 }
+            },
+            aspect_loc() {
+                return [EDIT, this.uuid]
+            },
+            page_title() {
+                return this.entry_type.title + (this.title ? ": " + this.title : "")
+            },
+            title() {
+                return this.$store.getters[GET_ENTRY_TITLE]()
+            },
+            aspects() {
+                const entry_type = this.$store.getters.entry_type(this.entry.type_slug)
+                return entry_type.content.aspects
+            },
+            entry() {
+                return this.$store.getters[ENTRIES_GET_EDIT]
             },
             shown_aspects() {
                 if (this.has_pages) {
@@ -201,7 +215,7 @@
             },
             parent_title() {
                 // todo not necessarily available for remote entries. should be included?
-                return this.$store.getters[ENTRIES_GET_ENTRY](this.entry.refs.parent.uuid).title
+                return this.$store.getters[ENTRIES_GET_PARENT](this.entry).title
             },
             // maybe also consider:
             // https://github.com/edisdev/download-json-data/blob/develop/src/components/Download.vue
@@ -217,7 +231,7 @@
                 return {
                     mode: this.mode,
                     entry_type: this.entry_type,
-                    entry: this.entry
+                    entry: this.entry,
                 }
             }
         }, watch: {
@@ -233,7 +247,5 @@
 
 <style scoped>
 
-  #hidden_aspects_values {
-    /*display:none*/
-  }
+
 </style>

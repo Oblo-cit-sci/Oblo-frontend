@@ -75,7 +75,7 @@
     import Aspect from "../Aspect";
     import ListMixin from "../ListMixin";
     import {INDEX} from "../../lib/consts";
-    import {aspect_loc_str, packed_aspect_default_value, get_aspect_component} from "../../lib/aspect";
+    import {aspect_loc_str, packed_aspect_default_value, get_aspect_vue_component} from "../../lib/aspect";
     import ListitemActions from "../ListitemActions";
     import Paginate from "../Paginate";
     import goTo from 'vuetify/lib/services/goto'
@@ -171,7 +171,7 @@
         },
         methods: {
             clearableAspectComponent(aspect) {
-                return get_aspect_component(aspect, this.mode)
+                return get_aspect_vue_component(aspect, this.mode)
             },
             aspect_is_on_page(index) {
                 return index >= this.page * PAGINATION_TRESH && index < (this.page + 1) * PAGINATION_TRESH

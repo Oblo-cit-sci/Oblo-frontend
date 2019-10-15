@@ -44,7 +44,7 @@
         aspect_loc_str,
         aspect_loc_str2arr, aspect_loc_uuid,
         aspect_raw_default_value, check_condition_value, complete_aspect_loc,
-        get_aspect_component, pack_value, packed_aspect_default_value
+        get_aspect_vue_component, pack_value
     } from "../lib/aspect";
     import {ENTRIES_GET_ENTRY, ENTRIES_SET_ENTRY_VALUE, ENTRIES_VALUE} from "../lib/store_consts";
 
@@ -142,8 +142,7 @@
                     return value
                 } else if (this.aspect.attr.ref_length) { // this is for lists
                     let location_array = complete_aspect_loc(aspect_loc_uuid(this.aspect_loc), aspect_loc_str2arr(this.aspect.attr.ref_length))
-                    const fixed_length = this.$store.getters[ENTRIES_VALUE](location_array).value.length
-                    this.extra["ref_length"] = fixed_length
+                    this.extra["ref_length"] = this.$store.getters[ENTRIES_VALUE](location_array).value.length
                     return this.$store.getters[ENTRIES_VALUE](this.aspect_loc)
                 } else {
                     return this.$store.getters[ENTRIES_VALUE](this.aspect_loc)
@@ -223,7 +222,7 @@
                 }
             },
             aspectComponent(aspect, mode) {
-                return get_aspect_component(aspect, mode, this.extra)
+                return get_aspect_vue_component(aspect, mode, this.extra)
             },
             update_value(event) {
                 //console.log("aspect.update_value", event, "reg ?", this.use_regular)
@@ -268,6 +267,7 @@
 </script>
 
 <style scoped>
+  /* ignore warning about being not used */
   .composite {
     border-left: 1px #8080806b solid;
     padding-left: 5px;

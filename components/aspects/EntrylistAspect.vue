@@ -26,6 +26,7 @@
 <script>
     import AspectMixin from "./AspectMixin";
     import {
+        EDIT,
         ENTRY_INDEX
     } from "../../lib/consts";
     import DecisionDialog from "../DecisionDialog";
@@ -34,8 +35,8 @@
     import ListMixin from "../ListMixin";
     import {
         EDIT_UUID,
-        ENTRIES_EDIT_ADD_REF_CHILD, ENTRIES_EDIT_DELETE_REF_CHILD,
-        ENTRIES_GET_ENTRY, ENTRY_TYPE,
+        ENTRIES_EDIT_DELETE_REF_CHILD,
+        ENTRIES_GET_ENTRY, ENTRIES_SAVE_CHILD_N_REF, ENTRY_TYPE,
     } from "../../lib/store_consts";
     import {aspect_loc_str} from "../../lib/aspect";
     import {no_duplicate_texts} from "../../lib/options";
@@ -111,16 +112,16 @@
                 if (this.disabled)
                     return
                 const index_aspect_loc = this.aspect_loc_for_index(this.value.length)
-                const entry = create_entry(this.$store, this.item_type_slug, {}, {
+                console.log("index_aspect_loc", index_aspect_loc)
+                const child = create_entry(this.$store, this.item_type_slug, {}, {
                     uuid: this.$store.getters[EDIT_UUID],
                     aspect_loc: index_aspect_loc,
                 })
-                this.$store.commit(ENTRIES_EDIT_ADD_REF_CHILD, {
-                    child_uuid: entry.uuid,
-                    aspect_loc: index_aspect_loc,
-                })
+                // saving the child, setting refrences, saving this entry(title),
+                this.$store.dispatch(ENTRIES_SAVE_CHILD_N_REF, {child: child, aspect_loc: index_aspect_loc})
                 this.value_change(this.$_.concat(this.value, [entry.uuid]))
-                this.to_entry(entry.uuid)
+                this.$store.dispatch(save_entry)
+                this.to_entry(entry.uuid, EDIT)
             },
             aspect_loc_for_index(index) {
                 return this.$_.concat(this.$_.drop(this.aspect_loc), [[ENTRY_INDEX, index]])
@@ -132,9 +133,10 @@
                 if (this.disabled)
                     return
                 if (!this.has_entry(item.uuid))
-                    this.fetch_and_nav(entry.uuid)
+                    this.fetch_and_nav(item.uuid)
                 else {
-                    this.$router.push("/entry/" + item.uuid)
+                    // todo, not always edit: parent is owned, but child not, ...
+                    this.to_entry(item.uuid, this.mode)
                 }
             }
         }

@@ -53,7 +53,7 @@
         </v-btn>
       </div>
       <v-spacer></v-spacer>
-      <div v-if="login_state">
+      <div v-if="logged_in">
         <v-btn v-for="(item, i) in header_items"
                :key="i"
                :to="item.to"
@@ -77,11 +77,7 @@
 
 
 <script>
-
-    /*
-
-    */
-
+    import {INITIALIZED} from "../lib/store_consts"
     import GlobalSnackbar from "../components/GlobalSnackbar"
 
     const all_items = [
@@ -160,60 +156,14 @@
 
     export default {
         components: {GlobalSnackbar},
-        created() {
-
-            this.login_state = this.$store.state.user.logged_in
-            this.update_sidebar()
-
-            this.$store.watch(state => state.connecting, () => {
-                this.connecting = this.$store.state.connecting
-            })
-
-            this.$store.watch(state => state.user.logged_in, () => {
-                this.login_state = this.$store.state.user.logged_in
-                this.update_sidebar()
-            })
-
-            this.connected = this.$store.state.connected
-            this.$store.watch(state => state.connected, () => {
-                this.connected = this.$store.state.connected
-                this.update_sidebar()
-            })
-
-            this.initialized = this.$store.state.initialized
-            this.$store.watch(state => state.initialized, () => {
-                this.initialized = this.$store.state.initialized
-                this.update_sidebar()
-            })
-        },
-        methods: {
-            update_sidebar() {
-                if (!this.login_state) {
-                    this.items = all_items.filter(item => require_login.indexOf(item.title) === -1)
-                    if (!this.connected) {
-                        this.items = this.items.filter(item => hide_no_login.indexOf(item.title) === -1)
-                    }
-                } else { // logged in
-                    this.items = all_items.filter(item => hide_no_login.indexOf(item.title) === -1)
-                }
-                if (!this.isDev) {
-                    this.items = this.items.filter(item => show_inDev.indexOf(item.title) === -1)
-                }
-            }
-        },
         data() {
             return {
                 isDev: this.$store.app.context.isDev,
-                login_state: false,
-                connecting: false,
-                connected: false,
-                initialized: false,
                 drawer: false,
                 clipped: false,
                 miniVariant: false,
                 title: 'LICCI',
                 version: pkg.version,
-                items: all_items,
                 header_items: [
                     /*{
                       icon: "",
@@ -232,6 +182,33 @@
             }
         },
         computed: {
+            initialized() {
+                return this.$store.getters[INITIALIZED]
+            },
+            connecting() {
+                return this.$store.getters["connecting"]
+            },
+            connected() {
+                return this.$store.getters["connected"]
+            },
+            logged_in() {
+                return this.$store.getters["user/logged_in"]
+            },
+            items() {
+                let items = all_items
+                if (!this.logged_in) {
+                    items = this.$_.filter(items, item => require_login.indexOf(item.title) === -1)
+                    if (!this.connected) {
+                        items = this.$_.filter(items,item => hide_no_login.indexOf(item.title) === -1)
+                    }
+                } else { // logged in
+                    items =this.$_.filter(items,item => hide_no_login.indexOf(item.title) === -1)
+                }
+                if (!this.isDev) {
+                    items = this.$_.filter(items, item => show_inDev.indexOf(item.title) === -1)
+                }
+                return items
+            },
             connected_icon() {
                 if (this.connected) {
                     return "wifi"

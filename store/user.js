@@ -24,12 +24,16 @@ let default_user_data = {
 }
 
 
-
 export const state = () => ({
   logged_in: false,
   user_data: default_user_data,
 })
 
+export const getters = {
+  logged_in(state) {
+    return state.logged_in
+  }
+}
 
 export const mutations = {
   login(state, data) {

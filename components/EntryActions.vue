@@ -50,7 +50,7 @@
     import {
         ENTRIES_DELETE_ENTRY,
         ENTRIES_GET_CHILDREN,
-        ENTRIES_GET_RECURSIVE_ENTRIES,
+        ENTRIES_GET_RECURSIVE_ENTRIES, ENTRIES_SAVE_ENTRY,
         ENTRIES_SET_EDIT_CLEAN
     } from "../lib/store_consts";
     import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
@@ -172,7 +172,7 @@
                 // todo not if it is an aspect page
                 //save_entry(this.$store, this.entry)
 
-                this.$store.dispatch("entries/save_entry")
+                this.$store.dispatch(ENTRIES_SAVE_ENTRY)
                 this.ok_snackbar("Entry saved")
                 this.back()
             },
@@ -186,7 +186,7 @@
                         this.sending = false
                         this.snackbar(res.data.status, res.data.msg)
                         this.entry.status = SUBMITTED
-                        save_entry(this.$store, this.entry)
+                        this.$store.dispatch(ENTRIES_SAVE_ENTRY)
                         this.back()
                     }).catch((err) => {
                         console.log("error", err)
@@ -218,7 +218,7 @@
             back(to_last_element = true) {
                 //this.$emit("update:dirty", false)
                 this.$store.commit(ENTRIES_SET_EDIT_CLEAN,this.entry.uuid)
-                this.to_parent(to_last_element)
+                this.to_parent(to_last_element, this.mode)
             }
         },
         computed: {

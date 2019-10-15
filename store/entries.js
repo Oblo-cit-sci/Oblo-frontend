@@ -1,10 +1,10 @@
 /*
   this is for the own entries
  */
-import {ASPECT, COLLECT, COMPONENT, DRAFT, EDIT, ENTRY, INDEX} from "../lib/consts";
+import {ASPECT, COMPONENT, DRAFT, EDIT, ENTRY, INDEX} from "../lib/consts";
 import {get_entry_titleAspect, select_aspect_loc} from "../lib/entry";
-import {aspect_loc_str2arr} from "../lib/aspect";
-import {ENTRIES_GET_ENTRY, GET_ENTRY_TITLE} from "../lib/store_consts";
+import {aspect_loc_str2arr, loc_prepend} from "../lib/aspect";
+import { GET_ENTRY_TITLE} from "../lib/store_consts";
 
 
 const ld = require("lodash")
@@ -35,13 +35,10 @@ export const mutations = {
     })
      */
   },
-  create(state, entry) {
-    state.entries.set(entry.uuid, entry)
-  },
   save_entry(state, entry) {
     state.entries.set(entry.uuid, entry)
   },
-  delete_edit_entry(state, uuid) {
+  delete_edit_entry(state) {
     state.edit = null
   },
   set_downladed(state, uuid) {
@@ -58,6 +55,9 @@ export const mutations = {
   },
   add_edit_ref_child(state, {aspect_loc, child_uuid}) {
     state.edit.refs.children[child_uuid] = aspect_loc
+  },
+  add_ref_child(state, {uuid, child_uuid, aspect_loc}) {
+    state.entries.get(uuid).refs.children[child_uuid] = aspect_loc
   },
   delete_edit_ref_child(state, child_uuid) {
     delete state.edit.refs.children[child_uuid]
@@ -109,26 +109,33 @@ export const mutations = {
       state.edit.local.dirty = false
     }
   },
+  // todo renmae, update entry
   _save_entry(state, uuid) {
     let entry = state.entries.get(uuid)
     entry.version += 1
     entry.local.prev = null
   },
-  update(state) {
-    const a = state.edit
-    state.edit.aspects_values = a.aspects_values
-  },
   set_edit(state, uuid) {
     state.edit = state.entries.get(uuid)
   },
+  // todo this is actually not needed I think, because its the same object as in in the store.
   save_edit(state) {
     if (state.edit) {
       state.entries.set(state.edit.uuid, state.edit)
     }
   },
-  update_edit_title(state, title) {
-    state.edit.title = title
-  }
+  // todo template for all kinds of computed meta-aspects
+  update_title(state, {uuid, title}) {
+    state.entries.get(uuid).titie = title
+  },
+  entries_add_ref_child(context, {parent, child, aspect_loc}) {
+    //
+    context.commit("add_ref_child", {
+
+      child_uuid: child.uuid,
+      aspect_loc: aspect_loc,
+    })
+  },
 }
 
 
@@ -164,12 +171,12 @@ export const getters = {
   get_entry(state) {
     return (uuid) => {
       return state.entries.get(uuid)
-    };
+    }
   },
   get_children(state) {
     return (entry) => {
       return ld.map(entry.refs.children, ref => state.entries.get(ref.uuid))
-    };
+    }
   },
   get_own_entries(state) {
     // todo
@@ -177,9 +184,17 @@ export const getters = {
   get_edit(state) {
     return state.edit
   },
-  value(state) {
+  get_parent(state, getters) { // ENTRIES_GET_PARENT
+    return entry => {
+      console.log("getter", entry, entry.refs)
+      return getters["get_entry"](entry.refs.parent.uuid)
+    }
+  },
+  value(state, getters) {
     return (aspect_loc) => {
-      //console.log("value", aspect_loc)
+      if (aspect_loc[0][0] !== ENTRY) {
+        aspect_loc = ld.concat([[EDIT, getters.edit_uuid]], aspect_loc)
+      }
       return select_aspect_loc(state, aspect_loc)
     }
   },
@@ -221,8 +236,9 @@ export const getters = {
       }
     }
   },
+  // todo: get edit title, but will be simpler...?
   get_entry_title: function (state, getters) {
-    return uuid => {
+    return (uuid = state.edit.uuid) => {
       const entry = getters.get_entry(uuid)
       const type = getters.get_entry_type(entry.type_slug)
       let titleAspect = get_entry_titleAspect(type)
@@ -230,7 +246,8 @@ export const getters = {
         console.log("entries.get_entry_title TODO, use default title for type")
         return ""
       }
-      const title = select_aspect_loc(state, ld.concat([[EDIT, uuid]], aspect_loc_str2arr(titleAspect)))
+      // todo maybe it would be cleaner to add "entry "+uuid , so that  aspect_loc_str2arr/is wrapped around
+      const title = select_aspect_loc(state, loc_prepend(ENTRY, uuid, aspect_loc_str2arr(titleAspect)))
       if (title)
         return title.value
       else {
@@ -239,8 +256,8 @@ export const getters = {
       }
     }
   },
-  get_search_entries: function(state) {
-    return(state.entries)
+  get_search_entries: function (state) {
+    return (state.entries)
   }
 
 }
@@ -252,6 +269,10 @@ export const actions = {
     context.commit("set_edit_dirty")
     // context.commit("update")
   },
+  save_child_n_ref(context, {uuid, child, aspect_loc, child_uuid}) {
+    context.commit("save_entry", child)
+    context.commit("add_ref_child", {uuid, aspect_loc, child_uuid})
+  },
   /*add_child(context, uuid_n_aspect_loc_n_child) {
     console.log("store.entries: add child")
     context.commit("set_entry_value", uuid_n_aspect_loc_n_child)
@@ -261,11 +282,11 @@ export const actions = {
     commit("cancel_entry_edit", uuid)
   },
   // rename to save edit entry
-  save_entry(context) {
-    const entry_title = context.getters[GET_ENTRY_TITLE](context.state.edit.uuid)
-    if (entry_title)
-      context.commit("update_edit_title", entry_title)
-    context.commit("save_edit")
+  // todo: purpose/name: update meta or something like that?
+  save_entry(context, uuid = context.state.edit.uuid) {
+    const entry_title = context.getters[GET_ENTRY_TITLE](uuid)
+    context.commit("update_edit_title", {uuid, entry_title})
+    //context.commit("save_edit")
   },
   set_edit(context, uuid) {
     context.commit("save_edit")
@@ -275,7 +296,6 @@ export const actions = {
     let aspect_loc = context.state.entries.get(uuid).refs.children[child_uuid]
     delete context.state.entries.get(uuid).refs.children[child_uuid]
     context.commit("_remove_entry_value_index", ld.concat([[ENTRY, uuid]], aspect_loc))
-
   },
   delete_entry(context, uuid) { // ENTRIES_DELETE_ENTRY
     const entry = context.state.entries.get(uuid)
