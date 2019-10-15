@@ -36,7 +36,7 @@
     import {
         EDIT_UUID,
         ENTRIES_EDIT_DELETE_REF_CHILD,
-        ENTRIES_GET_ENTRY, ENTRIES_SAVE_CHILD_N_REF, ENTRY_TYPE,
+        ENTRIES_GET_ENTRY, ENTRIES_SAVE_CHILD_N_REF, ENTRIES_SAVE_ENTRY, ENTRY_TYPE,
     } from "../../lib/store_consts";
     import {aspect_loc_str} from "../../lib/aspect";
     import {no_duplicate_texts} from "../../lib/options";
@@ -112,16 +112,15 @@
                 if (this.disabled)
                     return
                 const index_aspect_loc = this.aspect_loc_for_index(this.value.length)
-                console.log("index_aspect_loc", index_aspect_loc)
+                //console.log("index_aspect_loc", index_aspect_loc)
                 const child = create_entry(this.$store, this.item_type_slug, {}, {
                     uuid: this.$store.getters[EDIT_UUID],
                     aspect_loc: index_aspect_loc,
                 })
                 // saving the child, setting refrences, saving this entry(title),
                 this.$store.dispatch(ENTRIES_SAVE_CHILD_N_REF, {child: child, aspect_loc: index_aspect_loc})
-                this.value_change(this.$_.concat(this.value, [entry.uuid]))
-                this.$store.dispatch(save_entry)
-                this.to_entry(entry.uuid, EDIT)
+                this.value_change(this.$_.concat(this.value, [child.uuid]))
+                this.to_entry(child.uuid, EDIT)
             },
             aspect_loc_for_index(index) {
                 return this.$_.concat(this.$_.drop(this.aspect_loc), [[ENTRY_INDEX, index]])
@@ -132,6 +131,7 @@
             open_item(item) {
                 if (this.disabled)
                     return
+                this.$store.dispatch(ENTRIES_SAVE_ENTRY)
                 if (!this.has_entry(item.uuid))
                     this.fetch_and_nav(item.uuid)
                 else {

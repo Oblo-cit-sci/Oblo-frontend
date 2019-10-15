@@ -4,11 +4,12 @@
 import {ASPECT, COMPONENT, DRAFT, EDIT, ENTRY, INDEX} from "../lib/consts";
 import {get_entry_titleAspect, select_aspect_loc} from "../lib/entry";
 import {aspect_loc_str2arr, loc_prepend} from "../lib/aspect";
-import { GET_ENTRY_TITLE} from "../lib/store_consts";
+import {ENTRIES_GET_ENTRY_TITLE} from "../lib/store_consts";
 
 
 const ld = require("lodash")
 
+const GET_EDIT = "get_edit"
 const DELETE_ENTRY = "delete_entry"
 const DELETE_EDIT_ENTRY = "delete_edit_entry"
 const DELETE_REF_CHILD = "delete_ref_child"
@@ -62,7 +63,7 @@ export const mutations = {
   delete_edit_ref_child(state, child_uuid) {
     delete state.edit.refs.children[child_uuid]
   },
-  // todo, showldnt be needed
+  // todo, shouldnt be needed
   set_ref_parent(state, {uuid, ref}) {
     state.entries.get(uuid).refs.parent = ref
   },
@@ -71,15 +72,6 @@ export const mutations = {
     state.edit = null
     state.timeline_entries = []
   },
-  /*update(state, {uuid}) {
-    state.entries = new Map(state.entries.entries())
-    // TODO TEMP TO TEST EDIT
-    console.log("UPDATE", state.entries.get(uuid), state.edit, state.entries.get(uuid).aspects_values.title.value)
-    if(state.edit === null)
-      state.edit = state.entries.get(uuid)
-    else
-      state.edit = null //
-  },*/
   _set_entry_value(state, {aspect_loc, value}) {
     //console.log("set entry value", aspect_loc, value)
     let select = select_aspect_loc(state, aspect_loc, true)
@@ -117,25 +109,10 @@ export const mutations = {
   },
   set_edit(state, uuid) {
     state.edit = state.entries.get(uuid)
-  },
-  // todo this is actually not needed I think, because its the same object as in in the store.
-  save_edit(state) {
-    if (state.edit) {
-      state.entries.set(state.edit.uuid, state.edit)
-    }
-  },
-  // todo template for all kinds of computed meta-aspects
+  },  // todo template for all kinds of computed meta-aspects
   update_title(state, {uuid, title}) {
-    state.entries.get(uuid).titie = title
-  },
-  entries_add_ref_child(context, {parent, child, aspect_loc}) {
-    //
-    context.commit("add_ref_child", {
-
-      child_uuid: child.uuid,
-      aspect_loc: aspect_loc,
-    })
-  },
+    state.entries.get(uuid).title = title
+  }
 }
 
 
@@ -145,6 +122,9 @@ export const getters = {
   },
   all_entries_array(state) {
     return Array.from(state.entries.values())
+  },
+  get_edit(state) {
+    return state.edit
   },
   edit_uuid(state) {
     if (state.edit)
@@ -181,12 +161,9 @@ export const getters = {
   get_own_entries(state) {
     // todo
   },
-  get_edit(state) {
-    return state.edit
-  },
   get_parent(state, getters) { // ENTRIES_GET_PARENT
     return entry => {
-      console.log("getter", entry, entry.refs)
+      //console.log("getter", entry, entry.refs)
       return getters["get_entry"](entry.refs.parent.uuid)
     }
   },
@@ -269,7 +246,11 @@ export const actions = {
     context.commit("set_edit_dirty")
     // context.commit("update")
   },
-  save_child_n_ref(context, {uuid, child, aspect_loc, child_uuid}) {
+  save_child_n_ref(context, {uuid, child, aspect_loc, child_uuid}) { // ENTRIES_SAVE_CHILD_N_REF
+    if (!uuid) {
+      uuid = context.getters["edit_uuid"]
+    }
+    context.dispatch("save_entry", uuid)
     context.commit("save_entry", child)
     context.commit("add_ref_child", {uuid, aspect_loc, child_uuid})
   },
@@ -284,12 +265,10 @@ export const actions = {
   // rename to save edit entry
   // todo: purpose/name: update meta or something like that?
   save_entry(context, uuid = context.state.edit.uuid) {
-    const entry_title = context.getters[GET_ENTRY_TITLE](uuid)
-    context.commit("update_edit_title", {uuid, entry_title})
-    //context.commit("save_edit")
+    const entry_title = context.getters["get_entry_title"](uuid)
+    context.commit("update_title", {uuid, title: entry_title})
   },
   set_edit(context, uuid) {
-    context.commit("save_edit")
     context.commit("set_edit", uuid)
   },
   delete_ref_child(context, {uuid, child_uuid}) { // DELETE_REF_CHILD

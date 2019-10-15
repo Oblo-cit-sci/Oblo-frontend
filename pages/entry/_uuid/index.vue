@@ -59,7 +59,7 @@
         ENTRIES_GET_EDIT,
         ENTRIES_GET_PARENT,
         ENTRIES_SAVE_ENTRY,
-        ENTRIES_SET_EDIT, ENTRIES_VALUE, GET_ENTRY_TITLE
+        ENTRIES_SET_EDIT, ENTRIES_VALUE, ENTRIES_GET_ENTRY_TITLE
     } from "../../../lib/store_consts";
     import {get_aspect_vue_component} from "../../../lib/aspect"
     import {unsaved_changes_default_dialog} from "../../../lib/dialogs"
@@ -122,8 +122,7 @@
             }
         },
         beforeRouteLeave(to, from, next) {
-            // temporary, we dont care abou dirtyness
-            this.$store.dispatch()
+            this.$store.dispatch(ENTRIES_SAVE_ENTRY)
             next()
             /*
             if (this.entry.local.dirty) {
@@ -181,7 +180,7 @@
                 return this.entry_type.title + (this.title ? ": " + this.title : "")
             },
             title() {
-                return this.$store.getters[GET_ENTRY_TITLE]()
+                return this.$store.getters[ENTRIES_GET_ENTRY_TITLE]()
             },
             aspects() {
                 const entry_type = this.$store.getters.entry_type(this.entry.type_slug)
