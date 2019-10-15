@@ -42,12 +42,11 @@
     import {
         aspect_default_value,
         aspect_loc_str,
-        aspect_loc_str2arr,
-        aspect_raw_default_value, check_condition_value,
+        aspect_loc_str2arr, aspect_loc_uuid,
+        aspect_raw_default_value, check_condition_value, complete_aspect_loc,
         get_aspect_component, pack_value, packed_aspect_default_value
     } from "../lib/aspect";
     import {ENTRIES_GET_ENTRY, ENTRIES_SET_ENTRY_VALUE, ENTRIES_VALUE} from "../lib/store_consts";
-    import {aspect_loc_uuid, complete_aspect_loc} from "../lib/client";
 
     export default {
         name: "Aspect",

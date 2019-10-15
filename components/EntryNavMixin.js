@@ -50,10 +50,17 @@ export default {
         this.$router.push("/")
       }
     },
-    to_entry(uuid) {
-      this.$router.push({
-        path: "/entry/" + uuid
-      })
+    to_entry(uuid, mode = 'view') {
+      let route = {
+        name: "entry-uuid",
+        params: {
+          uuid: uuid
+        },
+        query: {
+          mode: mode
+        }
+      }
+      this.$router.push(route)
     }
   },
   computed: {

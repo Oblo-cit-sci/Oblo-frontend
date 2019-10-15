@@ -17,9 +17,11 @@
 </template>
 
 <script>
-    import {CREATOR, entry_actor_relation, license_icon, privacy_icon} from "../lib/client"
+    import {license_icon} from "../lib/client"
     import EntryNavMixin from "./EntryNavMixin";
     import {ENTRIES_HAS_ENTRY} from "../lib/store_consts"
+    import {CREATOR, entry_actor_relation} from "../lib/actors";
+    import {privacy_icon} from "../lib/util";
 
     export default {
         name: "Entrylist",

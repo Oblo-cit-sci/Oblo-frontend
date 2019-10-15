@@ -20,8 +20,9 @@
 
 <script>
   import SingleSelect from "./SingleSelect";
-  import {privacy_icon, string2option, string_list2options} from "../lib/client";
   import {EDIT, PRIVATE, PRIVATE_LOCAL, PUBLIC} from "../lib/consts";
+  import {string2option, string_list2options} from "../lib/options";
+  import {privacy_icon} from "../lib/util";
 
 
   /*

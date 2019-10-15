@@ -46,7 +46,7 @@ module.exports = {
   ],
 
   router: {
-    middleware: 'init',
+    middleware: ['init'],
     base: "/app/"
   },
 

@@ -9,10 +9,10 @@
 <script>
 
   /*
-          span {{i_value[0].value | format_float}}
+          span {{value[0].value | format_float}}
         span &nbsp;&nbsp;&nbsp;&nbsp;
         span Latitude:&nbsp;&nbsp;
-        span {{i_value[1].value | format_float}}
+        span {{value[1].value | format_float}}
         div Error of {{$store.state.user.user_data.location_error}} included
    */
 
@@ -68,8 +68,8 @@
             }).catch((err) => {
               console.log("error: mapbox api error", err)
             })
-            this.i_value = [{value: error_loc.lon}, {value: error_loc.lat}]
-            this.value_change(this.i_value)
+            let value = [{value: error_loc.lon}, {value: error_loc.lat}]
+            this.value_change(value)
           });
         } else if (this.selection.value === FROM_MAP) {
           //this.$emit("entryAction", {action: GLOBAL_ASPECT_REF, value: this.extra.aspect_loc})

@@ -1,26 +1,27 @@
 <template lang="pug">
-    v-container
+    v-container(fluid)
         v-row(wrap justify-start)
-            v-col(cols="12" md="10")
+            v-col(cols="12")
                 v-text-field(
                     v-model="keyword"
-                    clearable
                     label="Buscar"
                     single-line
-                    hide-details)
-            v-col(cols="12" md="2")
-                v-btn(
-                    color="success"
-                    @click="getEntries"
-                    :loading="searching") BUSCAR
-        Entrypreview(:entries="entries")
+                    hide-details
+                    append-outer-icon="search"
+                    @click:append-outer="getEntries"
+                    clearable
+                    :loading="searching")
+        v-row(wrap justify-center)
+            v-col(cols=12 v-for="entry in entries"
+                :key="entry.id" class="col-sm-6 col-xs-12")
+                Entrypreview(:entry="entry")
 </template>
 
 <script>
-    import axios from "axios";
-    import Entrypreview from "../components/EntryPreview";
 
-    const ld = require('lodash');
+    import { mapGetters} from "vuex"
+    import Entrypreview from "../components/EntryPreview";
+    import {search_entries} from "../lib/client";
 
     export default {
         name: "Search",
@@ -28,38 +29,30 @@
         data() {
             return {
                 searching: false,
-                keyword: '',
+                keyword: ''
             }
         },
         watch: {
-            // whenever text-field changes, this function will run
             keyword: function (newKeyword, oldKeyword) {
-                //missing debounce function here
-                this.getEntries();
+                if(this.keyword !== null && this.keyword.length >= 4) {
+                    this.searching = true
+                    this.$_.debounce(this.getEntries, 500)()
+                }
             }
         },
         computed: {
-            entries() {
-                return  Array.from(this.$store.state.entries.entries.values())
-            }
+            ...mapGetters({entries: 'search/get_entries'}),
         },
         methods: {
-            getEntries: function () {
-                console.log("Entries updated with the new search");
-                //this.searching = true;
-                //var vm = this
-
-                //axios.get('', {
-                  //  params: {
-                    //    keyword:keyword
-                    //}
-                //}).then(function (response) {
-                  //  vm.searching = false;
-                    //console.log("data",response)
-                //}).catch(function (error) {
-                    //vm.searching = false;
-                    //console.log("error",error)
-                //})
+            getEntries() {
+                this.searching = true
+                search_entries(this.$axios, this.$store, this.keyword)
+                    .then(res => {
+                        this.searching = false
+                    }).catch(err => {
+                        console.log('Error getting entries')
+                        this.searching = false
+                    })
             }
         }
   }
