@@ -11,9 +11,9 @@
                     @click:append-outer="getEntries"
                     clearable
                     :loading="searching")
-        v-row(wrap justify-start)
-            v-col(v-for="entry in entries"
-                :key="entry.id" class="col-lg-6 col-xs-12")
+        v-row(wrap justify-center)
+            v-col(cols=12 v-for="entry in entries"
+                :key="entry.id" class="col-sm-6 col-xs-12")
                 Entrypreview(:entry="entry")
 </template>
 
