@@ -39,10 +39,14 @@
         },
         methods: {
             show(entry) {
+                let mode = this.$store.getters["entries/get_proper_mode"](entry.uuid)
+                this.to_entry(entry.uuid, mode)
+                /*
                 if (this.$store.getters[ENTRIES_HAS_ENTRY](entry.uuid))
                     this.$router.push("/entry/" + entry.uuid)
                 else
                     this.fetch_and_nav(entry.uuid)
+                 */
             },
             privacy_icon(privacy) {
                 return privacy_icon(privacy)

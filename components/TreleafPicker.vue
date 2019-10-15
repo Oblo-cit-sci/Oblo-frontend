@@ -27,7 +27,6 @@
     import TextShort from "./aspects/TextShortAspect";
     import {object_list2options} from "../lib/options";
 
-    const ld = require('lodash');
 
     export default {
         name: "TreleafPicker",
@@ -36,6 +35,7 @@
             tree: {
                 type: Object
             },
+            // refactor, its basically another aspect
             allows_extra: {
                 type: [Boolean, Number],
             },
@@ -45,8 +45,14 @@
             keep_selection: {
                 type: Boolean,
                 default: false
-            }
-        }, // OuterRef is for the LICCI aspect, cuz JS messes up loops and events (always takes the
+            },
+            attr: {
+                type: Object,
+                default: () => {
+                    return {}
+                }
+            } // OuterRef is for the LICCI aspect, cuz JS messes up loops and events (always takes the
+        },
         data: function () {
             return {
                 selection: [], // indices of children
@@ -60,22 +66,28 @@
                 if (this.selection.length === 0) {
                     options = this.tree.children;
                 } else {
-                    options = ld.last(this.selection).children || [];
+                    options = this.$_.last(this.selection).children || [];
                 }
                 for (let index in options) {
                     let node = options[index];
                     node["title"] = node["name"];
                     node["id"] = parseInt(index);
                 }
-
-                //options = ld.map(options, (o) => {return o.name})
+                //options = this.$_.map(options, (o) => {return o.name})
                 return object_list2options(options, "title", "title"); //string_list2options(options);
             },
             done_available() {
-                return ld.size(this.act_options) === 0;
+                if (this.attr.hasOwnProperty("allow_select_levels")) {
+                    return (this.$_.includes(this.attr.allow_select_levels, this.act_level))
+                } else {
+                    return this.$_.size(this.act_options) === 0
+                }
             },
             has_level_names() {
-                return this.level_names && ld.size(this.act_options) > 0;
+                return this.level_names && this.$_.size(this.act_options) > 0;
+            },
+            act_level() {
+                return this.selection.length - 1
             },
             act_levelname() {
                 return this.level_names[this.selection.length]
@@ -98,7 +110,6 @@
         },
         methods: {
             select(value) {
-                //console.log(value);
                 this.selection.push(value);
             },
             remove(index) {
@@ -108,8 +119,7 @@
                 return this.selection.length > 0 && this.act_options.length > 0;
             },
             done() {
-                this.$emit("selected", ld.last(this.selection));
-                //console.log(this.selection)
+                this.$emit("selected", this.$_.last(this.selection));
                 if (!this.keep_selection)
                     this.selection = [];
             },

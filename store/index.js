@@ -6,7 +6,6 @@ export const state = () => ({
   initialized: false,
   _connecting: false,
   connected: false,
-  mode: EDIT,
   entry_types: new Map(), // types for creation
   codes: {},
   // recent

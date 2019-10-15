@@ -1,9 +1,10 @@
 /*
   this is for the own entries
  */
-import {ASPECT, COLLECT, COMPONENT, DRAFT, EDIT, ENTRY, INDEX} from "../lib/consts";
+import {ASPECT, COLLECT, COMPONENT, DRAFT, EDIT, ENTRY, INDEX, PRIVATE_LOCAL, VIEW} from "../lib/consts";
 import {get_entry_titleAspect, select_aspect_loc} from "../lib/entry";
 import {aspect_loc_str2arr, loc_prepend} from "../lib/aspect";
+import {GET_ENTRY} from "../lib/store_consts";
 
 
 const ld = require("lodash")
@@ -129,6 +130,11 @@ export const getters = {
       return state.edit.uuid
     else return ""
   },
+  get_status(state) {
+    return (uuid = state.edit) => {
+      return state.entries.get(uuid).status
+    }
+  },
   all_drafts(state) {
     // as method prevents caching
     return () => {
@@ -158,6 +164,16 @@ export const getters = {
   },
   get_own_entries(state) {
     // todo
+  },
+  user_rights(state, getters, rootState, rootGetters) { // ENTRIES_USER_RIGHTS
+    return (user_uid = rootGetters["user/user_uid"], uuid = state.edit.uuid) => {
+      const entry = getters[GET_ENTRY](uuid)
+      if (ld.find(entry.actors.owners, owner => owner.uid === user_uid)) {
+        return EDIT
+      } else {
+        return VIEW
+      }
+    }
   },
   get_parent(state, getters) { // ENTRIES_GET_PARENT
     return entry => {
@@ -223,18 +239,39 @@ export const getters = {
       }
       // todo maybe it would be cleaner to add "entry "+uuid , so that  aspect_loc_str2arr/is wrapped around
       const title = select_aspect_loc(state, loc_prepend(ENTRY, uuid, aspect_loc_str2arr(titleAspect)))
-      if (title)
+      console.log("get_entry_title", title)
+      if (title.value)
         return title.value
       else {
         console.log("entries.get_entry_title TODO, use default title for type")
-        return ""
+        return entry.title
+      }
+    }
+  },
+  get_proper_mode(state, getters) {
+    // when entry is private local, always > edit
+    // when owner, draft > edit
+    // otherwise > view
+    return (uuid = state.edit.uuid) => {
+      console.log(uuid)
+      const entry = getters.get_entry(uuid)
+      console.log(uuid)
+      if (entry.privacy === PRIVATE_LOCAL) {
+        return EDIT
+      } else {
+        const user_rights = getters.user_rights(undefined, entry.uuid)
+        const status = getters.get_status(entry.uuid)
+        if (user_rights === EDIT && status === DRAFT) {
+          return EDIT
+        } else {
+          return VIEW
+        }
       }
     }
   },
   get_search_entries: function (state) {
     return (state.entries)
   }
-
 }
 
 // dispatch
