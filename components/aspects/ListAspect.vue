@@ -111,7 +111,7 @@
                 PAGINATION_TRESH: PAGINATION_TRESH
             }
         },
-        created() {
+        created() {          
             //console.log("LA created", this.value)
             let item_type = this.aspect.items;
             // todo. list, are extended lists by user, not select lists

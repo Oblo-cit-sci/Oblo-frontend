@@ -1,6 +1,6 @@
 <template lang="pug">
   div(
-    :class="[{ composite: aspect.type === 'composite',  disabled: disable}]"
+    :class="[{ composite: (aspect.type === 'composite' && mode === 'edit'),  disabled: disable}]"
     :id="aspect_id" v-if="enabled_visible")
     Title_Description(
       v-if="show_title_description"

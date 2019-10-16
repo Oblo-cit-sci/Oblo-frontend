@@ -58,7 +58,7 @@
         },
         computed: {
             layoutClasses() {
-                if (this.aspect.components.length === 2) {
+                if (this.aspect.components.length === 2 && this.aspect.mode === 'edit') {
                     const comp_types = this.aspect.components.map(c => c.type)
                     if ((comp_types[0] === INT || comp_types[0] === FLOAT) && comp_types[0] === comp_types[1]) {
                         return "xs12 sm6 lg6"

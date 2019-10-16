@@ -1,14 +1,15 @@
 <template lang="pug">
-  div
+  div(v-if="!readOnly")
     v-checkbox(
       v-if="select_check"
       v-model="check_box_value"
-      :label="check_box_value ? this.options[1].text : this.options[0].text"
-      :readonly="readOnly")
+      :label="check_box_value ? this.options[1].text : this.options[0].text")
     SingleSelect(v-else :options="options"
       :selection.sync="selection"
       :force_view="force_view"
       :disabled="disabled")
+  div(v-else)
+   p(v-if="select_check" class="text-uppercase") {{check_box_value ? this.options[1].text : this.options[0].text}}
 </template>
 
 <script>
