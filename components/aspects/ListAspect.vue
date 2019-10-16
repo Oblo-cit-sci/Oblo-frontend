@@ -47,6 +47,7 @@
               v-on:remove_value="remove_value($event)"
               v-on:move="move($event)")
     MinMaxIndicators(
+      v-if="!readOnly"
       :aspect="aspect"
       :length="this.value.length"
       :min="this.min"

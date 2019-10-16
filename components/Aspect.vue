@@ -7,7 +7,8 @@
       v-bind="title_description(aspect)"
       :disabled="disable"
       :disabled_text="disabled_text"
-      :mode="real_mode")
+      :mode="real_mode"
+      :placeholder="is_placeholder")
     v-switch(v-if="has_alternative"
       v-model="use_regular"
       hideDetails
@@ -165,6 +166,13 @@
                     return this.aspect.attr.mode
                 } else
                     return this.mode
+            },
+            is_placeholder() {
+                if(this.aspect.attr.placeholder) {
+                    return true
+                } else {
+                    return false
+                }
             },
             /*raw_value() {
                 if (!this.value) { // failsafe
