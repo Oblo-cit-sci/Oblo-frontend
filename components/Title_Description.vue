@@ -7,8 +7,7 @@
       div(v-for="(description_part, index) in description" :key="index")
         div(v-if="index===0") {{description_part}}
         div(v-else class="secondary_descr") {{description_part}}
-    div(v-else) {{first_description}}
-    div.pb-1
+    div(v-else class="pb-1") {{first_description}}
 </template>
 
 <script>

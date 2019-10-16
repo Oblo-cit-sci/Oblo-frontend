@@ -17,10 +17,8 @@
       :value="value"
       @input="value_change($event)")
     // dummy readOnly, but I dont like that you can still focus it...
-    v-text-field(v-else
-      :value="value"
-      readonly
-      hide-details)
+    p(v-else
+      class="body-1") {{value}}
 </template>
 
 <script>
