@@ -11,7 +11,6 @@ export const state = () => ({
   // recent
   // momentary
   snackbar: {message: "", status: "ok", trigger: false},
-  mapmode: {},
   global_ref: null, // the last draft/entry
   draft_numbers: {},
   meta: {
@@ -70,9 +69,6 @@ export const mutations = {
   },
   connection(state, connected) {
     state.connected = connected
-  },
-  set_mapmode(state, mode) {
-    state.mapmode = mode
   },
   set_global_ref(state, uuid) {
     state.global_ref = {uuid: uuid}
