@@ -1,5 +1,5 @@
 <template lang="pug">
-  div
+  div(v-if="!readOnly")
     v-textarea(
       outlined
       single-line
@@ -12,6 +12,8 @@
 
       :value="value"
       @input="value_change($event)")
+  div(v-else)
+    p(class="body-1") {{value}}
 </template>
 
 <script>

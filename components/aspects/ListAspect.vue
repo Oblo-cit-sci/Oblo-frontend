@@ -47,6 +47,7 @@
               v-on:remove_value="remove_value($event)"
               v-on:move="move($event)")
     MinMaxIndicators(
+      v-if="!readOnly"
       :aspect="aspect"
       :length="this.value.length"
       :min="this.min"
@@ -110,7 +111,7 @@
                 PAGINATION_TRESH: PAGINATION_TRESH
             }
         },
-        created() {
+        created() {          
             //console.log("LA created", this.value)
             let item_type = this.aspect.items;
             // todo. list, are extended lists by user, not select lists

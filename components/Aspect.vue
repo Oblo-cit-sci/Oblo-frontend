@@ -1,13 +1,14 @@
 <template lang="pug">
   div(
-    :class="[{ composite: aspect.type === 'composite',  disabled: disable}]"
+    :class="[{ composite: (aspect.type === 'composite' && mode === 'edit'),  disabled: disable}]"
     :id="aspect_id" v-if="enabled_visible")
     Title_Description(
       v-if="show_title_description"
       v-bind="title_description(aspect)"
       :disabled="disable"
       :disabled_text="disabled_text"
-      :mode="real_mode")
+      :mode="real_mode"
+      :placeholder="is_placeholder")
     v-switch(v-if="has_alternative"
       v-model="use_regular"
       hideDetails
@@ -165,6 +166,13 @@
                     return this.aspect.attr.mode
                 } else
                     return this.mode
+            },
+            is_placeholder() {
+                if(this.aspect.attr.placeholder) {
+                    return true
+                } else {
+                    return false
+                }
             },
             /*raw_value() {
                 if (!this.value) { // failsafe

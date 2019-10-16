@@ -1,10 +1,16 @@
 <template lang="pug">
-  div
+  div(v-if="!readOnly")
     v-select(
       :items="options"
       v-model="selection"
       :readonly="readOnly"
-      single-line outlined chips multiple)
+      single-line outlined chips multiple)  
+  div(v-else)  
+    v-chip(
+        v-for="(item, index) in selection" :key="index"
+        class="mr-2 mt-2 mb-4"
+      )
+      span {{item.text}}
 </template>
 
 <script>

@@ -1,21 +1,22 @@
 <template lang="pug">
-  div
-    v-text-field(
-      outlined
-      single-line
-      :value="value"
-      v-on:input="input($event)"
-      :suffix="suffix"
-      :disabled="disabled"
-      :readonly="readOnly"
-      type="number"
-      :min="min"
-      :max="max"
-      v-on:update:error="error = $event"
-      :append-outer-icon="clearIcon"
-      @click:append-outer="$emit('entryAction', {action: 'clear'})"
-      :rules="[minmax,valid_num_type]"
-      :mask="mask" )
+    div(v-if="!readOnly")
+        v-text-field(
+        outlined
+        single-line
+        :value="value"
+        v-on:input="input($event)"
+        :suffix="suffix"
+        :disabled="disabled"
+        type="number"
+        :min="min"
+        :max="max"
+        v-on:update:error="error = $event"
+        :append-outer-icon="clearIcon"
+        @click:append-outer="$emit('entryAction', {action: 'clear'})"
+        :rules="[minmax,valid_num_type]"
+        :mask="mask" )
+    div(v-else)
+        p(class="body-1") {{value}}
 </template>
 
 <script>

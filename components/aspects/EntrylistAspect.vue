@@ -1,26 +1,35 @@
 <template lang="pug">
-  div
+  div(v-if="!readOnly")
     div(v-if="!select")
       v-list(v-if="has_items")
         v-list-item(v-for="(item, index) in items", :key="item.key" :id="aspect_loc_str(index)")
           v-list-item-content(@click="open_item(item)")
             v-list-item-title {{index + 1}} &nbsp;
               b {{item.title}}
-          v-list-item-action(v-if="!readOnly")
+          v-list-item-action
             v-btn(@click="open_item(item)" icon)
               v-icon edit
-          v-list-item-action(v-if="!readOnly")
+          v-list-item-action
             v-btn(@click="open_remove(index)" icon)
               v-icon(color="red" lighten-1) close
     div(v-else)
       div v-selelct
-    div(v-if="more_allowed && !readOnly")
+    div(v-if="more_allowed")
       v-btn(@click="create_item()" :color="requieres_more_color") Add {{item_name}}
         v-icon(right) add
       .v-text-field__details
         .v-messages
-    div(v-else) maximum reached
+    div(v-else class="mb-2") Maximum reached
     DecisionDialog(v-bind="remove_data_dialog" :open.sync="show_remove" v-on:action="remove($event)")
+  div(v-else)
+    v-list-item-group(v-if="has_items")
+      v-list-item(v-for="(item, index) in items", 
+          :key="item.key" 
+          :id="aspect_loc_str(index)")
+        v-list-item-content(@click="open_item(item)")
+          v-list-item-title {{index + 1}} &nbsp; {{item.title}}
+        v-list-item-icon
+          v-icon(class="fa fa-angle-right")
 </template>
 
 <script>
