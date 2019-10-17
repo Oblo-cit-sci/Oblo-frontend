@@ -35,7 +35,6 @@
         watch: {
             keyword: function (newKeyword, oldKeyword) {
                 if(this.keyword !== null && this.keyword.length >= 4) {
-                    this.searching = true
                     this.$_.debounce(this.getEntries, 500)()
                 }
             }

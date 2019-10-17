@@ -8,20 +8,23 @@
                 @load="onMapLoaded"
                 @click="touch($event)"
         >
-          <div v-if="mode !== modes.SIMPLE_MODE">
-            <MglMarker :coordinates="coordinates">
+          <div v-if="mode === 'coordinate'">
+            <MglMarker v-if="display_coordinates" :coordinates="display_coordinates">
               <!--<MglPopup anchor="top">
                 <VCard>
                   <div>Hello, I'm popup!</div>
                 </VCard>
               </MglPopup>-->
             </MglMarker>
-            <v-text-field hideDetails readonly fullWidth :value="coordinate_string"></v-text-field>
-            <v-btn small @click="done">
-              Done
-            </v-btn>
+            <!--<v-text-field hideDetails readonly fullWidth :value="coordinate_string"></v-text-field>-->
           </div>
         </MglMap>
+        <v-btn v-if="done" style="bottom:2%; right:25%" fixed dark fab bottom right color="success" @click="back">
+          <v-icon>mdi-check</v-icon>
+        </v-btn>
+        <v-btn v-if="done" style="bottom:2%; right:20%" fixed dark fab bottom right color="orange darken-3" @click="rev_geocode">
+          <v-icon>mdi-map-marker-question-outline</v-icon>
+        </v-btn>
       </client-only>
     </v-layout>
   </div>
@@ -42,12 +45,17 @@
      */
 
     import {MglMarker, MglPopup} from 'vue-mapbox';
-    import {access_token, licci_style_map} from "../lib/services/mapbox";
-    import {pack_value} from "../lib/aspect";
-    import {ENTRIES_SET_ENTRY_VALUE} from "../lib/store_consts";
+    import {access_token, licci_style_map, rev_geocode} from "../lib/services/mapbox";
+    import {VIEW} from "../lib/consts";
 
-    const SIMPLE_MODE = 0
 
+    const COORDINATE = "coordinate"
+    const modes = [VIEW, COORDINATE]
+
+    /*
+        v-btn(style="bottom:2%; right:2 5%" fixed dark fab bottom right color="success" @click="drawer = !drawer")
+      v-icon mdi-check
+     */
     export default {
         name: "Map",
         components: {MglMarker, MglPopup},
@@ -64,10 +72,9 @@
             return {
                 accessToken: access_token, // your access token. Needed if you using Mapbox maps
                 mapStyle: licci_style_map, //'mapbox://styles/mapbox/streets-v11', // your map style,
-                coordinates: [0, 0],
+                display_coordinates: null,
+
                 entries: [],
-                mode: null,
-                modes: {SIMPLE_MODE: SIMPLE_MODE},
                 mapCssStyle: "",
                 layerVisiblities: {
                     climate: false,
@@ -85,7 +92,6 @@
             }
         },
         created() {
-            this.mode = this.$store.state.mapmode.select || SIMPLE_MODE
             this.map_sources_iter = Array.from(this.map_sources.entries())
         },
         methods: {
@@ -110,9 +116,21 @@
                 }
             },
             touch({mapboxEvent}) {
-                this.coordinates = [mapboxEvent.lngLat.lng, mapboxEvent.lngLat.lat]
+                if(this.mode === COORDINATE) {
+                    this.display_coordinates = [mapboxEvent.lngLat.lng, mapboxEvent.lngLat.lat]
+                    this.$store.commit("map/marker_point", this.display_coordinates)
+                }
             },
-            done() {
+            rev_geocode() {
+                rev_geocode(this.$axios, this.display_coordinates).then(res => {
+                    console.log(res)
+                }).catch(err => {
+                    console.log(err)
+                })
+
+            },
+            back() {
+                console.log("back")
                 /*
                 todo
                 SET EDIT
@@ -131,6 +149,17 @@
         computed: {
             coordinate_string() {
                 return this.coordinates[0].toString() + "   " + this.coordinates[1].toString()
+            },
+            mode() {
+              return this.$route.query.mode || COORDINATE
+            },
+            done() {
+                switch(this.mode) {
+                    case COORDINATE:
+                        return this.display_coordinates
+                    default:
+                        return false
+                }
             }
         },
         mounted() {

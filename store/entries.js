@@ -1,11 +1,12 @@
 /*
   this is for the own entries
  */
-import {ASPECT, COLLECT, COMPONENT, DRAFT, EDIT, ENTRY, INDEX, PRIVATE_LOCAL, VIEW} from "../lib/consts";
+import {ASPECT, COMPONENT, DRAFT, EDIT, ENTRY, INDEX, PRIVATE_LOCAL, VIEW} from "../lib/consts";
 import {get_entry_titleAspect, select_aspect_loc} from "../lib/entry";
 import {aspect_loc_str2arr, loc_prepend} from "../lib/aspect";
 import {GET_ENTRY} from "../lib/store_consts";
 
+import Vue from "vue"
 
 const ld = require("lodash")
 
@@ -81,7 +82,7 @@ export const mutations = {
     } else if (final_loc[0] === COMPONENT) {
       select.value[final_loc[1]] = value
     } else if (final_loc[0] === INDEX) {
-      select.value[final_loc[1]] = value
+      Vue.set(select.value,final_loc[1], value)
     } else {
       console.log("ERROR store.entries. final location", final_loc)
     }
@@ -120,7 +121,10 @@ export const getters = {
     return state.entries.values()
   },
   all_entries_array(state) {
-    return Array.from(state.entries.values())
+    //console.log(state.entries)
+    return () => {
+      return Array.from(state.entries.values())
+    }
   },
   get_edit(state) {
     return state.edit
@@ -178,7 +182,7 @@ export const getters = {
   get_parent(state, getters) { // ENTRIES_GET_PARENT
     return entry => {
       //console.log("getter", entry, entry.refs)
-      return getters["get_entry"](entry.refs.parent.uuid)
+      return getters.get_entry(entry.refs.parent.uuid)
     }
   },
   value(state, getters) {
@@ -239,7 +243,7 @@ export const getters = {
       }
       // todo maybe it would be cleaner to add "entry "+uuid , so that  aspect_loc_str2arr/is wrapped around
       const title = select_aspect_loc(state, loc_prepend(ENTRY, uuid, aspect_loc_str2arr(titleAspect)))
-      console.log("get_entry_title", title)
+      //console.log("get_entry_title", title)
       if (title.value)
         return title.value
       else {
@@ -253,9 +257,7 @@ export const getters = {
     // when owner, draft > edit
     // otherwise > view
     return (uuid = state.edit.uuid) => {
-      console.log(uuid)
       const entry = getters.get_entry(uuid)
-      console.log(uuid)
       if (entry.privacy === PRIVATE_LOCAL) {
         return EDIT
       } else {
@@ -283,7 +285,7 @@ export const actions = {
   },
   save_child_n_ref(context, {uuid, child, aspect_loc, child_uuid}) { // ENTRIES_SAVE_CHILD_N_REF
     if (!uuid) {
-      uuid = context.getters["edit_uuid"]
+      uuid = context.getters.edit_uuid
     }
     context.dispatch("save_entry", uuid)
     context.commit("save_entry", child)
@@ -300,7 +302,7 @@ export const actions = {
   // rename to save edit entry
   // todo: purpose/name: update meta or something like that?
   save_entry(context, uuid = context.state.edit.uuid) {
-    const entry_title = context.getters["get_entry_title"](uuid)
+    const entry_title = context.getters.get_entry_title(uuid)
     context.commit("update_title", {uuid, title: entry_title})
   },
   set_edit(context, uuid) {
@@ -328,22 +330,7 @@ export const actions = {
       context.commit(DELETE_ENTRY, uuid)
       context.commit(DELETE_EDIT_ENTRY)
 
-      //context.getters("value")
-      /*let parent_no_index = JSON.parse(JSON.stringify(parent))
 
-      if (ld.last(parent_no_index.aspect_loc)[0] === "index") {
-        parent_no_index.aspect_loc.pop()
-      }
-      const value = context.getters.get_entry_value(parent_no_index)
-      // ListOf
-      if (Array.isArray(value)) {
-        const filtered_value = value.filter(av => av !== uuid)
-        context.commit("set_entry_value", {
-          ...parent_no_index,
-          value: pack_value(filtered_value)
-        })
-
-       */
     } else {
       console.log("store: entries DELETE tries to delete some entry that doesnt exist!")
     }
