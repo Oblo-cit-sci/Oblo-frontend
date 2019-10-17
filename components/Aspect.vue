@@ -7,8 +7,7 @@
       v-bind="title_description(aspect)"
       :disabled="disable"
       :disabled_text="disabled_text"
-      :mode="real_mode"
-      :placeholder="is_placeholder")
+      :mode="real_mode")
     v-switch(v-if="has_alternative"
       v-model="use_regular"
       hideDetails
@@ -150,6 +149,9 @@
                 }
             },
             show_title_description() {
+                if((this.aspect.attr.placeholder || this.aspect.type === "options") && this.mode === VIEW) {
+                    return false
+                }
                 if (this.extra.hasOwnProperty("show_title_descr")) {
                     return this.extra.show_title_descr
                 } else
@@ -167,13 +169,7 @@
                 } else
                     return this.mode
             },
-            is_placeholder() {
-                if(this.aspect.attr.placeholder) {
-                    return true
-                } else {
-                    return false
-                }
-            },
+
             /*raw_value() {
                 if (!this.value) { // failsafe
                     return aspect_raw_default_value(this.aspect)
