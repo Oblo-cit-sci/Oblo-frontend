@@ -13,6 +13,7 @@
             v-on:entryAction="handleEntryAction($event, index)"
             v-on:append-outer="remove_value(index)")
           ListitemActions(
+            v-if="!readOnly"
             :requires_delete="requires_delete"
             :itemname="extra.itemname"
             :moveable="moveable"
@@ -20,7 +21,7 @@
             :listlength="value.length - 1"
             v-on:remove_value="remove_value($event)"
             v-on:move="move($event)")
-    div(v-else)
+    div(v-else class="mb-4 mt-4")
       v-expansion-panels(
         multiple
         v-model="act_panel_state")
@@ -38,7 +39,7 @@
               :extra="list_extra(index)"
               :aspect_loc="item_aspect_loc(index)"
               v-on:entryAction="$emit('entryAction',$event)")
-            ListitemActions(
+            ListitemActions(v-if="!readOnly"
               :requires_delete="requires_delete && !fixed_length"
               :itemname="extra.itemname"
               :moveable="moveable"
