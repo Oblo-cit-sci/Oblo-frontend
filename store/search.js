@@ -5,6 +5,9 @@ export const state = () => ({
 export const mutations = {
     set_entries(state, entries) {
         state.entries = new Map(entries)
+    },
+    clear(state) {
+      state.entries.clear()
     }
 }
 

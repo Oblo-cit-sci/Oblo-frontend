@@ -174,6 +174,7 @@ export const actions = {
   },
   clear_entries({commit}) {
     commit("entries/clear")
+    commit("search/clear")
     commit("clear_draft_numbers")
   }
 

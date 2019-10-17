@@ -81,71 +81,25 @@
     import GlobalSnackbar from "../components/GlobalSnackbar"
 
     const all_items = [
-        {
-            icon: 'home',
-            title: 'Home',
-            to: '/'
-        },
-        {
-            icon: 'note_add',
-            title: 'Create Entry',
-            to: '/CreateEntry'
-        },
-        {
-            icon: "reorder",
-            title: "My Entries",
-            to: "/personalentries"
-        },
-        {
-            icon: 'person',
-            title: 'Profile',
-            to: '/profile'
-        },
-        {
-            icon: 'computer',
-            title: 'Tests',
-            to: '/Tests'
-        },
-        {
-            icon: 'flip_to_front',
-            title: 'Entrytypes',
-            to: '/CreateEntrytype'
-        },
-        {
-            icon: 'fa-map',
-            title: 'Map',
-            to: '/Map'
-        },
-        {
-            icon: 'computer',
-            title: 'Aspectbuild',
-            to: '/AspectBuild'
-        },
-        {
-            icon: 'how_to_reg',
-            title: 'Register',
-            to: '/register'
-        },
-        {
-            icon: 'play_arrow',
-            title: 'Login',
-            to: '/login'
-        },
-        {
-            icon: 'keyboard_return',
-            title: 'Logout',
-            to: '/logout'
-        },
-        {
-            icon: 'settings',
-            title: 'Settings',
-            to: '/settings'
-        }
-        /*{
-          icon: "build",
-          title: "debug",
-          to: "/StoreDebug"
-        }*/
+        {icon: 'home', title: 'Home', to: '/'},
+        {icon: 'note_add', title: 'Create Entry', to: '/CreateEntry'},
+        {icon: "reorder", title: "My Entries", to: "/personalentries"},
+        {icon: 'person', title: 'Profile', to: '/profile'},
+        {icon: 'computer', title: 'Tests', to: '/Tests'},
+        {icon: 'flip_to_front', title: 'Entrytypes', to: '/CreateEntrytype'},
+        {icon: 'fa-map', title: 'Map', to: '/Map'},
+        {icon: 'computer', title: 'Aspectbuild', to: '/AspectBuild'},
+        {icon: 'how_to_reg', title: 'Register', to: '/register'},
+        {icon: 'play_arrow', title: 'Login', to: '/login'},
+        {icon: 'keyboard_return', title: 'Logout', to: '/logout'},
+        {icon: 'settings', title: 'Settings', to: '/settings'}
+        /*{icon: "build",title: "debug", to: "/StoreDebug"}*/
+    ]
+
+    const header_items = [
+        /*{icon: "",to: "/export"},*/
+        {icon: 'home', to: '/'},
+        /*{icon: 'notifications',title: '',to: '/notifications'},*/
     ]
 
     let require_login = ["Profile", "Logout"]
@@ -164,21 +118,7 @@
                 miniVariant: false,
                 title: 'LICCI',
                 version: pkg.version,
-                header_items: [
-                    /*{
-                      icon: "",
-                      to: "/export"
-                    },*/
-                    {
-                        icon: 'home',
-                        to: '/'
-                    },
-                    /*{
-                      icon: 'notifications',
-                      title: '',
-                      to: '/notifications'
-                    },*/
-                ]
+                header_items: header_items
             }
         },
         computed: {
@@ -199,10 +139,10 @@
                 if (!this.logged_in) {
                     items = this.$_.filter(items, item => require_login.indexOf(item.title) === -1)
                     if (!this.connected) {
-                        items = this.$_.filter(items,item => hide_no_login.indexOf(item.title) === -1)
+                        items = this.$_.filter(items, item => hide_no_login.indexOf(item.title) === -1)
                     }
                 } else { // logged in
-                    items =this.$_.filter(items,item => hide_no_login.indexOf(item.title) === -1)
+                    items = this.$_.filter(items, item => hide_no_login.indexOf(item.title) === -1)
                 }
                 if (!this.isDev) {
                     items = this.$_.filter(items, item => show_inDev.indexOf(item.title) === -1)

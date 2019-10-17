@@ -27,7 +27,7 @@
             return {}
         },
         computed: {
-            ...mapGetters({entries: "entries/all_entries_array"}),
+            ...mapGetters({entries: "entries/all_entries_arrayall_entries_array"}),
 
         },
         methods: {}

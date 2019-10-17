@@ -120,7 +120,10 @@ export const getters = {
     return state.entries.values()
   },
   all_entries_array(state) {
-    return Array.from(state.entries.values())
+    //console.log(state.entries)
+    return () => {
+      return Array.from(state.entries.values())
+    }
   },
   get_edit(state) {
     return state.edit
@@ -253,9 +256,7 @@ export const getters = {
     // when owner, draft > edit
     // otherwise > view
     return (uuid = state.edit.uuid) => {
-      console.log(uuid)
       const entry = getters.get_entry(uuid)
-      console.log(uuid)
       if (entry.privacy === PRIVATE_LOCAL) {
         return EDIT
       } else {

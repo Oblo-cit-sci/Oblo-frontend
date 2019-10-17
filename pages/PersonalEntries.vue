@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-layout(column)
+  v-container(fluid)
     v-layout(row wrap justify-start)
       v-flex(
         v-for="o in filter_options" :key="o.value")
@@ -7,69 +7,73 @@
           v-model="filter"
           :label="o.label"
           :value="o.value")
-    v-layout(row justify-center)
-      entrylist(xm12 lg12 :entries="entries")
+    v-row(wrap justify-center)
+      v-col(cols=12 v-for="entry in entries"
+        :key="entry.uuid" class="col-sm-6 col-xs-12")
+        Entrypreview(:entry="entry")
+
 </template>
 
 <script>
-  import Entrylist from "../components/Entrylist";
+    import Entrylist from "../components/Entrylist";
+    import Entrypreview from "../components/EntryPreview";
+    import {ENTRIES_ALL_ENTRIES_ARRAY} from "../lib/store_consts";
 
-  const ld = require("lodash");
+    const ld = require("lodash");
 
-  const options = [
-    {
-      label: "All",
-      value: "all"
-    },
-    {
-      label: "Owner",
-      value: "owners"
-    },
-    {
-      label: "Reviewer",
-      value: "reviewers"
-    },
-    {
-      label: "Explicit access",
-      value: "explicit_access"
-    },
-    {
-      label: "Collaborator",
-      value: "collaborators"
-    }
-  ];
-
-  const roles = ld.map(options, (o) => {
-    return o.value
-  });
-
-  export default {
-    name: "PersonalEntries",
-    components: {Entrylist},
-    data() {
-      return {
-        filter_options: options,
-        filter: ["all"]
-      }
-    },
-    computed: {
-      entries() {
-        const registered_name = this.$store.state.user.user_data.registered_name;
-        let result_entries = Array.from(this.$store.state.entries.entries.values())
-        if (this.filter.length !== 1) {
-          if (this.$_.last(this.filter) === "all") {
-            this.filter = ["all"]
-            //console.log(this.$store.state.entries)
-          } else {
-            if (this.filter[0] === "all") {
-              this.filter.shift()
-            }
-          }
+    const options = [
+        {
+            label: "All",
+            value: "all"
+        },
+        {
+            label: "Owner",
+            value: "owners"
+        },
+        {
+            label: "Reviewer",
+            value: "reviewers"
+        },
+        {
+            label: "Explicit access",
+            value: "explicit_access"
+        },
+        {
+            label: "Collaborator",
+            value: "collaborators"
         }
-        return result_entries
-      }
+    ];
+
+    const roles = ld.map(options, (o) => {
+        return o.value
+    });
+
+    export default {
+        name: "PersonalEntries",
+        components: {Entrylist, Entrypreview},
+        data() {
+            return {
+                filter_options: options,
+                filter: ["all"]
+            }
+        },
+        computed: {
+            entries() {
+                let result_entries = this.$store.getters[ENTRIES_ALL_ENTRIES_ARRAY]()
+                if (this.filter.length !== 1) {
+                    if (this.$_.last(this.filter) === "all") {
+                        this.filter = ["all"]
+                        //console.log(this.$store.state.entries)
+                    } else {
+                        if (this.filter[0] === "consoleall") {
+                            this.filter.shift()
+                        }
+                    }
+                }
+                return result_entries
+            }
+        }
     }
-  }
 </script>
 
 <style scoped>
