@@ -9,8 +9,9 @@
       :force_view="force_view"
       :disabled="disabled")
   div(v-else)
-   p(v-if="select_check" class="text-uppercase") {{check_box_value ? this.options[1].text : this.options[0].text}}
-   p(v-else) {{this.selection.value}}
+    div(v-if="value")
+     p(v-if="select_check" class="text-uppercase") {{check_box_value ? this.options[1].text : this.options[0].text}}
+     p(v-else) {{this.selection.value}}
 </template>
 
 <script>
@@ -30,7 +31,7 @@
             this.$options.components.SingleSelect = require('../SingleSelect.vue').default
         },
         created() {
-            
+            console.log("created", this.value, this.mvalue, this.aspect.name)
             if (this.select_check) {
                 this.check_box_value = this.value === this.options[1].value // or maybe a value/default...
                 if (this.aspect.items.length !== 2) {
@@ -65,6 +66,7 @@
                 this.set_selection()
             },
             selection() {
+                console.log("watch sel", this.selection, this.init)
                 //console.log("Select-selection", this.selection, "/",val, "/",prev_val, !prev_val)
                 if (this.init) {
                     this.init = false
