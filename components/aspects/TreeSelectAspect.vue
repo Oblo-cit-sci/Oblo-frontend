@@ -1,10 +1,6 @@
 <template lang="pug">
   div
-    div nanana
     v-flex(text-xs-left)
-    div {{aspect_loc}}
-    div {{value}}
-    div coool
       v-autocomplete(
         outlined
         single-line

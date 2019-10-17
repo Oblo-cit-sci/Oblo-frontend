@@ -6,6 +6,7 @@ import {get_entry_titleAspect, select_aspect_loc} from "../lib/entry";
 import {aspect_loc_str2arr, loc_prepend} from "../lib/aspect";
 import {GET_ENTRY} from "../lib/store_consts";
 
+import Vue from "vue"
 
 const ld = require("lodash")
 
@@ -72,7 +73,6 @@ export const mutations = {
     state.timeline_entries = []
   },
   _set_entry_value(state, {aspect_loc, value}) {
-    //console.log("set entry value", aspect_loc, value)
     let select = select_aspect_loc(state, aspect_loc, true)
     const final_loc = ld.last(aspect_loc)
     //console.log("final,", final_loc, "select", select, "value", value)
@@ -81,7 +81,7 @@ export const mutations = {
     } else if (final_loc[0] === COMPONENT) {
       select.value[final_loc[1]] = value
     } else if (final_loc[0] === INDEX) {
-      select.value[final_loc[1]] = value
+      Vue.set(select.value,final_loc[1], value)
     } else {
       console.log("ERROR store.entries. final location", final_loc)
     }
