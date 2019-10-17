@@ -1,11 +1,12 @@
 /*
   this is for the own entries
  */
-import {ASPECT, COLLECT, COMPONENT, DRAFT, EDIT, ENTRY, INDEX, PRIVATE_LOCAL, VIEW} from "../lib/consts";
+import {ASPECT, COMPONENT, DRAFT, EDIT, ENTRY, INDEX, PRIVATE_LOCAL, VIEW} from "../lib/consts";
 import {get_entry_titleAspect, select_aspect_loc} from "../lib/entry";
 import {aspect_loc_str2arr, loc_prepend} from "../lib/aspect";
 import {GET_ENTRY} from "../lib/store_consts";
 
+import Vue from "vue"
 
 const ld = require("lodash")
 
@@ -81,7 +82,7 @@ export const mutations = {
     } else if (final_loc[0] === COMPONENT) {
       select.value[final_loc[1]] = value
     } else if (final_loc[0] === INDEX) {
-      select.value[final_loc[1]] = value
+      Vue.set(select.value,final_loc[1], value)
     } else {
       console.log("ERROR store.entries. final location", final_loc)
     }
@@ -312,7 +313,7 @@ export const actions = {
     delete context.state.entries.get(uuid).refs.children[child_uuid]
     context.commit("_remove_entry_value_index", ld.concat([[ENTRY, uuid]], aspect_loc))
   },
-  delete_entry: function (context, uuid) { // ENTRIES_DELETE_ENTRY
+  delete_entry(context, uuid) { // ENTRIES_DELETE_ENTRY
     const entry = context.state.entries.get(uuid)
     if (entry) {
       // TODO just TEMP, for easier testing
