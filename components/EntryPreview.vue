@@ -58,7 +58,7 @@
 
     v-card-actions
       div
-        v-btn(small text outlined @click="show(entry)") {{goto_text}}
+        v-btn(small text outlined @click="goto(entry)") {{goto_text}}
         v-btn(small text outlined v-if="to_download") Download
 </template>
 
@@ -85,9 +85,9 @@
             }
         },
         methods: {
-            show(entry) {
+            goto(entry) {
                 if (this.$store.getters[ENTRIES_HAS_ENTRY](entry.uuid))
-                    this.$router.push("/entry/" + entry.uuid)
+                    this.to_entry(entry.uuid, this.proper_mode)
                 else
                     this.fetch_and_nav(entry.uuid)
             },
@@ -102,18 +102,15 @@
             entry_date() {
                 return printDate(this.entry.creation_datetime)
             },
-            to_edit() {
-                return this.$store.getters["entries/get_proper_mode"](undefined, this.entry.uuid) === EDIT
+            proper_mode() {
+                return this.$store.getters["entries/get_proper_mode"](this.entry.uuid)
             },
             to_download() {
                 return false
             },
             goto_text() {
-                if (this.to_edit) {
-                    return EDIT
-                } else {
-                    return "details"
-                }
+                // assuming, we call it edit and view
+                return this.proper_mode
             },
             show_image() {
                 return true
