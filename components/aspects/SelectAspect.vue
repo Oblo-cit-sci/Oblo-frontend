@@ -11,7 +11,7 @@
   div(v-else)
     div(v-if="value")
      p(v-if="select_check" class="text-uppercase") {{check_box_value ? this.options[1].text : this.options[0].text}}
-     p(v-else) {{this.selection.value}}
+     p(v-else) {{this.selection.text}}
 </template>
 
 <script>

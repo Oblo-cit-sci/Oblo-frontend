@@ -19,16 +19,12 @@
           v-on="on"
         ></v-text-field>
       </template>
-      <v-date-picker value="value" @change="value_change($event)" no-title @input="menu = false"></v-date-picker>
+      <v-date-picker v-model="value"  :show-current="false" @change="value_change($event)" no-title @input="menu = false"></v-date-picker>
     </v-menu>
   </div>
-  <div v-else>
-    <v-text-field
-      :value="value"
-      :label="aspect.name"
-      prepend-icon="event"
-      readonly  solo flat
-    ></v-text-field>
+  <div v-else class="mb-2 mt-2">
+    <v-icon readonly  solo flat> mdi-calendar</v-icon>
+    <span class="ml-2">{{value}}</span>
   </div>
 </template>
 

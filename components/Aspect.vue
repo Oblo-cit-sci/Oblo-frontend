@@ -8,11 +8,12 @@
       :disabled="disable"
       :disabled_text="disabled_text"
       :mode="real_mode")
-    v-switch(v-if="has_alternative"
+    v-switch(v-if="has_alternative && mode === 'edit'"
       v-model="use_regular"
       hideDetails
       :label="use_regular ? regular_value_text: alternative_value_text"
       color="primary")
+    div(v-if="mode === 'view' && !use_regular") {{alternative_value_text}}
     component(
       v-if="use_regular"
       :is="aspectComponent(aspect, mode)"
