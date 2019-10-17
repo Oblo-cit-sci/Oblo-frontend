@@ -244,7 +244,7 @@ export const getters = {
       // todo maybe it would be cleaner to add "entry "+uuid , so that  aspect_loc_str2arr/is wrapped around
       const title = select_aspect_loc(state, loc_prepend(ENTRY, uuid, aspect_loc_str2arr(titleAspect)))
       //console.log("get_entry_title", title)
-      if (title.value)
+      if (title && title.value)
         return title.value
       else {
         console.log("entries.get_entry_title TODO, use default title for type")

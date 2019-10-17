@@ -68,7 +68,7 @@
     import {ENTRIES_HAS_ENTRY, ENTRIES_USER_RIGHTS} from "../lib/store_consts";
     import {CREATOR, entry_actor_relation} from "../lib/actors";
     import {privacy_icon, printDate} from "../lib/util";
-    import {EDIT} from "../lib/consts";
+    import {EDIT, VIEW} from "../lib/consts";
 
     export default {
         name: "Entrypreview",
