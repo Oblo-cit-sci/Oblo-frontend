@@ -1,6 +1,6 @@
 <template lang="pug">
   v-card(class="mx-auto" outlined)
-    v-row(class="ma-2")
+    v-row(class="ma-1")
       v-col(cols="12" class="col-md-8 col-sm-12 entry-meta")
         div(class="overline") {{entry_date}}
         p(class="headline mb-4") {{entry.title}}
@@ -68,7 +68,7 @@
     import {ENTRIES_HAS_ENTRY, ENTRIES_USER_RIGHTS} from "../lib/store_consts";
     import {CREATOR, entry_actor_relation} from "../lib/actors";
     import {privacy_icon, printDate} from "../lib/util";
-    import {EDIT} from "../lib/consts";
+    import {EDIT, VIEW} from "../lib/consts";
 
     export default {
         name: "Entrypreview",
@@ -103,7 +103,7 @@
                 return printDate(this.entry.creation_datetime)
             },
             proper_mode() {
-                return this.$store.getters["entries/get_proper_mode"](this.entry.uuid)
+                return VIEW //this.$store.getters["entries/get_proper_mode"](this.entry.uuid)
             },
             to_download() {
                 return false

@@ -13,7 +13,7 @@
                     :loading="searching")
         v-row(wrap justify-center)
             v-col(cols=12 v-for="entry in entries"
-                :key="entry.id" class="col-sm-6 col-xs-12")
+                :key="entry.id" class="col-sm-12 col-xs-6")
                 Entrypreview(:entry="entry")
 </template>
 
@@ -22,15 +22,25 @@
     import { mapGetters} from "vuex"
     import Entrypreview from "../components/EntryPreview";
     import {search_entries} from "../lib/client";
+    import {mapMutations} from "../_node_modules/vuex";
 
     export default {
         name: "Search",
         components: {Entrypreview},
+        props: {
+            init_clear: Boolean
+        },
         data() {
             return {
                 searching: false,
                 keyword: ''
             }
+        },
+        created() {
+          if(this.init_clear) {
+              console.log("clear")
+              this.clear()
+          }
         },
         watch: {
             keyword: function (newKeyword, oldKeyword) {
@@ -48,11 +58,13 @@
                 search_entries(this.$axios, this.$store, this.keyword)
                     .then(res => {
                         this.searching = false
+                        this.$emit("received_search_results", this.entries)
                     }).catch(err => {
                         console.log('Error getting entries')
                         this.searching = false
                     })
-            }
+            },
+            ...mapMutations({"clear": "search/clear"})
         }
   }
 </script>
