@@ -2,31 +2,41 @@
   v-app
     v-btn(style="bottom:2%" fixed dark fab bottom right color="blue" @click="drawer = !drawer")
       v-icon mdi-menu
-    v-navigation-drawer(
-      app
+    v-bottom-sheet(
       v-model="drawer"
-      :mini-variant="false"
-      :clipped="true"
-      :hide-overlay="true"
-      temporary
-      width="400"
-      fixed)
-      v-btn(to="/" nuxt) back
-      v-row(wrap justify-center)
-        v-col(cols=12 v-for="entry in entries"
-          :key="entry.id" class="col-sm-12 col-xs-12")
-          Entrypreview(:entry="entry")
+      scrollable
+      hide-overlay)
+      v-card(height="300")
+        v-row(cols="12")
+          v-col.col-sm-2
+            v-btn(to="/" nuxt)
+              v-icon home
+              span home
+          v-col.col-sm-2
+            v-btn my location
+              v-icon mdi-crosshairs-gps
+          v-col.col-sm-2
+            v-btn() search
+              v-icon search
+          v-col.col-sm-2(right)
+            v-btn(text :ripple="false" @click="drawer = !drawer")
+              v-icon mdi-chevron-double-down
+        v-card-text
+          Search(v-on:received_search_results="update_map_entries($event)" clean)
     v-content
       v-container(id="fullContainer")
-        nuxt
+
     GlobalSnackbar
 </template>
 
 <script>
 
+    // nuxt
     import GlobalSnackbar from "../components/GlobalSnackbar"
     import Entrypreview from "../components/EntryPreview"
     import {mapGetters} from "vuex"
+    import Search from "../components/Search";
+    import {mapMutations} from "vuex";
 
     const menu = [
         {
@@ -36,7 +46,7 @@
         },
     ]
     export default {
-        components: {GlobalSnackbar, Entrypreview},
+        components: {GlobalSnackbar, Entrypreview, Search},
         data() {
             return {
                 drawer: false,
@@ -45,6 +55,14 @@
         },
         computed: {
             ...mapGetters({entries: "entries/all_entries_array"})
+        },
+        methods: {
+            update_map_entries(entries) {
+                console.log(entries)
+                //this.set_entries(entries)
+                this.$store.commit("map/set_entries", entries)
+            },
+            ...mapMutations({"set_entries": "map/set_entries"})
         }
     }
 </script>
@@ -56,4 +74,7 @@
     padding: 0;
   }
 
+  .bggg {
+    background-color: aliceblue;
+  }
 </style>
