@@ -15,7 +15,7 @@
 
   import {export_data} from "../lib/import_export";
   import {get_from_store_location} from "../lib/aspect";
-  import {mapToJson, printDate} from "../lib/util";
+  import {mapToJson, printDateHours} from "../lib/util";
 
   const ld = require("lodash")
 
@@ -87,7 +87,7 @@
         return data
       },
       blob_dl() {
-        const filename = "export_" + printDate(new Date()) + ".json"
+        const filename = "export_" + printDateHours(new Date()) + ".json"
         export_data(this.export_data(), filename)
         //console.log(this.export_data())
       }

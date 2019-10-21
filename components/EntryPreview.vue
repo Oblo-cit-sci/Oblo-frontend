@@ -80,8 +80,8 @@
         },
         data: function () {
             return {
-                recent: {},
-                date: new Date().toISOString().substr(0, 10)
+              recent: {},
+              date: new Date().toISOString().substr(0, 10)
             }
         },
         methods: {
