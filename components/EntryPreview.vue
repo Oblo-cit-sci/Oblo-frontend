@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-card(class="mx-auto" outlined)
+  v-card(class="mx-auto custom-card" outlined)
     v-row(class="ma-2")
       v-col(cols="12" class="col-md-8 col-sm-12 entry-meta")
         div(class="overline") {{entry_date}}
@@ -123,6 +123,11 @@
 </script>
 
 <style scoped>
+
+  .custom-card {
+    height: 100%
+  }
+  
   .entry-display-size {
     width: 100%;
   }
