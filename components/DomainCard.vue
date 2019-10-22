@@ -1,5 +1,5 @@
 <template lang="pug">
-    v-card(class="mb-10" outlined :width="550"  :to="to" nuxt :ripple="false")
+    v-card(class="mb-10" outlined :width="550"  :to="to" nuxt :ripple="false" @click.native="setDomain()")
         v-img(:src="img_src" max-height="auto")
             v-card-title(class="align-end fill-height shadow") {{title}}
         v-card-text {{text}}
@@ -31,7 +31,11 @@
 
         },
         computed: {},
-        methods: {},
+        methods: {
+            setDomain() {
+                console.log('setDomain', this.title)
+            }
+        },
         watch: {}
     }
 </script>
