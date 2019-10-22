@@ -35,6 +35,8 @@
         created() {
           if(this.init_clear) {
               this.clear()
+              // TODO if entries is empty make DEFAULT search
+
           }
         },
         watch: {
@@ -50,6 +52,8 @@
         methods: {
             getEntries() {
                 this.searching = true
+                // TODO replace keyword with configuration
+                // build_config merges 2 objects,
                 search_entries(this.$axios, this.$store, this.keyword)
                     .then(res => {
                         this.searching = false
