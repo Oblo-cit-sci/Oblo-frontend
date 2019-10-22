@@ -18,7 +18,7 @@
             </MglMarker>
             <!--<v-text-field hideDetails readonly fullWidth :value="coordinate_string"></v-text-field>-->
           </div>
-          <MglMarker v-for="entry in entries" :coordinates="entry.location">
+          <MglMarker v-for="entry in entries" :coordinates="entry.location" :key="entry.uuid">
             <!--<MglPopup anchor="top">
               <VCard>
                 <div>Hello, I'm popup!</div>

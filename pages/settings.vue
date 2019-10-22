@@ -104,6 +104,7 @@
             load_file(event) {
                 if (event.ok) {
                     event.data.forEach(entry => {
+                        entry.creation_datetime = new Date(entry.creation_datetime)
                         this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
                     })
                     this.ok_snackbar("Entries imported")
