@@ -38,7 +38,6 @@
         },
         created() {
           if(this.init_clear) {
-              console.log("clear")
               this.clear()
           }
         },
