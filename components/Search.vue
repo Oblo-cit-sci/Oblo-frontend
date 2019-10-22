@@ -11,22 +11,18 @@
                     @click:append-outer="getEntries"
                     clearable
                     :loading="searching")
-        v-row(wrap justify-center)
-            v-col(cols=12 v-for="entry in entries"
-                :key="entry.id" class="col-sm-12 col-xs-6")
-                Entrypreview(:entry="entry")
+        EntryPreviewList(:entries="entries")
 </template>
 
 <script>
 
-    import { mapGetters} from "vuex"
-    import Entrypreview from "../components/EntryPreview";
+    import {mapGetters, mapMutations} from "vuex"
+    import EntryPreviewList from "../components/EntryPreviewList"
     import {search_entries} from "../lib/client";
-    import {mapMutations} from "../_node_modules/vuex";
 
     export default {
         name: "Search",
-        components: {Entrypreview},
+        components: {EntryPreviewList},
         props: {
             init_clear: Boolean
         },
