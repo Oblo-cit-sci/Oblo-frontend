@@ -5,7 +5,7 @@
       small
       class="mr-2 mb-2"
       label)
-      v-avatar
+      v-avatar(v-if="item.icon")
         v-icon(small) {{item.icon}}
       p(class="ma-0" ) {{item.name}}
 </template>
@@ -29,10 +29,4 @@
 </script>
 
 <style scoped>
-  .secondary_descr {
-    font-size: 85%;
-    padding-left: 1%;
-    padding-right: 5%;
-  }
-
 </style>

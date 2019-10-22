@@ -16,9 +16,7 @@
               src="https://article.images.consumerreports.org/f_auto/prod/content/dam/CRO%20Images%202018/Health/June/CR-Health-InlineHero-Foods-That-Are-Healthier-Cooked-09-17"
               alt="item")
     v-row(v-if="show_tags" class="ma-2")
-      div(class="ml-4 mb-2")
-        span(class="pr-4 text-truncate caption") # {{entry.type_slug}}
-        span(class="pr-4 text-truncate caption") # {{entry.status}}
+      Tags
 
     v-divider(light)
 
@@ -36,10 +34,11 @@
     import {privacy_icon, printDate} from "../lib/util";
     import {EDIT} from "../lib/consts";
     import MetaChips from "../components/MetaChips";
+    import Tags from "../components/Tags";
 
     export default {
         name: "Entrypreview",
-        components: {MetaChips},
+        components: {MetaChips, Tags},
         props: {
             entry: {type: Object, required: true}
         },
