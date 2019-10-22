@@ -18,7 +18,6 @@
     // div(v-if="initialized")
     //   entrylist(:entries="$store.state.entries.timeline_entries")
 
-    import Entrylist from '../components/Entrylist.vue'
     import {initialize} from "../lib/client"
     import DomainCard from "../components/DomainCard";
 
@@ -62,7 +61,7 @@
 
         },
         components: {
-            Entrylist, DomainCard
+            DomainCard
         },
         methods: {
             initialize() {

@@ -7,16 +7,13 @@
           v-model="filter"
           :label="o.label"
           :value="o.value")
-    v-row(wrap justify-center)
-      v-col(cols=12 v-for="entry in entries"
-        :key="entry.uuid" class="col-sm-6 col-xs-12")
-        Entrypreview(:entry="entry")
+      EntryPreviewList(:entries="entries")
 
 </template>
 
 <script>
-    import Entrylist from "../components/Entrylist";
     import Entrypreview from "../components/EntryPreview";
+    import EntryPreviewList from "../components/EntryPreviewList";
     import {ENTRIES_ALL_ENTRIES_ARRAY} from "../lib/store_consts";
 
     const ld = require("lodash");
@@ -50,7 +47,7 @@
 
     export default {
         name: "PersonalEntries",
-        components: {Entrylist, Entrypreview},
+        components: {EntryPreviewList, Entrypreview},
         data() {
             return {
                 filter_options: options,
