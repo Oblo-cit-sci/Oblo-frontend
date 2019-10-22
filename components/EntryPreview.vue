@@ -75,7 +75,11 @@
                 return this.proper_mode
             },
             show_image() {
+              if(this.entry.image) {
                 return true
+              } else {
+                return false
+              }  
             },
             show_tags() {
                 return true
