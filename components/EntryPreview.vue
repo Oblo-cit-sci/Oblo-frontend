@@ -30,11 +30,12 @@
     import {license_icon} from "../lib/client"
     import EntryNavMixin from "./EntryNavMixin";
     import {ENTRIES_HAS_ENTRY, ENTRIES_USER_RIGHTS} from "../lib/store_consts";
-    import {CREATOR, entry_actor_relation} from "../lib/actors";
-    import {privacy_icon, printDate} from "../lib/util";
-    import {EDIT} from "../lib/consts";
-    import MetaChips from "../components/MetaChips";
-    import Tags from "../components/Tags";
+    import {CREATOR, entry_actor_relation} from "../lib/actors"
+    import {privacy_icon, printDate} from "../lib/util"
+    import {EDIT} from "../lib/consts"
+    import MetaChips from "../components/MetaChips"
+    import Tags from "../components/Tags"
+    import {get_proper_mode} from "../lib/entry"
 
     export default {
         name: "Entrypreview",
@@ -64,7 +65,7 @@
                 return printDate(this.entry.creation_datetime)
             },
             proper_mode() {
-                return this.$store.getters["entries/get_proper_mode"](this.entry.uuid)
+              return(get_proper_mode(this.$store, this.entry))
             },
             to_download() {
                 return false
