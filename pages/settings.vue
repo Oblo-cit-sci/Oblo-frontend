@@ -107,6 +107,7 @@
                         entry.creation_datetime = new Date(entry.creation_datetime)
                         this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
                     })
+                    console.log("Entries imported")
                     this.ok_snackbar("Entries imported")
                 } else {
                     this.error_snackbar("Something went wrong")
