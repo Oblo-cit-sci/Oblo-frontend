@@ -1,7 +1,7 @@
 <template lang="pug">
   div
     span {{count_text}}{{comma ? ", " : ""}} &nbsp
-    span(v-if="requires") required: {{min}}
+    span(v-if="requires") {{min}} required
     span(v-else)
       span(v-if="min") min: {{min}} &nbsp;
       span(v-if="max") max: {{max}}
@@ -24,10 +24,10 @@
         },
         computed: {
             requires() {
-                return this.min === this.max && this.min !== undefined
+                return this.min !== null
             },
             comma() {
-                return this.min !== undefined || this.max !== undefined || this.requires
+                return this.min !== null && this.min > 0
             },
             count_text() {
                 const attr = this.aspect.attr

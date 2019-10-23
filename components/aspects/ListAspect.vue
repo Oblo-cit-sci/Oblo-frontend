@@ -21,10 +21,10 @@
             :listlength="value.length - 1"
             v-on:remove_value="remove_value($event)"
             v-on:move="move($event)")
-    div(v-else class="mb-4 mt-4")
+    div(v-else class="mb-1 mt-1")
       v-expansion-panels(
         multiple
-        v-model="act_panel_state")
+        v-model="panelState")
         v-expansion-panel(
           v-if="aspect_is_on_page(index)"
           v-for="(value, index) in value"
@@ -54,21 +54,21 @@
       :min="this.min"
       :max="this.max")
 
-    div(v-if="!readOnly && !fixed_length")
+    div.inline(v-if="!readOnly && !fixed_length")
       v-btn(:disabled="!more_allowed" @click="add_value()" :color="requieres_more_color") Add {{item_name}}
         v-icon(right) add
-      ListPagination(
-        v-if="has_pagination"
-        :total="Math.ceil(value.length / PAGINATION_TRESH)"
-        :page="page"
-        :pages="pages"
-        :allow_jump="allow_jump"
-        :default_next_page_text="default_next_page_text"
-        :default_prev_page_text="default_prev_page_text"
-        @update:page="set_page($event)"
-        @lastpage="more_follow_page = ($event)")
-      .v-text-field__details
-        .v-messages
+    ListPagination(
+      v-if="has_pagination"
+      :total="Math.ceil(value.length / PAGINATION_TRESH)"
+      :page="page"
+      :pages="pages"
+      :allow_jump="allow_jump"
+      :default_next_page_text="default_next_page_text"
+      :default_prev_page_text="default_prev_page_text"
+      @update:page="set_page($event)"
+      @lastpage="more_follow_page = ($event)")
+    .v-text-field__details
+      .v-messages
 </template>
 
 <script>
@@ -89,7 +89,7 @@
     const SIMPLE = "simple"
     const PANELS = "panels"
 
-    const PAGINATION_TRESH = 3
+    const PAGINATION_TRESH = 5
 
     export default {
         name: "ListAspect",
@@ -112,7 +112,7 @@
                 PAGINATION_TRESH: PAGINATION_TRESH
             }
         },
-        created() {          
+        created() {
             //console.log("LA created", this.value)
             let item_type = this.aspect.items;
             // todo. list, are extended lists by user, not select lists
@@ -142,6 +142,7 @@
                 if (this.aspect.items.type === "composite" || this.aspect.attr.force_panels) {
                     this.item_aspect = this.aspect.items;
                     this.structure = PANELS
+                    this.titles
                     // fill in the values of the titleAspect
                 } else {
                     this.item_aspect = this.aspect.items;
@@ -194,11 +195,13 @@
             },
             add_value(n = 1) {
                 let additional = []
+                console.log("list add")
                 for (let i = 0; i < n; i++) {
                     additional.push(packed_aspect_default_value(this.item_aspect))
                     if (this.structure === PANELS) {
-                        this.panelState = [this.value.length]
+                        this.panelState = [(this.value.length) % PAGINATION_TRESH]
                     }
+                console.log("list, panelstate, ",this.panelState)
                 }
                 this.value_change(this.$_.concat(this.value, additional))
 
@@ -260,6 +263,7 @@
         },
         computed: {
             has_pagination() {
+                console.log("LIST_ASP has_pagination", this.value)
                 return this.value.length > PAGINATION_TRESH || this.aspect.attr.pagination
             },
             pages() {
@@ -269,12 +273,14 @@
                 }
                 return pages
             },
-            act_panel_state: {
+            /*act_panel_state: {
                 get() {
+
+                    console.log("act panel", this.$_.filter(this.panelState, (e, index) => this.index_on_act_page(index)))
                     return this.$_.filter(this.panelState, (e, index) => this.index_on_act_page(index))
                 },
                 set(val) {} // we need this, or vue warns...
-            },
+            },*/
             is_simple() {
                 return this.structure === SIMPLE
             },
@@ -312,4 +318,8 @@
     width: 98%;
     margin: auto;
   }*/
+
+  .inline {
+    display: inline-block;
+  }
 </style>

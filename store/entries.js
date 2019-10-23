@@ -197,7 +197,7 @@ export const getters = {
 
   },
   get_recursive_entries(state, getters) {
-    return uuid => {
+    return (uuid = state.edit.uuid) => {
       const entry = getters.get_entry(uuid)
       let entries = [entry]
       const child_keys = Object.keys(entry.refs.children)
@@ -244,7 +244,7 @@ export const getters = {
       // todo maybe it would be cleaner to add "entry "+uuid , so that  aspect_loc_str2arr/is wrapped around
       const title = select_aspect_loc(state, loc_prepend(ENTRY, uuid, aspect_loc_str2arr(titleAspect)))
       //console.log("get_entry_title", title)
-      if (title.value)
+      if (title && title.value)
         return title.value
       else {
         console.log("entries.get_entry_title TODO, use default title for type")
@@ -273,10 +273,11 @@ export const actions = {
     context.commit("set_edit_dirty")
     // context.commit("update")
   },
-  save_child_n_ref(context, {uuid, child, aspect_loc, child_uuid}) { // ENTRIES_SAVE_CHILD_N_REF
+  save_child_n_ref(context, {uuid, child, aspect_loc}) { // ENTRIES_SAVE_CHILD_N_REF
     if (!uuid) {
       uuid = context.getters.edit_uuid
     }
+    let child_uuid= child.uuid
     context.dispatch("save_entry", uuid)
     context.commit("save_entry", child)
     context.commit("add_ref_child", {uuid, aspect_loc, child_uuid})

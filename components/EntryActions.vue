@@ -228,9 +228,6 @@
             dirty() {
                 return this.entry.local.dirty
             },
-            is_draft() {
-                return this.entry.status === DRAFT
-            },
             submitted() {
                 return this.entry.status === SUBMITTED
             },
@@ -253,9 +250,8 @@
                 return this.entry_type.content.meta.hasOwnProperty("named_pages") || false
             },
             save_word() {
-                if(!this.dirty) {
-                    return "save" // TODO "back"
-                } else if (this.in_context) {
+                // todo
+                if (this.in_context) {
                     return "save and back"
                 } else if (this.private_local) {
                     return "save"
