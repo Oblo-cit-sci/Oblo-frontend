@@ -15,6 +15,9 @@ export const state = () => ({
   draft_numbers: {},
   meta: {
     repository: {}
+  }, 
+  domain: {
+    title: undefined
   }
   // selected entry type (for creation)
 })
@@ -92,6 +95,12 @@ export const mutations = {
   },
   clear_draft_numbers(state) {
     state.draft_numbers = {}
+  },
+  set_domain(state, domain) {
+    state.domain.title = domain
+  },
+  clear_domain(state) {
+    state.domain.title = undefined
   }
 };
 
@@ -165,6 +174,12 @@ export const getters = {
   },
   connected(state) {
     return state.connected
+  },
+  get_domain(state) {
+    return state.domain
+  },
+  get_domain_title(state) {
+    return state.domain.title
   }
 };
 

@@ -33,7 +33,7 @@
                     img_src: "images/licci.jpg",
                     text: "Local Indicators of Climate Change Impacts - The Contribution of Local Knowledge to Climate Change Research"
                 }, {
-                    title: "CONECT-e",
+                    title: "CONECTE",
                     to: "/domain/conecte",
                     img_src: "images/conecte.jpg",
                     text: "Compartiendo el CONocimiento ECológico Tradicional - Una plataforma interactiva de recogida y transmisión de conocimientos tradicionales relativos a plantas, animales, hongos, variedades tradicionales de cultivos o ecosistemas"
@@ -58,8 +58,8 @@
                 this.initialized = this.$store.state.initialized
                 //fix_entries(this.$store)
             })
-
-        },
+            this.$store.commit("clear_domain")
+        },  
         components: {
             DomainCard
         },
