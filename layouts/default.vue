@@ -37,7 +37,7 @@
       <v-app-bar-nav-icon v-show="initialized" @click="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title>
       <span>
-        {{title}}
+        {{domain_title}}
       </span>
         <span style="font-size: 0.6em">(v{{version}})</span>
       </v-toolbar-title>
@@ -116,45 +116,45 @@
                 drawer: false,
                 clipped: false,
                 miniVariant: false,
-                title: 'LICCI',
+                title: this.$store.getters["get_domain"] ? this.$store.state.domain.title : 'HOME',
                 version: pkg.version,
                 header_items: header_items
             }
         },
         computed: {
             initialized() {
-                return this.$store.getters[INITIALIZED]
+              return this.$store.getters[INITIALIZED]
             },
             connecting() {
-                return this.$store.getters["connecting"]
+              return this.$store.getters["connecting"]
             },
             connected() {
-                return this.$store.getters["connected"]
+              return this.$store.getters["connected"]
             },
             logged_in() {
-                return this.$store.getters["user/logged_in"]
+              return this.$store.getters["user/logged_in"]
             },
             items() {
-                let items = all_items
-                if (!this.logged_in) {
-                    items = this.$_.filter(items, item => require_login.indexOf(item.title) === -1)
-                    if (!this.connected) {
-                        items = this.$_.filter(items, item => hide_no_login.indexOf(item.title) === -1)
-                    }
-                } else { // logged in
-                    items = this.$_.filter(items, item => hide_no_login.indexOf(item.title) === -1)
-                }
-                if (!this.isDev) {
-                    items = this.$_.filter(items, item => show_inDev.indexOf(item.title) === -1)
-                }
-                return items
+              let items = all_items
+              if (!this.logged_in) {
+                  items = this.$_.filter(items, item => require_login.indexOf(item.title) === -1)
+                  if (!this.connected) {
+                      items = this.$_.filter(items, item => hide_no_login.indexOf(item.title) === -1)
+                  }
+              } else { // logged in
+                  items = this.$_.filter(items, item => hide_no_login.indexOf(item.title) === -1)
+              }
+              if (!this.isDev) {
+                  items = this.$_.filter(items, item => show_inDev.indexOf(item.title) === -1)
+              }
+              return items
             },
             connected_icon() {
-                if (this.connected) {
-                    return "wifi"
-                } else {
-                    return "wifi_off"
-                }
+              if (this.connected) {
+                  return "wifi"
+              } else {
+                  return "wifi_off"
+              }
             },
             userrole_icon() {
                 if (this.$store.getters.visitor) {
@@ -162,6 +162,13 @@
                 } else {
                     return "person"
                 }
+            },
+            domain_title() {
+              if (this.$store.getters["get_domain_title"]) {
+                return this.$store.state.domain.title
+              } else {
+                return "HOME"
+              }
             }
         }
     }
