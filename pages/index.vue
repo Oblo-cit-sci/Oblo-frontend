@@ -58,8 +58,8 @@
                 this.initialized = this.$store.state.initialized
                 //fix_entries(this.$store)
             })
-
-        },
+            this.$store.commit("clear_domain")
+        },  
         components: {
             DomainCard
         },

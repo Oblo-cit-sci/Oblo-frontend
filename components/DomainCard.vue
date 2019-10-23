@@ -33,7 +33,7 @@
         computed: {},
         methods: {
             setDomain() {
-                console.log('setDomain', this.title)
+                this.$store.commit("set_domain",this.title)
             }
         },
         watch: {}
