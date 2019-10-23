@@ -2,7 +2,7 @@
   this is for the own entries
  */
 import {ASPECT, COMPONENT, DRAFT, EDIT, ENTRY, INDEX, PRIVATE_LOCAL, VIEW} from "../lib/consts";
-import {get_entry_titleAspect, select_aspect_loc} from "../lib/entry";
+import {get_entry_titleAspect, get_proper_mode, select_aspect_loc} from "../lib/entry";
 import {aspect_loc_str2arr, loc_prepend} from "../lib/aspect";
 import {GET_ENTRY} from "../lib/store_consts";
 
@@ -258,17 +258,7 @@ export const getters = {
     // otherwise > view
     return (uuid = state.edit.uuid) => {
       const entry = getters.get_entry(uuid)
-      if (entry.privacy === PRIVATE_LOCAL) {
-        return EDIT
-      } else {
-        const user_rights = getters.user_rights(undefined, entry.uuid)
-        const status = getters.get_status(entry.uuid)
-        if (user_rights === EDIT && status === DRAFT) {
-          return EDIT
-        } else {
-          return VIEW
-        }
-      }
+      return get_proper_mode(entry)
     }
   },
   get_search_entries: function (state) {

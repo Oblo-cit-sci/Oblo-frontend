@@ -1,19 +1,19 @@
 <template lang="pug">
   div(
     :class="[{ composite: (aspect.type === 'composite' && mode === 'edit'),  disabled: disable}]"
-    :id="aspect_id" v-if="enabled_visible")
+    :id="aspect_id" v-if="visible")
     Title_Description(
       v-if="show_title_description"
       v-bind="title_description(aspect)"
       :disabled="disable"
       :disabled_text="disabled_text"
-      :mode="real_mode"
-      :placeholder="is_placeholder")
-    v-switch(v-if="has_alternative"
+      :mode="real_mode")
+    v-switch(v-if="has_alternative && mode === 'edit'"
       v-model="use_regular"
       hideDetails
       :label="use_regular ? regular_value_text: alternative_value_text"
       color="primary")
+    div(v-if="mode === 'view' && !use_regular") {{alternative_value_text}}
     component(
       v-if="use_regular"
       :is="aspectComponent(aspect, mode)"
@@ -60,9 +60,10 @@
                 default: "view"
             },
             aspect: Object,
-            aspect_loc:
-                {type: Array},
-            //value: Object, // a wrapper, which  might encode "exceptional_value"
+            aspect_loc: {
+                type: Array,
+                required: true
+            },
             extra: {
                 type: Object,
                 default: () => {
@@ -72,30 +73,17 @@
         },
         data() {
             return {
-                has_alternative: false,
-                use_regular:  null // leave it null, to catch create triggering watcher
+                use_regular: null // leave it null, to catch create triggering watcher
             }
         },
         created() {
-            try {
-                this.has_alternative = this.aspect.attr.hasOwnProperty("alternative")
-                if (!this.aspect_loc) {
-                    console.log("Aspect.created: no aspect_loc defined for", this.aspect.name, "emitting up results")
-                }
-                try {
-                    this.use_regular = this.value.hasOwnProperty("regular") ? this.value.regular : true
-                } catch (e) {
-                    console.log("Aspect.created, ERROR, no value for aspect:", this.aspect.name)
-                    this.update_value(aspect_raw_default_value(this.aspect))
-                    this.use_regular = true
-                }
-            } catch (e) {
-                console.log("DEV, crash on Aspect", this.aspect.name, this.aspect, this.aspect_loc)
-                console.log(e)
-            }
+            this.use_regular = this.value.hasOwnProperty("regular") ? this.value.regular : true
         },
         // boolean check is not required, since "false" is the default
         computed: {
+            has_alternative() {
+                return this.aspect.attr.hasOwnProperty("alternative")
+            },
             condition_fail() {
                 //console.log("condition_fail?", this.aspect, this.aspect.name, this.condition)
                 // todo this getting of the value, could mayeb also go into the helper...
@@ -150,12 +138,15 @@
                 }
             },
             show_title_description() {
+                if ((this.aspect.attr.placeholder || this.aspect.type === "options") && this.mode === VIEW) {
+                    return false
+                }
                 if (this.extra.hasOwnProperty("show_title_descr")) {
                     return this.extra.show_title_descr
                 } else
                     return true
             },
-            enabled_visible() {
+            visible() {
                 return !this.disable || !this.aspect.attr.hide_on_disabled
             },
             real_mode() {
@@ -167,13 +158,7 @@
                 } else
                     return this.mode
             },
-            is_placeholder() {
-                if(this.aspect.attr.placeholder) {
-                    return true
-                } else {
-                    return false
-                }
-            },
+
             /*raw_value() {
                 if (!this.value) { // failsafe
                     return aspect_raw_default_value(this.aspect)

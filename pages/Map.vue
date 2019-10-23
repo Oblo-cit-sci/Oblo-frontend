@@ -18,6 +18,13 @@
             </MglMarker>
             <!--<v-text-field hideDetails readonly fullWidth :value="coordinate_string"></v-text-field>-->
           </div>
+          <MglMarker v-for="entry in entries" :coordinates="entry.location" :key="entry.uuid">
+            <!--<MglPopup anchor="top">
+              <VCard>
+                <div>Hello, I'm popup!</div>
+              </VCard>
+            </MglPopup>-->
+          </MglMarker>
         </MglMap>
         <v-btn v-if="done" style="bottom:2%; right:25%" fixed dark fab bottom right color="success" @click="back">
           <v-icon>mdi-check</v-icon>
@@ -52,6 +59,8 @@
     const COORDINATE = "coordinate"
     const modes = [VIEW, COORDINATE]
 
+    import {mapGetters} from "vuex"
+
     /*
         v-btn(style="bottom:2%; right:2 5%" fixed dark fab bottom right color="success" @click="drawer = !drawer")
       v-icon mdi-check
@@ -74,7 +83,6 @@
                 mapStyle: licci_style_map, //'mapbox://styles/mapbox/streets-v11', // your map style,
                 display_coordinates: null,
 
-                entries: [],
                 mapCssStyle: "",
                 layerVisiblities: {
                     climate: false,
@@ -130,7 +138,6 @@
 
             },
             back() {
-                console.log("back")
                 /*
                 todo
                 SET EDIT
@@ -153,6 +160,9 @@
             mode() {
               return this.$route.query.mode || COORDINATE
             },
+            ...mapGetters({
+                entries: "map/get_entries"
+            }),
             done() {
                 switch(this.mode) {
                     case COORDINATE:

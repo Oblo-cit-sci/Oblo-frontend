@@ -11,26 +11,35 @@
                     @click:append-outer="getEntries"
                     clearable
                     :loading="searching")
-        v-row(wrap justify-center)
-            v-col(cols=12 v-for="entry in entries"
-                :key="entry.id" class="col-sm-6 col-xs-12")
-                Entrypreview(:entry="entry")
+        EntryPreviewList(:entries="entries")
 </template>
 
 <script>
 
-    import { mapGetters} from "vuex"
-    import Entrypreview from "../components/EntryPreview";
+    import {mapGetters, mapMutations} from "vuex"
+    import EntryPreviewList from "../components/EntryPreviewList"
     import {search_entries} from "../lib/client";
 
     export default {
         name: "Search",
-        components: {Entrypreview},
+        components: {EntryPreviewList},
+        props: {
+            init_clear: Boolean
+        },
         data() {
             return {
                 searching: false,
                 keyword: ''
             }
+        },
+        created() {
+            if(this.init_clear) {
+                this.clear()
+            }
+            if(this.entries.length === 0) {
+               this.getEntries()
+            }
+
         },
         watch: {
             keyword: function (newKeyword, oldKeyword) {
@@ -45,13 +54,29 @@
         methods: {
             getEntries() {
                 this.searching = true
-                search_entries(this.$axios, this.$store, this.keyword)
+                let config = this.searchConfiguration()
+                // build_config merges 2 objects,
+
+                search_entries(this.$axios, this.$store, config)
                     .then(res => {
                         this.searching = false
+                        this.$emit("received_search_results", this.entries)
                     }).catch(err => {
                         console.log('Error getting entries')
                         this.searching = false
                     })
+            },
+            ...mapMutations({"clear": "search/clear"}),
+            searchConfiguration() {
+                let configuration = {
+                    required: {},
+                    include: {}
+                }
+                configuration.required.domain = this.$store.state.domain.title.toLowerCase()
+                if(this.keyword) {
+                    configuration.include.aspect_search = this.keyword
+                }
+                return configuration
             }
         }
   }

@@ -1,33 +1,34 @@
 <template lang="pug">
   v-container(fluid)
-    v-row
-      v-col(xs12 sm8 md12)
-        div
-      v-col(cols=12 v-for="entry in entries"
-        :key="entry.id" class="col-sm-12 col-xs-12")
-        Entrypreview(:entry="entry")
+    ActionButton(v-bind="loc")
 </template>
 
 <script>
 
-    import {mapGetters} from "vuex";
-    import Entrypreview from "../components/EntryPreview";
+    import ActionButton from "../components/aspect_utils/ActionButton";
+
+    const dev_loc_action_btn = {
+        action_title: "device location",
+        action_name: "get_device_location",
+        icon: "mdi-crosshairs-gps"
+    }
+
 
     const ld = require("lodash")
 
     export default {
         name: "Tests",
-        components: {Entrypreview},
+        components: {ActionButton},
         mounted () {
-            let name = this.$vuetify
         },
         created() {
         },
         data() {
-            return {}
+            return {
+                loc: dev_loc_action_btn
+            }
         },
         computed: {
-            ...mapGetters({entries: "entries/all_entries_arrayall_entries_array"})
         },
         methods: {}
     }

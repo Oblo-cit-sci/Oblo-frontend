@@ -20,6 +20,7 @@
     "@nuxtjs/pwa": "^2.6.0",
     "cross-env": "^5.2.1",
     "express": "^4.17.1",
+    "fast-levenshtein": "^2.0.6",
     "file-saver": "^2.0.2",
     "fs": "0.0.1-security",
     "localforage": "^1.7.3",

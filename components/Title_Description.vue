@@ -8,7 +8,7 @@
         div(v-else class="secondary_descr") {{description_part}}
     div(v-else class="pb-1") {{first_description}}
   div(v-else)
-    component(v-if="!placeholder" :is="header_type") {{title}}
+    component(:is="header_type") {{title}}
 </template>
 
 <script>
@@ -42,10 +42,6 @@
       mode: {
         type: String,
         default: VIEW
-      },
-      placeholder: {
-        type: Boolean,
-        default: false
       }
     },
     computed: {

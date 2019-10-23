@@ -1,5 +1,5 @@
 <template lang="pug">
-  div
+  div(v-if="!readOnly")
     div(v-if="edit && !selected_aspect")
       SingleSelect(
         :options="options"
@@ -12,6 +12,14 @@
         :aspect_loc="aspect_loc"
         :extra="extra"
         mode="edit")
+  div(v-else)
+    div(v-if="!selected_aspect")
+        p NO PILL SELECTED
+    div(v-if="selected_option")
+        Aspect(
+            v-bind:aspect="selected_aspect"
+            :aspect_loc="aspect_loc"
+            :extra="extra")
 </template>
 
 <script>
