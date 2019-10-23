@@ -33,11 +33,13 @@
             }
         },
         created() {
-          if(this.init_clear) {
-              this.clear()
-              // TODO if entries is empty make DEFAULT search
+            if(this.init_clear) {
+                this.clear()
+            }
+            if(this.entries.length === 0) {
+               this.getEntries()
+            }
 
-          }
         },
         watch: {
             keyword: function (newKeyword, oldKeyword) {
@@ -52,9 +54,10 @@
         methods: {
             getEntries() {
                 this.searching = true
-                // TODO replace keyword with configuration
+                let config = this.searchConfiguration()
                 // build_config merges 2 objects,
-                search_entries(this.$axios, this.$store, this.keyword)
+
+                search_entries(this.$axios, this.$store, config)
                     .then(res => {
                         this.searching = false
                         this.$emit("received_search_results", this.entries)
@@ -63,7 +66,18 @@
                         this.searching = false
                     })
             },
-            ...mapMutations({"clear": "search/clear"})
+            ...mapMutations({"clear": "search/clear"}),
+            searchConfiguration() {
+                let configuration = {
+                    required: {},
+                    include: {}
+                }
+                configuration.required.domain = this.$store.state.domain.title.toLowerCase()
+                if(this.keyword) {
+                    configuration.include.aspect_search = this.keyword
+                }
+                return configuration
+            }
         }
   }
 </script>
