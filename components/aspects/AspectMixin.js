@@ -1,5 +1,5 @@
 import {EDIT, VIEW} from "../../lib/consts";
-import {aspect_raw_default_value} from "../../lib/aspect";
+import {aspect_loc_uuid, aspect_raw_default_value} from "../../lib/aspect";
 
 export default {
   props: {
@@ -54,7 +54,11 @@ export default {
     },
     value() {
       return this.mvalue.value
+    },
+    entry_uuid() {
+      return aspect_loc_uuid(this.aspect_loc)
     }
+
   },
   watch: {}
 }

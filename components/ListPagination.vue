@@ -11,7 +11,10 @@
 
     export default {
         name: "ListPagination",
-        mixins: [PaginateMixin]
+        mixins: [PaginateMixin],
+        computed: {
+
+        }
     }
 </script>
 

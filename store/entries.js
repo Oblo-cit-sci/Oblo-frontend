@@ -3,7 +3,7 @@
  */
 import {ASPECT, COMPONENT, DRAFT, EDIT, ENTRY, INDEX, PRIVATE_LOCAL, VIEW} from "../lib/consts";
 import {get_entry_titleAspect, get_proper_mode, select_aspect_loc} from "../lib/entry";
-import {aspect_loc_str2arr, loc_prepend} from "../lib/aspect";
+import {aspect_loc_str, aspect_loc_str2arr, aspect_loc_uuid, loc_prepend, remove_entry_loc} from "../lib/aspect";
 import {GET_ENTRY} from "../lib/store_consts";
 
 import Vue from "vue"
@@ -37,6 +37,7 @@ export const mutations = {
      */
   },
   save_entry(state, entry) {
+    console.log(state.entries)
     state.entries.set(entry.uuid, entry)
   },
   delete_edit_entry(state) {
@@ -112,6 +113,17 @@ export const mutations = {
   },  // todo template for all kinds of computed meta-aspects
   update_title(state, {uuid, title}) {
     state.entries.get(uuid).title = title
+  },
+  entries_set_local_list_page(state, {aspect_loc, page}) {
+    let entry = state.entries.get(aspect_loc_uuid(aspect_loc))
+    // todo, later out, should be there from the creation
+    if(!entry.local.list_pages) {
+      entry.local.list_pages = {}
+    }
+    const loc_str = aspect_loc_str(remove_entry_loc(aspect_loc))
+    entry.local.list_pages[loc_str] = page
+    //let entry =
+    //remove_entry_loc
   }
 }
 

@@ -111,6 +111,12 @@
             }
         },
         mounted() {
+            console.log(this.entry.local)
+            if(this.entry.local.list_pages) {
+                for(let aspect of this.entry.local.list_pages) {
+
+                }
+            }
             if (this.$route.query.goTo) {
                 setTimeout(() => {
                     goTo("#" + this.$route.query.goTo, {
