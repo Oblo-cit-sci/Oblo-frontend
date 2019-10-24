@@ -121,6 +121,9 @@
                 header_items: header_items
             }
         },
+        methods: {
+            
+        },
         computed: {
             initialized() {
               return this.$store.getters[INITIALIZED]
@@ -164,11 +167,8 @@
                 }
             },
             domain_title() {
-              if (this.$store.getters[DOMAIN_TITLE]) {
-                return this.$store.state.domain.title
-              } else {
-                return HOME
-              }
+              let domain = this.$store.getters[DOMAIN]
+              return this.$store.state.domain ? domain.title : HOME
             }
         },
         watch: {
@@ -206,4 +206,9 @@
   .disabled * {
     opacity: 0.8;
   }
+
+  .header-avatar {
+  
+  }
+
 </style>

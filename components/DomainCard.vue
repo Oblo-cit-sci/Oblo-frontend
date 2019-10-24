@@ -1,8 +1,8 @@
 <template lang="pug">
-    v-card(class="mb-10" outlined :width="550"  :to="to" nuxt :ripple="false" @click.native="setDomain()")
-        v-img(:src="img_src" max-height="auto")
-            v-card-title(class="align-end fill-height shadow") {{title}}
-        v-card-text {{text}}
+    v-card(class="mb-10" outlined :width="550"  :to="domain.to" nuxt :ripple="false" @click.native="setDomain()")
+        v-img(:src="domain.img_src" max-height="auto")
+            v-card-title(class="align-end fill-height shadow") {{domain.title}}
+        v-card-text {{domain.text}}
 </template>
 
 <script>
@@ -10,20 +10,10 @@
     export default {
         name: "DomainCard",
         props: {
-            title: {
-                type: String,
-                required: true
-            },
-            to: {
-                type: String,
-                required: true
-            },
-            img_src: {
-                type: String
-            },
-            text: {
-              type: String
+            domain:{
+                type: Object
             }
+
         },
         data() {
             return {}
@@ -34,7 +24,7 @@
         computed: {},
         methods: {
             setDomain() {
-                this.$store.commit(SET_DOMAIN,this.title)              
+                this.$store.commit(SET_DOMAIN, this.domain)        
             }
         },
         watch: {}

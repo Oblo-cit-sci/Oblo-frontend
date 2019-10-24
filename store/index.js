@@ -16,9 +16,7 @@ export const state = () => ({
   meta: {
     repository: {}
   },
-  domain: {
-    title: undefined
-  }
+  domain: {}
   // selected entry type (for creation)
 })
 
@@ -97,10 +95,10 @@ export const mutations = {
     state.draft_numbers = {}
   },
   set_domain(state, domain) {
-    state.domain.title = domain
+    state.domain = domain
   },
   clear_domain(state) {
-    state.domain.title = undefined
+    state.domain = undefined
   },
   set_stored_entries(state, entries) {
     this.state.entries.entries = entries
