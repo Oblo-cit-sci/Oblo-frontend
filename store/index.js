@@ -189,6 +189,11 @@ export const getters = {
   },
   get_domain_title(state) {
     return state.domain.title
+  },
+  get_type_name(state) {
+    return slug => {
+      return state.entry_types.get(slug).title
+    }
   }
 };
 

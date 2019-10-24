@@ -8,7 +8,7 @@
         mode="edit")
       div(v-if="entry.refs.parent")
         span This entry is part of:&nbsp
-        a(@click="to_parent") {{parent_title}}
+        a(@click="to_parent(true, mode)") {{parent_title}}
       v-divider(class="wide_divider")
       div(v-if="has_pages")
         Title_Description(

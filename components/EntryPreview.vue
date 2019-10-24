@@ -2,9 +2,10 @@
   v-card(class="mx-auto custom-card" outlined)
     v-row(class="ma-2")
       v-col(cols="12" class="col-md-8 col-sm-12 entry-meta")
-        div(class="overline") {{entry_date}}
-        p(class="headline mb-4") {{entry.title}}
-        MetaChips
+        div.caption {{entry_date}}
+        p(class="headline mb-2") {{entry.title}}
+          span.subtitle-1 &nbsp; {{typename}}
+        MetaChips(:meta_aspects="meta_aspects")
       v-col(v-if="show_image" cols="12" class="col-md-4 col-sm-12 entry-image")
         div(class="float-md-right float-sm-left entry-display-size")
           v-avatar(
@@ -83,6 +84,15 @@
             },
             show_tags() {
                 return true
+            },
+            meta_aspects() {
+                let result = []
+                result.push({icon: privacy_icon(this.entry.privacy), name: this.entry.privacy})
+                result.push({name: "License: "+ this.entry.license})
+                return result
+            },
+            typename() {
+                return this.$store.getters["get_type_name"](this.entry.type_slug)
             }
         }
     }
