@@ -1,12 +1,7 @@
 <template lang="pug">
   v-container(fluid)
     v-layout(row wrap justify-start)
-      v-flex(
-        v-for="o in filter_options" :key="o.value")
-        v-checkbox(
-          v-model="filter"
-          :label="o.label"
-          :value="o.value")
+
       EntryPreviewList(:entries="entries")
 
 </template>
@@ -16,7 +11,16 @@
     import EntryPreviewList from "../components/EntryPreviewList";
     import {ENTRIES_ALL_ENTRIES_ARRAY} from "../lib/store_consts";
 
-    const ld = require("lodash");
+    /*
+    v-flex(
+        v-for="o in filter_options" :key="o.value")
+        v-checkbox(
+          v-model="filter"
+          :label="o.label"
+          :value="o.value")
+
+     */
+
 
     const options = [
         {
@@ -41,9 +45,7 @@
         }
     ];
 
-    const roles = ld.map(options, (o) => {
-        return o.value
-    });
+
 
     export default {
         name: "PersonalEntries",
@@ -68,6 +70,11 @@
                     }
                 }
                 return result_entries
+            },
+            roles() {
+                this.$_.map(options, (o) => {
+                    return o.value
+                });
             }
         }
     }
