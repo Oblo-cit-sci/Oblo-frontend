@@ -3,8 +3,9 @@
     v-row(class="ma-2")
       v-col(cols="12" class="col-md-8 col-sm-12 entry-meta")
         div.caption {{entry_date}}
-        p(class="headline mb-2") {{entry.title}}
-          span.subtitle-1 &nbsp; {{typename}}
+        p.title.mb-2 {{typename}}:
+          span.title &nbsp; {{entry.title}}
+          
         MetaChips(:meta_aspects="meta_aspects")
       v-col(v-if="show_image" cols="12" class="col-md-4 col-sm-12 entry-image")
         div(class="float-md-right float-sm-left entry-display-size")

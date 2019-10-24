@@ -1,6 +1,7 @@
 <template lang="pug">
   v-row(wrap justify-center)
-    div {{num_entries}} Entries
+    v-col(cols=12)
+        div {{num_entries}} Entries
     v-col(cols=12 v-for="entry in visible_entries"
       :key="entry.id" class="col-sm-12 col-xs-6")
       Entrypreview(:entry="entry")

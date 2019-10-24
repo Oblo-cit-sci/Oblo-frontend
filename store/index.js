@@ -100,7 +100,7 @@ export const mutations = {
   clear_domain(state) {
     state.domain = undefined
   },
-  set_stored_entries(state, entries) {
+  set_stored_entries(state, entries) {  
     this.state.entries.entries = entries
   },
   set_draft_numbers(state, draft_numbers) {
