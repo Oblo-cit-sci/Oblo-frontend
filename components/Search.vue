@@ -40,11 +40,16 @@
             if (this.entries.length === 0) {
                 this.getEntries()
             }
-
         },
         watch: {
-            keyword: function (newKeyword, oldKeyword) {
-                if (this.keyword !== null && this.keyword.length >= 4) {
+            keyword: function (kw) {
+                // !kw covers: kw === null || kw === "", which can both occur, (clear and deleting all manually)
+                if (!kw) {
+                    // TODO
+                    // this uses now, the domain only filter.
+                    // could later be replaced by, last search or all local in that domain (like it is now)
+                    this.getEntries()
+                } else if (kw.length >= 4) {
                     this.$_.debounce(this.getEntries, 500)()
                 }
             }
@@ -57,15 +62,14 @@
                 this.searching = true
                 let config = this.searchConfiguration()
                 // build_config merges 2 objects,
-
                 search_entries(this.$axios, this.$store, config)
                     .then(res => {
                         this.searching = false
                         this.$emit("received_search_results", this.entries)
                     }).catch(err => {
-                        console.log('Error getting entries')
-                        this.searching = false
-                    })
+                    console.log('Error getting entries')
+                    this.searching = false
+                })
             },
             ...mapMutations({"clear": CLEAR_SEARCH}),
             searchConfiguration(
@@ -78,7 +82,6 @@
                     include: {}
                 }
 
-                configuration.required.domain = this.$store.getters["domain_title"]
                 if (this.keyword) {
                     for (let default_search_part of ["title", "tags", "aspect_search"]) {
                         configuration.include[default_search_part] = this.keyword
@@ -87,7 +90,7 @@
                 return configuration
             }
         }
-  }
+    }
 </script>
 
 <style scoped>
