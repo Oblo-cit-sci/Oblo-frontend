@@ -77,9 +77,9 @@
 
 
 <script>
-    import {INITIALIZED} from "../lib/store_consts"
+    import {INITIALIZED, SET_ENTRIES, DOMAIN_TITLE, DOMAIN} from "../lib/store_consts"
     import GlobalSnackbar from "../components/GlobalSnackbar"
-
+    import {HOME} from "../lib/consts"
     const all_items = [
         {icon: 'home', title: 'Home', to: '/'},
         {icon: 'note_add', title: 'Create Entry', to: '/CreateEntry'},
@@ -105,7 +105,7 @@
     let require_login = ["Profile", "Logout"]
     let hide_no_login = ["Register", "Login"] // if not connected out and if logged in out
     let show_inDev = ["Tests", "Types", "Entrytypes", "Aspectbuild"]
-
+    let lastDomain = ''
     const pkg = require('../package')
 
     export default {
@@ -116,7 +116,7 @@
                 drawer: false,
                 clipped: false,
                 miniVariant: false,
-                title: this.$store.getters["get_domain"] ? this.$store.state.domain.title : 'HOME',
+                title: this.$store.getters[DOMAIN] ? this.$store.state.domain.title : HOME,
                 version: pkg.version,
                 header_items: header_items
             }
@@ -164,12 +164,22 @@
                 }
             },
             domain_title() {
-              if (this.$store.getters["get_domain_title"]) {
+              if (this.$store.getters[DOMAIN_TITLE]) {
                 return this.$store.state.domain.title
               } else {
-                return "HOME"
+                return HOME
               }
             }
+        },
+        watch: {
+          domain_title: function(newValue, oldValue) {
+            if (newValue !== HOME && newValue !== lastDomain) {
+              this.$store.commit(SET_ENTRIES, [])
+            } 
+            if(newValue !== HOME) {
+              lastDomain = newValue
+            }
+          }
         }
     }
 </script>

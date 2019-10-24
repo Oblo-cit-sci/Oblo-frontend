@@ -6,6 +6,7 @@
 </template>
 
 <script>
+    import {SET_DOMAIN} from "../lib/store_consts"
     export default {
         name: "DomainCard",
         props: {
@@ -33,7 +34,7 @@
         computed: {},
         methods: {
             setDomain() {
-                this.$store.commit("set_domain",this.title)
+                this.$store.commit(SET_DOMAIN,this.title)              
             }
         },
         watch: {}
