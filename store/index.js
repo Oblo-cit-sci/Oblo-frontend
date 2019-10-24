@@ -192,6 +192,9 @@ export const getters = {
     return slug => {
       return state.entry_types.get(slug).title
     }
+  },
+  domain_title(state) {
+    return state.domain.title ? state.domain.title.toLowerCase() : ''
   }
 };
 

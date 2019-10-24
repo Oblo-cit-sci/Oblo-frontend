@@ -1,17 +1,17 @@
 <template lang="pug">
-    v-container(fluid)
-        v-row(wrap justify-start)
-            v-col(cols="12")
-                v-text-field(
-                    v-model="keyword"
-                    label="Buscar"
-                    single-line
-                    hide-details
-                    append-outer-icon="search"
-                    @click:append-outer="getEntries"
-                    clearable
-                    :loading="searching")
-        EntryPreviewList(:entries="entries")
+  v-container(fluid)
+    v-row(wrap justify-start)
+      v-col(cols="12")
+        v-text-field(
+          v-model="keyword"
+          label="Search"
+          single-line
+          hide-details
+          append-outer-icon="search"
+          @click:append-outer="getEntries"
+          clearable
+          :loading="searching")
+    EntryPreviewList(:entries="entries")
 </template>
 
 <script>
@@ -34,17 +34,17 @@
             }
         },
         created() {
-            if(this.init_clear) {
+            if (this.init_clear) {
                 this.clear()
             }
-            if(this.entries.length === 0) {
-               this.getEntries()
+            if (this.entries.length === 0) {
+                this.getEntries()
             }
 
         },
         watch: {
             keyword: function (newKeyword, oldKeyword) {
-                if(this.keyword !== null && this.keyword.length >= 4) {
+                if (this.keyword !== null && this.keyword.length >= 4) {
                     this.$_.debounce(this.getEntries, 500)()
                 }
             }
@@ -63,25 +63,27 @@
                         this.searching = false
                         this.$emit("received_search_results", this.entries)
                     }).catch(err => {
-                        console.log('Error getting entries')
-                        this.searching = false
-                    })
+                    console.log('Error getting entries')
+                    this.searching = false
+                })
             },
             ...mapMutations({"clear": CLEAR_SEARCH}),
             searchConfiguration() {
+                // todo this is only the default. should be mixable with a props // map only shows those with location (required)
                 let configuration = {
                     required: {},
                     include: {}
                 }
-                configuration.required.domain = this.$store.state.domain.title ? 
-                                                this.$store.state.domain.title.toLowerCase() : ''
-                if(this.keyword) {
-                    configuration.include.aspect_search = this.keyword
+                configuration.required.domain = this.$store.getters["domain_title"]
+                if (this.keyword) {
+                    for (let default_search_part of ["title", "tags", "aspect_search"]) {
+                        configuration.include[default_search_part] = this.keyword
+                    }
                 }
                 return configuration
             }
         }
-  }
+    }
 </script>
 
 <style scoped>
