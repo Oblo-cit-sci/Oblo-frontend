@@ -59,13 +59,13 @@
                 //fix_entries(this.$store)
             })
             this.$store.commit("clear_domain")
-        },  
+        },
         components: {
             DomainCard
         },
         methods: {
             initialize() {
-                initialize(this.$axios, this.$store)
+                initialize(this.$axios, this.$store, this.$localForage)
             }
         }
     }
