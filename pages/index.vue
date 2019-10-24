@@ -2,8 +2,8 @@
   v-container(fluid)
     v-row(align="center" justify="center")
       v-col(class="col-lg-6 col-xs-12")
-        div(v-if="initialized")
-          DomainCard(v-for="domain in domains" :key="domain.title" v-bind="domain")
+        div(v-if="initialized" v-for="domain in domains" :key="domain.title")
+          DomainCard(:domain="domain")
         div(v-else-if="!connecting" style="width:60%")
           v-alert(type="error" value="true" style="width:100%") Not initialized
           div(style="margin-top:10%")
