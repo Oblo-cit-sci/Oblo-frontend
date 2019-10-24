@@ -111,6 +111,12 @@
             }
         },
         mounted() {
+            console.log(this.entry.local)
+            if(this.entry.local.list_pages) {
+                for(let aspect of this.entry.local.list_pages) {
+
+                }
+            }
             if (this.$route.query.goTo) {
                 setTimeout(() => {
                     goTo("#" + this.$route.query.goTo, {
@@ -122,6 +128,9 @@
         },
         beforeRouteLeave(to, from, next) {
             this.$store.dispatch(ENTRIES_SAVE_ENTRY)
+            this.$localForage.setItem("entries", this.$store.state.entries.entries, () => {
+                console.log("stored")
+            })
             next()
             /*
             if (this.entry.local.dirty) {

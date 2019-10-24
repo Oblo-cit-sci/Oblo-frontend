@@ -21,10 +21,10 @@
             :listlength="value.length - 1"
             v-on:remove_value="remove_value($event)"
             v-on:move="move($event)")
-    div(v-else class="mb-4 mt-4")
+    div(v-else class="mb-1 mt-1")
       v-expansion-panels(
         multiple
-        v-model="act_panel_state")
+        v-model="panelState")
         v-expansion-panel(
           v-if="aspect_is_on_page(index)"
           v-for="(value, index) in value"
@@ -59,13 +59,13 @@
         v-icon(right) add
       ListPagination(
         v-if="has_pagination"
-        :total="Math.ceil(value.length / PAGINATION_TRESH)"
+        :total="Math.ceil(value.length / pagination_tresh)"
         :page="page"
         :pages="pages"
         :allow_jump="allow_jump"
         :default_next_page_text="default_next_page_text"
         :default_prev_page_text="default_prev_page_text"
-        @update:page="set_page($event)"
+        @update:page="set_page($event, goto_panel_id())"
         @lastpage="more_follow_page = ($event)")
       .v-text-field__details
         .v-messages
@@ -80,7 +80,6 @@
     import {aspect_loc_str, packed_aspect_default_value, get_aspect_vue_component} from "../../lib/aspect";
     import ListitemActions from "../ListitemActions";
     import Paginate from "../Paginate";
-    import goTo from 'vuetify/lib/services/goto'
     import MinMaxIndicators from '../list_components/MinMaxIndicators'
 
     import ListPagination from "../ListPagination";
@@ -89,7 +88,6 @@
     const SIMPLE = "simple"
     const PANELS = "panels"
 
-    const PAGINATION_TRESH = 3
 
     export default {
         name: "ListAspect",
@@ -105,14 +103,9 @@
                 select: false, // select... instead of button
                 options: [],
                 //
-                page: 0,
-                allow_jump: false,
-                default_next_page_text: ">",
-                default_prev_page_text: "<",
-                PAGINATION_TRESH: PAGINATION_TRESH
             }
         },
-        created() {          
+        created() {
             //console.log("LA created", this.value)
             let item_type = this.aspect.items;
             // todo. list, are extended lists by user, not select lists
@@ -142,6 +135,7 @@
                 if (this.aspect.items.type === "composite" || this.aspect.attr.force_panels) {
                     this.item_aspect = this.aspect.items;
                     this.structure = PANELS
+                    this.titles
                     // fill in the values of the titleAspect
                 } else {
                     this.item_aspect = this.aspect.items;
@@ -175,36 +169,19 @@
             clearableAspectComponent(aspect) {
                 return get_aspect_vue_component(aspect, this.mode)
             },
-            aspect_is_on_page(index) {
-                return index >= this.page * PAGINATION_TRESH && index < (this.page + 1) * PAGINATION_TRESH
-            },
-            set_page(page) {
-                this.page = page
-                try {
-                    const item_no = parseInt(page * PAGINATION_TRESH)
-                    setTimeout(() => {
-                        goTo("#" + this.panel_id(item_no), {
-                            duration: 200,
-                            easing: "easeOutCubic"
-                        })
-                    }, 50)
-                } catch (e) {
-                    console.log(e)
-                }
-            },
             add_value(n = 1) {
                 let additional = []
                 for (let i = 0; i < n; i++) {
                     additional.push(packed_aspect_default_value(this.item_aspect))
-                    if (this.structure === PANELS) {
-                        this.panelState = [this.value.length]
-                    }
+                    this.value_change(this.$_.concat(this.value, additional))
+                    this.goto_delayed_last_page(this.goto_panel_id())
+                    setTimeout(() => {
+                        if (this.structure === PANELS) {
+                            this.panelState = [(this.value.length + this.pagination_tresh - 1) % this.pagination_tresh]
+                        }
+                    }, 20)
                 }
-                this.value_change(this.$_.concat(this.value, additional))
 
-                setTimeout(() => {
-                    this.set_page(this.pages.length - 1)
-                }, 50)
 
             },
             remove_value(index) {
@@ -255,26 +232,20 @@
                 return "L-" + aspect_loc_str(this.$_.slice(this.$_.concat(this.aspect_loc, [[INDEX, index]]), 1))
             },
             index_on_act_page(index) {
-                return index >= this.page * PAGINATION_TRESH && index < (this.page + 1) * PAGINATION_TRESH
+                return index >= this.page * this.pagination_tresh && index < (this.page + 1) * this.pagination_tresh
+            },
+            goto_panel_id() {
+                return this.panel_id(parseInt(this.page * this.pagination_tresh))
             }
         },
         computed: {
-            has_pagination() {
-                return this.value.length > PAGINATION_TRESH || this.aspect.attr.pagination
-            },
-            pages() {
-                let pages = []
-                for (let i = 0; i < this.value.length / PAGINATION_TRESH; i++) {
-                    pages.push({})
-                }
-                return pages
-            },
-            act_panel_state: {
+            /*act_panel_state: {
                 get() {
                     return this.$_.filter(this.panelState, (e, index) => this.index_on_act_page(index))
                 },
-                set(val) {} // we need this, or vue warns...
-            },
+                set(val) {
+                } // we need this, or vue warns...
+            },*/
             is_simple() {
                 return this.structure === SIMPLE
             },

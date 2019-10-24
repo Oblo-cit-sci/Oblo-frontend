@@ -55,7 +55,6 @@ module.exports = {
   */
   plugins: [
     {src: '~/plugins/mapbox', mode: 'client'},
-    { src: '~/plugins/vuex-persist', mode: 'client'  },
     '~/plugins/lodash.js',
   ],
 
@@ -67,7 +66,8 @@ module.exports = {
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
     '@nuxtjs/font-awesome',
-    '~/modules/myCache'
+    '~/modules/myCache',
+    '@nuxtjs/localforage'
   ],
 
 

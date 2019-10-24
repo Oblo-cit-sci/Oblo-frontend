@@ -79,7 +79,7 @@
                 return true
               } else {
                 return false
-              }  
+              }
             },
             show_tags() {
                 return true

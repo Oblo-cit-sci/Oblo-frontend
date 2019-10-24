@@ -15,8 +15,6 @@
 
 <script>
 
-    // div(v-if="initialized")
-    //   entrylist(:entries="$store.state.entries.timeline_entries")
 
     import {initialize} from "../lib/client"
     import DomainCard from "../components/DomainCard";
@@ -59,13 +57,13 @@
                 //fix_entries(this.$store)
             })
             this.$store.commit("clear_domain")
-        },  
+        },
         components: {
             DomainCard
         },
         methods: {
             initialize() {
-                initialize(this.$axios, this.$store)
+                initialize(this.$axios, this.$store, this.$localForage)
             }
         }
     }

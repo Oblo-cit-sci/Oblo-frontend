@@ -99,6 +99,9 @@ export const mutations = {
   },
   clear_domain(state) {
     state.domain = undefined
+  },
+  set_stored_entries(state, entries) {
+    this.state.entries.entries = entries
   }
 };
 
@@ -187,5 +190,4 @@ export const actions = {
     commit("search/clear")
     commit("clear_draft_numbers")
   }
-
 }
