@@ -4,21 +4,12 @@
       div(v-for="(value, index) in value" :key="index")
         div(v-if="aspect_is_on_page(index)" :id="panel_id(index)")
           Aspect(
-            :aspect="indexed_item_aspect(index)"
-            :value.sync="value"
-            :edit="true"
-            :mode="mode"
-            :aspect_loc="item_aspect_loc(index)"
-            :extra="list_extra(index)"
+            v-bind="list_aspect_props(index)"
             v-on:entryAction="handleEntryAction($event, index)"
             v-on:append-outer="remove_value(index)")
           ListitemActions(
             v-if="!readOnly"
-            :requires_delete="requires_delete"
-            :itemname="extra.itemname"
-            :moveable="moveable"
-            :index="index"
-            :listlength="value.length - 1"
+            v-bind="listitem_actions_prop(index)"
             v-on:remove_value="remove_value($event)"
             v-on:move="move($event)")
     div(v-else class="mb-1 mt-1")
@@ -29,22 +20,14 @@
           v-if="aspect_is_on_page(index)"
           v-for="(value, index) in value"
           :key="index"
-          :id="panel_id(index)"
-        )
+          :id="panel_id(index)")
           v-expansion-panel-header {{titles[index]|| index + 1}}
           v-expansion-panel-content
             Aspect(
-              :aspect="indexed_item_aspect(index)"
-              :mode="mode"
-              :extra="list_extra(index)"
-              :aspect_loc="item_aspect_loc(index)"
+              v-bind="list_aspect_props(index)"
               v-on:entryAction="$emit('entryAction',$event)")
             ListitemActions(v-if="!readOnly"
-              :requires_delete="requires_delete && !fixed_length"
-              :itemname="extra.itemname"
-              :moveable="moveable"
-              :index="index"
-              :listlength="value.length - 1"
+              v-bind="listitem_actions_prop(index)"
               v-on:remove_value="remove_value($event)"
               v-on:move="move($event)")
     MinMaxIndicators(
@@ -53,20 +36,14 @@
       :length="this.value.length"
       :min="this.min"
       :max="this.max")
-
-    div(v-if="!readOnly && !fixed_length")
+    .inline(v-if="!readOnly && !fixed_length")
       v-btn(:disabled="!more_allowed" @click="add_value()" :color="requieres_more_color") Add {{item_name}}
         v-icon(right) add
-      ListPagination(
-        v-if="has_pagination"
-        :total="Math.ceil(value.length / pagination_tresh)"
-        :page="page"
-        :pages="pages"
-        :allow_jump="allow_jump"
-        :default_next_page_text="default_next_page_text"
-        :default_prev_page_text="default_prev_page_text"
-        @update:page="set_page($event, goto_panel_id())"
-        @lastpage="more_follow_page = ($event)")
+    ListPagination(
+      v-if="has_pagination"
+      v-bind="pagination_props"
+      @update:page="set_page($event, goto_panel_id($event))"
+      @lastpage="more_follow_page = ($event)")
       .v-text-field__details
         .v-messages
 </template>
@@ -77,13 +54,19 @@
     import Aspect from "../Aspect";
     import ListMixin from "../ListMixin";
     import {INDEX} from "../../lib/consts";
-    import {aspect_loc_str, packed_aspect_default_value, get_aspect_vue_component} from "../../lib/aspect";
+    import {
+        aspect_loc_str,
+        packed_aspect_default_value,
+        get_aspect_vue_component,
+        remove_entry_loc
+    } from "../../lib/aspect";
     import ListitemActions from "../ListitemActions";
     import Paginate from "../Paginate";
     import MinMaxIndicators from '../list_components/MinMaxIndicators'
 
     import ListPagination from "../ListPagination";
     import {get_codes_as_options} from "../../lib/options";
+    import goTo from 'vuetify/lib/services/goto'
 
     const SIMPLE = "simple"
     const PANELS = "panels"
@@ -110,21 +93,15 @@
             let item_type = this.aspect.items;
             // todo. list, are extended lists by user, not select lists
             if (typeof (item_type) === "string") {
-                if (item_type[0] === "*") {
-                    this.select = true
-                    //console.log("list multi-select", item_type)
-                    this.options = get_codes_as_options(this.$store.state, item_type)
-                } else {
-                    switch (item_type) {
-                        case "str":
-                            this.structure = SIMPLE
-                            break;
-                        case "int":
-                            this.structure = SIMPLE
-                            break
-                        default:
-                            console.log("unknown type for list", item_type);
-                    }
+                switch (item_type) {
+                    case "str":
+                        this.structure = SIMPLE
+                        break;
+                    case "int":
+                        this.structure = SIMPLE
+                        break
+                    default:
+                        console.log("unknown type for list", item_type);
                 }
                 this.item_aspect = {
                     attr: {},
@@ -135,11 +112,12 @@
                 if (this.aspect.items.type === "composite" || this.aspect.attr.force_panels) {
                     this.item_aspect = this.aspect.items;
                     this.structure = PANELS
+                    // get the titles // should cause having the panel titles when entry is entered
                     this.titles
                     // fill in the values of the titleAspect
                 } else {
                     this.item_aspect = this.aspect.items;
-                    this.structure = "simple";
+                    this.structure = SIMPLE;
                 }
             }
             // not sure if this would still be an extra or attr...
@@ -164,6 +142,13 @@
                     this.add_value()
                 }
             }
+            const entry = this.get_entry()
+            if (entry.local.list_pages) {
+                const loc_str = aspect_loc_str(remove_entry_loc(this.aspect_loc))
+                if (entry.local.list_pages[loc_str] !== undefined) {
+                    this.set_page(entry.local.list_pages[loc_str])
+                }
+            }
         },
         methods: {
             clearableAspectComponent(aspect) {
@@ -176,13 +161,28 @@
                     this.value_change(this.$_.concat(this.value, additional))
                     this.goto_delayed_last_page(this.goto_panel_id())
                     setTimeout(() => {
-                        if (this.structure === PANELS) {
+                        if (!this.is_simple) {
                             this.panelState = [(this.value.length + this.pagination_tresh - 1) % this.pagination_tresh]
                         }
                     }, 20)
                 }
-
-
+            },
+            list_aspect_props(index) {
+                return {
+                    aspect: this.indexed_item_aspect(index),
+                    mode: this.mode,
+                    aspect_loc: this.item_aspect_loc(index),
+                    extra: this.list_extra(index)
+                }
+            },
+            listitem_actions_prop(index) {
+                return {
+                    requires_delete: this.requires_delete,
+                    itemname: this.extra.itemname,
+                    moveable: this.moveable,
+                    index: index,
+                    listlength: this.value.length - 1
+                }
             },
             remove_value(index) {
                 this.value_change(this.$_.filter(this.value, (val, i) => {
@@ -202,9 +202,13 @@
                 this.value_change(this.$_.concat(new_left, to_move, new_right))
                 // fix panelstates todo
                 if (this.structure === PANELS) {
-                    this.$_.fill(this.panelState, false)
-                    //this.panelState[index+direction] = true
+                    this.panelState = [index + direction]
                 }
+
+                goTo("#" + this.panel_id(index + direction), {
+                    duration: 400,
+                    easing: "easeOutCubic"
+                })
             },
             item_aspect_loc(index) {
                 return this.$_.concat(this.aspect_loc, [[INDEX, index]])
@@ -234,18 +238,11 @@
             index_on_act_page(index) {
                 return index >= this.page * this.pagination_tresh && index < (this.page + 1) * this.pagination_tresh
             },
-            goto_panel_id() {
-                return this.panel_id(parseInt(this.page * this.pagination_tresh))
+            goto_panel_id(page = this.page) {
+                return this.is_simple ? undefined : this.panel_id(parseInt(page * this.pagination_tresh))
             }
         },
         computed: {
-            /*act_panel_state: {
-                get() {
-                    return this.$_.filter(this.panelState, (e, index) => this.index_on_act_page(index))
-                },
-                set(val) {
-                } // we need this, or vue warns...
-            },*/
             is_simple() {
                 return this.structure === SIMPLE
             },
@@ -278,6 +275,10 @@
 </script>
 
 <style scoped>
+
+  .inline {
+    display: inline-block;
+  }
 
   /**.panel_content {
     width: 98%;

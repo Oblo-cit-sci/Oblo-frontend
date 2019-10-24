@@ -1,5 +1,6 @@
 import {EDIT, VIEW} from "../../lib/consts";
 import {aspect_loc_uuid, aspect_raw_default_value} from "../../lib/aspect";
+import {ENTRIES_GET_ENTRY} from "../../lib/store_consts";
 
 export default {
   props: {
@@ -40,6 +41,9 @@ export default {
     toString(value) {
       return value || ""
     },
+    get_entry() {
+      return this.$store.getters[ENTRIES_GET_ENTRY](this.entry_uuid)
+    }
   },
   computed: {
     edit() {

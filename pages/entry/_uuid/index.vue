@@ -36,6 +36,7 @@
         :open.sync="openSaveDialog"
         @action="edit_or_save_dialog($event)"
         v-bind="unsaved_changes_dialog")
+      div {{entry}}
 </template>
 
 <script>
@@ -111,12 +112,6 @@
             }
         },
         mounted() {
-            console.log(this.entry.local)
-            if(this.entry.local.list_pages) {
-                for(let aspect of this.entry.local.list_pages) {
-
-                }
-            }
             if (this.$route.query.goTo) {
                 setTimeout(() => {
                     goTo("#" + this.$route.query.goTo, {

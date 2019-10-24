@@ -104,6 +104,9 @@ export const mutations = {
   },
   set_stored_entries(state, entries) {
     this.state.entries.entries = entries
+  },
+  set_draft_numbers(state, draft_numbers) {
+    state.draft_numbers = draft_numbers
   }
 };
 
@@ -151,17 +154,20 @@ export const getters = {
       })
     }
   },
-  get_aspect_index(state, getters) {
+  get_aspect_index(state) {
     return (type_slug, aspect_name) => {
       return ld.findIndex(state.entry_types.get(type_slug).content.aspects, (a) => a.name === aspect_name)
     }
   },
-  get_aspect(state, getters) {
+  get_aspect(state) {
     return (type_slug, aspect_name) => {
       return ld.find(state.entry_types.get(type_slug).content.aspects, (a) => a.name === aspect_name)
     }
   },
-  draft_no(state, getters) {
+  draft_numbers(state) {
+    return state.draft_numbers
+  },
+  draft_no(state) {
     return (type_slug) => {
       return state.draft_numbers[type_slug] || 1
     }

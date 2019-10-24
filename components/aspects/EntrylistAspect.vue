@@ -1,27 +1,29 @@
 <template lang="pug">
   div
     div(v-if="!readOnly")
-      div(v-if="!select")
-        v-list(v-if="has_items")
-          v-list-item(v-for="(item, index) in items", :key="item.key" :id="aspect_loc_str(index)" v-if="aspect_is_on_page(index)")
-            v-list-item-content(@click="open_item(item)")
-              v-list-item-title {{index + 1}} &nbsp;
-                b {{item.title}}
-            v-list-item-action
-              v-btn(@click="open_item(item)" icon)
-                v-icon edit
-            v-list-item-action
-              v-btn(@click="open_remove(index)" icon)
-                v-icon(color="red" lighten-1) close
-      div(v-else)
-        div v-selelct
-      div(v-if="more_allowed")
-        v-btn(@click="create_item()" :color="requieres_more_color") Add {{item_name}}
-          v-icon(right) add
-        .v-text-field__details
-          .v-messages
-      div(v-else class="mb-2") Maximum reached
-      DecisionDialog(v-bind="remove_data_dialog" :open.sync="show_remove" v-on:action="remove($event)")
+      v-list(v-if="has_items")
+        v-list-item(v-for="(item, index) in items", :key="item.key" :id="aspect_loc_str(index)" v-if="aspect_is_on_page(index)")
+          v-list-item-content(@click="open_item(item)")
+            v-list-item-title {{index + 1}} &nbsp;
+              b {{item.title}}
+          v-list-item-action
+            v-btn(@click="open_item(item)" icon)
+              v-icon edit
+          v-list-item-action
+            v-btn(@click="open_remove(index)" icon)
+              v-icon(color="red" lighten-1) close
+      div.inline
+        div(v-if="more_allowed")
+          v-btn(@click="create_item()" :color="requieres_more_color") Add {{item_name}}
+            v-icon(right) add
+          .v-text-field__details
+            .v-messages
+        div(v-else class="mb-2") Maximum reached
+      ListPagination(
+        v-if="has_pagination"
+        v-bind="pagination_props"
+        @update:page="set_page($event)"
+        @lastpage="more_follow_page = ($event)")
     div(v-else)
       v-list-item-group(v-if="has_items")
         v-list-item(v-for="(item, index) in items",
@@ -31,16 +33,12 @@
             v-list-item-title {{index + 1}} &nbsp; {{item.title}}
           v-list-item-icon
             v-icon(class="fa fa-angle-right")
-    ListPagination(
-      v-if="has_pagination"
-      :total="Math.ceil(value.length / pagination_tresh)"
-      :page="page"
-      :pages="pages"
-      :allow_jump="allow_jump"
-      :default_next_page_text="default_next_page_text"
-      :default_prev_page_text="default_prev_page_text"
-      @update:page="set_page($event)"
-      @lastpage="more_follow_page = ($event)")
+      ListPagination(
+        v-if="has_pagination"
+        v-bind="pagination_props"
+        @update:page="set_page($event)"
+        @lastpage="more_follow_page = ($event)")
+    DecisionDialog(v-bind="remove_data_dialog" :open.sync="show_remove" v-on:action="remove($event)")
 </template>
 
 <script>
@@ -58,11 +56,10 @@
         ENTRIES_EDIT_DELETE_REF_CHILD,
         ENTRIES_GET_ENTRY, ENTRIES_SAVE_CHILD_N_REF, ENTRIES_SAVE_ENTRY, ENTRY_TYPE,
     } from "../../lib/store_consts";
-    import {aspect_loc_str} from "../../lib/aspect";
+    import {aspect_loc_str, remove_entry_loc} from "../../lib/aspect";
     import {no_duplicate_texts} from "../../lib/options";
     import ListPagination from "../ListPagination";
 
-    const SELECT_THRESH = 6
 
 
     export default {
@@ -85,14 +82,14 @@
                 console.log("Warning- aspect: ", this.aspect.name, "referrers to a typename that does not exist: ", this.item_type_slug)
                 console.log("TODO disable this aspect")
             }
+
+            this.goto_stored_page()
         },
         computed: {
             has_items() {
                 return this.$_.size(this.value) > 0
             },
-            select() {
-                return this.value > SELECT_THRESH
-            },
+
             items() {
                 let entries = this.$_.map(this.value, e => {
                     const entry = this.$store.getters[ENTRIES_GET_ENTRY](e)
@@ -168,4 +165,7 @@
 
 <style scoped>
 
+  .inline {
+    display: inline-block;
+  }
 </style>

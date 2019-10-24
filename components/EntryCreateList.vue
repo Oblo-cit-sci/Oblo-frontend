@@ -62,6 +62,7 @@
                 let uuid = null
                 if (type === ENTRY_TYPE) {
                     const entry = create_entry(this.$store, value)
+                    this.$localForage.setItem("draft_numbers", this.$store.getters["draft_numbers"])
                     this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
                     uuid = entry.uuid
                 } else {

@@ -28,6 +28,15 @@ export default {
         }
       }
     },
+    goto_stored_page() {
+      const entry = this.get_entry()
+      if (entry.local.list_pages) {
+        const loc_str = aspect_loc_str(remove_entry_loc(this.aspect_loc))
+        if(entry.local.list_pages[loc_str] !== undefined) {
+          this.set_page(entry.local.list_pages[loc_str])
+        }
+      }
+    },
     set_page(page, goto_id) {
       this.page = page
       this.$store.commit("entries/entries_set_local_list_page", {aspect_loc: this.aspect_loc, page: this.page})
@@ -77,6 +86,16 @@ export default {
         pages.push({})
       }
       return pages
+    },
+    pagination_props() {
+      return {
+        total: Math.ceil(this.value.length / this.pagination_tresh),
+        page: this.page,
+        pages: this.pages,
+        allow_jump: this.allow_jump,
+        default_next_page_text: this.default_next_page_text,
+        default_prev_page_text: this.default_prev_page_text,
+      }
     }
   }
 }
