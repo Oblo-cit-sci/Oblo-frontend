@@ -18,7 +18,8 @@
 
     import {mapGetters, mapMutations} from "vuex"
     import EntryPreviewList from "../components/EntryPreviewList"
-    import {search_entries} from "../lib/client";
+    import {search_entries} from "../lib/client"
+    import {ENTRIES_SEARCH, CLEAR_SEARCH} from "../lib/store_consts"
 
     export default {
         name: "Search",
@@ -49,7 +50,7 @@
             }
         },
         computed: {
-            ...mapGetters({entries: 'search/get_entries'}),
+            ...mapGetters({entries: ENTRIES_SEARCH}),
         },
         methods: {
             getEntries() {
@@ -66,13 +67,14 @@
                         this.searching = false
                     })
             },
-            ...mapMutations({"clear": "search/clear"}),
+            ...mapMutations({"clear": CLEAR_SEARCH}),
             searchConfiguration() {
                 let configuration = {
                     required: {},
                     include: {}
                 }
-                configuration.required.domain = this.$store.state.domain.title.toLowerCase()
+                configuration.required.domain = this.$store.state.domain.title ? 
+                                                this.$store.state.domain.title.toLowerCase() : ''
                 if(this.keyword) {
                     configuration.include.aspect_search = this.keyword
                 }
