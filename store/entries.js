@@ -82,7 +82,7 @@ export const mutations = {
     } else if (final_loc[0] === COMPONENT) {
       select.value[final_loc[1]] = value
     } else if (final_loc[0] === INDEX) {
-      Vue.set(select.value,final_loc[1], value)
+      Vue.set(select.value, final_loc[1], value)
     } else {
       console.log("ERROR store.entries. final location", final_loc)
     }
@@ -116,7 +116,7 @@ export const mutations = {
   entries_set_local_list_page(state, {aspect_loc, page}) {
     let entry = state.entries.get(aspect_loc_uuid(aspect_loc))
     // todo, later out, should be there from the creation
-    if(!entry.local.list_pages) {
+    if (!entry.local.list_pages) {
       entry.local.list_pages = {}
     }
     const loc_str = aspect_loc_str(remove_entry_loc(aspect_loc))
@@ -191,9 +191,9 @@ export const getters = {
     }
   },
   get_parent(state, getters) { // ENTRIES_GET_PARENT
-    return entry => {
+    return (uuid = state.edit.uuid) => {
       //console.log("getter", entry, entry.refs)
-      return getters.get_entry(entry.refs.parent.uuid)
+      return getters.get_entry(getters.get_entry(uuid).refs.parent.uuid)
     }
   },
   value(state, getters) {
@@ -274,6 +274,15 @@ export const getters = {
   },
   get_search_entries: function (state) {
     return (state.entries)
+  },
+  domain: function (state, getters, rootState, rootGetters) {
+    return (uuid = state.edit.uuid) => {
+      const entry = getters.get_entry(uuid)
+      const etype = getters.get_entry_type(entry.type_slug)
+      const a = rootGetters.domain_of_type(etype.slug).title
+      return a
+    }
+
   }
 }
 
@@ -288,7 +297,7 @@ export const actions = {
     if (!uuid) {
       uuid = context.getters.edit_uuid
     }
-    let child_uuid= child.uuid
+    let child_uuid = child.uuid
     context.dispatch("save_entry", uuid)
     context.commit("save_entry", child)
     context.commit("add_ref_child", {uuid, aspect_loc, child_uuid})

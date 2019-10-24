@@ -1,5 +1,6 @@
-import {EDIT, VISITOR} from "../lib/consts";
+import {EDIT, NO_DOMAIN, TITLE, VISITOR} from "../lib/consts";
 import {entries_domain_filter} from "../lib/search";
+import {object_list2options} from "../lib/options";
 
 export const state = () => ({
   // comes by init
@@ -16,7 +17,11 @@ export const state = () => ({
   meta: {
     repository: {}
   },
-  domain: {}
+  domains: [],
+  domain: {
+    value: NO_DOMAIN,
+    title: "OpenTEK"
+  }
   // selected entry type (for creation)
 })
 
@@ -51,6 +56,7 @@ export const mutations = {
       state.codes = {...data.codes}
       state.codes.liccis_flat = extract_liccis(data.codes.liccis);
       state.entry_types = new Map(data.entryTemplates)
+      state.domains = data.domains
       state.initialized = true
     }
   },
@@ -98,9 +104,12 @@ export const mutations = {
     state.domain = domain
   },
   clear_domain(state) {
-    state.domain = undefined
+    state.domain = {
+      value: NO_DOMAIN,
+      title: "OpenTEK"
+    }
   },
-  set_stored_entries(state, entries) {  
+  set_stored_entries(state, entries) {
     this.state.entries.entries = entries
   },
   set_draft_numbers(state, draft_numbers) {
@@ -138,6 +147,9 @@ export const getters = {
         return state.entry_types.get(entry_or_type_slug)
       }
     }
+  },
+  entrytypes(state) {
+    return Array.from(state.entry_types.values())
   },
   entrytypes_of_domain(state) {
     return domain => {
@@ -182,16 +194,27 @@ export const getters = {
   connected(state) {
     return state.connected
   },
-  get_domain(state) {
+  domain(state) {
     return state.domain
   },
-  get_domain_title(state) {
+  domain_title(state) {
     return state.domain.title
   },
-  get_type_name(state) {
+  type_name(state) {
     return slug => {
       return state.entry_types.get(slug).title
     }
+  },
+  domain_of_type(state) {
+    return slug => {
+      return ld.filter(state.domains, domain => domain.value === state.entry_types.get(slug).domain)[0]
+    }
+  },
+  domains(state) {
+    return state.domains
+  },
+  domain_options(state) {
+    return object_list2options(state.domains, TITLE)
   }
 };
 

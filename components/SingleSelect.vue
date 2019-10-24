@@ -16,7 +16,7 @@
             v-list-item-title {{item.text}}
             v-list-item-subtitle {{item.description}}
   div(v-else-if="view_select")
-    v-select(outlined single-line :multiple=false v-model="selected_item" :items="options" return-object)
+    v-select(outlined single-line :multiple=false v-model="selected_item" :items="options" return-object clearable :placeholder="placeholder")
     .v-text-field__details
       .v-messages
   div(v-else-if="view_autocomplete")
@@ -78,7 +78,8 @@
             },
             disabled: {
                 type: Boolean,
-            }
+            },
+            placeholder: String // only select
         },
         data() {
             return {
@@ -146,10 +147,10 @@
                 const event = this.only_value ? (typeof item === "string" ? item : item.value) : item
                 //console.log("emit", item, this.select_sync)
                 if (this.select_sync) {
-                    this.$emit('update:selection', event); // refactor to use the item
+                    this.$emit('update:selection', event) // refactor to use the item
                 } else {
                     //console.log("emit no sync")
-                    this.$emit("selection", event);
+                    this.$emit("selection", event)
                 }
             },
             set_selected_item() {

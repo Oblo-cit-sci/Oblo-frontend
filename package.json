@@ -27,7 +27,6 @@
     "localforage": "^1.7.3",
     "mapbox-gl": "^0.53.1",
     "nuxt": "^2.9.2",
-    "timeago.js": "^4.0.0-beta.2",
     "update": "^0.7.4",
     "uuid": "^3.3.3",
     "vue-mapbox": "^0.2.2",

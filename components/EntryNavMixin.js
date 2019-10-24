@@ -20,20 +20,21 @@ export default {
     },
     to_parent(to_last_element = true, mode = VIEW) {
       if (this.in_context) {
-        let parent_entry_type_slug = this.$store.getters[ENTRIES_GET_ENTRY](this.entry.refs.parent.uuid).type_slug
+        const parent_ref = this.entry.refs.parent
+        let parent_entry_type_slug = this.$store.getters[ENTRIES_GET_ENTRY](parent_ref.uuid).type_slug
 
-        const uuid = this.entry.refs.parent.uuid
+        const uuid = parent_ref.uuid
 
         // TODO this loc stuff will work different in the future
         const aspect_def = this.$store.getters[GET_ASPECT_DEF]({
           type_slug: parent_entry_type_slug,
-          aspect_name: this.entry.refs.parent.aspect_loc[0][1]
+          aspect_name: parent_ref.aspect_loc[0][1]
         })
         let query = {
           page:  aspect_def.attr.page,
         }
         if (to_last_element) {
-          const aspect_id = aspect_loc_str(this.entry.refs.parent.aspect_loc)
+          const aspect_id = aspect_loc_str(parent_ref.aspect_loc)
           query.goTo = (aspect_id ? aspect_id : "")
         }
         this.to_entry(uuid, mode, query)

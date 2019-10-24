@@ -16,6 +16,8 @@
 <script>
 
 
+    import {mapGetters} from "vuex"
+
     import {initialize} from "../lib/client"
     import DomainCard from "../components/DomainCard";
 
@@ -25,17 +27,7 @@
                 connecting: false,
                 connected: null,
                 initialized: this.$store.state.initialized,
-                domains: [{
-                    title: "LICCI",
-                    to: "/domain/licci",
-                    img_src: "images/licci.jpg",
-                    text: "Local Indicators of Climate Change Impacts - The Contribution of Local Knowledge to Climate Change Research"
-                }, {
-                    title: "CONECTE",
-                    to: "/domain/conecte",
-                    img_src: "images/conecte.jpg",
-                    text: "Compartiendo el CONocimiento ECológico Tradicional - Una plataforma interactiva de recogida y transmisión de conocimientos tradicionales relativos a plantas, animales, hongos, variedades tradicionales de cultivos o ecosistemas"
-                }]
+
             }
         },
         created() {
@@ -65,6 +57,9 @@
             initialize() {
                 initialize(this.$axios, this.$store, this.$localForage)
             }
+        },
+        computed: {
+            ...mapGetters(["domains"])
         }
     }
 </script>

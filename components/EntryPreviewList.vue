@@ -4,7 +4,7 @@
         div {{num_entries}} Entries
     v-col(cols=12 v-for="entry in visible_entries"
       :key="entry.id" class="col-sm-12 col-xs-6")
-      Entrypreview(:entry="entry")
+      Entrypreview(:entry="entry" :include_domain_tag="include_domain_tag")
     v-col(v-if="has_entries")
       v-Pagination(v-if="entries.length>20" v-model="page"
         :length="num_pages"
@@ -13,6 +13,7 @@
 
 <script>
     import Entrypreview from "../components/EntryPreview";
+    import {TYPE_NAME} from "../lib/store_consts";
 
     export default {
         name: "EntryPreviewList",
@@ -23,6 +24,7 @@
                 type: Number,
                 default: 20
             },
+            include_domain_tag: Boolean
         },
         created() {
         },
@@ -58,7 +60,7 @@
                     new Set(
                         this.$_.map(
                             this.entries,
-                            e => this.$store.getters["get_type_name"](e.type_slug))).values())
+                            e => this.$store.getters[TYPE_NAME](e.type_slug))).values())
             }
         }
     }

@@ -6,9 +6,11 @@
         header_type="h1"
         :description="entry_type.description"
         mode="edit")
-      div(v-if="entry.refs.parent")
+      div {{has_parent}}
+      div(v-if="has_parent")
         span This entry is part of:&nbsp
         a(@click="to_parent(true, mode)") {{parent_title}}
+        v-breadcrumbs(:items="parents")
       v-divider(class="wide_divider")
       div(v-if="has_pages")
         Title_Description(
@@ -63,13 +65,14 @@
     } from "../../../lib/store_consts";
     import {get_aspect_vue_component} from "../../../lib/aspect"
     import {unsaved_changes_default_dialog} from "../../../lib/dialogs"
+    import EntryMixin from "../../../components/EntryMixin";
 
     /**
      * @vue-data {Object} entry_type - Initial counter's value
      */
     export default {
         name: "uuid",
-        mixins: [EntryNavMixin],
+        mixins: [EntryNavMixin, EntryMixin],
         components: {
             DecisionDialog,
             Aspect,
@@ -217,7 +220,8 @@
             },
             parent_title() {
                 // todo not necessarily available for remote entries. should be included?
-                return this.$store.getters[ENTRIES_GET_PARENT](this.entry).title
+                console.log(this.$store.getters[ENTRIES_GET_PARENT]())
+                return this.$store.getters[ENTRIES_GET_PARENT]().title
             },
             // maybe also consider:
             // https://github.com/edisdev/download-json-data/blob/develop/src/components/Download.vue

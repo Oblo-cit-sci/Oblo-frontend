@@ -1,8 +1,7 @@
 <template lang="pug">
     v-container(fluid)
         EntryCreateList(
-            :entrytypes_entries="entrytypes_entries"
-            @selection="")
+            :entrytypes_entries="entrytypes_entries")
         Search
 </template>
 

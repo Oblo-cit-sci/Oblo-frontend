@@ -57,7 +57,7 @@
                 this.searching = true
                 let config = this.searchConfiguration()
                 // build_config merges 2 objects,
-
+                console.log(config)
                 search_entries(this.$axios, this.$store, config)
                     .then(res => {
                         this.searching = false
@@ -68,13 +68,16 @@
                     })
             },
             ...mapMutations({"clear": CLEAR_SEARCH}),
-            searchConfiguration() {
+            searchConfiguration(
+                domain = this.$store.state.domain.value
+            ) {
                 let configuration = {
-                    required: {},
+                    required: {
+                        domain: domain
+                    },
                     include: {}
                 }
-                configuration.required.domain = this.$store.state.domain.title ? 
-                                                this.$store.state.domain.title.toLowerCase() : ''
+
                 if(this.keyword) {
                     configuration.include.aspect_search = this.keyword
                 }

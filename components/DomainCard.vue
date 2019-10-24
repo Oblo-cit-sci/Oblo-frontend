@@ -1,8 +1,8 @@
 <template lang="pug">
-    v-card(class="mb-10" outlined :width="550"  :to="domain.to" nuxt :ripple="false" @click.native="setDomain()")
+    v-card(class="mb-10" outlined :width="550"  :to="domain_url" nuxt :ripple="false" @click.native="setDomain()")
         v-img(:src="domain.img_src" max-height="auto")
             v-card-title(class="align-end fill-height shadow") {{domain.title}}
-        v-card-text {{domain.text}}
+        v-card-text {{domain.description}}
 </template>
 
 <script>
@@ -13,27 +13,23 @@
             domain:{
                 type: Object
             }
-
         },
-        data() {
-            return {}
-        },
-        created() {
-
-        },
-        computed: {},
         methods: {
             setDomain() {
-                this.$store.commit(SET_DOMAIN, this.domain)        
+                this.$store.commit(SET_DOMAIN, this.domain)
             }
         },
-        watch: {}
+        computed: {
+            domain_url() {
+                return "domain/" + this.domain.value
+            }
+        }
     }
 </script>
 
 <style scoped>
    .shadow {
-       text-shadow: 3px 3px 2px black; 
+       text-shadow: 3px 3px 2px black;
        color: whitesmoke;
    }
 </style>
