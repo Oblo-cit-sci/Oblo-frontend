@@ -37,7 +37,6 @@ export const mutations = {
      */
   },
   save_entry(state, entry) {
-    console.log(state.entries)
     state.entries.set(entry.uuid, entry)
   },
   delete_edit_entry(state) {
@@ -209,7 +208,7 @@ export const getters = {
 
   },
   get_recursive_entries(state, getters) {
-    return uuid => {
+    return (uuid = state.edit.uuid) => {
       const entry = getters.get_entry(uuid)
       let entries = [entry]
       const child_keys = Object.keys(entry.refs.children)
@@ -285,10 +284,11 @@ export const actions = {
     context.commit("set_edit_dirty")
     // context.commit("update")
   },
-  save_child_n_ref(context, {uuid, child, aspect_loc, child_uuid}) { // ENTRIES_SAVE_CHILD_N_REF
+  save_child_n_ref(context, {uuid, child, aspect_loc}) { // ENTRIES_SAVE_CHILD_N_REF
     if (!uuid) {
       uuid = context.getters.edit_uuid
     }
+    let child_uuid= child.uuid
     context.dispatch("save_entry", uuid)
     context.commit("save_entry", child)
     context.commit("add_ref_child", {uuid, aspect_loc, child_uuid})

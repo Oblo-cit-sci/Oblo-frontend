@@ -135,6 +135,7 @@
                 if (this.aspect.items.type === "composite" || this.aspect.attr.force_panels) {
                     this.item_aspect = this.aspect.items;
                     this.structure = PANELS
+                    this.titles
                     // fill in the values of the titleAspect
                 } else {
                     this.item_aspect = this.aspect.items;

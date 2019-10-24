@@ -15,7 +15,7 @@ export const state = () => ({
   draft_numbers: {},
   meta: {
     repository: {}
-  }, 
+  },
   domain: {
     title: undefined
   }
@@ -101,6 +101,9 @@ export const mutations = {
   },
   clear_domain(state) {
     state.domain.title = undefined
+  },
+  set_stored_entries(state, entries) {
+    this.state.entries.entries = entries
   }
 };
 
@@ -192,5 +195,4 @@ export const actions = {
     commit("search/clear")
     commit("clear_draft_numbers")
   }
-
 }

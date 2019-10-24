@@ -128,6 +128,9 @@
         },
         beforeRouteLeave(to, from, next) {
             this.$store.dispatch(ENTRIES_SAVE_ENTRY)
+            this.$localForage.setItem("entries", this.$store.state.entries.entries, () => {
+                console.log("stored")
+            })
             next()
             /*
             if (this.entry.local.dirty) {

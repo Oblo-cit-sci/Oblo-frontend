@@ -57,7 +57,7 @@ export default {
   },
   computed: {
     in_context() {
-      return this.entry_type.content.meta.context !== GLOBAL
+      return this.entry_type.content.meta.context !== GLOBAL || this.entry.refs.parent
     }
   }
 }

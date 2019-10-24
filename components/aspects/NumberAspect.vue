@@ -41,8 +41,13 @@
                     } else return true
                 },
                 valid_num_type: value => {
-                    if (this.num_type === INT && value % 1 !== 0) {
-                        return "value must be an integer"
+                    if (this.num_type === INT) {
+                        let i = parseInt(value)
+                        if (!i || value % 1 !== 0) {
+                            return "value is not a integer number"
+                        } else {
+                            return true
+                        }
                     } else if (this.num_type === FLOAT) {
                         let f = parseFloat(value)
                         if (!f) {

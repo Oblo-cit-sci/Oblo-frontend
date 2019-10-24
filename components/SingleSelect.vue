@@ -74,7 +74,7 @@
                 default: undefined
             }, // either (CLEAR_LIST | VUETIFY_SELECT)
             only_value: {
-                type: Boolean,
+                type: Boolean
             },
             disabled: {
                 type: Boolean,
@@ -121,7 +121,12 @@
                     return
                 if (item.value === undefined)
                     return;
-                this.emitUp(item)
+                if (this.selection && this.selection.value === item.value) {
+                    this.emitUp(null)
+                } else {
+                    this.emitUp(item)
+                }
+
             },
             icon_path(item) {
                 if (item.icon) {
