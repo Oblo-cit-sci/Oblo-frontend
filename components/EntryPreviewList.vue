@@ -8,7 +8,7 @@
     v-col(v-if="has_entries")
       v-Pagination(v-if="entries.length>20" v-model="page"
         :length="num_pages"
-        total-visible="entries_per_page")
+        total-visible="8")
 </template>
 
 <script>

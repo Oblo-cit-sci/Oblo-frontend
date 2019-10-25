@@ -5,7 +5,8 @@
       force_view="list"
       @selection="selection($event)"
       :select_sync="false"
-      :highlight="false")
+      :highlight="false"
+      :create="true")
 </template>
 
 <script>
@@ -75,5 +76,4 @@
 </script>
 
 <style scoped>
-
 </style>

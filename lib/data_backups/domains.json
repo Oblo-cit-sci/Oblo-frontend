@@ -4,13 +4,21 @@
     "title": "LICCI",
     "value": "licci",
     "img_src": "images/licci.jpg",
-    "description": "Local Indicators of Climate Change Impacts - The Contribution of Local Knowledge to Climate Change Research"
+    "description": "Local Indicators of Climate Change Impacts - The Contribution of Local Knowledge to Climate Change Research",
+    "page_index": {
+      "title": "Local Indicators of Climate Change Impacts",
+      "description": "The Contribution of Local Knowledge to Climate Change Research"
+    }
   },
   {
     "icon": "images/conecte.png",
     "title": "Conect-e",
     "value": "conecte",
     "img_src": "images/conecte.jpg",
-    "description": "Compartiendo el CONocimiento ECológico Tradicional - Una plataforma interactiva de recogida y transmisión de conocimientos tradicionales relativos a plantas, animales, hongos, variedades tradicionales de cultivos o ecosistemas"
+    "description": "Compartiendo el CONocimiento ECológico Tradicional - Una plataforma interactiva de recogida y transmisión de conocimientos tradicionales relativos a plantas, animales, hongos, variedades tradicionales de cultivos o ecosistemas",
+    "page_index": {
+      "title": "El saber tradicional",
+      "description": "Ayúdanos a rescatar el saber tradicional antes de que se pierdan. Los necesitamos para construir un mundo más sostenible."
+    }
   }
 ]
