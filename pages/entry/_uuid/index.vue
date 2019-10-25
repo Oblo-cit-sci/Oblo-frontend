@@ -1,16 +1,17 @@
 <template lang="pug">
-  v-layout(justify-center align-center)
-    v-flex(xs12 md12)
+  v-layout(justify-center align-center) 
+    v-flex(xs12 md12) 
       Title_Description(
         :title="page_title"
         header_type="h1"
         :description="entry_type.description"
         mode="edit")
-      div {{has_parent}}
       div(v-if="has_parent")
         span This entry is part of:&nbsp
         a(@click="to_parent(true, mode)") {{parent_title}}
-        v-breadcrumbs(:items="parents")
+        v-breadcrumbs(:items="parents") 
+      div(v-if="this.mode==='view'")
+        MetaChips(:meta_aspects="meta_aspects_privacy")
       v-divider(class="wide_divider")
       div(v-if="has_pages")
         Title_Description(
@@ -25,7 +26,7 @@
           :aspect_loc="aspect_locs[aspect.name]"
           v-on:entryAction="entryAction($event)"
           :mode="mode")
-      div(v-if="page === 0")
+      div(v-if="page === 0 && this.mode !== 'view'")
         v-divider(class="wide_divider")
         License(:passedLicense.sync="entry.license" :mode="licence_mode")
         Privacy(:mode="privacy_mode" :passedPrivacy.sync="entry.privacy")
@@ -66,6 +67,8 @@
     import {get_aspect_vue_component} from "../../../lib/aspect"
     import {unsaved_changes_default_dialog} from "../../../lib/dialogs"
     import EntryMixin from "../../../components/EntryMixin";
+    import MetaChips from "../../../components/MetaChips"
+    import {privacy_icon} from "../../../lib/util"
 
     /**
      * @vue-data {Object} entry_type - Initial counter's value
@@ -78,7 +81,8 @@
             Aspect,
             EntryActions,
             Title_Description,
-            Privacy, License
+            Privacy, License, 
+            MetaChips
         },
         data() {
             return {
@@ -239,7 +243,13 @@
                     entry_type: this.entry_type,
                     entry: this.entry,
                 }
-            }
+            },
+            meta_aspects_privacy() {
+                let result = []
+                result.push({icon: privacy_icon(this.entry.privacy), name: this.entry.privacy})
+                result.push({name: "License: "+ this.entry.license})
+                return result
+            },
         }, watch: {
             page() {
                 setTimeout(() => goTo(".v-content"), {
