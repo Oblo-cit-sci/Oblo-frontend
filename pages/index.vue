@@ -26,11 +26,13 @@
                 connected: null,
                 initialized: this.$store.state.initialized,
                 domains: [{
+                    icon: "icon.png",
                     title: "LICCI",
                     to: "/domain/licci",
                     img_src: "images/licci.jpg",
                     text: "Local Indicators of Climate Change Impacts - The Contribution of Local Knowledge to Climate Change Research"
                 }, {
+                    icon: "images/conecte.png",
                     title: "CONECTE",
                     to: "/domain/conecte",
                     img_src: "images/conecte.jpg",
