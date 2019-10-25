@@ -5,7 +5,6 @@
         div.caption {{entry_date}}
         p.title.mb-2 {{typename}}:
           span.title &nbsp; {{entry.title}}
-          
         MetaChips(:meta_aspects="meta_aspects")
       v-col(v-if="show_image" cols="12" class="col-md-4 col-sm-12 entry-image")
         div(class="float-md-right float-sm-left entry-display-size")
@@ -31,7 +30,7 @@
 <script>
     import {license_icon} from "../lib/client"
     import EntryNavMixin from "./EntryNavMixin";
-    import {ENTRIES_HAS_ENTRY, ENTRIES_USER_RIGHTS} from "../lib/store_consts";
+    import {ENTRIES_HAS_ENTRY, ENTRIES_USER_RIGHTS, TYPE_NAME} from "../lib/store_consts";
     import {CREATOR, entry_actor_relation} from "../lib/actors"
     import {privacy_icon, printDate} from "../lib/util"
     import {EDIT} from "../lib/consts"
@@ -43,7 +42,8 @@
         name: "Entrypreview",
         components: {MetaChips, Taglist},
         props: {
-            entry: {type: Object, required: true}
+            entry: {type: Object, required: true},
+            include_domain_tag: Boolean
         },
         mixins: [EntryNavMixin],
         created() {
@@ -90,10 +90,13 @@
                 let result = []
                 result.push({icon: privacy_icon(this.entry.privacy), name: this.entry.privacy})
                 result.push({name: "License: "+ this.entry.license})
+                if(this.include_domain_tag){
+                    result.push({name: this.$store.getters["entries/domain"](this.entry.uuid)})
+                }
                 return result
             },
             typename() {
-                return this.$store.getters["get_type_name"](this.entry.type_slug)
+                return this.$store.getters[TYPE_NAME](this.entry.type_slug)
             }
         }
     }
