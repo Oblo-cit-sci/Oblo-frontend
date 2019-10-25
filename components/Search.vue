@@ -1,16 +1,16 @@
 <template lang="pug">
   v-container(fluid)
     v-row(wrap justify-start)
-      v-col(cols="12")
-        v-text-field(
-          v-model="keyword"
-          label="Search"
-          single-line
-          hide-details
-          append-outer-icon="search"
-          @click:append-outer="getEntries"
-          clearable
-          :loading="searching")
+        v-col(cols="12")
+            v-text-field(
+            v-model="keyword"
+            label="Search"
+            single-line
+            hide-details
+            append-outer-icon="search"
+            @click:append-outer="getEntries"
+            clearable
+            :loading="searching")
     EntryPreviewList(:entries="entries")
 </template>
 
@@ -94,6 +94,5 @@
 </script>
 
 <style scoped>
-
 </style>
 

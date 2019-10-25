@@ -1,20 +1,26 @@
 <template lang="pug">
-  div(v-if="view_clearlist")
-    v-list(
+  div.pa-0(v-if="view_clearlist")
+    v-list.pa-0(
       :three-line="has_some_description"
-      :dense="!has_some_description"
-      class="singleselect_list")
+      dense
+      class="singleselect_list"
+      )
       div(v-for="item of options")
         v-subheader(v-if="is_category(item)") {{item.text}}
         v-list-item(v-else
         :key="item.value"
           @click="select(item)"
-          :class="{ marked: marked(item.value) }")
+          :class="{ marked: marked(item.value) }"
+          class="single_select")
           v-list-item-avatar(v-if="has_some_icons" tile)
             v-img(:src="icon_path(item)")
-          v-list-item-content
+          v-list-item-content.align-self-center
             v-list-item-title {{item.text}}
             v-list-item-subtitle {{item.description}}
+          v-list-item-action.align-self-center
+            v-spacer
+            v-icon(color="grey lighten-1") mdi-login-variant
+        v-divider
   div(v-else-if="view_select")
     v-select(outlined single-line :multiple=false v-model="selected_item" :items="options" return-object clearable :placeholder="placeholder")
     .v-text-field__details
@@ -79,7 +85,11 @@
             disabled: {
                 type: Boolean,
             },
-            placeholder: String // only select
+            placeholder: String, // only select
+            create: {
+                type: Boolean, 
+                default: false
+            }
         },
         data() {
             return {
@@ -212,9 +222,11 @@
 </script>
 
 <style scoped>
-
   .singleselect_list {
     margin-bottom: 1%;
+  }
+  .single_select {
+      min-height: 40px;
   }
 
   .marked {
