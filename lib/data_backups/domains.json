@@ -1,11 +1,13 @@
 [
   {
+    "icon": "icon.png",
     "title": "LICCI",
     "value": "licci",
     "img_src": "images/licci.jpg",
     "description": "Local Indicators of Climate Change Impacts - The Contribution of Local Knowledge to Climate Change Research"
   },
   {
+    "icon": "images/conecte.png",
     "title": "Conect-e",
     "value": "conecte",
     "img_src": "images/conecte.jpg",

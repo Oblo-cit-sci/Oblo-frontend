@@ -32,14 +32,22 @@
       :clipped-left="clipped"
       true
       app
-      dense
     >
       <v-app-bar-nav-icon v-show="initialized" @click="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title>
-      <span>
-        {{domain_title}}
-      </span>
-        <span style="font-size: 0.6em">(v{{version}})</span>
+      <v-toolbar-title class="pa-0">
+        <v-list-item class="pl-0">
+          <v-list-item-avatar v-if="domain_icon" width="55" height="auto" tile>
+            <v-img contain :src="domain_icon"></v-img>
+          </v-list-item-avatar>
+          <v-list-item-content>
+            <v-list-item-title class="headline">
+              {{domain_title}}
+            </v-list-item-title>
+            <v-list-item-subtitle class="header-subtitle">
+              (v{{version}})
+            </v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <div>
@@ -52,7 +60,6 @@
           <v-icon>{{userrole_icon}}</v-icon>
         </v-btn>
       </div>
-      <v-spacer></v-spacer>
       <div v-if="logged_in">
         <v-btn v-for="(item, i) in header_items"
                :key="i"
@@ -168,7 +175,11 @@
             },
             domain_title() {
               let domain = this.$store.getters[DOMAIN]
-              return this.$store.state.domain ? domain.title : HOME
+              return domain ? domain.title : HOME
+            },
+            domain_icon() {
+              let domain = this.$store.getters[DOMAIN]
+              return domain ? domain.icon : undefined
             }
         },
         watch: {
@@ -206,9 +217,7 @@
   .disabled * {
     opacity: 0.8;
   }
-
-  .header-avatar {
-  
+  .header-subtitle {
+    font-size: 0.6em
   }
-
 </style>

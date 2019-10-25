@@ -27,7 +27,6 @@
                 connecting: false,
                 connected: null,
                 initialized: this.$store.state.initialized,
-
             }
         },
         created() {
