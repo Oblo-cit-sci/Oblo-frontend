@@ -4,7 +4,7 @@
         div {{num_entries}} Entries
     v-col(cols=12 v-for="entry in visible_entries"
       :key="entry.id" class="col-sm-12 col-xs-6")
-      Entrypreview(:entry="entry" :include_domain_tag="include_domain_tag")
+      Entrypreview(:entry="entry" v-bind="preview_options")
     v-col(v-if="has_entries")
       v-Pagination(v-if="entries.length>20" v-model="page"
         :length="num_pages"
@@ -24,7 +24,9 @@
                 type: Number,
                 default: 20
             },
-            include_domain_tag: Boolean
+            preview_options: {
+                type: Object
+            }
         },
         created() {
         },

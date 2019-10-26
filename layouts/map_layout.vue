@@ -3,26 +3,45 @@
     v-btn(style="bottom:2%" fixed dark fab bottom right color="blue" @click="drawer = !drawer")
       v-icon mdi-menu
     v-bottom-sheet(
+      v-if="small_display"
+      app
       v-model="drawer"
       scrollable
       hide-overlay)
-      v-card(height="300")
-        v-row(cols="12")
-          v-col.col-sm-2
+      v-card.ma-1(height="400")
+        v-row()
+          v-col.col-sm-3
             v-btn(to="/" nuxt)
               v-icon home
-              span home
-          v-col.col-sm-2
-            v-btn my location
+              span
+          v-col.col-sm-3
+            v-btn
               v-icon mdi-crosshairs-gps
-          v-col.col-sm-2
-            v-btn() search
+          v-col.col-sm-3
+            v-btn
               v-icon search
-          v-col.col-sm-2(right)
+          v-col.col-sm-3
             v-btn(text :ripple="false" @click="drawer = !drawer")
               v-icon mdi-chevron-double-down
         v-card-text
-          Search(v-on:received_search_results="update_map_entries($event)" clean)
+          Search(v-on:received_search_results="update_map_entries($event)" :show_results="false" clean)
+          EntryPreviewList(:entries="entries" :preview_options="slim_preview_options", show)
+    v-navigation-drawer(
+      v-else
+      app
+      v-model="drawer"
+      :mini-variant="false"
+      :clipped="true"
+      :hide-overlay="true"
+      temporary
+      width="400"
+      fixed)
+      v-btn(to="/" nuxt) back
+      v-btn my location
+        v-icon mdi-crosshairs-gps
+      v-row.ma-1(wrap justify-center)
+        Search(v-on:received_search_results="update_map_entries($event)" clean)
+
     v-content
       v-container(id="fullContainer")
 
@@ -37,6 +56,7 @@
     import {mapGetters} from "vuex"
     import Search from "../components/Search";
     import {mapMutations} from "vuex";
+    import EntryPreviewList from "../components/EntryPreviewList";
 
     const menu = [
         {
@@ -46,7 +66,7 @@
         },
     ]
     export default {
-        components: {GlobalSnackbar, Entrypreview, Search},
+        components: {GlobalSnackbar, Entrypreview, Search, EntryPreviewList},
         data() {
             return {
                 drawer: false,
@@ -54,11 +74,22 @@
             }
         },
         computed: {
-            ...mapGetters({entries: "entries/all_entries_array"})
+            ...mapGetters({entries: "map/entries"}),
+            small_display() {
+                return this.$vuetify.breakpoint.smAndDown
+            },
+            slim_preview_options() {
+                return {
+                    show_title_action: true,
+                    show_botton_actions: false,
+                    show_date: false,
+                    show_meta_aspects: false
+                }
+            }
         },
         methods: {
             update_map_entries(entries) {
-                console.log(entries)
+                console.log("update_map_entries", entries)
                 //this.set_entries(entries)
                 this.$store.commit("map/set_entries", entries)
             },
