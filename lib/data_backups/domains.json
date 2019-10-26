@@ -1,6 +1,6 @@
 [
   {
-    "icon": "icon.png",
+    "icon": "images/licci_icon.png",
     "title": "LICCI",
     "value": "licci",
     "img_src": "images/licci.jpg",
@@ -11,7 +11,7 @@
     }
   },
   {
-    "icon": "images/conecte.png",
+    "icon": "images/conecte_icon.png",
     "title": "Conect-e",
     "value": "conecte",
     "img_src": "images/conecte.jpg",

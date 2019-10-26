@@ -115,7 +115,6 @@ export const mutations = {
     state.entries.get(uuid).title = title
   },
   update_location(state, {uuid, location}) {
-    console.log("set location", location)
     state.entries.get(uuid).location = location
   },
   entries_set_local_list_page(state, {aspect_loc, page}) {
