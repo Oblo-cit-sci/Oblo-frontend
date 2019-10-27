@@ -275,6 +275,7 @@ export const getters = {
       let location = null
       if (locationAspect) {
         location = select_aspect_loc(state, loc_prepend(ENTRY, uuid, aspect_loc_str2arr(locationAspect)))
+        // this is weird
         if (location && location.value)
           location =  location.value
       }
@@ -334,7 +335,9 @@ export const actions = {
     const entry_title = context.getters.get_entry_title(uuid)
     context.commit("update_title", {uuid, title: entry_title})
     const location = context.getters.entry_location(uuid)
-    context.commit("update_location", {uuid, location: recursive_unpack(location)})
+    if(location){
+      context.commit("update_location", {uuid, location: recursive_unpack(location)})
+    }
   },
   set_edit(context, uuid) {
     context.commit("set_edit", uuid)

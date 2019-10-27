@@ -17,7 +17,7 @@
     v-btn(@click="export_entries") Export
     h3 Import data
     div Import data from a previously exported (downloaded) json file
-    LoadFileButton(@fileload="load_file($event)")
+    LoadFileButton(@fileload="load_file($event)" )
     br
     v-divider
     h3 Clear entries

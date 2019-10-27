@@ -29,6 +29,7 @@
     v-navigation-drawer(
       v-else
       app
+      :permanent="drawer"
       v-model="drawer"
       :mini-variant="false"
       :clipped="true"
@@ -40,11 +41,12 @@
       v-btn my location
         v-icon mdi-crosshairs-gps
       v-row.ma-1(wrap justify-center)
-        Search(v-on:received_search_results="update_map_entries($event)" clean)
-
+        Search(v-if="show_in_menu === 'search'"
+          v-on:received_search_results="update_map_entries($event)" clean)
+        EntryAspectView(v-if="show_in_menu === 'entry'" :entry="selected_entry" mode="view")
     v-content
       v-container(id="fullContainer")
-
+        nuxt
     GlobalSnackbar
 </template>
 
@@ -57,6 +59,12 @@
     import Search from "../components/Search";
     import {mapMutations} from "vuex";
     import EntryPreviewList from "../components/EntryPreviewList";
+    import EntryAspectView from "../components/EntryAspectView";
+
+    const SEARCH = "search"
+    const ENTRY = "entry"
+    const show_in_menu_options = [SEARCH, ENTRY]
+
 
     const menu = [
         {
@@ -66,15 +74,16 @@
         },
     ]
     export default {
-        components: {GlobalSnackbar, Entrypreview, Search, EntryPreviewList},
+        components: {GlobalSnackbar, Entrypreview, Search, EntryPreviewList, EntryAspectView},
         data() {
             return {
                 drawer: false,
-                menu_items: menu
+                menu_items: menu,
+                show_in_menu: SEARCH
             }
         },
         computed: {
-            ...mapGetters({entries: "map/entries"}),
+            ...mapGetters({entries: "map/entries", selected_entry: "map/selected_entry"}),
             small_display() {
                 return this.$vuetify.breakpoint.smAndDown
             },
@@ -89,11 +98,17 @@
         },
         methods: {
             update_map_entries(entries) {
-                console.log("update_map_entries", entries)
+                //console.log("update_map_entries", entries)
                 //this.set_entries(entries)
                 this.$store.commit("map/set_entries", entries)
             },
             ...mapMutations({"set_entries": "map/set_entries"})
+        },
+        watch: {
+            selected_entry(val) {
+                this.drawer = true
+                this.show_in_menu = ENTRY
+            }
         }
     }
 </script>

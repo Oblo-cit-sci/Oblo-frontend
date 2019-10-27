@@ -87,7 +87,7 @@
             },
             placeholder: String, // only select
             create: {
-                type: Boolean, 
+                type: Boolean,
                 default: false
             }
         },
