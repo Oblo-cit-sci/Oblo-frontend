@@ -36,7 +36,7 @@
       <v-toolbar-title class="pa-0">
         <v-list-item class="pl-0">
           <v-list-item-avatar v-if="domain_icon" width="55" height="auto" tile>
-            <v-img contain :src="'/app/' + domain_icon"></v-img>
+            <v-img contain :src="domain_icon"></v-img>
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title class="headline">
@@ -91,6 +91,7 @@
     import Footer from "../components/Footer"
 
     import {initialize} from "../lib/client"
+    import {static_file_path} from "../lib/util";
 
     // commented out the dev menu items
     const all_items = [
@@ -192,7 +193,7 @@
             },
             domain_icon() {
                 let domain = this.$store.getters[DOMAIN]
-                return domain ? domain.icon : undefined
+                return domain ? static_file_path(this.$store, domain.icon) : undefined
             }
         },
         watch: {
