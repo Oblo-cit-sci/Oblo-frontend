@@ -17,6 +17,8 @@
         methods: {
             setDomain() {
                 this.$store.commit(SET_DOMAIN, this.domain)
+                this.$localForage.setItem("domain", this.$store.state.domain, () => {
+                })
             }
         },
         computed: {

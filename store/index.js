@@ -20,7 +20,8 @@ export const state = () => ({
   domains: [],
   domain: {
     value: NO_DOMAIN,
-    title: "OpenTEK"
+    title: "OpenTEK",
+    icon: "images/openTEK_icon.png"
   }
   // selected entry type (for creation)
 })
@@ -107,7 +108,8 @@ export const mutations = {
   clear_domain(state) {
     state.domain = {
       value: NO_DOMAIN,
-      title: "OpenTEK"
+      title: "OpenTEK",
+      icon: "images/openTEK_icon.png"
     }
   },
   set_stored_entries(state, entries) {
