@@ -11,8 +11,9 @@
       v-card.ma-1(height="400")
         v-row()
           v-col.col-sm-3
-            v-btn(to="/" nuxt)
+            v-btn(@click="back" nuxt)
               v-icon home
+              span
           v-col.col-sm-3
             v-btn
               v-icon mdi-crosshairs-gps
@@ -38,9 +39,9 @@
       fixed)
       v-row
         v-col.col-sm-3
-          v-btn(to="/" nuxt)
+          v-btn(@click="back" nuxt)
             v-icon home
-            span Home
+            span Back
         v-col.col-sm-3
           v-btn
             v-icon mdi-crosshairs-gps
@@ -68,6 +69,8 @@
     import {mapMutations} from "vuex";
     import EntryPreviewList from "../components/EntryPreviewList";
     import EntryAspectView from "../components/EntryAspectView";
+    import {NO_DOMAIN} from "../lib/consts";
+    import {DOMAIN} from "../lib/store_consts";
 
     const SEARCH = "search"
     const ENTRY = "entry"
@@ -113,6 +116,16 @@
             ...mapMutations({"set_entries": "map/set_entries"}),
             search_view() {
                 this.menu_mode = SEARCH
+            },
+            back() {
+                // todo copy of entryNavMixin
+                let domain = this.$store.getters[DOMAIN]
+                if (domain.value === NO_DOMAIN) {
+                    this.$router.push("/")
+                } else {
+                    // todo could be a bit nicer (named router, route param...)
+                    this.$router.push("/domain/" + domain.value)
+                }
             }
         },
         watch: {
