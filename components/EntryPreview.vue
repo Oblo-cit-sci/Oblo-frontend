@@ -30,11 +30,12 @@
 </template>
 
 <script>
+
+    import {license_icon} from "../lib/client"
     import EntryNavMixin from "./EntryNavMixin";
     import {ENTRIES_HAS_ENTRY, ENTRIES_USER_RIGHTS, TYPE_NAME} from "../lib/store_consts";
-    import {CREATOR, entry_actor_relation} from "../lib/actors"
     import {privacy_icon, printDate} from "../lib/util"
-    import {EDIT, VIEW} from "../lib/consts"
+    import {VIEW} from "../lib/consts"
     import MetaChips from "../components/MetaChips"
     import Taglist from "../components/Taglist"
     import {get_proper_mode} from "../lib/entry"
