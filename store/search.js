@@ -7,7 +7,8 @@ export const mutations = {
         state.entries = new Map(entries)
     },
     clear(state) {
-      state.entries.clear()
+      // yes, instead of state.entries.clear(), which won't trigger any update
+      state.entries = new Map()
     }
 }
 

@@ -1,12 +1,21 @@
+
 const pkg = require('./package')
 const colors = require('vuetify/es5/util/colors')
 
+/*
+release mode:
+partner
+eovalue
+ */
+
+const release_modes = ["eovalue", "licci_partners"]
 
 module.exports = {
   mode: 'universal',
 
   env: {
-    NODE_ENV: process.env.NODE_ENV || true
+    NODE_ENV: process.env.NODE_ENV || true,
+    release_mode: "eovalue"
   },
   server: {
     port: 8082,

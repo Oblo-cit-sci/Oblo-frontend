@@ -74,7 +74,7 @@
       </div>
     </v-app-bar>
     <v-content>
-      <v-container>
+      <v-container v-if="initialized">
         <nuxt/>
       </v-container>
     </v-content>
@@ -87,6 +87,8 @@
     import {INITIALIZED, SET_ENTRIES, DOMAIN_TITLE, DOMAIN} from "../lib/store_consts"
     import GlobalSnackbar from "../components/GlobalSnackbar"
     import {HOME} from "../lib/consts"
+
+    import {initialize} from "../lib/client"
 
     // commented out the dev menu items
     const all_items = [
@@ -119,6 +121,13 @@
 
     export default {
         components: {GlobalSnackbar},
+        created() {
+            //console.log("default create")
+            //console.log(this.initialized, this.connected, this.connecting)
+            if(!this.initialized) {
+                initialize(this.$axios, this.$store, this.$localForage)
+            }
+        },
         data() {
             return {
                 isDev: this.$store.app.context.isDev,

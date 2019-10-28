@@ -59,7 +59,7 @@
             }
         },
         computed: {
-            ...mapGetters({entries: ENTRIES_SEARCH}),
+            ...mapGetters({entries: ENTRIES_SEARCH})
         },
         methods: {
             getEntries() {
