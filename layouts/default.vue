@@ -91,7 +91,7 @@
     // commented out the dev menu items
     const all_items = [
         {icon: 'home', title: 'Home', to: '/'},
-        {icon: 'note_add', title: 'Create Entry', to: '/CreateEntry'},
+       // {icon: 'note_add', title: 'Create Entry', to: '/CreateEntry'},
         {icon: "reorder", title: "My Entries", to: "/personalentries"},
         {icon: 'person', title: 'Profile', to: '/profile'},
        // {icon: 'computer', title: 'Tests', to: '/Tests'},

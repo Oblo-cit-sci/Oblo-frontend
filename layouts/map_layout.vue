@@ -9,22 +9,22 @@
       scrollable
       hide-overlay)
       v-card.ma-1(height="400")
-        v-row()
-          v-col.col-sm-3
-            v-btn(@click="back" nuxt)
-              v-icon home
-              span
-          v-col.col-sm-3
-            v-btn
-              v-icon mdi-crosshairs-gps
-          v-col.col-sm-3
-            v-btn
-              v-icon search
-          v-col.col-sm-3
-            v-btn(text :ripple="false" @click="drawer = !drawer")
-              v-icon mdi-chevron-double-down
         v-card-text
-          Search(v-on:received_search_results="update_map_entries($event)" :show_results="false" clean)
+          v-row
+            v-col.col-sm-2
+              v-btn(@click="back" nuxt)
+                v-icon home
+                span
+            //v-col.col-sm-3
+              v-btn
+                v-icon mdi-crosshairs-gps
+            v-col.col-sm-2
+              v-btn(v-if="menu_mode === 'entry'")
+                v-icon search
+            v-col.col-sm-1.offset-sm-6
+              v-btn(text :ripple="false" @click="drawer = !drawer")
+                v-icon mdi-chevron-double-down
+            Search(v-on:received_search_results="update_map_entries($event)" :show_results="false" clean)
           EntryPreviewList(:entries="entries" :preview_options="slim_preview_options", show)
     v-navigation-drawer(
       v-else
@@ -42,17 +42,17 @@
           v-btn(@click="back" nuxt)
             v-icon home
             span Back
-        v-col.col-sm-3
+        //v-col.col-sm-3
           v-btn
             v-icon mdi-crosshairs-gps
       v-row.ma-1(wrap justify-center)
         Search(v-if="menu_mode === 'search'"
           v-on:received_search_results="update_map_entries($event)" clean)
         div.ma-1(v-if="menu_mode === 'entry'")
-        v-row
-          v-btn(@click="search_view" Search)
-            v-icon search
-        EntryAspectView.ma-1.pa-2(:entry="selected_entry" mode="view")
+          v-row
+            v-btn(@click="search_view" Search)
+              v-icon search
+          EntryAspectView.ma-1.pa-2(:entry="selected_entry" mode="view")
     v-content
       v-container(id="fullContainer")
         nuxt
