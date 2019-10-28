@@ -1,6 +1,6 @@
 <template lang="pug">
     v-card(class="mb-10" outlined :width="550"  :to="domain_url" nuxt :ripple="false" @click.native="setDomain()")
-        v-img(:src="domain.img_src" max-height="auto")
+        v-img(:src="'/app' + domain.img_src" max-height="auto")
             v-card-title(class="align-end fill-height shadow") {{domain.title}}
         v-card-text {{domain.description}}
 </template>

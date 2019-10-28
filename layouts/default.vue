@@ -36,7 +36,7 @@
       <v-toolbar-title class="pa-0">
         <v-list-item class="pl-0">
           <v-list-item-avatar v-if="domain_icon" width="55" height="auto" tile>
-            <v-img contain :src="domain_icon"></v-img>
+            <v-img contain :src="'/app/' + domain_icon"></v-img>
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title class="headline">

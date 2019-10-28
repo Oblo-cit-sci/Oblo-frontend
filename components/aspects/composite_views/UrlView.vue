@@ -1,5 +1,5 @@
 <template lang="pug">
-  p {{title}}: 
+  p {{title}}:
     a(:href="url" target="_blank") {{url}}
 </template>
 
@@ -8,12 +8,15 @@
   export default {
     name: "UrlView",
     mixins: [AspectMixin],
+    props: {
+      title: String
+    },
     computed: {
       title(){
-        return this.value.Title.value
+        return this.title ? this.title : this.value
       },
       url() {
-        return this.value.URL.value
+        return this.value
       }
     }
   }
