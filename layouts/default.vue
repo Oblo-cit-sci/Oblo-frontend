@@ -95,13 +95,13 @@
     // commented out the dev menu items
     const all_items = [
         {icon: 'home', title: 'Home', to: '/'},
-       // {icon: 'note_add', title: 'Create Entry', to: '/CreateEntry'},
+        // {icon: 'note_add', title: 'Create Entry', to: '/CreateEntry'},
         {icon: "reorder", title: "My Entries", to: "/personalentries"},
         {icon: 'person', title: 'Profile', to: '/profile'},
-       // {icon: 'computer', title: 'Tests', to: '/Tests'},
-       // {icon: 'flip_to_front', title: 'Entrytypes', to: '/CreateEntrytype'},
+        // {icon: 'computer', title: 'Tests', to: '/Tests'},
+        // {icon: 'flip_to_front', title: 'Entrytypes', to: '/CreateEntrytype'},
         {icon: 'fa-map', title: 'Map', to: '/Map'},
-       // {icon: 'computer', title: 'Aspectbuild', to: '/AspectBuild'},
+        // {icon: 'computer', title: 'Aspectbuild', to: '/AspectBuild'},
         {icon: 'how_to_reg', title: 'Register', to: '/register'},
         {icon: 'play_arrow', title: 'Login', to: '/login'},
         {icon: 'keyboard_return', title: 'Logout', to: '/logout'},
@@ -124,9 +124,10 @@
     export default {
         components: {GlobalSnackbar, Footer},
         created() {
-            //console.log("default create")
-            //console.log(this.initialized, this.connected, this.connecting)
+            console.log("layout created", this.initialized)
+
             if(!this.initialized) {
+                console.log("layout not initialized")
                 initialize(this.$axios, this.$store, this.$localForage)
             }
         },
@@ -141,43 +142,42 @@
                 header_items: header_items
             }
         },
-        methods: {
-
-        },
+        methods: {},
         computed: {
             initialized() {
-              return this.$store.getters[INITIALIZED]
+                console.log("call init", this.$store.getters[INITIALIZED]())
+                return this.$store.getters[INITIALIZED]()
             },
             connecting() {
-              return this.$store.getters["connecting"]
+                return this.$store.getters["connecting"]
             },
             connected() {
-              return this.$store.getters["connected"]
+                return this.$store.getters["connected"]
             },
             logged_in() {
-              return this.$store.getters["user/logged_in"]
+                return this.$store.getters["user/logged_in"]
             },
             items() {
-              let items = all_items
-              if (!this.logged_in) {
-                  items = this.$_.filter(items, item => require_login.indexOf(item.title) === -1)
-                  if (!this.connected) {
-                      items = this.$_.filter(items, item => hide_no_login.indexOf(item.title) === -1)
-                  }
-              } else { // logged in
-                  items = this.$_.filter(items, item => hide_no_login.indexOf(item.title) === -1)
-              }
-              if (!this.isDev) {
-                  items = this.$_.filter(items, item => show_inDev.indexOf(item.title) === -1)
-              }
-              return items
+                let items = all_items
+                if (!this.logged_in) {
+                    items = this.$_.filter(items, item => require_login.indexOf(item.title) === -1)
+                    if (!this.connected) {
+                        items = this.$_.filter(items, item => hide_no_login.indexOf(item.title) === -1)
+                    }
+                } else { // logged in
+                    items = this.$_.filter(items, item => hide_no_login.indexOf(item.title) === -1)
+                }
+                if (!this.isDev) {
+                    items = this.$_.filter(items, item => show_inDev.indexOf(item.title) === -1)
+                }
+                return items
             },
             connected_icon() {
-              if (this.connected) {
-                  return "wifi"
-              } else {
-                  return "wifi_off"
-              }
+                if (this.connected) {
+                    return "wifi"
+                } else {
+                    return "wifi_off"
+                }
             },
             userrole_icon() {
                 if (this.$store.getters.visitor) {
@@ -187,23 +187,23 @@
                 }
             },
             domain_title() {
-              let domain = this.$store.getters[DOMAIN]
-              return domain ? domain.title : HOME
+                let domain = this.$store.getters[DOMAIN]
+                return domain ? domain.title : HOME
             },
             domain_icon() {
-              let domain = this.$store.getters[DOMAIN]
-              return domain ? domain.icon : undefined
+                let domain = this.$store.getters[DOMAIN]
+                return domain ? domain.icon : undefined
             }
         },
         watch: {
-          domain_title: function(newValue, oldValue) {
-            if (newValue !== HOME && newValue !== lastDomain) {
-              this.$store.commit(SET_ENTRIES, [])
+            domain_title: function (newValue, oldValue) {
+                if (newValue !== HOME && newValue !== lastDomain) {
+                    this.$store.commit(SET_ENTRIES, [])
+                }
+                if (newValue !== HOME) {
+                    lastDomain = newValue
+                }
             }
-            if(newValue !== HOME) {
-              lastDomain = newValue
-            }
-          }
         }
     }
 </script>
@@ -230,6 +230,7 @@
   .disabled * {
     opacity: 0.8;
   }
+
   .header-subtitle {
     font-size: 0.6em
   }

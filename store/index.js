@@ -59,6 +59,7 @@ export const mutations = {
       state.codes.liccis_flat = extract_liccis(data.codes.liccis);
       state.entry_types = new Map(data.entryTemplates)
       state.domains = data.domains
+      console.log("store backup_init, setting init")
       state.initialized = true
     }
   },
@@ -189,7 +190,9 @@ export const getters = {
     return state.meta.repository.user_key || ""
   },
   initialized(state) {
-    return state.initialized
+    return () => {
+      return state.initialized
+    }
   },
   connecting(state) {
     return state._connecting

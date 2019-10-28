@@ -6,10 +6,18 @@ import {SET_DOMAIN} from "../lib/store_consts";
 import {get_release_mode} from "../lib/util";
 
 
-export default function (context) {
+export default async function (context) {
+  console.log("init-middleware")
   const licci_partner_home = get_release_mode(null, context) === LICCI_PARTNERS && context.route.path === "/"
 
   if (!context.store.state.initialized) {
+
+    await initialize(context.$axios, context.store, context.localForage)
+
+    if (licci_partner_home) {
+      return context.redirect("/domain/licci/")
+    }
+    /*
     initialize(context.$axios, context.store, context.localForage).then((res) => {
       //console.log("done initialized", context.store.state.domains)
       if (licci_partner_home) {
@@ -18,7 +26,7 @@ export default function (context) {
     }).catch((err) => {
       console.log(err)
       console.log("error initializing")
-    })
+    })*/
   } else {
     if (licci_partner_home) {
       return context.redirect("/domain/licci/")
