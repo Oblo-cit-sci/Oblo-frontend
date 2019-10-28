@@ -1,12 +1,11 @@
 <template>
   <v-app>
     <v-navigation-drawer
-      app
       v-model="drawer"
       v-show="initialized"
       :mini-variant="miniVariant"
       :clipped="clipped"
-      fixed
+      app
     >
       <v-list>
         <v-list-item-group>
@@ -78,8 +77,10 @@
         <nuxt/>
       </v-container>
     </v-content>
+    <Footer></Footer>
     <GlobalSnackbar></GlobalSnackbar>
   </v-app>
+  
 </template>
 
 
@@ -87,6 +88,7 @@
     import {INITIALIZED, SET_ENTRIES, DOMAIN_TITLE, DOMAIN} from "../lib/store_consts"
     import GlobalSnackbar from "../components/GlobalSnackbar"
     import {HOME} from "../lib/consts"
+    import Footer from "../components/Footer"
 
     // commented out the dev menu items
     const all_items = [
@@ -118,7 +120,7 @@
     const pkg = require('../package')
 
     export default {
-        components: {GlobalSnackbar},
+        components: {GlobalSnackbar, Footer},
         data() {
             return {
                 isDev: this.$store.app.context.isDev,
