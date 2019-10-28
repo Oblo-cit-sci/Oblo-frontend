@@ -7,10 +7,12 @@ import {get_release_mode} from "../lib/util";
 
 
 export default function (context) {
+  const licci_partner_home = get_release_mode(null, context) === LICCI_PARTNERS && context.route.path === "/"
+
   if (!context.store.state.initialized) {
     initialize(context.$axios, context.store, context.localForage).then((res) => {
       //console.log("done initialized", context.store.state.domains)
-      if (get_release_mode(null, context) === LICCI_PARTNERS && context.route.path === "/") {
+      if (licci_partner_home) {
         return context.redirect("/domain/licci/")
       }
     }).catch((err) => {
@@ -18,7 +20,7 @@ export default function (context) {
       console.log("error initializing")
     })
   } else {
-    if (context.env.release_mode === LICCI_PARTNERS && context.route.path === "/") {
+    if (licci_partner_home) {
       return context.redirect("/domain/licci/")
     }
   }
