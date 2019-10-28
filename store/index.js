@@ -54,16 +54,13 @@ export const mutations = {
   },
   backup_init(state, data) {
     // calld in the middleware
-    console.log("backup_init", state.initialized)
     if (!state.initialized) {
-      console.log("lets do it")
       state.codes = {...data.codes}
       state.codes.liccis_flat = extract_liccis(data.codes.liccis);
       state.entry_types = new Map(data.entryTemplates)
       state.domains = data.domains
       state.initialized = true
     }
-    console.log("domain", state.domain)
   },
   set_related_users(state, related_users) {
     state.related_users = related_users
