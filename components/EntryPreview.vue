@@ -39,6 +39,7 @@
     import MetaChips from "../components/MetaChips"
     import Taglist from "../components/Taglist"
     import {get_proper_mode} from "../lib/entry"
+    import {CREATOR, entry_actor_relation} from "../lib/actors";
 
     export default {
         name: "Entrypreview",
@@ -90,6 +91,14 @@
             goto_text() {
                 // assuming, we call it edit and view
                 return this.proper_mode
+            },
+            creator() {
+                const public_name = this.entry.actors.creator.public_name
+                console.log(public_name)
+                let relation = entry_actor_relation(this.entry, this.$store.getters.user)
+                if (relation === CREATOR.key)
+                    return "From yourself"
+                return public_name
             },
             show_image() {
               if(this.entry.image) {
