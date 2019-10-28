@@ -1,17 +1,17 @@
 <template lang="pug">
   v-container(fluid)
     v-row(wrap justify-start)
-        v-col(cols="12")
-            v-text-field(
-            v-model="keyword"
-            label="Search"
-            single-line
-            hide-details
-            append-outer-icon="search"
-            @click:append-outer="getEntries"
-            clearable
-            :loading="searching")
-    EntryPreviewList(:entries="entries")
+      v-col(cols="12")
+        v-text-field(
+          v-model="keyword"
+          label="Search"
+          single-line
+          hide-details
+          append-outer-icon="search"
+          @click:append-outer="getEntries"
+          clearable
+          :loading="searching")
+    EntryPreviewList(v-if="show_results" :entries="entries")
 </template>
 
 <script>
@@ -25,7 +25,11 @@
         name: "Search",
         components: {EntryPreviewList},
         props: {
-            init_clear: Boolean
+            init_clear: Boolean,
+            show_results: {
+                type: Boolean,
+                default: true
+            }
         },
         data() {
             return {

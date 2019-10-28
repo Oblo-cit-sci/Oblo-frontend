@@ -20,7 +20,8 @@ export const state = () => ({
   domains: [],
   domain: {
     value: NO_DOMAIN,
-    title: "OpenTEK"
+    title: "OpenTEK",
+    icon: "images/openTEK_icon.png"
   }
   // selected entry type (for creation)
 })
@@ -47,6 +48,7 @@ export const mutations = {
     state.codes.liccis_flat = extract_liccis(data.codes.liccis);
     state.entry_types = new Map(data.entryTemplates);
     state.related_users = data.related_users || {};
+    state.domains = data.domains
     //state.entry_type_slug_index_dict = array_to_val__id_dict(data.entryTemplates, "slug");
     state.initialized = true
   },
@@ -106,7 +108,8 @@ export const mutations = {
   clear_domain(state) {
     state.domain = {
       value: NO_DOMAIN,
-      title: "OpenTEK"
+      title: "OpenTEK",
+      icon: "images/openTEK_icon.png"
     }
   },
   set_stored_entries(state, entries) {

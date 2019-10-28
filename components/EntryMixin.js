@@ -10,7 +10,6 @@ export default {
     parents() {
       let act = this.entry
       let result = []
-      console.log("act1", act)
       while (act.refs.parent) {
         act = this.$store.getters[ENTRIES_GET_PARENT](act.uuid)
         console.log("act", act)

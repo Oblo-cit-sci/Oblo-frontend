@@ -87,15 +87,17 @@
     import {INITIALIZED, SET_ENTRIES, DOMAIN_TITLE, DOMAIN} from "../lib/store_consts"
     import GlobalSnackbar from "../components/GlobalSnackbar"
     import {HOME} from "../lib/consts"
+
+    // commented out the dev menu items
     const all_items = [
         {icon: 'home', title: 'Home', to: '/'},
         {icon: 'note_add', title: 'Create Entry', to: '/CreateEntry'},
         {icon: "reorder", title: "My Entries", to: "/personalentries"},
         {icon: 'person', title: 'Profile', to: '/profile'},
-        {icon: 'computer', title: 'Tests', to: '/Tests'},
-        {icon: 'flip_to_front', title: 'Entrytypes', to: '/CreateEntrytype'},
+       // {icon: 'computer', title: 'Tests', to: '/Tests'},
+       // {icon: 'flip_to_front', title: 'Entrytypes', to: '/CreateEntrytype'},
         {icon: 'fa-map', title: 'Map', to: '/Map'},
-        {icon: 'computer', title: 'Aspectbuild', to: '/AspectBuild'},
+       // {icon: 'computer', title: 'Aspectbuild', to: '/AspectBuild'},
         {icon: 'how_to_reg', title: 'Register', to: '/register'},
         {icon: 'play_arrow', title: 'Login', to: '/login'},
         {icon: 'keyboard_return', title: 'Logout', to: '/logout'},
@@ -129,7 +131,7 @@
             }
         },
         methods: {
-            
+
         },
         computed: {
             initialized() {
@@ -186,7 +188,7 @@
           domain_title: function(newValue, oldValue) {
             if (newValue !== HOME && newValue !== lastDomain) {
               this.$store.commit(SET_ENTRIES, [])
-            } 
+            }
             if(newValue !== HOME) {
               lastDomain = newValue
             }

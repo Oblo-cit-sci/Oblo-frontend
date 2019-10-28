@@ -1,11 +1,13 @@
 <template lang="pug">
   v-card(class="mx-auto custom-card" outlined)
     v-row(class="ma-2")
-      v-col(cols="12" class="col-md-8 col-sm-12 entry-meta")
-        div.caption {{entry_date}}
+      v-col(cols="12" class="col-sm-12 entry-meta" v-bind:class="[show_image ? 'col-md-8' : 'col-md-12']")
+        div.caption(v-if="show_date") {{entry_date}}
         p.title.mb-2 {{typename}}:
           span.title &nbsp; {{entry.title}}
-        MetaChips(:meta_aspects="meta_aspects")
+          v-btn(v-if="show_title_action" @click="goto(entry)" depressed small)
+            v-icon(:class="default_action_icon")
+        MetaChips(v-if="show_meta_aspects" :meta_aspects="meta_aspects")
       v-col(v-if="show_image" cols="12" class="col-md-4 col-sm-12 entry-image")
         div(class="float-md-right float-sm-left entry-display-size")
           v-avatar(
@@ -19,21 +21,21 @@
     v-row(v-if="show_tags" class="ma-2")
       Taglist
 
-    v-divider(light)
-
-    v-card-actions
-      div
-        v-btn(small text outlined @click="goto(entry)") {{goto_text}}
-        v-btn(small text outlined v-if="to_download") Download
+    div(v-if="show_botton_actions")
+      v-divider(light)
+      v-card-actions
+        div
+          v-btn(small text outlined @click="goto(entry)") {{goto_text}}
+          v-btn(small text outlined v-if="to_download") Download
 </template>
 
 <script>
+
     import {license_icon} from "../lib/client"
     import EntryNavMixin from "./EntryNavMixin";
     import {ENTRIES_HAS_ENTRY, ENTRIES_USER_RIGHTS, TYPE_NAME} from "../lib/store_consts";
-    import {CREATOR, entry_actor_relation} from "../lib/actors"
     import {privacy_icon, printDate} from "../lib/util"
-    import {EDIT} from "../lib/consts"
+    import {VIEW} from "../lib/consts"
     import MetaChips from "../components/MetaChips"
     import Taglist from "../components/Taglist"
     import {get_proper_mode} from "../lib/entry"
@@ -43,7 +45,20 @@
         components: {MetaChips, Taglist},
         props: {
             entry: {type: Object, required: true},
-            include_domain_tag: Boolean
+            show_date: {
+              type: Boolean,
+              default: true
+            },
+            show_meta_aspects: {
+                type: Boolean,
+                default: true
+            },
+            show_botton_actions: {
+                type: Boolean,
+                default: true
+            },
+            include_domain_tag: Boolean,
+            show_title_action: Boolean
         },
         mixins: [EntryNavMixin],
         created() {
@@ -97,6 +112,12 @@
             },
             typename() {
                 return this.$store.getters[TYPE_NAME](this.entry.type_slug)
+            },
+            default_action_icon() {
+                if(this.proper_mode === VIEW)
+                    return "fa fa-angle-right"
+                else
+                    return "fa fa-edit"
             }
         }
     }

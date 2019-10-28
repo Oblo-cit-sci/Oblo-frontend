@@ -166,6 +166,7 @@
             delete_entry() {
                 this.$store.dispatch(ENTRIES_DELETE_ENTRY, this.entry.uuid)
                 this.ok_snackbar("Entry deleted")
+                this.$emit("entryAction", "delete")
                 this.back(false)
             },
             save() {

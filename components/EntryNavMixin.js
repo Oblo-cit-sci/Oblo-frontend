@@ -1,6 +1,6 @@
 import {fetch_entry} from "../lib/entry";
-import {GLOBAL, VIEW} from "../lib/consts";
-import {ENTRIES_GET_ENTRY, GET_ASPECT_DEF} from "../lib/store_consts";
+import {GLOBAL, NO_DOMAIN, VIEW} from "../lib/consts";
+import {DOMAIN, ENTRIES_GET_ENTRY, GET_ASPECT_DEF} from "../lib/store_consts";
 import {aspect_loc_str} from "../lib/aspect";
 
 export default {
@@ -39,7 +39,12 @@ export default {
         }
         this.to_entry(uuid, mode, query)
       } else {
-        this.$router.push("/")
+        if(this.domain.value === NO_DOMAIN) {
+          this.$router.push("/")
+        } else {
+          // todo could be a bit nicer (named router, route param...)
+          this.$router.push("/domain/"+ this.domain.value)
+        }
       }
     },
     to_entry(uuid, mode = VIEW, query = {}) {
@@ -59,6 +64,9 @@ export default {
   computed: {
     in_context() {
       return this.entry_type.content.meta.context !== GLOBAL || this.entry.refs.parent
+    },
+    domain() {
+      return this.$store.getters[DOMAIN]
     }
   }
 }

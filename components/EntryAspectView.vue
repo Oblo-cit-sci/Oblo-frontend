@@ -3,17 +3,14 @@
     div(v-for="(aspect) in shown_aspects" :key="aspect.name")
       Aspect(
         :aspect="aspect"
+        :mode="mode"
         :aspect_loc="aspect_locs[aspect.name]"
-        v-on:entryAction="entryAction($event)"
-        mode="edit")
+        v-on:entryAction="entryAction($event)")
 </template>
 
 <script>
 
-    /*
-
-     */
-    import {ASPECT, ENTRY} from "../lib/consts";
+    import {ASPECT, ENTRY, VIEW} from "../lib/consts";
     import Aspect from "./Aspect";
 
     export default {
@@ -22,6 +19,10 @@
         props: {
             entry: {
                 type: Object
+            },
+            mode: {
+                type: String,
+                default: VIEW
             }
         },
         data() {

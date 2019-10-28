@@ -6,7 +6,7 @@
                 :access-token="accessToken"
                 :map-style="mapStyle"
                 @load="onMapLoaded"
-                @click="touch($event)"
+
         >
           <div v-if="mode === 'coordinate'">
             <MglMarker v-if="display_coordinates" :coordinates="display_coordinates">
@@ -18,13 +18,18 @@
             </MglMarker>
             <!--<v-text-field hideDetails readonly fullWidth :value="coordinate_string"></v-text-field>-->
           </div>
-          <MglMarker v-for="entry in entries" :coordinates="entry.location" :key="entry.uuid">
+          <div v-for="entry in entries" :key="entry.uuid">
+          <MglMarker v-for="(loc, index) in entry.location"
+                     :coordinates="transform_loc(loc)"
+                     :key="index"
+                      @click="select_entry_marker($event, entry.uuid)">
             <!--<MglPopup anchor="top">
               <VCard>
                 <div>Hello, I'm popup!</div>
               </VCard>
             </MglPopup>-->
           </MglMarker>
+          </div>
         </MglMap>
         <v-btn v-if="done" style="bottom:2%; right:25%" fixed dark fab bottom right color="success" @click="back">
           <v-icon>mdi-check</v-icon>
@@ -65,6 +70,9 @@
         v-btn(style="bottom:2%; right:2 5%" fixed dark fab bottom right color="success" @click="drawer = !drawer")
       v-icon mdi-check
      */
+
+    // mode could also be COORDINATE
+
     export default {
         name: "Map",
         components: {MglMarker, MglPopup},
@@ -101,8 +109,13 @@
         },
         created() {
             this.map_sources_iter = Array.from(this.map_sources.entries())
+            console.log(this.entries)
         },
         methods: {
+            select_entry_marker(event, entry_uuid) {
+                //console.log("sele", event, entry_uuid)
+                this.$store.dispatch("map/select_entry", entry_uuid)
+            },
             layerClr(l_id) {
                 return this.layerVisiblities[l_id] ? "#00DD1030" : "#77777720";
             },
@@ -117,10 +130,16 @@
                 this.update_layer(l_id)
             },
             update_layer(l_id) {
-                console.log(l_id)
                 for (let l of this.map_sources.get(l_id).layers) {
                     let newVal = this.layerVisiblities[l_id] ? "visible" : "none";
                     this.map.setLayoutProperty(l, 'visibility', newVal);
+                }
+            },
+            transform_loc(loc) {
+                if(loc.hasOwnProperty("lon") && loc.hasOwnProperty("lat")) {
+                    return [loc.lon, loc.lat]
+                } else {
+                    return loc
                 }
             },
             touch({mapboxEvent}) {
@@ -158,10 +177,10 @@
                 return this.coordinates[0].toString() + "   " + this.coordinates[1].toString()
             },
             mode() {
-              return this.$route.query.mode || COORDINATE
+              return this.$route.query.mode || VIEW
             },
             ...mapGetters({
-                entries: "map/get_entries"
+                entries: "map/entries"
             }),
             done() {
                 switch(this.mode) {
@@ -170,6 +189,11 @@
                     default:
                         return false
                 }
+            }
+        },
+        watch: {
+            entries(val) {
+              console.log("NEWW", val)
             }
         },
         mounted() {

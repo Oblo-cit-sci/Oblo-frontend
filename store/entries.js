@@ -1,12 +1,13 @@
 /*
   this is for the own entries
  */
-import {ASPECT, COMPONENT, DRAFT, EDIT, ENTRY, INDEX, PRIVATE_LOCAL, VIEW} from "../lib/consts";
+import {ASPECT, COMPONENT, DRAFT, EDIT, ENTRY, INDEX, PRIVATE_LOCAL, TITLE_ASPECT, VIEW} from "../lib/consts";
 import {get_entry_titleAspect, get_proper_mode, select_aspect_loc} from "../lib/entry";
 import {aspect_loc_str, aspect_loc_str2arr, aspect_loc_uuid, loc_prepend, remove_entry_loc} from "../lib/aspect";
 import {GET_ENTRY} from "../lib/store_consts";
 
 import Vue from "vue"
+import {recursive_unpack} from "../lib/util";
 
 const ld = require("lodash")
 
@@ -112,6 +113,9 @@ export const mutations = {
   },  // todo template for all kinds of computed meta-aspects
   update_title(state, {uuid, title}) {
     state.entries.get(uuid).title = title
+  },
+  update_location(state, {uuid, location}) {
+    state.entries.get(uuid).location = location
   },
   entries_set_local_list_page(state, {aspect_loc, page}) {
     let entry = state.entries.get(aspect_loc_uuid(aspect_loc))
@@ -263,9 +267,24 @@ export const getters = {
       }
     }
   },
+  entry_location: function (state, getters) {
+    return (uuid = state.edit.uuid) => {
+      const entry = getters.get_entry(uuid)
+      const entry_type = getters.get_entry_type(entry.type_slug)
+      const locationAspect = entry_type.content.meta.locationAspect
+      let location = null
+      if (locationAspect) {
+        location = select_aspect_loc(state, loc_prepend(ENTRY, uuid, aspect_loc_str2arr(locationAspect)))
+        // this is weird
+        if (location && location.value)
+          location =  location.value
+      }
+      return location
+    }
+  },
   get_proper_mode(state, getters) {
     // when entry is private local, always > edit
-    // when owner, draft > edit
+    // whenlocationAspectlocationAspect owner, draft > edit
     // otherwise > view
     return (uuid = state.edit.uuid) => {
       const entry = getters.get_entry(uuid)
@@ -315,6 +334,10 @@ export const actions = {
   save_entry(context, uuid = context.state.edit.uuid) {
     const entry_title = context.getters.get_entry_title(uuid)
     context.commit("update_title", {uuid, title: entry_title})
+    const location = context.getters.entry_location(uuid)
+    if(location){
+      context.commit("update_location", {uuid, location: recursive_unpack(location)})
+    }
   },
   set_edit(context, uuid) {
     context.commit("set_edit", uuid)

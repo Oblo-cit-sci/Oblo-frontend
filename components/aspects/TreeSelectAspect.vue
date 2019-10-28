@@ -1,23 +1,24 @@
 <template lang="pug">
-  div
-    v-flex(text-xs-left)
-      v-autocomplete(
-        outlined
-        single-line
+  div(v-if="!readOnly")
+    v-autocomplete(
+      outlined
+      single-line
+      :disabled="disabled"
+      :items="flat_options"
+      :value="value"
+      @change="emit($event)"
+      :aspect_loc="aspect_loc"
+      :prependIcon="prependIcon"
+      @click:prepend="openDialog()")
+    v-dialog(width="500" v-model="dialogOpen")
+      TreleafPicker(
+        :tree="tree"
+        :attr="aspect.attr"
+        v-on:selected="selected($event)"
         :disabled="disabled"
-        :items="flat_options"
-        :value="value"
-        @change="emit($event)"
-        :aspect_loc="aspect_loc"
-        :prependIcon="prependIcon"
-        @click:prepend="openDialog()")
-      v-dialog(width="500" v-model="dialogOpen")
-        TreleafPicker(
-          :tree="tree"
-          :attr="aspect.attr"
-          v-on:selected="selected($event)"
-          :disabled="disabled"
-          :keep_selection="true")
+        :keep_selection="true")
+  div(v-else)
+    div {{value}}
 </template>
 
 <script>
@@ -63,7 +64,7 @@
                 }
             },
             selected(val) {
-                console.log("TS Aspect", val.value)
+                console.log("TS Aspect", val)
                 this.dialogOpen = false;
                 this.emit(val.value)
             },

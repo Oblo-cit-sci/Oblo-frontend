@@ -1,6 +1,6 @@
 <template lang="pug">
-  v-layout(justify-center align-center) 
-    v-flex(xs12 md12) 
+  v-layout(justify-center align-center  v-if="!delete_entry")
+    v-flex(xs12 md12)
       Title_Description(
         :title="page_title"
         header_type="h1"
@@ -9,7 +9,7 @@
       div(v-if="has_parent")
         span This entry is part of:&nbsp
         a(@click="to_parent(true, mode)") {{parent_title}}
-        v-breadcrumbs(:items="parents") 
+        v-breadcrumbs(:items="parents")
       div(v-if="this.mode==='view'")
         MetaChips(:meta_aspects="meta_aspects_privacy")
       v-divider(class="wide_divider")
@@ -81,7 +81,7 @@
             Aspect,
             EntryActions,
             Title_Description,
-            Privacy, License, 
+            Privacy, License,
             MetaChips
         },
         data() {
@@ -99,7 +99,9 @@
                 //
                 openSaveDialog: false,
                 unsaved_changes_dialog: unsaved_changes_default_dialog,
-                router_next: null
+                router_next: null,
+                // flag
+                delete_entry: false
             }
         },
         created() {
@@ -129,7 +131,9 @@
             }
         },
         beforeRouteLeave(to, from, next) {
-            this.$store.dispatch(ENTRIES_SAVE_ENTRY)
+            if (!this.delete_entry) {
+                this.$store.dispatch(ENTRIES_SAVE_ENTRY)
+            }
             this.$localForage.setItem("entries", this.$store.state.entries.entries, () => {
                 console.log("stored")
             })
@@ -173,6 +177,11 @@
             aspectComponent(aspect) {
                 return get_aspect_vue_component(aspect)
             },
+            entryAction(action) {
+                if(action === "delete") {
+                    this.delete_entry = true
+                }
+            }
         },
         computed: {
             mode: {
