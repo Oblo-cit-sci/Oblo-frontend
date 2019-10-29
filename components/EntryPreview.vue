@@ -1,25 +1,24 @@
 <template lang="pug">
   v-card(class="mx-auto custom-card" outlined)
     v-row(class="ma-2")
-      v-col(cols="12" class="col-sm-12 entry-meta" v-bind:class="[show_image ? 'col-md-8' : 'col-md-12']")
+      v-col(class="entry-meta" v-bind:class="[show_image ? 'col-md-8' : 'col-md-12']")
         div.caption(v-if="show_date") {{entry_date}}
         p.title.mb-2 {{typename}}:
           span.title &nbsp; {{entry.title}}
           v-btn(v-if="show_title_action" @click="goto()" depressed small)
             v-icon(:class="default_action_icon")
         MetaChips(v-if="show_meta_aspects" :meta_aspects="meta_aspects")
+        div.mt-2(v-if="show_tags")
+          Taglist.ml-0
       v-col(v-if="show_image" cols="12" class="col-md-4 col-sm-12 entry-image")
         div(class="float-md-right float-sm-left entry-display-size")
           v-avatar(
             v-if="entry.image"
             tile
-            color="grey"
             class="entry-image-size")
             v-img(
-              src="https://article.images.consumerreports.org/f_auto/prod/content/dam/CRO%20Images%202018/Health/June/CR-Health-InlineHero-Foods-That-Are-Healthier-Cooked-09-17"
+              :src="entry_image"
               alt="item")
-    v-row(v-if="show_tags" class="ma-2")
-      Taglist
 
     div(v-if="show_botton_actions")
       v-divider(light)
@@ -36,7 +35,7 @@
     import {license_icon} from "../lib/client"
     import EntryNavMixin from "./EntryNavMixin";
     import {ENTRIES_HAS_ENTRY, ENTRIES_USER_RIGHTS, TYPE_NAME} from "../lib/store_consts";
-    import {privacy_icon, printDate} from "../lib/util"
+    import {privacy_icon, printDate, static_file_path} from "../lib/util"
     import {VIEW} from "../lib/consts"
     import MetaChips from "../components/MetaChips"
     import Taglist from "../components/Taglist"
@@ -133,6 +132,9 @@
                     return "fa fa-angle-right"
                 else
                     return "fa fa-edit"
+            },
+            entry_image() {
+                return static_file_path(this.$store, '/images/entry_images/' + this.entry.image)
             },
             has_action_goto_location() {
                 return this.entry.location && this.actions.includes('goto_location')
