@@ -145,9 +145,12 @@
         },
         methods: {
           goTo() {
-            this.$router.go({
-              path: 'domain/licci'
-            })
+            let domain = this.$store.getters[DOMAIN]
+            if(this.$route.path !== domain.to){
+              this.$router.push({
+                path: domain.to ? domain.to : '/'
+              })
+            }
           }
         },
         computed: {
