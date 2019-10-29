@@ -1,7 +1,8 @@
 export const state = () => ({
   marker: null,
   entries: [],
-  selected_entry: null
+  selected_entry: null,
+  goto_location: null
 })
 
 export const mutations = {
@@ -16,6 +17,9 @@ export const mutations = {
   },
   select_entry(state, entry) {
     state.selected_entry = entry
+  },
+  goto_location(state, location) {
+    state.goto_location = location
   }
 }
 
@@ -25,6 +29,10 @@ export const getters = {
   },
   selected_entry(state) {
     return state.selected_entry
+  },
+  goto_location(state) {
+    return () => {
+      return state.goto_location}
   }
 }
 
