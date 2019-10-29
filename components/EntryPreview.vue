@@ -19,7 +19,7 @@
               src="https://article.images.consumerreports.org/f_auto/prod/content/dam/CRO%20Images%202018/Health/June/CR-Health-InlineHero-Foods-That-Are-Healthier-Cooked-09-17"
               alt="item")
     v-row(v-if="show_tags" class="ma-2")
-      Taglist
+      Taglist(v-if="tags" :tags="tags")
 
     div(v-if="show_botton_actions")
       v-divider(light)
@@ -136,6 +136,9 @@
             },
             has_action_goto_location() {
                 return this.entry.location && this.actions.includes('goto_location')
+            },
+            tags() {
+              return this.entry.tags || null
             }
         }
     }
