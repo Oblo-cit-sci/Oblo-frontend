@@ -253,7 +253,7 @@ export const getters = {
       const type = getters.get_entry_type(entry.type_slug)
       let titleAspect = get_entry_titleAspect(type)
       if (!titleAspect) {
-        console.log("entries.get_entry_title TODO, use default title for type")
+        //console.log("entries.get_entry_title TODO, use default title for type")
         return ""
       }
       // todo maybe it would be cleaner to add "entry "+uuid , so that  aspect_loc_str2arr/is wrapped around
@@ -262,7 +262,7 @@ export const getters = {
       if (title && title.value)
         return title.value
       else {
-        console.log("entries.get_entry_title TODO, use default title for type")
+        //console.log("entries.get_entry_title TODO, use default title for type")
         return entry.title
       }
     }

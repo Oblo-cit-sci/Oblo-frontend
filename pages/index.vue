@@ -21,6 +21,7 @@
     import {initialize} from "../lib/client"
     import DomainCard from "../components/DomainCard";
 
+
     export default {
         data() {
             return {
@@ -54,7 +55,7 @@
         },
         methods: {
             initialize() {
-                initialize(this.$axios, this.$store, this.$localForage)
+                //initialize(this.$axios, this.$store, this.$localForage)
             }
         },
         computed: {

@@ -36,7 +36,7 @@
     import {pack_value} from "../lib/aspect";
     import LoadFileButton from "../components/LoadFileButton";
     import DecisionDialog from "../components/DecisionDialog";
-  import TextShort from "../components/aspects/TextShortAspect";
+    import TextShort from "../components/aspects/TextShortAspect";
     import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
     import {export_data} from "../lib/import_export";
     import {ENTRIES_SAVE_ENTRY, USER_KEY} from "../lib/store_consts";
@@ -78,7 +78,7 @@
                     }
                 }).then(res => {
                     this.snackbar(res.data.status, res.data.msg)
-                    if(res.data.status){
+                    if (res.data.status) {
                         this.$router.push("/")
                     }
                 }).catch(err => {
@@ -87,7 +87,7 @@
                 })
             },
             export_entries() {
-                const entries =Array.from(this.$store.state.entries.entries.values())
+                const entries = Array.from(this.$store.state.entries.entries.values())
                 export_data(entries, "all_licci_entries.json")
             },
             show_clear_entries() {
@@ -120,6 +120,9 @@
             },
             clear_entries() {
                 this.$store.dispatch("clear_entries")
+                this.$localForage.setItem("entries", this.$store.state.entries.entries, () => {
+                    console.log("stored")
+                })
             }
         },
         computed: {

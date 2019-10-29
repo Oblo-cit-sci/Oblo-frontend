@@ -44,17 +44,6 @@
 
 <script>
 
-    /*
-          <v-flex column sm2 md2 lg2>
-          <div>
-            <v-btn router to="/" nuxt> Back</v-btn>
-            <v-btn
-              v-for="map_source in map_sources_iter" :key="map_source[0]" small @click="switch_layer(map_source[0])"
-              :color="layerClr(map_source[0])"> {{map_source[1].title}}
-            </v-btn>
-          </div>
-        </v-flex>
-     */
 
     import {MglMarker, MglPopup} from 'vue-mapbox';
     import {access_token, licci_style_map, rev_geocode} from "../lib/services/mapbox";
@@ -66,10 +55,6 @@
 
     import {mapGetters} from "vuex"
 
-    /*
-        v-btn(style="bottom:2%; right:2 5%" fixed dark fab bottom right color="success" @click="drawer = !drawer")
-      v-icon mdi-check
-     */
 
     // mode could also be COORDINATE
 
@@ -109,7 +94,6 @@
         },
         created() {
             this.map_sources_iter = Array.from(this.map_sources.entries())
-            console.log(this.entries)
         },
         methods: {
             select_entry_marker(event, entry_uuid) {
@@ -154,7 +138,6 @@
                 }).catch(err => {
                     console.log(err)
                 })
-
             },
             back() {
                 /*
@@ -189,11 +172,6 @@
                     default:
                         return false
                 }
-            }
-        },
-        watch: {
-            entries(val) {
-              console.log("NEWW", val)
             }
         },
         mounted() {

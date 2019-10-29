@@ -32,7 +32,7 @@ export default function myCache(moduleOptions) {
       })
     })
     .catch((err) => {
-      console.log("couldn't grab cache types and codes")
+      console.log("couldn't grab new types and codes from server")
     })
 
 }
