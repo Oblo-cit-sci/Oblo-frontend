@@ -11,11 +11,10 @@
       @lastpage="more_follow_page = ($event)")
       // todo this can come back
     span(v-if="owner")
-      span(v-if="view")
+      span(v-if="view && can_edit")
         v-btn(color="secondary" @click="edit") edit
-      span(v-else)
+      span(v-else-if="can_edit")
         v-btn(color="warning" @click="show_delete") delete
-
         v-btn( color="success" @click="save") {{save_word}}
         v-btn(
           v-if="!private_local && !view && !in_context"
@@ -25,7 +24,7 @@
           :loading="sending") {{submitted ? 'update' : 'submit'}}
         v-btn(v-if="upload_option" @click="upload_to_repo") Upload to the repo
       // v-if="private_local" todo for now, download for everyone
-      v-btn(:disabled="disable_download"  @click="download") download
+      v-btn(v-if="can_download" :disabled="disable_download"  @click="download") download
 
     DecisionDialog(v-bind="dialog_data" :open.sync="dialog_visible" v-on:action="dialog_action($event)")
 </template>
@@ -34,7 +33,7 @@
 
 
     import {
-        DRAFT, EDIT,
+        DRAFT, EDIT, LICCI_PARTNERS,
         PRIVATE_LOCAL,
         PUBLIC,
         SUBMITTED,
@@ -55,6 +54,8 @@
     } from "../lib/store_consts";
     import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
     import {export_data} from "../lib/import_export";
+    import {CREATOR, entry_actor_relation} from "../lib/actors";
+    import {get_release_mode} from "../lib/util";
 
     export default {
         name: "EntryActions",
@@ -102,7 +103,7 @@
         },
         methods: {
             edit() {
-              this.$emit(EDIT)
+                this.$emit(EDIT)
             },
             // BUTTONS
             upload_to_repo() {
@@ -218,7 +219,7 @@
             },
             back(to_last_element = true) {
                 //this.$emit("update:dirty", false)
-                this.$store.commit(ENTRIES_SET_EDIT_CLEAN,this.entry.uuid)
+                this.$store.commit(ENTRIES_SET_EDIT_CLEAN, this.entry.uuid)
                 this.to_parent(to_last_element, this.mode)
             }
         },
@@ -260,11 +261,18 @@
                     return "save draft"
                 }
             },
+            can_edit() {
+                let relation = entry_actor_relation(this.entry, this.$store.getters.user)
+                return relation === CREATOR.key
+            },
             upload_option() {
                 return this.entry_type.content.activities.hasOwnProperty("upload")
             },
             initial_version() {
                 return this.entry.version === 0
+            },
+            can_download() {
+                return get_release_mode(this.$store) === LICCI_PARTNERS
             }
         }
     }

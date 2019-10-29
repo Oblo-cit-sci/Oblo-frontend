@@ -39,7 +39,6 @@
         :open.sync="openSaveDialog"
         @action="edit_or_save_dialog($event)"
         v-bind="unsaved_changes_dialog")
-      div {{entry}}
 </template>
 
 <script>

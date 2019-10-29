@@ -91,6 +91,7 @@
     import Footer from "../components/Footer"
 
     import {initialize} from "../lib/client"
+    import {static_file_path} from "../lib/util";
 
     // commented out the dev menu items
     const all_items = [
@@ -201,7 +202,7 @@
             },
             domain_icon() {
                 let domain = this.$store.getters[DOMAIN]
-                return domain ? domain.icon : undefined
+                return domain ? static_file_path(this.$store, domain.icon) : undefined
             }
         },
         watch: {

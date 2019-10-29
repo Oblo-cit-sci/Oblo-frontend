@@ -20,12 +20,14 @@
                     v-carousel(height="100" hide-delimiters=true cycle=true)
                         v-carousel-item(v-for="item in footer_data"
                             :key="item.logo")
-                            v-img(:src="item.logo" height="60" contain)
+                            v-img(:src="logo_path(item.logo)" height="60" contain)
                 v-card-text.privacy-policy
-                    a {{privacy.title}}       
+                    a {{privacy.title}}
 </template>
 
 <script>
+
+    import {static_file_path} from "../lib/util";
 
     export default {
         name: "Footer",
@@ -56,6 +58,11 @@
                         link: 'https://ictaweb.uab.cat/MdM.php'
                     }
                 ]
+            }
+        },
+        methods: {
+            logo_path(img_path) {
+                static_file_path(this.$store, img_path)
             }
         }
     }
