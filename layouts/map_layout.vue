@@ -47,6 +47,7 @@
             v-icon mdi-crosshairs-gps
       v-row.ma-1(wrap justify-center)
         Search(v-if="menu_mode === 'search'"
+          :preview_options="{actions: ['goto_location']}"
           v-on:received_search_results="update_map_entries($event)" clean)
         div.ma-1(v-if="menu_mode === 'entry'")
           v-row
@@ -93,6 +94,12 @@
                 menu_mode: SEARCH
             }
         },
+        created() {
+            if(this.menu_mode === SEARCH) {
+                const entries = this.$store.getters["search/get_entries"]
+                this.update_map_entries(entries)
+            }
+        },
         computed: {
             ...mapGetters({entries: "map/entries", selected_entry: "map/selected_entry"}),
             small_display() {
@@ -109,8 +116,6 @@
         },
         methods: {
             update_map_entries(entries) {
-                //console.log("update_map_entries", entries)
-                //this.set_entries(entries)
                 this.$store.commit("map/set_entries", entries)
             },
             ...mapMutations({"set_entries": "map/set_entries"}),

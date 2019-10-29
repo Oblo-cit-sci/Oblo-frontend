@@ -6,7 +6,6 @@
                 :access-token="accessToken"
                 :map-style="mapStyle"
                 @load="onMapLoaded"
-
         >
           <div v-if="mode === 'coordinate'">
             <MglMarker v-if="display_coordinates" :coordinates="display_coordinates">
@@ -19,22 +18,23 @@
             <!--<v-text-field hideDetails readonly fullWidth :value="coordinate_string"></v-text-field>-->
           </div>
           <div v-for="entry in entries" :key="entry.uuid">
-          <MglMarker v-for="(loc, index) in entry.location"
-                     :coordinates="transform_loc(loc)"
-                     :key="index"
-                      @click="select_entry_marker($event, entry.uuid)">
-            <!--<MglPopup anchor="top">
-              <VCard>
-                <div>Hello, I'm popup!</div>
-              </VCard>
-            </MglPopup>-->
-          </MglMarker>
+            <MglMarker v-for="(loc, index) in entry.location"
+                       :coordinates="transform_loc(loc)"
+                       :key="index"
+                       @click="select_entry_marker($event, entry.uuid)">
+              <!--<MglPopup anchor="top">
+                <VCard>
+                  <div>Hello, I'm popup!</div>
+                </VCard>
+              </MglPopup>-->
+            </MglMarker>
           </div>
         </MglMap>
         <v-btn v-if="done" style="bottom:2%; right:25%" fixed dark fab bottom right color="success" @click="back">
           <v-icon>mdi-check</v-icon>
         </v-btn>
-        <v-btn v-if="done" style="bottom:2%; right:20%" fixed dark fab bottom right color="orange darken-3" @click="rev_geocode">
+        <v-btn v-if="done" style="bottom:2%; right:20%" fixed dark fab bottom right color="orange darken-3"
+               @click="rev_geocode">
           <v-icon>mdi-map-marker-question-outline</v-icon>
         </v-btn>
       </client-only>
@@ -61,6 +61,9 @@
     export default {
         name: "Map",
         components: {MglMarker, MglPopup},
+        props: {
+            test_prop: String
+        },
         head() {
             return {
                 link: [{
@@ -120,14 +123,14 @@
                 }
             },
             transform_loc(loc) {
-                if(loc.hasOwnProperty("lon") && loc.hasOwnProperty("lat")) {
+                if (loc.hasOwnProperty("lon") && loc.hasOwnProperty("lat")) {
                     return [loc.lon, loc.lat]
                 } else {
                     return loc
                 }
             },
             touch({mapboxEvent}) {
-                if(this.mode === COORDINATE) {
+                if (this.mode === COORDINATE) {
                     this.display_coordinates = [mapboxEvent.lngLat.lng, mapboxEvent.lngLat.lat]
                     this.$store.commit("map/marker_point", this.display_coordinates)
                 }
@@ -160,22 +163,37 @@
                 return this.coordinates[0].toString() + "   " + this.coordinates[1].toString()
             },
             mode() {
-              return this.$route.query.mode || VIEW
+                return this.$route.query.mode || VIEW
             },
             ...mapGetters({
                 entries: "map/entries"
             }),
             done() {
-                switch(this.mode) {
+                switch (this.mode) {
                     case COORDINATE:
                         return this.display_coordinates
                     default:
                         return false
                 }
-            }
+            },
+            goto_location() {
+              return this.$store.getters["map/goto_location"]()
+            },
         },
         mounted() {
             this.mapCssStyle = "height: " + document.getElementById("fullContainer").clientHeight + "px"
+        },
+        watch: {
+            goto_location(val) {
+                const center = this.transform_loc(val)
+                this.map.flyTo({
+                    center: center,
+                    speed: 0.8, // make the flying slow
+                    easing: function (t) {
+                        return t;
+                    }
+                });
+            }
         }
     }
 

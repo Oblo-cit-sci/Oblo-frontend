@@ -11,7 +11,7 @@
           @click:append-outer="getEntries"
           clearable
           :loading="searching")
-    EntryPreviewList(v-if="show_results" :entries="entries")
+    EntryPreviewList(v-if="show_results" :entries="entries" :preview_options="preview_options")
 </template>
 
 <script>
@@ -29,6 +29,9 @@
             show_results: {
                 type: Boolean,
                 default: true
+            },
+            preview_options: {
+                type: Object
             }
         },
         data() {
@@ -66,6 +69,7 @@
                 this.searching = true
                 let config = this.searchConfiguration()
                 // build_config merges 2 objects,
+                //console.log("search.getEntries: config", config)
                 search_entries(this.$axios, this.$store, config)
                     .then(res => {
                         this.searching = false

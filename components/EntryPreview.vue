@@ -5,7 +5,7 @@
         div.caption(v-if="show_date") {{entry_date}}
         p.title.mb-2 {{typename}}:
           span.title &nbsp; {{entry.title}}
-          v-btn(v-if="show_title_action" @click="goto(entry)" depressed small)
+          v-btn(v-if="show_title_action" @click="goto()" depressed small)
             v-icon(:class="default_action_icon")
         MetaChips(v-if="show_meta_aspects" :meta_aspects="meta_aspects")
         div.mt-2(v-if="show_tags")
@@ -25,6 +25,8 @@
       v-card-actions
         div
           v-btn(small text outlined @click="goto(entry)") {{goto_text}}
+          v-btn(small text outlined @click="goto_location" v-if="has_action_goto_location")
+            v-icon mdi-map-marker
           v-btn(small text outlined v-if="to_download") Download
 </template>
 
@@ -58,23 +60,31 @@
                 default: true
             },
             include_domain_tag: Boolean,
-            show_title_action: Boolean
+            show_title_action: Boolean,
+            actions: {
+                type: Array,
+                default: () => []
+            }
         },
         mixins: [EntryNavMixin],
-        created() {
-        },
         methods: {
-            goto(entry) {
-                if (this.$store.getters[ENTRIES_HAS_ENTRY](entry.uuid))
-                    this.to_entry(entry.uuid, this.proper_mode)
+            goto() {
+                const uuid = this.entry.uuid
+                if (this.$store.getters[ENTRIES_HAS_ENTRY](uuid))
+                    this.to_entry(uuid, this.proper_mode)
                 else
-                    this.fetch_and_nav(entry.uuid)
+                    this.fetch_and_nav(uuid)
             },
             privacy_icon(privacy) {
                 return privacy_icon(privacy)
             },
             type_name(entry) {
                 return this.$store.getters.entry_type(entry.type_slug).title
+            },
+            goto_location() {
+                if(this.entry.location){
+                    this.$store.commit("map/goto_location", this.entry.location[0])
+                }
             }
         },
         computed: {
@@ -100,11 +110,7 @@
                 return public_name
             },
             show_image() {
-              if(this.entry.image) {
-                return true
-              } else {
-                return false
-              }
+              return this.entry.image
             },
             show_tags() {
                 return true
@@ -127,10 +133,14 @@
                 else
                     return "fa fa-edit"
             },
+
             entry_image() {
                 return static_file_path(this.$store, '/images/entry_images/' + this.entry.image)
             }
-        }
+            has_action_goto_location() {
+                return this.entry.location && this.actions.includes('goto_location')
+            }
+        
     }
 </script>
 
