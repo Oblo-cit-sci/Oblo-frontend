@@ -61,8 +61,8 @@
             }
         },
         methods: {
-            logo_path(img_path) {
-                static_file_path(this.$store, img_path)
+            logo_path(path) {
+                return static_file_path(this.$store, path)
             }
         }
     }
