@@ -84,7 +84,6 @@
             },
             goto_location() {
                 if(this.entry.location){
-                    console.log("goto loc", this.entry.location[0])
                     this.$store.commit("map/goto_location", this.entry.location[0])
                 }
             }
@@ -136,7 +135,7 @@
                     return "fa fa-edit"
             },
             has_action_goto_location() {
-                return this.actions.includes('goto_location')
+                return this.entry.location && this.actions.includes('goto_location')
             }
         }
     }
