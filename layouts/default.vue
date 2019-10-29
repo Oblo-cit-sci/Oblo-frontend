@@ -35,8 +35,8 @@
       <v-app-bar-nav-icon v-show="initialized" @click="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title class="pa-0">
         <v-list-item class="pl-0">
-          <v-list-item-avatar v-if="domain_icon" width="55" height="auto" tile>
-            <v-img contain :src="domain_icon"></v-img>
+          <v-list-item-avatar class="header-avatar" @click="goTo" :src="domain_icon" width="55" height="auto" tile>
+              <v-img contain :src="domain_icon"></v-img>
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title class="headline">
@@ -49,21 +49,20 @@
         </v-list-item>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <div>
-        <v-btn text icon :loading="connecting">
-          <!-- nuxt to="/" -->
-          <v-icon>{{connected_icon}}</v-icon>
-        </v-btn>
-        <v-btn text icon>
-          <!-- nuxt to="/profile" -->
-          <v-icon>{{userrole_icon}}</v-icon>
-        </v-btn>
-      </div>
+
+      <v-btn icon :loading="connecting">
+        <!-- nuxt to="/" -->
+        <v-icon>{{connected_icon}}</v-icon>
+      </v-btn>
+      <v-btn icon>
+        <!-- nuxt to="/profile" -->
+        <v-icon>{{userrole_icon}}</v-icon>
+      </v-btn>
+
       <div v-if="logged_in">
         <v-btn v-for="(item, i) in header_items"
                :key="i"
                :to="item.to"
-               text
                icon
                router
                nuxt
@@ -71,6 +70,7 @@
           <v-icon>{{ item.icon }}</v-icon>
         </v-btn>
       </div>
+       
     </v-app-bar>
     <v-content>
       <v-container v-if="initialized">
@@ -143,7 +143,16 @@
                 header_items: header_items
             }
         },
-        methods: {},
+        methods: {
+          goTo() {
+            let domain = this.$store.getters[DOMAIN]
+            if(this.$route.path !== domain.to){
+              this.$router.push({
+                path: domain.to ? domain.to : '/'
+              })
+            }
+          }
+        },
         computed: {
             initialized() {
                 console.log("call init", this.$store.getters[INITIALIZED]())
@@ -234,5 +243,9 @@
 
   .header-subtitle {
     font-size: 0.6em
+  }
+
+  .header-avatar {
+    cursor: pointer;
   }
 </style>

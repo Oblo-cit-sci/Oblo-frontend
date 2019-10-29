@@ -60,9 +60,6 @@
                 ]
             }
         },
-        mounted () {
-            console.log(this.$vuetify.breakpoint)
-        },
         methods: {
             logo_path(img_path) {
                 static_file_path(this.$store, img_path)
