@@ -9,6 +9,23 @@
     >
       <v-list>
         <v-list-item-group>
+          <v-list-item 
+            :to="'/'"
+            router
+            nuxt
+            exact>
+            <v-list-item-icon>
+              <v-icon v-text="'home'"></v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title v-text="'Home'"></v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-divider></v-divider>
+        </v-list-item-group>
+      </v-list>
+      <v-list>
+        <v-list-item-group>
           <v-list-item
             v-for="(item, i) in items"
             :key="i"
@@ -16,16 +33,16 @@
             router
             nuxt
             exact
-          >
+          >   
             <v-list-item-icon>
               <v-icon v-text="item.icon"></v-icon>
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title v-text="item.title"></v-list-item-title>
-            </v-list-item-content>
+            </v-list-item-content>             
           </v-list-item>
         </v-list-item-group>
-      </v-list>
+      </v-list> 
     </v-navigation-drawer>
     <v-app-bar
       :clipped-left="clipped"
@@ -95,7 +112,7 @@
 
     // commented out the dev menu items
     const all_items = [
-        {icon: 'home', title: 'Home', to: '/'},
+        // {icon: 'home', title: 'Home', to: '/'},
         // {icon: 'note_add', title: 'Create Entry', to: '/CreateEntry'},
         {icon: "reorder", title: "My Entries", to: "/personalentries"},
         {icon: 'person', title: 'Profile', to: '/profile'},
