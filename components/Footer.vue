@@ -10,9 +10,6 @@
           v-btn(v-for="item in footer_data"
             :key="item.logo" class="mx-4 white--text" :href="item.link" target="_blank" text small)
             v-img(:src="item.logo"  width="70" contain)
-        v-card-text.privacy-policy
-          a {{privacy.title}}
-          span | v{{version}}
     v-col(v-if="this.$vuetify.breakpoint.sm || this.$vuetify.breakpoint.xs")
       v-card(flat
       tile
@@ -22,8 +19,6 @@
             v-carousel-item(v-for="item in footer_data"
               :key="item.logo")
               v-img(:src="logo_path(item.logo)" height="60" contain)
-        v-card-text.privacy-policy
-          a {{privacy.title}}
 </template>
 
 <script>
