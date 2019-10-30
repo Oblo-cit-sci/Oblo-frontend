@@ -115,6 +115,8 @@ export const mutations = {
     state.entries.get(uuid).title = title
   },
   update_location(state, {uuid, location}) {
+    // todo, this shouldnt be here. the licci reviews are wrongly converted sometimes. into {lon:{}, lat:{}}
+    location = ld.filter(location, loc => (typeof loc.lat === "number"))
     state.entries.get(uuid).location = location
   },
   update_tags(state, {uuid, tags}) {
@@ -314,14 +316,13 @@ export const getters = {
         const aspect_tag_location = tagsAspect[tags_type]
         let tags = select_aspect_loc(state, loc_prepend(ENTRY, uuid, aspect_loc_str2arr(aspect_tag_location)))
         tags = flatten_collection_of_lists(tags)
-        tags = ld.filter(tags, t => t.value )
-        tags = ld.map(tags, t => ({name: t.value}))
-        console.log(tags_type, tags, tags.empty)
-        if(tags.length > 0) {
+        tags = ld.uniqBy(tags, t => t.value)
+        tags = ld.filter(tags, t => t.value) // kickout empty string
+        tags = ld.map(tags, t => ({name: t.value})) // tag format // todo icons...
+        if (tags.length > 0) {
           all_tags[tags_type] = tags
         }
       }
-      console.log("al", all_tags)
       return all_tags
     }
   }
@@ -363,7 +364,6 @@ export const actions = {
 
     const tags = context.getters.entry_tags(uuid)
     if (tags) {
-      console.log(tags)
       context.commit("update_tags", {uuid, tags: tags})
     }
   },

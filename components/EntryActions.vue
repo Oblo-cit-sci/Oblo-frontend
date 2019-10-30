@@ -10,7 +10,7 @@
       :pages="entry_type.content.meta.pages"
       @lastpage="more_follow_page = ($event)")
       // todo this can come back
-    span(v-if="owner")
+    span(v-if="can_edit")
       span(v-if="view && can_edit")
         v-btn(color="secondary" @click="edit") edit
       span(v-else-if="can_edit")
@@ -25,7 +25,8 @@
         v-btn(v-if="upload_option" @click="upload_to_repo") Upload to the repo
       // v-if="private_local" todo for now, download for everyone
       v-btn(v-if="can_download" :disabled="disable_download"  @click="download") download
-
+    span(v-else)
+      v-btn(@click="back") back
     DecisionDialog(v-bind="dialog_data" :open.sync="dialog_visible" v-on:action="dialog_action($event)")
 </template>
 
@@ -246,6 +247,7 @@
                 return false; // this.has_pages && !this.last_page
             },
             owner() {
+                console.log(current_user_is_owner(this.$store, this.entry))
                 return current_user_is_owner(this.$store, this.entry)
             },
             named_pages() {
