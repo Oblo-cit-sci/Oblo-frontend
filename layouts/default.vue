@@ -9,7 +9,7 @@
     >
       <v-list>
         <v-list-item-group>
-          <v-list-item 
+          <v-list-item
             :to="'/'"
             router
             nuxt
@@ -33,16 +33,16 @@
             router
             nuxt
             exact
-          >   
+          >
             <v-list-item-icon>
               <v-icon v-text="item.icon"></v-icon>
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title v-text="item.title"></v-list-item-title>
-            </v-list-item-content>             
+            </v-list-item-content>
           </v-list-item>
         </v-list-item-group>
-      </v-list> 
+      </v-list>
     </v-navigation-drawer>
     <v-app-bar
       :clipped-left="clipped"
@@ -87,14 +87,14 @@
           <v-icon>{{ item.icon }}</v-icon>
         </v-btn>
       </div>
-       
+
     </v-app-bar>
     <v-content>
       <v-container v-if="initialized">
         <nuxt/>
       </v-container>
     </v-content>
-    <Footer></Footer>
+    <Footer v-if="eovalue"></Footer>
     <GlobalSnackbar></GlobalSnackbar>
   </v-app>
 
@@ -104,11 +104,11 @@
 <script>
     import {INITIALIZED, SET_ENTRIES, DOMAIN_TITLE, DOMAIN} from "../lib/store_consts"
     import GlobalSnackbar from "../components/GlobalSnackbar"
-    import {HOME} from "../lib/consts"
+    import {EOVALUE, HOME} from "../lib/consts"
     import Footer from "../components/Footer"
 
     import {initialize} from "../lib/client"
-    import {static_file_path} from "../lib/util";
+    import {get_release_mode, static_file_path} from "../lib/util";
 
     // commented out the dev menu items
     const all_items = [
@@ -220,6 +220,9 @@
             domain_icon() {
                 let domain = this.$store.getters[DOMAIN]
                 return domain ? static_file_path(this.$store, domain.icon) : undefined
+            },
+            eovalue() {
+                return get_release_mode(this.$store) === EOVALUE
             }
         },
         watch: {

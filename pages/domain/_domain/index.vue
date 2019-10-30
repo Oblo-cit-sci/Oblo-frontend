@@ -5,7 +5,6 @@
       p.heading {{domain_data.page_index.description}}
     v-divider
     EntryCreateList(
-      v-if="licci_partners"
       :entrytypes_entries="entrytypes_entries")
     Search(:init_clear="true")
 </template>

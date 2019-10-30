@@ -9,7 +9,7 @@
       div(v-if="has_parent")
         span This entry is part of:&nbsp
         a(@click="to_parent(true, mode)") {{parent_title}}
-        v-breadcrumbs(:items="parents")
+        //v-breadcrumbs(:items="parents")
       div(v-if="this.mode==='view'")
         MetaChips(:meta_aspects="meta_aspects_privacy")
       v-divider(class="wide_divider")
