@@ -1,7 +1,7 @@
 <template lang="pug">
   div(
     :class="[{ composite: (aspect.type === 'composite' && mode === 'edit'),  disabled: disable}]"
-    :id="aspect_id" v-if="visible")
+    :id="aspect_id" v-if="visible && has_value")
     Title_Description(
       v-if="show_title_description"
       v-bind="title_description(aspect)"
@@ -77,10 +77,14 @@
             }
         },
         created() {
-            this.use_regular = this.value.hasOwnProperty("regular") ? this.value.regular : true
+            this.use_regular =  this.has_value && this.value.hasOwnProperty("regular") ? this.value.regular : true
         },
         // boolean check is not required, since "false" is the default
         computed: {
+            // at the moment
+            has_value() {
+              return this.value || false
+            },
             has_alternative() {
                 return this.aspect.attr.hasOwnProperty("alternative")
             },
