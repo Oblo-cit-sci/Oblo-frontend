@@ -273,11 +273,7 @@
                 return titles
             },
             is_public() {
-                if(this.aspect.attr.add_privacy === PUBLIC) {
-                    return true
-                } else {
-                    return false
-                }
+                return this.aspect.attr.add_privacy || true
             }
         }
     }
