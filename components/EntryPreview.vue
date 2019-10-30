@@ -1,7 +1,7 @@
 <template lang="pug">
   v-card(class="mx-auto custom-card" outlined)
     v-row(class="ma-2")
-      v-col(class="entry-meta" v-bind:class="[show_image ? 'col-md-8' : 'col-md-12']")
+      v-col(class="entry-meta" cols=12 v-bind:class="[show_image ? 'col-md-10' : 'col-md-12']")
         div.caption(v-if="show_date") {{entry_date}}
         p.title.mb-2 {{typename}}:
           span.title &nbsp; {{entry.title}}
@@ -10,7 +10,7 @@
         MetaChips(v-if="show_meta_aspects" :meta_aspects="meta_aspects")
         div.mt-2(v-if="show_tags")
           Taglist.ml-0
-      v-col(v-if="show_image" cols="12" class="col-md-4 col-sm-12 entry-image")
+      v-col(v-if="show_image" cols=12 class="col-md-2 col-sm-12 entry-image")
         div(class="float-md-right float-sm-left entry-display-size")
           v-avatar(
             v-if="entry.image"
@@ -18,7 +18,8 @@
             class="entry-image-size")
             v-img(
               :src="entry_image"
-              alt="item")
+              alt="item"
+              contain)
     v-row(v-if="show_tags" class="ma-2")
       Taglist(v-if="tags" :tags="tags")
 
@@ -171,8 +172,9 @@
 
     .entry-image {
       order: -1;
-      width: 50px;
+      max-width: 200px;
     }
   }
+
 </style>
 
