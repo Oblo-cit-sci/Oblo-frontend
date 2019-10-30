@@ -10,7 +10,7 @@
             v-icon cancel
     v-divider(v-if="has_both()")
     v-subheader#subheader(v-if="has_level_names") {{act_levelname}}
-    SingleSelect(v-if="!has_options" :options="act_options" v-on:selection="select($event)" :select_sync="false" :highlight="false")
+    SingleSelect(v-if="has_options" :options="act_options" v-on:selection="select($event)" :select_sync="false" :highlight="false")
     v-btn(v-if="done_available" @click="done" color="success") Done
     div(v-if="allows_extra")
       TextShort(v-bind:aspect="extra_value_aspect" :edit="true" v-bind:value.sync="extra_value")
@@ -90,6 +90,7 @@
                 return this.selection.length - 1
             },
             has_options() {
+                console.log("AO", this.act_options)
                 return this.act_options.length  > 0
             },
             act_levelname() {

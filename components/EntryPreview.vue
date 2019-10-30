@@ -42,10 +42,12 @@
     import Taglist from "../components/Taglist"
     import {get_proper_mode} from "../lib/entry"
     import {CREATOR, entry_actor_relation} from "../lib/actors";
+    import MapJumpMixin from "./MapJumpMixin";
 
     export default {
         name: "Entrypreview",
         components: {MetaChips, Taglist},
+        mixins: [EntryNavMixin, MapJumpMixin],
         props: {
             entry: {type: Object, required: true},
             show_date: {
@@ -67,7 +69,6 @@
                 default: () => []
             }
         },
-        mixins: [EntryNavMixin],
         methods: {
             goto() {
                 const uuid = this.entry.uuid
@@ -135,11 +136,9 @@
                     return "fa fa-edit"
             },
             entry_image() {
-                return static_file_path(this.$store, '/images/entry_images/' + this.entry.image)
+                return static_file_path(this.$store, 'images/entry_images/' + this.entry.image)
             },
-            has_action_goto_location() {
-                return this.entry.location && this.actions.includes('goto_location')
-            },
+
             tags() {
               return this.entry.tags || null
             }
