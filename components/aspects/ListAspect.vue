@@ -36,7 +36,7 @@
       :length="this.value.length"
       :min="this.min"
       :max="this.max")
-    .inline(v-if="is_public && !fixed_length")
+    .inline(v-if="adding_allowed && !fixed_length")
       v-btn(:disabled="!more_allowed" @click="add_value()" :color="requieres_more_color") Add {{item_name}}
         v-icon(right) add
     ListPagination(
@@ -228,7 +228,7 @@
             },
             list_extra(index) {
                 return {
-                    no_title: this.aspect.attr.hasOwnProperty("no_titles") ? this.aspect.attr.no_titles : false,
+                    no_title: this.aspect.attr.hasOwnProperty("no_titles") ? this.aspect.attr.no_titles : true,
                     clear: false,
                     listitem: true,
                     list_index: index
@@ -285,6 +285,13 @@
                     }
                 }
                 return titles
+            },
+            adding_allowed() {
+                if(this.mode === EDIT) {
+                    return true
+                } else {
+                    return this.is_public
+                }
             },
             is_public() {
                 return this.aspect.attr.add_privacy || false
