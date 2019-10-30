@@ -19,6 +19,8 @@
             v-img(
               :src="entry_image"
               alt="item")
+    v-row(v-if="show_tags" class="ma-2")
+      Taglist(v-if="tags" :tags="tags")
 
     div(v-if="show_botton_actions")
       v-divider(light)
@@ -133,12 +135,14 @@
                 else
                     return "fa fa-edit"
             },
-
             entry_image() {
                 return static_file_path(this.$store, '/images/entry_images/' + this.entry.image)
             },
             has_action_goto_location() {
                 return this.entry.location && this.actions.includes('goto_location')
+            },
+            tags() {
+              return this.entry.tags || null
             }
         }
     }

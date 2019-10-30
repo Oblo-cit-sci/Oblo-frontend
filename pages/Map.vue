@@ -123,9 +123,11 @@
                 }
             },
             transform_loc(loc) {
-                if (loc.hasOwnProperty("lon") && loc.hasOwnProperty("lat")) {
+                // todo take the NaN check out and filter earlier...
+                if (loc.hasOwnProperty("lon") && loc.lat && !isNaN(loc.lon) && !isNaN(loc.lat)) {
                     return [loc.lon, loc.lat]
                 } else {
+                    console.log("natural")
                     return loc
                 }
             },

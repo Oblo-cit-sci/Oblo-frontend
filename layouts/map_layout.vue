@@ -1,6 +1,6 @@
 <template lang="pug">
   v-app
-    v-btn(style="bottom:2%" fixed dark fab bottom right color="blue" @click="drawer = !drawer")
+    v-btn(style="bottom:2%" fixed dark fab bottom right x-large color="blue" @click="drawer = !drawer")
       v-icon mdi-menu
     v-bottom-sheet(
       v-if="small_display"
@@ -35,7 +35,7 @@
       :clipped="true"
       :hide-overlay="true"
       temporary
-      width="400"
+      :width="drawer_width"
       fixed)
       v-row
         v-col.col-sm-3
@@ -112,6 +112,9 @@
                     show_date: false,
                     show_meta_aspects: false
                 }
+            },
+            drawer_width() {
+                return this.$vuetify.breakpoint.lgAndUp ? 600 : 400
             }
         },
         methods: {
