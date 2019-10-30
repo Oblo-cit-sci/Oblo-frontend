@@ -135,7 +135,7 @@
                     return "fa fa-edit"
             },
             entry_image() {
-                return static_file_path(this.$store, '/images/entry_images/' + this.entry.image)
+                return static_file_path(this.$store, 'images/entry_images/' + this.entry.image)
             },
             has_action_goto_location() {
                 return this.entry.location && this.actions.includes('goto_location')
