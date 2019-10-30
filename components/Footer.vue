@@ -18,7 +18,7 @@
       tile
       class="white text-center")
         v-card-text.pb-0.pt-0
-          v-carousel(height="100" hide-deli miters=true cycle=true)
+          v-carousel(height="100" hide-delimiters=true cycle=true)
             v-carousel-item(v-for="item in footer_data"
               :key="item.logo")
               v-img(:src="logo_path(item.logo)" height="60" contain)
