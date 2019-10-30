@@ -36,7 +36,7 @@
       :length="this.value.length"
       :min="this.min"
       :max="this.max")
-    .inline(v-if="!readOnly && !fixed_length")
+    .inline(v-if="is_public && !fixed_length")
       v-btn(:disabled="!more_allowed" @click="add_value()" :color="requieres_more_color") Add {{item_name}}
         v-icon(right) add
     ListPagination(
@@ -53,7 +53,7 @@
     import AspectMixin from "./AspectMixin";
     import Aspect from "../Aspect";
     import ListMixin from "../ListMixin";
-    import {INDEX} from "../../lib/consts";
+    import {INDEX, PRIVATE, PUBLIC, EDIT} from "../../lib/consts";
     import {
         aspect_loc_str,
         packed_aspect_default_value,
@@ -85,6 +85,7 @@
                 panelState: [],
                 select: false, // select... instead of button
                 options: [],
+                new_edit: []
                 //
             }
         },
@@ -166,11 +167,12 @@
                         }
                     }, 20)
                 }
+                this.new_edit.push(this.value.length);
             },
             list_aspect_props(index) {
                 return {
                     aspect: this.indexed_item_aspect(index),
-                    mode: this.mode,
+                    mode: this.$_.includes(this.new_edit, index) ? EDIT : this.mode,
                     aspect_loc: this.item_aspect_loc(index),
                     extra: this.list_extra(index)
                 }
@@ -269,6 +271,13 @@
                     }
                 }
                 return titles
+            },
+            is_public() {
+                if(this.aspect.attr.add_privacy === PUBLIC) {
+                    return true
+                } else {
+                    return false
+                }
             }
         }
     }
