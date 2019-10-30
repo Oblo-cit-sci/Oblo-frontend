@@ -42,7 +42,11 @@
             </v-list-item-content>
           </v-list-item>
         </v-list-item-group>
+        <v-list-item>
+          <p class="package-version"> v{{version}} </p>
+        </v-list-item>
       </v-list>
+      
     </v-navigation-drawer>
     <v-app-bar
       :clipped-left="clipped"
@@ -149,12 +153,13 @@
         },
         data() {
             return {
-                isDev: this.$store.app.context.isDev,
-                drawer: false,
-                clipped: false,
-                miniVariant: false,
-                title: this.$store.getters[DOMAIN] ? this.$store.state.domain.title : HOME,
-                header_items: header_items
+              version: pkg.version,
+              isDev: this.$store.app.context.isDev,
+              drawer: false,
+              clipped: false,
+              miniVariant: false,
+              title: this.$store.getters[DOMAIN] ? this.$store.state.domain.title : HOME,
+              header_items: header_items
             }
         },
         methods: {
@@ -264,5 +269,10 @@
 
   .header-avatar {
     cursor: pointer;
+  }
+
+  .package-version {
+    color: rgb(189, 189, 189);
+    font-size: 12px;  
   }
 </style>
