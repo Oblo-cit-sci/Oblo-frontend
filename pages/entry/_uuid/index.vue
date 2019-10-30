@@ -14,7 +14,7 @@
         MetaChips(:meta_aspects="meta_aspects_privacy")
       v-divider(class="wide_divider")
       div.col-md-6.pa-0(cols=12 v-if="this.mode==='view' && show_image")
-        v-img(:src="entry_image()" max-height="200")
+        v-img(:src="entry_image()" aspect-ratio=1 class="entry_image")
       div(v-if="has_pages")
         Title_Description(
           :title="page_info.title"
@@ -278,6 +278,13 @@
 </script>
 
 <style scoped>
-
+    .entry_image {
+        max-width: 300px;
+    }
+    @media (max-width: 959px) {
+        .entry_image {
+            max-width: 200px;
+        }
+    }
 
 </style>
