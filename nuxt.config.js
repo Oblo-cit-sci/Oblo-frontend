@@ -6,7 +6,7 @@ const colors = require('vuetify/es5/util/colors')
 release mode:
 partner
 eovalue
- */
+*/
 
 const release_modes = ["eovalue", "licci_partners"]
 
@@ -58,7 +58,7 @@ module.exports = {
 
   router: {
     middleware: ['init'],
-    base: "/app/"
+    base: "/appbeta/"
   },
 
   /*

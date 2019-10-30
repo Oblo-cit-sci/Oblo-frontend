@@ -119,6 +119,9 @@ export const mutations = {
   },
   set_draft_numbers(state, draft_numbers) {
     state.draft_numbers = draft_numbers
+  },
+  delete_domain(state, domain_name) {
+    state.domains = ld.filter(state.domains, domain => domain.value !== domain_name)
   }
 };
 
