@@ -11,7 +11,8 @@
                         :key="item.logo" class="mx-4 white--text" :href="item.link" target="_blank" text small)
                         v-img(:src="item.logo"  width="70" contain)
                 v-card-text.privacy-policy
-                    a {{privacy.title}}
+                    a {{privacy.title}} 
+                    span | v{{version}}
         v-col(v-if="this.$vuetify.breakpoint.sm || this.$vuetify.breakpoint.xs")
              v-card(flat
                 tile
@@ -28,11 +29,12 @@
 <script>
 
     import {static_file_path} from "../lib/util";
-
+    const pkg = require('../package')
     export default {
         name: "Footer",
         data() {
             return {
+                version: pkg.version,
                 privacy: {
                     title: 'Privacy Policy'
                 },

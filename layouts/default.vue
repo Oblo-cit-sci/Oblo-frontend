@@ -59,9 +59,7 @@
             <v-list-item-title class="headline">
               {{domain_title}}
             </v-list-item-title>
-            <v-list-item-subtitle class="header-subtitle">
-              (v{{version}})
-            </v-list-item-subtitle>
+
           </v-list-item-content>
         </v-list-item>
       </v-toolbar-title>
@@ -156,7 +154,6 @@
                 clipped: false,
                 miniVariant: false,
                 title: this.$store.getters[DOMAIN] ? this.$store.state.domain.title : HOME,
-                version: pkg.version,
                 header_items: header_items
             }
         },
