@@ -7,7 +7,7 @@ import {aspect_loc_str, aspect_loc_str2arr, aspect_loc_uuid, loc_prepend, remove
 import {GET_ENTRY} from "../lib/store_consts";
 
 import Vue from "vue"
-import {recursive_unpack} from "../lib/util";
+import {flatten_collection_of_lists, recursive_unpack} from "../lib/util";
 
 const ld = require("lodash")
 
@@ -115,7 +115,12 @@ export const mutations = {
     state.entries.get(uuid).title = title
   },
   update_location(state, {uuid, location}) {
+    // todo, this shouldnt be here. the licci reviews are wrongly converted sometimes. into {lon:{}, lat:{}}
+    location = ld.filter(location, loc => (typeof loc.lat === "number"))
     state.entries.get(uuid).location = location
+  },
+  update_tags(state, {uuid, tags}) {
+    state.entries.get(uuid).tags = tags
   },
   entries_set_local_list_page(state, {aspect_loc, page}) {
     let entry = state.entries.get(aspect_loc_uuid(aspect_loc))
@@ -277,7 +282,7 @@ export const getters = {
         location = select_aspect_loc(state, loc_prepend(ENTRY, uuid, aspect_loc_str2arr(locationAspect)))
         // this is weird
         if (location && location.value)
-          location =  location.value
+          location = location.value
       }
       return location
     }
@@ -298,10 +303,28 @@ export const getters = {
     return (uuid = state.edit.uuid) => {
       const entry = getters.get_entry(uuid)
       const etype = getters.get_entry_type(entry.type_slug)
-      const a = rootGetters.domain_of_type(etype.slug).title
-      return a
+      return rootGetters.domain_of_type(etype.slug).title
     }
-
+  },
+  entry_tags(state, getters) {
+    return (uuid = state.edit.uuid) => {
+      const entry = getters.get_entry(uuid)
+      const entry_type = getters.get_entry_type(entry.type_slug)
+      const tagsAspect = entry_type.content.meta.tagsAspect
+      const all_tags = {}
+      for (let tags_type in tagsAspect) {
+        const aspect_tag_location = tagsAspect[tags_type]
+        let tags = select_aspect_loc(state, loc_prepend(ENTRY, uuid, aspect_loc_str2arr(aspect_tag_location)))
+        tags = flatten_collection_of_lists(tags)
+        tags = ld.uniqBy(tags, t => t.value)
+        tags = ld.filter(tags, t => t.value) // kickout empty string
+        tags = ld.map(tags, t => ({name: t.value})) // tag format // todo icons...
+        if (tags.length > 0) {
+          all_tags[tags_type] = tags
+        }
+      }
+      return all_tags
+    }
   }
 }
 
@@ -335,8 +358,13 @@ export const actions = {
     const entry_title = context.getters.get_entry_title(uuid)
     context.commit("update_title", {uuid, title: entry_title})
     const location = context.getters.entry_location(uuid)
-    if(location){
+    if (location) {
       context.commit("update_location", {uuid, location: recursive_unpack(location)})
+    }
+
+    const tags = context.getters.entry_tags(uuid)
+    if (tags) {
+      context.commit("update_tags", {uuid, tags: tags})
     }
   },
   set_edit(context, uuid) {

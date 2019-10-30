@@ -2,16 +2,18 @@
   div
     h1 Settings
     br
-    h3 User key: Upload to the LICCI Repo (temporary option)
-    div During the main data collection period of LICCI partners, partners can upload collected data to the LICCI data repository. AUTOMATICALLY SAVED
-    TextShort(
-      :aspect="user_key_aspect"
-      :mvalue="user_key"
-      mode="edit"
-      v-on:update_value="update_value($event)")
-    v-btn(@click="test_save") Test and save
-    br
-    v-divider
+    div(v-if="partner_settings")
+      h3 User key: Upload to the LICCI Repo (temporary option)
+      div During the main data collection period of LICCI partners, partners can upload collected data to the LICCI data repository. AUTOMATICALLY SAVED
+      TextShort(
+        :aspect="user_key_aspect"
+        :mvalue="user_key"
+        mode="edit"
+        v-on:update_value="update_value($event)")
+      v-btn(@click="test_save") Test and save
+      br
+      v-divider.wide-divider
+
     h3 Export data
     div Export all your entries
     v-btn(@click="export_entries") Export
@@ -19,7 +21,7 @@
     div Import data from a previously exported (downloaded) json file
     LoadFileButton(@fileload="load_file($event)" )
     br
-    v-divider
+    v-divider.wide-divider
     h3 Clear entries
     div delete all entries. Make sure that you made backups of the entries you made
     v-btn(@click="show_clear_entries" color="error") Clear
@@ -40,6 +42,8 @@
     import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
     import {export_data} from "../lib/import_export";
     import {ENTRIES_SAVE_ENTRY, USER_KEY} from "../lib/store_consts";
+    import {get_release_mode} from "../lib/util";
+    import {LICCI_PARTNERS} from "../lib/consts";
 
     export default {
         name: "settings",
@@ -128,6 +132,9 @@
         computed: {
             user_key() {
                 return pack_value(this.$store.getters[USER_KEY])
+            },
+            partner_settings() {
+                return get_release_mode(this.$store) === LICCI_PARTNERS
             }
         }
     }
@@ -135,4 +142,7 @@
 
 <style scoped>
 
+  .wide-divider {
+    margin: 10px 0;
+  }
 </style>

@@ -13,6 +13,8 @@
       div(v-if="this.mode==='view'")
         MetaChips(:meta_aspects="meta_aspects_privacy")
       v-divider(class="wide_divider")
+      div.col-md-6.pa-0(cols=12 v-if="this.mode==='view' && show_image")
+        v-img(:src="entry_image()" aspect-ratio=1 class="entry_image")
       div(v-if="has_pages")
         Title_Description(
           :title="page_info.title"
@@ -67,7 +69,7 @@
     import {unsaved_changes_default_dialog} from "../../../lib/dialogs"
     import EntryMixin from "../../../components/EntryMixin";
     import MetaChips from "../../../components/MetaChips"
-    import {privacy_icon} from "../../../lib/util"
+    import {privacy_icon, static_file_path} from "../../../lib/util"
 
     /**
      * @vue-data {Object} entry_type - Initial counter's value
@@ -146,6 +148,9 @@
             }*/
         },
         methods: {
+            entry_image() {
+                return static_file_path(this.$store, '/images/entry_images/' + this.entry.image)
+            },
             edit_or_save_dialog(event) {
                 if (event.confirm) {
                     this.$store.dispatch(ENTRIES_SAVE_ENTRY, this.uuid)
@@ -258,6 +263,9 @@
                 result.push({name: "License: "+ this.entry.license})
                 return result
             },
+            show_image() {
+              return this.entry.image
+            }
         }, watch: {
             page() {
                 setTimeout(() => goTo(".v-content"), {
@@ -270,6 +278,13 @@
 </script>
 
 <style scoped>
-
+    .entry_image {
+        max-width: 300px;
+    }
+    @media (max-width: 959px) {
+        .entry_image {
+            max-width: 200px;
+        }
+    }
 
 </style>

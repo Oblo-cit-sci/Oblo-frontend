@@ -35,9 +35,6 @@
             },
             domain_data() {
                 return this.$store.getters[DOMAIN_BY_NAME](this.$route.params.domain)
-            },
-            licci_partners() {
-                return get_release_mode(this.$store) === LICCI_PARTNERS
             }
         },
         methods: {},

@@ -17,10 +17,12 @@ module.exports = {
     NODE_ENV: process.env.NODE_ENV || true,
     release_mode: "licci_partners"
   },
+
   server: {
     port: 8082,
     host: "0.0.0.0"
   },
+
   /*
   ** Headers of the page
   */
@@ -103,6 +105,7 @@ module.exports = {
       },
     }
   },
+
   /*
   ** Axios module configuration
   */
@@ -126,6 +129,7 @@ module.exports = {
         import: ["~assets/style/variables.styl"]
       }
     },
+
     /*
     ** You can extend webpack config here
     */
