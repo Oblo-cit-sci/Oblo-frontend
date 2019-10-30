@@ -3,7 +3,7 @@
     v-chip(v-for="(item, index) in meta_aspects" :key="index"
       :ripple="false"
       small
-      class="mr-1 mb-1"
+      class="mr-4"
       label)
       v-avatar(v-if="item.icon")
         v-icon(small) {{item.icon}}
