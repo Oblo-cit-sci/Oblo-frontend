@@ -1,9 +1,8 @@
 <template lang="pug">
-  div
-    v-chip(v-for="tag in taglist" :key="tag.name"
-      class="ma-2" outlined) {{tag.name}}
-      v-icon.ml-2(v-if="tag.hasOwnProperty('icon')"
-        size="16" light) {{tag.icon}}
+    v-chip-group
+        v-chip(class="custom-chip" v-for="tag in taglist" :key="tag.name" outlined) {{tag.name}}
+            v-icon.ml-2(v-if="tag.hasOwnProperty('icon')"
+                size="16" light) {{tag.icon}}
 </template>
 
 <script>
@@ -33,5 +32,9 @@
 </script>
 
 <style scoped>
-
+    .custom-chip-group {
+    }
+    .custom-chip {
+        cursor: default;
+    }
 </style>
