@@ -1,6 +1,6 @@
 <template lang="pug">
-  v-layout(justify-center align-center  v-if="!delete_entry")
-    v-flex(xs12 md12)
+  v-row(justify-center align-center  v-if="!delete_entry && this.mode==='edit'")
+    v-col(xs12 md12)
       Title_Description(
         :title="page_title"
         header_type="h1"
@@ -9,12 +9,11 @@
       div(v-if="has_parent")
         span This entry is part of:&nbsp
         a(@click="to_parent(true, mode)") {{parent_title}}
-        //v-breadcrumbs(:items="parents")
       div(v-if="this.mode==='view'")
         MetaChips(:meta_aspects="meta_aspects_privacy")
       v-divider(class="wide_divider")
       div.col-md-6.pa-0(cols=12 v-if="this.mode==='view' && show_image")
-        v-img(:src="entry_image()" aspect-ratio=1 class="entry_image")
+        v-img(:src="entry_image()" aspect-ratio=1 class="entry-image")
       div(v-if="has_pages")
         Title_Description(
           :title="page_info.title"
@@ -28,7 +27,7 @@
           :aspect_loc="aspect_locs[aspect.name]"
           v-on:entryAction="entryAction($event)"
           :mode="mode")
-      div(v-if="page === 0 && this.mode !== 'view'")
+      div(v-if="page === 0")
         v-divider(class="wide_divider")
         License(:passedLicense.sync="entry.license" :mode="licence_mode")
         Privacy(:mode="privacy_mode" :passedPrivacy.sync="entry.privacy")
@@ -41,6 +40,47 @@
         :open.sync="openSaveDialog"
         @action="edit_or_save_dialog($event)"
         v-bind="unsaved_changes_dialog")
+    
+  v-row(justify-center align-center v-else-if="this.mode==='view'")
+    v-col(cols=12)
+      Title_Description(
+        :title="page_title"
+        header_type="h1"
+        :description="entry_type.description")
+      div(v-if="has_parent")
+        span This entry is part of:&nbsp
+        a(@click="to_parent(true, mode)") {{parent_title}}
+      div
+        MetaChips(:meta_aspects="meta_aspects_privacy")
+      v-divider(class="wide_divider")
+    v-col(cols=12 class="col-md-9")
+      div(v-if="has_pages")
+        Title_Description(
+          :title="page_info.title"
+          header_type="h2"
+          :description="page_info.description")
+      br
+      div(v-for="(aspect) in shown_aspects" :key="aspect.name")
+        Aspect(
+          :aspect="aspect"
+          :aspect_loc="aspect_locs[aspect.name]"
+          v-on:entryAction="entryAction($event)"
+          :mode="mode")
+      
+    v-col(cols="12" class="col-md-3" v-if="show_image")
+      v-img(:src="entry_image()" aspect-ratio=1 class="entry-image")
+    v-col(cols=12)
+      EntryActions(
+        v-bind="entry_actions_props"
+        :page.sync="page"
+        v-on:entryAction="entryAction($event)"
+        v-on:edit="mode='edit'")
+      DecisionDialog(
+        :open.sync="openSaveDialog"
+        @action="edit_or_save_dialog($event)"
+        v-bind="unsaved_changes_dialog")
+    
+
 </template>
 
 <script>
@@ -278,13 +318,21 @@
 </script>
 
 <style scoped>
-    .entry_image {
+    .entry-image {
         max-width: 300px;
     }
     @media (max-width: 959px) {
-        .entry_image {
+        .entry-image {
             max-width: 200px;
+            float: right;
         }
+    }
+    .test {
+        background-color: cadetblue;
+    }
+
+    .test2{
+        background-color: red;
     }
 
 </style>
