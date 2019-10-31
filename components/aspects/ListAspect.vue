@@ -36,6 +36,7 @@
       :length="this.value.length"
       :min="this.min"
       :max="this.max")
+
     .inline(v-if="adding_allowed && !fixed_length")
       v-btn(:disabled="!more_allowed" @click="add_value()" :color="requieres_more_color") Add {{item_name}}
         v-icon(right) add

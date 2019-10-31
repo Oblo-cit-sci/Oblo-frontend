@@ -26,6 +26,7 @@
     import TreleafPicker from "../TreleafPicker";
     import TextShort from "./TextShortAspect";
     import {flatten_tree_to_options} from "../../lib/options";
+    import {EDIT} from "../../lib/consts";
 
     export default {
         name: "TreeSelectAspect",
@@ -39,23 +40,26 @@
             }
         },
         created() {
-            // build the given_options (all tree available) from what is passed
-            let passed_tree = this.aspect.items;
-            // a "*" means, lookup code and set the values as tree
-            if (typeof (passed_tree) === "string") {
-                let type_char = passed_tree.charAt(0);
-                //console.log("tree, cja", type_char, )
-                if (type_char === "*") {
-                    this.tree = this.$store.state.codes[passed_tree.substring(1)];
+            // todo move this to a function
+            if(this.mode === EDIT) {
+                // build the given_options (all tree available) from what is passed
+                let passed_tree = this.aspect.items;
+                // a "*" means, lookup code and set the values as tree
+                if (typeof (passed_tree) === "string") {
+                    let type_char = passed_tree.charAt(0);
+                    //console.log("tree, cja", type_char, )
+                    if (type_char === "*") {
+                        this.tree = this.$store.state.codes[passed_tree.substring(1)];
+                    }
                 }
-            }
-            // flat_options // TODO maybe store them...
+                // flat_options // TODO maybe store them...
 
-            let options = {}
-            if (this.aspect.attr.allow_select_levels) {
-                options.include_levels = this.aspect.attr.allow_select_levels
+                let options = {}
+                if (this.aspect.attr.allow_select_levels) {
+                    options.include_levels = this.aspect.attr.allow_select_levels
+                }
+                this.flat_options = flatten_tree_to_options(this.tree, options)
             }
-            this.flat_options = flatten_tree_to_options(this.tree, options)
         },
         methods: {
             openDialog(short_persistence) {

@@ -5265,7 +5265,8 @@
           {
             "attr": {
               "force_panels": true,
-              "itemname": "Pill"
+              "itemname": "Pill",
+              "add_privacy": true
             },
             "items": {
               "attr": {},
@@ -5401,7 +5402,7 @@
           "search_in": [
             "# Pills / ( / @ Name"
           ],
-          "tags": {
+          "tagsAspect": {
             "tag": "# Pills / ( / @ Category & Tag"
           },
           "titleAspect": "# Scientific name"

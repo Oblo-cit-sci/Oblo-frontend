@@ -58,7 +58,7 @@ module.exports = {
 
   router: {
     middleware: ['init'],
-    base: "/eovalue/"
+    base: "/opentek/"
   },
 
   /*

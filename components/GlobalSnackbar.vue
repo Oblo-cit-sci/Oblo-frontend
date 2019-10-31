@@ -19,9 +19,7 @@
     created: function () {
       this.$store.watch(state => state.snackbar.trigger, () => {
           let snackbar = this.$store.state.snackbar
-          console.log("SNACKBAR!")
           if (snackbar.trigger) {
-              console.log("SNACKBAR!")
             this.show = true
             this.message = snackbar.message
             this.color = snackbar.ok === true ? "success" : "error"

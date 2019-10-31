@@ -81,13 +81,16 @@
                 return privacy_icon(privacy)
             },
             type_name(entry) {
-                return this.$store.getters.entry_type(entry.type_slug).title
+                return this.entry_type.title
             },
             goto_location() {
                 if(this.entry.location){
                     this.$store.commit("map/goto_location", this.entry.location[0])
                 }
-            }
+            },
+            entry_type(entry) {
+                return this.$store.getters.entry_type(entry.type_slug)
+            },
         },
         computed: {
             entry_date() {

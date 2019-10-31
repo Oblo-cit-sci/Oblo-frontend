@@ -72,7 +72,7 @@ export const mutations = {
   },
   // should be set with {message: str, ok: boolean}
   snackbar(state, snackbar) {
-    console.log("snack", snackbar)
+    //console.log("snack", snackbar)
     state.snackbar = Object.assign(snackbar, {trigger:true})
   },
   snackbar_reset(state) {
