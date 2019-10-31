@@ -9,11 +9,7 @@
       div(v-if="has_parent")
         span This entry is part of:&nbsp
         a(@click="to_parent(true, mode)") {{parent_title}}
-      div(v-if="this.mode==='view'")
-        MetaChips(:meta_aspects="meta_aspects_privacy")
       v-divider(class="wide_divider")
-      div.col-md-6.pa-0(cols=12 v-if="this.mode==='view' && show_image")
-        v-img(:src="entry_image()" aspect-ratio=1 class="entry-image")
       div(v-if="has_pages")
         Title_Description(
           :title="page_info.title"
@@ -53,7 +49,7 @@
       div
         MetaChips(:meta_aspects="meta_aspects_privacy")
       v-divider(class="wide_divider")
-    v-col(cols=12 class="col-md-9")
+    v-col(class="entry-meta" cols=12 v-bind:class="[show_image ? 'col-md-9' : 'col-md-12']")
       div(v-if="has_pages")
         Title_Description(
           :title="page_info.title"
@@ -67,9 +63,9 @@
           v-on:entryAction="entryAction($event)"
           :mode="mode")
       
-    v-col(cols="12" class="col-md-3" v-if="show_image")
-      v-img(:src="entry_image()" aspect-ratio=1 class="entry-image")
-    v-col(cols=12)
+    v-col(v-if="show_image" cols=12 class="col-md-3 col-sm-12 entry-image")
+      v-img(:src="entry_image()" aspect-ratio=1)
+    v-col(class="entry-meta" cols=12)
       EntryActions(
         v-bind="entry_actions_props"
         :page.sync="page"
@@ -79,8 +75,6 @@
         :open.sync="openSaveDialog"
         @action="edit_or_save_dialog($event)"
         v-bind="unsaved_changes_dialog")
-    
-
 </template>
 
 <script>
@@ -322,17 +316,14 @@
         max-width: 300px;
     }
     @media (max-width: 959px) {
+        .entry-meta {
+            order: 1
+        }
+
         .entry-image {
-            max-width: 200px;
-            float: right;
+            max-width: 300px;
         }
     }
-    .test {
-        background-color: cadetblue;
-    }
 
-    .test2{
-        background-color: red;
-    }
 
 </style>
