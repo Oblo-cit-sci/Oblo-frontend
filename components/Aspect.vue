@@ -33,6 +33,7 @@
         v-on:update_value="update_value($event)"
         :mvalue="value"
         :mode="alt_mode")
+
 </template>
 
 <script>
