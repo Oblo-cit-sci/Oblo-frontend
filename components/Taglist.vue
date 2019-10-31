@@ -1,5 +1,5 @@
 <template lang="pug">
-    v-chip-group
+    v-slide-group(show-arrows=true class="custom-chip-group")
         v-chip(class="custom-chip" v-for="tag in taglist" :key="tag.name" outlined) {{tag.name}}
             v-icon.ml-2(v-if="tag.hasOwnProperty('icon')"
                 size="16" light) {{tag.icon}}
@@ -33,8 +33,11 @@
 
 <style scoped>
     .custom-chip-group {
+        margin-top: 15px;
+        margin-bottom: 15px;
     }
     .custom-chip {
         cursor: default;
+        margin-right: 10px;
     }
 </style>

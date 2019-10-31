@@ -11,7 +11,7 @@
             v-btn(@click="initialize") Try again
             div(style="margin-top:5%") or load your offline data from your device
             v-btn Load your data
-    v-row(align="center")
+    v-row(justify="center")
       v-btn(text nuxt to="about") About The Project
       v-btn(text nuxt to="about#privacy") Privacy Policy
 </template>
