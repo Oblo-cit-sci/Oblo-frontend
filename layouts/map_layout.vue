@@ -8,7 +8,7 @@
       v-model="drawer"
       scrollable
       hide-overlay)
-      v-card.ma-1(height="400")
+      v-card(tile height="400")
         v-card-text
           v-row
             v-col.col-sm-2
@@ -19,13 +19,16 @@
               v-btn
                 v-icon mdi-crosshairs-gps
             v-col.col-sm-2
-              v-btn(v-if="menu_mode === 'entry'")
+              v-btn(@click="search_view" Search v-if="menu_mode === 'entry'")
                 v-icon search
             v-col.col-sm-1.offset-sm-6
               v-btn(text :ripple="false" @click="drawer = !drawer")
                 v-icon mdi-chevron-double-down
-            Search(v-on:received_search_results="update_map_entries($event)" :show_results="false" clean)
-          EntryPreviewList(:entries="entries" :preview_options="slim_preview_options", show)
+            Search(v-if="menu_mode === 'search'" v-on:received_search_results="update_map_entries($event)" :show_results="false" clean)
+          EntryPreviewList(v-if="menu_mode === 'search'" :entries="entries" :preview_options="slim_preview_options", show)
+          div.ma-1(v-if="menu_mode === 'entry'")
+          v-row
+            EntryAspectView.ma-1.pa-2(:entry="selected_entry" mode="view")
     v-navigation-drawer(
       v-else
       app
