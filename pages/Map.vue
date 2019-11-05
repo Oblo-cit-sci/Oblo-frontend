@@ -55,7 +55,6 @@
 
     import {mapGetters} from "vuex"
 
-
     // mode could also be COORDINATE
 
     export default {
@@ -78,56 +77,25 @@
                 accessToken: access_token, // your access token. Needed if you using Mapbox maps
                 mapStyle: licci_style_map, //'mapbox://styles/mapbox/streets-v11', // your map style,
                 display_coordinates: null,
-
                 mapCssStyle: "",
-                layerVisiblities: {
-                    climate: false,
-                    stations: false
-                },
-                map_sources: new Map([
-                    ["climate", {
-                        layers: ["climate type copy"], title: "Koeppen-Geiger"
-                    }],
-                    ["stations", {
-                        layers: ["weather stations", "weather stations age quality"], title: "Weather stations"
-                    }]
-                ]),
-                map_sources_iter: null
             }
-        },
-        created() {
-            this.map_sources_iter = Array.from(this.map_sources.entries())
-            console.log(this.map_sources_iter)
         },
         methods: {
             select_entry_marker(event, entry_uuid) {
-                //console.log("sele", event, entry_uuid)
                 this.$store.dispatch("map/select_entry", entry_uuid)
             },
             layerClr(l_id) {
                 return this.layerVisiblities[l_id] ? "#00DD1030" : "#77777720";
             },
             onMapLoaded(event) {
-                this.map = event.map;
-                for (let l of this.map_sources_iter) {
-                    this.update_layer(l[0])
-                }
-            },
-            update_layers() {
-                console.log(this.map_sources)
-            },
-            update_layer(l_id) {
-                for (let l of this.map_sources.get(l_id).layers) {
-                    let newVal = this.layerVisiblities[l_id] ? "visible" : "none";
-                    this.map.setLayoutProperty(l, 'visibility', newVal);
-                }
+                this.map = event.map
+                this.set_layer_status()
             },
             transform_loc(loc) {
                 // todo take the NaN check out and filter earlier...
                 if (loc.hasOwnProperty("lon") && loc.lat && !isNaN(loc.lon) && !isNaN(loc.lat)) {
                     return [loc.lon, loc.lat]
                 } else {
-                    console.log("natural")
                     return loc
                 }
             },
@@ -144,20 +112,10 @@
                     console.log(err)
                 })
             },
-            back() {
-                /*
-                todo
-                SET EDIT
-                entry nav mixin
-                this.$store.commit(ENTRIES_SET_ENTRY_VALUE, {
-                    ...this.$store.state.global_ref,
-                    value:
-                        pack_value([{value: this.coordinates[0]}, {value: this.coordinates[1]}])
-                })
-
-                let route = "/entry/" + this.$store.state.global_ref.uuid
-                this.$router.push(route)
-                 */
+            set_layer_status(layers = this.layer_status) {
+                for (let layer in layers) {
+                    this.map.setLayoutProperty(layer, 'visibility', layers[layer] ? "visible" : "none")
+                }
             }
         },
         computed: {
@@ -168,7 +126,8 @@
                 return this.$route.query.mode || VIEW
             },
             ...mapGetters({
-                entries: "map/entries"
+                entries: "map/entries",
+                layer_status: "map/layer_status"
             }),
             done() {
                 switch (this.mode) {
@@ -180,7 +139,7 @@
             },
             goto_location() {
               return this.$store.getters["map/goto_location"]()
-            },
+            }
         },
         mounted() {
             this.mapCssStyle = "height: " + document.getElementById("fullContainer").clientHeight + "px"
@@ -195,6 +154,9 @@
                         return t;
                     }
                 });
+            },
+            layer_status(layers) {
+              this.set_layer_status(layers)
             }
         }
     }

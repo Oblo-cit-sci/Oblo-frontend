@@ -45,8 +45,8 @@
           v-btn(@click="back" nuxt)
             v-icon home
             span Back
-        v-col.col-sm-8
-          v-select(:items="layer_options" multiple small-chips v-on:change="layer_select_change($event)")
+        v-col.col-sm-7
+          v-select(label="Layers" :items="layer_options" multiple small-chips v-on:change="layer_select_change($event)")
         //v-col.col-sm-3
           v-btn
             v-icon mdi-crosshairs-gps
@@ -81,6 +81,7 @@
 
     const SEARCH = "search"
     const ENTRY = "entry"
+
     const menu_mode_options = [SEARCH, ENTRY]
 
 
