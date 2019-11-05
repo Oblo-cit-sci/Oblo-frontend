@@ -22,11 +22,11 @@
             v-icon(color="grey lighten-1") mdi-login-variant
         v-divider
   div(v-else-if="view_select")
-    v-select(outlined single-line :multiple=false v-model="selected_item" :items="options" return-object clearable :placeholder="placeholder")
+    v-select(outlined single-line :multiple=false v-model="selected_item" :items="options" return-object clearable :placeholder="placeholder" :disabled="disabled")
     .v-text-field__details
       .v-messages
   div(v-else-if="view_autocomplete")
-    v-autocomplete(outlined single-line v-model="selected_item" :items="options" return-object)
+    v-autocomplete(outlined single-line v-model="selected_item" :items="options" clearable return-object)
   div(v-else-if="view_radiogroup")
     v-radio-group(:row="true"  v-model="selected_item")
       v-radio(v-for="item of options" :key="item.key" :label="item.text" :value="item.value")

@@ -4,6 +4,7 @@
       outlined
       single-line
       :disabled="disabled"
+      clearable
       :items="flat_options"
       :value="value"
       @change="emit($event)"

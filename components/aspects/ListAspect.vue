@@ -54,7 +54,7 @@
     import AspectMixin from "./AspectMixin";
     import Aspect from "../Aspect";
     import ListMixin from "../ListMixin";
-    import {INDEX, PRIVATE, PUBLIC, EDIT} from "../../lib/consts";
+    import {INDEX, PRIVATE, PUBLIC, EDIT, VALUE} from "../../lib/consts";
     import {
         aspect_loc_str,
         packed_aspect_default_value,
@@ -280,7 +280,15 @@
                             if (!this.value[i].value[titleAspectName]) {
                                 console.log(`list no component value! index:${i}, component:${titleAspectName}`)
                             } else {
-                                titles[i] = this.value[i].value[titleAspectName].value
+                                let title_value = this.value[i].value[titleAspectName].value
+                                if(Array.isArray(title_value)) {
+                                    // todo, should be just one func
+                                    title_value = ""
+                                    for(let list_value of this.value[i].value[titleAspectName].value) {
+                                        title_value += list_value[VALUE]+", "
+                                    }
+                                }
+                                titles[i] = title_value
                             }
                         }
                     }
