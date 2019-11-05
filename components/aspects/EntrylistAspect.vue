@@ -12,18 +12,17 @@
           v-list-item-action
             v-btn(@click="open_remove(index)" icon)
               v-icon(color="red" lighten-1) close
-      div.inline
-        div(v-if="more_allowed")
+      .inline(v-if="more_allowed")
           v-btn(@click="create_item()" :color="requieres_more_color") Add {{item_name}}
             v-icon(right) add
-          .v-text-field__details
-            .v-messages
-        div(v-else class="mb-2") Maximum reached
+      .inline(v-else class="mb-2") Maximum reached
       ListPagination(
         v-if="has_pagination"
         v-bind="pagination_props"
         @update:page="set_page($event)"
         @lastpage="more_follow_page = ($event)")
+      .v-text-field__details
+        .v-messages
     div(v-else)
       v-list-item-group(v-if="has_items")
         v-list-item(v-for="(item, index) in items",
@@ -82,7 +81,6 @@
                 console.log("Warning- aspect: ", this.aspect.name, "referrers to a typename that does not exist: ", this.item_type_slug)
                 console.log("TODO disable this aspect")
             }
-
             this.goto_stored_page()
         },
         computed: {

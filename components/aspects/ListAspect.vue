@@ -45,8 +45,8 @@
       v-bind="pagination_props"
       @update:page="set_page($event, goto_panel_id($event))"
       @lastpage="more_follow_page = ($event)")
-      .v-text-field__details
-        .v-messages
+    .v-text-field__details
+      .v-messages
 </template>
 
 <script>
@@ -315,8 +315,4 @@
     display: inline-block;
   }
 
-  /**.panel_content {
-    width: 98%;
-    margin: auto;
-  }*/
 </style>

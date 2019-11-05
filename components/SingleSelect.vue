@@ -17,7 +17,7 @@
           v-list-item-content.align-self-center
             v-list-item-title {{item.text}}
             v-list-item-subtitle {{item.description}}
-          v-list-item-action.align-self-center
+          v-list-item-action.align-self-center(v-if="create")
             v-spacer
             v-icon(color="grey lighten-1") mdi-login-variant
         v-divider
