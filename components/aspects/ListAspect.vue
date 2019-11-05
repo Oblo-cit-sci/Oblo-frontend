@@ -68,6 +68,7 @@
     import ListPagination from "../ListPagination";
     import {get_codes_as_options} from "../../lib/options";
     import goTo from 'vuetify/lib/services/goto'
+    import {recursive_unpack} from "../../lib/util";
 
     const SIMPLE = "simple"
     const PANELS = "panels"
@@ -280,15 +281,10 @@
                             if (!this.value[i].value[titleAspectName]) {
                                 console.log(`list no component value! index:${i}, component:${titleAspectName}`)
                             } else {
-                                let title_value = this.value[i].value[titleAspectName].value
-                                if(Array.isArray(title_value)) {
-                                    // todo, should be just one func
-                                    title_value = ""
-                                    for(let list_value of this.value[i].value[titleAspectName].value) {
-                                        title_value += list_value[VALUE]+", "
-                                    }
+                                titles[i] = this.value[i].value[titleAspectName].value
+                                if(Array.isArray(titles[i])) {
+                                    titles[i] = recursive_unpack(this.value[i].value[titleAspectName].value).join(", ")
                                 }
-                                titles[i] = title_value
                             }
                         }
                     }
