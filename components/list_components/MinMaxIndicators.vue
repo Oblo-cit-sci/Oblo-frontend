@@ -8,6 +8,8 @@
 </template>
 
 <script>
+    import {item_count_name} from "../../lib/listaspects";
+
     export default {
         name: "MinMaxIndicators",
         props: {
@@ -30,11 +32,7 @@
                 return this.min !== null && this.min > 0
             },
             count_text() {
-                const attr = this.aspect.attr
-                const name = attr.itemname || "item"
-                const item_word = this.length === 1 ? name :
-                    (attr.itemname_plural || name + "s")
-                return this.length + " " + item_word
+                return this.length + " " +  item_count_name(this.aspect, this.length)
             },
         },
         methods: {},

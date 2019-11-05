@@ -27,6 +27,8 @@
         v-divider(class="wide_divider")
         License(:passedLicense.sync="entry.license" :mode="licence_mode")
         Privacy(:mode="privacy_mode" :passedPrivacy.sync="entry.privacy")
+      v-col(v-if="last_page")
+        MissingAspectsNotice(:entry="this.entry")
       EntryActions(
         v-bind="entry_actions_props"
         :page.sync="page"
@@ -36,7 +38,7 @@
         :open.sync="openSaveDialog"
         @action="edit_or_save_dialog($event)"
         v-bind="unsaved_changes_dialog")
-    
+
   v-row(justify-center align-center v-else-if="this.mode==='view'")
     v-col(cols=12)
       Title_Description(
@@ -62,7 +64,7 @@
           :aspect_loc="aspect_locs[aspect.name]"
           v-on:entryAction="entryAction($event)"
           :mode="mode")
-      
+
     v-col(v-if="show_image" cols=12 class="col-md-3 col-sm-12 entry-image")
       v-img(:src="entry_image()" aspect-ratio=1)
     v-col(class="entry-meta" cols=12)
@@ -104,6 +106,7 @@
     import EntryMixin from "../../../components/EntryMixin";
     import MetaChips from "../../../components/MetaChips"
     import {privacy_icon, static_file_path} from "../../../lib/util"
+    import MissingAspectsNotice from "../../../components/MissingAspectsNotice";
 
     /**
      * @vue-data {Object} entry_type - Initial counter's value
@@ -112,6 +115,7 @@
         name: "uuid",
         mixins: [EntryNavMixin, EntryMixin],
         components: {
+            MissingAspectsNotice,
             DecisionDialog,
             Aspect,
             EntryActions,
@@ -121,13 +125,10 @@
         },
         data() {
             return {
-                entry_type: null, // the full shizzle for the type_slug
                 required_values: [], // shortcut, but in entry_type
                 sending: false,
                 complete: true,
                 // todo abstact aspect-pagination
-                has_pages: false,
-                last_page: false,
                 page: this.$route.query.page | 0,
                 uuid: null,  // todo , make computed
                 aspect_locs: {},
@@ -143,8 +144,6 @@
             this.uuid = this.$route.params.uuid
             //console.log("entry index create", this.entry.aspects_values.)
             this.$store.dispatch(ENTRIES_SET_EDIT, this.uuid)
-            this.entry_type = this.$store.getters.entry_type(this.entry.type_slug)
-            this.has_pages = this.entry_type.content.meta.hasOwnProperty("pages")
 
             let required_aspects = this.$_.filter(this.entry_type.content.aspects, (a) => a.required || false)
             this.required_values = this.$_.map(required_aspects, (a) => {
@@ -233,6 +232,9 @@
             aspect_loc() {
                 return [EDIT, this.uuid]
             },
+            last_page() {
+                return !this.has_pages || this.page === this.pages.length - 1
+            },
             page_title() {
                 return this.entry_type.title + (this.title ? ": " + this.title : "")
             },
@@ -271,7 +273,7 @@
             },
             parent_title() {
                 // todo not necessarily available for remote entries. should be included?
-                console.log(this.$store.getters[ENTRIES_GET_PARENT]())
+                //console.log(this.$store.getters[ENTRIES_GET_PARENT]())
                 return this.$store.getters[ENTRIES_GET_PARENT]().title
             },
             // maybe also consider:

@@ -4,9 +4,7 @@ export const state = () => ({
   selected_entry: null,
   goto_location: null,
   layers: ["climate type copy", "weather stations"],
-  layer_status: {
-
-  }
+  layer_status: {}
 })
 
 export const mutations = {
