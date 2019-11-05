@@ -112,17 +112,11 @@
                     console.log("Error unknown force_view", this.force_view, "should be from:", this.view_options)
                 }
             } else {
-                let sz = this.$_.size(this.options)
-                if (sz === 0) {
-                    this.viewStyle = NONE
-                } else if (sz < select_tresh) {
-                    this.viewStyle = CLEAR_LIST
-                } else if (sz < autocomplet_thresh) {
-                    this.viewStyle = SELECT
-                } else {
-                    this.viewStyle = AUTOCOMPLETE
-                }
+              this.set_view_style()
             }
+        },
+        beforeUpdate() {
+            this.set_view_style()
         },
         methods: {
             select(item) {
@@ -135,7 +129,18 @@
                 } else {
                     this.emitUp(item)
                 }
-
+            },
+            set_view_style() {
+                let sz = this.$_.size(this.options)
+                if (sz === 0) {
+                    this.viewStyle = NONE
+                } else if (sz < select_tresh) {
+                    this.viewStyle = CLEAR_LIST
+                } else if (sz < autocomplet_thresh) {
+                    this.viewStyle = SELECT
+                } else {
+                    this.viewStyle = AUTOCOMPLETE
+                }
             },
             icon_path(item) {
                 if (item.icon) {
