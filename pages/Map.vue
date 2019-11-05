@@ -97,6 +97,7 @@
         },
         created() {
             this.map_sources_iter = Array.from(this.map_sources.entries())
+            console.log(this.map_sources_iter)
         },
         methods: {
             select_entry_marker(event, entry_uuid) {
@@ -112,9 +113,8 @@
                     this.update_layer(l[0])
                 }
             },
-            switch_layer(l_id) {
-                this.layerVisiblities[l_id] = !this.layerVisiblities[l_id]
-                this.update_layer(l_id)
+            update_layers() {
+                console.log(this.map_sources)
             },
             update_layer(l_id) {
                 for (let l of this.map_sources.get(l_id).layers) {
