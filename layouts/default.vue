@@ -46,7 +46,7 @@
           <p class="package-version"> v{{version}} </p>
         </v-list-item>
       </v-list>
-      
+
     </v-navigation-drawer>
     <v-app-bar
       :clipped-left="clipped"
@@ -144,10 +144,9 @@
     export default {
         components: {GlobalSnackbar, Footer},
         created() {
-            console.log("layout created", this.initialized)
-
+            //console.log("layout created. initialized?", this.initialized)
             if(!this.initialized) {
-                console.log("layout not initialized")
+                console.log("layout. initializing")
                 initialize(this.$axios, this.$store, this.$localForage)
             }
         },
@@ -273,6 +272,6 @@
 
   .package-version {
     color: rgb(189, 189, 189);
-    font-size: 12px;  
+    font-size: 12px;
   }
 </style>

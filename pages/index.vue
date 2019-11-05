@@ -18,12 +18,9 @@
 
 <script>
 
-
     import {mapGetters} from "vuex"
 
-    import {initialize} from "../lib/client"
     import DomainCard from "../components/DomainCard";
-
 
     export default {
         data() {
