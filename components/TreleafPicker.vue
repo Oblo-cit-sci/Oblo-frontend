@@ -90,7 +90,6 @@
                 return this.selection.length - 1
             },
             has_options() {
-                console.log("AO", this.act_options)
                 return this.act_options.length  > 0
             },
             act_levelname() {

@@ -66,7 +66,7 @@
                 this.set_selection()
             },
             selection() {
-                console.log("watch sel", this.selection, this.init)
+                //console.log("watch sel", this.selection, this.init)
                 //console.log("Select-selection", this.selection, "/",val, "/",prev_val, !prev_val)
                 if (this.init) {
                     this.init = false
