@@ -3,6 +3,7 @@
     div(v-if="is_simple")
       div(v-for="(value, index) in value" :key="index")
         div(v-if="aspect_is_on_page(index)" :id="panel_id(index)")
+          b.m-1(v-if="has_indexTitle") {{titles[index]|| index + 1}}
           Aspect(
             v-bind="list_aspect_props(index)"
             v-on:entryAction="handleEntryAction($event, index)"
@@ -18,10 +19,10 @@
         v-model="panelState")
         v-expansion-panel(
           v-if="aspect_is_on_page(index)"
-          v-for="(value, index) in value"
+          v-for="(val, index) in value"
           :key="index"
           :id="panel_id(index)")
-          v-expansion-panel-header {{titles[index]|| index + 1}}
+          v-expansion-panel-header {{titles[index] || index + 1}}
           v-expansion-panel-content
             Aspect(
               v-bind="list_aspect_props(index)"
@@ -221,7 +222,8 @@
                 let aspect = {...this.item_aspect}
                 aspect.name = "" + (index + 1)
                 return aspect
-            }, handleEntryAction(event, index) {
+            },
+            handleEntryAction(event, index) {
                 if (event.action === "clear") {
                     this.remove_value(index)
                 } else {
@@ -261,7 +263,9 @@
                 return !(itemtype === "str" || itemtype === "int" || itemtype === "float");
             },
             titles() {
+                console.log("calling titles")
                 let titles = new Array(this.value.length)
+                console.log("init", titles)
                 if (this.aspect.attr.indexTitle || this.aspect.attr.force_panels) { // indexTitle or non-complex panels
                     for (let i = 0; i < titles.length; i++) {
                         titles[i] = this.aspect.attr.itemname + " " + (parseInt(i) + 1).toString()
@@ -282,6 +286,8 @@
                                 console.log(`list no component value! index:${i}, component:${titleAspectName}`)
                             } else {
                                 titles[i] = this.value[i].value[titleAspectName].value
+                                //console.log(titles[i], "from ", this.value[i], this.aspect.items.components)
+                                // TODO here we should check if there is a ref_value and grab that
                                 if(Array.isArray(titles[i])) {
                                     titles[i] = recursive_unpack(this.value[i].value[titleAspectName].value).join(", ")
                                 }
@@ -289,6 +295,7 @@
                         }
                     }
                 }
+                console.log(">", titles)
                 return titles
             },
             adding_allowed() {
@@ -300,6 +307,9 @@
             },
             is_public() {
                 return this.aspect.attr.add_privacy || false
+            },
+            has_indexTitle() {
+                return this.aspect.attr.indexTitle || false
             }
         }
     }
