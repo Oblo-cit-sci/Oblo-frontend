@@ -141,6 +141,7 @@
             }
 
             this.set_min_max()
+
             if (this.value.length === 0) {
                 for (let i = 0; i < this.aspect.attr.create || 0; i++) {
                     this.add_value()
@@ -263,9 +264,10 @@
                 return !(itemtype === "str" || itemtype === "int" || itemtype === "float");
             },
             titles() {
-                console.log("calling titles")
+                //console.log("calling titles")
+
                 let titles = new Array(this.value.length)
-                console.log("init", titles)
+                //console.log("init", titles)
                 if (this.aspect.attr.indexTitle || this.aspect.attr.force_panels) { // indexTitle or non-complex panels
                     for (let i = 0; i < titles.length; i++) {
                         titles[i] = this.aspect.attr.itemname + " " + (parseInt(i) + 1).toString()
@@ -295,7 +297,7 @@
                         }
                     }
                 }
-                console.log(">", titles)
+                //console.log(">", titles)
                 return titles
             },
             adding_allowed() {

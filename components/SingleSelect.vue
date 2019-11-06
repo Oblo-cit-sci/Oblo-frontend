@@ -4,7 +4,7 @@
       :three-line="has_some_description"
       dense
       class="singleselect_list"
-      )
+    )
       div(v-for="item of options")
         v-subheader(v-if="is_category(item)") {{item.text}}
         v-list-item(v-else
@@ -112,11 +112,13 @@
                     console.log("Error unknown force_view", this.force_view, "should be from:", this.view_options)
                 }
             } else {
-              this.set_view_style()
+                this.set_view_style()
             }
         },
         beforeUpdate() {
-            this.set_view_style()
+            if (!this.force_view) {
+                this.set_view_style()
+            }
         },
         methods: {
             select(item) {
@@ -228,8 +230,9 @@
   .singleselect_list {
     margin-bottom: 1%;
   }
+
   .single_select {
-      min-height: 40px;
+    min-height: 40px;
   }
 
   .marked {

@@ -78,13 +78,13 @@
             }
         },
         created() {
-            this.use_regular =  this.has_value && this.value.hasOwnProperty("regular") ? this.value.regular : true
+            this.use_regular = this.has_value && this.value.hasOwnProperty("regular") ? this.value.regular : true
         },
         // boolean check is not required, since "false" is the default
         computed: {
             // at the moment
             has_value() {
-              return this.value || false
+                return this.value || false
             },
             has_alternative() {
                 return this.aspect.attr.hasOwnProperty("alternative")
@@ -163,14 +163,6 @@
                 } else
                     return this.mode
             },
-
-            /*raw_value() {
-                if (!this.value) { // failsafe
-                    return aspect_raw_default_value(this.aspect)
-                } else {
-                    return this.value.value
-                }
-            },*/
             aspect_label() {
                 if (this.aspect.label !== undefined) {
                     return this.aspect.label

@@ -64,6 +64,12 @@
         methods: {
             validate_aspect(aspect, raw_value) {
                 const a_default = aspect_raw_default_value(aspect)
+                if(!raw_value) {
+                    return MISSING
+                }
+                if(aspect.attr.IDAspect || false) {
+                    return OK
+                }
                 if (raw_value === a_default) {
                     return MISSING
                 } else if ([LIST, ENTRYLIST].includes(aspect.type)) {
