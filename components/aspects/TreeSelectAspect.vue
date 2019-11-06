@@ -50,7 +50,8 @@
                     let type_char = passed_tree.charAt(0);
                     //console.log("tree, cja", type_char, )
                     if (type_char === "*") {
-                        this.tree = this.$store.state.codes[passed_tree.substring(1)];
+                        //console.log("tree")
+                        this.tree = this.$store.getters.get_code(passed_tree.substring(1));
                     }
                 }
                 // flat_options // TODO maybe store them...
@@ -69,12 +70,12 @@
                 }
             },
             selected(val) {
-                console.log("TS Aspect", val)
+                //console.log("TS Aspect", val)
                 this.dialogOpen = false;
                 this.emit(val.value)
             },
             emit(val) {
-                console.log("emit", val)
+                //console.log("emit", val)
                 this.value_change(val)
             }
         },

@@ -136,6 +136,9 @@ export const getters = {
   name(state) {
     return state.user.user_data.registered_name
   },
+  get_code(state) {
+    return (code_name) => {return (state.codes[code_name])}
+  },
   // entry-types
   global_entry_types_as_array(state) {
     // todo generalize, e.g. array of 2val array ["context", "global"]

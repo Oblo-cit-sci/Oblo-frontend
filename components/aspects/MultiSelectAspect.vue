@@ -30,13 +30,13 @@
         },
         methods: {
             set_selection() {
-                console.log(this.value)
+                //console.log(this.value)
                 if (this.value !== null) {
                     this.selection = this.$_.filter(this.options, (o) => {
                         return this.value.indexOf(o.value) > -1
                     })
                 }
-                console.log("Set sel", this.value)
+                //console.log("Set sel", this.value)
             },
             toString(value) {
                 return value.join(", ") || ""
