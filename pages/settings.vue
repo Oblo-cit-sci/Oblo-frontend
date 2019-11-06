@@ -13,7 +13,6 @@
       v-btn(@click="test_save") Test and save
       br
       v-divider.wide-divider
-
     h3 Export data
     div Export all your entries
     v-btn(@click="export_entries") Export

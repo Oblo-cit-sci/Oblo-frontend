@@ -4,8 +4,8 @@
       :items="options"
       v-model="selection"
       :readonly="readOnly"
-      single-line outlined chips multiple)  
-  div(v-else)  
+      single-line outlined chips multiple)
+  div(v-else)
     v-chip(
         v-for="(item, index) in selection" :key="index"
         class="mr-2 mt-2 mb-4"
@@ -44,7 +44,7 @@
         },
         watch: {
             selection() {
-                console.log("multi-select", this.selection)
+                //console.log("multi-select", this.selection)
                 if(this.init) {
                     this.init = false
                     return
