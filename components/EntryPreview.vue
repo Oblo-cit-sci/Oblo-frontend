@@ -9,6 +9,9 @@
             v-icon(:class="default_action_icon")
         MetaChips(v-if="show_meta_aspects" :meta_aspects="meta_aspects")
         Taglist(v-if="show_tags" :tags="tags")
+        .red--text(v-if="outdated")
+          v-icon(color="red") mdi-alert-outline
+          span Created from an outdated version. Some values might change. Download the entry if update does not work
       v-col(v-if="show_image" cols=12 class="col-md-2 col-sm-12 entry-image")
         div(class="float-md-right float-sm-left entry-display-size")
           v-avatar(
@@ -26,12 +29,12 @@
           v-btn(small text outlined @click="goto(entry)") {{goto_text}}
           v-btn(small text outlined @click="goto_location" v-if="has_action_goto_location")
             v-icon mdi-map-marker
-          v-btn(small text outlined v-if="to_download") Download
+          v-btn(small text outlined v-if="to_download" @click="download()") Download
 </template>
 
 <script>
 
-    import {license_icon} from "../lib/client"
+    import {app_version, license_icon} from "../lib/client"
     import EntryNavMixin from "./EntryNavMixin";
     import {ENTRIES_HAS_ENTRY, ENTRIES_USER_RIGHTS, TYPE_NAME} from "../lib/store_consts";
     import {privacy_icon, printDate, static_file_path} from "../lib/util"
@@ -41,11 +44,12 @@
     import {get_proper_mode} from "../lib/entry"
     import {CREATOR, entry_actor_relation} from "../lib/actors";
     import MapJumpMixin from "./MapJumpMixin";
+    import EntryMixin from "./EntryMixin";
 
     export default {
         name: "Entrypreview",
         components: {MetaChips, Taglist},
-        mixins: [EntryNavMixin, MapJumpMixin],
+        mixins: [EntryNavMixin, MapJumpMixin, EntryMixin],
         props: {
             entry: {type: Object, required: true},
             show_date: {
@@ -78,17 +82,11 @@
             privacy_icon(privacy) {
                 return privacy_icon(privacy)
             },
-            type_name(entry) {
-                return this.entry_type.title
-            },
             goto_location() {
                 if(this.entry.location){
                     this.$store.commit("map/goto_location", this.entry.location[0])
                 }
-            },
-            entry_type(entry) {
-                return this.$store.getters.entry_type(entry.type_slug)
-            },
+            }
         },
         computed: {
             entry_date() {
@@ -98,7 +96,7 @@
               return(get_proper_mode(this.$store, this.entry))
             },
             to_download() {
-                return false
+                return this.outdated
             },
             goto_text() {
                 // assuming, we call it edit and view
@@ -106,7 +104,7 @@
             },
             creator() {
                 const public_name = this.entry.actors.creator.public_name
-                console.log(public_name)
+                //console.log(public_name)
                 let relation = entry_actor_relation(this.entry, this.$store.getters.user)
                 if (relation === CREATOR.key)
                     return "From yourself"
@@ -139,7 +137,6 @@
             entry_image() {
                 return static_file_path(this.$store, 'images/entry_images/' + this.entry.image)
             },
-
             tags() {
               return this.entry.tags || null
             }

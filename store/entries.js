@@ -8,6 +8,7 @@ import {GET_ENTRY} from "../lib/store_consts";
 
 import Vue from "vue"
 import {flatten_collection_of_lists, recursive_unpack} from "../lib/util";
+import {app_version} from "../lib/client";
 
 const ld = require("lodash")
 
@@ -132,6 +133,9 @@ export const mutations = {
     entry.local.list_pages[loc_str] = page
     //let entry =
     //remove_entry_loc
+  },
+  update_app_version(state, uuid = state.edit.uuid) {
+    state.entries.get(uuid).app_version =  app_version()
   }
 }
 

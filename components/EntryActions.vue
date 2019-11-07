@@ -58,17 +58,15 @@
     import {CREATOR, entry_actor_relation} from "../lib/actors";
     import {get_release_mode} from "../lib/util";
     import {store_entries} from "../lib/browser_db";
+    import EntryMixin from "./EntryMixin";
 
     export default {
         name: "EntryActions",
         components: {DecisionDialog, Paginate},
-        mixins: [EntryNavMixin, TriggerSnackbarMixin],
+        mixins: [EntryNavMixin, TriggerSnackbarMixin, EntryMixin],
         props: {
             mode: {
                 type: String // view, create edit
-            },
-            entry_type: { // TODO maybe doesnt need to be the full thing
-                type: Object
             },
             page: {
                 type: Number
@@ -208,15 +206,6 @@
                 version: this.entry_type.version,
                 language: this.entry_type.language
               }*/
-            download_title() {
-                // todo title, wont update in real time
-                return (this.entry.type_slug + " " + this.entry.title).replace(" ", "_") + ".json"
-            },
-            download() {
-                const entries = this.$store.getters[ENTRIES_GET_RECURSIVE_ENTRIES](this.entry.uuid)
-                export_data(entries, this.download_title())
-                this.$store.commit("entries/set_downloaded", this.entry.uuid)
-            },
             lastpage_reached($event) {
                 console.log("en action lastpage_reached", $event)
             },

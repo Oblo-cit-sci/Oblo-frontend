@@ -79,6 +79,9 @@
         },
         created() {
             this.use_regular = this.has_value && this.value.hasOwnProperty("regular") ? this.value.regular : true
+            if(!this.has_value) {
+                this.update_value(aspect_raw_default_value(this.aspect))
+            }
         },
         // boolean check is not required, since "false" is the default
         computed: {

@@ -109,13 +109,14 @@
     import {privacy_icon, static_file_path} from "../../../lib/util"
     import MissingAspectsNotice from "../../../components/MissingAspectsNotice";
     import {store_entries} from "../../../lib/browser_db";
+    import TriggerSnackbarMixin from "../../../components/TriggerSnackbarMixin";
 
     /**
      * @vue-data {Object} entry_type - Initial counter's value
      */
     export default {
         name: "uuid",
-        mixins: [EntryNavMixin, EntryMixin],
+        mixins: [EntryNavMixin, EntryMixin, TriggerSnackbarMixin],
         components: {
             MissingAspectsNotice,
             DecisionDialog,
@@ -155,6 +156,7 @@
             for (let aspect of this.entry_type.content.aspects) {
                 this.aspect_locs[aspect.name] = loc_append([this.aspect_loc], ASPECT, aspect.name)
             }
+
         },
         mounted() {
             if (this.$route.query.goTo) {
@@ -164,6 +166,11 @@
                         easing: "easeOutCubic"
                     })
                 }, 300)
+            }
+
+            if(this.outdated) {
+              this.$store.commit("entries/update_app_version")
+                this.ok_snackbar("Updated")
             }
         },
         beforeRouteLeave(to, from, next) {
