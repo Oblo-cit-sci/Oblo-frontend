@@ -96,6 +96,9 @@ export const mutations = {
     ld.remove(select.value, (_, index) => index === final_loc[1])
   },
   set_edit_dirty(state) {
+    if(!state.edit.local) {
+      state.edit.local = {}
+    }
     state.edit.local.dirty = true
   },
   set_edit_clean(state) { // ENTRIES_SET_EDIT_CLEAN

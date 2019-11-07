@@ -45,7 +45,12 @@ export default {
   },
   methods: {
     download() {
-      const entries = this.$store.getters[ENTRIES_GET_RECURSIVE_ENTRIES](this.entry.uuid)
+      let entries = this.$store.getters[ENTRIES_GET_RECURSIVE_ENTRIES](this.entry.uuid)
+      entries = this.$_.map(entries, e => {
+        const clone = this.$_.cloneDeep(e)
+        delete clone.local
+        return clone
+      })
       export_data(entries, this.download_title)
       this.$store.commit("entries/set_downloaded", this.entry.uuid)
     }
