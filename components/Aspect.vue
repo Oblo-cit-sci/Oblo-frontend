@@ -176,7 +176,7 @@
                 return this.aspect.attr["alternative-false"] || "alternative value"
             },
             alt_mode() {
-                console.log(this.aspect)
+                //console.log(this.aspect)
                 return this.aspect.attr.alternative.attr.mode || this.mode
             },
             disable() {

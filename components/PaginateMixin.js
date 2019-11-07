@@ -122,5 +122,12 @@ export default {
         }
       })
     }
+  },
+  watch: {
+    total(val, old_val) {
+      if(old_val === val + 1) {
+        this.change_page(-1)
+      }
+    }
   }
 }

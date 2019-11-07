@@ -265,7 +265,6 @@
             },
             titles() {
                 //console.log("calling titles")
-
                 let titles = new Array(this.value.length)
                 //console.log("init", titles)
                 if (this.aspect.attr.indexTitle || this.aspect.attr.force_panels) { // indexTitle or non-complex panels
