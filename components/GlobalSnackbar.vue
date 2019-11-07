@@ -1,6 +1,6 @@
 <template lang="pug">
-  v-snackbar(bottom=true v-model="show" top :timeout=1400 :color="color")
-    .snack_text {{message}}
+  v-snackbar(bottom=true v-model="show" top :timeout=1800 :color="color" multi-line)
+    b.snack_text {{message}}
 </template>
 
 <script>
@@ -35,5 +35,6 @@
   .snack_text {
     text-align: center;
     width: 100%;
+    font-size: 150%;
   }
 </style>

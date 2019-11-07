@@ -81,6 +81,7 @@
                         'Access-Control-Allow-Origin': '*',
                     }
                 }).then(res => {
+                    // TODO the whole thing is not super elegant. stored in vuex on key, but in browser only on save...
                     this.snackbar(res.data.status, res.data.msg)
                     store_user_key(this.$localForage, this.$store)
 
