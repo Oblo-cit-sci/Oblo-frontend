@@ -57,6 +57,7 @@
     import {export_data} from "../lib/import_export";
     import {CREATOR, entry_actor_relation} from "../lib/actors";
     import {get_release_mode} from "../lib/util";
+    import {store_entries} from "../lib/browser_db";
 
     export default {
         name: "EntryActions",
@@ -176,6 +177,7 @@
                 //save_entry(this.$store, this.entry)
 
                 this.$store.dispatch(ENTRIES_SAVE_ENTRY)
+                store_entries(this.$localForage, this.$store)
                 this.ok_snackbar("Entry saved")
                 this.back()
             },

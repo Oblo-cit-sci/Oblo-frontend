@@ -108,6 +108,7 @@
     import MetaChips from "../../../components/MetaChips"
     import {privacy_icon, static_file_path} from "../../../lib/util"
     import MissingAspectsNotice from "../../../components/MissingAspectsNotice";
+    import {store_entries} from "../../../lib/browser_db";
 
     /**
      * @vue-data {Object} entry_type - Initial counter's value
@@ -166,12 +167,11 @@
             }
         },
         beforeRouteLeave(to, from, next) {
+            // BEWARE, this is not called when navigating from one entry to another
             if (!this.delete_entry) {
                 this.$store.dispatch(ENTRIES_SAVE_ENTRY)
             }
-            this.$localForage.setItem("entries", this.$store.state.entries.entries, () => {
-                console.log("stored")
-            })
+            store_entries(this.$localForage, this.$store)
             next()
             /*
             if (this.entry.local.dirty) {
