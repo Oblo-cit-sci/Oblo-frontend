@@ -18,6 +18,7 @@
     import AspectMixin from "./AspectMixin";
     import Aspect from "../Aspect";
     import {INT, FLOAT, COMPONENT} from "../../lib/consts";
+    import {loc_append} from "../../lib/aspect";
 
     export default {
         name: "CompositeAspect",
@@ -30,7 +31,7 @@
         },
         created() {
             for (let component of this.aspect.components) {
-                this.aspect_locs[component.name] = this.$_.concat(this.aspect_loc, [[COMPONENT, component.name]])
+                this.aspect_locs[component.name] = loc_append(this.aspect_loc, COMPONENT, component.name)
             }
         },
         methods: {

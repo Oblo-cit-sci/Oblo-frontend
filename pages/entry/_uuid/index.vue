@@ -102,7 +102,7 @@
         ENTRIES_SAVE_ENTRY,
         ENTRIES_SET_EDIT, ENTRIES_VALUE, ENTRIES_GET_ENTRY_TITLE
     } from "../../../lib/store_consts";
-    import {get_aspect_vue_component} from "../../../lib/aspect"
+    import {get_aspect_vue_component, loc_append} from "../../../lib/aspect"
     import {unsaved_changes_default_dialog} from "../../../lib/dialogs"
     import EntryMixin from "../../../components/EntryMixin";
     import MetaChips from "../../../components/MetaChips"
@@ -152,7 +152,7 @@
             })
 
             for (let aspect of this.entry_type.content.aspects) {
-                this.aspect_locs[aspect.name] = [this.aspect_loc, [ASPECT, aspect.name]]
+                this.aspect_locs[aspect.name] = loc_append([this.aspect_loc], ASPECT, aspect.name)
             }
         },
         mounted() {

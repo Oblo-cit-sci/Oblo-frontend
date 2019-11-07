@@ -6,9 +6,9 @@
 
 <script>
     import EntryMixin from "./EntryMixin";
-    import {aspect_raw_default_value} from "../lib/aspect";
+    import {aspect_raw_default_value, disabled_by_condition, label, loc_append} from "../lib/aspect";
     import {pack} from "../node_modules_/csso/lib/replace/Number";
-    import {COMPOSITE, ENTRYLIST, LIST} from "../lib/consts";
+    import {ASPECT, COMPONENT, COMPOSITE, EDIT, ENTRYLIST, LIST} from "../lib/consts";
     import {item_count_name} from "../lib/listaspects";
 
 
@@ -16,6 +16,7 @@
     const MISSING = 1
     const LIST_NOT_ENOUGH = 2
     const COMPOSITE_INCOMPLETE = 3
+
 
     export default {
         name: "MissingAspectsNotice",
@@ -40,14 +41,16 @@
                         // todo, value thing not so elegant...
                         const a_w_value = this.entry.aspects_values[aspect.name] || pack(null)
                         const a_value = a_w_value.value
-                        const validation = this.validate_aspect(aspect, a_value)
+                        const base_aspect_loc = loc_append([[EDIT, this.entry.uuid]], ASPECT, aspect.name)
+                        const validation = this.validate_aspect(aspect, a_value, base_aspect_loc)
                         let add_text = ""
+                        const aspect_label = label(aspect)
                         if (validation === MISSING) {
-                            add_text = aspect.name + " missing"
+                            add_text = aspect_label + " missing"
                         } else if (validation === LIST_NOT_ENOUGH) {
-                            add_text = aspect.name + " requires more " + item_count_name(aspect, a_value.length) + " (" + a_value.length + "/" + aspect.attr.min + ")"
+                            add_text =aspect_label + " requires more " + item_count_name(aspect, a_value.length) + " (" + a_value.length + "/" + aspect.attr.min + ")"
                         } else if (validation === COMPOSITE_INCOMPLETE) {
-                            add_text = aspect.name + " is not complete"
+                            add_text = aspect_label + " is not complete"
                         }
                         if(add_text) {
                             if(this.has_pages) {
@@ -62,12 +65,16 @@
             }
         },
         methods: {
-            validate_aspect(aspect, raw_value) {
+            validate_aspect(aspect, raw_value, aspect_loc) {
+                //console.log("val", aspect.name, aspect_loc)
                 const a_default = aspect_raw_default_value(aspect)
+                if(aspect.attr.IDAspect) {
+                    return OK
+                }
                 if(!raw_value) {
                     return MISSING
                 }
-                if(aspect.attr.IDAspect || false) {
+                if(disabled_by_condition(this.$store, aspect, aspect_loc)) {
                     return OK
                 }
                 if (raw_value === a_default) {
@@ -79,7 +86,8 @@
                 } else if (aspect.type === COMPOSITE) {
                     let component_validations = {}
                     for (let component of aspect.components) {
-                        component_validations[component.name] = this.validate_aspect(component, raw_value[component.name].value || null)
+                        const comp_loc = loc_append(aspect_loc, COMPONENT, component.name)
+                        component_validations[component.name] = this.validate_aspect(component, raw_value[component.name].value || null, comp_loc)
                     }
                     if (this.$_.find(Object.values(component_validations), c => c !== OK)) {
                         return COMPOSITE_INCOMPLETE

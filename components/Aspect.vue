@@ -46,7 +46,7 @@
         aspect_loc_str,
         aspect_loc_str2arr, aspect_loc_uuid,
         aspect_raw_default_value, check_condition_value, complete_aspect_loc,
-        get_aspect_vue_component, pack_value
+        get_aspect_vue_component, label, pack_value
     } from "../lib/aspect";
     import {ENTRIES_GET_ENTRY, ENTRIES_SET_ENTRY_VALUE, ENTRIES_VALUE} from "../lib/store_consts";
 
@@ -164,11 +164,7 @@
                     return this.mode
             },
             aspect_label() {
-                if (this.aspect.label !== undefined) {
-                    return this.aspect.label
-                } else {
-                    return this.aspect.name
-                }
+                return label(this.aspect)
             },
             regular_value_text() {
                 return this.aspect.attr["alternative-true"] || "regular value"
