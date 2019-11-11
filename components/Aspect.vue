@@ -25,7 +25,7 @@
       :mode="real_mode"
       v-on:update_value="update_value($event)"
       v-on:entryAction="$emit('entryAction',$event)")
-    div(v-if="!use_regular && aspect.attr.alternative !== undefined")  // ...alternative:  savety check
+    div(v-if="!use_regular && aspect.attr.alternative !== undefined")
       Title_Description(v-bind="title_description(aspect.attr.alternative)")
       component(
         :is="aspectComponent(aspect.attr.alternative)"
@@ -80,9 +80,10 @@
         created() {
             // todo no idea, why the shortcut below does not work
             if (!this.has_value) {
-                this.use_regular = this.value.hasOwnProperty("regular") ? this.value.regular : true
-            } else {
+                console.log("has no value")
                 this.use_regular = true
+            } else {
+                this.use_regular = this.value.hasOwnProperty("regular") ? this.value.regular : true
             }
             //this.use_regular = this.has_value && this.value.hasOwnProperty("regular") ? this.value.regular : true
             if (!this.has_value) {
@@ -136,7 +137,7 @@
                         this.extra[LIST_INDEX])
                     // console.log("value ref,  ",this.aspect.name, aspect_location)
                     let value = this.$store.getters[ENTRIES_VALUE](aspect_location)
-                    console.log("Aspect.value ref_value: received value", value)
+                    //console.log("Aspect.value ref_value: received value", value)
                     // console.log("my stored value", this.$store.getters["entries/value"](this.aspect_loc))
                     if (value.hasOwnProperty(REGULAR)) {
                         delete value[REGULAR]
@@ -164,16 +165,13 @@
                 return !this.disable || !this.aspect.attr.hide_on_disabled
             },
             real_mode() {
-                if (this.aspect.attr.ref_value) {
+                if (this.aspect.attr.ref_value || this.fixed_value) {
                     return VIEW
                 }
                 if (this.aspect.attr.mode !== undefined) {
                     return this.aspect.attr.mode
                 } else
                     return this.mode
-            },
-            aspect_label() {
-                return label(this.aspect)
             },
             regular_value_text() {
                 return this.aspect.attr["alternative-true"] || "regular value"
@@ -182,8 +180,10 @@
                 return this.aspect.attr["alternative-false"] || "alternative value"
             },
             alt_mode() {
-                //console.log(this.aspect)
-                return this.aspect.attr.alternative.attr.mode || this.mode
+                if (this.fixed_value)
+                    return VIEW
+                else
+                    return this.aspect.attr.alternative.attr.mode || this.mode
             },
             disable() {
                 return this.condition_fail || this.aspect.attr.disable
@@ -201,6 +201,13 @@
             aspect_id() {
                 return aspect_loc_str(this.$_.tail(this.aspect_loc))
             },
+            fixed_value() {
+                if (this.use_regular) {
+                    return this.aspect.attr.hasOwnProperty("value")
+                } else {
+                    return this.aspect.attr.alternative.attr.hasOwnProperty("value")
+                }
+            }
         },
         methods: {
             title_description(aspect) {
@@ -212,9 +219,12 @@
                     }
                 }
                 return {
-                    title: this.extra.no_title ? "" : this.aspect_label,
+                    title: this.extra.no_title ? "" : this.aspect_label(aspect),
                     description: aspect.description || ""
                 }
+            },
+            aspect_label(aspect) {
+                return label(aspect)
             },
             aspectComponent(aspect, mode) {
                 return get_aspect_vue_component(aspect, mode, this.extra)
