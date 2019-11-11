@@ -251,7 +251,6 @@
         },
         watch: {
             use_regular(val, old_val) {
-                console.log(this.aspect.name, "REG WATCH", val, old_val)
                 // catch from created. keep this!
                 if (old_val === null) {
                     return
@@ -265,7 +264,6 @@
                         this.update_value(aspect_raw_default_value(this.aspect.attr.alternative))
                     }
                 } else {
-                    console.log("RED -> default")
                     this.update_value(aspect_raw_default_value(this.aspect))
                 }
             }

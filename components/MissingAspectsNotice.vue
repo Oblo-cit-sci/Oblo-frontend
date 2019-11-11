@@ -2,7 +2,7 @@
   div
     h3 Validation
     b(v-if="has_missing") Missing or incomplete aspects:
-    div(v-else) All values in this entryseem ok
+    div(v-else) All values in this entry seem ok
     .required_aspect.red--text(v-for="(aspect, i) in missing" :key="i") {{aspect}}
 </template>
 
