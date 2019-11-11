@@ -88,8 +88,10 @@
                 return this.$_.size(this.value) > 0
             },
             items() {
+                console.log("items", this.value)
                 let entries = this.$_.map(this.value, e => {
                     const entry = this.$store.getters[ENTRIES_GET_ENTRY](e)
+                    console.log("e", entry)
                     return {title: entry.title, uuid: e}
                 })
                 no_duplicate_texts(entries, "title")

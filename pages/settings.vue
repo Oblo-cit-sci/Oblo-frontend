@@ -39,7 +39,7 @@
     import DecisionDialog from "../components/DecisionDialog";
     import TextShort from "../components/aspects/TextShortAspect";
     import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
-    import {export_data} from "../lib/import_export";
+    import {export_data, merge_imported_entries} from "../lib/import_export";
     import {ENTRIES_SAVE_ENTRY, USER_KEY} from "../lib/store_consts";
     import {get_release_mode} from "../lib/util";
     import {LICCI_PARTNERS} from "../lib/consts";
@@ -112,8 +112,13 @@
                 if (event.ok) {
                     event.data.forEach(entry => {
                         entry.creation_datetime = new Date(entry.creation_datetime)
-                        this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
+                        entry.local = {
+                            dirty: false,
+                            prev: null,
+                        }
+                        //this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
                     })
+                    merge_imported_entries(this.$store, event.data)
                     console.log("Entries imported")
                     this.ok_snackbar("Entries imported")
                 } else {

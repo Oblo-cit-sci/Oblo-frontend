@@ -33,7 +33,6 @@
         v-on:update_value="update_value($event)"
         :mvalue="value"
         :mode="alt_mode")
-
 </template>
 
 <script>
@@ -241,7 +240,6 @@
         },
         watch: {
             use_regular(val, old_val) {
-                console.log(this.aspect.name, "REG WATCH", val, old_val)
                 // catch from created. keep this!
                 if (old_val === null) {
                     return

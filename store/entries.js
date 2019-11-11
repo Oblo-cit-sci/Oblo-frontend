@@ -95,11 +95,12 @@ export const mutations = {
     const final_loc = ld.last(aspect_loc)
     ld.remove(select.value, (_, index) => index === final_loc[1])
   },
-  set_edit_dirty(state) {
-    if(!state.edit.local) {
-      state.edit.local = {}
+  set_dirty(state, uuid) {
+    let entry = state.entries.get(uuid)
+    if(!entry.local) {
+      entry.local = {}
     }
-    state.edit.local.dirty = true
+    entry.local.dirty = true
   },
   set_edit_clean(state) { // ENTRIES_SET_EDIT_CLEAN
     if (state.edit) {
@@ -142,7 +143,7 @@ export const mutations = {
   }
 }
 
-
+// getters
 export const getters = {
   all_entries(state) {
     return state.entries.values()
@@ -338,11 +339,13 @@ export const getters = {
 // dispatch
 export const actions = {
   set_entry_value(context, data) {
+    console.log("setting valud", data)
     context.commit("_set_entry_value", data)
-    context.commit("set_edit_dirty")
+    context.commit("set_dirty",aspect_loc_uuid(data.aspect_loc))
     // context.commit("update")
   },
   save_child_n_ref(context, {uuid, child, aspect_loc}) { // ENTRIES_SAVE_CHILD_N_REF
+    //console.log(uuid, child.uuid, aspect_loc)
     if (!uuid) {
       uuid = context.getters.edit_uuid
     }

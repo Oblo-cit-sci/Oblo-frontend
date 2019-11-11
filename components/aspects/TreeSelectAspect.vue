@@ -11,7 +11,7 @@
       :aspect_loc="aspect_loc"
       :prependIcon="prependIcon"
       @click:prepend="openDialog()")
-    v-dialog(width="500" v-model="dialogOpen")
+    v-dialog(width="800" v-model="dialogOpen")
       TreleafPicker(
         :tree="tree"
         :attr="aspect.attr"
