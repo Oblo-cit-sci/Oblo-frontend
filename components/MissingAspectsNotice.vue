@@ -1,6 +1,8 @@
 <template lang="pug">
   div
-    b Missing or incomplete aspects:
+    h3 Validation
+    b(v-if="has_missing") Missing or incomplete aspects:
+    div(v-else) All values in this entryseem ok
     .required_aspect.red--text(v-for="(aspect, i) in missing" :key="i") {{aspect}}
 </template>
 
@@ -62,6 +64,9 @@
                     }
                 }
                 return missing
+            },
+            has_missing() {
+                return this.missing.length > 0
             }
         },
         methods: {
@@ -71,11 +76,11 @@
                 if(aspect.attr.IDAspect) {
                     return OK
                 }
-                if(!raw_value) {
-                    return MISSING
-                }
                 if(disabled_by_condition(this.$store, aspect, aspect_loc)) {
                     return OK
+                }
+                if(!raw_value) {
+                    return MISSING
                 }
                 if (raw_value === a_default) {
                     return MISSING
@@ -88,7 +93,11 @@
                     for (let component of aspect.components) {
                         const comp_loc = loc_append(aspect_loc, COMPONENT, component.name)
                         component_validations[component.name] = this.validate_aspect(component, raw_value[component.name].value || null, comp_loc)
+                        if(component_validations[component.name] !== OK) {
+                            console.log(aspect.name, component.name, component_validations[component.name])
+                        }
                     }
+                    //console.log(component_validations)
                     if (this.$_.find(Object.values(component_validations), c => c !== OK)) {
                         return COMPOSITE_INCOMPLETE
                     }

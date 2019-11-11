@@ -267,7 +267,8 @@
                 return this.entry.version === 0
             },
             can_download() {
-                return get_release_mode(this.$store) === LICCI_PARTNERS
+                //console.log(this.entry_type.content.meta.download)
+                return get_release_mode(this.$store) === LICCI_PARTNERS && this.entry_type.content.meta.download
             }
         }
     }
