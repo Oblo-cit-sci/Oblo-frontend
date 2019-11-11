@@ -96,6 +96,7 @@
             //console.log("LA created", this.value)
             let item_type = this.aspect.items;
             // todo. list, are extended lists by user, not select lists
+            // todo the item should not be just a string
             if (typeof (item_type) === "string") {
                 switch (item_type) {
                     case "str":

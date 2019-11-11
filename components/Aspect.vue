@@ -25,7 +25,7 @@
       :mode="real_mode"
       v-on:update_value="update_value($event)"
       v-on:entryAction="$emit('entryAction',$event)")
-    div(v-if="!use_regular")
+    div(v-if="!use_regular && aspect.attr.alternative !== undefined")  // ...alternative:  savety check
       Title_Description(v-bind="title_description(aspect.attr.alternative)")
       component(
         :is="aspectComponent(aspect.attr.alternative)"
@@ -78,8 +78,14 @@
             }
         },
         created() {
-            this.use_regular = this.has_value && this.value.hasOwnProperty("regular") ? this.value.regular : true
-            if(!this.has_value) {
+            // todo no idea, why the shortcut below does not work
+            if (!this.has_value) {
+                this.use_regular = this.value.hasOwnProperty("regular") ? this.value.regular : true
+            } else {
+                this.use_regular = true
+            }
+            //this.use_regular = this.has_value && this.value.hasOwnProperty("regular") ? this.value.regular : true
+            if (!this.has_value) {
                 this.update_value(aspect_raw_default_value(this.aspect))
             }
         },
@@ -235,6 +241,7 @@
         },
         watch: {
             use_regular(val, old_val) {
+                console.log(this.aspect.name, "REG WATCH", val, old_val)
                 // catch from created. keep this!
                 if (old_val === null) {
                     return
@@ -248,6 +255,7 @@
                         this.update_value(aspect_raw_default_value(this.aspect.attr.alternative))
                     }
                 } else {
+                    console.log("RED -> default")
                     this.update_value(aspect_raw_default_value(this.aspect))
                 }
             }
