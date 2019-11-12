@@ -9,7 +9,7 @@
 <script>
     import EntryMixin from "./EntryMixin";
     import {aspect_raw_default_value, disabled_by_condition, label, loc_append, pack_value} from "../lib/aspect";
-    import {ASPECT, COMPONENT, COMPOSITE, EDIT, ENTRYLIST, LIST} from "../lib/consts";
+    import {ASPECT, COMPONENT, COMPOSITE, EDIT, ENTRYLIST, INDEX, LIST} from "../lib/consts";
     import {item_count_name} from "../lib/listaspects";
 
 
@@ -17,6 +17,7 @@
     const MISSING = 1
     const LIST_NOT_ENOUGH = 2
     const COMPOSITE_INCOMPLETE = 3
+    const LISTITEM_INCOMPLETE = 4
 
 
     export default {
@@ -44,18 +45,21 @@
                     if (required) {
                         // todo, value thing not so elegant...
                         const a_w_value = this.entry.aspects_values[aspect.name] || pack_value(null)
-                        //console.log(a_w_value)
                         const a_value = a_w_value.value
                         const base_aspect_loc = loc_append([[EDIT, this.entry.uuid]], ASPECT, aspect.name)
                         const validation = this.validate_aspect(aspect, a_w_value, base_aspect_loc)
+                        const valid = validation[0]
+                        const invalid_message = validation[1]
                         let add_text = ""
                         const aspect_label = label(aspect)
-                        if (validation === MISSING) {
+                        if (valid === MISSING) {
                             add_text = aspect_label + " missing"
-                        } else if (validation === LIST_NOT_ENOUGH) {
+                        } else if (valid === LIST_NOT_ENOUGH) {
                             add_text = aspect_label + " requires more " + item_count_name(aspect, a_value.length) + " (" + a_value.length + "/" + aspect.attr.min + ")"
-                        } else if (validation === COMPOSITE_INCOMPLETE) {
-                            add_text = aspect_label + " is not complete"
+                        } else if (valid === COMPOSITE_INCOMPLETE) {
+                            add_text = aspect_label + " is not complete: missing components: " + invalid_message.join(", ")
+                        } else if(valid === LISTITEM_INCOMPLETE) {
+                            add_text = aspect_label + " has at least one incomplete item: " + invalid_message.join(", ")
                         }
                         if (add_text) {
                             if (this.has_pages) {
@@ -74,7 +78,14 @@
         },
         methods: {
             validate_aspect(aspect, a_w_value, aspect_loc) {
-                //console.log(aspect.name, a_w_value)
+                //console.log(aspect.name, a_w_value, aspect_loc)
+                let required = true
+                if (aspect.attr.hasOwnProperty("required")) {
+                    required = aspect.attr.required
+                }
+                if(!required) {
+                    return [OK]
+                }
                 const raw_value = a_w_value.value
                 //console.log(raw_value)
                 if (a_w_value.hasOwnProperty("regular") && a_w_value.regular === false) {
@@ -83,34 +94,55 @@
                 //console.log("val", aspect.name, aspect_loc)
                 const a_default = aspect_raw_default_value(aspect)
                 if (aspect.attr.IDAspect) {
-                    return OK
+                    return [OK]
                 }
                 if (disabled_by_condition(this.$store, aspect, aspect_loc)) {
-                    return OK
+                    return [OK]
                 }
                 if (!raw_value) {
-                    return MISSING
+                    return [MISSING, ""]
                 }
                 if (raw_value === a_default) {
                     return MISSING
                 } else if ([LIST, ENTRYLIST].includes(aspect.type)) {
                     if (aspect.attr.min !== null && raw_value.length < aspect.attr.min) {
-                        return LIST_NOT_ENOUGH
+                        return [LIST_NOT_ENOUGH, ""]
+                    }
+                    if(aspect.type === LIST) {
+                        //let item_validations = []
+                        let incomplete_items = []
+                        for (let item_index in raw_value) {
+                            const item = raw_value[item_index]
+                            const item_loc = loc_append(aspect_loc, INDEX, item_index)
+                            const validation = this.validate_aspect(aspect.items, item || pack_value(null), item_loc)
+                            if(validation[0] !== OK) {
+                                incomplete_items.push(parseInt(item_index) + 1)
+                            }
+                        }
+                        if(incomplete_items.length > 0) {
+                            return [LISTITEM_INCOMPLETE, incomplete_items]
+                        } else {
+                            return [OK]
+                        }
                     }
                 } else if (aspect.type === COMPOSITE) {
-                    let component_validations = {}
+                    let missing_components = []
                     for (let component of aspect.components) {
                         const comp_loc = loc_append(aspect_loc, COMPONENT, component.name)
                         //console.log("-> comp", component.name, raw_value[component.name])
-                        component_validations[component.name] = this.validate_aspect(component, raw_value[component.name] || pack_value(null), comp_loc)
+                        let component_validations = this.validate_aspect(component, raw_value[component.name] || pack_value(null), comp_loc)
+                        if(component_validations[0] !== OK) {
+                            missing_components.push(label(component))
+                        }
                     }
-                    //console.log(component_validations)
-                    if (this.$_.find(Object.values(component_validations), c => c !== OK)) {
-                        return COMPOSITE_INCOMPLETE
+                    if(missing_components.length > 0) {
+                        return [COMPOSITE_INCOMPLETE, missing_components]
+                    } else {
+                        return [OK]
                     }
                 }
                 // default
-                return OK
+                return [OK]
             }
         },
         watch: {}

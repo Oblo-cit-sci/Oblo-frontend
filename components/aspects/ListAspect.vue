@@ -66,7 +66,6 @@
     import MinMaxIndicators from '../list_components/MinMaxIndicators'
 
     import ListPagination from "../ListPagination";
-    import {get_codes_as_options} from "../../lib/options";
     import goTo from 'vuetify/lib/services/goto'
     import {recursive_unpack} from "../../lib/util";
 
@@ -266,16 +265,12 @@
             titles() {
                 //console.log("calling titles")
                 let titles = new Array(this.value.length)
-
-
                 let titleAspectName = this.item_aspect.attr.titleAspect
-
                 let simple_type = SIMPLE_TYPE.includes(this.item_aspect.type)
 
-                console.log(!simple_type, !titleAspectName, this.item_aspect.type)
                 if (!simple_type && !titleAspectName && this.item_aspect.type === COMPOSITE) {
                     titleAspectName = this.item_aspect.components[0].name
-                    console.log("setting titleAspectName to first component")
+                    //console.log("setting titleAspectName to first component")
                 }
 
                 // condition hell should go if we apply json schema properly, this is all fallback stuff
@@ -303,14 +298,12 @@
                             if (Array.isArray(titles[i])) {
                                 titles[i] = recursive_unpack(this.value[i].value[titleAspectName].value).join(", ")
                             }
-                            if (titles[i] === "") {
+                            if (titles[i] === "" || titles[i] === null) {
                                 titles[i] = this.aspect.attr.itemname + " " + (parseInt(i) + 1).toString()
                             }
                         }
                     }
                 }
-
-
                 return titles
             },
             adding_allowed() {
