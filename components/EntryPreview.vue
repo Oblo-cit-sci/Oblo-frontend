@@ -93,7 +93,7 @@
                 return printDate(this.entry.creation_datetime)
             },
             proper_mode() {
-              return(get_proper_mode(this.$store, this.entry))
+              return get_proper_mode(this.$store, this.entry)
             },
             to_download() {
                 return this.outdated

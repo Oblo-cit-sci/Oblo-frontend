@@ -172,6 +172,12 @@
               this.$store.commit("entries/update_app_version")
                 this.ok_snackbar("Updated")
             }
+
+            for(let aspect of this.entry_type.content.aspects) {
+                //console.log(aspect.name)
+                //let missing = !this.entry.aspects_values.hasOwnProperty(aspect.name)
+                //console.log(missing)
+            }
         },
         beforeRouteLeave(to, from, next) {
             // BEWARE, this is not called when navigating from one entry to another

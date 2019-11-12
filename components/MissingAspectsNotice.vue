@@ -38,6 +38,7 @@
                 const aspects = this.entry_type.content.aspects
                 let missing = []
                 for (let aspect of aspects) {
+                    //console.log("val", aspect.name)
                     let required = true
                     if (aspect.attr.hasOwnProperty("required")) {
                         required = aspect.attr.required
@@ -45,6 +46,7 @@
                     if (required) {
                         // todo, value thing not so elegant...
                         const a_w_value = this.entry.aspects_values[aspect.name] || pack_value(null)
+                        console.log("val-", aspect.name, a_w_value)
                         const a_value = a_w_value.value
                         const base_aspect_loc = loc_append([[EDIT, this.entry.uuid]], ASPECT, aspect.name)
                         const validation = this.validate_aspect(aspect, a_w_value, base_aspect_loc)
@@ -78,7 +80,7 @@
         },
         methods: {
             validate_aspect(aspect, a_w_value, aspect_loc) {
-                //console.log(aspect.name, a_w_value, aspect_loc)
+                //console.log(aspect.name, a_w_value, aspect, aspect_loc)
                 let required = true
                 if (aspect.attr.hasOwnProperty("required")) {
                     required = aspect.attr.required
@@ -89,6 +91,7 @@
                 const raw_value = a_w_value.value
                 //console.log(raw_value)
                 if (a_w_value.hasOwnProperty("regular") && a_w_value.regular === false) {
+                    console.log("aking alternative for ", aspect.name)
                     aspect = aspect.attr.alternative
                 }
                 //console.log("val", aspect.name, aspect_loc)

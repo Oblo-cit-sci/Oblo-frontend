@@ -74,21 +74,23 @@
         },
         data() {
             return {
-                use_regular: null // leave it null, to catch create triggering watcher
+                use_regular: true // leave it null, to catch create triggering watcher
             }
         },
         created() {
             // todo no idea, why the shortcut below does not work
             if (!this.has_value) {
-                console.log("has no value")
+                console.log("has no value", this.aspect.name)
                 this.use_regular = true
             } else {
+                console.log(this.aspect.name, this.value)
                 this.use_regular = this.value.hasOwnProperty("regular") ? this.value.regular : true
+                console.log("UR", this.use_regular)
             }
             //this.use_regular = this.has_value && this.value.hasOwnProperty("regular") ? this.value.regular : true
-            if (!this.has_value) {
+            /*if (!this.has_value) {
                 this.update_value(aspect_raw_default_value(this.aspect))
-            }
+            }*/
         },
         // boolean check is not required, since "false" is the default
         computed: {
@@ -149,7 +151,14 @@
                     this.extra["ref_length"] = this.$store.getters[ENTRIES_VALUE](location_array).value.length
                     return this.$store.getters[ENTRIES_VALUE](this.aspect_loc)
                 } else {
-                    return this.$store.getters[ENTRIES_VALUE](this.aspect_loc)
+                    let value = this.$store.getters[ENTRIES_VALUE](this.aspect_loc)
+                    if(value === undefined) {
+                        console.log("undefined", this.aspect)
+                        let raw__new_value = aspect_raw_default_value(this.aspect)
+                        this.update_value(raw__new_value)
+                        return pack_value(raw__new_value)
+                    }
+                    return value
                 }
             },
             show_title_description() {
@@ -231,6 +240,9 @@
             },
             update_value(event) {
                 //console.log("aspect.update_value", event, "reg ?", this.use_regular)
+                if(this.aspect.name) {
+                    console.log(this.aspect.name)
+                }
                 if (this.has_alternative && this.use_regular) {
                     if (this.aspect.attr.hasOwnProperty("alternative-activate-on-value")) {
                         if (event === this.aspect.attr["alternative-activate-on-value"]) {
