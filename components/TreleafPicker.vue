@@ -11,6 +11,9 @@
     v-divider(v-if="has_both()")
     v-subheader#subheader(v-if="has_level_names") {{act_levelname}}
     SingleSelect(v-if="has_options" :options="act_options" v-on:selection="select($event)" :select_sync="false" :highlight="false")
+    .ml-3(v-if="last_description")
+      div Description:
+      div {{last_description}}
     v-btn(v-if="done_available" @click="done" color="success") Done
     div(v-if="allows_extra")
       TextShort(v-bind:aspect="extra_value_aspect" :edit="true" v-bind:value.sync="extra_value")
@@ -64,7 +67,7 @@
             act_options() {
                 let options = [];
                 if (this.selection.length === 0) {
-                    options = this.tree.children;
+                    options = this.tree.children
                 } else {
                     options = this.$_.last(this.selection).children || [];
                 }
@@ -81,6 +84,13 @@
                     return (this.$_.includes(this.attr.allow_select_levels, this.act_level))
                 } else {
                     return this.$_.size(this.act_options) === 0
+                }
+            },
+            last_description() {
+                if(this.selection.length === 0) {
+                    return ""
+                } else {
+                    return this.selection[this.act_level].description || ""
                 }
             },
             has_level_names() {

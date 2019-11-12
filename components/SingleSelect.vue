@@ -4,7 +4,7 @@
       :three-line="has_some_description"
       dense
       class="singleselect_list"
-      )
+    )
       div(v-for="item of options")
         v-subheader(v-if="is_category(item)") {{item.text}}
         v-list-item(v-else
@@ -22,9 +22,7 @@
             v-icon(color="grey lighten-1") mdi-login-variant
         v-divider
   div(v-else-if="view_select")
-    v-select(outlined single-line :multiple=false v-model="selected_item" :items="options" return-object clearable :placeholder="placeholder" :disabled="disabled")
-    .v-text-field__details
-      .v-messages
+    v-select(outlined single-line hide-details :multiple=false v-model="selected_item" :items="options" return-object clearable :placeholder="placeholder" :disabled="disabled" )
   div(v-else-if="view_autocomplete")
     v-autocomplete(outlined single-line v-model="selected_item" :items="options" clearable return-object)
   div(v-else-if="view_radiogroup")
@@ -114,16 +112,12 @@
                     console.log("Error unknown force_view", this.force_view, "should be from:", this.view_options)
                 }
             } else {
-                let sz = this.$_.size(this.options)
-                if (sz === 0) {
-                    this.viewStyle = NONE
-                } else if (sz < select_tresh) {
-                    this.viewStyle = CLEAR_LIST
-                } else if (sz < autocomplet_thresh) {
-                    this.viewStyle = SELECT
-                } else {
-                    this.viewStyle = AUTOCOMPLETE
-                }
+                this.set_view_style()
+            }
+        },
+        beforeUpdate() {
+            if (!this.force_view) {
+                this.set_view_style()
             }
         },
         methods: {
@@ -137,7 +131,18 @@
                 } else {
                     this.emitUp(item)
                 }
-
+            },
+            set_view_style() {
+                let sz = this.$_.size(this.options)
+                if (sz === 0) {
+                    this.viewStyle = NONE
+                } else if (sz < select_tresh) {
+                    this.viewStyle = CLEAR_LIST
+                } else if (sz < autocomplet_thresh) {
+                    this.viewStyle = SELECT
+                } else {
+                    this.viewStyle = AUTOCOMPLETE
+                }
             },
             icon_path(item) {
                 if (item.icon) {
@@ -225,8 +230,9 @@
   .singleselect_list {
     margin-bottom: 1%;
   }
+
   .single_select {
-      min-height: 40px;
+    min-height: 40px;
   }
 
   .marked {

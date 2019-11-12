@@ -2,7 +2,9 @@ export const state = () => ({
   marker: null,
   entries: [],
   selected_entry: null,
-  goto_location: null
+  goto_location: null,
+  layers: ["climate type copy", "weather stations"],
+  layer_status: {}
 })
 
 export const mutations = {
@@ -20,6 +22,9 @@ export const mutations = {
   },
   goto_location(state, location) {
     state.goto_location = location
+  },
+  set_layer_status(state, layer_status) {
+    state.layer_status = layer_status
   }
 }
 
@@ -33,6 +38,12 @@ export const getters = {
   goto_location(state) {
     return () => {
       return state.goto_location}
+  },
+  layers(state) {
+      return state.layers
+  },
+  layer_status(state) {
+    return state.layer_status
   }
 }
 

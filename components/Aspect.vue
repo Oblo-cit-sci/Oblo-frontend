@@ -25,7 +25,7 @@
       :mode="real_mode"
       v-on:update_value="update_value($event)"
       v-on:entryAction="$emit('entryAction',$event)")
-    div(v-if="!use_regular")
+    div(v-if="!use_regular && aspect.attr.alternative !== undefined")
       Title_Description(v-bind="title_description(aspect.attr.alternative)")
       component(
         :is="aspectComponent(aspect.attr.alternative)"
@@ -46,7 +46,7 @@
         aspect_loc_str,
         aspect_loc_str2arr, aspect_loc_uuid,
         aspect_raw_default_value, check_condition_value, complete_aspect_loc,
-        get_aspect_vue_component, pack_value
+        get_aspect_vue_component, label, pack_value
     } from "../lib/aspect";
     import {ENTRIES_GET_ENTRY, ENTRIES_SET_ENTRY_VALUE, ENTRIES_VALUE} from "../lib/store_consts";
 
@@ -74,17 +74,29 @@
         },
         data() {
             return {
-                use_regular: null // leave it null, to catch create triggering watcher
+                use_regular: true // leave it null, to catch create triggering watcher
             }
         },
         created() {
-            this.use_regular =  this.has_value && this.value.hasOwnProperty("regular") ? this.value.regular : true
+            // todo no idea, why the shortcut below does not work
+            if (!this.has_value) {
+                console.log("has no value", this.aspect.name)
+                this.use_regular = true
+            } else {
+                console.log(this.aspect.name, this.value)
+                this.use_regular = this.value.hasOwnProperty("regular") ? this.value.regular : true
+                console.log("UR", this.use_regular)
+            }
+            //this.use_regular = this.has_value && this.value.hasOwnProperty("regular") ? this.value.regular : true
+            /*if (!this.has_value) {
+                this.update_value(aspect_raw_default_value(this.aspect))
+            }*/
         },
         // boolean check is not required, since "false" is the default
         computed: {
             // at the moment
             has_value() {
-              return this.value || false
+                return this.value || false
             },
             has_alternative() {
                 return this.aspect.attr.hasOwnProperty("alternative")
@@ -127,7 +139,7 @@
                         this.extra[LIST_INDEX])
                     // console.log("value ref,  ",this.aspect.name, aspect_location)
                     let value = this.$store.getters[ENTRIES_VALUE](aspect_location)
-                    console.log("Aspect.value ref_value: received value", value)
+                    //console.log("Aspect.value ref_value: received value", value)
                     // console.log("my stored value", this.$store.getters["entries/value"](this.aspect_loc))
                     if (value.hasOwnProperty(REGULAR)) {
                         delete value[REGULAR]
@@ -139,7 +151,14 @@
                     this.extra["ref_length"] = this.$store.getters[ENTRIES_VALUE](location_array).value.length
                     return this.$store.getters[ENTRIES_VALUE](this.aspect_loc)
                 } else {
-                    return this.$store.getters[ENTRIES_VALUE](this.aspect_loc)
+                    let value = this.$store.getters[ENTRIES_VALUE](this.aspect_loc)
+                    if(value === undefined) {
+                        console.log("undefined", this.aspect)
+                        let raw__new_value = aspect_raw_default_value(this.aspect)
+                        this.update_value(raw__new_value)
+                        return pack_value(raw__new_value)
+                    }
+                    return value
                 }
             },
             show_title_description() {
@@ -155,28 +174,13 @@
                 return !this.disable || !this.aspect.attr.hide_on_disabled
             },
             real_mode() {
-                if (this.aspect.attr.ref_value) {
+                if (this.aspect.attr.ref_value || this.fixed_value) {
                     return VIEW
                 }
                 if (this.aspect.attr.mode !== undefined) {
                     return this.aspect.attr.mode
                 } else
                     return this.mode
-            },
-
-            /*raw_value() {
-                if (!this.value) { // failsafe
-                    return aspect_raw_default_value(this.aspect)
-                } else {
-                    return this.value.value
-                }
-            },*/
-            aspect_label() {
-                if (this.aspect.label !== undefined) {
-                    return this.aspect.label
-                } else {
-                    return this.aspect.name
-                }
             },
             regular_value_text() {
                 return this.aspect.attr["alternative-true"] || "regular value"
@@ -185,8 +189,10 @@
                 return this.aspect.attr["alternative-false"] || "alternative value"
             },
             alt_mode() {
-                console.log(this.aspect)
-                return this.aspect.attr.alternative.attr.mode || this.mode
+                if (this.fixed_value)
+                    return VIEW
+                else
+                    return this.aspect.attr.alternative.attr.mode || this.mode
             },
             disable() {
                 return this.condition_fail || this.aspect.attr.disable
@@ -204,6 +210,13 @@
             aspect_id() {
                 return aspect_loc_str(this.$_.tail(this.aspect_loc))
             },
+            fixed_value() {
+                if (this.use_regular) {
+                    return this.aspect.attr.hasOwnProperty("value")
+                } else {
+                    return this.aspect.attr.alternative.attr.hasOwnProperty("value")
+                }
+            }
         },
         methods: {
             title_description(aspect) {
@@ -215,15 +228,21 @@
                     }
                 }
                 return {
-                    title: this.extra.no_title ? "" : this.aspect_label,
+                    title: this.extra.no_title ? "" : this.aspect_label(aspect),
                     description: aspect.description || ""
                 }
+            },
+            aspect_label(aspect) {
+                return label(aspect)
             },
             aspectComponent(aspect, mode) {
                 return get_aspect_vue_component(aspect, mode, this.extra)
             },
             update_value(event) {
                 //console.log("aspect.update_value", event, "reg ?", this.use_regular)
+                if(this.aspect.name) {
+                    console.log(this.aspect.name)
+                }
                 if (this.has_alternative && this.use_regular) {
                     if (this.aspect.attr.hasOwnProperty("alternative-activate-on-value")) {
                         if (event === this.aspect.attr["alternative-activate-on-value"]) {

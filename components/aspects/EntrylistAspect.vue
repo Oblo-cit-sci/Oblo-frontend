@@ -55,7 +55,7 @@
         ENTRIES_EDIT_DELETE_REF_CHILD,
         ENTRIES_GET_ENTRY, ENTRIES_SAVE_CHILD_N_REF, ENTRIES_SAVE_ENTRY, ENTRY_TYPE,
     } from "../../lib/store_consts";
-    import {aspect_loc_str, remove_entry_loc} from "../../lib/aspect";
+    import {aspect_loc_str} from "../../lib/aspect";
     import {no_duplicate_texts} from "../../lib/options";
     import ListPagination from "../ListPagination";
 
@@ -87,7 +87,6 @@
             has_items() {
                 return this.$_.size(this.value) > 0
             },
-
             items() {
                 let entries = this.$_.map(this.value, e => {
                     const entry = this.$store.getters[ENTRIES_GET_ENTRY](e)
@@ -100,7 +99,7 @@
                 return {
                     id: this.remove_item_select.id,
                     title: "Delete " + this.remove_item_select.title,
-                    text: "Are you sure you want to delete this " + this.remove_item_select.title + "?",
+                    text: "Are you sure you want to delete " + this.remove_item_select.title + "?",
                     confirm_text: "delete",
                     cancel_color: "success",
                     confirm_color: "error"
@@ -111,6 +110,10 @@
             open_remove(index) {
                 if (this.disabled)
                     return
+                this.remove_item_select = {
+                    id: index,
+                    title: this.items[index].title
+                }
                 this.remove_data_dialog.id = index
                 this.show_remove = true
             },

@@ -45,6 +45,8 @@
           v-btn(@click="back" nuxt)
             v-icon home
             span Back
+        v-col.col-sm-7
+          v-select(label="Layers" :items="layer_options" multiple small-chips v-on:change="layer_select_change($event)")
         //v-col.col-sm-3
           v-btn
             v-icon mdi-crosshairs-gps
@@ -75,9 +77,11 @@
     import EntryAspectView from "../components/EntryAspectView";
     import {NO_DOMAIN} from "../lib/consts";
     import {DOMAIN} from "../lib/store_consts";
+    import {string_list2options} from "../lib/options";
 
     const SEARCH = "search"
     const ENTRY = "entry"
+
     const menu_mode_options = [SEARCH, ENTRY]
 
 
@@ -104,9 +108,12 @@
             }
         },
         computed: {
-            ...mapGetters({entries: "map/entries", selected_entry: "map/selected_entry"}),
+            ...mapGetters({entries: "map/entries", selected_entry: "map/selected_entry", layers: "map/layers"}),
             small_display() {
                 return this.$vuetify.breakpoint.smAndDown
+            },
+            layer_options() {
+               return string_list2options(this.layers)
             },
             slim_preview_options() {
                 return {
@@ -124,7 +131,7 @@
             update_map_entries(entries) {
                 this.$store.commit("map/set_entries", entries)
             },
-            ...mapMutations({"set_entries": "map/set_entries"}),
+            ...mapMutations({"set_entries": "map/set_entries", "set_layer_status": "map/set_layer_status"}),
             search_view() {
                 this.menu_mode = SEARCH
             },
@@ -137,6 +144,9 @@
                     // todo could be a bit nicer (named router, route param...)
                     this.$router.push("/domain/" + domain.value)
                 }
+            },
+            layer_select_change(active_layers) {
+                this.set_layer_status(this.$_.mapValues(this.$_.keyBy(this.layers), l => active_layers.includes(l)))
             }
         },
         watch: {
