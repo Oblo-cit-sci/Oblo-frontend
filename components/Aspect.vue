@@ -139,7 +139,7 @@
                         this.extra[LIST_INDEX])
                     // console.log("value ref,  ",this.aspect.name, aspect_location)
                     let value = this.$store.getters[ENTRIES_VALUE](aspect_location)
-                    //console.log("Aspect.value ref_value: received value", value)
+                    // console.log("Aspect.value ref_value: received value", value)
                     // console.log("my stored value", this.$store.getters["entries/value"](this.aspect_loc))
                     if (value.hasOwnProperty(REGULAR)) {
                         delete value[REGULAR]
@@ -148,7 +148,16 @@
                     return value
                 } else if (this.aspect.attr.ref_length) { // this is for lists
                     let location_array = complete_aspect_loc(aspect_loc_uuid(this.aspect_loc), aspect_loc_str2arr(this.aspect.attr.ref_length))
-                    this.extra["ref_length"] = this.$store.getters[ENTRIES_VALUE](location_array).value.length
+
+                    // USES lists or ints
+                    const length_value = this.$store.getters[ENTRIES_VALUE](location_array).value
+                    // todo use the aspect_descr to find out if its a list or an int
+                    if(Array.isArray(length_value)) {
+                        this.extra["ref_length"] = length_value.length
+                    } else {
+                        this.extra["ref_length"] = parseInt(length_value)
+                    }
+
                     return this.$store.getters[ENTRIES_VALUE](this.aspect_loc)
                 } else {
                     let value = this.$store.getters[ENTRIES_VALUE](this.aspect_loc)
