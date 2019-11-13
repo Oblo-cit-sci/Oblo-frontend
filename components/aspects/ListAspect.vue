@@ -284,11 +284,11 @@
                         console.log(`list no value! index:${i}`)
                         titles[i] = ""
                     } else {
-                        if (simple_type || this.aspect.attr.indexTitle) {
+                        const index_name = () => this.aspect.attr.itemname + " " + (parseInt(i) + 1).toString()
+                        if (simple_type) {
                             titles[i] = this.value[i].value
-                            if (titles[i] === "") {
-                                titles[i] = this.aspect.attr.itemname + " " + (parseInt(i) + 1).toString()
-                            }
+                        } else if (this.aspect.attr.indexTitle) {
+                            titles[i] = index_name()
                         } else if (!this.value[i].value[titleAspectName]) {
                             console.log(`list no component value! index:${i}, component:${titleAspectName}`)
                         } else {
@@ -298,9 +298,9 @@
                             if (Array.isArray(titles[i])) {
                                 titles[i] = recursive_unpack(this.value[i].value[titleAspectName].value).join(", ")
                             }
-                            if (titles[i] === "" || titles[i] === null) {
-                                titles[i] = this.aspect.attr.itemname + " " + (parseInt(i) + 1).toString()
-                            }
+                        }
+                        if (titles[i] === "" || titles[i] === null) {
+                            titles[i] = index_name()
                         }
                     }
                 }
