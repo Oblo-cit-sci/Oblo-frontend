@@ -13,6 +13,7 @@
     "python":  "python3 -m http.server",
     "localtest": "nuxt build --spa --pwa; rm -r app; mkdir app; cp -r dist/* app; python3 -m http.server",
     "to_eovalue": "rm -r eovalue; mv -r eovalue eovalue;",
+    "move2server" : "node util/move2server.js",
     "upload": "sudo python3 /media/ra/hd/projects/2019/liccibackend/helpers/app_upload.py"
   },
   "dependencies": {

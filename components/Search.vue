@@ -11,7 +11,9 @@
           @click:append-outer="getEntries"
           clearable
           :loading="searching")
-    EntryPreviewList(v-if="show_results" :entries="entries" :preview_options="preview_options")
+    v-row
+      FilterSelect(filter_name="Entrytype" store_getter="search/conaining_types_options" :selection.sync="type_filter")
+    EntryPreviewList(v-if="show_results" :entries="filtered_entries" :preview_options="preview_options")
 </template>
 
 <script>
@@ -20,10 +22,11 @@
     import EntryPreviewList from "../components/EntryPreviewList"
     import {search_entries} from "../lib/client"
     import {ENTRIES_SEARCH, CLEAR_SEARCH} from "../lib/store_consts"
+    import FilterSelect from "./FilterSelect";
 
     export default {
         name: "Search",
-        components: {EntryPreviewList},
+        components: {FilterSelect, EntryPreviewList},
         props: {
             init_clear: Boolean,
             show_results: {
@@ -37,7 +40,8 @@
         data() {
             return {
                 searching: false,
-                keyword: ''
+                keyword: '',
+                type_filter: null
             }
         },
         created() {
@@ -62,7 +66,14 @@
             }
         },
         computed: {
-            ...mapGetters({entries: ENTRIES_SEARCH})
+            ...mapGetters({entries: ENTRIES_SEARCH}),
+            filtered_entries() {
+                if(!this.type_filter) {
+                    return this.entries
+                } else {
+                    return this.$_.filter(this.entries, e => e.type_slug === this.type_filter.value)
+                }
+            }
         },
         methods: {
             getEntries() {

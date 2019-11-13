@@ -1,4 +1,4 @@
-import {EDIT, NO_DOMAIN, TITLE, VISITOR} from "../lib/consts";
+import {NO_DOMAIN, TITLE, VISITOR} from "../lib/consts";
 import {entries_domain_filter} from "../lib/search";
 import {object_list2options} from "../lib/options";
 
