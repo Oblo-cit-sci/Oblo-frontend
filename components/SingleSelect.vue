@@ -159,7 +159,9 @@
                 return item.type === "category"
             },
             emitUp(item) {
-                console.log("emitUp", item)
+                //console.log("emitUp", item)
+                if(item === undefined)
+                    item = null
                 // todo maybe just one emit?
                 // but item might already be string, ...
                 const event = this.emit_only_value ? (typeof item === "string" ? item : item.value) : item
