@@ -94,7 +94,7 @@
             //console.log("LA created", this.value)
             let item_type = this.aspect.items;
             // todo. list, are extended lists by user, not select lists
-            // todo the item should not be just a string
+            // todo the item should not be just a string, DEPRECATED
             if (typeof (item_type) === "string") {
                 switch (item_type) {
                     case "str":
@@ -159,16 +159,21 @@
                 return get_aspect_vue_component(aspect, this.mode)
             },
             add_value(n = 1) {
+                console.log("adding val")
                 let additional = []
                 for (let i = 0; i < n; i++) {
+                    //additional.push(packed_aspect_calced_value(this.item_aspect))
                     additional.push(packed_aspect_default_value(this.item_aspect))
+
                     this.value_change(this.$_.concat(this.value, additional))
-                    this.goto_delayed_last_page(this.goto_panel_id())
-                    setTimeout(() => {
-                        if (!this.is_simple) {
-                            this.panelState = [(this.value.length + this.pagination_tresh - 1) % this.pagination_tresh]
-                        }
-                    }, 20)
+                    if (n === 1) {
+                        this.goto_delayed_last_page(this.goto_panel_id())
+                        setTimeout(() => {
+                            if (!this.is_simple) {
+                                this.panelState = [(this.value.length + this.pagination_tresh - 1) % this.pagination_tresh]
+                            }
+                        }, 20)
+                    }
                 }
                 this.new_edit.push(this.value.length);
             },
@@ -263,13 +268,18 @@
                 return !(itemtype === "str" || itemtype === "int" || itemtype === "float");
             },
             titles() {
-                //console.log("calling titles")
+                console.log("calling titles")
                 let titles = new Array(this.value.length)
                 let titleAspectName = this.item_aspect.attr.titleAspect
                 let simple_type = SIMPLE_TYPE.includes(this.item_aspect.type)
+                let item_name = this.aspect.attr.itemname
 
                 if (!simple_type && !titleAspectName && this.item_aspect.type === COMPOSITE) {
                     titleAspectName = this.item_aspect.components[0].name
+                    console.log("title Aspect name:", titleAspectName)
+                    if(!item_name) {
+                        item_name = titleAspectName
+                    }
                     //console.log("setting titleAspectName to first component")
                 }
 
@@ -284,7 +294,7 @@
                         console.log(`list no value! index:${i}`)
                         titles[i] = ""
                     } else {
-                        const index_name = () => this.aspect.attr.itemname + " " + (parseInt(i) + 1).toString()
+                        const index_name = () => item_name + " " + (parseInt(i) + 1).toString()
                         if (simple_type) {
                             titles[i] = this.value[i].value
                         } else if (this.aspect.attr.indexTitle) {

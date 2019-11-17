@@ -16,6 +16,7 @@
     import {EDIT} from "../lib/consts";
     import EntryNavMixin from "./EntryNavMixin";
     import {ENTRIES_SAVE_ENTRY} from "../lib/store_consts";
+    import {store_draft_numbers} from "../lib/browser_db";
 
     const ENTRY_TYPE = "etype";
     const DRAFT = "draft";
@@ -63,7 +64,7 @@
                 let uuid = null
                 if (type === ENTRY_TYPE) {
                     const entry = create_entry(this.$store, value)
-                    this.$localForage.setItem("draft_numbers", this.$store.getters["draft_numbers"])
+                    store_draft_numbers(this.$localForage, this.$store)
                     this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
                     uuid = entry.uuid
                 } else {

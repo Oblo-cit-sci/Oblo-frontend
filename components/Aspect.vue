@@ -1,6 +1,6 @@
 <template lang="pug">
   div(
-    :class="[{ composite: (aspect.type === 'composite' && mode === 'edit'),  disabled: disable}]"
+    :class="[{ composite: (aspect.type === 'composite' && mode === 'edit'),  disabled: disable, invisible_class: invisible_class}]"
     :id="aspect_id" v-if="visible && has_value")
     Title_Description(
       v-if="show_title_description"
@@ -83,14 +83,8 @@
                 console.log("has no value", this.aspect.name)
                 this.use_regular = true
             } else {
-                console.log(this.aspect.name, this.value)
                 this.use_regular = this.value.hasOwnProperty("regular") ? this.value.regular : true
-                console.log("UR", this.use_regular)
             }
-            //this.use_regular = this.has_value && this.value.hasOwnProperty("regular") ? this.value.regular : true
-            /*if (!this.has_value) {
-                this.update_value(aspect_raw_default_value(this.aspect))
-            }*/
         },
         // boolean check is not required, since "false" is the default
         computed: {
@@ -116,6 +110,7 @@
                 }
             },
             value: function () {
+                //console.log(this.aspect.name)
                 if (this.aspect.attr.IDAspect) {
                     let this_uuid = aspect_loc_uuid(this.aspect_loc)
                     let entry = this.$store.getters[ENTRIES_GET_ENTRY](this_uuid)
@@ -123,28 +118,31 @@
                     return {value: index + 1}
                 }
                 if (this.aspect.attr.ref_value) {
-                    if (this.aspect.attr.ref_update === "create") {
-                        // console.log("ref-create", this.aspect_loc)
-                        let value = this.$store.getters[ENTRIES_VALUE](this.aspect_loc)
-                        // console.log("stored value", value, "default", aspect_default_value(this.$store, this.aspect))
-                        // console.log(value !== aspect_default_value(this.$store, this.aspect))
-                        if (!this.$_.isEqual(value, aspect_default_value(this.aspect))) {
-                            return value
-                        }
-                    }
-                    // console.log("calculating and setting")
+                    // GRAB REF
                     let aspect_location = complete_aspect_loc(
                         aspect_loc_uuid(this.aspect_loc),
                         aspect_loc_str2arr(this.aspect.attr.ref_value),
                         this.extra[LIST_INDEX])
                     // console.log("value ref,  ",this.aspect.name, aspect_location)
                     let value = this.$store.getters[ENTRIES_VALUE](aspect_location)
-                    // console.log("Aspect.value ref_value: received value", value)
-                    // console.log("my stored value", this.$store.getters["entries/value"](this.aspect_loc))
+                    if(value === undefined) {
+                        console.log("broken ref!")
+                        value = aspect_default_value(this.aspect)
+                    }
+
                     if (value.hasOwnProperty(REGULAR)) {
                         delete value[REGULAR]
                     }
-                    this.update_value(value.value)
+
+                    if (this.aspect.attr.ref_update === "create") {
+                        // console.log("ref-create", this.aspect_loc)
+                        let stored_value = this.$store.getters[ENTRIES_VALUE](this.aspect_loc)
+                        if (this.$_.isEqual(stored_value, aspect_default_value(this.aspect))) {
+                            this.update_value(value.value)
+                        }
+                    } else {
+                        this.update_value(value.value)
+                    }
                     return value
                 } else if (this.aspect.attr.ref_length) { // this is for lists
                     let location_array = complete_aspect_loc(aspect_loc_uuid(this.aspect_loc), aspect_loc_str2arr(this.aspect.attr.ref_length))
@@ -225,6 +223,10 @@
                 } else {
                     return this.aspect.attr.alternative.attr.hasOwnProperty("value")
                 }
+            },
+            invisible_class() {
+                //console.log(this.aspect.name "inv", this.aspect.attr.hasOwnProperty("visible") )
+                return this.aspect.attr.hasOwnProperty("visible") ? (!this.aspect.attr.visible) : false
             }
         },
         methods: {
@@ -248,9 +250,13 @@
                 return get_aspect_vue_component(aspect, mode, this.extra)
             },
             update_value(event) {
-                //console.log("aspect.update_value", event, "reg ?", this.use_regular)
-                if(this.aspect.name) {
-                    console.log(this.aspect.name)
+                //console.log("saving", event, this.aspect.name)
+                if(this.aspect.attr.ref_value) {
+                    let stored_value = this.$store.getters[ENTRIES_VALUE](this.aspect_loc)
+                    if(stored_value.value === event) {
+                        //console.log("not emitting ref_value", event, stored_value)
+                        return
+                    }
                 }
                 if (this.has_alternative && this.use_regular) {
                     if (this.aspect.attr.hasOwnProperty("alternative-activate-on-value")) {
@@ -299,4 +305,7 @@
     padding-left: 5px;
   }
 
+  .invisible_class {
+    display: none
+  }
 </style>

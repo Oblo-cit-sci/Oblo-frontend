@@ -12,7 +12,12 @@
           clearable
           :loading="searching")
     v-row
-      FilterSelect(filter_name="Entrytype" store_getter="search/conaining_types_options" :selection.sync="type_filter")
+      v-col.col-md-6.col-xs-12(cols="12")
+        FilterSelect(
+          filter_name="Entrytype"
+          store_getter="search/conaining_types_options"
+          :selection.sync="type_filter"
+          placeholder="All types")
     EntryPreviewList(v-if="show_results" :entries="filtered_entries" :preview_options="preview_options")
 </template>
 

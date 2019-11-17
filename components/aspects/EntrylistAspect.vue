@@ -58,8 +58,7 @@
     import {aspect_loc_str} from "../../lib/aspect";
     import {no_duplicate_texts} from "../../lib/options";
     import ListPagination from "../ListPagination";
-
-
+    import {store_draft_numbers, store_entries} from "../../lib/browser_db";
 
     export default {
         name: "EntrylistAspect",
@@ -137,9 +136,11 @@
                     uuid: this.$store.getters[EDIT_UUID],
                     aspect_loc: index_aspect_loc,
                 })
+                store_draft_numbers(this.$localForage, this.$store)
                 // saving the child, setting refrences, saving this entry(title),
                 this.$store.dispatch(ENTRIES_SAVE_CHILD_N_REF, {child: child, aspect_loc: index_aspect_loc})
                 this.value_change(this.$_.concat(this.value, [child.uuid]))
+                store_entries(this.$localForage, this.$store)
                 this.to_entry(child.uuid, EDIT)
                 this.goto_delayed_last_page()
             },
