@@ -117,6 +117,7 @@
         // {icon: 'home', title: 'Home', to: '/'},
         // {icon: 'note_add', title: 'Create Entry', to: '/CreateEntry'},
         {icon: "reorder", title: "My Entries", to: "/personalentries"},
+        //{icon: "computer", title: "Create notes", to: "/EntrytypeNotes"},
         {icon: 'person', title: 'Profile', to: '/profile'},
         // {icon: 'computer', title: 'Tests', to: '/Tests'},
         // {icon: 'flip_to_front', title: 'Entrytypes', to: '/CreateEntrytype'},

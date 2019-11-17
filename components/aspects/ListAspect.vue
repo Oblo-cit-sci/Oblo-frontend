@@ -274,8 +274,8 @@
                 }
 
                 // condition hell should go if we apply json schema properly, this is all fallback stuff
-                if (!titleAspectName) {
-                    console.log(`json schema error. no titleAspectName in list with name ${this.aspect.name}`)
+                if (!(simple_type || titleAspectName)) {
+                    console.log(`json schema error. no simple aspect or titleAspectName in list with name ${this.aspect.name}`)
                     return this.$_.fill([], "", 0, this.value.length)
                 }
 
