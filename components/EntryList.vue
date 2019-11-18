@@ -64,12 +64,16 @@
             },
             type_name(entry) {
                 // todo this should be a getter. and eventually include a fetch,... never know...
+                console.log("DEPRACATED METHOD!")
+                return  this.$store.getters.entry_type(entry)
+                /*
                 let entry_type = this.$store.getters.entry_type(entry.type_slug)
                 if(entry_type) {
                   return entry_type.title
                 }  else {
                   return entry.type_slug
                 }
+                 */
             }
         }
     }

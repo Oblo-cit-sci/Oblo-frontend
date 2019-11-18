@@ -58,6 +58,7 @@
             },
             // could be in some mixin
             set_of_types() {
+                //console.log("num entries", this.entries.length)
                 return Array.from(
                     new Set(
                         this.$_.map(

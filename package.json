@@ -1,6 +1,6 @@
 {
   "name": "LICCI",
-  "version": "0.6.16F",
+  "version": "0.6.16G",
   "description": "Local Indicators of Climate change impacts",
   "author": "Ramin S",
   "private": true,
@@ -11,7 +11,7 @@
     "generate": "nuxt generate",
     "doc": "jsdoc lib/*.js",
     "python":  "python3 -m http.server",
-    "localtest": "nuxt build --spa --pwa; rm -r app; mkdir app; cp -r dist/* app; python3 -m http.server",
+    "localtest": "nuxt build --spa --pwa; rm -r appbeta; mv dist appbeta; python3 -m http.server",
     "to_eovalue": "rm -r eovalue; mv -r eovalue eovalue;",
     "move2server" : "node util/move2server.js",
     "upload": "sudo python3 /media/ra/hd/projects/2019/liccibackend/helpers/app_upload.py"
