@@ -152,15 +152,10 @@ export const getters = {
     return global_entry_types
   },
   entry_type(state) {
-
     return (entry_or_type_slug) => {
-      console.log("ETYP?", entry_or_type_slug, entry_or_type_slug.type_slug)
-      console.log(state.entry_types)
       if(typeof  entry_or_type_slug === "object") {
-        console.log("OBJ")
         return state.entry_types.get(entry_or_type_slug.type_slug)
       } else {
-        console.log("TS")
         return state.entry_types.get(entry_or_type_slug)
       }
     }
