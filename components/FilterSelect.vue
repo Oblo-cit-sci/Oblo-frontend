@@ -38,7 +38,7 @@
         },
         computed: {
             options() {
-                return this.$store.getters[this.store_getter]
+                return this.$store.getters[this.store_getter]()
             }
         },
         methods: {},

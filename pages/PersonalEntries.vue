@@ -1,9 +1,8 @@
 <template lang="pug">
   v-container(fluid)
     v-row
-      v-col.col-md-6.col-xs-12(v-for="config in Object.values(filter_configs)" cols="12")
+      v-col.col-md-6.col-xs-12(v-for="(config, index) in Object.values(filter_configs)" cols="12"  :key="index")
         FilterSelect(v-bind="config" :selection.sync="filter_values[config.name]")
-
     EntryPreviewList(:entries="entries" :include_domain_tag="all_domains")
 </template>
 
@@ -12,11 +11,11 @@
     import EntryPreviewList from "../components/EntryPreviewList";
     import {ENTRIES_ALL_ENTRIES_ARRAY} from "../lib/store_consts";
     import FilterSelect from "../components/FilterSelect";
-    import {entries_domain_filter2} from "../lib/search";
-    import {NO_DOMAIN} from "../lib/consts";
+    import {LICCI_PARTNERS, NO_DOMAIN} from "../lib/consts";
     import {domain_filter_options, entrytype_filter_options} from "../lib/filter_option_consts";
     import FilterMixin from "../components/FilterMixin";
     import {pack_value} from "../lib/aspect";
+    import {get_release_mode} from "../lib/util";
     /*
     v-flex(
         v-for="o in filter_options" :key="o.value")
@@ -50,14 +49,16 @@
         }
     ];
 
-    const all_filters = [domain_filter_options, entrytype_filter_options]
+    let all_filters = [domain_filter_options, entrytype_filter_options]
 
     export default {
         name: "PersonalEntries",
         components: {FilterSelect, EntryPreviewList, Entrypreview},
         mixins: [FilterMixin],
         data() {
-            let filter = all_filters.map(f => (f.name))
+            if (get_release_mode(this.$store) === LICCI_PARTNERS) {
+                all_filters = all_filters.filter(f => f.name !== "Domain")
+            }
             return {
                 filter_configs: this.$_.mapKeys(all_filters, v => v.name),
                 filter_values: {},

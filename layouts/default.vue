@@ -46,7 +46,6 @@
           <p class="package-version"> v{{version}} </p>
         </v-list-item>
       </v-list>
-
     </v-navigation-drawer>
     <v-app-bar
       :clipped-left="clipped"
@@ -63,7 +62,6 @@
             <v-list-item-title class="headline">
               {{domain_title}}
             </v-list-item-title>
-
           </v-list-item-content>
         </v-list-item>
       </v-toolbar-title>
@@ -274,7 +272,7 @@
   }
 
   .package-version {
-    color: rgb(189, 189, 189);
-    font-size: 12px;
+    color: rgb(109, 109, 109);
+    font-size: 14px;
   }
 </style>

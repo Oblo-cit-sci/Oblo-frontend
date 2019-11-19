@@ -12,7 +12,7 @@
           clearable
           :loading="searching")
     v-row
-      v-col.col-md-6.col-xs-12(v-for="config in Object.values(filter_configs)" cols="12")
+      v-col.col-md-6.col-xs-12(v-for="(config, index) in Object.values(filter_configs)" cols="12"  :key="index")
         FilterSelect(v-bind="config" :selection.sync="filter_values[config.name]")
     EntryPreviewList(v-if="show_results" :entries="filtered_entries" :preview_options="preview_options")
 </template>
