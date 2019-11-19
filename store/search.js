@@ -17,14 +17,5 @@ export const mutations = {
 export const getters = {
   get_entries(state) {
     return Array.from(state.entries.values())
-  },
-  conaining_types_options(state, getters, rootState, rootGetters) {
-    const types = new Set()
-    for (let entry of state.entries.values()) {
-      types.add(entry.type_slug)
-    }
-    return Array.from(types).map(type => {
-      return {value: type, text: rootGetters.type_name(type)}
-    })
   }
 }

@@ -1,5 +1,5 @@
 <template lang="pug">
-  div {{filter_name}}
+  div {{name}}
     div(v-if="select_multiple")
       div
     div(v-else)
@@ -14,7 +14,7 @@
         name: "FilterSelect",
         components: {SingleSelect},
         props: {
-            filter_name: {
+            name: {
                 type: String,
                 required: true
             },

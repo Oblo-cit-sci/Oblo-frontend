@@ -12,12 +12,8 @@
           clearable
           :loading="searching")
     v-row
-      v-col.col-md-6.col-xs-12(cols="12")
-        FilterSelect(
-          filter_name="Entrytype"
-          store_getter="search/conaining_types_options"
-          :selection.sync="type_filter"
-          placeholder="All types")
+      v-col.col-md-6.col-xs-12(v-for="config in Object.values(filter_configs)" cols="12")
+        FilterSelect(v-bind="config" :selection.sync="filter_values[config.name]")
     EntryPreviewList(v-if="show_results" :entries="filtered_entries" :preview_options="preview_options")
 </template>
 
@@ -28,10 +24,14 @@
     import {search_entries} from "../lib/client"
     import {ENTRIES_SEARCH, CLEAR_SEARCH} from "../lib/store_consts"
     import FilterSelect from "./FilterSelect";
+    import {pack_value} from "../lib/aspect";
+    import FilterMixin from "./FilterMixin";
+
 
     export default {
         name: "Search",
         components: {FilterSelect, EntryPreviewList},
+        mixins: [FilterMixin],
         props: {
             init_clear: Boolean,
             show_results: {
@@ -40,13 +40,20 @@
             },
             preview_options: {
                 type: Object
+            },
+            include_filters: {
+              type: Array,
+                default: () => []
             }
         },
         data() {
             return {
+                // TODO duplicate of personalE
+                filter_configs: this.$_.mapKeys(this.include_filters, v => v.name),
+                filter_values: {},
+                //
                 searching: false,
-                keyword: '',
-                type_filter: null
+                keyword: ''
             }
         },
         created() {
@@ -73,11 +80,15 @@
         computed: {
             ...mapGetters({entries: ENTRIES_SEARCH}),
             filtered_entries() {
-                if(!this.type_filter) {
-                    return this.entries
-                } else {
-                    return this.$_.filter(this.entries, e => e.type_slug === this.type_filter.value)
+                let result_entries = this.entries
+                for (let filter of Object.values(this.filter_configs)) {
+                    //todo we select the value, because select is not just emitting value up, clean this!
+                    const filter_value = (this.filter_values[filter.name] || pack_value(null)).value
+                    if (filter_value) {
+                        result_entries = this[filter.filter_method](result_entries, filter_value)
+                    }
                 }
+                return result_entries
             }
         },
         methods: {

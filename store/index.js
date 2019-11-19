@@ -234,6 +234,21 @@ export const getters = {
   },
   domain_options(state) {
     return object_list2options(state.domains, TITLE)
+  },
+  entrytype_options(state, getters) {
+    return object_list2options(getters.entry_types_array, "title", "slug")
+  },
+  entry_types_array(state) {
+    return Array.from(state.entry_types.values())
+  },
+  conaining_types_options(state, getters) {
+    const types = new Set()
+    for (let entry of state.entries.entries.values()) {
+      types.add(entry.type_slug)
+    }
+    return Array.from(types).map(type => {
+      return {value: type, text: getters.type_name(type)}
+    })
   }
 };
 
