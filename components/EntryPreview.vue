@@ -34,22 +34,27 @@
 
 <script>
 
-    import {app_version, license_icon} from "../lib/client"
     import EntryNavMixin from "./EntryNavMixin";
-    import {ENTRIES_HAS_ENTRY, ENTRIES_USER_RIGHTS, TYPE_NAME} from "../lib/store_consts";
+    import {
+        EDIT_UUID,
+        ENTRIES_HAS_ENTRY,
+        ENTRIES_SAVE_CHILD_N_REF,
+        TYPE_NAME
+    } from "../lib/store_consts";
     import {privacy_icon, printDate, static_file_path} from "../lib/util"
-    import {VIEW} from "../lib/consts"
+    import {EDIT, VIEW} from "../lib/consts"
     import MetaChips from "../components/MetaChips"
     import Taglist from "../components/Taglist"
-    import {get_proper_mode} from "../lib/entry"
+    import {create_entry, get_proper_mode} from "../lib/entry"
     import {CREATOR, entry_actor_relation} from "../lib/actors";
     import MapJumpMixin from "./MapJumpMixin";
     import EntryMixin from "./EntryMixin";
+    import PersistentStorageMixin from "./PersistentStorageMixin";
 
     export default {
         name: "Entrypreview",
         components: {MetaChips, Taglist},
-        mixins: [EntryNavMixin, MapJumpMixin, EntryMixin],
+        mixins: [EntryNavMixin, MapJumpMixin, EntryMixin, PersistentStorageMixin],
         props: {
             entry: {type: Object, required: true},
             show_date: {
@@ -86,6 +91,24 @@
                 if(this.entry.location){
                     this.$store.commit("map/goto_location", this.entry.location[0])
                 }
+            },
+            create_child_action() {
+                if (this.disabled)
+                    return
+                const index_aspect_loc = this.aspect_loc_for_index(this.value.length)
+                //console.log("index_aspect_loc", index_aspect_loc)
+                const child = create_entry(this.$store, this.item_type_slug, {}, {
+                    uuid: this.$store.getters[EDIT_UUID],
+                    aspect_loc: index_aspect_loc,
+                })
+
+                // saving the child, setting refrences, saving this entry(title),
+                this.$store.dispatch(ENTRIES_SAVE_CHILD_N_REF, {child: child, aspect_loc: index_aspect_loc})
+                this.value_change(this.$_.concat(this.value, [child.uuid]))
+                this.persist_draft_numbers()
+                this.persist_entries()
+                this.to_entry(child.uuid, EDIT)
+                this.goto_delayed_last_page()
             }
         },
         computed: {
@@ -139,6 +162,10 @@
             },
             tags() {
               return this.entry.tags || null
+            },
+            additional_actions() {
+                const etype = this.entry_type.meta.preview_actions
+
             }
         }
     }

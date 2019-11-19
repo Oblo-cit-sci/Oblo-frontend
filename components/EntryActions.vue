@@ -54,16 +54,15 @@
         ENTRIES_SET_EDIT_CLEAN
     } from "../lib/store_consts";
     import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
-    import {export_data} from "../lib/import_export";
     import {CREATOR, entry_actor_relation} from "../lib/actors";
     import {get_release_mode} from "../lib/util";
-    import {store_entries} from "../lib/browser_db";
     import EntryMixin from "./EntryMixin";
+    import PersistentStorageMixin from "./PersistentStorageMixin";
 
     export default {
         name: "EntryActions",
         components: {DecisionDialog, Paginate},
-        mixins: [EntryNavMixin, TriggerSnackbarMixin, EntryMixin],
+        mixins: [EntryNavMixin, TriggerSnackbarMixin, EntryMixin, PersistentStorageMixin],
         props: {
             mode: {
                 type: String // view, create edit
@@ -175,7 +174,7 @@
                 //save_entry(this.$store, this.entry)
 
                 this.$store.dispatch(ENTRIES_SAVE_ENTRY)
-                store_entries(this.$localForage, this.$store)
+                this.persist_entries()
                 this.ok_snackbar("Entry saved")
                 this.back()
             },

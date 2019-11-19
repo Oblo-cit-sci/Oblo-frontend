@@ -58,12 +58,12 @@
     import {aspect_loc_str} from "../../lib/aspect";
     import {no_duplicate_texts} from "../../lib/options";
     import ListPagination from "../ListPagination";
-    import {store_draft_numbers, store_entries} from "../../lib/browser_db";
+    import PersistentStorageMixin from "../PersistentStorageMixin";
 
     export default {
         name: "EntrylistAspect",
         components: {DecisionDialog, ListPagination},
-        mixins: [AspectMixin, EntryNavMixin, ListMixin],
+        mixins: [AspectMixin, EntryNavMixin, ListMixin, PersistentStorageMixin],
         data() {
             return {
                 item_type_slug: this.aspect.items,
@@ -131,16 +131,16 @@
                 if (this.disabled)
                     return
                 const index_aspect_loc = this.aspect_loc_for_index(this.value.length)
-                //console.log("index_aspect_loc", index_aspect_loc)
                 const child = create_entry(this.$store, this.item_type_slug, {}, {
                     uuid: this.$store.getters[EDIT_UUID],
                     aspect_loc: index_aspect_loc,
                 })
-                store_draft_numbers(this.$localForage, this.$store)
                 // saving the child, setting refrences, saving this entry(title),
                 this.$store.dispatch(ENTRIES_SAVE_CHILD_N_REF, {child: child, aspect_loc: index_aspect_loc})
                 this.value_change(this.$_.concat(this.value, [child.uuid]))
-                store_entries(this.$localForage, this.$store)
+                this.persist_draft_numbers()
+                this.persist_entries()
+                // goto
                 this.to_entry(child.uuid, EDIT)
                 this.goto_delayed_last_page()
             },
@@ -153,6 +153,7 @@
             open_item(item) {
                 if (this.disabled)
                     return
+                this.persist_entries()
                 this.$store.dispatch(ENTRIES_SAVE_ENTRY)
                 if (!this.has_entry(item.uuid))
                     this.fetch_and_nav(item.uuid)

@@ -14,9 +14,9 @@
     import SingleSelect from "./SingleSelect";
     import {create_entry} from "../lib/entry";
     import {EDIT} from "../lib/consts";
-    import EntryNavMixin from "./EntryNavMixin";
     import {ENTRIES_SAVE_ENTRY} from "../lib/store_consts";
-    import {store_draft_numbers} from "../lib/browser_db";
+    import EntryNavMixin from "./EntryNavMixin";
+    import PersistentStorageMixin from "./PersistentStorageMixin";
 
     const ENTRY_TYPE = "etype";
     const DRAFT = "draft";
@@ -24,7 +24,7 @@
     export default {
         name: "EntryCreateList",
         components: {SingleSelect},
-        mixins: [EntryNavMixin],
+        mixins: [EntryNavMixin, PersistentStorageMixin],
         props: {
             entrytypes_entries: {
                 type: Array,
@@ -64,7 +64,7 @@
                 let uuid = null
                 if (type === ENTRY_TYPE) {
                     const entry = create_entry(this.$store, value)
-                    store_draft_numbers(this.$localForage, this.$store)
+                    this.persist_draft_numbers()
                     this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
                     uuid = entry.uuid
                 } else {
