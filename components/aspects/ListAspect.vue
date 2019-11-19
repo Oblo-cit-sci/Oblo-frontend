@@ -268,7 +268,6 @@
                 return !(itemtype === "str" || itemtype === "int" || itemtype === "float");
             },
             titles() {
-                console.log("calling titles")
                 let titles = new Array(this.value.length)
                 let titleAspectName = this.item_aspect.attr.titleAspect
                 let simple_type = SIMPLE_TYPE.includes(this.item_aspect.type)

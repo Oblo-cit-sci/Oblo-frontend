@@ -96,7 +96,7 @@ export const mutations = {
     ld.remove(select.value, (_, index) => index === final_loc[1])
   },
   set_edit_dirty(state) {
-    if(!state.edit.local) {
+    if (!state.edit.local) {
       state.edit.local = {}
     }
     state.edit.local.dirty = true
@@ -138,7 +138,7 @@ export const mutations = {
     //remove_entry_loc
   },
   update_app_version(state, uuid = state.edit.uuid) {
-    state.entries.get(uuid).app_version =  app_version()
+    state.entries.get(uuid).app_version = app_version()
   }
 }
 
@@ -332,6 +332,9 @@ export const getters = {
       }
       return all_tags
     }
+  },
+  all_entries_of_type(state, getters) {
+    return type_slug => getters.all_entries_array().filter(e => e.type_slug === type_slug)
   }
 }
 
