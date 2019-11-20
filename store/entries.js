@@ -220,9 +220,6 @@ export const getters = {
       return select_aspect_loc(state, aspect_loc)
     }
   },
-  delete_ref_value(state, {uuid, child_uuid}) {
-
-  },
   get_recursive_entries(state, getters) {
     return (uuid = state.edit.uuid) => {
       const entry = getters.get_entry(uuid)

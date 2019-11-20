@@ -51,7 +51,7 @@
     import EntryNavMixin from "../EntryNavMixin";
     import ListMixin from "../ListMixin";
     import {
-        EDIT_UUID,
+        EDIT_UUID, ENTRIES_DELETE_ENTRY,
         ENTRIES_EDIT_DELETE_REF_CHILD,
         ENTRIES_GET_ENTRY, ENTRIES_SAVE_CHILD_N_REF, ENTRIES_SAVE_ENTRY, ENTRY_TYPE,
     } from "../../lib/store_consts";
@@ -121,6 +121,7 @@
                     let index = parseInt(action.id)
                     let child_uuid = this.value[index]
                     this.$store.commit(ENTRIES_EDIT_DELETE_REF_CHILD, child_uuid)
+                    this.$store.commit(ENTRIES_DELETE_ENTRY, child_uuid)
                     const mod_value = this.$_.filter(this.value, (_, i) => {
                         return i !== index
                     })
