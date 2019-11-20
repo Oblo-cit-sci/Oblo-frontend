@@ -70,9 +70,10 @@
                 }
             },
             selected(val) {
-                //console.log("TS Aspect", val)
                 this.dialogOpen = false;
-                this.emit(val.value)
+                if(val) {
+                    this.emit(val.value)
+                }
             },
             emit(val) {
                 //console.log("emit", val)

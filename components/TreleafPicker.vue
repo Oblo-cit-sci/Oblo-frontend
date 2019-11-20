@@ -1,7 +1,8 @@
 <template lang="pug">
   .treeselect
     div
-    v-list
+      v-btn(icon small @click="$emit('selected', null)") x
+    v-list(v-if="has_selection")
       v-list-item(v-for="(node, index) of selection", :key="node.title")
         v-list-item-content
           v-list-item-title {{node.name}}
@@ -96,6 +97,9 @@
             has_level_names() {
                 return this.level_names && this.$_.size(this.act_options) > 0;
             },
+            has_selection() {
+                return this.selection.length > 0
+            },
             act_level() {
                 return this.selection.length - 1
             },
@@ -123,16 +127,16 @@
         },
         methods: {
             select(value) {
-                this.selection.push(value);
+                this.selection.push(value)
             },
             remove(index) {
-                this.selection = this.selection.slice(0, index);
+                this.selection = this.selection.slice(0, index)
             },
             has_both() {
-                return this.selection.length > 0 && this.act_options.length > 0;
+                return this.selection.length > 0 && this.act_options.length > 0
             },
             done() {
-                this.$emit("selected", this.$_.last(this.selection));
+                this.$emit("selected", this.$_.last(this.selection))
                 if (!this.keep_selection)
                     this.selection = [];
             },

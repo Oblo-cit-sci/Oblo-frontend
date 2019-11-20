@@ -46,7 +46,6 @@
           <p class="package-version"> v{{version}} </p>
         </v-list-item>
       </v-list>
-
     </v-navigation-drawer>
     <v-app-bar
       :clipped-left="clipped"
@@ -57,27 +56,16 @@
       <v-toolbar-title class="pa-0">
         <v-list-item class="pl-0">
           <v-list-item-avatar class="header-avatar" @click="goTo" :src="domain_icon" width="55" height="auto" tile>
-              <v-img contain :src="domain_icon"></v-img>
+            <v-img contain :src="domain_icon"></v-img>
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title class="headline">
               {{domain_title}}
             </v-list-item-title>
-
           </v-list-item-content>
         </v-list-item>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-
-      <v-btn icon :loading="connecting">
-        <!-- nuxt to="/" -->
-        <v-icon>{{connected_icon}}</v-icon>
-      </v-btn>
-      <v-btn icon>
-        <!-- nuxt to="/profile" -->
-        <v-icon>{{userrole_icon}}</v-icon>
-      </v-btn>
-
       <div v-if="logged_in">
         <v-btn v-for="(item, i) in header_items"
                :key="i"
@@ -112,11 +100,24 @@
     import {initialize} from "../lib/client"
     import {get_release_mode, static_file_path} from "../lib/util";
 
+    /*
+          <v-btn icon :loading="connecting">
+        <!-- nuxt to="/" -->
+        <v-icon>{{connected_icon}}</v-icon>
+      </v-btn>
+      <v-btn icon>
+        <!-- nuxt to="/profile" -->
+        <v-icon>{{userrole_icon}}</v-icon>
+      </v-btn>
+*/
+
+
     // commented out the dev menu items
     const all_items = [
         // {icon: 'home', title: 'Home', to: '/'},
         // {icon: 'note_add', title: 'Create Entry', to: '/CreateEntry'},
         {icon: "reorder", title: "My Entries", to: "/personalentries"},
+        //{icon: "computer", title: "Create notes", to: "/EntrytypeNotes"},
         {icon: 'person', title: 'Profile', to: '/profile'},
         // {icon: 'computer', title: 'Tests', to: '/Tests'},
         // {icon: 'flip_to_front', title: 'Entrytypes', to: '/CreateEntrytype'},
@@ -145,31 +146,31 @@
         components: {GlobalSnackbar, Footer},
         created() {
             //console.log("layout created. initialized?", this.initialized)
-            if(!this.initialized) {
+            if (!this.initialized) {
                 console.log("layout. initializing")
                 initialize(this.$axios, this.$store, this.$localForage)
             }
         },
         data() {
             return {
-              version: pkg.version,
-              isDev: this.$store.app.context.isDev,
-              drawer: false,
-              clipped: false,
-              miniVariant: false,
-              title: this.$store.getters[DOMAIN] ? this.$store.state.domain.title : HOME,
-              header_items: header_items
+                version: pkg.version,
+                isDev: this.$store.app.context.isDev,
+                drawer: false,
+                clipped: false,
+                miniVariant: false,
+                title: this.$store.getters[DOMAIN] ? this.$store.state.domain.title : HOME,
+                header_items: header_items
             }
         },
         methods: {
-          goTo() {
-            let domain = this.$store.getters[DOMAIN]
-            if(this.$route.path !== domain.to){
-              this.$router.push({
-                path: domain.to ? domain.to : '/'
-              })
+            goTo() {
+                let domain = this.$store.getters[DOMAIN]
+                if (this.$route.path !== domain.to) {
+                    this.$router.push({
+                        path: domain.to ? domain.to : '/'
+                    })
+                }
             }
-          }
         },
         computed: {
             initialized() {
@@ -271,7 +272,7 @@
   }
 
   .package-version {
-    color: rgb(189, 189, 189);
-    font-size: 12px;
+    color: rgb(109, 109, 109);
+    font-size: 14px;
   }
 </style>

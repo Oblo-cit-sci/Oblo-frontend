@@ -108,15 +108,15 @@
     import MetaChips from "../../../components/MetaChips"
     import {privacy_icon, static_file_path} from "../../../lib/util"
     import MissingAspectsNotice from "../../../components/MissingAspectsNotice";
-    import {store_entries} from "../../../lib/browser_db";
     import TriggerSnackbarMixin from "../../../components/TriggerSnackbarMixin";
+    import PersistentStorageMixin from "../../../components/PersistentStorageMixin";
 
     /**
      * @vue-data {Object} entry_type - Initial counter's value
      */
     export default {
         name: "uuid",
-        mixins: [EntryNavMixin, EntryMixin, TriggerSnackbarMixin],
+        mixins: [EntryNavMixin, EntryMixin, TriggerSnackbarMixin, PersistentStorageMixin],
         components: {
             MissingAspectsNotice,
             DecisionDialog,
@@ -172,13 +172,19 @@
               this.$store.commit("entries/update_app_version")
                 this.ok_snackbar("Updated")
             }
+
+            for(let aspect of this.entry_type.content.aspects) {
+                //console.log(aspect.name)
+                //let missing = !this.entry.aspects_values.hasOwnProperty(aspect.name)
+                //console.log(missing)
+            }
         },
         beforeRouteLeave(to, from, next) {
             // BEWARE, this is not called when navigating from one entry to another
             if (!this.delete_entry) {
                 this.$store.dispatch(ENTRIES_SAVE_ENTRY)
             }
-            store_entries(this.$localForage, this.$store)
+            this.persist_entries()
             next()
             /*
             if (this.entry.local.dirty) {

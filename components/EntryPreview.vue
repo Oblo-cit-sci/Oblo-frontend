@@ -30,31 +30,43 @@
           v-btn(small text outlined @click="goto_location" v-if="has_action_goto_location")
             v-icon mdi-map-marker
           v-btn(small text outlined v-if="to_download" @click="download()") Download
+          v-btn(small text outlined color="green"
+            v-for="act in additional_actions"
+            :key="act.key"
+            @click="additional_action(act.key)") {{act.name}}
+
 </template>
 
 <script>
 
-    import {app_version, license_icon} from "../lib/client"
     import EntryNavMixin from "./EntryNavMixin";
-    import {ENTRIES_HAS_ENTRY, ENTRIES_USER_RIGHTS, TYPE_NAME} from "../lib/store_consts";
+    import {
+        EDIT_UUID,
+        ENTRIES_HAS_ENTRY,
+        ENTRIES_SAVE_CHILD_N_REF, ENTRIES_VALUE,
+        TYPE_NAME
+    } from "../lib/store_consts";
     import {privacy_icon, printDate, static_file_path} from "../lib/util"
-    import {VIEW} from "../lib/consts"
+    import {EDIT, ENTRY, VIEW} from "../lib/consts"
     import MetaChips from "../components/MetaChips"
     import Taglist from "../components/Taglist"
-    import {get_proper_mode} from "../lib/entry"
+    import {create_entry, get_proper_mode} from "../lib/entry"
     import {CREATOR, entry_actor_relation} from "../lib/actors";
     import MapJumpMixin from "./MapJumpMixin";
     import EntryMixin from "./EntryMixin";
+    import PersistentStorageMixin from "./PersistentStorageMixin";
+    import ChildCreateMixin from "./ChildCreateMixin";
+    import {aspect_loc_str2arr, loc_prepend} from "../lib/aspect";
 
     export default {
         name: "Entrypreview",
         components: {MetaChips, Taglist},
-        mixins: [EntryNavMixin, MapJumpMixin, EntryMixin],
+        mixins: [EntryNavMixin, MapJumpMixin, EntryMixin, PersistentStorageMixin, ChildCreateMixin],
         props: {
             entry: {type: Object, required: true},
             show_date: {
-              type: Boolean,
-              default: true
+                type: Boolean,
+                default: true
             },
             show_meta_aspects: {
                 type: Boolean,
@@ -83,9 +95,34 @@
                 return privacy_icon(privacy)
             },
             goto_location() {
-                if(this.entry.location){
+                if (this.entry.location) {
                     this.$store.commit("map/goto_location", this.entry.location[0])
                 }
+            },
+            create_child_action() {
+                if (this.disabled)
+                    return
+                const index_aspect_loc = this.aspect_loc_for_index(this.value.length)
+                //console.log("index_aspect_loc", index_aspect_loc)
+                const child = create_entry(this.$store, this.item_type_slug, {}, {
+                    uuid: this.$store.getters[EDIT_UUID],
+                    aspect_loc: index_aspect_loc,
+                })
+
+                // saving the child, setting refrences, saving this entry(title),
+                this.$store.dispatch(ENTRIES_SAVE_CHILD_N_REF, {child: child, aspect_loc: index_aspect_loc})
+                this.value_change(this.$_.concat(this.value, [child.uuid]))
+                this.persist_draft_numbers()
+                this.persist_entries()
+                this.to_entry(child.uuid, EDIT)
+                this.goto_delayed_last_page()
+            },
+            additional_action(action_key) {
+                const preview_action = this.entry_type.content.meta.preview_actions[action_key]
+                // DUPLICATE BELOW
+                const action_aspect_loc = aspect_loc_str2arr(preview_action.aspect)
+                const aspect_loc = loc_prepend(ENTRY, this.entry.uuid, action_aspect_loc)
+                this.create_child(aspect_loc, preview_action.child_type_slug)
             }
         },
         computed: {
@@ -93,7 +130,7 @@
                 return printDate(this.entry.creation_datetime)
             },
             proper_mode() {
-              return(get_proper_mode(this.$store, this.entry))
+                return get_proper_mode(this.$store, this.entry)
             },
             to_download() {
                 return this.outdated
@@ -111,7 +148,7 @@
                 return public_name
             },
             show_image() {
-              return this.entry.image
+                return this.entry.image
             },
             show_tags() {
                 return true
@@ -119,8 +156,8 @@
             meta_aspects() {
                 let result = []
                 result.push({icon: privacy_icon(this.entry.privacy), name: this.entry.privacy})
-                result.push({name: "License: "+ this.entry.license})
-                if(this.include_domain_tag){
+                result.push({name: "License: " + this.entry.license})
+                if (this.include_domain_tag) {
                     result.push({name: this.$store.getters["entries/domain"](this.entry.uuid)})
                 }
                 return result
@@ -129,7 +166,7 @@
                 return this.$store.getters[TYPE_NAME](this.entry.type_slug)
             },
             default_action_icon() {
-                if(this.proper_mode === VIEW)
+                if (this.proper_mode === VIEW)
                     return "fa fa-angle-right"
                 else
                     return "fa fa-edit"
@@ -138,7 +175,21 @@
                 return static_file_path(this.$store, 'images/entry_images/' + this.entry.image)
             },
             tags() {
-              return this.entry.tags || null
+                return this.entry.tags || null
+            },
+            additional_actions() {
+                const pw_actions = this.entry_type.content.meta.preview_actions
+                const show_actions = []
+                for (let pw_action_key in pw_actions) {
+                    const pw_action = pw_actions[pw_action_key]
+                    const action_aspect_loc = aspect_loc_str2arr(pw_action.aspect)
+                    const aspect_loc = loc_prepend(ENTRY, this.entry.uuid, action_aspect_loc)
+                    const value = this.$store.getters[ENTRIES_VALUE](aspect_loc).value
+                    if (value.length > 0) {
+                        show_actions.push(Object.assign(this.$_.clone(pw_action), {key: pw_action.key}))
+                    }
+                }
+                return show_actions
             }
         }
     }

@@ -32,12 +32,11 @@
               v-on:remove_value="remove_value($event)"
               v-on:move="move($event)")
     MinMaxIndicators(
-      v-if="!readOnly"
+      v-if="!readOnly && !disabled"
       :aspect="aspect"
       :length="this.value.length"
       :min="this.min"
       :max="this.max")
-
     .inline(v-if="adding_allowed && !fixed_length")
       v-btn(:disabled="!more_allowed" @click="add_value()" :color="requieres_more_color") Add {{item_name}}
         v-icon(right) add
@@ -55,7 +54,7 @@
     import AspectMixin from "./AspectMixin";
     import Aspect from "../Aspect";
     import ListMixin from "../ListMixin";
-    import {INDEX, PRIVATE, PUBLIC, EDIT, VALUE} from "../../lib/consts";
+    import {INDEX, SIMPLE_TYPE, EDIT, COMPOSITE} from "../../lib/consts";
     import {
         aspect_loc_str,
         packed_aspect_default_value,
@@ -67,7 +66,6 @@
     import MinMaxIndicators from '../list_components/MinMaxIndicators'
 
     import ListPagination from "../ListPagination";
-    import {get_codes_as_options} from "../../lib/options";
     import goTo from 'vuetify/lib/services/goto'
     import {recursive_unpack} from "../../lib/util";
 
@@ -96,7 +94,7 @@
             //console.log("LA created", this.value)
             let item_type = this.aspect.items;
             // todo. list, are extended lists by user, not select lists
-            // todo the item should not be just a string
+            // todo the item should not be just a string, DEPRECATED
             if (typeof (item_type) === "string") {
                 switch (item_type) {
                     case "str":
@@ -161,16 +159,21 @@
                 return get_aspect_vue_component(aspect, this.mode)
             },
             add_value(n = 1) {
+                console.log("adding val")
                 let additional = []
                 for (let i = 0; i < n; i++) {
+                    //additional.push(packed_aspect_calced_value(this.item_aspect))
                     additional.push(packed_aspect_default_value(this.item_aspect))
+
                     this.value_change(this.$_.concat(this.value, additional))
-                    this.goto_delayed_last_page(this.goto_panel_id())
-                    setTimeout(() => {
-                        if (!this.is_simple) {
-                            this.panelState = [(this.value.length + this.pagination_tresh - 1) % this.pagination_tresh]
-                        }
-                    }, 20)
+                    if (n === 1) {
+                        this.goto_delayed_last_page(this.goto_panel_id())
+                        setTimeout(() => {
+                            if (!this.is_simple) {
+                                this.panelState = [(this.value.length + this.pagination_tresh - 1) % this.pagination_tresh]
+                            }
+                        }, 20)
+                    }
                 }
                 this.new_edit.push(this.value.length);
             },
@@ -265,43 +268,55 @@
                 return !(itemtype === "str" || itemtype === "int" || itemtype === "float");
             },
             titles() {
-                //console.log("calling titles")
                 let titles = new Array(this.value.length)
-                //console.log("init", titles)
-                if (this.aspect.attr.indexTitle || this.aspect.attr.force_panels) { // indexTitle or non-complex panels
-                    for (let i = 0; i < titles.length; i++) {
-                        titles[i] = this.aspect.attr.itemname + " " + (parseInt(i) + 1).toString()
+                let titleAspectName = this.item_aspect.attr.titleAspect
+                let simple_type = SIMPLE_TYPE.includes(this.item_aspect.type)
+                let item_name = this.aspect.attr.itemname
+
+                if (!simple_type && !titleAspectName && this.item_aspect.type === COMPOSITE) {
+                    titleAspectName = this.item_aspect.components[0].name
+                    //console.log("title Aspect name:", titleAspectName)
+                    if(!item_name) {
+                        item_name = titleAspectName
                     }
-                } else {
-                    let titleAspectName = this.item_aspect.attr.titleAspect || this.item_aspect.components[0].name
-                    // condition hell should go if we apply json schema properly, this is all fallback stuff
-                    if (!titleAspectName) {
-                        console.log("json schema error. no titleAspectName in list with name ${this.aspect.name}")
-                        return this.$_.fill([], "", 0, this.value.length)
-                    }
-                    for (let i = 0; i < titles.length; i++) {
-                        if (!this.value[i]) {
-                            console.log(`list no value! index:${i}`)
-                            titles[i] = ""
+                    //console.log("setting titleAspectName to first component")
+                }
+
+                // condition hell should go if we apply json schema properly, this is all fallback stuff
+                if (!(simple_type || titleAspectName)) {
+                    console.log(`json schema error. no simple aspect or titleAspectName in list with name ${this.aspect.name}`)
+                    return this.$_.fill([], "", 0, this.value.length)
+                }
+
+                for (let i = 0; i < titles.length; i++) {
+                    if (!this.value[i]) {
+                        console.log(`list no value! index:${i}`)
+                        titles[i] = ""
+                    } else {
+                        const index_name = () => item_name + " " + (parseInt(i) + 1).toString()
+                        if (simple_type) {
+                            titles[i] = this.value[i].value
+                        } else if (this.aspect.attr.indexTitle) {
+                            titles[i] = index_name()
+                        } else if (!this.value[i].value[titleAspectName]) {
+                            console.log(`list no component value! index:${i}, component:${titleAspectName}`)
                         } else {
-                            if (!this.value[i].value[titleAspectName]) {
-                                console.log(`list no component value! index:${i}, component:${titleAspectName}`)
-                            } else {
-                                titles[i] = this.value[i].value[titleAspectName].value
-                                //console.log(titles[i], "from ", this.value[i], this.aspect.items.components)
-                                // TODO here we should check if there is a ref_value and grab that
-                                if(Array.isArray(titles[i])) {
-                                    titles[i] = recursive_unpack(this.value[i].value[titleAspectName].value).join(", ")
-                                }
+                            titles[i] = this.value[i].value[titleAspectName].value
+                            //console.log(titles[i], "from ", this.value[i], this.aspect.items.components)
+                            // TODO here we should check if there is a ref_value and grab that
+                            if (Array.isArray(titles[i])) {
+                                titles[i] = recursive_unpack(this.value[i].value[titleAspectName].value).join(", ")
                             }
+                        }
+                        if (titles[i] === "" || titles[i] === null) {
+                            titles[i] = index_name()
                         }
                     }
                 }
-                //console.log(">", titles)
                 return titles
             },
             adding_allowed() {
-                if(this.mode === EDIT) {
+                if (this.mode === EDIT) {
                     return true
                 } else {
                     return this.is_public

@@ -1,4 +1,4 @@
-import {EDIT, NO_DOMAIN, TITLE, VISITOR} from "../lib/consts";
+import {NO_DOMAIN, TITLE, VISITOR} from "../lib/consts";
 import {entries_domain_filter} from "../lib/search";
 import {object_list2options} from "../lib/options";
 
@@ -60,6 +60,7 @@ export const mutations = {
       state.entry_types = new Map(data.entryTemplates)
       state.domains = data.domains
       console.log("store backup_init, setting init")
+      console.log("backup etypes", state.entry_types)
       state.initialized = true
     }
   },
@@ -73,7 +74,7 @@ export const mutations = {
   // should be set with {message: str, ok: boolean}
   snackbar(state, snackbar) {
     //console.log("snack", snackbar)
-    state.snackbar = Object.assign(snackbar, {trigger:true})
+    state.snackbar = Object.assign(snackbar, {trigger: true})
   },
   snackbar_reset(state) {
     state.snackbar.trigger = false
@@ -137,7 +138,9 @@ export const getters = {
     return state.user.user_data.registered_name
   },
   get_code(state) {
-    return (code_name) => {return (state.codes[code_name])}
+    return (code_name) => {
+      return (state.codes[code_name])
+    }
   },
   // entry-types
   global_entry_types_as_array(state) {
@@ -152,7 +155,7 @@ export const getters = {
   },
   entry_type(state) {
     return (entry_or_type_slug) => {
-      if(typeof  entry_or_type_slug === "object") {
+      if (typeof entry_or_type_slug === "object") {
         return state.entry_types.get(entry_or_type_slug.type_slug)
       } else {
         return state.entry_types.get(entry_or_type_slug)
@@ -232,7 +235,26 @@ export const getters = {
     return state.domains
   },
   domain_options(state) {
-    return object_list2options(state.domains, TITLE)
+    return () => {
+      return object_list2options(state.domains, TITLE)
+    }
+  },
+  entrytype_options(state, getters) {
+    return object_list2options(getters.entry_types_array, "title", "slug")
+  },
+  entry_types_array(state) {
+    return Array.from(state.entry_types.values())
+  },
+  conaining_types_options(state, getters) {
+    return () => {
+      const types = new Set()
+      for (let entry of state.entries.entries.values()) {
+        types.add(entry.type_slug)
+      }
+      return Array.from(types).map(type => {
+        return {value: type, text: getters.type_name(type)}
+      })
+    }
   }
 };
 

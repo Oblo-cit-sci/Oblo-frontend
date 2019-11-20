@@ -36,7 +36,7 @@ export default {
   },
   methods: {
     value_change(event) {
-      this.$emit('update_value', event);
+      this.$emit('update_value', event)
     },
     toString(value) {
       return value || ""

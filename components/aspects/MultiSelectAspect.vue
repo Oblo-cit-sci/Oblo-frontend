@@ -4,7 +4,7 @@
       :items="options"
       v-model="selection"
       :readonly="readOnly"
-      single-line outlined chips multiple)
+      single-line outlined chips multiple clearable)
   div(v-else)
     v-chip(
         v-for="(item, index) in selection" :key="index"
@@ -17,7 +17,6 @@
     import AspectMixin from "./AspectMixin";
     import SelectMixin from "./SelectMixin";
 
-    // //@change="change($emit)"
     export default {
         name: "MultiselectAspect",
         mixins: [AspectMixin, SelectMixin],
@@ -25,18 +24,17 @@
             return {init: true}
         },
         created() {
-            //this.set_selection()
             this.set_selection()
         },
         methods: {
             set_selection() {
-                //console.log(this.value)
                 if (this.value !== null) {
                     this.selection = this.$_.filter(this.options, (o) => {
                         return this.value.indexOf(o.value) > -1
                     })
+                } else {
+                    this.init = false
                 }
-                //console.log("Set sel", this.value)
             },
             toString(value) {
                 return value.join(", ") || ""
@@ -44,7 +42,7 @@
         },
         watch: {
             selection() {
-                //console.log("multi-select", this.selection)
+                //console.log("multi-select", this.selection, this.init)
                 if(this.init) {
                     this.init = false
                     return

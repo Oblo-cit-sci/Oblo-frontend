@@ -1,7 +1,8 @@
 <template lang="pug">
   v-container(fluid)
     v-row
-      FilterSelect(v-bind="domain_filter_options" :selection.sync="selected_domain", :init_selection="$store.getters.domain")
+      v-col.col-md-6.col-xs-12(v-for="(config, index) in Object.values(filter_configs)" cols="12"  :key="index")
+        FilterSelect(v-bind="config" :selection.sync="filter_values[config.name]")
     EntryPreviewList(:entries="entries" :include_domain_tag="all_domains")
 </template>
 
@@ -10,9 +11,12 @@
     import EntryPreviewList from "../components/EntryPreviewList";
     import {ENTRIES_ALL_ENTRIES_ARRAY} from "../lib/store_consts";
     import FilterSelect from "../components/FilterSelect";
-    import {entries_domain_filter2} from "../lib/search";
-    import {NO_DOMAIN} from "../lib/consts";
-    import {domain_filter_options} from "../lib/filter_option_consts";
+    import {LICCI_PARTNERS, NO_DOMAIN} from "../lib/consts";
+    import {domain_filter_options, entrytype_filter_options} from "../lib/filter_option_consts";
+    import FilterMixin from "../components/FilterMixin";
+    import {pack_value} from "../lib/aspect";
+    import {get_release_mode} from "../lib/util";
+
     /*
     v-flex(
         v-for="o in filter_options" :key="o.value")
@@ -46,47 +50,41 @@
         }
     ];
 
-
+    let all_filters = [domain_filter_options, entrytype_filter_options]
 
     export default {
         name: "PersonalEntries",
         components: {FilterSelect, EntryPreviewList, Entrypreview},
+        mixins: [FilterMixin],
         data() {
+            if (get_release_mode(this.$store) === LICCI_PARTNERS) {
+                all_filters = all_filters.filter(f => f.name !== "Domain")
+            }
             return {
-                filter_options: options,
-                filter: ["all"],
-                selected_domain: undefined // dont change to null, v-select will set it undefined  when cleared
+                filter_configs: this.$_.mapKeys(all_filters, v => v.name),
+                filter_values: {},
             }
         },
         computed: {
             all_domains() {
-              return this.selected_domain === undefined || this.selected_domain.value === NO_DOMAIN
+                const value = this.filter_values["Domain"]
+                return value === undefined || value === NO_DOMAIN
             },
             entries() {
                 let result_entries = this.$store.getters[ENTRIES_ALL_ENTRIES_ARRAY]()
-                if(!this.all_domains)
-                  result_entries = entries_domain_filter2(result_entries, this.selected_domain.value, this.$store.getters.entrytypes)
-                /* this is the roles filter... not in use atm
-                if (this.filter.length !== 1) {
-                    if (this.$_.last(this.filter) === "all") {
-                        this.filter = ["all"]
-                        //console.log(this.$store.state.entries)
-                    } else {
-                        if (this.filter[0] === "consoleall") {
-                            this.filter.shift()
-                        }
+                for (let filter of all_filters) {
+                    //todo we select the value, because select is not just emitting value up, clean this!
+                    const filter_value = (this.filter_values[filter.name] || pack_value(null)).value
+                    if (filter_value) {
+                        result_entries = this[filter.filter_method](result_entries, filter_value)
                     }
                 }
-                 */
                 return result_entries
             },
             roles() {
                 this.$_.map(options, (o) => {
                     return o.value
                 });
-            },
-            domain_filter_options() {
-                return domain_filter_options
             }
         }
     }

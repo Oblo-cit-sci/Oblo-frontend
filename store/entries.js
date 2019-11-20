@@ -139,7 +139,7 @@ export const mutations = {
     //remove_entry_loc
   },
   update_app_version(state, uuid = state.edit.uuid) {
-    state.entries.get(uuid).app_version =  app_version()
+    state.entries.get(uuid).app_version = app_version()
   }
 }
 
@@ -220,9 +220,6 @@ export const getters = {
       }
       return select_aspect_loc(state, aspect_loc)
     }
-  },
-  delete_ref_value(state, {uuid, child_uuid}) {
-
   },
   get_recursive_entries(state, getters) {
     return (uuid = state.edit.uuid) => {
@@ -333,14 +330,21 @@ export const getters = {
       }
       return all_tags
     }
+  },
+  all_entries_of_type(state, getters) {
+    return type_slug => getters.all_entries_array().filter(e => e.type_slug === type_slug)
   }
 }
 
 // dispatch
 export const actions = {
   set_entry_value(context, data) {
-    console.log("setting valud", data)
     context.commit("_set_entry_value", data)
+    if(context.state.edit) {
+      if (aspect_loc_uuid(data.aspect_loc) === context.getters.edit_uuid) {
+        context.commit("set_edit_dirty")
+      }
+    }
     context.commit("set_dirty",aspect_loc_uuid(data.aspect_loc))
     // context.commit("update")
   },

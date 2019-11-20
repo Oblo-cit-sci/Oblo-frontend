@@ -6,7 +6,7 @@
     v-divider
     EntryCreateList(
       :entrytypes_entries="entrytypes_entries")
-    Search(:init_clear="true")
+    Search(:init_clear="true" :include_filters="filters")
 </template>
 
 <script>
@@ -17,6 +17,7 @@
     import {ENTRYTYPES_OF_DOMAIN, DOMAIN, DOMAIN_BY_NAME, SET_DOMAIN} from "../../../lib/store_consts";
     import {get_release_mode} from "../../../lib/util";
     import {LICCI_PARTNERS} from "../../../lib/consts";
+    import {entrytype_filter_options} from "../../../lib/filter_option_consts";
 
     export default {
         name: "index",
@@ -35,6 +36,9 @@
             },
             domain_data() {
                 return this.$store.getters[DOMAIN_BY_NAME](this.$route.params.domain)
+            },
+            filters() {
+                return [entrytype_filter_options]
             }
         },
         methods: {},

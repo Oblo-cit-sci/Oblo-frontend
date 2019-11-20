@@ -1,6 +1,6 @@
 <template lang="pug">
   div(
-    :class="[{ composite: (aspect.type === 'composite' && mode === 'edit'),  disabled: disable}]"
+    :class="[{ composite: (aspect.type === 'composite' && mode === 'edit'),  disabled: disable, invisible_class: invisible_class}]"
     :id="aspect_id" v-if="visible && has_value")
     Title_Description(
       v-if="show_title_description"
@@ -25,7 +25,7 @@
       :mode="real_mode"
       v-on:update_value="update_value($event)"
       v-on:entryAction="$emit('entryAction',$event)")
-    div(v-if="!use_regular && aspect.attr.alternative !== undefined")  // ...alternative:  savety check
+    div(v-if="!use_regular && aspect.attr.alternative !== undefined")
       Title_Description(v-bind="title_description(aspect.attr.alternative)")
       component(
         :is="aspectComponent(aspect.attr.alternative)"
@@ -73,19 +73,16 @@
         },
         data() {
             return {
-                use_regular: null // leave it null, to catch create triggering watcher
+                use_regular: true // leave it null, to catch create triggering watcher
             }
         },
         created() {
             // todo no idea, why the shortcut below does not work
             if (!this.has_value) {
-                this.use_regular = this.value.hasOwnProperty("regular") ? this.value.regular : true
-            } else {
+                console.log("has no value", this.aspect.name)
                 this.use_regular = true
-            }
-            //this.use_regular = this.has_value && this.value.hasOwnProperty("regular") ? this.value.regular : true
-            if (!this.has_value) {
-                this.update_value(aspect_raw_default_value(this.aspect))
+            } else {
+                this.use_regular = this.value.hasOwnProperty("regular") ? this.value.regular : true
             }
         },
         // boolean check is not required, since "false" is the default
@@ -101,10 +98,12 @@
                 //console.log("condition_fail?", this.aspect, this.aspect.name, this.condition)
                 // todo this getting of the value, could mayeb also go into the helper...
                 if (this.aspect.attr.hasOwnProperty("condition")) {
+                    //console.log("condition", this.aspect.name, this.extra[LIST_INDEX])
                     let aspect_location = complete_aspect_loc(
                         aspect_loc_uuid(this.aspect_loc),
                         aspect_loc_str2arr(this.aspect.attr.condition.aspect),
                         this.extra[LIST_INDEX])
+                    //console.log("val", aspect_location)
                     let condition_value = this.$store.getters[ENTRIES_VALUE](aspect_location)
                     return !check_condition_value(condition_value, this.aspect.attr.condition)
                 } else {
@@ -112,6 +111,7 @@
                 }
             },
             value: function () {
+                //console.log(this.aspect.name)
                 if (this.aspect.attr.IDAspect) {
                     let this_uuid = aspect_loc_uuid(this.aspect_loc)
                     let entry = this.$store.getters[ENTRIES_GET_ENTRY](this_uuid)
@@ -119,35 +119,54 @@
                     return {value: index + 1}
                 }
                 if (this.aspect.attr.ref_value) {
-                    if (this.aspect.attr.ref_update === "create") {
-                        // console.log("ref-create", this.aspect_loc)
-                        let value = this.$store.getters[ENTRIES_VALUE](this.aspect_loc)
-                        // console.log("stored value", value, "default", aspect_default_value(this.$store, this.aspect))
-                        // console.log(value !== aspect_default_value(this.$store, this.aspect))
-                        if (!this.$_.isEqual(value, aspect_default_value(this.aspect))) {
-                            return value
-                        }
-                    }
-                    // console.log("calculating and setting")
+                    // GRAB REF
                     let aspect_location = complete_aspect_loc(
                         aspect_loc_uuid(this.aspect_loc),
                         aspect_loc_str2arr(this.aspect.attr.ref_value),
                         this.extra[LIST_INDEX])
                     // console.log("value ref,  ",this.aspect.name, aspect_location)
                     let value = this.$store.getters[ENTRIES_VALUE](aspect_location)
-                    console.log("Aspect.value ref_value: received value", value)
-                    // console.log("my stored value", this.$store.getters["entries/value"](this.aspect_loc))
+                    if(value === undefined) {
+                        console.log("broken ref!")
+                        value = aspect_default_value(this.aspect)
+                    }
+
                     if (value.hasOwnProperty(REGULAR)) {
                         delete value[REGULAR]
                     }
-                    this.update_value(value.value)
+
+                    if (this.aspect.attr.ref_update === "create") {
+                        // console.log("ref-create", this.aspect_loc)
+                        let stored_value = this.$store.getters[ENTRIES_VALUE](this.aspect_loc)
+                        if (this.$_.isEqual(stored_value, aspect_default_value(this.aspect))) {
+                            this.update_value(value.value)
+                        }
+                    } else {
+                        this.update_value(value.value)
+                    }
                     return value
                 } else if (this.aspect.attr.ref_length) { // this is for lists
                     let location_array = complete_aspect_loc(aspect_loc_uuid(this.aspect_loc), aspect_loc_str2arr(this.aspect.attr.ref_length))
-                    this.extra["ref_length"] = this.$store.getters[ENTRIES_VALUE](location_array).value.length
+
+                    // USES lists or ints
+                    const length_value = this.$store.getters[ENTRIES_VALUE](location_array).value
+                    // todo use the aspect_descr to find out if its a list or an int
+                    if(Array.isArray(length_value)) {
+                        this.extra["ref_length"] = length_value.length
+                    } else {
+                        this.extra["ref_length"] = parseInt(length_value)
+                    }
+
                     return this.$store.getters[ENTRIES_VALUE](this.aspect_loc)
                 } else {
-                    return this.$store.getters[ENTRIES_VALUE](this.aspect_loc)
+                    let value = this.$store.getters[ENTRIES_VALUE](this.aspect_loc)
+                    if(value === undefined) {
+                        console.log("undefined", this.aspect)
+                        let raw__new_value = aspect_raw_default_value(this.aspect)
+                        this.update_value(raw__new_value)
+                        return pack_value(raw__new_value)
+                    }
+                    return value
                 }
             },
             show_title_description() {
@@ -163,16 +182,13 @@
                 return !this.disable || !this.aspect.attr.hide_on_disabled
             },
             real_mode() {
-                if (this.aspect.attr.ref_value) {
+                if (this.aspect.attr.ref_value || this.fixed_value) {
                     return VIEW
                 }
                 if (this.aspect.attr.mode !== undefined) {
                     return this.aspect.attr.mode
                 } else
                     return this.mode
-            },
-            aspect_label() {
-                return label(this.aspect)
             },
             regular_value_text() {
                 return this.aspect.attr["alternative-true"] || "regular value"
@@ -181,8 +197,10 @@
                 return this.aspect.attr["alternative-false"] || "alternative value"
             },
             alt_mode() {
-                //console.log(this.aspect)
-                return this.aspect.attr.alternative.attr.mode || this.mode
+                if (this.fixed_value)
+                    return VIEW
+                else
+                    return this.aspect.attr.alternative.attr.mode || this.mode
             },
             disable() {
                 return this.condition_fail || this.aspect.attr.disable
@@ -200,6 +218,17 @@
             aspect_id() {
                 return aspect_loc_str(this.$_.tail(this.aspect_loc))
             },
+            fixed_value() {
+                if (this.use_regular) {
+                    return this.aspect.attr.hasOwnProperty("value")
+                } else {
+                    return this.aspect.attr.alternative.attr.hasOwnProperty("value")
+                }
+            },
+            invisible_class() {
+                //console.log(this.aspect.name "inv", this.aspect.attr.hasOwnProperty("visible") )
+                return this.aspect.attr.hasOwnProperty("visible") ? (!this.aspect.attr.visible) : false
+            }
         },
         methods: {
             title_description(aspect) {
@@ -211,15 +240,25 @@
                     }
                 }
                 return {
-                    title: this.extra.no_title ? "" : this.aspect_label,
+                    title: this.extra.no_title ? "" : this.aspect_label(aspect),
                     description: aspect.description || ""
                 }
+            },
+            aspect_label(aspect) {
+                return label(aspect)
             },
             aspectComponent(aspect, mode) {
                 return get_aspect_vue_component(aspect, mode, this.extra)
             },
             update_value(event) {
-                //console.log("aspect.update_value", event, "reg ?", this.use_regular)
+                //console.log("saving", event, this.aspect.name)
+                if(this.aspect.attr.ref_value) {
+                    let stored_value = this.$store.getters[ENTRIES_VALUE](this.aspect_loc)
+                    if(stored_value.value === event) {
+                        //console.log("not emitting ref_value", event, stored_value)
+                        return
+                    }
+                }
                 if (this.has_alternative && this.use_regular) {
                     if (this.aspect.attr.hasOwnProperty("alternative-activate-on-value")) {
                         if (event === this.aspect.attr["alternative-activate-on-value"]) {
@@ -253,7 +292,6 @@
                         this.update_value(aspect_raw_default_value(this.aspect.attr.alternative))
                     }
                 } else {
-                    console.log("RED -> default")
                     this.update_value(aspect_raw_default_value(this.aspect))
                 }
             }
@@ -268,4 +306,7 @@
     padding-left: 5px;
   }
 
+  .invisible_class {
+    display: none
+  }
 </style>

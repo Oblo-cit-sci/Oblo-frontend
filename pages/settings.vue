@@ -43,12 +43,12 @@
     import {ENTRIES_SAVE_ENTRY, USER_KEY} from "../lib/store_consts";
     import {get_release_mode} from "../lib/util";
     import {LICCI_PARTNERS} from "../lib/consts";
-    import {store_user_key} from "../lib/browser_db";
+    import PersistentStorageMixin from "../components/PersistentStorageMixin";
 
     export default {
         name: "settings",
         components: {TextShort, DecisionDialog, LoadFileButton, Aspect},
-        mixins: [TriggerSnackbarMixin],
+        mixins: [TriggerSnackbarMixin, PersistentStorageMixin],
         data() {
             return {
                 dialog_data: {
@@ -83,7 +83,7 @@
                 }).then(res => {
                     // TODO the whole thing is not super elegant. stored in vuex on key, but in browser only on save...
                     this.snackbar(res.data.status, res.data.msg)
-                    store_user_key(this.$localForage, this.$store)
+                    this.persist_user_key()
 
                     if (res.data.status) {
                         this.$router.push("/")

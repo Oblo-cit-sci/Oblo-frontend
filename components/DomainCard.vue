@@ -1,5 +1,5 @@
 <template lang="pug">
-    v-card(class="mb-10" outlined :width="550"  :to="domain_url" nuxt :ripple="false" @click.native="setDomain()")
+    v-card(class="mb-10" outlined :width="550" @click="goto_domain(domain)" :ripple="false")
         v-img(:src="domain_image" max-height="auto")
             v-card-title(class="align-end fill-height shadow") {{domain.title}}
         v-card-text {{domain.description}}
@@ -16,10 +16,10 @@
             }
         },
         methods: {
-            setDomain() {
+            goto_domain(domain) {
                 this.$store.commit(SET_DOMAIN, this.domain)
-                //this.$localForage.setItem("domain", this.$store.state.domain, () => {})
-            }
+                this.$router.push("/domain/" + domain.value)
+            },
         },
         computed: {
             domain_url() {

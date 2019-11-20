@@ -51,20 +51,19 @@
     import EntryNavMixin from "../EntryNavMixin";
     import ListMixin from "../ListMixin";
     import {
-        EDIT_UUID,
+        EDIT_UUID, ENTRIES_DELETE_ENTRY,
         ENTRIES_EDIT_DELETE_REF_CHILD,
         ENTRIES_GET_ENTRY, ENTRIES_SAVE_CHILD_N_REF, ENTRIES_SAVE_ENTRY, ENTRY_TYPE,
     } from "../../lib/store_consts";
     import {aspect_loc_str} from "../../lib/aspect";
     import {no_duplicate_texts} from "../../lib/options";
     import ListPagination from "../ListPagination";
-
-
+    import PersistentStorageMixin from "../PersistentStorageMixin";
 
     export default {
         name: "EntrylistAspect",
         components: {DecisionDialog, ListPagination},
-        mixins: [AspectMixin, EntryNavMixin, ListMixin],
+        mixins: [AspectMixin, EntryNavMixin, ListMixin, PersistentStorageMixin],
         data() {
             return {
                 item_type_slug: this.aspect.items,
@@ -124,6 +123,7 @@
                     let index = parseInt(action.id)
                     let child_uuid = this.value[index]
                     this.$store.commit(ENTRIES_EDIT_DELETE_REF_CHILD, child_uuid)
+                    this.$store.commit(ENTRIES_DELETE_ENTRY, child_uuid)
                     const mod_value = this.$_.filter(this.value, (_, i) => {
                         return i !== index
                     })
@@ -134,7 +134,6 @@
                 if (this.disabled)
                     return
                 const index_aspect_loc = this.aspect_loc_for_index(this.value.length)
-                //console.log("index_aspect_loc", index_aspect_loc)
                 const child = create_entry(this.$store, this.item_type_slug, {}, {
                     uuid: this.$store.getters[EDIT_UUID],
                     aspect_loc: index_aspect_loc,
@@ -142,6 +141,9 @@
                 // saving the child, setting refrences, saving this entry(title),
                 this.$store.dispatch(ENTRIES_SAVE_CHILD_N_REF, {child: child, aspect_loc: index_aspect_loc})
                 this.value_change(this.$_.concat(this.value, [child.uuid]))
+                this.persist_draft_numbers()
+                this.persist_entries()
+                // goto
                 this.to_entry(child.uuid, EDIT)
                 this.goto_delayed_last_page()
             },
@@ -154,6 +156,7 @@
             open_item(item) {
                 if (this.disabled)
                     return
+                this.persist_entries()
                 this.$store.dispatch(ENTRIES_SAVE_ENTRY)
                 if (!this.has_entry(item.uuid))
                     this.fetch_and_nav(item.uuid)

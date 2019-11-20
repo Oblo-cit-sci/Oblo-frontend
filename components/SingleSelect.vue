@@ -94,18 +94,20 @@
                 viewStyle: CLEAR_LIST,
                 selected_item: null, // for v-select
                 view_options: VIEW_OPTIONS,
-                radioselect_test: "view"
+                radioselect_test: "view",
+                emit_only_value: false
             }
         },
         created() {
             //console.log("Selection create", this.selection)
+            this.emit_only_value = this.only_value
             if (this.selection) {
                 this.set_selected_item(false)
             }
             if (this.force_view) {
                 this.viewStyle = this.view_options[this.force_view];
                 if (this.viewStyle === RADIOGROUP) {
-                    this.only_value = true
+                    this.emit_only_value = true
                     this.set_selected_item(false)
                 }
                 if (!this.viewStyle) {
@@ -157,9 +159,12 @@
                 return item.type === "category"
             },
             emitUp(item) {
+                //console.log("emitUp", item)
+                if(item === undefined)
+                    item = null
                 // todo maybe just one emit?
                 // but item might already be string, ...
-                const event = this.only_value ? (typeof item === "string" ? item : item.value) : item
+                const event = this.emit_only_value ? (typeof item === "string" ? item : item.value) : item
                 //console.log("emit", item, this.select_sync)
                 if (this.select_sync) {
                     this.$emit('update:selection', event) // refactor to use the item
@@ -170,11 +175,11 @@
             },
             set_selected_item() {
                 //console.log("set_selected_item", this.selected_item, this.only_value, this.selection)
-                if (this.only_value) {
+                if (this.emit_only_value) {
                     this.selected_item = this.selection
                 } else {
                     if (typeof this.selection === "string") {
-                        this.only_value = true
+                        this.emit_only_value = true
                         this.selected_item = this.$_.find(this.options, (o) => {
                             return o.value === this.selection
                         })
@@ -232,7 +237,7 @@
   }
 
   .single_select {
-    min-height: 40px;
+    min-height: 35px;
   }
 
   .marked {
