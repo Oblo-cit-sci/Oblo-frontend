@@ -16,6 +16,7 @@
     import FilterMixin from "../components/FilterMixin";
     import {pack_value} from "../lib/aspect";
     import {get_release_mode} from "../lib/util";
+
     /*
     v-flex(
         v-for="o in filter_options" :key="o.value")

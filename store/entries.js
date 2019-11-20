@@ -342,8 +342,11 @@ export const getters = {
 export const actions = {
   set_entry_value(context, data) {
     context.commit("_set_entry_value", data)
-    context.commit("set_edit_dirty")
-    // context.commit("update")
+    if(context.state.edit) {
+      if (aspect_loc_uuid(data.aspect_loc) === context.getters.edit_uuid) {
+        context.commit("set_edit_dirty")
+      }
+    }
   },
   save_child_n_ref(context, {uuid, child, aspect_loc}) { // ENTRIES_SAVE_CHILD_N_REF
     if (!uuid) {
@@ -384,6 +387,7 @@ export const actions = {
     let aspect_loc = context.state.entries.get(uuid).refs.children[child_uuid]
     delete context.state.entries.get(uuid).refs.children[child_uuid]
     context.commit("_remove_entry_value_index", ld.concat([[ENTRY, uuid]], aspect_loc))
+    debugger
   },
   delete_entry(context, uuid) { // ENTRIES_DELETE_ENTRY
     const entry = context.state.entries.get(uuid)
