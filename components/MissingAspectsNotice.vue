@@ -79,7 +79,7 @@
             }
         },
         methods: {
-            validate_aspect(aspect, a_w_value, aspect_loc) {
+            validate_aspect(aspect, a_w_value, aspect_loc, item_index) {
                 //console.log(aspect.name, a_w_value, aspect, aspect_loc)
                 let required = true
                 if (aspect.attr.hasOwnProperty("required")) {
@@ -91,7 +91,7 @@
                 const raw_value = a_w_value.value
                 //console.log(raw_value)
                 if (a_w_value.hasOwnProperty("regular") && a_w_value.regular === false) {
-                    console.log("aking alternative for ", aspect.name)
+                    //console.log("asking alternative for ", aspect.name)
                     aspect = aspect.attr.alternative
                 }
                 //console.log("val", aspect.name, aspect_loc)
@@ -99,7 +99,7 @@
                 if (aspect.attr.IDAspect) {
                     return [OK]
                 }
-                if (disabled_by_condition(this.$store, aspect, aspect_loc)) {
+                if (disabled_by_condition(this.$store, aspect, aspect_loc, item_index)) {
                     return [OK]
                 }
                 if (!raw_value) {
@@ -117,7 +117,7 @@
                         for (let item_index in raw_value) {
                             const item = raw_value[item_index]
                             const item_loc = loc_append(aspect_loc, INDEX, item_index)
-                            const validation = this.validate_aspect(aspect.items, item || pack_value(null), item_loc)
+                            const validation = this.validate_aspect(aspect.items, item || pack_value(null), item_loc, item_index)
                             if(validation[0] !== OK) {
                                 incomplete_items.push(parseInt(item_index) + 1)
                             }
@@ -133,7 +133,7 @@
                     for (let component of aspect.components) {
                         const comp_loc = loc_append(aspect_loc, COMPONENT, component.name)
                         //console.log("-> comp", component.name, raw_value[component.name])
-                        let component_validations = this.validate_aspect(component, raw_value[component.name] || pack_value(null), comp_loc)
+                        let component_validations = this.validate_aspect(component, raw_value[component.name] || pack_value(null), comp_loc, item_index)
                         if(component_validations[0] !== OK) {
                             missing_components.push(label(component))
                         }

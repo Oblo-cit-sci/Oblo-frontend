@@ -99,10 +99,12 @@
                 //console.log("condition_fail?", this.aspect, this.aspect.name, this.condition)
                 // todo this getting of the value, could mayeb also go into the helper...
                 if (this.aspect.attr.hasOwnProperty("condition")) {
+                    //console.log("condition", this.aspect.name, this.extra[LIST_INDEX])
                     let aspect_location = complete_aspect_loc(
                         aspect_loc_uuid(this.aspect_loc),
                         aspect_loc_str2arr(this.aspect.attr.condition.aspect),
                         this.extra[LIST_INDEX])
+                    //console.log("val", aspect_location)
                     let condition_value = this.$store.getters[ENTRIES_VALUE](aspect_location)
                     return !check_condition_value(condition_value, this.aspect.attr.condition)
                 } else {

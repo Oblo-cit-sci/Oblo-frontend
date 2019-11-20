@@ -275,7 +275,7 @@
 
                 if (!simple_type && !titleAspectName && this.item_aspect.type === COMPOSITE) {
                     titleAspectName = this.item_aspect.components[0].name
-                    console.log("title Aspect name:", titleAspectName)
+                    //console.log("title Aspect name:", titleAspectName)
                     if(!item_name) {
                         item_name = titleAspectName
                     }

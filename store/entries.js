@@ -384,7 +384,6 @@ export const actions = {
     let aspect_loc = context.state.entries.get(uuid).refs.children[child_uuid]
     delete context.state.entries.get(uuid).refs.children[child_uuid]
     context.commit("_remove_entry_value_index", ld.concat([[ENTRY, uuid]], aspect_loc))
-    debugger
   },
   delete_entry(context, uuid) { // ENTRIES_DELETE_ENTRY
     const entry = context.state.entries.get(uuid)
