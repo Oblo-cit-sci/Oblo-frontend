@@ -22,6 +22,12 @@
               :src="entry_image"
               alt="item"
               contain)
+    div.ml-4
+      Aspect(v-for="aspect in shown_aspects"
+        :key="aspect.name"
+        :aspect="aspect"
+        mode="view"
+        :aspect_loc="aspect_locs(aspect)")
     div(v-if="show_botton_actions")
       v-divider(light)
       v-card-actions
@@ -47,7 +53,7 @@
         TYPE_NAME
     } from "../lib/store_consts";
     import {privacy_icon, printDate, static_file_path} from "../lib/util"
-    import {EDIT, ENTRY, VIEW} from "../lib/consts"
+    import {ASPECT, EDIT, ENTRY, VIEW} from "../lib/consts"
     import MetaChips from "../components/MetaChips"
     import Taglist from "../components/Taglist"
     import {create_entry, get_proper_mode} from "../lib/entry"
@@ -57,10 +63,12 @@
     import PersistentStorageMixin from "./PersistentStorageMixin";
     import ChildCreateMixin from "./ChildCreateMixin";
     import {aspect_loc_str2arr, loc_prepend} from "../lib/aspect";
+    import EntryAspectView from "./EntryAspectView";
+    import Aspect from "./Aspect";
 
     export default {
         name: "Entrypreview",
-        components: {MetaChips, Taglist},
+        components: {Aspect, EntryAspectView, MetaChips, Taglist},
         mixins: [EntryNavMixin, MapJumpMixin, EntryMixin, PersistentStorageMixin, ChildCreateMixin],
         props: {
             entry: {type: Object, required: true},
@@ -82,6 +90,10 @@
                 type: Array,
                 default: () => []
             }
+        /*show_aspects_names: {
+                type: Array,
+                default: () => []
+            }*/
         },
         methods: {
             goto() {
@@ -123,6 +135,10 @@
                 const action_aspect_loc = aspect_loc_str2arr(preview_action.aspect)
                 const aspect_loc = loc_prepend(ENTRY, this.entry.uuid, action_aspect_loc)
                 this.create_child(aspect_loc, preview_action.child_type_slug)
+            },
+            aspect_locs(aspect) {
+                //console.log([[ENTRY, this.entry.uuid], [ASPECT, aspect.name]])
+                return [[ENTRY, this.entry.uuid], [ASPECT, aspect.name]]
             }
         },
         computed: {
@@ -190,6 +206,10 @@
                     }
                 }
                 return show_actions
+            },
+            shown_aspects() {
+                const search_res = this.$store.getters["search/get_entry_aspects"](this.entry.uuid)
+                return this.$_.filter(this.entry_type.content.aspects, a => search_res.includes(a.name))
             }
         }
     }
