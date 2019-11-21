@@ -11,6 +11,7 @@
         :selection="selected_page"
         force_view="select"
         :only_value="true"
+        :clearable="false"
         :select_sync="false"
         color="blue"
         v-on:selection="page_selected($event)")

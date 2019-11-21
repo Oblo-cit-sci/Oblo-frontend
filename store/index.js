@@ -93,7 +93,7 @@ export const mutations = {
     state.initialized = false
   },
   update_draft_number(state, type_slug) {
-    state.draft_numbers[type_slug] = (state.draft_numbers[type_slug] || 1) + 1
+    state.draft_numbers[type_slug] = (state.draft_numbers[type_slug] || 0) + 1
   },
   connecting(state, conn) {
     state._connecting = conn
@@ -123,6 +123,15 @@ export const mutations = {
   },
   delete_domain(state, domain_name) {
     state.domains = ld.filter(state.domains, domain => domain.value !== domain_name)
+  },
+  update_draft_numbers(state, additional_draft_numbers) {
+    for(let etype in additional_draft_numbers) {
+      if(state.draft_numbers.hasOwnProperty(etype)) {
+        state.draft_numbers[etype] += additional_draft_numbers[etype]
+      } else {
+        state.draft_numbers[etype] = additional_draft_numbers[etype]
+      }
+    }
   }
 };
 
@@ -193,7 +202,7 @@ export const getters = {
   },
   draft_no(state) {
     return (type_slug) => {
-      return state.draft_numbers[type_slug] || 1
+      return state.draft_numbers[type_slug] || 0
     }
   },
   user_key(state) {

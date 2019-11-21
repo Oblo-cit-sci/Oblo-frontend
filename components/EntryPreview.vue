@@ -186,7 +186,7 @@
                     const aspect_loc = loc_prepend(ENTRY, this.entry.uuid, action_aspect_loc)
                     const value = this.$store.getters[ENTRIES_VALUE](aspect_loc).value
                     if (value.length > 0) {
-                        show_actions.push(Object.assign(this.$_.clone(pw_action), {key: pw_action.key}))
+                        show_actions.push(Object.assign(this.$_.clone(pw_action), {key: pw_action_key}))
                     }
                 }
                 return show_actions

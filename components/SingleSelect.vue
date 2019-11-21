@@ -22,7 +22,7 @@
             v-icon(color="grey lighten-1") mdi-login-variant
         v-divider
   div(v-else-if="view_select")
-    v-select(outlined single-line hide-details :multiple=false v-model="selected_item" :items="options" return-object clearable :placeholder="placeholder" :disabled="disabled" )
+    v-select(outlined single-line hide-details :multiple=false v-model="selected_item" :items="options" return-object :clearable="clearable" :placeholder="placeholder" :disabled="disabled" )
   div(v-else-if="view_autocomplete")
     v-autocomplete(outlined single-line v-model="selected_item" :items="options" clearable return-object)
   div(v-else-if="view_radiogroup")
@@ -87,6 +87,10 @@
             create: {
                 type: Boolean,
                 default: false
+            },
+            clearable: {
+                type: Boolean,
+                default: true
             }
         },
         data() {

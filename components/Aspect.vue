@@ -119,32 +119,41 @@
                     return {value: index + 1}
                 }
                 if (this.aspect.attr.ref_value) {
+                    //console.log("ref")
                     // GRAB REF
                     let aspect_location = complete_aspect_loc(
                         aspect_loc_uuid(this.aspect_loc),
                         aspect_loc_str2arr(this.aspect.attr.ref_value),
                         this.extra[LIST_INDEX])
                     // console.log("value ref,  ",this.aspect.name, aspect_location)
-                    let value = this.$store.getters[ENTRIES_VALUE](aspect_location)
-                    if(value === undefined) {
+                    let ref_value = this.$store.getters[ENTRIES_VALUE](aspect_location)
+                    //console.log("ref value", ref_value)
+                    if(ref_value === undefined) {
                         console.log("broken ref!")
-                        value = aspect_default_value(this.aspect)
+                        ref_value = aspect_default_value(this.aspect)
                     }
 
-                    if (value.hasOwnProperty(REGULAR)) {
-                        delete value[REGULAR]
+                    if (ref_value.hasOwnProperty(REGULAR)) {
+                        delete ref_value[REGULAR]
                     }
 
                     if (this.aspect.attr.ref_update === "create") {
-                        // console.log("ref-create", this.aspect_loc)
+                        //console.log("ref-create", this.aspect_loc)
                         let stored_value = this.$store.getters[ENTRIES_VALUE](this.aspect_loc)
+                        //console.log("stored", stored_value)
                         if (this.$_.isEqual(stored_value, aspect_default_value(this.aspect))) {
-                            this.update_value(value.value)
+                            //console.log("ref-create:updating")
+                            this.update_value(ref_value.value)
+                            return ref_value
+                        }
+                        else {
+                            return stored_value
                         }
                     } else {
-                        this.update_value(value.value)
+                        //console.log("updating")
+                        this.update_value(ref_value.value)
+                        return ref_value
                     }
-                    return value
                 } else if (this.aspect.attr.ref_length) { // this is for lists
                     let location_array = complete_aspect_loc(aspect_loc_uuid(this.aspect_loc), aspect_loc_str2arr(this.aspect.attr.ref_length))
 

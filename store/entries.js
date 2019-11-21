@@ -95,9 +95,9 @@ export const mutations = {
     const final_loc = ld.last(aspect_loc)
     ld.remove(select.value, (_, index) => index === final_loc[1])
   },
-  set_dirty(state, uuid) {
+  set_dirty(state, uuid = state.edit.uuid) {
     let entry = state.entries.get(uuid)
-    if(!entry.local) {
+    if (!entry.local) {
       entry.local = {}
     }
     entry.local.dirty = true
@@ -340,12 +340,7 @@ export const getters = {
 export const actions = {
   set_entry_value(context, data) {
     context.commit("_set_entry_value", data)
-    if(context.state.edit) {
-      if (aspect_loc_uuid(data.aspect_loc) === context.getters.edit_uuid) {
-        context.commit("set_edit_dirty")
-      }
-    }
-    context.commit("set_dirty",aspect_loc_uuid(data.aspect_loc))
+    context.commit("set_dirty", aspect_loc_uuid(data.aspect_loc))
     // context.commit("update")
   },
   save_child_n_ref(context, {uuid, child, aspect_loc}) { // ENTRIES_SAVE_CHILD_N_REF
@@ -386,27 +381,21 @@ export const actions = {
   },
   delete_ref_child(context, {uuid, child_uuid}) { // DELETE_REF_CHILD
     let aspect_loc = context.state.entries.get(uuid).refs.children[child_uuid]
+    console.log("child loc", aspect_loc)
     delete context.state.entries.get(uuid).refs.children[child_uuid]
     context.commit("_remove_entry_value_index", ld.concat([[ENTRY, uuid]], aspect_loc))
   },
   delete_entry(context, uuid) { // ENTRIES_DELETE_ENTRY
     const entry = context.state.entries.get(uuid)
     if (entry) {
-      // TODO just TEMP, for easier testing
-
       for (let child_uuid in entry.refs.children) {
         context.dispatch(DELETE_ENTRY, child_uuid)
       }
-
       if (entry.refs.parent) {
         const parent = entry.refs.parent
         context.dispatch(DELETE_REF_CHILD, {uuid: parent.uuid, child_uuid: uuid})
       }
-
       context.commit(DELETE_ENTRY, uuid)
-      context.commit(DELETE_EDIT_ENTRY)
-
-
     } else {
       console.log("store: entries DELETE tries to delete some entry that doesnt exist!")
     }
