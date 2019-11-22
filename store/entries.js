@@ -3,7 +3,14 @@
  */
 import {ASPECT, COMPONENT, DRAFT, EDIT, ENTRY, INDEX, PRIVATE_LOCAL, TITLE_ASPECT, VIEW} from "../lib/consts";
 import {get_entry_titleAspect, get_proper_mode, select_aspect_loc} from "../lib/entry";
-import {aspect_loc_str, aspect_loc_str2arr, aspect_loc_uuid, loc_prepend, remove_entry_loc} from "../lib/aspect";
+import {
+  aspect_loc_str,
+  aspect_loc_str2arr,
+  aspect_loc_uuid, last_loc_value,
+  loc_prepend,
+  loc_remove_last,
+  remove_entry_loc
+} from "../lib/aspect";
 import {GET_ENTRY} from "../lib/store_consts";
 
 import Vue from "vue"
@@ -94,6 +101,20 @@ export const mutations = {
     let select = select_aspect_loc(state, aspect_loc, true)
     const final_loc = ld.last(aspect_loc)
     ld.remove(select.value, (_, index) => index === final_loc[1])
+  },
+  _remove_entry_ref_index(state, {uuid, child_uuid, aspect_loc}) {
+    let children = state.entries.get(uuid).refs.children
+    delete state.entries.get(uuid).refs.children[child_uuid]
+    const pre_aspect_loc = loc_remove_last(aspect_loc)
+    const shift_index = last_loc_value(aspect_loc)
+    debugger
+    for (let other_child_uuid in children) {
+      //console.log("o", loc_remove_last(children[other_child_uuid]))
+      //console.log("p", pre_aspect_loc)
+      if(ld.isEqual(loc_remove_last(children[other_child_uuid]), pre_aspect_loc)) {
+
+      }
+    }
   },
   set_dirty(state, uuid = state.edit.uuid) {
     let entry = state.entries.get(uuid)
@@ -382,8 +403,8 @@ export const actions = {
   delete_ref_child(context, {uuid, child_uuid}) { // DELETE_REF_CHILD
     let aspect_loc = context.state.entries.get(uuid).refs.children[child_uuid]
     console.log("child loc", aspect_loc)
-    delete context.state.entries.get(uuid).refs.children[child_uuid]
     context.commit("_remove_entry_value_index", ld.concat([[ENTRY, uuid]], aspect_loc))
+    context.commit("_remove_entry_ref_index", {uuid, child_uuid, aspect_loc})
   },
   delete_entry(context, uuid) { // ENTRIES_DELETE_ENTRY
     const entry = context.state.entries.get(uuid)

@@ -122,10 +122,12 @@
                     let child_uuid = this.value[index]
                     //this.$store.commit(ENTRIES_EDIT_DELETE_REF_CHILD, child_uuid)
                     this.$store.dispatch(ENTRIES_DELETE_ENTRY, child_uuid)
-                    const mod_value = this.$_.filter(this.value, (_, i) => {
+                    //debugger
+
+                    /*const mod_value = this.$_.filter(this.value, (_, i) => {
                         return i !== index
                     })
-                    this.value_change(mod_value)
+                    this.value_change(mod_value)*/
                 }
             },
             create_item() {
