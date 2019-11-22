@@ -159,7 +159,6 @@
                 return get_aspect_vue_component(aspect, this.mode)
             },
             add_value(n = 1) {
-                console.log("adding val")
                 let additional = []
                 for (let i = 0; i < n; i++) {
                     //additional.push(packed_aspect_calced_value(this.item_aspect))

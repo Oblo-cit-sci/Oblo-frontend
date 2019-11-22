@@ -36,6 +36,8 @@ export default {
   },
   methods: {
     value_change(event) {
+      if(event === undefined)
+        event = null
       this.$emit('update_value', event)
     },
     toString(value) {

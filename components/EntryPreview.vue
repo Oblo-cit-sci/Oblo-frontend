@@ -1,7 +1,7 @@
 <template lang="pug">
   v-card(class="mx-auto custom-card" outlined)
     v-row(class="ma-2")
-      v-col(class="entry-meta" cols=12 v-bind:class="[show_image ? 'col-md-10' : 'col-md-12']")
+      v-col(class="entry-meta" cols=12 v-bind:class="[show_image ? 'col-md-8' : 'col-md-10']")
         div.caption(v-if="show_date") {{entry_date}}
         p.subtitle-1.mb-2 {{typename}}:
           span.subtitle-1 &nbsp; {{entry.title}}
