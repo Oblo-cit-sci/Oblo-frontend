@@ -119,6 +119,7 @@
                         //this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
                     })
                     merge_imported_entries(this.$store, event.data)
+                    this.persist_entries()
                     console.log("Entries imported")
                     this.ok_snackbar("Entries imported")
                 } else {
