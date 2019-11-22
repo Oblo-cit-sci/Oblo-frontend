@@ -113,6 +113,7 @@
                 })
             },
             set_layer_status(layers = this.layer_status) {
+                //console.log(this.map.style._layers)
                 for (let layer in layers) {
                     this.map.setLayoutProperty(layer, 'visibility', layers[layer] ? "visible" : "none")
                 }

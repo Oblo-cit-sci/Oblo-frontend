@@ -14,6 +14,11 @@
 <script>
   import {VIEW} from "../lib/consts";
 
+  /*
+    put 2 times behind the header component
+    v-icon.ml-1(small) mdi-feature-search-outline
+   */
+
   export default {
     name: "Title_Description",
     props: {
