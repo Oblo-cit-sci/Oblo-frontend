@@ -87,6 +87,7 @@
                 return this.$_.size(this.value) > 0
             },
             items() {
+                debugger
                 let entries = this.$_.map(this.value, e => {
                     const entry = this.$store.getters[ENTRIES_GET_ENTRY](e)
                     return {title: entry.title, uuid: e}
@@ -120,14 +121,8 @@
                 if (action.confirm) {
                     let index = parseInt(action.id)
                     let child_uuid = this.value[index]
-                    //this.$store.commit(ENTRIES_EDIT_DELETE_REF_CHILD, child_uuid)
                     this.$store.dispatch(ENTRIES_DELETE_ENTRY, child_uuid)
                     //debugger
-
-                    /*const mod_value = this.$_.filter(this.value, (_, i) => {
-                        return i !== index
-                    })
-                    this.value_change(mod_value)*/
                 }
             },
             create_item() {
