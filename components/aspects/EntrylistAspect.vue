@@ -87,7 +87,6 @@
                 return this.$_.size(this.value) > 0
             },
             items() {
-                debugger
                 let entries = this.$_.map(this.value, e => {
                     const entry = this.$store.getters[ENTRIES_GET_ENTRY](e)
                     return {title: entry.title, uuid: e}
@@ -122,7 +121,6 @@
                     let index = parseInt(action.id)
                     let child_uuid = this.value[index]
                     this.$store.dispatch(ENTRIES_DELETE_ENTRY, child_uuid)
-                    //debugger
                 }
             },
             create_item() {

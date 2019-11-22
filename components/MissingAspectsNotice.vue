@@ -95,6 +95,7 @@
                     aspect = aspect.attr.alternative
                 }
                 //console.log("val", aspect.name, aspect_loc)
+
                 const a_default = aspect_raw_default_value(aspect)
                 if (aspect.attr.IDAspect) {
                     return [OK]

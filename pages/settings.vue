@@ -7,7 +7,7 @@
       div During the main data collection period of LICCI partners, partners can upload collected data to the LICCI data repository. AUTOMATICALLY SAVED
       TextShort(
         :aspect="user_key_aspect"
-        :mvalue="user_key"
+        :value="user_key"
         mode="edit"
         v-on:update_value="update_value($event)")
       v-btn(@click="test_save") Test and save
