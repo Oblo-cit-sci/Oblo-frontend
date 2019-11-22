@@ -40,7 +40,7 @@
     import TextShort from "../components/aspects/TextShortAspect";
     import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
     import {export_data, merge_imported_entries} from "../lib/import_export";
-    import {ENTRIES_SAVE_ENTRY, USER_KEY} from "../lib/store_consts";
+    import {USER_KEY} from "../lib/store_consts";
     import {get_release_mode} from "../lib/util";
     import {LICCI_PARTNERS} from "../lib/consts";
     import PersistentStorageMixin from "../components/PersistentStorageMixin";
@@ -133,9 +133,8 @@
             },
             clear_entries() {
                 this.$store.dispatch("clear_entries")
-                this.$localForage.setItem("entries", this.$store.state.entries.entries, () => {
-                    console.log("stored")
-                })
+                this.persist_entries()
+                this.persist_draft_numbers()
             }
         },
         computed: {
