@@ -1,4 +1,3 @@
-
 const pkg = require('./package')
 const colors = require('vuetify/es5/util/colors')
 
@@ -35,11 +34,6 @@ module.exports = {
     ],
     link: [
       {rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'},
-      {
-        rel: 'stylesheet',
-        href:
-          'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons'
-      }
     ]
   },
 
@@ -53,7 +47,8 @@ module.exports = {
   */
   css: [
     '~/assets/style/app.styl',
-    '~/assets/style/main.scss'
+    '~/assets/style/main.scss',
+    "@mdi/font/css/materialdesignicons.css"
   ],
 
   router: {
@@ -83,29 +78,26 @@ module.exports = {
 
 
   buildModules: [
-    '@nuxtjs/vuetify'
-  ],
-
-    /*
-   ** Vuetify options
-   ** Doc: https://github.com/nuxt-community/vuetify-module
-   */
-  vuetify: {
-    theme: {
-      themes: {
-        light: {
-          primary: colors.default.blue.darken2,
-          accent: colors.default.grey.darken3,
-          secondary: colors.default.amber.darken4,
-          info: colors.default.teal.lighten1,
-          warning: colors.default.amber.base,
-          error: colors.default.deepOrange.accent4,
-          success: colors.default.green.accent4
-        },
+    ['@nuxtjs/vuetify', {
+      defaultAssets: false,
+      icons: {
+        iconfont: 'mdi',
       },
-    }
-  },
-
+      theme: {
+        themes: {
+          light: {
+            primary: colors.default.blue.darken2,
+            accent: colors.default.grey.darken3,
+            secondary: colors.default.amber.darken4,
+            info: colors.default.teal.lighten1,
+            warning: colors.default.amber.base,
+            error: colors.default.deepOrange.accent4,
+            success: colors.default.green.accent4
+          },
+        },
+      }
+    }]
+  ],
   /*
   ** Axios module configuration
   */

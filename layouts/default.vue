@@ -35,7 +35,7 @@
             exact
           >
             <v-list-item-icon>
-              <v-icon v-text="item.icon"></v-icon>
+              <v-icon>{{item.icon}}</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title v-text="item.title"></v-list-item-title>
@@ -117,7 +117,7 @@
         // {icon: 'home', title: 'Home', to: '/'},
         // {icon: 'note_add', title: 'Create Entry', to: '/CreateEntry'},
         {icon: "reorder", title: "My Entries", to: "/personalentries"},
-        //{icon: "computer", title: "Create notes", to: "/EntrytypeNotes"},
+        {icon: "fa-edit", title: "Create notes", to: "/EntrytypeNotes"},
         {icon: 'person', title: 'Profile', to: '/profile'},
         // {icon: 'computer', title: 'Tests', to: '/Tests'},
         // {icon: 'flip_to_front', title: 'Entrytypes', to: '/CreateEntrytype'},
@@ -153,6 +153,7 @@
         },
         data() {
             return {
+                ci: "",
                 version: pkg.version,
                 isDev: this.$store.app.context.isDev,
                 drawer: false,

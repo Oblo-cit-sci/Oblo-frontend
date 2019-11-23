@@ -60,7 +60,7 @@ export const mutations = {
       state.entry_types = new Map(data.entryTemplates)
       state.domains = data.domains
       console.log("store backup_init, setting init")
-      console.log("backup etypes", state.entry_types)
+      //console.log("backup etypes", state.entry_types)
       state.initialized = true
     }
   },
