@@ -39,7 +39,7 @@
       :max="this.max")
     .inline(v-if="adding_allowed && !fixed_length")
       v-btn(:disabled="!more_allowed" @click="add_value()" :color="requieres_more_color") Add {{item_name}}
-        v-icon(right) add
+        v-icon mdi-plus
     ListPagination(
       v-if="has_pagination"
       v-bind="pagination_props"
@@ -205,7 +205,7 @@
                 })
             },
             item_aspect_loc(index) {
-                return this.$_.concat(this.aspect_loc, [[INDEX, index]])
+                return this.$_.concat(this.aspect_loc, [[INDEX, index, this.aspect.items.name]])
             },
             indexed_item_aspect(index) {
                 let aspect = {...this.item_aspect}

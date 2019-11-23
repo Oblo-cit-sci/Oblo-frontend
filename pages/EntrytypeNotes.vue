@@ -15,7 +15,6 @@
             v-divider
             h2 {{page_title(index)}}
           AspectDescription(:aspect="aspect" :loc="aspect_descr_loc(aspect)")
-
 </template>
 
 <script>
@@ -23,13 +22,14 @@
     import SingleSelect from "../components/SingleSelect";
     import AspectDescription from "../components/AspectDescription";
     import {ENTRY_TYPE} from "../lib/store_consts";
+    import PersistentStorageMixin from "../components/PersistentStorageMixin";
 
     const TYPE_SELECT = "type_select"
     const ENTRY_NOTES = "entry_notes"
 
     export default {
         name: "EntrytypeNotes",
-        mixins: [],
+        mixins: [PersistentStorageMixin],
         components: {AspectDescription, SingleSelect},
         props: {},
         data() {
@@ -40,6 +40,10 @@
         },
         created() {
 
+        },
+        beforeRouteLeave(to, from, next) {
+          this.persist_notes()
+          next()
         },
         computed: {
             options() {
@@ -91,7 +95,7 @@
                 return this.entry_type.content.meta.pages[this.page(index)].title
             },
             aspect_descr_loc(aspect) {
-                console.log([this.selectec_type, aspect.name])
+                //console.log([this.selectec_type, aspect.name])
                 return [this.selectec_type, aspect.name]
             }
         },

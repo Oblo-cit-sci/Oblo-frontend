@@ -41,7 +41,7 @@
 
     import Title_Description from "./Title_Description";
     import {
-        aspect_default_value,
+        aspect_default_value, aspect_loc2aspect_descr_loc,
         aspect_loc_str,
         aspect_loc_str2arr, aspect_loc_uuid,
         aspect_raw_default_value, check_condition_value, complete_aspect_loc,
@@ -56,12 +56,9 @@
             Title_Description
         },
         mixins: [AspectMixin],
-        props: {
-
-        },
+        props: {},
         data() {
-            return {
-            }
+            return {}
         },
         created() {
             // todo no idea, why the shortcut below does not work
@@ -69,7 +66,7 @@
             if (!this.has_value) {
                 console.log("has no value", this.aspect.name)
             }
-          },
+        },
         // boolean check is not required, since "false" is the default
         computed: {
             // at the moment
@@ -143,9 +140,15 @@
                         description: ""
                     }
                 }
+                debugger
+                const aspect_descr_loc = aspect_loc2aspect_descr_loc(this.aspect_loc)
+                console.log(aspect_descr_loc)
+                const note = this.$store.getters["entrytypes/note"](aspect_descr_loc)
+                //console.log(note)
                 return {
                     title: this.extra.no_title ? "" : this.aspect_label(aspect),
-                    description: aspect.description || ""
+                    description: aspect.description || "",
+                    note: {text: note, note_class: "note"}
                 }
             },
             aspect_label(aspect) {
@@ -155,8 +158,7 @@
                 return get_aspect_vue_component(aspect, mode, this.extra)
             }
         },
-        watch: {
-        }
+        watch: {}
     }
 </script>
 

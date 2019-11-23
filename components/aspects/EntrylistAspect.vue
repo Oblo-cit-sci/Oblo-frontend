@@ -8,13 +8,13 @@
               b {{item.title}}
           v-list-item-action
             v-btn(@click="open_item(item)" icon)
-              v-icon edit
+              v-icon mdi-pencil
           v-list-item-action
             v-btn(@click="open_remove(index)" icon)
-              v-icon(color="red" lighten-1) close
+              v-icon(color="red" lighten-1) mdi-close
       .inline(v-if="more_allowed")
           v-btn(@click="create_item()" :color="requieres_more_color") Add {{item_name}}
-            v-icon(right) add
+            v-icon mdi-plus
       .inline(v-else class="mb-2") Maximum reached
       ListPagination(
         v-if="has_pagination"

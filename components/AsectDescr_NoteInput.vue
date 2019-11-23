@@ -37,7 +37,7 @@ export default {
             this.show_input = true
           },
           update_note(note) {
-              console.log(note)
+              //console.log(note)
               this.$store.commit("entrytypes/add_note", {
                   note_location: this.aspect_descr_loc,
                   note: note
