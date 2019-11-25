@@ -39,7 +39,7 @@
       :max="this.max")
     .inline(v-if="adding_allowed && !fixed_length")
       v-btn(:disabled="!more_allowed" @click="add_value()" :color="requieres_more_color") Add {{item_name}}
-        v-icon(right) add
+        v-icon mdi-plus
     ListPagination(
       v-if="has_pagination"
       v-bind="pagination_props"
@@ -95,34 +95,19 @@
             let item_type = this.aspect.items;
             // todo. list, are extended lists by user, not select lists
             // todo the item should not be just a string, DEPRECATED
-            if (typeof (item_type) === "string") {
-                switch (item_type) {
-                    case "str":
-                        this.structure = SIMPLE
-                        break;
-                    case "int":
-                        this.structure = SIMPLE
-                        break
-                    default:
-                        console.log("unknown type for list", item_type);
-                }
-                this.item_aspect = {
-                    attr: {},
-                    type: this.aspect.items,
-                }
-            } else if (typeof (item_type) === "object") {
-                //console.log("object type", this.aspect.items)
-                if (this.aspect.items.type === "composite" || this.aspect.attr.force_panels) {
-                    this.item_aspect = this.aspect.items;
-                    this.structure = PANELS
-                    // get the titles // should cause having the panel titles when entry is entered
-                    this.titles
-                    // fill in the values of the titleAspect
-                } else {
-                    this.item_aspect = this.aspect.items;
-                    this.structure = SIMPLE;
-                }
+
+            //console.log("object type", this.aspect.items)
+            if (this.aspect.items.type === "composite" || this.aspect.attr.force_panels) {
+                this.item_aspect = this.aspect.items;
+                this.structure = PANELS
+                // get the titles // should cause having the panel titles when entry is entered
+                this.titles
+                // fill in the values of the titleAspect
+            } else {
+                this.item_aspect = this.aspect.items;
+                this.structure = SIMPLE;
             }
+
             // not sure if this would still be an extra or attr...
 
             if (this.extra.ref_length) {
@@ -220,7 +205,7 @@
                 })
             },
             item_aspect_loc(index) {
-                return this.$_.concat(this.aspect_loc, [[INDEX, index]])
+                return this.$_.concat(this.aspect_loc, [[INDEX, index, this.aspect.items.name]])
             },
             indexed_item_aspect(index) {
                 let aspect = {...this.item_aspect}
@@ -275,7 +260,7 @@
                 if (!simple_type && !titleAspectName && this.item_aspect.type === COMPOSITE) {
                     titleAspectName = this.item_aspect.components[0].name
                     //console.log("title Aspect name:", titleAspectName)
-                    if(!item_name) {
+                    if (!item_name) {
                         item_name = titleAspectName
                     }
                     //console.log("setting titleAspectName to first component")
@@ -304,7 +289,8 @@
                             //console.log(titles[i], "from ", this.value[i], this.aspect.items.components)
                             // TODO here we should check if there is a ref_value and grab that
                             if (Array.isArray(titles[i])) {
-                                titles[i] = recursive_unpack(this.value[i].value[titleAspectName].value).join(", ")
+                                const list_values = recursive_unpack(this.value[i].value[titleAspectName].value).filter(v => Object.keys(v).length > 0)
+                                titles[i] = list_values.join(", ")
                             }
                         }
                         if (titles[i] === "" || titles[i] === null) {

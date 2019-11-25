@@ -46,7 +46,7 @@
         },
         created() {
             console.log(this.mvalue)
-            if (this.mvalue.hasOwnProperty(OPTION)) {
+            if (this.value.hasOwnProperty(OPTION)) {
                 this.option_selected(this.mvalue.option, false)
             }
         },

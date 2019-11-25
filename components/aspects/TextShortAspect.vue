@@ -16,7 +16,6 @@
 
       :value="value"
       @input="value_change($event)")
-    // dummy readOnly, but I dont like that you can still focus it...
     p(v-else
       class="body-1") {{value}}
 </template>

@@ -100,19 +100,27 @@ export const mutations = {
   _remove_entry_value_index(state, aspect_loc) {
     let select = select_aspect_loc(state, aspect_loc, true)
     const final_loc = ld.last(aspect_loc)
-    ld.remove(select.value, (_, index) => index === final_loc[1])
+    debugger
+    select.value = ld.filter(select.value, (_, index) => index !== final_loc[1])
   },
   _remove_entry_ref_index(state, {uuid, child_uuid, aspect_loc}) {
     let children = state.entries.get(uuid).refs.children
     delete state.entries.get(uuid).refs.children[child_uuid]
     const pre_aspect_loc = loc_remove_last(aspect_loc)
     const shift_index = last_loc_value(aspect_loc)
-    debugger
+    //debugger
     for (let other_child_uuid in children) {
-      //console.log("o", loc_remove_last(children[other_child_uuid]))
-      //console.log("p", pre_aspect_loc)
-      if(ld.isEqual(loc_remove_last(children[other_child_uuid]), pre_aspect_loc)) {
-
+      console.log("o", loc_remove_last(children[other_child_uuid]))
+      console.log("p", pre_aspect_loc)
+      const other_aspect_loc = children[other_child_uuid]
+      console.log(ld.isEqual(loc_remove_last(other_aspect_loc), pre_aspect_loc))
+      if(ld.isEqual(loc_remove_last(other_aspect_loc), pre_aspect_loc)) {
+        if(other_aspect_loc[other_aspect_loc.length - 1 ][1] > shift_index) {
+          console.log(other_aspect_loc[other_aspect_loc.length - 1 ][1])
+          //debugger
+          other_aspect_loc[other_aspect_loc.length - 1 ][1]--
+          console.log(other_aspect_loc[other_aspect_loc.length - 1 ][1])
+        }
       }
     }
   },
@@ -403,7 +411,11 @@ export const actions = {
   delete_ref_child(context, {uuid, child_uuid}) { // DELETE_REF_CHILD
     let aspect_loc = context.state.entries.get(uuid).refs.children[child_uuid]
     console.log("child loc", aspect_loc)
-    context.commit("_remove_entry_value_index", ld.concat([[ENTRY, uuid]], aspect_loc))
+    let first_loc = ENTRY
+    /*if(context.getters.edit_uuid === uuid) {
+      first_loc = EDIT
+    }*/
+    context.commit("_remove_entry_value_index", ld.concat([[EDIT, uuid]], aspect_loc))
     context.commit("_remove_entry_ref_index", {uuid, child_uuid, aspect_loc})
   },
   delete_entry(context, uuid) { // ENTRIES_DELETE_ENTRY

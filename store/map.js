@@ -3,7 +3,7 @@ export const state = () => ({
   entries: [],
   selected_entry: null,
   goto_location: null,
-  layers: ["climate type copy", "weather stations"],
+  layers: ["Climate types", "Weather stations"],
   layer_status: {}
 })
 

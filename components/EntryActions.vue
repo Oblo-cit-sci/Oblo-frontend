@@ -23,8 +23,10 @@
           :disabled="!connected"
           :loading="sending") {{submitted ? 'update' : 'submit'}}
         v-btn(v-if="upload_option" @click="upload_to_repo") Upload to the repo
+          v-icon.ml-2 mdi-send-circle
       // v-if="private_local" todo for now, download for everyone
       v-btn(v-if="can_download" :disabled="disable_download"  @click="download") download
+        v-icon.ml-2 mdi-download
     span(v-else)
       v-btn(@click="back") back
     DecisionDialog(v-bind="dialog_data" :open.sync="dialog_visible" v-on:action="dialog_action($event)")

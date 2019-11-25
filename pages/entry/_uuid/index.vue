@@ -38,7 +38,7 @@
         :open.sync="openSaveDialog"
         @action="edit_or_save_dialog($event)"
         v-bind="unsaved_changes_dialog")
-      //div {{entry}}
+      div {{entry}}
   v-row(justify-center align-center v-else-if="this.mode==='view'")
     v-col(cols=12)
       Title_Description(
@@ -156,7 +156,6 @@
             for (let aspect of this.entry_type.content.aspects) {
                 this.aspect_locs[aspect.name] = loc_append([this.aspect_loc], ASPECT, aspect.name)
             }
-
         },
         mounted() {
             if (this.$route.query.goTo) {
@@ -244,13 +243,16 @@
                 }
             },
             aspect_loc() {
-                return [EDIT, this.uuid]
+                return [EDIT, this.uuid, this.type_slug]
             },
             last_page() {
                 return !this.has_pages || this.page === this.pages.length - 1
             },
             page_title() {
                 return this.entry_type.title + (this.title ? ": " + this.title : "")
+            },
+            type_slug() {
+                return this.entry.type_slug
             },
             title() {
                 return this.$store.getters[ENTRIES_GET_ENTRY_TITLE]()

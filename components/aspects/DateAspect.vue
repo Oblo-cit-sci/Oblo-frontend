@@ -14,7 +14,7 @@
           outlined
           single-line
           :label="aspect.name"
-          prepend-icon="event"
+          prepend-icon="mdi-calendar"
           readonly
           v-on="on"
         ></v-text-field>

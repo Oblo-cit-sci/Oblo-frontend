@@ -15,7 +15,7 @@
             nuxt
             exact>
             <v-list-item-icon>
-              <v-icon v-text="'home'"></v-icon>
+              <v-icon>mdi-home</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title v-text="'Home'"></v-list-item-title>
@@ -35,7 +35,7 @@
             exact
           >
             <v-list-item-icon>
-              <v-icon v-text="item.icon"></v-icon>
+              <v-icon>{{item.icon}}</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title v-text="item.title"></v-list-item-title>
@@ -116,8 +116,8 @@
     const all_items = [
         // {icon: 'home', title: 'Home', to: '/'},
         // {icon: 'note_add', title: 'Create Entry', to: '/CreateEntry'},
-        {icon: "reorder", title: "My Entries", to: "/personalentries"},
-        //{icon: "computer", title: "Create notes", to: "/EntrytypeNotes"},
+        {icon: "mdi-reorder-horizontal", title: "My Entries", to: "/personalentries"},
+        {icon: "fa-edit", title: "Create notes", to: "/EntrytypeNotes"},
         {icon: 'person', title: 'Profile', to: '/profile'},
         // {icon: 'computer', title: 'Tests', to: '/Tests'},
         // {icon: 'flip_to_front', title: 'Entrytypes', to: '/CreateEntrytype'},
@@ -126,7 +126,7 @@
         {icon: 'how_to_reg', title: 'Register', to: '/register'},
         {icon: 'play_arrow', title: 'Login', to: '/login'},
         {icon: 'keyboard_return', title: 'Logout', to: '/logout'},
-        {icon: 'settings', title: 'Settings', to: '/settings'}
+        {icon: 'mdi-settings', title: 'Settings', to: '/settings'}
         /*{icon: "build",title: "debug", to: "/StoreDebug"}*/
     ]
 
@@ -153,6 +153,7 @@
         },
         data() {
             return {
+                ci: "",
                 version: pkg.version,
                 isDev: this.$store.app.context.isDev,
                 drawer: false,
