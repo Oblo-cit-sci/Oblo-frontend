@@ -53,7 +53,7 @@ module.exports = {
 
   router: {
     middleware: ['init'],
-    base: "/appbeta/"
+    base: "/app/"
   },
 
   /*

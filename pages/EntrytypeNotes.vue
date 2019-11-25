@@ -52,7 +52,7 @@
         },
         computed: {
             options() {
-                return this.$_.map(this.$store.getters.global_entry_types_as_array, o => {
+                return this.$_.map(this.$store.getters.entrytypes, o => {
                     return {
                         text: o.title,
                         value: o.slug,

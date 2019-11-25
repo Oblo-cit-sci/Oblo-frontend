@@ -16,6 +16,7 @@
     h3 Export data
     div Export all your entries
     v-btn(@click="export_entries") Export
+      v-icon.ml-2 mdi-export
     h3 Import data
     div Import data from a previously exported (downloaded) json file
     LoadFileButton(@fileload="load_file($event)" )
@@ -59,6 +60,13 @@
                     title: "Are you sure you want to clear all entries? Did you make a backup via Export?",
                     cancel_color: "",
                     confirm_color: "error"
+                },
+                entries_imported_dialog: {
+                    id: "entries imported",
+                    title: "Entries imported",
+                    text: "",
+                    cancel_color: "",
+                    show_cancel: false
                 },
                 user_key_aspect: {
                     name: "User key",
@@ -109,7 +117,9 @@
                 })
             },
             load_file(event) {
+                //console.log("load event", event)
                 if (event.ok) {
+                    console.log("importting")
                     event.data.forEach(entry => {
                         entry.creation_datetime = new Date(entry.creation_datetime)
                         entry.local = {
@@ -120,8 +130,10 @@
                     })
                     merge_imported_entries(this.$store, event.data)
                     this.persist_entries()
-                    console.log("Entries imported")
-                    this.ok_snackbar("Entries imported")
+                    //console.log("Entries imported")
+                    //this.ok_snackbar("Entries imported")
+                    //this.show_dialog = true
+                    //this.dialog_data = this.entries_imported_dialog
                 } else {
                     this.error_snackbar("Something went wrong")
                 }

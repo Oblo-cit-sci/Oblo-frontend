@@ -33,7 +33,7 @@
         },
         computed: {
             note() {
-                console.log(this.$store.getters["entrytypes/note"](this.aspect_descr_loc))
+                //console.log(this.$store.getters["entrytypes/note"](this.aspect_descr_loc))
                 return this.$store.getters["entrytypes/note"](this.aspect_descr_loc)
             },
             has_note() {
