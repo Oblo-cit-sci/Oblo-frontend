@@ -14,6 +14,9 @@ export default {
       type: Object,
       required: true
     },
+    ext_value: {
+      type: Object
+    },
     mode: { // todo well, this is gonna be messy
       type: String,
       default: VIEW
@@ -24,7 +27,6 @@ export default {
     },
     aspect_loc: {
       type: Array, // for composites and lists pass it down...
-      required: true
     },
     extra: {
       type: Object,
@@ -39,14 +41,13 @@ export default {
   created() {
   },
   methods: {
-    value_change(event, regular= this.use_regular) {
+    value_change(event, regular = this.use_regular) {
       if (event === undefined)
         event = null
       this.update_value(event, regular)
     },
-    update_value(raw_value,regular = true) {
+    update_value(raw_value, regular = true) {
       //console.log("saving", eveventent, this.aspect.name)
-
       if (this.has_alternative && regular) {
         if (this.aspect.attr.hasOwnProperty("alternative-activate-on-value")) {
           if (raw_value === this.aspect.attr["alternative-activate-on-value"]) {
@@ -59,7 +60,10 @@ export default {
       if (!regular) {
         up_value.regular = false
       }
-      this.$store.dispatch(ENTRIES_SET_ENTRY_VALUE, {aspect_loc: this.aspect_loc, value: up_value})
+      if (this.aspect_loc)
+        this.$store.dispatch(ENTRIES_SET_ENTRY_VALUE, {aspect_loc: this.aspect_loc, value: up_value})
+      else
+        this.$emit("update_value", up_value)
     },
     toString(value) {
       return value || ""
@@ -109,7 +113,7 @@ export default {
         return this.mvalue.hasOwnProperty("regular") ? this.mvalue.regular : true
       },
       set(value, old_value) {
-        if(value) {
+        if (value) {
           this.update_value(aspect_raw_default_value(this.aspect))
         } else {
           this.update_value(aspect_raw_default_value(this.alternative), false)
@@ -120,6 +124,13 @@ export default {
       return this.mvalue.value
     },
     mvalue: function () {
+      if(!this.aspect_loc) {
+        if(this.ext_value) {
+          return this.ext_value
+        } else {
+          return {value:null}
+        }
+      }
       //console.log(this.aspect.name)
       if (this.aspect.attr.IDAspect) {
         let this_uuid = aspect_loc_uuid(this.aspect_loc)

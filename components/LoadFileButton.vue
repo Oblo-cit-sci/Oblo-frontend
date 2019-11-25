@@ -1,6 +1,8 @@
 <template lang="pug">
-  v-btn(:loading="loading") Load file
-    input(type="file"  @change="filesChange($event.target.files)" accept="json/*" class="input-file")
+  v-btn(:loading="loading")
+    v-icon.mr-2 mdi-import
+    span Load file
+    input(type="file"  @change="filesChange($event.target.files)" accept="application/json" class="input-file")
 </template>
 
 <script>
@@ -14,7 +16,6 @@
         },
         methods: {
             filesChange(files) {
-                console.log("fch")
                 this.loading = true
                 const file = files[0]
                 let reader = new FileReader()

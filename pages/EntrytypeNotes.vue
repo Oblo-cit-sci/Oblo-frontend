@@ -15,6 +15,9 @@
             v-divider
             h2 {{page_title(index)}}
           AspectDescription(:aspect="aspect" :loc="aspect_descr_loc(aspect)")
+        v-btn(@click="download") download
+          v-icon.ml-2 mdi-download
+        LoadFileButton(@fileload="import_data($event)")
 </template>
 
 <script>
@@ -23,6 +26,8 @@
     import AspectDescription from "../components/AspectDescription";
     import {ENTRY_TYPE} from "../lib/store_consts";
     import PersistentStorageMixin from "../components/PersistentStorageMixin";
+    import {export_data} from "../lib/import_export";
+    import LoadFileButton from "../components/LoadFileButton";
 
     const TYPE_SELECT = "type_select"
     const ENTRY_NOTES = "entry_notes"
@@ -30,7 +35,7 @@
     export default {
         name: "EntrytypeNotes",
         mixins: [PersistentStorageMixin],
-        components: {AspectDescription, SingleSelect},
+        components: {LoadFileButton, AspectDescription, SingleSelect},
         props: {},
         data() {
             return {
@@ -97,6 +102,46 @@
             aspect_descr_loc(aspect) {
                 //console.log([this.selectec_type, aspect.name])
                 return [this.selectec_type, aspect.name]
+            },
+            download() {
+                export_data(this.$store.getters["entrytypes/type_notes"](this.selectec_type), this.$store.getters[ENTRY_TYPE](this.selectec_type).title+"_notes.json")
+            },
+            import_data(result) {
+                if(result.ok) {
+                    this.$store.commit("entrytypes/set_type_notes", {type_slug: this.selectec_type ,notes: result.data})
+                    console.log("done")
+                }
+                /*
+                debugger
+                if(!file)
+                    return
+                let reader = new FileReader()
+                reader.onload = (event) => {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        //this.loading = false
+
+                        console.log("done", data)
+
+                    } catch (e) {
+                        //this.loading = false
+                        console.log("fucked loading json")
+                        console.log("result",event.target.result)
+                        console.log(typeof  event.target.result)
+                        console.log(e)
+
+                        //this.$emit("fileload", {ok: false})
+                    }
+                };
+                reader.onerror = (event) => {
+                    console.log("fucked reading file")
+                    // alert(event.target.error.name);
+                    //this.$emit("fileload", {ok: false})
+                    //this.loading = false
+                };
+                console.log(file)
+                reader.readAsText(file);
+                 */
             }
         },
         watch: {}
