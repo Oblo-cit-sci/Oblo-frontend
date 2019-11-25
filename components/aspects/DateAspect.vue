@@ -19,7 +19,7 @@
           v-on="on"
         ></v-text-field>
       </template>
-      <v-date-picker v-model="value"  :show-current="false" @change="value_change($event)" no-title @input="menu = false"></v-date-picker>
+      <v-date-picker :value="value"  :show-current="false" @change="value_change($event)" no-title @input="menu = false"></v-date-picker>
     </v-menu>
   </div>
   <div v-else class="mb-2 mt-2">
@@ -41,9 +41,9 @@
       }
     },
       created() {
-        if(!this.value) {
+        /*if(!this.value) {
             this.value_change(new Date().toISOString())
-        }
+        }*/
       },
     computed: {
       value_str() {
