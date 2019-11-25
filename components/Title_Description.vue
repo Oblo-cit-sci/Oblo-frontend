@@ -6,9 +6,9 @@
       div(v-for="(description_part, index) in description" :key="index")
         div(v-if="index===0") {{description_part}}
         div(v-else class="secondary_descr") {{description_part}}
+    div(v-else class="pb-1") {{first_description}}
     div(v-if="note && !readOnly")
       div(:class="note.note_class") {{note.text}}
-    div(v-else class="pb-1") {{first_description}}
   div(v-else)
     component(:is="header_type") {{title}}
 </template>

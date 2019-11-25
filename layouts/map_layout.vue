@@ -13,14 +13,13 @@
           v-row
             v-col.col-sm-2
               v-btn(@click="back" nuxt)
-                v-icon home
-                span
+                v-icon mdi-home
             //v-col.col-sm-3
               v-btn
                 v-icon mdi-crosshairs-gps
             v-col.col-sm-2
               v-btn(@click="search_view" Search v-if="menu_mode === 'entry'")
-                v-icon search
+                v-icon mdi-magnify
             v-col.col-sm-1.offset-sm-6
               v-btn(text :ripple="false" @click="drawer = !drawer")
                 v-icon mdi-chevron-double-down
@@ -43,7 +42,7 @@
       v-row
         v-col.col-sm-3
           v-btn(@click="back" nuxt)
-            v-icon home
+            v-icon mdi-home
             span Back
         v-col.col-sm-7
           v-select(label="Layers" :items="layer_options" multiple small-chips v-on:change="layer_select_change($event)")
@@ -57,7 +56,7 @@
         div.ma-1(v-if="menu_mode === 'entry'")
           v-row
             v-btn(@click="search_view" Search)
-              v-icon search
+              v-icon mdi-magnify
           EntryAspectView.ma-1.pa-2(:entry="selected_entry" mode="view")
     v-content
       v-container(id="fullContainer")

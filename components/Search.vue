@@ -7,7 +7,7 @@
           label="Search"
           single-line
           hide-details
-          append-outer-icon="search"
+          append-outer-icon="mdi-magnify"
           @click:append-outer="getEntries"
           clearable
           :loading="searching")

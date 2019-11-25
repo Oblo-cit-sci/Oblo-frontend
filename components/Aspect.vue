@@ -140,11 +140,8 @@
                         description: ""
                     }
                 }
-                debugger
                 const aspect_descr_loc = aspect_loc2aspect_descr_loc(this.aspect_loc)
-                console.log(aspect_descr_loc)
                 const note = this.$store.getters["entrytypes/note"](aspect_descr_loc)
-                //console.log(note)
                 return {
                     title: this.extra.no_title ? "" : this.aspect_label(aspect),
                     description: aspect.description || "",

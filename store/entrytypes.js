@@ -52,6 +52,11 @@ export const getters = {
       let select = type_notes
       //console.log(type_notes)
 
+      if(!type_notes) {
+        //console.log("no notes for this type")
+        return null
+      }
+
       const c_s = (loc) => {
         if (!select) {
           console.log("note error access:", select, loc, aspect_descr_loc)

@@ -1,7 +1,14 @@
+@font-face {
+  font-family: roboto;
+  src: url("/fonts/Roboto-Regular.ttf");
+}
+
 html {
   overscroll-behavior: contain;
+  font-family: roboto;
 }
 
 .v-btn {
   margin: 6px 8px;
 }
+

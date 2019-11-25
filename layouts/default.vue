@@ -123,9 +123,9 @@
         // {icon: 'flip_to_front', title: 'Entrytypes', to: '/CreateEntrytype'},
         {icon: 'fa-map', title: 'Map', to: '/Map'},
         // {icon: 'computer', title: 'Aspectbuild', to: '/AspectBuild'},
-        {icon: 'how_to_reg', title: 'Register', to: '/register'},
-        {icon: 'play_arrow', title: 'Login', to: '/login'},
-        {icon: 'keyboard_return', title: 'Logout', to: '/logout'},
+        {icon: 'mdi-account-check', title: 'Register', to: '/register'},
+        {icon: 'mdi-login', title: 'Login', to: '/login'},
+        {icon: 'mdi-logout', title: 'Logout', to: '/logout'},
         {icon: 'mdi-settings', title: 'Settings', to: '/settings'}
         /*{icon: "build",title: "debug", to: "/StoreDebug"}*/
     ]
