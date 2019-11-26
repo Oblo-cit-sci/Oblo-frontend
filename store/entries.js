@@ -20,7 +20,6 @@ import {app_version} from "../lib/client";
 const ld = require("lodash")
 
 const DELETE_ENTRY = "delete_entry"
-const DELETE_EDIT_ENTRY = "delete_edit_entry"
 const DELETE_REF_CHILD = "delete_ref_child"
 
 export const state = () => ({
@@ -100,7 +99,6 @@ export const mutations = {
   _remove_entry_value_index(state, aspect_loc) {
     let select = select_aspect_loc(state, aspect_loc, true)
     const final_loc = ld.last(aspect_loc)
-    debugger
     select.value = ld.filter(select.value, (_, index) => index !== final_loc[1])
   },
   _remove_entry_ref_index(state, {uuid, child_uuid, aspect_loc}) {
@@ -110,16 +108,16 @@ export const mutations = {
     const shift_index = last_loc_value(aspect_loc)
     //debugger
     for (let other_child_uuid in children) {
-      console.log("o", loc_remove_last(children[other_child_uuid]))
-      console.log("p", pre_aspect_loc)
+      //console.log("o", loc_remove_last(children[other_child_uuid]))
+      // console.log("p", pre_aspect_loc)
       const other_aspect_loc = children[other_child_uuid]
-      console.log(ld.isEqual(loc_remove_last(other_aspect_loc), pre_aspect_loc))
+      // console.log(ld.isEqual(loc_remove_last(other_aspect_loc), pre_aspect_loc))
       if(ld.isEqual(loc_remove_last(other_aspect_loc), pre_aspect_loc)) {
         if(other_aspect_loc[other_aspect_loc.length - 1 ][1] > shift_index) {
-          console.log(other_aspect_loc[other_aspect_loc.length - 1 ][1])
+          // console.log(other_aspect_loc[other_aspect_loc.length - 1 ][1])
           //debugger
           other_aspect_loc[other_aspect_loc.length - 1 ][1]--
-          console.log(other_aspect_loc[other_aspect_loc.length - 1 ][1])
+          // console.log(other_aspect_loc[other_aspect_loc.length - 1 ][1])
         }
       }
     }
@@ -130,6 +128,9 @@ export const mutations = {
       entry.local = {}
     }
     entry.local.dirty = true
+  },
+  set_incomplete(state, {uuid, incomplete}) {
+    state.entries.get(uuid).local.incomplete = incomplete
   },
   set_edit_clean(state) { // ENTRIES_SET_EDIT_CLEAN
     if (state.edit) {
@@ -410,7 +411,7 @@ export const actions = {
   },
   delete_ref_child(context, {uuid, child_uuid}) { // DELETE_REF_CHILD
     let aspect_loc = context.state.entries.get(uuid).refs.children[child_uuid]
-    console.log("child loc", aspect_loc)
+    //console.log("child loc", aspect_loc)
     let first_loc = ENTRY
     /*if(context.getters.edit_uuid === uuid) {
       first_loc = EDIT
