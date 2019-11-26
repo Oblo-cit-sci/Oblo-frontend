@@ -3,7 +3,7 @@ import {COMPOSITE, LIST} from "../lib/consts";
 const ld = require("lodash")
 
 export const state = () => ({
-  notes: new Map(),
+  notes: {}
 })
 
 export const mutations = {
@@ -11,18 +11,20 @@ export const mutations = {
     state.notes = notes
   },
   set_type_notes(state, {type_slug, notes}) {
-    state.notes.set(type_slug, notes)
+    state.notes[type_slug] = notes
     // todo this is a shame. no re-assign no update!
-    state.notes = new Map(Array.from(state.notes))
+    // state.notes = new Map(Array.from(state.notes))
   },
   init_notes(state, type_slug) {
-    state.notes.set(type_slug, {})
+    state.notes[type_slug] = {}
   },
   add_aspect_descr_notes(state, {type_slug, aspect_name, notes}) {
-    state.notes.get(type_slug)[aspect_name] = notes
+    state.notes[type_slug][aspect_name] = notes
   },
   add_note(state, {note_location, note}) {
-    const type_notes = state.notes.get(note_location[0])
+    console.log("adding note",note_location,  "<", note, ">")
+    const type_slug = note_location[0]
+    const type_notes = state.notes[type_slug]
     if (type_notes) {
       let select = type_notes
       note_location = ld.drop(note_location)
@@ -30,9 +32,12 @@ export const mutations = {
         select = select[loc]
       }
       select._note = note
+      //select = ld.cloneDeep(select)
+      state.notes[type_slug] = ld.cloneDeep(type_notes)
     } else {
       console.log("entrytypes: add_note: wtf!")
     }
+
   }
 }
 
@@ -42,7 +47,7 @@ export const getters = {
   },
   type_notes(state) {
     return (type_slug) => {
-      return state.notes.get(type_slug)
+      return state.notes[type_slug]
     }
   },
   note(state, getters) {

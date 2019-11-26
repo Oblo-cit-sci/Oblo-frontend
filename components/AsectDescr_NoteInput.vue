@@ -8,8 +8,8 @@
         auto-grow
         @input="update_note($event)")
 
-    v-btn(v-else icon @click="add_note")
-      v-icon(@click="update_note('')") mdi-pencil
+    v-btn(v-else icon @click="update_note('')")
+      v-icon() mdi-pencil
 </template>
 
 <script>
@@ -25,15 +25,14 @@
             }
         },
         data() {
-            return {
-            }
+            return {}
         },
         created() {
 
         },
         computed: {
             note() {
-                //console.log(this.$store.getters["entrytypes/note"](this.aspect_descr_loc))
+                console.log("update")
                 return this.$store.getters["entrytypes/note"](this.aspect_descr_loc)
             },
             has_note() {
@@ -45,7 +44,7 @@
                 this.show_input = true
             },
             update_note(note) {
-                //console.log(note)
+                //console.log("update_note", note)
                 this.$store.commit("entrytypes/add_note", {
                     note_location: this.aspect_descr_loc,
                     note: note
