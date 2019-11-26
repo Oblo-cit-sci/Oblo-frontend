@@ -1,11 +1,24 @@
-@font-face {
+/*@font-face {
   font-family: roboto;
-  src: url("/fonts/Roboto-Regular.ttf");
+  src: local("~assets/fonts/Roboto-Regular");
+}*/
+
+/* latin-ext */
+@font-face {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 300;
+  src: local('./fonts/Roboto-Regular.tff');
+}
+
+
+.v-application {
+  font-family: Roboto, serif;
 }
 
 html {
   overscroll-behavior: contain;
-  font-family: roboto;
+  font-family: Roboto, serif;
 }
 
 .v-btn {
