@@ -95,10 +95,10 @@
     import EntryNavMixin from "../../../components/EntryNavMixin";
     import DecisionDialog from "../../../components/DecisionDialog";
     import {
-        ENTRIES_GET_EDIT,
-        ENTRIES_GET_PARENT,
-        ENTRIES_SAVE_ENTRY,
-        ENTRIES_SET_EDIT, ENTRIES_VALUE, ENTRIES_GET_ENTRY_TITLE
+      ENTRIES_GET_EDIT,
+      ENTRIES_GET_PARENT,
+      ENTRIES_SAVE_ENTRY,
+      ENTRIES_SET_EDIT, ENTRIES_VALUE, ENTRIES_GET_ENTRY_TITLE, ENTRYTYPES_TYPENAME, ENTRYTYPES_TYPE
     } from "../../../lib/store_consts";
     import {get_aspect_vue_component, loc_append} from "../../../lib/aspect"
     import {unsaved_changes_default_dialog} from "../../../lib/dialogs"
@@ -256,7 +256,7 @@
                 return this.$store.getters[ENTRIES_GET_ENTRY_TITLE]()
             },
             aspects() {
-                const entry_type = this.$store.getters.entry_type(this.entry.type_slug)
+                const entry_type = this.$store.getters[ENTRYTYPES_TYPE](this.entry.type_slug)
                 return entry_type.content.aspects
             },
             entry() {

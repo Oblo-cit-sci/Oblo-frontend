@@ -1,47 +1,73 @@
 import {COMPOSITE, LIST} from "../lib/consts";
+import {object_list2options} from "../lib/options";
+import {entries_domain_filter} from "../lib/search";
 
 const ld = require("lodash")
 
 export const state = () => ({
+  entry_types: new Map(), // types for creation
   notes: {}
 })
 
-export const mutations = {
-  set_notes(state, notes) {
-    state.notes = notes
-  },
-  set_type_notes(state, {type_slug, notes}) {
-    state.notes[type_slug] = notes
-    // todo this is a shame. no re-assign no update!
-    // state.notes = new Map(Array.from(state.notes))
-  },
-  init_notes(state, type_slug) {
-    state.notes[type_slug] = {}
-  },
-  add_aspect_descr_notes(state, {type_slug, aspect_name, notes}) {
-    state.notes[type_slug][aspect_name] = notes
-  },
-  add_note(state, {note_location, note}) {
-    console.log("adding note",note_location,  "<", note, ">")
-    const type_slug = note_location[0]
-    const type_notes = state.notes[type_slug]
-    if (type_notes) {
-      let select = type_notes
-      note_location = ld.drop(note_location)
-      for (let loc of note_location) {
-        select = select[loc]
-      }
-      select._note = note
-      //select = ld.cloneDeep(select)
-      state.notes[type_slug] = ld.cloneDeep(type_notes)
-    } else {
-      console.log("entrytypes: add_note: wtf!")
-    }
-
-  }
-}
-
 export const getters = {
+  type_name(state) {
+    return slug => {
+      return state.entry_types.get(slug).title
+    }
+  },
+  domain_of_type(state) {
+    return slug => {
+      return ld.filter(state.domains, domain => domain.value === state.entry_types.get(slug).domain)[0]
+    }
+  },
+  // entry-types
+  global_entry_types_as_array(state) {
+    // todo generalize, e.g. array of 2val array ["context", "global"]
+    let global_entry_types = [];
+    for (let entry of state.entry_types.values()) {
+      if (entry.content.meta.context === "global") {
+        global_entry_types.push(entry)
+      }
+    }
+    return global_entry_types
+  },
+  entry_type(state) {
+    return (type_slug) => {
+      return state.entry_types.get(type_slug)
+    }
+  },
+  entrytypes(state) {
+    return Array.from(state.entry_types.values())
+  },
+  entrytypes_of_domain(state) {
+    return domain => {
+      return entries_domain_filter(Array.from(state.entry_types.values()), domain)
+    }
+  },
+  get_aspect_def(state, getters) {
+    return ({type_slug, aspect_name}) => {
+      let type = getters.entry_type(type_slug)
+      return type.content.aspects.find(a => {
+        return a.name === aspect_name
+      })
+    }
+  },
+  get_aspect_index(state) {
+    return (type_slug, aspect_name) => {
+      return ld.findIndex(state.entry_types.get(type_slug).content.aspects, (a) => a.name === aspect_name)
+    }
+  },
+  get_aspect(state) {
+    return (type_slug, aspect_name) => {
+      return ld.find(state.entry_types.get(type_slug).content.aspects, (a) => a.name === aspect_name)
+    }
+  },
+  entrytype_options(state, getters) {
+    return object_list2options(getters.entry_types_array, "title", "slug")
+  },
+  entry_types_array(state) {
+    return Array.from(state.entry_types.values())
+  },
   all_notes(state) {
     return state.notes
   },
@@ -57,7 +83,7 @@ export const getters = {
       let select = type_notes
       //console.log(type_notes)
 
-      if(!type_notes) {
+      if (!type_notes) {
         //console.log("no notes for this type")
         return null
       }
@@ -83,6 +109,46 @@ export const getters = {
     }
   }
 }
+
+export const mutations = {
+  entrytype(state, newtype) {
+    state.entry_types[newtype.type_slug] = newtype;
+    //state.entry_type_slug_index_dict[newtype.slug] = state.available_entries.length - 1;
+  },
+  set_notes(state, notes) {
+    state.notes = notes
+  },
+  set_type_notes(state, {type_slug, notes}) {
+    state.notes[type_slug] = notes
+    // todo this is a shame. no re-assign no update!
+    // state.notes = new Map(Array.from(state.notes))
+  },
+  init_notes(state, type_slug) {
+    state.notes[type_slug] = {}
+  },
+  add_aspect_descr_notes(state, {type_slug, aspect_name, notes}) {
+    state.notes[type_slug][aspect_name] = notes
+  },
+  add_note(state, {note_location, note}) {
+    console.log("adding note", note_location, "<", note, ">")
+    const type_slug = note_location[0]
+    const type_notes = state.notes[type_slug]
+    if (type_notes) {
+      let select = type_notes
+      note_location = ld.drop(note_location)
+      for (let loc of note_location) {
+        select = select[loc]
+      }
+      select._note = note
+      //select = ld.cloneDeep(select)
+      state.notes[type_slug] = ld.cloneDeep(type_notes)
+    } else {
+      console.log("entrytypes: add_note: wtf!")
+    }
+
+  }
+}
+
 
 export const actions = {
   init_notes(context, type_slug) {

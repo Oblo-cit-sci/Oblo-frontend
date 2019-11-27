@@ -18,6 +18,7 @@
 
 <script>
     import Aspect from "../components/Aspect";
+    import {ENTRYTYPES_TYPE, ENTRYTYPES_TYPENAME} from "../lib/store_consts";
     export default {
         name: "EntryTypeCreate",
       components: {Aspect},
@@ -49,7 +50,7 @@
       computed: {
         aspects_options() {
           if(this.selection.etype) {
-            const etype = this.$store.getters.entry_type(this.selection.etype)
+            const etype = this.$store.getters[ENTRYTYPES_TYPE](this.selection.etype)
             return this.$_.map(etype.content.aspects,
               (asp) => {
                 return {"text":asp.name, "value": asp.name}
@@ -59,7 +60,7 @@
       },
       watch: {
         "selection.aspect"(aspect_name) {
-          const aspects = this.$store.getters.entry_type(this.selection.etype).content.aspects
+          const aspects = this.$store.getters[ENTRYTYPES_TYPE](this.selection.etype).content.aspects
           const aspect_desc = this.$_.find(aspects, (a) => a.name === aspect_name)
           this.input = JSON.stringify(aspect_desc, null, 2)
         }

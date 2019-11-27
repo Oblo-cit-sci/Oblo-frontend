@@ -24,7 +24,7 @@
 
     import SingleSelect from "../components/SingleSelect";
     import AspectDescription from "../components/AspectDescription";
-    import {ENTRY_TYPE} from "../lib/store_consts";
+    import {ENTRYTYPES_TYPE, ENTRYTYPES_TYPE_NOTES} from "../lib/store_consts";
     import PersistentStorageMixin from "../components/PersistentStorageMixin";
     import {export_data} from "../lib/import_export";
     import LoadFileButton from "../components/LoadFileButton";
@@ -67,7 +67,7 @@
                 return this.state === ENTRY_NOTES
             },
             entry_type() {
-              return this.$store.getters[ENTRY_TYPE](this.selectec_type)
+              return this.$store.getters[ENTRYTYPES_TYPE](this.selectec_type)
             },
             entry_aspects() {
                 return this.entry_type.content.aspects
@@ -84,7 +84,7 @@
                 this.init_typenotes(this.selectec_type)
             },
             init_typenotes(type_slug) {
-                let notes = this.$store.getters["entrytypes/type_notes"](type_slug)
+                let notes = this.$store.getters[ENTRYTYPES_TYPE_NOTES](type_slug)
                 if(!notes) {
                     this.$store.dispatch("entrytypes/init_notes", type_slug)
                 }
@@ -104,7 +104,7 @@
                 return [this.selectec_type, aspect.name]
             },
             download() {
-                export_data(this.$store.getters["entrytypes/type_notes"](this.selectec_type), this.$store.getters[ENTRY_TYPE](this.selectec_type).title+"_notes.json")
+                export_data(this.$store.getters[ENTRYTYPES_TYPE_NOTES](this.selectec_type), this.$store.getters[ENTRYTYPES_TYPE](this.selectec_type).title+"_notes.json")
             },
             import_data(result) {
                 if(result.ok) {

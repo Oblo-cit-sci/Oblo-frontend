@@ -102,7 +102,7 @@
         },
         created() {
             if(this.menu_mode === SEARCH) {
-                const entries = this.$store.getters["search/get_entries"]
+                const entries = this.$store.getters[SEARCH_GET_ENTRIES]
                 this.update_map_entries(entries)
             }
         },

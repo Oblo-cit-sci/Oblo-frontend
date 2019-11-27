@@ -1,5 +1,10 @@
 import {has_parent} from "../lib/entry";
-import {ENTRIES_GET_PARENT, ENTRIES_GET_RECURSIVE_ENTRIES} from "../lib/store_consts";
+import {
+  ENTRIES_GET_ENTRY_TITLE,
+  ENTRIES_GET_PARENT,
+  ENTRIES_GET_RECURSIVE_ENTRIES, ENTRYTYPES_TYPE,
+  ENTRYTYPES_TYPENAME
+} from "../lib/store_consts";
 import {app_version} from "../lib/client";
 import {export_data} from "../lib/import_export";
 
@@ -23,7 +28,7 @@ export default {
       return result
     },
     entry_type() {
-      return this.$store.getters.entry_type(this.entry.type_slug)
+      return this.$store.getters[ENTRYTYPES_TYPE](this.entry.type_slug)
     },
     type_name() {
       return this.entry_type.title
@@ -39,7 +44,7 @@ export default {
     },
     download_title() {
       // todo title, wont update in real time
-      const entry_title = this.$store.getters["entries/get_entry_title"](this.entry.uuid)
+      const entry_title = this.$store.getters[ENTRIES_GET_ENTRY_TITLE](this.entry.uuid)
       return (this.type_name + "_" + entry_title).replace(" ", "_") + ".json"
     }
   },

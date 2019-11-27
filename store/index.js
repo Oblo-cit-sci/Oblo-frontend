@@ -1,13 +1,14 @@
 import {NO_DOMAIN, TITLE, VISITOR} from "../lib/consts";
 import {entries_domain_filter} from "../lib/search";
 import {object_list2options} from "../lib/options";
+import {ENTRYTYPES_TYPENAME} from "../lib/store_consts";
 
 export const state = () => ({
   // comes by init
   initialized: false,
   _connecting: false,
   connected: false,
-  entry_types: new Map(), // types for creation
+  //entry_types: new Map(), // types for creation
   codes: {},
   // recent
   // momentary
@@ -46,18 +47,19 @@ export const mutations = {
   init(state, data) {
     state.codes = {...data.codes}
     state.codes.liccis_flat = extract_liccis(data.codes.liccis);
-    state.entry_types = new Map(data.entryTemplates);
+    // TODO dispatch
+    state.entrytypes.entry_types = new Map(data.entryTemplates);
     state.related_users = data.related_users || {};
     state.domains = data.domains
-    //state.entry_type_slug_index_dict = array_to_val__id_dict(data.entryTemplates, "slug");
     state.initialized = true
   },
   backup_init(state, data) {
     // calld in the middleware
     if (!state.initialized) {
       state.codes = {...data.codes}
-      state.codes.liccis_flat = extract_liccis(data.codes.liccis);
-      state.entry_types = new Map(data.entryTemplates)
+      state.codes.liccis_flat = extract_liccis(data.codes.liccis)
+      // TODO dispatch
+      state.entrytypes.entry_types = new Map(data.entryTemplates)
       state.domains = data.domains
       console.log("store backup_init, setting init")
       //console.log("backup etypes", state.entry_types)
@@ -66,10 +68,6 @@ export const mutations = {
   },
   set_related_users(state, related_users) {
     state.related_users = related_users
-  },
-  entrytype(state, newtype) {
-    state.entry_types[newtype.type_slug] = newtype;
-    //state.entry_type_slug_index_dict[newtype.slug] = state.available_entries.length - 1;
   },
   // should be set with {message: str, ok: boolean}
   snackbar(state, snackbar) {
@@ -151,52 +149,6 @@ export const getters = {
       return (state.codes[code_name])
     }
   },
-  // entry-types
-  global_entry_types_as_array(state) {
-    // todo generalize, e.g. array of 2val array ["context", "global"]
-    let global_entry_types = [];
-    for (let entry of state.entry_types.values()) {
-      if (entry.content.meta.context === "global") {
-        global_entry_types.push(entry)
-      }
-    }
-    return global_entry_types
-  },
-  entry_type(state) {
-    return (entry_or_type_slug) => {
-      if (typeof entry_or_type_slug === "object") {
-        return state.entry_types.get(entry_or_type_slug.type_slug)
-      } else {
-        return state.entry_types.get(entry_or_type_slug)
-      }
-    }
-  },
-  entrytypes(state) {
-    return Array.from(state.entry_types.values())
-  },
-  entrytypes_of_domain(state) {
-    return domain => {
-      return entries_domain_filter(Array.from(state.entry_types.values()), domain)
-    }
-  },
-  get_aspect_def(state, getters, root_state, root_getter) {
-    return ({type_slug, aspect_name}) => {
-      let type = root_getter.entry_type(type_slug)
-      return type.content.aspects.find(a => {
-        return a.name === aspect_name
-      })
-    }
-  },
-  get_aspect_index(state) {
-    return (type_slug, aspect_name) => {
-      return ld.findIndex(state.entry_types.get(type_slug).content.aspects, (a) => a.name === aspect_name)
-    }
-  },
-  get_aspect(state) {
-    return (type_slug, aspect_name) => {
-      return ld.find(state.entry_types.get(type_slug).content.aspects, (a) => a.name === aspect_name)
-    }
-  },
   draft_numbers(state) {
     return state.draft_numbers
   },
@@ -230,16 +182,7 @@ export const getters = {
   domain_title(state) {
     return state.domain.title
   },
-  type_name(state) {
-    return slug => {
-      return state.entry_types.get(slug).title
-    }
-  },
-  domain_of_type(state) {
-    return slug => {
-      return ld.filter(state.domains, domain => domain.value === state.entry_types.get(slug).domain)[0]
-    }
-  },
+
   domains(state) {
     return state.domains
   },
@@ -248,12 +191,6 @@ export const getters = {
       return object_list2options(state.domains, TITLE)
     }
   },
-  entrytype_options(state, getters) {
-    return object_list2options(getters.entry_types_array, "title", "slug")
-  },
-  entry_types_array(state) {
-    return Array.from(state.entry_types.values())
-  },
   conaining_types_options(state, getters) {
     return () => {
       const types = new Set()
@@ -261,7 +198,7 @@ export const getters = {
         types.add(entry.type_slug)
       }
       return Array.from(types).map(type => {
-        return {value: type, text: getters.type_name(type)}
+        return {value: type, text: getters[ENTRYTYPES_TYPENAME](type)}
       })
     }
   }

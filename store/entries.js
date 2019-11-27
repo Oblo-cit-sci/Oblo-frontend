@@ -11,7 +11,7 @@ import {
   loc_remove_last,
   remove_entry_loc
 } from "../lib/aspect";
-import {GET_ENTRY} from "../lib/store_consts";
+import {ENTRYTYPES_TYPE, GET_ENTRY} from "../lib/store_consts";
 
 import Vue from "vue"
 import {flatten_collection_of_lists, recursive_unpack} from "../lib/util";
@@ -265,19 +265,9 @@ export const getters = {
       return entries
     }
   },
-  get_type_of_entry(state, getters) {
-    return uuid => {
-      let entry = getters.get_entry(uuid)
-      if (!entry) {
-        console.log("No entry for uuid", uuid)
-        return null
-      }
-      return getters.get_entry_type(entry.type_slug)
-    }
-  },
-  get_entry_type(state, getters, root_state) {
+  get_entry_type(state, getters, root_state, rootGetter) {
     return slug => {
-      const entry_type = root_state.entry_types.get(slug)
+      const entry_type = rootGetter[ENTRYTYPES_TYPE](slug)
       if (!entry_type) {
         console.log("No entry type for slug", slug)
         return null

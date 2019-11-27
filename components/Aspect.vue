@@ -37,18 +37,16 @@
 
 <script>
 
-    import {LIST_INDEX, REGULAR, VIEW} from "../lib/consts";
+    import {VIEW} from "../lib/consts";
 
     import Title_Description from "./Title_Description";
     import {
-        aspect_default_value, aspect_loc2aspect_descr_loc,
+        aspect_loc2aspect_descr_loc,
         aspect_loc_str,
-        aspect_loc_str2arr, aspect_loc_uuid,
-        aspect_raw_default_value, check_condition_value, complete_aspect_loc,
-        get_aspect_vue_component, label, pack_value
+        get_aspect_vue_component, label
     } from "../lib/aspect";
-    import {ENTRIES_GET_ENTRY, ENTRIES_SET_ENTRY_VALUE, ENTRIES_VALUE} from "../lib/store_consts";
     import AspectMixin from "./aspects/AspectMixin";
+    import {ENTRYTYPES_NOTES} from "../lib/store_consts";
 
     export default {
         name: "Aspect",
@@ -141,7 +139,7 @@
                     }
                 }
                 const aspect_descr_loc = aspect_loc2aspect_descr_loc(this.aspect_loc)
-                const note = this.$store.getters["entrytypes/note"](aspect_descr_loc)
+                const note = this.$store.getters[ENTRYTYPES_NOTES](aspect_descr_loc)
                 return {
                     title: this.extra.no_title ? "" : this.aspect_label(aspect),
                     description: aspect.description || "",

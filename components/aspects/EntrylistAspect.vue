@@ -51,9 +51,9 @@
     import EntryNavMixin from "../EntryNavMixin";
     import ListMixin from "../ListMixin";
     import {
-        EDIT_UUID, ENTRIES_DELETE_ENTRY,
-        ENTRIES_EDIT_DELETE_REF_CHILD,
-        ENTRIES_GET_ENTRY, ENTRIES_SAVE_CHILD_N_REF, ENTRIES_SAVE_ENTRY, ENTRY_TYPE,
+      EDIT_UUID, ENTRIES_DELETE_ENTRY,
+      ENTRIES_EDIT_DELETE_REF_CHILD,
+      ENTRIES_GET_ENTRY, ENTRIES_SAVE_CHILD_N_REF, ENTRIES_SAVE_ENTRY, ENTRYTYPES_TYPE,
     } from "../../lib/store_consts";
     import {aspect_loc_str} from "../../lib/aspect";
     import {no_duplicate_texts} from "../../lib/options";
@@ -76,7 +76,7 @@
         },
         created() {
             this.set_min_max()
-            if (!this.$store.getters[ENTRY_TYPE](this.item_type_slug)) {
+            if (!this.$store.getters[ENTRYTYPES_TYPE](this.item_type_slug)) {
                 console.log("Warning- aspect: ", this.aspect.name, "referrers to a typename that does not exist: ", this.item_type_slug)
                 console.log("TODO disable this aspect")
             }

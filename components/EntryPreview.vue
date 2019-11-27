@@ -47,10 +47,9 @@
 
     import EntryNavMixin from "./EntryNavMixin";
     import {
-        EDIT_UUID,
-        ENTRIES_HAS_ENTRY,
-        ENTRIES_SAVE_CHILD_N_REF, ENTRIES_VALUE,
-        TYPE_NAME
+      EDIT_UUID, ENTRIES_DOMAIN,
+      ENTRIES_HAS_ENTRY,
+      ENTRIES_SAVE_CHILD_N_REF, ENTRIES_VALUE, ENTRYTYPES_TYPENAME, SEARCH_ENTRY_ASPECT,
     } from "../lib/store_consts";
     import {privacy_icon, printDate, static_file_path} from "../lib/util"
     import {ASPECT, EDIT, ENTRY, VIEW} from "../lib/consts"
@@ -174,12 +173,12 @@
                 result.push({icon: privacy_icon(this.entry.privacy), name: this.entry.privacy})
                 result.push({name: "License: " + this.entry.license})
                 if (this.include_domain_tag) {
-                    result.push({name: this.$store.getters["entries/domain"](this.entry.uuid)})
+                    result.push({name: this.$store.getters[ENTRIES_DOMAIN](this.entry.uuid)})
                 }
                 return result
             },
             typename() {
-                return this.$store.getters[TYPE_NAME](this.entry.type_slug)
+                return this.$store.getters[ENTRYTYPES_TYPENAME](this.entry.type_slug)
             },
             default_action_icon() {
                 if (this.proper_mode === VIEW)
@@ -208,7 +207,8 @@
                 return show_actions
             },
             shown_aspects() {
-                const search_res = this.$store.getters["search/get_entry_aspects"](this.entry.uuid)
+                const search_res = this.$store.getters[SEARCH_ENTRY_ASPECT](this.entry.uuid)
+                console.log(this.entry_type)
                 return this.$_.filter(this.entry_type.content.aspects, a => search_res.includes(a.name))
             }
         }

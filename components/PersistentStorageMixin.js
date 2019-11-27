@@ -1,3 +1,5 @@
+import {ENTRYTYPES_ALL_NOTES} from "../lib/store_consts";
+
 export default {
   name: "PersistentStorageMixin",
   methods: {
@@ -18,7 +20,7 @@ export default {
       this.store_value("draft_numbers", this.$store.getters.draft_numbers)
     },
     persist_notes() {
-      this.store_value("notes", this.$store.getters["entrytypes/all_notes"])
+      this.store_value("notes", this.$store.getters[ENTRYTYPES_ALL_NOTES])
     }
   }
 }

@@ -13,7 +13,7 @@
 
 <script>
     import Entrypreview from "../components/EntryPreview";
-    import {TYPE_NAME} from "../lib/store_consts";
+    import {ENTRYTYPES_TYPE, ENTRYTYPES_TYPENAME} from "../lib/store_consts";
 
     export default {
         name: "EntryPreviewList",
@@ -63,7 +63,7 @@
                     new Set(
                         this.$_.map(
                             this.entries,
-                            e => this.$store.getters[TYPE_NAME](e.type_slug))).values())
+                            e => this.$store.getters[ENTRYTYPES_TYPE](e.type_slug))).values())
             }
         }
     }

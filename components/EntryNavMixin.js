@@ -1,6 +1,6 @@
 import {fetch_entry} from "../lib/entry";
 import {GLOBAL, NO_DOMAIN, VIEW} from "../lib/consts";
-import {DOMAIN, ENTRIES_GET_ENTRY, GET_ASPECT_DEF} from "../lib/store_consts";
+import {DOMAIN, ENTRIES_GET_ENTRY, ENTRYTYPES_GET_ASPECT_DEF} from "../lib/store_consts";
 import {aspect_loc_str} from "../lib/aspect";
 
 export default {
@@ -26,7 +26,7 @@ export default {
         const uuid = parent_ref.uuid
 
         // TODO this loc stuff will work different in the future
-        const aspect_def = this.$store.getters[GET_ASPECT_DEF]({
+        const aspect_def = this.$store.getters[ENTRYTYPES_GET_ASPECT_DEF]({
           type_slug: parent_entry_type_slug,
           aspect_name: parent_ref.aspect_loc[0][1]
         })

@@ -12,6 +12,7 @@
 
     import {ASPECT, ENTRY, VIEW} from "../lib/consts";
     import Aspect from "./Aspect";
+    import {ENTRYTYPES_TYPE, ENTRYTYPES_TYPENAME} from "../lib/store_consts";
 
     export default {
         name: "EntryAspectView",
@@ -33,7 +34,7 @@
         },
         computed: {
             entry_type() {
-                return this.$store.getters.entry_type(this.entry.type_slug)
+                return this.$store.getters[ENTRYTYPES_TYPE](this.entry.type_slug)
             },
             shown_aspects() {
                 if (this.has_pages) {

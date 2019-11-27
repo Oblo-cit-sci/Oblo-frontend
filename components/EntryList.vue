@@ -19,7 +19,7 @@
 <script>
     import {license_icon} from "../lib/client"
     import EntryNavMixin from "./EntryNavMixin";
-    import {ENTRIES_HAS_ENTRY} from "../lib/store_consts"
+    import {ENTRIES_GET_PROPER_MODE, ENTRYTYPES_TYPENAME} from "../lib/store_consts"
     import {CREATOR, entry_actor_relation} from "../lib/actors";
     import {privacy_icon} from "../lib/util";
 
@@ -39,7 +39,7 @@
         },
         methods: {
             show(entry) {
-                let mode = this.$store.getters["entries/get_proper_mode"](entry.uuid)
+                let mode = this.$store.getters[ENTRIES_GET_PROPER_MODE](entry.uuid)
                 this.to_entry(entry.uuid, mode)
                 /*
                 if (this.$store.getters[ENTRIES_HAS_ENTRY](entry.uuid))
@@ -65,7 +65,7 @@
             type_name(entry) {
                 // todo this should be a getter. and eventually include a fetch,... never know...
                 console.log("DEPRACATED METHOD!")
-                return  this.$store.getters.entry_type(entry)
+                return  this.$store.getters[ENTRYTYPES_TYPENAME](entry)
                 /*
                 let entry_type = this.$store.getters.entry_type(entry.type_slug)
                 if(entry_type) {

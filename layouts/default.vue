@@ -92,7 +92,15 @@
 
 
 <script>
-    import {INITIALIZED, SET_ENTRIES, DOMAIN_TITLE, DOMAIN} from "../lib/store_consts"
+  import {
+    INITIALIZED,
+    SET_ENTRIES,
+    DOMAIN_TITLE,
+    DOMAIN,
+    CONNECTING,
+    CONNECTED,
+    USER_LOGGED_IN
+  } from "../lib/store_consts"
     import GlobalSnackbar from "../components/GlobalSnackbar"
     import {EOVALUE, HOME} from "../lib/consts"
     import Footer from "../components/Footer"
@@ -179,13 +187,13 @@
                 return this.$store.getters[INITIALIZED]()
             },
             connecting() {
-                return this.$store.getters["connecting"]
+                return this.$store.getters[CONNECTING]
             },
             connected() {
-                return this.$store.getters["connected"]
+                return this.$store.getters[CONNECTED]
             },
             logged_in() {
-                return this.$store.getters["user/logged_in"]
+                return this.$store.getters[USER_LOGGED_IN]
             },
             items() {
                 let items = all_items

@@ -54,6 +54,7 @@
     const modes = [VIEW, COORDINATE]
 
     import {mapGetters} from "vuex"
+    import {MAP_GOTO_LOCATION} from "../lib/store_consts";
 
     // mode could also be COORDINATE
 
@@ -139,7 +140,7 @@
                 }
             },
             goto_location() {
-              return this.$store.getters["map/goto_location"]()
+              return this.$store.getters[MAP_GOTO_LOCATION]()
             }
         },
         mounted() {
