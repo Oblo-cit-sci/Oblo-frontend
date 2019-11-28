@@ -61,7 +61,6 @@
       }
       return {
         filters: filters,
-        filter_configs: this.$_.mapKeys(all_filters, v => v.name),
         filter_values: {},
       }
     },

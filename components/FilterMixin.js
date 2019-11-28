@@ -1,4 +1,3 @@
-import {NO_DOMAIN} from "../lib/consts";
 
 export default {
   name: "FilterMixin",

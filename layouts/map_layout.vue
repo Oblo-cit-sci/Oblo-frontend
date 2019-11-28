@@ -75,7 +75,7 @@
     import EntryPreviewList from "../components/EntryPreviewList";
     import EntryAspectView from "../components/EntryAspectView";
     import {NO_DOMAIN} from "../lib/consts";
-    import {DOMAIN} from "../lib/store_consts";
+    import {DOMAIN, SEARCH_GET_ENTRIES} from "../lib/store_consts";
     import {string_list2options} from "../lib/options";
 
     const SEARCH = "search"

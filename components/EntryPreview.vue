@@ -208,7 +208,6 @@
             },
             shown_aspects() {
                 const search_res = this.$store.getters[SEARCH_ENTRY_ASPECT](this.entry.uuid)
-                console.log(this.entry_type)
                 return this.$_.filter(this.entry_type.content.aspects, a => search_res.includes(a.name))
             }
         }
