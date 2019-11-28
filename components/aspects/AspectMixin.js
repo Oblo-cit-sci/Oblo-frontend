@@ -131,7 +131,7 @@ export default {
           return {value:null}
         }
       }
-      //console.log(this.aspect.name)
+      //console.log("value . ",this.aspect.name)
       if (this.aspect.attr.IDAspect) {
         let this_uuid = aspect_loc_uuid(this.aspect_loc)
         let entry = this.$store.getters[ENTRIES_GET_ENTRY](this_uuid)
@@ -140,6 +140,7 @@ export default {
       }
       if (this.aspect.attr.ref_value) {
         //console.log("ref")
+        //debugger
         // GRAB REF
         let aspect_location = complete_aspect_loc(
           aspect_loc_uuid(this.aspect_loc),
@@ -156,36 +157,32 @@ export default {
         if (ref_value.hasOwnProperty(REGULAR)) {
           delete ref_value[REGULAR]
         }
-
+        let stored_value = this.$store.getters[ENTRIES_VALUE](this.aspect_loc)
         if (this.aspect.attr.ref_update === "create") {
-          debugger
-          //console.log("ref-create", this.aspect_loc)
-          let stored_value = this.$store.getters[ENTRIES_VALUE](this.aspect_loc)
-          //console.log("stored", stored_value)
           if (this.$_.isEqual(stored_value, aspect_default_value(this.aspect))) {
-            //console.log("ref-create:updating")
             this.update_value(ref_value.value)
             return ref_value
           } else {
             return stored_value
           }
         } else {
-          //console.log("updating")
-          //this.update_value(ref_value.value)
-          //return ref_value
+          if(!this.$_.isEqual(stored_value, ref_value)) {
+            this.update_value(ref_value.value)
+          }
+          return ref_value
         }
       } else if (this.aspect.attr.ref_length) { // this is for lists
         let location_array = complete_aspect_loc(aspect_loc_uuid(this.aspect_loc), aspect_loc_str2arr(this.aspect.attr.ref_length))
-
         // USES lists or ints
         const length_value = this.$store.getters[ENTRIES_VALUE](location_array).value
+
+        //debugger
         // todo use the aspect_descr to find out if its a list or an int
         if (Array.isArray(length_value)) {
           this.extra["ref_length"] = length_value.length
         } else {
           this.extra["ref_length"] = parseInt(length_value)
         }
-
         return this.$store.getters[ENTRIES_VALUE](this.aspect_loc)
       } else {
         let value = this.$store.getters[ENTRIES_VALUE](this.aspect_loc)

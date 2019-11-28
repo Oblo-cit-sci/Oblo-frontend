@@ -123,8 +123,8 @@ export const mutations = {
     state.domains = ld.filter(state.domains, domain => domain.value !== domain_name)
   },
   update_draft_numbers(state, additional_draft_numbers) {
-    for(let etype in additional_draft_numbers) {
-      if(state.draft_numbers.hasOwnProperty(etype)) {
+    for (let etype in additional_draft_numbers) {
+      if (state.draft_numbers.hasOwnProperty(etype)) {
         state.draft_numbers[etype] += additional_draft_numbers[etype]
       } else {
         state.draft_numbers[etype] = additional_draft_numbers[etype]
@@ -197,6 +197,11 @@ export const getters = {
       for (let entry of state.entries.entries.values()) {
         types.add(entry.type_slug)
       }
+      console.log("conaining_types_options", types)
+      console.log("as array", Array.from(types))
+      console.log("getters", getters)
+      if (Array.from(types).length > 0)
+        console.log("typename", getters[ENTRYTYPES_TYPENAME](Array.from(types)[0]))
       return Array.from(types).map(type => {
         return {value: type, text: getters[ENTRYTYPES_TYPENAME](type)}
       })

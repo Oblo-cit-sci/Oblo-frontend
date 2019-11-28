@@ -1,6 +1,6 @@
 import {aspect_loc_str2arr, check_condition_value} from "../lib/aspect";
 import {select_aspect_loc} from "../lib/entry";
-import {EDIT} from "../lib/consts";
+import {EDIT, ENTRY} from "../lib/consts";
 import {string_list2options} from "../lib/options";
 
 export default {
@@ -24,6 +24,11 @@ export default {
     default_prev_page_text: {
       type: String,
       default: "Previous page"
+    },
+    // only used, when the paginate is on concrete entries. not necessary.
+    // It's for conditioning, which depends on aspects of the entry
+    entry: {
+      type: Object
     }
   },
   computed: {
@@ -63,15 +68,7 @@ export default {
       return this.default_next_page_text
     },
     active_pages() {
-      return this.$_.filter(this.pages, p => {
-        if (p.condition) {
-          let aspect_loc = this.$_.concat([[EDIT, this.$store.state.entries.edit.uuid]], aspect_loc_str2arr(p.condition.aspect))
-          let value = select_aspect_loc(this.$store.state.entries, aspect_loc)
-          return check_condition_value(value, p.condition)
-        } else {
-          return true
-        }
-      })
+      return this.$_.filter(this.pages, p => this.page_disabled(p))
     },
     number_of_pages() {
       return this.active_pages.length
@@ -82,6 +79,15 @@ export default {
     }
   },
   methods: {
+    page_disabled(page) {
+      if (page.condition && this.entry) {
+        let aspect_loc = this.$_.concat([[ENTRY, this.entry.uuid]], aspect_loc_str2arr(page.condition.aspect))
+        let value = select_aspect_loc(this.$store.state.entries, aspect_loc)
+        return check_condition_value(value, page.condition)
+      } else {
+        return true
+      }
+    },
     test_last_page(test_page) {
       return test_page === this.total - 1
     },
@@ -112,15 +118,7 @@ export default {
       return this.$_.slice(this.active_pages, null, page)
     },
     mask_pages_active() {
-      return this.$_.map(this.pages, p => {
-        if (p.condition) {
-          let aspect_loc = this.$_.concat([[EDIT, this.$store.state.entries.edit.uuid]], aspect_loc_str2arr(p.condition.aspect))
-          let value = select_aspect_loc(this.$store.state.entries, aspect_loc)
-          return check_condition_value(value, p.condition)
-        } else {
-          return true
-        }
-      })
+      return this.$_.map(this.pages, p => this.page_disabled(p))
     }
   },
   watch: {

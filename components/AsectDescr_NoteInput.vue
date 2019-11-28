@@ -45,7 +45,6 @@
                 this.show_input = true
             },
             update_note(note) {
-                //console.log("update_note", note)
                 this.$store.commit("entrytypes/add_note", {
                     note_location: this.aspect_descr_loc,
                     note: note

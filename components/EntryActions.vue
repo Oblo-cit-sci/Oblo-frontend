@@ -4,9 +4,10 @@
     Paginate(
       v-if="has_pages"
       :page="page"
-      @update:page="$emit('update:page', $event)"
+      @update:page="update_page($event)"
       :total="entry_type.content.meta.pages.length"
       :named_pages="named_pages"
+      :entry="entry"
       :pages="entry_type.content.meta.pages"
       @lastpage="more_follow_page = ($event)")
       // todo this can come back
@@ -69,9 +70,6 @@
             mode: {
                 type: String // view, create edit
             },
-            page: {
-                type: Number
-            },
             entry: {
                 type: Object
             },
@@ -79,7 +77,6 @@
         data() {
             return {
                 NOT_TRAINING: false,
-                last_page: false,
                 dialog_visible: false,
                 delete_dialog_data: {
                     id: "delete",
@@ -103,6 +100,10 @@
             }
         },
         methods: {
+            update_page(page) {
+              this.page = page
+              this.$emit('update:page', page)
+            },
             edit() {
                 this.$emit(EDIT)
             },
@@ -242,9 +243,6 @@
                 console.log(current_user_is_owner(this.$store, this.entry))
                 return current_user_is_owner(this.$store, this.entry)
             },
-            named_pages() {
-                return this.entry_type.content.meta.hasOwnProperty("named_pages") || false
-            },
             save_word() {
                 // todo
                 if (this.in_context) {
@@ -275,7 +273,3 @@
     }
 
 </script>
-
-<style scoped>
-
-</style>

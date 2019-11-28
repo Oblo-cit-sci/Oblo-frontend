@@ -12,6 +12,7 @@ export const state = () => ({
 export const getters = {
   type_name(state) {
     return slug => {
+      console.log("typename of ", slug)
       return state.entry_types.get(slug).title
     }
   },
@@ -140,8 +141,8 @@ export const mutations = {
         select = select[loc]
       }
       select._note = note
-      //select = ld.cloneDeep(select)
-      state.notes[type_slug] = ld.cloneDeep(type_notes)
+      select = ld.cloneDeep(select)
+      //state.notes = ld.cloneDeep(state.notes)
     } else {
       console.log("entrytypes: add_note: wtf!")
     }
@@ -152,7 +153,7 @@ export const mutations = {
 
 export const actions = {
   init_notes(context, type_slug) {
-    let entry_type = context.rootGetters.entry_type(type_slug)
+    let entry_type = context.getters.entry_type(type_slug)
 
     const rec_aspect_descr_note_init = (aspect) => {
       let note_wrapper = {
