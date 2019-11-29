@@ -159,7 +159,8 @@ export default {
         }
         let stored_value = this.$store.getters[ENTRIES_VALUE](this.aspect_loc)
         if (this.aspect.attr.ref_update === "create") {
-          if (this.$_.isEqual(stored_value, aspect_default_value(this.aspect))) {
+          if (this.$_.isEqual(stored_value, aspect_default_value(this.aspect)) &&
+            !this.$_.isEqual(stored_value, ref_value)) { // this will catch a inf loop when ref_value === default
             this.update_value(ref_value.value)
             return ref_value
           } else {

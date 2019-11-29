@@ -1,6 +1,6 @@
 import {aspect_loc_str2arr, check_condition_value} from "../lib/aspect";
 import {select_aspect_loc} from "../lib/entry";
-import {EDIT, ENTRY} from "../lib/consts";
+import {ENTRY} from "../lib/consts";
 import {string_list2options} from "../lib/options";
 
 export default {

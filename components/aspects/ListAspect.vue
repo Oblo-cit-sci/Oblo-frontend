@@ -33,10 +33,7 @@
               v-on:move="move($event)")
     MinMaxIndicators(
       v-if="!readOnly && !disabled"
-      :aspect="aspect"
-      :length="this.value.length"
-      :min="this.min"
-      :max="this.max")
+      v-bind="min_max_props")
     .inline(v-if="adding_allowed && !fixed_length")
       v-btn(:disabled="!more_allowed" @click="add_value()" :color="requieres_more_color") Add {{item_name}}
         v-icon mdi-plus
@@ -112,7 +109,6 @@
       if (this.extra.ref_length) {
         if (this.extra.ref_length !== this.value.length) {
           const diff = this.extra.ref_length - this.value.length
-          console.log("diff", diff)
           if (diff > 0)
             this.add_value(diff)
           else if (diff < 0) {
@@ -252,21 +248,17 @@
       },
       titles() {
         //debugger
-        console.log("titles", this.value.length)
         let titles = new Array(this.value.length)
         let titleAspectName = this.item_aspect.attr.titleAspect
 
-        //console.log("titles for ", this.aspect.name, "from ", titleAspectName)
         let simple_type = SIMPLE_TYPE.includes(this.item_aspect.type)
         let item_name = this.aspect.attr.itemname
 
         if (!simple_type && !titleAspectName && this.item_aspect.type === COMPOSITE) {
           titleAspectName = this.item_aspect.components[0].name
-          //console.log("title Aspect name:", titleAspectName)
           if (!item_name) {
             item_name = titleAspectName
           }
-          //console.log("setting titleAspectName to first component")
         }
 
         // condition hell should go if we apply json schema properly, this is all fallback stuff
@@ -315,6 +307,14 @@
       },
       has_indexTitle() {
         return this.aspect.attr.indexTitle || false
+      },
+      min_max_props() {
+        return {
+          aspect: this.aspect,
+          length: this.value.length,
+          min: this.min,
+          max: this.max
+        }
       }
     }
   }

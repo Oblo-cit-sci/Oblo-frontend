@@ -48,7 +48,6 @@
         },
         data() {
             return {
-                // TODO duplicate of personalE
                 filter_configs: this.$_.mapKeys(this.include_filters, v => v.name),
                 filter_values: {},
                 //

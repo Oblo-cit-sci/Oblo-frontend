@@ -35,12 +35,6 @@
             }
         },
         methods: {
-            update_value($event, index) {
-                // TODO x
-                this.value[index] = $event
-                // todo use TitleAspect in meta
-                this.value_change(this.value)
-            },
             comp_extras(comp_type) {
                 let xtra_copy = JSON.parse(JSON.stringify((this.extra || {})))
                 // composites in lista dont have title descriptions, their kids should
