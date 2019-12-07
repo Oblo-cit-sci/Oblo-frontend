@@ -199,7 +199,6 @@ export const getters = {
       }
       console.log("conaining_types_options", types)
       console.log("as array", Array.from(types))
-      console.log("getters", getters)
       if (Array.from(types).length > 0)
         console.log("typename", getters[ENTRYTYPES_TYPENAME](Array.from(types)[0]))
       return Array.from(types).map(type => {

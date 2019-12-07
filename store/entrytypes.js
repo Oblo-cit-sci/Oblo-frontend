@@ -10,10 +10,26 @@ export const state = () => ({
 })
 
 export const getters = {
-  type_name(state) {
+  has_type(state) {//ENTRYTYPES_HAS_TYPE
+    return (type_slug) => {
+      return state.entry_types.has(type_slug)
+    }
+  },
+  entry_type(state) {
+    return (type_slug) => {
+      return state.entry_types.get(type_slug)
+    }
+  },
+  type_name(state, getters) {
     return slug => {
-      console.log("typename of ", slug)
-      return state.entry_types.get(slug).title
+      //console.log("typename of ", slug)
+      const etype = getters.entry_type(slug)
+      if (etype) {
+        return etype.title
+      } else {
+        console.log("WARNING: type for unknown slug requested", slug)
+        return "unknown type:" + slug
+      }
     }
   },
   domain_of_type(state) {
@@ -32,11 +48,7 @@ export const getters = {
     }
     return global_entry_types
   },
-  entry_type(state) {
-    return (type_slug) => {
-      return state.entry_types.get(type_slug)
-    }
-  },
+
   entrytypes(state) {
     return Array.from(state.entry_types.values())
   },
