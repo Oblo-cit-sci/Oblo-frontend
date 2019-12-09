@@ -87,8 +87,14 @@
                 return this.$_.size(this.value) > 0
             },
             items() {
+                console.log("el a")
+                console.log(this.value)
                 let entries = this.$_.map(this.value, e => {
                     const entry = this.$store.getters[ENTRIES_GET_ENTRY](e)
+                    console.log(entry)
+                    if(!entry) {
+                        return {title: "UNKNWON ENTRY", uuid: this.uuid}
+                    }
                     return {title: entry.title, uuid: e}
                 })
                 no_duplicate_texts(entries, "title")

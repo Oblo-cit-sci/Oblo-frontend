@@ -2,8 +2,10 @@ import {fetch_entry} from "../lib/entry";
 import {GLOBAL, NO_DOMAIN, VIEW} from "../lib/consts";
 import {DOMAIN, ENTRIES_GET_ENTRY, ENTRYTYPES_GET_ASPECT_DEF} from "../lib/store_consts";
 import {aspect_loc_str} from "../lib/aspect";
+import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
 
 export default {
+  mixins: [TriggerSnackbarMixin],
   methods: {
     // why does has_entry call get entry
     has_entry(uuid) {
@@ -15,7 +17,7 @@ export default {
         this.to_entry(uuid, mode)
       }).catch(() => {
         // todo ENH: could also be an error msg from the server
-        this.$store.commit("set_error_snackbar", "Couldn't fetch entry")
+        this.error_snackbar("Couldn't fetch entry")
       })
     },
     to_parent(to_last_element = true, mode = VIEW) {
