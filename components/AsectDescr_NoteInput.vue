@@ -14,7 +14,7 @@
 
 <script>
     import TextLongAspect from "./aspects/TextLongAspect";
-    import {ENTRYTYPES_NOTES} from "../lib/store_consts";
+    import {ENTRYTYPES_ADD_NOTE, ENTRYTYPES_NOTE} from "../lib/store_consts";
 
     export default {
         name: "AsectDescr_NoteInput",
@@ -34,7 +34,7 @@
         computed: {
             note() {
                 console.log("update")
-                return this.$store.getters[ENTRYTYPES_NOTES](this.aspect_descr_loc)
+                return this.$store.getters[ENTRYTYPES_NOTE](this.aspect_descr_loc)
             },
             has_note() {
                 return this.note !== null
@@ -45,10 +45,13 @@
                 this.show_input = true
             },
             update_note(note) {
-                this.$store.commit("entrytypes/add_note", {
+                this.$store.commit(ENTRYTYPES_ADD_NOTE, {
                     note_location: this.aspect_descr_loc,
                     note: note
                 })
+              // ugly fix, for chromi not calling this.note
+             console.log(this.$store.getters[ENTRYTYPES_NOTE](this.aspect_descr_loc))
+              console.log(this.note)
             }
         },
         watch: {}

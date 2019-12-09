@@ -12,6 +12,9 @@ export default {
     named_pages() {
       return this.entry_type.content.meta.hasOwnProperty("named_pages") || false
     },
+    slug() {
+      return this.entry_type.slug
+    },
     pages() {
       return this.entry_type.content.meta.pages || []
     },

@@ -46,7 +46,7 @@
         get_aspect_vue_component, label
     } from "../lib/aspect";
     import AspectMixin from "./aspects/AspectMixin";
-    import {ENTRYTYPES_NOTES} from "../lib/store_consts";
+    import {ENTRYTYPES_NOTE} from "../lib/store_consts";
 
     export default {
         name: "Aspect",
@@ -139,7 +139,7 @@
                     }
                 }
                 const aspect_descr_loc = aspect_loc2aspect_descr_loc(this.aspect_loc)
-                const note = this.$store.getters[ENTRYTYPES_NOTES](aspect_descr_loc)
+                const note = this.$store.getters[ENTRYTYPES_NOTE](aspect_descr_loc)
                 return {
                     title: this.extra.no_title ? "" : this.aspect_label(aspect),
                     description: aspect.description || "",

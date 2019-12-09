@@ -44,6 +44,7 @@
   import Title_Description from "../components/Title_Description";
   import EntrytypePageMixin from "../components/EntrytypePageMixin";
   import goTo from 'vuetify/lib/services/goto'
+  import mapGetters from 'vuex'
 
   const TYPE_SELECT = "type_select"
   const ENTRY_NOTES = "entry_notes"
@@ -67,6 +68,10 @@
       next()
     },
     computed: {
+      /*...mapGetters({"f_type_notes": ENTRYTYPES_TYPE_NOTES}),
+      type_notes() {
+          return this.f_type_notes(this.slug)
+      },*/
       options() {
         return this.$_.map(this.$store.getters[ENTRYTYPES_TYPES], o => {
           return {
@@ -91,6 +96,9 @@
       has_pages() {
         // todo duplicate entryMixin
         return this.entry_type.content.meta.hasOwnProperty("pages")
+      },
+      notes() {
+        type_notes
       }
     },
     methods: {

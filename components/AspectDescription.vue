@@ -39,9 +39,6 @@
         data() {
             return {}
         },
-        created() {
-
-        },
         computed: {
             title_description() {
                 return {

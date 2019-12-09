@@ -1,6 +1,7 @@
 import {COMPOSITE, LIST} from "../lib/consts";
 import {object_list2options} from "../lib/options";
 import {entries_domain_filter} from "../lib/search";
+import {ENTRYTYPES_ADD_NOTE} from "../lib/store_consts";
 
 const ld = require("lodash")
 
@@ -48,7 +49,6 @@ export const getters = {
     }
     return global_entry_types
   },
-
   entrytypes(state) {
     return Array.from(state.entry_types.values())
   },
@@ -84,14 +84,14 @@ export const getters = {
   all_notes(state) {
     return state.notes
   },
-  type_notes(state) {
+  type_notes(state) { // ENTRYTPES_TYPE_NOTES
     return (type_slug) => {
       return state.notes[type_slug]
     }
   },
   note(state, getters) {
     return aspect_descr_loc => {
-      const type_notes = getters.type_notes(aspect_descr_loc[0])
+      let type_notes = getters.type_notes(aspect_descr_loc[0])
       aspect_descr_loc = ld.drop(aspect_descr_loc)
       let select = type_notes
       //console.log(type_notes)
@@ -142,7 +142,7 @@ export const mutations = {
   add_aspect_descr_notes(state, {type_slug, aspect_name, notes}) {
     state.notes[type_slug][aspect_name] = notes
   },
-  add_note(state, {note_location, note}) {
+  add_note(state, {note_location, note}) { // ENTRYTYPES_ADD_NOTE
     console.log("adding note", note_location, "<", note, ">")
     const type_slug = note_location[0]
     const type_notes = state.notes[type_slug]
@@ -152,7 +152,7 @@ export const mutations = {
       for (let loc of note_location) {
         select = select[loc]
       }
-      select._note = note
+      select = Object.assign(select, {_note : note})
       select = ld.cloneDeep(select)
       //state.notes = ld.cloneDeep(state.notes)
     } else {
