@@ -117,7 +117,8 @@
                     return
                 }
                 const entries = this.$store.getters[ENTRIES_GET_RECURSIVE_ENTRIES](this.entry.uuid)
-                let export_data = {entries: {...entries}, user_key: user_key}
+                console.log("sening entries", entries)
+                let export_data = {entries: entries, user_key: user_key}
                 //console.log(url, user_key, export_data)
                 axios.post(url, export_data, {
                     headers: {

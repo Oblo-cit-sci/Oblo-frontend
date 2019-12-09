@@ -103,7 +103,7 @@
             },
             export_entries() {
                 const entries = Array.from(this.$store.state.entries.entries.values())
-                export_data(entries, "all_licci_entries.json")
+                export_data({entries:entries}, "all_licci_entries.json")
             },
             show_clear_entries() {
                 this.show_dialog = true
@@ -117,10 +117,13 @@
                 })
             },
             load_file(event) {
-                //console.log("load event", event)
+                console.log("load event", event)
                 if (event.ok) {
-                    console.log("importting")
-                    event.data.forEach(entry => {
+                    // console.log("importing", event)
+                    console.log(event.data.entries, typeof event.data.entries)
+                    // console.log(Array.isArray(event.data.entries))
+                    let entries =  event.data.entries
+                    entries.forEach(entry => {
                         entry.creation_datetime = new Date(entry.creation_datetime)
                         entry.local = {
                             dirty: false,
@@ -128,7 +131,7 @@
                         }
                         //this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
                     })
-                    merge_imported_entries(this.$store, event.data)
+                    merge_imported_entries(this.$store, event.data.entries)
                     this.persist_entries()
                     //console.log("Entries imported")
                     //this.ok_snackbar("Entries imported")

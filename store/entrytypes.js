@@ -143,7 +143,7 @@ export const mutations = {
     state.notes[type_slug][aspect_name] = notes
   },
   add_note(state, {note_location, note}) { // ENTRYTYPES_ADD_NOTE
-    console.log("adding note", note_location, "<", note, ">")
+    // console.log("adding note", note_location, "<", note, ">")
     const type_slug = note_location[0]
     const type_notes = state.notes[type_slug]
     if (type_notes) {
@@ -154,7 +154,8 @@ export const mutations = {
       }
       select = Object.assign(select, {_note : note})
       select = ld.cloneDeep(select)
-      //state.notes = ld.cloneDeep(state.notes)
+      // TODO fucking annoying, and triggers update on all aspects!
+      state.notes = ld.cloneDeep(state.notes)
     } else {
       console.log("entrytypes: add_note: wtf!")
     }

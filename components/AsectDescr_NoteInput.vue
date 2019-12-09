@@ -33,7 +33,7 @@
         },
         computed: {
             note() {
-                console.log("update")
+                //console.log("update")
                 return this.$store.getters[ENTRYTYPES_NOTE](this.aspect_descr_loc)
             },
             has_note() {
@@ -41,17 +41,14 @@
             }
         },
         methods: {
-            add_note() {
-                this.show_input = true
-            },
             update_note(note) {
                 this.$store.commit(ENTRYTYPES_ADD_NOTE, {
                     note_location: this.aspect_descr_loc,
                     note: note
                 })
-              // ugly fix, for chromi not calling this.note
-             console.log(this.$store.getters[ENTRYTYPES_NOTE](this.aspect_descr_loc))
-              console.log(this.note)
+                // ugly fix, for chromi not calling this.note
+                // console.log(this.$store.getters[ENTRYTYPES_NOTE](this.aspect_descr_loc))
+                // console.log(this.note)
             }
         },
         watch: {}

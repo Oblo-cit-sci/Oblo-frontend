@@ -80,7 +80,7 @@ export default {
         delete clone.local
         return clone
       })
-      export_data(entries, this.download_title)
+      export_data({entries: entries}, this.download_title)
       this.$store.commit("entries/set_downloaded", this.entry.uuid)
     }
   }
