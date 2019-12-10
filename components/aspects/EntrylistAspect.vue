@@ -81,17 +81,15 @@
                 console.log("TODO disable this aspect")
             }
             this.goto_stored_page()
+            this.guarantee_page()
         },
         computed: {
             has_items() {
                 return this.$_.size(this.value) > 0
             },
             items() {
-                console.log("el a")
-                console.log(this.value)
                 let entries = this.$_.map(this.value, e => {
                     const entry = this.$store.getters[ENTRIES_GET_ENTRY](e)
-                    console.log(entry)
                     if(!entry) {
                         return {title: "UNKNWON ENTRY", uuid: this.uuid}
                     }
@@ -126,7 +124,10 @@
                 if (action.confirm) {
                     let index = parseInt(action.id)
                     let child_uuid = this.value[index]
+                    console.log(this.pages, this.page)
                     this.$store.dispatch(ENTRIES_DELETE_ENTRY, child_uuid)
+                    console.log(this.pages, this.page)
+                    this.guarantee_page()
                 }
             },
             create_item() {

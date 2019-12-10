@@ -9,7 +9,7 @@
             v-icon(:class="default_action_icon")
         MetaChips(v-if="show_meta_aspects" :meta_aspects="meta_aspects")
         Taglist(v-if="show_tags" :tags="tags")
-        .red--text(v-if="outdated")
+        .orange--text(v-if="outdated")
           v-icon(color="orange") mdi-alert-outline
           span Created from an outdated version. Some values might change. Download the entry if update does not work
       v-col(v-if="show_image" cols=12 class="col-md-2 col-sm-12 entry-image")
@@ -40,7 +40,6 @@
             v-for="act in additional_actions"
             :key="act.key"
             @click="additional_action(act.key)") {{act.name}}
-
 </template>
 
 <script>

@@ -113,6 +113,7 @@ export default {
         return this.mvalue.hasOwnProperty("regular") ? this.mvalue.regular : true
       },
       set(value, old_value) {
+        console.log("set regular")
         if (value) {
           this.update_value(aspect_raw_default_value(this.aspect))
         } else {

@@ -112,11 +112,11 @@ export const mutations = {
       // console.log("p", pre_aspect_loc)
       const other_aspect_loc = children[other_child_uuid]
       // console.log(ld.isEqual(loc_remove_last(other_aspect_loc), pre_aspect_loc))
-      if(ld.isEqual(loc_remove_last(other_aspect_loc), pre_aspect_loc)) {
-        if(other_aspect_loc[other_aspect_loc.length - 1 ][1] > shift_index) {
+      if (ld.isEqual(loc_remove_last(other_aspect_loc), pre_aspect_loc)) {
+        if (other_aspect_loc[other_aspect_loc.length - 1][1] > shift_index) {
           // console.log(other_aspect_loc[other_aspect_loc.length - 1 ][1])
           //debugger
-          other_aspect_loc[other_aspect_loc.length - 1 ][1]--
+          other_aspect_loc[other_aspect_loc.length - 1][1]--
           // console.log(other_aspect_loc[other_aspect_loc.length - 1 ][1])
         }
       }
@@ -251,17 +251,21 @@ export const getters = {
       return select_aspect_loc(state, aspect_loc)
     }
   },
-  get_recursive_entries(state, getters) {
+  get_recursive_entries(state, getters) { //  ENTRIES_GET_RECURSIVE_ENTRIES
     return (uuid = state.edit.uuid) => {
+      let entries = []
       const entry = getters.get_entry(uuid)
-      let entries = [entry]
-      const child_keys = Object.keys(entry.refs.children)
-      const child_entries_list = ld.map(child_keys, uuid => getters.get_recursive_entries(uuid))
-      child_entries_list.forEach(ce_list => {
-        ce_list.forEach(c_entry => {
-          entries.push(c_entry)
+      //console.log(entry)
+      if (entry) {
+        entries.push(entry)
+        const child_keys = Object.keys(entry.refs.children)
+        const child_entries_list = ld.map(child_keys, uuid => getters.get_recursive_entries(uuid))
+        child_entries_list.forEach(ce_list => {
+          ce_list.forEach(c_entry => {
+            entries.push(c_entry)
+          })
         })
-      })
+      }
       return entries
     }
   },
@@ -373,11 +377,6 @@ export const actions = {
     context.commit("save_entry", child)
     context.commit("add_ref_child", {uuid, aspect_loc, child_uuid})
   },
-  /*add_child(context, uuid_n_aspect_loc_n_child) {
-    console.log("store.entries: add child")
-    context.commit("set_entry_value", uuid_n_aspect_loc_n_child)
-    context.commit("add_ref_child", uuid_n_aspect_loc_n_child)
-  },*/
   cancel_entry_edit({commit}, uuid) {
     commit("cancel_entry_edit", uuid)
   },
@@ -406,7 +405,7 @@ export const actions = {
     /*if(context.getters.edit_uuid === uuid) {
       first_loc = EDIT
     }*/
-    context.commit("_remove_entry_value_index", ld.concat([[EDIT, uuid]], aspect_loc))
+    context.commit("_remove_entry_value_index", ld.concat([[ENTRY, uuid]], aspect_loc))
     context.commit("_remove_entry_ref_index", {uuid, child_uuid, aspect_loc})
   },
   delete_entry(context, uuid) { // ENTRIES_DELETE_ENTRY

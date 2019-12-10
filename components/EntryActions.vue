@@ -160,7 +160,6 @@
                 }
             },
             cancel_edit() {
-                console.log("cancel_edit")
                 if (this.entry.version === 0) {
                     this.$store.dispatch(ENTRIES_DELETE_ENTRY, this.entry.uuid)
                     this.ok_snackbar("Creation canceled")
@@ -176,7 +175,6 @@
             save() {
                 // todo not if it is an aspect page
                 //save_entry(this.$store, this.entry)
-
                 this.$store.dispatch(ENTRIES_SAVE_ENTRY)
                 this.persist_entries()
                 this.ok_snackbar("Entry saved")

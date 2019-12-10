@@ -60,6 +60,11 @@ export default {
       setTimeout(() => {
         this.set_page(this.pages.length - 1, goto_id)
       }, 10)
+    },
+    guarantee_page() {
+      if(this.page >= this.pages.length) {
+        this.set_page(this.pages.length - 1)
+      }
     }
   },
   computed: {

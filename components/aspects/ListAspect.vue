@@ -180,6 +180,7 @@
         if (this.structure === PANELS) {
           this.panelState = []
         }
+        this.guarantee_page()
       },
       move(index_direction) {
         const index = index_direction[0]
