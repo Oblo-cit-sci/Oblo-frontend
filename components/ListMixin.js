@@ -9,7 +9,7 @@ export default {
     return {
       min: null,
       max: null,
-      item_name: this.aspect.attr.itemname || "item",
+
       // page
       page: 0,
       allow_jump: false,
@@ -68,6 +68,9 @@ export default {
     }
   },
   computed: {
+    item_name() {
+        return this.aspect.attr.itemname || "item"
+    },
     more_allowed() {
       return (!this.max || this.value.length < this.max) && !this.disabled && !this.aspect.attr.ref_size
     },

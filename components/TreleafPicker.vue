@@ -1,14 +1,15 @@
 <template lang="pug">
   .treeselect
     div
-      v-btn(icon small @click="$emit('selected', null)") x
+      v-btn(icon small @click="$emit('selected', null)")
+        v-icon mdi-close
     v-list(v-if="has_selection")
       v-list-item(v-for="(node, index) of selection", :key="node.title")
         v-list-item-content
           v-list-item-title {{node.name}}
         v-list-item-action
           v-btn(icon @click="remove(index)")
-            v-icon cancel
+            v-icon mdi-close-circle-outline
     v-divider(v-if="has_both()")
     v-subheader#subheader(v-if="has_level_names") {{act_levelname}}
     SingleSelect(v-if="has_options" :options="act_options" v-on:selection="select($event)" :select_sync="false" :highlight="false")

@@ -152,7 +152,7 @@ export default {
         //console.log("ref value", ref_value)
         if (ref_value === undefined) {
           console.log("broken ref!")
-          ref_value = pack_value(this.raw_default_value())
+          ref_value = pack_value(aspect_raw_default_value(this.aspect))
         }
 
         if (ref_value.hasOwnProperty(REGULAR)) {
