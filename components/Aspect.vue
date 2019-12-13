@@ -69,7 +69,7 @@
         computed: {
             // at the moment
             show_title_description() {
-                if ((this.aspect.attr.placeholder || this.aspect.type === "options") && this.mode === VIEW) {
+                if (((this.aspect.attr && this.aspect.attr.placeholder) || this.aspect.type === "options") && this.mode === VIEW) {
                     return false
                 }
                 if (this.extra.hasOwnProperty("show_title_descr")) {
@@ -81,10 +81,10 @@
                 return !this.disable || !this.aspect.attr.hide_on_disabled
             },
             real_mode() {
-                if (this.aspect.attr.ref_value || this.fixed_value) {
+                if ((this.aspect.attr && this.aspect.attr.ref_value) || this.fixed_value) {
                     return VIEW
                 }
-                if (this.aspect.attr.mode !== undefined) {
+                if (this.aspect.attr && this.aspect.attr.mode !== undefined) {
                     return this.aspect.attr.mode
                 } else
                     return this.mode
@@ -102,7 +102,7 @@
                     return this.aspect.attr.alternative.attr.mode || this.mode
             },
             disable() {
-                return this.condition_fail || this.aspect.attr.disable
+                return this.condition_fail || (this.aspect.attr && this.aspect.attr.disable)
             },
             regular_disable() {
                 return this.disable || !this.use_regular
@@ -126,7 +126,7 @@
             },
             invisible_class() {
                 //console.log(this.aspect.name "inv", this.aspect.attr.hasOwnProperty("visible") )
-                return this.aspect.attr.hasOwnProperty("visible") ? (!this.aspect.attr.visible) : false
+                return (this.aspect.attr && this.aspect.attr.hasOwnProperty("visible")) ? (!this.aspect.attr.visible) : false
             }
         },
         methods: {

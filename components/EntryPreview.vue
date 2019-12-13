@@ -217,7 +217,7 @@
                 return show_actions
             },
             shown_aspects() {
-                console.log(this.entry_type)
+                //console.log(this.entry_type)
                 if (this.entry_type) {
                     const search_res = this.$store.getters[SEARCH_ENTRY_ASPECT](this.entry.uuid)
                     return this.$_.filter(this.entry_type.content.aspects, a => search_res.includes(a.name))

@@ -79,7 +79,7 @@ export default {
     condition_fail() {
       //console.log("condition_fail?", this.aspect, this.aspect.name, this.condition)
       // todo this getting of the value, could mayeb also go into the helper...
-      if (this.aspect.attr.hasOwnProperty("condition")) {
+      if (this.aspect.hasOwnProperty("attr") && this.aspect.attr.hasOwnProperty("condition")) {
         //console.log("condition", this.aspect.name, this.extra[LIST_INDEX])
         let aspect_location = complete_aspect_loc(
           aspect_loc_uuid(this.aspect_loc),
@@ -103,7 +103,7 @@ export default {
     },
     clearIcon() {
       //console.log("AspMix - ", this.aspect.name, this.aspect.type, this.extra)
-      return ((this.extra.listitem && this.mode === EDIT) || false) ? "clear" : undefined //this.extra
+      return ((this.extra.listitem && this.mode === EDIT) || false) ? "mdi-close" : undefined //this.extra
     },
     alternative() {
       return this.aspect.attr.alternative
@@ -131,6 +131,11 @@ export default {
         } else {
           return {value:null}
         }
+      }
+
+      if(!this.aspect.hasOwnProperty("attr")) {
+        console.log("AspectMixin.mvalue: broken Aspect, no ATTR:", this.aspect.name)
+        return pack_value(aspect_raw_default_value(this.aspect))
       }
       //console.log("value . ",this.aspect.name)
       if (this.aspect.attr.IDAspect) {
