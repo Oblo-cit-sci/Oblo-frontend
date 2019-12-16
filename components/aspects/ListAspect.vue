@@ -275,8 +275,6 @@
             console.log(`list no value! index:${i}`)
             titles[i] = ""
           } else {
-
-            console.log(i, simple_type, this.aspect.attr.indexTitle)
             const index_name = () => item_name + " " + (parseInt(i) + 1).toString()
             if (simple_type && !this.aspect.attr.indexTitle) {
               titles[i] = this.value[i].value

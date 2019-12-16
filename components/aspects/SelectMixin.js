@@ -15,7 +15,7 @@ export default {
   created() {
     if (typeof this.aspect.items === "string") {
       if (this.aspect.items.startsWith("*")) {
-        this.options = get_codes_as_options(this.$store.state, this.aspect.items)
+        this.options = get_codes_as_options(this.$store, this.aspect.items)
       } else if (Array.from(Object.keys(delim2str)).includes(this.aspect.items[0])) {
         // getting the options from a value (type: list)
         let aspect_location = complete_aspect_loc(aspect_loc_uuid(this.aspect_loc),aspect_loc_str2arr(this.aspect.items))
