@@ -2,7 +2,7 @@
   this is for the own entries
  */
 import {ASPECT, COMPONENT, DRAFT, EDIT, ENTRY, INDEX, PRIVATE_LOCAL, TITLE_ASPECT, VIEW} from "../lib/consts";
-import {get_entry_titleAspect, get_proper_mode, select_aspect_loc} from "../lib/entry";
+import {default_values, get_entry_titleAspect, get_proper_mode, select_aspect_loc} from "../lib/entry";
 import {
   aspect_loc_str,
   aspect_loc_str2arr,
@@ -168,8 +168,17 @@ export const mutations = {
     //let entry =
     //remove_entry_loc
   },
-  update_app_version(state, uuid = state.edit.uuid) {
+
+  _update_app_version(state, uuid = state.edit.uuid) {
     state.entries.get(uuid).app_version = app_version()
+  },
+  insert_missing_default_values(state, {uuid, type_default_values}) {
+    let aspects_values = state.entries.get(uuid).aspects_values
+    for (let key in type_default_values) {
+      if(!aspects_values.hasOwnProperty(key)) {
+        aspects_values[key] =  type_default_values[key]
+      }
+    }
   }
 }
 
@@ -422,5 +431,11 @@ export const actions = {
     } else {
       console.log("store: entries DELETE tries to delete some entry that doesnt exist!")
     }
+  },
+  update_app_version(context, uuid = context.state.edit.uuid) {
+    const etype = context.getters.get_entry_type(context.getters.get_entry(uuid).type_slug)
+    const type_default_values = default_values(etype)
+    context.commit("insert_missing_default_values", {uuid, type_default_values})
+    context.commit("_update_app_version", uuid)
   }
 }

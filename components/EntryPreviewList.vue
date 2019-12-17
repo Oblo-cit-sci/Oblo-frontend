@@ -13,7 +13,8 @@
 
 <script>
     import Entrypreview from "../components/EntryPreview";
-    import {ENTRYTYPES_TYPE, ENTRYTYPES_TYPENAME} from "../lib/store_consts";
+    import {ENTRYTYPES_TYPE} from "../lib/store_consts";
+    import goTo from 'vuetify/lib/services/goto'
 
     export default {
         name: "EntryPreviewList",
@@ -28,11 +29,15 @@
                 type: Object
             }
         },
-        created() {
-        },
         watch: {
             entries: function () {
                 this.page = 1
+            },
+            page(page) {
+                goTo("body", {
+                    duration: 1200,
+                    easing: "easeOutCubic"
+                })
             }
         },
         data: function () {

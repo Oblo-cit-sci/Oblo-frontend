@@ -12,7 +12,7 @@
             v-icon mdi-close-circle-outline
     v-divider(v-if="has_both()")
     v-subheader#subheader(v-if="has_level_names") {{act_levelname}}
-    SingleSelect(v-if="has_options" :options="act_options" v-on:selection="select($event)" :select_sync="false" :highlight="false")
+    SingleSelect.pb-1(v-if="has_options" :options="act_options" v-on:selection="select($event)" :select_sync="false" :highlight="false")
     .ml-3(v-if="last_description")
       div Description:
       div {{last_description}}

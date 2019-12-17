@@ -55,12 +55,12 @@
                     }
                 }
                 // flat_options // TODO maybe store them...
-
                 let options = {}
                 if (this.aspect.attr.allow_select_levels) {
                     options.include_levels = this.aspect.attr.allow_select_levels
                 }
                 this.flat_options = flatten_tree_to_options(this.tree, options)
+                //console.log(this.flat_options)
             }
         },
         methods: {
@@ -74,9 +74,9 @@
                 if(val) {
                     this.emit(val.value)
                 }
+                //console.log(val)
             },
             emit(val) {
-                //console.log("emit", val)
                 this.value_change(val)
             }
         },
@@ -84,6 +84,11 @@
             prependIcon() {
                 return this.edit ? 'mdi-file-tree' : ''
             }
+            /*description() {
+                let has_d = this.value.hasOwnProperty("description")
+                console.log("hasd", has_d)
+                return this.value.description
+            }*/
         }
     }
 </script>

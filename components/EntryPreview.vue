@@ -176,7 +176,7 @@
                 return this.entry.image
             },
             show_tags() {
-                return true
+                return this.entry.tags.length > 0
             },
             meta_aspects() {
                 let result = []

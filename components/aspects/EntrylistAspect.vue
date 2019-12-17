@@ -2,7 +2,7 @@
   div
     div(v-if="!readOnly")
       v-list(v-if="has_items")
-        v-list-item(v-for="(item, index) in items", :key="item.key" :id="aspect_loc_str(index)" v-if="aspect_is_on_page(index)")
+        v-list-item(v-for="(item, index) in items", :key="item.uuid" :id="aspect_loc_str(index)" v-if="aspect_is_on_page(index)")
           v-list-item-content(@click="open_item(item)")
             v-list-item-title {{index + 1}} &nbsp;
               b {{item.title}}

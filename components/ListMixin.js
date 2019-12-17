@@ -32,12 +32,17 @@ export default {
       const entry = this.get_entry()
       if (entry.local.list_pages) {
         const loc_str = aspect_loc_str(remove_entry_loc(this.aspect_loc))
-        if(entry.local.list_pages[loc_str] !== undefined) {
+        if (entry.local.list_pages[loc_str] !== undefined) {
           this.set_page(entry.local.list_pages[loc_str])
         }
       }
     },
     set_page(page, goto_id) {
+      if (page >= this.pages.length) {
+        page = this.pages.length - 1
+      } else if (page < 0) {
+        page = 0;
+      }
       this.page = page
       this.$store.commit("entries/entries_set_local_list_page", {aspect_loc: this.aspect_loc, page: this.page})
       try {
@@ -54,6 +59,7 @@ export default {
       }
     },
     aspect_is_on_page(index) {
+      //console.log("checking page", index, this.page * this.pagination_tresh, (this.page + 1) * this.pagination_tresh)
       return index >= this.page * this.pagination_tresh && index < (this.page + 1) * this.pagination_tresh
     },
     goto_delayed_last_page(goto_id) {
@@ -62,14 +68,14 @@ export default {
       }, 10)
     },
     guarantee_page() {
-      if(this.page >= this.pages.length) {
+      if (this.page >= this.pages.length) {
         this.set_page(this.pages.length - 1)
       }
     }
   },
   computed: {
     item_name() {
-        return this.aspect.attr.itemname || "item"
+      return this.aspect.attr.itemname || "item"
     },
     more_allowed() {
       return (!this.max || this.value.length < this.max) && !this.disabled && !this.aspect.attr.ref_size
@@ -82,11 +88,7 @@ export default {
       return this.value.length > this.pagination_tresh || this.aspect.attr.pagination
     },
     pagination_tresh() {
-      if (this.aspect.attr.items_per_page) {
-        return this.aspect.attr.items_per_page
-      } else {
-        return PAGINATION_TRESH
-      }
+      return this.aspect.attr.items_per_page || PAGINATION_TRESH
     },
     pages() {
       let pages = []

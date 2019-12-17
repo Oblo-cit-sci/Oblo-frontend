@@ -19,7 +19,9 @@ export default {
       } else if (Array.from(Object.keys(delim2str)).includes(this.aspect.items[0])) {
         // getting the options from a value (type: list)
         let aspect_location = complete_aspect_loc(aspect_loc_uuid(this.aspect_loc),aspect_loc_str2arr(this.aspect.items))
+        // console.log("referenced items...:", aspect_location)
         let value = this.$store.getters[ENTRIES_VALUE](aspect_location).value
+        // console.log("referenced items ->", value)
         //console.log("building options from val", value)
         this.options = object_list2options(value, "value", "value")
         no_duplicate_texts(this.options)

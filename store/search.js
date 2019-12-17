@@ -25,7 +25,7 @@ export const mutations = {
 
 export const getters = {
   get_entries(state) {
-    return Array.from(state.entries.values())
+    return () => Array.from(state.entries.values())
   },
   get_entry_aspects(state) {
     return (entry_uuid) => {

@@ -121,8 +121,14 @@
                 if (event.ok) {
                     // console.log("importing", event)
                     console.log(event.data.entries, typeof event.data.entries)
-                    // console.log(Array.isArray(event.data.entries))
+                    //
                     let entries =  event.data.entries
+                    // TODO TAKE CARE OF THE OLD FORMAT
+                    if(!Array.isArray(event.data.entries)) {
+                        entries = Object.values(event.data.entries)
+                        console.log("trans", entries, typeof entries)
+                    }
+
                     entries.forEach(entry => {
                         entry.creation_datetime = new Date(entry.creation_datetime)
                         entry.local = {
@@ -131,7 +137,7 @@
                         }
                         //this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
                     })
-                    merge_imported_entries(this.$store, event.data.entries)
+                    merge_imported_entries(this.$store, entries)
                     this.persist_entries()
                     //console.log("Entries imported")
                     //this.ok_snackbar("Entries imported")

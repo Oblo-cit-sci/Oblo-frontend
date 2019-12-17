@@ -1,5 +1,4 @@
 import {NO_DOMAIN, TITLE, VISITOR} from "../lib/consts";
-import {entries_domain_filter} from "../lib/search";
 import {object_list2options} from "../lib/options";
 import {ENTRYTYPES_TYPENAME} from "../lib/store_consts";
 
@@ -197,10 +196,8 @@ export const getters = {
       for (let entry of state.entries.entries.values()) {
         types.add(entry.type_slug)
       }
-      console.log("conaining_types_options", types)
-      console.log("as array", Array.from(types))
-      if (Array.from(types).length > 0)
-        console.log("typename", getters[ENTRYTYPES_TYPENAME](Array.from(types)[0]))
+      // console.log("conaining_types_options", types)
+      // console.log("as array", Array.from(types))
       return Array.from(types).map(type => {
         return {value: type, text: getters[ENTRYTYPES_TYPENAME](type)}
       })

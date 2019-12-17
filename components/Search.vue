@@ -79,7 +79,7 @@
         computed: {
             ...mapGetters({entries: ENTRIES_SEARCH}),
             filtered_entries() {
-                let result_entries = this.entries
+                let result_entries = this.entries()
                 for (let filter of Object.values(this.filter_configs)) {
                     //todo we select the value, because select is not just emitting value up, clean this!
                     const filter_value = (this.filter_values[filter.name] || pack_value(null)).value
