@@ -131,7 +131,7 @@
     // {icon: 'flip_to_front', title: 'Entrytypes', to: '/CreateEntrytype'},
     {icon: 'fa-map', title: 'Map', to: '/Map'},
     // {icon: 'computer', title: 'Aspectbuild', to: '/AspectBuild'},
-    {icon: 'mdi-laptop', title: 'Codes', to: '/Codes'},
+    // {icon: 'mdi-laptop', title: 'Codes', to: '/Codes'},
     {icon: 'mdi-account-check', title: 'Register', to: '/register'},
     {icon: 'mdi-login', title: 'Login', to: '/login'},
     {icon: 'mdi-logout', title: 'Logout', to: '/logout'},

@@ -140,7 +140,7 @@
                     merge_imported_entries(this.$store, entries)
                     this.persist_entries()
                     //console.log("Entries imported")
-                    //this.ok_snackbar("Entries imported")
+                    this.ok_snackbar("Entries imported")
                     //this.show_dialog = true
                     //this.dialog_data = this.entries_imported_dialog
                 } else {
