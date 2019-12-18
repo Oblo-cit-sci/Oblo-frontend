@@ -34,205 +34,207 @@
 
 <script>
 
-    /*
-    OPTIONS NEED TO HAVE
-    text, value
-    and optional "description"
-     */
+  /*
+  OPTIONS NEED TO HAVE
+  text, value
+  and optional "description"
+   */
 
-    import {server_icon_path} from "../lib/client";
+  import {server_icon_path} from "../lib/client";
 
-    let select_tresh = 6;
-    let autocomplet_thresh = 20
+  let select_tresh = 6;
+  let autocomplet_thresh = 20
 
-    const NONE = -1
-    const CLEAR_LIST = "list";
-    const SELECT = "select";
-    const AUTOCOMPLETE = "autocomplete"
+  const NONE = -1
+  const CLEAR_LIST = "list";
+  const SELECT = "select";
+  const AUTOCOMPLETE = "autocomplete"
 
-    const RADIOGROUP = "radiogroup"
+  const RADIOGROUP = "radiogroup"
 
-    export const VIEW_OPTIONS = {
-        none: NONE,
-        list: CLEAR_LIST,
-        select: SELECT,
-        autocomplete: AUTOCOMPLETE,
-        radiogroup: RADIOGROUP
-    }
+  export const VIEW_OPTIONS = {
+    none: NONE,
+    list: CLEAR_LIST,
+    select: SELECT,
+    autocomplete: AUTOCOMPLETE,
+    radiogroup: RADIOGROUP
+  }
 
-    export default {
-        name: "SingleSelect",
-        props: {
-            options: Array,
-            selection: [Object, String],
-            highlight: {
-                type: Boolean,
-                default: true
-            },
-            select_sync: {
-                type: Boolean,
-                default: true
-            },
-            force_view: {
-                type: String,
-                default: undefined
-            }, // either (CLEAR_LIST | VUETIFY_SELECT)
-            only_value: {
-                type: Boolean
-            },
-            disabled: {
-                type: Boolean,
-            },
-            placeholder: String, // only select
-            create: {
-                type: Boolean,
-                default: false
-            },
-            clearable: {
-                type: Boolean,
-                default: true
-            }
-        },
-        data() {
-            return {
-                viewStyle: CLEAR_LIST,
-                selected_item: null, // for v-select
-                view_options: VIEW_OPTIONS,
-                radioselect_test: "view",
-                emit_only_value: false
-            }
-        },
-        created() {
-            //console.log("Selection create", this.selection)
-            this.emit_only_value = this.only_value
-            if (this.selection) {
-                this.set_selected_item(false)
-            }
-            if (this.force_view) {
-                this.viewStyle = this.view_options[this.force_view];
-                if (this.viewStyle === RADIOGROUP) {
-                    this.emit_only_value = true
-                    this.set_selected_item(false)
-                }
-                if (!this.viewStyle) {
-                    console.log("Error unknown force_view", this.force_view, "should be from:", this.view_options)
-                }
-            } else {
-                this.set_view_style()
-            }
-        },
-        beforeUpdate() {
-            if (!this.force_view) {
-                this.set_view_style()
-            }
-        },
-        methods: {
-            select(item) {
-                if (this.disabled)
-                    return
-                if (item.value === undefined)
-                    return;
-                if (this.selection && this.selection.value === item.value) {
-                    this.emitUp(null)
-                } else {
-                    this.emitUp(item)
-                }
-            },
-            set_view_style() {
-                let sz = this.$_.size(this.options)
-                if (sz === 0) {
-                    this.viewStyle = NONE
-                } else if (sz < select_tresh) {
-                    this.viewStyle = CLEAR_LIST
-                } else if (sz < autocomplet_thresh) {
-                    this.viewStyle = SELECT
-                } else {
-                    this.viewStyle = AUTOCOMPLETE
-                }
-            },
-            icon_path(item) {
-                if (item.icon) {
-                    return server_icon_path(this.$axios, item.icon)
-                } else return ""
-            },
-            marked(key) {
-                if (this.selection)
-                    return key === this.selection.value && this.highlight;
-            },
-            is_category(item) {
-                return item.type === "category"
-            },
-            emitUp(item) {
-                //console.log("emitUp", item)
-                if(item === undefined)
-                    item = null
-                // todo maybe just one emit?
-                // but item might already be string, ...
-                const event = this.emit_only_value ? (typeof item === "string" ? item : item.value) : item
-                //console.log("emit", item, this.select_sync)
-                if (this.select_sync) {
-                    this.$emit('update:selection', event) // refactor to use the item
-                } else {
-                    //console.log("emit no sync")
-                    this.$emit("selection", event)
-                }
-            },
-            set_selected_item() {
-                //console.log("set_selected_item", this.selected_item, this.only_value, this.selection)
-                if (this.emit_only_value) {
-                    this.selected_item = this.selection
-                } else {
-                    if (typeof this.selection === "string") {
-                        this.emit_only_value = true
-                        this.selected_item = this.$_.find(this.options, (o) => {
-                            return o.value === this.selection
-                        })
-                    } else {
-                        this.selected_item = this.selection;
-                    }
-                }
-            }
-        },
-        computed: {
-            has_some_description() {
-                return this.$_.find(this.options, (o) => o.description && o.description !== "") !== undefined
-            },
-            has_some_icons() {
-                return this.$_.find(this.options, (o) => o.icon && o.icon !== "") !== undefined
-            },
-            view_clearlist() {
-                return this.viewStyle === CLEAR_LIST
-            },
-            view_select() {
-                return this.viewStyle === SELECT
-            },
-            view_autocomplete() {
-                return this.viewStyle === AUTOCOMPLETE
-            },
-            view_radiogroup() {
-                return this.viewStyle === RADIOGROUP
-            },
-            none() {
-                return this.viewStyle === NONE
-            }
-        },
-        watch: {
-            selected_item(item) {
-                this.emitUp(item)
-                /* console.log("emitup", item)
-                if (typeof item === "object") {
-                    this.emitUp(item.value)
-                } else if (typeof item === "string") {
-                    this.emitUp(item)
-                } else {
-                  console.log("SingleSelect. unknown type to emit up")
-                }*/
-            },
-            selection(val) {
-                this.set_selected_item()
-            }
+  export default {
+    name: "SingleSelect",
+    props: {
+      options: Array,
+      selection: [Object, String],
+      highlight: {
+        type: Boolean,
+        default: true
+      },
+      select_sync: {
+        type: Boolean,
+        default: true
+      },
+      force_view: {
+        type: String,
+        default: undefined
+      }, // either (CLEAR_LIST | VUETIFY_SELECT)
+      only_value: {
+        type: Boolean
+      },
+      disabled: {
+        type: Boolean,
+      },
+      placeholder: String, // only select
+      create: {
+        type: Boolean,
+        default: false
+      },
+      clearable: {
+        type: Boolean,
+        default: true
+      }
+    },
+    data() {
+      return {
+        viewStyle: CLEAR_LIST,
+        selected_item: null, // for v-select
+        view_options: VIEW_OPTIONS,
+        radioselect_test: "view",
+        emit_only_value: false
+      }
+    },
+    created() {
+      //console.log("Selection create", this.selection)
+      this.emit_only_value = this.only_value
+      if (this.selection) {
+        this.set_selected_item(false)
+      }
+      if (this.force_view) {
+        this.viewStyle = this.view_options[this.force_view];
+        if (this.viewStyle === RADIOGROUP) {
+          this.emit_only_value = true
+          this.set_selected_item(false)
         }
+        if (!this.viewStyle) {
+          console.log("Error unknown force_view", this.force_view, "should be from:", this.view_options)
+        }
+      } else {
+        this.set_view_style()
+      }
+    },
+    beforeUpdate() {
+      if (!this.force_view) {
+        this.set_view_style()
+      }
+    },
+    methods: {
+      select(item) {
+        if (this.disabled)
+          return
+        if (item.value === undefined)
+          return;
+        if (this.selection && this.selection.value === item.value) {
+          this.emitUp(null)
+        } else {
+          this.emitUp(item)
+        }
+      },
+      set_view_style() {
+        let sz = this.$_.size(this.options)
+        if (sz === 0) {
+          this.viewStyle = NONE
+        } else if (sz < select_tresh) {
+          this.viewStyle = CLEAR_LIST
+        } else if (sz < autocomplet_thresh) {
+          this.viewStyle = SELECT
+        } else {
+          this.viewStyle = AUTOCOMPLETE
+        }
+      },
+      icon_path(item) {
+        if (item.icon) {
+          return server_icon_path(this.$axios, item.icon)
+        } else return ""
+      },
+      marked(key) {
+        if (this.selection)
+          return key === this.selection.value && this.highlight;
+      },
+      is_category(item) {
+        return item.type === "category"
+      },
+      emitUp(item) {
+        //console.log("emitUp", item)
+        if (item === undefined)
+          item = null
+        // todo maybe just one emit?
+        // but item might already be string, ...
+        const event = this.emit_only_value ?
+          ((typeof item === "string" || item === null) ? item : item.value) :
+          item
+        //console.log("emit", item, this.select_sync)
+        if (this.select_sync) {
+          this.$emit('update:selection', event) // refactor to use the item
+        } else {
+          //console.log("emit no sync")
+          this.$emit("selection", event)
+        }
+      },
+      set_selected_item() {
+        //console.log("set_selected_item", this.selected_item, this.only_value, this.selection)
+        if (this.emit_only_value) {
+          this.selected_item = this.selection
+        } else {
+          if (typeof this.selection === "string") {
+            this.emit_only_value = true
+            this.selected_item = this.$_.find(this.options, (o) => {
+              return o.value === this.selection
+            })
+          } else {
+            this.selected_item = this.selection;
+          }
+        }
+      }
+    },
+    computed: {
+      has_some_description() {
+        return this.$_.find(this.options, (o) => o.description && o.description !== "") !== undefined
+      },
+      has_some_icons() {
+        return this.$_.find(this.options, (o) => o.icon && o.icon !== "") !== undefined
+      },
+      view_clearlist() {
+        return this.viewStyle === CLEAR_LIST
+      },
+      view_select() {
+        return this.viewStyle === SELECT
+      },
+      view_autocomplete() {
+        return this.viewStyle === AUTOCOMPLETE
+      },
+      view_radiogroup() {
+        return this.viewStyle === RADIOGROUP
+      },
+      none() {
+        return this.viewStyle === NONE
+      }
+    },
+    watch: {
+      selected_item(item) {
+        this.emitUp(item)
+        /* console.log("emitup", item)
+        if (typeof item === "object") {
+            this.emitUp(item.value)
+        } else if (typeof item === "string") {
+            this.emitUp(item)
+        } else {
+          console.log("SingleSelect. unknown type to emit up")
+        }*/
+      },
+      selection(val) {
+        this.set_selected_item()
+      }
     }
+  }
 </script>
 
 <style scoped>

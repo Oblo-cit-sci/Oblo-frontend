@@ -18,6 +18,9 @@ export const getters = {
   },
   entry_type(state) {
     return (type_slug) => {
+      if(!state.entry_types.has(type_slug)) {
+        console.log("WARNING, store,entrytype.getters.entry_type: type for slug missing", type_slug, "returning null, should be catched earlier")
+      }
       return state.entry_types.get(type_slug)
     }
   },

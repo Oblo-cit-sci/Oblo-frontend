@@ -101,152 +101,153 @@
     CONNECTED,
     USER_LOGGED_IN
   } from "../lib/store_consts"
-    import GlobalSnackbar from "../components/GlobalSnackbar"
-    import {EOVALUE, HOME} from "../lib/consts"
-    import Footer from "../components/Footer"
+  import GlobalSnackbar from "../components/GlobalSnackbar"
+  import {EOVALUE, HOME} from "../lib/consts"
+  import Footer from "../components/Footer"
 
-    import {initialize} from "../lib/client"
-    import {get_release_mode, static_file_path} from "../lib/util";
+  import {initialize} from "../lib/client"
+  import {get_release_mode, static_file_path} from "../lib/util";
 
-    /*
-          <v-btn icon :loading="connecting">
-        <!-- nuxt to="/" -->
-        <v-icon>{{connected_icon}}</v-icon>
-      </v-btn>
-      <v-btn icon>
-        <!-- nuxt to="/profile" -->
-        <v-icon>{{userrole_icon}}</v-icon>
-      </v-btn>
+  /*
+        <v-btn icon :loading="connecting">
+      <!-- nuxt to="/" -->
+      <v-icon>{{connected_icon}}</v-icon>
+    </v-btn>
+    <v-btn icon>
+      <!-- nuxt to="/profile" -->
+      <v-icon>{{userrole_icon}}</v-icon>
+    </v-btn>
 */
 
 
-    // commented out the dev menu items
-    const all_items = [
-        // {icon: 'home', title: 'Home', to: '/'},
-        // {icon: 'note_add', title: 'Create Entry', to: '/CreateEntry'},
-        {icon: "mdi-reorder-horizontal", title: "My Entries", to: "/personalentries"},
-        {icon: "fa-edit", title: "Create notes", to: "/EntrytypeNotes"},
-        {icon: 'person', title: 'Profile', to: '/profile'},
-        // {icon: 'computer', title: 'Tests', to: '/Tests'},
-        // {icon: 'flip_to_front', title: 'Entrytypes', to: '/CreateEntrytype'},
-        {icon: 'fa-map', title: 'Map', to: '/Map'},
-        // {icon: 'computer', title: 'Aspectbuild', to: '/AspectBuild'},
-        {icon: 'mdi-account-check', title: 'Register', to: '/register'},
-        {icon: 'mdi-login', title: 'Login', to: '/login'},
-        {icon: 'mdi-logout', title: 'Logout', to: '/logout'},
-        {icon: 'mdi-settings', title: 'Settings', to: '/settings'}
-        /*{icon: "build",title: "debug", to: "/StoreDebug"}*/
-    ]
+  // commented out the dev menu items
+  const all_items = [
+    // {icon: 'home', title: 'Home', to: '/'},
+    // {icon: 'note_add', title: 'Create Entry', to: '/CreateEntry'},
+    {icon: "mdi-reorder-horizontal", title: "My Entries", to: "/personalentries"},
+    {icon: "fa-edit", title: "Create notes", to: "/EntrytypeNotes"},
+    {icon: 'person', title: 'Profile', to: '/profile'},
+    // {icon: 'computer', title: 'Tests', to: '/Tests'},
+    // {icon: 'flip_to_front', title: 'Entrytypes', to: '/CreateEntrytype'},
+    {icon: 'fa-map', title: 'Map', to: '/Map'},
+    // {icon: 'computer', title: 'Aspectbuild', to: '/AspectBuild'},
+    {icon: 'mdi-laptop', title: 'Codes', to: '/Codes'},
+    {icon: 'mdi-account-check', title: 'Register', to: '/register'},
+    {icon: 'mdi-login', title: 'Login', to: '/login'},
+    {icon: 'mdi-logout', title: 'Logout', to: '/logout'},
+    {icon: 'mdi-settings', title: 'Settings', to: '/settings'}
+    /*{icon: "build",title: "debug", to: "/StoreDebug"}*/
+  ]
 
-    const header_items = [
-        /*{icon: "",to: "/export"},*/
-        {icon: 'home', to: '/'},
-        /*{icon: 'notifications',title: '',to: '/notifications'},*/
-    ]
+  const header_items = [
+    /*{icon: "",to: "/export"},*/
+    {icon: 'home', to: '/'},
+    /*{icon: 'notifications',title: '',to: '/notifications'},*/
+  ]
 
-    let require_login = ["Profile", "Logout"]
-    let hide_no_login = ["Register", "Login"] // if not connected out and if logged in out
-    let show_inDev = ["Tests", "Types", "Entrytypes", "Aspectbuild"]
-    let lastDomain = ''
-    const pkg = require('../package')
+  let require_login = ["Profile", "Logout"]
+  let hide_no_login = ["Register", "Login"] // if not connected out and if logged in out
+  let show_inDev = ["Tests", "Types", "Entrytypes", "Aspectbuild"]
+  let lastDomain = ''
+  const pkg = require('../package')
 
-    export default {
-        components: {GlobalSnackbar, Footer},
-        created() {
-            //console.log("layout created. initialized?", this.initialized)
-            if (!this.initialized) {
-                console.log("layout. initializing")
-                initialize(this.$axios, this.$store, this.$localForage)
-            }
-        },
-        data() {
-            return {
-                ci: "",
-                version: pkg.version,
-                isDev: this.$store.app.context.isDev,
-                drawer: false,
-                clipped: false,
-                miniVariant: false,
-                title: this.$store.getters[DOMAIN] ? this.$store.state.domain.title : HOME,
-                header_items: header_items
-            }
-        },
-        methods: {
-            goTo() {
-                let domain = this.$store.getters[DOMAIN]
-                if (this.$route.path !== domain.to) {
-                    this.$router.push({
-                        path: domain.to ? domain.to : '/'
-                    })
-                }
-            }
-        },
-        computed: {
-            initialized() {
-                console.log("call init", this.$store.getters[INITIALIZED]())
-                return this.$store.getters[INITIALIZED]()
-            },
-            connecting() {
-                return this.$store.getters[CONNECTING]
-            },
-            connected() {
-                return this.$store.getters[CONNECTED]
-            },
-            logged_in() {
-                return this.$store.getters[USER_LOGGED_IN]
-            },
-            items() {
-                let items = all_items
-                if (!this.logged_in) {
-                    items = this.$_.filter(items, item => require_login.indexOf(item.title) === -1)
-                    if (!this.connected) {
-                        items = this.$_.filter(items, item => hide_no_login.indexOf(item.title) === -1)
-                    }
-                } else { // logged in
-                    items = this.$_.filter(items, item => hide_no_login.indexOf(item.title) === -1)
-                }
-                if (!this.isDev) {
-                    items = this.$_.filter(items, item => show_inDev.indexOf(item.title) === -1)
-                }
-                return items
-            },
-            connected_icon() {
-                if (this.connected) {
-                    return "wifi"
-                } else {
-                    return "wifi_off"
-                }
-            },
-            userrole_icon() {
-                if (this.$store.getters.visitor) {
-                    return "person_outline"
-                } else {
-                    return "person"
-                }
-            },
-            domain_title() {
-                let domain = this.$store.getters[DOMAIN]
-                return domain ? domain.title : HOME
-            },
-            domain_icon() {
-                let domain = this.$store.getters[DOMAIN]
-                return domain ? static_file_path(this.$store, domain.icon) : undefined
-            },
-            eovalue() {
-                return get_release_mode(this.$store) === EOVALUE
-            }
-        },
-        watch: {
-            domain_title: function (newValue, oldValue) {
-                if (newValue !== HOME && newValue !== lastDomain) {
-                    this.$store.commit(SET_ENTRIES, [])
-                }
-                if (newValue !== HOME) {
-                    lastDomain = newValue
-                }
-            }
+  export default {
+    components: {GlobalSnackbar, Footer},
+    created() {
+      //console.log("layout created. initialized?", this.initialized)
+      if (!this.initialized) {
+        console.log("layout. initializing")
+        initialize(this.$axios, this.$store, this.$localForage)
+      }
+    },
+    data() {
+      return {
+        ci: "",
+        version: pkg.version,
+        isDev: this.$store.app.context.isDev,
+        drawer: false,
+        clipped: false,
+        miniVariant: false,
+        title: this.$store.getters[DOMAIN] ? this.$store.state.domain.title : HOME,
+        header_items: header_items
+      }
+    },
+    methods: {
+      goTo() {
+        let domain = this.$store.getters[DOMAIN]
+        if (this.$route.path !== domain.to) {
+          this.$router.push({
+            path: domain.to ? domain.to : '/'
+          })
         }
+      }
+    },
+    computed: {
+      initialized() {
+        console.log("call init", this.$store.getters[INITIALIZED]())
+        return this.$store.getters[INITIALIZED]()
+      },
+      connecting() {
+        return this.$store.getters[CONNECTING]
+      },
+      connected() {
+        return this.$store.getters[CONNECTED]
+      },
+      logged_in() {
+        return this.$store.getters[USER_LOGGED_IN]
+      },
+      items() {
+        let items = all_items
+        if (!this.logged_in) {
+          items = this.$_.filter(items, item => require_login.indexOf(item.title) === -1)
+          if (!this.connected) {
+            items = this.$_.filter(items, item => hide_no_login.indexOf(item.title) === -1)
+          }
+        } else { // logged in
+          items = this.$_.filter(items, item => hide_no_login.indexOf(item.title) === -1)
+        }
+        if (!this.isDev) {
+          items = this.$_.filter(items, item => show_inDev.indexOf(item.title) === -1)
+        }
+        return items
+      },
+      connected_icon() {
+        if (this.connected) {
+          return "wifi"
+        } else {
+          return "wifi_off"
+        }
+      },
+      userrole_icon() {
+        if (this.$store.getters.visitor) {
+          return "person_outline"
+        } else {
+          return "person"
+        }
+      },
+      domain_title() {
+        let domain = this.$store.getters[DOMAIN]
+        return domain ? domain.title : HOME
+      },
+      domain_icon() {
+        let domain = this.$store.getters[DOMAIN]
+        return domain ? static_file_path(this.$store, domain.icon) : undefined
+      },
+      eovalue() {
+        return get_release_mode(this.$store) === EOVALUE
+      }
+    },
+    watch: {
+      domain_title: function (newValue, oldValue) {
+        if (newValue !== HOME && newValue !== lastDomain) {
+          this.$store.commit(SET_ENTRIES, [])
+        }
+        if (newValue !== HOME) {
+          lastDomain = newValue
+        }
+      }
     }
+  }
 </script>
 
 <style>
