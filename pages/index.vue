@@ -35,7 +35,6 @@
             // maybe in the middleware
             if (!this.initialized) {
                 this.connecting = true
-                this.initialize()
             }
             // doesnt do anything
             this.$store.watch(state => state.connecting, () => {
@@ -46,17 +45,11 @@
             this.initialized = this.$store.state.initialized
             this.$store.watch(state => state.initialized, () => {
                 this.initialized = this.$store.state.initialized
-                //fix_entries(this.$store)
             })
             this.$store.commit("clear_domain")
         },
         components: {
             DomainCard
-        },
-        methods: {
-            initialize() {
-                //initialize(this.$axios, this.$store, this.$localForage)
-            }
         },
         computed: {
             ...mapGetters(["domains"])

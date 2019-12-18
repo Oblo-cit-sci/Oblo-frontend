@@ -1,0 +1,44 @@
+<template lang="pug">
+  div.ml-4
+    Aspect(v-for="aspect in shown_aspects"
+      :key="aspect.name"
+      :aspect="aspect"
+      mode="view"
+      :aspect_loc="aspect_locs(aspect)")
+
+</template>
+
+<script>
+import EntryMixin from "../components/EntryMixin";
+
+export default {
+      name: "Codes",
+      mixins: [EntryMixin],
+      components: {},
+      props: {
+
+      },
+      data() {
+          return {
+              entry: null
+          }
+      },
+      created() {
+        this.entry = this.$store.state.codes.Countrycodes
+        console.log(this.entry)
+      },
+      computed: {
+
+      },
+      methods: {
+
+      },
+      watch: {
+
+      }
+}
+</script>
+
+<style scoped>
+
+</style>
