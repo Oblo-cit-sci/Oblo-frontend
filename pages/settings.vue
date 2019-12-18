@@ -119,9 +119,8 @@
             load_file(event) {
                 console.log("load event", event)
                 if (event.ok) {
-                    // console.log("importing", event)
-                    console.log(event.data.entries, typeof event.data.entries)
-                    //
+                    // console.log("importing", event.data)
+                    // console.log(event.data.entries, typeof event.data.entries)
                     let entries =  event.data.entries
                     // TODO TAKE CARE OF THE OLD FORMAT
                     if(!Array.isArray(event.data.entries)) {
