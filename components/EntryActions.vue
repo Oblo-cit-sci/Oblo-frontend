@@ -61,6 +61,7 @@
     import {get_release_mode} from "../lib/util";
     import EntryMixin from "./EntryMixin";
     import PersistentStorageMixin from "./PersistentStorageMixin";
+    import {upload} from "../lib/client";
 
     export default {
         name: "EntryActions",
@@ -101,8 +102,8 @@
         },
         methods: {
             update_page(page) {
-              this.page = page
-              this.$emit('update:page', page)
+                this.page = page
+                this.$emit('update:page', page)
             },
             edit() {
                 this.$emit(EDIT)
@@ -111,22 +112,14 @@
             upload_to_repo() {
                 const url = this.entry_type.content.activities.upload.url
                 const user_key = this.$store.getters.user_key
-
                 if (!user_key) {
                     this.error_snackbar("No user key. Go to the settings and paste the user key given by the LICCI core team")
                     return
                 }
                 const entries = this.$store.getters[ENTRIES_GET_RECURSIVE_ENTRIES](this.entry.uuid)
-                console.log("sening entries", entries)
                 let export_data = {entries: entries, user_key: user_key}
                 //console.log(url, user_key, export_data)
-                axios.post(url, export_data, {
-                    headers: {
-                        "accept": "*",
-                        "Access-Control-Allow-Headers": "accept",
-                        'Access-Control-Allow-Origin': '*',
-                    }
-                }).then(res => {
+                upload(this.$axios, url, export_data).then(res => {
                     this.snackbar(res.data.status, res.data.msg)
                 }).catch(err => {
                     console.log(err)
@@ -253,7 +246,7 @@
                 }
             },
             can_edit() {
-                if(get_release_mode(this.$store) === LICCI_PARTNERS)
+                if (get_release_mode(this.$store) === LICCI_PARTNERS)
                     return true
                 let relation = entry_actor_relation(this.entry, this.$store.getters.user)
                 return relation === CREATOR.key

@@ -285,7 +285,7 @@
                         } else {
                             titles[i] = this.value[i].value[titleAspectName].value
                             if (!this.value[i].value[titleAspectName].value) {
-                                console.log("setting i name")
+                                // console.log("setting i name")
                                 titles[i] = index_name()
                             }
                             //console.log(titles[i], "from ", this.value[i], this.aspect.items.components)

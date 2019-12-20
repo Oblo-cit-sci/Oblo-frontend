@@ -48,11 +48,13 @@ export default {
     },
     update_value(raw_value, regular = true) {
       //console.log("saving", eveventent, this.aspect.name)
+
+      // switch to unregular value
       if (this.has_alternative && regular) {
         if (this.aspect.attr.hasOwnProperty("alternative-activate-on-value")) {
           if (raw_value === this.aspect.attr["alternative-activate-on-value"]) {
-            console.log("weird stop in aspect...")
-            return
+            regular = false
+            raw_value = aspect_raw_default_value(this.aspect.attr.alternative)
           }
         }
       }
@@ -85,8 +87,10 @@ export default {
           aspect_loc_uuid(this.aspect_loc),
           aspect_loc_str2arr(this.aspect.attr.condition.aspect),
           this.extra[LIST_INDEX])
-        //console.log("val", aspect_location)
+        // console.log("checking condition for", this.aspect.name)
+        // console.log("condition aspect-loc", aspect_location)
         let condition_value = this.$store.getters[ENTRIES_VALUE](aspect_location)
+        // console.log("condition value", condition_value, check_condition_value(condition_value, this.aspect.attr.condition))
         return !check_condition_value(condition_value, this.aspect.attr.condition)
       } else {
         return false
@@ -113,7 +117,7 @@ export default {
         return this.mvalue.hasOwnProperty("regular") ? this.mvalue.regular : true
       },
       set(value, old_value) {
-        console.log("set regular")
+        // console.log("set regular")
         if (value) {
           this.update_value(aspect_raw_default_value(this.aspect))
         } else {

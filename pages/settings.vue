@@ -117,7 +117,7 @@
                 })
             },
             load_file(event) {
-                console.log("load event", event)
+                //console.log("load event", event)
                 if (event.ok) {
                     // console.log("importing", event.data)
                     // console.log(event.data.entries, typeof event.data.entries)

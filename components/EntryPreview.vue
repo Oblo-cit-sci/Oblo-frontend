@@ -9,7 +9,7 @@
             v-icon(:class="default_action_icon")
         MetaChips(v-if="show_meta_aspects" :meta_aspects="meta_aspects")
         Taglist(v-if="show_tags" :tags="tags")
-        .orange--text(v-if="outdated")
+        .orange--text.mt-2(v-if="outdated")
           v-icon(color="orange") mdi-alert-outline
           span Created from an outdated version. Some values might change. Download the entry if update does not work
       v-col(v-if="show_image" cols=12 class="col-md-2 col-sm-12 entry-image")
@@ -47,7 +47,7 @@
     import EntryNavMixin from "./EntryNavMixin";
     import {
         EDIT_UUID,
-        ENTRIES_DOMAIN,
+        ENTRIES_DOMAIN, ENTRIES_GET_RECURSIVE_ENTRIES,
         ENTRIES_HAS_ENTRY,
         ENTRIES_SAVE_CHILD_N_REF,
         ENTRIES_VALUE,
@@ -70,6 +70,7 @@
     import EntryAspectView from "./EntryAspectView";
     import Aspect from "./Aspect";
     import {mapGetters} from "vuex"
+    import {upload} from "../lib/client";
 
     export default {
         name: "Entrypreview",
@@ -135,13 +136,34 @@
                 this.goto_delayed_last_page()
             },
             additional_action(action_key) {
-                console.log("additional_action", this.entry_type)
+                //console.log("additional_action", this.entry_type)
                 if (this.entry_type) {
                     const preview_action = this.entry_type.content.meta.preview_actions[action_key]
                     // DUPLICATE BELOW
-                    const action_aspect_loc = aspect_loc_str2arr(preview_action.aspect)
-                    const aspect_loc = loc_prepend(ENTRY, this.entry.uuid, action_aspect_loc)
-                    this.create_child(aspect_loc, preview_action.child_type_slug)
+                    if (preview_action.type === "create_child") {
+                        const action_aspect_loc = aspect_loc_str2arr(preview_action.aspect)
+                        const aspect_loc = loc_prepend(ENTRY, this.entry.uuid, action_aspect_loc)
+                        this.create_child(aspect_loc, preview_action.child_type_slug)
+                    } else if (preview_action.type === "download") {
+                        this.download()
+                    } else if (preview_action.type === "upload") {
+                        /*
+                        todo duplicate in the entryActions
+                         */
+                        const user_key = this.$store.getters.user_key
+                        if (!user_key) {
+                            this.error_snackbar("No user key. Go to the settings and paste the user key given by the LICCI core team")
+                            return
+                        }
+                        const entries = this.$store.getters[ENTRIES_GET_RECURSIVE_ENTRIES](this.entry.uuid)
+                        let export_data = {entries: entries, user_key: user_key}
+                        upload(this.$axios, preview_action.url, export_data).then(res => {
+                            this.snackbar(res.data.status, res.data.msg)
+                        }).catch(err => {
+                            console.log(err)
+                            this.error_snackbar("Something went horribly wrong")
+                        })
+                    }
                 }
             },
             aspect_locs(aspect) {
@@ -207,10 +229,16 @@
                 const show_actions = []
                 for (let pw_action_key in pw_actions) {
                     const pw_action = pw_actions[pw_action_key]
-                    const action_aspect_loc = aspect_loc_str2arr(pw_action.aspect)
-                    const aspect_loc = loc_prepend(ENTRY, this.entry.uuid, action_aspect_loc)
-                    const value = this.$store.getters[ENTRIES_VALUE](aspect_loc).value
-                    if (value.length > 0) {
+                    if (pw_action.type === "create_child") {
+                        const action_aspect_loc = aspect_loc_str2arr(pw_action.aspect)
+                        const aspect_loc = loc_prepend(ENTRY, this.entry.uuid, action_aspect_loc)
+                        const value = this.$store.getters[ENTRIES_VALUE](aspect_loc).value
+                        if (value.length > 0) {
+                            show_actions.push(Object.assign(this.$_.clone(pw_action), {key: pw_action_key}))
+                        }
+                    } else if (pw_action.type === "download") {
+                        show_actions.push(Object.assign(this.$_.clone(pw_action), {key: pw_action_key}))
+                    } else if (pw_action.type === "upload") {
                         show_actions.push(Object.assign(this.$_.clone(pw_action), {key: pw_action_key}))
                     }
                 }

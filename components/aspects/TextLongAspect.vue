@@ -13,7 +13,7 @@
       :value="value"
       @input="value_change($event)")
   div(v-else)
-    p(class="body-1") {{value}}
+    p(class="body-1 readonly-aspect") {{value}}
 </template>
 
 <script>

@@ -6,6 +6,7 @@
       :readonly="readOnly"
       :disabled="disabled"
       :placeholder="aspect.attr.placeholder"
+      hide-details
       :hint="hint"
       :rules="rules"
       :prependIcon="prependIcon"
@@ -17,7 +18,7 @@
       :value="value"
       @input="value_change($event)")
     p(v-else
-      class="body-1") {{value}}
+      class="body-1 readonly-aspect") {{value}}
 </template>
 
 <script>
