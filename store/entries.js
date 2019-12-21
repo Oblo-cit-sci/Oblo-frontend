@@ -175,8 +175,8 @@ export const mutations = {
   insert_missing_default_values(state, {uuid, type_default_values}) {
     let aspects_values = state.entries.get(uuid).aspects_values
     for (let key in type_default_values) {
-      if(!aspects_values.hasOwnProperty(key)) {
-        aspects_values[key] =  type_default_values[key]
+      if (!aspects_values.hasOwnProperty(key)) {
+        aspects_values[key] = type_default_values[key]
       }
     }
   }
@@ -416,6 +416,8 @@ export const actions = {
     }*/
     context.commit("_remove_entry_value_index", ld.concat([[ENTRY, uuid]], aspect_loc))
     context.commit("_remove_entry_ref_index", {uuid, child_uuid, aspect_loc})
+
+    //context.dispatch("adjust_id")
   },
   delete_entry(context, uuid) { // ENTRIES_DELETE_ENTRY
     const entry = context.state.entries.get(uuid)

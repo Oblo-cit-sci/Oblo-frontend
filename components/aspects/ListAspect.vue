@@ -295,6 +295,9 @@
                                 titles[i] = list_values.join(", ")
                             }
                         }
+                        if (titles[i] === null) {
+                          console.log(this.item_aspect)
+                        }
                         if (titles[i] === "" || titles[i] === null) {
                             titles[i] = index_name()
                         }

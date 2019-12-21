@@ -43,19 +43,21 @@ export default {
       } else if (page < 0) {
         page = 0;
       }
-      this.page = page
-      this.$store.commit("entries/entries_set_local_list_page", {aspect_loc: this.aspect_loc, page: this.page})
-      try {
-        if (goto_id) {
-          setTimeout(() => {
-            goTo("#" + goto_id, {
-              duration: 200,
-              easing: "easeOutCubic"
-            })
-          }, 50)
+      if (page !== this.page) {
+        this.page = page
+        this.$store.commit("entries/entries_set_local_list_page", {aspect_loc: this.aspect_loc, page: this.page})
+        try {
+          if (goto_id) {
+            setTimeout(() => {
+              goTo("#" + goto_id, {
+                duration: 200,
+                easing: "easeOutCubic"
+              })
+            }, 50)
+          }
+        } catch (e) {
+          console.log(e)
         }
-      } catch (e) {
-        console.log(e)
       }
     },
     aspect_is_on_page(index) {

@@ -37,124 +37,128 @@
 
 <script>
 
-    import {VIEW} from "../lib/consts";
+  import {VIEW} from "../lib/consts";
 
-    import Title_Description from "./Title_Description";
-    import {
-        aspect_loc2aspect_descr_loc,
-        aspect_loc_str,
-        get_aspect_vue_component, label
-    } from "../lib/aspect";
-    import AspectMixin from "./aspects/AspectMixin";
-    import {ENTRYTYPES_NOTE} from "../lib/store_consts";
+  import Title_Description from "./Title_Description";
+  import {
+    aspect_loc2aspect_descr_loc,
+    aspect_loc_str,
+    get_aspect_vue_component, label
+  } from "../lib/aspect";
+  import AspectMixin from "./aspects/AspectMixin";
+  import {ENTRYTYPES_NOTE} from "../lib/store_consts";
 
-    export default {
-        name: "Aspect",
-        components: {
-            Title_Description
-        },
-        mixins: [AspectMixin],
-        props: {},
-        data() {
-            return {}
-        },
-        created() {
-            // todo no idea, why the shortcut below does not work
-            //console.log("c", this.aspect)
-            if (!this.has_value) {
-                console.log("has no value", this.aspect.name)
-            }
-        },
-        // boolean check is not required, since "false" is the default
-        computed: {
-            // at the moment
-            show_title_description() {
-                if (((this.aspect.attr && this.aspect.attr.placeholder) || this.aspect.type === "options") && this.mode === VIEW) {
-                    return false
-                }
-                if (this.extra.hasOwnProperty("show_title_descr")) {
-                    return this.extra.show_title_descr
-                } else
-                    return true
-            },
-            visible() {
-                return !this.disable || !this.aspect.attr.hide_on_disabled
-            },
-            real_mode() {
-                if ((this.aspect.attr && this.aspect.attr.ref_value) || this.fixed_value) {
-                    return VIEW
-                }
-                if (this.aspect.attr && this.aspect.attr.mode !== undefined) {
-                    return this.aspect.attr.mode
-                } else
-                    return this.mode
-            },
-            regular_value_text() {
-                return this.aspect.attr["alternative-true"] || "regular value"
-            },
-            alternative_value_text() {
-                return this.aspect.attr["alternative-false"] || "alternative value"
-            },
-            alt_mode() {
-                if (this.fixed_value)
-                    return VIEW
-                else
-                    return this.aspect.attr.alternative.attr.mode || this.mode
-            },
-            disable() {
-                return this.condition_fail || (this.aspect.attr && this.aspect.attr.disable)
-            },
-            regular_disable() {
-                return this.disable || !this.use_regular
-            },
-            disabled_text() {
-                if (this.condition_fail) {
-                    return this.aspect.attr.condition.disabled_text
-                } else {
-                    return "disabled"
-                }
-            },
-            aspect_id() {
-                return aspect_loc_str(this.$_.tail(this.aspect_loc))
-            },
-            fixed_value() {
-                if (this.use_regular) {
-                    return this.aspect.attr.hasOwnProperty("value")
-                } else {
-                    return this.aspect.attr.alternative.attr.hasOwnProperty("value")
-                }
-            },
-            invisible_class() {
-                //console.log(this.aspect.name "inv", this.aspect.attr.hasOwnProperty("visible") )
-                return (this.aspect.attr && this.aspect.attr.hasOwnProperty("visible")) ? (!this.aspect.attr.visible) : false
-            }
-        },
-        methods: {
-            title_description(aspect) {
-                // todo. probably not needed anymore
-                if (!aspect) {
-                    return {
-                        title: "",
-                        description: ""
-                    }
-                }
-                const aspect_descr_loc = aspect_loc2aspect_descr_loc(this.aspect_loc)
-                const note = this.$store.getters[ENTRYTYPES_NOTE](aspect_descr_loc)
-                return {
-                    title: this.extra.no_title ? "" : this.aspect_label(aspect),
-                    description: aspect.description || "",
-                    note: {text: note, note_class: "note"}
-                }
-            },
-            aspect_label(aspect) {
-                return label(aspect)
-            },
-            aspectComponent(aspect, mode) {
-                return get_aspect_vue_component(aspect, mode, this.extra)
-            }
-        },
-        watch: {}
-    }
+  export default {
+    name: "Aspect",
+    components: {
+      Title_Description
+    },
+    mixins: [AspectMixin],
+    props: {},
+    data() {
+      return {}
+    },
+    created() {
+      // todo no idea, why the shortcut below does not work
+      //console.log("c", this.aspect)
+      if (!this.has_value) {
+        console.log("has no value", this.aspect.name)
+      }
+    },
+    // boolean check is not required, since "false" is the default
+    computed: {
+      // at the moment
+      show_title_description() {
+        if (((this.aspect.attr && this.aspect.attr.placeholder) || this.aspect.type === "options") && this.mode === VIEW) {
+          return false
+        }
+        if (this.extra.hasOwnProperty("show_title_descr")) {
+          return this.extra.show_title_descr
+        } else
+          return true
+      },
+      visible() {
+        return !this.disable || !this.aspect.attr.hide_on_disabled
+      },
+      real_mode() {
+        if ((this.aspect.attr && this.aspect.attr.ref_value) || this.fixed_value) {
+          return VIEW
+        }
+        if (this.aspect.attr && this.aspect.attr.mode !== undefined) {
+          return this.aspect.attr.mode
+        } else
+          return this.mode
+      },
+      regular_value_text() {
+        // TODO 1. should be deprecated
+        return this.aspect.attr["alternative-true"] ||
+          this.aspect.attr.alternative["regular_text"] || "regular value"
+      },
+      alternative_value_text() {
+        // TODO 1. should be deprecated
+        return this.aspect.attr["alternative-false"] ||
+          this.aspect.attr.alternative["alternative_text"] || "alternative value"
+      },
+      alt_mode() {
+        if (this.fixed_value)
+          return VIEW
+        else
+          return this.aspect.attr.alternative.attr.mode || this.mode
+      },
+      disable() {
+        return this.condition_fail || (this.aspect.attr && this.aspect.attr.disable)
+      },
+      regular_disable() {
+        return this.disable || !this.use_regular
+      },
+      disabled_text() {
+        if (this.condition_fail) {
+          return this.aspect.attr.condition.disabled_text
+        } else {
+          return "disabled"
+        }
+      },
+      aspect_id() {
+        return aspect_loc_str(this.$_.tail(this.aspect_loc))
+      },
+      fixed_value() {
+        if (this.use_regular) {
+          return this.aspect.attr.hasOwnProperty("value")
+        } else {
+          return this.aspect.attr.alternative.attr.hasOwnProperty("value")
+        }
+      },
+      invisible_class() {
+        //console.log(this.aspect.name "inv", this.aspect.attr.hasOwnProperty("visible") )
+        return (this.aspect.attr && this.aspect.attr.hasOwnProperty("visible")) ? (!this.aspect.attr.visible) : false
+      }
+    },
+    methods: {
+      title_description(aspect) {
+        // todo. probably not needed anymore
+        if (!aspect) {
+          return {
+            title: "",
+            description: ""
+          }
+        }
+        const aspect_descr_loc = aspect_loc2aspect_descr_loc(this.aspect_loc)
+        const note = this.$store.getters[ENTRYTYPES_NOTE](aspect_descr_loc)
+        return {
+          title: this.extra.no_title ? "" : this.aspect_label(aspect),
+          description: aspect.description || "",
+          note: {text: note, note_class: "note"}
+        }
+      },
+      aspect_label(aspect) {
+        return label(aspect)
+      },
+      aspectComponent(aspect, mode) {
+        return get_aspect_vue_component(aspect, mode, this.extra)
+      }
+    },
+    watch: {}
+  }
 </script>
 
 <style scoped>

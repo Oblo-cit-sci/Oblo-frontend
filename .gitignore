@@ -1,6 +1,6 @@
 pages/test/*
 
-appbeta/
+crop/
 crop/
 # Created by .ignore support plugin (hsz.mobi)
 ### Node template
@@ -89,7 +89,7 @@ dist
 sw.*
 
 
-/appbeta/
+/crop/
 /out/
 /assets/cc-icons-cc-icons-3c4c93e/
 /static/images/entry_images/

@@ -124,9 +124,7 @@
                 if (action.confirm) {
                     let index = parseInt(action.id)
                     let child_uuid = this.value[index]
-                    console.log(this.pages, this.page)
                     this.$store.dispatch(ENTRIES_DELETE_ENTRY, child_uuid)
-                    console.log(this.pages, this.page)
                     this.guarantee_page()
                 }
             },
