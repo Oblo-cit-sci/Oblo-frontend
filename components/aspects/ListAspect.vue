@@ -51,12 +51,12 @@
     import AspectMixin from "./AspectMixin";
     import Aspect from "../Aspect";
     import ListMixin from "../ListMixin";
-    import {INDEX, SIMPLE_TYPE, EDIT, COMPOSITE} from "../../lib/consts";
+    import {INDEX, SIMPLE_TYPE, EDIT, COMPOSITE, LIST_INDEX} from "../../lib/consts";
     import {
-        aspect_loc_str,
-        packed_aspect_default_value,
-        get_aspect_vue_component,
-        remove_entry_loc
+      aspect_loc_str,
+      packed_aspect_default_value,
+      get_aspect_vue_component,
+      remove_entry_loc, complete_aspect_loc, aspect_loc_uuid, aspect_loc_str2arr, pack_value, aspect_raw_default_value
     } from "../../lib/aspect";
     import ListitemActions from "../ListitemActions";
     import Paginate from "../Paginate";
@@ -65,6 +65,7 @@
     import ListPagination from "../ListPagination";
     import goTo from 'vuetify/lib/services/goto'
     import {recursive_unpack} from "../../lib/util";
+    import {ENTRIES_VALUE} from "../../lib/store_consts";
 
     const SIMPLE = "simple"
     const PANELS = "panels"
@@ -285,8 +286,24 @@
                         } else {
                             titles[i] = this.value[i].value[titleAspectName].value
                             if (!this.value[i].value[titleAspectName].value) {
-                                // console.log("setting i name")
-                                titles[i] = index_name()
+                              // trying to pregrab a referenced value that hasnt been called yet. not setting it on the orig location
+                              if(titleAspectName) {
+                                const ref_value = this.$_.find(this.item_aspect.components, c => c.name === titleAspectName).attr.ref_value
+                                if(ref_value) {
+                                  let aspect_location = complete_aspect_loc(
+                                    aspect_loc_uuid(this.aspect_loc),
+                                    aspect_loc_str2arr(ref_value),
+                                    i)
+                                  // console.log("value ref,  ",this.aspect.name, aspect_location)
+                                  titles[i] = (this.$store.getters[ENTRIES_VALUE](aspect_location) || pack_value()).value
+                                  //console.log("ref value", ref_value)
+                                  if (titles[i] === undefined) {
+                                    console.log("broken ref!")
+                                    titles[i] = pack_value(aspect_raw_default_value(this.aspect))
+                                  }
+                                }
+                              }
+
                             }
                             //console.log(titles[i], "from ", this.value[i], this.aspect.items.components)
                             // TODO here we should check if there is a ref_value and grab that
@@ -294,9 +311,6 @@
                                 const list_values = recursive_unpack(this.value[i].value[titleAspectName].value).filter(v => Object.keys(v).length > 0)
                                 titles[i] = list_values.join(", ")
                             }
-                        }
-                        if (titles[i] === null) {
-                          console.log(this.item_aspect)
                         }
                         if (titles[i] === "" || titles[i] === null) {
                             titles[i] = index_name()
