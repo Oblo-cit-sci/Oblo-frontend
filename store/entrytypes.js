@@ -18,7 +18,7 @@ export const getters = {
   },
   entry_type(state) {
     return (type_slug) => {
-      if(!state.entry_types.has(type_slug)) {
+      if (!state.entry_types.has(type_slug)) {
         console.log("WARNING, store,entrytype.getters.entry_type: type for slug missing", type_slug, "returning null, should be catched earlier")
       }
       return state.entry_types.get(type_slug)
@@ -155,14 +155,23 @@ export const mutations = {
       for (let loc of note_location) {
         select = select[loc]
       }
-      select = Object.assign(select, {_note : note})
+      select = Object.assign(select, {_note: note})
       select = ld.cloneDeep(select)
       // TODO fucking annoying, and triggers update on all aspects!
       state.notes = ld.cloneDeep(state.notes)
     } else {
       console.log("entrytypes: add_note: wtf!")
     }
-
+  },
+  init_aspect_note(state, aspect_loc) {
+    let select = state.notes
+    for (let loc of aspect_loc) {
+      if (select.hasOwnProperty(loc)) {
+        select = select[loc]
+      } else {
+        select[loc] = {_note: null}
+      }
+    }
   }
 }
 
@@ -191,21 +200,6 @@ export const actions = {
         aspect_name: aspect.name,
         notes: rec_aspect_descr_note_init(aspect)
       })
-    }
-  },
-  init_aspect_note(context, aspect_loc) {
-    let select = null;
-    for(let asp_index in aspect_loc) {
-      // why the fuck do i need to parse?
-      if(parseInt(asp_index) === 0) {
-        select = context.getters.type_notes(aspect_loc[0])
-      } else {
-        if(select.hasOwnProperty(select)) {
-          select = select[select]
-        } else {
-          select[select] = {_note:null}
-        }
-      }
     }
   }
 }

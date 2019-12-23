@@ -36,7 +36,7 @@
                 //console.log("update")
                 const note = this.$store.getters[ENTRYTYPES_NOTE](this.aspect_descr_loc)
                 if(note === undefined) {
-                    this.$store.dispatch("entrytypes/init_aspect_note", this.aspect_descr_loc)
+                    this.$store.commit("entrytypes/init_aspect_note", this.aspect_descr_loc)
                     return null
                 }
                 return note
