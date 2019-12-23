@@ -3,9 +3,7 @@ import {
   ENTRIES_GET_ENTRY_TITLE,
   ENTRIES_GET_PARENT,
   ENTRIES_GET_RECURSIVE_ENTRIES, ENTRYTYPES_TYPE,
-  ENTRYTYPES_TYPENAME
 } from "../lib/store_consts";
-import {app_version} from "../lib/client";
 import {export_data} from "../lib/import_export";
 
 export default {
@@ -64,7 +62,7 @@ export default {
       return this.entry_type.content.aspects
     },
     outdated() {
-      return (this.entry.app_version || "") !== app_version()
+      return (this.entry.parent_type_version || 0) !== this.entry_type.version
     },
     download_title() {
       // todo title, wont update in real time

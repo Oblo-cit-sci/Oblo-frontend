@@ -169,8 +169,8 @@ export const mutations = {
     //remove_entry_loc
   },
 
-  _update_app_version(state, uuid = state.edit.uuid) {
-    state.entries.get(uuid).app_version = app_version()
+  _update_parent_version(state, {uuid = state.edit.uuid, version}) {
+    state.entries.get(uuid).parent_type_version = version
   },
   insert_missing_default_values(state, {uuid, type_default_values}) {
     let aspects_values = state.entries.get(uuid).aspects_values
@@ -434,10 +434,11 @@ export const actions = {
       console.log("store: entries DELETE tries to delete some entry that doesnt exist!")
     }
   },
-  update_app_version(context, uuid = context.state.edit.uuid) {
+  update_parent_version(context, uuid = context.state.edit.uuid) {
     const etype = context.getters.get_entry_type(context.getters.get_entry(uuid).type_slug)
     const type_default_values = default_values(etype)
     context.commit("insert_missing_default_values", {uuid, type_default_values})
-    context.commit("_update_app_version", uuid)
+
+    context.commit("_update_parent_version", {uuid, version: etype.version})
   }
 }

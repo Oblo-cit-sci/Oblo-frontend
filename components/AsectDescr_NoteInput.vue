@@ -1,15 +1,15 @@
 <template lang="pug">
-  div
-    div(v-if="has_note")
-      v-textarea(
-        :value="note"
-        outlined
-        single-line
-        auto-grow
-        @input="update_note($event)")
+    div
+        div(v-if="has_note")
+            v-textarea(
+                :value="note"
+                outlined
+                single-line
+                auto-grow
+                @input="update_note($event)")
 
-    v-btn(v-else icon @click="update_note('')")
-      v-icon() mdi-pencil
+        v-btn(v-else icon @click="update_note('')")
+            v-icon() mdi-pencil
 </template>
 
 <script>
@@ -34,7 +34,12 @@
         computed: {
             note() {
                 //console.log("update")
-                return this.$store.getters[ENTRYTYPES_NOTE](this.aspect_descr_loc)
+                const note = this.$store.getters[ENTRYTYPES_NOTE](this.aspect_descr_loc)
+                if(note === undefined) {
+                    this.$store.dispatch("entrytypes/init_aspect_note", this.aspect_descr_loc)
+                    return null
+                }
+                return note
             },
             has_note() {
                 return this.note !== null

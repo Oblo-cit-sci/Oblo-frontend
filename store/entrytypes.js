@@ -113,12 +113,12 @@ export const getters = {
 
       for (let loc of aspect_descr_loc) {
         if (!c_s()) {
-          return null
+          return select
         }
         select = select[loc]
       }
       if (!c_s()) {
-        return null
+        return select
       } else {
         return select._note
       }
@@ -191,6 +191,21 @@ export const actions = {
         aspect_name: aspect.name,
         notes: rec_aspect_descr_note_init(aspect)
       })
+    }
+  },
+  init_aspect_note(context, aspect_loc) {
+    let select = null;
+    for(let asp_index in aspect_loc) {
+      // why the fuck do i need to parse?
+      if(parseInt(asp_index) === 0) {
+        select = context.getters.type_notes(aspect_loc[0])
+      } else {
+        if(select.hasOwnProperty(select)) {
+          select = select[select]
+        } else {
+          select[select] = {_note:null}
+        }
+      }
     }
   }
 }

@@ -164,7 +164,7 @@
       }
 
       if (this.outdated) {
-        this.$store.dispatch("entries/update_app_version")
+        this.$store.dispatch("entries/update_parent_version")
         this.ok_snackbar("Updated")
       }
 

@@ -107,8 +107,8 @@
       },
       init_typenotes(type_slug) {
         let notes = this.$store.getters[ENTRYTYPES_TYPE_NOTES](type_slug)
-        if (!notes) {
-          this.$store.dispatch("entrytypes/init_notes", type_slug)
+        if (notes === undefined) {
+          //this.$store.dispatch("entrytypes/init_notes", type_slug)
         }
       },
       aspect_descr_loc(aspect) {
