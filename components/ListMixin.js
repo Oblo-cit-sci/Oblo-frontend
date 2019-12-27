@@ -38,6 +38,7 @@ export default {
       }
     },
     set_page(page, goto_id) {
+      // console.log("set page", page)
       if (page >= this.pages.length) {
         page = this.pages.length - 1
       } else if (page < 0) {
@@ -70,6 +71,7 @@ export default {
       }, 10)
     },
     guarantee_page() {
+      // console.log(this.aspect.name, "guarantee page, ", this.page, this.pages.length)
       if (this.page >= this.pages.length) {
         this.set_page(this.pages.length - 1)
       }

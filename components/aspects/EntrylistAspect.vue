@@ -127,6 +127,7 @@
                     this.$store.dispatch(ENTRIES_DELETE_ENTRY, child_uuid)
                     this.guarantee_page()
                 }
+                console.log("post remove, page", this.page)
             },
             create_item() {
                 if (this.disabled)

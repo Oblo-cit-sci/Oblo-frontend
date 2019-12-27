@@ -111,7 +111,6 @@ export default {
       this.$emit("update:page", page_select)
       this.$emit("lastpage", this.test_last_page(page_select))
     },
-
     get_active_page_after(page) {
       return this.$_.filter(this.$_.slice(this.pages, page + 1), p => this.page_disabled(p))
     },
@@ -121,13 +120,6 @@ export default {
     },
     mask_pages_active() {
       return this.$_.map(this.pages, p => this.page_disabled(p))
-    }
-  },
-  watch: {
-    total(val, old_val) {
-      if(old_val === val + 1) {
-        this.change_page(-1)
-      }
     }
   }
 }

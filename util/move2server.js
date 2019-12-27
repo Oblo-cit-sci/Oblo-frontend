@@ -34,8 +34,6 @@ if(remove_entry_images) {
 }
 
 deleteFolderRecursive(destination + "/*")
-
-
 // copy source folder to destination
 fs.copy(source, destination, function (err) {
   if (err){
