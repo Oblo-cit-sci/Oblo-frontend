@@ -1,6 +1,6 @@
 <template lang="pug">
   div(
-    :class="[{ composite: (aspect.type === 'composite' && mode === 'edit'),  disabled: disable, invisible_class: invisible_class}]"
+    :class="[{composite: (aspect.type === 'composite' && mode === 'edit'),  disabled: disable, invisible_class: invisible_class, update_hint:new_in_update}]"
     :id="aspect_id" v-if="visible && has_value")
     Title_Description(
       v-if="show_title_description"
@@ -56,7 +56,9 @@
     mixins: [AspectMixin],
     props: {},
     data() {
-      return {}
+      return {
+        new_in_update: false
+      }
     },
     created() {
       // todo no idea, why the shortcut below does not work
@@ -165,6 +167,11 @@
   /* ignore warning about being not used */
   .composite {
     border-left: 1px #8080806b solid;
+    padding-left: 5px;
+  }
+
+  .update_hint {
+    border-left: 2px orange solid;
     padding-left: 5px;
   }
 

@@ -22,6 +22,7 @@
           :aspect="aspect"
           :aspect_loc="aspect_locs[aspect.name]"
           v-on:entryAction="entryAction($event)"
+          :extra="aspect_extras"
           :mode="mode")
       div(v-if="page === 0")
         v-divider(class="wide_divider")
@@ -131,6 +132,7 @@
         // todo abstact aspect-pagination
         uuid: null,  // todo , make computed
         aspect_locs: {},
+        aspect_extras: {},
         //
         openSaveDialog: false,
         unsaved_changes_dialog: unsaved_changes_default_dialog,
@@ -165,6 +167,7 @@
 
       if (this.outdated) {
         this.$store.dispatch("entries/update_parent_version")
+        this.aspect_extras["mark new aspects"] = true
         this.ok_snackbar("Updated")
       }
 
@@ -264,6 +267,7 @@
         return this.entry.local.dirty || false
       },
       parent_title() {
+        console.log("getting parent title", this)
         // todo not necessarily available for remote entries. should be included?
         //console.log(this.$store.getters[ENTRIES_GET_PARENT]())
         return this.$store.getters[ENTRIES_GET_PARENT]().title

@@ -143,7 +143,7 @@ export default {
       }
       //console.log("value . ",this.aspect.name)
       if (this.aspect.attr.IDAspect) {
-        console.log("ID ASPECT")
+        // console.log("ID ASPECT")
         let this_uuid = aspect_loc_uuid(this.aspect_loc)
         let entry = this.$store.getters[ENTRIES_GET_ENTRY](this_uuid)
         let id = this.$_.last(entry.refs.parent.aspect_loc)[1] + 1
@@ -203,7 +203,8 @@ export default {
       } else {
         let value = this.$store.getters[ENTRIES_VALUE](this.aspect_loc)
         if (value === undefined) {
-          console.log("undefined", this.aspect)
+          // console.log("undefined, probably means update", this.aspect, this.extra)
+          this.new_in_update = true
           let raw__new_value = aspect_raw_default_value(this.aspect)
           this.update_value(raw__new_value)
           return pack_value(raw__new_value)

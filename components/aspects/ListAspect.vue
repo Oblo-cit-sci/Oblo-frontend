@@ -217,12 +217,12 @@
                 }
             },
             list_extra(index) {
-                return {
+                return Object.assign({
                     no_title: this.aspect.attr.hasOwnProperty("no_titles") ? this.aspect.attr.no_titles : true,
                     clear: false,
                     listitem: true,
                     list_index: index
-                }
+                }, this.extra)
             },
             panel_id(index) {
                 return "L-" + aspect_loc_str(this.$_.slice(this.$_.concat(this.aspect_loc, [[INDEX, index]]), 1))
