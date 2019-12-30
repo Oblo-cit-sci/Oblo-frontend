@@ -11,7 +11,7 @@
         Taglist(v-if="show_tags" :tags="tags")
         .orange--text.mt-2(v-if="outdated")
           v-icon(color="orange") mdi-alert-outline
-          span Created from an outdated version. Some values might change. Download the entry if update does not work
+          span Created from an outdated version. Some values might change. Download the entry before updating is recommended
       v-col(v-if="show_image" cols=12 class="col-md-2 col-sm-12 entry-image")
         div(class="float-md-right float-sm-left entry-display-size")
           v-avatar(
@@ -179,8 +179,10 @@
         return get_proper_mode(this.$store, this.entry)
       },
       goto_text() {
-        // assuming, we call it edit and view
-        return this.proper_mode
+        if(this.outdated)
+          return "update"
+        else
+          return this.proper_mode
       },
       creator() {
         const public_name = this.entry.actors.creator.public_name

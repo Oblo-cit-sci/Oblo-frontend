@@ -15,7 +15,7 @@
       color="primary")
     div(v-if="mode === 'view' && !use_regular") {{alternative_value_text}}
     component(
-      v-if="use_regular"
+      v-if="use_regular && !disable"
       :is="aspectComponent(aspect, mode)"
       :aspect="aspect"
       :aspect_loc="aspect_loc"

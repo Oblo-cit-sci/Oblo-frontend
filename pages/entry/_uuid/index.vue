@@ -267,7 +267,7 @@
         return this.entry.local.dirty || false
       },
       parent_title() {
-        console.log("getting parent title", this)
+        // console.log("getting parent title", this)
         // todo not necessarily available for remote entries. should be included?
         //console.log(this.$store.getters[ENTRIES_GET_PARENT]())
         return this.$store.getters[ENTRIES_GET_PARENT]().title
