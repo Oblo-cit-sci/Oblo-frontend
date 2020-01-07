@@ -18,7 +18,7 @@
         v-btn(color="warning" @click="show_delete") delete
         v-btn( color="success" @click="save") {{save_word}}
         v-btn(
-          v-if="!private_local && !view && !in_context"
+          v-if="!private_local && !view && !in_context && !partner_mode"
           color="success"
           @click="submit"
           :disabled="!connected"
@@ -259,7 +259,10 @@
       },
       can_download() {
         //console.log(this.entry_type.content.meta.download)
-        return get_release_mode(this.$store) === LICCI_PARTNERS && this.entry_type.content.meta.download
+        return this.partner_mode && this.entry_type.content.meta.download
+      },
+      partner_mode() {
+        return get_release_mode(this.$store) === LICCI_PARTNERS
       }
     }
   }

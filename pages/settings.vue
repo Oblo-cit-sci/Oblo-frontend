@@ -10,7 +10,7 @@
         :ext_value="user_key"
         mode="edit"
         v-on:update_value="update_value($event)")
-      v-btn(@click="test_save") Test and save
+      v-btn(@click="test_save" :loading="test_save_connect_loading") Test and save
       br
       v-divider.wide-divider
     h3 Export data
@@ -55,6 +55,8 @@
         dialog_data: {
           id: ""
         },
+        test_save_connect_loading: false,
+        // todo move to json files
         clear_dialog_data: {
           id: "clear entries",
           title: "Are you sure you want to clear all entries? Did you make a backup via Export?",
@@ -81,6 +83,7 @@
     },
     methods: {
       test_save() {
+        this.test_save_connect_loading = true
         let data = {user_key: this.$store.state.meta.repository.user_key}
         this.$axios.post("https://licci.uab.cat/cgi-bin/test_user.py", data, {
           headers: {
@@ -92,12 +95,13 @@
           // TODO the whole thing is not super elegant. stored in vuex on key, but in browser only on save...
           this.snackbar(res.data.status, res.data.msg)
           this.persist_user_key()
-
+          this.test_save_connect_loading = false
           if (res.data.status) {
             this.$router.push("/")
           }
         }).catch(err => {
           console.log(err)
+          this.test_save_connect_loading = false
           this.error_snackbar("Something went horribly wrong")
         })
       },

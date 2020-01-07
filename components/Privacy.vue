@@ -48,7 +48,7 @@
         privacy_options: [
           {text: PUBLIC, value: PUBLIC, description: "This entry is visible to everyone", icon:privacy_icon(PUBLIC)},
           {text: PRIVATE, value: PRIVATE,  description: "This entry is not shared with any expect with those your grant access", icon:privacy_icon(PRIVATE)},
-          {text: PRIVATE_LOCAL, value: PRIVATE_LOCAL, description: "This entry stays on your device. Make sure to save it after changes", icon:privacy_icon(PRIVATE_LOCAL)}
+          {text: PRIVATE_LOCAL, value: PRIVATE_LOCAL, description: "This entry stays on your device.", icon:privacy_icon(PRIVATE_LOCAL)}
         ],
         selectedPrivacy: null,
         use_alternative_privacy: false
