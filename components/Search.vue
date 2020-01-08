@@ -80,7 +80,7 @@
     computed: {
       ...mapGetters({entries: ENTRIES_SEARCH}),
       search_hint() {
-        if (this.keyword.length < this.kw_char_thresh) {
+        if (this.keyword && this.keyword.length < this.kw_char_thresh) {
           return "type 4 characters to trigger search"
         }
       },

@@ -170,7 +170,6 @@
         this.aspect_extras["mark new aspects"] = true
         this.ok_snackbar("Updated")
       }
-
     },
     beforeRouteLeave(to, from, next) {
       // BEWARE, this is not called when navigating from one entry to another
@@ -300,7 +299,10 @@
       }
     },
     watch: {
-      page() {
+      page(value) {
+          let res = Object.assign({}, this.$route.query)
+          res = Object.assign(res, { page: value })
+          this.$router.replace({query: res})
         setTimeout(() => goTo(".v-content"), {
           duration: 200,
           easing: "easeOutCubic"

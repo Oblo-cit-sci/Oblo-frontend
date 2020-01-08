@@ -13,12 +13,6 @@
       div see more details here:
       span
         a(href="https://www.mapbox.com/legal/privacy") Mapbox Privacy policy
-      h4 Use of webfonts
-      div On these websites external fonts, Google fonts are used. Google Fonts is a service of Google Inc. (“Google”). The integration of these web fonts is done by a server call, usually a Google server in the USA. This will be transmitted to the server, which of our websites you have visited. Also, the IP address of the browser of the terminal of the visitor of this website is stored by Google. For more information, see the Google Privacy Policy, which you can access here:
-      div
-        a(href="www.google.com/fonts#AboutPlace:about") google.com/fonts
-      div
-        a(href="www.google.com/policies/privacy/") google.com/policies/privacy
 
 </template>
 
