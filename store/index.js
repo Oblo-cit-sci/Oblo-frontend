@@ -22,8 +22,10 @@ export const state = () => ({
     value: NO_DOMAIN,
     title: "OpenTEK",
     icon: "images/openTEK_icon.png"
-  }
-  // selected entry type (for creation)
+  },
+  // prevent that the save and back is messing up, should not go back to a child. e.g.
+  // stores either domain or my entries page or a parent entry
+  page_path: []
 })
 
 function extract_liccis(tree) {
@@ -129,6 +131,15 @@ export const mutations = {
         state.draft_numbers[etype] = additional_draft_numbers[etype]
       }
     }
+  },
+  init_page_path(state, route) {
+    state.page_path = [route]
+  },
+  push_page_path(state, route) {
+    state.page_path.push(route)
+  },
+  pop_last_page_path(state) {
+    state.page_path.pop()
   }
 };
 
@@ -202,6 +213,12 @@ export const getters = {
         return {value: type, text: getters[ENTRYTYPES_TYPENAME](type)}
       })
     }
+  },
+  last_page_path(state) {
+    if (state.page_path.length > 0)
+      return state.page_path[state.page_path.length - 1]
+    else
+      return null
   }
 };
 

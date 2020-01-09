@@ -51,9 +51,16 @@
     import EntryNavMixin from "../EntryNavMixin";
     import ListMixin from "../ListMixin";
     import {
-      EDIT_UUID, ENTRIES_DELETE_ENTRY,
-      ENTRIES_EDIT_DELETE_REF_CHILD,
-      ENTRIES_GET_ENTRY, ENTRIES_SAVE_CHILD_N_REF, ENTRIES_SAVE_ENTRY, ENTRYTYPES_TYPE,
+        ADD_PAGE_PATH,
+        EDIT_UUID,
+        ENTRIES_DELETE_ENTRY,
+        ENTRIES_EDIT_DELETE_REF_CHILD,
+        ENTRIES_GET_ENTRY,
+        ENTRIES_SAVE_CHILD_N_REF,
+        ENTRIES_SAVE_ENTRY,
+        ENTRYTYPES_TYPE,
+        INIT_PAGE_PATH,
+        PUSH_PAGE_PATH,
     } from "../../lib/store_consts";
     import {aspect_loc_str} from "../../lib/aspect";
     import {no_duplicate_texts} from "../../lib/options";
@@ -143,6 +150,8 @@
                 this.persist_draft_numbers()
                 this.persist_entries()
                 // goto
+                // console.log("EL asp", this.$route)
+                this.$store.commit(PUSH_PAGE_PATH, this.$route)
                 this.to_entry(child.uuid, EDIT)
                 this.goto_delayed_last_page()
             },
@@ -161,6 +170,8 @@
                     this.fetch_and_nav(item.uuid)
                 else {
                     // todo, not always edit: parent is owned, but child not, ...
+                    // console.log("EL asp", this.$route)
+                    this.$store.commit(PUSH_PAGE_PATH, this.$route)
                     this.to_entry(item.uuid, this.mode)
                 }
             }

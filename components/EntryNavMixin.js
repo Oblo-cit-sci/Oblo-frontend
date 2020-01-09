@@ -1,6 +1,6 @@
 import {fetch_entry} from "../lib/entry";
 import {GLOBAL, NO_DOMAIN, VIEW} from "../lib/consts";
-import {DOMAIN, ENTRIES_GET_ENTRY, ENTRYTYPES_GET_ASPECT_DEF} from "../lib/store_consts";
+import {DOMAIN, ENTRIES_GET_ENTRY, ENTRYTYPES_GET_ASPECT_DEF, POP_LAST_PAGE_PATH} from "../lib/store_consts";
 import {aspect_loc_str} from "../lib/aspect";
 import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
 
@@ -39,6 +39,7 @@ export default {
           const aspect_id = aspect_loc_str(parent_ref.aspect_loc)
           query.goTo = (aspect_id ? aspect_id : "")
         }
+        this.$store.commit(POP_LAST_PAGE_PATH)
         this.to_entry(uuid, mode, query)
       } else {
         if(this.domain.value === NO_DOMAIN) {

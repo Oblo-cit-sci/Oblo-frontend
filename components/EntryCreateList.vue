@@ -14,7 +14,7 @@
     import SingleSelect from "./SingleSelect";
     import {create_entry} from "../lib/entry";
     import {EDIT} from "../lib/consts";
-    import {ENTRIES_SAVE_ENTRY} from "../lib/store_consts";
+    import {ENTRIES_SAVE_ENTRY, INIT_PAGE_PATH} from "../lib/store_consts";
     import EntryNavMixin from "./EntryNavMixin";
     import PersistentStorageMixin from "./PersistentStorageMixin";
 
@@ -70,6 +70,8 @@
                 } else {
                     uuid = value
                 }
+                // console.log("entrycreatelist", this.$route)
+                this.$store.commit(INIT_PAGE_PATH, this.$route.path)
                 this.to_entry(uuid, EDIT)
             }
         }

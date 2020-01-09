@@ -4,10 +4,7 @@
 </template>
 
 <script>
-  import Entrypreview from "../components/EntryPreview";
-  import EntryPreviewList from "../components/EntryPreviewList";
   import {ENTRIES_ALL_ENTRIES_ARRAY} from "../lib/store_consts";
-  import FilterSelect from "../components/FilterSelect";
   import {LICCI_PARTNERS, NO_DOMAIN} from "../lib/consts";
   import {domain_filter_options, entrytype_filter_options} from "../lib/filter_option_consts";
   import FilterMixin from "../components/FilterMixin";
@@ -52,7 +49,7 @@
 
   export default {
     name: "PersonalEntries",
-    components: {Search, FilterSelect, EntryPreviewList, Entrypreview},
+    components: {Search},
     mixins: [FilterMixin],
     data() {
       let filters = all_filters
@@ -71,6 +68,7 @@
       },
       entries() {
         let result_entries = this.$store.getters[ENTRIES_ALL_ENTRIES_ARRAY]()
+
         for (let filter of all_filters) {
           //todo we select the value, because select is not just emitting value up, clean this!
           const filter_value = (this.filter_values[filter.name] || pack_value(null)).value

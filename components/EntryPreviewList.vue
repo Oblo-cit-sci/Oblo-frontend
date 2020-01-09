@@ -13,7 +13,7 @@
 
 <script>
     import Entrypreview from "../components/EntryPreview";
-    import {ENTRYTYPES_TYPE} from "../lib/store_consts";
+    import {ENTRIES_HAS_ENTRY, ENTRYTYPES_TYPE} from "../lib/store_consts";
     import goTo from 'vuetify/lib/services/goto'
 
     export default {
