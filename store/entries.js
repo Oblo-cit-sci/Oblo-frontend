@@ -94,7 +94,6 @@ export const mutations = {
     } else {
       console.log("ERROR store.entries. final location", final_loc)
     }
-    //console.log("result", select, state)
   },
   _remove_entry_value_index(state, aspect_loc) {
     let select = select_aspect_loc(state, aspect_loc, true)
@@ -106,18 +105,11 @@ export const mutations = {
     delete state.entries.get(uuid).refs.children[child_uuid]
     const pre_aspect_loc = loc_remove_last(aspect_loc)
     const shift_index = last_loc_value(aspect_loc)
-    //debugger
     for (let other_child_uuid in children) {
-      //console.log("o", loc_remove_last(children[other_child_uuid]))
-      // console.log("p", pre_aspect_loc)
       const other_aspect_loc = children[other_child_uuid]
-      // console.log(ld.isEqual(loc_remove_last(other_aspect_loc), pre_aspect_loc))
       if (ld.isEqual(loc_remove_last(other_aspect_loc), pre_aspect_loc)) {
         if (other_aspect_loc[other_aspect_loc.length - 1][1] > shift_index) {
-          // console.log(other_aspect_loc[other_aspect_loc.length - 1 ][1])
-          //debugger
           other_aspect_loc[other_aspect_loc.length - 1][1]--
-          // console.log(other_aspect_loc[other_aspect_loc.length - 1 ][1])
         }
       }
     }
