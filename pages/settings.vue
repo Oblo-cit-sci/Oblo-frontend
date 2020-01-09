@@ -9,7 +9,7 @@
         :aspect="user_key_aspect"
         :ext_value="user_key"
         mode="edit"
-        v-on:update_value="update_value($event)")
+        v-on:update_value="update_user_key($event)")
       v-btn(@click="test_save" :loading="test_save_connect_loading") Test and save
       br
       v-divider.wide-divider
@@ -94,9 +94,9 @@
         }).then(res => {
           // TODO the whole thing is not super elegant. stored in vuex on key, but in browser only on save...
           this.snackbar(res.data.status, res.data.msg)
-          this.persist_user_key()
           this.test_save_connect_loading = false
           if (res.data.status) {
+              this.persist_user_key()
             this.$router.push("/")
           }
         }).catch(err => {
@@ -107,13 +107,13 @@
       },
       export_entries() {
         const entries = Array.from(this.$store.state.entries.entries.values())
-        export_data({entries: entries}, "all_licci_entries.json")
+        export_data({entries: entries}, "all_entries.json")
       },
       show_clear_entries() {
         this.show_dialog = true
         this.dialog_data = this.clear_dialog_data
       },
-      update_value(event) {
+        update_user_key(event) {
         this.$store.commit("add_meta", {
           repository: {
             user_key: event.value

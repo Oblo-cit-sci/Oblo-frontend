@@ -401,15 +401,8 @@ export const actions = {
   },
   delete_ref_child(context, {uuid, child_uuid}) { // DELETE_REF_CHILD
     let aspect_loc = context.state.entries.get(uuid).refs.children[child_uuid]
-    //console.log("child loc", aspect_loc)
-    let first_loc = ENTRY
-    /*if(context.getters.edit_uuid === uuid) {
-      first_loc = EDIT
-    }*/
     context.commit("_remove_entry_value_index", ld.concat([[ENTRY, uuid]], aspect_loc))
     context.commit("_remove_entry_ref_index", {uuid, child_uuid, aspect_loc})
-
-    //context.dispatch("adjust_id")
   },
   delete_entry(context, uuid) { // ENTRIES_DELETE_ENTRY
     const entry = context.state.entries.get(uuid)
