@@ -193,20 +193,12 @@
                 }
                 this.sending = false
             },
-            /*download_data() {
-              return {
-                entry: this.entry,
-                name: this.entry_type.slug,
-                version: this.entry_type.version,
-                language: this.entry_type.language
-              }*/
             lastpage_reached($event) {
-                console.log("en action lastpage_reached", $event)
+                console.log("an action lastpage_reached", $event)
             },
             back() {
-                //this.$emit("update:dirty", false)
-                //this.$store.commit(ENTRIES_SET_EDIT_CLEAN, this.entry.uuid)
                 const last_path = this.$store.getters[LAST_BASE_PAGE_PATH]
+                // console.log("EA back", last_path)
                 this.$store.commit(POP_LAST_PAGE_PATH)
                 if(last_path) {
                     this.$router.push(last_path.fullPath)

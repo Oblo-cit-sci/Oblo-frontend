@@ -71,7 +71,7 @@
                     uuid = value
                 }
                 // console.log("entrycreatelist", this.$route)
-                this.$store.commit(INIT_PAGE_PATH, this.$route.path)
+                this.$store.commit(INIT_PAGE_PATH, this.$route)
                 this.to_entry(uuid, EDIT)
             }
         }
