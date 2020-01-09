@@ -121,13 +121,9 @@ export const mutations = {
   delete_domain(state, domain_name) {
     state.domains = ld.filter(state.domains, domain => domain.value !== domain_name)
   },
-  update_draft_numbers(state, additional_draft_numbers) {
-    for (let etype in additional_draft_numbers) {
-      if (state.draft_numbers.hasOwnProperty(etype)) {
-        state.draft_numbers[etype] += additional_draft_numbers[etype]
-      } else {
-        state.draft_numbers[etype] = additional_draft_numbers[etype]
-      }
+  update_draft_numbers(state, entries) { // UPDATE_DRAFT_NUMBERS
+    for (let entry of entries) {
+      state.draft_numbers[entry.type_slug] = (state.draft_numbers[entry.type_slug] || 0) + 1
     }
   }
 };
