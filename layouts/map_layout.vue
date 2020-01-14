@@ -46,7 +46,7 @@
             span Back
         v-col.col-sm-7
           v-select(label="Layers" :items="layer_options" multiple small-chips v-on:change="layer_select_change($event)")
-        //v-col.col-sm-3
+        v-col.col-sm-3
           v-btn
             v-icon mdi-crosshairs-gps
       v-row.ma-1(wrap justify-center)
@@ -97,7 +97,7 @@
             return {
                 drawer: false,
                 menu_items: menu,
-                menu_mode: SEARCH
+                menu_mode: ENTRY
             }
         },
         created() {

@@ -45,8 +45,8 @@
             }
         },
         created() {
-            console.log(this.mvalue)
-            if (this.value.hasOwnProperty(OPTION)) {
+            // console.log(this.mvalue)
+            if (this.mvalue.hasOwnProperty(OPTION)) {
                 this.option_selected(this.mvalue.option, false)
             }
         },
@@ -57,6 +57,7 @@
                 if (selected) {
                     let value = aspect_default_value(this.selected_aspect)
                     value.option = option
+                  // call method
                     this.$store.dispatch(ENTRIES_SET_ENTRY_VALUE, {
                         aspect_loc: this.aspect_loc,
                         value: value
