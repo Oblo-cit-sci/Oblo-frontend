@@ -15,17 +15,17 @@
         :layers="layers"
         :mode="mode"
         @layer_select_change="layer_select_change($event)")
-      MglMap(:style="mapCssStyle"
-        :access-token="accessToken"
-        :map-style="mapStyle"
-        @load="onMapLoaded"
-        :center="center_coordinates"
-        @click="touch($event)")
-        MglMarker(v-if="selected_coordinates" :coordinates="selected_coordinates")
-        div(v-for="entry in entries" :key="entry.uuid")
-          MglMarker(v-for="(loc, index) in entry.location"
-                    :coordinates="transform_loc(loc.coordinates)"
-                    :key="index")
+      <!--      MglMap(:style="mapCssStyle"-->
+      <!--        :access-token="accessToken"-->
+      <!--        :map-style="mapStyle"-->
+      <!--        @load="onMapLoaded"-->
+      <!--        :center="center_coordinates"-->
+      <!--        @click="touch($event)")-->
+      <!--        MglMarker(v-if="selected_coordinates" :coordinates="selected_coordinates")-->
+      <!--        div(v-for="entry in entries" :key="entry.uuid")-->
+      <!--          MglMarker(v-for="(loc, index) in entry.location"-->
+      <!--                    :coordinates="transform_loc(loc.coordinates)"-->
+      <!--                    :key="index")-->
 </template>
 
 <script>
@@ -74,12 +74,10 @@
         },
         created() {
             this.map = null
-            console.log(this.mode, this.normal_mode)
             if(this.normal_mode) {
                 this.$store.dispatch(MAP_SET_ENTRIES, this.$store.getters[ENTRIES_ALL_ENTRIES_ARRAY]())
                 // const entries = this.$store.getters[SEARCH_GET_ENTRIES]
                 // this.update_map_entries(entries)
-                console.log("es", this.entries)
             }
         },
         mounted() {
@@ -113,11 +111,10 @@
         methods: {
             onMapLoaded(event) {
                 this.map = event.map
-                // console.log("map", this.map)
+                console.log("map", this.map)
             },
             // todo later use dispatch, like in create?
             update_map_entries(entries) {
-                console.log(entries.length)
                 this.$store.commit("map/set_entries", entries)
             },
             layer_select_change(active_layers) {

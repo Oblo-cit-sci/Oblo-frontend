@@ -1,5 +1,5 @@
 import {string_list2options} from "../../lib/options";
-import {MODE_ASPECT_POINT, MODE_NORMAL} from "../../lib/consts";
+import {LOCATION, MODE_ASPECT_POINT, MODE_NORMAL} from "../../lib/consts";
 
 export default {
   name: "MapNavigationMixin",
@@ -7,6 +7,16 @@ export default {
     drawer: Boolean,
     layers: Array,
     mode: String
+  },
+  data() {
+    return {
+      location_pre_filter: [
+        {
+          name: "meta_aspect",
+          meta_aspect_name: LOCATION
+        }
+      ]
+    }
   },
   computed: {
     select_mode() {
@@ -27,8 +37,11 @@ export default {
       this.$emit("layerstatus", active_layers)
     },
     update_map_entries(entries) {
-      console.log(entries.length)
-      // this.$store.commit("map/set_entries", entries)
+      console.log("map nav, num results", entries.length)
+      if(entries.length > 0) {
+        console.log(entries[0])
+      }
+      this.$store.commit("map/set_entries", entries)
     },
   },
 }

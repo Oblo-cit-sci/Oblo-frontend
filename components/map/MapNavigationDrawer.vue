@@ -23,8 +23,10 @@
           v-icon mdi-crosshairs-gps
     v-row.ma-1(wrap justify-center)
       Search(v-if="normal_mode"
+        init_full
         :preview_options="{actions: ['goto_location']}"
-        v-on:received_search_results="update_map_entries($event)" clean)
+        :fixed_filters="location_pre_filter"
+        v-on:received_search_results="update_map_entries($event)")
 </template>
 
 <script>
