@@ -92,15 +92,15 @@
 
 
 <script>
-  import {
-    INITIALIZED,
-    SET_ENTRIES,
-    DOMAIN_TITLE,
-    DOMAIN,
-    CONNECTING,
-    CONNECTED,
-    USER_LOGGED_IN
-  } from "../lib/store_consts"
+    import {
+        INITIALIZED,
+        SET_ENTRIES,
+        DOMAIN_TITLE,
+        DOMAIN,
+        CONNECTING,
+        CONNECTED,
+        USER_LOGGED_IN, SEARCH_SET_ENTRIES
+    } from "../lib/store_consts"
   import GlobalSnackbar from "../components/GlobalSnackbar"
   import {EOVALUE, HOME} from "../lib/consts"
   import Footer from "../components/Footer"
@@ -240,7 +240,7 @@
     watch: {
       domain_title: function (newValue, oldValue) {
         if (newValue !== HOME && newValue !== lastDomain) {
-          this.$store.commit(SET_ENTRIES, [])
+          this.$store.commit(SEARCH_SET_ENTRIES, [])
         }
         if (newValue !== HOME) {
           lastDomain = newValue

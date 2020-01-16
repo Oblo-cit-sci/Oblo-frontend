@@ -22,7 +22,7 @@
     import {mapGetters, mapMutations} from "vuex"
     import EntryPreviewList from "../components/EntryPreviewList"
     import {search_entries} from "../lib/client"
-    import {ENTRIES_SEARCH, CLEAR_SEARCH, ENTRIES_HAS_ENTRY} from "../lib/store_consts"
+    import {ENTRIES_SEARCH, CLEAR_SEARCH, ENTRIES_HAS_ENTRY, SEARCH_GET_ENTRIES} from "../lib/store_consts"
     import FilterSelect from "./FilterSelect";
     import {pack_value} from "../lib/aspect";
     import FilterMixin from "./FilterMixin";
@@ -78,7 +78,7 @@
             }
         },
         computed: {
-            ...mapGetters({entries: ENTRIES_SEARCH}),
+            ...mapGetters({entries: SEARCH_GET_ENTRIES}),
             search_hint() {
                 if (this.keyword && this.keyword.length < this.kw_char_thresh) {
                     return "type 4 characters to trigger search"

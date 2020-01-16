@@ -1,3 +1,5 @@
+const ld = require("lodash")
+
 export const state = () => ({
   marker: null,
   entries: [],
@@ -5,7 +7,7 @@ export const state = () => ({
   goto_location: null,
   layers: ["Climate types", "Weather stations"],
   layer_status: {},
-  to_select_aspect_location: null // when coming from a locationAspect
+  to_select_aspect_location: null // when coming from a locationAspect, comes with
 })
 
 export const mutations = {
@@ -63,5 +65,10 @@ export const actions = {
     let entry = context.rootGetters["entries/get_entry"](uuid)
     context.commit("select_entry", entry)
     console.log(entry.title)
+  },
+  // filters entries that have a location set
+  set_entries({commit}, entries) {
+    const location_entries = ld.filter(entries, e => e.location !== null && e.location !== undefined)
+    commit("set_entries", location_entries)
   }
 }
