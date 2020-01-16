@@ -174,9 +174,13 @@ export const mutations = {
   },
   insert_missing_default_values(state, {uuid, type_default_values}) {
     let aspects_values = state.entries.get(uuid).aspects_values
+
     for (let key in type_default_values) {
       if (!aspects_values.hasOwnProperty(key)) {
+        console.log("adding ", key)
         aspects_values[key] = type_default_values[key]
+      } else {
+        console.log(aspects_values[key].value)
       }
     }
   }
@@ -432,7 +436,6 @@ export const actions = {
     const etype = context.getters.get_entry_type(context.getters.get_entry(uuid).type_slug)
     const type_default_values = default_values(etype)
     context.commit("insert_missing_default_values", {uuid, type_default_values})
-
     context.commit("_update_parent_version", {uuid, version: etype.version})
   }
 }

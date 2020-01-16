@@ -47,10 +47,11 @@
         div Error of {{$store.state.user.user_data.location_error}} included
    */
 
-  import {get_location, create_location_error, array2coords} from "../../lib/location";
+  import {get_location, create_location_error, array2coords, place2str} from "../../lib/location";
   import AspectMixin from "./AspectMixin";
   import SingleSelect from "../SingleSelect";
   import {location_search, rev_geocode} from "../../lib/services/mapbox";
+  import {default_place_type, MODE_ASPECT_POINT} from "../../lib/consts";
 
   const ACTUAL_LOCATION = "act";
 
@@ -66,7 +67,7 @@
   const default_output = [LOCATION, PLACE]
 
   // below place: "locality", "neighborhood"
-  const default_place_type = ["place", "district", "region", "country"]
+
 
   export default {
     name: "LocationAspect",
@@ -114,24 +115,17 @@
       location_set() {
         return this.value !== null
       },
+      has_place() {
+        return this.location_set && this.value.place !== undefined
+      },
       location_view() {
-        let result = ""
-        if(!this.location_set)
-          return result
-        if (this.has_output_place) {
-          const place = this.value.place
-          let result_vals = []
-          for(let place_type of default_place_type) {
-            if(place.hasOwnProperty(place_type)) {
-              result_vals.push(place[place_type])
-            }
-          }
-          return result_vals.join(", ")
-        }
-        return result
+        if (this.has_output_place && this.has_place) {
+          return place2str(this.value.place)
+        } else
+          return ""
       },
       has_output_location() {
-        this.has_output(LOCATION)
+        return this.has_output(LOCATION)
       },
       has_output_place() {
         return this.has_output(PLACE)
@@ -158,6 +152,7 @@
           this.selected_search_result = this.search_result_options[0].id
         }).catch(err => {
           console.log(err)
+          this.btn_loading_search_location = false
         })
       },
       has_input_option(type) {
@@ -170,21 +165,22 @@
         this.btn_loading_device_location = true
         this.reset_search_data()
         get_location((location) => {
-          this.update_location_from_location(location)
+          // console.log("device_position", location)
+          if (location !== null) // we get null, when error occured, e.g. not beeing connected
+            this.update_location_from_location(location)
           this.btn_loading_device_location = false
         });
       },
-      update_location_from_location(location) {
+      update_location_from_location: function (location) {
         let value = {}
         if (this.has_output_location) {
           if (this.aspect.attr.hasOwnProperty("apply_location_error") &&
             this.aspect.attr.apply_location_error) {
-            console.log("err.loc")
-            const error_loc = create_location_error(
+            value.location = create_location_error(
               location.coords.longitude,
               location.coords.latitude,
               this.$store.state.user.user_data.location_error)
-            console.log(error_loc)
+            // console.log("err.loc", value.location)
           } else {
             console.log("exact.loc")
             value.location = {
@@ -205,18 +201,20 @@
             this.update_value(value)
           }).catch((err) => {
             console.log("error: mapbox api error", err)
-          })
+          }) // must be with else, cuz its async
         } else {
           this.update_value(value)
         }
       },
       map_position() {
-        this.$store.commit("set_mapmode", {
-          select: "point",
-          aspect: this.aspect.name
-        })
-        //console.log("loc. store edit")
-        this.$router.push("/map")
+        let route = {
+          path: "/map",
+          query: {
+            mode: MODE_ASPECT_POINT,
+          }
+        }
+        this.$store.commit("map/set_to_select_aspect_location", this.aspect_loc)
+        this.$router.push(route)
       }
     },
     watch: {
@@ -233,7 +231,7 @@
           for (let place_type of feature.place_type) {
             value.place[place_type] = feature.text
           }
-          for(let context of feature.context || []) {
+          for (let context of feature.context || []) {
             const place_type = context.id.split(".")[0]
             value.place[place_type] = context.text
           }

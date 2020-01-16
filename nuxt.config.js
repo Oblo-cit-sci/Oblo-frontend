@@ -53,7 +53,7 @@ module.exports = {
 
   router: {
     middleware: ['init'],
-    base: "/opentek/"
+    base: "/appbeta/"
   },
 
   /*
