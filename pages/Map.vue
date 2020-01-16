@@ -2,23 +2,18 @@
   v-layout.map.row
     client-only
       .buttongroup
-        v-btn(dark fab bottom right x-large color="blue" @click="drawer = !drawer")
-          v-icon mdi-menu
-        v-btn(v-if="select_mode" dark fab bottom right large color="warning" @click="back")
-          v-icon mdi-arrow-left
-        v-btn(v-if="show_select_confirm" dark fab bottom right large color="green" @click="confirm_select")
-          v-icon mdi-map-marker-check
-      v-navigation-drawer(
-        app
-        :permanent="drawer"
-        v-model="drawer"
-        :mini-variant="false"
-        :clipped="true"
-        :hide-overlay="true"
-        temporary
-        :width="drawer_width"
-        fixed)
-      v-snackbar(v-if="selected_place" :value="selected_place" :timeout="0" selected_place right top) {{selected_place_text}}
+        div
+          v-btn(dark fab bottom right x-large color="blue" @click="drawer = !drawer")
+            v-icon mdi-menu
+          v-btn(v-if="select_mode" dark fab bottom right large color="warning" @click="back")
+            v-icon mdi-arrow-left
+          v-btn(v-if="show_select_confirm" dark fab bottom right large color="green" @click="confirm_select")
+            v-icon mdi-map-marker-check
+        v-snackbar(v-if="selected_place" :value="selected_place" :timeout="0" selected_place right top) {{selected_place_text}}
+      MapNavigationDrawer(
+        :drawer="drawer"
+        :layers="layers"
+        @layer_select_change="layer_select_change($event)")
       MglMap(:style="mapCssStyle"
         :access-token="accessToken"
         :map-style="mapStyle"
@@ -41,18 +36,19 @@
         ENTRIES_ALL_ENTRIES_ARRAY,
         ENTRIES_SET_ENTRY_VALUE,
         MAP_SET_ENTRIES,
-        SEARCH_GET_ENTRIES
     } from "../lib/store_consts";
     import {pack_value} from "../lib/aspect";
     import {arr2coords} from "../lib/map_utils";
     import {mapGetters} from "vuex"
+    import MapNavigationDrawer from "../components/map/MapNavigationDrawer";
 
     const menu_mode_options = [MODE_NORMAL, MODE_ASPECT_POINT]
+
 
     export default {
         name: "Map",
         mixins: [],
-        components: {MglMarker, MglPopup},
+        components: {MapNavigationDrawer, MglMarker, MglPopup},
         props: {},
         layout: "map_layout",
         head() {
@@ -91,11 +87,9 @@
         computed: {
             ...mapGetters({
                 entries: "map/entries",
+                layers: "map/layers",
                 layer_status: "map/layer_status"
             }),
-            drawer_width() {
-                return this.$vuetify.breakpoint.lgAndUp ? 600 : 400
-            },
             mode() {
                 return this.$route.query.mode || MODE_NORMAL
             },
@@ -124,6 +118,15 @@
             update_map_entries(entries) {
                 console.log(entries.length)
                 this.$store.commit("map/set_entries", entries)
+            },
+            layer_select_change(active_layers) {
+                this.set_layer_status(this.$_.mapValues(this.$_.keyBy(this.layers), l => active_layers.includes(l)))
+            },
+            set_layer_status(layers = this.layer_status) {
+                //console.log(this.map.style._layers)
+                for (let layer in layers) {
+                    this.map.setLayoutProperty(layer, 'visibility', layers[layer] ? "visible" : "none")
+                }
             },
             transform_loc(loc) {
                 // todo take the NaN check out and filter earlier...
