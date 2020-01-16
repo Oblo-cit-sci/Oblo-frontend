@@ -109,9 +109,6 @@
   import TriggerSnackbarMixin from "../../../components/TriggerSnackbarMixin";
   import PersistentStorageMixin from "../../../components/PersistentStorageMixin";
 
-  /**
-   * @vue-data {Object} entry_type - Initial counter's value
-   */
   export default {
     name: "uuid",
     mixins: [EntryNavMixin, EntryMixin, TriggerSnackbarMixin, PersistentStorageMixin],

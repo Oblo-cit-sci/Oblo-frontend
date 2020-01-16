@@ -96,7 +96,7 @@
           this.snackbar(res.data.status, res.data.msg)
           this.test_save_connect_loading = false
           if (res.data.status) {
-              this.persist_user_key()
+            this.persist_user_key()
             this.$router.push("/")
           }
         }).catch(err => {

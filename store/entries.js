@@ -423,7 +423,6 @@ export const actions = {
     const etype = context.getters.get_entry_type(context.getters.get_entry(uuid).type_slug)
     const type_default_values = default_values(etype)
     context.commit("insert_missing_default_values", {uuid, type_default_values})
-
     context.commit("_update_parent_version", {uuid, version: etype.version})
   }
 }

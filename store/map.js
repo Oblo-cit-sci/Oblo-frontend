@@ -4,7 +4,8 @@ export const state = () => ({
   selected_entry: null,
   goto_location: null,
   layers: ["Climate types", "Weather stations"],
-  layer_status: {}
+  layer_status: {},
+  to_select_aspect_location: null // when coming from a locationAspect
 })
 
 export const mutations = {
@@ -25,6 +26,12 @@ export const mutations = {
   },
   set_layer_status(state, layer_status) {
     state.layer_status = layer_status
+  },
+  set_to_select_aspect_location(state, aspect_location) {
+    state.to_select_aspect_location = aspect_location
+  },
+  reset_to_select_aspect_location(state, aspect_location) {
+    state.to_select_aspect_location = null
   }
 }
 
@@ -44,6 +51,9 @@ export const getters = {
   },
   layer_status(state) {
     return state.layer_status
+  },
+  to_select_aspect_location(state) {
+    return state.to_select_aspect_location
   }
 }
 
