@@ -13,6 +13,7 @@
       MapNavigationDrawer(
         :drawer="drawer"
         :layers="layers"
+        :mode="mode"
         @layer_select_change="layer_select_change($event)")
       MglMap(:style="mapCssStyle"
         :access-token="accessToken"

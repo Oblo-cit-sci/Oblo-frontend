@@ -21,21 +21,21 @@
       v-col.col-sm-3
         v-btn
           v-icon mdi-crosshairs-gps
+    v-row.ma-1(wrap justify-center)
+      Search(v-if="normal_mode"
+        :preview_options="{actions: ['goto_location']}"
+        v-on:received_search_results="update_map_entries($event)" clean)
 </template>
 
 <script>
     import MapNavigationMixin from "./MapNavigationMixin";
+    import Search from "../Search";
 
-    /*
-
-
-
-     */
 
     export default {
         name: "MapNavigationDrawer",
         mixins: [MapNavigationMixin],
-        components: {},
+        components: {Search},
         computed: {
             drawer_width() {
                 return this.$vuetify.breakpoint.lgAndUp ? 600 : 400
