@@ -154,7 +154,6 @@ export default {
       }
       if (this.aspect.attr.ref_value) {
         //console.log("ref")
-        //debugger
         // GRAB REF
         let aspect_location = complete_aspect_loc(
           aspect_loc_uuid(this.aspect_loc),
@@ -191,7 +190,6 @@ export default {
         // USES lists or ints
         const length_value = this.$store.getters[ENTRIES_VALUE](location_array).value
 
-        //debugger
         // todo use the aspect_descr to find out if its a list or an int
         if (Array.isArray(length_value)) {
           this.extra["ref_length"] = length_value.length

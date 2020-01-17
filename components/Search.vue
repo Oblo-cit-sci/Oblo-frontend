@@ -81,7 +81,6 @@
         const required = this.searchConfiguration().required
         const all_entries = this.$store.getters[ENTRIES_ALL_ENTRIES_ARRAY]()
         const filtered_entries = filter_required(all_entries, required).map(e => ([e.uuid, e]))
-        debugger
         // const entries = filter_required(this.$store.getters[ENTRIES_ALL_ENTRIES_ARRAY](), required).map(e => ([e.uuid, e]))
         console.log("init_full, entries:", filtered_entries.length)
         this.$store.commit(SEARCH_SET_ENTRIES, filtered_entries)

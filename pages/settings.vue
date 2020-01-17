@@ -29,6 +29,8 @@
       v-bind="dialog_data"
       :open.sync="show_dialog"
       @action="dialog_action($event)")
+    VDialog(v-bind="dialog_content")
+
 </template>
 
 <script>
@@ -144,10 +146,7 @@
           const result = merge_imported_entries(this.$store, entries)
           console.log("import", result)
           this.persist_entries()
-          //console.log("Entries imported")
           this.ok_snackbar("Entries imported")
-          //this.show_dialog = true
-          //this.dialog_data = this.entries_imported_dialog
         } else {
           this.error_snackbar("Something went wrong")
         }
@@ -169,6 +168,9 @@
       },
       partner_settings() {
         return get_release_mode(this.$store) === LICCI_PARTNERS
+      },
+      dialog_content() {
+        return ""
       }
     }
   }
