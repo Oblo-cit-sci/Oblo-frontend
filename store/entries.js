@@ -14,7 +14,7 @@ import {
 import {ENTRYTYPES_TYPE, GET_ENTRY} from "../lib/store_consts";
 
 import Vue from "vue"
-import {flatten_collection_of_lists, recursive_unpack} from "../lib/util";
+import {filter_empty, filter_no_value, flatten_collection_of_lists, recursive_unpack} from "../lib/util";
 import {app_version} from "../lib/client";
 
 const ld = require("lodash")
@@ -143,7 +143,8 @@ export const mutations = {
   },
   update_location(state, {uuid, location}) {
     // todo, this shouldnt be here. the licci reviews are wrongly converted sometimes. into {lon:{}, lat:{}}
-    location = ld.filter(location, loc => (typeof loc.coordinates.lat === "number"))
+    console.log("update_location", location)
+    location = ld.filter(location, loc => (loc && typeof loc.coordinates.lat === "number"))
     state.entries.get(uuid).location = location
   },
   update_tags(state, {uuid, tags}) {
@@ -388,7 +389,9 @@ export const actions = {
     context.commit("update_title", {uuid, title: entry_title})
     const location = context.getters.entry_location(uuid)
     if (location) {
-      context.commit("update_location", {uuid, location: recursive_unpack(location)})
+      console.log("save_entry. loc",location )
+      const simple_location = filter_empty(recursive_unpack(location))
+      context.commit("update_location", {uuid, location: simple_location})
     }
 
     const tags = context.getters.entry_tags(uuid)

@@ -60,6 +60,7 @@
     import SingleSelect from "../SingleSelect";
     import {location_search, rev_geocode} from "../../lib/services/mapbox";
     import {default_place_type, MODE_ASPECT_POINT} from "../../lib/consts";
+    import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
 
     // "attr.input" options
     const DEVICE = "device"
@@ -78,7 +79,7 @@
     export default {
         name: "LocationAspect",
         components: {SingleSelect},
-        mixins: [AspectMixin],
+        mixins: [AspectMixin, TriggerSnackbarMixin],
         data() {
             return {
                 input_options: [],
@@ -160,7 +161,7 @@
                 this.btn_loading_device_location = true
                 this.reset_search_data()
                 get_location((location) => {
-                    // console.log("device_position", location)
+                    console.log("device_position", location)
                     if (location !== null) {
                         let value = {}
                         if (this.has_output_location) {
@@ -196,7 +197,9 @@
                         } else {
                             this.update_value(value)
                         }
-                    } // we get null, when error occured, e.g. not beeing connected
+                    } else { // we get null, when error occured, e.g. not beeing connected
+                      this.error_snackbar("Could not obtain  location")
+                    }
                     this.btn_loading_device_location = false
                 });
             },

@@ -15,160 +15,177 @@
         :layers="layers"
         :mode="mode"
         @layer_select_change="layer_select_change($event)")
-      <!--      MglMap(:style="mapCssStyle"-->
-      <!--        :access-token="accessToken"-->
-      <!--        :map-style="mapStyle"-->
-      <!--        @load="onMapLoaded"-->
-      <!--        :center="center_coordinates"-->
-      <!--        @click="touch($event)")-->
-      <!--        MglMarker(v-if="selected_coordinates" :coordinates="selected_coordinates")-->
-      <!--        div(v-for="entry in entries" :key="entry.uuid")-->
-      <!--          MglMarker(v-for="(loc, index) in entry.location"-->
-      <!--                    :coordinates="transform_loc(loc.coordinates)"-->
-      <!--                    :key="index")-->
+      MglMap(:style="mapCssStyle"
+        :access-token="accessToken"
+        :map-style="mapStyle"
+        @load="onMapLoaded"
+        :center="center_coordinates"
+        @click="touch($event)")
+        MglMarker(v-if="selected_coordinates" :coordinates="selected_coordinates")
+        div(v-for="entry in entries" :key="entry.uuid")
+          MglMarker(v-for="(loc, index) in entry.location"
+            :coordinates="transform_loc(loc.coordinates)"
+            :key="index")
 </template>
 
 <script>
-    import {MglMarker, MglPopup} from "vue-mapbox";
-    import {access_token, licci_style_map, rev_geocode} from "../lib/services/mapbox";
-    import {MODE_ASPECT_POINT, MODE_NORMAL} from "../lib/consts";
-    import {place2str} from "../lib/location";
-    import {
-        ENTRIES_ALL_ENTRIES_ARRAY,
-        ENTRIES_SET_ENTRY_VALUE,
-        MAP_SET_ENTRIES,
-    } from "../lib/store_consts";
-    import {pack_value} from "../lib/aspect";
-    import {arr2coords} from "../lib/map_utils";
-    import {mapGetters} from "vuex"
-    import MapNavigationDrawer from "../components/map/MapNavigationDrawer";
+  import {MglMarker, MglPopup} from "vue-mapbox";
+  import {access_token, licci_style_map, rev_geocode} from "../lib/services/mapbox";
+  import {MODE_ASPECT_POINT, MODE_NORMAL} from "../lib/consts";
+  import {place2str} from "../lib/location";
+  import {
+    ENTRIES_ALL_ENTRIES_ARRAY,
+    ENTRIES_SET_ENTRY_VALUE, MAP_GOTO_LOCATION,
+    MAP_SET_ENTRIES,
+  } from "../lib/store_consts";
+  import {pack_value} from "../lib/aspect";
+  import {arr2coords} from "../lib/map_utils";
+  import {mapGetters} from "vuex"
+  import MapNavigationDrawer from "../components/map/MapNavigationDrawer";
 
-    const menu_mode_options = [MODE_NORMAL, MODE_ASPECT_POINT]
+  const menu_mode_options = [MODE_NORMAL, MODE_ASPECT_POINT]
 
 
-    export default {
-        name: "Map",
-        mixins: [],
-        components: {MapNavigationDrawer, MglMarker, MglPopup},
-        props: {},
-        layout: "map_layout",
-        head() {
-            return {
-                link: [{
-                    href: "https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css",
-                    rel: "stylesheet"
-                }]
+  export default {
+    name: "Map",
+    mixins: [],
+    components: {MapNavigationDrawer, MglMarker, MglPopup},
+    props: {},
+    layout: "map_layout",
+    head() {
+      return {
+        link: [{
+          href: "https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css",
+          rel: "stylesheet"
+        }]
+      }
+    },
+    data() {
+      return {
+        drawer: false,
+        accessToken: access_token,
+        mapCssStyle: "",
+        mapStyle: licci_style_map,
+        center_coordinates: [-0.8844128193341589, 37.809519042232694],
+        //  MODE_ASPECT_POINT
+        selected_coordinates: null,
+        selected_place: null
+      }
+    },
+    created() {
+      this.map = null
+      if (this.normal_mode) {
+        this.$store.dispatch(MAP_SET_ENTRIES, this.$store.getters[ENTRIES_ALL_ENTRIES_ARRAY]())
+        // const entries = this.$store.getters[SEARCH_GET_ENTRIES]
+        // this.update_map_entries(entries)
+      }
+    },
+    mounted() {
+      this.mapCssStyle = "height: " + document.getElementById("fullContainer").clientHeight + "px"
+    },
+    computed: {
+      ...mapGetters({
+        entries: "map/entries",
+        layers: "map/layers",
+        layer_status: "map/layer_status"
+      }),
+      mode() {
+        return this.$route.query.mode || MODE_NORMAL
+      },
+      select_mode() {
+        return this.mode === MODE_ASPECT_POINT
+      },
+      normal_mode() {
+        return this.mode === MODE_NORMAL
+      },
+      selected_place_text() {
+        if (this.selected_place)
+          return place2str(this.selected_place)
+        else
+          return ""
+      },
+      show_select_confirm() {
+        return this.selected_place
+      },
+      goto_location() {
+        return this.$store.getters[MAP_GOTO_LOCATION]()
+      }
+    },
+    methods: {
+      onMapLoaded(event) {
+        this.map = event.map
+        console.log("map", this.map)
+      },
+      // todo later use dispatch, like in create?
+      update_map_entries(entries) {
+        this.$store.commit("map/set_entries", entries)
+      },
+      layer_select_change(active_layers) {
+        this.set_layer_status(this.$_.mapValues(this.$_.keyBy(this.layers), l => active_layers.includes(l)))
+      },
+      set_layer_status(layers = this.layer_status) {
+        //console.log(this.map.style._layers)
+        for (let layer in layers) {
+          this.map.setLayoutProperty(layer, 'visibility', layers[layer] ? "visible" : "none")
+        }
+      },
+      transform_loc(loc) {
+        // todo take the NaN check out and filter earlier...
+        if (loc.hasOwnProperty("lon") && loc.lat && !isNaN(loc.lon) && !isNaN(loc.lat)) {
+          return [loc.lon, loc.lat]
+        } else {
+          return loc
+        }
+      },
+      back() {
+        this.$router.back()
+      },
+      confirm_select() {
+        const value = pack_value({
+          coordinates: arr2coords(this.selected_coordinates),
+          place: this.selected_place
+        })
+        const aspect_loc = this.$store.getters["map/to_select_aspect_location"]
+        this.$store.commit("map/reset_to_select_aspect_location")
+        this.$store.dispatch(ENTRIES_SET_ENTRY_VALUE, {aspect_loc: aspect_loc, value: value})
+        this.$router.back()
+      },
+      touch({mapboxEvent}) {
+        console.log(mapboxEvent.lngLat.lng, mapboxEvent.lngLat.lat)
+        if (this.mode === MODE_ASPECT_POINT) {
+          this.selected_coordinates = [mapboxEvent.lngLat.lng, mapboxEvent.lngLat.lat]
+          rev_geocode(this.$axios, {lon: mapboxEvent.lngLat.lng, lat: mapboxEvent.lngLat.lat}).then(data => {
+            this.selected_place = {}
+            if (data.features.length === 0) { // oceans
+              this.selected_place = null
+            } else {
+              this.$_.forEach(data.features, feature => {
+                this.selected_place[feature.place_type[0]] = feature.text
+              })
             }
-        },
-        data() {
-            return {
-                drawer: false,
-                accessToken: access_token,
-                mapCssStyle: "",
-                mapStyle: licci_style_map,
-                center_coordinates: [-0.8844128193341589, 37.809519042232694],
-                //  MODE_ASPECT_POINT
-                selected_coordinates: null,
-                selected_place: null
-            }
-        },
-        created() {
-            this.map = null
-            if(this.normal_mode) {
-                this.$store.dispatch(MAP_SET_ENTRIES, this.$store.getters[ENTRIES_ALL_ENTRIES_ARRAY]())
-                // const entries = this.$store.getters[SEARCH_GET_ENTRIES]
-                // this.update_map_entries(entries)
-            }
-        },
-        mounted() {
-            this.mapCssStyle = "height: " + document.getElementById("fullContainer").clientHeight + "px"
-        },
-        computed: {
-            ...mapGetters({
-                entries: "map/entries",
-                layers: "map/layers",
-                layer_status: "map/layer_status"
-            }),
-            mode() {
-                return this.$route.query.mode || MODE_NORMAL
-            },
-            select_mode() {
-                return this.mode === MODE_ASPECT_POINT
-            },
-            normal_mode() {
-                return this.mode === MODE_NORMAL
-            },
-            selected_place_text() {
-                if (this.selected_place)
-                    return place2str(this.selected_place)
-                else
-                    return ""
-            },
-            show_select_confirm() {
-                return this.selected_place
-            }
-        },
-        methods: {
-            onMapLoaded(event) {
-                this.map = event.map
-                console.log("map", this.map)
-            },
-            // todo later use dispatch, like in create?
-            update_map_entries(entries) {
-                this.$store.commit("map/set_entries", entries)
-            },
-            layer_select_change(active_layers) {
-                this.set_layer_status(this.$_.mapValues(this.$_.keyBy(this.layers), l => active_layers.includes(l)))
-            },
-            set_layer_status(layers = this.layer_status) {
-                //console.log(this.map.style._layers)
-                for (let layer in layers) {
-                    this.map.setLayoutProperty(layer, 'visibility', layers[layer] ? "visible" : "none")
-                }
-            },
-            transform_loc(loc) {
-                // todo take the NaN check out and filter earlier...
-                if (loc.hasOwnProperty("lon") && loc.lat && !isNaN(loc.lon) && !isNaN(loc.lat)) {
-                    return [loc.lon, loc.lat]
-                } else {
-                    return loc
-                }
-            },
-            back() {
-                this.$router.back()
-            },
-            confirm_select() {
-                const value = pack_value({
-                    coordinates: arr2coords(this.selected_coordinates),
-                    place: this.selected_place
-                })
-                const aspect_loc = this.$store.getters["map/to_select_aspect_location"]
-                this.$store.commit("map/reset_to_select_aspect_location")
-                this.$store.dispatch(ENTRIES_SET_ENTRY_VALUE, {aspect_loc: aspect_loc, value: value})
-                this.$router.back()
-            },
-            touch({mapboxEvent}) {
-                console.log(mapboxEvent.lngLat.lng, mapboxEvent.lngLat.lat)
-                if (this.mode === MODE_ASPECT_POINT) {
-                    this.selected_coordinates = [mapboxEvent.lngLat.lng, mapboxEvent.lngLat.lat]
-                    rev_geocode(this.$axios, {lon: mapboxEvent.lngLat.lng, lat: mapboxEvent.lngLat.lat}).then(data => {
-                        this.selected_place = {}
-                        if (data.features.length === 0) { // oceans
-                            this.selected_place = null
-                        } else {
-                            this.$_.forEach(data.features, feature => {
-                                this.selected_place[feature.place_type[0]] = feature.text
-                            })
-                        }
 
-                    })
-                } else {
-                    // this.rev_geocode({lon: mapboxEvent.lngLat.lng, lat: mapboxEvent.lngLat.lat})
-                }
+          })
+        } else {
+          // this.rev_geocode({lon: mapboxEvent.lngLat.lng, lat: mapboxEvent.lngLat.lat})
+        }
+      }
+    },
+    watch: {
+      goto_location(location) {
+        if (location) {
+          const center = this.transform_loc(location.coordinates)
+          this.map.flyTo({
+            center: center,
+            speed: 0.8, // make the flying slow
+            easing: function (t) {
+              return t;
             }
-        },
-        watch: {}
+          })
+          this.$store.commit("map/goto_location", null)
+        }
+      },
     }
+  }
 </script>
 
 <style src="mapbox-gl/dist/mapbox-gl.css"></style>
