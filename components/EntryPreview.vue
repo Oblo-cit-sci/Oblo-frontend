@@ -90,24 +90,26 @@
             },
             include_domain_tag: Boolean,
             show_title_action: Boolean,
+            prevent_page_change: Boolean,
             actions: {
                 type: Array,
                 default: () => []
-            }
-            /*show_aspects_names: {
-                    type: Array,
-                    default: () => []
-                }*/
+            },
         },
         methods: {
             goto() {
-                this.$store.commit(INIT_PAGE_PATH, this.$route)
-                // console.log("entrypreview goto", this.$route)
-                const uuid = this.entry.uuid
-                if (this.$store.getters[ENTRIES_HAS_ENTRY](uuid))
+                if(!this.prevent_page_change) {
+                  this.$store.commit(INIT_PAGE_PATH, this.$route)
+                  // console.log("entrypreview goto", this.$route)
+                  const uuid = this.entry.uuid
+                  if (this.$store.getters[ENTRIES_HAS_ENTRY](uuid))
                     this.to_entry(uuid, this.proper_mode)
-                else
+                  else
                     this.fetch_and_nav(uuid)
+                } else {
+                  console.log(this.entry.uuid, this.goto_text)
+                  this.$emit("preview_action", {uuid: this.entry.uuid, action: this.goto_text})
+                }
             },
             privacy_icon(privacy) {
                 return privacy_icon(privacy)

@@ -9,8 +9,11 @@ import {export_data} from "../lib/import_export";
 export default {
   name: "EntryMixin",
   mixins: [],
+  props: {
+  },
   data() {
     return {
+      uuid: null,
       page: this.$route.query.page | 0,
     }
   },

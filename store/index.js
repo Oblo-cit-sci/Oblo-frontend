@@ -70,10 +70,19 @@ export const mutations = {
   set_related_users(state, related_users) {
     state.related_users = related_users
   },
-  // should be set with {message: str, ok: boolean}
   snackbar(state, snackbar) {
     console.log("snack", snackbar, "state", state.snackbar)
+    // should be set with {message: str, ok: boolean}
+    // method 1 . verbose
+    // state.snackbar.message = snackbar.message
+    // state.snackbar.trigger = true
+    // state.snackbar.ok = snackbar.ok
+    // method 2 . as lame as anything
+    // Object.assign(state.snackbar, snackbar)
+    // state.snackbar.trigger = true
+    // method
     state.snackbar = Object.assign(snackbar, {trigger: true})
+    console.log("final snackbar", state.snackbar)
   },
   snackbar_reset(state) {
     state.snackbar.trigger = false

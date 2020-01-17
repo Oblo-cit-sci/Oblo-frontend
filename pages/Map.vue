@@ -13,7 +13,9 @@
       MapNavigationDrawer(
         :drawer="drawer"
         :layers="layers"
-        :mode="mode"
+        :map_mode="mode"
+        :navigation_mode.sync="navigation_mode"
+        :selected_enry_uuid.sync="selected_entry"
         @layer_select_change="layer_select_change($event)")
       MglMap(:style="mapCssStyle"
         :access-token="accessToken"
@@ -25,6 +27,7 @@
         div(v-for="entry in entries" :key="entry.uuid")
           MglMarker(v-for="(loc, index) in entry.location"
             :coordinates="transform_loc(loc.coordinates)"
+            @click="select_entry_marker($event, entry.uuid)"
             :key="index")
 </template>
 
@@ -45,6 +48,9 @@
 
   const menu_mode_options = [MODE_NORMAL, MODE_ASPECT_POINT]
 
+  // navigation mode!! copy of  MapNvaigationMixin
+  export const SEARCH = "search"
+  export const ENTRY = "entry"
 
   export default {
     name: "Map",
@@ -69,7 +75,10 @@
         center_coordinates: [-0.8844128193341589, 37.809519042232694],
         //  MODE_ASPECT_POINT
         selected_coordinates: null,
-        selected_place: null
+        selected_place: null,
+        // for the navigation
+        navigation_mode: SEARCH,
+        selected_entry: null
       }
     },
     created() {
@@ -163,11 +172,15 @@
                 this.selected_place[feature.place_type[0]] = feature.text
               })
             }
-
           })
-        } else {
-          // this.rev_geocode({lon: mapboxEvent.lngLat.lng, lat: mapboxEvent.lngLat.lat})
         }
+      },
+      select_entry_marker(event, entry_uuid) {
+        // this.$store.dispatch("map/select_entry", entry_uuid)
+        // console.log(event)
+        this.navigation_mode = ENTRY
+        this.selected_entry = entry_uuid
+        this.drawer = true
       }
     },
     watch: {

@@ -127,7 +127,6 @@
         sending: false,
         complete: true,
         // todo abstact aspect-pagination
-        uuid: null,  // todo , make computed
         aspect_locs: {},
         aspect_extras: {},
         //

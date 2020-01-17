@@ -8,7 +8,7 @@
       v-btn(v-if="map_location_input_option"
         :color="!location_set ? 'success' : ''"
         @click="map_position") from map
-      .search_part(v-if="search_location_input_option")
+      .ml-2.mt-2(v-if="search_location_input_option")
         div Location search
         v-text-field(
           v-if="!search_result_obtained"
@@ -21,15 +21,9 @@
           item-text="place_name"
           item-value="id"
           clearable)
-      v-text-field(
-        outlined
-        single-line
-        filled
-        dense
-        :readonly="true"
-        :value="location_view"
-        :placeholder="aspect.attr.placeholder"
-        hide-details)
+      div.ml-3.mb-1
+        span.mr-1.font-weight-bold Result:
+        span.body-1.readonly-aspect {{location_view}}
     div(v-else)
       v-text-field(
         outlined
@@ -143,9 +137,13 @@
                 this.btn_loading_search_location = true
                 location_search(this.$axios, this.search_query, {types: default_place_type}).then(data => {
                     this.btn_loading_search_location = false
-                    this.search_result_obtained = true
-                    this.search_result_options = data.features
-                    this.selected_search_result = this.search_result_options[0].id
+                    if(data.features.length === 0) {
+                      this.error_snackbar("No place with that name")
+                    } else {
+                      this.search_result_obtained = true
+                      this.search_result_options = data.features
+                      this.selected_search_result = this.search_result_options[0].id
+                    }
                 }).catch(err => {
                     console.log(err)
                     this.btn_loading_search_location = false

@@ -14,7 +14,10 @@
     v-row
       v-col.col-md-6.col-xs-12(v-for="(config, index) in Object.values(filter_configs)" cols="12"  :key="index")
         FilterSelect(v-bind="config" :selection.sync="filter_values[config.name]")
-    EntryPreviewList(v-if="show_results" :entries="filtered_entries" :preview_options="preview_options")
+    EntryPreviewList(v-if="show_results"
+      :entries="filtered_entries"
+      :preview_options="preview_options"
+      @preview_action="$emit('preview_action',$event)")
 </template>
 
 <script>
@@ -58,7 +61,7 @@
       include_filters: {
         type: Array,
         default: () => []
-      }
+      },
     },
     data() {
       return {
@@ -147,7 +150,7 @@
           required: [],
           include: {}
         }
-        for(let filter of this.fixed_filters) {
+        for (let filter of this.fixed_filters) {
           configuration.required.push(filter)
         }
 
