@@ -143,7 +143,6 @@ export const mutations = {
   },
   update_location(state, {uuid, location}) {
     // todo, this shouldnt be here. the licci reviews are wrongly converted sometimes. into {lon:{}, lat:{}}
-    console.log("update_location", location)
     location = ld.filter(location, loc => (loc && typeof loc.coordinates.lat === "number"))
     state.entries.get(uuid).location = location
   },

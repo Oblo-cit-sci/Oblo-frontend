@@ -133,7 +133,6 @@
             entries = Object.values(event.data.entries)
             console.log("trans", entries, typeof entries)
           }
-
           entries.forEach(entry => {
             entry.creation_datetime = new Date(entry.creation_datetime)
             entry.local = {
@@ -142,7 +141,8 @@
             }
             //this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
           })
-          merge_imported_entries(this.$store, entries)
+          const result = merge_imported_entries(this.$store, entries)
+          console.log("import", result)
           this.persist_entries()
           //console.log("Entries imported")
           this.ok_snackbar("Entries imported")

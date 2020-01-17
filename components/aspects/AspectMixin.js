@@ -145,11 +145,8 @@ export default {
       if (this.aspect.attr.IDAspect) {
         let this_uuid = aspect_loc_uuid(this.aspect_loc)
         let entry = this.$store.getters[ENTRIES_GET_ENTRY](this_uuid)
-        console.log(entry.refs.parent)
-        console.log("parent ref, last index", this_uuid, this.$_.last(entry.refs.parent.aspect_loc[1] , "+1"))
         let id = this.$_.last(entry.refs.parent.aspect_loc)[1] + 1
         let stored_value = this.$store.getters[ENTRIES_VALUE](this.aspect_loc).value
-        console.log("stored", stored_value)
         if(stored_value !== id) {
           this.update_value(id)
         }
