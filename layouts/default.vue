@@ -87,7 +87,6 @@
     <Footer v-if="eovalue"></Footer>
     <GlobalSnackbar></GlobalSnackbar>
   </v-app>
-
 </template>
 
 

@@ -198,6 +198,22 @@ export const getters = {
       return state.entries.get(uuid).status
     }
   },
+  get_propper__mode(state, getters) {
+    return (uuid) => {
+      const e = getters.get_entry(uuid)
+      if (e.privacy === PRIVATE_LOCAL) {
+        return EDIT
+      } else {
+        const user_rights = getters.user_rights(undefined, e.uuid)
+        const status = getters.get_status(e.uuid)
+        if (user_rights === EDIT && status === DRAFT) {
+          return EDIT
+        } else {
+          return VIEW
+        }
+      }
+    }
+  },
   all_drafts(state) {
     // as method prevents caching
     return () => {

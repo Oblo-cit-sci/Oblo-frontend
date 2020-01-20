@@ -3,9 +3,10 @@ import {GLOBAL, NO_DOMAIN, VIEW} from "../lib/consts";
 import {DOMAIN, ENTRIES_GET_ENTRY, ENTRYTYPES_GET_ASPECT_DEF, POP_LAST_PAGE_PATH} from "../lib/store_consts";
 import {aspect_loc_str} from "../lib/aspect";
 import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
+import NavBaseMixin from "./NavBaseMixin";
 
 export default {
-  mixins: [TriggerSnackbarMixin],
+  mixins: [TriggerSnackbarMixin, NavBaseMixin],
   methods: {
     // why does has_entry call get entry
     has_entry(uuid) {
@@ -49,19 +50,6 @@ export default {
           this.$router.push("/domain/"+ this.domain.value)
         }
       }
-    },
-    to_entry(uuid, mode = VIEW, query = {}) {
-      let route = {
-        name: "entry-uuid",
-        params: {
-          uuid: uuid
-        },
-        query: {
-          mode: mode,
-          ...query
-        }
-      }
-      this.$router.push(route)
     }
   },
   computed: {

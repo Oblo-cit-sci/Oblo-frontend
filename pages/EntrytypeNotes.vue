@@ -42,7 +42,7 @@
 
   import SingleSelect from "../components/SingleSelect";
   import AspectDescription from "../components/AspectDescription";
-  import {ENTRYTYPES_TYPE, ENTRYTYPES_TYPE_NOTES, ENTRYTYPES_TYPES} from "../lib/store_consts";
+  import {ENTRYTYPES_TYPE, ENTRYTYPES_TYPE_NOTES, ENTRYTYPES_TYPES, ENTRYTYPES_TYPES_ARRAY} from "../lib/store_consts";
   import PersistentStorageMixin from "../components/PersistentStorageMixin";
   import {export_data} from "../lib/import_export";
   import LoadFileButton from "../components/LoadFileButton";
@@ -50,6 +50,7 @@
   import Title_Description from "../components/Title_Description";
   import EntrytypePageMixin from "../components/EntrytypePageMixin";
   import goTo from 'vuetify/lib/services/goto'
+
   import mapGetters from 'vuex'
 
 
@@ -69,34 +70,6 @@
     beforeRouteLeave(to, from, next) {
       this.persist_notes()
       next()
-    },
-    computed: {
-      /*...mapGetters({"f_type_notes": ENTRYTYPES_TYPE_NOTES}),
-      type_notes() {
-          return this.f_type_notes(this.slug)
-      },*/
-      options() {
-        return this.$_.map(this.$store.getters[ENTRYTYPES_TYPES], o => {
-          return {
-            text: o.title,
-            value: o.slug,
-            description: o.description,
-          }
-        })
-      },
-      type_selected() {
-        return this.selectec_type !== null
-      },
-      entry_type() {
-        return this.$store.getters[ENTRYTYPES_TYPE](this.selectec_type)
-      },
-      entry_aspects() {
-        return this.entry_type.content.aspects
-      },
-      has_pages() {
-        // todo duplicate entryMixin
-        return this.entry_type.content.meta.hasOwnProperty("pages")
-      }
     },
     methods: {
       selection(type) {
@@ -129,6 +102,35 @@
           })
           //console.log("done")
         }
+      }
+    },
+    computed: {
+      /*...mapGetters({"f_type_notes": ENTRYTYPES_TYPE_NOTES}),
+      type_notes() {
+          return this.f_type_notes(this.slug)
+      },*/
+      // ...mapGetters({types: ENTRYTYPES_TYPES}),
+      options() {
+        return this.$_.map(this.$store.getters[ENTRYTYPES_TYPES_ARRAY], o => {
+          return {
+            text: o.title,
+            value: o.slug,
+            description: o.description,
+          }
+        })
+      },
+      type_selected() {
+        return this.selectec_type !== null
+      },
+      entry_type() {
+        return this.$store.getters[ENTRYTYPES_TYPE](this.selectec_type)
+      },
+      entry_aspects() {
+        return this.entry_type.content.aspects
+      },
+      has_pages() {
+        // todo duplicate entryMixin
+        return this.entry_type.content.meta.hasOwnProperty("pages")
       }
     },
     watch: {

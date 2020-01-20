@@ -29,8 +29,9 @@
       v-bind="dialog_data"
       :open.sync="show_dialog"
       @action="dialog_action($event)")
-    VDialog(v-bind="dialog_content")
-
+    <!--    VDialog(v-bind="dialog_content")-->
+    <!--    v-card-->
+    v-btn(@click="fix_entries") fix entries
 </template>
 
 <script>
@@ -47,6 +48,8 @@
   import {get_release_mode} from "../lib/util";
   import {LICCI_PARTNERS} from "../lib/consts";
   import PersistentStorageMixin from "../components/PersistentStorageMixin";
+  import {sort_by_type} from "../lib/entry_collections";
+  import {fix_add_licci_domain} from "../lib/fixes";
 
   export default {
     name: "settings",
@@ -141,10 +144,12 @@
               dirty: false,
               prev: null,
             }
-            //this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
           })
           const result = merge_imported_entries(this.$store, entries)
+
           console.log("import", result)
+          const sorted = sort_by_type(result)
+          console.log("sorted", sorted)
           this.persist_entries()
           this.ok_snackbar("Entries imported")
         } else {
@@ -152,7 +157,7 @@
         }
       },
       dialog_action(event) {
-        if (event.id === this.clear_dialog_data.id) {
+        if (event.id === this.clear_dialog_data.id && event.confirm) {
           this.clear_entries()
         }
       },
@@ -160,6 +165,9 @@
         this.$store.dispatch("clear_entries")
         this.persist_entries()
         this.persist_draft_numbers()
+      },
+      fix_entries() {
+        fix_add_licci_domain(this.$store)
       }
     },
     computed: {

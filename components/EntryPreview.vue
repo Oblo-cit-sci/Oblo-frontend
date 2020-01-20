@@ -103,7 +103,7 @@
                   // console.log("entrypreview goto", this.$route)
                   const uuid = this.entry.uuid
                   if (this.$store.getters[ENTRIES_HAS_ENTRY](uuid))
-                    this.to_entry(uuid, this.proper_mode)
+                    this.to_entry(uuid)
                   else
                     this.fetch_and_nav(uuid)
                 } else {

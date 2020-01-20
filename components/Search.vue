@@ -1,23 +1,37 @@
 <template lang="pug">
   v-container(fluid)
-    v-row(wrap justify-start)
-      v-col(cols="12")
-        v-text-field(
-          v-model="keyword"
-          label="Search"
-          single-line
-          :hint="search_hint"
-          append-outer-icon="mdi-magnify"
-          @click:append-outer="getEntries"
-          clearable
-          :loading="searching")
     v-row
-      v-col.col-md-6.col-xs-12(v-for="(config, index) in Object.values(filter_configs)" cols="12"  :key="index")
-        FilterSelect(v-bind="config" :selection.sync="filter_values[config.name]")
-    EntryPreviewList(v-if="show_results"
-      :entries="filtered_entries"
-      :preview_options="preview_options"
-      @preview_action="$emit('preview_action',$event)")
+      v-col
+        v-btn-toggle(v-model="view_mode" mandatory)
+          v-btn search
+          v-btn tree view
+    div(v-if="view_mode===0")
+      v-row( wrap justify-start)
+        v-col(cols="12")
+          v-text-field(
+            v-model="keyword"
+            label="Search"
+            single-line
+            :hint="search_hint"
+            append-outer-icon="mdi-magnify"
+            @click:append-outer="getEntries"
+            clearable
+            :loading="searching")
+      v-row
+        v-col.col-md-6.col-xs-12(v-for="(config, index) in Object.values(filter_configs)" cols="12"  :key="index")
+          FilterSelect(v-bind="config" :selection.sync="filter_values[config.name]")
+      EntryPreviewList(v-if="show_results"
+        :entries="filtered_entries"
+        :preview_options="preview_options"
+        @preview_action="$emit('preview_action',$event)")
+    v-row(v-if="view_mode===1" wrap)
+      v-col
+        v-treeview(:items="tree" open-on-click)
+          template(v-slot:prepend="{ item }")
+            v-icon {{item.icon}}
+            v-icon(v-if="item.outdated" color="orange") mdi-alert-outline
+          template(v-slot:append="{ item }")
+            v-icon(@click="to_entry(item.uuid)") mdi-arrow-right
 </template>
 
 <script>
@@ -26,23 +40,27 @@
   import EntryPreviewList from "../components/EntryPreviewList"
   import {search_entries} from "../lib/client"
   import {
-    ENTRIES_SEARCH,
     CLEAR_SEARCH,
     ENTRIES_HAS_ENTRY,
     SEARCH_GET_ENTRIES,
-    ENTRIES_ALL_ENTRIES_ARRAY, SEARCH_SET_ENTRIES
+    ENTRIES_ALL_ENTRIES_ARRAY, SEARCH_SET_ENTRIES, ENTRYTYPES_TYPES
   } from "../lib/store_consts"
   import FilterSelect from "./FilterSelect";
   import {pack_value} from "../lib/aspect";
   import FilterMixin from "./FilterMixin";
   import {filter_required} from "../lib/search";
+  import {entries2vuetify_tree} from "../lib/entry_collections";
+  import NavBaseMixin from "./NavBaseMixin";
 
   const LOG = true
+
+  const SEARCH = 0
+  const TREE = 1
 
   export default {
     name: "Search",
     components: {FilterSelect, EntryPreviewList},
-    mixins: [FilterMixin],
+    mixins: [FilterMixin, NavBaseMixin],
     props: {
       init_clear: Boolean,
       init_full: Boolean,
@@ -65,6 +83,8 @@
     },
     data() {
       return {
+        view_mode: "search",
+        //
         filter_configs: this.$_.mapKeys(this.include_filters, v => v.name),
         filter_values: {},
         //
@@ -88,6 +108,7 @@
       } else if (this.entries.length === 0) {
         this.getEntries()
       }
+      console.log("tree", this.tree)
     },
     watch: {
       keyword: function (kw) {
@@ -104,6 +125,9 @@
     },
     computed: {
       ...mapGetters({entries: SEARCH_GET_ENTRIES}),
+      tree() {
+        return entries2vuetify_tree(this.entries(), this.$store.getters[ENTRYTYPES_TYPES], true)
+      },
       search_hint() {
         if (this.keyword && this.keyword.length < this.kw_char_thresh) {
           return "type 4 characters to trigger search"
@@ -127,6 +151,9 @@
       }
     },
     methods: {
+      set_mode(mode) {
+        this.view_mode = mode
+      },
       getEntries() {
         // console.log("search getting entries")
         this.searching = true

@@ -1,24 +1,29 @@
 <template lang="pug">
-  v-row(wrap justify-center)
-    v-col(cols=12)
+  div
+    v-row(wrap justify-center)
       div {{num_entries}} Entries
-    v-col(cols=12 v-for="entry in visible_entries"
+    v-row(v-for="entry in visible_entries"
       :key="entry.id" class="col-sm-12 col-xs-6")
-      Entrypreview(:entry="entry" v-bind="preview_options" @preview_action="$emit('preview_action',$event)")
-    v-col(v-if="has_entries")
+      v-col
+        Entrypreview(:entry="entry" v-bind="preview_options" @preview_action="$emit('preview_action',$event)")
+    v-row(v-if="has_entries")
       v-Pagination(v-if="entries.length>20" v-model="page"
         :length="num_pages"
         total-visible="8")
+
 </template>
 
 <script>
   import Entrypreview from "../components/EntryPreview";
-  import {ENTRIES_HAS_ENTRY, ENTRYTYPES_TYPE} from "../lib/store_consts";
+  import {ENTRYTYPES_TYPE, ENTRYTYPES_TYPES} from "../lib/store_consts";
   import goTo from 'vuetify/lib/services/goto'
+  import {entries2vuetify_tree} from "../lib/entry_collections";
+  import NavBaseMixin from "./NavBaseMixin";
 
   export default {
     name: "EntryPreviewList",
     components: {Entrypreview},
+    mixins: [],
     props: {
       entries: Array,
       entries_per_page: {

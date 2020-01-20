@@ -53,7 +53,7 @@ export const getters = {
     return global_entry_types
   },
   entrytypes(state) {
-    return Array.from(state.entry_types.values())
+    return Object.fromEntries(state.entry_types)
   },
   entrytypes_of_domain(state) {
     return domain => {

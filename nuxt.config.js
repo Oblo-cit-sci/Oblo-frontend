@@ -14,7 +14,7 @@ module.exports = {
 
   env: {
     NODE_ENV: process.env.NODE_ENV || true,
-    release_mode: "eovalue"
+    release_mode: "licci_partners"
   },
 
   server: {
