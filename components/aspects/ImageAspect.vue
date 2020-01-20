@@ -1,8 +1,9 @@
 <template lang="pug">
   div
     v-row
-      v-col(v-for="(img_data, index) in images" :key="index" cols="4")
+      v-col(v-for="(img_data, index) in images" :key="index" :cols="num_cols")
         v-img(:src="img_data.url" @click="open_image(index)")
+          v-badge(v-if="cover_image_index===index" color="yellow" inline)
     v-row
       v-btn(@click="add_image") Add image
     v-dialog(v-model="image_open" overlay-opacity="100" fullscreen)
@@ -16,6 +17,10 @@
         v-row.ma-5
           v-img(:src="selected_img_data.url" contain max-height="500px")
         div.ma-1
+          v-row
+            v-col.font-weight-bold(v-if="selected_is_cover") Cover image
+            v-col(v-else)
+              v-btn(text @click="make_selected_cover" small) Make cover image
           v-row(v-for="(info, index) in additional_info" :key="index")
             v-col {{info}}
         v-row
@@ -34,7 +39,8 @@
         data() {
             return {
                 fake_data: [],
-                selected_image_index: -1
+                selected_image_index: -1,
+                cover_image_index: 0
             }
         },
         created() {
@@ -50,6 +56,22 @@
             console.log(this.fake_data)
         },
         computed: {
+            num_cols() {
+                const bp = this.$vuetify.breakpoint
+                console.log(bp)
+                if (bp.smAndDown)
+                    return 6
+                else if (bp.mdOnly)
+                    return 4
+                else if (bp.lgOnly)
+                    return 3
+                else if (bp.xlOnly)
+                    return 2
+                else {
+                    console.log("unknown breakpoint", bp.name)
+                    return 4
+                }
+            },
             image_open() {
                 return this.selected_image_index !== -1
             },
@@ -58,6 +80,9 @@
             },
             selected_img_data() {
                 return this.images[this.selected_image_index]
+            },
+            selected_is_cover() {
+                return this.selected_image_index === this.cover_image_index
             },
             additional_info() {
                 const i = this.selected_img_data
@@ -75,6 +100,12 @@
             },
             close() {
                 this.selected_image_index = -1
+            },
+            set_cover_image(index) {
+              this.cover_image_index = index
+            },
+            make_selected_cover() {
+                this.set_cover_image(this.selected_image_index)
             }
         },
         watch: {}
