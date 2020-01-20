@@ -8,7 +8,7 @@
 
 <script>
 
-    import SingleSelect from "./SingleSelect";
+    import SingleSelect from "./input/SingleSelect";
 
     export default {
         name: "FilterSelect",

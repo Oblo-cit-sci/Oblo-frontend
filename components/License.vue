@@ -23,7 +23,7 @@
 
 <script>
     import TextShort from "./aspects/TextShortAspect";
-    import SingleSelect from "./SingleSelect";
+    import SingleSelect from "./input/SingleSelect";
 
     import {license_icon} from "../lib/client";
     import {EDIT, VIEW} from "../lib/consts";

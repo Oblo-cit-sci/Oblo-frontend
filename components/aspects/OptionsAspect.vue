@@ -27,7 +27,7 @@
     import AspectMixin from "./AspectMixin"
     import Aspect from "../Aspect"
     import {aspect_default_value, aspect_raw_default_value} from "../../lib/aspect";
-    import SingleSelect from "../SingleSelect";
+    import SingleSelect from "../input/SingleSelect";
     import {ENTRIES_SET_ENTRY_VALUE} from "../../lib/store_consts";
     import {OPTION} from "../../lib/consts";
     import {string_list2options} from "../../lib/options";

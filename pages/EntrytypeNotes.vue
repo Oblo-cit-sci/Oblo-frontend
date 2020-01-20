@@ -40,7 +40,7 @@
 
 <script>
 
-  import SingleSelect from "../components/SingleSelect";
+  import SingleSelect from "../components/input/SingleSelect";
   import AspectDescription from "../components/AspectDescription";
   import {ENTRYTYPES_TYPE, ENTRYTYPES_TYPE_NOTES, ENTRYTYPES_TYPES, ENTRYTYPES_TYPES_ARRAY} from "../lib/store_consts";
   import PersistentStorageMixin from "../components/PersistentStorageMixin";

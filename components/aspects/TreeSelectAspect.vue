@@ -24,7 +24,7 @@
 
 <script>
     import AspectMixin from "./AspectMixin";
-    import TreleafPicker from "../TreleafPicker";
+    import TreleafPicker from "../input/TreleafPicker";
     import TextShort from "./TextShortAspect";
     import {flatten_tree_to_options} from "../../lib/options";
     import {EDIT} from "../../lib/consts";

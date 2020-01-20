@@ -11,7 +11,7 @@
 
 <script>
 
-    import SingleSelect from "./SingleSelect";
+    import SingleSelect from "./input/SingleSelect";
     import {create_entry} from "../lib/entry";
     import {EDIT} from "../lib/consts";
     import {ENTRIES_SAVE_ENTRY, INIT_PAGE_PATH} from "../lib/store_consts";

@@ -32,7 +32,9 @@
         v-row
           v-btn(@click="to_search_mode" Search)
             v-icon mdi-magnify
-        EntryAspectView.ma-1.pa-2(:entry="selected_entry" mode="view")
+        v-row
+          v-col
+            EntryAspectView.ma-1.pa-2(:entry="selected_entry" mode="view")
 </template>
 
 <script>

@@ -29,7 +29,7 @@
 
 <script>
     import Title_Description from "../components/Title_Description";
-    import SingleSelect from "../components/SingleSelect";
+    import SingleSelect from "../components/input/SingleSelect";
     import {create_entry} from "../lib/entry";
     import EntryAspectView from "../components/EntryAspectView";
     import {mapGetters} from "vuex"

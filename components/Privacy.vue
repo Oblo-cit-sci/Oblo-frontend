@@ -19,7 +19,7 @@
 </template>
 
 <script>
-  import SingleSelect from "./SingleSelect";
+  import SingleSelect from "./input/SingleSelect";
   import {EDIT, PRIVATE, PRIVATE_LOCAL, PUBLIC} from "../lib/consts";
   import {privacy_icon} from "../lib/util";
 

@@ -28,7 +28,7 @@
             }
         },
         beforeCreate: function () {
-            this.$options.components.SingleSelect = require('../SingleSelect.vue').default
+            this.$options.components.SingleSelect = require('../input/SingleSelect.vue').default
         },
         created() {
             //console.log("created", this.value, this.mvalue, this.aspect.name)

@@ -7,7 +7,7 @@
 
   import {merge_imported_entries} from "../lib/import_export";
 
-  import test_data from "../lib/test_files/entry_merge_test_entries.json"
+  // import test_data from "../lib/test_files/entry_merge_test_entries.json"
   import {ENTRIES_ALL_ENTRIES_ARRAY} from "../lib/store_consts";
 
   const ld = require("lodash")
@@ -26,14 +26,14 @@
     computed: {},
     methods: {
       test_init() {
-        test_data.entries.forEach(entry => {
-          entry.creation_datetime = new Date(entry.creation_datetime)
-          entry.local = {
-            dirty: false,
-            prev: null,
-          }
-          //this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
-        })
+        // test_data.entries.forEach(entry => {
+        //   entry.creation_datetime = new Date(entry.creation_datetime)
+        //   entry.local = {
+        //     dirty: false,
+        //     prev: null,
+        //   }
+        //   //this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
+        // })
 
         // test first import
         const result = merge_imported_entries(this.$store, test_data.entries)

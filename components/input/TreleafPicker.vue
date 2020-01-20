@@ -29,8 +29,8 @@
      */
 
     import SingleSelect from "./SingleSelect";
-    import TextShort from "./aspects/TextShortAspect";
-    import {object_list2options} from "../lib/options";
+    import TextShort from "../aspects/TextShortAspect";
+    import {object_list2options} from "../../lib/options";
 
 
     export default {

@@ -19,7 +19,7 @@
 </template>
 
 <script>
-    import SingleSelect from "./SingleSelect";
+    import SingleSelect from "./input/SingleSelect";
     import Title_Description from "./Title_Description";
     import PaginateMixin from "./PaginateMixin";
 

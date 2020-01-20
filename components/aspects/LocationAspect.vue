@@ -51,7 +51,7 @@
 
     import {get_location, create_location_error, array2coords, place2str} from "../../lib/location";
     import AspectMixin from "./AspectMixin";
-    import SingleSelect from "../SingleSelect";
+    import SingleSelect from "../input/SingleSelect";
     import {location_search, rev_geocode} from "../../lib/services/mapbox";
     import {default_place_type, MODE_ASPECT_POINT} from "../../lib/consts";
     import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
