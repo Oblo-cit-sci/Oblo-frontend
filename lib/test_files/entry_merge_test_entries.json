@@ -1,0 +1,1264 @@
+{
+  "entries": [
+    {
+      "type_slug": "site",
+      "draft_no": 1,
+      "aspects_values": {
+        "Site ID": {
+          "value": null
+        },
+        "Site name": {
+          "value": "Site 1"
+        },
+        "Country": {
+          "value": null
+        },
+        "Local Currency Name": {
+          "value": ""
+        },
+        "Local Currency Value": {
+          "value": null
+        },
+        "Currency Value Date": {
+          "value": null
+        },
+        "IPLC name": {
+          "value": ""
+        },
+        "Protected area in site": {
+          "value": null
+        },
+        "Protected areas": {
+          "value": []
+        },
+        "Recognized territory in Site": {
+          "value": null
+        },
+        "Recognized territories": {
+          "value": []
+        },
+        "Assets with a market value": {
+          "value": {
+            "Livelihood and household assets": {
+              "value": []
+            },
+            "Livestock species": {
+              "value": []
+            }
+          }
+        },
+        "Villages": {
+          "value": [
+            "f3904506-745d-4252-9e66-320f9fff835c"
+          ]
+        },
+        "Local timeline": {
+          "value": []
+        },
+        "Seasonal Calendar": {
+          "value": []
+        },
+        "Observation & LICCI": {
+          "value": []
+        },
+        "Adaptation and coping strategies": {
+          "value": []
+        },
+        "Crop diversity contribution": {
+          "value": null
+        },
+        "Crop diversity systems": {
+          "value": []
+        },
+        "Survey LICCIS": {
+          "value": []
+        },
+        "Survey LACCIS": {
+          "value": []
+        },
+        "Knowledgeable groups and activities": {
+          "value": {
+            "Knowledgeable group 1": {
+              "value": ""
+            },
+            "Activity 1": {
+              "value": ""
+            },
+            "Knowledgeable group 2": {
+              "value": ""
+            },
+            "Activity 2": {
+              "value": ""
+            },
+            "Knowledgeable group 3": {
+              "value": ""
+            }
+          }
+        }
+      },
+      "license": "None",
+      "privacy": "private local",
+      "title": "Site 1",
+      "refs": {
+        "parent": null,
+        "children": {
+          "f3904506-745d-4252-9e66-320f9fff835c": [
+            [
+              "aspect",
+              "Villages"
+            ],
+            [
+              "entry_index",
+              0
+            ]
+          ]
+        }
+      },
+      "status": "draft",
+      "uuid": "dbb8811d-3caa-462a-8028-f6c23f96d462",
+      "version": 0,
+      "local": {
+        "dirty": true,
+        "prev": null
+      },
+      "location": null,
+      "actors": {
+        "creator": {
+          "registered_name": "visitor",
+          "public_name": "visitor",
+          "uid": "d15d13cc-c9b8-4652-8f5d-44a0d1dbb5fe"
+        },
+        "owners": []
+      },
+      "parent_type_version": 35,
+      "app_version": "0.6.17",
+      "domain": "licci",
+      "downloads": false,
+      "creation_datetime": "2020-01-18T16:45:25.829Z",
+      "tags": {}
+    },
+    {
+      "type_slug": "village",
+      "draft_no": 1,
+      "aspects_values": {
+        "Village id": {
+          "value": 1
+        },
+        "Village name": {
+          "value": "Village 1"
+        },
+        "Village household number": {
+          "value": null
+        },
+        "Administrative center": {
+          "value": ""
+        },
+        "Same place": {
+          "value": null
+        },
+        "Market town": {
+          "value": ""
+        },
+        "Special protected area": {
+          "value": null
+        },
+        "Staple crop": {
+          "value": {
+            "Local name": {
+              "value": ""
+            },
+            "Scientific name": {
+              "value": null
+            }
+          }
+        },
+        "Access administrative center, easy season": {
+          "value": null
+        },
+        "Administrative center, easy season": {
+          "value": []
+        },
+        "Same accessibility of the administrative center during the seasons": {
+          "value": null
+        },
+        "Access administrative center, hard season": {
+          "value": null
+        },
+        "Administrative center, hard season": {
+          "value": []
+        },
+        "Access market, easy season": {
+          "value": null
+        },
+        "Market town, easy season": {
+          "value": []
+        },
+        "Same accessibility of the market town during the seasons": {
+          "value": null
+        },
+        "Access market, hard season": {
+          "value": null
+        },
+        "Market town, hard season": {
+          "value": []
+        },
+        "Village electricity": {
+          "value": null
+        },
+        "Approximately, how many households have electricity…": {
+          "value": {
+            "Village electricity grid": {
+              "value": null
+            },
+            "Village electricity generator": {
+              "value": null
+            },
+            "Village electricity solar": {
+              "value": null
+            },
+            "Village electricity other": {
+              "value": null
+            }
+          }
+        },
+        "Approximately, how many households in the village obtain water from... ": {
+          "value": {
+            "Village water well": {
+              "value": null
+            },
+            "Village water river": {
+              "value": null
+            },
+            "Village water rain": {
+              "value": null
+            },
+            "Village water pipe": {
+              "value": null
+            },
+            "Village water other": {
+              "value": null
+            }
+          }
+        },
+        "Village radio access": {
+          "value": null
+        },
+        "Village TV access": {
+          "value": null
+        },
+        "Village phone coverage": {
+          "value": null
+        },
+        "Village government worker": {
+          "value": null
+        },
+        "Village access to primary school": {
+          "value": null
+        },
+        "Village access to secondary school": {
+          "value": null
+        },
+        "Village access to school beyond secondary": {
+          "value": null
+        },
+        "Village health healer": {
+          "value": null
+        },
+        "Village health worker": {
+          "value": null
+        },
+        "Village health post": {
+          "value": null
+        },
+        "Village hospital": {
+          "value": null
+        },
+        "Village shop basic": {
+          "value": null
+        },
+        "Village shop special": {
+          "value": null
+        },
+        "Village sell harvest": {
+          "value": null
+        },
+        "Groups": {
+          "value": {
+            "Group cohesion": {
+              "value": null
+            },
+            "Group solidarity": {
+              "value": null
+            },
+            "Group care": {
+              "value": null
+            },
+            "Group trust": {
+              "value": null
+            },
+            "Group change": {
+              "value": null
+            }
+          }
+        },
+        "Formal groups": {
+          "value": {
+            "Formal groups numbers": {
+              "value": {
+                "Productive activities": {
+                  "value": null
+                },
+                "Cultural activities": {
+                  "value": null
+                },
+                "Spiritual or Religious activities": {
+                  "value": null
+                },
+                "Political activities": {
+                  "value": null
+                },
+                "Nature conservation activities": {
+                  "value": null
+                },
+                "Sport activities": {
+                  "value": null
+                },
+                "NGOs": {
+                  "value": null
+                },
+                "Other": {
+                  "value": null
+                }
+              }
+            },
+            "Formal groups meeting frequency": {
+              "value": {
+                "Productive activities": {
+                  "value": null
+                },
+                "Cultural activities": {
+                  "value": null
+                },
+                "Spiritual or Religious activities": {
+                  "value": null
+                },
+                "Political activities": {
+                  "value": null
+                },
+                "Nature conservation activities": {
+                  "value": null
+                },
+                "Sport activities": {
+                  "value": null
+                },
+                "NGOs": {
+                  "value": null
+                },
+                "Other": {
+                  "value": null
+                }
+              }
+            },
+            "Group participation": {
+              "value": {
+                "Productive activities": {
+                  "value": null
+                },
+                "Cultural activities": {
+                  "value": null
+                },
+                "Spiritual or Religious activities": {
+                  "value": null
+                },
+                "Political activities": {
+                  "value": null
+                },
+                "Nature conservation activities": {
+                  "value": null
+                },
+                "Sport activities": {
+                  "value": null
+                },
+                "NGOs": {
+                  "value": null
+                },
+                "Other": {
+                  "value": null
+                }
+              }
+            }
+          }
+        },
+        "Crop diversity system": {
+          "value": null
+        },
+        "Surveys": {
+          "value": [
+            "d8b221f3-5f27-4594-a719-5de168f3fd37",
+            "4ceec369-d2fb-4d89-8951-d343518b375d",
+            "916eaa3b-f0b1-4e26-946c-58ef50249c76",
+            "a27e5a8a-95b0-42d2-80bc-5e2a629089e7",
+            "0a9c555d-fb5c-40d8-a071-f490ebe2a5d8"
+          ]
+        }
+      },
+      "license": "None",
+      "privacy": "private local",
+      "title": "Village 1",
+      "refs": {
+        "parent": {
+          "uuid": "dbb8811d-3caa-462a-8028-f6c23f96d462",
+          "aspect_loc": [
+            [
+              "aspect",
+              "Villages"
+            ],
+            [
+              "entry_index",
+              0
+            ]
+          ]
+        },
+        "children": {
+          "d8b221f3-5f27-4594-a719-5de168f3fd37": [
+            [
+              "aspect",
+              "Surveys"
+            ],
+            [
+              "entry_index",
+              0
+            ]
+          ],
+          "4ceec369-d2fb-4d89-8951-d343518b375d": [
+            [
+              "aspect",
+              "Surveys"
+            ],
+            [
+              "entry_index",
+              1
+            ]
+          ],
+          "916eaa3b-f0b1-4e26-946c-58ef50249c76": [
+            [
+              "aspect",
+              "Surveys"
+            ],
+            [
+              "entry_index",
+              2
+            ]
+          ],
+          "a27e5a8a-95b0-42d2-80bc-5e2a629089e7": [
+            [
+              "aspect",
+              "Surveys"
+            ],
+            [
+              "entry_index",
+              3
+            ]
+          ],
+          "0a9c555d-fb5c-40d8-a071-f490ebe2a5d8": [
+            [
+              "aspect",
+              "Surveys"
+            ],
+            [
+              "entry_index",
+              4
+            ]
+          ]
+        }
+      },
+      "status": "draft",
+      "uuid": "f3904506-745d-4252-9e66-320f9fff835c",
+      "version": 0,
+      "local": {
+        "dirty": true,
+        "prev": null
+      },
+      "location": null,
+      "actors": {
+        "creator": {
+          "registered_name": "visitor",
+          "public_name": "visitor",
+          "uid": "d15d13cc-c9b8-4652-8f5d-44a0d1dbb5fe"
+        },
+        "owners": []
+      },
+      "parent_type_version": 27,
+      "app_version": "0.6.17",
+      "domain": "licci",
+      "downloads": false,
+      "creation_datetime": "2020-01-18T16:45:31.451Z",
+      "tags": {}
+    },
+    {
+      "type_slug": "household_survey",
+      "draft_no": 1,
+      "aspects_values": {
+        "household id": {
+          "value": 1
+        },
+        "household agreed": {
+          "value": null
+        },
+        "Household composition": {
+          "value": []
+        },
+        "Other offsprings outside the household": {
+          "value": {
+            "Male Adult offspring living in the village": {
+              "value": null
+            },
+            "Female Adult offspring living in the village": {
+              "value": null
+            },
+            "Male Adult offspring living outside the village": {
+              "value": null
+            },
+            "Female Adult offspring living outside the village": {
+              "value": null
+            }
+          }
+        },
+        "houses quantity": {
+          "value": null
+        },
+        "Houses properties": {
+          "value": []
+        },
+        "physical assets": {
+          "value": []
+        },
+        "organized group": {
+          "value": null
+        },
+        "collective activities": {
+          "value": null
+        },
+        "government support": {
+          "value": null
+        },
+        "ngo support": {
+          "value": null
+        },
+        "emergency cash": {
+          "value": null
+        },
+        "livelihood activities": {
+          "value": []
+        },
+        "plot sizes": {
+          "value": []
+        },
+        "livestock types and quantities": {
+          "value": []
+        },
+        "Food quantity": {
+          "value": null
+        },
+        "Food quality": {
+          "value": null
+        },
+        "Food preference": {
+          "value": null
+        },
+        "Food control": {
+          "value": null
+        },
+        "Fresh water quantity": {
+          "value": null
+        },
+        "Fresh water quality": {
+          "value": null
+        },
+        "Fresh water preference": {
+          "value": null
+        },
+        "Fresh water control": {
+          "value": null
+        },
+        "cash income": {
+          "value": null
+        },
+        "monetary savings": {
+          "value": null
+        },
+        "monetary savings access": {
+          "value": null
+        },
+        "monetary debts": {
+          "value": null
+        },
+        "Adaptation, coping measures, barriers and drivers": {
+          "value": []
+        },
+        "pebble game": {
+          "value": []
+        },
+        "Individual surveys": {
+          "value": []
+        },
+        "Crop diversity survey": {
+          "value": []
+        }
+      },
+      "license": "None",
+      "privacy": "private local",
+      "title": "Household survey 1",
+      "refs": {
+        "parent": {
+          "uuid": "f3904506-745d-4252-9e66-320f9fff835c",
+          "aspect_loc": [
+            [
+              "aspect",
+              "Surveys"
+            ],
+            [
+              "entry_index",
+              0
+            ]
+          ]
+        },
+        "children": {}
+      },
+      "status": "draft",
+      "uuid": "d8b221f3-5f27-4594-a719-5de168f3fd37",
+      "version": 0,
+      "local": {
+        "dirty": true,
+        "prev": null
+      },
+      "location": null,
+      "actors": {
+        "creator": {
+          "registered_name": "visitor",
+          "public_name": "visitor",
+          "uid": "d15d13cc-c9b8-4652-8f5d-44a0d1dbb5fe"
+        },
+        "owners": []
+      },
+      "parent_type_version": 19,
+      "app_version": "0.6.17",
+      "domain": "licci",
+      "downloads": false,
+      "creation_datetime": "2020-01-18T16:45:36.679Z",
+      "tags": {}
+    },
+    {
+      "type_slug": "household_survey",
+      "draft_no": 2,
+      "aspects_values": {
+        "household id": {
+          "value": 2
+        },
+        "household agreed": {
+          "value": null
+        },
+        "Household composition": {
+          "value": []
+        },
+        "Other offsprings outside the household": {
+          "value": {
+            "Male Adult offspring living in the village": {
+              "value": null
+            },
+            "Female Adult offspring living in the village": {
+              "value": null
+            },
+            "Male Adult offspring living outside the village": {
+              "value": null
+            },
+            "Female Adult offspring living outside the village": {
+              "value": null
+            }
+          }
+        },
+        "houses quantity": {
+          "value": null
+        },
+        "Houses properties": {
+          "value": []
+        },
+        "physical assets": {
+          "value": []
+        },
+        "organized group": {
+          "value": null
+        },
+        "collective activities": {
+          "value": null
+        },
+        "government support": {
+          "value": null
+        },
+        "ngo support": {
+          "value": null
+        },
+        "emergency cash": {
+          "value": null
+        },
+        "livelihood activities": {
+          "value": []
+        },
+        "plot sizes": {
+          "value": []
+        },
+        "livestock types and quantities": {
+          "value": []
+        },
+        "Food quantity": {
+          "value": null
+        },
+        "Food quality": {
+          "value": null
+        },
+        "Food preference": {
+          "value": null
+        },
+        "Food control": {
+          "value": null
+        },
+        "Fresh water quantity": {
+          "value": null
+        },
+        "Fresh water quality": {
+          "value": null
+        },
+        "Fresh water preference": {
+          "value": null
+        },
+        "Fresh water control": {
+          "value": null
+        },
+        "cash income": {
+          "value": null
+        },
+        "monetary savings": {
+          "value": null
+        },
+        "monetary savings access": {
+          "value": null
+        },
+        "monetary debts": {
+          "value": null
+        },
+        "Adaptation, coping measures, barriers and drivers": {
+          "value": []
+        },
+        "pebble game": {
+          "value": []
+        },
+        "Individual surveys": {
+          "value": []
+        },
+        "Crop diversity survey": {
+          "value": []
+        }
+      },
+      "license": "None",
+      "privacy": "private local",
+      "title": "Household survey 2",
+      "refs": {
+        "parent": {
+          "uuid": "f3904506-745d-4252-9e66-320f9fff835c",
+          "aspect_loc": [
+            [
+              "aspect",
+              "Surveys"
+            ],
+            [
+              "entry_index",
+              1
+            ]
+          ]
+        },
+        "children": {}
+      },
+      "status": "draft",
+      "uuid": "4ceec369-d2fb-4d89-8951-d343518b375d",
+      "version": 0,
+      "local": {
+        "dirty": true,
+        "prev": null
+      },
+      "location": null,
+      "actors": {
+        "creator": {
+          "registered_name": "visitor",
+          "public_name": "visitor",
+          "uid": "d15d13cc-c9b8-4652-8f5d-44a0d1dbb5fe"
+        },
+        "owners": []
+      },
+      "parent_type_version": 19,
+      "app_version": "0.6.17",
+      "domain": "licci",
+      "downloads": false,
+      "creation_datetime": "2020-01-18T16:45:40.821Z",
+      "tags": {}
+    },
+    {
+      "type_slug": "household_survey",
+      "draft_no": 3,
+      "aspects_values": {
+        "household id": {
+          "value": 3
+        },
+        "household agreed": {
+          "value": null
+        },
+        "Household composition": {
+          "value": []
+        },
+        "Other offsprings outside the household": {
+          "value": {
+            "Male Adult offspring living in the village": {
+              "value": null
+            },
+            "Female Adult offspring living in the village": {
+              "value": null
+            },
+            "Male Adult offspring living outside the village": {
+              "value": null
+            },
+            "Female Adult offspring living outside the village": {
+              "value": null
+            }
+          }
+        },
+        "houses quantity": {
+          "value": null
+        },
+        "Houses properties": {
+          "value": []
+        },
+        "physical assets": {
+          "value": []
+        },
+        "organized group": {
+          "value": null
+        },
+        "collective activities": {
+          "value": null
+        },
+        "government support": {
+          "value": null
+        },
+        "ngo support": {
+          "value": null
+        },
+        "emergency cash": {
+          "value": null
+        },
+        "livelihood activities": {
+          "value": []
+        },
+        "plot sizes": {
+          "value": []
+        },
+        "livestock types and quantities": {
+          "value": []
+        },
+        "Food quantity": {
+          "value": null
+        },
+        "Food quality": {
+          "value": null
+        },
+        "Food preference": {
+          "value": null
+        },
+        "Food control": {
+          "value": null
+        },
+        "Fresh water quantity": {
+          "value": null
+        },
+        "Fresh water quality": {
+          "value": null
+        },
+        "Fresh water preference": {
+          "value": null
+        },
+        "Fresh water control": {
+          "value": null
+        },
+        "cash income": {
+          "value": null
+        },
+        "monetary savings": {
+          "value": null
+        },
+        "monetary savings access": {
+          "value": null
+        },
+        "monetary debts": {
+          "value": null
+        },
+        "Adaptation, coping measures, barriers and drivers": {
+          "value": []
+        },
+        "pebble game": {
+          "value": []
+        },
+        "Individual surveys": {
+          "value": []
+        },
+        "Crop diversity survey": {
+          "value": []
+        }
+      },
+      "license": "None",
+      "privacy": "private local",
+      "title": "Household survey 3",
+      "refs": {
+        "parent": {
+          "uuid": "f3904506-745d-4252-9e66-320f9fff835c",
+          "aspect_loc": [
+            [
+              "aspect",
+              "Surveys"
+            ],
+            [
+              "entry_index",
+              2
+            ]
+          ]
+        },
+        "children": {}
+      },
+      "status": "draft",
+      "uuid": "916eaa3b-f0b1-4e26-946c-58ef50249c76",
+      "version": 0,
+      "local": {
+        "dirty": true,
+        "prev": null
+      },
+      "location": null,
+      "actors": {
+        "creator": {
+          "registered_name": "visitor",
+          "public_name": "visitor",
+          "uid": "d15d13cc-c9b8-4652-8f5d-44a0d1dbb5fe"
+        },
+        "owners": []
+      },
+      "parent_type_version": 19,
+      "app_version": "0.6.17",
+      "domain": "licci",
+      "downloads": false,
+      "creation_datetime": "2020-01-18T16:45:44.451Z",
+      "tags": {}
+    },
+    {
+      "type_slug": "household_survey",
+      "draft_no": 4,
+      "aspects_values": {
+        "household id": {
+          "value": 4
+        },
+        "household agreed": {
+          "value": null
+        },
+        "Household composition": {
+          "value": []
+        },
+        "Other offsprings outside the household": {
+          "value": {
+            "Male Adult offspring living in the village": {
+              "value": null
+            },
+            "Female Adult offspring living in the village": {
+              "value": null
+            },
+            "Male Adult offspring living outside the village": {
+              "value": null
+            },
+            "Female Adult offspring living outside the village": {
+              "value": null
+            }
+          }
+        },
+        "houses quantity": {
+          "value": null
+        },
+        "Houses properties": {
+          "value": []
+        },
+        "physical assets": {
+          "value": []
+        },
+        "organized group": {
+          "value": null
+        },
+        "collective activities": {
+          "value": null
+        },
+        "government support": {
+          "value": null
+        },
+        "ngo support": {
+          "value": null
+        },
+        "emergency cash": {
+          "value": null
+        },
+        "livelihood activities": {
+          "value": []
+        },
+        "plot sizes": {
+          "value": []
+        },
+        "livestock types and quantities": {
+          "value": []
+        },
+        "Food quantity": {
+          "value": null
+        },
+        "Food quality": {
+          "value": null
+        },
+        "Food preference": {
+          "value": null
+        },
+        "Food control": {
+          "value": null
+        },
+        "Fresh water quantity": {
+          "value": null
+        },
+        "Fresh water quality": {
+          "value": null
+        },
+        "Fresh water preference": {
+          "value": null
+        },
+        "Fresh water control": {
+          "value": null
+        },
+        "cash income": {
+          "value": null
+        },
+        "monetary savings": {
+          "value": null
+        },
+        "monetary savings access": {
+          "value": null
+        },
+        "monetary debts": {
+          "value": null
+        },
+        "Adaptation, coping measures, barriers and drivers": {
+          "value": []
+        },
+        "pebble game": {
+          "value": []
+        },
+        "Individual surveys": {
+          "value": []
+        },
+        "Crop diversity survey": {
+          "value": []
+        }
+      },
+      "license": "None",
+      "privacy": "private local",
+      "title": "Household survey 4",
+      "refs": {
+        "parent": {
+          "uuid": "f3904506-745d-4252-9e66-320f9fff835c",
+          "aspect_loc": [
+            [
+              "aspect",
+              "Surveys"
+            ],
+            [
+              "entry_index",
+              3
+            ]
+          ]
+        },
+        "children": {}
+      },
+      "status": "draft",
+      "uuid": "a27e5a8a-95b0-42d2-80bc-5e2a629089e7",
+      "version": 0,
+      "local": {
+        "dirty": true,
+        "prev": null
+      },
+      "location": null,
+      "actors": {
+        "creator": {
+          "registered_name": "visitor",
+          "public_name": "visitor",
+          "uid": "d15d13cc-c9b8-4652-8f5d-44a0d1dbb5fe"
+        },
+        "owners": []
+      },
+      "parent_type_version": 19,
+      "app_version": "0.6.17",
+      "domain": "licci",
+      "downloads": false,
+      "creation_datetime": "2020-01-18T16:45:51.041Z",
+      "tags": {}
+    },
+    {
+      "type_slug": "household_survey",
+      "draft_no": 5,
+      "aspects_values": {
+        "household id": {
+          "value": 5
+        },
+        "household agreed": {
+          "value": null
+        },
+        "Household composition": {
+          "value": []
+        },
+        "Other offsprings outside the household": {
+          "value": {
+            "Male Adult offspring living in the village": {
+              "value": null
+            },
+            "Female Adult offspring living in the village": {
+              "value": null
+            },
+            "Male Adult offspring living outside the village": {
+              "value": null
+            },
+            "Female Adult offspring living outside the village": {
+              "value": null
+            }
+          }
+        },
+        "houses quantity": {
+          "value": null
+        },
+        "Houses properties": {
+          "value": []
+        },
+        "physical assets": {
+          "value": []
+        },
+        "organized group": {
+          "value": null
+        },
+        "collective activities": {
+          "value": null
+        },
+        "government support": {
+          "value": null
+        },
+        "ngo support": {
+          "value": null
+        },
+        "emergency cash": {
+          "value": null
+        },
+        "livelihood activities": {
+          "value": []
+        },
+        "plot sizes": {
+          "value": []
+        },
+        "livestock types and quantities": {
+          "value": []
+        },
+        "Food quantity": {
+          "value": null
+        },
+        "Food quality": {
+          "value": null
+        },
+        "Food preference": {
+          "value": null
+        },
+        "Food control": {
+          "value": null
+        },
+        "Fresh water quantity": {
+          "value": null
+        },
+        "Fresh water quality": {
+          "value": null
+        },
+        "Fresh water preference": {
+          "value": null
+        },
+        "Fresh water control": {
+          "value": null
+        },
+        "cash income": {
+          "value": null
+        },
+        "monetary savings": {
+          "value": null
+        },
+        "monetary savings access": {
+          "value": null
+        },
+        "monetary debts": {
+          "value": null
+        },
+        "Adaptation, coping measures, barriers and drivers": {
+          "value": []
+        },
+        "pebble game": {
+          "value": []
+        },
+        "Individual surveys": {
+          "value": []
+        },
+        "Crop diversity survey": {
+          "value": []
+        }
+      },
+      "license": "None",
+      "privacy": "private local",
+      "title": "Household survey 5",
+      "refs": {
+        "parent": {
+          "uuid": "f3904506-745d-4252-9e66-320f9fff835c",
+          "aspect_loc": [
+            [
+              "aspect",
+              "Surveys"
+            ],
+            [
+              "entry_index",
+              4
+            ]
+          ]
+        },
+        "children": {}
+      },
+      "status": "draft",
+      "uuid": "0a9c555d-fb5c-40d8-a071-f490ebe2a5d8",
+      "version": 0,
+      "local": {
+        "dirty": true,
+        "prev": null
+      },
+      "location": null,
+      "actors": {
+        "creator": {
+          "registered_name": "visitor",
+          "public_name": "visitor",
+          "uid": "d15d13cc-c9b8-4652-8f5d-44a0d1dbb5fe"
+        },
+        "owners": []
+      },
+      "parent_type_version": 19,
+      "app_version": "0.6.17",
+      "domain": "licci",
+      "downloads": false,
+      "creation_datetime": "2020-01-18T16:45:54.249Z",
+      "tags": {}
+    }
+  ]
+}

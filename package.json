@@ -14,37 +14,47 @@
     "localtest": "nuxt build --spa --pwa; rm -r appbeta; mv dist appbeta; python3 -m http.server 8100",
     "to_eovalue": "rm -r eovalue; mv -r eovalue eovalue;",
     "move2server": "node util/move2server.js",
-    "upload": "sudo python3 /media/ra/hd/projects/2019/liccibackend/helpers/app_upload.py"
+    "upload": "sudo python3 /media/ra/hd/projects/2019/liccibackend/helpers/app_upload.py",
+    "test": "jest"
+  },
+  "ava": {
+    "files": [
+      "test/**/*"
+    ]
   },
   "dependencies": {
-    "@nuxtjs/axios": "^5.6.0",
+    "@nuxtjs/axios": "^5.9.3",
     "@nuxtjs/font-awesome": "^1.0.4",
     "@nuxtjs/localforage": "^1.0.2",
     "@nuxtjs/pwa": "^2.6.0",
-    "cross-env": "^5.2.1",
+    "cross-env": "^6.0.3",
     "express": "^4.17.1",
     "fast-levenshtein": "^2.0.6",
     "file-saver": "^2.0.2",
     "fs": "0.0.1-security",
     "localforage": "^1.7.3",
-    "mapbox-gl": "^0.53.1",
-    "nuxt": "^2.9.2",
+    "mapbox-gl": "^1.6.1",
+    "npm-check-updates": "^4.0.1",
+    "nuxt": "^2.11.0",
     "update": "^0.7.4",
-    "uuid": "^3.3.3",
+    "uuid": "^3.4.0",
     "vue-mapbox": "^0.4.1",
-    "vuelidate": "^0.7.4"
+    "vuelidate": "^0.7.5"
   },
   "devDependencies": {
-    "@mdi/font": "^4.6.95",
-    "@nuxtjs/vuetify": "^1.9.0",
-    "css-loader": "^3.2.0",
-    "jsdoc": "^3.6.3",
-    "jsdoc-vuejs": "^3.0.4",
-    "nodemon": "^1.19.2",
+    "@mdi/font": "^4.7.95",
+    "@nuxtjs/vuetify": "^1.10.1",
+    "css-loader": "^3.4.2",
+    "jsdom": "^16.0.0",
+    "@vue/test-utils": "^1.0.0-beta.27",
+    "babel-jest": "^24.1.0",
+    "jest": "^24.1.0",
+    "vue-jest": "^4.0.0-0",
+    "nodemon": "^2.0.2",
     "pug": "^2.0.4",
     "pug-plain-loader": "^1.0.0",
     "stylus": "^0.54.7",
     "stylus-loader": "^3.0.2",
-    "vue-template-compiler": "^2.6.10"
+    "vue-template-compiler": "^2.6.11"
   }
 }

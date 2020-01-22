@@ -32,6 +32,7 @@
     <!--    VDialog(v-bind="dialog_content")-->
     <!--    v-card-->
     v-btn(@click="fix_entries") fix entries
+    v-btn(@click="load_etypes") load entry types, just 6.17 for now
 </template>
 
 <script>
@@ -49,7 +50,7 @@
   import {LICCI_PARTNERS} from "../lib/consts";
   import PersistentStorageMixin from "../components/PersistentStorageMixin";
   import {sort_by_type} from "../lib/entry_collections";
-  import {fix_add_licci_domain} from "../lib/fixes";
+  import {fix_add_licci_domain, fix_check_entrylist_references} from "../lib/fixes";
 
   export default {
     name: "settings",
@@ -127,7 +128,7 @@
       },
       load_file(event) {
         if (event.ok) {
-          console.log("importing", event.data)
+
           // console.log(event.data.entries, typeof event.data.entries)
           let entries = event.data.entries
           // TODO TAKE CARE OF THE OLD FORMAT
@@ -138,6 +139,8 @@
             entries = Object.values(event.data.entries)
             console.log("trans", entries, typeof entries)
           }
+          console.log("importing", entries.length)
+
           entries.forEach(entry => {
             entry.creation_datetime = new Date(entry.creation_datetime)
             entry.local = {
@@ -147,9 +150,10 @@
           })
           const result = merge_imported_entries(this.$store, entries)
 
-          console.log("import", result)
-          const sorted = sort_by_type(result)
-          console.log("sorted", sorted)
+          console.log("imported", result.length)
+          // the following part will be usefull to display some results
+          // const sorted = sort_by_type(result)
+          // console.log("sorted", sorted)
           this.persist_entries()
           this.ok_snackbar("Entries imported")
         } else {
@@ -168,6 +172,16 @@
       },
       fix_entries() {
         fix_add_licci_domain(this.$store)
+        try {
+          fix_check_entrylist_references(this.$store)
+        } catch (e) {
+          console.log(e)
+        }
+      },
+      load_etypes() {
+        const etypes = require("../lib/data_backups/v.0.6.17")
+        this.$store.commit("entrytypes/set_types", etypes)
+        // console.log(etypes)
       }
     },
     computed: {

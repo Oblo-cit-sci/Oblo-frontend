@@ -2,6 +2,7 @@ import {COMPOSITE, LIST} from "../lib/consts";
 import {object_list2options} from "../lib/options";
 import {entries_domain_filter} from "../lib/search";
 import {ENTRYTYPES_ADD_NOTE} from "../lib/store_consts";
+import {ASPECT, ENTRYLIST} from "~/lib/consts";
 
 const ld = require("lodash")
 
@@ -16,7 +17,7 @@ export const getters = {
       return state.entry_types.has(type_slug)
     }
   },
-  entry_type(state) {
+  entry_type(state) { // ENTRYTYPES_TYPE
     return (type_slug) => {
       if (!state.entry_types.has(type_slug)) {
         console.log("WARNING, store,entrytype.getters.entry_type: type for slug missing", type_slug, "returning null, should be catched earlier")
@@ -24,7 +25,7 @@ export const getters = {
       return state.entry_types.get(type_slug)
     }
   },
-  type_name(state, getters) {
+  type_name(state, getters) { // ENTRYTYPES_TYPENAME
     return slug => {
       //console.log("typename of ", slug)
       const etype = getters.entry_type(slug)
@@ -52,15 +53,15 @@ export const getters = {
     }
     return global_entry_types
   },
-  entrytypes(state) {
+  entrytypes(state) { // ENTRYTYPES_TYPES
     return Object.fromEntries(state.entry_types)
   },
-  entrytypes_of_domain(state) {
+  entrytypes_of_domain(state) { // ENTRYTYPES_OF_DOMAIN
     return domain => {
       return entries_domain_filter(Array.from(state.entry_types.values()), domain)
     }
   },
-  get_aspect_def(state, getters) {
+  get_aspect_def(state, getters) { // ENTRYTYPES_GET_ASPECT_DEF
     return ({type_slug, aspect_name}) => {
       let type = getters.entry_type(type_slug)
       return type.content.aspects.find(a => {
@@ -123,6 +124,20 @@ export const getters = {
         return select._note
       }
     }
+  },
+  get_entrylist_aspect_locs(state, getters) {
+    return (type_slug) => {
+      const locations = []
+      debugger
+      const e_type = getters.entry_type(type_slug)
+      for (let aspect of e_type.content.aspects) {
+        if(aspect.type === ENTRYLIST) {
+          // console.log([ASPECT, aspect.name])
+          locations.push([[ASPECT, aspect.name]])
+        }
+      }
+      return locations
+    }
   }
 }
 
@@ -171,6 +186,11 @@ export const mutations = {
       } else {
         select[loc] = {_note: null}
       }
+    }
+  },
+  set_types(state, types) {
+    for(let type_slug in types) {
+      state.entry_types.set(type_slug, types[type_slug])
     }
   }
 }
