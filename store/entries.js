@@ -11,11 +11,10 @@ import {
   loc_remove_last,
   remove_entry_loc
 } from "../lib/aspect";
-import {ENTRIES_ALL_ENTRIES_ARRAY, ENTRYTYPES_TYPE, GET_ENTRY} from "../lib/store_consts";
+import {ENTRYTYPES_TYPE, GET_ENTRY} from "../lib/store_consts";
 
 import Vue from "vue"
 import {filter_empty, filter_no_value, flatten_collection_of_lists, recursive_unpack} from "../lib/util";
-import {app_version} from "../lib/client";
 
 const ld = require("lodash")
 
@@ -80,8 +79,8 @@ export const mutations = {
     state.edit = null
     state.timeline_entries = []
   },
-  _set_entry_value(state, {aspect_loc, value}) {
-    //console.log("set entry value", aspect_loc, value)
+  _set_entry_value(state, {aspect_loc, value}) { // ENTRIES_SET_ENTRY_VALUE
+    console.log("set entry value", aspect_loc, value)
     let select = select_aspect_loc(state, aspect_loc, true)
     const final_loc = ld.last(aspect_loc)
     //console.log("final,", final_loc, "select", select, "value", value)
@@ -172,12 +171,12 @@ export const mutations = {
       }
     }
   },
-  mark_orphan(state, uuid) {
+  set_entry_status(state, {uuid, status}) {
     const e = state.entries.get(uuid)
     if(e) {
-      e.state = "orphan"
+      e.status = status
     } else {
-      console.log("cannot mark orphan, entry missing", uuid)
+      console.log("cannot set status, entry missing", uuid)
     }
   },
   // fixer
@@ -387,6 +386,9 @@ export const getters = {
   },
   all_entries_of_type(state, getters) {
     return type_slug => getters.all_entries_array().filter(e => e.type_slug === type_slug)
+  },
+  get_orphans(state, getters) {
+    ld.filter(getters.all_entries_array(), e => e.state === "orphan")
   }
 }
 

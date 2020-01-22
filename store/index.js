@@ -55,11 +55,12 @@ export const mutations = {
     state.initialized = true
   },
   backup_init(state, data) {
-    // calld in the middleware
+    // called in the middleware
     if (!state.initialized) {
       state.codes = {...data.codes}
       state.codes.liccis_flat = extract_liccis(data.codes.liccis)
       // TODO dispatch
+      console.log(data.entryTemplates)
       state.entrytypes.entry_types = new Map(data.entryTemplates)
       state.domains = data.domains
       console.log("store backup_init, setting init")
@@ -210,7 +211,7 @@ export const getters = {
     return () => {
       const types = new Set()
       for (let entry of state.entries.entries.values()) {
-        console.log(entry.type_slug)
+        // console.log(entry.type_slug)
         types.add(entry.type_slug)
       }
       // console.log("conaining_types_options", types)

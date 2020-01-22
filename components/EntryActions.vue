@@ -23,7 +23,7 @@
           @click="submit"
           :disabled="!connected"
           :loading="sending") {{submitted ? 'update' : 'submit'}}
-        v-btn(v-if="upload_option" @click="upload_to_repo") Upload to the repo
+        v-btn(v-if="upload_option" @click="upload_to_repo" :loading="upload_loading") Upload to the repo
           v-icon.ml-2 mdi-send-circle
       // v-if="private_local" todo for now, download for everyone
       v-btn(v-if="can_download" :disabled="disable_download"  @click="download") download
@@ -49,19 +49,18 @@
     import DecisionDialog from "./DecisionDialog";
     import EntryNavMixin from "./EntryNavMixin";
 
-    import axios from "axios"
     import {
         ENTRIES_DELETE_ENTRY,
-        ENTRIES_GET_CHILDREN,
+        ENTRIES_GET_CHILDREN, ENTRIES_GET_ENTRY,
         ENTRIES_GET_RECURSIVE_ENTRIES, ENTRIES_SAVE_ENTRY,
-        ENTRIES_SET_EDIT_CLEAN, LAST_BASE_PAGE_PATH, POP_LAST_PAGE_PATH
+        LAST_BASE_PAGE_PATH, POP_LAST_PAGE_PATH
     } from "../lib/store_consts";
     import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
     import {CREATOR, entry_actor_relation} from "../lib/actors";
     import {get_release_mode} from "../lib/util";
     import EntryMixin from "./EntryMixin";
     import PersistentStorageMixin from "./PersistentStorageMixin";
-    import {upload} from "../lib/client";
+    import {upload_to_repo} from "../lib/import_export";
 
     export default {
         name: "EntryActions",
@@ -97,7 +96,8 @@
                     confirm_text: "dismiss"
                 },
                 dialog_data: {id: "none"},
-                sending: false
+                sending: false,
+                upload_loading: false
             }
         },
         methods: {
@@ -110,19 +110,16 @@
             },
             // BUTTONS
             upload_to_repo() {
+                this.upload_loading = true
                 const url = this.entry_type.content.activities.upload.url
-                const user_key = this.$store.getters.user_key
-                if (!user_key) {
-                    this.error_snackbar("No user key. Go to the settings and paste the user key given by the LICCI core team")
-                    return
-                }
                 const entries = this.$store.getters[ENTRIES_GET_RECURSIVE_ENTRIES](this.entry.uuid)
-                let export_data = {entries: entries, user_key: user_key}
-                //console.log(url, user_key, export_data)
-                upload(this.$axios, url, export_data).then(res => {
+                const upload_promise = upload_to_repo(this.$store, this.$axios, entries, url, true)
+                upload_promise.then(res => {
                     this.snackbar(res.data.status, res.data.msg)
+                    this.upload_loading = false
                 }).catch(err => {
                     console.log(err)
+                    this.upload_loading = false
                     this.error_snackbar("Something went horribly wrong")
                 })
             },

@@ -58,17 +58,13 @@
         computed: {
             num_cols() {
                 const bp = this.$vuetify.breakpoint
-                console.log(bp)
                 if (bp.smAndDown)
                     return 6
                 else if (bp.mdOnly)
                     return 4
-                else if (bp.lgOnly)
+                else if (bp.lgAndUp)
                     return 3
-                else if (bp.xlOnly)
-                    return 2
                 else {
-                    console.log("unknown breakpoint", bp.name)
                     return 4
                 }
             },
@@ -102,7 +98,8 @@
                 this.selected_image_index = -1
             },
             set_cover_image(index) {
-              this.cover_image_index = index
+                this.cover_image_index = index
+                console.log(this.entry)
             },
             make_selected_cover() {
                 this.set_cover_image(this.selected_image_index)

@@ -128,7 +128,6 @@ export const getters = {
   get_entrylist_aspect_locs(state, getters) {
     return (type_slug) => {
       const locations = []
-      debugger
       const e_type = getters.entry_type(type_slug)
       for (let aspect of e_type.content.aspects) {
         if(aspect.type === ENTRYLIST) {
