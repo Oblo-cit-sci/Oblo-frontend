@@ -11,7 +11,7 @@ import {
   loc_remove_last,
   remove_entry_loc
 } from "../lib/aspect";
-import {ENTRYTYPES_TYPE, GET_ENTRY} from "../lib/store_consts";
+import {ENTRIES_ALL_ENTRIES_ARRAY, ENTRYTYPES_TYPE, GET_ENTRY} from "../lib/store_consts";
 
 import Vue from "vue"
 import {filter_empty, filter_no_value, flatten_collection_of_lists, recursive_unpack} from "../lib/util";
@@ -171,6 +171,19 @@ export const mutations = {
         aspects_values[key] = type_default_values[key]
       }
     }
+  },
+  mark_orphan(state, uuid) {
+    const e = state.entries.get(uuid)
+    if(e) {
+      e.state = "orphan"
+    } else {
+      console.log("cannot mark orphan, entry missing", uuid)
+    }
+  },
+  // fixer
+  fix_refs(state,  {parent_uuid, child_uuid, aspect_loc}) {
+    state.entries.get(parent_uuid).refs.children[child_uuid] = aspect_loc
+    state.entries.get(child_uuid).refs.parent.aspect_loc = aspect_loc
   }
 }
 
