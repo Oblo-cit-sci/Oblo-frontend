@@ -10,14 +10,24 @@ export default {
   name: "EntryMixin",
   mixins: [],
   props: {
+    passed_uuid: {
+      type: String
+    }
   },
   data() {
     return {
-      uuid: null,
       page: this.$route.query.page | 0,
     }
   },
   computed: {
+    uuid() {
+      console.log(this.$route.name)
+      if(this.passed_uuid) {
+        return this.passed_uuid
+      } else {
+        return this.$route.params.uuid
+      }
+    },
     has_parent() {
       return has_parent(this.entry)
     },

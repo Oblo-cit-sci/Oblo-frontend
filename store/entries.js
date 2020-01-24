@@ -238,14 +238,20 @@ export const getters = {
       return result
     }
   },
-  has_entry(state) { // ENTRIES_GET_ENTRY
+  has_entry(state) {
     return (uuid) => {
       return state.entries.has(uuid)
     };
   },
-  get_entry(state) {
+  get_entry(state) { // ENTRIES_GET_ENTRY
     return (uuid) => {
       return state.entries.get(uuid)
+    }
+  },
+  get_entries(state, getters) { // ENTRIES_GET_ENTRIES
+    return (uuids) => {
+      debugger
+      return ld.filter(getters.all_entries_array(), e => ld.includes(uuids,e.uuid))
     }
   },
   get_children(state) {
@@ -438,12 +444,13 @@ export const actions = {
     context.commit("_remove_entry_ref_index", {uuid, child_uuid, aspect_loc})
   },
   delete_entry(context, uuid) { // ENTRIES_DELETE_ENTRY
+    // console.log(uuid)
     const entry = context.state.entries.get(uuid)
     if (entry) {
       for (let child_uuid in entry.refs.children) {
         context.dispatch(DELETE_ENTRY, child_uuid)
       }
-      if (entry.refs.parent) {
+      if (entry.status !== "orphan" && entry.refs.parent) {
         const parent = entry.refs.parent
         context.dispatch(DELETE_REF_CHILD, {uuid: parent.uuid, child_uuid: uuid})
       }

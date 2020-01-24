@@ -25,10 +25,18 @@
         @click="touch($event)")
         MglMarker(v-if="selected_coordinates" :coordinates="selected_coordinates")
         div(v-for="entry in entries" :key="entry.uuid")
-          MglMarker(v-for="(loc, index) in entry.location"
-            :coordinates="transform_loc(loc.coordinates)"
-            @click="select_entry_marker($event, entry.uuid)"
-            :key="index")
+          div {{entry.uuid === selected_entry}}
+          div(v-if="entry.uuid !== selected_entry")
+            MglMarker(v-for="(loc, index) in entry.location"
+              :coordinates="transform_loc(loc.coordinates)"
+              @click="select_entry_marker($event, entry.uuid)"
+              :key="index")
+          div(v-else)
+            MglMarker(v-for="(loc, index) in entry.location"
+              :color="'#af5555'"
+              :coordinates="transform_loc(loc.coordinates)"
+              @click="select_entry_marker($event, entry.uuid)"
+              :key="index")
 </template>
 
 <script>
@@ -45,6 +53,7 @@
   import {arr2coords} from "../lib/map_utils";
   import {mapGetters} from "vuex"
   import MapNavigationDrawer from "../components/map/MapNavigationDrawer";
+  import {Marker} from "mapbox-gl";
 
   const menu_mode_options = [MODE_NORMAL, MODE_ASPECT_POINT]
 
@@ -124,6 +133,24 @@
       onMapLoaded(event) {
         this.map = event.map
         console.log("map", this.map)
+
+        let marker = new Marker().setLngLat([0, 0])
+        marker.getElement().addEventListener('click', () => {
+          console.log("Clicked");
+        });
+        // marker.on("dragstart", (e) => {
+        //   console.log(e)
+        // })
+        marker.addTo(this.map)
+      },
+      marker_color(uuid) {
+        console.log("call color")
+        console.log(uuid, this.selected_entry)
+        if(uuid === this.selected_entry) {
+          console.log("jupp")
+          return "#af5555"
+        } else
+          return "#a0a0a0"
       },
       // todo later use dispatch, like in create?
       update_map_entries(entries) {
@@ -160,7 +187,8 @@
         this.$router.back()
       },
       touch({mapboxEvent}) {
-        console.log(mapboxEvent.lngLat.lng, mapboxEvent.lngLat.lat)
+        console.log(mapboxEvent)
+        // console.log(mapboxEvent.lngLat.lng, mapboxEvent.lngLat.lat)
         if (this.mode === MODE_ASPECT_POINT) {
           this.selected_coordinates = [mapboxEvent.lngLat.lng, mapboxEvent.lngLat.lat]
           rev_geocode(this.$axios, {lon: mapboxEvent.lngLat.lng, lat: mapboxEvent.lngLat.lat}).then(data => {
