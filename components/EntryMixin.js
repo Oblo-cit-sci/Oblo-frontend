@@ -5,6 +5,7 @@ import {
   ENTRIES_GET_RECURSIVE_ENTRIES, ENTRYTYPES_TYPE,
 } from "../lib/store_consts";
 import {export_data} from "../lib/import_export";
+import {ENTRIES_SET_DOWNLOADED} from "~/lib/store_consts";
 
 export default {
   name: "EntryMixin",
@@ -92,7 +93,7 @@ export default {
         return clone
       })
       export_data({entries: entries}, this.download_title)
-      this.$store.commit("entries/set_downloaded", this.entry.uuid)
+      this.$store.commit(ENTRIES_SET_DOWNLOADED, this.entry.uuid)
     }
   }
 }

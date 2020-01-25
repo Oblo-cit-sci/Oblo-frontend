@@ -62,7 +62,13 @@
   import TextShort from "../components/aspects/TextShortAspect";
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
   import {export_data, merge_imported_entries} from "../lib/import_export";
-  import {ENTRIES_ALL_ENTRIES_ARRAY, ENTRIES_GET_ENTRIES, ENTRIES_GET_ENTRY, USER_KEY} from "../lib/store_consts";
+  import {
+    ADD_META,
+    ENTRIES_ALL_ENTRIES_ARRAY,
+    ENTRIES_GET_ENTRIES,
+    ENTRIES_GET_ENTRY, ENTRYTYPES_SET_TYPES,
+    USER_KEY
+  } from "../lib/store_consts";
   import {get_release_mode} from "../lib/util";
   import {LICCI_PARTNERS, TYPE_SLUG} from "../lib/consts";
   import PersistentStorageMixin from "../components/PersistentStorageMixin";
@@ -209,7 +215,7 @@
         this.dialog_data = this.clear_dialog_data
       },
       update_user_key(event) {
-        this.$store.commit("add_meta", {
+        this.$store.commit(ADD_META, {
           repository: {
             user_key: event.value
           }
@@ -263,7 +269,7 @@
       },
       load_etypes() {
         const etypes = require("../lib/data_backups/v.0.6.17")
-        this.$store.commit("entrytypes/set_types", etypes)
+        this.$store.commit(ENTRYTYPES_SET_TYPES, etypes)
         // console.log(etypes)
       }
     },

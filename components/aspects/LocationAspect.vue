@@ -45,6 +45,7 @@
   import {location_search, rev_geocode} from "../../lib/services/mapbox";
   import {default_place_type, MODE_ASPECT_POINT} from "../../lib/consts";
   import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
+  import {MAP_SET_TO_SELECT_ASPECT_LOCATION} from "../../lib/store_consts";
 
   // "attr.input" options
   const DEVICE = "device"
@@ -202,7 +203,7 @@
             mode: MODE_ASPECT_POINT,
           }
         }
-        this.$store.commit("map/set_to_select_aspect_location", this.aspect_loc)
+        this.$store.commit(MAP_SET_TO_SELECT_ASPECT_LOCATION, this.aspect_loc)
         this.$router.push(route)
       }
     },

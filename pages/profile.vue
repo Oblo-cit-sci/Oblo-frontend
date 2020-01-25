@@ -34,6 +34,7 @@
   import Taglist from "../components/Taglist.vue"
   import Aspect from "../components/Aspect";
   import {EDIT, VIEW} from "../lib/consts";
+  import {USER_SET_USER_DATA} from "../lib/store_consts";
 
   let editable = [
     "public_name", "description", "location", "interested_topics"
@@ -93,7 +94,7 @@
             this.errorMsg = data.msg
           } else if (data.status) {
             //console.log("update ok", data.user.user_data);
-            this.$store.commit("user/set_user_data", data.result.user_data);
+            this.$store.commit(USER_SET_USER_DATA, data.result.user_data);
             this.edit_mode = false
           }
         }).catch((err) => {

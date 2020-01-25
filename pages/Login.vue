@@ -14,6 +14,7 @@
     import {unpack} from "../lib/aspect";
     import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
     import {STR} from "../lib/consts";
+    import {USER_LOGIN} from "../lib/store_consts";
 
     export default {
         name: "Login",
@@ -60,7 +61,7 @@
                         //console.log("LOGGIN DONE")
                         initialize(this.$axios, this.$store).then((res) => {
                         });
-                        this.$store.commit("user/login", data.result);
+                        this.$store.commit(USER_LOGIN, data.result);
                         // todo test, what is coming back...
                         this.$router.push("/");
                         this.snackbar(data.status === true, "You are logged in")

@@ -3,6 +3,7 @@ import {aspect_loc_str, remove_entry_loc} from "../lib/aspect";
 const PAGINATION_TRESH = 5
 
 import goTo from 'vuetify/lib/services/goto'
+import {ENTRIES_ENTRIES_SET_LOCAL_LIST_PAGE} from "~/lib/store_consts";
 
 export default {
   data() {
@@ -46,7 +47,7 @@ export default {
       }
       if (page !== this.page) {
         this.page = page
-        this.$store.commit("entries/entries_set_local_list_page", {aspect_loc: this.aspect_loc, page: this.page})
+        this.$store.commit(ENTRIES_ENTRIES_SET_LOCAL_LIST_PAGE, {aspect_loc: this.aspect_loc, page: this.page})
         try {
           if (goto_id) {
             setTimeout(() => {

@@ -1,4 +1,4 @@
-import {NO_DOMAIN, TITLE, VISITOR} from "../lib/consts";
+import {EOVALUE, NO_DOMAIN, TITLE, VISITOR} from "../lib/consts";
 import {object_list2options} from "../lib/options";
 import {ENTRYTYPES_TYPENAME} from "../lib/store_consts";
 
@@ -45,6 +45,9 @@ function extract_liccis(tree) {
 const ld = require('lodash')
 
 export const mutations = {
+  // for db setter during INIT
+
+  //
   init(state, data) {
     state.codes = {...data.codes}
     state.codes.liccis_flat = extract_liccis(data.codes.liccis);
@@ -150,6 +153,8 @@ export const mutations = {
 };
 
 export const getters = {
+  release_mode(state) {
+  },
   visitor(state) {
     //console.log("visitor check");
     return state.user.user_data.global_role === VISITOR

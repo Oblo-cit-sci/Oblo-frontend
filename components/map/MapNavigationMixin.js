@@ -1,6 +1,6 @@
 import {string_list2options} from "../../lib/options";
 import {LOCATION, MODE_ASPECT_POINT, MODE_NORMAL} from "../../lib/consts";
-import {ENTRIES_GET_ENTRY} from "../../lib/store_consts";
+import {ENTRIES_GET_ENTRY, MAP_SET_ENTRIES} from "../../lib/store_consts";
 
 // the navigation either shows the search or one specific entry
 
@@ -64,7 +64,7 @@ export default {
       if (entries.length > 0) {
         console.log(entries[0])
       }
-      this.$store.commit("map/set_entries", entries)
+      this.$store.commit(MAP_SET_ENTRIES, entries)
     },
     to_search_mode() {
       this.$emit("update:navigation_mode", SEARCH)

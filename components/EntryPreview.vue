@@ -54,7 +54,7 @@
     ENTRIES_VALUE,
     ENTRYTYPES_HAS_TYPE,
     ENTRYTYPES_TYPENAME,
-    SEARCH_ENTRY_ASPECT, INIT_PAGE_PATH, ENTRIES_GET_ENTRY,
+    SEARCH_ENTRY_ASPECT, INIT_PAGE_PATH, ENTRIES_GET_ENTRY, MAP_GOTO_LOCATION,
   } from "../lib/store_consts";
   import {privacy_icon, printDate, static_file_path} from "../lib/util"
   import {ASPECT, EDIT, ENTRY, VIEW} from "../lib/consts"
@@ -232,7 +232,7 @@
       },
       goto_location() {
         if (this.entry.location) {
-          this.$store.commit("map/goto_location", this.entry.location[0])
+          this.$store.commit(MAP_GOTO_LOCATION, this.entry.location[0])
         }
       },
       create_child_action() {

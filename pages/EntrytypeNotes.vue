@@ -42,7 +42,13 @@
 
   import SingleSelect from "../components/input/SingleSelect";
   import AspectDescription from "../components/AspectDescription";
-  import {ENTRYTYPES_TYPE, ENTRYTYPES_TYPE_NOTES, ENTRYTYPES_TYPES, ENTRYTYPES_TYPES_ARRAY} from "../lib/store_consts";
+  import {
+    ENTRYTYPES_INIT_NOTES, ENTRYTYPES_SET_TYPE_NOTES,
+    ENTRYTYPES_TYPE,
+    ENTRYTYPES_TYPE_NOTES,
+    ENTRYTYPES_TYPES,
+    ENTRYTYPES_TYPES_ARRAY
+  } from "../lib/store_consts";
   import PersistentStorageMixin from "../components/PersistentStorageMixin";
   import {export_data} from "../lib/import_export";
   import LoadFileButton from "../components/LoadFileButton";
@@ -81,7 +87,7 @@
       init_typenotes(type_slug) {
         let notes = this.$store.getters[ENTRYTYPES_TYPE_NOTES](type_slug)
         if (notes === undefined) {
-          this.$store.commit("entrytypes/init_notes", type_slug)
+          this.$store.commit(ENTRYTYPES_INIT_NOTES, type_slug)
         }
       },
       aspect_descr_loc(aspect) {
@@ -96,7 +102,7 @@
       },
       import_data(result) {
         if (result.ok) {
-          this.$store.commit("entrytypes/set_type_notes", {
+          this.$store.commit(ENTRYTYPES_SET_TYPE_NOTES, {
             type_slug: this.selectec_type,
             notes: result.data.notes
           })

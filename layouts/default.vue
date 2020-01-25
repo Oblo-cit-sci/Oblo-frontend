@@ -8,32 +8,13 @@
       app
     >
       <v-list>
-        <v-list-item-group>
-          <v-list-item
-            :to="'/'"
-            router
-            nuxt
-            exact>
-            <v-list-item-icon>
-              <v-icon>mdi-home</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title v-text="'Home'"></v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-divider></v-divider>
-        </v-list-item-group>
-      </v-list>
-      <v-list>
-        <v-list-item-group>
-          <v-list-item
-            v-for="(item, i) in items"
-            :key="i"
-            :to="item.to"
-            router
-            nuxt
-            exact
-          >
+        <v-list-item-group v-for="group in groups" :key="group.name">
+          <v-list-item v-for="item in group.items"
+                       :key="item.to"
+                       :to="item.to"
+                       router
+                       nuxt
+                       exact>
             <v-list-item-icon>
               <v-icon>{{item.icon}}</v-icon>
             </v-list-item-icon>
@@ -84,59 +65,28 @@
         <nuxt/>
       </v-container>
     </v-content>
-    <Footer v-if="eovalue"></Footer>
     <GlobalSnackbar></GlobalSnackbar>
   </v-app>
 </template>
 
 
 <script>
-    import {
-        INITIALIZED,
-        SET_ENTRIES,
-        DOMAIN_TITLE,
-        DOMAIN,
-        CONNECTING,
-        CONNECTED,
-        USER_LOGGED_IN, SEARCH_SET_ENTRIES
-    } from "../lib/store_consts"
+  import {
+    INITIALIZED,
+    DOMAIN,
+    CONNECTING,
+    CONNECTED,
+    USER_LOGGED_IN, SEARCH_SET_ENTRIES
+  } from "../lib/store_consts"
   import GlobalSnackbar from "../components/GlobalSnackbar"
-  import {EOVALUE, HOME} from "../lib/consts"
+  import {HOME} from "../lib/consts"
   import Footer from "../components/Footer"
 
   import {initialize} from "../lib/client"
+  import {mapGetters} from "vuex"
   import {get_release_mode, static_file_path} from "../lib/util";
+  import {all_pages} from "../lib/pages";
 
-  /*
-        <v-btn icon :loading="connecting">
-      <!-- nuxt to="/" -->
-      <v-icon>{{connected_icon}}</v-icon>
-    </v-btn>
-    <v-btn icon>
-      <!-- nuxt to="/profile" -->
-      <v-icon>{{userrole_icon}}</v-icon>
-    </v-btn>
-*/
-
-
-  // commented out the dev menu items
-  const all_items = [
-    // {icon: 'home', title: 'Home', to: '/'},
-    // {icon: 'note_add', title: 'Create Entry', to: '/CreateEntry'},
-    {icon: "mdi-reorder-horizontal", title: "My Entries", to: "/personalentries"},
-    {icon: "fa-edit", title: "Create notes", to: "/EntrytypeNotes"},
-    {icon: 'person', title: 'Profile', to: '/profile'},
-    // {icon: 'computer', title: 'Tests', to: '/Tests'},
-    // {icon: 'flip_to_front', title: 'Entrytypes', to: '/CreateEntrytype'},
-    {icon: 'fa-map', title: 'Map', to: '/Map'},
-    // {icon: 'computer', title: 'Aspectbuild', to: '/AspectBuild'},
-    // {icon: 'mdi-laptop', title: 'Codes', to: '/Codes'},
-    {icon: 'mdi-account-check', title: 'Register', to: '/register'},
-    {icon: 'mdi-login', title: 'Login', to: '/login'},
-    {icon: 'mdi-logout', title: 'Logout', to: '/logout'},
-    {icon: 'mdi-settings', title: 'Settings', to: '/settings'}
-    /*{icon: "build",title: "debug", to: "/StoreDebug"}*/
-  ]
 
   const header_items = [
     /*{icon: "",to: "/export"},*/
@@ -144,8 +94,8 @@
     /*{icon: 'notifications',title: '',to: '/notifications'},*/
   ]
 
-  let require_login = ["Profile", "Logout"]
-  let hide_no_login = ["Register", "Login"] // if not connected out and if logged in out
+  let require_login = ["/profile", "/logout"]
+  let hide_no_be = ["/register", "/login"] // if not connected out and if logged in out
   let show_inDev = ["Tests", "Types", "Entrytypes", "Aspectbuild"]
   let lastDomain = ''
   const pkg = require('../package')
@@ -157,6 +107,7 @@
       if (!this.initialized) {
         console.log("layout. initializing")
         initialize(this.$axios, this.$store, this.$localForage)
+        console.log("layout init done")
       }
     },
     data() {
@@ -181,9 +132,26 @@
         }
       }
     },
+    /*
+      ...mapGetters([INITIALIZED, CONNECTING, CONNECTED, USER_LOGGED_IN]),
+  logged_in() {
+    return this.user_logged_in
+  },
+ */
     computed: {
+      // ...mapGetters([INITIALIZED]),
+      groups() {
+        const home = all_pages[0]
+        let other_pages = this.$_.tail(all_pages)
+        other_pages = other_pages.filter(p => !hide_no_be.includes(p.to))
+        if (!this.logged_in) {
+          other_pages = other_pages.filter(p => !require_login.includes(p.to))
+        }
+        return [{name: "home", items: [home]},
+          {name: "other", items: other_pages}]
+      },
       initialized() {
-        console.log("call init", this.$store.getters[INITIALIZED]())
+        console.log("calling init?")
         return this.$store.getters[INITIALIZED]()
       },
       connecting() {
@@ -196,7 +164,7 @@
         return this.$store.getters[USER_LOGGED_IN]
       },
       items() {
-        let items = all_items
+        let items = all_pages
         if (!this.logged_in) {
           items = this.$_.filter(items, item => require_login.indexOf(item.title) === -1)
           if (!this.connected) {
@@ -231,9 +199,6 @@
       domain_icon() {
         let domain = this.$store.getters[DOMAIN]
         return domain ? static_file_path(this.$store, domain.icon) : undefined
-      },
-      eovalue() {
-        return get_release_mode(this.$store) === EOVALUE
       }
     },
     watch: {

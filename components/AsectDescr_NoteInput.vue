@@ -14,7 +14,7 @@
 
 <script>
     import TextLongAspect from "./aspects/TextLongAspect";
-    import {ENTRYTYPES_ADD_NOTE, ENTRYTYPES_NOTE} from "../lib/store_consts";
+    import {ENTRYTYPES_ADD_NOTE, ENTRYTYPES_INIT_ASPECT_NOTE, ENTRYTYPES_NOTE} from "../lib/store_consts";
 
     export default {
         name: "AsectDescr_NoteInput",
@@ -36,7 +36,7 @@
                 //console.log("update")
                 const note = this.$store.getters[ENTRYTYPES_NOTE](this.aspect_descr_loc)
                 if(note === undefined) {
-                    this.$store.commit("entrytypes/init_aspect_note", this.aspect_descr_loc)
+                    this.$store.commit(ENTRYTYPES_INIT_ASPECT_NOTE, this.aspect_descr_loc)
                     return null
                 }
                 return note

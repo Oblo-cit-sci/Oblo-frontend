@@ -75,7 +75,7 @@
     import EntryPreviewList from "../components/EntryPreviewList";
     import EntryAspectView from "../components/EntryAspectView";
     import {NO_DOMAIN} from "../lib/consts";
-    import {DOMAIN, SEARCH_GET_ENTRIES} from "../lib/store_consts";
+    import {DOMAIN, MAP_SET_ENTRIES, SEARCH_GET_ENTRIES} from "../lib/store_consts";
     import {string_list2options} from "../lib/options";
 
     const SEARCH = "search"
@@ -128,7 +128,7 @@
         },
         methods: {
             update_map_entries(entries) {
-                this.$store.commit("map/set_entries", entries)
+                this.$store.commit(MAP_SET_ENTRIES, entries)
             },
             ...mapMutations({"set_entries": "map/set_entries", "set_layer_status": "map/set_layer_status"}),
             search_view() {

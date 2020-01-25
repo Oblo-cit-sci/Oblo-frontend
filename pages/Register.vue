@@ -17,6 +17,7 @@
 
   import licenses from '@@/codes/licenses.json'
   import Aspect from "../components/Aspect";
+  import {USER_LOGIN} from "../lib/store_consts";
 
 
   function random_String(length) {
@@ -147,7 +148,7 @@
           //console.log("some data")
           //console.log(data)
           if (data.status) {
-            this.$store.commit("user/login", data.result);
+            this.$store.commit(USER_LOGIN, data.result);
             this.$router.push("/")
           } else {
             this.errorMsg = data.msg

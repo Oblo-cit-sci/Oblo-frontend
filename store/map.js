@@ -1,3 +1,5 @@
+import {_SELECT_ENTRY, ENTRIES_GET_ENTRY} from "~/lib/store_consts";
+
 const ld = require("lodash")
 
 export const state = () => ({
@@ -62,8 +64,8 @@ export const getters = {
 export const actions = {
   select_entry(context, uuid) {
     //console.log(context)
-    let entry = context.rootGetters["entries/get_entry"](uuid)
-    context.commit("select_entry", entry)
+    let entry = context.rootGetters[ENTRIES_GET_ENTRY](uuid)
+    context.commit(_SELECT_ENTRY, entry)
     console.log(entry.title)
   },
   // filters entries that have a location set

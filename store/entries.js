@@ -15,6 +15,7 @@ import {ENTRYTYPES_TYPE, GET_ENTRY} from "../lib/store_consts";
 
 import Vue from "vue"
 import {filter_empty, filter_no_value, flatten_collection_of_lists, recursive_unpack} from "../lib/util";
+import {_SET_ENTRY_VALUE, SET_DIRTY} from "~/lib/store_consts";
 
 const ld = require("lodash")
 
@@ -31,17 +32,6 @@ export const state = () => ({
 export const mutations = {
   add_timeline_entries(state, entries) {
     state.timeline_entries = entries;
-  },
-  set_entries(state, entries) {
-    // todo, needs to converted to a map (from array)
-    //console.log("setting own entries with", entries)
-    /*
-    entries.forEach((e) => {
-      e.aspects_values = e.content.aspects
-      e.local_id = e.uuid
-      state.entries.set(e.uuid, e)
-    })
-     */
   },
   save_entry(state, entry) {
     state.entries.set(entry.uuid, entry)
@@ -401,12 +391,11 @@ export const getters = {
 // dispatch
 export const actions = {
   set_entry_value(context, data) {
-    context.commit("_set_entry_value", data)
-    context.commit("set_dirty", aspect_loc_uuid(data.aspect_loc))
+    context.commit(_SET_ENTRY_VALUE, data)
+    context.commit(SET_DIRTY, aspect_loc_uuid(data.aspect_loc))
     // context.commit("update")
   },
   save_child_n_ref(context, {uuid, child, aspect_loc}) { // ENTRIES_SAVE_CHILD_N_REF
-    //console.log(uuid, child.uuid, aspect_loc)
     if (!uuid) {
       uuid = context.getters.edit_uuid
     }
@@ -420,6 +409,22 @@ export const actions = {
   },
   // rename to save edit entry
   // todo: purpose/name: update meta or something like that?
+  //
+  update_entry(context, uuid = context.state.edit.uuid) { // ENTRIES_UPDATE_ENTRY
+    const entry_title = context.getters.get_entry_title(uuid)
+    context.commit("update_title", {uuid, title: entry_title})
+    const location = context.getters.entry_location(uuid)
+    if (location) {
+      // console.log("save_entry. loc",location )
+      const simple_location = filter_empty(recursive_unpack(location))
+      context.commit("update_location", {uuid, location: simple_location})
+    }
+    const tags = context.getters.entry_tags(uuid)
+    if (tags) {
+      context.commit("update_tags", {uuid, tags: tags})
+    }
+  },
+  // TODO LIKE THIS DEPRACATED. should take an entry, commit save it and set update, potential parents and children
   save_entry(context, uuid = context.state.edit.uuid) {
     const entry_title = context.getters.get_entry_title(uuid)
     context.commit("update_title", {uuid, title: entry_title})
@@ -429,7 +434,6 @@ export const actions = {
       const simple_location = filter_empty(recursive_unpack(location))
       context.commit("update_location", {uuid, location: simple_location})
     }
-
     const tags = context.getters.entry_tags(uuid)
     if (tags) {
       context.commit("update_tags", {uuid, tags: tags})

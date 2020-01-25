@@ -3,6 +3,8 @@
 </template>
 
 <script>
+  import {CLEAR, ENTRIES_CLEAR, USER_LOGOUT} from "../lib/store_consts";
+
   export default {
     name: "logout",
     created() {
@@ -18,11 +20,11 @@
     },
     methods: {
       done() {
-        this.$store.commit("user/logout");
-        this.ok_snackbar("You are logged out")
-        this.$store.commit("entries/clear")
-        this.$store.commit("clear")
+        this.$store.commit(USER_LOGOUT);
+        this.$store.commit(ENTRIES_CLEAR)
+        this.$store.commit(CLEAR)
         this.$router.push("/")
+        this.ok_snackbar("You are logged out")
       }
     }
   }

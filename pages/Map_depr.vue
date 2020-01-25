@@ -55,7 +55,7 @@
   const modes = [VIEW, COORDINATE]
 
   import {mapGetters} from "vuex"
-  import {MAP_GOTO_LOCATION} from "../lib/store_consts";
+  import {MAP_ARKER_POINT, MAP_GOTO_LOCATION} from "../lib/store_consts";
 
   // mode could also be COORDINATE
 
@@ -106,7 +106,7 @@
         console.log(mapboxEvent.lngLat.lng, mapboxEvent.lngLat.lat)
         if (this.mode === COORDINATE) {
           this.display_coordinates = [mapboxEvent.lngLat.lng, mapboxEvent.lngLat.lat]
-          this.$store.commit("map/marker_point", this.display_coordinates)
+          this.$store.commit(MAP_ARKER_POINT, this.display_coordinates)
         } else {
           this.rev_geocode({lon:mapboxEvent.lngLat.lng,lat: mapboxEvent.lngLat.lat})
         }

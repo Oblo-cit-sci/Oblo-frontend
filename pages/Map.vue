@@ -46,7 +46,7 @@
   import {place2str} from "../lib/location";
   import {
     ENTRIES_ALL_ENTRIES_ARRAY,
-    ENTRIES_SET_ENTRY_VALUE, MAP_GOTO_LOCATION,
+    ENTRIES_SET_ENTRY_VALUE, MAP_GOTO_LOCATION, MAP_RESET_TO_SELECT_ASPECT_LOCATION,
     MAP_SET_ENTRIES,
   } from "../lib/store_consts";
   import {pack_value} from "../lib/aspect";
@@ -154,7 +154,7 @@
       },
       // todo later use dispatch, like in create?
       update_map_entries(entries) {
-        this.$store.commit("map/set_entries", entries)
+        this.$store.commit(MAP_SET_ENTRIES, entries)
       },
       layer_select_change(active_layers) {
         this.set_layer_status(this.$_.mapValues(this.$_.keyBy(this.layers), l => active_layers.includes(l)))
@@ -182,7 +182,7 @@
           place: this.selected_place
         })
         const aspect_loc = this.$store.getters["map/to_select_aspect_location"]
-        this.$store.commit("map/reset_to_select_aspect_location")
+        this.$store.commit(MAP_RESET_TO_SELECT_ASPECT_LOCATION)
         this.$store.dispatch(ENTRIES_SET_ENTRY_VALUE, {aspect_loc: aspect_loc, value: value})
         this.$router.back()
       },
@@ -222,7 +222,7 @@
               return t;
             }
           })
-          this.$store.commit("map/goto_location", null)
+          this.$store.commit(MAP_GOTO_LOCATION, null)
         }
       },
     }
