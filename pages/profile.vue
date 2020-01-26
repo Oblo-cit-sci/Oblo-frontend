@@ -135,7 +135,7 @@
             name: "Interested topics",
             description: "LICCIs you are interested in",
             type: "multiselect",
-            items: "*liccis_flat",
+            items: ["empty upsi"],
             attr: {}
           }
         },

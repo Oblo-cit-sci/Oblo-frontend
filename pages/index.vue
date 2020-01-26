@@ -49,6 +49,7 @@
       })
 
       this.connected = this.$store.state.connected
+      // todo : kill this
       this.initialized = this.$store.state.initialized
       this.$store.watch(state => state.initialized, () => {
         this.initialized = this.$store.state.initialized

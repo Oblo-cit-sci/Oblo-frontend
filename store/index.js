@@ -29,19 +29,6 @@ export const state = () => ({
   page_path: []
 })
 
-function extract_liccis(tree) {
-  let liccis = [];
-  for (let system of tree.children) {
-    for (let subsystem of system.children) {
-      for (let element of subsystem.children) {
-        for (let licci of element.children) {
-          liccis.push(licci.name)
-        }
-      }
-    }
-  }
-  return liccis
-}
 
 const ld = require('lodash')
 
@@ -51,7 +38,6 @@ export const mutations = {
   //
   init(state, data) {
     state.codes = {...data.codes}
-    state.codes.liccis_flat = extract_liccis(data.codes.liccis);
     // TODO dispatch
     state.entrytypes.entry_types = new Map(data.entryTemplates);
     state.related_users = data.related_users || {};
@@ -68,9 +54,9 @@ export const mutations = {
     // called in the middleware
     if (!state.initialized) {
       state.codes = {...data.codes}
-      state.codes.liccis_flat = extract_liccis(data.codes.liccis)
       // TODO dispatch
       console.log(data.entryTemplates)
+      // backup_used_entrytype_versions()
       state.entrytypes.entry_types = new Map(data.entryTemplates)
       state.domains = data.domains
       console.log("store backup_init, setting init")
