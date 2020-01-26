@@ -25,9 +25,9 @@
 
   import DomainCard from "../components/DomainCard";
   import {get_release_mode} from "../lib/util";
-  import {EOVALUE, LICCI_PARTNERS} from "../lib/consts";
+  import {LICCI_PARTNERS} from "../lib/consts";
   import {fix_add_licci_domain} from "../lib/fixes";
-  import {CLEAR_DOMAIN, DOMAINS, RELEASE_MODE} from "../lib/store_consts";
+  import {CLEAR_DOMAIN, DOMAINS} from "../lib/store_consts";
 
   export default {
     data() {
@@ -60,9 +60,9 @@
       DomainCard
     },
     computed: {
-      ...mapGetters([DOMAINS, RELEASE_MODE]),
+      ...mapGetters([DOMAINS]),
       not_partner() {
-        return this.release_mode !== LICCI_PARTNERS
+        return get_release_mode(this.$store) !== LICCI_PARTNERS
       },
       // todo should make a request to the uab page.
       partner_needs_update() {

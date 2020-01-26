@@ -46,6 +46,7 @@ export default {
       return result
     },
     entry_type() {
+      console.log("this.entry_type?")
       return this.$store.getters[ENTRYTYPES_TYPE](this.entry.type_slug)
     },
     type_name() {

@@ -1,81 +1,82 @@
 <template lang="pug">
-  v-row(justify-center align-center  v-if="!delete_entry && this.mode==='edit'")
-    v-col(xs12 md12)
-      Title_Description(
-        :title="page_title"
-        header_type="h1"
-        :description="entry_type.description"
-        mode="edit")
-      div(v-if="has_parent")
-        span This entry is part of:&nbsp
-        a(@click="to_parent(true, mode)") {{parent_title}}
-      v-divider(class="wide_divider")
-      div(v-if="has_pages")
+  div(v-if="entry")
+    v-row(justify-center align-center  v-if="!delete_entry && this.mode==='edit'")
+      v-col(xs12 md12)
         Title_Description(
-          :title="page_info.title"
-          header_type="h2"
-          :description="page_info.description"
+          :title="page_title"
+          header_type="h1"
+          :description="entry_type.description"
           mode="edit")
-      br
-      div(v-for="(aspect) in shown_aspects" :key="aspect.name")
-        Aspect(
-          :aspect="aspect"
-          :aspect_loc="aspect_locs[aspect.name]"
-          v-on:entryAction="entryAction($event)"
-          :extra="aspect_extras"
-          :mode="mode")
-      div(v-if="page === 0")
+        div(v-if="has_parent")
+          span This entry is part of:&nbsp
+          a(@click="to_parent(true, mode)") {{parent_title}}
         v-divider(class="wide_divider")
-        License(:passedLicense.sync="entry.license" :mode="licence_mode")
-        Privacy(:mode="privacy_mode" :passedPrivacy.sync="entry.privacy")
-      v-col(v-if="last_page")
-        MissingAspectsNotice(:entry="this.entry")
-      EntryActions(
-        v-bind="entry_actions_props"
-        :page.sync="page"
-        v-on:entryAction="entryAction($event)"
-        v-on:edit="mode='edit'")
-      DecisionDialog(
-        :open.sync="openSaveDialog"
-        @action="edit_or_save_dialog($event)"
-        v-bind="unsaved_changes_dialog")
-  v-row(justify-center align-center v-else-if="this.mode==='view'")
-    v-col(cols=12)
-      Title_Description(
-        :title="page_title"
-        header_type="h1"
-        :description="entry_type.description")
-      div(v-if="has_parent")
-        span This entry is part of:&nbsp
-        a(@click="to_parent(true, mode)") {{parent_title}}
-      div
-        MetaChips(:meta_aspects="meta_aspects_privacy")
-      v-divider(class="wide_divider")
-    v-col(class="entry-meta" cols=12 v-bind:class="[show_image ? 'col-md-9' : 'col-md-12']")
-      div(v-if="has_pages")
-        Title_Description(
-          :title="page_info.title"
-          header_type="h2"
-          :description="page_info.description")
-      br
-      div(v-for="(aspect) in shown_aspects" :key="aspect.name")
-        Aspect(
-          :aspect="aspect"
-          :aspect_loc="aspect_locs[aspect.name]"
+        div(v-if="has_pages")
+          Title_Description(
+            :title="page_info.title"
+            header_type="h2"
+            :description="page_info.description"
+            mode="edit")
+        br
+        div(v-for="(aspect) in shown_aspects" :key="aspect.name")
+          Aspect(
+            :aspect="aspect"
+            :aspect_loc="aspect_locs[aspect.name]"
+            v-on:entryAction="entryAction($event)"
+            :extra="aspect_extras"
+            :mode="mode")
+        div(v-if="page === 0")
+          v-divider(class="wide_divider")
+          License(:passedLicense.sync="entry.license" :mode="licence_mode")
+          Privacy(:mode="privacy_mode" :passedPrivacy.sync="entry.privacy")
+        v-col(v-if="last_page")
+          MissingAspectsNotice(:entry="this.entry")
+        EntryActions(
+          v-bind="entry_actions_props"
+          :page.sync="page"
           v-on:entryAction="entryAction($event)"
-          :mode="mode")
-    v-col(v-if="show_image" cols=12 class="col-md-3 col-sm-12 entry-image")
-      v-img(:src="entry_image()" aspect-ratio=1)
-    v-col(class="entry-meta" cols=12)
-      EntryActions(
-        v-bind="entry_actions_props"
-        :page.sync="page"
-        v-on:entryAction="entryAction($event)"
-        v-on:edit="mode='edit'")
-      DecisionDialog(
-        :open.sync="openSaveDialog"
-        @action="edit_or_save_dialog($event)"
-        v-bind="unsaved_changes_dialog")
+          v-on:edit="mode='edit'")
+        DecisionDialog(
+          :open.sync="openSaveDialog"
+          @action="edit_or_save_dialog($event)"
+          v-bind="unsaved_changes_dialog")
+    v-row(justify-center align-center v-else-if="this.mode==='view'")
+      v-col(cols=12)
+        Title_Description(
+          :title="page_title"
+          header_type="h1"
+          :description="entry_type.description")
+        div(v-if="has_parent")
+          span This entry is part of:&nbsp
+          a(@click="to_parent(true, mode)") {{parent_title}}
+        div
+          MetaChips(:meta_aspects="meta_aspects_privacy")
+        v-divider(class="wide_divider")
+      v-col(class="entry-meta" cols=12 v-bind:class="[show_image ? 'col-md-9' : 'col-md-12']")
+        div(v-if="has_pages")
+          Title_Description(
+            :title="page_info.title"
+            header_type="h2"
+            :description="page_info.description")
+        br
+        div(v-for="(aspect) in shown_aspects" :key="aspect.name")
+          Aspect(
+            :aspect="aspect"
+            :aspect_loc="aspect_locs[aspect.name]"
+            v-on:entryAction="entryAction($event)"
+            :mode="mode")
+      v-col(v-if="show_image" cols=12 class="col-md-3 col-sm-12 entry-image")
+        v-img(:src="entry_image()" aspect-ratio=1)
+      v-col(class="entry-meta" cols=12)
+        EntryActions(
+          v-bind="entry_actions_props"
+          :page.sync="page"
+          v-on:entryAction="entryAction($event)"
+          v-on:edit="mode='edit'")
+        DecisionDialog(
+          :open.sync="openSaveDialog"
+          @action="edit_or_save_dialog($event)"
+          v-bind="unsaved_changes_dialog")
 </template>
 
 <script>
@@ -98,7 +99,13 @@
     ENTRIES_GET_EDIT,
     ENTRIES_GET_PARENT,
     ENTRIES_SAVE_ENTRY,
-    ENTRIES_SET_EDIT, ENTRIES_VALUE, ENTRIES_GET_ENTRY_TITLE, ENTRYTYPES_TYPENAME, ENTRYTYPES_TYPE
+    ENTRIES_SET_EDIT,
+    ENTRIES_VALUE,
+    ENTRIES_GET_ENTRY_TITLE,
+    ENTRYTYPES_TYPENAME,
+    ENTRYTYPES_TYPE,
+    ENTRIES_GET_ENTRY,
+    ENTRIES_ALL_ENTRIES_ARRAY
   } from "../../../lib/store_consts";
   import {get_aspect_vue_component, loc_append} from "../../../lib/aspect"
   import {unsaved_changes_default_dialog} from "../../../lib/dialogs"
@@ -138,14 +145,15 @@
       }
     },
     created() {
+      console.log("page created")
       //console.log("entry index create", this.entry.aspects_values.)
       this.$store.dispatch(ENTRIES_SET_EDIT, this.uuid)
-
+      console.log("edit set")
+      console.log(this.$store.getters[ENTRIES_ALL_ENTRIES_ARRAY]().length)
       let required_aspects = this.$_.filter(this.entry_type.content.aspects, (a) => a.required || false)
       this.required_values = this.$_.map(required_aspects, (a) => {
         return a.name
       })
-
       for (let aspect of this.entry_type.content.aspects) {
         this.aspect_locs[aspect.name] = loc_append([this.aspect_loc], ASPECT, aspect.name)
       }
@@ -244,7 +252,11 @@
         return entry_type.content.aspects
       },
       entry() {
-        return this.$store.getters[ENTRIES_GET_EDIT]
+        console.log(this.$store.state.entries.entries.size)
+        console.log("entry", this.uuid, this.$store.getters[ENTRIES_ALL_ENTRIES_ARRAY]())
+        // console.log(this.$store.getters[ENTRIES_GET_EDIT])
+        //guarantee_edit()
+        return this.$store.getters[ENTRIES_GET_ENTRY](this.uuid)
       },
       privacy_mode() {
         const privacy_set = this.entry_type.content.meta.privacy

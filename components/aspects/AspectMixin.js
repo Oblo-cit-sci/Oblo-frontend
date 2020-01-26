@@ -7,6 +7,9 @@ import {
   complete_aspect_loc, pack_value
 } from "../../lib/aspect";
 import {ENTRIES_GET_ENTRY, ENTRIES_SET_ENTRY_VALUE, ENTRIES_VALUE} from "../../lib/store_consts";
+import PersistentStorageMixin from "~/components/PersistentStorageMixin";
+
+const ld = require("lodash")
 
 export default {
   props: {
@@ -35,6 +38,7 @@ export default {
       }
     }
   },
+  mixins: [PersistentStorageMixin],
   data() {
     return {}
   },
@@ -46,9 +50,12 @@ export default {
         event = null
       this.update_value(event, regular)
     },
+    // debounce to not to store contantly while typing
+    debounce_store_db: ld.debounce((mixin) => {
+      mixin.persist_entries()
+    }, 300),
     update_value(raw_value, regular = true) {
       //console.log("saving", eveventent, this.aspect.name)
-
       // switch to unregular value
       if (this.has_alternative && regular) {
         if (this.aspect.attr.hasOwnProperty("alternative-activate-on-value")) {
@@ -62,10 +69,11 @@ export default {
       if (!regular) {
         up_value.regular = false
       }
-      if (this.aspect_loc)
+      if (this.aspect_loc) {
         this.$store.dispatch(ENTRIES_SET_ENTRY_VALUE, {aspect_loc: this.aspect_loc, value: up_value})
-      else
+      } else
         this.$emit("update_value", up_value)
+      this.debounce_store_db(this)
     },
     toString(value) {
       return value || ""
@@ -129,15 +137,15 @@ export default {
       return this.mvalue.value
     },
     mvalue: function () {
-      if(!this.aspect_loc) {
-        if(this.ext_value) {
+      if (!this.aspect_loc) {
+        if (this.ext_value) {
           return this.ext_value
         } else {
-          return {value:null}
+          return {value: null}
         }
       }
 
-      if(!this.aspect.hasOwnProperty("attr")) {
+      if (!this.aspect.hasOwnProperty("attr")) {
         console.log("AspectMixin.mvalue: broken Aspect, no ATTR:", this.aspect.name)
         return pack_value(aspect_raw_default_value(this.aspect))
       }
@@ -147,7 +155,7 @@ export default {
         let entry = this.$store.getters[ENTRIES_GET_ENTRY](this_uuid)
         let id = this.$_.last(entry.refs.parent.aspect_loc)[1] + 1
         let stored_value = this.$store.getters[ENTRIES_VALUE](this.aspect_loc).value
-        if(stored_value !== id) {
+        if (stored_value !== id) {
           this.update_value(id)
         }
         return {value: id}
@@ -180,7 +188,7 @@ export default {
             return stored_value
           }
         } else {
-          if(!this.$_.isEqual(stored_value, ref_value)) {
+          if (!this.$_.isEqual(stored_value, ref_value)) {
             this.update_value(ref_value.value)
           }
           return ref_value

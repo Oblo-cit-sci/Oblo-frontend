@@ -4,6 +4,7 @@ import {ENTRYTYPES_TYPENAME} from "../lib/store_consts";
 
 export const state = () => ({
   // comes by init
+  db_loaded: false,
   initialized: false,
   _connecting: false,
   connected: false,
@@ -57,6 +58,12 @@ export const mutations = {
     state.domains = data.domains
     state.initialized = true
   },
+  set_user_key(state, data) {
+
+  },
+  db_loaded(state) {
+    state.db_loaded= true
+  },
   backup_init(state, data) {
     // called in the middleware
     if (!state.initialized) {
@@ -69,6 +76,8 @@ export const mutations = {
       console.log("store backup_init, setting init")
       //console.log("backup etypes", state.entry_types)
       state.initialized = true
+    } else {
+      console.log("store.backup_init: already initialized")
     }
   },
   set_related_users(state, related_users) {
@@ -153,7 +162,10 @@ export const mutations = {
 };
 
 export const getters = {
-  release_mode(state) {
+  db_loaded(state) {
+    return () => {
+      return state.db_loaded
+    }
   },
   visitor(state) {
     //console.log("visitor check");

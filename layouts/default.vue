@@ -76,13 +76,13 @@
     DOMAIN,
     CONNECTING,
     CONNECTED,
-    USER_LOGGED_IN, SEARCH_SET_ENTRIES
+    USER_LOGGED_IN, SEARCH_SET_ENTRIES, ENTRIES_ALL_ENTRIES_ARRAY, DB_LOADED
   } from "../lib/store_consts"
   import GlobalSnackbar from "../components/GlobalSnackbar"
   import {HOME} from "../lib/consts"
   import Footer from "../components/Footer"
 
-  import {initialize} from "../lib/client"
+  import {initialize, reload_storage} from "../lib/client"
   import {mapGetters} from "vuex"
   import {get_release_mode, static_file_path} from "../lib/util";
   import {all_pages} from "../lib/pages";
@@ -102,14 +102,6 @@
 
   export default {
     components: {GlobalSnackbar, Footer},
-    created() {
-      //console.log("layout created. initialized?", this.initialized)
-      if (!this.initialized) {
-        console.log("layout. initializing")
-        initialize(this.$axios, this.$store, this.$localForage)
-        console.log("layout init done")
-      }
-    },
     data() {
       return {
         ci: "",
@@ -122,24 +114,17 @@
         header_items: header_items
       }
     },
-    methods: {
-      goTo() {
-        let domain = this.$store.getters[DOMAIN]
-        if (this.$route.path !== domain.to) {
-          this.$router.push({
-            path: domain.to ? domain.to : '/'
-          })
-        }
-      }
+    created() {
+      //console.log("layout created. initialized?", this.initialized)
+      reload_storage(this.$store, this.$localForage)
     },
-    /*
-      ...mapGetters([INITIALIZED, CONNECTING, CONNECTED, USER_LOGGED_IN]),
-  logged_in() {
-    return this.user_logged_in
-  },
- */
     computed: {
-      // ...mapGetters([INITIALIZED]),
+      /*
+  ...mapGetters([INITIALIZED, CONNECTING, CONNECTED, USER_LOGGED_IN]),
+logged_in() {
+return this.user_logged_in
+},
+*/
       groups() {
         const home = all_pages[0]
         let other_pages = this.$_.tail(all_pages)
@@ -150,8 +135,11 @@
         return [{name: "home", items: [home]},
           {name: "other", items: other_pages}]
       },
+      db_loaded() {
+        return this.$store.getters[DB_LOADED]()
+      },
       initialized() {
-        console.log("calling init?")
+        console.log("layout.default: calling init?", this.$store.getters[INITIALIZED]())
         return this.$store.getters[INITIALIZED]()
       },
       connecting() {
@@ -163,21 +151,22 @@
       logged_in() {
         return this.$store.getters[USER_LOGGED_IN]
       },
-      items() {
-        let items = all_pages
-        if (!this.logged_in) {
-          items = this.$_.filter(items, item => require_login.indexOf(item.title) === -1)
-          if (!this.connected) {
-            items = this.$_.filter(items, item => hide_no_login.indexOf(item.title) === -1)
-          }
-        } else { // logged in
-          items = this.$_.filter(items, item => hide_no_login.indexOf(item.title) === -1)
-        }
-        if (!this.isDev) {
-          items = this.$_.filter(items, item => show_inDev.indexOf(item.title) === -1)
-        }
-        return items
-      },
+      // todo bring back this logic in computed.groups
+      // items() {
+      //   let items = all_pages
+      //   if (!this.logged_in) {
+      //     items = this.$_.filter(items, item => require_login.indexOf(item.title) === -1)
+      //     if (!this.connected) {
+      //       items = this.$_.filter(items, item => hide_no_login.indexOf(item.title) === -1)
+      //     }
+      //   } else { // logged in
+      //     items = this.$_.filter(items, item => hide_no_login.indexOf(item.title) === -1)
+      //   }
+      //   if (!this.isDev) {
+      //     items = this.$_.filter(items, item => show_inDev.indexOf(item.title) === -1)
+      //   }
+      //   return items
+      // },
       connected_icon() {
         if (this.connected) {
           return "wifi"
@@ -201,6 +190,16 @@
         return domain ? static_file_path(this.$store, domain.icon) : undefined
       }
     },
+    methods: {
+      goTo() {
+        let domain = this.$store.getters[DOMAIN]
+        if (this.$route.path !== domain.to) {
+          this.$router.push({
+            path: domain.to ? domain.to : '/'
+          })
+        }
+      }
+    },
     watch: {
       domain_title: function (newValue, oldValue) {
         if (newValue !== HOME && newValue !== lastDomain) {
@@ -208,6 +207,17 @@
         }
         if (newValue !== HOME) {
           lastDomain = newValue
+        }
+      },
+      db_loaded(val, old) {
+        console.log("db_loaded", val)
+        console.log(this.$store.getters[ENTRIES_ALL_ENTRIES_ARRAY]())
+        if (val && !this.initialized) {
+          console.log("layout. initializing")
+          initialize(this.$axios, this.$store, this.$localForage).then(() => {
+            console.log("layout init done, promise done")
+          })
+          console.log("layout init done")
         }
       }
     }
