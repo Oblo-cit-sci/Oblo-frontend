@@ -138,6 +138,9 @@ export const mutations = {
   update_tags(state, {uuid, tags}) {
     state.entries.get(uuid).tags = tags
   },
+  update_image(state, {uuid, image_url}) {
+    state.entries.get(uuid).image = image_url
+  },
   entries_set_local_list_page(state, {aspect_loc, page}) {
     let entry = state.entries.get(aspect_loc_uuid(aspect_loc))
     // todo, later out, should be there from the creation

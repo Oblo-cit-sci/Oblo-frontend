@@ -99,10 +99,13 @@
             },
             set_cover_image(index) {
                 this.cover_image_index = index
-                console.log(this.entry)
             },
             make_selected_cover() {
                 this.set_cover_image(this.selected_image_index)
+                this.$store.commit("entries/update_image", {
+                    uuid: this.entry_uuid,
+                    image_url: this.images[this.cover_image_index].url
+                })
             }
         },
         watch: {}
