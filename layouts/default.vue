@@ -34,7 +34,7 @@
       app
     >
       <v-app-bar-nav-icon v-show="initialized" @click="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title class="pa-0">
+      <v-toolbar-title class="pa-0" v-if="initialized">
         <v-list-item class="pl-0">
           <v-list-item-avatar class="header-avatar" @click="goTo" :src="domain_icon" width="55" height="auto" tile>
             <v-img contain :src="domain_icon"></v-img>

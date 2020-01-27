@@ -8,64 +8,64 @@
       :entrytypes_entries="entrytypes_entries")
     Search(
       :init_clear="true"
-      :view.sync="entries_view"
+      :view_mode.sync="entries_view"
       :fixed_filters="domain_pre_filter",
       :include_filters="filters")
 </template>
 
 <script>
 
-  import EntryCreateList from "../../../components/EntryCreateList";
-  import {global_context_filter} from "../../../lib/search";
-  import Search from "../../../components/Search";
-  import {ENTRYTYPES_OF_DOMAIN, DOMAIN, DOMAIN_BY_NAME, SET_DOMAIN} from "../../../lib/store_consts";
-  import {entrytype_filter_options} from "../../../lib/filter_option_consts";
-  import {MODE_ASPECT_POINT, VIEW_SEARCH} from "../../../lib/consts";
+    import EntryCreateList from "../../../components/EntryCreateList";
+    import {global_context_filter} from "../../../lib/search";
+    import Search from "../../../components/Search";
+    import {ENTRYTYPES_OF_DOMAIN, DOMAIN, DOMAIN_BY_NAME, SET_DOMAIN} from "../../../lib/store_consts";
+    import {entrytype_filter_options} from "../../../lib/filter_option_consts";
+    import {MODE_ASPECT_POINT, VIEW_SEARCH} from "../../../lib/consts";
 
-  export default {
-    name: "index",
-    components: {EntryCreateList, Search},
-    created() {
-      if (this.domain_data.value !== this.$store.getters[DOMAIN]) {
-        this.$store.commit(SET_DOMAIN, this.domain_data)
-      }
-    },
-    computed: {
-      entries_view: {
-        get: function () {
-          return this.$route.params.view || VIEW_SEARCH
-        },
-        set: function (view) {
-          console.log(view, this)
-          let route = {
-            path: this.$route.path,
-            query: {
-              view: view,
+
+    export default {
+        name: "index",
+        components: {EntryCreateList, Search},
+        created() {
+            if (this.domain_data.value !== this.$store.getters[DOMAIN]) {
+                this.$store.commit(SET_DOMAIN, this.domain_data)
             }
-          }
-          this.$router.push(route)
-        }
-      },
-      entrytypes_entries() {
-        return global_context_filter(this.$store.getters[ENTRYTYPES_OF_DOMAIN](this.$route.params.domain))
-      },
-      domain_data() {
-        return this.$store.getters[DOMAIN_BY_NAME](this.$route.params.domain)
-      },
-      filters() {
-        return [entrytype_filter_options]
-      },
-      domain_pre_filter() {
-        return [{
-          name: "meta_aspect",
-          meta_aspect_name: DOMAIN,
-          conditional_value: this.domain_data.value
-        }]
-      }
-    },
-    methods: {},
-    watch: {}
-  }
+        },
+        computed: {
+            entries_view: {
+                get: function () {
+                    return this.$route.query.view || VIEW_SEARCH
+                },
+                set: function (view) {
+                    let route = {
+                        path: this.$route.path,
+                        query: {
+                            view: view,
+                        }
+                    }
+                    this.$router.push(route)
+                }
+            },
+            entrytypes_entries() {
+                return global_context_filter(this.$store.getters[ENTRYTYPES_OF_DOMAIN](this.$route.params.domain))
+            },
+            domain_data() {
+                return this.$store.getters[DOMAIN_BY_NAME](this.$route.params.domain)
+            },
+            filters() {
+                return [entrytype_filter_options]
+            },
+            domain_pre_filter() {
+                return [{
+                    name: "meta_aspect",
+                    meta_aspect_name: DOMAIN,
+                    conditional_value: this.domain_data.value
+                }]
+            }
+        },
+        methods: {},
+        watch: {}
+    }
 </script>
 
 <style scoped>
