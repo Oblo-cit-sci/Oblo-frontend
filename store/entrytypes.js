@@ -194,7 +194,6 @@ export const mutations = {
   }
 }
 
-
 export const actions = {
   init_notes(context, type_slug) {
     let entry_type = context.getters.entry_type(type_slug)
@@ -220,5 +219,8 @@ export const actions = {
         notes: rec_aspect_descr_note_init(aspect)
       })
     }
+  },
+  update_entry_types(context, entrytypes) {
+
   }
 }

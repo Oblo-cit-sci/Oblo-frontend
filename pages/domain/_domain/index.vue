@@ -8,6 +8,7 @@
       :entrytypes_entries="entrytypes_entries")
     Search(
       :init_clear="true"
+      :view.sync="entries_view"
       :fixed_filters="domain_pre_filter",
       :include_filters="filters")
 </template>
@@ -19,6 +20,7 @@
   import Search from "../../../components/Search";
   import {ENTRYTYPES_OF_DOMAIN, DOMAIN, DOMAIN_BY_NAME, SET_DOMAIN} from "../../../lib/store_consts";
   import {entrytype_filter_options} from "../../../lib/filter_option_consts";
+  import {MODE_ASPECT_POINT, VIEW_SEARCH} from "../../../lib/consts";
 
   export default {
     name: "index",
@@ -29,6 +31,21 @@
       }
     },
     computed: {
+      entries_view: {
+        get: function () {
+          return this.$route.params.view || VIEW_SEARCH
+        },
+        set: function (view) {
+          console.log(view, this)
+          let route = {
+            path: this.$route.path,
+            query: {
+              view: view,
+            }
+          }
+          this.$router.push(route)
+        }
+      },
       entrytypes_entries() {
         return global_context_filter(this.$store.getters[ENTRYTYPES_OF_DOMAIN](this.$route.params.domain))
       },

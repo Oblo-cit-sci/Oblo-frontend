@@ -2,7 +2,7 @@
   v-container(fluid)
     v-row
       v-col
-        v-btn-toggle(v-model="view_mode" mandatory)
+        v-btn-toggle(:value="view_mode" @change="$emit('update:view', $event)" mandatory)
           v-btn search
           v-btn tree view
     div(v-if="view_mode===0")
@@ -41,9 +41,11 @@
   import {search_entries} from "../lib/client"
   import {
     CLEAR_SEARCH,
+    ENTRIES_ALL_ENTRIES_ARRAY,
     ENTRIES_HAS_ENTRY,
+    ENTRYTYPES_TYPES,
     SEARCH_GET_ENTRIES,
-    ENTRIES_ALL_ENTRIES_ARRAY, SEARCH_SET_ENTRIES, ENTRYTYPES_TYPES
+    SEARCH_SET_ENTRIES
   } from "../lib/store_consts"
   import FilterSelect from "./FilterSelect";
   import {pack_value} from "../lib/aspect";
@@ -51,11 +53,9 @@
   import {filter_required} from "../lib/search";
   import {entries2vuetify_tree} from "../lib/entry_collections";
   import NavBaseMixin from "./NavBaseMixin";
+  import {VIEW_SEARCH} from "../lib/consts";
 
   const LOG = true
-
-  const SEARCH = 0
-  const TREE = 1
 
   export default {
     name: "Search",
@@ -64,6 +64,10 @@
     props: {
       init_clear: Boolean,
       init_full: Boolean,
+      view_mode: {
+        type: String,
+        default: VIEW_SEARCH
+      },
       show_results: {
         type: Boolean,
         default: true
@@ -121,6 +125,9 @@
         } else if (kw.length >= this.kw_char_thresh) {
           this.$_.debounce(this.getEntries, 500)()
         }
+      },
+      view_mode(val) {
+        this.$emit("update:view_mode", val)
       }
     },
     computed: {
@@ -187,7 +194,7 @@
         }
         return configuration
       }
-    }
+    },
   }
 </script>
 

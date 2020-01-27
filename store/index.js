@@ -233,9 +233,6 @@ export const getters = {
 };
 
 export const actions = {
-  test(context, val) {
-    //console.log("text store action", context, val)
-  },
   clear_entries({commit}) {
     commit("entries/clear")
     commit("search/clear")
