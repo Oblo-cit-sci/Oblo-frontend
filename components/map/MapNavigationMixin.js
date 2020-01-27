@@ -50,6 +50,7 @@ export default {
         actions: ['goto_location'],
         prevent_page_change: true
       }
+      // return {}
     }
   },
   methods: {

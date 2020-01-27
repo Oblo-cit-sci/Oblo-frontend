@@ -34,7 +34,7 @@
           v-btn(v-if="has_type" small text outlined @click="goto(entry)") {{goto_text}}
           v-btn(small text outlined @click="goto_location" v-if="has_action_goto_location")
             v-icon mdi-map-marker
-          v-badge(v-if="has_action_goto_location" color="grey" :content="num_locations" overlap small)
+            v-badge(color="black" :content="num_locations")
           v-btn(small text outlined :color="act.color || 'green'"
             v-for="act in additional_actions"
             :key="act.key"
@@ -170,7 +170,7 @@
             },
             additional_actions() {
                 const pw_actions = this.$_.cloneDeep(this.entry_type.content.meta.preview_actions) || []
-                // console.log(this.entry_type.slug, pw_actions)
+                console.log(this.entry_type.slug, pw_actions)
                 const show_actions = []
                 if (this.outdated) {
                     const download_action = this.$_.find(this.entry_type.content.meta.preview_actions, a => a.type === "download")
@@ -189,7 +189,6 @@
                             console.log("child action cannot be added, aspect location doesnt exist for action:", pw_action.name)
                             continue
                         }
-                        const i_value = value.value
                         if (value.length > 0) {
                             show_actions.push(Object.assign(this.$_.clone(pw_action), {key: action_name}))
                         }
@@ -200,7 +199,7 @@
                     }
                 }
                 for (let additional_action of this.actions) {
-                    console.log(additional_action)
+                    console.log("Aa", additional_action)
                     show_actions.push(additional_action)
                 }
                 return show_actions
