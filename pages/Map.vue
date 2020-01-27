@@ -15,7 +15,7 @@
         :layers="layers"
         :map_mode="mode"
         :navigation_mode.sync="navigation_mode"
-        :selected_enry_uuid.sync="selected_entry"
+        :selected_entry_uuid.sync="selected_entry"
         @layer_select_change="layer_select_change($event)")
       MglMap(:style="mapCssStyle"
         :access-token="accessToken"
@@ -24,19 +24,7 @@
         :center="center_coordinates"
         @click="touch($event)")
         MglMarker(v-if="selected_coordinates" :coordinates="selected_coordinates")
-        div(v-for="entry in entries" :key="entry.uuid")
-          div {{entry.uuid === selected_entry}}
-          div(v-if="entry.uuid !== selected_entry")
-            MglMarker(v-for="(loc, index) in entry.location"
-              :coordinates="transform_loc(loc.coordinates)"
-              @click="select_entry_marker($event, entry.uuid)"
-              :key="index")
-          div(v-else)
-            MglMarker(v-for="(loc, index) in entry.location"
-              :color="'#af5555'"
-              :coordinates="transform_loc(loc.coordinates)"
-              @click="select_entry_marker($event, entry.uuid)"
-              :key="index")
+
 </template>
 
 <script>
@@ -57,9 +45,28 @@
 
     const menu_mode_options = [MODE_NORMAL, MODE_ASPECT_POINT]
 
+    /*
+    old marker approach... having the entries (full data)...
+            div(v-for="entry in entries" :key="entry.uuid")
+          div {{entry.uuid === selected_entry}}
+          div(v-if="entry.uuid !== selected_entry")
+            MglMarker(v-for="(loc, index) in entry.location"
+              :coordinates="transform_loc(loc.coordinates)"
+              @click="select_entry_marker($event, entry.uuid)"
+              :key="index")
+          div(v-else)
+            MglMarker(v-for="(loc, index) in entry.location"
+              :color="'#af5555'"
+              :coordinates="transform_loc(loc.coordinates)"
+              @click="select_entry_marker($event, entry.uuid)"
+              :key="index")
+     */
+
     // navigation mode!! copy of  MapNvaigationMixin
     export const SEARCH = "search"
     export const ENTRY = "entry"
+
+    const selected_color = "#C6780A"
 
     export default {
         name: "Map",
@@ -87,7 +94,8 @@
                 selected_place: null,
                 // for the navigation
                 navigation_mode: SEARCH,
-                selected_entry: null
+                selected_entry: null,
+                markers: []
             }
         },
         created() {
@@ -132,106 +140,7 @@
         methods: {
             onMapLoaded(event) {
                 this.map = event.map
-                const m = new Marker()
-                m.setLngLat([0, 0]).addTo(this.map)
-                m.getElement().addEventListener("click",(e) => {
-                    console.log("selected", e, m)
-                    // m._color = "#FF00B0"
-                    m.remove()
-
-                    const nm = new Marker({color:"#FF00B0"})
-                    nm.setLngLat([0, 0]).addTo(this.map)
-                    nm.getElement().addEventListener("click",(e) => {
-                        console.log("selected", e, m)
-                    })
-                })
-
-                console.log(this.map)
-                // console.log(this.map.mapbox)
-                // var myLayer = L.mapbox.featureLayer().addTo(map);
-
-                // this.map.addLayer(
-                //     {
-                //         "type": "FeatureCollection",
-                //         "features": [
-                //             {
-                //                 "type": "Feature",
-                //                 "properties": {
-                //                     "marker-color": "#f76565",
-                //                     "title": "La Taqueria",
-                //                     "marker-symbol": "restaurant"
-                //                 },
-                //                 "geometry": {
-                //                     "type": "Point",
-                //                     "coordinates": [
-                //                         0,
-                //                         0
-                //                     ]
-                //                 }
-                //             }]
-                //     })
-                //
-                // this.map.addLayer({
-                //     'id': 'points',
-                //     'type': 'symbol',
-                //     'source': {
-                //         'type': 'geojson',
-                //         'data': {
-                //             'type': 'FeatureCollection',
-                //             'features': [
-                //                 {
-                //                     'type': 'Feature',
-                //                     'geometry': {
-                //                         'type': 'Point',
-                //                         'coordinates': [
-                //                             -77.03238901390978,
-                //                             38.913188059745586
-                //                         ]
-                //                     },
-                //                     'properties': {
-                //                         "color": "#f76565",
-                //                         'icon': 'harbor',
-                //                         "marker-color": "#f76565",
-                //                         "title": "La Taqueria",
-                //                         "marker-symbol": "restaurant",
-                //                         "fill-color": "#f76565"
-                //                     }
-                //                 },
-                //                 {
-                //                     // feature for Mapbox SF
-                //                     'type': 'Feature',
-                //                     'geometry': {
-                //                         'type': 'Point',
-                //                         'coordinates': [-122.414, 37.776]
-                //                     },
-                //                     'properties': {
-                //                         'title': 'Mapbox SF',
-                //                         'icon': 'harbor'
-                //                     }
-                //                 }
-                //             ]
-                //         }
-                //     },
-                //     'layout': {
-                //         // get the icon name from the source's "icon" property
-                //         // concatenate the name to get an icon from the style's sprite sheet
-                //         'icon-image': ['concat', ['get', 'icon'], '-15'],
-                //         // get the title name from the source's "title" property
-                //         'text-field': ['get', 'title'],
-                //         'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
-                //         'text-offset': [0, 0.6],
-                //         'text-anchor': 'top'
-                //     }
-                // });
-            },
-            marker_color(uuid) {
-                console.log("call color")
-                console.log(uuid, this.selected_entry)
-                if (uuid === this.selected_entry) {
-                    console.log("jupp")
-                    return "#af5555"
-                } else
-                    return "#a0a0a0"
+                this.create_markers()
             },
             // todo later use dispatch, like in create?
             update_map_entries(entries) {
@@ -284,12 +193,40 @@
                     })
                 }
             },
-            select_entry_marker(event, entry_uuid) {
+            select_entry_marker(entry_uuid) {
                 // this.$store.dispatch("map/select_entry", entry_uuid)
                 // console.log(event)
+                if(this.selected_entry) {
+                    this.change_entry_markers_mode(entry_uuid, false)
+                }
                 this.navigation_mode = ENTRY
                 this.selected_entry = entry_uuid
                 this.drawer = true
+                this.change_entry_markers_mode(entry_uuid, true)
+            },
+            change_entry_markers_mode(entry_uuid, selected) {
+                const relevant_markers = this.$_.filter(this.markers, (m) => m.e_uuid === entry_uuid)
+                this.markers = this.$_.pullAllBy(this.markers, relevant_markers, "e_uuid")
+                for(let m of relevant_markers) {
+                    m.remove()
+                    this.create_e_marker(m.getLngLat(), entry_uuid, {color: selected_color})
+                }
+            },
+            create_e_marker(coordinates, uuid, options) {
+                const m = new Marker(options)
+                m.e_uuid = uuid
+                m.setLngLat(coordinates).addTo(this.map)
+                this.markers.push(m)
+                m.getElement().addEventListener("click", () => {
+                    this.select_entry_marker(m.e_uuid)
+                })
+            },
+            create_markers() {
+                for (let e of this.entries) {
+                    for (let loc of e.location || []) {
+                        this.create_e_marker(loc.coordinates, e.uuid, {})
+                    }
+                }
             }
         },
         watch: {
@@ -306,6 +243,21 @@
                     this.$store.commit(MAP_GOTO_LOCATION, null)
                 }
             },
+            entries() {
+                console.log("watch- entries")
+                this.markers = []
+                // todo, a bit ineficient. is called whenever we go back from an entry to the search
+                if (this.map) {
+                    this.create_markers()
+                }
+            },
+            selected_entry() {
+                console.log("watch- selected_entry_uuid")
+            },
+            navigation_mode(mode) {
+                console.log("watch- ",mode, this.selected_entry)
+                this.change_entry_markers_mode(this.selected_entry, true)
+            }
         }
     }
 </script>

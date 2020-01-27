@@ -34,6 +34,7 @@
           v-btn(v-if="has_type" small text outlined @click="goto(entry)") {{goto_text}}
           v-btn(small text outlined @click="goto_location" v-if="has_action_goto_location")
             v-icon mdi-map-marker
+          v-badge(v-if="has_action_goto_location" color="grey" :content="num_locations" overlap small)
           v-btn(small text outlined :color="act.color || 'green'"
             v-for="act in additional_actions"
             :key="act.key"

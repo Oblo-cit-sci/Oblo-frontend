@@ -4,7 +4,6 @@ export default {
       mixins: [],
       components: {},
       props: {
-
       },
       data() {
           return {
@@ -19,6 +18,9 @@ export default {
         has_action_goto_location() {
           return this.entry.location && this.actions.includes('goto_location')
         },
+        num_locations() {
+          return (this.entry.location || []).length
+        }
       },
       methods: {
 

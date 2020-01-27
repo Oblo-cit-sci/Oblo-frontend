@@ -14,7 +14,7 @@ export default {
     layers: Array,
     map_mode: String,
     navigation_mode: String, // synced
-    selected_enry_uuid: String // synced
+    selected_entry_uuid: String // synced
   },
   data() {
     return {
@@ -43,7 +43,7 @@ export default {
       return this.navigation_mode === ENTRY
     },
     selected_entry() {
-      return this.$store.getters[ENTRIES_GET_ENTRY](this.selected_enry_uuid)
+      return this.$store.getters[ENTRIES_GET_ENTRY](this.selected_entry_uuid)
     },
     preview_options() {
       return {
@@ -71,7 +71,7 @@ export default {
     },
     preview_action({uuid, action}) {
       this.$emit("update:navigation_mode", ENTRY)
-      this.$emit("update:selected_enry_uuid", uuid)
+      this.$emit("update:selected_entry_uuid", uuid)
     }
   },
 }
