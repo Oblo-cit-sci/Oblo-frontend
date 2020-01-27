@@ -37,9 +37,9 @@
             v-badge(color="black" :content="num_locations")
           v-btn(small text outlined :color="act.color || 'green'"
             v-for="act in additional_actions"
-            :key="act.key"
-            :loading="action_loading[act.key] || false"
-            @click="additional_action(act.key)") {{act.name}} {{action_loading[act.key]}}
+            :key="act.name"
+            :loading="action_loading[act.name] || false"
+            @click="additional_action(act.name)") {{act.name}} {{action_loading[act.name]}}
 
 </template>
 
@@ -160,7 +160,7 @@
                     return "fa fa-edit"
             },
             entry_image() {
-                if(this.entry.image.startsWith("http")) {
+                if (this.entry.image.startsWith("http")) {
                     return this.entry.image
                 }
                 return static_file_path(this.$store, 'images/entry_images/' + this.entry.image)
@@ -190,12 +190,12 @@
                             continue
                         }
                         if (value.length > 0) {
-                            show_actions.push(Object.assign(this.$_.clone(pw_action), {key: action_name}))
+                            show_actions.push(pw_action)
                         }
                     } else if (pw_action.type === "download") {
-                        show_actions.push(Object.assign(this.$_.clone(pw_action), {key: action_name}))
+                        show_actions.push(pw_action)
                     } else if (pw_action.type === "upload") {
-                        show_actions.push(Object.assign(this.$_.clone(pw_action), {key: action_name}))
+                        show_actions.push(pw_action)
                     }
                 }
                 for (let additional_action of this.actions) {
@@ -255,9 +255,9 @@
                 this.to_entry(child.uuid, EDIT)
                 this.goto_delayed_last_page()
             },
-            additional_action(action_key) {
-                console.log("additional_action", action_key)
-                const preview_action = this.$_.find(this.additional_actions, a => a.key === action_key)
+            additional_action(action_name) {
+                console.log("additional_action", action_name)
+                const preview_action = this.$_.find(this.additional_actions, a => a.name === action_name)
                 // why?
                 // if (this.entry_type) {
                 // const preview_action = this.$_.find(this.entry_type.content.meta.preview_actions, a => a.name === action_key)
@@ -277,13 +277,13 @@
                     case "upload":
                         const entries = this.$store.getters[ENTRIES_GET_RECURSIVE_ENTRIES](this.entry.uuid)
                         const upload_promise = upload_to_repo(this.$store, this.$axios, entries, preview_action.url, true)
-                        this.additional_action_loading[action_key] = true
+                        this.additional_action_loading[action_name] = true
                         upload_promise.then(res => {
                             this.snackbar(res.data.status, res.data.msg)
-                            this.additional_action_loading[action_key] = false
+                            this.additional_action_loading[action_name] = false
                         }).catch(err => {
                             console.log(err)
-                            this.additional_action_loading[action_key] = false
+                            this.additional_action_loading[action_name] = false
                             this.error_snackbar(err)
                         })
                         break
