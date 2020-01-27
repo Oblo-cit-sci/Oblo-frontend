@@ -145,11 +145,8 @@
       }
     },
     created() {
-      console.log("page created")
       //console.log("entry index create", this.entry.aspects_values.)
       this.$store.dispatch(ENTRIES_SET_EDIT, this.uuid)
-      console.log("edit set")
-      console.log(this.$store.getters[ENTRIES_ALL_ENTRIES_ARRAY]().length)
       let required_aspects = this.$_.filter(this.entry_type.content.aspects, (a) => a.required || false)
       this.required_values = this.$_.map(required_aspects, (a) => {
         return a.name
@@ -252,10 +249,6 @@
         return entry_type.content.aspects
       },
       entry() {
-        console.log(this.$store.state.entries.entries.size)
-        console.log("entry", this.uuid, this.$store.getters[ENTRIES_ALL_ENTRIES_ARRAY]())
-        // console.log(this.$store.getters[ENTRIES_GET_EDIT])
-        //guarantee_edit()
         return this.$store.getters[ENTRIES_GET_ENTRY](this.uuid)
       },
       privacy_mode() {

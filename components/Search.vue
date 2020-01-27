@@ -55,7 +55,7 @@
     import NavBaseMixin from "./NavBaseMixin";
     import {VIEW_SEARCH, VIEW_TREE} from "../lib/consts";
 
-    const LOG = true
+    const LOG = false
 
     export default {
         name: "Search",
@@ -108,13 +108,12 @@
                 const all_entries = this.$store.getters[ENTRIES_ALL_ENTRIES_ARRAY]()
                 const filtered_entries = filter_required(all_entries, required).map(e => ([e.uuid, e]))
                 // const entries = filter_required(this.$store.getters[ENTRIES_ALL_ENTRIES_ARRAY](), required).map(e => ([e.uuid, e]))
-                console.log("init_full, entries:", filtered_entries.length)
+                // console.log("init_full, entries:", filtered_entries.length)
                 this.$store.commit(SEARCH_SET_ENTRIES, filtered_entries)
                 this.$emit("received_search_results", filtered_entries.map(e => e[1]))
             } else if (this.entries.length === 0) {
                 this.getEntries()
             }
-            console.log("tree", this.tree)
         },
         watch: {
             keyword: function (kw) {

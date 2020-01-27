@@ -40,193 +40,274 @@
 </template>
 
 <script>
-  import {MglMarker, MglPopup} from "vue-mapbox";
-  import {access_token, licci_style_map, rev_geocode} from "../lib/services/mapbox";
-  import {MODE_ASPECT_POINT, MODE_NORMAL} from "../lib/consts";
-  import {place2str} from "../lib/location";
-  import {
-    ENTRIES_ALL_ENTRIES_ARRAY,
-    ENTRIES_SET_ENTRY_VALUE, MAP_GOTO_LOCATION, MAP_RESET_TO_SELECT_ASPECT_LOCATION,
-    MAP_SET_ENTRIES,
-  } from "../lib/store_consts";
-  import {pack_value} from "../lib/aspect";
-  import {arr2coords} from "../lib/map_utils";
-  import {mapGetters} from "vuex"
-  import MapNavigationDrawer from "../components/map/MapNavigationDrawer";
-  import {Marker} from "mapbox-gl";
+    import {MglMarker, MglPopup} from "vue-mapbox";
+    import {access_token, licci_style_map, rev_geocode} from "../lib/services/mapbox";
+    import {MODE_ASPECT_POINT, MODE_NORMAL} from "../lib/consts";
+    import {place2str} from "../lib/location";
+    import {
+        ENTRIES_ALL_ENTRIES_ARRAY,
+        ENTRIES_SET_ENTRY_VALUE, MAP_GOTO_LOCATION, MAP_RESET_TO_SELECT_ASPECT_LOCATION,
+        MAP_SET_ENTRIES,
+    } from "../lib/store_consts";
+    import {pack_value} from "../lib/aspect";
+    import {arr2coords} from "../lib/map_utils";
+    import {mapGetters} from "vuex"
+    import MapNavigationDrawer from "../components/map/MapNavigationDrawer";
+    import {Marker} from "mapbox-gl";
 
-  const menu_mode_options = [MODE_NORMAL, MODE_ASPECT_POINT]
+    const menu_mode_options = [MODE_NORMAL, MODE_ASPECT_POINT]
 
-  // navigation mode!! copy of  MapNvaigationMixin
-  export const SEARCH = "search"
-  export const ENTRY = "entry"
+    // navigation mode!! copy of  MapNvaigationMixin
+    export const SEARCH = "search"
+    export const ENTRY = "entry"
 
-  export default {
-    name: "Map",
-    mixins: [],
-    components: {MapNavigationDrawer, MglMarker, MglPopup},
-    props: {},
-    layout: "map_layout",
-    head() {
-      return {
-        link: [{
-          href: "https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css",
-          rel: "stylesheet"
-        }]
-      }
-    },
-    data() {
-      return {
-        drawer: false,
-        accessToken: access_token,
-        mapCssStyle: "",
-        mapStyle: licci_style_map,
-        center_coordinates: [-0.8844128193341589, 37.809519042232694],
-        //  MODE_ASPECT_POINT
-        selected_coordinates: null,
-        selected_place: null,
-        // for the navigation
-        navigation_mode: SEARCH,
-        selected_entry: null
-      }
-    },
-    created() {
-      this.map = null
-      if (this.normal_mode) {
-        this.$store.dispatch(MAP_SET_ENTRIES, this.$store.getters[ENTRIES_ALL_ENTRIES_ARRAY]())
-        // const entries = this.$store.getters[SEARCH_GET_ENTRIES]
-        // this.update_map_entries(entries)
-      }
-    },
-    mounted() {
-      this.mapCssStyle = "height: " + document.getElementById("fullContainer").clientHeight + "px"
-    },
-    computed: {
-      ...mapGetters({
-        entries: "map/entries",
-        layers: "map/layers",
-        layer_status: "map/layer_status"
-      }),
-      mode() {
-        return this.$route.query.mode || MODE_NORMAL
-      },
-      select_mode() {
-        return this.mode === MODE_ASPECT_POINT
-      },
-      normal_mode() {
-        return this.mode === MODE_NORMAL
-      },
-      selected_place_text() {
-        if (this.selected_place)
-          return place2str(this.selected_place)
-        else
-          return ""
-      },
-      show_select_confirm() {
-        return this.selected_place
-      },
-      goto_location() {
-        return this.$store.getters[MAP_GOTO_LOCATION]()
-      }
-    },
-    methods: {
-      onMapLoaded(event) {
-        this.map = event.map
-        console.log("map", this.map)
-
-        let marker = new Marker().setLngLat([0, 0])
-        marker.getElement().addEventListener('click', () => {
-          console.log("Clicked");
-        });
-        // marker.on("dragstart", (e) => {
-        //   console.log(e)
-        // })
-        marker.addTo(this.map)
-      },
-      marker_color(uuid) {
-        console.log("call color")
-        console.log(uuid, this.selected_entry)
-        if(uuid === this.selected_entry) {
-          console.log("jupp")
-          return "#af5555"
-        } else
-          return "#a0a0a0"
-      },
-      // todo later use dispatch, like in create?
-      update_map_entries(entries) {
-        this.$store.commit(MAP_SET_ENTRIES, entries)
-      },
-      layer_select_change(active_layers) {
-        this.set_layer_status(this.$_.mapValues(this.$_.keyBy(this.layers), l => active_layers.includes(l)))
-      },
-      set_layer_status(layers = this.layer_status) {
-        //console.log(this.map.style._layers)
-        for (let layer in layers) {
-          this.map.setLayoutProperty(layer, 'visibility', layers[layer] ? "visible" : "none")
-        }
-      },
-      transform_loc(loc) {
-        // todo take the NaN check out and filter earlier...
-        if (loc.hasOwnProperty("lon") && loc.lat && !isNaN(loc.lon) && !isNaN(loc.lat)) {
-          return [loc.lon, loc.lat]
-        } else {
-          return loc
-        }
-      },
-      back() {
-        this.$router.back()
-      },
-      confirm_select() {
-        const value = pack_value({
-          coordinates: arr2coords(this.selected_coordinates),
-          place: this.selected_place
-        })
-        const aspect_loc = this.$store.getters["map/to_select_aspect_location"]
-        this.$store.commit(MAP_RESET_TO_SELECT_ASPECT_LOCATION)
-        this.$store.dispatch(ENTRIES_SET_ENTRY_VALUE, {aspect_loc: aspect_loc, value: value})
-        this.$router.back()
-      },
-      touch({mapboxEvent}) {
-        console.log(mapboxEvent)
-        // console.log(mapboxEvent.lngLat.lng, mapboxEvent.lngLat.lat)
-        if (this.mode === MODE_ASPECT_POINT) {
-          this.selected_coordinates = [mapboxEvent.lngLat.lng, mapboxEvent.lngLat.lat]
-          rev_geocode(this.$axios, {lon: mapboxEvent.lngLat.lng, lat: mapboxEvent.lngLat.lat}).then(data => {
-            this.selected_place = {}
-            if (data.features.length === 0) { // oceans
-              this.selected_place = null
-            } else {
-              this.$_.forEach(data.features, feature => {
-                this.selected_place[feature.place_type[0]] = feature.text
-              })
+    export default {
+        name: "Map",
+        mixins: [],
+        components: {MapNavigationDrawer, MglMarker, MglPopup},
+        props: {},
+        layout: "map_layout",
+        head() {
+            return {
+                link: [{
+                    href: "https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css",
+                    rel: "stylesheet"
+                }]
             }
-          })
-        }
-      },
-      select_entry_marker(event, entry_uuid) {
-        // this.$store.dispatch("map/select_entry", entry_uuid)
-        // console.log(event)
-        this.navigation_mode = ENTRY
-        this.selected_entry = entry_uuid
-        this.drawer = true
-      }
-    },
-    watch: {
-      goto_location(location) {
-        if (location) {
-          const center = this.transform_loc(location.coordinates)
-          this.map.flyTo({
-            center: center,
-            speed: 0.8, // make the flying slow
-            easing: function (t) {
-              return t;
+        },
+        data() {
+            return {
+                drawer: false,
+                accessToken: access_token,
+                mapCssStyle: "",
+                mapStyle: licci_style_map,
+                center_coordinates: [-0.8844128193341589, 37.809519042232694],
+                //  MODE_ASPECT_POINT
+                selected_coordinates: null,
+                selected_place: null,
+                // for the navigation
+                navigation_mode: SEARCH,
+                selected_entry: null
             }
-          })
-          this.$store.commit(MAP_GOTO_LOCATION, null)
+        },
+        created() {
+            this.map = null
+            if (this.normal_mode) {
+                this.$store.dispatch(MAP_SET_ENTRIES, this.$store.getters[ENTRIES_ALL_ENTRIES_ARRAY]())
+                // const entries = this.$store.getters[SEARCH_GET_ENTRIES]
+                // this.update_map_entries(entries)
+            }
+        },
+        mounted() {
+            this.mapCssStyle = "height: " + document.getElementById("fullContainer").clientHeight + "px"
+        },
+        computed: {
+            ...mapGetters({
+                entries: "map/entries",
+                layers: "map/layers",
+                layer_status: "map/layer_status"
+            }),
+            mode() {
+                return this.$route.query.mode || MODE_NORMAL
+            },
+            select_mode() {
+                return this.mode === MODE_ASPECT_POINT
+            },
+            normal_mode() {
+                return this.mode === MODE_NORMAL
+            },
+            selected_place_text() {
+                if (this.selected_place)
+                    return place2str(this.selected_place)
+                else
+                    return ""
+            },
+            show_select_confirm() {
+                return this.selected_place
+            },
+            goto_location() {
+                return this.$store.getters[MAP_GOTO_LOCATION]()
+            }
+        },
+        methods: {
+            onMapLoaded(event) {
+                this.map = event.map
+                const m = new Marker()
+                m.setLngLat([0, 0]).addTo(this.map)
+                m.getElement().addEventListener("click",(e) => {
+                    console.log("selected", e, m)
+                    // m._color = "#FF00B0"
+                    m.remove()
+
+                    const nm = new Marker({color:"#FF00B0"})
+                    nm.setLngLat([0, 0]).addTo(this.map)
+                    nm.getElement().addEventListener("click",(e) => {
+                        console.log("selected", e, m)
+                    })
+                })
+
+                console.log(this.map)
+                // console.log(this.map.mapbox)
+                // var myLayer = L.mapbox.featureLayer().addTo(map);
+
+                // this.map.addLayer(
+                //     {
+                //         "type": "FeatureCollection",
+                //         "features": [
+                //             {
+                //                 "type": "Feature",
+                //                 "properties": {
+                //                     "marker-color": "#f76565",
+                //                     "title": "La Taqueria",
+                //                     "marker-symbol": "restaurant"
+                //                 },
+                //                 "geometry": {
+                //                     "type": "Point",
+                //                     "coordinates": [
+                //                         0,
+                //                         0
+                //                     ]
+                //                 }
+                //             }]
+                //     })
+                //
+                // this.map.addLayer({
+                //     'id': 'points',
+                //     'type': 'symbol',
+                //     'source': {
+                //         'type': 'geojson',
+                //         'data': {
+                //             'type': 'FeatureCollection',
+                //             'features': [
+                //                 {
+                //                     'type': 'Feature',
+                //                     'geometry': {
+                //                         'type': 'Point',
+                //                         'coordinates': [
+                //                             -77.03238901390978,
+                //                             38.913188059745586
+                //                         ]
+                //                     },
+                //                     'properties': {
+                //                         "color": "#f76565",
+                //                         'icon': 'harbor',
+                //                         "marker-color": "#f76565",
+                //                         "title": "La Taqueria",
+                //                         "marker-symbol": "restaurant",
+                //                         "fill-color": "#f76565"
+                //                     }
+                //                 },
+                //                 {
+                //                     // feature for Mapbox SF
+                //                     'type': 'Feature',
+                //                     'geometry': {
+                //                         'type': 'Point',
+                //                         'coordinates': [-122.414, 37.776]
+                //                     },
+                //                     'properties': {
+                //                         'title': 'Mapbox SF',
+                //                         'icon': 'harbor'
+                //                     }
+                //                 }
+                //             ]
+                //         }
+                //     },
+                //     'layout': {
+                //         // get the icon name from the source's "icon" property
+                //         // concatenate the name to get an icon from the style's sprite sheet
+                //         'icon-image': ['concat', ['get', 'icon'], '-15'],
+                //         // get the title name from the source's "title" property
+                //         'text-field': ['get', 'title'],
+                //         'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
+                //         'text-offset': [0, 0.6],
+                //         'text-anchor': 'top'
+                //     }
+                // });
+            },
+            marker_color(uuid) {
+                console.log("call color")
+                console.log(uuid, this.selected_entry)
+                if (uuid === this.selected_entry) {
+                    console.log("jupp")
+                    return "#af5555"
+                } else
+                    return "#a0a0a0"
+            },
+            // todo later use dispatch, like in create?
+            update_map_entries(entries) {
+                this.$store.commit(MAP_SET_ENTRIES, entries)
+            },
+            layer_select_change(active_layers) {
+                this.set_layer_status(this.$_.mapValues(this.$_.keyBy(this.layers), l => active_layers.includes(l)))
+            },
+            set_layer_status(layers = this.layer_status) {
+                //console.log(this.map.style._layers)
+                for (let layer in layers) {
+                    this.map.setLayoutProperty(layer, 'visibility', layers[layer] ? "visible" : "none")
+                }
+            },
+            transform_loc(loc) {
+                // todo take the NaN check out and filter earlier...
+                if (loc.hasOwnProperty("lon") && loc.lat && !isNaN(loc.lon) && !isNaN(loc.lat)) {
+                    return [loc.lon, loc.lat]
+                } else {
+                    return loc
+                }
+            },
+            back() {
+                this.$router.back()
+            },
+            confirm_select() {
+                const value = pack_value({
+                    coordinates: arr2coords(this.selected_coordinates),
+                    place: this.selected_place
+                })
+                const aspect_loc = this.$store.getters["map/to_select_aspect_location"]
+                this.$store.commit(MAP_RESET_TO_SELECT_ASPECT_LOCATION)
+                this.$store.dispatch(ENTRIES_SET_ENTRY_VALUE, {aspect_loc: aspect_loc, value: value})
+                this.$router.back()
+            },
+            touch({mapboxEvent}) {
+                // console.log(mapboxEvent)
+                // console.log(mapboxEvent.lngLat.lng, mapboxEvent.lngLat.lat)
+                if (this.mode === MODE_ASPECT_POINT) {
+                    this.selected_coordinates = [mapboxEvent.lngLat.lng, mapboxEvent.lngLat.lat]
+                    rev_geocode(this.$axios, {lon: mapboxEvent.lngLat.lng, lat: mapboxEvent.lngLat.lat}).then(data => {
+                        this.selected_place = {}
+                        if (data.features.length === 0) { // oceans
+                            this.selected_place = null
+                        } else {
+                            this.$_.forEach(data.features, feature => {
+                                this.selected_place[feature.place_type[0]] = feature.text
+                            })
+                        }
+                    })
+                }
+            },
+            select_entry_marker(event, entry_uuid) {
+                // this.$store.dispatch("map/select_entry", entry_uuid)
+                // console.log(event)
+                this.navigation_mode = ENTRY
+                this.selected_entry = entry_uuid
+                this.drawer = true
+            }
+        },
+        watch: {
+            goto_location(location) {
+                if (location) {
+                    const center = this.transform_loc(location.coordinates)
+                    this.map.flyTo({
+                        center: center,
+                        speed: 0.8, // make the flying slow
+                        easing: function (t) {
+                            return t;
+                        }
+                    })
+                    this.$store.commit(MAP_GOTO_LOCATION, null)
+                }
+            },
         }
-      },
     }
-  }
 </script>
 
 <style src="mapbox-gl/dist/mapbox-gl.css"></style>

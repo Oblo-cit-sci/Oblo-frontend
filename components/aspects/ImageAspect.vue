@@ -53,7 +53,6 @@
                     license: "No license"
                 }
             }
-            console.log(this.fake_data)
         },
         computed: {
             num_cols() {

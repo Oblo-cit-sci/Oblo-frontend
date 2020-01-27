@@ -70,7 +70,7 @@ export const mutations = {
     state.timeline_entries = []
   },
   _set_entry_value(state, {aspect_loc, value}) { // ENTRIES_SET_ENTRY_VALUE
-    console.log("set entry value", aspect_loc, value)
+    // console.log("set entry value", aspect_loc, value)
     let select = select_aspect_loc(state, aspect_loc, true)
     const final_loc = ld.last(aspect_loc)
     //console.log("final,", final_loc, "select", select, "value", value)
@@ -117,6 +117,12 @@ export const mutations = {
     if (state.edit) {
       state.edit.local.dirty = false
     }
+  },
+  // todo renmae, update entry
+  _update_entry(state, uuid) {
+    let entry = state.entries.get(uuid)
+    entry.version += 1
+    entry.local.prev = null
   },
   // todo renmae, update entry
   _save_entry(state, uuid) {

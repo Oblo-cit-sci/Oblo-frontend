@@ -21,8 +21,6 @@
     import Entrypreview from "../components/EntryPreview";
     import {ENTRIES_HAS_ENTRY, ENTRYTYPES_TYPE, ENTRYTYPES_TYPES} from "../lib/store_consts";
     import goTo from 'vuetify/lib/services/goto'
-    import {entries2vuetify_tree} from "../lib/entry_collections";
-    import NavBaseMixin from "./NavBaseMixin";
 
     export default {
         name: "EntryPreviewList",

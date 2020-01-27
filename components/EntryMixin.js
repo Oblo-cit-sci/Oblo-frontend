@@ -22,7 +22,6 @@ export default {
   },
   computed: {
     uuid() {
-      console.log(this.$route.name)
       if(this.passed_uuid) {
         return this.passed_uuid
       } else {
@@ -37,7 +36,6 @@ export default {
       let result = []
       while (act.refs.parent) {
         act = this.$store.getters[ENTRIES_GET_PARENT](act.uuid)
-        //console.log("act", act)
         result.push({
             text: act.title,
             href: 'breadcrumbs_dashboard',
