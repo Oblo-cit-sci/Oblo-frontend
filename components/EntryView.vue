@@ -27,21 +27,20 @@
     v-col(v-if="show_image" cols=12 class="col-md-3 col-sm-12 entry-image")
       v-img(:src="entry_image()" aspect-ratio=1)
     v-col(class="entry-meta" cols=12)
-      EntryActions(
-        v-bind="entry_actions_props"
-        :page.sync="page"
-        v-on:entryAction="entryAction($event)"
-        v-on:edit="mode='edit'")
-      DecisionDialog(
-        :open.sync="openSaveDialog"
-        @action="edit_or_save_dialog($event)"
-        v-bind="unsaved_changes_dialog")
+          EntryActions(
+            v-bind="entry_actions_props"
+            :page.sync="page"
+            v-on:entryAction="entryAction($event)"
+            v-on:edit="mode='edit'")
+    DecisionDialog(
+      :open.sync="openSaveDialog"
+      @action="edit_or_save_dialog($event)"
+      v-bind="unsaved_changes_dialog")
 
 
 </template>
 
 <script>
-  import MissingAspectsNotice from "./MissingAspectsNotice";
   import DecisionDialog from "./DecisionDialog";
   import Aspect from "./Aspect";
   import EntryActions from "./EntryActions";
@@ -51,11 +50,11 @@
   import MetaChips from "./MetaChips";
   import EntryNavMixin from "./EntryNavMixin";
   import EntryMixin from "./EntryMixin";
-  import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
+  import FullEntryMixin from "./FullEntryMixin";
 
   export default {
     name: "EntryView",
-    mixins: [EntryNavMixin, EntryMixin, TriggerSnackbarMixin],
+    mixins: [EntryNavMixin, EntryMixin, FullEntryMixin],
     components: {
       DecisionDialog,
       Aspect,
@@ -69,7 +68,6 @@
       return {}
     },
     created() {
-
     },
     computed: {},
     methods: {},

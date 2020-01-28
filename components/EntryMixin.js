@@ -1,5 +1,6 @@
 import {has_parent} from "../lib/entry";
 import {
+  ENTRIES_GET_ENTRY,
   ENTRIES_GET_ENTRY_TITLE,
   ENTRIES_GET_PARENT,
   ENTRIES_GET_RECURSIVE_ENTRIES, ENTRYTYPES_TYPE,
@@ -22,11 +23,14 @@ export default {
   },
   computed: {
     uuid() {
-      if(this.passed_uuid) {
+      if (this.passed_uuid) {
         return this.passed_uuid
       } else {
         return this.$route.params.uuid
       }
+    },
+    entry() {
+      return this.$store.getters[ENTRIES_GET_ENTRY](this.uuid)
     },
     has_parent() {
       return has_parent(this.entry)
@@ -37,14 +41,17 @@ export default {
       while (act.refs.parent) {
         act = this.$store.getters[ENTRIES_GET_PARENT](act.uuid)
         result.push({
-            text: act.title,
-            href: 'breadcrumbs_dashboard',
-          })
+          text: act.title,
+          href: 'breadcrumbs_dashboard',
+        })
       }
       return result
     },
+    type_slug() {
+      return this.entry.type_slug
+    },
     entry_type() {
-      return this.$store.getters[ENTRYTYPES_TYPE](this.entry.type_slug)
+      return this.$store.getters[ENTRYTYPES_TYPE](this.type_slug)
     },
     type_name() {
       return this.entry_type.title

@@ -7,7 +7,6 @@
             v-col
                 Entrypreview(
                     :passed_uuid="entry.uuid"
-                    :entry="entry"
                     v-bind="preview_options"
                     @delete_e="delete_e($event)"
                     @preview_action="$emit('preview_action',$event)")

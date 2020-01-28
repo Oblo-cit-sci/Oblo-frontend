@@ -35,19 +35,21 @@
               v-icon mdi-magnify
           v-row
             v-col
-              EntryAspectView.ma-1.pa-2(:entry="selected_entry" mode="view")
+              EntryView(:passed_uuid="selected_entry_uuid")
+              <!-- EntryAspectView.ma-1.pa-2(:entry="selected_entry" mode="view")-->
 </template>
 
 <script>
     import MapNavigationMixin from "./MapNavigationMixin";
     import Search from "../Search";
     import EntryAspectView from "../EntryAspectView";
+    import EntryView from "../EntryView";
 
 
     export default {
         name: "MapNavigationDrawer",
-        mixins: [MapNavigationMixin],
-
+      components: {EntryView},
+      mixins: [MapNavigationMixin],
         computed: {
             drawer_width() {
                 return this.$vuetify.breakpoint.lgAndUp ? 600 : 400

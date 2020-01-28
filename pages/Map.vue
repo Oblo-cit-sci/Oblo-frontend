@@ -287,7 +287,6 @@
       },
       selected_entry(selected_uuid) {
         console.log("watch- selected_entry_uuid")
-        console.log(this.$route)
         let new_route = null
         if (selected_uuid) {
           new_route = route_change_query(this.$route, {select: selected_uuid})

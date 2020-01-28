@@ -70,9 +70,6 @@
             mode: {
                 type: String // view, create edit
             },
-            entry: {
-                type: Object
-            },
         },
         data() {
             return {

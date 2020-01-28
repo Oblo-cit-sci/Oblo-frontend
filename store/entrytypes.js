@@ -1,7 +1,6 @@
 import {COMPOSITE, LIST} from "../lib/consts";
 import {object_list2options} from "../lib/options";
 import {entries_domain_filter} from "../lib/search";
-import {ENTRYTYPES_ADD_NOTE} from "../lib/store_consts";
 import {ASPECT, ENTRYLIST} from "~/lib/consts";
 
 const ld = require("lodash")

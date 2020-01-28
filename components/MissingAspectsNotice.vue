@@ -23,10 +23,6 @@
     export default {
         name: "MissingAspectsNotice",
         props: {
-            entry: {
-                type: Object,
-                required: true
-            }
         },
         mixins: [EntryMixin],
         components: {},

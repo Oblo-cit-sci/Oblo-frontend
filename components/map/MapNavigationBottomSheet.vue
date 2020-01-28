@@ -1,6 +1,8 @@
 <template lang="pug">
   v-bottom-sheet(
     app
+    persistent
+    no-click-animation
     v-model="drawer"
     scrollable
     hide-overlay)

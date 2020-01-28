@@ -71,6 +71,7 @@
         EntryActions(
           v-bind="entry_actions_props"
           :page.sync="page"
+          :passed_uuid="uuid"
           v-on:entryAction="entryAction($event)"
           v-on:edit="mode='edit'")
         DecisionDialog(
@@ -96,29 +97,24 @@
   import EntryNavMixin from "../../../components/EntryNavMixin";
   import DecisionDialog from "../../../components/DecisionDialog";
   import {
-    ENTRIES_GET_EDIT,
     ENTRIES_GET_PARENT,
     ENTRIES_SAVE_ENTRY,
     ENTRIES_SET_EDIT,
-    ENTRIES_VALUE,
     ENTRIES_GET_ENTRY_TITLE,
-    ENTRYTYPES_TYPENAME,
     ENTRYTYPES_TYPE,
-    ENTRIES_GET_ENTRY,
-    ENTRIES_ALL_ENTRIES_ARRAY
   } from "../../../lib/store_consts";
-  import {get_aspect_vue_component, loc_append} from "../../../lib/aspect"
-  import {unsaved_changes_default_dialog} from "../../../lib/dialogs"
+  import {get_aspect_vue_component} from "../../../lib/aspect"
   import EntryMixin from "../../../components/EntryMixin";
   import MetaChips from "../../../components/MetaChips"
-  import {privacy_icon, static_file_path} from "../../../lib/util"
+  import {privacy_icon} from "../../../lib/util"
   import MissingAspectsNotice from "../../../components/MissingAspectsNotice";
   import TriggerSnackbarMixin from "../../../components/TriggerSnackbarMixin";
   import PersistentStorageMixin from "../../../components/PersistentStorageMixin";
+  import FullEntryMixin from "../../../components/FullEntryMixin";
 
   export default {
     name: "uuid",
-    mixins: [EntryNavMixin, EntryMixin, TriggerSnackbarMixin, PersistentStorageMixin],
+    mixins: [EntryNavMixin, EntryMixin, TriggerSnackbarMixin, PersistentStorageMixin, FullEntryMixin],
     components: {
       MissingAspectsNotice,
       DecisionDialog,
@@ -134,11 +130,8 @@
         sending: false,
         complete: true,
         // todo abstact aspect-pagination
-        aspect_locs: {},
         aspect_extras: {},
         //
-        openSaveDialog: false,
-        unsaved_changes_dialog: unsaved_changes_default_dialog,
         router_next: null,
         // flag
         delete_entry: false
@@ -151,9 +144,6 @@
       this.required_values = this.$_.map(required_aspects, (a) => {
         return a.name
       })
-      for (let aspect of this.entry_type.content.aspects) {
-        this.aspect_locs[aspect.name] = loc_append([this.aspect_loc], ASPECT, aspect.name)
-      }
     },
     mounted() {
       if (this.$route.query.goTo) {
@@ -164,7 +154,6 @@
           })
         }, 300)
       }
-
       if (this.outdated) {
         this.$store.dispatch("entries/update_parent_version")
         this.aspect_extras["mark new aspects"] = true
@@ -180,9 +169,6 @@
       next()
     },
     methods: {
-      entry_image() {
-        return static_file_path(this.$store, '/images/entry_images/' + this.entry.image)
-      },
       edit_or_save_dialog(event) {
         if (event.confirm) {
           this.$store.dispatch(ENTRIES_SAVE_ENTRY, this.uuid)
@@ -220,29 +206,15 @@
       }
     },
     computed: {
-      mode: {
-        get() {
-          return this.$route.query.mode || VIEW
-        },
-        set(mode) {
-          this.to_entry(this.uuid, mode)
-        }
+      title() {
+        return this.$store.getters[ENTRIES_GET_ENTRY_TITLE]()
       },
       aspect_loc() {
         return [EDIT, this.uuid, this.type_slug]
       },
-      type_slug() {
-        return this.entry.type_slug
-      },
-      title() {
-        return this.$store.getters[ENTRIES_GET_ENTRY_TITLE]()
-      },
       aspects() {
         const entry_type = this.$store.getters[ENTRYTYPES_TYPE](this.entry.type_slug)
         return entry_type.content.aspects
-      },
-      entry() {
-        return this.$store.getters[ENTRIES_GET_ENTRY](this.uuid)
       },
       privacy_mode() {
         const privacy_set = this.entry_type.content.meta.privacy
@@ -274,13 +246,6 @@
           return null
       },
       // wrong, create should be for all that are not local/saved or submitted
-      entry_actions_props() {
-        return {
-          mode: this.mode,
-          entry_type: this.entry_type,
-          entry: this.entry,
-        }
-      },
       meta_aspects_privacy() {
         let result = []
         result.push({icon: privacy_icon(this.entry.privacy), name: this.entry.privacy})

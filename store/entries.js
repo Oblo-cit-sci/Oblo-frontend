@@ -277,9 +277,10 @@ export const getters = {
       return getters.get_entry(getters.get_entry(uuid).refs.parent.uuid)
     }
   },
-  value(state, getters) { // VALUE
+  value(state, getters) { // ENTRIES_VALUE
     return (aspect_loc) => {
-      if (aspect_loc[0][0] !== ENTRY) {
+      const first_atype = aspect_loc[0][0]
+      if (![ENTRY, EDIT].includes(first_atype)) {
         aspect_loc = ld.concat([[EDIT, getters.edit_uuid]], aspect_loc)
       }
       return select_aspect_loc(state, aspect_loc)

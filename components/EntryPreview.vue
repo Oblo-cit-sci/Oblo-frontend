@@ -88,7 +88,6 @@
             }
         },
         props: {
-            entry: {type: Object, required: true},
             show_date: {
                 type: Boolean,
                 default: true
@@ -172,7 +171,7 @@
             },
             additional_actions() {
                 const pw_actions = this.$_.cloneDeep(this.entry_type.content.meta.preview_actions) || []
-                console.log(this.entry_type.slug, pw_actions)
+                // console.log(this.entry_type.slug, pw_actions)
                 const show_actions = []
                 if (this.outdated) {
                     const download_action = this.$_.find(this.entry_type.content.meta.preview_actions, a => a.type === "download")
