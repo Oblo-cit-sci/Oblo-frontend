@@ -1,6 +1,9 @@
 import {string_list2options} from "../../lib/options";
 import {LOCATION, MODE_ASPECT_POINT, MODE_NORMAL} from "../../lib/consts";
 import {ENTRIES_GET_ENTRY, MAP_SET_ENTRIES} from "../../lib/store_consts";
+import {get_location} from "~/lib/location";
+import EntryAspectView from "~/components/EntryAspectView";
+import Search from "~/components/Search";
 
 // the navigation either shows the search or one specific entry
 
@@ -9,6 +12,7 @@ export const ENTRY = "entry"
 
 export default {
   name: "MapNavigationMixin",
+  components: {EntryAspectView, Search},
   props: {
     drawer: Boolean,
     layers: Array,
@@ -78,6 +82,11 @@ export default {
     preview_action({uuid, action}) {
       this.$emit("update:navigation_mode", ENTRY)
       this.$emit("update:selected_entry_uuid", uuid)
+    },
+    get_goto_device_location() {
+      get_location((location) => {
+        console.log(location)
+      })
     }
   },
 }

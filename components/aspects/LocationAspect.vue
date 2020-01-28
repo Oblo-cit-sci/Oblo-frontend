@@ -197,7 +197,7 @@
             this.error_snackbar("Could not obtain  location")
           }
           this.btn_loading_device_location = false
-        });
+        })
       },
       map_position() {
         let route = {

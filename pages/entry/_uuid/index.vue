@@ -178,13 +178,6 @@
       }
       this.persist_entries()
       next()
-      /*
-      if (this.entry.local.dirty) {
-          this.openSaveDialog = true
-          this.router_next = next
-      } else {
-          next()
-      }*/
     },
     methods: {
       entry_image() {
