@@ -47,12 +47,13 @@ export const getters = {
   entries(state) {
     return state.entries
   },
-  selected_entry(state) {
-    return state.selected_entry
-  },
+  // selected_entry(state) {
+  //   return state.selected_entry
+  // },
   goto_location(state) {
     return () => {
-      return state.goto_location}
+      return state.goto_location
+    }
   },
   last_goto_location(state) {
     return () => {
@@ -60,7 +61,7 @@ export const getters = {
     }
   },
   layers(state) {
-      return state.layers
+    return state.layers
   },
   layer_status(state) {
     return state.layer_status
@@ -71,12 +72,12 @@ export const getters = {
 }
 
 export const actions = {
-  select_entry(context, uuid) {
-    //console.log(context)
-    let entry = context.rootGetters[ENTRIES_GET_ENTRY](uuid)
-    context.commit(_SELECT_ENTRY, entry)
-    console.log(entry.title)
-  },
+  // select_entry(context, uuid) {
+  //   //console.log(context)
+  //   let entry = context.rootGetters[ENTRIES_GET_ENTRY](uuid)
+  //   context.commit(_SELECT_ENTRY, entry)
+  //   // console.log(entry.title)
+  // },
   // filters entries that have a location set
   set_entries({commit}, entries) {
     const location_entries = ld.filter(entries, e => e.location !== null && e.location !== undefined)
@@ -84,8 +85,11 @@ export const actions = {
   },
   goto_done(context) {
     const goto_loc = context.getters.goto_location()
-    console.log("goto done act", goto_loc)
     context.commit("_last_goto_location", goto_loc)
+    context.commit("goto_location", null)
+  },
+  reset_goto_locations(context) {
+    context.commit("_last_goto_location", null)
     context.commit("goto_location", null)
   }
 }

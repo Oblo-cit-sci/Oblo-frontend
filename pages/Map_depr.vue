@@ -84,7 +84,7 @@
     },
     methods: {
       select_entry_marker(event, entry_uuid) {
-        this.$store.dispatch("map/select_entry", entry_uuid)
+        // this.$store.dispatch("map/select_entry", entry_uuid)
       },
       layerClr(l_id) {
         return this.layerVisiblities[l_id] ? "#00DD1030" : "#77777720";

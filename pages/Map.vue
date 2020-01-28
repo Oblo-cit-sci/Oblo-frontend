@@ -34,7 +34,11 @@
     import {place2str} from "../lib/location";
     import {
         ENTRIES_ALL_ENTRIES_ARRAY,
-        ENTRIES_SET_ENTRY_VALUE, MAP_GOTO_DONE, MAP_GOTO_LOCATION, MAP_RESET_TO_SELECT_ASPECT_LOCATION,
+        ENTRIES_SET_ENTRY_VALUE,
+        MAP_GOTO_DONE,
+        MAP_GOTO_LOCATION,
+        MAP_RESET_GOTO_LOCATIONS,
+        MAP_RESET_TO_SELECT_ASPECT_LOCATION,
         MAP_SET_ENTRIES,
     } from "../lib/store_consts";
     import {pack_value} from "../lib/aspect";
@@ -42,6 +46,7 @@
     import {mapGetters} from "vuex"
     import MapNavigationDrawer from "../components/map/MapNavigationDrawer";
     import {Marker} from "mapbox-gl";
+    import {route_change_query, route_change_remove_query} from "../lib/util";
 
     const menu_mode_options = [MODE_NORMAL, MODE_ASPECT_POINT]
 
@@ -102,8 +107,14 @@
             this.map = null
             if (this.normal_mode) {
                 this.$store.dispatch(MAP_SET_ENTRIES, this.$store.getters[ENTRIES_ALL_ENTRIES_ARRAY]())
-                // const entries = this.$store.getters[SEARCH_GET_ENTRIES]
-                // this.update_map_entries(entries)
+                const goto_location = this.$store.getters[MAP_GOTO_LOCATION]()
+                if (goto_location) {
+                    this.center_coordinates = this.transform_loc(goto_location.coordinates)
+                }
+            }
+            if (this.$route.query.select) {
+                this.selected_entry = this.$route.query.select
+                this.navigation_mode = ENTRY
             }
         },
         mounted() {
@@ -196,7 +207,7 @@
             select_entry_marker(entry_uuid) {
                 // this.$store.dispatch("map/select_entry", entry_uuid)
                 // console.log(event)
-                if(this.selected_entry) {
+                if (this.selected_entry) {
                     this.change_entry_markers_mode(entry_uuid, false)
                 }
                 this.navigation_mode = ENTRY
@@ -207,7 +218,7 @@
             change_entry_markers_mode(entry_uuid, selected) {
                 const relevant_markers = this.$_.filter(this.markers, (m) => m.e_uuid === entry_uuid)
                 this.markers = this.$_.pullAllBy(this.markers, relevant_markers, "e_uuid")
-                for(let m of relevant_markers) {
+                for (let m of relevant_markers) {
                     m.remove()
                     this.create_e_marker(m.getLngLat(), entry_uuid, {color: selected_color})
                 }
@@ -227,20 +238,24 @@
                         this.create_e_marker(loc.coordinates, e.uuid, {})
                     }
                 }
+            },
+            map_goto_location(location) {
+                const center = this.transform_loc(location.coordinates)
+                this.map.flyTo({
+                    center: center,
+                    speed: 0.8 // make the flying slow
+                })
+                this.$store.dispatch(MAP_GOTO_DONE)
             }
+        },
+        beforeRouteLeave() {
+            this.$store.dispatch(MAP_RESET_GOTO_LOCATIONS)
         },
         watch: {
             goto_location(location) {
+                console.log("map goto location watch")
                 if (location) {
-                    const center = this.transform_loc(location.coordinates)
-                    this.map.flyTo({
-                        center: center,
-                        speed: 0.8, // make the flying slow
-                        easing: function (t) {
-                            return t;
-                        }
-                    })
-                    this.$store.dispatch(MAP_GOTO_DONE)
+                    this.map_goto_location(location)
                 }
             },
             entries() {
@@ -251,11 +266,21 @@
                     this.create_markers()
                 }
             },
-            selected_entry() {
+            selected_entry(selected_uuid) {
                 console.log("watch- selected_entry_uuid")
+                console.log(this.$route)
+                let new_route = null
+                if(selected_uuid) {
+                    new_route = route_change_query(this.$route, {select: selected_uuid})
+                } else {
+                    new_route = route_change_remove_query(this.$route, ["select"])
+                }
+                this.$router.push(new_route)
             },
             navigation_mode(mode) {
-                console.log("watch- ",mode, this.selected_entry)
+                if (mode === SEARCH) {
+                    this.selected_entry = null
+                }
                 this.change_entry_markers_mode(this.selected_entry, true)
             }
         }

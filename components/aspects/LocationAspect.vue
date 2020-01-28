@@ -25,7 +25,7 @@
       div.ml-3.mb-1
         span.mr-1.font-weight-bold Result:
         span.body-1.readonly-aspect {{location_view}}
-        v-btn(v-if="location_set")
+        v-btn(v-if="location_set" @click="goto_location(value, entry_uuid)")
           v-icon mdi-map-marker
     div(v-else)
       v-text-field(
@@ -37,6 +37,8 @@
         :value="location_view"
         :placeholder="aspect.attr.placeholder"
         hide-details)
+      v-btn(v-if="location_set" @click="goto_location(value, entry_uuid)")
+        v-icon mdi-map-marker
 </template>
 
 <script>
@@ -48,6 +50,7 @@
   import {default_place_type, MODE_ASPECT_POINT} from "../../lib/consts";
   import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
   import {MAP_SET_TO_SELECT_ASPECT_LOCATION} from "../../lib/store_consts";
+  import MapJumpMixin from "../MapJumpMixin";
 
   // "attr.input" options
   const DEVICE = "device"
@@ -66,7 +69,7 @@
   export default {
     name: "LocationAspect",
     components: {SingleSelect},
-    mixins: [AspectMixin, TriggerSnackbarMixin],
+    mixins: [AspectMixin, TriggerSnackbarMixin, MapJumpMixin],
     data() {
       return {
         btn_loading_device_location: false,
@@ -77,9 +80,7 @@
         selected_search_result: undefined, // this because, clear sets it to that too,
       }
     },
-    created() {
 
-    },
     computed: {
       //  check for attr.input.___
       device_location_input_option() {
