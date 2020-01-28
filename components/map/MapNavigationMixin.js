@@ -47,7 +47,12 @@ export default {
     },
     preview_options() {
       return {
-        actions: ['goto_location'],
+        actions: [{
+          name:"goto_loc",
+          type:"goto_loc",
+          title: "",
+          icon:"mdi-map-marker"
+        }],
         prevent_page_change: true
       }
       // return {}

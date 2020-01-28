@@ -32,15 +32,16 @@
       v-card-actions
         div
           v-btn(v-if="has_type" small text outlined @click="goto(entry)") {{goto_text}}
-          v-btn(small text outlined @click="goto_next_entry_location" v-if="has_action_goto_location")
-            v-icon mdi-map-marker
-            v-badge(color="black" :content="num_locations")
+          <!--          v-btn(small text outlined @click="goto_next_entry_location" v-if="has_action_goto_location")-->
+          <!--            v-icon mdi-map-marker-->
+          <!--            v-badge(color="black" :content="num_locations")-->
           v-btn(small text outlined :color="act.color || 'green'"
             v-for="act in additional_actions"
             :key="act.name"
             :loading="action_loading[act.name] || false"
-            @click="additional_action(act.name)") {{act.name}} {{action_loading[act.name]}}
-
+            @click="additional_action(act.name)") {{act.title}}
+            v-icon(v-if="act.icon") {{act.icon}}
+            V-badge(v-if="act.badge_content" color="black" :content="act.badge_content")
 </template>
 
 <script>
@@ -180,7 +181,9 @@
                     else
                         pw_actions.unshift({name: "Download", type: "download", color: "orange"})
                 }
-                for (let pw_action of pw_actions) {
+                for (let pw_action of this.$_.concat(pw_actions, this.actions)) {
+                    if(pw_action.title === undefined)
+                        pw_action.title = pw_action.name
                     const action_name = pw_action.name
                     if (pw_action.type === "create_child") {
                         const action_aspect_loc = aspect_loc_str2arr(pw_action.aspect)
@@ -190,18 +193,18 @@
                             console.log("child action cannot be added, aspect location doesnt exist for action:", pw_action.name)
                             continue
                         }
-                        if (value.length > 0) {
-                            show_actions.push(pw_action)
-                        }
+                        if (value.length === 0)
+                           continue
                     } else if (pw_action.type === "download") {
-                        show_actions.push(pw_action)
+                        // show_actions.push(pw_action)
                     } else if (pw_action.type === "upload") {
-                        show_actions.push(pw_action)
+                        // show_actions.push(pw_action)
+                    } else if(pw_action.type === "goto_loc") {
+                        if(this.num_locations === 0)
+                          continue
+                        pw_action.badge_content = this.num_locations
                     }
-                }
-                for (let additional_action of this.actions) {
-                    console.log("Aa", additional_action)
-                    show_actions.push(additional_action)
+                    show_actions.push(pw_action)
                 }
                 return show_actions
             },
@@ -292,6 +295,9 @@
                         this.$store.dispatch("entries/delete_entry", this.uuid)
                         this.$emit("delete_e", this.uuid)
                         this.persist_entries()
+                        break
+                    case "goto_loc":
+                        this.goto_next_entry_location()
                         break
                     default:
                         console.log("unknown action", preview_action)
