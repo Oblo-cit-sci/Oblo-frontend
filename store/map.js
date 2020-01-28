@@ -7,6 +7,7 @@ export const state = () => ({
   entries: [],
   selected_entry: null,
   goto_location: null,
+  last_goto_location: null,
   layers: ["Climate types", "Weather stations"],
   layer_status: {},
   to_select_aspect_location: null // when coming from a locationAspect, comes with
@@ -27,6 +28,9 @@ export const mutations = {
   },
   goto_location(state, location) {
     state.goto_location = location
+  },
+  _last_goto_location(state, location) {
+    state.last_goto_location = location
   },
   set_layer_status(state, layer_status) {
     state.layer_status = layer_status
@@ -50,6 +54,11 @@ export const getters = {
     return () => {
       return state.goto_location}
   },
+  last_goto_location(state) {
+    return () => {
+      return state.last_goto_location
+    }
+  },
   layers(state) {
       return state.layers
   },
@@ -72,5 +81,11 @@ export const actions = {
   set_entries({commit}, entries) {
     const location_entries = ld.filter(entries, e => e.location !== null && e.location !== undefined)
     commit("set_entries", location_entries)
+  },
+  goto_done(context) {
+    const goto_loc = context.getters.goto_location()
+    console.log("goto done act", goto_loc)
+    context.commit("_last_goto_location", goto_loc)
+    context.commit("goto_location", null)
   }
 }

@@ -25,6 +25,8 @@
       div.ml-3.mb-1
         span.mr-1.font-weight-bold Result:
         span.body-1.readonly-aspect {{location_view}}
+        v-btn(v-if="location_set")
+          v-icon mdi-map-marker
     div(v-else)
       v-text-field(
         outlined

@@ -32,7 +32,7 @@
       v-card-actions
         div
           v-btn(v-if="has_type" small text outlined @click="goto(entry)") {{goto_text}}
-          v-btn(small text outlined @click="goto_location" v-if="has_action_goto_location")
+          v-btn(small text outlined @click="goto_next_entry_location" v-if="has_action_goto_location")
             v-icon mdi-map-marker
             v-badge(color="black" :content="num_locations")
           v-btn(small text outlined :color="act.color || 'green'"
@@ -79,7 +79,8 @@
     export default {
         name: "Entrypreview",
         components: {Aspect, EntryAspectView, MetaChips, Taglist},
-        mixins: [EntryNavMixin, MapJumpMixin, EntryMixin, PersistentStorageMixin, ChildCreateMixin],
+        mixins: [EntryNavMixin, MapJumpMixin, EntryMixin, MapJumpMixin,
+            PersistentStorageMixin, ChildCreateMixin],
         data() {
             return {
                 additional_action_loading: {}
@@ -232,9 +233,9 @@
             privacy_icon(privacy) {
                 return privacy_icon(privacy)
             },
-            goto_location() {
+            goto_next_entry_location() {
                 if (this.entry.location) {
-                    this.$store.commit(MAP_GOTO_LOCATION, this.entry.location[0])
+                    this.goto_next_location(this.entry.location)
                 }
             },
             create_child_action() {

@@ -34,7 +34,7 @@
     import {place2str} from "../lib/location";
     import {
         ENTRIES_ALL_ENTRIES_ARRAY,
-        ENTRIES_SET_ENTRY_VALUE, MAP_GOTO_LOCATION, MAP_RESET_TO_SELECT_ASPECT_LOCATION,
+        ENTRIES_SET_ENTRY_VALUE, MAP_GOTO_DONE, MAP_GOTO_LOCATION, MAP_RESET_TO_SELECT_ASPECT_LOCATION,
         MAP_SET_ENTRIES,
     } from "../lib/store_consts";
     import {pack_value} from "../lib/aspect";
@@ -240,7 +240,7 @@
                             return t;
                         }
                     })
-                    this.$store.commit(MAP_GOTO_LOCATION, null)
+                    this.$store.dispatch(MAP_GOTO_DONE)
                 }
             },
             entries() {
