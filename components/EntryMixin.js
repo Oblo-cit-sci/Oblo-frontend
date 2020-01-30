@@ -7,6 +7,7 @@ import {
 } from "../lib/store_consts";
 import {export_data} from "../lib/import_export";
 import {ENTRIES_SET_DOWNLOADED} from "~/lib/store_consts";
+import {loc_append} from "~/lib/aspect";
 import {ASPECT, ENTRY} from "~/lib/consts";
 
 export default {
@@ -19,6 +20,7 @@ export default {
   },
   data() {
     return {
+      aspect_locs: {},
       page: this.$route.query.page | 0,
     }
   },
@@ -81,6 +83,9 @@ export default {
     page_title() {
       return this.entry_type.title + (this.title ? ": " + this.title : "")
     },
+    aspect_loc() {
+      return [ENTRY, this.uuid, this.type_slug]
+    },
     shown_aspects() {
       if (this.has_pages) {
         return this.$_.filter(this.entry_type.content.aspects, (a) => {
@@ -99,6 +104,14 @@ export default {
       return (this.type_name + "_" + entry_title).replace(" ", "_") + ".json"
     }
   },
+  beforeMount() {
+    console.log("beforeMount")
+    this.update_aspect_locs()
+  },
+  beforeUpdate() {
+    // console.log("update")
+    this.update_aspect_locs()
+  },
   methods: {
     download() {
       let entries = this.$store.getters[ENTRIES_GET_RECURSIVE_ENTRIES](this.entry.uuid)
@@ -109,6 +122,13 @@ export default {
       })
       export_data({entries: entries}, this.download_title)
       this.$store.commit(ENTRIES_SET_DOWNLOADED, this.entry.uuid)
+    },
+    update_aspect_locs() {
+      // console.log("update_aspect_locs")
+      for (let aspect of this.entry_type.content.aspects) {
+        this.aspect_locs[aspect.name] = loc_append([this.aspect_loc], ASPECT, aspect.name)
+        // console.log(aspect.name, this.aspect_locs[aspect.name])
+      }
     }
   }
 }

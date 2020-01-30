@@ -7,7 +7,6 @@
   export default {
     data() {
       return {
-        aspect_locs: {},
         openSaveDialog: false,
         unsaved_changes_dialog: unsaved_changes_default_dialog,
       }
@@ -25,9 +24,7 @@
           this.to_entry(this.uuid, mode)
         }
       },
-      aspect_loc() {
-        return [ENTRY, this.uuid, this.type_slug]
-      },
+
       meta_aspects_privacy() {
         let result = []
         result.push({icon: privacy_icon(this.entry.privacy), name: this.entry.privacy})
@@ -44,22 +41,9 @@
         }
       },
     },
-    created() {
-      // console.log("before create")
-      this.update_aspect_locs()
-    },
-    beforeUpdate() {
-      // console.log("update")
-      this.update_aspect_locs()
-    },
     methods: {
       entry_image() {
         return static_file_path(this.$store, '/images/entry_images/' + this.entry.image)
-      },
-      update_aspect_locs() {
-        for (let aspect of this.entry_type.content.aspects) {
-          this.aspect_locs[aspect.name] = loc_append([this.aspect_loc], ASPECT, aspect.name)
-        }
       }
     }
   }

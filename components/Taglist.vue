@@ -1,6 +1,6 @@
 <template lang="pug">
     v-slide-group(show-arrows=true class="custom-chip-group")
-        v-chip(class="custom-chip" v-for="tag in taglist" :key="tag.name" outlined) {{tag.name}}
+        v-chip(class="custom-chip" v-for="tag in tag_list" :key="tag.name" outlined) {{tag.name}}
             v-icon.ml-2(v-if="tag.hasOwnProperty('icon')"
                 size="16" light) {{tag.icon}}
 </template>
@@ -18,7 +18,7 @@
             return {}
         },
         computed: {
-            taglist() {
+            tag_list() {
                 let result = []
                 for (let tag_type in this.tags) {
                     for (let tag of this.tags[tag_type]) {
