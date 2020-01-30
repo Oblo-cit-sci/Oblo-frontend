@@ -80,7 +80,6 @@
         selected_search_result: undefined, // this because, clear sets it to that too,
       }
     },
-
     computed: {
       //  check for attr.input.___
       device_location_input_option() {
@@ -112,15 +111,30 @@
         return this.has_output(PLACE)
       }
     },
-    filters: {
-      format_float(value) {
-        return value.toFixed(4);
+    created() {
+      // if only the coordinates are set (e.g. cuz of importing from some db, this one fills in the place
+      const has_coordinates = this.value.coordinates !== null
+      if (this.location_set && has_coordinates && this.has_output_place && !this.has_place) {
+        const place_types = this.aspect.attr.place_types || default_place_type
+        const coordinates = this.value.coordinates
+        rev_geocode(this.$axios,
+          {lon: coordinates.lon, lat: coordinates.lat},
+          {place_types}).then((data) => {
+          const new_value = this.$_.cloneDeep(this.value)
+          new_value.place = {}
+          this.$_.forEach(data.features, feature => {
+            new_value.place[feature.place_type[0]] = feature.text
+          })
+          this.update_value(new_value)
+        }).catch((err) => {
+          console.log("error: mapbox api error", err)
+        }) // must be with else, cuz its async
       }
     },
     methods: {
       search_keypress(keyEvent) {
         // Enter,  this is the most robust among all platforms (desktop, mobile, chrome, ff)
-        if(keyEvent.keyCode === 13) {
+        if (keyEvent.keyCode === 13) {
           this.search_location()
         }
         console.log(keyEvent)
