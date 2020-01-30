@@ -60,6 +60,9 @@ export default {
         prevent_page_change: true
       }
       // return {}
+    },
+    entry_navigation_props: {
+      show_back_button: false
     }
   },
   methods: {

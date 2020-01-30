@@ -31,6 +31,7 @@
             v-bind="entry_actions_props"
             :page.sync="page"
             v-on:entryAction="entryAction($event)"
+            :v-bind="entry_navigation_props"
             v-on:edit="mode='edit'")
     DecisionDialog(
       :open.sync="openSaveDialog"

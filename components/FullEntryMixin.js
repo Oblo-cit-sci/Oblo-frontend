@@ -13,6 +13,10 @@
     },
     props: {
       // mode: 3
+      entry_navigation_props: {
+        type: Object,
+        default: () => {}
+      }
     },
     name: "FullEntryMixin",
     computed: {
@@ -24,7 +28,6 @@
           this.to_entry(this.uuid, mode)
         }
       },
-
       meta_aspects_privacy() {
         let result = []
         result.push({icon: privacy_icon(this.entry.privacy), name: this.entry.privacy})

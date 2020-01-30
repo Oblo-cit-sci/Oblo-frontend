@@ -93,7 +93,7 @@
         // for the navigation
         navigation_mode: SEARCH,
         selected_entry: null,
-        markers: []
+        markers: [],
       }
     },
     created() {

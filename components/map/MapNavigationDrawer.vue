@@ -36,7 +36,7 @@
               v-icon mdi-magnify
           v-row
             v-col
-              EntryView(:passed_uuid="selected_entry_uuid")
+              EntryView(:passed_uuid="selected_entry_uuid" :navigation_props="entry_navigation_props")
               <!-- EntryAspectView.ma-1.pa-2(:entry="selected_entry" mode="view")-->
 </template>
 
