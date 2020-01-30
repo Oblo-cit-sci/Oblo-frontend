@@ -113,7 +113,8 @@
     },
     created() {
       // if only the coordinates are set (e.g. cuz of importing from some db, this one fills in the place
-      const has_coordinates = this.value.coordinates !== null
+
+      const has_coordinates = this.value && this.value.coordinates !== null
       if (this.location_set && has_coordinates && this.has_output_place && !this.has_place) {
         const place_types = this.aspect.attr.place_types || default_place_type
         const coordinates = this.value.coordinates

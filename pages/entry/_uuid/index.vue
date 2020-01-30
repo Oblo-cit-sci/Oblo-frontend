@@ -88,8 +88,7 @@
   import Title_Description from "../../../components/Title_Description"
   import EntryActions from "../../../components/EntryActions";
   import {
-    EDIT,
-    ASPECT, PRIVATE_LOCAL, VIEW
+    EDIT, PRIVATE_LOCAL, VIEW
   } from "../../../lib/consts";
   import Aspect from "../../../components/Aspect";
 
@@ -97,10 +96,8 @@
   import EntryNavMixin from "../../../components/EntryNavMixin";
   import DecisionDialog from "../../../components/DecisionDialog";
   import {
-    ENTRIES_GET_PARENT,
     ENTRIES_SAVE_ENTRY,
     ENTRIES_SET_EDIT,
-    ENTRIES_GET_ENTRY_TITLE,
     ENTRYTYPES_TYPE,
   } from "../../../lib/store_consts";
   import {get_aspect_vue_component} from "../../../lib/aspect"
@@ -206,9 +203,6 @@
       }
     },
     computed: {
-      title() {
-        return this.$store.getters[ENTRIES_GET_ENTRY_TITLE]()
-      },
       aspect_loc() {
         return [EDIT, this.uuid, this.type_slug]
       },
@@ -229,12 +223,6 @@
       },
       dirty() {
         return this.entry.local.dirty || false
-      },
-      parent_title() {
-        // console.log("getting parent title", this)
-        // todo not necessarily available for remote entries. should be included?
-        //console.log(this.$store.getters[ENTRIES_GET_PARENT]())
-        return this.$store.getters[ENTRIES_GET_PARENT]().title
       },
       // maybe also consider:
       // https://github.com/edisdev/download-json-data/blob/develop/src/components/Download.vue

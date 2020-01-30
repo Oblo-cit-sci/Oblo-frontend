@@ -1,9 +1,4 @@
-<template lang="pug">
 
-
-</template>
-
-<script>
   import {privacy_icon, static_file_path} from "../lib/util";
   import {loc_append} from "../lib/aspect";
   import {ASPECT, EDIT, ENTRY, VIEW} from "../lib/consts";
@@ -16,6 +11,9 @@
         openSaveDialog: false,
         unsaved_changes_dialog: unsaved_changes_default_dialog,
       }
+    },
+    props: {
+      // mode: 3
     },
     name: "FullEntryMixin",
     computed: {
@@ -47,18 +45,21 @@
       },
     },
     created() {
-      for (let aspect of this.entry_type.content.aspects) {
-        this.aspect_locs[aspect.name] = loc_append([this.aspect_loc], ASPECT, aspect.name)
-      }
+      // console.log("before create")
+      this.update_aspect_locs()
+    },
+    beforeUpdate() {
+      // console.log("update")
+      this.update_aspect_locs()
     },
     methods: {
       entry_image() {
         return static_file_path(this.$store, '/images/entry_images/' + this.entry.image)
+      },
+      update_aspect_locs() {
+        for (let aspect of this.entry_type.content.aspects) {
+          this.aspect_locs[aspect.name] = loc_append([this.aspect_loc], ASPECT, aspect.name)
+        }
       }
     }
   }
-</script>
-
-<style scoped>
-
-</style>

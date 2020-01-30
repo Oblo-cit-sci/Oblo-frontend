@@ -26,7 +26,6 @@
         :navigation_mode.sync="navigation_mode"
         :selected_entry_uuid.sync="selected_entry"
         @layer_select_change="layer_select_change($event)")
-
       MglMap(:style="mapCssStyle"
         :access-token="accessToken"
         :map-style="mapStyle"
@@ -60,23 +59,6 @@
   import MapNavigationBottomSheet from "../components/map/MapNavigationBottomSheet";
 
   const menu_mode_options = [MODE_NORMAL, MODE_ASPECT_POINT]
-
-  /*
-  old marker approach... having the entries (full data)...
-          div(v-for="entry in entries" :key="entry.uuid")
-        div {{entry.uuid === selected_entry}}
-        div(v-if="entry.uuid !== selected_entry")
-          MglMarker(v-for="(loc, index) in entry.location"
-            :coordinates="transform_loc(loc.coordinates)"
-            @click="select_entry_marker($event, entry.uuid)"
-            :key="index")
-        div(v-else)
-          MglMarker(v-for="(loc, index) in entry.location"
-            :color="'#af5555'"
-            :coordinates="transform_loc(loc.coordinates)"
-            @click="select_entry_marker($event, entry.uuid)"
-            :key="index")
-   */
 
   // navigation mode!! copy of  MapNvaigationMixin
   export const SEARCH = "search"
@@ -125,6 +107,7 @@
       }
       if (this.$route.query.select) {
         this.selected_entry = this.$route.query.select
+        this.select_entry_marker(this.selected_entry)
         this.navigation_mode = ENTRY
       }
     },
@@ -224,6 +207,10 @@
         // console.log(event)
         if (this.selected_entry) {
           this.change_entry_markers_mode(this.selected_entry, false)
+          if(entry_uuid !== this.selected_entry) {
+            // console.log("setting new entry")
+            this.selected_entry = entry_uuid
+          }
         }
         this.navigation_mode = ENTRY
         this.selected_entry = entry_uuid
@@ -242,8 +229,12 @@
         }
       },
       create_e_marker(coordinates, uuid, options) {
+        // var el = document.createElement('div');
+        // el.className = el.className + ' article_marker';
+        // const m = new Marker(el, options)
         const m = new Marker(options)
         m.e_uuid = uuid
+        // console.log(m.getElement())
         m.setLngLat(coordinates).addTo(this.map)
         this.markers.push(m)
         m.getElement().addEventListener("click", () => {
@@ -253,7 +244,8 @@
       create_markers() {
         for (let e of this.entries) {
           for (let loc of e.location || []) {
-            this.create_e_marker(loc.coordinates, e.uuid, {})
+            if(loc)
+              this.create_e_marker(loc.coordinates, e.uuid, {})
           }
         }
       },
@@ -286,7 +278,7 @@
         }
       },
       selected_entry(selected_uuid) {
-        console.log("watch- selected_entry_uuid")
+        // console.log("watch- selected_entry_uuid", selected_uuid, this.selected_entry)
         let new_route = null
         if (selected_uuid) {
           new_route = route_change_query(this.$route, {select: selected_uuid})
@@ -307,7 +299,7 @@
 
 <style src="mapbox-gl/dist/mapbox-gl.css"></style>
 
-<style scoped>
+<style>
 
   .buttongroup {
     top: 2%;
@@ -316,4 +308,13 @@
     height: 5%;
     z-index: 1
   }
+
+  /*.article_marker {*/
+  /*    background-image: url('../appbeta/icons/svgs/library-15.svg');*/
+  /*    background-size: cover;*/
+  /*    width: 25px;*/
+  /*    height: 25px;*/
+  /*    border-radius: 50%;*/
+  /*    cursor: pointer;*/
+  /*}*/
 </style>

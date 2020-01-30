@@ -62,7 +62,7 @@
     },
     created() {
       // todo no idea, why the shortcut below does not work
-      //console.log("c", this.aspect)
+      // console.log("c", this.aspect)
       if (!this.has_value) {
         console.log("has no value", this.aspect.name)
       }

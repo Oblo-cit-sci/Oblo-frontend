@@ -7,6 +7,7 @@ import {
 } from "../lib/store_consts";
 import {export_data} from "../lib/import_export";
 import {ENTRIES_SET_DOWNLOADED} from "~/lib/store_consts";
+import {ASPECT, ENTRY} from "~/lib/consts";
 
 export default {
   name: "EntryMixin",
@@ -52,6 +53,15 @@ export default {
     },
     entry_type() {
       return this.$store.getters[ENTRYTYPES_TYPE](this.type_slug)
+    },
+    title() {
+      return this.$store.getters[ENTRIES_GET_ENTRY_TITLE](this.uuid)
+    },
+    parent_title() {
+      // console.log("getting parent title", this)
+      // todo not necessarily available for remote entries. should be included?
+      //console.log(this.$store.getters[ENTRIES_GET_PARENT]())
+      return this.$store.getters[ENTRIES_GET_PARENT](this.uuid).title
     },
     type_name() {
       return this.entry_type.title

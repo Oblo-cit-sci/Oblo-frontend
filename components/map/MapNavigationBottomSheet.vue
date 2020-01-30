@@ -19,7 +19,8 @@
             v-icon mdi-crosshairs-gps
       v-card-text
         v-row.ma-1(wrap justify-center)
-          Search(v-if="normal_map_mode && nav_mode_search"
+          <!-- the v-show prevents reloading every time, when switching between entry and search-->
+          Search(v-show="normal_map_mode && nav_mode_search"
             init_full
             :preview_options="preview_options"
             :fixed_filters="location_pre_filter"

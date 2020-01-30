@@ -35,11 +35,10 @@ export default {
       /**
        * needs uuid if this.entry does not exist (in aspects)
        */
-      console.log(this.$route.name !== "Map", this.entry)
-
+      console.log("route", this.$route.name , this.$route.name !== "Map", this.entry)
       this.$store.commit(MAP_GOTO_LOCATION, location)
       let route = {
-        path: "/map",
+        path: "/Map",
         query: {
           mode: MODE_NORMAL,
         }

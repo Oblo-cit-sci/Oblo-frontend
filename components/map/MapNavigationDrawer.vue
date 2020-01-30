@@ -23,7 +23,8 @@
           v-btn(@click="get_goto_device_location")
             v-icon mdi-crosshairs-gps
       v-row.ma-1(wrap justify-center)
-        Search(v-if="normal_map_mode && nav_mode_search"
+        <!-- the v-show prevents reloading every time, when switching between entry and search-->
+        Search(v-show="normal_map_mode && nav_mode_search"
           init_full
           :preview_options="preview_options"
           :fixed_filters="location_pre_filter"
@@ -40,22 +41,22 @@
 </template>
 
 <script>
-    import MapNavigationMixin from "./MapNavigationMixin";
-    import Search from "../Search";
-    import EntryAspectView from "../EntryAspectView";
-    import EntryView from "../EntryView";
+  import MapNavigationMixin from "./MapNavigationMixin";
+  import Search from "../Search";
+  import EntryAspectView from "../EntryAspectView";
+  import EntryView from "../EntryView";
 
 
-    export default {
-        name: "MapNavigationDrawer",
-      components: {EntryView},
-      mixins: [MapNavigationMixin],
-        computed: {
-            drawer_width() {
-                return this.$vuetify.breakpoint.lgAndUp ? 600 : 400
-            }
-        }
+  export default {
+    name: "MapNavigationDrawer",
+    components: {EntryView},
+    mixins: [MapNavigationMixin],
+    computed: {
+      drawer_width() {
+        return this.$vuetify.breakpoint.lgAndUp ? 600 : 400
+      }
     }
+  }
 </script>
 
 <style scoped>

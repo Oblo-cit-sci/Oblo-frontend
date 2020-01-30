@@ -68,7 +68,6 @@
     import PersistentStorageMixin from "./PersistentStorageMixin";
     import ChildCreateMixin from "./ChildCreateMixin";
     import {aspect_loc_str2arr, loc_prepend} from "../lib/aspect";
-    import EntryAspectView from "./EntryAspectView";
     import Aspect from "./Aspect";
     import {mapGetters} from "vuex"
     import {upload_to_repo} from "../lib/import_export";
@@ -79,7 +78,7 @@
 
     export default {
         name: "Entrypreview",
-        components: {Aspect, EntryAspectView, MetaChips, Taglist},
+        components: {Aspect, MetaChips, Taglist},
         mixins: [EntryNavMixin, MapJumpMixin, EntryMixin, MapJumpMixin,
             PersistentStorageMixin, ChildCreateMixin],
         data() {
@@ -301,10 +300,6 @@
                     default:
                         console.log("unknown action", preview_action)
                 }
-            },
-            aspect_locs(aspect) {
-                //console.log([[ENTRY, this.entry.uuid], [ASPECT, aspect.name]])
-                return [[ENTRY, this.entry.uuid], [ASPECT, aspect.name]]
             }
         }
     }

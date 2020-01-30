@@ -48,300 +48,303 @@
 
 <script>
 
-    import AspectMixin from "./AspectMixin";
-    import Aspect from "../Aspect";
-    import ListMixin from "../ListMixin";
-    import {INDEX, SIMPLE_TYPE, EDIT, COMPOSITE, LIST_INDEX} from "../../lib/consts";
-    import {
-      aspect_loc_str,
-      packed_aspect_default_value,
-      get_aspect_vue_component,
-      remove_entry_loc, complete_aspect_loc, aspect_loc_uuid, aspect_loc_str2arr, pack_value, aspect_raw_default_value
-    } from "../../lib/aspect";
-    import ListitemActions from "../ListitemActions";
-    import Paginate from "../Paginate";
-    import MinMaxIndicators from '../list_components/MinMaxIndicators'
+  import AspectMixin from "./AspectMixin";
+  import Aspect from "../Aspect";
+  import ListMixin from "../ListMixin";
+  import {INDEX, SIMPLE_TYPE, EDIT, COMPOSITE, LIST_INDEX} from "../../lib/consts";
+  import {
+    aspect_loc_str,
+    packed_aspect_default_value,
+    get_aspect_vue_component,
+    remove_entry_loc, complete_aspect_loc, aspect_loc_uuid, aspect_loc_str2arr, pack_value, aspect_raw_default_value
+  } from "../../lib/aspect";
+  import ListitemActions from "../ListitemActions";
+  import Paginate from "../Paginate";
+  import MinMaxIndicators from '../list_components/MinMaxIndicators'
 
-    import ListPagination from "../ListPagination";
-    import goTo from 'vuetify/lib/services/goto'
-    import {recursive_unpack} from "../../lib/util";
-    import {ENTRIES_VALUE} from "../../lib/store_consts";
+  import ListPagination from "../ListPagination";
+  import goTo from 'vuetify/lib/services/goto'
+  import {recursive_unpack} from "../../lib/util";
+  import {ENTRIES_VALUE} from "../../lib/store_consts";
 
-    const SIMPLE = "simple"
-    const PANELS = "panels"
+  const SIMPLE = "simple"
+  const PANELS = "panels"
 
 
-    export default {
-        name: "ListAspect",
-        components: {ListPagination, Paginate, ListitemActions, Aspect, MinMaxIndicators},
-        mixins: [AspectMixin, ListMixin],
-        data() {
-            return {
-                item_aspect: null,
-                structure: null,
-                count: true,
-                // for composite
-                panelState: [],
-                select: false, // select... instead of button
-                options: [],
-                new_edit: []
-                //
-            }
-        },
-        created() {
-            //console.log("LA created", this.value)
-            let item_type = this.aspect.items;
-            // todo. list, are extended lists by user, not select lists
-            // todo the item should not be just a string, DEPRECATED
-
-            //console.log("object type", this.aspect.items)
-            if (this.aspect.items.type === "composite" || this.aspect.attr.force_panels) {
-                this.item_aspect = this.aspect.items;
-                this.structure = PANELS
-                // get the titles // should cause having the panel titles when entry is entered
-                // fill in the values of the titleAspect
-            } else {
-                this.item_aspect = this.aspect.items;
-                this.structure = SIMPLE;
-            }
-
-            // not sure if this would still be an extra or attr...
-
-            if (this.extra.ref_length) {
-                if (this.extra.ref_length !== this.value.length) {
-                    const diff = this.extra.ref_length - this.value.length
-                    if (diff > 0)
-                        this.add_value(diff)
-                    else if (diff < 0) {
-                        // remove some from the end
-                        // todo
-                    }
-                }
-                this.min = this.extra.ref_length
-                this.max = this.extra.ref_length
-            }
-
-            this.set_min_max()
-
-            if (this.value.length === 0) {
-                for (let i = 0; i < this.aspect.attr.create || 0; i++) {
-                    this.add_value()
-                }
-            }
-            const entry = this.get_entry()
-            if (entry.local.list_pages) {
-                const loc_str = aspect_loc_str(remove_entry_loc(this.aspect_loc))
-                if (entry.local.list_pages[loc_str] !== undefined) {
-                    this.set_page(entry.local.list_pages[loc_str])
-                }
-            }
-        },
-        methods: {
-            clearableAspectComponent(aspect) {
-                return get_aspect_vue_component(aspect, this.mode)
-            },
-            add_value(n = 1) {
-                let additional = []
-                //console.log("list has length", this.value)
-                for (let i = 0; i < n; i++) {
-                    additional.push(packed_aspect_default_value(this.item_aspect))
-                }
-                this.value_change(this.$_.concat(this.value, additional))
-                if (n === 1) {
-                    this.goto_delayed_last_page(this.goto_panel_id())
-                    setTimeout(() => {
-                        if (!this.is_simple) {
-                            this.panelState = [(this.value.length + this.pagination_tresh - 1) % this.pagination_tresh]
-                        }
-                    }, 20)
-                }
-                this.new_edit.push(this.value.length);
-            },
-            list_aspect_props(index) {
-                return {
-                    aspect: this.indexed_item_aspect(index),
-                    mode: this.$_.includes(this.new_edit, index) ? EDIT : this.mode,
-                    aspect_loc: this.item_aspect_loc(index),
-                    extra: this.list_extra(index)
-                }
-            },
-            listitem_actions_prop(index) {
-                return {
-                    requires_delete: this.requires_delete,
-                    itemname: this.extra.itemname,
-                    moveable: this.moveable,
-                    index: index,
-                    listlength: this.value.length - 1
-                }
-            },
-            remove_value(index) {
-                this.value_change(this.$_.filter(this.value, (val, i) => {
-                    return index !== i
-                }))
-                if (this.structure === PANELS) {
-                    this.panelState = []
-                }
-                this.guarantee_page()
-            },
-            move(index_direction) {
-                const index = index_direction[0]
-                const direction = index_direction[1]
-                const to_move = this.value[index]
-                const without = this.$_.filter(this.value, (e, i) => i !== index)
-                const new_left = this.$_.take(without, index + direction)
-                const new_right = this.$_.takeRight(without, without.length - (index + direction))
-                this.value_change(this.$_.concat(new_left, to_move, new_right))
-                // fix panelstates todo
-                if (this.structure === PANELS) {
-                    this.panelState = [index + direction]
-                }
-
-                goTo("#" + this.panel_id(index + direction), {
-                    duration: 400,
-                    easing: "easeOutCubic"
-                })
-            },
-            item_aspect_loc(index) {
-                return this.$_.concat(this.aspect_loc, [[INDEX, index, this.aspect.items.name]])
-            },
-            indexed_item_aspect(index) {
-                let aspect = {...this.item_aspect}
-                aspect.name = "" + (index + 1)
-                return aspect
-            },
-            handleEntryAction(event, index) {
-                if (event.action === "clear") {
-                    this.remove_value(index)
-                } else {
-                    $emit('entryAction', $event)
-                }
-            },
-            list_extra(index) {
-                return Object.assign({
-                    no_title: this.aspect.attr.hasOwnProperty("no_titles") ? this.aspect.attr.no_titles : true,
-                    clear: false,
-                    listitem: true,
-                    list_index: index
-                }, this.extra)
-            },
-            panel_id(index) {
-                return "L-" + aspect_loc_str(this.$_.slice(this.$_.concat(this.aspect_loc, [[INDEX, index]]), 1))
-            },
-            index_on_act_page(index) {
-                return index >= this.page * this.pagination_tresh && index < (this.page + 1) * this.pagination_tresh
-            },
-            goto_panel_id(page = this.page) {
-                return this.is_simple ? undefined : this.panel_id(parseInt(page * this.pagination_tresh))
-            }
-        },
-        computed: {
-            item_name() {
-                return this.aspect.items.name || this.aspect.attr.itemname || "item"
-            },
-            is_simple() {
-                return this.structure === SIMPLE
-            },
-            fixed_length() {
-                return this.extra.ref_length !== undefined
-            },
-            moveable() {
-                return this.aspect.attr.moveable || false
-            },
-            requires_delete() {
-                let itemtype = this.aspect.items.type
-                return !(itemtype === "str" || itemtype === "int" || itemtype === "float");
-            },
-            titles() {
-                let titles = new Array(this.value.length)
-                let titleAspectName = this.item_aspect.attr.titleAspect
-
-                let simple_type = SIMPLE_TYPE.includes(this.item_aspect.type)
-                let item_name = this.item_name
-
-                if (!simple_type && !titleAspectName && this.item_aspect.type === COMPOSITE) {
-                    titleAspectName = this.item_aspect.components[0].name
-                    if (!item_name) {
-                        item_name = titleAspectName
-                    }
-                }
-
-                // condition hell should go if we apply json schema properly, this is all fallback stuff
-                if (!(simple_type || titleAspectName)) {
-                    console.log(`json schema error. no simple aspect or titleAspectName in list with name ${this.aspect.name}`)
-                    return this.$_.fill([], "", 0, this.value.length)
-                }
-
-                for (let i = 0; i < titles.length; i++) {
-                    if (!this.value[i]) {
-                        console.log(`list no value! index:${i}`)
-                        titles[i] = ""
-                    } else {
-                        const index_name = () => item_name + " " + (parseInt(i) + 1).toString()
-                        if (simple_type && !this.aspect.attr.indexTitle) {
-                            titles[i] = this.value[i].value
-                        } else if (this.aspect.attr.indexTitle) {
-                            titles[i] = index_name()
-                        } else if (!this.value[i].value[titleAspectName]) {
-                            console.log(`list no component value! index:${i}, component:${titleAspectName}`)
-                        } else {
-                            titles[i] = this.value[i].value[titleAspectName].value
-                            if (!this.value[i].value[titleAspectName].value) {
-                              // trying to pregrab a referenced value that hasnt been called yet. not setting it on the orig location
-                              if(titleAspectName) {
-                                const ref_value = this.$_.find(this.item_aspect.components, c => c.name === titleAspectName).attr.ref_value
-                                if(ref_value) {
-                                  let aspect_location = complete_aspect_loc(
-                                    aspect_loc_uuid(this.aspect_loc),
-                                    aspect_loc_str2arr(ref_value),
-                                    i)
-                                  // console.log("value ref,  ",this.aspect.name, aspect_location)
-                                  titles[i] = (this.$store.getters[ENTRIES_VALUE](aspect_location) || pack_value()).value
-                                  //console.log("ref value", ref_value)
-                                  if (titles[i] === undefined) {
-                                    console.log("broken ref!")
-                                    titles[i] = pack_value(aspect_raw_default_value(this.aspect))
-                                  }
-                                }
-                              }
-
-                            }
-                            //console.log(titles[i], "from ", this.value[i], this.aspect.items.components)
-                            // TODO here we should check if there is a ref_value and grab that
-                            if (Array.isArray(titles[i])) {
-                                const list_values = recursive_unpack(this.value[i].value[titleAspectName].value).filter(v => Object.keys(v).length > 0)
-                                titles[i] = list_values.join(", ")
-                            }
-                        }
-                        if (titles[i] === "" || titles[i] === null) {
-                            titles[i] = index_name()
-                        }
-                    }
-                }
-                return titles
-            },
-            adding_allowed() {
-                if (this.mode === EDIT) {
-                    return true
-                } else {
-                    return this.is_public
-                }
-            },
-            is_public() {
-                return this.aspect.attr.add_privacy || false
-            },
-            has_indexTitle() {
-                return this.aspect.attr.indexTitle || false
-            },
-            min_max_props() {
-                return {
-                    aspect: this.aspect,
-                    length: this.value.length,
-                    min: this.min,
-                    max: this.max
-                }
-            }
+  export default {
+    name: "ListAspect",
+    components: {ListPagination, Paginate, ListitemActions, Aspect, MinMaxIndicators},
+    mixins: [AspectMixin, ListMixin],
+    data() {
+      return {
+        item_aspect: null,
+        structure: null,
+        count: true,
+        // for composite
+        panelState: [],
+        select: false, // select... instead of button
+        options: [],
+        new_edit: [],
+        // when switching between entries on one page (map), the list should collapse
+        uuid_cache: null
+      }
+    },
+    created() {
+      this.uuid_cache = this.entry_uuid
+      //console.log("LA created", this.value)
+      // todo. list, are extended lists by user, not select lists
+      // todo the item should not be just a string, DEPRECATED
+      //console.log("object type", this.aspect.items)
+      if (this.aspect.items.type === "composite" || this.aspect.attr.force_panels) {
+        this.item_aspect = this.aspect.items;
+        this.structure = PANELS
+        // get the titles // should cause having the panel titles when entry is entered
+        // fill in the values of the titleAspect
+      } else {
+        this.item_aspect = this.aspect.items;
+        this.structure = SIMPLE;
+      }
+      // not sure if this would still be an extra or attr...
+      if (this.extra.ref_length) {
+        if (this.extra.ref_length !== this.value.length) {
+          const diff = this.extra.ref_length - this.value.length
+          if (diff > 0)
+            this.add_value(diff)
+          else if (diff < 0) {
+            // remove some from the end
+            // todo
+          }
         }
+        this.min = this.extra.ref_length
+        this.max = this.extra.ref_length
+      }
+      this.set_min_max()
+      if (this.value.length === 0) {
+        for (let i = 0; i < this.aspect.attr.create || 0; i++) {
+          this.add_value()
+        }
+      }
+      const entry = this.get_entry()
+      if (entry.local.list_pages) {
+        const loc_str = aspect_loc_str(remove_entry_loc(this.aspect_loc))
+        if (entry.local.list_pages[loc_str] !== undefined) {
+          this.set_page(entry.local.list_pages[loc_str])
+        }
+      }
+    },
+    methods: {
+      clearableAspectComponent(aspect) {
+        return get_aspect_vue_component(aspect, this.mode)
+      },
+      add_value(n = 1) {
+        let additional = []
+        //console.log("list has length", this.value)
+        for (let i = 0; i < n; i++) {
+          additional.push(packed_aspect_default_value(this.item_aspect))
+        }
+        this.value_change(this.$_.concat(this.value, additional))
+        if (n === 1) {
+          this.goto_delayed_last_page(this.goto_panel_id())
+          setTimeout(() => {
+            if (!this.is_simple) {
+              this.panelState = [(this.value.length + this.pagination_tresh - 1) % this.pagination_tresh]
+            }
+          }, 20)
+        }
+        this.new_edit.push(this.value.length);
+      },
+      list_aspect_props(index) {
+        return {
+          aspect: this.indexed_item_aspect(index),
+          mode: this.$_.includes(this.new_edit, index) ? EDIT : this.mode,
+          aspect_loc: this.item_aspect_loc(index),
+          extra: this.list_extra(index)
+        }
+      },
+      listitem_actions_prop(index) {
+        return {
+          requires_delete: this.requires_delete,
+          itemname: this.extra.itemname,
+          moveable: this.moveable,
+          index: index,
+          listlength: this.value.length - 1
+        }
+      },
+      remove_value(index) {
+        this.value_change(this.$_.filter(this.value, (val, i) => {
+          return index !== i
+        }))
+        if (this.structure === PANELS) {
+          this.panelState = []
+        }
+        this.guarantee_page()
+      },
+      move(index_direction) {
+        const index = index_direction[0]
+        const direction = index_direction[1]
+        const to_move = this.value[index]
+        const without = this.$_.filter(this.value, (e, i) => i !== index)
+        const new_left = this.$_.take(without, index + direction)
+        const new_right = this.$_.takeRight(without, without.length - (index + direction))
+        this.value_change(this.$_.concat(new_left, to_move, new_right))
+        // fix panelstates todo
+        if (this.structure === PANELS) {
+          this.panelState = [index + direction]
+        }
+
+        goTo("#" + this.panel_id(index + direction), {
+          duration: 400,
+          easing: "easeOutCubic"
+        })
+      },
+      item_aspect_loc(index) {
+        return this.$_.concat(this.aspect_loc, [[INDEX, index, this.aspect.items.name]])
+      },
+      indexed_item_aspect(index) {
+        let aspect = {...this.item_aspect}
+        aspect.name = "" + (index + 1)
+        return aspect
+      },
+      handleEntryAction(event, index) {
+        if (event.action === "clear") {
+          this.remove_value(index)
+        } else {
+          $emit('entryAction', $event)
+        }
+      },
+      list_extra(index) {
+        return Object.assign({
+          no_title: this.aspect.attr.hasOwnProperty("no_titles") ? this.aspect.attr.no_titles : true,
+          clear: false,
+          listitem: true,
+          list_index: index
+        }, this.extra)
+      },
+      panel_id(index) {
+        return "L-" + aspect_loc_str(this.$_.slice(this.$_.concat(this.aspect_loc, [[INDEX, index]]), 1))
+      },
+      index_on_act_page(index) {
+        return index >= this.page * this.pagination_tresh && index < (this.page + 1) * this.pagination_tresh
+      },
+      goto_panel_id(page = this.page) {
+        return this.is_simple ? undefined : this.panel_id(parseInt(page * this.pagination_tresh))
+      }
+    },
+    computed: {
+      item_name() {
+        return this.aspect.items.name || this.aspect.attr.itemname || "item"
+      },
+      is_simple() {
+        return this.structure === SIMPLE
+      },
+      fixed_length() {
+        return this.extra.ref_length !== undefined
+      },
+      moveable() {
+        return this.aspect.attr.moveable || false
+      },
+      requires_delete() {
+        let itemtype = this.aspect.items.type
+        return !(itemtype === "str" || itemtype === "int" || itemtype === "float");
+      },
+      titles() {
+        let titles = new Array(this.value.length)
+        let titleAspectName = this.item_aspect.attr.titleAspect
+
+        let simple_type = SIMPLE_TYPE.includes(this.item_aspect.type)
+        let item_name = this.item_name
+
+        if (!simple_type && !titleAspectName && this.item_aspect.type === COMPOSITE) {
+          titleAspectName = this.item_aspect.components[0].name
+          if (!item_name) {
+            item_name = titleAspectName
+          }
+        }
+
+        // condition hell should go if we apply json schema properly, this is all fallback stuff
+        if (!(simple_type || titleAspectName)) {
+          console.log(`json schema error. no simple aspect or titleAspectName in list with name ${this.aspect.name}`)
+          return this.$_.fill([], "", 0, this.value.length)
+        }
+
+        for (let i = 0; i < titles.length; i++) {
+          if (!this.value[i]) {
+            console.log(`list no value! index:${i}`)
+            titles[i] = ""
+          } else {
+            const index_name = () => item_name + " " + (parseInt(i) + 1).toString()
+            if (simple_type && !this.aspect.attr.indexTitle) {
+              titles[i] = this.value[i].value
+            } else if (this.aspect.attr.indexTitle) {
+              titles[i] = index_name()
+            } else if (!this.value[i].value[titleAspectName]) {
+              console.log(`list no component value! index:${i}, component:${titleAspectName}`)
+            } else {
+              titles[i] = this.value[i].value[titleAspectName].value
+              if (!this.value[i].value[titleAspectName].value) {
+                // trying to pregrab a referenced value that hasnt been called yet. not setting it on the orig location
+                if (titleAspectName) {
+                  const ref_value = this.$_.find(this.item_aspect.components, c => c.name === titleAspectName).attr.ref_value
+                  if (ref_value) {
+                    let aspect_location = complete_aspect_loc(
+                      aspect_loc_uuid(this.aspect_loc),
+                      aspect_loc_str2arr(ref_value),
+                      i)
+                    // console.log("value ref,  ",this.aspect.name, aspect_location)
+                    titles[i] = (this.$store.getters[ENTRIES_VALUE](aspect_location) || pack_value()).value
+                    //console.log("ref value", ref_value)
+                    if (titles[i] === undefined) {
+                      console.log("broken ref!")
+                      titles[i] = pack_value(aspect_raw_default_value(this.aspect))
+                    }
+                  }
+                }
+
+              }
+              //console.log(titles[i], "from ", this.value[i], this.aspect.items.components)
+              // TODO here we should check if there is a ref_value and grab that
+              if (Array.isArray(titles[i])) {
+                const list_values = recursive_unpack(this.value[i].value[titleAspectName].value).filter(v => Object.keys(v).length > 0)
+                titles[i] = list_values.join(", ")
+              }
+            }
+            if (titles[i] === "" || titles[i] === null) {
+              titles[i] = index_name()
+            }
+          }
+        }
+        return titles
+      },
+      adding_allowed() {
+        if (this.mode === EDIT) {
+          return true
+        } else {
+          return this.is_public
+        }
+      },
+      is_public() {
+        return this.aspect.attr.add_privacy || false
+      },
+      has_indexTitle() {
+        return this.aspect.attr.indexTitle || false
+      },
+      min_max_props() {
+        return {
+          aspect: this.aspect,
+          length: this.value.length,
+          min: this.min,
+          max: this.max
+        }
+      }
+    },
+    beforeUpdate() {
+      if (this.uuid_cache && this.uuid_cache !== this.entry_uuid) {
+
+        this.uuid_cache = this.entry_uuid
+        this.panelState = []
+      }
     }
+  }
 </script>
 
 <style scoped>
