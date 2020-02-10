@@ -1,6 +1,7 @@
-import {EOVALUE, NO_DOMAIN, TITLE, VISITOR} from "../lib/consts";
+import {NO_DOMAIN, TITLE, VISITOR} from "../lib/consts";
 import {object_list2options} from "../lib/options";
-import {ENTRYTYPES_TYPENAME} from "../lib/store_consts";
+import {ENTRYTYPES_TYPENAME, SET_DOMAIN_TEMPLATES_FETCHED} from "../lib/store_consts";
+import {ADD_CODES, ENTRYTYPES_ADD_TEMPLATES} from "~/lib/store_consts";
 
 export const state = () => ({
   // comes by init
@@ -8,7 +9,6 @@ export const state = () => ({
   initialized: false,
   _connecting: false,
   connected: false,
-  //entry_types: new Map(), // types for creation
   codes: {},
   // recent
   // momentary
@@ -34,7 +34,6 @@ const ld = require('lodash')
 
 export const mutations = {
   // for db setter during INIT
-
   //
   init(state, data) {
     state.codes = {...data.codes}
@@ -44,8 +43,17 @@ export const mutations = {
     state.domains = data.domains
     state.initialized = true
   },
-  set_user_key(state, data) {
-
+  set_domains(state, domain_arr) {
+    state.domains = domain_arr
+    state.initialized = true
+  },
+  set_domain_templates_fetched(state, domain_name) {
+    state.domains.filter(d => d.name === domain_name)[0].templates_fetched = true
+  },
+  add_codes(state, code_arr) {
+    for(let code_entry of code_arr) {
+      state.codes[code_entry.slug] = code_entry
+    }
   },
   db_loaded(state) {
     state.db_loaded= true
@@ -123,7 +131,7 @@ export const mutations = {
     }
   },
   set_stored_entries(state, entries) {
-    this.state.entries.entries = entries
+    state.entries.entries = entries
   },
   set_draft_numbers(state, draft_numbers) {
     state.draft_numbers = draft_numbers
@@ -151,6 +159,12 @@ export const getters = {
   db_loaded(state) {
     return () => {
       return state.db_loaded
+    }
+  },
+
+  get_domain_templates_fetched(state) {
+    return (domain_name) => {
+      return state.domains.filter(d => d.name === domain_name).templates_fetched
     }
   },
   visitor(state) {
@@ -194,8 +208,8 @@ export const getters = {
     return state.domain
   },
   domain_by_name(state) {
-    return domain_value => {
-      return state.domains.find(domain => domain.value === domain_value)
+    return domain_name => {
+      return state.domains.find(domain => domain.name === domain_name)
     }
   },
   domain_title(state) {
@@ -237,5 +251,12 @@ export const actions = {
     commit("entries/clear")
     commit("search/clear")
     commit("clear_draft_numbers")
+  },
+  set_templates_codes_for_domain(context, {domain_name, entries}) {
+    if(domain_name !== NO_DOMAIN) {
+      context.commit(SET_DOMAIN_TEMPLATES_FETCHED, domain_name)
+    }
+    context.commit(ENTRYTYPES_ADD_TEMPLATES, entries.filter(e => e.type === "template"))
+    context.commit(ADD_CODES, entries.filter(e => e.type === "code"))
   }
 }

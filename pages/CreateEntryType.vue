@@ -56,7 +56,7 @@
         methods: {
             select_exisisting(event) {
                 this.entry = create_entry(this.$store, event)
-                this.aspects = this.$_.map(this.entry_type.content.aspects, a => {
+                this.aspects = this.$_.map(this.entry_type.aspects, a => {
                     return {
                         aspect: a,
                         value: JSON.stringify(a, null, 2),
@@ -66,7 +66,7 @@
                 })
             },
             undo(index) {
-                this.aspects[index].value = JSON.stringify(this.entry_type.content.aspects[index], null, 2)
+                this.aspects[index].value = JSON.stringify(this.entry_type.aspects[index], null, 2)
             },
             jsonparse(value) {
                 try {

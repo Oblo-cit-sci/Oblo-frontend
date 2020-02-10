@@ -38,22 +38,22 @@
             },
             shown_aspects() {
                 if (this.has_pages) {
-                    return this.$_.filter(this.entry_type.content.aspects, (a) => {
+                    return this.$_.filter(this.entry_type.aspects, (a) => {
                         return (this.page === 0 && (a.attr.page === 0 || a.attr.page === undefined) ||
                             (this.page > 0 && a.attr.page === this.page))
                     })
                 }
-                return this.entry_type.content.aspects
+                return this.entry_type.aspects
             },
             aspect_locs() {
                 let result = {}
-                this.entry_type.content.aspects.forEach(aspect => {
+                this.entry_type.aspects.forEach(aspect => {
                     result[aspect.name] = [[ENTRY, this.entry.uuid], [ASPECT, aspect.name]]
                 })
                 return result
             },
             has_pages() {
-                this.entry_type.content.meta.hasOwnProperty("pages")
+                this.entry_type.rules.hasOwnProperty("pages")
             }
         },
         methods: {
@@ -64,7 +64,7 @@
         watch: {
             entry() {
                 /*this.aspect_locs = {}
-                this.entry_type.content.aspects.forEach(aspect => {
+                this.entry_type.aspects.forEach(aspect => {
                     this.aspect_locs[aspect.name] = [[ENTRY, this.entry.uuid], [ASPECT, aspect.name]]
                 })*/
             }

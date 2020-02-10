@@ -50,7 +50,7 @@
                 set_name: "",
                 use_alternative_license: false,
                 selectedLicense: null,
-                licenseOptions: ld.map(this.$store.state.codes.licenses, (l) => Object.assign({
+                licenseOptions: ld.map(this.$store.state.codes.cc_licenses.values.licenses, (l) => Object.assign({
                     text: l.title,
                     value: l.short
                 }, l))

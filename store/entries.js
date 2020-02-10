@@ -249,7 +249,6 @@ export const getters = {
   },
   get_entries(state, getters) { // ENTRIES_GET_ENTRIES
     return (uuids) => {
-      debugger
       return ld.filter(getters.all_entries_array(), e => ld.includes(uuids,e.uuid))
     }
   },
@@ -340,7 +339,7 @@ export const getters = {
     return (uuid = state.edit.uuid) => {
       const entry = getters.get_entry(uuid)
       const entry_type = getters.get_entry_type(entry.type_slug)
-      const locationAspect = entry_type.content.meta.locationAspect
+      const locationAspect = entry_type.rules.locationAspect
       let location = null
       if (locationAspect) {
         location = select_aspect_loc(state, loc_prepend(ENTRY, uuid, aspect_loc_str2arr(locationAspect)))
@@ -374,7 +373,7 @@ export const getters = {
     return (uuid = state.edit.uuid) => {
       const entry = getters.get_entry(uuid)
       const entry_type = getters.get_entry_type(entry.type_slug)
-      const tagsAspect = entry_type.content.meta.tagsAspect
+      const tagsAspect = entry_type.rules.tagsAspect
       const all_tags = {}
       for (let tags_type in tagsAspect) {
         const aspect_tag_location = tagsAspect[tags_type]

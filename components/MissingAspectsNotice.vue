@@ -31,7 +31,7 @@
         },
         computed: {
             missing() {
-                const aspects = this.entry_type.content.aspects
+                const aspects = this.entry_type.aspects
                 let missing = []
                 for (let aspect of aspects) {
                     //console.log("val", aspect.name)

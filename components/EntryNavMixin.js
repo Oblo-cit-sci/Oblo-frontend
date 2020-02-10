@@ -54,7 +54,7 @@ export default {
   },
   computed: {
     in_context() {
-      return this.entry_type.content.meta.context !== GLOBAL || this.entry.refs.parent
+      return this.entry_type.rules.context !== GLOBAL || this.entry.refs.parent
     },
     domain() {
       return this.$store.getters[DOMAIN]

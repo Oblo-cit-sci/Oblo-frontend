@@ -137,7 +137,7 @@
     created() {
       //console.log("entry index create", this.entry.aspects_values.)
       this.$store.dispatch(ENTRIES_SET_EDIT, this.uuid)
-      let required_aspects = this.$_.filter(this.entry_type.content.aspects, (a) => a.required || false)
+      let required_aspects = this.$_.filter(this.entry_type.aspects, (a) => a.required || false)
       this.required_values = this.$_.map(required_aspects, (a) => {
         return a.name
       })
@@ -208,10 +208,10 @@
       },
       aspects() {
         const entry_type = this.$store.getters[ENTRYTYPES_TYPE](this.entry.type_slug)
-        return entry_type.content.aspects
+        return entry_type.aspects
       },
       privacy_mode() {
-        const privacy_set = this.entry_type.content.meta.privacy
+        const privacy_set = this.entry_type.rules.privacy
         return privacy_set ? VIEW : EDIT
       },
       licence_mode() {
@@ -227,9 +227,9 @@
       // maybe also consider:
       // https://github.com/edisdev/download-json-data/blob/develop/src/components/Download.vue
       page_info() {
-        //console.log(this.entry_type, this.page, this.entry_type.content.meta.pages[this.page])
+        //console.log(this.entry_type, this.page, this.entry_type.rules.pages[this.page])
         if (this.has_pages)
-          return this.entry_type.content.meta.pages[this.page]
+          return this.entry_type.rules.pages[this.page]
         else
           return null
       },

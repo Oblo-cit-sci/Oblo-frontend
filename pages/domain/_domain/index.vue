@@ -20,14 +20,14 @@
     import Search from "../../../components/Search";
     import {ENTRYTYPES_OF_DOMAIN, DOMAIN, DOMAIN_BY_NAME, SET_DOMAIN} from "../../../lib/store_consts";
     import {entrytype_filter_options} from "../../../lib/filter_option_consts";
-    import {MODE_ASPECT_POINT, VIEW_SEARCH} from "../../../lib/consts";
+    import {VIEW_SEARCH} from "../../../lib/consts";
 
 
     export default {
         name: "index",
         components: {EntryCreateList, Search},
         created() {
-            if (this.domain_data.value !== this.$store.getters[DOMAIN]) {
+            if (this.domain_data.name !== this.$store.getters[DOMAIN]) {
                 this.$store.commit(SET_DOMAIN, this.domain_data)
             }
         },
@@ -59,7 +59,7 @@
                 return [{
                     name: "meta_aspect",
                     meta_aspect_name: DOMAIN,
-                    conditional_value: this.domain_data.value
+                    conditional_value: this.domain_data.name
                 }]
             }
         },

@@ -29,9 +29,9 @@
           v-if="has_pages"
           :page="page"
           @update:page="page = $event"
-          :total="entry_type.content.meta.pages.length"
+          :total="entry_type.rules.pages.length"
           :named_pages="named_pages"
-          :pages="entry_type.content.meta.pages"
+          :pages="entry_type.rules.pages"
           @lastpage="more_follow_page = ($event)")
         v-btn(@click="download") download
           v-icon.ml-2 mdi-download
@@ -132,11 +132,11 @@
         return this.$store.getters[ENTRYTYPES_TYPE](this.selectec_type)
       },
       entry_aspects() {
-        return this.entry_type.content.aspects
+        return this.entry_type.aspects
       },
       has_pages() {
         // todo duplicate entryMixin
-        return this.entry_type.content.meta.hasOwnProperty("pages")
+        return this.entry_type.rules.hasOwnProperty("pages")
       }
     },
     watch: {

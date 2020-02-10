@@ -19,8 +19,7 @@
   import DomainCard from "../components/DomainCard";
   import {get_release_mode} from "../lib/util";
   import {LICCI_PARTNERS} from "../lib/consts";
-  import {fix_add_licci_domain} from "../lib/fixes";
-  import {CLEAR_DOMAIN, DOMAINS, INITIALIZED} from "../lib/store_consts";
+  import {CLEAR_DOMAIN, DOMAINS} from "../lib/store_consts";
 
   export default {
     data() {

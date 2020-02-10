@@ -166,11 +166,11 @@
         return this.entry.tags || null
       },
       additional_actions() {
-        const pw_actions = this.$_.cloneDeep(this.entry_type.content.meta.preview_actions) || []
+        const pw_actions = this.$_.cloneDeep(this.entry_type.rules.preview_actions) || []
         // console.log(this.entry_type.slug, pw_actions)
         const show_actions = []
         if (this.outdated) {
-          const download_action = this.$_.find(this.entry_type.content.meta.preview_actions, a => a.type === "download")
+          const download_action = this.$_.find(this.entry_type.rules.preview_actions, a => a.type === "download")
           if (download_action)
             download_action.color = "orange"
           else
@@ -205,10 +205,9 @@
       },
       shown_aspects() {
         // console.log(this.entry_type)
-        // debugger
         if (this.entry_type) {
           const search_res = this.$store.getters[SEARCH_ENTRY_ASPECT](this.entry.uuid)
-          return this.$_.filter(this.entry_type.content.aspects, a => search_res.includes(a.name))
+          return this.$_.filter(this.entry_type.aspects, a => search_res.includes(a.name))
         } else {
           return []
         }
@@ -260,7 +259,7 @@
         const preview_action = this.$_.find(this.additional_actions, a => a.name === action_name)
         // why?
         // if (this.entry_type) {
-        // const preview_action = this.$_.find(this.entry_type.content.meta.preview_actions, a => a.name === action_key)
+        // const preview_action = this.$_.find(this.entry_type.rules.preview_actions, a => a.name === action_key)
         console.log("res action", preview_action)
         // DUPLICATE BELOW
 

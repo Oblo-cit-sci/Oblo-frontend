@@ -46,7 +46,7 @@ export const getters = {
     // todo generalize, e.g. array of 2val array ["context", "global"]
     let global_entry_types = [];
     for (let entry of state.entry_types.values()) {
-      if (entry.content.meta.context === "global") {
+      if (entry.rules.context === "global") {
         global_entry_types.push(entry)
       }
     }
@@ -63,19 +63,19 @@ export const getters = {
   get_aspect_def(state, getters) { // ENTRYTYPES_GET_ASPECT_DEF
     return ({type_slug, aspect_name}) => {
       let type = getters.entry_type(type_slug)
-      return type.content.aspects.find(a => {
+      return type.aspects.find(a => {
         return a.name === aspect_name
       })
     }
   },
   get_aspect_index(state) {
     return (type_slug, aspect_name) => {
-      return ld.findIndex(state.entry_types.get(type_slug).content.aspects, (a) => a.name === aspect_name)
+      return ld.findIndex(state.entry_types.get(type_slug).aspects, (a) => a.name === aspect_name)
     }
   },
   get_aspect(state) {
     return (type_slug, aspect_name) => {
-      return ld.find(state.entry_types.get(type_slug).content.aspects, (a) => a.name === aspect_name)
+      return ld.find(state.entry_types.get(type_slug).aspects, (a) => a.name === aspect_name)
     }
   },
   entrytype_options(state, getters) {
@@ -128,7 +128,7 @@ export const getters = {
     return (type_slug) => {
       const locations = []
       const e_type = getters.entry_type(type_slug)
-      for (let aspect of e_type.content.aspects) {
+      for (let aspect of e_type.aspects) {
         if(aspect.type === ENTRYLIST) {
           // console.log([ASPECT, aspect.name])
           locations.push([[ASPECT, aspect.name]])
@@ -143,6 +143,11 @@ export const mutations = {
   entrytype(state, newtype) {
     state.entry_types[newtype.type_slug] = newtype;
     //state.entry_type_slug_index_dict[newtype.slug] = state.available_entries.length - 1;
+  },
+  add_templates(state, template_arr) {
+    for(let template of template_arr) {
+      state.entry_types.set(template.slug, template);
+    }
   },
   set_notes(state, notes) {
     state.notes = notes
@@ -210,7 +215,7 @@ export const actions = {
     }
 
     context.commit("init_notes", type_slug)
-    for (let aspect of entry_type.content.aspects) {
+    for (let aspect of entry_type.aspects) {
       //console.log(aspect.name)
       context.commit("add_aspect_descr_notes", {
         type_slug,
