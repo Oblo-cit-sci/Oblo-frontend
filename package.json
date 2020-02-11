@@ -38,7 +38,8 @@
     "update": "^0.7.4",
     "uuid": "^3.4.0",
     "vue-mapbox": "^0.4.1",
-    "vuelidate": "^0.7.5"
+    "vuelidate": "^0.7.5",
+    "qs": "latest"
   },
   "devDependencies": {
     "@mdi/font": "^4.8.95",

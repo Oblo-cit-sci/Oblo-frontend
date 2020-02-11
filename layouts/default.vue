@@ -128,7 +128,10 @@
             groups() {
                 const home = all_pages[0]
                 let other_pages = this.$_.tail(all_pages)
-                other_pages = other_pages.filter(p => !hide_no_be.includes(p.to))
+                if(this.$store.getters[CONNECTED]) {
+                } else {
+                  other_pages = other_pages.filter(p => !hide_no_be.includes(p.to))
+                }
                 if (!this.logged_in) {
                     other_pages = other_pages.filter(p => !require_login.includes(p.to))
                 }

@@ -1,7 +1,7 @@
 <template lang="pug">
   v-flex(xs12='' sm8='' md6='')
     v-form
-      Aspect(v-for="a of aspects" :aspect="a" :value.sync="a.value" mode="edit" :key="a.name")
+      Aspect(v-for="a of aspects" :aspect="a" :ext_value.sync="a.value" @update:ext_value="update_val($event)" mode="edit" :key="a.name")
       v-select(v-model='defaultPrivacy' :items='defaultPrivacyOptions' label='Default Privacy')
       v-select(v-model='defaultLicense' :items='defaultLicenseOptions' label='Default License')
       v-img(:src='licenses[defaultLicense].icon' max-width='88')
@@ -18,6 +18,7 @@
   import licenses from '@@/codes/licenses.json'
   import Aspect from "../components/Aspect";
   import {USER_LOGIN} from "../lib/store_consts";
+  import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
 
 
   function random_String(length) {
@@ -74,7 +75,7 @@
         value: ""
       }
     },
-    password_repeat: {
+    password_confirm: {
       type: "str",
       name: "repeat password",
       attr: {
@@ -89,9 +90,9 @@
     }
   }
   export default {
-    name: "Register",
+    name: "register",
     components: {Aspect},
-    mixins: [validationMixin],
+    mixins: [validationMixin, TriggerSnackbarMixin],
     data() {
       return {
         aspects: register_aspects,
@@ -132,24 +133,28 @@
         this.password = "123456"
         this.repeatPassword = "123456"
       },
+      update_val(val) {
+        console.log(val)
+      },
       // use this as a function to select/highlight a privacy from the list
       selectPrivacy(pri) {
         this.defaultPrivacy = pri
       },
       submit() {
-        //console.log()
-        this.$axios.post("/register", {
+        this.$axios.post("/actor", {
           registered_name: this.aspects.registered_name.value.value,
           email: this.aspects.email.value.value,
           password: this.aspects.password.value.value,
-          defaultPrivacy: this.defaultPrivacy,
-          defaultLicense: this.defaultLicense
+          password_confirm: this.aspects.password_confirm.value.value,
+          // defaultPrivacy: this.defaultPrivacy,
+          // defaultLicense: this.defaultLicense
         }).then(({data}) => {
           //console.log("some data")
           //console.log(data)
           if (data.status) {
             this.$store.commit(USER_LOGIN, data.result);
-            this.$router.push("/")
+
+            this.$router.push("/login")
           } else {
             this.errorMsg = data.msg
             this.$store.commoit("SNACKBAR", {msg: data.msg, ok: true})

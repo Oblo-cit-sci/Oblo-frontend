@@ -28,7 +28,7 @@ export default {
       type: Boolean,
       default: false
     },
-    aspect_loc: {
+    aspect_loc: { // when not passed on, it is somew kind of anonymous aspect, probably defined on that page (e.g. register)
       type: Array, // for composites and lists pass it down...
     },
     extra: {
@@ -71,8 +71,10 @@ export default {
       }
       if (this.aspect_loc) {
         this.$store.dispatch(ENTRIES_SET_ENTRY_VALUE, {aspect_loc: this.aspect_loc, value: up_value})
-      } else
-        this.$emit("update_value", up_value)
+      } else {
+        this.$emit("update:ext_value", up_value)
+        // this.$emit("update_value", up_value)
+      }
       this.debounce_store_db(this)
     },
     toString(value) {

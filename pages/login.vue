@@ -1,0 +1,89 @@
+<template lang="pug">
+  v-flex(xs12='' sm8='' md6='')
+    v-form
+      Aspect(v-for="a of aspects" :aspect="a" :value.sync="a.value" mode="edit" :key="a.name")
+    v-btn(@click='login' color='success' autofocus) Login
+    v-alert(:value='errorMsg' type='error') {{errorMsg}}
+</template>
+
+<script>
+  import {initialize} from "../lib/client";
+
+  import {LOGIN_ALREADY_LOGGED_IN} from "~~/lib/consts"
+  import Aspect from "../components/Aspect";
+  import {unpack} from "../lib/aspect";
+  import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
+  import {STR} from "../lib/consts";
+  import {USER_LOGIN} from "../lib/store_consts";
+
+  const qs = require('qs');
+
+  export default {
+    name: "Login",
+    mixins: [TriggerSnackbarMixin],
+    components: {Aspect},
+    data() {
+      return {
+        aspects: [{
+          type: STR,
+          label: "Username",
+          name: "registered_name",
+          attr: {
+            max: 30,
+          },
+          value: {
+            value: ""
+          }
+        },
+          {
+            type: STR,
+            name: "Password",
+            attr: {
+              max: 40,
+            },
+            value: {
+              value: ""
+            },
+          }
+        ],
+        username: "",
+        password:
+          "",
+        errorMsg:
+          ""
+      }
+    },
+    methods: {
+      login() {
+
+
+        this.$axios.post("/token", qs.stringify({
+          registered_name: unpack(this.aspects[0].value),
+          password: unpack(this.aspects[1].value),
+        }), {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        }).then(({data}) => {
+          if (data.status || data.msg_ === LOGIN_ALREADY_LOGGED_IN) {
+            //console.log("LOGGIN DONE")
+            initialize(this.$axios, this.$store).then((res) => {
+            });
+            this.$store.commit(USER_LOGIN, data.result);
+            // todo test, what is coming back...
+            this.$router.push("/");
+            this.snackbar(data.status === true, "You are logged in")
+          } else {
+            this.errorMsg = data.msg;
+          }
+        }).catch((err) => {
+          console.log("err", err)
+        })
+      }
+    }
+  }
+</script>
+
+<style scoped>
+
+</style>

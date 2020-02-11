@@ -16,18 +16,18 @@
       @click:append-outer="$emit('entryAction', {action: 'clear'})"
 
       :value="value"
-      @input="value_change($event)")
+      @input="$emit('value_change', $event)")
     p(v-else
       class="body-1 readonly-aspect") {{value}}
 </template>
 
 <script>
-  import AspectMixin from "./AspectMixin";
   import TextfieldAspect from "../TextfieldAspect";
+  import AspectComponentMixin from "./AspectComponentMixin";
 
   export default {
     name: "TextShortAspect",
-    mixins: [AspectMixin, TextfieldAspect],
+    mixins: [AspectComponentMixin, TextfieldAspect],
     props: {
         // probably not used atm
       prependIcon: String

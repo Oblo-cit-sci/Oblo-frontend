@@ -40,11 +40,6 @@
         menu: false,
       }
     },
-      created() {
-        /*if(!this.value) {
-            this.value_change(new Date().toISOString())
-        }*/
-      },
     computed: {
       value_str() {
         if(this.value)

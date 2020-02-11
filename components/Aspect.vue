@@ -17,20 +17,24 @@
     component(
       v-if="use_regular && !disable"
       :is="aspectComponent(aspect, mode)"
+      :value="value"
       :aspect="aspect"
       :aspect_loc="aspect_loc"
       :extra="extra"
       :disabled="regular_disable"
       :mode="real_mode"
+      v-on:value_change="value_change($event)"
       v-on:update_value="update_value($event)"
       v-on:entryAction="$emit('entryAction',$event)")
     div(v-if="!use_regular && aspect.attr.alternative !== undefined")
       Title_Description(v-bind="title_description(aspect.attr.alternative)")
       component(
         :is="aspectComponent(alternative, mode)"
+        :value="value"
         :aspect="alternative"
         :aspect_loc="aspect_loc"
         v-bind:aspect="aspect.attr.alternative"
+        v-on:value_change="value_change($event)"
         v-on:update_value="update_value($event)"
         :mode="alt_mode")
 </template>
@@ -144,12 +148,15 @@
             description: ""
           }
         }
-        const aspect_descr_loc = aspect_loc2aspect_descr_loc(this.aspect_loc)
-        const note = this.$store.getters[ENTRYTYPES_NOTE](aspect_descr_loc)
+        let note_text = ""
+        if(this.aspect_loc) {
+          const aspect_descr_loc = aspect_loc2aspect_descr_loc(this.aspect_loc)
+          note_text = this.$store.getters[ENTRYTYPES_NOTE](aspect_descr_loc)
+        }
         return {
           title: this.extra.no_title ? "" : this.aspect_label(aspect),
           description: aspect.description || "",
-          note: {text: note, note_class: "note"}
+          note: {text: note_text, note_class: "note"}
         }
       },
       aspect_label(aspect) {
