@@ -17,10 +17,15 @@ let default_user_data = {
   // https://stackoverflow.com/questions/1253499/simple-calculations-for-working-with-lat-lon-km-distance
   // of 1 degree will result in error of around 50km per coordinate -0.5, +0.5 degree change around the real location
   location_error: 2,
-  defaultLicense: "CC0", // should come from the server
+  defaultLicense: "CC-BY", // should come from the server
   defaultPrivacy: "public",
   location: "",
-  uid: null
+  uid: null,
+  auth_token: {
+    access_token: "",
+    token_type: "",
+    expiration_date: Date()
+  }
 }
 
 
@@ -36,30 +41,29 @@ export const getters = {
   registered_name(state) {
     return state.user_data.registered_name
   },
-  user_data(state) {
+  get_user_data(state) {
     return state.user_data
   },
   user_uid(state) {
     return state.user_data.uid
+  },
+  get_auth_token(state) {
+    return state.auth_token
   }
 }
 
 export const mutations = {
-  login(state, data) {
-    //console.log("LOGIN");
-    //console.log("store data", data.own_entries);
-    state.logged_in = true;
-    state.user_data = data.user_data;
-  },
   logout(state) {
-    state.logged_in = false;
-    state.user_data = default_user_data;
+    state.logged_in = false
   },
   set_user_data(state, user_data) {
     state.user_data = user_data;
   },
   _rnd_uid(state) {
     state.user_data.uid = uuidv4()
+  },
+  login(state) {
+    state.logged_in = true
   }
 }
 
@@ -68,6 +72,14 @@ export const actions = {
     if(!context.state.user_data.uid) {
       context.commit("_rnd_uid")
     }
+  },
+  login({commit}, data) {
+    commit("set_user_data", data)
+    commit("login")
+  },
+  logout({commit}) {
+    commit("set_user_data", default_user_data)
+    commit("logout")
   }
 }
 

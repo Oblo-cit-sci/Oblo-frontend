@@ -1,4 +1,4 @@
-import {ENTRYTYPES_ALL_NOTES} from "../lib/store_consts";
+import {ENTRYTYPES_ALL_NOTES, USER_GET_USER_DATA} from "../lib/store_consts";
 
 export default {
   name: "PersistentStorageMixin",
@@ -21,6 +21,9 @@ export default {
     },
     persist_notes() {
       this.store_value("notes", this.$store.getters[ENTRYTYPES_ALL_NOTES])
+    },
+    persist_user_data() {
+      this.store_value("user_data", this.$store.getters[USER_GET_USER_DATA])
     }
   }
 }

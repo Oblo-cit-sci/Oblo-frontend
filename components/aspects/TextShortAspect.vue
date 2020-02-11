@@ -10,6 +10,7 @@
       :hint="hint"
       :rules="rules"
       :prependIcon="prependIcon"
+      :type="aspect.attr.component_type === 'password' ? 'password' : 'text'"
       @click:prepend="$emit('clickPrepend')"
 
       :append-outer-icon="clearIcon"

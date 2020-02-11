@@ -1,7 +1,7 @@
 <template lang="pug">
   v-flex(xs12='' sm8='' md6='')
     v-form
-      Aspect(v-for="a of aspects" :aspect="a" :ext_value.sync="a.value" @update:ext_value="update_val($event)" mode="edit" :key="a.name")
+      Aspect(v-for="a of aspects" :aspect="a" :ext_value.sync="a.value" mode="edit" :key="a.name")
       v-select(v-model='defaultPrivacy' :items='defaultPrivacyOptions' label='Default Privacy')
       v-select(v-model='defaultLicense' :items='defaultLicenseOptions' label='Default License')
       v-img(:src='licenses[defaultLicense].icon' max-width='88')
@@ -133,9 +133,9 @@
         this.password = "123456"
         this.repeatPassword = "123456"
       },
-      update_val(val) {
-        console.log(val)
-      },
+      // update_val(val) {
+      //   console.log(val)
+      // },
       // use this as a function to select/highlight a privacy from the list
       selectPrivacy(pri) {
         this.defaultPrivacy = pri
@@ -153,7 +153,6 @@
           //console.log(data)
           if (data.status) {
             this.$store.commit(USER_LOGIN, data.result);
-
             this.$router.push("/login")
           } else {
             this.errorMsg = data.msg
