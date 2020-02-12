@@ -7,7 +7,6 @@
       v-img(:src='licenses[defaultLicense].icon' max-width='88')
     v-btn(@click='submit' :disabled="submitStatus === 'PENDING'" color='success') Submit!
     v-alert(:value='errorMsg' type='error') {{errorMsg}}
-    div {{this.aspects.registered_name.value}}
 </template>
 
 <script>
@@ -19,17 +18,6 @@
   import Aspect from "../components/Aspect";
   import {USER_LOGIN} from "../lib/store_consts";
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
-
-
-  function random_String(length) {
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-    for (var i = 0; i < length; i++)
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-    return text;
-  }
 
   const register_aspects = {
     registered_name: {
@@ -96,9 +84,6 @@
     data() {
       return {
         aspects: register_aspects,
-        /*input: this.$_.map(register_aspects, (r) => {
-          return {value: r.name}
-        }),*/
         // MUST MATCH THE ENUM values app.models.Privacy.Privacy
         defaultPrivacyOptions: ["public", "private"], // "followers_only",
         defaultPrivacy: "public",
@@ -106,7 +91,7 @@
         licenses: licenses,
         defaultLicenseOptions: Object.keys(licenses),
         submitStatus: null,
-        errorMsg: ""
+        errorMsg: null
       }
     },
     validations: {
@@ -127,15 +112,6 @@
       }
     },
     methods: {
-      randomize() {
-        this.user = random_String(10)
-        this.email = random_String(10) + "licci.eu"
-        this.password = "123456"
-        this.repeatPassword = "123456"
-      },
-      // update_val(val) {
-      //   console.log(val)
-      // },
       // use this as a function to select/highlight a privacy from the list
       selectPrivacy(pri) {
         this.defaultPrivacy = pri
@@ -156,7 +132,6 @@
             this.$router.push("/login")
           } else {
             this.errorMsg = data.msg
-            this.$store.commoit("SNACKBAR", {msg: data.msg, ok: true})
           }
         }).catch((err) => {
           console.log("err", err)

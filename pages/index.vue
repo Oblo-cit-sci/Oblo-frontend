@@ -1,5 +1,10 @@
 <template lang="pug">
   v-container(fluid)
+    v-row(v-if="!logged_in && connected" align="center")
+      v-col(cols=2 offset="4")
+        v-btn(large to="/register") Register
+      v-col(cols=2)
+        v-btn(large to="/login") Login
     v-row(align="center" justify="center")
       v-col(class="col-lg-6 col-xs-12")
         div(v-for="domain in domains" :key="domain.title")
@@ -19,15 +24,10 @@
   import DomainCard from "../components/DomainCard";
   import {get_release_mode} from "../lib/util";
   import {LICCI_PARTNERS} from "../lib/consts";
-  import {CLEAR_DOMAIN, DOMAINS} from "../lib/store_consts";
+  import {CLEAR_DOMAIN, CONNECTED, DOMAINS, USER_LOGGED_IN} from "../lib/store_consts";
 
   export default {
     data() {
-      return {
-        connecting: false,
-        connected: null,
-        // initialized: this.$store.state.initialized,
-      }
     },
     created() {
       this.$store.commit(CLEAR_DOMAIN)
@@ -36,7 +36,8 @@
       DomainCard
     },
     computed: {
-      ...mapGetters([DOMAINS]),
+      ...mapGetters([DOMAINS, CONNECTED]),
+      ...mapGetters({logged_in: USER_LOGGED_IN}),
       not_partner() {
         return get_release_mode(this.$store) !== LICCI_PARTNERS
       },

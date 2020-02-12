@@ -18,7 +18,7 @@ export default {
       required: true
     },
     ext_value: {
-      type: Object
+      type: [Object, String, Number]
     },
     mode: { // todo well, this is gonna be messy
       type: String,
@@ -65,15 +65,19 @@ export default {
           }
         }
       }
-      let up_value = pack_value(raw_value)
-      if (!regular) {
-        up_value.regular = false
+      let up_value = null
+      if(this.aspect.attr.unpacked) {
+        up_value = raw_value
+      } else {
+        up_value = pack_value(raw_value)
+        if (!regular) {
+          up_value.regular = false
+        }
       }
       if (this.aspect_loc) {
         this.$store.dispatch(ENTRIES_SET_ENTRY_VALUE, {aspect_loc: this.aspect_loc, value: up_value})
       } else {
         this.$emit("update:ext_value", up_value)
-        // this.$emit("update_value", up_value)
       }
       this.debounce_store_db(this)
     },

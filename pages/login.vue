@@ -12,7 +12,6 @@
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
   import {STR} from "../lib/consts";
   import {USER_LOGIN} from "../lib/store_consts";
-  import TextShortAspect from "../components/aspects/TextShortAspect";
   import PersistentStorageMixin from "../components/PersistentStorageMixin";
 
   const qs = require('qs');
@@ -20,7 +19,7 @@
   export default {
     name: "Login",
     mixins: [TriggerSnackbarMixin, PersistentStorageMixin],
-    components: {TextShortAspect, Aspect},
+    components: {Aspect},
     data() {
       return {
         aspects: [{
@@ -29,32 +28,27 @@
           name: "registered_name",
           attr: {
             max: 30,
+            unpacked:true
           },
-          value: {
-            value: ""
-          }
+          value: ""
         },
           {
             type: STR,
             name: "Password",
             attr: {
               max: 40,
+              unpacked:true
               component_type: "password"
             },
-            value: {
-              value: ""
-            },
+            value: ""
           }
         ],
-        username: "",
-        password:
-          "",
-        errorMsg:
-          ""
+        errorMsg: null
       }
     },
     methods: {
       login() {
+        console.log("val", this.aspects[0].value)
         // debugger
         this.$axios.post("/token", qs.stringify({
           username: unpack(this.aspects[0].value),
