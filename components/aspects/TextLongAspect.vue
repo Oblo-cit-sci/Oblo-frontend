@@ -10,18 +10,19 @@
       :append-outer-icon="clearIcon"
       @click:append-outer="$emit('entryAction', {action: 'clear'})"
 
-      :value="value"
-      @input="emit('update_value', $event)")
+      @input="$emit('value_change', $event)")
   div(v-else)
     p(class="body-1 readonly-aspect") {{value}}
 </template>
 
 <script>
   import AspectMixin from "./AspectMixin";
+  import AspectComponentMixin from "./AspectComponentMixin";
+  import TextfieldAspect from "../TextfieldAspect";
 
 
   export default {
-    mixins: [AspectMixin],
+    mixins: [AspectComponentMixin, TextfieldAspect],
     name: "TextLongAspect",
     data() {
       return {

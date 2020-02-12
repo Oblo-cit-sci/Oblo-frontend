@@ -1,5 +1,6 @@
 <template lang="pug">
-  v-flex()
+  v-flex
+    h2.mb-2 Login
     v-form
       Aspect(v-for="a of aspects" :aspect="a" :ext_value.sync="a.value" mode="edit" :key="a.name")
     v-btn(@click='login' color='success' autofocus) Login
@@ -37,7 +38,7 @@
             name: "Password",
             attr: {
               max: 40,
-              unpacked:true
+              unpacked:true,
               component_type: "password"
             },
             value: ""
@@ -48,11 +49,11 @@
     },
     methods: {
       login() {
-        console.log("val", this.aspects[0].value)
+        console.log("val", this.aspects[0].value, this.aspects[1].value)
         // debugger
         this.$axios.post("/token", qs.stringify({
-          username: unpack(this.aspects[0].value),
-          password: unpack(this.aspects[1].value),
+          username: this.aspects[0].value,
+          password: this.aspects[1].value,
           grant_type: "password"
         }), {
           headers: {
@@ -62,22 +63,8 @@
           this.ok_snackbar("Login successful")
           this.$store.dispatch(USER_LOGIN, data)
           this.persist_user_data()
-          //  data.auth_token.token_type
           this.$axios.defaults.headers.common["Authorization"] = "Bearer " + data.auth_token.access_token
           this.$router.push("/")
-          console.log(this.$axios.defaults)
-          debugger
-          // if (data.status || data.msg_ === LOGIN_ALREADY_LOGGED_IN) {
-          //   //console.log("LOGGIN DONE")
-          //   initialize(this.$axios, this.$store).then((res) => {
-          //   });
-          //   this.$store.commit(USER_LOGIN, data.result);
-          //   // todo test, what is coming back...
-          //   this.$router.push("/");
-          //   this.snackbar(data.status === true, "You are logged in")
-          // } else {
-          //   this.errorMsg = data.msg;
-          // }
         }).catch((err) => {
           console.log("err", err)
         })

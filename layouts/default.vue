@@ -16,12 +16,12 @@
                        nuxt
                        @click="item.action ? action(item.action) : ''"
                        exact>
-              <v-list-item-icon>
-                <v-icon>{{item.icon}}</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title v-text="item.title"></v-list-item-title>
-              </v-list-item-content>
+            <v-list-item-icon>
+              <v-icon>{{item.icon}}</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title v-text="item.title"></v-list-item-title>
+            </v-list-item-content>
           </v-list-item>
         </v-list-item-group>
         <v-list-item>
@@ -85,6 +85,7 @@
   import {initialize, reload_storage} from "../lib/client"
   import {static_file_path} from "../lib/util";
   import {all_pages_n_actions} from "../lib/pages";
+  import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
 
 
   const header_items = [
@@ -102,6 +103,7 @@
 
   export default {
     components: {GlobalSnackbar, Footer},
+    mixins: [TriggerSnackbarMixin],
     data() {
       return {
         ci: "",
@@ -119,12 +121,12 @@
         reload_storage(this.$store, this.$localForage)
     },
     computed: {
-      /*
-  ...mapGetters([INITIALIZED, CONNECTING, CONNECTED, USER_LOGGED_IN]),
-logged_in() {
-return this.user_logged_in
-},
-*/
+              /*
+          ...mapGetters([INITIALIZED, CONNECTING, CONNECTED, USER_LOGGED_IN]),
+        logged_in() {
+        return this.user_logged_in
+        },
+        */
       groups() {
         const home = all_pages_n_actions[0]
         let other_pages = this.$_.tail(all_pages_n_actions)
@@ -156,22 +158,6 @@ return this.user_logged_in
       logged_in() {
         return this.$store.getters[USER_LOGGED_IN]
       },
-      // todo bring back this logic in computed.groups
-      // items() {
-      //   let items = all_pages_n_actions
-      //   if (!this.logged_in) {
-      //     items = this.$_.filter(items, item => require_login.indexOf(item.title) === -1)
-      //     if (!this.connected) {
-      //       items = this.$_.filter(items, item => hide_no_login.indexOf(item.title) === -1)
-      //     }
-      //   } else { // logged in
-      //     items = this.$_.filter(items, item => hide_no_login.indexOf(item.title) === -1)
-      //   }
-      //   if (!this.isDev) {
-      //     items = this.$_.filter(items, item => show_inDev.indexOf(item.title) === -1)
-      //   }
-      //   return items
-      // },
       connected_icon() {
         if (this.connected) {
           return "wifi"
@@ -205,17 +191,23 @@ return this.user_logged_in
         }
       },
       action(action_type) {
-        if(action_type === "logout") {
+        if (action_type === "logout") {
           console.log(this.$axios.defaults)
-          this.$axios.get("/logout").then((res) => {
-            console.log("logout")
+          this.$axios.get("/logout").then(() => {
+            this.ok_snackbar("You are logged out")
             this.$store.dispatch(USER_LOGOUT)
             this.$router.push("/")
-            this.ok_snackbar("You are logged out")
+            /*
+                    this.$store.commit(USER_LOGOUT);
+        this.$store.commit(ENTRIES_CLEAR)
+        this.$store.commit(CLEAR)
+        this.$router.push("/")
+        this.ok_snackbar("You are logged out")
+             */
+
           }).catch((err) => {
             console.log("logout error", err.response);
             if (err.response.status === 401) {
-              this.done()
             }
           })
         }
