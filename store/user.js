@@ -74,6 +74,11 @@ export const actions = {
     }
   },
   login({commit}, data) {
+    data["auth_token"] = {}
+    for(let k of ["access_token", "token_type", "expiration_date"]) {
+      data["auth_token"][k] = data[k]
+      delete data[k]
+    }
     commit("set_user_data", data)
     commit("login")
   },

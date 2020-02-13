@@ -7,13 +7,18 @@
           v-list-item-subtitle username
         v-list-item-action
           v-chip(outlined disabled small) {{$store.state.user.user_data.global_role}}
-      v-subheader General
-      Aspect(:aspect="profile_aspects.public_name" :value.sync="edits.public_name" :edit="edit_mode" :mode="mode")
-      Aspect(:aspect="profile_aspects.description" :value.sync="edits.description" :edit="edit_mode" :mode="mode")
-      Aspect(:aspect="profile_aspects.location" :value.sync="edits.location" :edit="edit_mode" :mode="mode")
+      v-subheader General information
+      Aspect(v-for="aspect in profile_aspects" :key="aspect.name" :aspect="aspect" :ext_value.sync="aspect.value" :edit="edit_mode" :mode="mode")
+      v-file-input(
+        v-if="edit_mode"
+        :rules="avatar_rules"
+        label="Avatar"
+        accept="image/png, image/jpeg, image/bmp"
+        @change="avatar_added($event)"
+        prepend-icon="mdi-camera")
       v-divider
       //Taglist(:tags="$store.state.user.user_data.interested_topics")
-      Aspect(:aspect="profile_aspects.interested_topics" :value.sync="edits.interested_topics" :edit="edit_mode" :mode="mode")
+      <!--      Aspect(:aspect="profile_aspects.interested_topics" :value.sync="profile_aspects.interested_topics.value" :edit="edit_mode" :mode="mode")-->
       v-divider
       //v-tabs(v-model="selected_tab" v-if="!edit_mode")
         //v-tab follows
@@ -34,11 +39,11 @@
   import Taglist from "../components/Taglist.vue"
   import Aspect from "../components/Aspect";
   import {EDIT, VIEW} from "../lib/consts";
-  import {USER_SET_USER_DATA} from "../lib/store_consts";
+  import {USER_GET_USER_DATA, USER_SET_USER_DATA} from "../lib/store_consts";
 
-  let editable = [
-    "public_name", "description", "location", "interested_topics"
-  ];
+  import {mapGetters} from "vuex"
+  import {extract_unpacked_values} from "../lib/aspect";
+  import PersistentStorageMixin from "../components/PersistentStorageMixin";
 
   export default {
     name: "profile",
@@ -46,108 +51,137 @@
       Aspect,
       Taglist
     },
-    middleware(context){
-      if(context.store.getters.visitor) {
-        context.redirect("/visitor")
-      }
-    },
-    validate({params}) {
-      // Must be a number
-      // console.log(params.profile);
-      return true;
-    },
+    mixins: [PersistentStorageMixin],
     created() {
       console.log("profile created")
       this.reset_edit_values()
     },
     methods: {
       reset_edit_values() {
-        for (let value of editable) {
-          // todo test if this is required
-          if(value === "interested_topics") {
-            this.edits[value] = {value: [...this.$store.state.user.user_data[value]]}
+        const user_data = this.$_.cloneDeep(this.user_data)
+        for (let aspect of this.profile_aspects) {
+          if (aspect.name === "interested_topics") {
+            aspect.value = [...user_data[aspect.name]]
           } else {
-            this.edits[value] = {value: this.$store.state.user.user_data[value]}
+            aspect.value = user_data[aspect.name]
           }
         }
       },
       setEdit: function () {
         this.edit_mode = true
-        /*  for (let value of editable) {
-            this.edits[value] = this.$store.state.user.user_data[value];
-          }*/
       },
       cancelEdit: function () {
         this.edit_mode = false;
         this.reset_edit_values()
       },
-      raw_values() {
-        return this.$_.mapValues(this.edits, (value) => {
-          //console.log(k,this.edits[k])
-          return value.value
-        })
-      },
+      // raw_values() {
+      //   return this.$_.mapValues(this.edits, (value) => {
+      //     //console.log(k,this.edits[k])
+      //     return value.value
+      //   })
+      // },
       doneEdit: function () {
-        console.log("posting", this.raw_values())
-        this.$axios.post("/update_profile", this.raw_values()).then(({data}) => {
-          if (!data.status) {
-            this.errorMsg = data.msg
-          } else if (data.status) {
-            //console.log("update ok", data.user.user_data);
-            this.$store.commit(USER_SET_USER_DATA, data.result.user_data);
-            this.edit_mode = false
-          }
+        console.log("posting", this.profile_aspects)
+        const new_profile = extract_unpacked_values(this.profile_aspects)
+        this.$axios.post("/actor/me", new_profile).then(({data}) => {
+          console.log(data)
+          this.$store.commit(USER_SET_USER_DATA, data)
+          this.persist_user_data()
+          this.edit_mode = false;
+          this.reset_edit_values()
         }).catch((err) => {
           console.log("err", err)
         })
+      },
+      avatar_added(image) {
+        console.log(image)
+        let formData = new FormData();
+        formData.append('file', image);
+        this.$axios.post( '/single-file',
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          }
+        ).then(function(){
+          console.log('SUCCESS!!');
+        })
+          .catch(function(){
+            console.log('FAILURE!!');
+          });
+
       }
     },
     data: function () {
       return {
         edit_mode: false,
         selected_tab: 0,
-        profile_aspects: {
-          public_name: {
-            name: "public name",
+        profile_aspects: [
+          {
+            name: "public_name",
+            label: "Public name",
             description: "",
             type: "str",
             attr: {
-              max: 40
-            }
+              max: 40,
+              unpacked: true
+            },
+            value: ""
           },
-          description: {
-            name: "Description",
+          {
+            name: "description",
+            label: "Description",
             description: "",
             type: "str",
             attr: {
-              max: 980
-            }
+              max: 980,
+              unpacked: true
+            },
+            value: ""
           },
-          location: {
-            name: "Location",
+          {
+            name: "location",
+            label: "Location",
             description: "main location",
             type: "str",
             attr: {
-              max: 80
-            }
+              max: 80,
+              unpacked: true
+            },
+            value: ""
           },
-          interested_topics: {
+          {
             name: "Interested topics",
             description: "LICCIs you are interested in",
             type: "multiselect",
             items: ["empty upsi"],
-            attr: {}
-          }
-        },
-        edits: {
-          public_name: {},
-          description: {},
-          location: {},
-          interested_topics: {}
-        }
+            attr: {
+              unpacked: true
+            },
+            value: []
+          },
+          {
+            name: "email",
+            label: "Email address",
+            description: "",
+            type: "str",
+            attr: {
+              max: 90,
+              unpacked: true,
+              extra: {
+                rules: [
+                  v => !!v || 'E-mail is required',
+                  v => /.+@.+\..+/.test(v) || 'E-mail must be valid'
+                ]
+              }
+            },
+            value: ""
+          }]
       }
     },
     computed: {
+      ...mapGetters({user_data: USER_GET_USER_DATA}),
       mode() {
         return this.edit_mode ? EDIT : VIEW
       },

@@ -140,7 +140,14 @@ export default {
       }
     },
     value() {
-      return this.mvalue.value
+      if(this.aspect.attr.unpacked) {
+        if(typeof this.mvalue === "object") { // when its   {value: null}
+          return this.mvalue.value
+        }
+        return this.mvalue
+      } else {
+        return this.mvalue.value
+      }
     },
     mvalue: function () {
       if (!this.aspect_loc) {
@@ -150,7 +157,6 @@ export default {
           return {value: null}
         }
       }
-
       if (!this.aspect.hasOwnProperty("attr")) {
         console.log("AspectMixin.mvalue: broken Aspect, no ATTR:", this.aspect.name)
         return pack_value(aspect_raw_default_value(this.aspect))
