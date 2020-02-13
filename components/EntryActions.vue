@@ -244,7 +244,8 @@
         return relation === CREATOR.key
       },
       upload_option() {
-        return this.entry_type.rules.activities.hasOwnProperty("upload")
+        return this.entry_type.rules.hasOwnProperty("activities") &&
+          this.entry_type.rules.activities.hasOwnProperty("upload")
       },
       initial_version() {
         return this.entry.version === 0

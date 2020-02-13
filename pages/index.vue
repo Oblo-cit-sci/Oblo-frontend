@@ -28,6 +28,7 @@
 
   export default {
     data() {
+      return {}
     },
     created() {
       this.$store.commit(CLEAR_DOMAIN)

@@ -26,7 +26,7 @@
     import AspectMixin from "./AspectMixin";
     import TreleafPicker from "../input/TreleafPicker";
     import TextShort from "./TextShortAspect";
-    import {flatten_tree_to_options} from "../../lib/options";
+    import {flatten_tree_to_options, get_codes_as_options, get_codes_as_tree} from "../../lib/options";
     import {EDIT} from "../../lib/consts";
 
     export default {
@@ -44,16 +44,19 @@
             // todo move this to a function
             if(this.mode === EDIT) {
                 // build the given_options (all tree available) from what is passed
-                let passed_tree = this.aspect.items;
+                // let passed_tree = this.aspect.items;
+              this.tree = get_codes_as_tree(this.$store, this.aspect.items)
+
                 // a "*" means, lookup code and set the values as tree
-                if (typeof (passed_tree) === "string") {
-                    let type_char = passed_tree.charAt(0);
-                    //console.log("tree, cja", type_char, )
-                    if (type_char === "*") {
-                        //console.log("tree")
-                        this.tree = this.$store.getters.get_code(passed_tree.substring(1));
-                    }
-                }
+
+                // if (typeof (passed_tree) === "string") {
+                //     let type_char = passed_tree.charAt(0);
+                //     //console.log("tree, cja", type_char, )
+                //     if (type_char === "*") {
+                //         //console.log("tree")
+                //         this.tree = this.$store.getters.get_code(passed_tree.substring(1));
+                //     }
+                // }
                 // flat_options // TODO maybe store them...
                 let options = {}
                 if (this.aspect.attr.allow_select_levels) {

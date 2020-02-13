@@ -37,7 +37,7 @@
             name: "Password",
             attr: {
               max: 40,
-              unpacked:true
+              unpacked:true,
               component_type: "password"
             },
             value: ""
