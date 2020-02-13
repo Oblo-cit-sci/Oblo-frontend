@@ -27,7 +27,8 @@
             :mode="mode")
         div(v-if="page === 0")
           v-divider(class="wide_divider")
-          License(:passedLicense.sync="entry.license" :mode="licence_mode")
+          Aspect(:aspect="license_aspect" :extra="aspect_extras" :mode="mode")
+          <!--          License(:passedLicense.sync="entry.license" :mode="licence_mode")-->
           Privacy(:mode="privacy_mode" :passedPrivacy.sync="entry.privacy")
         v-col(v-if="last_page")
           MissingAspectsNotice(:entry="this.entry")
@@ -108,6 +109,7 @@
   import TriggerSnackbarMixin from "../../../components/TriggerSnackbarMixin";
   import PersistentStorageMixin from "../../../components/PersistentStorageMixin";
   import FullEntryMixin from "../../../components/FullEntryMixin";
+  import {cc_license_aspect, license_aspect} from "../../../lib/typical_aspects";
 
   export default {
     name: "uuid",
@@ -131,7 +133,8 @@
         //
         router_next: null,
         // flag
-        delete_entry: false
+        delete_entry: false,
+        license_aspect: license_aspect(this.$store, ["cc_licenses"])
       }
     },
     created() {
@@ -246,9 +249,9 @@
     },
     watch: {
       page(value) {
-          let res = Object.assign({}, this.$route.query)
-          res = Object.assign(res, { page: value })
-          this.$router.replace({query: res})
+        let res = Object.assign({}, this.$route.query)
+        res = Object.assign(res, {page: value})
+        this.$router.replace({query: res})
         setTimeout(() => goTo(".v-content"), {
           duration: 200,
           easing: "easeOutCubic"

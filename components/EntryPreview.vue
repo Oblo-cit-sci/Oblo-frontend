@@ -3,11 +3,12 @@
     v-row(class="ma-2")
       v-col(class="entry-meta" cols=12 v-bind:class="[show_image ? 'col-md-8' : 'col-md-10']")
         div.caption(v-if="show_date") {{entry_date}}
-        p.subtitle-1.mb-2 {{typename}}:
+        p.subtitle-1.mb-2 {{template_title}}:
           span.subtitle-1 &nbsp; {{entry.title}}
           v-btn(v-if="show_title_action" @click="goto()" depressed small)
             v-icon(:class="default_action_icon")
         MetaChips(v-if="show_meta_aspects" :meta_aspects="meta_aspects")
+        EntryActorList.mt-2(:actors="actors")
         Taglist(v-if="show_tags" :tags="tags")
         .orange--text.mt-2(v-if="outdated")
           v-icon(color="orange") mdi-alert-outline
@@ -68,6 +69,7 @@
   import Aspect from "./Aspect";
   import {mapGetters} from "vuex"
   import {upload_to_repo} from "../lib/import_export";
+  import EntryActorList from "./entry/EntryActorList";
 
   /**
    * ISSUE is not working atm, to responsive
@@ -75,7 +77,7 @@
 
   export default {
     name: "Entrypreview",
-    components: {Aspect, MetaChips, Taglist},
+    components: {EntryActorList, Aspect, MetaChips, Taglist},
     mixins: [EntryNavMixin, MapJumpMixin, EntryMixin, MapJumpMixin,
       PersistentStorageMixin, ChildCreateMixin],
     data() {
@@ -110,7 +112,7 @@
         return this.additional_action_loading
       },
       entry_date() {
-        return printDate(this.entry.creation_datetime)
+        return printDate(new Date(this.entry.creation_ts))
       },
       proper_mode() {
         return get_proper_mode(this.$store, this.entry)
@@ -147,8 +149,8 @@
         }
         return result
       },
-      typename() {
-        return this.$store.getters[ENTRYTYPES_TYPENAME](this.entry.type_slug)
+      template_title() {
+        return this.$store.getters[ENTRYTYPES_TYPENAME](this.entry.template.slug)
       },
       default_action_icon() {
         if (this.proper_mode === VIEW)
@@ -166,11 +168,11 @@
         return this.entry.tags || null
       },
       additional_actions() {
-        const pw_actions = this.$_.cloneDeep(this.entry_type.rules.preview_actions) || []
-        // console.log(this.entry_type.slug, pw_actions)
+        const pw_actions = this.$_.cloneDeep(this.template.rules.preview_actions) || []
+        // console.log(this.template.slug, pw_actions)
         const show_actions = []
         if (this.outdated) {
-          const download_action = this.$_.find(this.entry_type.rules.preview_actions, a => a.type === "download")
+          const download_action = this.$_.find(this.template.rules.preview_actions, a => a.type === "download")
           if (download_action)
             download_action.color = "orange"
           else
@@ -204,10 +206,10 @@
         return show_actions
       },
       shown_aspects() {
-        // console.log(this.entry_type)
-        if (this.entry_type) {
+        // console.log(this.template)
+        if (this.template) {
           const search_res = this.$store.getters[SEARCH_ENTRY_ASPECT](this.entry.uuid)
-          return this.$_.filter(this.entry_type.aspects, a => search_res.includes(a.name))
+          return this.$_.filter(this.template.aspects, a => search_res.includes(a.name))
         } else {
           return []
         }
@@ -258,8 +260,8 @@
         console.log("additional_action", action_name)
         const preview_action = this.$_.find(this.additional_actions, a => a.name === action_name)
         // why?
-        // if (this.entry_type) {
-        // const preview_action = this.$_.find(this.entry_type.rules.preview_actions, a => a.name === action_key)
+        // if (this.template) {
+        // const preview_action = this.$_.find(this.template.rules.preview_actions, a => a.name === action_key)
         console.log("res action", preview_action)
         // DUPLICATE BELOW
 

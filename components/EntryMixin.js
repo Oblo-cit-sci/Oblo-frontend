@@ -3,10 +3,10 @@ import {
   ENTRIES_GET_ENTRY,
   ENTRIES_GET_ENTRY_TITLE,
   ENTRIES_GET_PARENT,
-  ENTRIES_GET_RECURSIVE_ENTRIES, ENTRYTYPES_TYPE,
+  ENTRIES_GET_RECURSIVE_ENTRIES, ENTRYTYPES_TYPE, SEARCH_GET_ENTRIES,
 } from "../lib/store_consts";
 import {export_data} from "../lib/import_export";
-import {ENTRIES_SET_DOWNLOADED} from "~/lib/store_consts";
+import {ENTRIES_SET_DOWNLOADED, SEARCH_GET_ENTRY} from "~/lib/store_consts";
 import {loc_append} from "~/lib/aspect";
 import {ASPECT, ENTRY} from "~/lib/consts";
 
@@ -33,7 +33,11 @@ export default {
       }
     },
     entry() {
-      return this.$store.getters[ENTRIES_GET_ENTRY](this.uuid)
+      let entry = this.$store.getters[ENTRIES_GET_ENTRY](this.uuid)
+      if (!entry) {
+        entry = this.$store.getters[SEARCH_GET_ENTRY](this.uuid)
+      }
+      return entry
     },
     has_parent() {
       return has_parent(this.entry)
@@ -50,11 +54,15 @@ export default {
       }
       return result
     },
-    type_slug() {
-      return this.entry.type_slug
+    actors() {
+      return this.entry.actors
     },
-    entry_type() {
-      return this.$store.getters[ENTRYTYPES_TYPE](this.type_slug)
+    template_slug() {
+      console.log(this.entry)
+      return this.entry.template.slug
+    },
+    template() {
+      return this.$store.getters[ENTRYTYPES_TYPE](this.template_slug)
     },
     title() {
       return this.$store.getters[ENTRIES_GET_ENTRY_TITLE](this.uuid)
@@ -66,37 +74,37 @@ export default {
       return this.$store.getters[ENTRIES_GET_PARENT](this.uuid).title
     },
     type_name() {
-      return this.entry_type.title
+      return this.template.title
     },
     has_pages() {
-      return this.entry_type.rules.hasOwnProperty("pages")
+      return this.template.rules.hasOwnProperty("pages")
     },
     named_pages() {
-      return this.entry_type.rules.hasOwnProperty("named_pages") || false
+      return this.template.rules.hasOwnProperty("named_pages") || false
     },
     pages() {
-      return this.entry_type.rules.pages || []
+      return this.template.rules.pages || []
     },
     last_page() {
       return !this.has_pages || this.page === this.pages.length - 1
     },
     page_title() {
-      return this.entry_type.title + (this.title ? ": " + this.title : "")
+      return this.template.title + (this.title ? ": " + this.title : "")
     },
     aspect_loc() {
       return [ENTRY, this.uuid, this.type_slug]
     },
     shown_aspects() {
       if (this.has_pages) {
-        return this.$_.filter(this.entry_type.aspects, (a) => {
+        return this.$_.filter(this.template.aspects, (a) => {
           return (this.page === 0 && (a.attr.page === 0 || a.attr.page === undefined) ||
             (this.page > 0 && a.attr.page === this.page))
         })
       }
-      return this.entry_type.aspects
+      return this.template.aspects
     },
     outdated() {
-      return (this.entry.parent_type_version || 0) !== this.entry_type.version
+      return (this.entry.parent_type_version || 0) !== this.template.version
     },
     download_title() {
       // todo title, wont update in real time
@@ -124,7 +132,7 @@ export default {
     },
     update_aspect_locs() {
       // console.log("update_aspect_locs")
-      for (let aspect of this.entry_type.aspects) {
+      for (let aspect of this.template.aspects) {
         this.aspect_locs[aspect.name] = loc_append([this.aspect_loc], ASPECT, aspect.name)
         // console.log(aspect.name, this.aspect_locs[aspect.name])
       }

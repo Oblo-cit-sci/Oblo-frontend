@@ -31,7 +31,6 @@
             this.$options.components.SingleSelect = require('../input/SingleSelect.vue').default
         },
         created() {
-            //console.log("created", this.value, this.mvalue, this.aspect.name)
             if (this.select_check) {
                 this.check_box_value = this.value === this.options[1].value // or maybe a value/default...
                 if (this.aspect.items.length !== 2) {

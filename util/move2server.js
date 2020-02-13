@@ -1,14 +1,12 @@
-server_static_dir = "/media/ra/hd2/projects/licci/server/static/"
+server_static_dir = "/mnt/SSD/licci/licci_be/"
 
 remove_entry_images = process.argv[2] ? false : true
 
-var fs = require("fs-extra");
+const fs = require("fs-extra");
 const pathf = require('path');
 
-
-
-var source = "dist"
-var destination = server_static_dir + "dist"
+const source = "dist"
+const destination = server_static_dir + "fe"
 
 
 const deleteFolderRecursive = function(path) {

@@ -20,8 +20,7 @@
     import Search from "../../../components/Search";
     import {ENTRYTYPES_OF_DOMAIN, DOMAIN, DOMAIN_BY_NAME, SET_DOMAIN} from "../../../lib/store_consts";
     import {entrytype_filter_options} from "../../../lib/filter_option_consts";
-    import {VIEW_SEARCH} from "../../../lib/consts";
-
+    import {REGULAR, VIEW_SEARCH} from "../../../lib/consts";
 
     export default {
         name: "index",

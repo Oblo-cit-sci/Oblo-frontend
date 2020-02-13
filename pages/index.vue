@@ -1,10 +1,13 @@
 <template lang="pug">
   v-container(fluid)
-    v-row(v-if="!logged_in && connected" align="center")
-      v-col(cols=2 offset="4")
-        v-btn(large to="/register") Register
-      v-col(cols=2)
-        v-btn(large to="/login") Login
+    div(v-if="!logged_in && connected")
+      v-row With an account on {{server_name}} you'll be able to create entries and join groups.
+      v-row(align="center")
+        v-col(sm="4" offset="1")
+          v-btn(large to="/register") Register
+        v-col(sm="4")
+          v-btn(large to="/login") Login
+      v-row You can browse through public entries in these domains.
     v-row(align="center" justify="center")
       v-col(class="col-lg-6 col-xs-12")
         div(v-for="domain in domains" :key="domain.title")
@@ -39,6 +42,10 @@
     computed: {
       ...mapGetters([DOMAINS, CONNECTED]),
       ...mapGetters({logged_in: USER_LOGGED_IN}),
+      server_name() {
+        // todo
+        return "OpenTEK.eu"
+      },
       not_partner() {
         return get_release_mode(this.$store) !== LICCI_PARTNERS
       },

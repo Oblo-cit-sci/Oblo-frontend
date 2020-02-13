@@ -70,7 +70,7 @@
         this.selectedLicense = this.find_from_options(this.passedLicense)
         if(!this.selectedLicense) {
           console.log("license does not exist in options", this.passedLicense)
-          console.log("options are", this.$_.map(this.licenseOptions, l => l.value))
+          // console.log("options are", this.$_.map(this.licenseOptions, l => l.value))
           this.selectedLicense = no_license
         }
         this.use_alternative_license = this.selectedLicense.value !== this.$store.state.user.user_data.defaultLicense;

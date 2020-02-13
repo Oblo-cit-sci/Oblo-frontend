@@ -13,7 +13,7 @@
           :class="{ marked: marked(item.value) }"
           class="single_select")
           v-list-item-avatar(v-if="has_some_icons" tile)
-            v-img(:src="icon_path(item)")
+            v-img(:src="icon_path(item)" contain)
           v-list-item-content.align-self-center
             v-list-item-title {{item.text}}
             v-list-item-subtitle {{item.description}}
@@ -23,6 +23,10 @@
         v-divider
   div(v-else-if="view_select")
     v-select(outlined single-line hide-details :multiple=false v-model="selected_item" :items="options" return-object :clearable="clearable" :placeholder="placeholder" :disabled="disabled" )
+    div(v-if="selected_item")
+      div(v-if="selected_item.description") Description: {{selected_item.description}}
+      div(v-if="has_some_icons")
+        v-img(:src="icon_path(selected_item)" contain max-height="40")
   div(v-else-if="view_autocomplete")
     v-autocomplete(outlined single-line v-model="selected_item" :items="options" return-object :clearable="clearable" :placeholder="placeholder" :disabled="disabled" )
   div(v-else-if="view_radiogroup")

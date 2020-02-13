@@ -1,6 +1,8 @@
 const pkg = require('./package')
 const colors = require('vuetify/es5/util/colors')
 
+
+
 /*
 release mode:
 partner
@@ -53,7 +55,7 @@ module.exports = {
 
   router: {
     middleware: ['init'],
-    base: "/appbeta/"
+    base: "/fe/"
   },
 
   /*
@@ -105,6 +107,8 @@ module.exports = {
     // See https://github.com/nuxt-community/axios-module#options
     baseURL: "http://localhost:8100", //"http://192.168.1.36:5000", // //"http://158.109.161.247:5000",, //, // ,
     withCredentials: true,
+
+
     // credentials: true,
     // proxyHeaders: true,
   },

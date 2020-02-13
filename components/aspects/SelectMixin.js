@@ -49,7 +49,11 @@ export default {
       if (this.aspect.attr.hasOwnProperty("select") && this.aspect.attr.select === "check") {
         this.select_check = true
       }
-      this.options = string_list2options(this.aspect.items)
+      if(typeof this.aspect.items[0] === "string") {
+        this.options = string_list2options(this.aspect.items)
+      } else { // should be objects that have already text, value, ...
+        this.options = this.aspect.items
+      }
     } else {
       console.log("ERROR cannot create options from aspect items", this.aspect.items)
     }
