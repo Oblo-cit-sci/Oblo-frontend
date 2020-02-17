@@ -29,7 +29,6 @@ export const state = () => ({
   page_path: []
 })
 
-
 const ld = require('lodash')
 
 export const mutations = {

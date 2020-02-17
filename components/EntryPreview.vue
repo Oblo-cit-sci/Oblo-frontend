@@ -32,7 +32,7 @@
       v-divider(light)
       v-card-actions
         div
-          v-btn(v-if="has_type" small text outlined @click="goto(entry)") {{goto_text}}
+          v-btn(v-if="has_type" small text outlined @click="goto(entry.uuid)") {{goto_text}}
           v-btn(small text outlined :color="act.color || 'green'"
             v-for="act in additional_actions"
             :key="act.name"
@@ -216,20 +216,6 @@
       }
     },
     methods: {
-      goto() {
-        if (!this.prevent_page_change) {
-          this.$store.commit(INIT_PAGE_PATH, this.$route)
-          // console.log("entrypreview goto", this.$route)
-          const uuid = this.uuid
-          if (this.$store.getters[ENTRIES_HAS_ENTRY](uuid))
-            this.to_entry(uuid)
-          else
-            this.fetch_and_nav(uuid)
-        } else {
-          console.log(this.entry.uuid, this.goto_text)
-          this.$emit("preview_action", {uuid: this.entry.uuid, action: this.goto_text})
-        }
-      },
       privacy_icon(privacy) {
         return privacy_icon(privacy)
       },

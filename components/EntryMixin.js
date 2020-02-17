@@ -58,7 +58,6 @@ export default {
       return this.entry.actors
     },
     template_slug() {
-      console.log(this.entry)
       return this.entry.template.slug
     },
     template() {

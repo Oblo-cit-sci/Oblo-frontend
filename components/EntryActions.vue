@@ -5,10 +5,10 @@
       v-if="has_pages"
       :page="page"
       @update:page="update_page($event)"
-      :total="entry_type.rules.pages.length"
+      :total="template.rules.pages.length"
       :named_pages="named_pages"
       :entry="entry"
-      :pages="entry_type.rules.pages"
+      :pages="template.rules.pages"
       @lastpage="more_follow_page = ($event)")
       // todo this can come back
     span(v-if="can_edit")
@@ -212,13 +212,13 @@
         return this.entry.status === SUBMITTED
       },
       private_local() {
-        return (this.entry_type.rules.privacy || PUBLIC) === PRIVATE_LOCAL
+        return (this.template.rules.privacy || PUBLIC) === PRIVATE_LOCAL
       },
       connected() {
         return this.$store.state.connected
       },
       has_pages() {
-        return has_pages(this.entry_type)
+        return has_pages(this.template)
       },
       disable_download() {
         return false; // this.has_pages && !this.last_page
@@ -244,15 +244,15 @@
         return relation === CREATOR.key
       },
       upload_option() {
-        return this.entry_type.rules.hasOwnProperty("activities") &&
-          this.entry_type.rules.activities.hasOwnProperty("upload")
+        return this.template.rules.hasOwnProperty("activities") &&
+          this.template.rules.activities.hasOwnProperty("upload")
       },
       initial_version() {
         return this.entry.version === 0
       },
       can_download() {
-        //console.log(this.entry_type.rules.download)
-        return this.partner_mode && this.entry_type.rules.download
+        //console.log(this.template.rules.download)
+        return this.partner_mode && this.template.rules.download
       },
       partner_mode() {
         return get_release_mode(this.$store) === LICCI_PARTNERS

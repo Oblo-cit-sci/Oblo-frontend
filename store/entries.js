@@ -163,10 +163,10 @@ export const mutations = {
     state.entries.get(uuid).parent_type_version = version
   },
   insert_missing_default_values(state, {uuid, type_default_values}) {
-    let aspects_values = state.entries.get(uuid).aspects_values
+    let values = state.entries.get(uuid).values
     for (let key in type_default_values) {
-      if (!aspects_values.hasOwnProperty(key)) {
-        aspects_values[key] = type_default_values[key]
+      if (!values.hasOwnProperty(key)) {
+        values[key] = type_default_values[key]
       }
     }
   },
@@ -318,7 +318,7 @@ export const getters = {
   get_entry_title: function (state, getters) {
     return (uuid = state.edit.uuid) => {
       const entry = getters.get_entry(uuid)
-      const type = getters.get_entry_type(entry.type_slug)
+      const type = getters.get_entry_type(entry.template.slug)
       let titleAspect = get_entry_titleAspect(type)
       if (!titleAspect) {
         //console.log("entries.get_entry_title TODO, use default title for type")
@@ -338,7 +338,7 @@ export const getters = {
   entry_location: function (state, getters) {
     return (uuid = state.edit.uuid) => {
       const entry = getters.get_entry(uuid)
-      const entry_type = getters.get_entry_type(entry.type_slug)
+      const entry_type = getters.get_entry_type(entry.template.slug)
       const locationAspect = entry_type.rules.locationAspect
       let location = null
       if (locationAspect) {
@@ -365,14 +365,14 @@ export const getters = {
   domain: function (state, getters, rootState, rootGetters) {
     return (uuid = state.edit.uuid) => {
       const entry = getters.get_entry(uuid)
-      const etype = getters.get_entry_type(entry.type_slug)
+      const etype = getters.get_entry_type(entry.template.slug)
       return rootGetters.domain_of_type(etype.slug).title
     }
   },
   entry_tags(state, getters) {
     return (uuid = state.edit.uuid) => {
       const entry = getters.get_entry(uuid)
-      const entry_type = getters.get_entry_type(entry.type_slug)
+      const entry_type = getters.get_entry_type(entry.template.slug)
       const tagsAspect = entry_type.rules.tagsAspect
       const all_tags = {}
       for (let tags_type in tagsAspect) {
@@ -390,7 +390,7 @@ export const getters = {
     }
   },
   all_entries_of_type(state, getters) {
-    return type_slug => getters.all_entries_array().filter(e => e.type_slug === type_slug)
+    return type_slug => getters.all_entries_array().filter(e => e.template.slug === type_slug)
   },
   get_orphans(state, getters) {
     ld.filter(getters.all_entries_array(), e => e.state === "orphan")
@@ -473,9 +473,9 @@ export const actions = {
     }
   },
   update_parent_version(context, uuid = context.state.edit.uuid) {
-    const etype = context.getters.get_entry_type(context.getters.get_entry(uuid).type_slug)
-    const type_default_values = default_values(etype)
+    const template = context.getters.get_entry_type(context.getters.get_entry(uuid).template.slug)
+    const type_default_values = default_values(template)
     context.commit("insert_missing_default_values", {uuid, type_default_values})
-    context.commit("_update_parent_version", {uuid, version: etype.version})
+    context.commit("_update_parent_version", {uuid, version: template.version})
   }
 }

@@ -5,7 +5,7 @@
         Title_Description(
           :title="page_title"
           header_type="h1"
-          :description="entry_type.description"
+          :description="template.description"
           mode="edit")
         div(v-if="has_parent")
           span This entry is part of:&nbsp
@@ -46,7 +46,7 @@
         Title_Description(
           :title="page_title"
           header_type="h1"
-          :description="entry_type.description")
+          :description="template.description")
         div(v-if="has_parent")
           span This entry is part of:&nbsp
           a(@click="to_parent(true, mode)") {{parent_title}}
@@ -125,7 +125,7 @@
     },
     data() {
       return {
-        required_values: [], // shortcut, but in entry_type
+        required_values: [], // shortcut, but in template
         sending: false,
         complete: true,
         // todo abstact aspect-pagination
@@ -138,9 +138,9 @@
       }
     },
     created() {
-      //console.log("entry index create", this.entry.aspects_values.)
+      //console.log("entry index create", this.entry.values.)
       this.$store.dispatch(ENTRIES_SET_EDIT, this.uuid)
-      let required_aspects = this.$_.filter(this.entry_type.aspects, (a) => a.required || false)
+      let required_aspects = this.$_.filter(this.template.aspects, (a) => a.required || false)
       this.required_values = this.$_.map(required_aspects, (a) => {
         return a.name
       })
@@ -179,7 +179,7 @@
       },
       check_complete() {
         for (let aspect_name of this.required_values) {
-          let val = this.entry.aspects_values[aspect_name]
+          let val = this.entry.values[aspect_name]
           //console.log("checking", aspect_name, val)
           if (val === null || val === "") {
             this.complete = false
@@ -210,11 +210,10 @@
         return [EDIT, this.uuid, this.type_slug]
       },
       aspects() {
-        const entry_type = this.$store.getters[ENTRYTYPES_TYPE](this.entry.type_slug)
-        return entry_type.aspects
+        return this.$store.getters[ENTRYTYPES_TYPE](this.template_slug).aspects
       },
       privacy_mode() {
-        const privacy_set = this.entry_type.rules.privacy
+        const privacy_set = this.template.rules.privacy
         return privacy_set ? VIEW : EDIT
       },
       licence_mode() {
@@ -230,9 +229,9 @@
       // maybe also consider:
       // https://github.com/edisdev/download-json-data/blob/develop/src/components/Download.vue
       page_info() {
-        //console.log(this.entry_type, this.page, this.entry_type.rules.pages[this.page])
+        //console.log(this.template, this.page, this.template.rules.pages[this.page])
         if (this.has_pages)
-          return this.entry_type.rules.pages[this.page]
+          return this.template.rules.pages[this.page]
         else
           return null
       },

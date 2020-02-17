@@ -10,7 +10,7 @@
     div(v-if="testmode")
       Aspect(
         :aspect="aspect"
-        v-bind:value.sync="aspects_value"
+        v-bind:value.sync="values"
         v-on:entryAction="entryAction($event)"
         mode="edit"
         :extra="{}")
@@ -27,7 +27,7 @@
             input: "",
             aspect: {},
             testmode: false,
-            aspects_value: {value: null},
+            values: {value: null},
             etypes: [],
             selection: {etype: null, aspect:null}
           }

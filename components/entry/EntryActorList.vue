@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    v-chip(v-for="actor_role in actors" pill)
+    v-chip(v-for="actor_role in actors" pill :key="actor_role.actor.registered_name")
       v-avatar(left)
         v-img(:src="avatar(actor_role.actor)")
       span {{actor_role.actor.public_name}}

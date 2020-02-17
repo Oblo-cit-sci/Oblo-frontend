@@ -1,6 +1,12 @@
 import {fetch_entry} from "../lib/entry";
 import {GLOBAL, NO_DOMAIN, VIEW} from "../lib/consts";
-import {DOMAIN, ENTRIES_GET_ENTRY, ENTRYTYPES_GET_ASPECT_DEF, POP_LAST_PAGE_PATH} from "../lib/store_consts";
+import {
+  DOMAIN,
+  ENTRIES_GET_ENTRY, ENTRIES_HAS_ENTRY, ENTRIES_SAVE_ENTRY,
+  ENTRYTYPES_GET_ASPECT_DEF,
+  INIT_PAGE_PATH,
+  POP_LAST_PAGE_PATH
+} from "../lib/store_consts";
 import {aspect_loc_str} from "../lib/aspect";
 import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
 import NavBaseMixin from "./NavBaseMixin";
@@ -12,9 +18,26 @@ export default {
     has_entry(uuid) {
       return this.$store.getters[ENTRIES_GET_ENTRY](uuid)
     },
+    goto(uuid) {
+      console.log("goto")
+      if (!this.prevent_page_change) {
+        this.$store.commit(INIT_PAGE_PATH, this.$route)
+        // console.log("entrypreview goto", this.$route)
+        if (this.$store.getters[ENTRIES_HAS_ENTRY](uuid))
+          this.to_entry(uuid)
+        else
+          this.fetch_and_nav(uuid)
+      } else {
+        console.log(this.entry.uuid, this.goto_text)
+        this.$emit("preview_action", {uuid: this.entry.uuid, action: this.goto_text})
+      }
+    },
     fetch_and_nav(uuid, mode = VIEW) {
-      fetch_entry(this.$store, this.$axios, uuid).then(entry => {
-        console.log("downloading entry", entry)
+      fetch_entry(this.$store, this.$axios, uuid).then(res => {
+        console.log("downloading entry", res)
+        const entry = res.data
+        entry.local = {}
+        this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
         this.to_entry(uuid, mode)
       }).catch(() => {
         // todo ENH: could also be an error msg from the server
@@ -54,7 +77,7 @@ export default {
   },
   computed: {
     in_context() {
-      return this.entry_type.rules.context !== GLOBAL || this.entry.refs.parent
+      return this.template.rules.context !== GLOBAL || this.entry.refs.parent
     },
     domain() {
       return this.$store.getters[DOMAIN]

@@ -224,7 +224,7 @@
       },
       db_loaded(val, old) {
         // console.log("db_loaded", val)
-        console.log(this.$store.getters[ENTRIES_ALL_ENTRIES_ARRAY]())
+        // console.log(this.$store.getters[ENTRIES_ALL_ENTRIES_ARRAY]())
         if (val && !this.initialized) {
           console.log("layout. initializing")
           initialize(this.$axios, this.$store, this.$localForage).then(() => {
