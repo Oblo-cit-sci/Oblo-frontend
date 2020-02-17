@@ -105,7 +105,7 @@ module.exports = {
   */
   axios: {
     // See https://github.com/nuxt-community/axios-module#options
-    baseURL: "http://localhost:8100", //"http://192.168.1.36:5000", // //"http://158.109.161.247:5000",, //, // ,
+    baseURL: "http://localhost:8100/api",
     withCredentials: true,
     defaults: {
       paramsSerializer: function (params) {
