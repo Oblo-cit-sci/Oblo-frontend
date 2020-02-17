@@ -3,10 +3,8 @@
     h2.mb-2 Registration
     v-form
       Aspect(v-for="a of aspects" :aspect="a" :ext_value.sync="a.value" mode="edit" :key="a.name")
-      v-select(v-model='defaultPrivacy' :items='defaultPrivacyOptions' label='Default Privacy')
-      v-select(v-model='defaultLicense' :items='defaultLicenseOptions' label='Default License')
-      v-img(:src='licenses[defaultLicense].icon' max-width='88')
-      a(href="https://creativecommons.org/choose/" target="_blank") learn more
+      span learn more about
+      a(href="https://creativecommons.org/choose/" target="_blank") creative commons licences
     v-btn(@click='submit' :disabled="submitStatus === 'PENDING'" color='success') Submit!
     v-alert(:value='errorMsg' type='error') {{errorMsg}}
 </template>
@@ -18,12 +16,19 @@
   import licenses from '@@/codes/licenses.json'
   import Aspect from "../components/Aspect";
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
+  import {license_aspect} from "../lib/typical_aspects";
 
   export default {
     name: "register",
     components: {Aspect},
     mixins: [validationMixin, TriggerSnackbarMixin],
     data() {
+      const default_license = this.$_.cloneDeep(license_aspect(this.$store, ["cc_licenses"]))
+      default_license.name = "default_licence"
+      default_license.label = "Default licence"
+      default_license.value = "CC-BY"
+      default_license.attr.unpacked = true
+
       return {
         aspects: {
           registered_name: {
@@ -31,23 +36,21 @@
             name: "Username",
             attr: {
               max: 30,
-              unpacked:true,
+              unpacked: true,
               extra: {
                 rules: [
                   v => v && v.length >= 4 || 'Username must have at 4 characters',
                 ]
               }
             },
-            value: {
-              value: ""
-            }
+            value: ""
           },
           email: {
             type: "str",
             name: "email",
             attr: {
               max: 40,
-              unpacked:true,
+              unpacked: true,
               extra: {
                 rules: [
                   v => !!v || 'E-mail is required',
@@ -55,16 +58,15 @@
                 ]
               }
             },
-            value: {
-              value: ""
-            }
+            value: ""
           },
           password: {
             type: "str",
             name: "password",
+            label: "Password",
             attr: {
               max: 40,
-              unpacked:true,
+              unpacked: true,
               component_type: "password",
               extra: {
                 rules: [
@@ -73,16 +75,15 @@
                 ]
               }
             },
-            value: {
-              value: ""
-            }
+            value: ""
           },
           password_confirm: {
             type: "str",
             name: "repeat password",
+            label: "Repeat password",
             attr: {
               max: 40,
-              unpacked:true,
+              unpacked: true,
               component_type: "password",
               extra: {
                 rules: [
@@ -90,34 +91,35 @@
                 ]
               }
             },
-            value: {
-              value: ""
-            }
-          }
+            value: ""
+          },
+          default_privacy: {
+            name: "default_privacy",
+            label: "Default privacy",
+            type: "select",
+            attr: {
+              unpacked: true,
+              force_view: "select"
+            },
+            items: ["public", "private"],
+            value: "public"
+          },
+          default_license: default_license
         },
-        // MUST MATCH THE ENUM values app.models.Privacy.Privacy
-        defaultPrivacyOptions: ["public", "private"], // "followers_only",
-        defaultPrivacy: "public",
-        defaultLicense: "BY-NC",
-        licenses: licenses,
-        defaultLicenseOptions: Object.keys(licenses),
         submitStatus: null,
         errorMsg: null
       }
     },
     methods: {
       // use this as a function to select/highlight a privacy from the list
-      selectPrivacy(pri) {
-        this.defaultPrivacy = pri
-      },
       submit() {
         this.$axios.post("/actor", {
           registered_name: this.aspects.registered_name.value,
           email: this.aspects.email.value,
           password: this.aspects.password.value,
           password_confirm: this.aspects.password_confirm.value,
-          // defaultPrivacy: this.defaultPrivacy,
-          // defaultLicense: this.defaultLicense
+          default_privacy: this.aspects.default_privacy.value,
+          default_license: this.aspects.default_license.value
         }).then(({data}) => {
           if (data.status) {
             this.$router.push("/login")
