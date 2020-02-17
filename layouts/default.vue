@@ -47,18 +47,6 @@
           </v-list-item-content>
         </v-list-item>
       </v-toolbar-title>
-      <!--      <v-spacer></v-spacer>-->
-      <!--      <div v-if="logged_in">-->
-      <!--        <v-btn v-for="(item, i) in header_items"-->
-      <!--               :key="i"-->
-      <!--               :to="item.to"-->
-      <!--               icon-->
-      <!--               router-->
-      <!--               nuxt-->
-      <!--               exact>-->
-      <!--          <v-icon>{{ item.icon }}</v-icon>-->
-      <!--        </v-btn>-->
-      <!--      </div>-->
     </v-app-bar>
     <v-content>
       <v-container v-if="initialized">
