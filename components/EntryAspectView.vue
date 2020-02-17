@@ -34,7 +34,7 @@
         },
         computed: {
             entry_type() {
-                return this.$store.getters[ENTRYTYPES_TYPE](this.entry.type_slug)
+                return this.$store.getters[ENTRYTYPES_TYPE](this.entry.template.slug)
             },
             shown_aspects() {
                 if (this.has_pages) {

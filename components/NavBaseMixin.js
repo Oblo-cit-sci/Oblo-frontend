@@ -1,10 +1,11 @@
 import {VIEW} from "../lib/consts";
+import {get_proper_mode} from "~/lib/entry";
 
 export default {
   name: "NavBaseMixin",
   methods: {
-    to_entry(uuid, mode = this.proper_mode_for(uuid), query = {}) {
-
+    to_entry(uuid, mode = VIEW, query = {}) {
+      // console.log("to entry")
       let route = {
         name: "entry-uuid",
         params: {
@@ -16,9 +17,6 @@ export default {
         }
       }
       this.$router.push(route)
-    },
-    proper_mode_for(uuid) {
-      return this.$store.getters['entries/get_propper__mode'](uuid)
     }
   }
 }

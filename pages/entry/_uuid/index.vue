@@ -52,6 +52,7 @@
           a(@click="to_parent(true, mode)") {{parent_title}}
         div
           MetaChips(:meta_aspects="meta_aspects_privacy")
+          EntryActorList.mt-2(:actors="actors")
         v-divider(class="wide_divider")
       v-col(class="entry-meta" cols=12 v-bind:class="[show_image ? 'col-md-9' : 'col-md-12']")
         div(v-if="has_pages")
@@ -109,7 +110,8 @@
   import TriggerSnackbarMixin from "../../../components/TriggerSnackbarMixin";
   import PersistentStorageMixin from "../../../components/PersistentStorageMixin";
   import FullEntryMixin from "../../../components/FullEntryMixin";
-  import {cc_license_aspect, license_aspect} from "../../../lib/typical_aspects";
+  import {license_aspect} from "../../../lib/typical_aspects";
+  import EntryActorList from "../../../components/entry/EntryActorList";
 
   export default {
     name: "uuid",
@@ -121,7 +123,8 @@
       EntryActions,
       Title_Description,
       Privacy, License,
-      MetaChips
+      MetaChips,
+      EntryActorList
     },
     data() {
       return {

@@ -8,7 +8,7 @@ import {
 import {export_data} from "../lib/import_export";
 import {ENTRIES_SET_DOWNLOADED, SEARCH_GET_ENTRY} from "~/lib/store_consts";
 import {loc_append} from "~/lib/aspect";
-import {ASPECT, ENTRY} from "~/lib/consts";
+import {ASPECT, ENTRY, GLOBAL} from "~/lib/consts";
 
 export default {
   name: "EntryMixin",
@@ -31,6 +31,9 @@ export default {
       } else {
         return this.$route.params.uuid
       }
+    },
+    in_context() {
+      return this.template.rules.context !== GLOBAL || this.entry.refs.parent
     },
     entry() {
       let entry = this.$store.getters[ENTRIES_GET_ENTRY](this.uuid)
@@ -91,7 +94,7 @@ export default {
       return this.template.title + (this.title ? ": " + this.title : "")
     },
     aspect_loc() {
-      return [ENTRY, this.uuid, this.type_slug]
+      return [ENTRY, this.uuid, this.template.slug]
     },
     shown_aspects() {
       if (this.has_pages) {

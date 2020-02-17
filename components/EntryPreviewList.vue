@@ -4,7 +4,6 @@
       div {{num_entries}} Entries
     v-row(v-for="entry in visible_entries"
       :key="entry.id" class="col-sm-12 col-xs-6")
-      div {{entry}}
       v-col
         Entrypreview(
           :passed_uuid="entry.uuid"
@@ -70,7 +69,7 @@
           new Set(
             this.$_.map(
               this.entries,
-              e => this.$store.getters[ENTRYTYPES_TYPE](e.type_slug))).values())
+              e => this.$store.getters[ENTRYTYPES_TYPE](e.template.slug))).values())
       }
     },
     methods: {

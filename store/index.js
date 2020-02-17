@@ -223,12 +223,12 @@ export const getters = {
       return object_list2options(state.domains, TITLE)
     }
   },
-  conaining_types_options(state, getters) {
+  containing_template_options(state, getters) {
     return () => {
       const types = new Set()
       for (let entry of state.entries.entries.values()) {
         // console.log(entry.type_slug)
-        types.add(entry.type_slug)
+        types.add(entry.template.slug)
       }
       // console.log("conaining_types_options", types)
       // console.log("as array", Array.from(types))

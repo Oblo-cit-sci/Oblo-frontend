@@ -18,7 +18,7 @@
         v-btn(color="warning" @click="show_delete") delete
         v-btn( color="success" @click="save") {{save_word}}
         v-btn(
-          v-if="!private_local && !view && !in_context && !partner_mode"
+          v-if="can_submit"
           color="success"
           @click="submit"
           :disabled="!connected"
@@ -74,7 +74,6 @@
     },
     data() {
       return {
-        NOT_TRAINING: false,
         dialog_visible: false,
         delete_dialog_data: {
           id: "delete",
@@ -173,8 +172,9 @@
         this.sending = true
         // would be the same as checking submitted
         if (this.entry.status === DRAFT) {
-          const all_entries = this.$_.concat([this.entry], this.$store.getters[ENTRIES_GET_CHILDREN](this.entry))
-          this.$axios.post("/create_entry", all_entries).then((res) => {
+          // const all_entries = this.$_.concat([this.entry], this.$store.getters[ENTRIES_GET_CHILDREN](this.entry))
+          // todo, make the BE  work with many entries
+          this.$axios.post("/entry", this.entry).then((res) => {
             this.sending = false
             this.snackbar(res.data.status, res.data.msg)
             this.entry.status = SUBMITTED
@@ -241,7 +241,10 @@
         if (get_release_mode(this.$store) === LICCI_PARTNERS)
           return true
         let relation = entry_actor_relation(this.entry, this.$store.getters.user)
-        return relation === CREATOR.key
+        return relation === CREATOR.actors_key
+      },
+      can_submit() {
+        return !this.private_local && !this.view && !this.in_context && !this.partner_mode
       },
       upload_option() {
         return this.template.rules.hasOwnProperty("activities") &&

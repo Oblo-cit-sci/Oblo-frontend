@@ -252,8 +252,8 @@
   }
 
   .wide_divider {
-    margin-top: 2%;
-    margin-bottom: 2%;
+    margin-top: 1.6%;
+    margin-bottom: 1.6%;
   }
 
   .disabled * {

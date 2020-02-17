@@ -10,12 +10,6 @@ export const mutations = {
     state.entry_aspects = new Map()
     for(let entry of entries) {
       state.entries.set(entry.uuid,entry)
-      // todo later.. bring back aspects that contain search results
-      // if(entry.length > 1) {
-      //   let aspects_names = state.entry_aspects.get(entry[0]) || []
-      //   aspects_names.push(entry[2])
-      //   state.entry_aspects.set(entry[0], aspects_names)
-      // }
     }
   },
   clear(state) {

@@ -48,12 +48,11 @@
   import {
     EDIT_UUID,
     ENTRIES_DOMAIN, ENTRIES_GET_RECURSIVE_ENTRIES,
-    ENTRIES_HAS_ENTRY,
     ENTRIES_SAVE_CHILD_N_REF,
     ENTRIES_VALUE,
     ENTRYTYPES_HAS_TYPE,
     ENTRYTYPES_TYPENAME,
-    SEARCH_ENTRY_ASPECT, INIT_PAGE_PATH, ENTRIES_GET_ENTRY, MAP_GOTO_LOCATION,
+    SEARCH_ENTRY_ASPECT
   } from "../lib/store_consts";
   import {privacy_icon, printDate, static_file_path} from "../lib/util"
   import {EDIT, ENTRY, VIEW} from "../lib/consts"
@@ -115,7 +114,7 @@
         return printDate(new Date(this.entry.creation_ts))
       },
       proper_mode() {
-        return get_proper_mode(this.$store, this.entry)
+        return get_proper_mode(this.entry, this.$store)
       },
       goto_text() {
         if (this.outdated)

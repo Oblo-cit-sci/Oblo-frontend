@@ -19,9 +19,10 @@
 <script>
     import {license_icon} from "../lib/client"
     import EntryNavMixin from "./EntryNavMixin";
-    import {ENTRIES_GET_PROPER_MODE, ENTRYTYPES_TYPENAME} from "../lib/store_consts"
+    import {ENTRYTYPES_TYPENAME} from "../lib/store_consts"
     import {CREATOR, entry_actor_relation} from "../lib/actors";
     import {privacy_icon} from "../lib/util";
+    import {get_proper_mode} from "../lib/entry";
 
     export default {
         name: "Entrylist",
@@ -39,7 +40,7 @@
         },
         methods: {
             show(entry) {
-                let mode = this.$store.getters[ENTRIES_GET_PROPER_MODE](entry.uuid)
+                let mode = get_proper_mode(entry, this.$store)
                 this.to_entry(entry.uuid, mode)
                 /*
                 if (this.$store.getters[ENTRIES_HAS_ENTRY](entry.uuid))
@@ -67,11 +68,11 @@
                 console.log("DEPRACATED METHOD!")
                 return  this.$store.getters[ENTRYTYPES_TYPENAME](entry)
                 /*
-                let entry_type = this.$store.getters.entry_type(entry.type_slug)
+                let entry_type = this.$store.getters.entry_type(entry.template.slug)
                 if(entry_type) {
                   return entry_type.title
                 }  else {
-                  return entry.type_slug
+                  return entry.template.slug
                 }
                  */
             }

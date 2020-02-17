@@ -2,7 +2,7 @@
   this is for the own entries
  */
 import {ASPECT, COMPONENT, DRAFT, EDIT, ENTRY, INDEX, PRIVATE_LOCAL, TITLE_ASPECT, VIEW} from "../lib/consts";
-import {default_values, get_entry_titleAspect, get_proper_mode, select_aspect_loc} from "../lib/entry";
+import {default_values, get_entry_titleAspect, select_aspect_loc} from "../lib/entry";
 import {
   aspect_loc_str,
   aspect_loc_str2arr,
@@ -16,6 +16,7 @@ import {ENTRYTYPES_TYPE, GET_ENTRY} from "../lib/store_consts";
 import Vue from "vue"
 import {filter_empty, filter_no_value, flatten_collection_of_lists, recursive_unpack} from "../lib/util";
 import {_SET_ENTRY_VALUE, SET_DIRTY} from "~/lib/store_consts";
+import {CREATOR, entry_actor_relation} from "~/lib/actors";
 
 const ld = require("lodash")
 
@@ -217,11 +218,11 @@ export const getters = {
       } else {
         const user_rights = getters.user_rights(undefined, e.uuid)
         const status = getters.get_status(e.uuid)
-        if (user_rights === EDIT && status === DRAFT) {
-          return EDIT
-        } else {
-          return VIEW
-        }
+        // if (user_rights === EDIT && status === DRAFT) {
+        //   return EDIT
+        // } else {
+        //   return VIEW
+        // }
       }
     }
   },
@@ -261,7 +262,7 @@ export const getters = {
     // todo
   },
   user_rights(state, getters, rootState, rootGetters) { // ENTRIES_USER_RIGHTS
-    return (user_uid = rootGetters["user/user_uid"], uuid = state.edit.uuid) => {
+    return (uuid = state.edit.uuid) => {
       const entry = getters[GET_ENTRY](uuid)
       if (ld.find(entry.actors.owners, owner => owner.uid === user_uid)) {
         return EDIT
@@ -348,15 +349,6 @@ export const getters = {
           location = location.value
       }
       return location
-    }
-  },
-  get_proper_mode(state, getters) {
-    // when entry is private local, always > edit
-    // whenlocationAspectlocationAspect owner, draft > edit
-    // otherwise > view
-    return (uuid = state.edit.uuid) => {
-      const entry = getters.get_entry(uuid)
-      return get_proper_mode(entry)
     }
   },
   get_search_entries: function (state) {

@@ -1,4 +1,4 @@
-import {fetch_entry} from "../lib/entry";
+import {fetch_entry, get_proper_mode} from "../lib/entry";
 import {GLOBAL, NO_DOMAIN, VIEW} from "../lib/consts";
 import {
   DOMAIN,
@@ -19,12 +19,13 @@ export default {
       return this.$store.getters[ENTRIES_GET_ENTRY](uuid)
     },
     goto(uuid) {
-      console.log("goto")
       if (!this.prevent_page_change) {
         this.$store.commit(INIT_PAGE_PATH, this.$route)
         // console.log("entrypreview goto", this.$route)
-        if (this.$store.getters[ENTRIES_HAS_ENTRY](uuid))
-          this.to_entry(uuid)
+        if (this.$store.getters[ENTRIES_HAS_ENTRY](uuid)) {
+          const proper_mode = get_proper_mode(this.$store.getters[ENTRIES_GET_ENTRY](uuid), this.$store)
+          this.to_entry(uuid, proper_mode)
+        }
         else
           this.fetch_and_nav(uuid)
       } else {
@@ -32,13 +33,14 @@ export default {
         this.$emit("preview_action", {uuid: this.entry.uuid, action: this.goto_text})
       }
     },
-    fetch_and_nav(uuid, mode = VIEW) {
+    fetch_and_nav(uuid) {
       fetch_entry(this.$store, this.$axios, uuid).then(res => {
         console.log("downloading entry", res)
         const entry = res.data
         entry.local = {}
+        const proper_mode = get_proper_mode(entry, this.$store)
         this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
-        this.to_entry(uuid, mode)
+        this.to_entry(uuid, proper_mode)
       }).catch(() => {
         // todo ENH: could also be an error msg from the server
         this.error_snackbar("Couldn't fetch entry")
@@ -47,7 +49,7 @@ export default {
     to_parent(to_last_element = true, mode = VIEW) {
       if (this.in_context) {
         const parent_ref = this.entry.refs.parent
-        let parent_entry_type_slug = this.$store.getters[ENTRIES_GET_ENTRY](parent_ref.uuid).type_slug
+        let parent_entry_type_slug = this.$store.getters[ENTRIES_GET_ENTRY](parent_ref.uuid).template.slug
 
         const uuid = parent_ref.uuid
 

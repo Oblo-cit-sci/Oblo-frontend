@@ -31,7 +31,7 @@
         },
         computed: {
             missing() {
-                const aspects = this.entry_type.aspects
+                const aspects = this.template.aspects
                 let missing = []
                 for (let aspect of aspects) {
                     //console.log("val", aspect.name)
@@ -41,7 +41,7 @@
                     }
                     if (required) {
                         // todo, value thing not so elegant...
-                        const a_w_value = this.entry.aspects_values[aspect.name] || pack_value(null)
+                        const a_w_value = this.entry.values[aspect.name] || pack_value(null)
                         //console.log("val-", aspect.name, a_w_value)
                         const a_value = a_w_value.value
                         const base_aspect_loc = loc_append([[EDIT, this.entry.uuid]], ASPECT, aspect.name)
