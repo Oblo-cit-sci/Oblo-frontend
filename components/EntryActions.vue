@@ -174,7 +174,7 @@
         if (this.entry.status === DRAFT) {
           // const all_entries = this.$_.concat([this.entry], this.$store.getters[ENTRIES_GET_CHILDREN](this.entry))
           // todo, make the BE  work with many entries
-          this.$axios.post("/entry", this.entry).then((res) => {
+          this.$api.post_entry(this.entry).then((res) => {
             this.sending = false
             this.snackbar(res.data.status, res.data.msg)
             this.entry.status = SUBMITTED

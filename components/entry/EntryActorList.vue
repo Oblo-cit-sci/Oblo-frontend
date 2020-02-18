@@ -16,7 +16,7 @@
     },
     methods: {
       avatar(actor) {
-        return this.$axios.defaults.baseURL + "/actor/" + actor.registered_name + "/avatar"
+        return this.$api.url_actor__$registered_name__avatar(actor.registered_name)
       }
     }
   }

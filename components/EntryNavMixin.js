@@ -25,8 +25,7 @@ export default {
         if (this.$store.getters[ENTRIES_HAS_ENTRY](uuid)) {
           const proper_mode = get_proper_mode(this.$store.getters[ENTRIES_GET_ENTRY](uuid), this.$store)
           this.to_entry(uuid, proper_mode)
-        }
-        else
+        } else
           this.fetch_and_nav(uuid)
       } else {
         console.log(this.entry.uuid, this.goto_text)
@@ -34,7 +33,7 @@ export default {
       }
     },
     fetch_and_nav(uuid) {
-      fetch_entry(this.$store, this.$axios, uuid).then(res => {
+      this.$api.entry__$uuid(uuid).then(res => {
         console.log("downloading entry", res)
         const entry = res.data
         entry.local = {}
@@ -59,7 +58,7 @@ export default {
           aspect_name: parent_ref.aspect_loc[0][1]
         })
         let query = {
-          page:  aspect_def.attr.page,
+          page: aspect_def.attr.page,
         }
         if (to_last_element) {
           const aspect_id = aspect_loc_str(parent_ref.aspect_loc)
@@ -68,11 +67,11 @@ export default {
         this.$store.commit(POP_LAST_PAGE_PATH)
         this.to_entry(uuid, mode, query)
       } else {
-        if(this.domain.value === NO_DOMAIN) {
+        if (this.domain.value === NO_DOMAIN) {
           this.$router.push("/")
         } else {
           // todo could be a bit nicer (named router, route param...)
-          this.$router.push("/domain/"+ this.domain.value)
+          this.$router.push("/domain/" + this.domain.value)
         }
       }
     }

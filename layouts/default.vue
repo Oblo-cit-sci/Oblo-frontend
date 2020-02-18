@@ -203,15 +203,21 @@
         console.log("db loaded", this.initialized)
         if (val && !this.initialized) {
           console.log("layout. initializing")
-          initialize(this.$axios, this.$store, this.$route).then(() => {
+          initialize(this.$api, this.$store, this.$route).then(() => {
             console.log("layout init done, promise done")
           })
           console.log("layout init done")
-
           const user_data = this.$store.getters[USER_GET_USER_DATA]
           if(user_data.auth_token.access_token) {
-            this.$store.commit(USER_LOGIN)
-            this.$axios.setToken("Bearer " + user_data.auth_token.access_token)
+            this.$api.actor__validate_token(user_data.auth_token).then(res => {
+              if(res.data.token_valid) {
+                this.$store.commit(USER_LOGIN)
+                this.$axios.setToken("Bearer " + user_data.auth_token.access_token)
+              } else {
+                this.$store.commit("user/reset_auth_token")
+                this.error_snackbar("You are logged out")
+              }
+            })
           }
         }
       }

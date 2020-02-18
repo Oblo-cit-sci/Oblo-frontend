@@ -76,7 +76,7 @@
     layout: "map_layout_depr",
     data() {
       return {
-        accessToken: access_token, // your access token. Needed if you using Mapbox maps
+        accessToken: access_token, // your access post_token. Needed if you using Mapbox maps
         mapStyle: licci_style_map, //'mapbox://styles/mapbox/streets-v11', // your map style,
         display_coordinates: null,
         mapCssStyle: "",

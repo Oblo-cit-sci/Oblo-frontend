@@ -24,7 +24,7 @@ let default_user_data = {
   auth_token: {
     access_token: null,
     token_type: "",
-    expiration_date: Date()
+    expiration_date: null
   }
 }
 
@@ -65,20 +65,27 @@ export const mutations = {
   login(state) {
     state.logged_in = true
   },
-  set_auth_token(state,auth_token) {
+  set_auth_token(state, auth_token) {
     state.auth_token = auth_token
+  },
+  reset_auth_token(state) {
+    state.auth_token = {
+      access_token: null,
+      token_type: "",
+      expiration_date: null
+    }
   }
 }
 
 export const actions = {
   guarantee_uuid(context) {
-    if(!context.state.user_data.uid) {
+    if (!context.state.user_data.uid) {
       context.commit("_rnd_uid")
     }
   },
   login({commit}, data) {
     data["auth_token"] = {}
-    for(let k of ["access_token", "token_type", "expiration_date"]) {
+    for (let k of ["access_token", "token_type", "expiration_date"]) {
       data["auth_token"][k] = data[k]
       delete data[k]
     }

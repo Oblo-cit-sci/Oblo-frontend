@@ -113,7 +113,7 @@
     methods: {
       // use this as a function to select/highlight a privacy from the list
       submit() {
-        this.$axios.post("/actor", {
+        this.$api.post_actor({
           registered_name: this.aspects.registered_name.value,
           email: this.aspects.email.value,
           password: this.aspects.password.value,

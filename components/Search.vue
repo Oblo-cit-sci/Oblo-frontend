@@ -179,7 +179,7 @@
         let config = this.searchConfiguration()
         // build_config merges 2 objects,
         //console.log("search.getEntries: config", config)
-        search_entries(this.$axios, this.$store, config)
+        search_entries(this.$api, this.$store, config)
           .then(res => {
             this.searching = false
             this.$emit("received_search_results", this.entries)

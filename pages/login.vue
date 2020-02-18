@@ -47,7 +47,7 @@
     },
     methods: {
       login() {
-        this.$api.token(
+        this.$api.post_token(
           this.aspects[0].value,
           this.aspects[1].value
         ).then(({data}) => {

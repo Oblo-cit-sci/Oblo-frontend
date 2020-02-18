@@ -8,7 +8,6 @@
 <script>
   import {GET_DOMAIN_TEMPLATES_FETCHED, SET_DOMAIN} from "../lib/store_consts"
   import {static_file_path} from "../lib/util";
-  import {get_domain_templates_n_codes} from "../lib/client";
 
   export default {
     name: "DomainCard",
@@ -21,7 +20,7 @@
       goto_domain(domain) {
         if(!this.$store.getters[GET_DOMAIN_TEMPLATES_FETCHED](domain.name)) {
           // console.log("templates not fetched")
-          get_domain_templates_n_codes(domain.name, this.$store, this.$axios).then(({data}) => {
+          this.$api.domain__$domain_name__basic_entries(domain.name).then(({data}) => {
             // console.log("tempaltes fetch res", data)
             this.$store.dispatch("set_templates_codes_for_domain", {
               domain_name: domain.name,
