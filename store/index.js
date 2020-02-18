@@ -227,7 +227,6 @@ export const getters = {
     return () => {
       const types = new Set()
       for (let entry of state.entries.entries.values()) {
-        // console.log(entry.type_slug)
         types.add(entry.template.slug)
       }
       // console.log("conaining_types_options", types)

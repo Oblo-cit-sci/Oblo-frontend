@@ -64,7 +64,13 @@
     DOMAIN,
     CONNECTING,
     CONNECTED,
-    USER_LOGGED_IN, SEARCH_SET_ENTRIES, ENTRIES_ALL_ENTRIES_ARRAY, DB_LOADED, USER_LOGOUT
+    USER_LOGGED_IN,
+    SEARCH_SET_ENTRIES,
+    ENTRIES_ALL_ENTRIES_ARRAY,
+    DB_LOADED,
+    USER_LOGOUT,
+    USER_GET_USER_DATA,
+    USER_LOGIN
   } from "../lib/store_consts"
   import GlobalSnackbar from "../components/GlobalSnackbar"
   import {HOME} from "../lib/consts"
@@ -75,12 +81,8 @@
   import {all_pages_n_actions} from "../lib/pages";
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
 
+  import {mapGetters} from "vuex"
 
-  const header_items = [
-    /*{icon: "",to: "/export"},*/
-    {icon: 'home', to: '/'},
-    /*{icon: 'notifications',title: '',to: '/notifications'},*/
-  ]
 
   let require_login = ["Profile", "Logout"]
   let hide_logged_in = ["Login", "Register"]
@@ -101,20 +103,18 @@
         clipped: false,
         miniVariant: false,
         title: this.$store.getters[DOMAIN] ? this.$store.state.domain.title : HOME,
-        header_items: header_items
       }
     },
     created() {
       if (!this.$store.getters[DB_LOADED]())
         reload_storage(this.$store, this.$localForage)
+      if (!this.$api.is_initialized()) {
+        this.$api.init(this.$axios)
+      }
     },
     computed: {
-              /*
-          ...mapGetters([INITIALIZED, CONNECTING, CONNECTED, USER_LOGGED_IN]),
-        logged_in() {
-        return this.user_logged_in
-        },
-        */
+      ...mapGetters([CONNECTING, CONNECTED, USER_LOGGED_IN, DOMAIN]),
+      ...mapGetters({logged_in: USER_LOGGED_IN}),
       groups() {
         const home = all_pages_n_actions[0]
         let other_pages = this.$_.tail(all_pages_n_actions)
@@ -137,15 +137,6 @@
         console.log("layout.default: calling init?", this.$store.getters[INITIALIZED]())
         return this.$store.getters[INITIALIZED]()
       },
-      connecting() {
-        return this.$store.getters[CONNECTING]
-      },
-      connected() {
-        return this.$store.getters[CONNECTED]
-      },
-      logged_in() {
-        return this.$store.getters[USER_LOGGED_IN]
-      },
       connected_icon() {
         if (this.connected) {
           return "wifi"
@@ -161,12 +152,10 @@
         }
       },
       domain_title() {
-        let domain = this.$store.getters[DOMAIN]
-        return domain ? domain.title : HOME
+        return this.domain ? this.domain.title : HOME
       },
       domain_icon() {
-        let domain = this.$store.getters[DOMAIN]
-        return domain ? static_file_path(this.$store, domain.icon) : undefined
+        return this.domain ? static_file_path(this.$store, this.domain.icon) : undefined
       }
     },
     methods: {
@@ -211,14 +200,19 @@
         }
       },
       db_loaded(val, old) {
-        // console.log("db_loaded", val)
-        // console.log(this.$store.getters[ENTRIES_ALL_ENTRIES_ARRAY]())
+        console.log("db loaded", this.initialized)
         if (val && !this.initialized) {
           console.log("layout. initializing")
-          initialize(this.$axios, this.$store, this.$localForage).then(() => {
+          initialize(this.$axios, this.$store, this.$route).then(() => {
             console.log("layout init done, promise done")
           })
           console.log("layout init done")
+
+          const user_data = this.$store.getters[USER_GET_USER_DATA]
+          if(user_data.auth_token.access_token) {
+            this.$store.commit(USER_LOGIN)
+            this.$axios.setToken("Bearer " + user_data.auth_token.access_token)
+          }
         }
       }
     }

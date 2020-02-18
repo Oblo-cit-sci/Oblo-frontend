@@ -64,6 +64,7 @@ module.exports = {
   plugins: [
     {src: '~/plugins/mapbox', mode: 'client'},
     '~/plugins/lodash.js',
+    {src: '~/plugins/api_wrapper'},
   ],
 
   /*

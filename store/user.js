@@ -22,7 +22,7 @@ let default_user_data = {
   location: "",
   uid: null,
   auth_token: {
-    access_token: "",
+    access_token: null,
     token_type: "",
     expiration_date: Date()
   }
@@ -64,6 +64,9 @@ export const mutations = {
   },
   login(state) {
     state.logged_in = true
+  },
+  set_auth_token(state,auth_token) {
+    state.auth_token = auth_token
   }
 }
 
