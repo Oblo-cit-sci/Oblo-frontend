@@ -1,7 +1,7 @@
 const pkg = require('./package')
 const colors = require('vuetify/es5/util/colors')
 
-
+var qs = require('qs');
 
 /*
 release mode:

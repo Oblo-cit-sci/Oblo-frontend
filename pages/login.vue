@@ -47,7 +47,7 @@
     },
     methods: {
       login() {
-        this.$api.post_token(
+        this.$api.post_actor__login(
           this.aspects[0].value,
           this.aspects[1].value
         ).then(({data}) => {

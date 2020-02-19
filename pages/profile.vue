@@ -11,7 +11,6 @@
       Aspect(v-for="aspect in profile_aspects" :key="aspect.name" :aspect="aspect" :ext_value.sync="aspect.value" :edit="edit_mode" :mode="mode")
       v-file-input(
         v-if="edit_mode"
-        :rules="avatar_rules"
         label="Avatar"
         accept="image/png, image/jpeg, image/bmp"
         @change="avatar_added($event)"
@@ -74,17 +73,9 @@
         this.edit_mode = false;
         this.reset_edit_values()
       },
-      // raw_values() {
-      //   return this.$_.mapValues(this.edits, (value) => {
-      //     //console.log(k,this.edits[k])
-      //     return value.value
-      //   })
-      // },
       doneEdit: function () {
-        console.log("posting", this.profile_aspects)
         const new_profile = extract_unpacked_values(this.profile_aspects)
-        this.$axios.post("/actor/me", new_profile).then(({data}) => {
-          console.log(data)
+        this.$api.post_actor__me(new_profile).then(({data}) => {
           this.$store.commit(USER_SET_USER_DATA, data)
           this.persist_user_data()
           this.edit_mode = false;
@@ -94,23 +85,27 @@
         })
       },
       avatar_added(image) {
-        console.log(image)
-        let formData = new FormData();
-        formData.append('file', image);
-        this.$axios.post( '/single-file',
-          formData,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }
-          }
-        ).then(function(){
-          console.log('SUCCESS!!');
-        })
-          .catch(function(){
-            console.log('FAILURE!!');
-          });
+        if (image) { // check != undefined, which comes from the (not removable? clearable on the fileinput
+          let formData = new FormData();
+          formData.append('file', image)
+          // this.$api.post_actor__avatar(formData)
+          //   .then(function () {
+          //     console.log('SUCCESS!!');
+          //   })
+          //   .catch(function () {
+          //     console.log('FAILURE!!');
+          //   });
 
+
+          formData.append("actor_in", JSON.stringify(extract_unpacked_values({no:3})))
+          this.$api.post_actor__form_test(formData)
+            .then(function () {
+              console.log('SUCCESS!!');
+            })
+            .catch(function () {
+              console.log('FAILURE!!');
+            });
+        }
       }
     },
     data: function () {
