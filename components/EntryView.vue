@@ -61,16 +61,7 @@
       Title_Description,
       Privacy, License,
       MetaChips
-    },
-    props: {},
-    data() {
-      return {}
-    },
-    created() {
-    },
-    computed: {},
-    methods: {},
-    watch: {}
+    }
   }
 </script>
 

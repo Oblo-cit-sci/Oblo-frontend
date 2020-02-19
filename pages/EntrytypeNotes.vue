@@ -64,7 +64,6 @@
     name: "EntrytypeNotes",
     mixins: [PersistentStorageMixin, EntrytypePageMixin],
     components: {Title_Description, Paginate, LoadFileButton, AspectDescription, SingleSelect},
-    props: {},
     data() {
       return {
         selectec_type: null
