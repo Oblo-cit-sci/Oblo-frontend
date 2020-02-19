@@ -112,6 +112,9 @@ class APIWrapper {
     )
   }
 
+  actor__logout() {
+    return this.axios.get(`${this.api_baseURL}/actor/logout`)
+  }
 
   entry__$uuid(uuid) {
     return this.axios.get(`${this.api_baseURL}/entry/${uuid}`)
@@ -119,6 +122,14 @@ class APIWrapper {
 
   post_entry(entry_data) {
     return this.axios.post(`${this.api_baseURL}/entry`, entry_data)
+  }
+
+  post_entry__$uuid(uuid, entry_data) {
+    return this.axios.post(`${this.api_baseURL}/entry/${uuid}`, entry_data)
+  }
+
+  delete_entry__$uuid(uuid) {
+    return this.axios.delete(`${this.api_baseURL}/entry/${uuid}`)
   }
 }
 

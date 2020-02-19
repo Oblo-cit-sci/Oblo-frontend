@@ -15,7 +15,7 @@ import {ENTRYTYPES_TYPE, GET_ENTRY} from "../lib/store_consts";
 
 import Vue from "vue"
 import {filter_empty, filter_no_value, flatten_collection_of_lists, recursive_unpack} from "../lib/util";
-import {_SET_ENTRY_VALUE, SET_DIRTY} from "~/lib/store_consts";
+import {_SET_ENTRY_VALUE, SET_DIRTY, UPDATE_TAGS} from "~/lib/store_consts";
 import {CREATOR, entry_actor_relation} from "~/lib/actors";
 
 const ld = require("lodash")
@@ -143,6 +143,7 @@ export const mutations = {
     state.entries.get(uuid).location = location
   },
   update_tags(state, {uuid, tags}) {
+    console.log("update tags", tags)
     state.entries.get(uuid).tags = tags
   },
   update_image(state, {uuid, image_url}) {
@@ -373,7 +374,7 @@ export const getters = {
         tags = flatten_collection_of_lists(tags)
         tags = ld.uniqBy(tags, t => t.value)
         tags = ld.filter(tags, t => t.value) // kickout empty string
-        tags = ld.map(tags, t => ({name: t.value})) // tag format // todo icons...
+        tags = ld.map(tags, t => t.value) // tag format // todo icons...
         if (tags.length > 0) {
           all_tags[tags_type] = tags
         }
@@ -422,7 +423,7 @@ export const actions = {
     }
     const tags = context.getters.entry_tags(uuid)
     if (tags) {
-      context.commit("update_tags", {uuid, tags: tags})
+      context.commit(UPDATE_TAGS, {uuid, tags: tags})
     }
   },
   // TODO LIKE THIS DEPRACATED. should take an entry, commit save it and set update, potential parents and children
@@ -437,7 +438,7 @@ export const actions = {
     }
     const tags = context.getters.entry_tags(uuid)
     if (tags) {
-      context.commit("update_tags", {uuid, tags: tags})
+      context.commit(UPDATE_TAGS, {uuid, tags: tags})
     }
   },
   set_edit(context, uuid) {

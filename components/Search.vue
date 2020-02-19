@@ -143,7 +143,7 @@
       },
       filtered_entries() {
         let result_entries = this.entries() // must be a call
-        console.log("new filtered entries", result_entries)
+        // console.log("new filtered entries", result_entries)
         if (LOG) {
           console.log("Search.filtered_entries. entries:", result_entries.length)
           console.log("e1:", result_entries)

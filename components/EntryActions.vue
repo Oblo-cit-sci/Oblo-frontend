@@ -16,13 +16,13 @@
         v-btn(color="secondary" @click="edit") edit
       span(v-else-if="can_edit")
         v-btn(color="warning" @click="show_delete") delete
-        v-btn( color="success" @click="save") {{save_word}}
+        v-btn(color="success" @click="save") {{save_word}}
         v-btn(
           v-if="can_submit"
           color="success"
           @click="submit"
           :disabled="!connected"
-          :loading="sending") {{submitted ? 'update' : 'submit'}}
+          :loading="sending") {{published ? 'update' : 'submit'}}
         v-btn(v-if="upload_option" @click="upload_to_repo" :loading="upload_loading") Upload to the repo
           v-icon.ml-2 mdi-send-circle
       // v-if="private_local" todo for now, download for everyone
@@ -37,8 +37,7 @@
   import {
     DRAFT, EDIT, LICCI_PARTNERS,
     PRIVATE_LOCAL,
-    PUBLIC,
-    SUBMITTED,
+    PUBLIC, PUBLISHED,
     VIEW
   } from "../lib/consts";
   import Paginate from "./Paginate";
@@ -49,7 +48,6 @@
 
   import {
     ENTRIES_DELETE_ENTRY,
-    ENTRIES_GET_CHILDREN, ENTRIES_GET_ENTRY,
     ENTRIES_GET_RECURSIVE_ENTRIES, ENTRIES_SAVE_ENTRY,
     LAST_BASE_PAGE_PATH, POP_LAST_PAGE_PATH
   } from "../lib/store_consts";
@@ -109,7 +107,7 @@
       upload_to_repo() {
         this.upload_loading = true
         const url = this.rules.activities.upload.url
-        const entries = this.$store.getters[ENTRIES_GET_RECURSIVE_ENTRIES](this.entry.uuid)
+        const entries = this.$store.getters[ENTRIES_GET_RECURSIVE_ENTRIES](this.uuid)
         const upload_promise = upload_to_repo(this.$store, this.$axios, entries, url, true)
         upload_promise.then(res => {
           this.snackbar(res.data.status, res.data.msg)
@@ -142,19 +140,20 @@
             }
             this.back()
           } else if (event.id === this.delete_dialog_data.id) {
+            this.$api.delete_entry__$uuid(this.uuid)
             this.delete_entry()
           }
         }
       },
       cancel_edit() {
         if (this.entry.version === 0) {
-          this.$store.dispatch(ENTRIES_DELETE_ENTRY, this.entry.uuid)
+          this.$store.dispatch(ENTRIES_DELETE_ENTRY, this.uuid)
           this.ok_snackbar("Creation canceled")
           this.back()
         }
       },
       delete_entry() {
-        this.$store.dispatch(ENTRIES_DELETE_ENTRY, this.entry.uuid)
+        this.$store.dispatch(ENTRIES_DELETE_ENTRY, this.uuid)
         this.ok_snackbar("Entry deleted")
         this.$emit("entryAction", "delete")
         this.back()
@@ -170,23 +169,37 @@
       submit() {
         //console.log("entryAction submit")
         this.sending = true
-        // would be the same as checking submitted
+        // would be the same as checking published
         if (this.entry.status === DRAFT) {
           // const all_entries = this.$_.concat([this.entry], this.$store.getters[ENTRIES_GET_CHILDREN](this.entry))
           // todo, make the BE  work with many entries
           this.$api.post_entry(this.entry).then((res) => {
             this.sending = false
-            this.snackbar(res.data.status, res.data.msg)
-            this.entry.status = SUBMITTED
+            this.ok_snackbar(res.data.msg)
+            // todo- probably redundant, since its coming back
+            this.entry.status = PUBLISHED
             this.$store.dispatch(ENTRIES_SAVE_ENTRY)
             this.back()
           }).catch((err) => {
             console.log("error", err)
+            this.sending = false
+          })
+        } else if (this.entry.status === PUBLISHED) {
+          this.$api.post_entry__$uuid(this.uuid, this.entry).then((res) => {
+            this.sending = false
+            this.ok_snackbar(res.data.msg)
+            // todo- probably redundant, since its coming back
+            this.$store.dispatch(ENTRIES_SAVE_ENTRY)
+            this.back()
+          }).catch((err) => {
+            this.sending = false
+            console.log("error", err)
           })
         } else {
-          this.error_snackbar("not yet implemented")
+          this.error_snackbar("not yet implemented for this status")
+          this.sending = false
         }
-        this.sending = false
+
       },
       lastpage_reached($event) {
         console.log("an action lastpage_reached", $event)
@@ -208,8 +221,8 @@
       dirty() {
         return this.entry.local.dirty
       },
-      submitted() {
-        return this.entry.status === SUBMITTED
+      published() {
+        return this.entry.status === PUBLISHED
       },
       private_local() {
         return (this.template.rules.privacy || PUBLIC) === PRIVATE_LOCAL
@@ -228,13 +241,16 @@
         return current_user_is_owner(this.$store, this.entry)
       },
       save_word() {
-        // todo
         if (this.in_context) {
           return "save and back"
         } else if (this.private_local) {
           return "save"
         } else {
-          return "save draft"
+          if(this.published) {
+            return "save"
+          } else {
+            return "save draft"
+          }
         }
       },
       can_edit() {

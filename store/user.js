@@ -58,6 +58,13 @@ export const mutations = {
   },
   set_user_data(state, user_data) {
     state.user_data = user_data;
+    if(!state.user_data.auth_token) {
+      state.user_data.auth_token = {
+        access_token: null,
+        token_type: "",
+        expiration_date: null
+      }
+    }
   },
   _rnd_uid(state) {
     state.user_data.uid = uuidv4()
@@ -69,7 +76,7 @@ export const mutations = {
     state.auth_token = auth_token
   },
   reset_auth_token(state) {
-    state.auth_token = {
+    state.user_data.auth_token = {
       access_token: null,
       token_type: "",
       expiration_date: null

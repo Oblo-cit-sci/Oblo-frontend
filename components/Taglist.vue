@@ -1,8 +1,8 @@
 <template lang="pug">
     v-slide-group(show-arrows=true class="custom-chip-group")
-        v-chip(class="custom-chip" v-for="tag in tag_list" :key="tag.name" outlined) {{tag.name}}
-            v-icon.ml-2(v-if="tag.hasOwnProperty('icon')"
-                size="16" light) {{tag.icon}}
+        v-chip(class="custom-chip" v-for="tag in tag_list" :key="tag" outlined) {{tag}}
+            <!--            v-icon.ml-2(v-if="tag.hasOwnProperty('icon')"-->
+            <!--                size="16" light) {{tag.icon}}-->
 </template>
 
 <script>

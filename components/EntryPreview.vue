@@ -164,7 +164,7 @@
         return static_file_path(this.$store, 'images/entry_images/' + this.entry.image)
       },
       tags() {
-        return this.entry.tags || null
+        return this.entry.tags || []
       },
       additional_actions() {
         const pw_actions = this.$_.cloneDeep(this.template.rules.preview_actions) || []

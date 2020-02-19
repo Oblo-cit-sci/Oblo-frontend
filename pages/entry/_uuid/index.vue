@@ -238,7 +238,7 @@
         else
           return null
       },
-      // wrong, create should be for all that are not local/saved or submitted
+      // wrong, create should be for all that are not local/saved or published
       meta_aspects_privacy() {
         let result = []
         result.push({icon: privacy_icon(this.entry.privacy), name: this.entry.privacy})

@@ -169,8 +169,7 @@
       },
       action(action_type) {
         if (action_type === "logout") {
-          console.log(this.$axios.defaults)
-          this.$axios.get("/logout").then(() => {
+          this.$api.actor__logout().then(() => {
             this.ok_snackbar("You are logged out")
             this.$store.dispatch(USER_LOGOUT)
             this.$router.push("/")

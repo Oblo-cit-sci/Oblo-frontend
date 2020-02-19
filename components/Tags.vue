@@ -10,11 +10,8 @@
         props: {
             item_tags: {
                 type: Array,
-                default: () => ['tag1', 'tag2', 'tag3', 'tag4']
+                default: () => []
             }
-        },
-        data: function () {
-            return {}
         }
     }
 </script>

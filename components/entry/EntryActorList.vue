@@ -16,7 +16,6 @@
         },
         methods: {
             avatar(actor) {
-                console.log(actor.public_name)
                 return this.$api.url_actor__$registered_name__avatar(actor.registered_name)
             }
         }
