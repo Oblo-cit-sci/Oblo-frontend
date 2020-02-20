@@ -70,7 +70,7 @@
     DB_LOADED,
     USER_LOGOUT,
     USER_GET_USER_DATA,
-    USER_LOGIN
+    USER_LOGIN, USER_RESET_AUTH_TOKEN
   } from "../lib/store_consts"
   import GlobalSnackbar from "../components/GlobalSnackbar"
   import {HOME} from "../lib/consts"
@@ -213,7 +213,7 @@
                 this.$store.commit(USER_LOGIN)
                 this.$axios.setToken("Bearer " + user_data.auth_token.access_token)
               } else {
-                this.$store.commit("user/reset_auth_token")
+                this.$store.commit(USER_RESET_AUTH_TOKEN)
                 this.error_snackbar("You are logged out")
               }
             })

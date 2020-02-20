@@ -1,42 +1,36 @@
 <template lang="pug">
   div
-    div(v-if="edit")
-      v-btn(v-if="device_location_input_option"
-        :loading="btn_loading_device_location"
-        :color="!location_set ? 'success' : ''"
-        @click="device_position") from device
-      v-btn(v-if="map_location_input_option"
-        :color="!location_set ? 'success' : ''"
-        @click="map_position") from map
-      .ml-2.mt-2(v-if="search_location_input_option")
-        div Location search
-        v-text-field(
-          v-if="!search_result_obtained"
-          v-model="search_query"
-          append-outer-icon="mdi-magnify"
-          @click:append-outer="search_location"
-          @keydown="search_keypress($event)"
-          :loading="btn_loading_search_location")
-        v-select(v-else :items="search_result_options"
-          v-model="selected_search_result"
-          item-text="place_name"
-          item-value="id"
-          clearable)
+    div(v-if="!readOnly")
       div.ml-3.mb-1
-        span.mr-1.font-weight-bold Result:
-        span.body-1.readonly-aspect {{location_view}}
-        v-btn(v-if="location_set" @click="goto_location(value, entry_uuid)")
-          v-icon mdi-map-marker
+        div(v-if="location_set")
+          span.body-1.readonly-aspect.font-weight-bold {{location_view}}
+          v-btn(icon @click="goto_location(value, entry_uuid)")
+            v-icon mdi-map-marker
+          div
+            v-btn(small @click="reset_location") reset location
+        div(v-else)
+          v-btn(v-if="device_location_input_option"
+            :loading="btn_loading_device_location"
+            :color="!location_set ? 'success' : ''"
+            @click="device_position") from device
+          v-btn(v-if="map_location_input_option"
+            :color="!location_set ? 'success' : ''"
+            @click="map_position") from map
+          .ml-2.mt-2(v-if="search_location_input_option")
+            div From place search
+            v-text-field(
+              v-model="search_query"
+              append-outer-icon="mdi-magnify"
+              @click:append-outer="search_location"
+              @keydown="search_keypress($event)"
+              :loading="btn_loading_search_location")
+            SingleSelect(
+              :options="search_result_options"
+              force_view="list"
+              :selection.sync="selected_search_result")
     div(v-else)
-      v-text-field(
-        outlined
-        single-line
-        filled
-        dense
-        :readonly="true"
-        :value="location_view"
-        :placeholder="aspect.attr.placeholder"
-        hide-details)
+      v-text-field( outlined single-line filled dense hide-details
+      :readonly="true" :value="location_view" :placeholder="aspect.attr.placeholder")
       v-btn(v-if="location_set" @click="goto_location(value, entry_uuid)")
         v-icon mdi-map-marker
 </template>
@@ -44,13 +38,13 @@
 <script>
 
   import {get_location, create_location_error, array2coords, place2str} from "../../lib/location";
-  import AspectMixin from "./AspectMixin";
   import SingleSelect from "../input/SingleSelect";
   import {location_search, rev_geocode} from "../../lib/services/mapbox";
   import {default_place_type, MODE_ASPECT_POINT} from "../../lib/consts";
   import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
   import {MAP_SET_TO_SELECT_ASPECT_LOCATION} from "../../lib/store_consts";
   import MapJumpMixin from "../MapJumpMixin";
+  import AspectComponentMixin from "./AspectComponentMixin";
 
   // "attr.input" options
   const DEVICE = "device"
@@ -69,14 +63,13 @@
   export default {
     name: "LocationAspect",
     components: {SingleSelect},
-    mixins: [AspectMixin, TriggerSnackbarMixin, MapJumpMixin],
+    mixins: [AspectComponentMixin, TriggerSnackbarMixin, MapJumpMixin],
     data() {
       return {
         btn_loading_device_location: false,
         search_query: "",
         btn_loading_search_location: false,
-        search_result_obtained: false,
-        search_result_options: null,
+        search_results: null,
         selected_search_result: undefined, // this because, clear sets it to that too,
       }
     },
@@ -100,8 +93,13 @@
       location_view() {
         if (this.has_output_place && this.has_place) {
           return place2str(this.value.place)
-        } else
-          return ""
+        } else {
+          if(this.location_set) {
+            return "Place not determined"
+          } else {
+            return ""
+          }
+        }
       },
       //  check for attr.output.___
       has_output_location() {
@@ -109,11 +107,13 @@
       },
       has_output_place() {
         return this.has_output(PLACE)
+      },
+      search_result_options() {
+        return this.$_.map(this.search_results, f => {return {value: f.id, text: f.place_name}})
       }
     },
     created() {
       // if only the coordinates are set (e.g. cuz of importing from some db, this one fills in the place
-
       const has_coordinates = this.value && this.value.coordinates !== null
       if (this.location_set && has_coordinates && this.has_output_place && !this.has_place) {
         const place_types = this.aspect.attr.place_types || default_place_type
@@ -126,13 +126,18 @@
           this.$_.forEach(data.features, feature => {
             new_value.place[feature.place_type[0]] = feature.text
           })
-          this.update_value(new_value)
+          this.$emit("update_value", new_value)
+          // this.update_value(new_value)
         }).catch((err) => {
           console.log("error: mapbox api error", err)
         }) // must be with else, cuz its async
       }
     },
     methods: {
+      reset_location() {
+        this.$emit("update_value", null)
+        // this.update_value(null)
+      },
       search_keypress(keyEvent) {
         // Enter,  this is the most robust among all platforms (desktop, mobile, chrome, ff)
         if (keyEvent.keyCode === 13) {
@@ -141,8 +146,6 @@
         console.log(keyEvent)
       },
       reset_search_data() {
-        this.search_result_obtained = false
-        this.search_result_options = null
         this.selected_search_result = undefined
         this.search_query = ""
       },
@@ -153,9 +156,7 @@
           if (data.features.length === 0) {
             this.error_snackbar("No place with that name")
           } else {
-            this.search_result_obtained = true
-            this.search_result_options = data.features
-            this.selected_search_result = this.search_result_options[0].id
+            this.search_results = data.features
           }
         }).catch(err => {
           console.log(err)
@@ -201,15 +202,17 @@
                 this.$_.forEach(data.features, feature => {
                   value.place[feature.place_type[0]] = feature.text
                 })
-                this.update_value(value)
+                this.$emit("update_value", value)
+                // this.update_value(value)
               }).catch((err) => {
                 console.log("error: mapbox api error", err)
               }) // must be with else, cuz its async
             } else {
-              this.update_value(value)
+              this.$emit("update_value", value)
+              // this.update_value(value)
             }
           } else { // we get null, when error occured, e.g. not beeing connected
-            this.error_snackbar("Could not obtain  location")
+            this.error_snackbar("Could not obtain location")
           }
           this.btn_loading_device_location = false
         })
@@ -226,12 +229,14 @@
       }
     },
     watch: {
-      selected_search_result(val) {
-        if (val === undefined) {
+      selected_search_result(sel) {
+        console.log("select ", sel)
+        if (!sel) {
           this.reset_search_data()
-          this.update_value(null)
+          this.$emit("update_value", null)
+          // this.update_value(null)
         } else {
-          const feature = this.$_.find(this.search_result_options, feature => feature.id === val)
+          const feature = this.$_.find(this.search_results, feature => feature.id === sel.value)
           let value = {
             coordinates: array2coords(feature.geometry.coordinates),
             place: {}
@@ -243,7 +248,8 @@
             const place_type = context.id.split(".")[0]
             value.place[place_type] = context.text
           }
-          this.update_value(value)
+          this.$emit("update_value", null)
+          // this.update_value(value)
         }
       }
     }
