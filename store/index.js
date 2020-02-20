@@ -77,6 +77,7 @@ export const mutations = {
     state.related_users = related_users
   },
   snackbar(state, snackbar) {
+    console.log(state.snackbar.trigger)
     console.log("snack", snackbar, "state", state.snackbar)
     // should be set with {message: str, ok: boolean}
     // method 1 . verbose
@@ -88,7 +89,7 @@ export const mutations = {
     // state.snackbar.trigger = true
     // method
     state.snackbar = Object.assign(snackbar, {trigger: true})
-    console.log("final snackbar", state.snackbar)
+    console.log("final snackbar", state.snackbar.trigger)
   },
   snackbar_reset(state) {
     state.snackbar.trigger = false
@@ -160,7 +161,11 @@ export const getters = {
       return state.db_loaded
     }
   },
-
+  snackbar_trigger(state) {
+    return () => {
+      return state.snackbar.trigger
+    }
+  },
   get_domain_templates_fetched(state) {
     return (domain_name) => {
       return state.domains.filter(d => d.name === domain_name).templates_fetched
