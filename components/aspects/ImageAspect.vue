@@ -84,7 +84,7 @@
     },
     methods: {
       add_image(image_result) {
-        this.value_change(this.$_.concat(this.value, [{
+        this.update_value(this.$_.concat(this.value, [{
           title: "nothing",
           description: "blabla",
           url: image_result.data,

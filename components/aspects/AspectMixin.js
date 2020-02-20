@@ -39,22 +39,14 @@ export default {
     }
   },
   mixins: [PersistentStorageMixin],
-  data() {
-    return {}
-  },
-  created() {
-  },
   methods: {
-    value_change(event, regular = this.use_regular) {
-      if (event === undefined)
-        event = null
-      this.update_value(event, regular)
-    },
     // debounce to not to store contantly while typing
     debounce_store_db: ld.debounce((mixin) => {
       mixin.persist_entries()
     }, 300),
     update_value(raw_value, regular = true) {
+      if(raw_value === undefined)
+        raw_value = null
       //console.log("saving", eveventent, this.aspect.name)
       // switch to unregular value
       if (this.has_alternative && regular) {
@@ -118,10 +110,6 @@ export default {
     },
     readOnly() {
       return this.mode === VIEW
-    },
-    clearIcon() {
-      //console.log("AspMix - ", this.aspect.name, this.aspect.type, this.extra)
-      return ((this.extra.listitem && this.mode === EDIT) || false) ? "mdi-close" : undefined //this.extra
     },
     alternative() {
       return this.aspect.attr.alternative

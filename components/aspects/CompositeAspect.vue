@@ -15,15 +15,15 @@
 
 <script>
 
-  import AspectMixin from "./AspectMixin";
   import Aspect from "../Aspect";
   import {INT, FLOAT, COMPONENT, ASPECT} from "../../lib/consts";
   import {loc_append} from "../../lib/aspect";
+  import AspectComponentMixin from "./AspectComponentMixin";
 
   export default {
     name: "CompositeAspect",
     components: {Aspect},
-    mixins: [AspectMixin],
+    mixins: [AspectComponentMixin],
     data() {
       return {
         aspect_locs: {}

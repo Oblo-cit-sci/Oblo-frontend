@@ -14,12 +14,12 @@
 </template>
 
 <script>
-    import AspectMixin from "./AspectMixin";
     import SelectMixin from "./SelectMixin";
+    import AspectComponentMixin from "./AspectComponentMixin";
 
     export default {
         name: "MultiselectAspect",
-        mixins: [AspectMixin, SelectMixin],
+        mixins: [AspectComponentMixin, SelectMixin],
         data() {
             return {init: true}
         },
@@ -48,9 +48,9 @@
                     return
                 }
                 if (this.selection === null)
-                    this.value_change(null)
+                    this.update_value(null)
                 else {
-                    this.value_change(this.selection)
+                    this.update_value(this.selection)
                 }
             }
         }

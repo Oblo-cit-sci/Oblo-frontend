@@ -235,7 +235,8 @@
 
         // saving the child, setting refrences, saving this entry(title),
         this.$store.dispatch(ENTRIES_SAVE_CHILD_N_REF, {child: child, aspect_loc: index_aspect_loc})
-        this.value_change(this.$_.concat(this.value, [child.uuid]))
+        // TODO this was there before, is it required???
+        // this.value_change(this.$_.concat(this.value, [child.uuid]))
         this.persist_draft_numbers()
         this.persist_entries()
         this.to_entry(child.uuid, EDIT)

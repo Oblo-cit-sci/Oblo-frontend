@@ -22,7 +22,6 @@
   export default {
     name: "SelectAspect",
     mixins: [SelectMixin, AspectComponentMixin],
-    // todo. init is a hack to prevent the first set_selection call to trigger a value_change
     props: {
       aspect: {
         type: Object,
@@ -81,12 +80,12 @@
         }
         //console.log("select", this.aspect, this.selection)
         if (this.selection === null)
-          this.$emit("update_value", null)
+          this.update_value(null)
         else
-          this.$emit("update_value", this.selection.value)
+          this.update_value(this.selection.value)
       },
       check_box_value(val) {
-        this.value_change(val ? this.options[1].value : this.options[0].value)
+        this.update_value(val ? this.options[1].value : this.options[0].value)
       }
     }
   }

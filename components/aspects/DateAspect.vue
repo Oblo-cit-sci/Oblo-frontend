@@ -1,5 +1,9 @@
 <template>
-  <div v-if="edit">
+  <div v-if="readOnly" class="mb-2 mt-2">
+    <v-icon readonly  solo flat> mdi-calendar</v-icon>
+    <span class="ml-2">{{value}}</span>
+  </div>
+  <div v-else>
     <v-menu
       v-model="menu"
       :close-on-content-click="false"
@@ -19,22 +23,19 @@
           v-on="on"
         ></v-text-field>
       </template>
-      <v-date-picker :value="value"  :show-current="false" @change="value_change($event)" no-title @input="menu = false"></v-date-picker>
+      <v-date-picker :value="value"  :show-current="false" @change="update_value($event)" no-title @input="menu = false"></v-date-picker>
     </v-menu>
   </div>
-  <div v-else class="mb-2 mt-2">
-    <v-icon readonly  solo flat> mdi-calendar</v-icon>
-    <span class="ml-2">{{value}}</span>
-  </div>
+
 </template>
 
 <script>
 
-  import AspectMixin from "./AspectMixin";
+  import AspectComponentMixin from "./AspectComponentMixin";
 
   export default {
     name: "DateAspect",
-    mixins: [AspectMixin],
+    mixins: [AspectComponentMixin],
     data() {
       return {
         menu: false,

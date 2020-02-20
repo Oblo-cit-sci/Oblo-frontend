@@ -24,18 +24,18 @@
 
 <script>
 
-    import AspectMixin from "./AspectMixin"
     import Aspect from "../Aspect"
-    import {aspect_default_value, aspect_raw_default_value} from "../../lib/aspect";
+    import {aspect_default_value} from "../../lib/aspect";
     import SingleSelect from "../input/SingleSelect";
     import {ENTRIES_SET_ENTRY_VALUE} from "../../lib/store_consts";
     import {OPTION} from "../../lib/consts";
     import {string_list2options} from "../../lib/options";
+    import AspectComponentMixin from "./AspectComponentMixin";
 
     export default {
         name: "OptionsAspect",
         components: {SingleSelect, Aspect},
-        mixins: [AspectMixin],
+        mixins: [AspectComponentMixin],
         data() {
             return {
                 selected_option: null,
@@ -45,7 +45,6 @@
             }
         },
         created() {
-            // console.log(this.mvalue)
             if (this.mvalue.hasOwnProperty(OPTION)) {
                 this.option_selected(this.mvalue.option, false)
             }
@@ -63,7 +62,6 @@
                         value: value
                     })
                 }
-                //this.value_change(aspect_raw_default_value(this.selected_aspect))
             }
         }
     }

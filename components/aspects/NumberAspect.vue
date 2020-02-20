@@ -20,12 +20,12 @@
 </template>
 
 <script>
-    import AspectMixin from "./AspectMixin";
     import {INT, FLOAT} from "../../lib/consts";
+    import AspectComponentMixin from "./AspectComponentMixin";
 
     export default {
         name: "NumberAspect",
-        mixins: [AspectMixin],
+        mixins: [AspectComponentMixin],
         data() {
             return {
                 mask: "",
@@ -68,7 +68,7 @@
         },
         methods: {
             input(val) {
-                this.value_change(val)
+                this.update_value(val)
             }
         }
     }

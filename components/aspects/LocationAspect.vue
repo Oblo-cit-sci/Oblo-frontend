@@ -126,7 +126,7 @@
           this.$_.forEach(data.features, feature => {
             new_value.place[feature.place_type[0]] = feature.text
           })
-          this.$emit("update_value", new_value)
+          this.update_value(new_value)
           // this.update_value(new_value)
         }).catch((err) => {
           console.log("error: mapbox api error", err)
@@ -135,7 +135,8 @@
     },
     methods: {
       reset_location() {
-        this.$emit("update_value", null)
+        this.search_query = ""
+        this.update_value(null)
         // this.update_value(null)
       },
       search_keypress(keyEvent) {
@@ -143,7 +144,6 @@
         if (keyEvent.keyCode === 13) {
           this.search_location()
         }
-        console.log(keyEvent)
       },
       reset_search_data() {
         this.selected_search_result = undefined
@@ -202,13 +202,13 @@
                 this.$_.forEach(data.features, feature => {
                   value.place[feature.place_type[0]] = feature.text
                 })
-                this.$emit("update_value", value)
+                this.update_value(value)
                 // this.update_value(value)
               }).catch((err) => {
                 console.log("error: mapbox api error", err)
               }) // must be with else, cuz its async
             } else {
-              this.$emit("update_value", value)
+              this.update_value(value)
               // this.update_value(value)
             }
           } else { // we get null, when error occured, e.g. not beeing connected
@@ -230,11 +230,10 @@
     },
     watch: {
       selected_search_result(sel) {
-        console.log("select ", sel)
+        console.log(sel)
         if (!sel) {
           this.reset_search_data()
-          this.$emit("update_value", null)
-          // this.update_value(null)
+          this.update_value(null)
         } else {
           const feature = this.$_.find(this.search_results, feature => feature.id === sel.value)
           let value = {
@@ -248,8 +247,8 @@
             const place_type = context.id.split(".")[0]
             value.place[place_type] = context.text
           }
-          this.$emit("update_value", null)
-          // this.update_value(value)
+          console.log(value)
+          this.update_value(value)
         }
       }
     }

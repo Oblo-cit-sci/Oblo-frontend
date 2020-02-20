@@ -48,7 +48,6 @@
 
 <script>
 
-  import AspectMixin from "./AspectMixin";
   import Aspect from "../Aspect";
   import ListMixin from "../ListMixin";
   import {INDEX, SIMPLE_TYPE, EDIT, COMPOSITE, LIST_INDEX} from "../../lib/consts";
@@ -66,6 +65,7 @@
   import goTo from 'vuetify/lib/services/goto'
   import {recursive_unpack} from "../../lib/util";
   import {ENTRIES_VALUE} from "../../lib/store_consts";
+  import AspectComponentMixin from "./AspectComponentMixin";
 
   const SIMPLE = "simple"
   const PANELS = "panels"
@@ -74,7 +74,7 @@
   export default {
     name: "ListAspect",
     components: {ListPagination, Paginate, ListitemActions, Aspect, MinMaxIndicators},
-    mixins: [AspectMixin, ListMixin],
+    mixins: [AspectComponentMixin, ListMixin],
     data() {
       return {
         item_aspect: null,
@@ -125,7 +125,7 @@
         }
       }
       const entry = this.get_entry()
-      if (entry.local.list_pages) {
+      if (entry && this.$_.get(entry, "local.list_pages")) {
         const loc_str = aspect_loc_str(remove_entry_loc(this.aspect_loc))
         if (entry.local.list_pages[loc_str] !== undefined) {
           this.set_page(entry.local.list_pages[loc_str])
@@ -142,7 +142,7 @@
         for (let i = 0; i < n; i++) {
           additional.push(packed_aspect_default_value(this.item_aspect))
         }
-        this.value_change(this.$_.concat(this.value, additional))
+        this.update_value(this.$_.concat(this.value, additional))
         if (n === 1) {
           this.goto_delayed_last_page(this.goto_panel_id())
           setTimeout(() => {
@@ -171,7 +171,7 @@
         }
       },
       remove_value(index) {
-        this.value_change(this.$_.filter(this.value, (val, i) => {
+        this.update_value(this.$_.filter(this.value, (val, i) => {
           return index !== i
         }))
         if (this.structure === PANELS) {
@@ -186,7 +186,7 @@
         const without = this.$_.filter(this.value, (e, i) => i !== index)
         const new_left = this.$_.take(without, index + direction)
         const new_right = this.$_.takeRight(without, without.length - (index + direction))
-        this.value_change(this.$_.concat(new_left, to_move, new_right))
+        this.update_value(this.$_.concat(new_left, to_move, new_right))
         // fix panelstates todo
         if (this.structure === PANELS) {
           this.panelState = [index + direction]
@@ -272,11 +272,12 @@
             console.log(`list no value! index:${i}`)
             titles[i] = ""
           } else {
-            const index_name = () => item_name + " " + (parseInt(i) + 1).toString()
+            // todo does not need to be a method?
+            const index_name = item_name + " " + (parseInt(i) + 1).toString()
             if (simple_type && !this.aspect.attr.indexTitle) {
               titles[i] = this.value[i].value
             } else if (this.aspect.attr.indexTitle) {
-              titles[i] = index_name()
+              titles[i] = index_name
             } else if (!this.value[i].value[titleAspectName]) {
               console.log(`list no component value! index:${i}, component:${titleAspectName}`)
             } else {
@@ -309,7 +310,7 @@
               }
             }
             if (titles[i] === "" || titles[i] === null) {
-              titles[i] = index_name()
+              titles[i] = index_name
             }
           }
         }

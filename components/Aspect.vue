@@ -23,7 +23,6 @@
       :extra="extra"
       :disabled="regular_disable"
       :mode="real_mode"
-      v-on:value_change="value_change($event)"
       v-on:update_value="update_value($event)"
       v-on:entryAction="$emit('entryAction',$event)")
     div(v-if="!use_regular && aspect.attr.alternative !== undefined")
@@ -34,7 +33,6 @@
         :aspect="alternative"
         :aspect_loc="aspect_loc"
         v-bind:aspect="aspect.attr.alternative"
-        v-on:value_change="value_change($event)"
         v-on:update_value="update_value($event)"
         :mode="alt_mode")
 </template>
