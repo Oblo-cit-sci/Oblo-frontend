@@ -88,6 +88,9 @@
         if (image) { // check != undefined, which comes from the (not removable? clearable on the fileinput
           let formData = new FormData();
           formData.append('file', image)
+          // for(let a of formData.values()) {
+          //   console.log(a)
+          // }
           // this.$api.post_actor__avatar(formData)
           //   .then(function () {
           //     console.log('SUCCESS!!');

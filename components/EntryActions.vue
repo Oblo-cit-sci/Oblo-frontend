@@ -41,7 +41,7 @@
     VIEW
   } from "../lib/consts";
   import Paginate from "./Paginate";
-  import {current_user_is_owner, has_pages} from "../lib/entry";
+  import {current_user_is_owner, get_attachments_to_post, has_pages} from "../lib/entry";
 
   import DecisionDialog from "./DecisionDialog";
   import EntryNavMixin from "./EntryNavMixin";
@@ -167,8 +167,28 @@
         this.back()
       },
       submit() {
-        //console.log("entryAction submit")
         this.sending = true
+
+        // attachments first.
+        const attachments_to_send = get_attachments_to_post(this.entry)
+        let formData = new FormData()
+        for (let attachment_data of attachments_to_send) {
+          const pre_string_le = ("data:" + attachment_data.meta.type + ";base64,").length
+          const base64data = attachment_data.url.substring(pre_string_le)
+          const byteCharacters = atob(base64data)
+          const byteNumbers = new Array(byteCharacters.length);
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+          }
+          const byteArray = new Uint8Array(byteNumbers);
+          const blob = new Blob([byteArray], {type: attachment_data.meta.type})
+          formData.append("file", blob, attachment_data.meta.name)
+          this.$api.post_entry__$uuid__attachment(this.uuid, formData).then((res) => {
+          }).catch(err => {
+            this.error_snackbar("File could not be uploaded", attachment_data.meta.name)
+          })
+        }
+
         // would be the same as checking published
         if (this.entry.status === DRAFT) {
           // const all_entries = this.$_.concat([this.entry], this.$store.getters[ENTRIES_GET_CHILDREN](this.entry))
@@ -196,7 +216,7 @@
             console.log("error", err)
           })
         } else {
-          this.error_snackbar("not yet implemented for this status")
+          this.error_snackbar("not yet implemented for this status:", this.entry.status)
           this.sending = false
         }
 
@@ -246,7 +266,7 @@
         } else if (this.private_local) {
           return "save"
         } else {
-          if(this.published) {
+          if (this.published) {
             return "save"
           } else {
             return "save draft"

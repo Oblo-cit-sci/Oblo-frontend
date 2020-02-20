@@ -160,7 +160,6 @@ export const mutations = {
     //let entry =
     //remove_entry_loc
   },
-
   _update_parent_version(state, {uuid = state.edit.uuid, version}) {
     state.entries.get(uuid).parent_type_version = version
   },
@@ -184,6 +183,11 @@ export const mutations = {
   fix_refs(state,  {parent_uuid, child_uuid, aspect_loc}) {
     state.entries.get(parent_uuid).refs.children[child_uuid] = aspect_loc
     state.entries.get(child_uuid).refs.parent.aspect_loc = aspect_loc
+  },
+  add_file_attachment(state, attachment) {
+    const {entry_uuid, ...attachment_data} = attachment
+    const entry = state.entries.get(entry_uuid)
+    entry.attached_files.push(attachment_data)
   }
 }
 

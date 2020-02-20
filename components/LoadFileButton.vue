@@ -29,7 +29,8 @@
     },
     data() {
       return {
-        loading: false
+        loading: false,
+        file_meta: {}
       }
     },
     computed: {
@@ -48,13 +49,16 @@
       filesChange(files) {
         this.loading = true
         const file = files[0]
+        this.file_meta = {
+          name: file.name,
+          type: file.type,
+          size: file.size
+        }
         let reader = new FileReader()
         reader.onerror = (event) => {
-          // alert(event.target.error.name);
-          this.$emit("fileload", {ok: false})
+          this.$emit("fileload", {ok: false, meta: this.file_meta})
           this.loading = false
         };
-
         switch (this.filetype) {
           case "json":
             reader.onload = this.onload_json
@@ -67,9 +71,13 @@
       },
       onload_json(event) {
         try {
+          if (event.target.readyState !== FileReader.DONE) {
+            console.log("reader not done")
+            return;
+          }
           const data = JSON.parse(event.target.result);
           this.loading = false
-          this.$emit("fileload", {ok: true, data: data})
+          this.$emit("fileload", {ok: true, data:data, meta: this.file_meta})
         } catch (e) {
           this.loading = false
           this.$emit("fileload", {ok: false})
@@ -77,7 +85,7 @@
       },
       onload_image(event) {
         this.loading = false
-        this.$emit("fileload", {ok: true, data: event.target.result})
+        this.$emit("fileload", {ok: true, data: event.target.result, meta: this.file_meta})
       }
     }
   }

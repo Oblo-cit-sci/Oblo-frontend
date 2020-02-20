@@ -8,11 +8,11 @@
       <!--        Aspect(:aspect="aspects.title" :mode="edit")-->
     v-row.ma-5
       v-img(:src="image_value.url" contain max-height="500px")
-    <!--    div.ma-1-->
-    <!--      v-row-->
-    <!--        v-col.font-weight-bold(v-if="selected_is_cover") Cover image-->
-    <!--        v-col(v-else)-->
-    <!--          v-btn(text @click="make_selected_cover" small) Make cover image-->
+    div.ma-1
+      v-row
+        v-col.font-weight-bold(v-if="is_cover") Cover image
+        v-col(v-else)
+          v-btn(text @click="$emit('set_cover')" small) Make cover image
     <!--      v-row(v-for="(info, index) in additional_info" :key="index")-->
     <!--        v-col {{info}}-->
     v-row
@@ -28,6 +28,10 @@
     props: {
       image_value: {
         type: Object,
+        required: true
+      },
+      is_cover: {
+        type: Boolean,
         required: true
       }
     },
