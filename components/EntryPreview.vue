@@ -69,6 +69,7 @@
   import {mapGetters} from "vuex"
   import {upload_to_repo} from "../lib/import_export";
   import EntryActorList from "./entry/EntryActorList";
+  import {check_str_is_uuid} from "../lib/fixes";
 
   /**
    * ISSUE is not working atm, to responsive
@@ -160,8 +161,11 @@
       entry_image() {
         if (this.entry.image.startsWith("http")) {
           return this.entry.image
+        } else if(check_str_is_uuid(this.entry.image)) {
+          this.$api.entry__$uuid__attachment__$file_uuid(this.uuid, this.entry.image)
+        } else {
+          return ""
         }
-        return static_file_path(this.$store, 'images/entry_images/' + this.entry.image)
       },
       tags() {
         return this.entry.tags || []

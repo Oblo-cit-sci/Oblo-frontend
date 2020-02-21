@@ -138,6 +138,15 @@ export default {
         this.aspect_locs[aspect.name] = loc_append([this.aspect_loc], ASPECT, aspect.name)
         // console.log(aspect.name, this.aspect_locs[aspect.name])
       }
+    },
+    get_attachments_to_post() {
+      const new_files_data = []
+      for (let file of this.entry.attached_files) {
+        if (!file.hasOwnProperty("url")) {
+          new_files_data.push(file)
+        }
+      }
+      return new_files_data
     }
   }
 }

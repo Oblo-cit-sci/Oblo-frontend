@@ -4,8 +4,8 @@ export const state = () => ({
 
 // commmit
 export const mutations = {
-  add_file(state, {uuid, data}) {
-    state.files[uuid] = data
+  add_file(state, {uuid, meta, data}) {
+    state.files[uuid] = {meta, data}
   },
   remove_file(state, uuid) {
     delete state.files[uuid]

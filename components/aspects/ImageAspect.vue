@@ -83,22 +83,13 @@
       },
       selected_is_cover() {
         return this.selected_image_index === this.cover_image_index
-      },
-      // additional_info() {
-      //   const i = this.selected_img_data
-      //   return [
-      //     i.description, i.license, i.date
-      //   ]
-      // }
+      }
     },
     methods: {
-      image_location(index) {
-        return loc_remove_first(loc_append(this.aspect_loc, INDEX, index))
-      },
       add_image(image_result) {
         console.log("add", image_result)
         const file_uuid = uuidv4()
-        this.$store.commit("files/add_file", {uuid: file_uuid, data: image_result.data})
+        this.$store.commit("files/add_file", {uuid: file_uuid, meta: image_result.meta, data: image_result.data})
         this.update_value(this.$_.concat(this.value, [{
           title: "",
           description: "",
@@ -128,7 +119,7 @@
       },
       get_image_data(index) {
         if(this.images[index].url === null) {
-          return this.$store.getters["files/get_file"](this.images[index].uuid)
+          return this.$store.getters["files/get_file"](this.images[index].uuid).data
         } else {
           return this.images[index].url
         }
@@ -142,7 +133,7 @@
           if (new_img_index === 0) {
             this.set_cover_image(0)
           }
-          this.add_file_attachment(this.entry_uuid(), "image", "loc", this.images[new_img_index].uuid)
+          this.add_file_attachment(this.entry_uuid(), "image", this.images[new_img_index].uuid)
         }
       }
     }

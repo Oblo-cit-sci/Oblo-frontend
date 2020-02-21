@@ -121,12 +121,12 @@ class APIWrapper {
     return this.axios.get(`${this.entry_baseURL}/${uuid}`)
   }
 
-  post_entry(entry_data) {
-    return this.axios.post(`${this.entry_baseURL}`, entry_data)
-  }
-
   post_entry__$uuid(uuid, entry_data) {
     return this.axios.post(`${this.entry_baseURL}/${uuid}`, entry_data)
+  }
+
+  patch_entry__$uuid(uuid, entry_data) {
+    return this.axios.patch(`${this.entry_baseURL}/${uuid}`, entry_data)
   }
 
   delete_entry__$uuid(uuid) {
@@ -142,6 +142,10 @@ class APIWrapper {
         }
       }
     )
+  }
+
+  entry__$uuid__attachment__$file_uuid(uuid, file_uuid) {
+    return this.axios.get(`${this.entry_baseURL}/${uuid}/attachment/${file_uuid}`)
   }
 }
 

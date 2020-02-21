@@ -41,7 +41,7 @@
     VIEW
   } from "../lib/consts";
   import Paginate from "./Paginate";
-  import {current_user_is_owner, get_attachments_to_post, has_pages} from "../lib/entry";
+  import {current_user_is_owner, has_pages} from "../lib/entry";
 
   import DecisionDialog from "./DecisionDialog";
   import EntryNavMixin from "./EntryNavMixin";
@@ -53,7 +53,7 @@
   } from "../lib/store_consts";
   import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
   import {CREATOR, entry_actor_relation} from "../lib/actors";
-  import {get_release_mode} from "../lib/util";
+  import {base64file_to_blob, get_release_mode} from "../lib/util";
   import EntryMixin from "./EntryMixin";
   import PersistentStorageMixin from "./PersistentStorageMixin";
   import {upload_to_repo} from "../lib/import_export";
@@ -166,55 +166,51 @@
         this.ok_snackbar("Entry saved")
         this.back()
       },
-      submit() {
+      async submit() {
         this.sending = true
 
-        // attachments first.
-        const attachments_to_send = get_attachments_to_post(this.entry)
-        let formData = new FormData()
-        for (let attachment_data of attachments_to_send) {
-          const pre_string_le = ("data:" + attachment_data.meta.type + ";base64,").length
-          const base64data = attachment_data.url.substring(pre_string_le)
-          const byteCharacters = atob(base64data)
-          const byteNumbers = new Array(byteCharacters.length);
-          for (let i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
-          }
-          const byteArray = new Uint8Array(byteNumbers);
-          const blob = new Blob([byteArray], {type: attachment_data.meta.type})
-          formData.append("file", blob, attachment_data.meta.name)
-          this.$api.post_entry__$uuid__attachment(this.uuid, formData).then((res) => {
-          }).catch(err => {
-            this.error_snackbar("File could not be uploaded", attachment_data.meta.name)
-          })
+        // would be the same as checking published
+        let method = null
+        if (this.entry.status === DRAFT) {
+          method = "post_entry__$uuid"
+        } else if (this.entry.status === PUBLISHED) {
+          method = "patch_entry__$uuid"
         }
 
-        // would be the same as checking published
-        if (this.entry.status === DRAFT) {
-          // const all_entries = this.$_.concat([this.entry], this.$store.getters[ENTRIES_GET_CHILDREN](this.entry))
-          // todo, make the BE  work with many entries
-          this.$api.post_entry(this.entry).then((res) => {
+        if (method) {
+          try {
+            const res = await this.$api[method](this.entry.uuid, this.entry)
+            const attachment_file_uuids = this.get_attachments_to_post(this.entry)
+            let formData = new FormData()
+            for (let attachment_uuid of attachment_file_uuids) {
+              const stored_file = this.$store.getters["files/get_file"](attachment_uuid)
+              const blob = base64file_to_blob(stored_file.meta.type, stored_file.data)
+              formData.append("file", blob, stored_file.meta.name)
+              this.$api.post_entry__$uuid__attachment(this.uuid, formData).then((res) => {
+              }).catch(err => {
+                this.error_snackbar("File could not be uploaded", stored_file.meta.name)
+              })
+            }
+            console.log(res.data)
             this.sending = false
-            this.ok_snackbar(res.data.msg)
-            // todo- probably redundant, since its coming back
             this.entry.status = PUBLISHED
             this.$store.dispatch(ENTRIES_SAVE_ENTRY)
             this.back()
-          }).catch((err) => {
-            console.log("error", err)
-            this.sending = false
-          })
-        } else if (this.entry.status === PUBLISHED) {
-          this.$api.post_entry__$uuid(this.uuid, this.entry).then((res) => {
-            this.sending = false
-            this.ok_snackbar(res.data.msg)
-            // todo- probably redundant, since its coming back
-            this.$store.dispatch(ENTRIES_SAVE_ENTRY)
-            this.back()
-          }).catch((err) => {
-            this.sending = false
-            console.log("error", err)
-          })
+          } catch (e) {
+            console.log(e)
+            // console.log(res)
+          }
+
+
+          // this.$api.post_entry__$uuid(this.entry.uuid, this.entry).then((res) => {
+          //   this.sending = false
+          //   this.ok_snackbar(res.data.msg)
+          //   // todo- probably redundant, since its coming back
+
+          // }).catch((err) => {
+          //   console.log("error", err)
+          //   this.sending = false
+          // })
         } else {
           this.error_snackbar("not yet implemented for this status:", this.entry.status)
           this.sending = false
