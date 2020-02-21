@@ -21,17 +21,17 @@ let default_user_data = {
   defaultPrivacy: "public",
   location: "",
   uid: null,
-  auth_token: {
-    access_token: null,
-    token_type: "",
-    expiration_date: null
-  }
 }
 
 
 export const state = () => ({
   logged_in: false, // todo should go somewhere else, so persist doesnt mess it up.
   user_data: default_user_data,
+  auth_token: {
+    access_token: null,
+    token_type: "",
+    expiration_date: null
+  }
 })
 
 export const getters = {
@@ -58,13 +58,6 @@ export const mutations = {
   },
   set_user_data(state, user_data) {
     state.user_data = user_data;
-    if(!state.user_data.auth_token) {
-      state.user_data.auth_token = {
-        access_token: null,
-        token_type: "",
-        expiration_date: null
-      }
-    }
   },
   _rnd_uid(state) {
     state.user_data.uid = uuidv4()
@@ -76,7 +69,7 @@ export const mutations = {
     state.auth_token = auth_token
   },
   reset_auth_token(state) {
-    state.user_data.auth_token = {
+    state.auth_token = {
       access_token: null,
       token_type: "",
       expiration_date: null
@@ -91,12 +84,9 @@ export const actions = {
     }
   },
   login({commit}, data) {
-    data["auth_token"] = {}
-    for (let k of ["access_token", "token_type", "expiration_date"]) {
-      data["auth_token"][k] = data[k]
-      delete data[k]
-    }
-    commit("set_user_data", data)
+    const {access_token, token_type, expiration_date, ...user_data} = data
+    commit("set_user_data", user_data)
+    commit("set_auth_token", {access_token, token_type, expiration_date})
     commit("login")
   },
   logout({commit}) {

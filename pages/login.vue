@@ -52,9 +52,10 @@
           this.aspects[1].value
         ).then(({data}) => {
           this.ok_snackbar("Login successful")
+          const access_token = data.access_token
           this.$store.dispatch(USER_LOGIN, data)
-          this.persist_user_data()
-          this.$axios.setToken("Bearer " + data.auth_token.access_token)
+          this.persist_auth_token()
+          this.$axios.setToken("Bearer " + access_token)
           // this.$axios.defaults.headers.common["Authorization"] =
           this.$router.push("/")
         }).catch((err) => {

@@ -70,7 +70,7 @@
     DB_LOADED,
     USER_LOGOUT,
     USER_GET_USER_DATA,
-    USER_LOGIN, USER_RESET_AUTH_TOKEN
+    USER_LOGIN, USER_RESET_AUTH_TOKEN, USER_GET_AUTH_TOKEN
   } from "../lib/store_consts"
   import GlobalSnackbar from "../components/GlobalSnackbar"
   import {HOME} from "../lib/consts"
@@ -206,12 +206,12 @@
             console.log("layout init done, promise done")
           })
           console.log("layout init done")
-          const user_data = this.$store.getters[USER_GET_USER_DATA]
-          if(user_data.auth_token.access_token) {
-            this.$api.actor__validate_token(user_data.auth_token).then(res => {
+          const auth_token = this.$store.getters[USER_GET_AUTH_TOKEN]
+          if(auth_token.access_token) {
+            this.$api.actor__validate_token(auth_token).then(res => {
               if(res.data.token_valid) {
                 this.$store.commit(USER_LOGIN)
-                this.$axios.setToken("Bearer " + user_data.auth_token.access_token)
+                this.$axios.setToken("Bearer " + auth_token.access_token)
               } else {
                 this.$store.commit(USER_RESET_AUTH_TOKEN)
                 this.error_snackbar("You are logged out")
