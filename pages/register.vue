@@ -13,15 +13,15 @@
 
   import {validationMixin} from 'vuelidate'
 
-  import licenses from '@@/codes/licenses.json'
   import Aspect from "../components/Aspect";
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
   import {license_aspect} from "../lib/typical_aspects";
+  import LoginMixin from "../components/actor/LoginMixin";
 
   export default {
     name: "register",
     components: {Aspect},
-    mixins: [validationMixin, TriggerSnackbarMixin],
+    mixins: [validationMixin, TriggerSnackbarMixin, LoginMixin],
     data() {
       const default_license = this.$_.cloneDeep(license_aspect(this.$store, ["cc_licenses"]))
       default_license.name = "default_licence"
@@ -121,12 +121,9 @@
           default_privacy: this.aspects.default_privacy.value,
           default_license: this.aspects.default_license.value
         }).then(({data}) => {
-          if (data.status) {
-            this.$router.push("/login")
             this.ok_snackbar("Registration successful")
-          } else {
-            this.errorMsg = data.msg
-          }
+            this.process_login(data)
+            this.$router.push("/")
         }).catch((err) => {
           console.log("err", err)
         })

@@ -14,10 +14,11 @@
   import {STR} from "../lib/consts";
   import {USER_LOGIN} from "../lib/store_consts";
   import PersistentStorageMixin from "../components/PersistentStorageMixin";
+  import LoginMixin from "../components/actor/LoginMixin";
 
   export default {
     name: "Login",
-    mixins: [TriggerSnackbarMixin, PersistentStorageMixin],
+    mixins: [TriggerSnackbarMixin, PersistentStorageMixin, LoginMixin],
     components: {Aspect},
     data() {
       return {
@@ -52,11 +53,7 @@
           this.aspects[1].value
         ).then(({data}) => {
           this.ok_snackbar("Login successful")
-          const access_token = data.access_token
-          this.$store.dispatch(USER_LOGIN, data)
-          this.persist_auth_token()
-          this.$axios.setToken("Bearer " + access_token)
-          // this.$axios.defaults.headers.common["Authorization"] =
+          this.process_login(data)
           this.$router.push("/")
         }).catch((err) => {
           console.log("err", err)
