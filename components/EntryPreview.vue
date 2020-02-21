@@ -13,15 +13,13 @@
         .orange--text.mt-2(v-if="outdated")
           v-icon(color="orange") mdi-alert-outline
           span Created from an outdated version. Some values might change. Download the entry before updating is recommended
-      v-col(v-if="show_image" cols=12 class="col-md-2 col-sm-12 entry-image")
+      v-col(v-if="show_image" cols=12 class="col-md-4 col-sm-12 entry-image")
         div(class="float-md-right float-sm-left entry-display-size")
-          v-avatar(
-            tile
-            class="entry-image-size")
+          v-avatar(tile class="entry-image-size")
             v-img(
               :src="entry_image"
-              alt="item"
-              contain)
+              height="400"
+              alt="item")
     div.ml-4.mr-2
       Aspect(v-for="aspect in shown_aspects"
         :key="aspect.name"
@@ -159,12 +157,14 @@
           return "fa fa-edit"
       },
       entry_image() {
-        if (this.entry.image.startsWith("http")) {
-          return this.entry.image
-        } else if(check_str_is_uuid(this.entry.image)) {
-          this.$api.entry__$uuid__attachment__$file_uuid(this.uuid, this.entry.image)
-        } else {
-          return ""
+        if (this.entry.image !== null) {
+          if (this.entry.image.startsWith("http")) {
+            return this.entry.image
+          } else if (check_str_is_uuid(this.entry.image)) {
+            return this.$api.url_entry__$uuid__attachment__$file_uuid(this.uuid, this.entry.image)
+          } else {
+            return null
+          }
         }
       },
       tags() {
@@ -307,6 +307,7 @@
   .entry-image-size {
     width: 100% !important;
     height: auto !important;
+    max-height: 200px;
   }
 
   @media (max-width: 959px) {

@@ -48,7 +48,7 @@
 
   import {
     ENTRIES_DELETE_ENTRY,
-    ENTRIES_GET_RECURSIVE_ENTRIES, ENTRIES_SAVE_ENTRY,
+    ENTRIES_GET_RECURSIVE_ENTRIES, ENTRIES_SAVE_ENTRY, ENTRIES_UPDATE_ENTRY,
     LAST_BASE_PAGE_PATH, POP_LAST_PAGE_PATH
   } from "../lib/store_consts";
   import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
@@ -140,7 +140,8 @@
             }
             this.back()
           } else if (event.id === this.delete_dialog_data.id) {
-            this.$api.delete_entry__$uuid(this.uuid)
+            if (this.entry.status !== DRAFT)
+              this.$api.delete_entry__$uuid(this.uuid)
             this.delete_entry()
           }
         }
@@ -180,21 +181,23 @@
         if (method) {
           try {
             const res = await this.$api[method](this.entry.uuid, this.entry)
-            const attachment_file_uuids = this.get_attachments_to_post(this.entry)
+            const attachments_data = this.get_attachments_to_post(this.entry)
             let formData = new FormData()
-            for (let attachment_uuid of attachment_file_uuids) {
-              const stored_file = this.$store.getters["files/get_file"](attachment_uuid)
+            for (let attachment_data of attachments_data) {
+              const file_uuid = attachment_data.file_uuid
+              const stored_file = this.$store.getters["files/get_file"](file_uuid)
               const blob = base64file_to_blob(stored_file.meta.type, stored_file.data)
               formData.append("file", blob, stored_file.meta.name)
-              this.$api.post_entry__$uuid__attachment(this.uuid, formData).then((res) => {
+              this.$api.post_entry__$uuid__attachment__$file_uuid(this.uuid, file_uuid, formData).then((res) => {
+                this.$store.commit("files/remove_file", file_uuid)
               }).catch(err => {
                 this.error_snackbar("File could not be uploaded", stored_file.meta.name)
               })
             }
-            console.log(res.data)
             this.sending = false
-            this.entry.status = PUBLISHED
+            // this.entry.status = PUBLISHED
             this.$store.dispatch(ENTRIES_SAVE_ENTRY)
+            this.$store.dispatch(ENTRIES_UPDATE_ENTRY)
             this.back()
           } catch (e) {
             console.log(e)

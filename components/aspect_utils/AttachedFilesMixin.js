@@ -11,8 +11,8 @@ import {ENTRIES_ADD_FILE_ATTACHMENT} from "~/lib/store_consts";
 export default {
   name: "AttachedFilesMixin",
   methods: {
-    add_file_attachment(entry_uuid, type, file_uuid) {
-      this.$store.commit(ENTRIES_ADD_FILE_ATTACHMENT, {entry_uuid, type, file_uuid})
+    add_file_attachment(entry_uuid, type, file_uuid, file_loc) {
+      this.$store.commit(ENTRIES_ADD_FILE_ATTACHMENT, {entry_uuid, type, file_uuid, file_loc})
     }
   }
 }

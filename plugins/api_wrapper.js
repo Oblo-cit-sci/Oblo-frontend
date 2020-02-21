@@ -133,10 +133,9 @@ class APIWrapper {
     return this.axios.delete(`${this.entry_baseURL}/${uuid}`)
   }
 
-  post_entry__$uuid__attachment(uuid, formData) {
-    return this.axios.post(`${this.entry_baseURL}/${uuid}/attachment`,
-      formData,
-      {
+  post_entry__$uuid__attachment__$file_uuid(uuid, file_uuid, formData) {
+    return this.axios.post(`${this.entry_baseURL}/${uuid}/attachment/${file_uuid}`,
+      formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -144,8 +143,8 @@ class APIWrapper {
     )
   }
 
-  entry__$uuid__attachment__$file_uuid(uuid, file_uuid) {
-    return this.axios.get(`${this.entry_baseURL}/${uuid}/attachment/${file_uuid}`)
+  url_entry__$uuid__attachment__$file_uuid(uuid, file_uuid) {
+    return `${this.entry_baseURL}/${uuid}/attachment/${file_uuid}`
   }
 }
 

@@ -2,7 +2,7 @@
   div
     v-row
       v-col(v-for="(img_data, index) in images" :key="index" :cols="num_cols")
-        v-img(:src="get_image_data(index)" @click="open_image(index)")
+        v-img(:src="get_image_data(index)" @click="open_image(index)" max-height="300" contain)
           v-badge(v-if="cover_image_index===index" color="yellow" inline)
     LoadFileButton(label="Add image" filetype="image" @fileload="add_image($event)")
     v-dialog(v-model="image_open" overlay-opacity="100" fullscreen)
@@ -41,9 +41,11 @@
   import {ENTRIES_UPDATE_IMAGE} from "../../lib/store_consts";
   import AttachedFilesMixin from "../aspect_utils/AttachedFilesMixin";
   import AspectComponentMixin from "./AspectComponentMixin";
-  import {loc_append, loc_remove_first} from "../../lib/aspect";
-  import {INDEX} from "../../lib/consts";
+  import {DRAFT, INDEX} from "../../lib/consts";
+  import {loc_append, remove_entry_loc} from "../../lib/aspect";
   const uuidv4 = require('uuid/v4')
+
+  // because of get_entry it only works in entries now
 
   export default {
     name: "ImageAspect",
@@ -93,7 +95,7 @@
         this.update_value(this.$_.concat(this.value, [{
           title: "",
           description: "",
-          uuid: file_uuid,
+          file_uuid: file_uuid,
           url: null,
           date: new Date(),
           license: "No license",
@@ -110,7 +112,7 @@
         this.cover_image_index = index
         this.$store.commit(ENTRIES_UPDATE_IMAGE, {
           uuid: this.entry_uuid(),
-          image_url: this.images[index].uuid
+          image_url: this.images[index].file_uuid
         })
       },
       // todo needs to be called from the ImageCard component
@@ -119,11 +121,14 @@
       },
       get_image_data(index) {
         if(this.images[index].url === null) {
-          return this.$store.getters["files/get_file"](this.images[index].uuid).data
+          return this.$store.getters["files/get_file"](this.images[index].file_uuid).data
         } else {
           return this.images[index].url
         }
       },
+      image_location(index) {
+        return loc_append(remove_entry_loc(this.aspect_loc), INDEX, index)
+      }
     },
     watch: {
       images(new_val, prev_val) {
@@ -133,7 +138,8 @@
           if (new_img_index === 0) {
             this.set_cover_image(0)
           }
-          this.add_file_attachment(this.entry_uuid(), "image", this.images[new_img_index].uuid)
+          this.add_file_attachment(this.entry_uuid(), "image",
+            this.images[new_img_index].file_uuid, this.image_location(new_img_index))
         }
       }
     }

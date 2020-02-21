@@ -111,8 +111,7 @@ module.exports = {
     defaults: {
       paramsSerializer: function (params) {
         return qs.stringify(params, {arrayFormat: 'repeat'})
-      },
-      validate
+      }
     }
 
     // credentials: true,

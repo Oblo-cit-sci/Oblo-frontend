@@ -187,7 +187,7 @@ export const mutations = {
   add_file_attachment(state, attachment) {
     const {entry_uuid, ...attachment_data} = attachment
     const entry = state.entries.get(entry_uuid)
-    entry.attached_files.push(attachment_data.file_uuid)
+    entry.attached_files.push(attachment_data)
   }
 }
 
