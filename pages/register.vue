@@ -2,10 +2,16 @@
   v-flex(xs12='' sm8='' md6='')
     h2.mb-2 Registration
     v-form
-      Aspect(v-for="a of aspects" :aspect="a" :ext_value.sync="a.value" mode="edit" :key="a.name")
-      span learn more about
+      Aspect(v-for="a of aspects"
+        :aspect="a"
+        :key="a.name"
+        :ext_value.sync="a.value"
+        @update:error="a.error = $event"
+        :extra="{clearable:false}"
+        mode="edit")
+      span learn more about &nbsp;
       a(href="https://creativecommons.org/choose/" target="_blank") creative commons licences
-    v-btn(@click='submit' :disabled="submitStatus === 'PENDING'" color='success') Submit!
+    v-btn(@click='submit' :disabled="any_invalid || submitStatus === 'PENDING'" color='success') Submit!
     v-alert(:value='errorMsg' type='error') {{errorMsg}}
 </template>
 
@@ -28,7 +34,6 @@
       default_license.label = "Default licence"
       default_license.value = "CC-BY"
       default_license.attr.unpacked = true
-
       return {
         aspects: {
           registered_name: {
@@ -43,7 +48,8 @@
                 ]
               }
             },
-            value: ""
+            value: "",
+            error: true
           },
           email: {
             type: "str",
@@ -58,7 +64,8 @@
                 ]
               }
             },
-            value: ""
+            value: "",
+            error: true
           },
           password: {
             type: "str",
@@ -75,7 +82,8 @@
                 ]
               }
             },
-            value: ""
+            value: "",
+            error: true
           },
           password_confirm: {
             type: "str",
@@ -91,7 +99,8 @@
                 ]
               }
             },
-            value: ""
+            value: "",
+            error: true
           },
           default_privacy: {
             name: "default_privacy",
@@ -99,7 +108,12 @@
             type: "select",
             attr: {
               unpacked: true,
-              force_view: "select"
+              force_view: "select",
+              extra: {
+                rules: [
+                  v => v || 'Select a default privacy',
+                ]
+              }
             },
             items: ["public", "private"],
             value: "public"
@@ -108,6 +122,12 @@
         },
         submitStatus: null,
         errorMsg: null
+      }
+    },
+    computed: {
+      any_invalid() {
+        // todo could also have  '|| !a.value'  but we should then be able to pass down the rules to the selectes
+        return this.$_.some(this.aspects, (a) => a.hasOwnProperty("error") && a.error)
       }
     },
     methods: {
@@ -121,9 +141,14 @@
           default_privacy: this.aspects.default_privacy.value,
           default_license: this.aspects.default_license.value
         }).then(({data}) => {
+          if (data.data) {
+            this.$router.push("/login")
             this.ok_snackbar("Registration successful")
             this.process_login(data)
             this.$router.push("/")
+          } else {
+            this.errorMsg = data.error.msg
+          }
         }).catch((err) => {
           console.log("err", err)
         })

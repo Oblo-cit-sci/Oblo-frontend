@@ -24,7 +24,7 @@
             // console.log("tempaltes fetch res", data)
             this.$store.dispatch("set_templates_codes_for_domain", {
               domain_name: domain.name,
-              entries: data
+              entries: data.data
             })
               this.$store.commit(SET_DOMAIN, this.domain)
               this.$router.push("/domain/" + domain.name)

@@ -14,7 +14,7 @@ class APIWrapper {
     this.api_baseURL = this.axios_baseURL + "/api"
     //
     this.domain_baseURL = this.api_baseURL + "/domain"
-    this.actor_baseURL = this.api_baseURL + "/actor"
+    this.actor_baseURL = this.api_baseURL + "/actor/"
     this.entry_baseURL = this.api_baseURL + "/entry"
   }
 
@@ -37,7 +37,7 @@ class APIWrapper {
    * login
    */
   post_actor__login(username, password) {
-    return this.axios.post(`${this.actor_baseURL}/login`, qs.stringify({
+    return this.axios.post(`${this.actor_baseURL}login`, qs.stringify({
       username,
       password,
       grant_type: "password"
@@ -53,7 +53,7 @@ class APIWrapper {
    * @returns {*} promise
    */
   domain() {
-    return this.axios.get(this.domain_baseURL)
+    return this.axios.get(`${this.domain_baseURL}/`)
   }
 
   /**
@@ -76,7 +76,7 @@ class APIWrapper {
   }
 
   actor__validate_token(auth_token) {
-    return this.axios.get(`${this.actor_baseURL}/validate_token`, {
+    return this.axios.get(`${this.actor_baseURL}validate_token`, {
       headers: {
         "Authorization": auth_token.token_type + " " + auth_token.access_token
       }
@@ -84,15 +84,15 @@ class APIWrapper {
   }
 
   url_actor__$registered_name__avatar(registered_name) {
-    return `${this.actor_baseURL}/${registered_name}/avatar`
+    return `${this.actor_baseURL}${registered_name}/avatar`
   }
 
   post_actor__me(profile_data) {
-    return this.axios.post(`${this.actor_baseURL}/me`, profile_data)
+    return this.axios.post(`${this.actor_baseURL}me`, profile_data)
   }
 
   post_actor__avatar(formData) {
-    return this.axios.post(`${this.actor_baseURL}/avatar`,
+    return this.axios.post(`${this.actor_baseURL}avatar`,
       formData,
       {
         headers: {
@@ -103,7 +103,7 @@ class APIWrapper {
   }
 
   post_actor__form_test(formData) {
-    return this.axios.post(`${this.actor_baseURL}/form_test`,
+    return this.axios.post(`${this.actor_baseURL}form_test`,
       formData,
       {
         headers: {
@@ -114,7 +114,7 @@ class APIWrapper {
   }
 
   actor__logout() {
-    return this.axios.get(`${this.actor_baseURL}/logout`)
+    return this.axios.get(`${this.actor_baseURL}logout`)
   }
 
   entry__$uuid(uuid) {

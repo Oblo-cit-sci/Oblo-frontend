@@ -28,6 +28,10 @@ export default {
       default: () => {
         return {}
       }
+    },
+    rules: {
+      type: Array,
+      default: ()  => []
     }
   },
   computed: {

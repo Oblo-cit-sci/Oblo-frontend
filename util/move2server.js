@@ -1,4 +1,4 @@
-server_static_dir = "/mnt/SSD/licci/licci_be/"
+server_static_dir = "/mnt/SSD/licci/licci_be/app/"
 
 remove_entry_images = process.argv[2] ? false : true
 
@@ -38,7 +38,7 @@ fs.copy(source, destination, function (err) {
     console.log('An error occured while copying the folder.')
     return console.error(err)
   }
-  console.log('Copy completed!')
+  console.log('Copy completed!', destination)
 });
 
 

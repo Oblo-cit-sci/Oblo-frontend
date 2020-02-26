@@ -5,8 +5,7 @@ export default {
   data() {
     return {
       hideDetails: true,
-      hint: undefined,
-      rules: undefined,
+      hint: undefined
     }
   },
   created() {
@@ -26,6 +25,11 @@ export default {
       //console.log("AspMix - ", this.aspect.name, this.aspect.type, this.extra)
       return ((this.extra.listitem && this.mode === EDIT) || false) ? "mdi-close" : undefined //this.extra
     },
+  },
+  methods: {
+    // update_error(event) {
+    //   console.log("error state", event)
+    // }
   }
 }
 

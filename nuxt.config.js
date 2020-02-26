@@ -11,6 +11,12 @@ eovalue
 
 const release_modes = ["opentek", "eovalue", "licci_partners"]
 
+let axios_baseURL = "https://opentek.eu"
+
+if(process.env.NODE_ENV === "development") {
+  axios_baseURL = "http://localhost:8100"
+}
+
 module.exports = {
   mode: 'universal',
 
@@ -55,7 +61,7 @@ module.exports = {
 
   router: {
     middleware: ['init'],
-    base: "/fe/"
+    base: "/"
   },
 
   /*
@@ -75,7 +81,6 @@ module.exports = {
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
     '@nuxtjs/font-awesome',
-    '~/modules/myCache',
     '@nuxtjs/localforage'
   ],
 
@@ -105,8 +110,7 @@ module.exports = {
   ** Axios module configuration
   */
   axios: {
-    // See https://github.com/nuxt-community/axios-module#options
-    baseURL: "http://localhost:8100",
+    baseURL: axios_baseURL,
     withCredentials: true,
     defaults: {
       paramsSerializer: function (params) {
@@ -117,9 +121,6 @@ module.exports = {
     // credentials: true,
     // proxyHeaders: true,
   },
-  // proxy: {
-  //   '/': 'http://api.example.com'
-  // },
   /*
   ** Build configuration
   */

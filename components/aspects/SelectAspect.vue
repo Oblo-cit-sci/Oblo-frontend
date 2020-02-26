@@ -16,7 +16,6 @@
 
 <script>
   import SelectMixin from "./SelectMixin";
-  import {VIEW} from "../../lib/consts";
   import AspectComponentMixin from "./AspectComponentMixin";
 
   export default {

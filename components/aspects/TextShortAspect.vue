@@ -17,7 +17,8 @@
       @click:append-outer="$emit('entryAction', {action: 'clear'})"
 
       :value="value"
-      @input="update_value($event)")
+      @input="update_value($event)"
+      @update:error="$emit('update:error', $event)")
     p(v-else
       class="body-1 readonly-aspect") {{value}}
 </template>

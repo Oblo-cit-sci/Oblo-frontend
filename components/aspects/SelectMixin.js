@@ -9,6 +9,12 @@ import {ENTRIES_VALUE} from "../../lib/store_consts";
 import {get_codes_as_options, no_duplicate_texts, object_list2options, string_list2options} from "../../lib/options";
 
 export default {
+  props: {
+    clearable: {
+      type: Boolean,
+      default: true
+    }
+  },
   data() {
     return {
       selection: null,

@@ -20,10 +20,10 @@
       :value="value"
       :aspect="aspect"
       :aspect_loc="aspect_loc"
-      :extra="extra"
       :disabled="regular_disable"
       :mode="real_mode"
       v-on:update_value="update_value($event)"
+      @update:error="$emit('update:error', ($event))"
       v-on:entryAction="$emit('entryAction',$event)")
     div(v-if="!use_regular && aspect.attr.alternative !== undefined")
       Title_Description(v-bind="title_description(aspect.attr.alternative)")
@@ -32,6 +32,7 @@
         :value="value"
         :aspect="alternative"
         :aspect_loc="aspect_loc"
+        v-bind="extra"
         v-bind:aspect="aspect.attr.alternative"
         v-on:update_value="update_value($event)"
         :mode="alt_mode")
