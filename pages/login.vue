@@ -55,7 +55,7 @@
           if(data.data){
             this.ok_snackbar("Login successful")
             this.process_login(data.data)
-            this.$router.push("/")
+            this.$router.back()
           } else {
             console.log("todo handle login error")
           }

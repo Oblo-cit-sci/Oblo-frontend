@@ -17,6 +17,7 @@
         div(class="float-md-right float-sm-left entry-display-size")
           v-avatar(tile class="entry-image-size")
             v-img(
+              contain
               :src="entry_image"
               height="400"
               alt="item")

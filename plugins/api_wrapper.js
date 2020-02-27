@@ -66,8 +66,8 @@ class APIWrapper {
   /**
    * regular entries of a domain, paginated
    */
-  domain__$domain_name__entries(domain_name, limit, offset) {
-    return this.axios.get(`${this.domain_baseURL}/${domain_name}/entries`, {
+  domain__$domain_name__entries(domain_name, limit, offset, search_query) {
+    return this.axios.post(`${this.domain_baseURL}/${domain_name}/entries`, search_query, {
       params: {
         limit,
         offset

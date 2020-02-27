@@ -5,20 +5,10 @@ export default {
   data() {
     return {
       hideDetails: true,
-      hint: undefined
     }
   },
   created() {
-    if (this.aspect.attr.hasOwnProperty("extra")) {
-      const extra = this.aspect.attr.extra
-      if (extra.hasOwnProperty("rules")) {
-        this.hideDetails = false
-        this.rules = extra.rules
-      }
-      this.hint = extra.hint
-      if (this.hint)
-        this.hideDetails = false
-    }
+
   },
   computed: {
     clearIcon() {
@@ -26,10 +16,5 @@ export default {
       return ((this.extra.listitem && this.mode === EDIT) || false) ? "mdi-close" : undefined //this.extra
     },
   },
-  methods: {
-    // update_error(event) {
-    //   console.log("error state", event)
-    // }
-  }
 }
 

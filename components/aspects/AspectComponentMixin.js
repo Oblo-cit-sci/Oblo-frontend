@@ -38,20 +38,33 @@ export default {
       //console.log("AspMix - ", this.aspect.name, this.aspect.type, this.extra)
       return ((this.extra.listitem && this.mode === EDIT) || false) ? "mdi-close" : undefined //this.extra
     },
+    rules() {
+      if (this.$_.get(this.aspect.attr, "extra.rules")) {
+        if (this.hasOwnProperty("hideDetails")) {
+          this.hideDetails = false
+        }
+        return this.aspect.attr.extra.rules
+      }
+    },
+    hint() {
+      if (this.$_.get(this.aspect.attr, "extra.hint", null)) {
+        return this.aspect.attr.extra.hint
+      }
+    }
   },
   methods: {
     update_value(value) {
       this.$emit("update_value", value)
     },
     entry_uuid() {
-      if(this.aspect_loc) {
+      if (this.aspect_loc) {
         return aspect_loc_uuid(this.aspect_loc)
       } else
         return null
     },
     get_entry() {
       const entry_uuid = this.entry_uuid()
-      if(entry_uuid){
+      if (entry_uuid) {
         return this.$store.getters[ENTRIES_GET_ENTRY](this.entry_uuid)
       } else {
         return null

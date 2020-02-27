@@ -196,7 +196,8 @@
             }
             this.sending = false
             // this.entry.status = PUBLISHED
-            this.$store.dispatch(ENTRIES_SAVE_ENTRY)
+            // this.$store.dispatch(ENTRIES_SAVE_ENTRY)
+            this.$store.commit(ENTRIES_SAVE_ENTRY, res.data.data)
             this.$store.dispatch(ENTRIES_UPDATE_ENTRY)
             this.back()
           } catch (e) {

@@ -43,6 +43,7 @@
   import AspectComponentMixin from "./AspectComponentMixin";
   import {DRAFT, INDEX} from "../../lib/consts";
   import {loc_append, remove_entry_loc} from "../../lib/aspect";
+
   const uuidv4 = require('uuid/v4')
 
   // because of get_entry it only works in entries now
@@ -120,8 +121,13 @@
         this.set_cover_image(index)
       },
       get_image_data(index) {
-        if(this.images[index].url === null) {
-          return this.$store.getters["files/get_file"](this.images[index].file_uuid).data
+        if (this.images[index].url === null) {
+          const img_data = this.$store.getters["files/get_file"](this.images[index].file_uuid)
+          if (img_data) {
+            return img_data.data
+          } else {
+            return this.$api.url_entry__$uuid__attachment__$file_uuid(this.entry_uuid(), (this.images[index].file_uuid))
+          }
         } else {
           return this.images[index].url
         }
@@ -133,7 +139,7 @@
     watch: {
       images(new_val, prev_val) {
         // image added
-        if(new_val.length > prev_val.length) {
+        if (new_val.length > prev_val.length) {
           const new_img_index = this.images.length - 1
           if (new_img_index === 0) {
             this.set_cover_image(0)

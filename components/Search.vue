@@ -21,7 +21,7 @@
       v-row
         v-col.col-md-6.col-xs-12(v-for="(config, index) in Object.values(filter_configs)" cols="12"  :key="index")
           FilterSelect(v-bind="config" :selection.sync="filter_values[config.name]")
-      v-row(v-if="waiting")
+      v-row(v-if="searching")
         v-col(offset="5" cols=2)
           v-progress-circular(indeterminate center size="35" color="success")
       EntryPreviewList(v-if="show_results"
@@ -42,22 +42,20 @@
 
   import {mapGetters, mapMutations} from "vuex"
   import EntryPreviewList from "../components/EntryPreviewList"
-  import {fetch_domain_entries, search_entries} from "../lib/client"
+  import {debounced_search,  search_entries} from "../lib/client"
   import {
     CLEAR_SEARCH,
     ENTRIES_ALL_ENTRIES_ARRAY,
-    ENTRIES_HAS_ENTRY,
     ENTRYTYPES_TYPES,
     SEARCH_GET_ENTRIES,
     SEARCH_SET_ENTRIES
   } from "../lib/store_consts"
   import FilterSelect from "./FilterSelect";
-  import {pack_value} from "../lib/aspect";
   import FilterMixin from "./FilterMixin";
   import {filter_required} from "../lib/search";
   import {entries2vuetify_tree} from "../lib/entry_collections";
   import NavBaseMixin from "./NavBaseMixin";
-  import {REGULAR, VIEW_SEARCH, VIEW_TREE} from "../lib/consts";
+  import {VIEW_SEARCH, VIEW_TREE} from "../lib/consts";
 
   const LOG = false
 
@@ -129,7 +127,7 @@
           // could later be replaced by, last search or all local in that domain (like it is now)
           this.getEntries()
         } else if (kw.length >= this.kw_char_thresh) {
-          this.$_.debounce(this.getEntries, 500)()
+          this.getEntries()
         }
       },
       view_mode(val) {
@@ -145,9 +143,6 @@
         if (this.keyword && this.keyword.length < this.kw_char_thresh) {
           return "type 4 characters to trigger search"
         }
-      },
-      waiting() {
-        return this.entries().length === 0
       },
       filtered_entries() {
         let result_entries = this.entries() // must be a call
@@ -169,6 +164,7 @@
       }
     },
     methods: {
+      // debounced_search: this.$_.debounce(this.getEntries, 1000),
       // todo test later. this was due to a bug in vuetify, buttons would only send their index, not their value
       to_view(view_selected) {
         const is_index = parseInt(view_selected)
@@ -182,13 +178,12 @@
         }
       },
       getEntries() {
-        // console.log("search getting entries")
         this.searching = true
         let config = this.searchConfiguration()
         // build_config merges 2 objects,
         //console.log("search.getEntries: config", config)
-        search_entries(this.$api, this.$store, config)
-          .then(res => {
+        debounced_search(this.$api, this.$store, config)
+          .then(() => {
             this.searching = false
             this.$emit("received_search_results", this.entries)
           }).catch(err => {

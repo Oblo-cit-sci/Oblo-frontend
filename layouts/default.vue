@@ -80,6 +80,7 @@
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
 
   import {mapGetters} from "vuex"
+  import PersistentStorageMixin from "../components/PersistentStorageMixin";
 
 
   let require_login = ["Profile", "Logout"]
@@ -91,7 +92,7 @@
 
   export default {
     components: {GlobalSnackbar, Footer},
-    mixins: [TriggerSnackbarMixin],
+    mixins: [TriggerSnackbarMixin, PersistentStorageMixin],
     data() {
       return {
         ci: "",
@@ -169,16 +170,9 @@
         if (action_type === "logout") {
           this.$api.actor__logout().then(() => {
             this.ok_snackbar("You are logged out")
+            this.remove_from_storage("auth_token")
             this.$store.dispatch(USER_LOGOUT)
             this.$router.push("/")
-            /*
-                    this.$store.commit(USER_LOGOUT);
-        this.$store.commit(ENTRIES_CLEAR)
-        this.$store.commit(CLEAR)
-        this.$router.push("/")
-        this.ok_snackbar("You are logged out")
-             */
-
           }).catch((err) => {
             console.log("logout error", err.response);
             if (err.response.status === 401) {

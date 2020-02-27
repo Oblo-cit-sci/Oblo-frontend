@@ -50,7 +50,7 @@
     },
     computed: {
       results_received() {
-        return this.total_number !== undefined
+        return this.entries !== undefined
       },
       visible_entries() {
         let from_index = (this.page - 1) * this.entries_per_page
