@@ -14,38 +14,7 @@
     import {get_release_mode} from "../lib/util";
     import Search from "../components/Search";
 
-    /*
-    v-flex(
-        v-for="o in filter_options" :key="o.value")
-        v-checkbox(
-          v-model="filter"
-          :label="o.label"
-          :value="o.value")
 
-     */
-
-    const options = [
-        {
-            label: "All",
-            value: "all"
-        },
-        {
-            label: "Owner",
-            value: "owners"
-        },
-        {
-            label: "Reviewer",
-            value: "reviewers"
-        },
-        {
-            label: "Explicit access",
-            value: "explicit_access"
-        },
-        {
-            label: "Collaborator",
-            value: "collaborators"
-        }
-    ];
 
     let all_filters = [domain_filter_options, entrytype_filter_options]
 
@@ -94,11 +63,6 @@
                     }
                 }
                 return result_entries
-            },
-            roles() {
-                this.$_.map(options, (o) => {
-                    return o.value
-                });
             }
         }
     }

@@ -12,7 +12,7 @@
       span learn more about &nbsp;
       a(href="https://creativecommons.org/choose/" target="_blank") creative commons licences
     v-btn(@click='submit' :disabled="any_invalid || submitStatus === 'PENDING'" color='success') Submit!
-    v-alert(:value='errorMsg' type='error') {{errorMsg}}
+    v-alert(:value='errorMsg !== null' type='error' prominent) {{errorMsg}}
 </template>
 
 <script>
@@ -144,7 +144,7 @@
           if (data.data) {
             this.$router.push("/login")
             this.ok_snackbar("Registration successful")
-            this.process_login(data)
+            this.process_login(data.data)
             this.$router.push("/")
           } else {
             this.errorMsg = data.error.msg

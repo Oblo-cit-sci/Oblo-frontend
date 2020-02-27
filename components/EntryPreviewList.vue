@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    v-row(wrap justify-center)
+    v-row(v-if="results_received" wrap justify-center)
       div {{num_entries}} Entries
     v-row(v-for="entry in visible_entries"
       :key="entry.id" class="col-sm-12 col-xs-6")
@@ -26,7 +26,9 @@
     components: {Entrypreview},
     mixins: [],
     props: {
-      total_number: 0,
+      total_number: {
+        type: Number
+      },
       entries: Array,
       entries_per_page: {
         type: Number,
@@ -47,6 +49,9 @@
       this.deleted = this.$_.filter(this.deleted, uuid => !this.$store.getters[ENTRIES_HAS_ENTRY](uuid))
     },
     computed: {
+      results_received() {
+        return this.total_number !== undefined
+      },
       visible_entries() {
         let from_index = (this.page - 1) * this.entries_per_page
         let to_index = from_index + this.entries_per_page

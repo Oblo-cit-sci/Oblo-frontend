@@ -1,10 +1,11 @@
 <template lang="pug">
   v-container(fluid)
-    v-row
-      v-col
-        v-btn-toggle(:value="view_mode" @change="$emit('update:view_mode', to_view($event))" mandatory)
-          v-btn(:value="VIEW_SEARCH") search
-          v-btn(:value="VIEW_TREE") tree view
+    <!--    v-row(note="temporarily out.... doesnt make sense for the public version")-->
+    <!--    v-row-->
+    <!--      v-col-->
+    <!--        v-btn-toggle(:value="view_mode" @change="$emit('update:view_mode', to_view($event))" mandatory)-->
+    <!--          v-btn(:value="VIEW_SEARCH") search-->
+    <!--          v-btn(:value="VIEW_TREE") tree view-->
     div(v-if="view_mode===VIEW_SEARCH")
       v-row(wrap justify-start)
         v-col(cols="12")
@@ -20,6 +21,9 @@
       v-row
         v-col.col-md-6.col-xs-12(v-for="(config, index) in Object.values(filter_configs)" cols="12"  :key="index")
           FilterSelect(v-bind="config" :selection.sync="filter_values[config.name]")
+      v-row(v-if="waiting")
+        v-col(offset="5" cols=2)
+          v-progress-circular(indeterminate center size="35" color="success")
       EntryPreviewList(v-if="show_results"
         :entries="filtered_entries"
         :preview_options="preview_options"
@@ -112,6 +116,7 @@
         this.$store.commit(SEARCH_SET_ENTRIES, filtered_entries)
         this.$emit("received_search_results", filtered_entries.map(e => e[1]))
       } else if (this.entries.length === 0) {
+        console.log("search create getting entries")
         this.getEntries()
       }
     },
@@ -140,6 +145,9 @@
         if (this.keyword && this.keyword.length < this.kw_char_thresh) {
           return "type 4 characters to trigger search"
         }
+      },
+      waiting() {
+        return this.entries().length === 0
       },
       filtered_entries() {
         let result_entries = this.entries() // must be a call

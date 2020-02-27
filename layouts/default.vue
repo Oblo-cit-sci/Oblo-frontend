@@ -66,10 +66,8 @@
     CONNECTED,
     USER_LOGGED_IN,
     SEARCH_SET_ENTRIES,
-    ENTRIES_ALL_ENTRIES_ARRAY,
     DB_LOADED,
     USER_LOGOUT,
-    USER_GET_USER_DATA,
     USER_LOGIN, USER_RESET_AUTH_TOKEN, USER_GET_AUTH_TOKEN
   } from "../lib/store_consts"
   import GlobalSnackbar from "../components/GlobalSnackbar"

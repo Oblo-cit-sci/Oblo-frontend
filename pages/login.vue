@@ -52,9 +52,13 @@
           this.aspects[0].value,
           this.aspects[1].value
         ).then(({data}) => {
-          this.ok_snackbar("Login successful")
-          this.process_login(data)
-          this.$router.push("/")
+          if(data.data){
+            this.ok_snackbar("Login successful")
+            this.process_login(data.data)
+            this.$router.push("/")
+          } else {
+            console.log("todo handle login error")
+          }
         }).catch((err) => {
           console.log("err", err)
         })

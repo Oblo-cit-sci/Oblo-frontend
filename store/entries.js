@@ -131,6 +131,9 @@ export const mutations = {
     entry.version += 1
     entry.local.prev = null
   },
+  set_from_array(state, uuid_entry_array) {
+    state.entries = new Map(uuid_entry_array)
+  },
   set_edit(state, uuid) {
     state.edit = state.entries.get(uuid)
   },  // todo template for all kinds of computed meta-aspects
@@ -173,14 +176,14 @@ export const mutations = {
   },
   set_entry_status(state, {uuid, status}) {
     const e = state.entries.get(uuid)
-    if(e) {
+    if (e) {
       e.status = status
     } else {
       console.log("cannot set status, entry missing", uuid)
     }
   },
   // fixer
-  fix_refs(state,  {parent_uuid, child_uuid, aspect_loc}) {
+  fix_refs(state, {parent_uuid, child_uuid, aspect_loc}) {
     state.entries.get(parent_uuid).refs.children[child_uuid] = aspect_loc
     state.entries.get(child_uuid).refs.parent.aspect_loc = aspect_loc
   },
@@ -193,8 +196,10 @@ export const mutations = {
 
 // getters
 export const getters = {
-  all_entries(state) {
-    return state.entries.values()
+  all_entries_uuid_entry_arr(state) {
+    return () => {
+      return Array.from(state.entries.entries())
+    }
   },
   all_entries_array(state) { // ENTRIES_ALL_ENTRIES_ARRAY
     //console.log(state.entries)
@@ -255,7 +260,7 @@ export const getters = {
   },
   get_entries(state, getters) { // ENTRIES_GET_ENTRIES
     return (uuids) => {
-      return ld.filter(getters.all_entries_array(), e => ld.includes(uuids,e.uuid))
+      return ld.filter(getters.all_entries_array(), e => ld.includes(uuids, e.uuid))
     }
   },
   get_children(state) {
@@ -436,7 +441,7 @@ export const actions = {
     context.commit("update_title", {uuid, title: entry_title})
     const location = context.getters.entry_location(uuid)
     if (location) {
-      console.log("save_entry. loc",location )
+      console.log("save_entry. loc", location)
       const simple_location = filter_empty(recursive_unpack(location))
       context.commit("update_location", {uuid, location: simple_location})
     }

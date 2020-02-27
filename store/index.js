@@ -130,9 +130,6 @@ export const mutations = {
       icon: "images/openTEK_icon.png"
     }
   },
-  set_stored_entries(state, entries) {
-    state.entries.entries = entries
-  },
   set_draft_numbers(state, draft_numbers) {
     state.draft_numbers = draft_numbers
   },
@@ -231,6 +228,7 @@ export const getters = {
   containing_template_options(state, getters) {
     return () => {
       const types = new Set()
+      console.log("containing_template_options", typeof (state.entries.entries), state.entries.entries.constructor)
       for (let entry of state.entries.entries.values()) {
         types.add(entry.template.slug)
       }
