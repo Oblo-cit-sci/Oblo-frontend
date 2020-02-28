@@ -6,7 +6,16 @@ const fs = require("fs-extra");
 const pathf = require('path');
 
 const source = "dist"
-const destination = server_static_dir + "fe"
+
+destination_folder = "fe"
+
+console.log("preparing copying")
+console.log(process.env.SERVER)
+if(process.env.SERVER === "staging") {
+  destination_folder = "fe.s"
+}
+
+const destination = server_static_dir + destination_folder
 
 
 const deleteFolderRecursive = function(path) {

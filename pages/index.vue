@@ -28,6 +28,7 @@
   import {get_release_mode} from "../lib/util";
   import {LICCI_PARTNERS} from "../lib/consts";
   import {CLEAR_DOMAIN, CONNECTED, DOMAINS, USER_LOGGED_IN} from "../lib/store_consts";
+  import Footer from "../components/Footer";
 
   export default {
     data() {
@@ -37,7 +38,8 @@
       this.$store.commit(CLEAR_DOMAIN)
     },
     components: {
-      DomainCard
+      Footer,
+      DomainCard,
     },
     computed: {
       ...mapGetters([DOMAINS, CONNECTED]),

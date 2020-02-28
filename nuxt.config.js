@@ -13,6 +13,11 @@ const release_modes = ["opentek", "eovalue", "licci_partners"]
 
 let axios_baseURL = "https://opentek.eu"
 
+if(process.env.SERVER === "staging") {
+  console.log("building for staging")
+  axios_baseURL = "https://staging.opentek.eu"
+}
+
 if(process.env.NODE_ENV === "development") {
   axios_baseURL = "http://localhost:8100"
 }
