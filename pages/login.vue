@@ -52,9 +52,10 @@
           this.aspects[0].value,
           this.aspects[1].value
         ).then(({data}) => {
-          if(data.data){
+          console.log(data)
+          if(data.user){
             this.ok_snackbar("Login successful")
-            this.process_login(data.data)
+            this.process_login(data)
             this.$router.back()
           } else {
             console.log("todo handle login error")

@@ -1,4 +1,4 @@
-server_static_dir = "/mnt/SSD/licci/licci_be/app/"
+server_static_dir = "../licci_be/app/"
 
 remove_entry_images = process.argv[2] ? false : true
 
@@ -10,7 +10,7 @@ const source = "dist"
 destination_folder = "fe"
 
 console.log("preparing copying")
-console.log(process.env.SERVER)
+server = process.env.SERVER || "production"
 if(process.env.SERVER === "staging") {
   destination_folder = "fe.s"
 }
