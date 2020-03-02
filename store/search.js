@@ -1,5 +1,6 @@
 export const state = () => ({
   entries: new Map(),
+  searching: false,
   entry_aspects: new Map(),
   search_count: 0
 });
@@ -8,8 +9,8 @@ export const mutations = {
   set_entries(state, entries) {
     state.entries = new Map()
     state.entry_aspects = new Map()
-    for(let entry of entries) {
-      state.entries.set(entry.uuid,entry)
+    for (let entry of entries) {
+      state.entries.set(entry.uuid, entry)
     }
   },
   clear(state) {
@@ -19,6 +20,9 @@ export const mutations = {
   },
   set_search_count(state, count) {
     state.search_count = count
+  },
+  set_searching(state, searching) {
+    state.searching = searching
   }
 }
 
@@ -38,5 +42,10 @@ export const getters = {
   },
   get_search_count(state) {
     return state.search_count
+  },
+  get_searching(state) {
+    return () => {
+      return state.searching
+    }
   }
 }

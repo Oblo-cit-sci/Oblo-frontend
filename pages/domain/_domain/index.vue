@@ -16,7 +16,7 @@
         v-col(sm="4")
           v-btn(large to="/login") Login
     Search(
-      :init_clear="true"
+      :init_clear="false"
       :view_mode.sync="entries_view"
       :fixed_filters="domain_pre_filter",
       :include_filters="filters")

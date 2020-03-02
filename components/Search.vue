@@ -93,8 +93,7 @@
         //
         filter_configs: this.$_.mapKeys(this.include_filters, v => v.name),
         filter_values: {},
-        //
-        searching: false,
+
         keyword: '',
         kw_char_thresh: 4,
         VIEW_SEARCH: VIEW_SEARCH,
@@ -102,6 +101,7 @@
       }
     },
     created() {
+      // console.log(this.init_clear, this.init_full, this.searching, this.entries().length)
       if (this.init_clear) {
         this.clear()
       }
@@ -113,8 +113,8 @@
         // console.log("init_full, entries:", filtered_entries.length)
         this.$store.commit(SEARCH_SET_ENTRIES, filtered_entries)
         this.$emit("received_search_results", filtered_entries.map(e => e[1]))
-      } else if (this.entries.length === 0) {
-        console.log("search create getting entries")
+      } else if (this.entries().length === 0) {
+        // console.log("search create getting entries")
         this.getEntries()
       }
     },
@@ -132,10 +132,16 @@
       },
       view_mode(val) {
         this.$emit("update:view_mode", val)
+      },
+      entries() {
+        console.log("entries update")
       }
     },
     computed: {
-      ...mapGetters({entries: SEARCH_GET_ENTRIES}),
+      ...mapGetters({entries: SEARCH_GET_ENTRIES, store_searching: "search/get_searching"}),
+      searching() {
+        return this.store_searching()
+      },
       tree() {
         return entries2vuetify_tree(this.entries(), this.$store.getters[ENTRYTYPES_TYPES], true)
       },
@@ -178,18 +184,21 @@
         }
       },
       getEntries() {
-        this.searching = true
+        // this.searching = true
+        console.log("getting entries")
         let config = this.searchConfiguration()
         // build_config merges 2 objects,
-        //console.log("search.getEntries: config", config)
+        this.$store.commit("search/set_searching", true)
         debounced_search(this.$api, this.$store, config)
-          .then(() => {
-            this.searching = false
-            this.$emit("received_search_results", this.entries)
-          }).catch(err => {
-          console.log('Error getting entries')
-          this.searching = false
-        })
+        // TODO would be nice to have the debounced search work with a promise so we do not need the
+        //  `searching` store variable
+        //   .then(() => {
+        //     this.searching = false
+        //     this.$emit("received_search_results", this.entries)
+        //   }).catch(err => {
+        //   console.log('Error getting entries')
+        //   this.searching = false
+        // })
       },
       ...mapMutations({"clear": CLEAR_SEARCH}),
       searchConfiguration() {
@@ -210,6 +219,7 @@
         return configuration
       }
     },
+
   }
 </script>
 
