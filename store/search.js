@@ -13,6 +13,16 @@ export const mutations = {
       state.entries.set(entry.uuid, entry)
     }
   },
+  prepend_entries(state, entries) {
+    const new_entries =  new Map()
+    for (let entry of entries) {
+      new_entries.set(entry.uuid, entry)
+    }
+    for (let entry of state.entries.entries()) {
+      new_entries.set(entry[0], entry[1])
+    }
+    state.entries = new_entries
+  },
   clear(state) {
     // yes, instead of state.entries.clear(), which won't trigger any update
     state.entries = new Map()

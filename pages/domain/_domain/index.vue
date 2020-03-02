@@ -68,8 +68,8 @@
       },
       domain_pre_filter() {
         return [{
-          name: "meta_aspect",
-          meta_aspect_name: DOMAIN,
+          name: "meta",
+          column: DOMAIN,
           conditional_value: this.domain_data.name
         }]
       }

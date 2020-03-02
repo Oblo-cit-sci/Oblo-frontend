@@ -25,7 +25,6 @@
       v-row.ma-1(wrap justify-center)
         <!-- the v-show prevents reloading every time, when switching between entry and search-->
         Search(v-show="normal_map_mode && nav_mode_search"
-          init_full
           :preview_options="preview_options"
           :fixed_filters="location_pre_filter"
           v-on:received_search_results="update_map_entries($event)"

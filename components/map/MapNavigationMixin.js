@@ -24,8 +24,8 @@ export default {
     return {
       location_pre_filter: [
         {
-          name: "meta_aspect",
-          meta_aspect_name: LOCATION
+          name: "meta",
+          column: LOCATION
         }
       ]
     }

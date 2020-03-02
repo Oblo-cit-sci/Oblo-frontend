@@ -101,6 +101,7 @@
       }
     },
     created() {
+      // console.log("search created!")
       // console.log(this.init_clear, this.init_full, this.searching, this.entries().length)
       if (this.init_clear) {
         this.clear()
@@ -135,8 +136,8 @@
       view_mode(val) {
         this.$emit("update:view_mode", val)
       },
-      entries() {
-        console.log("entries update")
+      filtered_entries() {
+        console.log("filtered_entries update")
       }
     },
     computed: {
@@ -159,7 +160,6 @@
           console.log("Search.filtered_entries. entries:", result_entries.length)
           console.log("e1:", result_entries)
         }
-
         // result_entries = result_entries.filter(e => this.$store.getters[ENTRIES_HAS_ENTRY](e.uuid))
         // for (let filter of Object.values(this.filter_configs)) {
         //   //todo we select the value, because select is not just emitting value up, clean this!
@@ -187,17 +187,19 @@
       },
       getEntries(before_last= true) {
         // this.searching = true
-        console.log("getting entries")
+        // console.log("getting entries")
         let config = this.searchConfiguration()
         if(before_last) {
           if (this.entries().length > 0) {
             const before_ts = this.entries()[0].creation_ts
-            config.include.before_ts = before_ts
+            config.required.push({name: "before_ts", ts: before_ts})
           }
         }
         // build_config merges 2 objects,
         this.$store.commit("search/set_searching", true)
-        debounced_search(this.$api, this.$store, config)
+
+        const prepend = this.entries().length > 0
+        debounced_search(this.$api, this.$store, config, prepend)
         // TODO would be nice to have the debounced search work with a promise so we do not need the
         //  `searching` store variable
         //   .then(() => {
