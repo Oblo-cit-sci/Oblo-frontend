@@ -116,6 +116,8 @@
       } else if (this.entries().length === 0) {
         // console.log("search create getting entries")
         this.getEntries()
+      } else {
+        this.getEntries(true)
       }
     },
     watch: {
@@ -183,10 +185,16 @@
             return VIEW_TREE
         }
       },
-      getEntries() {
+      getEntries(before_last= true) {
         // this.searching = true
         console.log("getting entries")
         let config = this.searchConfiguration()
+        if(before_last) {
+          if (this.entries().length > 0) {
+            const before_ts = this.entries()[0].creation_ts
+            config.include.before_ts = before_ts
+          }
+        }
         // build_config merges 2 objects,
         this.$store.commit("search/set_searching", true)
         debounced_search(this.$api, this.$store, config)
