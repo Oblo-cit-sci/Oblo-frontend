@@ -69,7 +69,7 @@
             act_options() {
                 let options = [];
                 if (this.selection.length === 0) {
-                    options = this.tree.children
+                    options = this.tree.root.children
                 } else {
                     options = this.$_.last(this.selection).children || [];
                 }

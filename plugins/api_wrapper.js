@@ -40,7 +40,8 @@ class APIWrapper {
     return this.axios.post(`${this.actor_baseURL}login`, qs.stringify({
       username,
       password,
-      grant_type: "password"
+      grant_type: "password",
+      swagger_compatible_fields: false
     }), {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'

@@ -202,6 +202,8 @@
             this.back()
           } catch (e) {
             console.log(e)
+            this.sending = false
+            this.error_snackbar("Something went wrong")
             // console.log(res)
           }
 

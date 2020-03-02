@@ -85,7 +85,7 @@ export const actions = {
   },
   login({commit}, data) {
     const {access_token, token_type, expiration_date, ...user_data} = data
-    commit("set_user_data", user_data)
+    commit("set_user_data", user_data.user)
     commit("set_auth_token", {access_token, token_type, expiration_date})
     commit("login")
   },
