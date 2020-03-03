@@ -33,13 +33,15 @@ export default {
       }
     },
     fetch_and_nav(uuid) {
-      this.$api.entry__$uuid(uuid).then(res => {
-        console.log("downloading entry", res)
-        const entry = res.data
-        entry.local = {}
-        const proper_mode = get_proper_mode(entry, this.$store)
-        this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
-        this.to_entry(uuid, proper_mode)
+      this.$api.entry__$uuid(uuid).then(({data}) => {
+        if(data.data) {
+          // console.log("downloading entry", res)
+          const entry = data.data
+          entry.local = {}
+          const proper_mode = get_proper_mode(entry, this.$store)
+          this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
+          this.to_entry(uuid, proper_mode)
+        }
       }).catch(() => {
         // todo ENH: could also be an error msg from the server
         this.error_snackbar("Couldn't fetch entry")

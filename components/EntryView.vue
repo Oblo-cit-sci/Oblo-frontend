@@ -4,7 +4,7 @@
       Title_Description(
         :title="page_title"
         header_type="h1"
-        :description="entry_type.description")
+        :description="template.description")
       div(v-if="has_parent")
         span This entry is part of:&nbsp
         a(@click="to_parent(true, mode)") {{parent_title}}
@@ -24,8 +24,6 @@
           :aspect_loc="aspect_locs[aspect.name]"
           v-on:entryAction="entryAction($event)"
           :mode="mode")
-    v-col(v-if="show_image" cols=12 class="col-md-3 col-sm-12 entry-image")
-      v-img(:src="entry_image()" aspect-ratio=1)
     v-col(class="entry-meta" cols=12)
           EntryActions(
             v-bind="entry_actions_props"

@@ -61,7 +61,6 @@ export default {
       return this.entry.actors
     },
     template_slug() {
-      debugger
       return this.entry.template.slug
     },
     template() {

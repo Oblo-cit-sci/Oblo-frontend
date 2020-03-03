@@ -143,6 +143,11 @@
     computed: {
       ...mapGetters({entries: SEARCH_GET_ENTRIES, store_searching: "search/get_searching"}),
       searching() {
+        console.log("search done")
+        const new_val = this.store_searching()
+        if(new_val === false) {
+          this.$emit("received_search_results", this.entries())
+        }
         return this.store_searching()
       },
       tree() {

@@ -42,7 +42,7 @@
   import {MODE_ASPECT_POINT, MODE_NORMAL} from "../lib/consts";
   import {place2str} from "../lib/location";
   import {
-    ENTRIES_ALL_ENTRIES_ARRAY,
+    ENTRIES_ALL_ENTRIES_ARRAY, ENTRIES_GET_ENTRY, ENTRIES_HAS_ENTRY, ENTRIES_SAVE_ENTRY,
     ENTRIES_SET_ENTRY_VALUE,
     MAP_GOTO_DONE,
     MAP_GOTO_LOCATION,
@@ -57,6 +57,7 @@
   import {Marker} from "mapbox-gl";
   import {route_change_query, route_change_remove_query} from "../lib/util";
   import MapNavigationBottomSheet from "../components/map/MapNavigationBottomSheet";
+  import {get_proper_mode} from "../lib/entry";
 
   const menu_mode_options = [MODE_NORMAL, MODE_ASPECT_POINT]
 
@@ -203,19 +204,35 @@
         }
       },
       select_entry_marker(entry_uuid) {
+        console.log("select_entry_marker")
         // this.$store.dispatch("map/select_entry", entry_uuid)
         // console.log(event)
-        if (this.selected_entry) {
-          this.change_entry_markers_mode(this.selected_entry, false)
-          if(entry_uuid !== this.selected_entry) {
-            // console.log("setting new entry")
-            this.selected_entry = entry_uuid
-          }
+
+        if (this.$store.getters[ENTRIES_HAS_ENTRY](entry_uuid)) {
+
+        } else {
+          this.$api.entry__$uuid(entry_uuid).then(({data}) => {
+            if(data.data) {
+              if (this.selected_entry) {
+                this.change_entry_markers_mode(this.selected_entry, false)
+                if(entry_uuid !== this.selected_entry) {
+                  console.log("setting new entry")
+                  this.selected_entry = entry_uuid
+                }
+              }
+
+              const entry = data.data
+              this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
+
+              this.navigation_mode = ENTRY
+              this.selected_entry = entry_uuid
+              this.drawer = true
+              this.change_entry_markers_mode(entry_uuid, true)
+            }
+          }).catch(err => {
+            console.log("error fetching entry")
+          })
         }
-        this.navigation_mode = ENTRY
-        this.selected_entry = entry_uuid
-        this.drawer = true
-        this.change_entry_markers_mode(entry_uuid, true)
       },
       change_entry_markers_mode(entry_uuid, selected) {
         const relevant_markers = this.$_.filter(this.markers, (m) => m.e_uuid === entry_uuid)
@@ -270,7 +287,7 @@
         }
       },
       entries() {
-        console.log("watch- entries")
+        // console.log("watch- entries")
         this.markers = []
         // todo, a bit ineficient. is called whenever we go back from an entry to the search
         if (this.map) {
@@ -278,14 +295,16 @@
         }
       },
       selected_entry(selected_uuid) {
-        // console.log("watch- selected_entry_uuid", selected_uuid, this.selected_entry)
-        let new_route = null
-        if (selected_uuid) {
-          new_route = route_change_query(this.$route, {select: selected_uuid})
-        } else {
-          new_route = route_change_remove_query(this.$route, ["select"])
-        }
-        this.$router.push(new_route)
+        console.log("watch- selected_entry_uuid", selected_uuid, this.selected_entry)
+
+        // TODO BRING BACK
+        // let new_route = null
+        // if (selected_uuid) {
+        //   new_route = route_change_query(this.$route, {select: selected_uuid})
+        // } else {
+        //   new_route = route_change_remove_query(this.$route, ["select"])
+        // }
+        // this.$router.push(new_route)
       },
       navigation_mode(mode) {
         if (mode === SEARCH) {
