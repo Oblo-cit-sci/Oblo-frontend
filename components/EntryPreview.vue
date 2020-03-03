@@ -53,7 +53,7 @@
     ENTRYTYPES_TYPENAME,
     SEARCH_ENTRY_ASPECT
   } from "../lib/store_consts";
-  import {privacy_icon, printDate, static_file_path} from "../lib/util"
+  import {privacy_icon, printDate} from "../lib/util"
   import {EDIT, ENTRY, VIEW} from "../lib/consts"
   import MetaChips from "../components/MetaChips"
   import Taglist from "../components/Taglist"

@@ -29,7 +29,19 @@ export default {
           this.fetch_and_nav(uuid)
       } else {
         console.log(this.entry.uuid, this.goto_text)
-        this.$emit("preview_action", {uuid: this.entry.uuid, action: this.goto_text})
+        if (this.$store.getters[ENTRIES_HAS_ENTRY](uuid)) {
+          this.$emit("preview_action", {uuid: this.entry.uuid, action: this.goto_text})
+        } else {
+          this.$api.entry__$uuid(this.entry.uuid).then(({data}) => {
+            if(data.data) {
+              const entry = data.data
+              this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
+              this.$emit("preview_action", {uuid: this.entry.uuid, action: this.goto_text})
+            }
+          }).catch(err => {
+            console.log("error fetching entry")
+          })
+        }
       }
     },
     fetch_and_nav(uuid) {

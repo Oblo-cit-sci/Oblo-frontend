@@ -52,17 +52,19 @@ export default {
     preview_options() {
       return {
         actions: [{
-          name:"goto_loc",
-          type:"goto_loc",
+          name: "goto_loc",
+          type: "goto_loc",
           title: "",
-          icon:"mdi-map-marker"
+          icon: "mdi-map-marker"
         }],
         prevent_page_change: true
       }
       // return {}
     },
-    entry_navigation_props: {
-      show_back_button: false
+    entry_navigation_props() {
+      return {
+        show_back_button: false
+      }
     }
   },
   methods: {
