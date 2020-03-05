@@ -183,13 +183,13 @@
         // build_config merges 2 objects,
         //console.log("search.getEntries: config", config)
         debounced_search(this.$api, this.$store, config)
-          .then(() => {
-            this.searching = false
-            this.$emit("received_search_results", this.entries)
-          }).catch(err => {
-          console.log('Error getting entries')
-          this.searching = false
-        })
+        //   .then(() => {
+        //     this.searching = false
+        //     this.$emit("received_search_results", this.entries)
+        //   }).catch(err => {
+        //   console.log('Error getting entries')
+        //   this.searching = false
+        // })
       },
       ...mapMutations({"clear": CLEAR_SEARCH}),
       searchConfiguration() {

@@ -86,7 +86,7 @@
   let require_login = ["Profile", "Logout"]
   let hide_logged_in = ["Login", "Register"]
   let hide_no_be = ["Register", "Login"] // if not connected out and if logged in out
-  let show_inDev = ["Tests", "Types", "Entrytypes", "Aspectbuild"]
+  let show_inDev = ["Tests"] //, "Types", "Entrytypes", "Aspectbuild"]
   let lastDomain = ''
   const pkg = require('../package')
 
@@ -125,6 +125,11 @@
           other_pages = other_pages.filter(p => !hide_logged_in.includes(p.title))
         } else {
           other_pages = other_pages.filter(p => !require_login.includes(p.title))
+        }
+        if (process.env.NODE_ENV !== "development") {
+          other_pages = other_pages.filter(p => !show_inDev.includes(p.title))
+        } else {
+          console.log("in DEV")
         }
         return [{name: "home", items: [home]},
           {name: "other", items: other_pages}]
@@ -199,9 +204,9 @@
           })
           console.log("layout init done")
           const auth_token = this.$store.getters[USER_GET_AUTH_TOKEN]
-          if(auth_token.access_token) {
+          if (auth_token.access_token) {
             this.$api.actor__validate_token(auth_token).then(res => {
-              if(res.data.token_valid) {
+              if (res.data.token_valid) {
                 this.$store.commit(USER_LOGIN)
                 this.$axios.setToken("Bearer " + auth_token.access_token)
               } else {

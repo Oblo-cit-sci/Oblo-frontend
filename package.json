@@ -1,6 +1,6 @@
 {
-  "name": "LICCI",
-  "version": "0.6.17a",
+  "name": "licci",
+  "version": "0.7.0",
   "description": "Local Indicators of Climate change impacts",
   "author": "Ramin S",
   "private": true,
