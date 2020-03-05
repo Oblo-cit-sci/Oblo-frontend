@@ -71,7 +71,7 @@ export default {
       } else {
         this.$emit("update:ext_value", up_value)
       }
-      this.debounce_store_db(this)
+      // this.debounce_store_db(this)
     },
     toString(value) {
       return value || ""

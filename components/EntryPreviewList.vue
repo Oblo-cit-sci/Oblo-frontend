@@ -11,19 +11,21 @@
           @delete_e="delete_e($event)"
           @preview_action="$emit('preview_action',$event)")
     v-row(v-if="has_entries")
-      v-Pagination(v-if="entries.length>20" v-model="page"
-        :length="num_pages"
-        total-visible="8")
+      SimplePaginate(v-if="entries.length>20" v-model="page")
+      <!--      v-Pagination(v-if="entries.length>20" v-model="page"-->
+      <!--        :length="num_pages"-->
+      <!--        total-visible="8")-->
 </template>
 
 <script>
   import Entrypreview from "../components/EntryPreview";
   import {ENTRIES_HAS_ENTRY, ENTRYTYPES_TYPE} from "../lib/store_consts";
   import goTo from 'vuetify/lib/services/goto'
+  import SimplePaginate from "./SimplePaginate";
 
   export default {
     name: "EntryPreviewList",
-    components: {Entrypreview},
+    components: {SimplePaginate, Entrypreview},
     mixins: [],
     props: {
       total_number: {

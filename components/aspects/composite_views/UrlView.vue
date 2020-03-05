@@ -1,6 +1,9 @@
 <template lang="pug">
-  p {{title}}:
-    a(:href="url" target="_blank") {{url}}
+  div
+    a(:href="url")
+      span {{title_view}}
+    v-btn(:href="url"  target="_blank" icon)
+      v-icon mdi-open-in-new
 </template>
 
 <script>
@@ -12,7 +15,7 @@
       title: String
     },
     computed: {
-      title(){
+      title_view(){
         return this.title ? this.title : this.value
       },
       url() {

@@ -4,7 +4,7 @@
     v-form
       Aspect(v-for="a of aspects" :aspect="a" :ext_value.sync="a.value" mode="edit" :key="a.name")
     v-btn(@click='login' color='success' autofocus) Login
-    v-alert(:value='errorMsg' type='error') {{errorMsg}}
+    v-alert(:value='errorMsg != null' type='error' prominent) {{errorMsg}}
 </template>
 
 <script>
@@ -57,7 +57,8 @@
             this.process_login(data)
             this.$router.back()
           } else {
-            console.log("todo handle login error")
+            // console.log("todo handle login error")
+            this.errorMsg = data.error.msg
           }
         }).catch((err) => {
           console.log("err", err)
