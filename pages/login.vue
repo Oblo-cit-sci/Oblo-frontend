@@ -52,7 +52,6 @@
           this.aspects[0].value,
           this.aspects[1].value
         ).then(({data}) => {
-          console.log(data)
           if(data.user){
             this.ok_snackbar("Login successful")
             this.process_login(data)

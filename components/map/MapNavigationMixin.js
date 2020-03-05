@@ -4,6 +4,7 @@ import {ENTRIES_GET_ENTRY, MAP_SET_ENTRIES} from "../../lib/store_consts";
 import {get_location} from "~/lib/location";
 import EntryAspectView from "~/components/EntryAspectView";
 import Search from "~/components/Search";
+import {SEARCH_GET_ENTRIES} from "~/store/search";
 
 // the navigation either shows the search or one specific entry
 
@@ -24,10 +25,17 @@ export default {
     return {
       location_pre_filter: [
         {
-          name: "meta_aspect",
-          meta_aspect_name: LOCATION
+          name: "meta",
+          column: LOCATION
         }
       ]
+    }
+  },
+  created() {
+    const search_entries = this.$store.getters[SEARCH_GET_ENTRIES]()
+    if(search_entries.length > 0) {
+      console.log("setting map entries", search_entries[0])
+      this.$store.commit(MAP_SET_ENTRIES, search_entries)
     }
   },
   computed: {
@@ -52,17 +60,19 @@ export default {
     preview_options() {
       return {
         actions: [{
-          name:"goto_loc",
-          type:"goto_loc",
+          name: "goto_loc",
+          type: "goto_loc",
           title: "",
-          icon:"mdi-map-marker"
+          icon: "mdi-map-marker"
         }],
         prevent_page_change: true
       }
       // return {}
     },
-    entry_navigation_props: {
-      show_back_button: false
+    entry_navigation_props() {
+      return {
+        show_back_button: false
+      }
     }
   },
   methods: {

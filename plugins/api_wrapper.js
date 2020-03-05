@@ -16,6 +16,7 @@ class APIWrapper {
     this.domain_baseURL = this.api_baseURL + "/domain"
     this.actor_baseURL = this.api_baseURL + "/actor/"
     this.entry_baseURL = this.api_baseURL + "/entry"
+    this.entries_baseURL = this.api_baseURL + "/entries/"
   }
 
   is_initialized() {
@@ -146,6 +147,15 @@ class APIWrapper {
 
   url_entry__$uuid__attachment__$file_uuid(uuid, file_uuid) {
     return `${this.entry_baseURL}/${uuid}/attachment/${file_uuid}`
+  }
+
+  entries_search(limit, offset, search_query) {
+    return this.axios.post(`${this.entries_baseURL}search`, search_query, {
+      params: {
+        limit,
+        offset
+      }
+    })
   }
 }
 

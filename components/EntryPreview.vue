@@ -50,10 +50,9 @@
     ENTRIES_SAVE_CHILD_N_REF,
     ENTRIES_VALUE,
     ENTRYTYPES_HAS_TYPE,
-    ENTRYTYPES_TYPENAME,
-    SEARCH_ENTRY_ASPECT
+    ENTRYTYPES_TYPENAME
   } from "../lib/store_consts";
-  import {privacy_icon, printDate, static_file_path} from "../lib/util"
+  import {privacy_icon, printDate} from "../lib/util"
   import {EDIT, ENTRY, VIEW} from "../lib/consts"
   import MetaChips from "../components/MetaChips"
   import Taglist from "../components/Taglist"
@@ -69,6 +68,7 @@
   import {upload_to_repo} from "../lib/import_export";
   import EntryActorList from "./entry/EntryActorList";
   import {check_str_is_uuid} from "../lib/fixes";
+  import {SEARCH_ENTRY_ASPECT} from "../store/search";
 
   /**
    * ISSUE is not working atm, to responsive

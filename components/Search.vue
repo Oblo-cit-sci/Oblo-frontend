@@ -44,11 +44,8 @@
   import EntryPreviewList from "../components/EntryPreviewList"
   import {debounced_search,  search_entries} from "../lib/client"
   import {
-    CLEAR_SEARCH,
     ENTRIES_ALL_ENTRIES_ARRAY,
-    ENTRYTYPES_TYPES,
-    SEARCH_GET_ENTRIES,
-    SEARCH_SET_ENTRIES
+    ENTRYTYPES_TYPES
   } from "../lib/store_consts"
   import FilterSelect from "./FilterSelect";
   import FilterMixin from "./FilterMixin";
@@ -56,6 +53,7 @@
   import {entries2vuetify_tree} from "../lib/entry_collections";
   import NavBaseMixin from "./NavBaseMixin";
   import {VIEW_SEARCH, VIEW_TREE} from "../lib/consts";
+  import {CLEAR_SEARCH, SEARCH_GET_ENTRIES, SEARCH_SET_ENTRIES} from "../store/search";
 
   const LOG = false
 
@@ -93,8 +91,7 @@
         //
         filter_configs: this.$_.mapKeys(this.include_filters, v => v.name),
         filter_values: {},
-        //
-        searching: false,
+
         keyword: '',
         kw_char_thresh: 4,
         VIEW_SEARCH: VIEW_SEARCH,
@@ -102,6 +99,8 @@
       }
     },
     created() {
+      // console.log("search created!")
+      // console.log(this.init_clear, this.init_full, this.searching, this.entries().length)
       if (this.init_clear) {
         this.clear()
       }
@@ -113,9 +112,11 @@
         // console.log("init_full, entries:", filtered_entries.length)
         this.$store.commit(SEARCH_SET_ENTRIES, filtered_entries)
         this.$emit("received_search_results", filtered_entries.map(e => e[1]))
-      } else if (this.entries.length === 0) {
-        console.log("search create getting entries")
+      } else if (this.entries().length === 0) {
+        // console.log("search create getting entries")
         this.getEntries()
+      } else {
+        this.getEntries(true)
       }
     },
     watch: {
@@ -132,10 +133,21 @@
       },
       view_mode(val) {
         this.$emit("update:view_mode", val)
+      },
+      filtered_entries() {
+        console.log("filtered_entries update")
       }
     },
     computed: {
-      ...mapGetters({entries: SEARCH_GET_ENTRIES}),
+      ...mapGetters({entries: SEARCH_GET_ENTRIES, store_searching: "search/get_searching"}),
+      searching() {
+        console.log("search done")
+        const new_val = this.store_searching()
+        if(new_val === false) {
+          this.$emit("received_search_results", this.entries())
+        }
+        return this.store_searching()
+      },
       tree() {
         return entries2vuetify_tree(this.entries(), this.$store.getters[ENTRYTYPES_TYPES], true)
       },
@@ -151,7 +163,6 @@
           console.log("Search.filtered_entries. entries:", result_entries.length)
           console.log("e1:", result_entries)
         }
-
         // result_entries = result_entries.filter(e => this.$store.getters[ENTRIES_HAS_ENTRY](e.uuid))
         // for (let filter of Object.values(this.filter_configs)) {
         //   //todo we select the value, because select is not just emitting value up, clean this!
@@ -177,12 +188,22 @@
             return VIEW_TREE
         }
       },
-      getEntries() {
-        this.searching = true
+      getEntries(before_last= true) {
+        // this.searching = true
+        // console.log("getting entries")
         let config = this.searchConfiguration()
+        if(before_last) {
+          if (this.entries().length > 0) {
+            const before_ts = this.entries()[0].creation_ts
+            config.required.push({name: "before_ts", ts: before_ts})
+          }
+        }
         // build_config merges 2 objects,
-        //console.log("search.getEntries: config", config)
-        debounced_search(this.$api, this.$store, config)
+        this.$store.commit("search/set_searching", true)
+        const prepend = this.entries().length > 0
+        debounced_search(this.$api, this.$store, config, prepend)
+        // TODO would be nice to have the debounced search work with a promise so we do not need the
+        //  `searching` store variable
         //   .then(() => {
         //     this.searching = false
         //     this.$emit("received_search_results", this.entries)
@@ -210,6 +231,7 @@
         return configuration
       }
     },
+
   }
 </script>
 

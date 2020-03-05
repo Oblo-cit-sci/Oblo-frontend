@@ -216,7 +216,6 @@ export const getters = {
   domain_title(state) {
     return state.domain.title
   },
-
   domains(state) {
     return state.domains
   },

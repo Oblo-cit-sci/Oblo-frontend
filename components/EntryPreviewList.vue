@@ -19,7 +19,7 @@
 
 <script>
   import Entrypreview from "../components/EntryPreview";
-  import {ENTRIES_HAS_ENTRY, ENTRYTYPES_TYPE, ENTRYTYPES_TYPES} from "../lib/store_consts";
+  import {ENTRIES_HAS_ENTRY, ENTRYTYPES_TYPE} from "../lib/store_consts";
   import goTo from 'vuetify/lib/services/goto'
   import SimplePaginate from "./SimplePaginate";
 
@@ -47,6 +47,9 @@
         deleted: []
       }
     },
+    created() {
+      console.log("entry preview list created")
+    },
     beforeUpdate() {
       this.deleted = this.$_.filter(this.deleted, uuid => !this.$store.getters[ENTRIES_HAS_ENTRY](uuid))
     },
@@ -58,6 +61,7 @@
         let from_index = (this.page - 1) * this.entries_per_page
         let to_index = from_index + this.entries_per_page
         const entries = this.entries.slice(from_index, to_index)
+        console.log("pwlist 0",entries[0])
         return this.$_.filter(entries, e => !this.deleted.includes(e.uuid))
       },
       num_pages() {

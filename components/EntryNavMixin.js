@@ -29,17 +29,31 @@ export default {
           this.fetch_and_nav(uuid)
       } else {
         console.log(this.entry.uuid, this.goto_text)
-        this.$emit("preview_action", {uuid: this.entry.uuid, action: this.goto_text})
+        if (this.$store.getters[ENTRIES_HAS_ENTRY](uuid)) {
+          this.$emit("preview_action", {uuid: this.entry.uuid, action: this.goto_text})
+        } else {
+          this.$api.entry__$uuid(this.entry.uuid).then(({data}) => {
+            if(data.data) {
+              const entry = data.data
+              this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
+              this.$emit("preview_action", {uuid: this.entry.uuid, action: this.goto_text})
+            }
+          }).catch(err => {
+            console.log("error fetching entry")
+          })
+        }
       }
     },
     fetch_and_nav(uuid) {
-      this.$api.entry__$uuid(uuid).then(res => {
-        console.log("downloading entry", res)
-        const entry = res.data
-        entry.local = {}
-        const proper_mode = get_proper_mode(entry, this.$store)
-        this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
-        this.to_entry(uuid, proper_mode)
+      this.$api.entry__$uuid(uuid).then(({data}) => {
+        if(data.data) {
+          // console.log("downloading entry", res)
+          const entry = data.data
+          entry.local = {}
+          const proper_mode = get_proper_mode(entry, this.$store)
+          this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
+          this.to_entry(uuid, proper_mode)
+        }
       }).catch(() => {
         // todo ENH: could also be an error msg from the server
         this.error_snackbar("Couldn't fetch entry")

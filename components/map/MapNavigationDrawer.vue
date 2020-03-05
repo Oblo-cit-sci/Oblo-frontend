@@ -25,9 +25,7 @@
       v-row.ma-1(wrap justify-center)
         <!-- the v-show prevents reloading every time, when switching between entry and search-->
         Search(v-show="normal_map_mode && nav_mode_search"
-          init_full
           :preview_options="preview_options"
-          :fixed_filters="location_pre_filter"
           v-on:received_search_results="update_map_entries($event)"
           @preview_action="preview_action($event)")
         div(v-if="normal_map_mode && nav_mode_entry")
@@ -46,6 +44,8 @@
   import EntryAspectView from "../EntryAspectView";
   import EntryView from "../EntryView";
 
+  // search:
+  //   <!--          :fixed_filters="location_pre_filter"-->
 
   export default {
     name: "MapNavigationDrawer",

@@ -253,7 +253,7 @@ export const getters = {
       return state.entries.has(uuid)
     };
   },
-  get_entry(state) { // ENTRIES_GET_ENTRY
+  get_entry(state, getters, rootGetters) { // ENTRIES_GET_ENTRY
     return (uuid) => {
       return state.entries.get(uuid)
     }
@@ -328,6 +328,7 @@ export const getters = {
   // todo: get edit title, but will be simpler...?
   get_entry_title: function (state, getters) {
     return (uuid = state.edit.uuid) => {
+      console.log("get entry title ", uuid)
       const entry = getters.get_entry(uuid)
       const type = getters.get_entry_type(entry.template.slug)
       let titleAspect = get_entry_titleAspect(type)
