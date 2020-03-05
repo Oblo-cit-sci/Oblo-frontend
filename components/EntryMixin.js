@@ -3,12 +3,13 @@ import {
   ENTRIES_GET_ENTRY,
   ENTRIES_GET_ENTRY_TITLE,
   ENTRIES_GET_PARENT,
-  ENTRIES_GET_RECURSIVE_ENTRIES, ENTRYTYPES_TYPE, SEARCH_GET_ENTRIES,
+  ENTRIES_GET_RECURSIVE_ENTRIES, ENTRYTYPES_TYPE,
 } from "../lib/store_consts";
 import {export_data} from "../lib/import_export";
-import {ENTRIES_SET_DOWNLOADED, SEARCH_GET_ENTRY} from "~/lib/store_consts";
+import {ENTRIES_SET_DOWNLOADED} from "~/lib/store_consts";
 import {loc_append} from "~/lib/aspect";
 import {ASPECT, ENTRY, GLOBAL} from "~/lib/consts";
+import {SEARCH_GET_ENTRIES, SEARCH_GET_ENTRY} from "~/store/search";
 
 export default {
   name: "EntryMixin",

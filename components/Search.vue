@@ -44,11 +44,8 @@
   import EntryPreviewList from "../components/EntryPreviewList"
   import {debounced_search,  search_entries} from "../lib/client"
   import {
-    CLEAR_SEARCH,
     ENTRIES_ALL_ENTRIES_ARRAY,
-    ENTRYTYPES_TYPES,
-    SEARCH_GET_ENTRIES,
-    SEARCH_SET_ENTRIES
+    ENTRYTYPES_TYPES
   } from "../lib/store_consts"
   import FilterSelect from "./FilterSelect";
   import FilterMixin from "./FilterMixin";
@@ -56,6 +53,7 @@
   import {entries2vuetify_tree} from "../lib/entry_collections";
   import NavBaseMixin from "./NavBaseMixin";
   import {VIEW_SEARCH, VIEW_TREE} from "../lib/consts";
+  import {CLEAR_SEARCH, SEARCH_GET_ENTRIES, SEARCH_SET_ENTRIES} from "../store/search";
 
   const LOG = false
 
@@ -202,7 +200,6 @@
         }
         // build_config merges 2 objects,
         this.$store.commit("search/set_searching", true)
-
         const prepend = this.entries().length > 0
         debounced_search(this.$api, this.$store, config, prepend)
         // TODO would be nice to have the debounced search work with a promise so we do not need the

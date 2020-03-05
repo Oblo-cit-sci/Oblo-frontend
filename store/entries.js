@@ -330,7 +330,6 @@ export const getters = {
     return (uuid = state.edit.uuid) => {
       console.log("get entry title ", uuid)
       const entry = getters.get_entry(uuid)
-      debugger
       const type = getters.get_entry_type(entry.template.slug)
       let titleAspect = get_entry_titleAspect(type)
       if (!titleAspect) {

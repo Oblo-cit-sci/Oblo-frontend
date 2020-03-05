@@ -4,6 +4,7 @@ import {ENTRIES_GET_ENTRY, MAP_SET_ENTRIES} from "../../lib/store_consts";
 import {get_location} from "~/lib/location";
 import EntryAspectView from "~/components/EntryAspectView";
 import Search from "~/components/Search";
+import {SEARCH_GET_ENTRIES} from "~/store/search";
 
 // the navigation either shows the search or one specific entry
 
@@ -28,6 +29,13 @@ export default {
           column: LOCATION
         }
       ]
+    }
+  },
+  created() {
+    const search_entries = this.$store.getters[SEARCH_GET_ENTRIES]()
+    if(search_entries.length > 0) {
+      console.log("setting map entries", search_entries[0])
+      this.$store.commit(MAP_SET_ENTRIES, search_entries)
     }
   },
   computed: {

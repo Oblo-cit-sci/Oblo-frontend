@@ -65,7 +65,6 @@
     CONNECTING,
     CONNECTED,
     USER_LOGGED_IN,
-    SEARCH_SET_ENTRIES,
     DB_LOADED,
     USER_LOGOUT,
     USER_LOGIN, USER_RESET_AUTH_TOKEN, USER_GET_AUTH_TOKEN
@@ -81,6 +80,7 @@
 
   import {mapGetters} from "vuex"
   import PersistentStorageMixin from "../components/PersistentStorageMixin";
+  import {SEARCH_SET_ENTRIES} from "../store/search";
 
 
   let require_login = ["Profile", "Logout"]
