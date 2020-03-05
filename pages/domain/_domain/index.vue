@@ -3,6 +3,8 @@
     div(class="header-domain")
       p.display-1 {{domain_data.page_index.title}}
       p.heading {{domain_data.page_index.description}}
+    p
+      h3 {{domain_data.page_index.action_text}}
     v-divider
     EntryCreateList(
       v-if="logged_in"
