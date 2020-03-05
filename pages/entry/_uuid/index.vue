@@ -31,7 +31,7 @@
           <!--          License(:passedLicense.sync="entry.license" :mode="licence_mode")-->
           Privacy(:mode="privacy_mode" :passedPrivacy.sync="entry.privacy")
         v-col(v-if="last_page")
-          MissingAspectsNotice(:entry="this.entry")
+          MissingAspectsNotice(:entry="this.entry" v-model="entry_complete")
         EntryActions(
           v-bind="entry_actions_props"
           :page.sync="page"
@@ -130,7 +130,7 @@
       return {
         required_values: [], // shortcut, but in template
         sending: false,
-        complete: true,
+        entry_complete: false,
         // todo abstact aspect-pagination
         aspect_extras: {},
         //
@@ -179,18 +179,6 @@
         } else {
           this.router_next = null
         }
-      },
-      check_complete() {
-        for (let aspect_name of this.required_values) {
-          let val = this.entry.values[aspect_name]
-          //console.log("checking", aspect_name, val)
-          if (val === null || val === "") {
-            this.complete = false
-            console.log("fail")
-            return
-          }
-        }
-        this.complete = true
       },
       // todo maybe kickout, since its also in Aspect
       /*aspect_id(aspect_name) {

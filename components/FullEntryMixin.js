@@ -41,6 +41,7 @@
         return {
           mode: this.mode,
           passed_uuid: this.uuid,
+          entry_complete: this.entry_complete
         }
       },
     },

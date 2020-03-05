@@ -1,9 +1,9 @@
 <template lang="pug">
-  div
-    h3 Validation
-    b(v-if="has_missing") Missing or incomplete aspects:
-    div(v-else) All values in this entry seem ok
-    .required_aspect.red--text(v-for="(aspect, i) in missing" :key="i") {{aspect}}
+    div
+      h3 Validation
+      b(v-if="has_missing") Missing or incomplete aspects:
+      div(v-else) All values in this entry seem ok
+      .required_aspect.red--text(v-for="(aspect, i) in missing" :key="i") {{aspect}}
 </template>
 
 <script>
@@ -19,10 +19,10 @@
     const COMPOSITE_INCOMPLETE = 3
     const LISTITEM_INCOMPLETE = 4
 
-
     export default {
         name: "MissingAspectsNotice",
         props: {
+            value: Boolean // we use that in the parent to have as v-model
         },
         mixins: [EntryMixin],
         components: {},
@@ -56,7 +56,7 @@
                             add_text = aspect_label + " requires more " + item_count_name(aspect, a_value.length) + " (" + a_value.length + "/" + aspect.attr.min + ")"
                         } else if (valid === COMPOSITE_INCOMPLETE) {
                             add_text = aspect_label + " is not complete: missing components: " + invalid_message.join(", ")
-                        } else if(valid === LISTITEM_INCOMPLETE) {
+                        } else if (valid === LISTITEM_INCOMPLETE) {
                             add_text = aspect_label + " has at least one incomplete item: " + invalid_message.join(", ")
                         }
                         if (add_text) {
@@ -81,7 +81,7 @@
                 if (aspect.attr.hasOwnProperty("required")) {
                     required = aspect.attr.required
                 }
-                if(!required) {
+                if (!required) {
                     return [OK]
                 }
                 const raw_value = a_w_value.value
@@ -108,18 +108,18 @@
                     if (aspect.attr.min !== null && raw_value.length < aspect.attr.min) {
                         return [LIST_NOT_ENOUGH, ""]
                     }
-                    if(aspect.type === LIST) {
+                    if (aspect.type === LIST) {
                         //let item_validations = []
                         let incomplete_items = []
                         for (let item_index in raw_value) {
                             const item = raw_value[item_index]
                             const item_loc = loc_append(aspect_loc, INDEX, item_index)
                             const validation = this.validate_aspect(aspect.items, item || pack_value(null), item_loc, item_index)
-                            if(validation[0] !== OK) {
+                            if (validation[0] !== OK) {
                                 incomplete_items.push(parseInt(item_index) + 1)
                             }
                         }
-                        if(incomplete_items.length > 0) {
+                        if (incomplete_items.length > 0) {
                             return [LISTITEM_INCOMPLETE, incomplete_items]
                         } else {
                             return [OK]
@@ -131,11 +131,11 @@
                         const comp_loc = loc_append(aspect_loc, COMPONENT, component.name)
                         //console.log("-> comp", component.name, raw_value[component.name])
                         let component_validations = this.validate_aspect(component, raw_value[component.name] || pack_value(null), comp_loc, item_index)
-                        if(component_validations[0] !== OK) {
+                        if (component_validations[0] !== OK) {
                             missing_components.push(label(component))
                         }
                     }
-                    if(missing_components.length > 0) {
+                    if (missing_components.length > 0) {
                         return [COMPOSITE_INCOMPLETE, missing_components]
                     } else {
                         return [OK]
@@ -145,13 +145,21 @@
                 return [OK]
             }
         },
-        watch: {}
+        watch: {
+            missing(val, prev_val) {
+                if (val.length === 0)
+                    this.$emit("input", true)
+                else if (prev_val.length === 0) {
+                    this.$emit("input", false)
+                }
+            }
+        }
     }
 </script>
 
 <style scoped>
 
-  .required_aspect {
-    margin: 1% 0 0 0;
-  }
+    .required_aspect {
+        margin: 1% 0 0 0;
+    }
 </style>

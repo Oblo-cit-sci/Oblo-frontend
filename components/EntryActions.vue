@@ -21,7 +21,7 @@
           v-if="can_submit"
           color="success"
           @click="submit"
-          :disabled="!connected"
+          :disabled="!connected || !entry_complete"
           :loading="sending") {{published ? 'update' : 'submit'}}
         v-btn(v-if="upload_option" @click="upload_to_repo" :loading="upload_loading") Upload to the repo
           v-icon.ml-2 mdi-send-circle
@@ -68,7 +68,8 @@
       },
       show_back_button: {
         type: Boolean
-      }
+      },
+      entry_complete: Boolean
     },
     data() {
       return {
