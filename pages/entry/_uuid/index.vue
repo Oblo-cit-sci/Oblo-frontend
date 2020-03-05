@@ -76,6 +76,7 @@
           :passed_uuid="uuid"
           v-on:entryAction="entryAction($event)"
           v-on:edit="mode='edit'")
+        <!-- comes from 'EntryView' :v-bind="entry_navigation_props"-->
         DecisionDialog(
           :open.sync="openSaveDialog"
           @action="edit_or_save_dialog($event)"

@@ -10,6 +10,7 @@
         a(@click="to_parent(true, mode)") {{parent_title}}
       div
         MetaChips(:meta_aspects="meta_aspects_privacy")
+        EntryActorList.mt-2(:actors="actors")
       v-divider(class="wide_divider")
     v-col(class="entry-meta" cols=12 v-bind:class="[show_image ? 'col-md-9' : 'col-md-12']")
       div(v-if="has_pages")
