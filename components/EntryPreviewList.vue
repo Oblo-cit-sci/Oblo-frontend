@@ -11,7 +11,7 @@
           @delete_e="delete_e($event)"
           @preview_action="$emit('preview_action',$event)")
     v-row(v-if="has_entries")
-      SimplePaginate(v-if="entries.length>20" v-model="page")
+      SimplePaginate(v-if="entries.length>20" v-model="page" :has_next="true")
       <!--      v-Pagination(v-if="entries.length>20" v-model="page"-->
       <!--        :length="num_pages"-->
       <!--        total-visible="8")-->
@@ -28,10 +28,9 @@
     components: {SimplePaginate, Entrypreview},
     mixins: [],
     props: {
-      total_number: {
-        type: Number
-      },
       entries: Array,
+      // this can be more then in entries, but will allow to navigate further with next, so another fetch is triggered
+      total_count: Number,
       entries_per_page: {
         type: Number,
         default: 20
@@ -61,7 +60,7 @@
         let from_index = (this.page - 1) * this.entries_per_page
         let to_index = from_index + this.entries_per_page
         const entries = this.entries.slice(from_index, to_index)
-        console.log("pwlist 0",entries[0])
+        console.log("pwlist 0", entries[0])
         return this.$_.filter(entries, e => !this.deleted.includes(e.uuid))
       },
       num_pages() {
@@ -71,7 +70,11 @@
         return this.num_entries > 0
       },
       num_entries() {
-        return this.entries.length - this.deleted.length
+        console.log("num_entries", this.total_count)
+        if (this.total_count !== undefined)
+          return this.total_count
+        else
+          return this.entries.length - this.deleted.length
       },
       // could be in some mixin
       set_of_types() {

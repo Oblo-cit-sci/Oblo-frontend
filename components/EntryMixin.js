@@ -10,6 +10,7 @@ import {ENTRIES_SET_DOWNLOADED} from "~/lib/store_consts";
 import {loc_append} from "~/lib/aspect";
 import {ASPECT, ENTRY, GLOBAL} from "~/lib/consts";
 import {SEARCH_GET_ENTRIES, SEARCH_GET_ENTRY} from "~/store/search";
+import {check_str_is_uuid} from "~/lib/fixes";
 
 export default {
   name: "EntryMixin",
@@ -69,6 +70,17 @@ export default {
     },
     title() {
       return this.$store.getters[ENTRIES_GET_ENTRY_TITLE](this.uuid)
+    },
+    entry_image() {
+      if (this.entry.image) {
+        if (this.entry.image.startsWith("http")) {
+          return this.entry.image
+        } else if (check_str_is_uuid(this.entry.image)) {
+          return this.$api.url_entry__$uuid__attachment__$file_uuid(this.uuid, this.entry.image)
+        } else {
+          return null
+        }
+      }
     },
     parent_title() {
       // console.log("getting parent title", this)

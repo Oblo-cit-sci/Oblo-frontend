@@ -26,6 +26,7 @@
           v-progress-circular(indeterminate center size="35" color="success")
       EntryPreviewList(v-if="show_results"
         :entries="filtered_entries"
+        :total_count="total_count"
         :preview_options="preview_options"
         @preview_action="$emit('preview_action',$event)")
     v-row(v-if="view_mode===VIEW_TREE" wrap)
@@ -139,7 +140,7 @@
       }
     },
     computed: {
-      ...mapGetters({entries: SEARCH_GET_ENTRIES, store_searching: "search/get_searching"}),
+      ...mapGetters({entries: SEARCH_GET_ENTRIES, store_searching: "search/get_searching", total_count: "search/get_search_count"}),
       searching() {
         console.log("search done")
         const new_val = this.store_searching()

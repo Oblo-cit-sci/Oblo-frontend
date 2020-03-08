@@ -1,46 +1,62 @@
 <template lang="pug">
   div(v-if="entry")
-    v-row(justify-center align-center  v-if="!delete_entry && this.mode==='edit'")
-      v-col(xs12 md12)
-        Title_Description(
-          :title="page_title"
-          header_type="h1"
-          :description="template.description"
-          mode="edit")
-        div(v-if="has_parent")
+    v-container(justify-center align-center  v-if="!delete_entry && this.mode==='edit'")
+      v-row
+        v-col(xs12 md12)
+          Title_Description(
+            :title="page_title"
+            header_type="h1"
+            :description="template.description"
+            mode="edit")
+      v-row
+        v-col(v-if="has_parent")
           span This entry is part of:&nbsp
           a(@click="to_parent(true, mode)") {{parent_title}}
-        v-divider(class="wide_divider")
+      v-row(justify="center" v-if="entry_image")
+        v-col.col-md-4.col-sm-12.entry-image(cols=12 alignSelf="center")
+          .float-md-right.float-sm-left.entry-display-size
+            v-img(
+              contain
+              :src="entry_image"
+              max-height="500")
+      v-divider(class="wide_divider")
+      v-row
         div(v-if="has_pages")
           Title_Description(
             :title="page_info.title"
             header_type="h2"
             :description="page_info.description"
             mode="edit")
-        br
-        div(v-for="(aspect) in shown_aspects" :key="aspect.name")
+      br
+      v-row(v-for="(aspect) in shown_aspects" :key="aspect.name")
+        v-col(:alignSelf="stretch" cols=12)
           Aspect(
             :aspect="aspect"
             :aspect_loc="aspect_locs[aspect.name]"
             v-on:entryAction="entryAction($event)"
             :extra="aspect_extras"
             :mode="mode")
+      v-row
         div(v-if="page === 0")
           v-divider(class="wide_divider")
-          Aspect(:aspect="license_aspect" :extra="aspect_extras" :mode="mode")
+          Aspect(:aspect="license_aspect" :aspect_loc="license_aspect.aspect_loc" :extra="aspect_extras" :mode="mode")
           <!--          License(:passedLicense.sync="entry.license" :mode="licence_mode")-->
           Privacy(:mode="privacy_mode" :passedPrivacy.sync="entry.privacy")
+      v-row
         v-col(v-if="last_page")
           MissingAspectsNotice(:entry="this.entry" v-model="entry_complete")
+      v-row
         EntryActions(
           v-bind="entry_actions_props"
           :page.sync="page"
           v-on:entryAction="entryAction($event)"
           v-on:edit="mode='edit'")
+      v-row
         DecisionDialog(
           :open.sync="openSaveDialog"
           @action="edit_or_save_dialog($event)"
           v-bind="unsaved_changes_dialog")
+
     v-row(justify-center align-center v-else-if="this.mode==='view'")
       v-col(cols=12)
         Title_Description(
@@ -68,7 +84,7 @@
             v-on:entryAction="entryAction($event)"
             :mode="mode")
       v-col(v-if="show_image" cols=12 class="col-md-3 col-sm-12 entry-image")
-        v-img(:src="entry_image()" aspect-ratio=1)
+        v-img(:src="entry_image" aspect-ratio=1)
       v-col(class="entry-meta" cols=12)
         EntryActions(
           v-bind="entry_actions_props"
@@ -137,8 +153,7 @@
         //
         router_next: null,
         // flag
-        delete_entry: false,
-        license_aspect: license_aspect(this.$store, ["cc_licenses"])
+        delete_entry: false
       }
     },
     created() {
@@ -200,6 +215,9 @@
     computed: {
       aspect_loc() {
         return [EDIT, this.uuid, this.type_slug]
+      },
+      license_aspect() {
+        return license_aspect(this.$store, ["cc_licenses"], [], this.uuid)
       },
       aspects() {
         return this.$store.getters[ENTRYTYPES_TYPE](this.template_slug).aspects

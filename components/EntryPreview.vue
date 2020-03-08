@@ -19,8 +19,7 @@
             v-img(
               contain
               :src="entry_image"
-              height="400"
-              alt="item")
+              height="200")
     div.ml-4.mr-2
       Aspect(v-for="aspect in shown_aspects"
         :key="aspect.name"
@@ -156,17 +155,6 @@
           return "fa fa-angle-right"
         else
           return "fa fa-edit"
-      },
-      entry_image() {
-        if (this.entry.image !== null) {
-          if (this.entry.image.startsWith("http")) {
-            return this.entry.image
-          } else if (check_str_is_uuid(this.entry.image)) {
-            return this.$api.url_entry__$uuid__attachment__$file_uuid(this.uuid, this.entry.image)
-          } else {
-            return null
-          }
-        }
       },
       tags() {
         return this.entry.tags || []

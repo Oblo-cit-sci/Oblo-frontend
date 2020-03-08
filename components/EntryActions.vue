@@ -183,11 +183,12 @@
           try {
             const res = await this.$api[method](this.entry.uuid, this.entry)
             const attachments_data = this.get_attachments_to_post(this.entry)
-            let formData = new FormData()
             for (let attachment_data of attachments_data) {
               const file_uuid = attachment_data.file_uuid
+              console.log("attachment_data", attachment_data)
               const stored_file = this.$store.getters["files/get_file"](file_uuid)
               const blob = base64file_to_blob(stored_file.meta.type, stored_file.data)
+              const formData = new FormData()
               formData.append("file", blob, stored_file.meta.name)
               this.$api.post_entry__$uuid__attachment__$file_uuid(this.uuid, file_uuid, formData).then((res) => {
                 this.$store.commit("files/remove_file", file_uuid)
@@ -208,16 +209,6 @@
             // console.log(res)
           }
 
-
-          // this.$api.post_entry__$uuid(this.entry.uuid, this.entry).then((res) => {
-          //   this.sending = false
-          //   this.ok_snackbar(res.data.msg)
-          //   // todo- probably redundant, since its coming back
-
-          // }).catch((err) => {
-          //   console.log("error", err)
-          //   this.sending = false
-          // })
         } else {
           this.error_snackbar("not yet implemented for this status:", this.entry.status)
           this.sending = false

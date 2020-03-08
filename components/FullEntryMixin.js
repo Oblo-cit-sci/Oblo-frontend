@@ -44,10 +44,10 @@
           entry_complete: this.entry_complete
         }
       },
-    },
-    methods: {
-      entry_image() {
-        return static_file_path(this.$store, '/images/entry_images/' + this.entry.image)
-      }
     }
+    // methods: {
+    //   entry_image() {
+    //     return static_file_path(this.$store, '/images/entry_images/' + this.entry.image)
+    //   }
+    // }
   }

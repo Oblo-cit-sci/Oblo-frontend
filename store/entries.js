@@ -17,6 +17,7 @@ import Vue from "vue"
 import {filter_empty, filter_no_value, flatten_collection_of_lists, recursive_unpack} from "../lib/util";
 import {_SET_ENTRY_VALUE, SET_DIRTY, UPDATE_TAGS} from "~/lib/store_consts";
 import {CREATOR, entry_actor_relation} from "~/lib/actors";
+import {META} from "~/lib/consts";
 
 const ld = require("lodash")
 
@@ -75,10 +76,16 @@ export const mutations = {
     let select = select_aspect_loc(state, aspect_loc, true)
     const final_loc = ld.last(aspect_loc)
     //console.log("final,", final_loc, "select", select, "value", value)
+
     if (final_loc[0] === ASPECT) {
       select[final_loc[1]] = value
     } else if (final_loc[0] === COMPONENT) {
       select.value[final_loc[1]] = value
+    } else if (final_loc[0] === META) {
+      //TODO (fix later) we need this cuz just entries, already goes to values
+      // debugger
+      select = state.entries.get(aspect_loc[0][1])
+      select[final_loc[1]] = value
     } else if (final_loc[0] === INDEX) {
       Vue.set(select.value, final_loc[1], value)
     } else {

@@ -3,7 +3,7 @@
     v-btn(:disabled="!_has_prev" @click="change_page(-1)" outlined color="blue") Back
     v-btn(:disabled="!_has_next" @click="change_page(1)" outlined color="blue") Next
     div.ml-2
-      span page: {{page + 1}} &nbsp;
+      span page: {{page}} &nbsp;
       span(v-if="total_pages") / {{total_pages}}
 
 </template>
@@ -32,13 +32,13 @@
       },
       _has_next() {
         if (this.total_pages) {
-          return this.page < this.total_pages - 1
+          return this.page < this.total_pages
         } else {
           return this.has_next
         }
       },
       _has_prev() {
-        return this.page > 0
+        return this.page > 1
       }
     },
     methods: {
