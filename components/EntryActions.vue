@@ -199,6 +199,7 @@
             this.sending = false
             // this.entry.status = PUBLISHED
             // this.$store.dispatch(ENTRIES_SAVE_ENTRY)
+            this.ok_snackbar("Entry submitted")
             this.$store.commit(ENTRIES_SAVE_ENTRY, res.data.data)
             this.$store.dispatch(ENTRIES_UPDATE_ENTRY)
             this.back()

@@ -38,7 +38,7 @@
   import LoadFileButton from "../LoadFileButton";
   import Aspect from "../Aspect";
   import ImageCard from "../aspect_utils/ImageCard";
-  import {ENTRIES_UPDATE_IMAGE} from "../../lib/store_consts";
+  import {ENTRIES_GET_ENTRY, ENTRIES_UPDATE_IMAGE} from "../../lib/store_consts";
   import AttachedFilesMixin from "../aspect_utils/AttachedFilesMixin";
   import AspectComponentMixin from "./AspectComponentMixin";
   import {DRAFT, INDEX} from "../../lib/consts";
@@ -60,6 +60,13 @@
       return {
         selected_image_index: -1,
         cover_image_index: -1,
+      }
+    },
+    created() {
+      // todo this, should be more direct for EntryAspectMixin (future)
+      const entry_image = this.$store.getters[ENTRIES_GET_ENTRY](this.entry_uuid()).image
+      if(entry_image) {
+        this.cover_image_index = this.images.findIndex(img => img.file_uuid === entry_image)
       }
     },
     computed: {

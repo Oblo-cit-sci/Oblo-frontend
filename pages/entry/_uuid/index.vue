@@ -13,12 +13,11 @@
           span This entry is part of:&nbsp
           a(@click="to_parent(true, mode)") {{parent_title}}
       v-row(justify="center" v-if="entry_image")
-        v-col.col-md-4.col-sm-12.entry-image(cols=12 alignSelf="center")
-          .float-md-right.float-sm-left.entry-display-size
-            v-img(
-              contain
-              :src="entry_image"
-              max-height="500")
+        v-col.col-md-10.col-sm-12(cols=12 alignSelf="center")
+          v-img.float-md-right.float-sm-left.entry-display-size(
+            contain
+            :src="entry_image"
+            max-height="500")
       v-divider(class="wide_divider")
       v-row
         div(v-if="has_pages")
@@ -29,7 +28,7 @@
             mode="edit")
       br
       v-row(v-for="(aspect) in shown_aspects" :key="aspect.name")
-        v-col(:alignSelf="stretch" cols=12)
+        v-col(alignSelf="stretch" cols=12)
           Aspect(
             :aspect="aspect"
             :aspect_loc="aspect_locs[aspect.name]"
