@@ -57,6 +57,7 @@
   import EntryMixin from "./EntryMixin";
   import PersistentStorageMixin from "./PersistentStorageMixin";
   import {upload_to_repo} from "../lib/import_export";
+  import {FILES_GET_FILE} from "../store/files";
 
   export default {
     name: "EntryActions",
@@ -186,7 +187,7 @@
             for (let attachment_data of attachments_data) {
               const file_uuid = attachment_data.file_uuid
               console.log("attachment_data", attachment_data)
-              const stored_file = this.$store.getters["files/get_file"](file_uuid)
+              const stored_file = this.$store.getters[FILES_GET_FILE](file_uuid)
               const blob = base64file_to_blob(stored_file.meta.type, stored_file.data)
               const formData = new FormData()
               formData.append("file", blob, stored_file.meta.name)

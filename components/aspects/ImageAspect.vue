@@ -8,10 +8,12 @@
     v-dialog(v-model="image_open" overlay-opacity="100" fullscreen)
       ImageCard(
         v-if="image_open"
-        :image_value="selected_img_data"
+        :image_data="selected_img_data"
+        :entry_uuid="entry_uuid()"
         :is_cover="selected_is_cover"
         @set_cover="make_selected_cover"
-        @close="close")
+        @close="close"
+        @delete="delete_image(selected_image_index)")
       <!--      v-card(v-if="image_open")-->
       <!--        v-row.ma-2-->
       <!--          v-col(cols=1)-->
@@ -43,6 +45,7 @@
   import AspectComponentMixin from "./AspectComponentMixin";
   import {DRAFT, INDEX} from "../../lib/consts";
   import {loc_append, remove_entry_loc} from "../../lib/aspect";
+  import {FILES_ADD_FILE, FILES_GET_FILE} from "../../store/files";
 
   const uuidv4 = require('uuid/v4')
 
@@ -99,7 +102,7 @@
       add_image(image_result) {
         console.log("add", image_result)
         const file_uuid = uuidv4()
-        this.$store.commit("files/add_file", {uuid: file_uuid, meta: image_result.meta, data: image_result.data})
+        this.$store.commit(FILES_ADD_FILE, {uuid: file_uuid, meta: image_result.meta, data: image_result.data})
         this.update_value(this.$_.concat(this.value, [{
           title: "",
           description: "",
@@ -123,13 +126,20 @@
           image_url: this.images[index].file_uuid
         })
       },
+      unset_cover_image() {
+        this.cover_image_index = -1
+        this.$store.commit(ENTRIES_UPDATE_IMAGE, {
+          uuid: this.entry_uuid(),
+          image_url: null
+        })
+      },
       // todo needs to be called from the ImageCard component
       make_selected_cover(index = this.selected_image_index) {
         this.set_cover_image(index)
       },
       get_image_data(index) {
         if (this.images[index].url === null) {
-          const img_data = this.$store.getters["files/get_file"](this.images[index].file_uuid)
+          const img_data = this.$store.getters[FILES_GET_FILE](this.images[index].file_uuid)
           if (img_data) {
             return img_data.data
           } else {
@@ -141,6 +151,35 @@
       },
       image_location(index) {
         return loc_append(remove_entry_loc(this.aspect_loc), INDEX, index)
+      },
+      delete_image(index) {
+        this.selected_image_index = -1
+        const entry = this.get_entry()
+        const entry_uuid = this.entry_uuid()
+        const file_uuid = this.images[index].file_uuid
+        console.log(entry)
+
+        const del_all = ()  => {
+          this.update_value(this.$_.filter(this.value, (val, i) => {
+            return index !== i
+          }))
+          if(this.cover_image_index === index) {
+            this.unset_cover_image()
+          }
+          this.remove_file_attachment(entry_uuid, file_uuid)
+        }
+
+        if(entry) {
+          if(entry.status === DRAFT) {
+            del_all()
+          } else {
+            const file_uuid = this.value[index].file_uuid
+            this.$api.delete_entry__$uuid__attachment__$file_uuid(this.entry_uuid(), file_uuid).then(resp => {
+              del_all()
+            }).catch(err => {
+            })
+          }
+        }
       }
     },
     watch: {
