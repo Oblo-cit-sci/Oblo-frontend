@@ -18,7 +18,9 @@
             contain
             :src="entry_image"
             max-height="500")
-      v-divider(class="wide_divider")
+      v-row
+        v-col(cols=8)
+          v-divider(v-if="is_first_page" class="wide_divider")
       v-row
         div(v-if="has_pages")
           Title_Description(
@@ -28,22 +30,26 @@
             mode="edit")
       br
       v-row(v-for="(aspect) in shown_aspects" :key="aspect.name")
-        v-col(alignSelf="stretch" cols=12)
+        v-col(alignSelf="stretch" cols=8)
           Aspect(
             :aspect="aspect"
             :aspect_loc="aspect_locs[aspect.name]"
             v-on:entryAction="entryAction($event)"
             :extra="aspect_extras"
             :mode="mode")
-      v-row
-        div(v-if="page === 0")
-          v-divider(class="wide_divider")
+      div(v-if="is_first_page")
+        v-row
+          v-col(cols=8)
+            v-divider(v-if="is_first_page" class="wide_divider")
+        v-row
           Aspect(:aspect="license_aspect" :aspect_loc="license_aspect.aspect_loc" :extra="aspect_extras" :mode="mode")
-          <!--          License(:passedLicense.sync="entry.license" :mode="licence_mode")-->
-          Privacy(:mode="privacy_mode" :passedPrivacy.sync="entry.privacy")
+        v-row(v-if="is_first_page")
+          Aspect(:aspect="privacy_aspect" :aspect_loc="privacy_aspect.aspect_loc" :mode="mode")
       v-row
-        v-col(v-if="last_page")
-          MissingAspectsNotice(:entry="this.entry" v-model="entry_complete")
+        v-col(cols=8)
+          v-divider(v-if="is_first_page" class="wide_divider")
+      v-row(v-if="last_page")
+        MissingAspectsNotice(:entry="this.entry" v-model="entry_complete")
       v-row
         EntryActions(
           v-bind="entry_actions_props"
@@ -55,7 +61,6 @@
           :open.sync="openSaveDialog"
           @action="edit_or_save_dialog($event)"
           v-bind="unsaved_changes_dialog")
-
     v-row(justify-center align-center v-else-if="this.mode==='view'")
       v-col(cols=12)
         Title_Description(
@@ -126,7 +131,7 @@
   import TriggerSnackbarMixin from "../../../components/TriggerSnackbarMixin";
   import PersistentStorageMixin from "../../../components/PersistentStorageMixin";
   import FullEntryMixin from "../../../components/FullEntryMixin";
-  import {license_aspect} from "../../../lib/typical_aspects";
+  import {license_aspect, privacy_aspect} from "../../../lib/typical_aspects";
   import EntryActorList from "../../../components/entry/EntryActorList";
 
   export default {
@@ -215,15 +220,18 @@
       aspect_loc() {
         return [EDIT, this.uuid, this.type_slug]
       },
+      is_first_page() {
+        return this.page === 0
+      },
       license_aspect() {
         return license_aspect(this.$store, ["cc_licenses"], [], this.uuid)
       },
+      privacy_aspect() {
+        debugger
+        return privacy_aspect(this.$store, this.uuid)
+      },
       aspects() {
         return this.$store.getters[ENTRYTYPES_TYPE](this.template_slug).aspects
-      },
-      privacy_mode() {
-        const privacy_set = this.template.rules.privacy
-        return privacy_set ? VIEW : EDIT
       },
       licence_mode() {
         if (this.entry.refs.parent || this.entry.privacy === PRIVATE_LOCAL) {

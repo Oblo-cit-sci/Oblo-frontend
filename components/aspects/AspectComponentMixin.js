@@ -46,6 +46,12 @@ export default {
         return this.aspect.attr.extra.rules
       }
     },
+    is_required() {
+      if (this.aspect.attr.hasOwnProperty("required")) {
+        return aspect.attr.required
+      } else
+        return true
+    },
     hint() {
       if (this.$_.get(this.aspect.attr, "extra.hint", null)) {
         return this.aspect.attr.extra.hint

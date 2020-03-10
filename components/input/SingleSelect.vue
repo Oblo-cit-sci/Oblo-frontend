@@ -5,15 +5,16 @@
       dense
       class="singleselect_list"
     )
-      div(v-for="item of options")
+      div(v-for="item of options" :key="item.value")
         v-subheader(v-if="is_category(item)") {{item.text}}
         v-list-item(v-else
-        :key="item.value"
           @click="select(item)"
           :class="{ marked: marked(item.value) }"
           class="single_select")
-          v-list-item-avatar(v-if="has_some_icons" tile)
-            v-img(:src="icon_path(item)" contain)
+          <!--          v-list-item-avatar(v-if="" tile)  TODO HAS SOME IMAGE...?-->
+          <!--            v-img(:src="icon_path(item)" contain)-->
+          v-list-item-icon(v-if="has_some_icons")
+            v-icon(:v-text="item.icon") {{item.icon}}
           v-list-item-content.align-self-center
             v-list-item-title {{item.text}}
             v-list-item-subtitle {{item.description}}
@@ -107,7 +108,7 @@
       }
     },
     created() {
-      //console.log("Selection create", this.selection)
+      console.log("Selection create", this.selection)
       this.emit_only_value = this.only_value
       if (this.selection) {
         this.set_selected_item(false)
@@ -136,7 +137,7 @@
           return
         if (item.value === undefined)
           return;
-        if (this.selection && this.selection.value === item.value) {
+        if (this.selection && this.selection.value === item.value && this.clearable) {
           this.emitUp(null)
         } else {
           this.emitUp(item)
@@ -160,6 +161,7 @@
         } else return ""
       },
       marked(key) {
+        console.log("marked", key, this.selection)
         if (this.selection)
           return key === this.selection.value && this.highlight;
       },
