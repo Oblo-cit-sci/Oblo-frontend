@@ -49,11 +49,13 @@
   import EntryNavMixin from "./EntryNavMixin";
   import EntryMixin from "./EntryMixin";
   import FullEntryMixin from "./FullEntryMixin";
+  import EntryActorList from "./entry/EntryActorList";
 
   export default {
     name: "EntryView",
     mixins: [EntryNavMixin, EntryMixin, FullEntryMixin],
     components: {
+      EntryActorList,
       DecisionDialog,
       Aspect,
       EntryActions,

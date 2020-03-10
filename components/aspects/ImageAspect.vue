@@ -157,7 +157,7 @@
         const entry = this.get_entry()
         const entry_uuid = this.entry_uuid()
         const file_uuid = this.images[index].file_uuid
-        console.log(entry)
+        // console.log(entry)
 
         const del_all = ()  => {
           this.update_value(this.$_.filter(this.value, (val, i) => {
