@@ -40,10 +40,10 @@
       div(v-if="is_first_page")
         v-row
           v-col(cols=8)
-            v-divider(v-if="is_first_page" class="wide_divider")
+            v-divider.wide_divider
         v-row
           Aspect(:aspect="license_aspect" :aspect_loc="license_aspect.aspect_loc" :extra="aspect_extras" :mode="mode")
-        v-row(v-if="is_first_page")
+        v-row
           Aspect(:aspect="privacy_aspect" :aspect_loc="privacy_aspect.aspect_loc" :mode="mode")
       v-row
         v-col(cols=8)
@@ -227,7 +227,6 @@
         return license_aspect(this.$store, ["cc_licenses"], [], this.uuid)
       },
       privacy_aspect() {
-        debugger
         return privacy_aspect(this.$store, this.uuid)
       },
       aspects() {
