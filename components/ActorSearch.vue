@@ -24,46 +24,66 @@
           v-avatar(left)
             v-img(:src="avatar_url(data.item.registered_name)")
           span {{data.item.public_name}}
+      template(v-slot:item="data")
+        v-list-item-avatar
+          v-img(:src="avatar_url(data.item.registered_name)")
+        v-list-item-content
+          v-list-item-title {{data.item.public_name}}
+          v-list-item-subtitle {{data.item.registered_name}}
 </template>
 
 <script>
+
 
   export default {
     name: "ActorSearch",
     mixins: [],
     components: {},
     props: {
-      multiple: Boolean
+      multiple: Boolean,
+      value: {
+        type: [Object, Array]
+      }
     },
     data() {
       return {
         actors: [],
         isLoading: false,
-        selection: null,
-        search: ""
+        search: "",
       }
     },
-    created() {
-
+    computed: {
+      selection: {
+        get() {
+          return this.value
+        },
+        set: function(val) {
+          this.search = ""
+          if (this.multiple) {
+            this.actors = val
+          } else {
+            if(val) {
+              this.actors = [val]
+            }
+          }
+          this.$emit("input", val)
+        }
+      }
     },
-    computed: {},
     methods: {
       avatar_url(registered_name) {
         return this.$api.url_actor__$registered_name__avatar(registered_name)
       },
       remove(registered_name) {
-        console.log("rem")
         if (this.multiple) {
           this.selection = this.selection.filter(actor => actor.registered_name !== registered_name)
         } else {
           this.selection = null
         }
-        this.actors = []
       }
     },
     watch: {
       search(val) {
-        console.log("S", val)
         if (!val) {
           return
         }
@@ -82,17 +102,6 @@
         }).catch(err => {
           console.log(err)
         }).finally(() => (this.isLoading = false))
-      },
-      selection(val) {
-        console.log(val)
-        this.search = ""
-        if (this.multiple) {
-          this.actors = this.selection
-        } else {
-          if(this.selection) {
-            this.actors = [this.selection]
-          }
-        }
       }
     }
   }
