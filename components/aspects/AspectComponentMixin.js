@@ -71,7 +71,7 @@ export default {
     get_entry() {
       const entry_uuid = this.entry_uuid()
       if (entry_uuid) {
-        return this.$store.getters[ENTRIES_GET_ENTRY](this.entry_uuid)
+        return this.$store.getters[ENTRIES_GET_ENTRY](entry_uuid)
       } else {
         return null
       }

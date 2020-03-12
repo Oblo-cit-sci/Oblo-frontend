@@ -171,6 +171,7 @@
         }
       },
       remove_value(index) {
+        // todo something like this could be in a mixin (used by others as well)
         this.update_value(this.$_.filter(this.value, (val, i) => {
           return index !== i
         }))

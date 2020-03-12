@@ -198,6 +198,10 @@ export const mutations = {
     const {entry_uuid, ...attachment_data} = attachment
     const entry = state.entries.get(entry_uuid)
     entry.attached_files.push(attachment_data)
+  },
+  remove_file_attachment(state, {entry_uuid, file_uuid}) {
+    const entry = state.entries.get(entry_uuid)
+    entry.attached_files = entry.attached_files.filter(a => a.file_uuid !== file_uuid)
   }
 }
 

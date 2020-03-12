@@ -7,33 +7,37 @@
       <!--      v-col(cols=4 offset=3)-->
       <!--        Aspect(:aspect="aspects.title" :mode="edit")-->
     v-row.ma-5
-      v-img(:src="image_value.url" contain max-height="500px")
+      v-img(:src="get_image_data()" contain max-height="500px")
     div.ma-1
       v-row
         v-col.font-weight-bold(v-if="is_cover") Cover image
         v-col(v-else)
           v-btn(text @click="$emit('set_cover')" small) Make cover image
+      v-row
+        v-col
+          v-btn(color="error" @click="$emit('delete')") delete image
     <!--      v-row(v-for="(info, index) in additional_info" :key="index")-->
     <!--        v-col {{info}}-->
-    v-row
-      v-col
-        v-btn(color="error") delete image
+    <!--    v-row-->
+
 </template>
 
 <script>
   import {dateAspectBuilder, shortTextAspectBuilder} from "../../lib/aspect";
+  import {FILES_GET_FILE} from "../../store/files";
 
   export default {
     name: "ImageCard",
     props: {
-      image_value: {
+      image_data: {
         type: Object,
         required: true
       },
       is_cover: {
         type: Boolean,
         required: true
-      }
+      },
+      entry_uuid: String
     },
     data() {
       return  {
@@ -42,6 +46,21 @@
           date: dateAspectBuilder("Date")
         }
       }
+    },
+    methods: {
+      // todo move this to a mixin or lib function. similar to ImageAspect
+      get_image_data() {
+        if (this.image_data.url === null) {
+          const img_data = this.$store.getters[FILES_GET_FILE](this.image_data.file_uuid)
+          if (img_data) {
+            return img_data.data
+          } else {
+            return this.$api.url_entry__$uuid__attachment__$file_uuid(this.entry_uuid, (this.image_data.file_uuid))
+          }
+        } else {
+          return this.image_data.url
+        }
+      },
     }
   }
 </script>

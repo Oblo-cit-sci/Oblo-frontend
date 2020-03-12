@@ -149,6 +149,11 @@ class APIWrapper {
     return `${this.entry_baseURL}/${uuid}/attachment/${file_uuid}`
   }
 
+  delete_entry__$uuid__attachment__$file_uuid(uuid, file_uuid) {
+    return this.axios.delete(`${this.entry_baseURL}/${uuid}/attachment/${file_uuid}`)
+  }
+
+
   entries_search(limit, offset, search_query) {
     return this.axios.post(`${this.entries_baseURL}search`, search_query, {
       params: {
