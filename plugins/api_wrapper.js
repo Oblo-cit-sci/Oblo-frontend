@@ -157,6 +157,10 @@ class APIWrapper {
       }
     })
   }
+
+  actor_search(search_query) {
+    return this.axios.post(`${this.actor_baseURL}search`, search_query)
+  }
 }
 
 
