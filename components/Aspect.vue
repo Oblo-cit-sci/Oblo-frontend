@@ -22,6 +22,7 @@
       :aspect_loc="aspect_loc"
       :disabled="regular_disable"
       :mode="real_mode"
+      v-bind="extra"
       v-on:update_value="update_value($event)"
       @update:error="$emit('update:error', ($event))"
       v-on:entryAction="$emit('entryAction',$event)")

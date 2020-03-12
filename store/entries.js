@@ -16,7 +16,6 @@ import {ENTRYTYPES_TYPE, GET_ENTRY} from "../lib/store_consts";
 import Vue from "vue"
 import {filter_empty, filter_no_value, flatten_collection_of_lists, recursive_unpack} from "../lib/util";
 import {_SET_ENTRY_VALUE, SET_DIRTY, UPDATE_TAGS} from "~/lib/store_consts";
-import {CREATOR, entry_actor_relation} from "~/lib/actors";
 import {META} from "~/lib/consts";
 
 const ld = require("lodash")

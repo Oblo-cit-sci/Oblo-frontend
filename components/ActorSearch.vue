@@ -43,6 +43,10 @@
       multiple: Boolean,
       value: {
         type: [Object, Array]
+      },
+      exclude_reg_names: {
+        type: Array,
+        default: () => []
       }
     },
     data() {
@@ -98,7 +102,7 @@
 
         // Lazily load input items
         this.$api.actor_search({name: val}).then(({data}) => {
-          this.actors = data.data
+          this.actors = data.data.filter(actor => !this.exclude_reg_names.includes(actor.registered_name))
         }).catch(err => {
           console.log(err)
         }).finally(() => (this.isLoading = false))

@@ -45,6 +45,8 @@
           Aspect(:aspect="license_aspect" :aspect_loc="license_aspect.aspect_loc" :extra="aspect_extras" :mode="mode")
         v-row
           Aspect(:aspect="privacy_aspect" :aspect_loc="privacy_aspect.aspect_loc" :mode="mode")
+        v-row
+          Aspect(:aspect="entry_roles_aspect" :aspect_loc="entry_roles_aspect.aspect_loc" :extra="{entry_is_private: entry.privacy==='private'}")
       v-row
         v-col(cols=8)
           v-divider(v-if="is_first_page" class="wide_divider")
@@ -131,7 +133,7 @@
   import TriggerSnackbarMixin from "../../../components/TriggerSnackbarMixin";
   import PersistentStorageMixin from "../../../components/PersistentStorageMixin";
   import FullEntryMixin from "../../../components/FullEntryMixin";
-  import {license_aspect, privacy_aspect} from "../../../lib/typical_aspects";
+  import {entry_roles_aspect, license_aspect, privacy_aspect} from "../../../lib/typical_aspects";
   import EntryActorList from "../../../components/entry/EntryActorList";
 
   export default {
@@ -228,6 +230,9 @@
       },
       privacy_aspect() {
         return privacy_aspect(this.$store, this.uuid)
+      },
+      entry_roles_aspect() {
+        return entry_roles_aspect(this.$store, this.uuid)
       },
       aspects() {
         return this.$store.getters[ENTRYTYPES_TYPE](this.template_slug).aspects

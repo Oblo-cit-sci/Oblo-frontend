@@ -129,9 +129,6 @@ export default {
     },
     value() {
       if(this.aspect.attr.unpacked) {
-        if(typeof this.mvalue === "object") { // when its   {value: null}
-          return this.mvalue.value
-        }
         return this.mvalue
       } else {
         return this.mvalue.value
