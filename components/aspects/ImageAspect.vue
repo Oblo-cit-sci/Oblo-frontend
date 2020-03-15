@@ -40,12 +40,12 @@
   import LoadFileButton from "../LoadFileButton";
   import Aspect from "../Aspect";
   import ImageCard from "../aspect_utils/ImageCard";
-  import {ENTRIES_GET_ENTRY, ENTRIES_UPDATE_IMAGE} from "../../lib/store_consts";
   import AttachedFilesMixin from "../aspect_utils/AttachedFilesMixin";
   import AspectComponentMixin from "./AspectComponentMixin";
   import {DRAFT, INDEX} from "../../lib/consts";
   import {loc_append, remove_entry_loc} from "../../lib/aspect";
   import {FILES_ADD_FILE, FILES_GET_FILE} from "../../store/files";
+  import {ENTRIES_GET_ENTRY, ENTRIES_UPDATE_IMAGE} from "../../store/entries";
 
   const uuidv4 = require('uuid/v4')
 

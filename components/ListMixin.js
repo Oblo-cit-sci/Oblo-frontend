@@ -3,7 +3,7 @@ import {aspect_loc_str, remove_entry_loc} from "../lib/aspect";
 const PAGINATION_TRESH = 5
 
 import goTo from 'vuetify/lib/services/goto'
-import {ENTRIES_ENTRIES_SET_LOCAL_LIST_PAGE} from "~/lib/store_consts";
+import {ENTRIES_ENTRIES_SET_LOCAL_LIST_PAGE} from "~/store/entries";
 
 export default {
   data() {

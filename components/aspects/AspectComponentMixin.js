@@ -1,6 +1,6 @@
 import {EDIT, VIEW} from "~/lib/consts";
-import {ENTRIES_GET_ENTRY} from "~/lib/store_consts";
 import {aspect_loc_uuid} from "~/lib/aspect";
+import {ENTRIES_GET_ENTRY} from "~/store/entries";
 
 export default {
   name: "AspectComponentMixin",

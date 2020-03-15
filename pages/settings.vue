@@ -64,9 +64,7 @@
   import {export_data, merge_imported_entries} from "../lib/import_export";
   import {
     ADD_META,
-    ENTRIES_ALL_ENTRIES_ARRAY,
-    ENTRIES_GET_ENTRIES,
-    ENTRIES_GET_ENTRY, ENTRYTYPES_SET_TYPES,
+    ENTRYTYPES_SET_TYPES,
     USER_KEY
   } from "../lib/store_consts";
   import {get_release_mode} from "../lib/util";
@@ -81,6 +79,7 @@
   } from "../lib/fixes";
   import {filter_required} from "../lib/search";
   import EntryPreviewList from "../components/EntryPreviewList";
+  import {ENTRIES_ALL_ENTRIES_ARRAY, ENTRIES_GET_ENTRIES, ENTRIES_GET_ENTRY} from "../store/entries";
 
 
   export default {

@@ -6,7 +6,7 @@
     - loc: array for aspect location
     - url: url
  */
-import {ENTRIES_ADD_FILE_ATTACHMENT, ENTRIES_REMOVE_FILE_ATTACHMENT} from "~/lib/store_consts";
+import {ENTRIES_ADD_FILE_ATTACHMENT, ENTRIES_REMOVE_FILE_ATTACHMENT} from "~/store/entries";
 
 export default {
   name: "AttachedFilesMixin",

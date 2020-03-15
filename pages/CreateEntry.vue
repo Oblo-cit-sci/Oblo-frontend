@@ -9,8 +9,8 @@
 <script>
 
 
-    import {ENTRIES_DRAFTS} from "../lib/store_consts";
     import EntryCreateList from "../components/EntryCreateList";
+    import {ENTRIES_DRAFTS} from "../store/entries";
 
     const ENTRY_TYPE = "etype";
     const DRAFT = "draft";

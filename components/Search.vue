@@ -45,7 +45,6 @@
   import EntryPreviewList from "../components/EntryPreviewList"
   import {debounced_search,  search_entries} from "../lib/client"
   import {
-    ENTRIES_ALL_ENTRIES_ARRAY,
     ENTRYTYPES_TYPES
   } from "../lib/store_consts"
   import FilterSelect from "./FilterSelect";
@@ -55,6 +54,7 @@
   import NavBaseMixin from "./NavBaseMixin";
   import {VIEW_SEARCH, VIEW_TREE} from "../lib/consts";
   import {CLEAR_SEARCH, SEARCH_GET_ENTRIES, SEARCH_SET_ENTRIES} from "../store/search";
+  import {ENTRIES_ALL_ENTRIES_ARRAY, ENTRIES_DOMAIN} from "../store/entries";
 
   const LOG = false
 
@@ -85,6 +85,9 @@
         type: Array,
         default: () => []
       },
+      mixin_domain_drafts: {
+        type: String
+      }
     },
     data() {
       return {
@@ -135,9 +138,6 @@
       view_mode(val) {
         this.$emit("update:view_mode", val)
       },
-      filtered_entries() {
-        console.log("filtered_entries update")
-      }
     },
     computed: {
       ...mapGetters({entries: SEARCH_GET_ENTRIES, store_searching: "search/get_searching", total_count: "search/get_search_count"}),
@@ -159,6 +159,11 @@
       },
       filtered_entries() {
         let result_entries = this.entries() // must be a call
+        if(this.mixin_domain_drafts) {
+          console.log("drafts", )
+          const drafts = this.$store.getters["entries/domain_drafts_uuids"](this.mixin_domain_drafts)
+          result_entries = drafts.concat(result_entries)
+        }
         // console.log("new filtered entries", result_entries)
         if (LOG) {
           console.log("Search.filtered_entries. entries:", result_entries.length)
@@ -193,16 +198,16 @@
         // this.searching = true
         // console.log("getting entries")
         let config = this.searchConfiguration()
-        if(before_last) {
-          if (this.entries().length > 0) {
-            const before_ts = this.entries()[0].creation_ts
-            config.required.push({name: "before_ts", ts: before_ts})
-          }
-        }
+        // if(before_last) {
+        //   if (this.entries().length > 0) {
+        //     // const before_ts = this.$store.getters[]
+        //     config.required.push({name: "before_ts", ts: before_ts})
+        //   }
+        // }
         // build_config merges 2 objects,
         this.$store.commit("search/set_searching", true)
-        const prepend = this.entries().length > 0
-        debounced_search(this.$api, this.$store, config, prepend)
+        // const prepend = this.entries().length > 0
+        debounced_search(this.$api, this.$store, config)
         // TODO would be nice to have the debounced search work with a promise so we do not need the
         //  `searching` store variable
         //   .then(() => {

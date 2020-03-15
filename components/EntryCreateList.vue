@@ -14,9 +14,10 @@
     import SingleSelect from "./input/SingleSelect";
     import {create_entry} from "../lib/entry";
     import {EDIT} from "../lib/consts";
-    import {ENTRIES_SAVE_ENTRY, INIT_PAGE_PATH} from "../lib/store_consts";
+    import {INIT_PAGE_PATH} from "../lib/store_consts";
     import EntryNavMixin from "./EntryNavMixin";
     import PersistentStorageMixin from "./PersistentStorageMixin";
+    import {ENTRIES_SAVE_ENTRY} from "../store/entries";
 
     const ENTRY_TYPE = "etype";
     const DRAFT = "draft";

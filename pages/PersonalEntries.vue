@@ -6,13 +6,13 @@
 </template>
 
 <script>
-    import {ENTRIES_ALL_ENTRIES_ARRAY} from "../lib/store_consts";
     import {LICCI_PARTNERS, NO_DOMAIN, VIEW_SEARCH} from "../lib/consts";
     import {domain_filter_options, entrytype_filter_options} from "../lib/filter_option_consts";
     import FilterMixin from "../components/FilterMixin";
     import {pack_value} from "../lib/aspect";
     import {get_release_mode} from "../lib/util";
     import Search from "../components/Search";
+    import {ENTRIES_ALL_ENTRIES_ARRAY} from "../store/entries";
 
 
 

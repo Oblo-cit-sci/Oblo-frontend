@@ -21,6 +21,7 @@
       :init_clear="false"
       :view_mode.sync="entries_view"
       :fixed_filters="domain_pre_filter",
+      :mixin_domain_drafts="domain_name",
       :include_filters="filters")
 </template>
 
@@ -45,6 +46,9 @@
     },
     computed: {
       ...mapGetters({logged_in:USER_LOGGED_IN}),
+      domain_name() {
+        return this.$route.params.domain
+      },
       entries_view: {
         get: function () {
           return this.$route.query.view || VIEW_SEARCH
@@ -60,10 +64,10 @@
         }
       },
       entrytypes_entries() {
-        return global_context_filter(this.$store.getters[ENTRYTYPES_OF_DOMAIN](this.$route.params.domain))
+        return global_context_filter(this.$store.getters[ENTRYTYPES_OF_DOMAIN](this.domain_name))
       },
       domain_data() {
-        return this.$store.getters[DOMAIN_BY_NAME](this.$route.params.domain)
+        return this.$store.getters[DOMAIN_BY_NAME](this.domain_name)
       },
       filters() {
         return [entrytype_filter_options]

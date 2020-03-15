@@ -2,11 +2,11 @@
   div
     v-row(v-if="results_received" wrap justify-center)
       div {{num_entries}} Entries
-    v-row(v-for="entry in visible_entries"
-      :key="entry.id" class="col-sm-12 col-xs-6")
+    v-row(v-for="uuid in visible_entries"
+      :key="uuid" class="col-sm-12 col-xs-6")
       v-col
         Entrypreview(
-          :passed_uuid="entry.uuid"
+          :passed_uuid="uuid"
           v-bind="preview_options"
           @delete_e="delete_e($event)"
           @preview_action="$emit('preview_action',$event)")
@@ -19,9 +19,10 @@
 
 <script>
   import Entrypreview from "../components/EntryPreview";
-  import {ENTRIES_HAS_ENTRY, ENTRYTYPES_TYPE} from "../lib/store_consts";
+  import {ENTRYTYPES_TYPE} from "../lib/store_consts";
   import goTo from 'vuetify/lib/services/goto'
   import SimplePaginate from "./SimplePaginate";
+  import {ENTRIES_HAS_ENTRY} from "../store/entries";
 
   export default {
     name: "EntryPreviewList",

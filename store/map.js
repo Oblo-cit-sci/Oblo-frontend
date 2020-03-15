@@ -1,4 +1,5 @@
-import {_SELECT_ENTRY, ENTRIES_GET_ENTRY} from "~/lib/store_consts";
+import {_SELECT_ENTRY} from "~/lib/store_consts";
+import {ENTRIES_GET_ENTRY} from "~/store/entries";
 
 const ld = require("lodash")
 

@@ -1,10 +1,11 @@
 import {string_list2options} from "../../lib/options";
 import {LOCATION, MODE_ASPECT_POINT, MODE_NORMAL} from "../../lib/consts";
-import {ENTRIES_GET_ENTRY, MAP_SET_ENTRIES} from "../../lib/store_consts";
+import {MAP_SET_ENTRIES} from "../../lib/store_consts";
 import {get_location} from "~/lib/location";
 import EntryAspectView from "~/components/EntryAspectView";
 import Search from "~/components/Search";
 import {SEARCH_GET_ENTRIES} from "~/store/search";
+import {ENTRIES_GET_ENTRY} from "~/store/entries";
 
 // the navigation either shows the search or one specific entry
 

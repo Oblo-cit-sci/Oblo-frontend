@@ -50,11 +50,6 @@
   import EntryNavMixin from "../EntryNavMixin";
   import ListMixin from "../ListMixin";
   import {
-    EDIT_UUID,
-    ENTRIES_DELETE_ENTRY,
-    ENTRIES_GET_ENTRY,
-    ENTRIES_SAVE_CHILD_N_REF,
-    ENTRIES_SAVE_ENTRY,
     ENTRYTYPES_TYPE,
     PUSH_PAGE_PATH,
   } from "../../lib/store_consts";
@@ -63,6 +58,13 @@
   import ListPagination from "../ListPagination";
   import PersistentStorageMixin from "../PersistentStorageMixin";
   import AspectComponentMixin from "./AspectComponentMixin";
+  import {
+      EDIT_UUID,
+      ENTRIES_DELETE_ENTRY,
+      ENTRIES_GET_ENTRY,
+      ENTRIES_SAVE_CHILD_N_REF,
+      ENTRIES_SAVE_ENTRY
+  } from "../../store/entries";
 
   export default {
     name: "EntrylistAspect",

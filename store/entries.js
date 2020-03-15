@@ -1,12 +1,13 @@
 /*
   this is for the own entries
  */
-import {ASPECT, COMPONENT, DRAFT, EDIT, ENTRY, INDEX, PRIVATE_LOCAL, TITLE_ASPECT, VIEW} from "../lib/consts";
+import {ASPECT, COMPONENT, DRAFT, EDIT, ENTRY, INDEX, PRIVATE_LOCAL, VIEW} from "../lib/consts";
 import {default_values, get_entry_titleAspect, select_aspect_loc} from "../lib/entry";
 import {
   aspect_loc_str,
   aspect_loc_str2arr,
-  aspect_loc_uuid, last_loc_value,
+  aspect_loc_uuid,
+  last_loc_value,
   loc_prepend,
   loc_remove_last,
   remove_entry_loc
@@ -14,9 +15,54 @@ import {
 import {ENTRYTYPES_TYPE, GET_ENTRY} from "../lib/store_consts";
 
 import Vue from "vue"
-import {filter_empty, filter_no_value, flatten_collection_of_lists, recursive_unpack} from "../lib/util";
-import {_SET_ENTRY_VALUE, SET_DIRTY, UPDATE_TAGS} from "~/lib/store_consts";
+import {filter_empty, flatten_collection_of_lists, recursive_unpack} from "../lib/util";
 import {META} from "~/lib/consts";
+
+
+// Mutations
+export const ENTRIES_ADD_TIMELINE_ENTRIES = "entries/add_timeline_entries"
+export const ENTRIES_SET_DOWNLOADED = "entries/set_downloaded"
+export const ENTRIES_ENTRIES_SET_LOCAL_LIST_PAGE = "entries/entries_set_local_list_page"
+export const ENTRIES_SET_ENTRY_STATUS = "entries/set_entry_status"
+export const SET_DIRTY = "set_dirty"
+export const ENTRIES_CLEAR = "entries/clear"
+export const ENTRIES_UPDATE_TAGS = "entries/update_tags"
+export const ENTRIES_UPDATE_IMAGE = "entries/update_image"
+export const ENTRIES_ADD_FILE_ATTACHMENT = "entries/add_file_attachment"
+export const ENTRIES_REMOVE_FILE_ATTACHMENT = "entries/remove_file_attachment"
+export const ENTRIES_SET_FROM_ARRAY = "entries/set_from_array"
+// internal
+export const _SET_ENTRY_VALUE = "_set_entry_value"
+export const UPDATE_TAGS = "update_tags"
+// Getter
+export const ENTRIES_HAS_ENTRY = "entries/has_entry"
+export const ENTRIES_GET_ENTRY = "entries/get_entry"
+export const ENTRIES_GET_ENTRIES = "entries/get_entries"
+// Actions
+export const ENTRIES_SAVE_ENTRY = "entries/save_entry"
+export const ENTRIES_UPDATE_ENTRY = "entries/update_entry"
+export const ENTRIES_SET_EDIT = "entries/set_edit"
+export const ENTRIES_CREATE_CHILD = "entries_create_child"
+export const ENTRIES_SAVE_CHILD_N_REF = "entries/save_child_n_ref"
+export const ENTRIES_ALL_ENTRIES_UUID_ENTRY_ARR = "entries/all_entries_uuid_entry_arr"
+export const ENTRIES_ALL_ENTRIES_ARRAY = "entries/all_entries_array"
+export const ENTRIES_GET_ENTRY_TITLE = "entries/get_entry_title"
+export const ENTRIES_GET_PARENT = "entries/get_parent"
+export const ENTRIES_ENTRY_TITLE = "entries/get_entry_title"
+export const ENTRIES_DOMAIN = "entries/domain"
+export const ENTRIES_ALL_ENTRIES_OF_TYPE = "entries/all_entries_of_type"
+export const ENTRIES_USER_RIGHTS = "entries/user_rights"
+export const ENTRIES_VALUE = "entries/value"
+export const ENTRIES_DRAFTS = "entries/all_drafts"
+export const ENTRIES_GET_EDIT = "entries/get_edit"
+export const EDIT_UUID = "entries/edit_uuid"
+//
+export const ENTRIES_SET_ENTRY_VALUE = "entries/set_entry_value"
+export const ENTRIES_DELETE_ENTRY = "entries/delete_entry"
+export const ENTRIES_EDIT_DELETE_REF_CHILD = "entries/delete_edit_ref_child"
+export const ENTRIES_GET_RECURSIVE_ENTRIES = "entries/get_recursive_entries"
+export const ENTRIES_GET_CHILDREN = "entries/get_children"
+export const ENTRIES_SET_EDIT_CLEAN = "entries/set_edit_clean"
 
 const ld = require("lodash")
 
@@ -263,7 +309,7 @@ export const getters = {
       return state.entries.has(uuid)
     };
   },
-  get_entry(state, getters, rootGetters) { // ENTRIES_GET_ENTRY
+  get_entry(state) { // ENTRIES_GET_ENTRY
     return (uuid) => {
       return state.entries.get(uuid)
     }
@@ -380,6 +426,11 @@ export const getters = {
       const entry = getters.get_entry(uuid)
       const etype = getters.get_entry_type(entry.template.slug)
       return rootGetters.domain_of_type(etype.slug).title
+    }
+  },
+  domain_drafts_uuids(state, getters) {
+    return (domain) => {
+      return Array.from(state.entries.values()).filter(e => e.status === "draft" && e.domain === domain).map(e => e.uuid)
     }
   },
   entry_tags(state, getters) {

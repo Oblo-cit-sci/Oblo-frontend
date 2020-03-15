@@ -27,10 +27,10 @@
     import Aspect from "../Aspect"
     import {aspect_default_value} from "../../lib/aspect";
     import SingleSelect from "../input/SingleSelect";
-    import {ENTRIES_SET_ENTRY_VALUE} from "../../lib/store_consts";
     import {OPTION} from "../../lib/consts";
     import {string_list2options} from "../../lib/options";
     import AspectComponentMixin from "./AspectComponentMixin";
+    import {ENTRIES_SET_ENTRY_VALUE} from "../../store/entries";
 
     export default {
         name: "OptionsAspect",

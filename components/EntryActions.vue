@@ -47,8 +47,6 @@
   import EntryNavMixin from "./EntryNavMixin";
 
   import {
-    ENTRIES_DELETE_ENTRY,
-    ENTRIES_GET_RECURSIVE_ENTRIES, ENTRIES_SAVE_ENTRY, ENTRIES_UPDATE_ENTRY,
     LAST_BASE_PAGE_PATH, POP_LAST_PAGE_PATH
   } from "../lib/store_consts";
   import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
@@ -58,6 +56,12 @@
   import PersistentStorageMixin from "./PersistentStorageMixin";
   import {upload_to_repo} from "../lib/import_export";
   import {FILES_GET_FILE} from "../store/files";
+  import {
+      ENTRIES_DELETE_ENTRY,
+      ENTRIES_GET_RECURSIVE_ENTRIES,
+      ENTRIES_SAVE_ENTRY,
+      ENTRIES_UPDATE_ENTRY
+  } from "../store/entries";
 
   export default {
     name: "EntryActions",

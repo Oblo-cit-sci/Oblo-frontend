@@ -121,8 +121,6 @@
   import EntryNavMixin from "../../../components/EntryNavMixin";
   import DecisionDialog from "../../../components/DecisionDialog";
   import {
-    ENTRIES_SAVE_ENTRY,
-    ENTRIES_SET_EDIT,
     ENTRYTYPES_TYPE,
   } from "../../../lib/store_consts";
   import {get_aspect_vue_component} from "../../../lib/aspect"
@@ -135,6 +133,7 @@
   import FullEntryMixin from "../../../components/FullEntryMixin";
   import {entry_roles_aspect, license_aspect, privacy_aspect} from "../../../lib/typical_aspects";
   import EntryActorList from "../../../components/entry/EntryActorList";
+  import {ENTRIES_SAVE_ENTRY, ENTRIES_SET_EDIT} from "../../../store/entries";
 
   export default {
     name: "uuid",

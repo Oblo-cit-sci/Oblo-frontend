@@ -9,8 +9,10 @@ export const SEARCH_GET_ENTRY = "search/get_entry"
 export const SEARCH_SET_SEARCH_COUNT = "search/set_search_count"
 export const SEARCH_GET_SEARCH_COUNT = "search/get_search_count"
 
+const ld = require("lodash")
+
 export const state = () => ({
-  entries: new Map(),
+  entries: [],
   searching: false,
   entry_aspects: new Map(),
   search_count: 0
@@ -18,26 +20,15 @@ export const state = () => ({
 
 export const mutations = {
   set_entries(state, entries) {
-    state.entries = new Map()
-    state.entry_aspects = new Map()
-    for (let entry of entries) {
-      state.entries.set(entry.uuid, entry)
-    }
+    state.entries = entries
   },
   prepend_entries(state, entries) {
-    const new_entries =  new Map()
-    for (let entry of entries) {
-      new_entries.set(entry.uuid, entry)
-    }
-    for (let entry of state.entries.entries()) {
-      new_entries.set(entry[0], entry[1])
-    }
-    state.entries = new_entries
+    state.entries = ld.concat(entries, state.entries)
   },
   clear(state) {
     // yes, instead of state.entries.clear(), which won't trigger any update
-    state.entries = new Map()
-    state.entry_aspects = new Map()
+    state.entries = []
+    state.entry_aspects = []
   },
   set_search_count(state, count) {
     state.search_count = count
@@ -49,16 +40,11 @@ export const mutations = {
 
 export const getters = {
   get_entries(state) {
-    return () => Array.from(state.entries.values())
+    return () => state.entries
   },
   get_entry_aspects(state) {
     return (entry_uuid) => {
       return state.entry_aspects.get(entry_uuid) || []
-    }
-  },
-  get_entry(state) {
-    return (uuid) => {
-      return state.entries.get(uuid)
     }
   },
   get_search_count(state) {

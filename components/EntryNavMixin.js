@@ -2,7 +2,6 @@ import {fetch_entry, get_proper_mode} from "../lib/entry";
 import {GLOBAL, NO_DOMAIN, VIEW} from "../lib/consts";
 import {
   DOMAIN,
-  ENTRIES_GET_ENTRY, ENTRIES_HAS_ENTRY, ENTRIES_SAVE_ENTRY,
   ENTRYTYPES_GET_ASPECT_DEF,
   INIT_PAGE_PATH,
   POP_LAST_PAGE_PATH
@@ -10,39 +9,52 @@ import {
 import {aspect_loc_str} from "../lib/aspect";
 import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
 import NavBaseMixin from "./NavBaseMixin";
+import {ENTRIES_GET_ENTRY, ENTRIES_HAS_ENTRY, ENTRIES_SAVE_ENTRY} from "~/store/entries";
+
+const ld = require("lodash")
 
 export default {
   mixins: [TriggerSnackbarMixin, NavBaseMixin],
   methods: {
     // why does has_entry call get entry
     has_entry(uuid) {
-      return this.$store.getters[ENTRIES_GET_ENTRY](uuid)
+      return this.$store.getters[ENTRIES_HAS_ENTRY](uuid)
     },
     goto(uuid) {
-      if (!this.prevent_page_change) {
+        // todo should push not init?!
         this.$store.commit(INIT_PAGE_PATH, this.$route)
         // console.log("entrypreview goto", this.$route)
-        if (this.$store.getters[ENTRIES_HAS_ENTRY](uuid)) {
-          const proper_mode = get_proper_mode(this.$store.getters[ENTRIES_GET_ENTRY](uuid), this.$store)
-          this.to_entry(uuid, proper_mode)
-        } else
-          this.fetch_and_nav(uuid)
-      } else {
-        console.log(this.entry.uuid, this.goto_text)
-        if (this.$store.getters[ENTRIES_HAS_ENTRY](uuid)) {
-          this.$emit("preview_action", {uuid: this.entry.uuid, action: this.goto_text})
-        } else {
-          this.$api.entry__$uuid(this.entry.uuid).then(({data}) => {
-            if(data.data) {
-              const entry = data.data
-              this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
-              this.$emit("preview_action", {uuid: this.entry.uuid, action: this.goto_text})
-            }
-          }).catch(err => {
-            console.log("error fetching entry")
-          })
+
+        // todo could be catched below in same check
+        if (!this.$store.getters[ENTRIES_HAS_ENTRY](uuid)) {
+          console.log("ENtryMixin. CACHE ERROR")
         }
-      }
+        else {
+          const entry = this.$store.getters[ENTRIES_GET_ENTRY](uuid)
+          const proper_mode = get_proper_mode(entry, this.$store)
+          if(!ld.get(entry, "values", false)) { // todo replace values by entry.local.is_full: Boolean
+            this.$api.entry__$uuid(this.entry.uuid).then(({data}) => {
+              if(data.data) {
+                const entry = data.data
+                this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
+                if (!this.prevent_page_change) {
+                  this.to_entry(uuid, proper_mode)
+                } else {
+                  this.$emit("preview_action", {uuid: this.entry.uuid, action: this.goto_text})
+                }
+
+              }
+            }).catch(err => {
+              console.log("error fetching entry")
+            })
+          }
+          else {
+            if (!this.prevent_page_change) {
+              this.to_entry(uuid, proper_mode)
+            } else {
+              this.$emit("preview_action", {uuid: this.entry.uuid, action: this.goto_text})
+            }}
+        }
     },
     fetch_and_nav(uuid) {
       this.$api.entry__$uuid(uuid).then(({data}) => {

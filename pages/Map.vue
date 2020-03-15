@@ -42,8 +42,6 @@
   import {MODE_ASPECT_POINT, MODE_NORMAL} from "../lib/consts";
   import {place2str} from "../lib/location";
   import {
-    ENTRIES_ALL_ENTRIES_ARRAY, ENTRIES_GET_ENTRY, ENTRIES_HAS_ENTRY, ENTRIES_SAVE_ENTRY,
-    ENTRIES_SET_ENTRY_VALUE,
     MAP_GOTO_DONE,
     MAP_GOTO_LOCATION,
     MAP_RESET_GOTO_LOCATIONS,
@@ -58,6 +56,12 @@
   import {route_change_query, route_change_remove_query} from "../lib/util";
   import MapNavigationBottomSheet from "../components/map/MapNavigationBottomSheet";
   import {get_proper_mode} from "../lib/entry";
+  import {
+      ENTRIES_ALL_ENTRIES_ARRAY,
+      ENTRIES_GET_ENTRY, ENTRIES_HAS_ENTRY,
+      ENTRIES_SAVE_ENTRY,
+      ENTRIES_SET_ENTRY_VALUE
+  } from "../store/entries";
 
   const menu_mode_options = [MODE_NORMAL, MODE_ASPECT_POINT]
 

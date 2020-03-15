@@ -1,8 +1,10 @@
 <template lang="pug">
-  v-card(class="mx-auto custom-card" outlined)
+  div(v-if="!entry_stored")
+    div Deleted Entry
+  v-card.mx-auto.custom-card(v-else outlined v-bind:class="{draft: is_draft}")
     v-row(class="ma-2")
       v-col(class="entry-meta" cols=12 v-bind:class="[show_image ? 'col-md-8' : 'col-md-10']")
-        div.caption(v-if="show_date") {{entry_date}}
+        div.caption(v-if="show_date") {{entry_date}} {{is_draft ? "DRAFT" : ""}}
         p.subtitle-1.mb-2 {{template_title}}:
           span.subtitle-1 &nbsp; {{entry.title}}
           v-btn(v-if="show_title_action" @click="goto()" depressed small)
@@ -27,7 +29,7 @@
         mode="view"
         :aspect_loc="aspect_locs[aspect.name]")
     div(v-if="show_botton_actions")
-      v-divider(light)
+      v-divider(light v-bind:class="{draft: is_draft}")
       v-card-actions
         div
           v-btn(v-if="has_type" small text outlined @click="goto(entry.uuid)") {{goto_text}}
@@ -44,10 +46,6 @@
 
   import EntryNavMixin from "./EntryNavMixin";
   import {
-    EDIT_UUID,
-    ENTRIES_DOMAIN, ENTRIES_GET_RECURSIVE_ENTRIES,
-    ENTRIES_SAVE_CHILD_N_REF,
-    ENTRIES_VALUE,
     ENTRYTYPES_HAS_TYPE,
     ENTRYTYPES_TYPENAME
   } from "../lib/store_consts";
@@ -68,6 +66,13 @@
   import EntryActorList from "./entry/EntryActorList";
   import {check_str_is_uuid} from "../lib/fixes";
   import {SEARCH_ENTRY_ASPECT} from "../store/search";
+  import {
+    EDIT_UUID,
+    ENTRIES_DOMAIN,
+    ENTRIES_GET_RECURSIVE_ENTRIES, ENTRIES_HAS_ENTRY,
+    ENTRIES_SAVE_CHILD_N_REF,
+    ENTRIES_VALUE
+  } from "../store/entries";
 
   /**
    * ISSUE is not working atm, to responsive
@@ -106,6 +111,12 @@
     },
     computed: {
       ...mapGetters({has_type: ENTRYTYPES_HAS_TYPE}),
+      deleted_entry() {
+        return !this.$store.getters[ENTRIES_HAS_ENTRY](this.uuid)
+      },
+      is_draft() {
+        return this.entry.status === "draft"
+      },
       action_loading() {
         return this.additional_action_loading
       },
@@ -299,6 +310,10 @@
     max-height: 200px;
   }
 
+  .draft {
+    border: solid 1px cornflowerblue !important;
+  }
+
   @media (max-width: 959px) {
     /* adjust to your needs */
     .entry-meta {
@@ -309,6 +324,8 @@
       order: -1;
       max-width: 200px;
     }
+
+
   }
 
 </style>

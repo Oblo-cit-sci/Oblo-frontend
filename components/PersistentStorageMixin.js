@@ -1,11 +1,9 @@
 import {
-  ENTRIES_ALL_ENTRIES_ARRAY,
-  ENTRIES_GET_ENTRIES,
   ENTRYTYPES_ALL_NOTES,
   USER_GET_AUTH_TOKEN,
   USER_GET_USER_DATA
 } from "../lib/store_consts";
-import {ENTRIES_ALL_ENTRIES_UUID_ENTRY_ARR} from "~/lib/store_consts";
+import {ENTRIES_ALL_ENTRIES_ARRAY, ENTRIES_ALL_ENTRIES_UUID_ENTRY_ARR, ENTRIES_GET_ENTRIES} from "~/store/entries";
 
 export default {
   name: "PersistentStorageMixin",

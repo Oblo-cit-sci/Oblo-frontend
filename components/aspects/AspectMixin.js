@@ -6,8 +6,8 @@ import {
   aspect_raw_default_value, check_condition_value,
   complete_aspect_loc, pack_value
 } from "../../lib/aspect";
-import {ENTRIES_GET_ENTRY, ENTRIES_SET_ENTRY_VALUE, ENTRIES_VALUE} from "../../lib/store_consts";
 import PersistentStorageMixin from "~/components/PersistentStorageMixin";
+import {ENTRIES_GET_ENTRY, ENTRIES_SET_ENTRY_VALUE, ENTRIES_VALUE} from "~/store/entries";
 
 const ld = require("lodash")
 

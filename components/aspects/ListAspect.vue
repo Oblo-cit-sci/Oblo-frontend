@@ -64,8 +64,8 @@
   import ListPagination from "../ListPagination";
   import goTo from 'vuetify/lib/services/goto'
   import {recursive_unpack} from "../../lib/util";
-  import {ENTRIES_VALUE} from "../../lib/store_consts";
   import AspectComponentMixin from "./AspectComponentMixin";
+  import {ENTRIES_VALUE} from "../../store/entries";
 
   const SIMPLE = "simple"
   const PANELS = "panels"
