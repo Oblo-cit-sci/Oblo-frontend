@@ -103,7 +103,7 @@ export default {
       }
     },
     has_value() {
-      return this.mvalue || false
+      return this.mvalue !== undefined || false
     },
     has_alternative() {
       return this.aspect.attr.hasOwnProperty("alternative")
@@ -114,9 +114,15 @@ export default {
     alternative() {
       return this.aspect.attr.alternative
     },
+    is_unpacked() {
+      return ld.get(this.aspect, "attr.unpacked", false)
+    },
     use_regular: {
       get() {
-        return this.mvalue.hasOwnProperty("regular") ? this.mvalue.regular : true
+        if(this.is_unpacked)
+          return true
+        else
+          return this.mvalue.hasOwnProperty("regular") ? this.mvalue.regular : true
       },
       set(value, old_value) {
         // console.log("set regular")
@@ -128,7 +134,7 @@ export default {
       }
     },
     value() {
-      if(this.aspect.attr.unpacked) {
+      if(this.is_unpacked) {
         return this.mvalue
       } else {
         return this.mvalue.value
@@ -136,10 +142,14 @@ export default {
     },
     mvalue: function () {
       if (!this.aspect_loc) {
-        if (this.ext_value) {
+        if (this.ext_value !== undefined) {
           return this.ext_value
         } else {
-          return {value: null}
+          const raw = aspect_raw_default_value(this.aspect)
+          if(this.is_unpacked)
+            return raw
+          else
+            return {value: raw}
         }
       }
       if (!this.aspect.hasOwnProperty("attr")) {

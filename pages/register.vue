@@ -11,7 +11,7 @@
         mode="edit")
       span learn more about &nbsp;
       a(href="https://creativecommons.org/choose/" target="_blank") creative commons licences
-    v-btn(@click='submit' :disabled="any_invalid || submitStatus === 'PENDING'" color='success') Submit!
+    v-btn.m-4(@click='submit' x-large :disabled="any_invalid || submitStatus === 'PENDING'" color='success') Register
     v-alert(:value='errorMsg !== null' type='error' prominent) {{errorMsg}}
 </template>
 
