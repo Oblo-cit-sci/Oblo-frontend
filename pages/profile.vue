@@ -1,24 +1,40 @@
 <template lang="pug">
-  v-flex(xs12 sm8 md6)
-    v-list
-      v-list-item(three-line)
-        v-list-item-content
-          v-list-item-title @{{$store.state.user.user_data.registered_name}}
-          v-list-item-subtitle username
-        v-list-item-action
-          v-chip(outlined disabled small) {{$store.state.user.user_data.global_role}}
-      v-subheader General information
-      Aspect(v-for="aspect in profile_aspects" :key="aspect.name" :aspect="aspect" :ext_value.sync="aspect.value" :edit="edit_mode" :mode="mode")
-      v-file-input(
-        v-if="edit_mode"
-        label="Avatar"
-        accept="image/png, image/jpeg, image/bmp"
-        @change="avatar_added($event)"
-        prepend-icon="mdi-camera")
-      v-divider
+  v-flex(xs12 sm10 md10)
+    v-row
+      v-col
+        v-list
+          v-list-item(three-line)
+            v-list-item-content
+              v-list-item-title @{{$store.state.user.user_data.registered_name}}
+              v-list-item-subtitle username
+            v-list-item-action
+              v-chip(outlined disabled small) {{$store.state.user.user_data.global_role}}
+      v-col
+        v-row
+          v-img(:src="avatar" max-height=200 contain)
+        v-row(style="margin-top:-10%" v-if="edit_mode")
+          v-col(offset=7)
+            <!--              v-btn(-->
+            <!--              color="#d0b482D8"-->
+            <!--              class="white&#45;&#45;text"-->
+            <!--              fab-->
+            <!--              top)-->
+            <!--                v-icon mdi-camera-->
+            LoadFileButton
+    h2 General information
+    v-row(v-for="aspect in profile_aspects" :key="aspect.name")
+      v-col(cols=10)
+        Aspect(:aspect="aspect" :ext_value.sync="aspect.value" :edit="edit_mode" :mode="mode")
+    v-file-input(
+      v-if="edit_mode"
+      label="Avatar"
+      accept="image/png, image/jpeg, image/bmp"
+      @change="avatar_added($event)"
+      prepend-icon="mdi-camera")
+    v-divider
       //Taglist(:tags="$store.state.user.user_data.interested_topics")
       <!--      Aspect(:aspect="profile_aspects.interested_topics" :value.sync="profile_aspects.interested_topics.value" :edit="edit_mode" :mode="mode")-->
-      v-divider
+    v-divider
       //v-tabs(v-model="selected_tab" v-if="!edit_mode")
         //v-tab follows
         //v-tab following
@@ -43,14 +59,17 @@
   import {mapGetters} from "vuex"
   import {extract_unpacked_values} from "../lib/aspect";
   import PersistentStorageMixin from "../components/PersistentStorageMixin";
+  import LoadFileButton from "../components/LoadFileButton";
+  import FileLoadMixin from "../components/FileLoadMixin";
 
   export default {
     name: "profile",
     components: {
+      LoadFileButton,
       Aspect,
       Taglist
     },
-    mixins: [PersistentStorageMixin],
+    mixins: [PersistentStorageMixin, FileLoadMixin],
     created() {
       console.log("profile created")
       this.reset_edit_values()
@@ -59,11 +78,7 @@
       reset_edit_values() {
         const user_data = this.$_.cloneDeep(this.user_data)
         for (let aspect of this.profile_aspects) {
-          if (aspect.name === "interested_topics") {
-            aspect.value = [...user_data[aspect.name]]
-          } else {
-            aspect.value = user_data[aspect.name]
-          }
+          aspect.value = user_data[aspect.name]
         }
       },
       setEdit: function () {
@@ -96,11 +111,11 @@
           //     console.log('SUCCESS!!');
           //   })
           //   .catch(function () {
-            //     console.log('FAILURE!!');
+          //     console.log('FAILURE!!');
           //   });
 
 
-          formData.append("actor_in", JSON.stringify(extract_unpacked_values({no:3})))
+          formData.append("actor_in", JSON.stringify(extract_unpacked_values({no: 3})))
           this.$api.post_actor__form_test(formData)
             .then(function () {
               console.log('SUCCESS!!');
@@ -142,12 +157,13 @@
             name: "location",
             label: "Location",
             description: "main location",
-            type: "str",
+            type: "location",
             attr: {
               max: 80,
-              unpacked: true
+              unpacked: true,
+              input: ["map", "search"]
             },
-            value: ""
+            value: null
           },
           {
             name: "Interested topics",
@@ -185,6 +201,9 @@
       },
       visitor() {
         return this.$store.getters.visitor
+      },
+      avatar() {
+        return this.$api.url_actor__$registered_name__avatar(this.user_data.registered_name)
       }
     }
   }

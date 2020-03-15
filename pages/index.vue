@@ -4,9 +4,9 @@
       v-row With an account on {{server_name}} you'll be able to create entries and join groups.
       v-row(align="center")
         v-col(sm="4" offset="1")
-          v-btn(large to="/register") Register
+          v-btn.mt-4.mb-8(large to="/register" rounded outlined) Register
         v-col(sm="4")
-          v-btn(large to="/login") Login
+          v-btn.mt-4.mb-8(large to="/login" rounded outlined) Login
       v-row You can browse through public entries in these domains.
     v-row(align="center" justify="center")
       v-col(class="col-lg-6 col-xs-12")

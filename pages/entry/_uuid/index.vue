@@ -42,11 +42,13 @@
           v-col(cols=8)
             v-divider.wide_divider
         v-row
-          Aspect(:aspect="license_aspect" :aspect_loc="license_aspect.aspect_loc" :extra="aspect_extras" :mode="mode")
+          v-col(alignSelf="stretch" cols=8 lg=4)
+            Aspect(:aspect="license_aspect" :aspect_loc="license_aspect.aspect_loc" :extra="aspect_extras" :mode="mode")
+          v-col(alignSelf="stretch" cols=8 lg=4)
+            Aspect(:aspect="privacy_aspect" :aspect_loc="privacy_aspect.aspect_loc" :mode="mode")
         v-row
-          Aspect(:aspect="privacy_aspect" :aspect_loc="privacy_aspect.aspect_loc" :mode="mode")
-        v-row
-          Aspect(:aspect="entry_roles_aspect" :aspect_loc="entry_roles_aspect.aspect_loc" :extra="{entry_is_private: entry.privacy==='private'}")
+          v-col(alignSelf="stretch" cols=8)
+            Aspect(:aspect="entry_roles_aspect" :aspect_loc="entry_roles_aspect.aspect_loc" :extra="{entry_is_private: entry.privacy==='private'}")
       v-row
         v-col(cols=8)
           v-divider(v-if="is_first_page" class="wide_divider")
