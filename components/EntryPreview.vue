@@ -1,29 +1,28 @@
 <template lang="pug">
   div(v-if="!entry_stored")
-    div Deleted Entry
+    div Deleted Entry, {{uuid}}
   v-card.mx-auto.custom-card(v-else outlined v-bind:class="{draft: is_draft}")
     v-container.ml-2
-      v-row(class="mt-2")
-        v-col(class="entry-meta" cols=12 v-bind:class="[show_image ? 'col-md-8' : 'col-md-10']")
-          div.caption(v-if="show_date") {{entry_date}} {{is_draft ? "DRAFT" : ""}}
-          p.subtitle-1.mb-2 {{template_title}}:
-            span.subtitle-1 &nbsp; {{entry.title}}
-            v-btn(v-if="show_title_action" @click="goto()" depressed small)
-              v-icon(:class="default_action_icon")
       v-row
-        v-col(cols=12)
-          MetaChips(v-if="show_meta_aspects" :meta_aspects="meta_aspects")
-      v-row
-        v-col(cols=12)
-          EntryActorList(:actors="actors")
-      v-row
-        v-col(cols=12)
-          Taglist(v-if="show_tags" :tags="tags")
-          .orange--text.mt-2(v-if="outdated")
-            v-icon(color="orange") mdi-alert-outline
-            span Created from an outdated version. Some values might change. Download the entry before updating is recommended
-      v-row
-        v-col(v-if="show_image" cols=12 class="col-md-4 col-sm-12 entry-image")
+        v-col(v-bind:class="[show_image ? 'col-md-8' : 'col-md-10']")
+          v-row
+            v-col(class="entry-meta" cols=12)
+              div.caption(v-if="show_date") {{entry_date}} {{is_draft ? "DRAFT" : ""}}
+              p.subtitle-1.mb-2 {{template_title}}:
+                span.subtitle-1 &nbsp; {{entry.title}}
+                v-btn(v-if="show_title_action" @click="goto()" depressed small)
+                  v-icon(:class="default_action_icon")
+          v-row.pl-3
+            MetaChips(v-if="show_meta_aspects" :meta_aspects="meta_aspects")
+          v-row.pl-3.mt-3
+              EntryActorList(:actors="actors")
+          v-row.pl-3
+            Taglist(v-if="show_tags" :tags="tags")
+          v-row.pl-3
+            .orange--text.mt-2(v-if="outdated")
+              v-icon(color="orange") mdi-alert-outline
+              span Created from an outdated version. Some values might change. Download the entry before updating is recommended
+        v-col(v-if="show_image" cols=4 class="col-md-4 col-sm-12 entry-image")
           div(class="float-md-right float-sm-left entry-display-size")
             v-avatar(tile class="entry-image-size")
               v-img(

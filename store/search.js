@@ -6,14 +6,19 @@ export const SEARCH_SET_ENTRIES = "search/set_entries"
 export const SEARCH_APPEND_ENTRIES = "search/append_entries"
 export const SEARCH_SET_PATH = "search/set_path"
 export const SEARCH_SET_SEARCHING = "search/set_searching"
+export const SEARCH_SET_SEARCHTIME = "search/set_searchtime"
+export const SEARCH_SET_SEARCH_COUNT = "search/set_search_count"
+export const SEARCH_INCREASE_COUNT = "search/increase_search_count"
+
 
 export const SEARCH_PREPEND_ENTRIES = "search/prepend_entries"
 export const SEARCH_GET_ENTRY = "search/get_entry"
-export const SEARCH_SET_SEARCH_COUNT = "search/set_search_count"
+
 export const SEARCH_GET_SEARCH_COUNT = "search/get_search_count"
 export const SEARCH_RECEIVED_ENTRIES = "search/get_received_entries"
 export const SEARCH_GET_PATH = "search/get_path"
 export const SEARCH_GET_SEARCHING = "search/get_searching"
+export const SEARCH_GET_SEARCHTIME = "search/get_searchtime"
 
 const ld = require("lodash")
 
@@ -22,7 +27,8 @@ export const state = () => ({
   searching: false,
   entry_aspects: [],
   search_count: 0,
-  path: ""
+  path: "",
+  searchtime: null
 });
 
 export const mutations = {
@@ -31,6 +37,9 @@ export const mutations = {
   },
   set_path(state, path) {
     state.path = path
+  },
+  set_searchtime(state, time) {
+    state.searchtime = time
   },
   prepend_entries(state, entries) {
     state.entries = ld.concat(entries, state.entries)
@@ -49,6 +58,9 @@ export const mutations = {
   },
   set_searching(state, searching) {
     state.searching = searching
+  },
+  increase_search_count(state, count) {
+    state.search_count += count
   }
 }
 
@@ -74,6 +86,9 @@ export const getters = {
   },
   get_received_entries(state) {
     return state.entries.length
+  },
+  get_searchtime(state) {
+    return state.searchtime
   }
 }
 

@@ -14,6 +14,9 @@
     v-row
       v-col.col-md-6.col-xs-12(v-for="(config, index) in Object.values(filter_configs)" cols="12"  :key="index")
         FilterSelect(v-bind="config" :selection.sync="filter_values[config.name]")
+    v-row(v-if="prepend_search")
+      v-col(offset="5" cols=2)
+        v-progress-circular(indeterminate center size="35" color="success")
     EntryPreviewList(v-if="show_results"
       :entries="filtered_entries"
       :requesting_entries="searching"
@@ -21,7 +24,6 @@
       :preview_options="preview_options"
       @preview_action="$emit('preview_action',$event)"
       @request_more="request_more")
-
 </template>
 
 <script>
@@ -41,7 +43,7 @@
   import {
     CLEAR_SEARCH, SEARCH_CLEAR,
     SEARCH_GET_ENTRIES,
-    SEARCH_GET_PATH, SEARCH_GET_SEARCH_COUNT, SEARCH_GET_SEARCHING,
+    SEARCH_GET_PATH, SEARCH_GET_SEARCH_COUNT, SEARCH_GET_SEARCHING, SEARCH_GET_SEARCHTIME,
     SEARCH_RECEIVED_ENTRIES,
     SEARCH_SET_ENTRIES, SEARCH_SET_PATH, SEARCH_SET_SEARCHING
   } from "../store/search";
@@ -90,6 +92,8 @@
 
         keyword: '',
         kw_char_thresh: 4,
+
+        prepend_search: false
       }
     },
     created() {
@@ -102,11 +106,14 @@
         this.$store.commit(SEARCH_SET_PATH, this.$route.path)
         start_search = true
         this.getEntries()
+      } else {
+        this.prepend_search= true
+        this.getEntries(true)
       }
-      else if (this.init_clear) {
+
+      if (this.init_clear) {
         this.clear()
         start_search = true
-
       }
 
       if(start_search) {
@@ -150,6 +157,7 @@
         const is_searching = this.get_searching()
         if(is_searching === false) {
           this.$emit("received_search_results", this.entries())
+          this.prepend_search = false
         }
         return is_searching
       },
@@ -183,10 +191,10 @@
       }
     },
     methods: {
-      getEntries(before_last= true) {
+      getEntries(before_last= false) {
         // this.searching = true
         // console.log("getting entries")
-        let config = this.searchConfiguration()
+        let config = this.searchConfiguration(before_last)
         // if(before_last) {
         //   if (this.entries().length > 0) {
         //     // const before_ts = this.$store.getters[]
@@ -207,8 +215,7 @@
         debounced_search(this.$api, this.$store, config, offset)
       },
       ...mapMutations({"clear": SEARCH_CLEAR}),
-      searchConfiguration() {
-        // domain = this.$store.state.domain.value
+      searchConfiguration(before_last = false) {
         let configuration = {
           required: [],
           include: {}
@@ -217,6 +224,11 @@
           configuration.required.push(filter)
         }
 
+        if(before_last) {
+          const ts = this.$store.getters[SEARCH_GET_SEARCHTIME]
+          console.log(ts)
+          configuration.required.push({name: "before_ts", ts: ts})
+        }
         if (this.keyword) {
           for (let default_search_part of ["title", "tags", "aspect_search"]) {
             configuration.include[default_search_part] = this.keyword
