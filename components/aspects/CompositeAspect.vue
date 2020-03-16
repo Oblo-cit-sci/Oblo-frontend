@@ -9,8 +9,7 @@
           :aspect_loc="aspect_locs[comp_type.name]"
           :mode="mode"
           :disabled="disabled"
-          :extra="comp_extras(comp_type)"
-          v-on:entryAction="$emit('entryAction',$event)")
+          :extra="comp_extras(comp_type)")
 </template>
 
 <script>

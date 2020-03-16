@@ -33,7 +33,6 @@
         Aspect(
           :aspect="aspect"
           :aspect_loc="aspect_locs[aspect.name]"
-          v-on:entryAction="entryAction($event)"
           :extra="aspect_extras"
           :mode="mode")
     div(v-if="is_first_page")
@@ -92,6 +91,13 @@
       MetaChips,
       EntryActorList
     },
+    methods: {
+      entryAction(action) {
+        if (action === "delete") {
+          this.delete_entry = true
+        }
+      }
+    }
   }
 </script>
 

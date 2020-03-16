@@ -34,7 +34,6 @@
           Aspect(
             :aspect="aspect"
             :aspect_loc="aspect_locs[aspect.name]"
-            v-on:entryAction="entryAction($event)"
             :extra="aspect_extras"
             :mode="mode")
       div(v-if="is_first_page")
@@ -89,7 +88,6 @@
           Aspect(
             :aspect="aspect"
             :aspect_loc="aspect_locs[aspect.name]"
-            v-on:entryAction="entryAction($event)"
             :mode="mode")
       v-col(v-if="show_image" cols=12 class="col-md-3 col-sm-12 entry-image")
         v-img(:src="entry_image" aspect-ratio=1)

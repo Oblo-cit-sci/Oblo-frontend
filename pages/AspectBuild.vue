@@ -11,7 +11,6 @@
       Aspect(
         :aspect="aspect"
         v-bind:value.sync="values"
-        v-on:entryAction="entryAction($event)"
         mode="edit"
         :extra="{}")
 </template>

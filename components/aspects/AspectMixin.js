@@ -6,7 +6,6 @@ import {
   aspect_raw_default_value, check_condition_value,
   complete_aspect_loc, pack_value
 } from "../../lib/aspect";
-import PersistentStorageMixin from "~/components/PersistentStorageMixin";
 import {ENTRIES_GET_ENTRY, ENTRIES_SET_ENTRY_VALUE, ENTRIES_VALUE} from "~/store/entries";
 
 const ld = require("lodash")
@@ -38,12 +37,8 @@ export default {
       }
     }
   },
-  mixins: [PersistentStorageMixin],
   methods: {
     // debounce to not to store contantly while typing
-    debounce_store_db: ld.debounce((mixin) => {
-      mixin.persist_entries()
-    }, 300),
     update_value(raw_value, regular = true) {
       if(raw_value === undefined)
         raw_value = null

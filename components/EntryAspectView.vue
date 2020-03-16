@@ -4,8 +4,7 @@
       Aspect(
         :aspect="aspect"
         :mode="mode"
-        :aspect_loc="aspect_locs[aspect.name]"
-        v-on:entryAction="entryAction($event)")
+        :aspect_loc="aspect_locs[aspect.name]")
 </template>
 
 <script>
@@ -54,11 +53,6 @@
             },
             has_pages() {
                 this.entry_type.rules.hasOwnProperty("pages")
-            }
-        },
-        methods: {
-            entryAction(event) {
-                console.log("unprocessed entryAction", event)
             }
         },
         watch: {

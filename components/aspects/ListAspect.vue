@@ -25,8 +25,7 @@
           v-expansion-panel-header {{titles[index] || index + 1}}
           v-expansion-panel-content
             Aspect(
-              v-bind="list_aspect_props(index)"
-              v-on:entryAction="$emit('entryAction',$event)")
+              v-bind="list_aspect_props(index)")
             ListitemActions(v-if="!readOnly"
               v-bind="listitem_actions_prop(index)"
               v-on:remove_value="remove_value($event)"
@@ -209,8 +208,6 @@
       handleEntryAction(event, index) {
         if (event.action === "clear") {
           this.remove_value(index)
-        } else {
-          $emit('entryAction', $event)
         }
       },
       list_extra(index) {
