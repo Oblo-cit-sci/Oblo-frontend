@@ -1,6 +1,5 @@
 <template lang="pug">
   div
-    div#pwlisthead P:{{this.page}}, {{this.page * this.entries_per_page}} more?: {{can_request_more}} rec:{{this.entries.length}}/{{this.total_count}}
     v-row.col-sm-12(v-if="results_received" wrap justify-center)
       div {{num_entries}} Entries
     v-row(v-for="uuid in visible_entries"

@@ -1,41 +1,27 @@
 <template lang="pug">
   v-container(fluid)
-    <!--    v-row(note="temporarily out.... doesnt make sense for the public version")-->
-    <!--    v-row-->
-    <!--      v-col-->
-    <!--        v-btn-toggle(:value="view_mode" @change="$emit('update:view_mode', to_view($event))" mandatory)-->
-    <!--          v-btn(:value="VIEW_SEARCH") search-->
-    <!--          v-btn(:value="VIEW_TREE") tree view-->
-    div(v-if="view_mode===VIEW_SEARCH")
-      v-row(wrap justify-start)
-        v-col(cols="12")
-          v-text-field(
-            v-model="keyword"
-            label="Search"
-            single-line
-            :hint="search_hint"
-            append-outer-icon="mdi-magnify"
-            @click:append-outer="getEntries"
-            clearable
-            :loading="searching")
-      v-row
-        v-col.col-md-6.col-xs-12(v-for="(config, index) in Object.values(filter_configs)" cols="12"  :key="index")
-          FilterSelect(v-bind="config" :selection.sync="filter_values[config.name]")
-      EntryPreviewList(v-if="show_results"
-        :entries="filtered_entries"
-        :requesting_entries="searching"
-        :total_count="total_count"
-        :preview_options="preview_options"
-        @preview_action="$emit('preview_action',$event)"
-        @request_more="request_more")
-    v-row(v-if="view_mode===VIEW_TREE" wrap)
-      v-col
-        v-treeview(:items="tree" open-on-click)
-          template(v-slot:prepend="{ item }")
-            v-icon {{item.icon}}
-            v-icon(v-if="item.outdated" color="orange") mdi-alert-outline
-          template(v-slot:append="{ item }")
-            v-icon(@click="to_entry(item.uuid)") mdi-arrow-right
+    v-row(wrap justify-start)
+      v-col(cols="12")
+        v-text-field(
+          v-model="keyword"
+          label="Search"
+          single-line
+          :hint="search_hint"
+          append-outer-icon="mdi-magnify"
+          @click:append-outer="getEntries"
+          clearable
+          :loading="searching")
+    v-row
+      v-col.col-md-6.col-xs-12(v-for="(config, index) in Object.values(filter_configs)" cols="12"  :key="index")
+        FilterSelect(v-bind="config" :selection.sync="filter_values[config.name]")
+    EntryPreviewList(v-if="show_results"
+      :entries="filtered_entries"
+      :requesting_entries="searching"
+      :total_count="total_count"
+      :preview_options="preview_options"
+      @preview_action="$emit('preview_action',$event)"
+      @request_more="request_more")
+
 </template>
 
 <script>
@@ -104,8 +90,6 @@
 
         keyword: '',
         kw_char_thresh: 4,
-        VIEW_SEARCH: VIEW_SEARCH,
-        VIEW_TREE: VIEW_TREE
       }
     },
     created() {
@@ -169,9 +153,6 @@
         }
         return is_searching
       },
-      tree() {
-        return entries2vuetify_tree(this.entries(), this.$store.getters[ENTRYTYPES_TYPES], true)
-      },
       search_hint() {
         if (this.keyword && this.keyword.length < this.kw_char_thresh) {
           return "type 4 characters to trigger search"
@@ -202,19 +183,6 @@
       }
     },
     methods: {
-      // debounced_search: this.$_.debounce(this.getEntries, 1000),
-      // todo test later. this was due to a bug in vuetify, buttons would only send their index, not their value
-      to_view(view_selected) {
-        const is_index = parseInt(view_selected)
-        if (isNaN(is_index)) {
-          return view_selected
-        } else {
-          if (is_index === 0)
-            return VIEW_SEARCH
-          else
-            return VIEW_TREE
-        }
-      },
       getEntries(before_last= true) {
         // this.searching = true
         // console.log("getting entries")

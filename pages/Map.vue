@@ -318,19 +318,9 @@
         }
       },
       selected_entry(selected_uuid, previous_selected) {
-        console.log("watch- selected_entry_uuid", selected_uuid, this.selected_entry, previous_selected)
         if(previous_selected) {
           this.change_entry_markers_mode(previous_selected, false)
         }
-        // if()
-        // TODO BRING BACK
-        // let new_route = null
-        // if (selected_uuid) {
-        //   new_route = route_change_query(this.$route, {select: selected_uuid})
-        // } else {
-        //   new_route = route_change_remove_query(this.$route, ["select"])
-        // }
-        // this.$router.push(new_route)
       },
       navigation_mode(mode) {
         if (mode === SEARCH) {
