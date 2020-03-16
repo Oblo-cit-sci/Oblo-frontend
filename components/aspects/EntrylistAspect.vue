@@ -164,7 +164,7 @@
         if (this.disabled)
           return
         this.persist_entries()
-        this.$store.dispatch(ENTRIES_SAVE_ENTRY)
+        this.$store.dispatch(ENTRIES_SAVE_ENTRY, this.entry_uuid())
         if (!this.has_entry(item.uuid))
           this.fetch_and_nav(item.uuid)
         else {

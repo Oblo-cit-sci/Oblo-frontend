@@ -99,7 +99,6 @@ export default {
     parent_title() {
       // console.log("getting parent title", this)
       // todo not necessarily available for remote entries. should be included?
-      //console.log(this.$store.getters[ENTRIES_GET_PARENT]())
       return this.$store.getters[ENTRIES_GET_PARENT](this.uuid).title
     },
     type_name() {

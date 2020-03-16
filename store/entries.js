@@ -20,13 +20,10 @@ import {META} from "~/lib/consts";
 
 
 // Mutations
-export const ENTRIES_ADD_TIMELINE_ENTRIES = "entries/add_timeline_entries"
 export const ENTRIES_SET_DOWNLOADED = "entries/set_downloaded"
 export const ENTRIES_ENTRIES_SET_LOCAL_LIST_PAGE = "entries/entries_set_local_list_page"
 export const ENTRIES_SET_ENTRY_STATUS = "entries/set_entry_status"
 export const SET_DIRTY = "set_dirty"
-export const ENTRIES_CLEAR = "entries/clear"
-export const ENTRIES_UPDATE_TAGS = "entries/update_tags"
 export const ENTRIES_UPDATE_IMAGE = "entries/update_image"
 export const ENTRIES_ADD_FILE_ATTACHMENT = "entries/add_file_attachment"
 export const ENTRIES_REMOVE_FILE_ATTACHMENT = "entries/remove_file_attachment"
@@ -49,24 +46,19 @@ export const ENTRIES_SIZE = "entries/get_size"
 export const ENTRIES_SAVE_ENTRY = "entries/save_entry"
 export const ENTRIES_UPDATE_ENTRY = "entries/update_entry"
 export const ENTRIES_SET_EDIT = "entries/set_edit"
-export const ENTRIES_CREATE_CHILD = "entries_create_child"
 export const ENTRIES_SAVE_CHILD_N_REF = "entries/save_child_n_ref"
 
-export const ENTRIES_ENTRY_TITLE = "entries/get_entry_title"
 export const ENTRIES_DOMAIN = "entries/domain"
 export const ENTRIES_ALL_ENTRIES_OF_TYPE = "entries/all_entries_of_type"
-export const ENTRIES_USER_RIGHTS = "entries/user_rights"
 export const ENTRIES_VALUE = "entries/value"
 export const ENTRIES_DRAFTS = "entries/all_drafts"
-export const ENTRIES_GET_EDIT = "entries/get_edit"
 export const EDIT_UUID = "entries/edit_uuid"
 //
 export const ENTRIES_SET_ENTRY_VALUE = "entries/set_entry_value"
 export const ENTRIES_DELETE_ENTRY = "entries/delete_entry"
-export const ENTRIES_EDIT_DELETE_REF_CHILD = "entries/delete_edit_ref_child"
 export const ENTRIES_GET_RECURSIVE_ENTRIES = "entries/get_recursive_entries"
-export const ENTRIES_GET_CHILDREN = "entries/get_children"
-export const ENTRIES_SET_EDIT_CLEAN = "entries/set_edit_clean"
+
+export const ENTRIES_UPDATE_PARENT_VERSION = "entries/update_parent_version"
 
 const ld = require("lodash")
 
@@ -160,7 +152,7 @@ export const mutations = {
       }
     }
   },
-  set_dirty(state, uuid = state.edit.uuid) {
+  set_dirty(state, uuid) {
     let entry = state.entries.get(uuid)
     if (!entry.local) {
       entry.local = {}
@@ -219,7 +211,7 @@ export const mutations = {
     //let entry =
     //remove_entry_loc
   },
-  _update_parent_version(state, {uuid = state.edit.uuid, version}) {
+  _update_parent_version(state, {uuid , version}) {
     state.entries.get(uuid).parent_type_version = version
   },
   insert_missing_default_values(state, {uuid, type_default_values}) {
@@ -279,7 +271,7 @@ export const getters = {
     else return ""
   },
   get_status(state) {
-    return (uuid = state.edit) => {
+    return (uuid) => {
       return state.entries.get(uuid).status
     }
   },
@@ -291,11 +283,7 @@ export const getters = {
       } else {
         const user_rights = getters.user_rights(undefined, e.uuid)
         const status = getters.get_status(e.uuid)
-        // if (user_rights === EDIT && status === DRAFT) {
-        //   return EDIT
-        // } else {
-        //   return VIEW
-        // }
+
       }
     }
   },
@@ -348,7 +336,7 @@ export const getters = {
     return result
   },
   user_rights(state, getters, rootGetters) { // ENTRIES_USER_RIGHTS
-    return (uuid = state.edit.uuid) => {
+    return (uuid) => {
       const entry = getters[GET_ENTRY](uuid)
       if (ld.find([entry.actors.creator] + entry.actors.owners, actor => actor.registered_name === rootGetters.name)) {
         return EDIT
@@ -358,7 +346,7 @@ export const getters = {
     }
   },
   get_parent(state, getters) { // ENTRIES_GET_PARENT
-    return (uuid = state.edit.uuid) => {
+    return (uuid) => {
       //console.log("getter", entry, entry.refs)
       return getters.get_entry(getters.get_entry(uuid).refs.parent.uuid)
     }
@@ -373,7 +361,7 @@ export const getters = {
     }
   },
   get_recursive_entries(state, getters) { //  ENTRIES_GET_RECURSIVE_ENTRIES
-    return (uuid = state.edit.uuid) => {
+    return (uuid) => {
       let entries = []
       const entry = getters.get_entry(uuid)
       //console.log(entry)
@@ -402,8 +390,8 @@ export const getters = {
     }
   },
   // todo: get edit title, but will be simpler...?
-  get_entry_title: function (state, getters) {
-    return (uuid = state.edit.uuid) => {
+  get_entry_title: function (state, getters) { // ENTRIES_GET_ENTRY_TITLE
+    return (uuid) => {
       console.log("get entry title ", uuid)
       const entry = getters.get_entry(uuid)
       const type = getters.get_entry_type(entry.template.slug)
@@ -424,7 +412,7 @@ export const getters = {
     }
   },
   entry_location: function (state, getters) {
-    return (uuid = state.edit.uuid) => {
+    return (uuid) => {
       const entry = getters.get_entry(uuid)
       const entry_type = getters.get_entry_type(entry.template.slug)
       const locationAspect = entry_type.rules.locationAspect
@@ -442,7 +430,7 @@ export const getters = {
     return (state.entries)
   },
   domain: function (state, getters, rootState, rootGetters) {
-    return (uuid = state.edit.uuid) => {
+    return (uuid) => {
       const entry = getters.get_entry(uuid)
       const etype = getters.get_entry_type(entry.template.slug)
       return rootGetters.domain_of_type(etype.slug).title
@@ -454,7 +442,7 @@ export const getters = {
     }
   },
   entry_tags(state, getters) {
-    return (uuid = state.edit.uuid) => {
+    return (uuid) => {
       const entry = getters.get_entry(uuid)
       const entry_type = getters.get_entry_type(entry.template.slug)
       const tagsAspect = entry_type.rules.tagsAspect
@@ -503,7 +491,7 @@ export const actions = {
   // rename to save edit entry
   // todo: purpose/name: update meta or something like that?
   //
-  update_entry(context, uuid = context.state.edit.uuid) { // ENTRIES_UPDATE_ENTRY
+  update_entry(context, uuid) { // ENTRIES_UPDATE_ENTRY
     const entry_title = context.getters.get_entry_title(uuid)
     context.commit("update_title", {uuid, title: entry_title})
     const location = context.getters.entry_location(uuid)
@@ -518,7 +506,7 @@ export const actions = {
     }
   },
   // TODO LIKE THIS DEPRACATED. should take an entry, commit save it and set update, potential parents and children
-  save_entry(context, uuid = context.state.edit.uuid) {
+  save_entry(context, uuid) {
     const entry_title = context.getters.get_entry_title(uuid)
     context.commit("update_title", {uuid, title: entry_title})
     const location = context.getters.entry_location(uuid)
@@ -556,7 +544,7 @@ export const actions = {
       console.log("store: entries DELETE tries to delete some entry that doesnt exist!")
     }
   },
-  update_parent_version(context, uuid = context.state.edit.uuid) {
+  update_parent_version(context) {
     const template = context.getters.get_entry_type(context.getters.get_entry(uuid).template.slug)
     const type_default_values = default_values(template)
     context.commit("insert_missing_default_values", {uuid, type_default_values})

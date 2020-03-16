@@ -135,7 +135,7 @@
   import FullEntryMixin from "../../../components/FullEntryMixin";
   import {entry_roles_aspect, license_aspect, privacy_aspect} from "../../../lib/typical_aspects";
   import EntryActorList from "../../../components/entry/EntryActorList";
-  import {ENTRIES_SAVE_ENTRY, ENTRIES_SET_EDIT} from "../../../store/entries";
+  import {ENTRIES_SAVE_ENTRY, ENTRIES_SET_EDIT, ENTRIES_UPDATE_PARENT_VERSION} from "../../../store/entries";
 
   export default {
     name: "uuid",
@@ -181,7 +181,7 @@
         }, 300)
       }
       if (this.outdated) {
-        this.$store.dispatch("entries/update_parent_version")
+        this.$store.dispatch(ENTRIES_UPDATE_PARENT_VERSION, this.uuid)
         this.aspect_extras["mark new aspects"] = true
         this.ok_snackbar("Updated")
       }
@@ -189,7 +189,7 @@
     beforeRouteLeave(to, from, next) {
       // BEWARE, this is not called when navigating from one entry to another
       if (!this.delete_entry) {
-        this.$store.dispatch(ENTRIES_SAVE_ENTRY)
+        this.$store.dispatch(ENTRIES_SAVE_ENTRY, this.uuid)
       }
       this.persist_entries()
       next()
