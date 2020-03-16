@@ -189,9 +189,6 @@
     },
     watch: {
       domain_title: function (newValue, oldValue) {
-        if (newValue !== HOME && newValue !== lastDomain) {
-          this.$store.commit(SEARCH_SET_ENTRIES, [])
-        }
         if (newValue !== HOME) {
           lastDomain = newValue
         }

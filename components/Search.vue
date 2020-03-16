@@ -52,7 +52,13 @@
   import {entries2vuetify_tree} from "../lib/entry_collections";
   import NavBaseMixin from "./NavBaseMixin";
   import {VIEW_SEARCH, VIEW_TREE} from "../lib/consts";
-  import {CLEAR_SEARCH, SEARCH_GET_ENTRIES, SEARCH_RECEIVED_ENTRIES, SEARCH_SET_ENTRIES} from "../store/search";
+  import {
+    CLEAR_SEARCH, SEARCH_CLEAR,
+    SEARCH_GET_ENTRIES,
+    SEARCH_GET_PATH,
+    SEARCH_RECEIVED_ENTRIES,
+    SEARCH_SET_ENTRIES, SEARCH_SET_PATH
+  } from "../store/search";
   import {ENTRIES_ALL_ENTRIES_ARRAY, ENTRIES_DOMAIN} from "../store/entries";
   import PersistentStorageMixin from "./PersistentStorageMixin";
 
@@ -103,25 +109,41 @@
       }
     },
     created() {
-      // console.log("search created!")
+      console.log("search created!")
       // console.log(this.init_clear, this.init_full, this.searching, this.entries().length)
-      if (this.init_clear) {
+      let start_search = false
+      debugger
+      const last_path = this.$store.getters[SEARCH_GET_PATH]
+      if(last_path !== this.$route.path) {
         this.clear()
-      }
-      if (this.init_full) {
-        const required = this.searchConfiguration().required
-        const all_entries = this.$store.getters[ENTRIES_ALL_ENTRIES_ARRAY]()
-        const filtered_entries = filter_required(all_entries, required).map(e => ([e.uuid, e]))
-        // const entries = filter_required(this.$store.getters[ENTRIES_ALL_ENTRIES_ARRAY](), required).map(e => ([e.uuid, e]))
-        // console.log("init_full, entries:", filtered_entries.length)
-        this.$store.commit(SEARCH_SET_ENTRIES, filtered_entries)
-        this.$emit("received_search_results", filtered_entries.map(e => e[1]))
-      } else if (this.entries().length === 0) {
-        // console.log("search create getting entries")
+        this.$store.commit(SEARCH_SET_PATH, this.$route.path)
+        start_search = true
         this.getEntries()
-      } else {
-        this.getEntries(true)
       }
+      else if (this.init_clear) {
+        this.clear()
+        start_search = true
+
+      }
+
+      if(start_search) {
+        this.getEntries()
+      }
+
+      // if (this.init_full) {
+      //   const required = this.searchConfiguration().required
+      //   const all_entries = this.$store.getters[ENTRIES_ALL_ENTRIES_ARRAY]()
+      //   const filtered_entries = filter_required(all_entries, required).map(e => ([e.uuid, e]))
+      //   // const entries = filter_required(this.$store.getters[ENTRIES_ALL_ENTRIES_ARRAY](), required).map(e => ([e.uuid, e]))
+      //   // console.log("init_full, entries:", filtered_entries.length)
+      //   this.$store.commit(SEARCH_SET_ENTRIES, filtered_entries)
+      //   this.$emit("received_search_results", filtered_entries.map(e => e[1]))
+      // } else if (this.entries().length === 0) {
+      //   // console.log("search create getting entries")
+      //   this.getEntries()
+      // } else {
+      //   this.getEntries(true)
+      // }
     },
     watch: {
       keyword: function (kw) {
@@ -217,7 +239,7 @@
         const offset = this.$store.getters[SEARCH_RECEIVED_ENTRIES]
         debounced_search(this.$api, this.$store, config, offset)
       },
-      ...mapMutations({"clear": CLEAR_SEARCH}),
+      ...mapMutations({"clear": SEARCH_CLEAR}),
       searchConfiguration() {
         // domain = this.$store.state.domain.value
         let configuration = {

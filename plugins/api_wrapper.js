@@ -65,17 +65,6 @@ class APIWrapper {
     return this.axios.get(`${this.domain_baseURL}/${domain_name}/basic_entries`)
   }
 
-  /**
-   * regular entries of a domain, paginated
-   */
-  domain__$domain_name__entries(domain_name, limit, offset, search_query) {
-    return this.axios.post(`${this.domain_baseURL}/${domain_name}/entries`, search_query, {
-      params: {
-        limit,
-        offset
-      }
-    })
-  }
 
   actor__validate_token(auth_token) {
     return this.axios.get(`${this.actor_baseURL}validate_token`, {
