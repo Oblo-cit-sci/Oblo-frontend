@@ -23,13 +23,13 @@
             v-icon(color="grey lighten-1") mdi-login-variant
         v-divider
   div(v-else-if="view_select")
-    v-select(outlined single-line hide-details :multiple=false v-model="selected_item" :items="options" return-object :clearable="clearable" :placeholder="placeholder" :disabled="disabled" )
+    v-select(outlined single-line :hide-details="hide_details" :multiple=false v-model="selected_item" :items="options" return-object :clearable="clearable" :placeholder="placeholder" :disabled="disabled" )
     div(v-if="selected_item")
       div(v-if="selected_item.description") Description: {{selected_item.description}}
       div(v-if="has_some_icons")
         v-img(:src="icon_path(selected_item)" contain max-height="40")
   div(v-else-if="view_autocomplete")
-    v-autocomplete(outlined single-line v-model="selected_item" :items="options" return-object :clearable="clearable" :placeholder="placeholder" :disabled="disabled" )
+    v-autocomplete(outlined single-line v-model="selected_item" :hide_details="hide_details" :items="options" return-object :clearable="clearable" :placeholder="placeholder" :disabled="disabled" )
   div(v-else-if="view_radiogroup")
     v-radio-group(:row="true"  v-model="selected_item")
       v-radio(v-for="item of options" :key="item.key" :label="item.text" :value="item.value")
@@ -96,7 +96,8 @@
       clearable: {
         type: Boolean,
         default: true
-      }
+      },
+      hide_details: Boolean
     },
     data() {
       return {
@@ -161,7 +162,6 @@
         } else return ""
       },
       marked(key) {
-        console.log("marked", key, this.selection)
         if (this.selection)
           return key === this.selection.value && this.highlight;
       },

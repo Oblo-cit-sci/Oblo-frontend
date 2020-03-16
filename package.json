@@ -38,12 +38,13 @@
     "fs": "0.0.1-security",
     "localforage": "^1.7.3",
     "mapbox-gl": "^1.6.1",
+    "mustache": "^4.0.1",
     "nuxt": "^2.11.0",
+    "qs": "^6.9.1",
     "update": "^0.7.4",
     "uuid": "^3.4.0",
     "vue-mapbox": "^0.4.1",
-    "vuelidate": "^0.7.5",
-    "qs": "latest"
+    "vuelidate": "^0.7.5"
   },
   "devDependencies": {
     "@mdi/font": "^4.7.95",

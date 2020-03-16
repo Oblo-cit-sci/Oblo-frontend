@@ -6,7 +6,7 @@
       :readonly="readOnly"
       :disabled="disabled"
       :placeholder="aspect.attr.placeholder"
-
+      :hide-details="hide_details"
       :hint="hint"
       :rules="rules"
       :prependIcon="prependIcon"

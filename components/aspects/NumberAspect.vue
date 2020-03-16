@@ -7,6 +7,7 @@
         v-on:input="input($event)"
         :suffix="suffix"
         :disabled="disabled"
+        :hide-details="hide_details"
         type="number"
         :min="min"
         :max="max"

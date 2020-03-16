@@ -4,6 +4,7 @@
       :items="options"
       v-model="selection"
       :readonly="readOnly"
+      hide-details
       single-line outlined chips multiple clearable)
   div(v-else)
     v-chip(

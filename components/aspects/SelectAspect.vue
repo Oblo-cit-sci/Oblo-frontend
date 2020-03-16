@@ -8,6 +8,7 @@
       :selection.sync="selection"
       :force_view="force_view"
       :disabled="disabled"
+      :hide_details="hide_details"
       :clearable="!is_required")
   div(v-else)
     div(v-if="value")
@@ -47,7 +48,6 @@
     },
     methods: {
       set_selection() {
-        console.log("set_selection", this.value)
         if (this.value !== null) {
           this.selection = this.$_.find(this.options, (o) => {
             return o.value === this.value

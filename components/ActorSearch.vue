@@ -11,6 +11,7 @@
       chips
       hide-no-data
       hide-selected
+      hide-details
       item-text="public_name"
       item-value="registered_name"
       prepend-inner-icon="mdi-account-search"

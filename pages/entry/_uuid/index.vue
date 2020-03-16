@@ -42,17 +42,18 @@
             v-divider.wide_divider
         v-row
           v-col(alignSelf="stretch" cols=8 lg=4)
-            Aspect(:aspect="license_aspect" :aspect_loc="license_aspect.aspect_loc" :extra="aspect_extras" :mode="mode")
+            Aspect(:aspect="license_aspect" :aspect_loc="aspect_locs[license_aspect.name]" :extra="aspect_extras" :mode="mode")
           v-col(alignSelf="stretch" cols=8 lg=4)
-            Aspect(:aspect="privacy_aspect" :aspect_loc="privacy_aspect.aspect_loc" :mode="mode")
+            Aspect(:aspect="privacy_aspect" :aspect_loc="aspect_locs[privacy_aspect.name]" :mode="mode")
         v-row
           v-col(alignSelf="stretch" cols=8)
-            Aspect(:aspect="entry_roles_aspect" :aspect_loc="entry_roles_aspect.aspect_loc" :extra="{entry_is_private: entry.privacy==='private'}")
-      v-row
-        v-col(cols=8)
-          v-divider(v-if="is_first_page" class="wide_divider")
+            Aspect(:aspect="entry_roles_aspect" :aspect_loc="aspect_locs[entry_roles_aspect.name]" :extra="{entry_is_private: entry.privacy==='private'}")
+        v-divider(v-if="is_first_page" class="wide_divider")
       v-row(v-if="last_page")
-        MissingAspectsNotice(:entry="this.entry" v-model="entry_complete")
+        MissingAspectsNotice(:entry="entry" :template_slug="template_slug" v-model="entry_complete")
+      div {{is_dirty}}
+      div(v-if="is_dirty")
+        v-row(v-for="change in changes" :key="change") {{change}}
       v-row
         EntryActions(
           v-bind="entry_actions_props"
@@ -121,7 +122,6 @@
   import {
     ENTRYTYPES_TYPE,
   } from "../../../lib/store_consts";
-  import {get_aspect_vue_component} from "../../../lib/aspect"
   import EntryMixin from "../../../components/EntryMixin";
   import MetaChips from "../../../components/MetaChips"
   import {privacy_icon} from "../../../lib/util"
@@ -131,7 +131,13 @@
   import FullEntryMixin from "../../../components/FullEntryMixin";
   import {entry_roles_aspect, license_aspect, privacy_aspect} from "../../../lib/typical_aspects";
   import EntryActorList from "../../../components/entry/EntryActorList";
-  import {ENTRIES_SAVE_ENTRY, ENTRIES_SET_EDIT, ENTRIES_UPDATE_PARENT_VERSION} from "../../../store/entries";
+  import {
+    ENTRIES_GET_EDIT, ENTRIES_GET_ENTRY,
+    ENTRIES_SAVE_ENTRY,
+    ENTRIES_SET_EDIT,
+    ENTRIES_UPDATE_PARENT_VERSION
+  } from "../../../store/entries";
+  import {compare_entries} from "../../../lib/entry_collections";
 
   export default {
     name: "uuid",
@@ -189,16 +195,6 @@
           this.router_next = null
         }
       },
-      // todo maybe kickout, since its also in Aspect
-      /*aspect_id(aspect_name) {
-          console.log("ASP_LOC STR", aspect_loc_str(this.aspect_locs[aspect_name]))
-          return aspect_loc_str(this.aspect_locs[aspect_name])
-      },*/
-      // should actually be the whole ref string
-      // TODO goes out for Aspect component
-      aspectComponent(aspect) {
-        return get_aspect_vue_component(aspect)
-      },
       entryAction(action) {
         if (action === "delete") {
           this.delete_entry = true
@@ -206,20 +202,39 @@
       }
     },
     computed: {
+      entry() {
+        console.log("e")
+        return this.$store.getters[ENTRIES_GET_EDIT]()
+      },
       aspect_loc() {
-        return [EDIT, this.uuid, this.type_slug]
+        return [EDIT, this.uuid]
+      },
+      is_dirty() {
+        const edit_entry = this.$store.getters[ENTRIES_GET_EDIT]()
+        console.log(edit_entry.version)
+        // if(edit_entry.version === 0) {
+        //   return false
+        // }
+        const original_entry = this.$store.getters[ENTRIES_GET_ENTRY](this.uuid)
+        return !this.$_.isEqual(edit_entry, original_entry)
+      },
+      changes() {
+        console.log("change check")
+        const edit_entry = this.$store.getters[ENTRIES_GET_EDIT]()
+        const original_entry = this.$store.getters[ENTRIES_GET_ENTRY](this.uuid)
+        return compare_entries(original_entry, edit_entry)
       },
       is_first_page() {
         return this.page === 0
       },
       license_aspect() {
-        return license_aspect(this.$store, ["cc_licenses"], [], this.uuid)
+        return license_aspect(this.$store, ["cc_licenses"], [])
       },
       privacy_aspect() {
-        return privacy_aspect(this.$store, this.uuid)
+        return privacy_aspect(this.$store)
       },
       entry_roles_aspect() {
-        return entry_roles_aspect(this.$store, this.uuid)
+        return entry_roles_aspect(this.$store)
       },
       aspects() {
         return this.$store.getters[ENTRYTYPES_TYPE](this.template_slug).aspects
@@ -230,9 +245,6 @@
         } else {
           return EDIT
         }
-      },
-      dirty() {
-        return this.entry.local.dirty || false
       },
       // maybe also consider:
       // https://github.com/edisdev/download-json-data/blob/develop/src/components/Download.vue

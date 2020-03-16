@@ -8,6 +8,7 @@
       auto-grow
       :counter="counter"
       :append-outer-icon="clearIcon"
+      :hide_details="hide_details"
       @click:append-outer="$emit('aspectAction', {action: 'clear'})"
 
       :value="value"

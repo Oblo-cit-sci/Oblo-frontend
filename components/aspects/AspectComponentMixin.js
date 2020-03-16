@@ -53,9 +53,10 @@ export default {
         return true
     },
     hint() {
-      if (this.$_.get(this.aspect.attr, "extra.hint", null)) {
-        return this.aspect.attr.extra.hint
-      }
+      return this.$_.get(this.aspect.attr, "extra.hint", null)
+    },
+    hide_details() {
+      return !this.hint && !this.$_.get(this.aspect.attr, "extra.rules", null)
     }
   },
   methods: {

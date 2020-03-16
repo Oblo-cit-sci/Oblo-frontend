@@ -42,6 +42,8 @@ export const ENTRIES_ALL_ENTRIES_ARRAY = "entries/all_entries_array"
 export const ENTRIES_GET_ENTRY_TITLE = "entries/get_entry_title"
 export const ENTRIES_GET_PARENT = "entries/get_parent"
 export const ENTRIES_SIZE = "entries/get_size"
+export const ENTRIES_GET_EDIT = "entries/get_edit"
+
 // Actions
 export const ENTRIES_SAVE_ENTRY = "entries/save_entry"
 export const ENTRIES_UPDATE_ENTRY = "entries/update_entry"
@@ -125,7 +127,11 @@ export const mutations = {
     } else if (final_loc[0] === META) {
       //TODO (fix later) we need this cuz just entries, already goes to values
       // debugger
-      select = state.entries.get(aspect_loc[0][1])
+      if(aspect_loc[0][0] === EDIT) {
+        select = state.edit
+      } else {
+        select = state.entries.get(aspect_loc[0][1])
+      }
       select[final_loc[1]] = value
     } else if (final_loc[0] === INDEX) {
       Vue.set(select.value, final_loc[1], value)
@@ -182,8 +188,8 @@ export const mutations = {
   set_from_array(state, uuid_entry_array) {
     state.entries = new Map(uuid_entry_array)
   },
-  set_edit(state, uuid) {
-    state.edit = state.entries.get(uuid)
+  set_edit(state, entry_data) {
+    state.edit = entry_data
   },  // todo template for all kinds of computed meta-aspects
   update_title(state, {uuid, title}) {
     state.entries.get(uuid).title = title
@@ -211,7 +217,7 @@ export const mutations = {
     //let entry =
     //remove_entry_loc
   },
-  _update_parent_version(state, {uuid , version}) {
+  _update_parent_version(state, {uuid, version}) {
     state.entries.get(uuid).parent_type_version = version
   },
   insert_missing_default_values(state, {uuid, type_default_values}) {
@@ -263,7 +269,9 @@ export const getters = {
     return state.entries.size
   },
   get_edit(state) {
-    return state.edit
+    return () => {
+      return state.edit
+    }
   },
   edit_uuid(state) {
     if (state.edit)
@@ -521,7 +529,9 @@ export const actions = {
     }
   },
   set_edit(context, uuid) {
-    context.commit("set_edit", uuid)
+    const entry = context.getters.get_entry(uuid)
+    console.log(entry)
+    context.commit("set_edit", ld.cloneDeep(entry))
   },
   delete_ref_child(context, {uuid, child_uuid}) { // DELETE_REF_CHILD
     let aspect_loc = context.state.entries.get(uuid).refs.children[child_uuid]
@@ -544,7 +554,7 @@ export const actions = {
       console.log("store: entries DELETE tries to delete some entry that doesnt exist!")
     }
   },
-  update_parent_version(context) {
+  update_parent_version(context, uuid) {
     const template = context.getters.get_entry_type(context.getters.get_entry(uuid).template.slug)
     const type_default_values = default_values(template)
     context.commit("insert_missing_default_values", {uuid, type_default_values})

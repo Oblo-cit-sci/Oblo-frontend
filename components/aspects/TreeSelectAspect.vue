@@ -7,6 +7,7 @@
       clearable
       :items="flat_options"
       :value="value"
+      :hide-details="hide_details"
       @change="update_value($event)"
       :aspect_loc="aspect_loc"
       :prependIcon="prependIcon"

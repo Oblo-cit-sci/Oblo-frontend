@@ -11,6 +11,7 @@
   import {aspect_raw_default_value, disabled_by_condition, label, loc_append, pack_value} from "../lib/aspect";
   import {ASPECT, COMPONENT, COMPOSITE, EDIT, ENTRYLIST, INDEX, LIST} from "../lib/consts";
   import {item_count_name} from "../lib/listaspects";
+  import {ENTRYTYPES_TYPE} from "../lib/store_consts";
 
 
   const OK = 0
@@ -22,9 +23,10 @@
   export default {
     name: "MissingAspectsNotice",
     props: {
-      value: Boolean // we use that in the parent to have as v-model
+      value: Boolean, // we use that in the parent to have as v-model
+      entry: Object,
+      template_slug: String
     },
-    mixins: [EntryMixin],
     components: {},
     data() {
       return {}
@@ -36,6 +38,9 @@
       }
     },
     computed: {
+      template() {
+        return this.$store.getters[ENTRYTYPES_TYPE](this.template_slug)
+      },
       missing() {
         const aspects = this.template.aspects
         let missing = []

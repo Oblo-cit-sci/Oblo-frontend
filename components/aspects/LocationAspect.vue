@@ -22,6 +22,7 @@
               v-model="search_query"
               append-outer-icon="mdi-magnify"
               @click:append-outer="search_location"
+              hide-details
               @keydown="search_keypress($event)"
               :loading="btn_loading_search_location")
             SingleSelect(

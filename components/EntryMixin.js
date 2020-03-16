@@ -4,7 +4,7 @@ import {
 } from "../lib/store_consts";
 import {export_data} from "../lib/import_export";
 import {loc_append} from "~/lib/aspect";
-import {ASPECT, ENTRY, GLOBAL} from "~/lib/consts";
+import {ASPECT, ENTRY, GLOBAL, LICENSE, META, META_ASPECT_LIST, PRIVACY} from "~/lib/consts";
 import {SEARCH_GET_ENTRIES, SEARCH_GET_ENTRY} from "~/store/search";
 import {check_str_is_uuid} from "~/lib/fixes";
 import {
@@ -165,6 +165,11 @@ export default {
           this.aspect_locs[aspect.name] = loc_append([this.aspect_loc], ASPECT, aspect.name)
           // console.log(aspect.name, this.aspect_locs[aspect.name])
         }
+
+      for(let aspect of META_ASPECT_LIST) {
+        this.aspect_locs[aspect] = loc_append([this.aspect_loc], META, aspect)
+      }
+
     },
     get_attachments_to_post() {
       const new_files_data = []

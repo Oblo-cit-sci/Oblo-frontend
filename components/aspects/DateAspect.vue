@@ -18,12 +18,13 @@
           outlined
           single-line
           :label="aspect.name"
+          :hide_details="hide_details"
           prepend-icon="mdi-calendar"
           readonly
           v-on="on"
         ></v-text-field>
       </template>
-      <v-date-picker :value="value"  :show-current="false" @change="update_value($event)" no-title @input="menu = false"></v-date-picker>
+      <v-date-picker :value="value" :hide_details="hide_details" :show-current="false" @change="update_value($event)" no-title @input="menu = false"></v-date-picker>
     </v-menu>
   </div>
 
