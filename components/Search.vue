@@ -21,11 +21,9 @@
       v-row
         v-col.col-md-6.col-xs-12(v-for="(config, index) in Object.values(filter_configs)" cols="12"  :key="index")
           FilterSelect(v-bind="config" :selection.sync="filter_values[config.name]")
-      v-row(v-if="searching")
-        v-col(offset="5" cols=2)
-          v-progress-circular(indeterminate center size="35" color="success")
       EntryPreviewList(v-if="show_results"
         :entries="filtered_entries"
+        :requesting_entries="searching"
         :total_count="total_count"
         :preview_options="preview_options"
         @preview_action="$emit('preview_action',$event)"

@@ -11,8 +11,11 @@
           v-bind="preview_options"
           @delete_e="delete_e($event)"
           @preview_action="$emit('preview_action',$event)")
+    v-row(v-if="requesting_entries && !next_loading")
+      v-col(offset="5" cols=2)
+        v-progress-circular(indeterminate center size="35" color="success")
     v-row(v-if="has_entries")
-      SimplePaginate(v-if="entries.length>entries_per_page" v-model="page" :has_next="has_more_pages" :next_loading="requesting_entries")
+      SimplePaginate(v-if="entries.length>entries_per_page" v-model="page" :has_next="has_more_pages" :next_loading="next_loading")
 </template>
 
 <script>
@@ -57,6 +60,10 @@
     computed: {
       results_received() {
         return this.entries !== undefined
+      },
+      next_loading() {
+        return this.requesting_entries && this.entries.length % this.entries_per_page === 0
+        //if()
       },
       visible_entries() {
         let from_index = (this.page - 1) * this.entries_per_page
