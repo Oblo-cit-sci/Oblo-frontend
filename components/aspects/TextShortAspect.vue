@@ -14,7 +14,7 @@
       @click:prepend="$emit('clickPrepend')"
 
       :append-outer-icon="clearIcon"
-      @click:append-outer="$emit('entryAction', {action: 'clear'})"
+      @click:append-outer="$emit('aspectAction', {action: 'clear'})"
 
       :value="value"
       @input="update_value($event)"

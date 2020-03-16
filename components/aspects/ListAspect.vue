@@ -6,7 +6,7 @@
           b.m-1(v-if="has_indexTitle") {{titles[index]|| index + 1}}
           Aspect(
             v-bind="list_aspect_props(index)"
-            v-on:entryAction="handleEntryAction($event, index)"
+            v-on:aspectAction="handleAspectAction($event, index)"
             v-on:append-outer="remove_value(index)")
           ListitemActions(
             v-if="!readOnly"
@@ -205,7 +205,7 @@
         aspect.name = "" + (index + 1)
         return aspect
       },
-      handleEntryAction(event, index) {
+      handleAspectAction(event, index) {
         if (event.action === "clear") {
           this.remove_value(index)
         }

@@ -12,7 +12,7 @@
         :max="max"
         v-on:update:error="error = $event"
         :append-outer-icon="clearIcon"
-        @click:append-outer="$emit('entryAction', {action: 'clear'})"
+        @click:append-outer="$emit('aspectAction', {action: 'clear'})"
         :rules="[minmax,valid_num_type]"
         :mask="mask" )
     div(v-else)

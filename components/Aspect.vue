@@ -22,10 +22,11 @@
       :aspect_loc="aspect_loc"
       :disabled="regular_disable"
       :mode="real_mode"
+      :extra="extra"
       v-bind="extra"
       v-on:update_value="update_value($event)"
       @update:error="$emit('update:error', ($event))"
-      v-on:entryAction="$emit('entryAction',$event)")
+      v-on:aspectAction="$emit('aspectAction',$event)")
     div(v-if="!use_regular && aspect.attr.alternative !== undefined")
       Title_Description(v-bind="title_description(aspect.attr.alternative)")
       component(
