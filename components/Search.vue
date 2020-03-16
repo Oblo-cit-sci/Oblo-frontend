@@ -159,7 +159,7 @@
         // console.log("EE--->")
         let result_entries = this.entries() // must be a call
         if(this.mixin_domain_drafts) {
-          const drafts = this.$store.getters["entries/domain_drafts_uuids"](this.mixin_domain_drafts)
+          const drafts = this.$store.getters["entries/domain_drafts_uuids"](this.mixin_domain_drafts).reverse()
           result_entries = drafts.concat(result_entries)
         }
         // console.log("new filtered entries", result_entries)
