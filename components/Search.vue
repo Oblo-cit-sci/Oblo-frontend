@@ -30,24 +30,17 @@
 
   import {mapGetters, mapMutations} from "vuex"
   import EntryPreviewList from "../components/EntryPreviewList"
-  import {debounced_search,  search_entries} from "../lib/client"
-  import {
-    ENTRYTYPES_TYPES
-  } from "../lib/store_consts"
+  import {debounced_search} from "../lib/client"
   import FilterSelect from "./FilterSelect";
   import FilterMixin from "./FilterMixin";
-  import {filter_required} from "../lib/search";
-  import {entries2vuetify_tree} from "../lib/entry_collections";
   import NavBaseMixin from "./NavBaseMixin";
-  import {VIEW_SEARCH, VIEW_TREE} from "../lib/consts";
   import {
-    CLEAR_SEARCH, SEARCH_CLEAR,
+    SEARCH_CLEAR,
     SEARCH_GET_ENTRIES,
     SEARCH_GET_PATH, SEARCH_GET_SEARCH_COUNT, SEARCH_GET_SEARCHING, SEARCH_GET_SEARCHTIME,
     SEARCH_RECEIVED_ENTRIES,
-    SEARCH_SET_ENTRIES, SEARCH_SET_PATH, SEARCH_SET_SEARCHING
+    SEARCH_SET_PATH, SEARCH_SET_SEARCHING
   } from "../store/search";
-  import {ENTRIES_ALL_ENTRIES_ARRAY, ENTRIES_DOMAIN} from "../store/entries";
   import PersistentStorageMixin from "./PersistentStorageMixin";
 
   const LOG = false
@@ -59,10 +52,6 @@
     props: {
       init_clear: Boolean,
       init_full: Boolean,
-      view_mode: {
-        type: String,
-        default: VIEW_SEARCH
-      },
       show_results: {
         type: Boolean,
         default: true
@@ -178,14 +167,6 @@
           console.log("Search.filtered_entries. entries:", result_entries.length)
           console.log("e1:", result_entries)
         }
-        // result_entries = result_entries.filter(e => this.$store.getters[ENTRIES_HAS_ENTRY](e.uuid))
-        // for (let filter of Object.values(this.filter_configs)) {
-        //   //todo we select the value, because select is not just emitting value up, clean this!
-        //   const filter_value = (this.filter_values[filter.name] || pack_value(null)).value
-        //   if (filter_value) {
-        //     result_entries = this[filter.filter_method](result_entries, filter_value)
-        //   }
-        // }
         this.persist_entries()
         return result_entries
       }

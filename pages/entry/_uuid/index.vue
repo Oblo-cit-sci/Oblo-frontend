@@ -109,8 +109,6 @@
 
 <script>
 
-  import License from "../../../components/License"
-  import Privacy from "../../../components/Privacy"
 
   import Title_Description from "../../../components/Title_Description"
   import EntryActions from "../../../components/EntryActions";
@@ -146,30 +144,20 @@
       Aspect,
       EntryActions,
       Title_Description,
-      Privacy, License,
       MetaChips,
       EntryActorList
     },
     data() {
       return {
-        required_values: [], // shortcut, but in template
-        sending: false,
         entry_complete: false,
-        // todo abstact aspect-pagination
         aspect_extras: {},
-        //
         router_next: null,
-        // flag
         delete_entry: false
       }
     },
     created() {
       //console.log("entry index create", this.entry.values.)
       this.$store.dispatch(ENTRIES_SET_EDIT, this.uuid)
-      let required_aspects = this.$_.filter(this.template.aspects, (a) => a.required || false)
-      this.required_values = this.$_.map(required_aspects, (a) => {
-        return a.name
-      })
     },
     mounted() {
       if (this.$route.query.goTo) {

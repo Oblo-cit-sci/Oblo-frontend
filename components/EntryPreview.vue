@@ -23,7 +23,7 @@
               v-icon(color="orange") mdi-alert-outline
               span Created from an outdated version. Some values might change. Download the entry before updating is recommended
         v-col(v-if="show_image" cols=4 class="col-md-4 col-sm-12 entry-image")
-          div(class="float-md-right float-sm-left entry-display-size")
+          div.float-md-right.float-sm-left.entry-display-size.mr-3
             v-avatar(tile class="entry-image-size")
               v-img(
                 contain

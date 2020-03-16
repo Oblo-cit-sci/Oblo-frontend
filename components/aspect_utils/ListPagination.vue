@@ -7,7 +7,7 @@
 
 <script>
 
-    import PaginateMixin from "./PaginateMixin";
+    import PaginateMixin from "../PaginateMixin";
 
     export default {
         name: "ListPagination",

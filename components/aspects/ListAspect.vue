@@ -50,22 +50,22 @@
 
   import Aspect from "../Aspect";
   import ListMixin from "../ListMixin";
-  import {INDEX, SIMPLE_TYPE, EDIT, COMPOSITE, LIST_INDEX} from "../../lib/consts";
+  import {INDEX, SIMPLE_TYPE, EDIT, COMPOSITE} from "../../lib/consts";
   import {
     aspect_loc_str,
     packed_aspect_default_value,
     get_aspect_vue_component,
     remove_entry_loc, complete_aspect_loc, aspect_loc_uuid, aspect_loc_str2arr, pack_value, aspect_raw_default_value
   } from "../../lib/aspect";
-  import ListitemActions from "../ListitemActions";
   import Paginate from "../Paginate";
   import MinMaxIndicators from '../list_components/MinMaxIndicators'
 
-  import ListPagination from "../ListPagination";
+  import ListPagination from "../aspect_utils/ListPagination";
   import goTo from 'vuetify/lib/services/goto'
   import {recursive_unpack} from "../../lib/util";
   import AspectComponentMixin from "./AspectComponentMixin";
   import {ENTRIES_VALUE} from "../../store/entries";
+  import ListitemActions from "../aspect_utils/ListitemActions";
 
   const SIMPLE = "simple"
   const PANELS = "panels"
@@ -73,7 +73,7 @@
 
   export default {
     name: "ListAspect",
-    components: {ListPagination, Paginate, ListitemActions, Aspect, MinMaxIndicators},
+    components: {ListitemActions, ListPagination, Paginate, Aspect, MinMaxIndicators},
     mixins: [AspectComponentMixin, ListMixin],
     data() {
       return {

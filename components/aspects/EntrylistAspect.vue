@@ -55,7 +55,7 @@
   } from "../../lib/store_consts";
   import {aspect_loc_str} from "../../lib/aspect";
   import {no_duplicate_texts} from "../../lib/options";
-  import ListPagination from "../ListPagination";
+  import ListPagination from "../aspect_utils/ListPagination";
   import PersistentStorageMixin from "../PersistentStorageMixin";
   import AspectComponentMixin from "./AspectComponentMixin";
   import {

@@ -19,7 +19,6 @@
           v-btn(large to="/login") Login
     Search(
       :init_clear="false"
-      :view_mode.sync="entries_view"
       :fixed_filters="domain_pre_filter",
       :mixin_domain_drafts="domain_name",
       :include_filters="filters")
@@ -32,7 +31,6 @@
   import Search from "../../../components/Search";
   import {ENTRYTYPES_OF_DOMAIN, DOMAIN, DOMAIN_BY_NAME, SET_DOMAIN, USER_LOGGED_IN} from "../../../lib/store_consts";
   import {entrytype_filter_options} from "../../../lib/filter_option_consts";
-  import {VIEW_SEARCH} from "../../../lib/consts";
 
   import {mapGetters} from "vuex"
 
@@ -49,20 +47,7 @@
       domain_name() {
         return this.$route.params.domain
       },
-      entries_view: {
-        get: function () {
-          return this.$route.query.view || VIEW_SEARCH
-        },
-        set: function (view) {
-          let route = {
-            path: this.$route.path,
-            query: {
-              view: view,
-            }
-          }
-          this.$router.push(route)
-        }
-      },
+
       entrytypes_entries() {
         return global_context_filter(this.$store.getters[ENTRYTYPES_OF_DOMAIN](this.domain_name))
       },
