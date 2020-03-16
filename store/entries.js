@@ -37,6 +37,7 @@ export const UPDATE_TAGS = "update_tags"
 // Getter
 export const ENTRIES_HAS_ENTRY = "entries/has_entry"
 export const ENTRIES_GET_ENTRY = "entries/get_entry"
+export const ENTRIES_HAS_FULL_ENTRY = "entries/has_full_entry"
 export const ENTRIES_GET_ENTRIES = "entries/get_entries"
 export const ENTRIES_GET_OWN_ENTRIES_UUIDS = "entries/get_own_entries_uuids"
 export const ENTRIES_ALL_ENTRIES_UUID_ENTRY_ARR = "entries/all_entries_uuid_entry_arr"
@@ -315,6 +316,11 @@ export const getters = {
   has_entry(state) {
     return (uuid) => {
       return state.entries.has(uuid)
+    };
+  },
+  has_full_entry(state, getters) {
+    return (uuid) => {
+      return state.entries.has(uuid) && getters.get_entry(uuid).values
     };
   },
   get_entry(state) { // ENTRIES_GET_ENTRY

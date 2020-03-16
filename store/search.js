@@ -5,6 +5,7 @@ export const SEARCH_CLEAR = "search/clear"
 export const SEARCH_SET_ENTRIES = "search/set_entries"
 export const SEARCH_APPEND_ENTRIES = "search/append_entries"
 export const SEARCH_SET_PATH = "search/set_path"
+export const SEARCH_SET_SEARCHING = "search/set_searching"
 
 export const SEARCH_PREPEND_ENTRIES = "search/prepend_entries"
 export const SEARCH_GET_ENTRY = "search/get_entry"
@@ -12,6 +13,7 @@ export const SEARCH_SET_SEARCH_COUNT = "search/set_search_count"
 export const SEARCH_GET_SEARCH_COUNT = "search/get_search_count"
 export const SEARCH_RECEIVED_ENTRIES = "search/get_received_entries"
 export const SEARCH_GET_PATH = "search/get_path"
+export const SEARCH_GET_SEARCHING = "search/get_searching"
 
 const ld = require("lodash")
 

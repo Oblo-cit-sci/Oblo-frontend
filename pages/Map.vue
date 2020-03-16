@@ -57,10 +57,10 @@
   import MapNavigationBottomSheet from "../components/map/MapNavigationBottomSheet";
   import {get_proper_mode} from "../lib/entry";
   import {
-      ENTRIES_ALL_ENTRIES_ARRAY,
-      ENTRIES_GET_ENTRY, ENTRIES_HAS_ENTRY,
-      ENTRIES_SAVE_ENTRY,
-      ENTRIES_SET_ENTRY_VALUE
+    ENTRIES_ALL_ENTRIES_ARRAY,
+    ENTRIES_GET_ENTRY, ENTRIES_HAS_ENTRY, ENTRIES_HAS_FULL_ENTRY,
+    ENTRIES_SAVE_ENTRY,
+    ENTRIES_SET_ENTRY_VALUE
   } from "../store/entries";
 
   const menu_mode_options = [MODE_NORMAL, MODE_ASPECT_POINT]
@@ -104,7 +104,12 @@
     created() {
       this.map = null
       if (this.normal_mode) {
-        this.$store.dispatch(MAP_SET_ENTRIES, this.$store.getters[ENTRIES_ALL_ENTRIES_ARRAY]())
+        //this.$store.dispatch(MAP_SET_ENTRIES, this.$store.getters[ENTRIES_ALL_ENTRIES_ARRAY]())
+        this.$api.entries_map_entries().then(({data}) => {
+          this.$store.dispatch(MAP_SET_ENTRIES, data.data)
+        }).catch(err => {
+          console.log("map entries error")
+        })
         const goto_location = this.$store.getters[MAP_GOTO_LOCATION]()
         if (goto_location) {
           this.center_coordinates = this.transform_loc(goto_location.coordinates)
@@ -212,14 +217,26 @@
         // this.$store.dispatch("map/select_entry", entry_uuid)
         // console.log(event)
 
-        if (this.$store.getters[ENTRIES_HAS_ENTRY](entry_uuid)) {
+        if (this.$store.getters[ENTRIES_HAS_FULL_ENTRY](entry_uuid)) {
+          if (this.selected_entry) {
+            this.change_entry_markers_mode(this.selected_entry, false)
+            if (entry_uuid !== this.selected_entry) {
+              console.log("setting new entry")
+              this.selected_entry = entry_uuid
+            }
+          }
+
+          this.navigation_mode = ENTRY
+          this.selected_entry = entry_uuid
+          this.drawer = true
+          this.change_entry_markers_mode(entry_uuid, true)
 
         } else {
           this.$api.entry__$uuid(entry_uuid).then(({data}) => {
-            if(data.data) {
+            if (data.data) {
               if (this.selected_entry) {
                 this.change_entry_markers_mode(this.selected_entry, false)
-                if(entry_uuid !== this.selected_entry) {
+                if (entry_uuid !== this.selected_entry) {
                   console.log("setting new entry")
                   this.selected_entry = entry_uuid
                 }
@@ -239,6 +256,7 @@
         }
       },
       change_entry_markers_mode(entry_uuid, selected) {
+        console.log("change_entry_markers_mode", entry_uuid, selected, this.selected_entry)
         const relevant_markers = this.$_.filter(this.markers, (m) => m.e_uuid === entry_uuid)
         this.markers = this.$_.pullAllBy(this.markers, relevant_markers, "e_uuid")
         for (let m of relevant_markers) {
@@ -265,8 +283,9 @@
       create_markers() {
         for (let e of this.entries) {
           for (let loc of e.location || []) {
-            if(loc)
+            if (loc) {
               this.create_e_marker(loc.coordinates, e.uuid, {})
+            }
           }
         }
       },
@@ -298,9 +317,12 @@
           this.create_markers()
         }
       },
-      selected_entry(selected_uuid) {
-        console.log("watch- selected_entry_uuid", selected_uuid, this.selected_entry)
-
+      selected_entry(selected_uuid, previous_selected) {
+        console.log("watch- selected_entry_uuid", selected_uuid, this.selected_entry, previous_selected)
+        if(previous_selected) {
+          this.change_entry_markers_mode(previous_selected, false)
+        }
+        // if()
         // TODO BRING BACK
         // let new_route = null
         // if (selected_uuid) {

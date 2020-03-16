@@ -9,7 +9,7 @@ import {
 import {aspect_loc_str} from "../lib/aspect";
 import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
 import NavBaseMixin from "./NavBaseMixin";
-import {ENTRIES_GET_ENTRY, ENTRIES_HAS_ENTRY, ENTRIES_SAVE_ENTRY} from "~/store/entries";
+import {ENTRIES_GET_ENTRY, ENTRIES_HAS_ENTRY, ENTRIES_HAS_FULL_ENTRY, ENTRIES_SAVE_ENTRY} from "~/store/entries";
 
 const ld = require("lodash")
 
@@ -21,44 +21,39 @@ export default {
       return this.$store.getters[ENTRIES_HAS_ENTRY](uuid)
     },
     goto(uuid) {
-        // todo should push not init?!
-        this.$store.commit(INIT_PAGE_PATH, this.$route)
-        // console.log("entrypreview goto", this.$route)
+      // todo should push not init?!
+      this.$store.commit(INIT_PAGE_PATH, this.$route)
 
-        // todo could be catched below in same check
-        if (!this.$store.getters[ENTRIES_HAS_ENTRY](uuid)) {
-          console.log("ENtryMixin. CACHE ERROR")
-        }
-        else {
-          const entry = this.$store.getters[ENTRIES_GET_ENTRY](uuid)
-          const proper_mode = get_proper_mode(entry, this.$store)
-          if(!ld.get(entry, "values", false)) { // todo replace values by entry.local.is_full: Boolean
-            this.$api.entry__$uuid(this.entry.uuid).then(({data}) => {
-              if(data.data) {
-                const entry = data.data
-                this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
-                if (!this.prevent_page_change) {
-                  this.to_entry(uuid, proper_mode)
-                } else {
-                  this.$emit("preview_action", {uuid: this.entry.uuid, action: this.goto_text})
-                }
-
-              }
-            }).catch(err => {
-              console.log("error fetching entry")
-            })
-          }
-          else {
+      const has_full_entry = this.$store.getters[ENTRIES_HAS_FULL_ENTRY](uuid)
+      console.log(has_full_entry)
+      const entry = this.$store.getters[ENTRIES_GET_ENTRY](uuid)
+      const proper_mode = get_proper_mode(entry, this.$store)
+      if (!has_full_entry) { // todo replace values by entry.local.is_full: Boolean
+        this.$api.entry__$uuid(this.entry.uuid).then(({data}) => {
+          if (data.data) {
+            const entry = data.data
+            this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
             if (!this.prevent_page_change) {
               this.to_entry(uuid, proper_mode)
             } else {
               this.$emit("preview_action", {uuid: this.entry.uuid, action: this.goto_text})
-            }}
+            }
+
+          }
+        }).catch(err => {
+          console.log("error fetching entry")
+        })
+      } else {
+        if (!this.prevent_page_change) {
+          this.to_entry(uuid, proper_mode)
+        } else {
+          this.$emit("preview_action", {uuid: this.entry.uuid, action: this.goto_text})
         }
+      }
     },
     fetch_and_nav(uuid) {
       this.$api.entry__$uuid(uuid).then(({data}) => {
-        if(data.data) {
+        if (data.data) {
           // console.log("downloading entry", res)
           const entry = data.data
           entry.local = {}
@@ -101,11 +96,13 @@ export default {
         }
       }
     }
-  },
+  }
+  ,
   computed: {
     in_context() {
       return this.template.rules.context !== GLOBAL || this.entry.refs.parent
-    },
+    }
+    ,
     domain() {
       return this.$store.getters[DOMAIN]
     }

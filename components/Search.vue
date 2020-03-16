@@ -55,9 +55,9 @@
   import {
     CLEAR_SEARCH, SEARCH_CLEAR,
     SEARCH_GET_ENTRIES,
-    SEARCH_GET_PATH,
+    SEARCH_GET_PATH, SEARCH_GET_SEARCH_COUNT, SEARCH_GET_SEARCHING,
     SEARCH_RECEIVED_ENTRIES,
-    SEARCH_SET_ENTRIES, SEARCH_SET_PATH
+    SEARCH_SET_ENTRIES, SEARCH_SET_PATH, SEARCH_SET_SEARCHING
   } from "../store/search";
   import {ENTRIES_ALL_ENTRIES_ARRAY, ENTRIES_DOMAIN} from "../store/entries";
   import PersistentStorageMixin from "./PersistentStorageMixin";
@@ -112,7 +112,6 @@
       console.log("search created!")
       // console.log(this.init_clear, this.init_full, this.searching, this.entries().length)
       let start_search = false
-      debugger
       const last_path = this.$store.getters[SEARCH_GET_PATH]
       if(last_path !== this.$route.path) {
         this.clear()
@@ -162,13 +161,13 @@
       },
     },
     computed: {
-      ...mapGetters({entries: SEARCH_GET_ENTRIES, store_searching: "search/get_searching", total_count: "search/get_search_count"}),
+      ...mapGetters({entries: SEARCH_GET_ENTRIES, get_searching: SEARCH_GET_SEARCHING, total_count: SEARCH_GET_SEARCH_COUNT}),
       searching() {
-        const new_val = this.store_searching()
-        if(new_val === false) {
+        const is_searching = this.get_searching()
+        if(is_searching === false) {
           this.$emit("received_search_results", this.entries())
         }
-        return this.store_searching()
+        return is_searching
       },
       tree() {
         return entries2vuetify_tree(this.entries(), this.$store.getters[ENTRYTYPES_TYPES], true)
@@ -179,7 +178,7 @@
         }
       },
       filtered_entries() {
-        console.log("EE--->")
+        // console.log("EE--->")
         let result_entries = this.entries() // must be a call
         if(this.mixin_domain_drafts) {
           const drafts = this.$store.getters["entries/domain_drafts_uuids"](this.mixin_domain_drafts)
@@ -227,7 +226,7 @@
         //   }
         // }
         // build_config merges 2 objects,
-        this.$store.commit("search/set_searching", true)
+        this.$store.commit(SEARCH_SET_SEARCHING, true)
         // const prepend = this.entries().length > 0
         debounced_search(this.$api, this.$store, config)
         // TODO would be nice to have the debounced search work with a promise so we do not need the

@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    a(:href="url")
+    a(:href="url"  target="_blank" )
       span {{title_view}}
     v-btn(:href="url"  target="_blank" icon)
       v-icon mdi-open-in-new

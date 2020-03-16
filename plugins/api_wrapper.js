@@ -16,7 +16,7 @@ class APIWrapper {
     this.domain_baseURL = this.api_baseURL + "/domain"
     this.actor_baseURL = this.api_baseURL + "/actor/"
     this.entry_baseURL = this.api_baseURL + "/entry"
-    this.entries_baseURL = this.api_baseURL + "/entries/"
+    this.entries_baseURL = this.api_baseURL + "/entries"
   }
 
   is_initialized() {
@@ -144,7 +144,7 @@ class APIWrapper {
 
 
   entries_search(limit, offset, search_query) {
-    return this.axios.post(`${this.entries_baseURL}search`, search_query, {
+    return this.axios.post(`${this.entries_baseURL}/search`, search_query, {
       params: {
         limit,
         offset
@@ -158,6 +158,10 @@ class APIWrapper {
 
   actor_clear_cache() {
     return this.axios.get(`${this.actor_baseURL}clear_cache`)
+  }
+
+  entries_map_entries() {
+    return this.axios.get(`${this.entries_baseURL}/map_entries`)
   }
 }
 
