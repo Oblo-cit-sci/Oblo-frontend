@@ -166,6 +166,10 @@ class APIWrapper {
   actor_search(search_query) {
     return this.axios.post(`${this.actor_baseURL}search`, search_query)
   }
+
+  actor_clear_cache() {
+    return this.axios.get(`${this.actor_baseURL}clear_cache`)
+  }
 }
 
 

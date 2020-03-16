@@ -1,20 +1,18 @@
 <template lang="pug">
   div
-    v-row(v-if="results_received" wrap justify-center)
+    div#head P:{{this.page}}, {{this.page * this.entries_per_page}} more?: {{can_request_more}} rec:{{this.entries.length}}/{{this.total_count}}
+    v-row.col-sm-12(v-if="results_received" wrap justify-center)
       div {{num_entries}} Entries
     v-row(v-for="uuid in visible_entries"
-      :key="uuid" class="col-sm-12 col-xs-6")
-      v-col
+      :key="uuid")
+      v-col(cols=12)
         Entrypreview(
           :passed_uuid="uuid"
           v-bind="preview_options"
           @delete_e="delete_e($event)"
           @preview_action="$emit('preview_action',$event)")
     v-row(v-if="has_entries")
-      SimplePaginate(v-if="entries.length>20" v-model="page" :has_next="true")
-      <!--      v-Pagination(v-if="entries.length>20" v-model="page"-->
-      <!--        :length="num_pages"-->
-      <!--        total-visible="8")-->
+      SimplePaginate(v-if="entries.length>entries_per_page" v-model="page" :has_next="has_more_pages" :next_loading="requesting_entries")
 </template>
 
 <script>
@@ -39,6 +37,9 @@
       preview_options: {
         type: Object
       },
+      requesting_entries: {
+        type: Boolean
+      }
     },
     data: function () {
       return {
@@ -47,11 +48,11 @@
         deleted: []
       }
     },
-    created() {
-      console.log("entry preview list created")
-    },
     beforeUpdate() {
       this.deleted = this.$_.filter(this.deleted, uuid => !this.$store.getters[ENTRIES_HAS_ENTRY](uuid))
+    },
+    created() {
+      console.log("PWlist create")
     },
     computed: {
       results_received() {
@@ -61,11 +62,7 @@
         let from_index = (this.page - 1) * this.entries_per_page
         let to_index = from_index + this.entries_per_page
         const entries = this.entries.slice(from_index, to_index)
-        console.log("pwlist 0", entries[0])
         return this.$_.filter(entries, e => !this.deleted.includes(e.uuid))
-      },
-      num_pages() {
-        return Math.ceil(this.num_entries / this.entries_per_page)
       },
       has_entries() {
         return this.num_entries > 0
@@ -85,22 +82,34 @@
             this.$_.map(
               this.entries,
               e => this.$store.getters[ENTRYTYPES_TYPE](e.template.slug))).values())
+      },
+      has_more_pages() {
+        return this.page * this.entries_per_page < this.total_count
+      },
+      can_request_more() {
+        return this.entries.length < this.total_count
       }
     },
     methods: {
       delete_e(uuid) {
         this.deleted.push(uuid)
+      },
+      request_more() {
+        this.$emit("request_more")
       }
     },
     watch: {
-      entries: function () {
-        this.page = 1
-      },
       page(page) {
-        goTo("body", {
+        setTimeout(() => goTo("#head", {
           duration: 1200,
           easing: "easeOutCubic"
-        })
+        }),50)
+        if(this.can_request_more) {
+          if(page * this.entries_per_page >= this.entries.length) {
+            this.$emit("request_more")
+            console.log("time for more")
+          }
+        }
       }
     }
   }

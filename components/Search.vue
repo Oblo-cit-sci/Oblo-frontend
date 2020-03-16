@@ -28,7 +28,8 @@
         :entries="filtered_entries"
         :total_count="total_count"
         :preview_options="preview_options"
-        @preview_action="$emit('preview_action',$event)")
+        @preview_action="$emit('preview_action',$event)"
+        @request_more="request_more")
     v-row(v-if="view_mode===VIEW_TREE" wrap)
       v-col
         v-treeview(:items="tree" open-on-click)
@@ -53,15 +54,16 @@
   import {entries2vuetify_tree} from "../lib/entry_collections";
   import NavBaseMixin from "./NavBaseMixin";
   import {VIEW_SEARCH, VIEW_TREE} from "../lib/consts";
-  import {CLEAR_SEARCH, SEARCH_GET_ENTRIES, SEARCH_SET_ENTRIES} from "../store/search";
+  import {CLEAR_SEARCH, SEARCH_GET_ENTRIES, SEARCH_RECEIVED_ENTRIES, SEARCH_SET_ENTRIES} from "../store/search";
   import {ENTRIES_ALL_ENTRIES_ARRAY, ENTRIES_DOMAIN} from "../store/entries";
+  import PersistentStorageMixin from "./PersistentStorageMixin";
 
   const LOG = false
 
   export default {
     name: "Search",
     components: {FilterSelect, EntryPreviewList},
-    mixins: [FilterMixin, NavBaseMixin],
+    mixins: [FilterMixin, NavBaseMixin, PersistentStorageMixin],
     props: {
       init_clear: Boolean,
       init_full: Boolean,
@@ -142,7 +144,6 @@
     computed: {
       ...mapGetters({entries: SEARCH_GET_ENTRIES, store_searching: "search/get_searching", total_count: "search/get_search_count"}),
       searching() {
-        console.log("search done")
         const new_val = this.store_searching()
         if(new_val === false) {
           this.$emit("received_search_results", this.entries())
@@ -158,9 +159,9 @@
         }
       },
       filtered_entries() {
+        console.log("EE--->")
         let result_entries = this.entries() // must be a call
         if(this.mixin_domain_drafts) {
-          console.log("drafts", )
           const drafts = this.$store.getters["entries/domain_drafts_uuids"](this.mixin_domain_drafts)
           result_entries = drafts.concat(result_entries)
         }
@@ -177,6 +178,7 @@
         //     result_entries = this[filter.filter_method](result_entries, filter_value)
         //   }
         // }
+        this.persist_entries()
         return result_entries
       }
     },
@@ -209,14 +211,13 @@
         // const prepend = this.entries().length > 0
         debounced_search(this.$api, this.$store, config)
         // TODO would be nice to have the debounced search work with a promise so we do not need the
-        //  `searching` store variable
-        //   .then(() => {
-        //     this.searching = false
-        //     this.$emit("received_search_results", this.entries)
-        //   }).catch(err => {
-        //   console.log('Error getting entries')
-        //   this.searching = false
-        // })
+      },
+      request_more() {
+        // console.log("request more", )
+        let config = this.searchConfiguration()
+        this.$store.commit("search/set_searching", true)
+        const offset = this.$store.getters[SEARCH_RECEIVED_ENTRIES]
+        debounced_search(this.$api, this.$store, config, offset)
       },
       ...mapMutations({"clear": CLEAR_SEARCH}),
       searchConfiguration() {

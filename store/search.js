@@ -4,10 +4,13 @@ export const SEARCH_ENTRY_ASPECT = "search/get_entry_aspects"
 export const SEARCH_CLEAR = "search/clear"
 export const CLEAR_SEARCH = "search/clear"
 export const SEARCH_SET_ENTRIES = "search/set_entries"
+export const SEARCH_APPEND_ENTRIES = "search/append_entries"
+
 export const SEARCH_PREPEND_ENTRIES = "search/prepend_entries"
 export const SEARCH_GET_ENTRY = "search/get_entry"
 export const SEARCH_SET_SEARCH_COUNT = "search/set_search_count"
 export const SEARCH_GET_SEARCH_COUNT = "search/get_search_count"
+export const SEARCH_RECEIVED_ENTRIES = "search/get_received_entries"
 
 const ld = require("lodash")
 
@@ -24,6 +27,9 @@ export const mutations = {
   },
   prepend_entries(state, entries) {
     state.entries = ld.concat(entries, state.entries)
+  },
+  append_entries(state, entries) {
+    state.entries = ld.concat(state.entries, entries)
   },
   clear(state) {
     // yes, instead of state.entries.clear(), which won't trigger any update
@@ -54,5 +60,9 @@ export const getters = {
     return () => {
       return state.searching
     }
+  },
+  get_received_entries(state) {
+    return state.entries.length
   }
 }
+

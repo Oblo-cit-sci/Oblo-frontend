@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-flex(xs12 sm8 md6)
+  v-flex(xs12 sm10)
     v-list
       v-list-item(three-line)
         v-list-item-content
@@ -16,6 +16,7 @@
         @change="avatar_added($event)"
         prepend-icon="mdi-camera")
       v-divider
+
       //Taglist(:tags="$store.state.user.user_data.interested_topics")
       <!--      Aspect(:aspect="profile_aspects.interested_topics" :value.sync="profile_aspects.interested_topics.value" :edit="edit_mode" :mode="mode")-->
       v-divider
@@ -29,6 +30,9 @@
       div(v-else)
         v-btn(color="warning" @click="cancelEdit") Cancel
         v-btn(color="success" @click="doneEdit") Save
+    v-divider
+    h2 Your Entries
+    EntryPreviewList(:entries="own_entries_uuids" :total_count="own_entries_uuids.length")
 </template>
 
 <script>
@@ -43,10 +47,14 @@
   import {mapGetters} from "vuex"
   import {extract_unpacked_values} from "../lib/aspect";
   import PersistentStorageMixin from "../components/PersistentStorageMixin";
+  import EntryPreviewList from "../components/EntryPreviewList";
+
+  import {ENTRIES_GET_OWN_ENTRIES_UUIDS} from "../store/entries";
 
   export default {
     name: "profile",
     components: {
+      EntryPreviewList,
       Aspect,
       Taglist
     },
@@ -179,7 +187,7 @@
       }
     },
     computed: {
-      ...mapGetters({user_data: USER_GET_USER_DATA}),
+      ...mapGetters({user_data: USER_GET_USER_DATA, own_entries_uuids: ENTRIES_GET_OWN_ENTRIES_UUIDS}),
       mode() {
         return this.edit_mode ? EDIT : VIEW
       },

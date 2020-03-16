@@ -38,16 +38,19 @@ export const UPDATE_TAGS = "update_tags"
 export const ENTRIES_HAS_ENTRY = "entries/has_entry"
 export const ENTRIES_GET_ENTRY = "entries/get_entry"
 export const ENTRIES_GET_ENTRIES = "entries/get_entries"
+export const ENTRIES_GET_OWN_ENTRIES_UUIDS = "entries/get_own_entries_uuids"
+export const ENTRIES_ALL_ENTRIES_UUID_ENTRY_ARR = "entries/all_entries_uuid_entry_arr"
+export const ENTRIES_ALL_ENTRIES_ARRAY = "entries/all_entries_array"
+export const ENTRIES_GET_ENTRY_TITLE = "entries/get_entry_title"
+export const ENTRIES_GET_PARENT = "entries/get_parent"
+export const ENTRIES_SIZE = "entries/get_size"
 // Actions
 export const ENTRIES_SAVE_ENTRY = "entries/save_entry"
 export const ENTRIES_UPDATE_ENTRY = "entries/update_entry"
 export const ENTRIES_SET_EDIT = "entries/set_edit"
 export const ENTRIES_CREATE_CHILD = "entries_create_child"
 export const ENTRIES_SAVE_CHILD_N_REF = "entries/save_child_n_ref"
-export const ENTRIES_ALL_ENTRIES_UUID_ENTRY_ARR = "entries/all_entries_uuid_entry_arr"
-export const ENTRIES_ALL_ENTRIES_ARRAY = "entries/all_entries_array"
-export const ENTRIES_GET_ENTRY_TITLE = "entries/get_entry_title"
-export const ENTRIES_GET_PARENT = "entries/get_parent"
+
 export const ENTRIES_ENTRY_TITLE = "entries/get_entry_title"
 export const ENTRIES_DOMAIN = "entries/domain"
 export const ENTRIES_ALL_ENTRIES_OF_TYPE = "entries/all_entries_of_type"
@@ -263,6 +266,9 @@ export const getters = {
       return Array.from(state.entries.values())
     }
   },
+  get_size(state) {
+    return state.entries.size
+  },
   get_edit(state) {
     return state.edit
   },
@@ -292,6 +298,8 @@ export const getters = {
       }
     }
   },
+
+  // todo depracated...
   all_drafts(state) {
     // as method prevents caching
     return () => {
@@ -324,13 +332,19 @@ export const getters = {
       return ld.map(entry.refs.children, ref => state.entries.get(ref.uuid))
     }
   },
-  get_own_entries(state) {
-    // todo
+  get_own_entries_uuids(state, getters) {
+    let result = []
+    for (let e of state.entries.values()) {
+
+      if (getters.user_rights(e.uuid) === EDIT)
+        result.push(e.uuid)
+    }
+    return result
   },
-  user_rights(state, getters, rootState, rootGetters) { // ENTRIES_USER_RIGHTS
+  user_rights(state, getters, rootGetters) { // ENTRIES_USER_RIGHTS
     return (uuid = state.edit.uuid) => {
       const entry = getters[GET_ENTRY](uuid)
-      if (ld.find(entry.actors.owners, owner => owner.uid === user_uid)) {
+      if (ld.find([entry.actors.creator] + entry.actors.owners, actor => actor.registered_name === rootGetters.name)) {
         return EDIT
       } else {
         return VIEW

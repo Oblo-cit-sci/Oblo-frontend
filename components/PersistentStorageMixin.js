@@ -19,7 +19,6 @@ export default {
       this.$localForage.removeItem(key)
     },
     persist_entries() {
-      console.log("persisting entries", this.$store.state.entries.entries.constructor)
       this.store_value("entries", this.$store.getters[ENTRIES_ALL_ENTRIES_UUID_ENTRY_ARR]())
     },
     persist_user_key() {

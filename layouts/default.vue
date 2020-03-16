@@ -73,7 +73,7 @@
   import {HOME} from "../lib/consts"
   import Footer from "../components/Footer"
 
-  import {initialize, reload_storage} from "../lib/client"
+  import {check_clear_cache, initialize, reload_storage} from "../lib/client"
   import {static_file_path} from "../lib/util";
   import {all_pages_n_actions} from "../lib/pages";
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
@@ -176,6 +176,7 @@
           this.$api.actor__logout().then(() => {
             this.ok_snackbar("You are logged out")
             this.remove_from_storage("auth_token")
+            // todo, remove draft entries and update storage, to leave no traces...
             this.$store.dispatch(USER_LOGOUT)
             this.$router.push("/")
           }).catch((err) => {
@@ -209,6 +210,7 @@
               if (res.data.token_valid) {
                 this.$store.commit(USER_LOGIN)
                 this.$axios.setToken("Bearer " + auth_token.access_token)
+                check_clear_cache(this.$store, this.$api)
               } else {
                 this.$store.commit(USER_RESET_AUTH_TOKEN)
                 this.error_snackbar("You are logged out")

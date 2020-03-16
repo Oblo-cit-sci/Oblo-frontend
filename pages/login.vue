@@ -9,12 +9,11 @@
 
 <script>
   import Aspect from "../components/Aspect";
-  import {unpack} from "../lib/aspect";
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
   import {STR} from "../lib/consts";
-  import {USER_LOGIN} from "../lib/store_consts";
   import PersistentStorageMixin from "../components/PersistentStorageMixin";
   import LoginMixin from "../components/actor/LoginMixin";
+  import {check_clear_cache} from "../lib/client";
 
   export default {
     name: "Login",
@@ -56,6 +55,7 @@
             this.ok_snackbar("Login successful")
             this.process_login(data)
             this.$router.back()
+            check_clear_cache(this.$store, this.$api)
           } else {
             // console.log("todo handle login error")
             this.errorMsg = data.error.msg
