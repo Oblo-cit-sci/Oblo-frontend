@@ -43,7 +43,8 @@
           template_slug: this.entry.template.slug,
           mode: this.mode,
           passed_uuid: this.uuid,
-          entry_complete: this.entry_complete
+          entry_complete: this.entry_complete,
+          is_dirty: this.is_dirty
         }
       },
     }

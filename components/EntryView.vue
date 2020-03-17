@@ -77,7 +77,7 @@
   import EntryActorList from "./entry/EntryActorList";
   import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
   import PersistentStorageMixin from "./PersistentStorageMixin";
-  import MissingAspectsNotice from "./MissingAspectsNotice";
+  import MissingAspectsNotice from "./entry/MissingAspectsNotice";
 
   export default {
     name: "EntryView",

@@ -132,7 +132,7 @@ export default {
       return this.template.aspects
     },
     outdated() {
-      return (this.entry.parent_type_version || 0) !== this.template.version
+      return this.entry.template_version !== this.template.version
     },
     download_title() {
       // todo title, wont update in real time

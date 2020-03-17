@@ -7,11 +7,10 @@
 </template>
 
 <script>
-  import EntryMixin from "./EntryMixin";
-  import {aspect_raw_default_value, disabled_by_condition, label, loc_append, pack_value} from "../lib/aspect";
-  import {ASPECT, COMPONENT, COMPOSITE, EDIT, ENTRYLIST, INDEX, LIST} from "../lib/consts";
-  import {item_count_name} from "../lib/listaspects";
-  import {ENTRYTYPES_TYPE} from "../lib/store_consts";
+  import {aspect_raw_default_value, disabled_by_condition, label, loc_append, pack_value} from "../../lib/aspect";
+  import {ASPECT, COMPONENT, COMPOSITE, EDIT, ENTRYLIST, INDEX, LIST} from "../../lib/consts";
+  import {item_count_name} from "../../lib/listaspects";
+  import {ENTRYTYPES_TYPE} from "../../lib/store_consts";
 
 
   const OK = 0

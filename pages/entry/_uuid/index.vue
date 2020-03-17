@@ -51,12 +51,11 @@
         v-divider(v-if="is_first_page" class="wide_divider")
       v-row(v-if="last_page")
         MissingAspectsNotice(:entry="entry" :template_slug="template_slug" v-model="entry_complete")
-      div(v-if="is_dirty")
-        v-row(v-for="change in changes" :key="change") {{change}}
+      v-row(v-if="is_dirty")
+        ChangedAspectNotice
       v-row
         EntryActions(
           v-bind="entry_actions_props"
-
           :page.sync="page"
           v-on:entryAction="entryAction($event)"
           v-on:edit="mode='edit'")
@@ -125,7 +124,7 @@
   import EntryMixin from "../../../components/EntryMixin";
   import MetaChips from "../../../components/MetaChips"
   import {privacy_icon} from "../../../lib/util"
-  import MissingAspectsNotice from "../../../components/MissingAspectsNotice";
+  import MissingAspectsNotice from "../../../components/entry/MissingAspectsNotice";
   import TriggerSnackbarMixin from "../../../components/TriggerSnackbarMixin";
   import PersistentStorageMixin from "../../../components/PersistentStorageMixin";
   import FullEntryMixin from "../../../components/FullEntryMixin";
@@ -137,12 +136,13 @@
     ENTRIES_SET_EDIT,
     ENTRIES_UPDATE_PARENT_VERSION
   } from "../../../store/entries";
-  import {compare_entries} from "../../../lib/entry_collections";
+  import ChangedAspectNotice from "../../../components/entry/ChangedAspectNotice";
 
   export default {
     name: "uuid",
     mixins: [EntryNavMixin, EntryMixin, TriggerSnackbarMixin, PersistentStorageMixin, FullEntryMixin],
     components: {
+      ChangedAspectNotice,
       MissingAspectsNotice,
       DecisionDialog,
       Aspect,
@@ -160,7 +160,6 @@
       }
     },
     created() {
-      //console.log("entry index create", this.entry.values.)
       this.$store.dispatch(ENTRIES_SET_EDIT, this.uuid)
     },
     mounted() {
@@ -174,7 +173,6 @@
       }
       if (this.outdated) {
         this.$store.dispatch(ENTRIES_UPDATE_PARENT_VERSION, this.uuid)
-        this.aspect_extras["mark new aspects"] = true
         this.ok_snackbar("Updated")
       }
     },
@@ -210,19 +208,15 @@
         return [EDIT, this.uuid]
       },
       is_dirty() {
+        // console.log("dirt check")
         const edit_entry = this.$store.getters[ENTRIES_GET_EDIT]()
-        console.log(edit_entry.version)
-        // if(edit_entry.version === 0) {
-        //   return false
+        const original_entry = this.$store.getters[ENTRIES_GET_ENTRY](this.uuid)
+        // todo local might disturb that
+        // console.log(edit_entry, original_entry)
+        // for(let k in edit_entry) {
+        //   console.log(k, this.$_.isEqual(edit_entry[k], original_entry[k]))
         // }
-        const original_entry = this.$store.getters[ENTRIES_GET_ENTRY](this.uuid)
         return !this.$_.isEqual(edit_entry, original_entry)
-      },
-      changes() {
-        console.log("change check")
-        const edit_entry = this.$store.getters[ENTRIES_GET_EDIT]()
-        const original_entry = this.$store.getters[ENTRIES_GET_ENTRY](this.uuid)
-        return compare_entries(original_entry, edit_entry)
       },
       is_first_page() {
         return this.page === 0

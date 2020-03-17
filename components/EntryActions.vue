@@ -22,7 +22,7 @@
           v-if="can_submit"
           color="success"
           @click="submit"
-          :disabled="!connected || !entry_complete"
+          :disabled="!connected || !entry_complete || !is_dirty"
           :loading="sending") {{published ? 'update' : 'submit'}}
       // v-if="private_local" todo for now, download for everyone
       v-btn(v-if="can_download" :disabled="disable_download"  @click="download") download
@@ -78,7 +78,8 @@
       show_back_button: {
         type: Boolean
       },
-      entry_complete: Boolean
+      entry_complete: Boolean,
+      is_dirty: Boolean
     },
     data() {
       return {

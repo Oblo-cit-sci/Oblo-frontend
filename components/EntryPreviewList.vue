@@ -52,9 +52,6 @@
     beforeUpdate() {
       this.deleted = this.$_.filter(this.deleted, uuid => !this.$store.getters[ENTRIES_HAS_ENTRY](uuid))
     },
-    created() {
-      console.log("PWlist create", this.entries)
-    },
     computed: {
       results_received() {
         return this.entries !== undefined
