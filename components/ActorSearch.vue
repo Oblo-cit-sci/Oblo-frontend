@@ -5,7 +5,7 @@
       v-model="selection"
       :items="actors"
       dense
-      :loading="isLoading"
+      :loading="isLoading ? 'info' : false"
       :search-input.sync="search"
       color="grey"
       chips
@@ -56,6 +56,9 @@
         isLoading: false,
         search: "",
       }
+    },
+    created() {
+      this.actors = this.value
     },
     computed: {
       selection: {
