@@ -31,15 +31,8 @@ export default {
     },
     goto_stored_page() {
       const entry = this.get_entry()
-      if(entry) {
-        if (entry.local.list_pages) {
-          const loc_str = aspect_loc_str(remove_entry_loc(this.aspect_loc))
-          if (entry.local.list_pages[loc_str] !== undefined) {
-            this.set_page(entry.local.list_pages[loc_str])
-          }
-        }
-      } else
-        return 0
+      const loc_str = aspect_loc_str(remove_entry_loc(this.aspect_loc))
+      return this.$_.get(entry, "local.list_pages." + loc_str, 0)
     },
     set_page(page, goto_id) {
       // console.log("set page", page)

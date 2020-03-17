@@ -16,8 +16,8 @@
         v-btn(color="secondary" @click="edit") edit
       span(v-else-if="can_edit")
         v-btn(v-if="is_draft" color="warning" @click="show_cancel") {{cancel_word}}
-        v-btn(color="error" @click="show_delete") Delete
-        v-btn(color="success" @click="save") {{save_word}}
+        v-btn(v-if="is_draft" color="success" @click="save") {{save_word}}
+        v-btn(v-if="!is_draft" color="error" @click="show_delete") Delete
         v-btn(
           v-if="can_submit"
           color="success"
@@ -62,11 +62,13 @@
     ENTRIES_SAVE_ENTRY,
     ENTRIES_UPDATE_ENTRY
   } from "../store/entries";
+  import EntryMixin2 from "./EntryMixin2";
+  import {SEARCH_DELETE_ENTRY} from "../store/search";
 
   export default {
     name: "EntryActions",
     components: {DecisionDialog, Paginate},
-    mixins: [EntryNavMixin, TriggerSnackbarMixin, PersistentStorageMixin],
+    mixins: [EntryNavMixin, TriggerSnackbarMixin, PersistentStorageMixin, EntryMixin2],
     props: {
       entry: Object,
       template_slug: String,
@@ -145,6 +147,7 @@
       },
       delete_entry() {
         this.$store.dispatch(ENTRIES_DELETE_ENTRY, this.uuid)
+        this.$store.commit(SEARCH_DELETE_ENTRY, this.uuid)
         this.ok_snackbar("Entry deleted")
         this.$emit("entryAction", "delete")
         this.back()
@@ -167,7 +170,6 @@
         } else if (this.entry.status === PUBLISHED) {
           method = "patch_entry__$uuid"
         }
-
         if (method) {
           try {
             const res = await this.$api[method](this.entry.uuid, this.entry)
@@ -255,12 +257,11 @@
           return "save and back"
         } else if (this.private_local) {
           return "save"
-        } else {
-          if (this.published) {
-            return "save"
-          } else {
+        } else if(this.is_draft){
             return "save draft"
-          }
+        } else {
+          console.log("wanring EntryAction.save_word should not be called")
+          return "save"
         }
       },
       can_edit() {

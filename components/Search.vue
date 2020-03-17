@@ -160,6 +160,7 @@
       filtered_entries() {
         // console.log("EE--->")
         let result_entries = this.entries() // must be a call
+        console.log("search filtered_", result_entries)
         if(this.mixin_domain_drafts) {
           const drafts = this.$store.getters[ENTRIES_DOMAIN_DRAFTS_UUIDS](this.mixin_domain_drafts).reverse()
           result_entries = drafts.concat(result_entries)

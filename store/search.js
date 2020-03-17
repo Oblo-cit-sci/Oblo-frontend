@@ -9,7 +9,7 @@ export const SEARCH_SET_SEARCHING = "search/set_searching"
 export const SEARCH_SET_SEARCHTIME = "search/set_searchtime"
 export const SEARCH_SET_SEARCH_COUNT = "search/set_search_count"
 export const SEARCH_INCREASE_COUNT = "search/increase_search_count"
-
+export const SEARCH_DELETE_ENTRY = "search/delete_entry"
 
 export const SEARCH_PREPEND_ENTRIES = "search/prepend_entries"
 export const SEARCH_GET_ENTRY = "search/get_entry"
@@ -46,6 +46,13 @@ export const mutations = {
   },
   append_entries(state, entries) {
     state.entries = ld.concat(state.entries, entries)
+  },
+  delete_entry(state, uuid) {
+    const result = state.entries.filter(e_uuid => e_uuid !== uuid)
+    if(result.length < state.entries.length) {
+      state.search_count--;
+    }
+    state.entries = result
   },
   clear(state) {
     // yes, instead of state.entries.clear(), which won't trigger any update

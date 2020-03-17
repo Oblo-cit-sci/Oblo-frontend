@@ -167,24 +167,6 @@ export const mutations = {
     }
     entry.local.dirty = true
   },
-  set_incomplete(state, {uuid, incomplete}) {
-    state.entries.get(uuid).local.incomplete = incomplete
-  },
-  set_edit_clean(state) { // ENTRIES_SET_EDIT_CLEAN
-    if (state.edit) {
-      state.edit.local.dirty = false
-    }
-  },
-  // todo renmae, update entry
-  _update_entry(state, uuid) {
-    let entry = state.entries.get(uuid)
-    entry.version += 1
-  },
-  // todo renmae, update entry
-  _save_entry(state, uuid) {
-    let entry = state.entries.get(uuid)
-    entry.version += 1
-  },
   set_from_array(state, uuid_entry_array) {
     state.entries = new Map(uuid_entry_array)
   },
@@ -540,7 +522,6 @@ export const actions = {
   },
   delete_entry(context, uuid) { // ENTRIES_DELETE_ENTRY
     console.log(uuid)
-    debugger
     const entry = context.state.entries.get(uuid)
     if (entry) {
       for (let child_uuid in entry.refs.children) {
