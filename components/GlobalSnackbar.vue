@@ -5,6 +5,7 @@
 
 <script>
   import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
+  import {SNACKBAR_TRIGGER} from "../lib/store_consts";
 
   export default {
     name: "GlobalSnackbar",
@@ -31,7 +32,7 @@
     },
     computed: {
       trigger() {
-        return this.$store.getters["snackbar_trigger"]()
+        return this.$store.getters[SNACKBAR_TRIGGER]()
       }
     }
   }

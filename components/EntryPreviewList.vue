@@ -1,5 +1,5 @@
 <template lang="pug">
-  div
+  #pwlisthead
     v-row.col-sm-12(v-if="results_received" wrap justify-center)
       div {{num_entries}} Entries
     v-row(v-for="uuid in visible_entries"
@@ -27,7 +27,6 @@
   export default {
     name: "EntryPreviewList",
     components: {SimplePaginate, Entrypreview},
-    mixins: [],
     props: {
       entries: Array,
       // this can be more then in entries, but will allow to navigate further with next, so another fetch is triggered
@@ -54,7 +53,7 @@
       this.deleted = this.$_.filter(this.deleted, uuid => !this.$store.getters[ENTRIES_HAS_ENTRY](uuid))
     },
     created() {
-      console.log("PWlist create")
+      console.log("PWlist create", this.entries)
     },
     computed: {
       results_received() {

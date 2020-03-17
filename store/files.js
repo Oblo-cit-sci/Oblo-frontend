@@ -1,5 +1,6 @@
 export const FILES_ADD_FILE = "files/add_file"
 export const FILES_GET_FILE = "files/get_file"
+export const FILES_REMOVE_FILE = "files/remove_file"
 
 export const state = () => ({
   files: {}, // base64

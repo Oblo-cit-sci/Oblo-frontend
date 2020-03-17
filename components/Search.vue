@@ -17,7 +17,7 @@
     v-row(v-if="prepend_search")
       v-col(offset="5" cols=2)
         v-progress-circular(indeterminate center size="35" color="success")
-    EntryPreviewList(v-if="show_results"
+    EntryPreviewList(v-if="show_results && !prepend_search"
       :entries="filtered_entries"
       :requesting_entries="searching"
       :total_count="total_count"
@@ -42,6 +42,7 @@
     SEARCH_SET_PATH, SEARCH_SET_SEARCHING
   } from "../store/search";
   import PersistentStorageMixin from "./PersistentStorageMixin";
+  import {ENTRIES_DOMAIN_DRAFTS_UUIDS} from "../store/entries";
 
   const LOG = false
 
@@ -91,6 +92,7 @@
       let start_search = false
       const last_path = this.$store.getters[SEARCH_GET_PATH]
       if(last_path !== this.$route.path) {
+        this.prepend_search= true
         this.clear()
         this.$store.commit(SEARCH_SET_PATH, this.$route.path)
         start_search = true
@@ -159,7 +161,7 @@
         // console.log("EE--->")
         let result_entries = this.entries() // must be a call
         if(this.mixin_domain_drafts) {
-          const drafts = this.$store.getters["entries/domain_drafts_uuids"](this.mixin_domain_drafts).reverse()
+          const drafts = this.$store.getters[ENTRIES_DOMAIN_DRAFTS_UUIDS](this.mixin_domain_drafts).reverse()
           result_entries = drafts.concat(result_entries)
         }
         // console.log("new filtered entries", result_entries)
@@ -191,7 +193,7 @@
       request_more() {
         // console.log("request more", )
         let config = this.searchConfiguration()
-        this.$store.commit("search/set_searching", true)
+        this.$store.commit(SEARCH_SET_SEARCHING, true)
         const offset = this.$store.getters[SEARCH_RECEIVED_ENTRIES]
         debounced_search(this.$api, this.$store, config, offset)
       },

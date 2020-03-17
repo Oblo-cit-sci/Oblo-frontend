@@ -6,7 +6,7 @@
 </template>
 
 <script>
-  import {GET_DOMAIN_TEMPLATES_FETCHED, SET_DOMAIN} from "../lib/store_consts"
+  import {GET_DOMAIN_TEMPLATES_FETCHED, SET_DOMAIN, SET_TEMPLATES_CODES_FOR_DOMAIN} from "../lib/store_consts"
   import {static_file_path} from "../lib/util";
 
   export default {
@@ -22,7 +22,7 @@
           // console.log("templates not fetched")
           this.$api.domain__$domain_name__basic_entries(domain.name).then(({data}) => {
             // console.log("tempaltes fetch res", data)
-            this.$store.dispatch("set_templates_codes_for_domain", {
+            this.$store.dispatch(SET_TEMPLATES_CODES_FOR_DOMAIN, {
               domain_name: domain.name,
               entries: data.data
             })

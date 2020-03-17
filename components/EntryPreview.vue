@@ -74,7 +74,7 @@
   import {check_str_is_uuid} from "../lib/fixes";
   import {SEARCH_ENTRY_ASPECT} from "../store/search";
   import {
-    EDIT_UUID,
+    EDIT_UUID, ENTRIES_DELETE_ENTRY,
     ENTRIES_DOMAIN,
     ENTRIES_GET_RECURSIVE_ENTRIES, ENTRIES_HAS_ENTRY,
     ENTRIES_SAVE_CHILD_N_REF,
@@ -286,7 +286,7 @@
             })
             break
           case "delete":
-            this.$store.dispatch("entries/delete_entry", this.uuid)
+            this.$store.dispatch(ENTRIES_DELETE_ENTRY, this.uuid)
             this.$emit("delete_e", this.uuid)
             this.persist_entries()
             break

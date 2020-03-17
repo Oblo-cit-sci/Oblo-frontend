@@ -15,7 +15,8 @@
       span(v-if="view && can_edit")
         v-btn(color="secondary" @click="edit") edit
       span(v-else-if="can_edit")
-        v-btn(color="warning" @click="show_delete") delete
+        v-btn(v-if="is_draft" color="warning" @click="show_cancel") {{cancel_word}}
+        v-btn(color="error" @click="show_delete") Delete
         v-btn(color="success" @click="save") {{save_word}}
         v-btn(
           v-if="can_submit"
@@ -23,8 +24,6 @@
           @click="submit"
           :disabled="!connected || !entry_complete"
           :loading="sending") {{published ? 'update' : 'submit'}}
-        v-btn(v-if="upload_option" @click="upload_to_repo" :loading="upload_loading") Upload to the repo
-          v-icon.ml-2 mdi-send-circle
       // v-if="private_local" todo for now, download for everyone
       v-btn(v-if="can_download" :disabled="disable_download"  @click="download") download
         v-icon.ml-2 mdi-download
@@ -47,6 +46,7 @@
   import EntryNavMixin from "./EntryNavMixin";
 
   import {
+    ENTRYTYPES_TYPE,
     LAST_BASE_PAGE_PATH, POP_LAST_PAGE_PATH
   } from "../lib/store_consts";
   import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
@@ -55,19 +55,21 @@
   import EntryMixin from "./EntryMixin";
   import PersistentStorageMixin from "./PersistentStorageMixin";
   import {upload_to_repo} from "../lib/import_export";
-  import {FILES_GET_FILE} from "../store/files";
+  import {FILES_GET_FILE, FILES_REMOVE_FILE} from "../store/files";
   import {
-      ENTRIES_DELETE_ENTRY,
-      ENTRIES_GET_RECURSIVE_ENTRIES,
-      ENTRIES_SAVE_ENTRY,
-      ENTRIES_UPDATE_ENTRY
+    ENTRIES_DELETE_ENTRY,
+    ENTRIES_GET_RECURSIVE_ENTRIES,
+    ENTRIES_SAVE_ENTRY,
+    ENTRIES_UPDATE_ENTRY
   } from "../store/entries";
 
   export default {
     name: "EntryActions",
     components: {DecisionDialog, Paginate},
-    mixins: [EntryNavMixin, TriggerSnackbarMixin, EntryMixin, PersistentStorageMixin],
+    mixins: [EntryNavMixin, TriggerSnackbarMixin, PersistentStorageMixin],
     props: {
+      entry: Object,
+      template_slug: String,
       mode: {
         type: String // view, create edit
       },
@@ -109,27 +111,8 @@
       edit() {
         this.$emit(EDIT)
       },
-      // BUTTONS
-      upload_to_repo() {
-        this.upload_loading = true
-        const url = this.rules.activities.upload.url
-        const entries = this.$store.getters[ENTRIES_GET_RECURSIVE_ENTRIES](this.uuid)
-        const upload_promise = upload_to_repo(this.$store, this.$axios, entries, url, true)
-        upload_promise.then(res => {
-          this.snackbar(res.data.status, res.data.msg)
-          this.upload_loading = false
-        }).catch(err => {
-          console.log(err)
-          this.upload_loading = false
-          this.error_snackbar("Something went horribly wrong")
-        })
-      },
       show_cancel() {
-        if (this.dirty) {
-          this.show_dialog(this.cancel_dialog_data)
-        } else {
-          this.cancel_edit()
-        }
+        this.cancel_edit()
       },
       show_delete() {
         this.show_dialog(this.delete_dialog_data)
@@ -153,9 +136,10 @@
         }
       },
       cancel_edit() {
-        if (this.entry.version === 0) {
+        if (this.is_draft) {
           this.$store.dispatch(ENTRIES_DELETE_ENTRY, this.uuid)
           this.ok_snackbar("Creation canceled")
+          this.$emit("entryAction", "delete")
           this.back()
         }
       },
@@ -190,13 +174,12 @@
             const attachments_data = this.get_attachments_to_post(this.entry)
             for (let attachment_data of attachments_data) {
               const file_uuid = attachment_data.file_uuid
-              console.log("attachment_data", attachment_data)
               const stored_file = this.$store.getters[FILES_GET_FILE](file_uuid)
               const blob = base64file_to_blob(stored_file.meta.type, stored_file.data)
               const formData = new FormData()
               formData.append("file", blob, stored_file.meta.name)
               this.$api.post_entry__$uuid__attachment__$file_uuid(this.uuid, file_uuid, formData).then((res) => {
-                this.$store.commit("files/remove_file", file_uuid)
+                this.$store.commit(FILES_REMOVE_FILE, file_uuid)
               }).catch(err => {
                 this.error_snackbar("File could not be uploaded", stored_file.meta.name)
               })
@@ -234,6 +217,12 @@
       }
     },
     computed: {
+      uuid() {
+        return this.entry.uuid
+      },
+      template() {
+        return this.$store.getters[ENTRYTYPES_TYPE](this.template_slug)
+      },
       view() {
         return this.mode === VIEW
       },
@@ -256,8 +245,10 @@
         return false; // this.has_pages && !this.last_page
       },
       owner() {
-        console.log(current_user_is_owner(this.$store, this.entry))
         return current_user_is_owner(this.$store, this.entry)
+      },
+      cancel_word() {
+        return "cancel"
       },
       save_word() {
         if (this.in_context) {
@@ -281,12 +272,8 @@
       can_submit() {
         return !this.private_local && !this.view && !this.in_context && !this.partner_mode
       },
-      upload_option() {
-        return this.template.rules.hasOwnProperty("activities") &&
-          this.template.rules.activities.hasOwnProperty("upload")
-      },
-      initial_version() {
-        return this.entry.version === 0
+      is_draft() {
+        return this.entry.status === DRAFT
       },
       can_download() {
         //console.log(this.template.rules.download)

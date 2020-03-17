@@ -50,6 +50,7 @@
   import EntryPreviewList from "../components/EntryPreviewList";
 
   import {ENTRIES_GET_OWN_ENTRIES_UUIDS} from "../store/entries";
+  import {license_aspect, privacy_aspect} from "../lib/typical_aspects";
 
   export default {
     name: "profile",
@@ -83,7 +84,9 @@
       },
       doneEdit: function () {
         const new_profile = extract_unpacked_values(this.profile_aspects)
+        console.log(new_profile)
         this.$api.post_actor__me(new_profile).then(({data}) => {
+          console.log(data)
           this.$store.commit(USER_SET_USER_DATA, data)
           this.persist_user_data()
           this.edit_mode = false;
@@ -104,11 +107,9 @@
           //     console.log('SUCCESS!!');
           //   })
           //   .catch(function () {
-            //     console.log('FAILURE!!');
+          //     console.log('FAILURE!!');
           //   });
 
-
-          formData.append("actor_in", JSON.stringify(extract_unpacked_values({no:3})))
           this.$api.post_actor__form_test(formData)
             .then(function () {
               console.log('SUCCESS!!');
@@ -183,7 +184,12 @@
               }
             },
             value: ""
-          }]
+          },
+          Object.assign(privacy_aspect(),
+            {name: "default_privacy", description: "Choose a default privacy for all your entries"}),
+          Object.assign(license_aspect(this.$store, ["cc_licenses"]),
+            {name: "default_license", description: "Choose a default license for your entries"})
+        ]
       }
     },
     computed: {

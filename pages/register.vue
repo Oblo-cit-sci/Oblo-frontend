@@ -21,7 +21,7 @@
 
   import Aspect from "../components/Aspect";
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
-  import {license_aspect} from "../lib/typical_aspects";
+  import {license_aspect, privacy_aspect} from "../lib/typical_aspects";
   import LoginMixin from "../components/actor/LoginMixin";
 
   export default {
@@ -102,23 +102,10 @@
             value: "",
             error: true
           },
-          default_privacy: {
-            name: "default_privacy",
-            label: "Default privacy",
-            type: "select",
-            attr: {
-              unpacked: true,
-              force_view: "select",
-              extra: {
-                rules: [
-                  v => v || 'Select a default privacy',
-                ]
-              }
-            },
-            items: ["public", "private"],
-            value: "public"
-          },
-          default_license: default_license
+          default_privacy: Object.assign(privacy_aspect(),
+            {value: "public", description: "Choose a default privacy for all your entries"}),
+          default_license: Object.assign(license_aspect(this.$store,["cc_licenses"]),
+            {value:"CC-BY", description:"Choose a default license for your entries"})
         },
         submitStatus: null,
         errorMsg: null

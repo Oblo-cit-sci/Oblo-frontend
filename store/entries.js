@@ -43,6 +43,8 @@ export const ENTRIES_GET_ENTRY_TITLE = "entries/get_entry_title"
 export const ENTRIES_GET_PARENT = "entries/get_parent"
 export const ENTRIES_SIZE = "entries/get_size"
 export const ENTRIES_GET_EDIT = "entries/get_edit"
+export const ENTRIES_DOMAIN_DRAFTS_UUIDS = "entries/domain_drafts_uuids"
+
 
 // Actions
 export const ENTRIES_SAVE_ENTRY = "entries/save_entry"
@@ -177,13 +179,11 @@ export const mutations = {
   _update_entry(state, uuid) {
     let entry = state.entries.get(uuid)
     entry.version += 1
-    entry.local.prev = null
   },
   // todo renmae, update entry
   _save_entry(state, uuid) {
     let entry = state.entries.get(uuid)
     entry.version += 1
-    entry.local.prev = null
   },
   set_from_array(state, uuid_entry_array) {
     state.entries = new Map(uuid_entry_array)
@@ -539,7 +539,8 @@ export const actions = {
     context.commit("_remove_entry_ref_index", {uuid, child_uuid, aspect_loc})
   },
   delete_entry(context, uuid) { // ENTRIES_DELETE_ENTRY
-    // console.log(uuid)
+    console.log(uuid)
+    debugger
     const entry = context.state.entries.get(uuid)
     if (entry) {
       for (let child_uuid in entry.refs.children) {

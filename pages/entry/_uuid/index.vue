@@ -51,12 +51,12 @@
         v-divider(v-if="is_first_page" class="wide_divider")
       v-row(v-if="last_page")
         MissingAspectsNotice(:entry="entry" :template_slug="template_slug" v-model="entry_complete")
-      div {{is_dirty}}
       div(v-if="is_dirty")
         v-row(v-for="change in changes" :key="change") {{change}}
       v-row
         EntryActions(
           v-bind="entry_actions_props"
+
           :page.sync="page"
           v-on:entryAction="entryAction($event)"
           v-on:edit="mode='edit'")

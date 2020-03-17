@@ -63,7 +63,7 @@
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
   import {export_data, merge_imported_entries} from "../lib/import_export";
   import {
-    ADD_META,
+    ADD_META, CLEAR_ENTRIES,
     ENTRYTYPES_SET_TYPES,
     USER_KEY
   } from "../lib/store_consts";
@@ -262,7 +262,7 @@
         }
       },
       clear_entries() {
-        this.$store.dispatch("clear_entries")
+        this.$store.dispatch(CLEAR_ENTRIES)
         this.persist_entries()
         this.persist_draft_numbers()
       },
