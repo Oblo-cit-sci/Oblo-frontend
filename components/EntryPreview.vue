@@ -69,14 +69,12 @@
   import {aspect_loc_str2arr, loc_prepend} from "../lib/aspect";
   import Aspect from "./Aspect";
   import {mapGetters} from "vuex"
-  import {upload_to_repo} from "../lib/import_export";
   import EntryActorList from "./entry/EntryActorList";
-  import {check_str_is_uuid} from "../lib/fixes";
   import {SEARCH_ENTRY_ASPECT} from "../store/search";
   import {
     EDIT_UUID, ENTRIES_DELETE_ENTRY,
     ENTRIES_DOMAIN,
-    ENTRIES_GET_RECURSIVE_ENTRIES, ENTRIES_HAS_ENTRY,
+    ENTRIES_HAS_ENTRY,
     ENTRIES_SAVE_CHILD_N_REF,
     ENTRIES_VALUE
   } from "../store/entries";
@@ -271,19 +269,6 @@
             break
           case "download":
             this.download()
-            break
-          case "upload":
-            const entries = this.$store.getters[ENTRIES_GET_RECURSIVE_ENTRIES](this.entry.uuid)
-            const upload_promise = upload_to_repo(this.$store, this.$axios, entries, preview_action.url, true)
-            this.additional_action_loading[action_name] = true
-            upload_promise.then(res => {
-              this.snackbar(res.data.status, res.data.msg)
-              this.additional_action_loading[action_name] = false
-            }).catch(err => {
-              console.log(err)
-              this.additional_action_loading[action_name] = false
-              this.error_snackbar(err)
-            })
             break
           case "delete":
             this.$store.dispatch(ENTRIES_DELETE_ENTRY, this.uuid)
