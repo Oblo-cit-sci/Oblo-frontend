@@ -241,7 +241,7 @@
       moveable() {
         return this.aspect.attr.moveable || false
       },
-      requires_delete() {
+                                                    requires_delete() {
         let itemtype = this.aspect.items.type
         return !(itemtype === "str" || itemtype === "int" || itemtype === "float");
       },

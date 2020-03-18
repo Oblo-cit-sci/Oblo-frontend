@@ -35,7 +35,7 @@
               v-icon mdi-magnify
           v-row
             v-col
-              EntryView(:passed_uuid="selected_entry_uuid" :navigation_props="entry_navigation_props")
+              EntryEdit(:passed_uuid="selected_entry_uuid" :navigation_props="entry_navigation_props")
               <!-- EntryAspectView.ma-1.pa-2(:entry="selected_entry" mode="view")-->
 </template>
 
@@ -43,14 +43,14 @@
   import MapNavigationMixin from "./MapNavigationMixin";
   import Search from "../Search";
   import EntryAspectView from "../EntryAspectView";
-  import EntryView from "../EntryView";
+  import EntryEdit from "../EntryEdit";
 
   // search:
   //   <!--          :fixed_filters="location_pre_filter"-->
 
   export default {
     name: "MapNavigationDrawer",
-    components: {EntryView},
+    components: {EntryEdit},
     mixins: [MapNavigationMixin],
     computed: {
       drawer_width() {

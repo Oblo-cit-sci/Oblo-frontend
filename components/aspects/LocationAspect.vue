@@ -1,10 +1,10 @@
 <template lang="pug">
   div
     div(v-if="!readOnly")
-      div.ml-3.mb-1
+      div.mb-1
         div(v-if="location_set")
           span.body-1.readonly-aspect.font-weight-bold {{location_view}}
-          v-btn(icon @click="goto_location(value, entry_uuid)")
+          v-btn(icon @click="goto_location(value, entry_uuid())")
             v-icon mdi-map-marker
           div
             v-btn(small @click="reset_location") reset location
@@ -31,7 +31,7 @@
               :selection.sync="selected_search_result")
     div(v-else)
       p.body-1.readonly-aspect {{location_view}}
-      v-btn(v-if="location_set" @click="goto_location(value, entry_uuid)")
+      v-btn(v-if="location_set" @click="goto_location(value, entry_uuid())")
         v-icon mdi-map-marker
 </template>
 

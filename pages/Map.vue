@@ -53,12 +53,9 @@
   import {mapGetters} from "vuex"
   import MapNavigationDrawer from "../components/map/MapNavigationDrawer";
   import {Marker} from "mapbox-gl";
-  import {route_change_query, route_change_remove_query} from "../lib/util";
   import MapNavigationBottomSheet from "../components/map/MapNavigationBottomSheet";
-  import {get_proper_mode} from "../lib/entry";
   import {
-    ENTRIES_ALL_ENTRIES_ARRAY,
-    ENTRIES_GET_ENTRY, ENTRIES_HAS_ENTRY, ENTRIES_HAS_FULL_ENTRY,
+    ENTRIES_HAS_FULL_ENTRY,
     ENTRIES_SAVE_ENTRY,
     ENTRIES_SET_ENTRY_VALUE
   } from "../store/entries";
@@ -115,6 +112,7 @@
           this.center_coordinates = this.transform_loc(goto_location.coordinates)
         }
       }
+      console.log("map create query.select", this.$route.query.select)
       if (this.$route.query.select) {
         this.selected_entry = this.$route.query.select
         this.select_entry_marker(this.selected_entry)
@@ -152,6 +150,7 @@
         return this.selected_place
       },
       goto_location() {
+        console.log("map, goto_location, map-store", this.$store.getters[MAP_GOTO_LOCATION]())
         return this.$store.getters[MAP_GOTO_LOCATION]()
       }
     },
@@ -191,7 +190,7 @@
           place: this.selected_place
         })
         const aspect_loc = this.$store.getters["map/to_select_aspect_location"]
-        if(aspect_loc) {
+        if (aspect_loc) {
           this.$store.commit(MAP_RESET_TO_SELECT_ASPECT_LOCATION)
           this.$store.dispatch(ENTRIES_SET_ENTRY_VALUE, {aspect_loc: aspect_loc, value: value})
         } else {
@@ -272,6 +271,7 @@
         }
       },
       create_e_marker(coordinates, uuid, options) {
+        console.log("map.m.create_e_marker")
         // var el = document.createElement('div');
         // el.className = el.className + ' article_marker';
         // const m = new Marker(el, options)
@@ -322,7 +322,7 @@
         }
       },
       selected_entry(selected_uuid, previous_selected) {
-        if(previous_selected) {
+        if (previous_selected) {
           this.change_entry_markers_mode(previous_selected, false)
         }
       },

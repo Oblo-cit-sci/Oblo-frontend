@@ -1,69 +1,7 @@
 <template lang="pug">
   div(v-if="entry")
-    v-container(justify-center align-center  v-if="!delete_entry && this.mode==='edit'")
-      v-row
-        v-col(xs12 md12)
-          Title_Description(
-            :title="page_title"
-            header_type="h1"
-            :description="template.description"
-            mode="edit")
-      v-row
-        v-col(v-if="has_parent")
-          span This entry is part of:&nbsp
-          a(@click="to_parent(true, mode)") {{parent_title}}
-      v-row(justify="center" v-if="entry_image")
-        v-col.col-md-10.col-sm-12(cols=12 alignSelf="center")
-          v-img.float-md-right.float-sm-left.entry-display-size(
-            contain
-            :src="entry_image"
-            max-height="500")
-      v-row
-        v-col(cols=8)
-          v-divider.wide_divider(v-if="is_first_page")
-      v-row
-        div(v-if="has_pages")
-          Title_Description(
-            :title="page_info.title"
-            header_type="h2"
-            :description="page_info.description"
-            mode="edit")
-      br
-      v-row(v-for="(aspect) in shown_aspects" :key="aspect.name")
-        v-col(alignSelf="stretch" cols=8)
-          Aspect(
-            :aspect="aspect"
-            :aspect_loc="aspect_locs[aspect.name]"
-            :extra="aspect_extras"
-            :mode="mode")
-      div(v-if="is_first_page")
-        v-row
-          v-col(cols=8)
-            v-divider.wide_divider
-        v-row
-          v-col(alignSelf="stretch" cols=8 lg=4)
-            Aspect(:aspect="license_aspect" :aspect_loc="aspect_locs[license_aspect.name]" :extra="aspect_extras" :mode="mode")
-          v-col(alignSelf="stretch" cols=8 lg=4)
-            Aspect(:aspect="privacy_aspect" :aspect_loc="aspect_locs[privacy_aspect.name]" :mode="mode")
-        v-row
-          v-col(alignSelf="stretch" cols=8)
-            Aspect(:aspect="entry_roles_aspect" :aspect_loc="aspect_locs[entry_roles_aspect.name]" :extra="{entry_is_private: entry.privacy==='private'}")
-        v-divider(v-if="is_first_page" class="wide_divider")
-      v-row(v-if="last_page")
-        MissingAspectsNotice(:entry="entry" :template_slug="template_slug" v-model="entry_complete")
-      v-row(v-if="is_dirty")
-        ChangedAspectNotice
-      v-row
-        EntryActions(
-          v-bind="entry_actions_props"
-          :page.sync="page"
-          v-on:entryAction="entryAction($event)"
-          v-on:edit="mode='edit'")
-      v-row
-        DecisionDialog(
-          :open.sync="openSaveDialog"
-          @action="edit_or_save_dialog($event)"
-          v-bind="unsaved_changes_dialog")
+    div(v-if="!delete_entry && this.mode==='edit'")
+      EntryEdit
     v-row(justify-center align-center v-else-if="this.mode==='view'")
       v-col(cols=12)
         Title_Description(
@@ -98,7 +36,6 @@
           :passed_uuid="uuid"
           v-on:entryAction="entryAction($event)"
           v-on:edit="mode='edit'")
-        <!-- comes from 'EntryView' :v-bind="entry_navigation_props"-->
         DecisionDialog(
           :open.sync="openSaveDialog"
           @action="edit_or_save_dialog($event)"
@@ -136,14 +73,13 @@
     ENTRIES_SET_EDIT,
     ENTRIES_UPDATE_PARENT_VERSION
   } from "../../../store/entries";
-  import ChangedAspectNotice from "../../../components/entry/ChangedAspectNotice";
+  import EntryEdit from "../../../components/EntryEdit";
 
   export default {
     name: "uuid",
     mixins: [EntryNavMixin, EntryMixin, TriggerSnackbarMixin, PersistentStorageMixin, FullEntryMixin],
     components: {
-      ChangedAspectNotice,
-      MissingAspectsNotice,
+      EntryEdit,
       DecisionDialog,
       Aspect,
       EntryActions,
@@ -201,7 +137,6 @@
     },
     computed: {
       entry() {
-        console.log("e")
         return this.$store.getters[ENTRIES_GET_EDIT]()
       },
       aspect_loc() {

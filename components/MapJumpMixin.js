@@ -32,6 +32,7 @@ export default {
       this.goto_location(entry_location[next_index])
     },
     goto_location(location, select_uuid) {
+      console.log("mapjump mixin.goto_location uuid",select_uuid)
       /**
        * needs uuid if this.entry does not exist (in aspects)
        */

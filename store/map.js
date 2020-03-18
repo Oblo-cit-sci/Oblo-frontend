@@ -91,7 +91,7 @@ export const actions = {
   },
   goto_done(context) {
     const goto_loc = context.getters.goto_location()
-    context.reset_to_select_aspect_locationcommit("_last_goto_location", goto_loc)
+    context.commit("_last_goto_location", goto_loc)
     context.commit("goto_location", null)
   },
   reset_goto_locations(context) {

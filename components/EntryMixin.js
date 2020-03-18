@@ -83,7 +83,7 @@ export default {
         if (this.entry.image.startsWith("http")) {
           return this.entry.image
         } else if (check_str_is_uuid(this.entry.image)) {
-          if(this.entry.status === "draft") {
+          if (this.entry.status === "draft") {
             const img_data = this.$store.getters[FILES_GET_FILE](this.entry.image)
             if (img_data) {
               return img_data.data
@@ -161,16 +161,15 @@ export default {
     },
     update_aspect_locs() {
       // console.log("update_aspect_locs")
-      if (this.entry_stored)
+      if (this.entry_stored) {
         for (let aspect of this.template.aspects) {
           this.aspect_locs[aspect.name] = loc_append([this.aspect_loc], ASPECT, aspect.name)
           // console.log(aspect.name, this.aspect_locs[aspect.name])
         }
-
-      for(let aspect of META_ASPECT_LIST) {
-        this.aspect_locs[aspect] = loc_append([this.aspect_loc], META, aspect)
+        for (let aspect of META_ASPECT_LIST) {
+          this.aspect_locs[aspect] = loc_append([this.aspect_loc], META, aspect)
+        }
       }
-
     },
     get_attachments_to_post() {
       const new_files_data = []
