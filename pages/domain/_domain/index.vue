@@ -14,9 +14,9 @@
       <!--      div todo same as in pages/index, so make it a small component...-->
       v-row(align="center")
         v-col(sm="4" offset="1")
-          v-btn(large to="/register") Register
+          v-btn.mt-4.mb-8(large to="/register" rounded outlined) Register
         v-col(sm="4")
-          v-btn(large to="/login") Login
+          v-btn.mt-4.mb-8(large to="/login" rounded outlined) Login
     Search(
       :init_clear="false"
       :fixed_filters="domain_pre_filter",
@@ -47,7 +47,6 @@
       domain_name() {
         return this.$route.params.domain
       },
-
       entrytypes_entries() {
         return global_context_filter(this.$store.getters[ENTRYTYPES_OF_DOMAIN](this.domain_name))
       },

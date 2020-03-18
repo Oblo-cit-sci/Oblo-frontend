@@ -61,7 +61,6 @@
   import EntryMixin from "../../../components/EntryMixin";
   import MetaChips from "../../../components/MetaChips"
   import {privacy_icon} from "../../../lib/util"
-  import MissingAspectsNotice from "../../../components/entry/MissingAspectsNotice";
   import TriggerSnackbarMixin from "../../../components/TriggerSnackbarMixin";
   import PersistentStorageMixin from "../../../components/PersistentStorageMixin";
   import FullEntryMixin from "../../../components/FullEntryMixin";

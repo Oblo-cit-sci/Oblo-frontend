@@ -23,12 +23,13 @@ export const SEARCH_GET_SEARCHTIME = "search/get_searchtime"
 const ld = require("lodash")
 
 export const state = () => ({
-  entries: [],
-  searching: false,
-  entry_aspects: [],
-  search_count: 0,
   path: "",
-  searchtime: null
+  search_term: "",
+  searching: false, // flag for loadin
+  entries: [], // result
+  entry_aspects: [], // result specifics, not used atm
+  search_count: 0, // total count in the db, used for requesting more
+  searchtime: null // used to update
 });
 
 export const mutations = {

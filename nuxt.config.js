@@ -11,7 +11,7 @@ eovalue
 
 const release_modes = ["opentek", "eovalue", "licci_partners"]
 
-console.log("env:server", process.env.SERVER)
+console.log("NUXT:CONFIG. env:server", process.env.SERVER)
 
 let axios_baseURL = "https://opentek.eu"
 

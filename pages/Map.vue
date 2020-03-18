@@ -157,6 +157,7 @@
     methods: {
       onMapLoaded(event) {
         this.map = event.map
+        console.log(this.map)
         // this.map.setRenderWorldCopies(false)
         this.create_markers()
       },
