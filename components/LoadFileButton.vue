@@ -1,9 +1,9 @@
 <template lang="pug">
   div
     slot
-      v-btn(:loading="loading")
-        v-icon.mr-2 mdi-import
-        span {{label}}
+      v-btn(:loading="loading" v-bind="btn_props")
+        v-icon {{btn_icon}}
+        span(v-if="label!==''") {{label}}
         input.input-file(type="file" @change="filesChange($event.target.files)" :accept="accepted")
 </template>
 
@@ -19,6 +19,11 @@
       label: {
         type: String,
         default: "Add File"
+      },
+      btn_props: Object,
+      btn_icon: {
+          type:String,
+          default: "mdi-import"
       },
     }
   }

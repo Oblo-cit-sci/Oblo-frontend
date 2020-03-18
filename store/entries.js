@@ -62,6 +62,7 @@ export const ENTRIES_SET_ENTRY_VALUE = "entries/set_entry_value"
 export const ENTRIES_DELETE_ENTRY = "entries/delete_entry"
 export const ENTRIES_GET_RECURSIVE_ENTRIES = "entries/get_recursive_entries"
 
+
 export const ENTRIES_UPDATE_PARENT_VERSION = "entries/update_parent_version"
 
 const ld = require("lodash")

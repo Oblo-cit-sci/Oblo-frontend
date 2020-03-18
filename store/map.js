@@ -1,5 +1,3 @@
-import {_SELECT_ENTRY} from "~/lib/store_consts";
-import {ENTRIES_GET_ENTRY} from "~/store/entries";
 
 const ld = require("lodash")
 
@@ -11,7 +9,8 @@ export const state = () => ({
   last_goto_location: null,
   layers: ["Climate types", "Weather stations"],
   layer_status: {},
-  to_select_aspect_location: null // when coming from a locationAspect, comes with
+  to_select_aspect_location: null, // when coming from a locationAspect, comes with
+  selected_location: null // when there is no "to_select_aspect_location" e.g. profile
 })
 
 export const mutations = {
@@ -39,8 +38,11 @@ export const mutations = {
   set_to_select_aspect_location(state, aspect_location) {
     state.to_select_aspect_location = aspect_location
   },
-  reset_to_select_aspect_location(state, aspect_location) {
+  reset_to_select_aspect_location(state) {
     state.to_select_aspect_location = null
+  },
+  selected_location(state, location) {
+    state.selected_location = location
   }
 }
 
@@ -69,6 +71,9 @@ export const getters = {
   },
   to_select_aspect_location(state) {
     return state.to_select_aspect_location
+  },
+  get_selected_location(state) {
+    return state.selected_location
   }
 }
 
@@ -86,7 +91,7 @@ export const actions = {
   },
   goto_done(context) {
     const goto_loc = context.getters.goto_location()
-    context.commit("_last_goto_location", goto_loc)
+    context.reset_to_select_aspect_locationcommit("_last_goto_location", goto_loc)
     context.commit("goto_location", null)
   },
   reset_goto_locations(context) {

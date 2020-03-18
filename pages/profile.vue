@@ -2,13 +2,8 @@
   v-flex(xs12 sm10 md10)
     v-row
       v-col
-        v-list
-          v-list-item(three-line)
-            v-list-item-content
-              v-list-item-title @{{$store.state.user.user_data.registered_name}}
-              v-list-item-subtitle username
-            v-list-item-action
-              v-chip(outlined disabled small) {{$store.state.user.user_data.global_role}}
+        div Username: {{$store.state.user.user_data.registered_name}}
+        v-chip(outlined disabled small) {{$store.state.user.user_data.global_role}}
       v-col
         v-row
           v-img(:src="avatar" max-height=200 contain)
@@ -20,7 +15,7 @@
             <!--              fab-->
             <!--              top)-->
             <!--                v-icon mdi-camera-->
-            LoadFileButton
+            LoadFileButton(:btn_props="{fab:true}" label="" btn_icon="mdi-camera")
     h2 General information
     v-row(v-for="aspect in profile_aspects" :key="aspect.name")
       v-col(cols=10)
@@ -31,23 +26,22 @@
       accept="image/png, image/jpeg, image/bmp"
       @change="avatar_added($event)"
       prepend-icon="mdi-camera")
-    v-divider
       //Taglist(:tags="$store.state.user.user_data.interested_topics")
       <!--      Aspect(:aspect="profile_aspects.interested_topics" :value.sync="profile_aspects.interested_topics.value" :edit="edit_mode" :mode="mode")-->
-    v-divider
       //v-tabs(v-model="selected_tab" v-if="!edit_mode")
         //v-tab follows
         //v-tab following
         //v-tab Groups
         //v-tab Roles
     div(v-if="!visitor")
-      v-btn(v-if="!edit_mode" color="info" @click="setEdit") Edit
+      v-btn(v-if="!edit_mode" color="info" @click="setEdit") Edit profile
       div(v-else)
         v-btn(color="warning" @click="cancelEdit") Cancel
         v-btn(color="success" @click="doneEdit") Save
-    v-divider
-    h2 Your Entries
-    EntryPreviewList(:entries="own_entries_uuids" :total_count="own_entries_uuids.length")
+    div(v-if="!edit_mode")
+      v-divider.wide_divider
+      h2 Your Entries
+      EntryPreviewList(:entries="own_entries_uuids" :total_count="own_entries_uuids.length")
 </template>
 
 <script>
@@ -79,8 +73,16 @@
     },
     mixins: [PersistentStorageMixin, FileLoadMixin],
     created() {
-      console.log("profile created")
       this.reset_edit_values()
+    },
+    // todo this could help us to get the map location, but not sure where to get it in the lifecycle
+    beforeRouteEnter(to, from, next) {
+      next(vm => {
+        if(from.fullPath === "/map?mode=m_mode_point") {
+          console.log("MAP!")
+          vm.grab_map_selection = true
+        }
+      })
     },
     methods: {
       reset_edit_values() {
@@ -136,6 +138,7 @@
     },
     data: function () {
       return {
+        grab_map_selection: false, // when coming back from the map
         edit_mode: false,
         selected_tab: 0,
         profile_aspects: [
@@ -169,7 +172,7 @@
             attr: {
               max: 80,
               unpacked: true,
-              input: ["map", "search"]
+              input: ["search"]
             },
             value: null
           },
@@ -201,9 +204,9 @@
             value: ""
           },
           Object.assign(privacy_aspect(),
-            {name: "default_privacy", description: "Choose a default privacy for all your entries"}),
+            {name: "default_privacy", label:"Default privacy", description: "Choose a default privacy for all your entries"}),
           Object.assign(license_aspect(this.$store, ["cc_licenses"]),
-            {name: "default_license", description: "Choose a default license for your entries"})
+            {name: "default_license", label:"Default License", description: "Choose a default license for your entries"})
         ]
       }
     },

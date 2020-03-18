@@ -30,8 +30,7 @@
               force_view="list"
               :selection.sync="selected_search_result")
     div(v-else)
-      v-text-field( outlined single-line filled dense hide-details
-      :readonly="true" :value="location_view" :placeholder="aspect.attr.placeholder")
+      p.body-1.readonly-aspect {{location_view}}
       v-btn(v-if="location_set" @click="goto_location(value, entry_uuid)")
         v-icon mdi-map-marker
 </template>

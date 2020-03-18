@@ -20,7 +20,7 @@
             max-height="500")
       v-row
         v-col(cols=8)
-          v-divider(v-if="is_first_page" class="wide_divider")
+          v-divider.wide_divider(v-if="is_first_page")
       v-row
         div(v-if="has_pages")
           Title_Description(

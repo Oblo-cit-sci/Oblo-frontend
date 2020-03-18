@@ -45,7 +45,7 @@
     MAP_GOTO_DONE,
     MAP_GOTO_LOCATION,
     MAP_RESET_GOTO_LOCATIONS,
-    MAP_RESET_TO_SELECT_ASPECT_LOCATION,
+    MAP_RESET_TO_SELECT_ASPECT_LOCATION, MAP_SELECTED_LOCATION,
     MAP_SET_ENTRIES,
   } from "../lib/store_consts";
   import {pack_value} from "../lib/aspect";
@@ -191,8 +191,12 @@
           place: this.selected_place
         })
         const aspect_loc = this.$store.getters["map/to_select_aspect_location"]
-        this.$store.commit(MAP_RESET_TO_SELECT_ASPECT_LOCATION)
-        this.$store.dispatch(ENTRIES_SET_ENTRY_VALUE, {aspect_loc: aspect_loc, value: value})
+        if(aspect_loc) {
+          this.$store.commit(MAP_RESET_TO_SELECT_ASPECT_LOCATION)
+          this.$store.dispatch(ENTRIES_SET_ENTRY_VALUE, {aspect_loc: aspect_loc, value: value})
+        } else {
+          this.$store.commit(MAP_SELECTED_LOCATION, value)
+        }
         this.$router.back()
       },
       touch({mapboxEvent}) {

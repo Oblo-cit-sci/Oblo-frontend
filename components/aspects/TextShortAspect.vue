@@ -19,8 +19,7 @@
       :value="value"
       @input="update_value($event)"
       @update:error="$emit('update:error', $event)")
-    p(v-else
-      class="body-1 readonly-aspect") {{value}}
+    p.body-1.readonly-aspect(v-else) {{value}}
 </template>
 
 <script>
