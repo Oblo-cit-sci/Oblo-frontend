@@ -29,6 +29,7 @@
         },
         methods: {
             set_selection() {
+              debugger
                 if (this.value !== null) {
                     this.selection = this.$_.filter(this.options, (o) => {
                         return this.value.indexOf(o.value) > -1
