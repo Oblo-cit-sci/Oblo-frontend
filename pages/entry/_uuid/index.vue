@@ -68,8 +68,7 @@
   import EntryActorList from "../../../components/entry/EntryActorList";
   import {
     ENTRIES_GET_EDIT, ENTRIES_GET_ENTRY,
-    ENTRIES_SAVE_ENTRY,
-    ENTRIES_SET_EDIT,
+    ENTRIES_SET_EDIT, ENTRIES_UPDATE_ENTRY,
     ENTRIES_UPDATE_PARENT_VERSION
   } from "../../../store/entries";
   import EntryEdit from "../../../components/EntryEdit";
@@ -113,16 +112,13 @@
     },
     beforeRouteLeave(to, from, next) {
       // BEWARE, this is not called when navigating from one entry to another
-      if (!this.delete_entry) {
-        this.$store.dispatch(ENTRIES_SAVE_ENTRY, this.uuid)
-      }
       this.persist_entries()
       next()
     },
     methods: {
       edit_or_save_dialog(event) {
         if (event.confirm) {
-          this.$store.dispatch(ENTRIES_SAVE_ENTRY, this.uuid)
+          this.$store.dispatch(ENTRIES_UPDATE_ENTRY, this.uuid)
           this.router_next()
         } else {
           this.router_next = null
@@ -141,17 +137,7 @@
       aspect_loc() {
         return [EDIT, this.uuid]
       },
-      is_dirty() {
-        // console.log("dirt check")
-        const edit_entry = this.$store.getters[ENTRIES_GET_EDIT]()
-        const original_entry = this.$store.getters[ENTRIES_GET_ENTRY](this.uuid)
-        // todo local might disturb that
-        // console.log(edit_entry, original_entry)
-        // for(let k in edit_entry) {
-        //   console.log(k, this.$_.isEqual(edit_entry[k], original_entry[k]))
-        // }
-        return !this.$_.isEqual(edit_entry, original_entry)
-      },
+
       is_first_page() {
         return this.page === 0
       },

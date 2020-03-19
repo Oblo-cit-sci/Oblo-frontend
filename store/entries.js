@@ -414,6 +414,9 @@ export const getters = {
         if (location && location.value)
           location = location.value
       }
+      if(!Array.isArray(location)){
+        location = [location]
+      }
       return location
     }
   },
@@ -488,21 +491,7 @@ export const actions = {
     const location = context.getters.entry_location(uuid)
     if (location) {
       // console.log("save_entry. loc",location )
-      const simple_location = filter_empty(recursive_unpack(location))
-      context.commit("update_location", {uuid, location: simple_location})
-    }
-    const tags = context.getters.entry_tags(uuid)
-    if (tags) {
-      context.commit(UPDATE_TAGS, {uuid, tags: tags})
-    }
-  },
-  // TODO LIKE THIS DEPRACATED. should take an entry, commit save it and set update, potential parents and children
-  save_entry(context, uuid) {
-    const entry_title = context.getters.get_entry_title(uuid)
-    context.commit("update_title", {uuid, title: entry_title})
-    const location = context.getters.entry_location(uuid)
-    if (location) {
-      console.log("save_entry. loc", location)
+      console.log(recursive_unpack(location))
       const simple_location = filter_empty(recursive_unpack(location))
       context.commit("update_location", {uuid, location: simple_location})
     }
@@ -512,9 +501,10 @@ export const actions = {
     }
   },
   set_edit(context, uuid) {
-    const entry = context.getters.get_entry(uuid)
-    console.log(entry)
-    context.commit("set_edit", ld.cloneDeep(entry))
+    if(!context.state.edit || context.state.edit.uuid !== uuid) {
+      const entry = context.getters.get_entry(uuid)
+      context.commit("set_edit", ld.cloneDeep(entry))
+    }
   },
   delete_ref_child(context, {uuid, child_uuid}) { // DELETE_REF_CHILD
     let aspect_loc = context.state.entries.get(uuid).refs.children[child_uuid]

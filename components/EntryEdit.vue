@@ -3,7 +3,7 @@
     v-row
       v-col(xs12 md12)
         Title_Description(
-          :title="page_title"
+          :title="entry_title"
           header_type="h1"
           :description="template.description"
           mode="edit")
@@ -58,6 +58,7 @@
         :page.sync="page"
         v-on:entryAction="entryAction($event)"
         v-on:edit="mode='edit'")
+      v-btn(@click="update_meta_tags()") meta
     v-row
       DecisionDialog(
         :open.sync="openSaveDialog"
@@ -78,12 +79,14 @@
   import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
   import PersistentStorageMixin from "./PersistentStorageMixin";
   import MissingAspectsNotice from "./entry/MissingAspectsNotice";
-  import {ENTRIES_GET_EDIT, ENTRIES_GET_ENTRY} from "../store/entries";
-  import {EDIT, PRIVATE_LOCAL, VIEW} from "../lib/consts";
+  import {ENTRIES_GET_EDIT, ENTRIES_GET_ENTRY, ENTRIES_VALUE} from "../store/entries";
+  import {EDIT, ENTRY, PRIVATE_LOCAL, VIEW} from "../lib/consts";
   import {entry_roles_aspect, license_aspect, privacy_aspect} from "../lib/typical_aspects";
   import {ENTRYTYPES_TYPE} from "../lib/store_consts";
   import {privacy_icon} from "../lib/util";
   import ChangedAspectNotice from "./entry/ChangedAspectNotice";
+  import {get_entry_titleAspect} from "../lib/entry";
+  import {aspect_loc_str2arr, loc_prepend} from "../lib/aspect";
 
   export default {
     name: "EntryEdit",
@@ -117,8 +120,18 @@
       entry() {
         return this.$store.getters[ENTRIES_GET_EDIT]()
       },
+      entry_title() {
+        let titleAspect = get_entry_titleAspect(this.template)
+        if (!titleAspect) {
+          return this.entry.title
+        }
+        // todo maybe it would be cleaner to add "entry "+uuid , so that  aspect_loc_str2arr/is wrapped around
+        let title = this.$store.getters[ENTRIES_VALUE](loc_prepend(EDIT, this.uuid, aspect_loc_str2arr(titleAspect)))
+        title = this.$_.get(title, "value", "")
+        return this.template.title + (title ? ": " + title : "")
+      },
       base_cols() {
-        if(this.$route.name === "entry-uuid")
+        if (this.$route.name === "entry-uuid")
           return 8
         else
           return 12
@@ -177,7 +190,18 @@
       },
       show_image() {
         return this.entry.image
-      }
+      },
+      is_dirty() {
+        // console.log("dirt check")
+        const edit_entry = this.$store.getters[ENTRIES_GET_EDIT]()
+        const original_entry = this.$store.getters[ENTRIES_GET_ENTRY](this.uuid)
+        // todo local might disturb that
+        // console.log(edit_entry, original_entry)
+        // for(let k in edit_entry) {
+        //   console.log(k, this.$_.isEqual(edit_entry[k], original_entry[k]))
+        // }
+        return !this.$_.isEqual(edit_entry, original_entry)
+      },
     }
   }
 </script>

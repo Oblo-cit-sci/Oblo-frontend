@@ -22,7 +22,7 @@
           v-if="can_submit"
           color="success"
           @click="submit"
-          :disabled="!connected || !entry_complete || !is_dirty"
+          :disabled="!connected || !entry_complete"
           :loading="sending") {{published ? 'update' : 'submit'}}
       // v-if="private_local" todo for now, download for everyone
       v-btn(v-if="can_download" :disabled="disable_download"  @click="download") download
@@ -57,13 +57,15 @@
   import {upload_to_repo} from "../lib/import_export";
   import {FILES_GET_FILE, FILES_REMOVE_FILE} from "../store/files";
   import {
-    ENTRIES_DELETE_ENTRY,
+    ENTRIES_DELETE_ENTRY, ENTRIES_GET_ENTRY,
     ENTRIES_GET_RECURSIVE_ENTRIES,
     ENTRIES_SAVE_ENTRY,
     ENTRIES_UPDATE_ENTRY
   } from "../store/entries";
   import EntryMixin2 from "./EntryMixin2";
   import {SEARCH_DELETE_ENTRY} from "../store/search";
+
+  // TODO, bring back !is_dirty check on submit
 
   export default {
     name: "EntryActions",
@@ -156,13 +158,19 @@
       save() {
         // todo not if it is an aspect page
         //save_entry(this.$store, this.entry)
-        this.$store.dispatch(ENTRIES_SAVE_ENTRY, this.uuid)
+        this.$store.commit(ENTRIES_SAVE_ENTRY, this.entry)
+        this.$store.dispatch(ENTRIES_UPDATE_ENTRY, this.uuid)
         this.persist_entries()
         this.ok_snackbar("Entry saved")
         this.back()
       },
       async submit() {
         this.sending = true
+
+        // TODO not good. call update functions
+        this.$store.commit(ENTRIES_SAVE_ENTRY, this.entry)
+        this.$store.dispatch(ENTRIES_UPDATE_ENTRY, this.uuid)
+        const sending_entry = this.$store.getters[ENTRIES_GET_ENTRY](this.uuid)
 
         // would be the same as checking published
         let method = null
@@ -173,8 +181,8 @@
         }
         if (method) {
           try {
-            const res = await this.$api[method](this.entry.uuid, this.entry)
-            const attachments_data = this.get_attachments_to_post(this.entry)
+            const res = await this.$api[method](this.entry.uuid, sending_entry)
+            const attachments_data = this.get_attachments_to_post(sending_entry)
             for (let attachment_data of attachments_data) {
               const file_uuid = attachment_data.file_uuid
               const stored_file = this.$store.getters[FILES_GET_FILE](file_uuid)

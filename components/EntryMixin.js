@@ -1,9 +1,9 @@
-import {has_parent} from "../lib/entry";
+import {has_parent, select_aspect_loc} from "../lib/entry";
 import {
   ENTRYTYPES_TYPE,
 } from "../lib/store_consts";
 import {export_data} from "../lib/import_export";
-import {loc_append} from "~/lib/aspect";
+import {aspect_loc_str2arr, loc_append, loc_prepend} from "~/lib/aspect";
 import {ASPECT, ENTRY, GLOBAL, LICENSE, META, META_ASPECT_LIST, PRIVACY} from "~/lib/consts";
 import {SEARCH_GET_ENTRIES, SEARCH_GET_ENTRY} from "~/store/search";
 import {check_str_is_uuid} from "~/lib/fixes";
@@ -11,9 +11,11 @@ import {
   ENTRIES_GET_ENTRY,
   ENTRIES_GET_ENTRY_TITLE,
   ENTRIES_GET_PARENT,
-  ENTRIES_GET_RECURSIVE_ENTRIES, ENTRIES_HAS_ENTRY, ENTRIES_SET_DOWNLOADED
+  ENTRIES_GET_RECURSIVE_ENTRIES, ENTRIES_HAS_ENTRY, ENTRIES_SET_DOWNLOADED, UPDATE_TAGS
 } from "~/store/entries";
 import {FILES_GET_FILE} from "~/store/files";
+import {filter_empty, recursive_unpack} from "~/lib/util";
+import {entry_value_select} from "~/lib/entry";
 
 export default {
   name: "EntryMixin",
@@ -116,9 +118,6 @@ export default {
     last_page() {
       return !this.has_pages || this.page === this.pages.length - 1
     },
-    page_title() {
-      return this.template.title + (this.title ? ": " + this.title : "")
-    },
     aspect_loc() {
       return [ENTRY, this.uuid, this.template.slug]
     },
@@ -179,6 +178,28 @@ export default {
         }
       }
       return new_files_data
-    }
+    },
+    // update_meta_tags() {
+    //   debugger
+    //   const locationAspect = this.template.rules.locationAspect
+    //   let location = null
+    //   if (locationAspect) {
+    //     location = entry_value_select(this.entry, aspect_loc_str2arr(locationAspect))
+    //     // this is weird
+    //     if (location && location.value)
+    //       location = location.value
+    //   }
+    //   if (location) {
+    //     // console.log("save_entry. loc",location )
+    //     const simple_location = filter_empty(recursive_unpack(location))
+    //     console.log(simple_location)
+    //
+    //     //context.commit("update_location", {uuid, location: simple_location})
+    //   }
+    //   // const tags = context.getters.entry_tags(uuid)
+    //   // if (tags) {
+    //   //   context.commit(UPDATE_TAGS, {uuid, tags: tags})
+    //   // }
+    // }
   }
 }

@@ -59,11 +59,11 @@
   import PersistentStorageMixin from "../PersistentStorageMixin";
   import AspectComponentMixin from "./AspectComponentMixin";
   import {
-      EDIT_UUID,
-      ENTRIES_DELETE_ENTRY,
-      ENTRIES_GET_ENTRY,
-      ENTRIES_SAVE_CHILD_N_REF,
-      ENTRIES_SAVE_ENTRY
+    EDIT_UUID,
+    ENTRIES_DELETE_ENTRY,
+    ENTRIES_GET_ENTRY,
+    ENTRIES_SAVE_CHILD_N_REF,
+    ENTRIES_SAVE_ENTRY, ENTRIES_UPDATE_ENTRY
   } from "../../store/entries";
 
   export default {
@@ -164,7 +164,7 @@
         if (this.disabled)
           return
         this.persist_entries()
-        this.$store.dispatch(ENTRIES_SAVE_ENTRY, this.entry_uuid())
+        this.$store.dispatch(ENTRIES_UPDATE_ENTRY, this.entry_uuid())
         if (!this.has_entry(item.uuid))
           this.fetch_and_nav(item.uuid)
         else {
