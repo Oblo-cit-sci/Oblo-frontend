@@ -58,7 +58,6 @@
         :page.sync="page"
         v-on:entryAction="entryAction($event)"
         v-on:edit="mode='edit'")
-      v-btn(@click="update_meta_tags()") meta
     v-row
       DecisionDialog(
         :open.sync="openSaveDialog"
@@ -71,11 +70,9 @@
   import Aspect from "./Aspect";
   import EntryActions from "./EntryActions";
   import Title_Description from "./Title_Description";
-  import MetaChips from "./MetaChips";
   import EntryNavMixin from "./EntryNavMixin";
   import EntryMixin from "./EntryMixin";
   import FullEntryMixin from "./FullEntryMixin";
-  import EntryActorList from "./entry/EntryActorList";
   import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
   import PersistentStorageMixin from "./PersistentStorageMixin";
   import MissingAspectsNotice from "./entry/MissingAspectsNotice";
@@ -85,8 +82,6 @@
   import {ENTRYTYPES_TYPE} from "../lib/store_consts";
   import {privacy_icon} from "../lib/util";
   import ChangedAspectNotice from "./entry/ChangedAspectNotice";
-  import {get_entry_titleAspect} from "../lib/entry";
-  import {aspect_loc_str2arr, loc_prepend} from "../lib/aspect";
 
   export default {
     name: "EntryEdit",
@@ -98,13 +93,10 @@
       Aspect,
       EntryActions,
       Title_Description,
-      MetaChips,
-      EntryActorList
     },
     data() {
       return {
         entry_complete: false,
-        aspect_extras: {},
         router_next: null,
         delete_entry: false
       }
@@ -120,39 +112,10 @@
       entry() {
         return this.$store.getters[ENTRIES_GET_EDIT]()
       },
-      entry_title() {
-        let titleAspect = get_entry_titleAspect(this.template)
-        if (!titleAspect) {
-          return this.entry.title
-        }
-        // todo maybe it would be cleaner to add "entry "+uuid , so that  aspect_loc_str2arr/is wrapped around
-        let title = this.$store.getters[ENTRIES_VALUE](loc_prepend(EDIT, this.uuid, aspect_loc_str2arr(titleAspect)))
-        title = this.$_.get(title, "value", "")
-        return this.template.title + (title ? ": " + title : "")
-      },
-      base_cols() {
-        if (this.$route.name === "entry-uuid")
-          return 8
-        else
-          return 12
-      },
       aspect_loc() {
         return [EDIT, this.uuid]
       },
-      is_dirty() {
-        // console.log("dirt check")
-        const edit_entry = this.$store.getters[ENTRIES_GET_EDIT]()
-        const original_entry = this.$store.getters[ENTRIES_GET_ENTRY](this.uuid)
-        // todo local might disturb that
-        // console.log(edit_entry, original_entry)
-        // for(let k in edit_entry) {
-        //   console.log(k, this.$_.isEqual(edit_entry[k], original_entry[k]))
-        // }
-        return !this.$_.isEqual(edit_entry, original_entry)
-      },
-      is_first_page() {
-        return this.page === 0
-      },
+
       license_aspect() {
         return license_aspect(this.$store, ["cc_licenses"], [])
       },
@@ -192,14 +155,14 @@
         return this.entry.image
       },
       is_dirty() {
-        // console.log("dirt check")
+        console.log("dirt check")
         const edit_entry = this.$store.getters[ENTRIES_GET_EDIT]()
         const original_entry = this.$store.getters[ENTRIES_GET_ENTRY](this.uuid)
         // todo local might disturb that
         // console.log(edit_entry, original_entry)
-        // for(let k in edit_entry) {
-        //   console.log(k, this.$_.isEqual(edit_entry[k], original_entry[k]))
-        // }
+        for(let k in edit_entry) {
+          console.log(k, this.$_.isEqual(edit_entry[k], original_entry[k]))
+        }
         return !this.$_.isEqual(edit_entry, original_entry)
       },
     }

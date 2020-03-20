@@ -1,17 +1,17 @@
-import {has_parent, select_aspect_loc} from "../lib/entry";
+import {get_entry_titleAspect, has_parent, select_aspect_loc} from "../lib/entry";
 import {
   ENTRYTYPES_TYPE,
 } from "../lib/store_consts";
 import {export_data} from "../lib/import_export";
 import {aspect_loc_str2arr, loc_append, loc_prepend} from "~/lib/aspect";
-import {ASPECT, ENTRY, GLOBAL, LICENSE, META, META_ASPECT_LIST, PRIVACY} from "~/lib/consts";
+import {ASPECT, EDIT, ENTRY, GLOBAL, LICENSE, META, META_ASPECT_LIST, PRIVACY} from "~/lib/consts";
 import {SEARCH_GET_ENTRIES, SEARCH_GET_ENTRY} from "~/store/search";
 import {check_str_is_uuid} from "~/lib/fixes";
 import {
   ENTRIES_GET_ENTRY,
   ENTRIES_GET_ENTRY_TITLE,
   ENTRIES_GET_PARENT,
-  ENTRIES_GET_RECURSIVE_ENTRIES, ENTRIES_HAS_ENTRY, ENTRIES_SET_DOWNLOADED, UPDATE_TAGS
+  ENTRIES_GET_RECURSIVE_ENTRIES, ENTRIES_HAS_ENTRY, ENTRIES_SET_DOWNLOADED, ENTRIES_VALUE, UPDATE_TAGS
 } from "~/store/entries";
 import {FILES_GET_FILE} from "~/store/files";
 import {filter_empty, recursive_unpack} from "~/lib/util";
@@ -28,6 +28,7 @@ export default {
   data() {
     return {
       aspect_locs: {},
+      aspect_extras: {},
       page: this.$route.query.page | 0,
     }
   },
@@ -74,11 +75,30 @@ export default {
     template_slug() {
       return this.entry.template.slug
     },
+    base_cols() {
+      if (this.$route.name === "entry-uuid")
+        return 8
+      else
+        return 12
+    },
+    is_first_page() {
+      return this.page === 0
+    },
     template() {
       return this.$store.getters[ENTRYTYPES_TYPE](this.template_slug)
     },
-    title() {
-      return this.$store.getters[ENTRIES_GET_ENTRY_TITLE](this.uuid)
+    // title() {
+    //   return this.$store.getters[ENTRIES_GET_ENTRY_TITLE](this.uuid)
+    // },
+    entry_title() {
+      let titleAspect = get_entry_titleAspect(this.template)
+      if (!titleAspect) {
+        return this.entry.title
+      }
+      // todo maybe it would be cleaner to add "entry "+uuid , so that  aspect_loc_str2arr/is wrapped around
+      let title = this.$store.getters[ENTRIES_VALUE](loc_prepend(EDIT, this.uuid, aspect_loc_str2arr(titleAspect)))
+      title = this.$_.get(title, "value", "")
+      return this.template.title + (title ? ": " + title : "")
     },
     entry_image() {
       if (this.entry.image) {

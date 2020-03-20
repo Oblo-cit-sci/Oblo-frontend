@@ -22,7 +22,7 @@
           v-if="can_submit"
           color="success"
           @click="submit"
-          :disabled="!connected || !entry_complete"
+          :disabled="!connected || !entry_complete || !is_dirty"
           :loading="sending") {{published ? 'update' : 'submit'}}
       // v-if="private_local" todo for now, download for everyone
       v-btn(v-if="can_download" :disabled="disable_download"  @click="download") download
@@ -65,9 +65,7 @@
   import EntryMixin2 from "./EntryMixin2";
   import {SEARCH_DELETE_ENTRY} from "../store/search";
 
-  // TODO, bring back !is_dirty check on submit
-
-  export default {
+     export default {
     name: "EntryActions",
     components: {DecisionDialog, Paginate},
     mixins: [EntryNavMixin, TriggerSnackbarMixin, PersistentStorageMixin, EntryMixin2],

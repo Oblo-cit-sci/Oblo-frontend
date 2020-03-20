@@ -2,44 +2,8 @@
   div(v-if="entry")
     div(v-if="!delete_entry && this.mode==='edit'")
       EntryEdit
-    v-row(justify-center align-center v-else-if="this.mode==='view'")
-      v-col(cols=12)
-        Title_Description(
-          :title="page_title"
-          header_type="h1"
-          :description="template.description")
-        div(v-if="has_parent")
-          span This entry is part of:&nbsp
-          a(@click="to_parent(true, mode)") {{parent_title}}
-        div
-          MetaChips(:meta_aspects="meta_aspects_privacy")
-          EntryActorList.mt-2(:actors="actors")
-        v-divider(class="wide_divider")
-      v-col(class="entry-meta" cols=12 v-bind:class="[show_image ? 'col-md-9' : 'col-md-12']")
-        div(v-if="has_pages")
-          Title_Description(
-            :title="page_info.title"
-            header_type="h2"
-            :description="page_info.description")
-        br
-        div(v-for="(aspect) in shown_aspects" :key="aspect.name")
-          Aspect(
-            :aspect="aspect"
-            :aspect_loc="aspect_locs[aspect.name]"
-            :mode="mode")
-      v-col(v-if="show_image" cols=12 class="col-md-3 col-sm-12 entry-image")
-        v-img(:src="entry_image" aspect-ratio=1)
-      v-col(class="entry-meta" cols=12)
-        EntryActions(
-          v-bind="entry_actions_props"
-          :page.sync="page"
-          :passed_uuid="uuid"
-          v-on:entryAction="entryAction($event)"
-          v-on:edit="mode='edit'")
-        DecisionDialog(
-          :open.sync="openSaveDialog"
-          @action="edit_or_save_dialog($event)"
-          v-bind="unsaved_changes_dialog")
+    div(v-if="!delete_entry && this.mode==='view'")
+      EntryView
 </template>
 
 <script>
@@ -72,11 +36,13 @@
     ENTRIES_UPDATE_PARENT_VERSION
   } from "../../../store/entries";
   import EntryEdit from "../../../components/EntryEdit";
+  import EntryView from "../../../components/entry/EntryView";
 
   export default {
     name: "uuid",
     mixins: [EntryNavMixin, EntryMixin, TriggerSnackbarMixin, PersistentStorageMixin, FullEntryMixin],
     components: {
+      EntryView,
       EntryEdit,
       DecisionDialog,
       Aspect,

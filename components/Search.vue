@@ -43,6 +43,7 @@
   } from "../store/search";
   import PersistentStorageMixin from "./PersistentStorageMixin";
   import {ENTRIES_DOMAIN_DRAFTS_UUIDS} from "../store/entries";
+  import {route_change_query} from "../lib/util";
 
   const LOG = false
 
@@ -87,7 +88,7 @@
       }
     },
     created() {
-      console.log("search created!")
+      // console.log("search created!")
       // console.log(this.init_clear, this.init_full, this.searching, this.entries().length)
       let start_search = false
       const last_path = this.$store.getters[SEARCH_GET_PATH]
@@ -133,8 +134,10 @@
           // TODO
           // this uses now, the domain only filter.
           // could later be replaced by, last search or all local in that domain (like it is now)
+          this.$router.push(route_change_query(this.$route))
           this.getEntries()
         } else if (kw.length >= this.kw_char_thresh) {
+          this.$router.push(route_change_query(this.$route, {"search": kw}))
           this.getEntries()
         }
       },

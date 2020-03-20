@@ -17,6 +17,7 @@ import {ENTRYTYPES_TYPE, GET_ENTRY} from "../lib/store_consts";
 import Vue from "vue"
 import {filter_empty, flatten_collection_of_lists, recursive_unpack} from "../lib/util";
 import {META} from "~/lib/consts";
+import {guarantee_array} from "~/lib/util";
 
 
 // Mutations
@@ -441,13 +442,19 @@ export const getters = {
       const entry_type = getters.get_entry_type(entry.template.slug)
       const tagsAspect = entry_type.rules.tagsAspect
       const all_tags = {}
+      debugger
       for (let tags_type in tagsAspect) {
         const aspect_tag_location = tagsAspect[tags_type]
         let tags = select_aspect_loc(state, loc_prepend(ENTRY, uuid, aspect_loc_str2arr(aspect_tag_location)))
-        tags = flatten_collection_of_lists(tags)
-        tags = ld.uniqBy(tags, t => t.value)
-        tags = ld.filter(tags, t => t.value) // kickout empty string
-        tags = ld.map(tags, t => t.value) // tag format // todo icons...
+        tags = recursive_unpack(tags)
+        //
+        tags = guarantee_array(tags)
+        tags =   ld.flattenDeep(tags)
+        tags = tags.filter(t => t)
+        tags = Array.from(new Set(tags))
+        // tags = ld.uniqBy(tags, t => t.value)
+        // tags = ld.filter(tags, t => t.value) // kickout empty string
+        // tags = ld.map(tags, t => t.value) // tag format // todo icons...
         if (tags.length > 0) {
           all_tags[tags_type] = tags
         }

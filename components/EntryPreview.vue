@@ -2,7 +2,7 @@
   div(v-if="!entry_stored")
     div Deleted Entry, {{uuid}}
   v-card.mx-auto.custom-card(v-else outlined v-bind:class="{draft: is_draft}")
-    v-container.ml-2
+    v-container.pt-0.pb-0
       v-row
         v-col(v-bind:class="[show_image ? 'col-md-8' : 'col-md-10']")
           v-row
