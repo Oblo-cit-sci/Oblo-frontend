@@ -21,7 +21,7 @@
 
   import Aspect from "../components/Aspect";
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
-  import {license_aspect, privacy_aspect} from "../lib/typical_aspects";
+  import {license_aspect, password_aspect, password_confirm_aspect, privacy_aspect} from "../lib/typical_aspects";
   import LoginMixin from "../components/actor/LoginMixin";
 
   export default {
@@ -67,45 +67,14 @@
             value: "",
             error: true
           },
-          password: {
-            type: "str",
-            name: "password",
-            label: "Password",
-            attr: {
-              max: 40,
-              unpacked: true,
-              component_type: "password",
-              extra: {
-                rules: [
-                  v => !!v || 'Password is required',
-                  v => v && (v.length >= 8) || 'Password must have at least 8 characters'
-                ]
-              }
-            },
-            value: "",
-            error: true
-          },
-          password_confirm: {
-            type: "str",
-            name: "repeat password",
-            label: "Repeat password",
-            attr: {
-              max: 40,
-              unpacked: true,
-              component_type: "password",
-              extra: {
-                rules: [
-                  v => v === this.aspects.password.value || "Passwords do not match"
-                ]
-              }
-            },
-            value: "",
-            error: true
-          },
+          password: this.$_.cloneDeep(password_aspect()),
+          password_confirm: this.$_.merge(this.$_.cloneDeep(password_confirm_aspect()), {attr: {extra:{rules: [
+        v => v === this.aspects.password.value || "Passwords do not match"
+      ]}}}),
           default_privacy: Object.assign(privacy_aspect(),
             {value: "public", description: "Choose a default privacy for all your entries"}),
-          default_license: Object.assign(license_aspect(this.$store,["cc_licenses"]),
-            {value:"CC-BY", description:"Choose a default license for your entries"})
+          default_license: Object.assign(license_aspect(this.$store, ["cc_licenses"]),
+            {value: "CC-BY", description: "Choose a default license for your entries"})
         },
         submitStatus: null,
         errorMsg: null

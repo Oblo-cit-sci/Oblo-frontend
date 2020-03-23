@@ -86,6 +86,10 @@ class APIWrapper {
     return this.axios.post(`${this.actor_baseURL}/me`, profile_data)
   }
 
+  post_actor__change_password(passwords) {
+    return this.axios.post(`${this.actor_baseURL}/change_password`, passwords)
+  }
+
   post_actor__avatar(formData) {
     return this.axios.post(`${this.actor_baseURL}/avatar`,
       formData,
