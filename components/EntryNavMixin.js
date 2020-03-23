@@ -1,5 +1,5 @@
 import {fetch_entry, get_proper_mode} from "../lib/entry";
-import {GLOBAL, NO_DOMAIN, VIEW} from "../lib/consts";
+import {EDIT, GLOBAL, NO_DOMAIN, VIEW} from "../lib/consts";
 import {
   DOMAIN,
   ENTRYTYPES_GET_ASPECT_DEF,
@@ -20,21 +20,21 @@ export default {
     has_entry(uuid) {
       return this.$store.getters[ENTRIES_HAS_ENTRY](uuid)
     },
-    goto(uuid) {
+    goto(uuid, force_mode) {
       // todo should push not init?!
       this.$store.commit(INIT_PAGE_PATH, this.$route)
 
       const has_full_entry = this.$store.getters[ENTRIES_HAS_FULL_ENTRY](uuid)
       console.log(has_full_entry)
       const entry = this.$store.getters[ENTRIES_GET_ENTRY](uuid)
-      const proper_mode = get_proper_mode(entry, this.$store)
+      const mode = force_mode ? force_mode : get_proper_mode(entry, this.$store)
       if (!has_full_entry) { // todo replace values by entry.local.is_full: Boolean
         this.$api.entry__$uuid(this.entry.uuid).then(({data}) => {
           if (data.data) {
             const entry = data.data
             this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
             if (!this.prevent_page_change) {
-              this.to_entry(uuid, proper_mode)
+              this.to_entry(uuid, mode)
             } else {
               this.$emit("preview_action", {uuid: this.entry.uuid, action: this.goto_text})
             }
@@ -45,7 +45,7 @@ export default {
         })
       } else {
         if (!this.prevent_page_change) {
-          this.to_entry(uuid, proper_mode)
+          this.to_entry(uuid, mode)
         } else {
           this.$emit("preview_action", {uuid: this.entry.uuid, action: this.goto_text})
         }

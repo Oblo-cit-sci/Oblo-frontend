@@ -187,8 +187,8 @@ export const mutations = {
     console.log("update tags", tags)
     state.entries.get(uuid).tags = tags
   },
-  update_image(state, {uuid, image_url}) {
-    state.entries.get(uuid).image = image_url
+  update_image(state, image_url) {
+    state.edit.image = image_url
   },
   entries_set_local_list_page(state, {aspect_loc, page}) {
     let entry = state.entries.get(aspect_loc_uuid(aspect_loc))
@@ -230,11 +230,19 @@ export const mutations = {
   },
   add_file_attachment(state, attachment) {
     const {entry_uuid, ...attachment_data} = attachment
-    const entry = state.entries.get(entry_uuid)
+    let entry = null
+    if (entry_uuid) {
+      entry = state.entries.get(entry_uuid)
+    } else
+      entry = state.edit
     entry.attached_files.push(attachment_data)
   },
   remove_file_attachment(state, {entry_uuid, file_uuid}) {
-    const entry = state.entries.get(entry_uuid)
+    let entry = null
+    if (entry_uuid) {
+      entry = state.entries.get(entry_uuid)
+    } else
+      entry = state.edit
     entry.attached_files = entry.attached_files.filter(a => a.file_uuid !== file_uuid)
   }
 }
@@ -445,7 +453,6 @@ export const getters = {
       const entry_type = getters.get_entry_type(entry.template.slug)
       const tagsAspect = entry_type.rules.tagsAspect
       const all_tags = {}
-      debugger
       for (let tags_type in tagsAspect) {
         const aspect_tag_location = tagsAspect[tags_type]
         let tags = select_aspect_loc(state, loc_prepend(ENTRY, uuid, aspect_loc_str2arr(aspect_tag_location)))

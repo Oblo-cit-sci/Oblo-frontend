@@ -40,6 +40,7 @@
       v-card-actions
         div
           v-btn(v-if="has_type" small text outlined @click="goto(entry.uuid)") {{goto_text}}
+          v-btn(v-if="has_type && proper_mode==='edit'" small text outlined @click="goto(entry.uuid, 'view')") view
           v-btn(small text outlined :color="act.color || 'green'"
             v-for="act in additional_actions"
             :key="act.name"

@@ -1,9 +1,7 @@
 <template lang="pug">
   div(v-if="entry")
-    div(v-if="!delete_entry && this.mode==='edit'")
-      EntryEdit
-    div(v-if="!delete_entry && this.mode==='view'")
-      EntryView
+    div(v-if="!delete_entry")
+      Entry
 </template>
 
 <script>
@@ -37,11 +35,13 @@
   } from "../../../store/entries";
   import EntryEdit from "../../../components/EntryEdit";
   import EntryView from "../../../components/entry/EntryView";
+  import Entry from "../../../components/Entry";
 
   export default {
     name: "uuid",
     mixins: [EntryNavMixin, EntryMixin, TriggerSnackbarMixin, PersistentStorageMixin, FullEntryMixin],
     components: {
+      Entry,
       EntryView,
       EntryEdit,
       DecisionDialog,

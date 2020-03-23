@@ -100,7 +100,7 @@
     },
     methods: {
       add_image(image_result) {
-        console.log("add", image_result)
+        // console.log("add", image_result)
         const file_uuid = uuidv4()
         this.$store.commit(FILES_ADD_FILE, {uuid: file_uuid, meta: image_result.meta, data: image_result.data})
         this.update_value(this.$_.concat(this.value, [{
@@ -121,17 +121,11 @@
       },
       set_cover_image(index) {
         this.cover_image_index = index
-        this.$store.commit(ENTRIES_UPDATE_IMAGE, {
-          uuid: this.entry_uuid(),
-          image_url: this.images[index].file_uuid
-        })
+        this.$store.commit(ENTRIES_UPDATE_IMAGE, this.images[index].file_uuid)
       },
       unset_cover_image() {
         this.cover_image_index = -1
-        this.$store.commit(ENTRIES_UPDATE_IMAGE, {
-          uuid: this.entry_uuid(),
-          image_url: null
-        })
+        this.$store.commit(ENTRIES_UPDATE_IMAGE,  null)
       },
       // todo needs to be called from the ImageCard component
       make_selected_cover(index = this.selected_image_index) {
@@ -190,7 +184,7 @@
           if (new_img_index === 0) {
             this.set_cover_image(0)
           }
-          this.add_file_attachment(this.entry_uuid(), "image",
+          this.add_file_attachment(null, "image",
             this.images[new_img_index].file_uuid, this.image_location(new_img_index))
         }
       }
