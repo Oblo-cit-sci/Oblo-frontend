@@ -76,9 +76,16 @@ export default {
       return this.entry.template.slug
     },
     base_cols() {
-      if (this.$route.name === "entry-uuid")
-        return 8
-      else
+      if (this.$route.name === "entry-uuid") {
+        if (this.$vuetify.breakpoint.smAndDown) {
+          return 12
+        }
+        if (this.$vuetify.breakpoint.mdAndDown) {
+          return 10
+        } else {
+          return 8
+        }
+      } else
         return 12
     },
     is_first_page() {

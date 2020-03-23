@@ -5,16 +5,10 @@
         div
           v-btn(dark fab bottom right x-large color="blue" @click="drawer = !drawer")
             v-icon mdi-menu
-          v-btn(v-if="select_mode" dark fab bottom right large color="warning" @click="back")
-            v-icon mdi-arrow-left
-          v-btn(v-if="show_select_confirm" dark fab bottom right large color="green" @click="confirm_select")
-            v-icon mdi-map-marker-check
-        v-snackbar(v-if="selected_place" :value="selected_place" :timeout="0" selected_place right top) {{selected_place_text}}
       MapNavigationBottomSheet(
         v-if="display_mdDown"
         :drawer="drawer"
         :layers="layers"
-        :map_mode="mode"
         :navigation_mode.sync="navigation_mode"
         :selected_entry_uuid.sync="selected_entry"
         @layer_select_change="layer_select_change($event)")
@@ -22,7 +16,6 @@
         v-else
         :drawer="drawer"
         :layers="layers"
-        :map_mode="mode"
         :navigation_mode.sync="navigation_mode"
         :selected_entry_uuid.sync="selected_entry"
         @layer_select_change="layer_select_change($event)")
@@ -32,35 +25,18 @@
         @load="onMapLoaded"
         :center="center_coordinates"
         @click="touch($event)")
-        MglMarker(v-if="selected_coordinates" :coordinates="selected_coordinates")
-
 </template>
 
 <script>
   import {MglMarker, MglPopup} from "vue-mapbox";
-  import {access_token, licci_style_map, rev_geocode} from "../lib/services/mapbox";
-  import {MODE_ASPECT_POINT, MODE_NORMAL} from "../lib/consts";
-  import {place2str} from "../lib/location";
-  import {
-    MAP_GOTO_DONE,
-    MAP_GOTO_LOCATION,
-    MAP_RESET_GOTO_LOCATIONS,
-    MAP_RESET_TO_SELECT_ASPECT_LOCATION, MAP_SELECTED_LOCATION,
-    MAP_SET_ENTRIES,
-  } from "../lib/store_consts";
-  import {pack_value} from "../lib/aspect";
-  import {arr2coords} from "../lib/map_utils";
+  import {access_token, licci_style_map} from "../lib/services/mapbox";
+  import {MAP_GOTO_DONE, MAP_GOTO_LOCATION, MAP_RESET_GOTO_LOCATIONS, MAP_SET_ENTRIES,} from "../lib/store_consts";
   import {mapGetters} from "vuex"
   import MapNavigationDrawer from "../components/map/MapNavigationDrawer";
   import {Marker} from "mapbox-gl";
   import MapNavigationBottomSheet from "../components/map/MapNavigationBottomSheet";
-  import {
-    ENTRIES_HAS_FULL_ENTRY,
-    ENTRIES_SAVE_ENTRY,
-    ENTRIES_SET_ENTRY_VALUE
-  } from "../store/entries";
+  import {ENTRIES_HAS_FULL_ENTRY, ENTRIES_SAVE_ENTRY} from "../store/entries";
 
-  const menu_mode_options = [MODE_NORMAL, MODE_ASPECT_POINT]
 
   // navigation mode!! copy of  MapNvaigationMixin
   export const SEARCH = "search"
@@ -89,9 +65,7 @@
         mapCssStyle: "",
         mapStyle: licci_style_map,
         center_coordinates: [-0.8844128193341589, 37.809519042232694],
-        //  MODE_ASPECT_POINT
-        selected_coordinates: null,
-        selected_place: null,
+
         // for the navigation
         navigation_mode: SEARCH,
         selected_entry: null,
@@ -100,17 +74,15 @@
     },
     created() {
       this.map = null
-      if (this.normal_mode) {
-        //this.$store.dispatch(MAP_SET_ENTRIES, this.$store.getters[ENTRIES_ALL_ENTRIES_ARRAY]())
-        this.$api.entries_map_entries().then(({data}) => {
-          this.$store.dispatch(MAP_SET_ENTRIES, data.data)
-        }).catch(err => {
-          console.log("map entries error")
-        })
-        const goto_location = this.$store.getters[MAP_GOTO_LOCATION]()
-        if (goto_location) {
-          this.center_coordinates = this.transform_loc(goto_location.coordinates)
-        }
+      //this.$store.dispatch(MAP_SET_ENTRIES, this.$store.getters[ENTRIES_ALL_ENTRIES_ARRAY]())
+      this.$api.entries_map_entries().then(({data}) => {
+        this.$store.dispatch(MAP_SET_ENTRIES, data.data)
+      }).catch(err => {
+        console.log("map entries error")
+      })
+      const goto_location = this.$store.getters[MAP_GOTO_LOCATION]()
+      if (goto_location) {
+        this.center_coordinates = this.transform_loc(goto_location.coordinates)
       }
       console.log("map create query.select", this.$route.query.select)
       if (this.$route.query.select) {
@@ -130,24 +102,6 @@
       }),
       display_mdDown() {
         return this.$vuetify.breakpoint.mdAndDown
-      },
-      mode() {
-        return this.$route.query.mode || MODE_NORMAL
-      },
-      select_mode() {
-        return this.mode === MODE_ASPECT_POINT
-      },
-      normal_mode() {
-        return this.mode === MODE_NORMAL
-      },
-      selected_place_text() {
-        if (this.selected_place)
-          return place2str(this.selected_place)
-        else
-          return ""
-      },
-      show_select_confirm() {
-        return this.selected_place
       },
       goto_location() {
         console.log("map, goto_location, map-store", this.$store.getters[MAP_GOTO_LOCATION]())
@@ -185,43 +139,13 @@
       back() {
         this.$router.back()
       },
-      confirm_select() {
-        const value = pack_value({
-          coordinates: arr2coords(this.selected_coordinates),
-          place: this.selected_place
-        })
-        const aspect_loc = this.$store.getters["map/to_select_aspect_location"]
-        if (aspect_loc) {
-          this.$store.commit(MAP_RESET_TO_SELECT_ASPECT_LOCATION)
-          this.$store.dispatch(ENTRIES_SET_ENTRY_VALUE, {aspect_loc: aspect_loc, value: value})
-        } else {
-          this.$store.commit(MAP_SELECTED_LOCATION, value)
-        }
-        this.$router.back()
-      },
       touch({mapboxEvent}) {
-        // console.log(mapboxEvent)
-        // console.log(mapboxEvent.lngLat.lng, mapboxEvent.lngLat.lat)
-        if (this.mode === MODE_ASPECT_POINT) {
-          this.selected_coordinates = [mapboxEvent.lngLat.lng, mapboxEvent.lngLat.lat]
-          rev_geocode(this.$axios, {lon: mapboxEvent.lngLat.lng, lat: mapboxEvent.lngLat.lat}).then(data => {
-            this.selected_place = {}
-            if (data.features.length === 0) { // oceans
-              this.selected_place = null
-            } else {
-              this.$_.forEach(data.features, feature => {
-                this.selected_place[feature.place_type[0]] = feature.text
-              })
-            }
-          })
-        }
       },
       select_entry_marker(entry_uuid) {
-        console.log("select_entry_marker")
-        // this.$store.dispatch("map/select_entry", entry_uuid)
-        // console.log(event)
+        console.log("select_entry_marker", entry_uuid)
 
         if (this.$store.getters[ENTRIES_HAS_FULL_ENTRY](entry_uuid)) {
+          console.log("has full entry")
           if (this.selected_entry) {
             this.change_entry_markers_mode(this.selected_entry, false)
             if (entry_uuid !== this.selected_entry) {
@@ -236,21 +160,21 @@
           this.change_entry_markers_mode(entry_uuid, true)
 
         } else {
+          console.log("grabbing entry")
           this.$api.entry__$uuid(entry_uuid).then(({data}) => {
             if (data.data) {
               if (this.selected_entry) {
                 this.change_entry_markers_mode(this.selected_entry, false)
                 if (entry_uuid !== this.selected_entry) {
                   console.log("setting new entry")
-                  this.selected_entry = entry_uuid
                 }
               }
 
               const entry = data.data
               this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
-
-              this.navigation_mode = ENTRY
               this.selected_entry = entry_uuid
+              this.navigation_mode = ENTRY
+
               this.drawer = true
               this.change_entry_markers_mode(entry_uuid, true)
             }

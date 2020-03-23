@@ -88,14 +88,14 @@
         return this.value !== null
       },
       has_place() {
-        return this.location_set && this.value.place !== undefined
+        return this.location_set && this.value.place && !this.$_.isEmpty(this.value.place)
       },
       location_view() {
         if (this.has_output_place && this.has_place) {
           return place2str(this.value.place)
         } else {
           if(this.location_set) {
-            return "Place not determined"
+            return "No location name"
           } else {
             return ""
           }
@@ -137,6 +137,7 @@
       reset_location() {
         this.search_query = ""
         this.update_value(null)
+        this.search_results = []
         // this.update_value(null)
       },
       search_keypress(keyEvent) {
@@ -219,7 +220,7 @@
       },
       map_position() {
         let route = {
-          path: "/map",
+          path: "/locationselectmap",
           query: {
             mode: MODE_ASPECT_POINT,
           }
@@ -230,7 +231,6 @@
     },
     watch: {
       selected_search_result(sel) {
-        console.log(sel)
         if (!sel) {
           this.reset_search_data()
           this.update_value(null)
@@ -247,7 +247,6 @@
             const place_type = context.id.split(".")[0]
             value.place[place_type] = context.text
           }
-          console.log(value)
           this.update_value(value)
         }
       }

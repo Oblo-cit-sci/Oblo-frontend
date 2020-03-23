@@ -18,7 +18,6 @@ export default {
   props: {
     drawer: Boolean,
     layers: Array,
-    map_mode: String,
     navigation_mode: String, // synced
     selected_entry_uuid: String // synced
   },
@@ -40,12 +39,6 @@ export default {
     }
   },
   computed: {
-    select_map_mode() {
-      return this.map_mode === MODE_ASPECT_POINT
-    },
-    normal_map_mode() {
-      return this.map_mode === MODE_NORMAL
-    },
     layer_options() {
       return string_list2options(this.layers)
     },

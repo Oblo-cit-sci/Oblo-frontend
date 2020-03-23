@@ -24,18 +24,18 @@
             v-icon mdi-crosshairs-gps
       v-row.ma-1(wrap justify-center)
         <!-- the v-show prevents reloading every time, when switching between entry and search-->
-        Search(v-show="normal_map_mode && nav_mode_search"
+        Search(v-show="nav_mode_search"
           :preview_options="preview_options"
           :fixed_filters="location_pre_filter"
           v-on:received_search_results="update_map_entries($event)"
           @preview_action="preview_action($event)")
-        div(v-if="normal_map_mode && nav_mode_entry")
+        div(v-if="nav_mode_entry")
           v-row
             v-btn(@click="to_search_mode" Search)
               v-icon mdi-magnify
           v-row
             v-col
-              EntryEdit(:passed_uuid="selected_entry_uuid" :navigation_props="entry_navigation_props")
+              EntryView(:passed_uuid="selected_entry_uuid" :navigation_props="entry_navigation_props")
               <!-- EntryAspectView.ma-1.pa-2(:entry="selected_entry" mode="view")-->
 </template>
 
@@ -44,13 +44,14 @@
   import Search from "../Search";
   import EntryAspectView from "../EntryAspectView";
   import EntryEdit from "../EntryEdit";
+  import EntryView from "../entry/EntryView";
 
   // search:
   //   <!--          :fixed_filters="location_pre_filter"-->
 
   export default {
     name: "MapNavigationDrawer",
-    components: {EntryEdit},
+    components: {EntryView, EntryEdit},
     mixins: [MapNavigationMixin],
     computed: {
       drawer_width() {
