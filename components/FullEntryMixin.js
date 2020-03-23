@@ -1,7 +1,6 @@
 
-  import {privacy_icon, static_file_path} from "../lib/util";
-  import {loc_append} from "../lib/aspect";
-  import {ASPECT, EDIT, ENTRY, VIEW} from "../lib/consts";
+  import {privacy_icon} from "../lib/util";
+  import {VIEW} from "../lib/consts";
   import {unsaved_changes_default_dialog} from "../lib/dialogs";
 
   export default {
@@ -12,7 +11,6 @@
       }
     },
     props: {
-      // mode: 3
       entry_navigation_props: {
         type: Object,
         default: () => {}
@@ -22,7 +20,7 @@
     computed: {
       mode: {
         get() {
-          return this.$route.query.mode || VIEW
+          return this.$route.query.entry_mode || VIEW
         },
         set(mode) {
           this.to_entry(this.uuid, mode)

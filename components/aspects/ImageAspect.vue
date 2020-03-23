@@ -10,6 +10,7 @@
         v-if="image_open"
         :image_data="selected_img_data"
         :entry_uuid="entry_uuid()"
+        :mode="mode"
         :is_cover="selected_is_cover"
         @set_cover="make_selected_cover"
         @close="close"

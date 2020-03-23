@@ -8,7 +8,7 @@
       <!--        Aspect(:aspect="aspects.title" :mode="edit")-->
     v-row.ma-5
       v-img(:src="get_image_data()" contain max-height="500px")
-    div.ma-1
+    div.ma-1(v-if="mode==='edit'")
       v-row
         v-col.font-weight-bold(v-if="is_cover") Cover image
         v-col(v-else)
@@ -23,46 +23,47 @@
 </template>
 
 <script>
-  import {dateAspectBuilder, shortTextAspectBuilder} from "../../lib/aspect";
-  import {FILES_GET_FILE} from "../../store/files";
+    import {dateAspectBuilder, shortTextAspectBuilder} from "../../lib/aspect";
+    import {FILES_GET_FILE} from "../../store/files";
 
-  export default {
-    name: "ImageCard",
-    props: {
-      image_data: {
-        type: Object,
-        required: true
-      },
-      is_cover: {
-        type: Boolean,
-        required: true
-      },
-      entry_uuid: String
-    },
-    data() {
-      return  {
-        aspects: {
-          title: shortTextAspectBuilder("Title"),
-          date: dateAspectBuilder("Date")
+    export default {
+        name: "ImageCard",
+        props: {
+            image_data: {
+                type: Object,
+                required: true
+            },
+            is_cover: {
+                type: Boolean,
+                required: true
+            },
+            entry_uuid: String,
+            mode: String
+        },
+        data() {
+            return {
+                aspects: {
+                    title: shortTextAspectBuilder("Title"),
+                    date: dateAspectBuilder("Date")
+                }
+            }
+        },
+        methods: {
+            // todo move this to a mixin or lib function. similar to ImageAspect
+            get_image_data() {
+                if (this.image_data.url === null) {
+                    const img_data = this.$store.getters[FILES_GET_FILE](this.image_data.file_uuid)
+                    if (img_data) {
+                        return img_data.data
+                    } else {
+                        return this.$api.url_entry__$uuid__attachment__$file_uuid(this.entry_uuid, (this.image_data.file_uuid))
+                    }
+                } else {
+                    return this.image_data.url
+                }
+            },
         }
-      }
-    },
-    methods: {
-      // todo move this to a mixin or lib function. similar to ImageAspect
-      get_image_data() {
-        if (this.image_data.url === null) {
-          const img_data = this.$store.getters[FILES_GET_FILE](this.image_data.file_uuid)
-          if (img_data) {
-            return img_data.data
-          } else {
-            return this.$api.url_entry__$uuid__attachment__$file_uuid(this.entry_uuid, (this.image_data.file_uuid))
-          }
-        } else {
-          return this.image_data.url
-        }
-      },
     }
-  }
 </script>
 
 <style scoped>

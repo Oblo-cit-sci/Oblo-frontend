@@ -68,7 +68,7 @@
         center_coordinates: [-0.8844128193341589, 37.809519042232694],
 
         // for the navigation
-        navigation_mode: SEARCH,
+        // navigation_mode: SEARCH,
         selected_entry: null,
         markers: [],
       }
@@ -85,11 +85,11 @@
       if (goto_location) {
         this.center_coordinates = this.transform_loc(goto_location.coordinates)
       }
-      console.log("map create query.select", this.$route.query.select)
-      if (this.$route.query.select) {
+      console.log("map create query.select", this.$route.query.uuid)
+      if (this.$route.query.uuid) {
         this.selected_entry = this.$route.query.select
         this.select_entry_marker(this.selected_entry)
-        this.navigation_mode = ENTRY
+        // this.navigation_mode = ENTRY
       }
     },
     mounted() {
@@ -107,13 +107,18 @@
       goto_location() {
         console.log("map, goto_location, map-store", this.$store.getters[MAP_GOTO_LOCATION]())
         return this.$store.getters[MAP_GOTO_LOCATION]()
+      },
+      navigation_mode() {
+        if (this.$route.query.uuid) {
+          return  ENTRY
+        } else
+          return SEARCH
       }
     },
     methods: {
       onMapLoaded(event) {
         this.map = event.map
         // console.log("map loaded")
-        // this.map.setRenderWorldCopies(false)
         this.create_markers()
       },
       // todo later use dispatch, like in create?
@@ -143,37 +148,31 @@
       touch({mapboxEvent}) {
       },
       select_entry_marker(entry_uuid) {
-        // console.log("select_entry_marker", entry_uuid)
+        console.log("select_entry_marker", entry_uuid)
+
         if (this.$store.getters[ENTRIES_HAS_FULL_ENTRY](entry_uuid)) {
           console.log("has full entry")
           if (this.selected_entry) {
             this.change_entry_markers_mode(this.selected_entry, false)
             if (entry_uuid !== this.selected_entry) {
               console.log("setting new entry")
-              this.selected_entry = entry_uuid
             }
           }
-
-          this.navigation_mode = ENTRY
           this.selected_entry = entry_uuid
+
           this.drawer = true
           this.change_entry_markers_mode(entry_uuid, true)
-
         } else {
           // console.log("grabbing entry")
           this.$api.entry__$uuid(entry_uuid).then(({data}) => {
             if (data.data) {
               if (this.selected_entry) {
                 this.change_entry_markers_mode(this.selected_entry, false)
-                if (entry_uuid !== this.selected_entry) {
-                  // console.log("setting new entry")
-                }
               }
 
               const entry = data.data
               this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
               this.selected_entry = entry_uuid
-              this.navigation_mode = ENTRY
 
               this.drawer = true
               this.change_entry_markers_mode(entry_uuid, true)
@@ -238,7 +237,7 @@
         }
       },
       entries() {
-        console.log("watch- entries")
+        // console.log("watch- entries")
         // todo, a bit ineficient. is called whenever we go back from an entry to the search
         if (this.map) {
           this.create_markers()
@@ -247,6 +246,7 @@
         }
       },
       selected_entry(selected_uuid, previous_selected) {
+        console.log("selected_entry", selected_uuid)
         if (previous_selected) {
           this.change_entry_markers_mode(previous_selected, false)
         }
@@ -254,17 +254,21 @@
         const query = {
           mode: this.navigation_mode
         }
-        if(selected_uuid) {
-          query.select = selected_uuid
+        if (selected_uuid) {
+          query.uuid = selected_uuid
+          // this.navigation_mode = ENTRY
         }
+        // else {
+        //   this.navigation_mode = SEARCH
+        // }
         this.$router.push(route_change_query(this.$route, query))
-      },
-      navigation_mode(mode) {
-        if (mode === SEARCH) {
-          this.selected_entry = null
-        }
-        this.change_entry_markers_mode(this.selected_entry, true)
       }
+      // navigation_mode(mode) {
+      //   if (mode === SEARCH) {
+      //     this.selected_entry = null
+      //   }
+      //   this.change_entry_markers_mode(this.selected_entry, true)
+      // }
     }
   }
 </script>

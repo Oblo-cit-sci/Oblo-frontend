@@ -1,21 +1,19 @@
-import {get_entry_titleAspect, has_parent, select_aspect_loc} from "../lib/entry";
-import {
-  ENTRYTYPES_TYPE,
-} from "../lib/store_consts";
+import {get_entry_titleAspect, has_parent} from "../lib/entry";
+import {ENTRYTYPES_TYPE,} from "../lib/store_consts";
 import {export_data} from "../lib/import_export";
 import {aspect_loc_str2arr, loc_append, loc_prepend} from "~/lib/aspect";
-import {ASPECT, EDIT, ENTRY, GLOBAL, LICENSE, META, META_ASPECT_LIST, PRIVACY} from "~/lib/consts";
-import {SEARCH_GET_ENTRIES, SEARCH_GET_ENTRY} from "~/store/search";
+import {ASPECT, EDIT, ENTRY, GLOBAL, META, META_ASPECT_LIST, VIEW} from "~/lib/consts";
 import {check_str_is_uuid} from "~/lib/fixes";
 import {
   ENTRIES_GET_ENTRY,
   ENTRIES_GET_ENTRY_TITLE,
   ENTRIES_GET_PARENT,
-  ENTRIES_GET_RECURSIVE_ENTRIES, ENTRIES_HAS_ENTRY, ENTRIES_SET_DOWNLOADED, ENTRIES_VALUE, UPDATE_TAGS
+  ENTRIES_GET_RECURSIVE_ENTRIES,
+  ENTRIES_HAS_ENTRY,
+  ENTRIES_SET_DOWNLOADED,
+  ENTRIES_VALUE
 } from "~/store/entries";
 import {FILES_GET_FILE} from "~/store/files";
-import {filter_empty, recursive_unpack} from "~/lib/util";
-import {entry_value_select} from "~/lib/entry";
 
 export default {
   name: "EntryMixin",
@@ -34,11 +32,20 @@ export default {
   },
   computed: {
     uuid() {
+      // console.log("UUID", this.passed_uuid, this.$route)
       if (this.passed_uuid) {
         return this.passed_uuid
-      } else {
+      } else if (this.$route.params.uuid) {
         return this.$route.params.uuid
+      } else if (this.$route.query.uuid) {
+        return this.$route.query.uuid
+      } else {
+        console.log("no UUID for entry/route:", this.$route)
+        return null
       }
+    },
+    mode() {
+      return this.$route.query.entry_mode || VIEW
     },
     in_context() {
       return this.template.rules.context !== GLOBAL || this.entry.refs.parent

@@ -38,7 +38,6 @@ export default {
             } else {
               this.$emit("preview_action", {uuid: this.entry.uuid, action: this.goto_text})
             }
-
           }
         }).catch(err => {
           console.log("error fetching entry")

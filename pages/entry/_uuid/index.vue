@@ -103,7 +103,6 @@
       aspect_loc() {
         return [EDIT, this.uuid]
       },
-
       is_first_page() {
         return this.page === 0
       },

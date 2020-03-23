@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-container(justify-center align-center)
+  v-container(justify-center align-center v-if="uuid")
     v-row
       v-col(xs12 md12)
         Title_Description(
@@ -82,7 +82,7 @@
   import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
   import PersistentStorageMixin from "./PersistentStorageMixin";
   import MissingAspectsNotice from "./entry/MissingAspectsNotice";
-  import {ENTRIES_GET_EDIT, ENTRIES_GET_ENTRY, ENTRIES_VALUE} from "../store/entries";
+  import {ENTRIES_GET_EDIT, ENTRIES_GET_ENTRY} from "../store/entries";
   import {EDIT, ENTRY, PRIVATE_LOCAL, VIEW} from "../lib/consts";
   import {entry_roles_aspect, license_aspect, privacy_aspect} from "../lib/typical_aspects";
   import {ENTRYTYPES_TYPE} from "../lib/store_consts";
@@ -119,11 +119,15 @@
       }
     },
     computed: {
-      entry() {
-        return this.$store.getters[ENTRIES_GET_EDIT]()
-      },
+      // entry() {
+      //   return this.$store.getters[ENTRIES_GET_EDIT]()
+      // },
       aspect_loc() {
-        return [EDIT, this.uuid]
+        if (this.is_edit_mode) {
+          return [EDIT, this.uuid]
+        } else {
+          return [ENTRY, this.uuid]
+        }
       },
       is_view_mode() {
         return this.mode === VIEW
@@ -175,7 +179,7 @@
         const original_entry = this.$store.getters[ENTRIES_GET_ENTRY](this.uuid)
         // todo local might disturb that
         // console.log(edit_entry, original_entry)
-        for(let k in edit_entry) {
+        for (let k in edit_entry) {
           console.log(k, this.$_.isEqual(edit_entry[k], original_entry[k]))
         }
         return !this.$_.isEqual(edit_entry, original_entry)

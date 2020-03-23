@@ -31,14 +31,16 @@
                 v-icon mdi-magnify
             v-row
               v-col
-                EntryAspectView.ma-1.pa-2(:entry="selected_entry" mode="view" :navigation_props="entry_navigation_props")
+                Entry(:navigation_props="entry_navigation_props")
 </template>
 
 <script>
   import MapNavigationMixin from "./MapNavigationMixin";
+  import Entry from "../Entry";
 
   export default {
     name: "MapNavigationBottomSheet",
+    components: {Entry},
     mixins:[MapNavigationMixin]
   }
 </script>

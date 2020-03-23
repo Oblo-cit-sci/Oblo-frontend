@@ -12,7 +12,7 @@ export default {
           uuid: uuid
         },
         query: {
-          mode: mode,
+          entry_mode: mode,
           ...query
         }
       }
