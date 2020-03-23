@@ -15,7 +15,7 @@
       span(v-if="view && can_edit")
         v-btn(color="secondary" @click="edit") edit
       span(v-else-if="can_edit")
-        v-btn(v-if="is_draft" color="warning" @click="show_cancel") {{cancel_word}}
+        v-btn(v-if="!view" color="warning" @click="show_cancel") {{cancel_word}}
         v-btn(v-if="is_draft" color="success" @click="save") {{save_word}}
         v-btn(v-if="!is_draft" color="error" @click="show_delete") Delete
         v-btn(
@@ -143,6 +143,8 @@
           this.$store.dispatch(ENTRIES_DELETE_ENTRY, this.uuid)
           this.ok_snackbar("Creation canceled")
           this.$emit("entryAction", "delete")
+          this.back()
+        } else {
           this.back()
         }
       },

@@ -15,7 +15,7 @@ import {
 import {ENTRYTYPES_TYPE, GET_ENTRY} from "../lib/store_consts";
 
 import Vue from "vue"
-import {filter_empty, flatten_collection_of_lists, recursive_unpack} from "../lib/util";
+import {filter_empty, recursive_unpack} from "../lib/util";
 import {META} from "~/lib/consts";
 import {guarantee_array} from "~/lib/util";
 
@@ -131,7 +131,7 @@ export const mutations = {
     } else if (final_loc[0] === META) {
       //TODO (fix later) we need this cuz just entries, already goes to values
       // debugger
-      if(aspect_loc[0][0] === EDIT) {
+      if (aspect_loc[0][0] === EDIT) {
         select = state.edit
       } else {
         select = state.entries.get(aspect_loc[0][1])
@@ -193,7 +193,10 @@ export const mutations = {
   entries_set_local_list_page(state, {aspect_loc, page}) {
     let entry = state.entries.get(aspect_loc_uuid(aspect_loc))
     // todo, later out, should be there from the creation
-    if (!entry.local.list_pages) {
+    if (!ld.get(entry, "local.list_pages")) {
+      if (!entry.hasOwnProperty("local")) {
+        entry.local = {}
+      }
       entry.local.list_pages = {}
     }
     const loc_str = aspect_loc_str(remove_entry_loc(aspect_loc))
@@ -415,7 +418,7 @@ export const getters = {
         if (location && location.value)
           location = location.value
       }
-      if(!Array.isArray(location)){
+      if (!Array.isArray(location)) {
         location = [location]
       }
       return location
@@ -449,7 +452,7 @@ export const getters = {
         tags = recursive_unpack(tags)
         //
         tags = guarantee_array(tags)
-        tags =   ld.flattenDeep(tags)
+        tags = ld.flattenDeep(tags)
         tags = tags.filter(t => t)
         tags = Array.from(new Set(tags))
         // tags = ld.uniqBy(tags, t => t.value)
@@ -508,7 +511,7 @@ export const actions = {
     }
   },
   set_edit(context, uuid) {
-    if(!context.state.edit || context.state.edit.uuid !== uuid) {
+    if (!context.state.edit || context.state.edit.uuid !== uuid) {
       const entry = context.getters.get_entry(uuid)
       context.commit("set_edit", ld.cloneDeep(entry))
     }

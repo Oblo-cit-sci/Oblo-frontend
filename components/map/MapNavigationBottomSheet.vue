@@ -24,7 +24,6 @@
             init_full
             :preview_options="preview_options"
             :fixed_filters="location_pre_filter"
-            v-on:received_search_results="update_map_entries($event)"
             @preview_action="preview_action($event)")
           div(v-if="nav_mode_entry")
             v-row
