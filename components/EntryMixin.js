@@ -52,9 +52,6 @@ export default {
     in_context() {
       return this.template.rules.context !== GLOBAL || this.entry.refs.parent
     },
-    entry_stored() {
-      return this.$store.getters[ENTRIES_HAS_ENTRY](this.uuid)
-    },
     entry() {
       let entry = null
       if (this.is_edit_mode) {
@@ -64,7 +61,6 @@ export default {
       }
       if (!entry) {
         console.log("WARNING, ENTRY MISSING IN CACHE")
-        return null
       }
       return entry
     },
@@ -203,8 +199,8 @@ export default {
       this.$store.commit(ENTRIES_SET_DOWNLOADED, this.entry.uuid)
     },
     update_aspect_locs() {
-      // console.log("update_aspect_locs")
-      if (this.entry_stored) {
+      console.log("update_aspect_locs", this.entry !== null)
+      if (this.entry !== null) {
         for (let aspect of this.template.aspects) {
           this.aspect_locs[aspect.name] = loc_append([this.aspect_loc], ASPECT, aspect.name)
           // console.log(aspect.name, this.aspect_locs[aspect.name])

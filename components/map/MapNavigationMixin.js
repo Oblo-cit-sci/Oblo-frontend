@@ -87,8 +87,7 @@ export default {
       this.$emit("navigation_mode_search")
     },
     preview_action({uuid, action}) {
-      this.$emit("update:navigation_mode", ENTRY)
-      this.$emit("update:selected_entry_uuid", uuid)
+      this.$emit("navigation_mode_entry", {uuid, mode: action})
     }
   },
 }

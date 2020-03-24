@@ -1,5 +1,5 @@
 <template lang="pug">
-  div(v-if="!entry_stored")
+  div(v-if="!uuid")
     div Deleted Entry, {{uuid}}
   v-card.mx-auto.custom-card(v-else outlined v-bind:class="{draft: is_draft}")
     v-container.pt-0.pb-0

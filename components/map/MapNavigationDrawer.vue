@@ -32,7 +32,6 @@
           v-row
             v-col
               Entry(:navigation_props="entry_navigation_props")
-              <!-- EntryAspectView.ma-1.pa-2(:entry="selected_entry" mode="view")-->
 </template>
 
 <script>

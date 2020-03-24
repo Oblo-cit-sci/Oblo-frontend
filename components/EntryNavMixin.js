@@ -1,5 +1,5 @@
-import {fetch_entry, get_proper_mode} from "../lib/entry";
-import {EDIT, GLOBAL, NO_DOMAIN, VIEW} from "../lib/consts";
+import {get_proper_mode} from "../lib/entry";
+import { GLOBAL, NO_DOMAIN, VIEW} from "../lib/consts";
 import {aspect_loc_str} from "../lib/aspect";
 import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
 import NavBaseMixin from "./NavBaseMixin";
@@ -22,14 +22,16 @@ export default {
       return this.$store.getters[ENTRIES_HAS_ENTRY](uuid)
     },
     goto(uuid, force_mode) {
+      // console.log("GOTO")
       // todo should push not init?!
       this.$store.commit(INIT_PAGE_PATH, this.$route)
-
       const has_full_entry = this.$store.getters[ENTRIES_HAS_FULL_ENTRY](uuid)
-      console.log(has_full_entry)
+      // console.log("has full", has_full_entry)
       const entry = this.$store.getters[ENTRIES_GET_ENTRY](uuid)
+      console.log("force mode", force_mode)
       const mode = force_mode ? force_mode : get_proper_mode(entry, this.$store)
       if (!has_full_entry) { // todo replace values by entry.local.is_full: Boolean
+        // console.log("grabbing")
         this.$api.entry__$uuid(this.entry.uuid).then(({data}) => {
           if (data.data) {
             const entry = data.data
@@ -37,17 +39,18 @@ export default {
             if (!this.prevent_page_change) {
               this.to_entry(uuid, mode)
             } else {
-              this.$emit("preview_action", {uuid: this.entry.uuid, action: this.goto_text})
+              this.$emit("preview_action", {uuid: this.entry.uuid, action: mode})
             }
           }
         }).catch(err => {
           console.log("error fetching entry")
         })
       } else {
+        // console.log("prevent_page_change", this.prevent_page_change)
         if (!this.prevent_page_change) {
           this.to_entry(uuid, mode)
         } else {
-          this.$emit("preview_action", {uuid: this.entry.uuid, action: this.goto_text})
+          this.$emit("preview_action", {uuid: this.entry.uuid, action: mode})
         }
       }
     },
@@ -66,6 +69,10 @@ export default {
         this.error_snackbar("Couldn't fetch entry")
       })
     },
+    // async gaurantee_full_entry(uuid) {
+    //   const has_full_entry = this.$store.getters[ENTRIES_HAS_FULL_ENTRY](uuid)
+    //
+    // },
     to_parent(to_last_element = true, mode = VIEW) {
       if (this.in_context) {
         const parent_ref = this.entry.refs.parent

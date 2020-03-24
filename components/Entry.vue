@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-container(justify-center align-center v-if="uuid")
+  v-container(justify-center align-center v-if="entry")
     v-row
       v-col(xs12 md12)
         Title_Description(
@@ -69,6 +69,8 @@
         :open.sync="openSaveDialog"
         @action="edit_or_save_dialog($event)"
         v-bind="unsaved_changes_dialog")
+  v-container(v-else)
+    div no uuid
 </template>
 
 <script>

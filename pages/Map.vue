@@ -9,15 +9,16 @@
         v-if="display_mdDown"
         :drawer="drawer"
         :layers="layers"
-        :selected_entry_uuid.sync="selected_entry"
+        :navigation_mode="navigation_mode"
+        @navigation_mode_entry="navigate_entry"
         @navigation_mode_search="unselect_entry"
         @layer_select_change="layer_select_change($event)")
       MapNavigationDrawer(
         v-else
         :drawer="drawer"
         :layers="layers"
-        :navigation_mode.sync="navigation_mode"
-        :selected_entry_uuid.sync="selected_entry"
+        :navigation_mode="navigation_mode"
+        @navigation_mode_entry="navigate_entry"
         @navigation_mode_search="unselect_entry"
         @layer_select_change="layer_select_change($event)")
       MglMap(:style="mapCssStyle"
@@ -38,6 +39,7 @@
   import {ENTRIES_HAS_FULL_ENTRY, ENTRIES_SAVE_ENTRY} from "../store/entries";
   import {route_change_query} from "../lib/util";
   import {MAP_GOTO_DONE, MAP_GOTO_LOCATION, MAP_RESET_GOTO_LOCATIONS, MAP_SET_ENTRIES} from "../store/map";
+  import {VIEW} from "../lib/consts";
 
 
   // navigation mode!! copy of  MapNvaigationMixin
@@ -67,10 +69,6 @@
         mapCssStyle: "",
         mapStyle: licci_style_map,
         center_coordinates: [-0.8844128193341589, 37.809519042232694],
-
-        // for the navigation
-        // navigation_mode: SEARCH,
-        selected_entry: null,
         markers: [],
       }
     },
@@ -88,8 +86,7 @@
       }
       console.log("map create query.select", this.$route.query.uuid)
       if (this.$route.query.uuid) {
-        this.selected_entry = this.$route.query.select
-        this.select_entry_marker(this.selected_entry)
+        this.update_navigation_mode(this.$route.query.select, VIEW)
       }
     },
     mounted() {
@@ -110,9 +107,12 @@
       },
       navigation_mode() {
         if (this.$route.query.uuid) {
-          return  ENTRY
+          return ENTRY
         } else
           return SEARCH
+      },
+      selected_entry() {
+        return this.$route.query.uuid
       }
     },
     methods: {
@@ -149,7 +149,6 @@
       },
       select_entry_marker(entry_uuid) {
         console.log("select_entry_marker", entry_uuid)
-
         if (this.$store.getters[ENTRIES_HAS_FULL_ENTRY](entry_uuid)) {
           console.log("has full entry")
           if (this.selected_entry) {
@@ -158,10 +157,9 @@
               console.log("setting new entry")
             }
           }
-          this.selected_entry = entry_uuid
+          this.update_navigation_mode(entry_uuid, VIEW)
 
           this.drawer = true
-          this.change_entry_markers_mode(entry_uuid, true)
         } else {
           // console.log("grabbing entry")
           this.$api.entry__$uuid(entry_uuid).then(({data}) => {
@@ -172,15 +170,15 @@
 
               const entry = data.data
               this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
-              this.selected_entry = entry_uuid
+              this.update_navigation_mode(entry_uuid, VIEW)
 
               this.drawer = true
-              this.change_entry_markers_mode(entry_uuid, true)
             }
           }).catch(err => {
             console.log("error fetching entry")
           })
         }
+        this.update_navigation_mode(entry_uuid, "view")
       },
       change_entry_markers_mode(entry_uuid, selected) {
         // console.log("change_entry_markers_mode", entry_uuid, selected, this.selected_entry)
@@ -224,8 +222,28 @@
         })
         this.$store.dispatch(MAP_GOTO_DONE)
       },
+      navigate_entry({uuid, mode}) {
+        this.update_navigation_mode(uuid, mode)
+      },
       unselect_entry() {
-        this.selected_entry = null
+        this.update_navigation_mode(null)
+      },
+      update_navigation_mode(entry_uuid, mode){
+        if (this.selected_entry) {
+          this.change_entry_markers_mode(this.selected_entry, false)
+        }
+        // this.select_entry_marker(entry_uuid)
+        console.log("selected_entry", entry_uuid)
+        const query = {}
+        // console.log("navigation_mode", this.navigation_mode)
+        if (entry_uuid) {
+          query.uuid = entry_uuid
+        }
+        if(mode) {
+          query.entry_mode = mode
+        }
+        this.change_entry_markers_mode(entry_uuid, true)
+        this.$router.push(route_change_query(this.$route, query, true))
       }
     },
     beforeRouteLeave(to, from, next) {
@@ -248,29 +266,6 @@
           console.log("entries, ... but no map")
         }
       },
-      selected_entry(selected_uuid, previous_selected) {
-        console.log("selected_entry", selected_uuid)
-        if (previous_selected) {
-          this.change_entry_markers_mode(previous_selected, false)
-        }
-        // console.log("navigation_mode", this.navigation_mode)
-        const query = {
-          mode: this.navigation_mode
-        }
-        if (selected_uuid) {
-          query.uuid = selected_uuid
-        }
-        // else {
-        //   this.navigation_mode = SEARCH
-        // }
-        this.$router.push(route_change_query(this.$route, query, true))
-      }
-      // navigation_mode(mode) {
-      //   if (mode === SEARCH) {
-      //     this.selected_entry = null
-      //   }
-      //   this.change_entry_markers_mode(this.selected_entry, true)
-      // }
     }
   }
 </script>

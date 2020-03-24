@@ -1,4 +1,3 @@
-
   import {privacy_icon} from "../lib/util";
   import {EDIT, VIEW} from "../lib/consts";
   import {unsaved_changes_default_dialog} from "../lib/dialogs";
@@ -52,9 +51,4 @@
         }
       },
     }
-    // methods: {
-    //   entry_image() {
-    //     return static_file_path(this.$store, '/images/entry_images/' + this.entry.image)
-    //   }
-    // }
   }

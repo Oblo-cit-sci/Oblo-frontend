@@ -305,7 +305,7 @@ export const getters = {
   },
   has_full_entry(state, getters) {
     return (uuid) => {
-      return state.entries.has(uuid) && getters.get_entry(uuid).values
+      return state.entries.has(uuid) && getters.get_entry(uuid).values !== undefined
     };
   },
   get_entry(state) { // ENTRIES_GET_ENTRY
