@@ -20,7 +20,6 @@ let default_user_data = {
   defaultLicense: "CC-BY", // should come from the server
   defaultPrivacy: "public",
   location: "",
-  uid: null,
 }
 
 
@@ -44,9 +43,6 @@ export const getters = {
   get_user_data(state) {
     return state.user_data
   },
-  user_uid(state) {
-    return state.user_data.uid
-  },
   get_auth_token(state) {
     return state.auth_token
   }
@@ -58,9 +54,6 @@ export const mutations = {
   },
   set_user_data(state, user_data) {
     state.user_data = user_data;
-  },
-  _rnd_uid(state) {
-    state.user_data.uid = uuidv4()
   },
   login(state) {
     state.logged_in = true
@@ -78,11 +71,6 @@ export const mutations = {
 }
 
 export const actions = {
-  guarantee_uuid(context) {
-    if (!context.state.user_data.uid) {
-      context.commit("_rnd_uid")
-    }
-  },
   login({commit}, data) {
     const {access_token, token_type, expiration_date, ...user_data} = data
     commit("set_user_data", user_data.user)

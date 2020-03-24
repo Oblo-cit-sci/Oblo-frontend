@@ -16,7 +16,7 @@
         v-btn(@click="back") back
         v-btn(color="secondary" @click="edit") edit
       span(v-else-if="can_edit")
-        v-btn(v-if="!view" color="warning" @click="show_cancel") {{cancel_word}}
+        v-btn(v-if="!view" @click="show_cancel") {{cancel_word}}
         v-btn(v-if="is_draft" color="success" @click="save") {{save_word}}
         v-btn(v-if="!is_draft" color="error" @click="show_delete") Delete
         v-btn(
@@ -138,6 +138,7 @@
           this.$emit("entryAction", "delete")
           this.back()
         } else {
+          this.$store.commit(ENTRIES_RESET_EDIT)
           this.back()
         }
       },
