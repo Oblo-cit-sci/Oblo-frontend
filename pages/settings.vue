@@ -29,12 +29,9 @@
   import TextShort from "../components/aspects/TextShortAspect";
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
   import {export_data, merge_imported_entries} from "../lib/import_export";
-  import {CLEAR_ENTRIES} from "../lib/store_consts";
-  import {get_release_mode} from "../lib/util";
-  import {LICCI_PARTNERS} from "../lib/consts";
   import PersistentStorageMixin from "../components/PersistentStorageMixin";
-  import {fix_add_licci_domain} from "../lib/fixes";
   import EntryPreviewList from "../components/EntryPreviewList";
+  import {CLEAR_ENTRIES} from "../store";
 
 
   export default {
@@ -103,9 +100,7 @@
           // the following part will be usefull to display some results
           // const sorted = sort_by_type(result)
           // console.log("sorted", sorted)
-          if (get_release_mode(this.$store) === LICCI_PARTNERS) {
-            fix_add_licci_domain(this.$store)
-          }
+
           this.persist_entries()
           this.ok_snackbar("Entries imported")
         } else {

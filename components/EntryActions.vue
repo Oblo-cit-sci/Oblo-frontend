@@ -41,7 +41,7 @@
   import DecisionDialog from "./DecisionDialog";
   import EntryNavMixin from "./EntryNavMixin";
 
-  import {ENTRYTYPES_TYPE, LAST_BASE_PAGE_PATH, POP_LAST_PAGE_PATH} from "../lib/store_consts";
+  import {ENTRYTYPES_TYPE} from "../lib/store_consts";
   import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
   import {CREATOR, entry_actor_relation} from "../lib/actors";
   import {base64file_to_blob, get_release_mode} from "../lib/util";
@@ -56,6 +56,7 @@
   } from "../store/entries";
   import EntryMixin2 from "./EntryMixin2";
   import {SEARCH_DELETE_ENTRY} from "../store/search";
+  import {LAST_BASE_PAGE_PATH, POP_LAST_PAGE_PATH} from "../store";
 
   export default {
     name: "EntryActions",

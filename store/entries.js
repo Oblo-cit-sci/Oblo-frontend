@@ -24,7 +24,6 @@ import {guarantee_array} from "~/lib/util";
 export const ENTRIES_SET_DOWNLOADED = "entries/set_downloaded"
 export const ENTRIES_ENTRIES_SET_LOCAL_LIST_PAGE = "entries/entries_set_local_list_page"
 export const ENTRIES_SET_ENTRY_STATUS = "entries/set_entry_status"
-export const SET_DIRTY = "set_dirty"
 export const ENTRIES_UPDATE_IMAGE = "entries/update_image"
 export const ENTRIES_ADD_FILE_ATTACHMENT = "entries/add_file_attachment"
 export const ENTRIES_REMOVE_FILE_ATTACHMENT = "entries/remove_file_attachment"
@@ -162,13 +161,6 @@ export const mutations = {
         }
       }
     }
-  },
-  set_dirty(state, uuid) {
-    let entry = state.entries.get(uuid)
-    if (!entry.local) {
-      entry.local = {}
-    }
-    entry.local.dirty = true
   },
   set_from_array(state, uuid_entry_array) {
     state.entries = new Map(uuid_entry_array)
@@ -485,7 +477,6 @@ export const getters = {
 export const actions = {
   set_entry_value(context, data) {
     context.commit(_SET_ENTRY_VALUE, data)
-    context.commit(SET_DIRTY, aspect_loc_uuid(data.aspect_loc))
     // context.commit("update")
   },
   save_child_n_ref(context, {uuid, child, aspect_loc}) { // ENTRIES_SAVE_CHILD_N_REF

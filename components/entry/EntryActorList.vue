@@ -7,7 +7,7 @@
 </template>
 
 <script>
-    import {USER_GET_USER_DATA} from "../../lib/store_consts";
+    import {USER_GET_USER_DATA} from "../../store";
 
     export default {
         name: "EntryActorList",

@@ -51,7 +51,7 @@
   import ListMixin from "../ListMixin";
   import {
     ENTRYTYPES_TYPE,
-    PUSH_PAGE_PATH,
+
   } from "../../lib/store_consts";
   import {aspect_loc_str} from "../../lib/aspect";
   import {no_duplicate_texts} from "../../lib/options";
@@ -65,6 +65,7 @@
     ENTRIES_SAVE_CHILD_N_REF,
     ENTRIES_SAVE_ENTRY, ENTRIES_UPDATE_ENTRY
   } from "../../store/entries";
+  import {PUSH_PAGE_PATH} from "../../store";
 
   export default {
     name: "EntrylistAspect",

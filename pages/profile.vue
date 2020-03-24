@@ -55,7 +55,7 @@
   import Taglist from "../components/Taglist.vue"
   import Aspect from "../components/Aspect";
   import {EDIT, VIEW} from "../lib/consts";
-  import {USER_GET_USER_DATA, USER_SET_USER_DATA} from "../lib/store_consts";
+  import {USER_SET_USER_DATA} from "../lib/store_consts";
 
   import {mapGetters} from "vuex"
   import {extract_unpacked_values} from "../lib/aspect";
@@ -67,6 +67,7 @@
   import LoadFileButton from "../components/LoadFileButton";
   import {base64file_to_blob} from "../lib/util";
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
+  import {USER_GET_USER_DATA} from "../store";
 
   export default {
     name: "profile",

@@ -3,7 +3,7 @@ import {ENTRYTYPES_TYPE,} from "../lib/store_consts";
 import {export_data} from "../lib/import_export";
 import {aspect_loc_str2arr, loc_append, loc_prepend} from "~/lib/aspect";
 import {ASPECT, EDIT, ENTRY, GLOBAL, META, META_ASPECT_LIST, VIEW} from "~/lib/consts";
-import {check_str_is_uuid} from "~/lib/fixes";
+
 import {
   ENTRIES_GET_EDIT,
   ENTRIES_GET_ENTRY,
@@ -15,6 +15,7 @@ import {
   ENTRIES_VALUE
 } from "~/store/entries";
 import {FILES_GET_FILE} from "~/store/files";
+import {check_str_is_uuid} from "~/lib/util";
 
 export default {
   name: "EntryMixin",
@@ -221,28 +222,6 @@ export default {
         }
       }
       return new_files_data
-    },
-    // update_meta_tags() {
-    //   debugger
-    //   const locationAspect = this.template.rules.locationAspect
-    //   let location = null
-    //   if (locationAspect) {
-    //     location = entry_value_select(this.entry, aspect_loc_str2arr(locationAspect))
-    //     // this is weird
-    //     if (location && location.value)
-    //       location = location.value
-    //   }
-    //   if (location) {
-    //     // console.log("save_entry. loc",location )
-    //     const simple_location = filter_empty(recursive_unpack(location))
-    //     console.log(simple_location)
-    //
-    //     //context.commit("update_location", {uuid, location: simple_location})
-    //   }
-    //   // const tags = context.getters.entry_tags(uuid)
-    //   // if (tags) {
-    //   //   context.commit(UPDATE_TAGS, {uuid, tags: tags})
-    //   // }
-    // }
+    }
   }
 }

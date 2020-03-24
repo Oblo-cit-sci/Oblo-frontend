@@ -6,8 +6,8 @@
 </template>
 
 <script>
-  import {GET_DOMAIN_TEMPLATES_FETCHED, SET_DOMAIN, SET_TEMPLATES_CODES_FOR_DOMAIN} from "../lib/store_consts"
   import {static_file_path} from "../lib/util";
+  import {GET_DOMAIN_TEMPLATES_FETCHED, SET_DOMAIN, SET_TEMPLATES_CODES_FOR_DOMAIN} from "../store";
 
   export default {
     name: "DomainCard",

@@ -1,7 +1,48 @@
 import {NO_DOMAIN, TITLE, VISITOR} from "../lib/consts";
 import {object_list2options} from "../lib/options";
-import {ENTRYTYPES_TYPENAME, SET_DOMAIN_TEMPLATES_FETCHED} from "../lib/store_consts";
-import {ADD_CODES, ENTRYTYPES_ADD_TEMPLATES} from "~/lib/store_consts";
+import {ENTRYTYPES_TYPENAME} from "../lib/store_consts";
+import {ENTRYTYPES_ADD_TEMPLATES} from "~/lib/store_consts";
+
+
+// *********** Index
+export const CLEAR_DOMAIN = "clear_domain"
+export const CLEAR = "clear"
+export const UPDATE_DRAFT_NUMBER = "update_draft_number"
+export const ADD_META = "add_meta"
+export const DELETE_DOMAIN = "delete_domain"
+export const INIT = "init"
+export const INITIALIZED = "initialized"
+export const CONNECTION = "connection"
+export const CONNECTING = "connecting"
+export const SET_STORED_ENTRIES = "set_stored_entries"
+export const SET_DRAFT_NUMBERS = "set_draft_numbers"
+export const SET_DOMAINS = "set_domains"
+export const SET_DOMAIN_TEMPLATES_FETCHED = "set_domain_templates_fetched"
+export const BACKUP_INIT = "backup_init"
+export const GET_CODE = "get_code"
+export const SET_TEMPLATES_CODES_FOR_DOMAIN = "set_templates_codes_for_domain"
+export const CLEAR_ENTRIES = "clear_entries"
+// export const RELEASE_MODE = "release_mode"
+export const DB_LOADED = "db_loaded"
+export const DOMAINS = "domains"
+export const SET_DOMAIN = "set_domain"
+export const INIT_PAGE_PATH = "init_page_path"
+export const PUSH_PAGE_PATH = "push_page_path"
+export const POP_LAST_PAGE_PATH = "pop_last_page_path"
+export const GET_DOMAIN_TEMPLATES_FETCHED = "get_domain_templates_fetched"
+export const UPDATE_DRAFT_NUMBERS = "update_draft_numbers"
+export const CONNECTED = "connected"
+export const USER_GET_USER_DATA = "user/get_user_data"
+export const DOMAIN = "domain"
+export const DOMAIN_BY_NAME = "domain_by_name"
+export const DOMAIN_TITLE = "domain_title"
+export const DRAFT_NO = "draft_no"
+export const LAST_BASE_PAGE_PATH = "last_page_path"
+// internal mutations
+export const ADD_CODES = "add_codes"
+
+
+
 
 export const state = () => ({
   // comes by init
@@ -13,7 +54,6 @@ export const state = () => ({
   // recent
   // momentary
   snackbar: {message: "", status: "ok", trigger: false},
-  global_ref: null, // the last draft/entry
   draft_numbers: {},
   meta: {
     repository: {}
@@ -97,14 +137,7 @@ export const mutations = {
   connection(state, connected) {
     state.connected = connected
   },
-  set_global_ref(state, uuid) {
-    state.global_ref = {uuid: uuid}
-  },
-  add_aspect_loc(state, aspect_loc) {
-    state.global_ref.aspect_loc = aspect_loc
-  },
   clear(state) {
-    state.global_ref = {}
     state.initialized = false
   },
   update_draft_number(state, type_slug) {
