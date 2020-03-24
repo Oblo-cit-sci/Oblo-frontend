@@ -81,7 +81,7 @@
   import {entry_roles_aspect, license_aspect, privacy_aspect} from "../lib/typical_aspects";
   import {privacy_icon} from "../lib/util";
   import ChangedAspectNotice from "./entry/ChangedAspectNotice";
-  import {ENTRYTYPES_TYPE} from "../store/entrytypes";
+  import {TEMPLATES_TYPE} from "../store/templates";
 
   export default {
     name: "EntryEdit",
@@ -126,7 +126,7 @@
         return entry_roles_aspect(this.$store)
       },
       aspects() {
-        return this.$store.getters[ENTRYTYPES_TYPE](this.template_slug).aspects
+        return this.$store.getters[TEMPLATES_TYPE](this.template_slug).aspects
       },
       licence_mode() {
         if (this.entry.refs.parent || this.entry.privacy === PRIVATE_LOCAL) {

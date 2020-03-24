@@ -4,25 +4,24 @@ import {entries_domain_filter} from "../lib/search";
 import {ASPECT, ENTRYLIST} from "~/lib/consts";
 
 // Mutations
-export const ENTRYTYPES_UPDATE_ENTRY_TYPES = "entrytypes/update_entry_types"
-export const ENTRYTYPES_ADD_TEMPLATES = "entrytypes/add_templates"
-export const ENTRYTYPES_INIT_NOTES = "entrytypes/init_notes"
-export const ENTRYTYPES_ADD_NOTE = "entrytypes/add_note"
-export const ENTRYTYPES_INIT_ASPECT_NOTE = "entrytypes/init_aspect_note"
-export const ENTRYTYPES_SET_TYPE_NOTES = "entrytypes/set_type_notes"
-export const ENTRYTYPES_SET_TYPES = "entrytypes/set_types"
-export const ENTRYTYPES_SET_NOTES = "entrytypes/set_notes"
+export const TEMPLATES_UPDATE_ENTRY_TYPES = "templates/update_entry_types"
+export const TEMPLATES_ADD_TEMPLATES = "templates/add_templates"
+export const TEMPLATES_INIT_NOTES = "templates/init_notes"
+export const TEMPLATES_ADD_NOTE = "templates/add_note"
+export const TEMPLATES_INIT_ASPECT_NOTE = "templates/init_aspect_note"
+export const TEMPLATES_SET_TYPE_NOTES = "templates/set_type_notes"
+export const TEMPLATES_SET_NOTES = "templates/set_notes"
 // Getter
-export const ENTRYTYPES_HAS_TYPE = "entrytypes/has_type"
-export const ENTRYTYPES_TYPE = "entrytypes/entry_type"
-export const ENTRYTYPES_TYPENAME = "entrytypes/type_name"
-export const ENTRYTYPES_TYPES = "entrytypes/entrytypes"
-export const ENTRYTYPES_OF_DOMAIN = "entrytypes/entrytypes_of_domain"
-export const ENTRYTYPES_GET_ASPECT_DEF = "entrytypes/get_aspect_def"
-export const ENTRYTYPES_TYPES_ARRAY = "entrytypes/entry_types_array"
-export const ENTRYTYPES_ALL_NOTES = "entrytypes/all_notes"
-export const ENTRYTYPES_TYPE_NOTES = "entrytypes/type_notes"
-export const ENTRYTYPES_NOTE = "entrytypes/note"
+export const TEMPLATES_HAS_TYPE = "templates/has_type"
+export const TEMPLATES_TYPE = "templates/entry_type"
+export const TEMPLATES_TYPENAME = "templates/type_name"
+export const TEMPLATES_TYPES = "templates/entrytypes"
+export const TEMPLATES_OF_DOMAIN = "templates/entrytypes_of_domain"
+export const TEMPLATES_GET_ASPECT_DEF = "templates/get_aspect_def"
+export const TEMPLATES_TYPES_ARRAY = "templates/entry_types_array"
+export const TEMPLATES_ALL_NOTES = "templates/all_notes"
+export const TEMPLATES_TYPE_NOTES = "templates/type_notes"
+export const TEMPLATES_NOTE = "templates/note"
 
 const ld = require("lodash")
 
@@ -32,12 +31,12 @@ export const state = () => ({
 })
 
 export const getters = {
-  has_type(state) {//ENTRYTYPES_HAS_TYPE
+  has_type(state) {//TEMPLATES_HAS_TYPE
     return (type_slug) => {
       return state.entry_types.has(type_slug)
     }
   },
-  entry_type(state) { // ENTRYTYPES_TYPE
+  entry_type(state) { // TEMPLATES_TYPE
     return (type_slug) => {
       // console.log("getting entry_type for slug", type_slug)
       if (!state.entry_types.has(type_slug)) {
@@ -46,7 +45,7 @@ export const getters = {
       return state.entry_types.get(type_slug)
     }
   },
-  type_name(state, getters) { // ENTRYTYPES_TYPENAME
+  type_name(state, getters) { // TEMPLATES_TYPENAME
     return slug => {
       // console.log("typename of ", slug)
       const etype = getters.entry_type(slug)
@@ -74,15 +73,15 @@ export const getters = {
     }
     return global_entry_types
   },
-  entrytypes(state) { // ENTRYTYPES_TYPES
+  entrytypes(state) { // TEMPLATES_TYPES
     return Object.fromEntries(state.entry_types)
   },
-  entrytypes_of_domain(state) { // ENTRYTYPES_OF_DOMAIN
+  entrytypes_of_domain(state) { // TEMPLATES_OF_DOMAIN
     return domain => {
       return entries_domain_filter(Array.from(state.entry_types.values()), domain)
     }
   },
-  get_aspect_def(state, getters) { // ENTRYTYPES_GET_ASPECT_DEF
+  get_aspect_def(state, getters) { // TEMPLATES_GET_ASPECT_DEF
     return ({type_slug, aspect_name}) => {
       let type = getters.entry_type(type_slug)
       return type.aspects.find(a => {
@@ -185,7 +184,7 @@ export const mutations = {
   add_aspect_descr_notes(state, {type_slug, aspect_name, notes}) {
     state.notes[type_slug][aspect_name] = notes
   },
-  add_note(state, {note_location, note}) { // ENTRYTYPES_ADD_NOTE
+  add_note(state, {note_location, note}) { // TEMPLATES_ADD_NOTE
     // console.log("adding note", note_location, "<", note, ">")
     const type_slug = note_location[0]
     const type_notes = state.notes[type_slug]
@@ -211,11 +210,6 @@ export const mutations = {
       } else {
         select[loc] = {_note: null}
       }
-    }
-  },
-  set_types(state, types) {
-    for(let type_slug in types) {
-      state.entry_types.set(type_slug, types[type_slug])
     }
   }
 }
@@ -245,8 +239,5 @@ export const actions = {
         notes: rec_aspect_descr_note_init(aspect)
       })
     }
-  },
-  update_entry_types(context, entrytypes) {
-
   }
 }

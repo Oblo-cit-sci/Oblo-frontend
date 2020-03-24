@@ -15,7 +15,7 @@ import {
 } from "~/store/entries";
 import {FILES_GET_FILE} from "~/store/files";
 import {check_str_is_uuid} from "~/lib/util";
-import {ENTRYTYPES_TYPE} from "~/store/entrytypes";
+import {TEMPLATES_TYPE} from "~/store/templates";
 
 export default {
   name: "EntryMixin",
@@ -109,7 +109,7 @@ export default {
       return this.page === 0
     },
     template() {
-      return this.$store.getters[ENTRYTYPES_TYPE](this.template_slug)
+      return this.$store.getters[TEMPLATES_TYPE](this.template_slug)
     },
     // title() {
     //   return this.$store.getters[ENTRIES_GET_ENTRY_TITLE](this.uuid)

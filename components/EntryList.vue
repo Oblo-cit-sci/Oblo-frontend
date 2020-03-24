@@ -22,7 +22,7 @@
     import {CREATOR, entry_actor_relation} from "../lib/actors";
     import {privacy_icon} from "../lib/util";
     import {get_proper_mode} from "../lib/entry";
-    import {ENTRYTYPES_TYPENAME} from "../store/entrytypes";
+    import {TEMPLATES_TYPENAME} from "../store/templates";
 
     export default {
         name: "Entrylist",
@@ -66,7 +66,7 @@
             type_name(entry) {
                 // todo this should be a getter. and eventually include a fetch,... never know...
                 console.log("DEPRACATED METHOD!")
-                return  this.$store.getters[ENTRYTYPES_TYPENAME](entry)
+                return  this.$store.getters[TEMPLATES_TYPENAME](entry)
                 /*
                 let entry_type = this.$store.getters.entry_type(entry.template.slug)
                 if(entry_type) {

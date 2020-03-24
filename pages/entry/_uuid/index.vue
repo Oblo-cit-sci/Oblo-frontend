@@ -33,7 +33,7 @@
   import EntryEdit from "../../../components/EntryEdit";
   import EntryView from "../../../components/entry/EntryView";
   import Entry from "../../../components/Entry";
-  import {ENTRYTYPES_TYPE} from "../../../store/entrytypes";
+  import {TEMPLATES_TYPE} from "../../../store/templates";
 
   export default {
     name: "uuid",
@@ -114,7 +114,7 @@
         return entry_roles_aspect(this.$store)
       },
       aspects() {
-        return this.$store.getters[ENTRYTYPES_TYPE](this.template_slug).aspects
+        return this.$store.getters[TEMPLATES_TYPE](this.template_slug).aspects
       },
       licence_mode() {
         if (this.entry.refs.parent || this.entry.privacy === PRIVATE_LOCAL) {

@@ -10,7 +10,7 @@
   import {aspect_raw_default_value, disabled_by_condition, label, loc_append, pack_value} from "../../lib/aspect";
   import {ASPECT, COMPONENT, COMPOSITE, EDIT, ENTRYLIST, INDEX, LIST} from "../../lib/consts";
   import {item_count_name} from "../../lib/listaspects";
-  import {ENTRYTYPES_TYPE} from "../../store/entrytypes";
+  import {TEMPLATES_TYPE} from "../../store/templates";
 
 
   const OK = 0
@@ -38,7 +38,7 @@
     },
     computed: {
       template() {
-        return this.$store.getters[ENTRYTYPES_TYPE](this.template_slug)
+        return this.$store.getters[TEMPLATES_TYPE](this.template_slug)
       },
       missing() {
         const aspects = this.template.aspects

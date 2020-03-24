@@ -10,7 +10,7 @@ import {
   ENTRIES_SAVE_ENTRY
 } from "~/store/entries";
 import {DOMAIN, INIT_PAGE_PATH, POP_LAST_PAGE_PATH} from "~/store";
-import {ENTRYTYPES_GET_ASPECT_DEF} from "~/store/entrytypes";
+import {TEMPLATES_GET_ASPECT_DEF} from "~/store/templates";
 
 const ld = require("lodash")
 
@@ -74,7 +74,7 @@ export default {
         const uuid = parent_ref.uuid
 
         // TODO this loc stuff will work different in the future
-        const aspect_def = this.$store.getters[ENTRYTYPES_GET_ASPECT_DEF]({
+        const aspect_def = this.$store.getters[TEMPLATES_GET_ASPECT_DEF]({
           type_slug: parent_entry_type_slug,
           aspect_name: parent_ref.aspect_loc[0][1]
         })

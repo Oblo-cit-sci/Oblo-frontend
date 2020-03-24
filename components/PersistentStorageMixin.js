@@ -4,7 +4,7 @@ import {
   ENTRIES_GET_ENTRIES
 } from "~/store/entries";
 import {USER_GET_USER_DATA} from "~/store";
-import {ENTRYTYPES_ALL_NOTES} from "~/store/entrytypes";
+import {TEMPLATES_ALL_NOTES} from "~/store/templates";
 import {USER_GET_AUTH_TOKEN} from "~/store/user";
 
 export default {
@@ -30,7 +30,7 @@ export default {
       this.store_value("draft_numbers", this.$store.getters.draft_numbers)
     },
     persist_notes() {
-      this.store_value("notes", this.$store.getters[ENTRYTYPES_ALL_NOTES])
+      this.store_value("notes", this.$store.getters[TEMPLATES_ALL_NOTES])
     },
     persist_user_data() {
       this.store_value("user_data", this.$store.getters[USER_GET_USER_DATA])

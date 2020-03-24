@@ -52,13 +52,13 @@
 
   import mapGetters from 'vuex'
   import {
-    ENTRYTYPES_INIT_NOTES,
-    ENTRYTYPES_SET_TYPE_NOTES,
-    ENTRYTYPES_TYPE,
-    ENTRYTYPES_TYPE_NOTES,
-    ENTRYTYPES_TYPES,
-    ENTRYTYPES_TYPES_ARRAY
-  } from "../store/entrytypes";
+    TEMPLATES_INIT_NOTES,
+    TEMPLATES_SET_TYPE_NOTES,
+    TEMPLATES_TYPE,
+    TEMPLATES_TYPE_NOTES,
+    TEMPLATES_TYPES,
+    TEMPLATES_TYPES_ARRAY
+  } from "../store/templates";
 
 
   export default {
@@ -85,9 +85,9 @@
         }
       },
       init_typenotes(type_slug) {
-        let notes = this.$store.getters[ENTRYTYPES_TYPE_NOTES](type_slug)
+        let notes = this.$store.getters[TEMPLATES_TYPE_NOTES](type_slug)
         if (notes === undefined) {
-          this.$store.commit(ENTRYTYPES_INIT_NOTES, type_slug)
+          this.$store.commit(TEMPLATES_INIT_NOTES, type_slug)
         }
       },
       aspect_descr_loc(aspect) {
@@ -96,13 +96,13 @@
       },
       download() {
         const data = {
-          notes: this.$store.getters[ENTRYTYPES_TYPE_NOTES](this.selectec_type)
+          notes: this.$store.getters[TEMPLATES_TYPE_NOTES](this.selectec_type)
         }
-        export_data(data, this.$store.getters[ENTRYTYPES_TYPE](this.selectec_type).title + "_notes.json")
+        export_data(data, this.$store.getters[TEMPLATES_TYPE](this.selectec_type).title + "_notes.json")
       },
       import_data(result) {
         if (result.ok) {
-          this.$store.commit(ENTRYTYPES_SET_TYPE_NOTES, {
+          this.$store.commit(TEMPLATES_SET_TYPE_NOTES, {
             type_slug: this.selectec_type,
             notes: result.data.notes
           })
@@ -111,13 +111,13 @@
       }
     },
     computed: {
-      /*...mapGetters({"f_type_notes": ENTRYTYPES_TYPE_NOTES}),
+      /*...mapGetters({"f_type_notes": TEMPLATES_TYPE_NOTES}),
       type_notes() {
           return this.f_type_notes(this.slug)
       },*/
-      // ...mapGetters({types: ENTRYTYPES_TYPES}),
+      // ...mapGetters({types: TEMPLATES_TYPES}),
       options() {
-        return this.$_.map(this.$store.getters[ENTRYTYPES_TYPES_ARRAY], o => {
+        return this.$_.map(this.$store.getters[TEMPLATES_TYPES_ARRAY], o => {
           return {
             text: o.title,
             value: o.slug,
@@ -129,7 +129,7 @@
         return this.selectec_type !== null
       },
       entry_type() {
-        return this.$store.getters[ENTRYTYPES_TYPE](this.selectec_type)
+        return this.$store.getters[TEMPLATES_TYPE](this.selectec_type)
       },
       entry_aspects() {
         return this.entry_type.aspects

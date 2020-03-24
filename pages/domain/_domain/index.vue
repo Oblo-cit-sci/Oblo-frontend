@@ -33,7 +33,7 @@
 
   import {mapGetters} from "vuex"
   import {DOMAIN, DOMAIN_BY_NAME, SET_DOMAIN} from "../../../store";
-  import {ENTRYTYPES_OF_DOMAIN} from "../../../store/entrytypes";
+  import {TEMPLATES_OF_DOMAIN} from "../../../store/templates";
   import {USER_LOGGED_IN} from "../../../store/user";
 
   export default {
@@ -50,7 +50,7 @@
         return this.$route.params.domain
       },
       entrytypes_entries() {
-        return global_context_filter(this.$store.getters[ENTRYTYPES_OF_DOMAIN](this.domain_name))
+        return global_context_filter(this.$store.getters[TEMPLATES_OF_DOMAIN](this.domain_name))
       },
       domain_data() {
         return this.$store.getters[DOMAIN_BY_NAME](this.domain_name)

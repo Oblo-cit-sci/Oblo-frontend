@@ -62,7 +62,7 @@
     ENTRIES_SAVE_ENTRY, ENTRIES_UPDATE_ENTRY
   } from "../../store/entries";
   import {PUSH_PAGE_PATH} from "../../store";
-  import {ENTRYTYPES_TYPE} from "../../store/entrytypes";
+  import {TEMPLATES_TYPE} from "../../store/templates";
 
   export default {
     name: "EntrylistAspect",
@@ -80,7 +80,7 @@
     },
     created() {
       this.set_min_max()
-      if (!this.$store.getters[ENTRYTYPES_TYPE](this.item_type_slug)) {
+      if (!this.$store.getters[TEMPLATES_TYPE](this.item_type_slug)) {
         console.log("Warning- aspect: ", this.aspect.name, "referrers to a typename that does not exist: ", this.item_type_slug)
         console.log("TODO disable this aspect")
       }

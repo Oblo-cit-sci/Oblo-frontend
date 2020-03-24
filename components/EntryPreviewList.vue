@@ -22,7 +22,7 @@
   import goTo from 'vuetify/lib/services/goto'
   import SimplePaginate from "./SimplePaginate";
   import {ENTRIES_HAS_ENTRY} from "../store/entries";
-  import {ENTRYTYPES_TYPE} from "../store/entrytypes";
+  import {TEMPLATES_TYPE} from "../store/templates";
 
   export default {
     name: "EntryPreviewList",
@@ -83,7 +83,7 @@
           new Set(
             this.$_.map(
               this.entries,
-              e => this.$store.getters[ENTRYTYPES_TYPE](e.template.slug))).values())
+              e => this.$store.getters[TEMPLATES_TYPE](e.template.slug))).values())
       },
       has_more_pages() {
         return this.page * this.entries_per_page < this.total_count

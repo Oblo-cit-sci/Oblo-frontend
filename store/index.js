@@ -1,6 +1,6 @@
 import {NO_DOMAIN, TITLE, VISITOR} from "../lib/consts";
 import {object_list2options} from "../lib/options";
-import {ENTRYTYPES_ADD_TEMPLATES, ENTRYTYPES_TYPENAME} from "~/store/entrytypes";
+import {TEMPLATES_ADD_TEMPLATES, TEMPLATES_TYPENAME} from "~/store/templates";
 
 
 // *********** Index
@@ -266,7 +266,7 @@ export const getters = {
       // console.log("conaining_types_options", types)
       // console.log("as array", Array.from(types))
       return Array.from(types).map(type => {
-        return {value: type, text: getters[ENTRYTYPES_TYPENAME](type)}
+        return {value: type, text: getters[TEMPLATES_TYPENAME](type)}
       })
     }
   },
@@ -288,7 +288,7 @@ export const actions = {
     if(domain_name !== NO_DOMAIN) {
       context.commit(SET_DOMAIN_TEMPLATES_FETCHED, domain_name)
     }
-    context.commit(ENTRYTYPES_ADD_TEMPLATES, entries.filter(e => e.type === "template"))
+    context.commit(TEMPLATES_ADD_TEMPLATES, entries.filter(e => e.type === "template"))
     context.commit(ADD_CODES, entries.filter(e => e.type === "code"))
   }
 }

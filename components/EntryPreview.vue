@@ -75,7 +75,7 @@
     ENTRIES_SAVE_CHILD_N_REF,
     ENTRIES_VALUE
   } from "../store/entries";
-  import {ENTRYTYPES_HAS_TYPE, ENTRYTYPES_TYPENAME} from "../store/entrytypes";
+  import {TEMPLATES_HAS_TYPE, TEMPLATES_TYPENAME} from "../store/templates";
 
   /**
    * ISSUE is not working atm, to responsive
@@ -113,7 +113,7 @@
       },
     },
     computed: {
-      ...mapGetters({has_type: ENTRYTYPES_HAS_TYPE}),
+      ...mapGetters({has_type: TEMPLATES_HAS_TYPE}),
       deleted_entry() {
         return !this.$store.getters[ENTRIES_HAS_ENTRY](this.uuid)
       },
@@ -162,7 +162,7 @@
         return result
       },
       template_title() {
-        return this.$store.getters[ENTRYTYPES_TYPENAME](this.entry.template.slug)
+        return this.$store.getters[TEMPLATES_TYPENAME](this.entry.template.slug)
       },
       default_action_icon() {
         if (this.proper_mode === VIEW)

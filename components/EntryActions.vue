@@ -56,7 +56,7 @@
   import EntryMixin2 from "./EntryMixin2";
   import {SEARCH_DELETE_ENTRY} from "../store/search";
   import {LAST_BASE_PAGE_PATH, POP_LAST_PAGE_PATH} from "../store";
-  import {ENTRYTYPES_TYPE} from "../store/entrytypes";
+  import {TEMPLATES_TYPE} from "../store/templates";
 
   export default {
     name: "EntryActions",
@@ -228,7 +228,7 @@
         return this.entry.uuid
       },
       template() {
-        return this.$store.getters[ENTRYTYPES_TYPE](this.template_slug)
+        return this.$store.getters[TEMPLATES_TYPE](this.template_slug)
       },
       view() {
         return this.mode === VIEW
