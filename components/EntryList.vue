@@ -19,10 +19,10 @@
 <script>
     import {license_icon} from "../lib/client"
     import EntryNavMixin from "./EntryNavMixin";
-    import {ENTRYTYPES_TYPENAME} from "../lib/store_consts"
     import {CREATOR, entry_actor_relation} from "../lib/actors";
     import {privacy_icon} from "../lib/util";
     import {get_proper_mode} from "../lib/entry";
+    import {ENTRYTYPES_TYPENAME} from "../store/entrytypes";
 
     export default {
         name: "Entrylist",

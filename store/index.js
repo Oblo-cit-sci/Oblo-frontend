@@ -1,7 +1,6 @@
 import {NO_DOMAIN, TITLE, VISITOR} from "../lib/consts";
 import {object_list2options} from "../lib/options";
-import {ENTRYTYPES_TYPENAME} from "../lib/store_consts";
-import {ENTRYTYPES_ADD_TEMPLATES} from "~/lib/store_consts";
+import {ENTRYTYPES_ADD_TEMPLATES, ENTRYTYPES_TYPENAME} from "~/store/entrytypes";
 
 
 // *********** Index

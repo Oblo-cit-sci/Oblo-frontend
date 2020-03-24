@@ -42,13 +42,6 @@
 
   import SingleSelect from "../components/input/SingleSelect";
   import AspectDescription from "../components/AspectDescription";
-  import {
-    ENTRYTYPES_INIT_NOTES, ENTRYTYPES_SET_TYPE_NOTES,
-    ENTRYTYPES_TYPE,
-    ENTRYTYPES_TYPE_NOTES,
-    ENTRYTYPES_TYPES,
-    ENTRYTYPES_TYPES_ARRAY
-  } from "../lib/store_consts";
   import PersistentStorageMixin from "../components/PersistentStorageMixin";
   import {export_data} from "../lib/import_export";
   import LoadFileButton from "../components/LoadFileButton";
@@ -58,6 +51,14 @@
   import goTo from 'vuetify/lib/services/goto'
 
   import mapGetters from 'vuex'
+  import {
+    ENTRYTYPES_INIT_NOTES,
+    ENTRYTYPES_SET_TYPE_NOTES,
+    ENTRYTYPES_TYPE,
+    ENTRYTYPES_TYPE_NOTES,
+    ENTRYTYPES_TYPES,
+    ENTRYTYPES_TYPES_ARRAY
+  } from "../store/entrytypes";
 
 
   export default {

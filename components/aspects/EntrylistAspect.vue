@@ -49,10 +49,6 @@
   import {create_entry} from "../../lib/entry";
   import EntryNavMixin from "../EntryNavMixin";
   import ListMixin from "../ListMixin";
-  import {
-    ENTRYTYPES_TYPE,
-
-  } from "../../lib/store_consts";
   import {aspect_loc_str} from "../../lib/aspect";
   import {no_duplicate_texts} from "../../lib/options";
   import ListPagination from "../aspect_utils/ListPagination";
@@ -66,6 +62,7 @@
     ENTRIES_SAVE_ENTRY, ENTRIES_UPDATE_ENTRY
   } from "../../store/entries";
   import {PUSH_PAGE_PATH} from "../../store";
+  import {ENTRYTYPES_TYPE} from "../../store/entrytypes";
 
   export default {
     name: "EntrylistAspect",

@@ -1,5 +1,4 @@
 import {get_entry_titleAspect, has_parent} from "../lib/entry";
-import {ENTRYTYPES_TYPE,} from "../lib/store_consts";
 import {export_data} from "../lib/import_export";
 import {aspect_loc_str2arr, loc_append, loc_prepend} from "~/lib/aspect";
 import {ASPECT, EDIT, ENTRY, GLOBAL, META, META_ASPECT_LIST, VIEW} from "~/lib/consts";
@@ -16,6 +15,7 @@ import {
 } from "~/store/entries";
 import {FILES_GET_FILE} from "~/store/files";
 import {check_str_is_uuid} from "~/lib/util";
+import {ENTRYTYPES_TYPE} from "~/store/entrytypes";
 
 export default {
   name: "EntryMixin",

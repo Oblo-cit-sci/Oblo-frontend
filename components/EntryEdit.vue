@@ -79,9 +79,9 @@
   import {ENTRIES_GET_EDIT, ENTRIES_GET_ENTRY, ENTRIES_VALUE} from "../store/entries";
   import {EDIT, ENTRY, PRIVATE_LOCAL, VIEW} from "../lib/consts";
   import {entry_roles_aspect, license_aspect, privacy_aspect} from "../lib/typical_aspects";
-  import {ENTRYTYPES_TYPE} from "../lib/store_consts";
   import {privacy_icon} from "../lib/util";
   import ChangedAspectNotice from "./entry/ChangedAspectNotice";
+  import {ENTRYTYPES_TYPE} from "../store/entrytypes";
 
   export default {
     name: "EntryEdit",

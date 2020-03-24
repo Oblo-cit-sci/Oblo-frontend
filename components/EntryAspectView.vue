@@ -11,7 +11,7 @@
 
     import {ASPECT, ENTRY, VIEW} from "../lib/consts";
     import Aspect from "./Aspect";
-    import {ENTRYTYPES_TYPE, ENTRYTYPES_TYPENAME} from "../lib/store_consts";
+    import {ENTRYTYPES_TYPE, ENTRYTYPES_TYPENAME} from "../store/entrytypes";
 
     export default {
         name: "EntryAspectView",

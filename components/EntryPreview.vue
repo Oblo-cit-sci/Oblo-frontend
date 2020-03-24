@@ -53,10 +53,6 @@
 <script>
 
   import EntryNavMixin from "./EntryNavMixin";
-  import {
-    ENTRYTYPES_HAS_TYPE,
-    ENTRYTYPES_TYPENAME
-  } from "../lib/store_consts";
   import {privacy_icon, printDate} from "../lib/util"
   import {EDIT, ENTRY, VIEW} from "../lib/consts"
   import MetaChips from "../components/MetaChips"
@@ -79,6 +75,7 @@
     ENTRIES_SAVE_CHILD_N_REF,
     ENTRIES_VALUE
   } from "../store/entries";
+  import {ENTRYTYPES_HAS_TYPE, ENTRYTYPES_TYPENAME} from "../store/entrytypes";
 
   /**
    * ISSUE is not working atm, to responsive

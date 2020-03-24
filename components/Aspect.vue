@@ -51,7 +51,7 @@
     get_aspect_vue_component, label
   } from "../lib/aspect";
   import AspectMixin from "./aspects/AspectMixin";
-  import {ENTRYTYPES_NOTE} from "../lib/store_consts";
+  import {ENTRYTYPES_NOTE} from "../store/entrytypes";
 
   export default {
     name: "Aspect",

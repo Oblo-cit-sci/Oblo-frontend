@@ -19,10 +19,10 @@
 
 <script>
   import Entrypreview from "../components/EntryPreview";
-  import {ENTRYTYPES_TYPE} from "../lib/store_consts";
   import goTo from 'vuetify/lib/services/goto'
   import SimplePaginate from "./SimplePaginate";
   import {ENTRIES_HAS_ENTRY} from "../store/entries";
+  import {ENTRYTYPES_TYPE} from "../store/entrytypes";
 
   export default {
     name: "EntryPreviewList",

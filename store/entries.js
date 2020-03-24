@@ -12,12 +12,13 @@ import {
   loc_remove_last,
   remove_entry_loc
 } from "../lib/aspect";
-import {ENTRYTYPES_TYPE, GET_ENTRY} from "../lib/store_consts";
+import {GET_ENTRY} from "../lib/store_consts";
 
 import Vue from "vue"
 import {filter_empty, recursive_unpack} from "../lib/util";
 import {META} from "~/lib/consts";
 import {guarantee_array} from "~/lib/util";
+import {ENTRYTYPES_TYPE} from "~/store/entrytypes";
 
 
 // Mutations

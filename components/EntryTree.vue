@@ -12,7 +12,7 @@
 
 <script>
 import {entries2vuetify_tree} from "../lib/entry_collections";
-import {ENTRYTYPES_TYPES} from "../lib/store_consts";
+import {ENTRYTYPES_TYPES} from "../store/entrytypes";
 
 /**
  * not used atm

@@ -34,7 +34,7 @@
     import EntryAspectView from "../components/EntryAspectView";
     import {mapGetters} from "vuex"
     import {object_list2options, string_list2options} from "../lib/options";
-    import {ENTRYTYPES_TYPE} from "../lib/store_consts";
+    import {ENTRYTYPES_TYPE} from "../store/entrytypes";
 
 
     export default {

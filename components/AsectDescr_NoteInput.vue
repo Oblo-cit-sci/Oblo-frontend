@@ -14,7 +14,7 @@
 
 <script>
     import TextLongAspect from "./aspects/TextLongAspect";
-    import {ENTRYTYPES_ADD_NOTE, ENTRYTYPES_INIT_ASPECT_NOTE, ENTRYTYPES_NOTE} from "../lib/store_consts";
+    import {ENTRYTYPES_ADD_NOTE, ENTRYTYPES_INIT_ASPECT_NOTE, ENTRYTYPES_NOTE} from "../store/entrytypes";
 
     export default {
         name: "AsectDescr_NoteInput",

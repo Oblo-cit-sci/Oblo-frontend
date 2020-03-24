@@ -1,13 +1,16 @@
 import {fetch_entry, get_proper_mode} from "../lib/entry";
 import {EDIT, GLOBAL, NO_DOMAIN, VIEW} from "../lib/consts";
-import {
-  ENTRYTYPES_GET_ASPECT_DEF
-} from "../lib/store_consts";
 import {aspect_loc_str} from "../lib/aspect";
 import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
 import NavBaseMixin from "./NavBaseMixin";
-import {ENTRIES_GET_ENTRY, ENTRIES_HAS_ENTRY, ENTRIES_HAS_FULL_ENTRY, ENTRIES_SAVE_ENTRY} from "~/store/entries";
+import {
+  ENTRIES_GET_ENTRY,
+  ENTRIES_HAS_ENTRY,
+  ENTRIES_HAS_FULL_ENTRY,
+  ENTRIES_SAVE_ENTRY
+} from "~/store/entries";
 import {DOMAIN, INIT_PAGE_PATH, POP_LAST_PAGE_PATH} from "~/store";
+import {ENTRYTYPES_GET_ASPECT_DEF} from "~/store/entrytypes";
 
 const ld = require("lodash")
 

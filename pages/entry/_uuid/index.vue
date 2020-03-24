@@ -17,9 +17,6 @@
   import goTo from 'vuetify/lib/services/goto'
   import EntryNavMixin from "../../../components/EntryNavMixin";
   import DecisionDialog from "../../../components/DecisionDialog";
-  import {
-    ENTRYTYPES_TYPE,
-  } from "../../../lib/store_consts";
   import EntryMixin from "../../../components/EntryMixin";
   import MetaChips from "../../../components/MetaChips"
   import {privacy_icon} from "../../../lib/util"
@@ -36,6 +33,7 @@
   import EntryEdit from "../../../components/EntryEdit";
   import EntryView from "../../../components/entry/EntryView";
   import Entry from "../../../components/Entry";
+  import {ENTRYTYPES_TYPE} from "../../../store/entrytypes";
 
   export default {
     name: "uuid",
