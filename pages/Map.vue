@@ -9,8 +9,8 @@
         v-if="display_mdDown"
         :drawer="drawer"
         :layers="layers"
-        :navigation_mode.sync="navigation_mode"
         :selected_entry_uuid.sync="selected_entry"
+        @navigation_mode_search="unselect_entry"
         @layer_select_change="layer_select_change($event)")
       MapNavigationDrawer(
         v-else
@@ -18,6 +18,7 @@
         :layers="layers"
         :navigation_mode.sync="navigation_mode"
         :selected_entry_uuid.sync="selected_entry"
+        @navigation_mode_search="unselect_entry"
         @layer_select_change="layer_select_change($event)")
       MglMap(:style="mapCssStyle"
         :access-token="accessToken"
@@ -89,7 +90,6 @@
       if (this.$route.query.uuid) {
         this.selected_entry = this.$route.query.select
         this.select_entry_marker(this.selected_entry)
-        // this.navigation_mode = ENTRY
       }
     },
     mounted() {
@@ -223,6 +223,9 @@
           speed: 0.8 // make the flying slow
         })
         this.$store.dispatch(MAP_GOTO_DONE)
+      },
+      unselect_entry() {
+        this.selected_entry = null
       }
     },
     beforeRouteLeave(to, from, next) {
@@ -256,12 +259,11 @@
         }
         if (selected_uuid) {
           query.uuid = selected_uuid
-          // this.navigation_mode = ENTRY
         }
         // else {
         //   this.navigation_mode = SEARCH
         // }
-        this.$router.push(route_change_query(this.$route, query))
+        this.$router.push(route_change_query(this.$route, query, true))
       }
       // navigation_mode(mode) {
       //   if (mode === SEARCH) {

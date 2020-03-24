@@ -84,16 +84,11 @@ export default {
       this.$store.commit(MAP_SET_ENTRIES, entries)
     },
     to_search_mode() {
-      this.$emit("update:navigation_mode", SEARCH)
+      this.$emit("navigation_mode_search")
     },
     preview_action({uuid, action}) {
       this.$emit("update:navigation_mode", ENTRY)
       this.$emit("update:selected_entry_uuid", uuid)
-    },
-    get_goto_device_location() {
-      get_location((location) => {
-        console.log(location)
-      })
     }
   },
 }

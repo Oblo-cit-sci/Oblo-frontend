@@ -19,15 +19,12 @@
             span Back
         v-col(cols=7)
           v-select(label="Layers" :items="layer_options" multiple small-chips v-on:change="$emit('layer_select_change', $event)")
-        v-col(cols=2)
-          v-btn(@click="get_goto_device_location")
-            v-icon mdi-crosshairs-gps
       v-row.ma-1(wrap justify-center)
         <!-- the v-show prevents reloading every time, when switching between entry and search-->
-        <!--        Search(v-show="nav_mode_search"-->
-        <!--          :preview_options="preview_options"-->
-        <!--          :fixed_filters="location_pre_filter"-->
-        <!--          @preview_action="preview_action($event)")-->
+        Search(v-show="nav_mode_search"
+          :preview_options="preview_options"
+          :fixed_filters="location_pre_filter"
+          @preview_action="preview_action($event)")
         div(v-if="nav_mode_entry")
           v-row
             v-btn(@click="to_search_mode" Search)

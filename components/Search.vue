@@ -10,7 +10,7 @@
           append-outer-icon="mdi-magnify"
           @click:append-outer="getEntries"
           clearable
-          :loading="searching")
+          :loading="searching ? 'success' : false")
       <!--    v-row-->
       <!--      v-col.col-md-6.col-xs-12(v-for="(config, index) in Object.values(filter_configs)" cols="12"  :key="index")-->
       <!--        FilterSelect(v-bind="config" :selection.sync="filter_values[config.name]")-->
