@@ -42,9 +42,9 @@
   import {location_search, rev_geocode} from "../../lib/services/mapbox";
   import {default_place_type, MODE_ASPECT_POINT} from "../../lib/consts";
   import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
-  import {MAP_SET_TO_SELECT_ASPECT_LOCATION} from "../../lib/store_consts";
   import MapJumpMixin from "../MapJumpMixin";
   import AspectComponentMixin from "./AspectComponentMixin";
+  import {MAP_SET_TO_SELECT_ASPECT_LOCATION} from "../../store/map";
 
   // "attr.input" options
   const DEVICE = "device"

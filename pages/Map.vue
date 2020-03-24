@@ -31,13 +31,13 @@
 <script>
   import {MglMarker, MglPopup} from "vue-mapbox";
   import {access_token, licci_style_map} from "../lib/services/mapbox";
-  import {MAP_GOTO_DONE, MAP_GOTO_LOCATION, MAP_RESET_GOTO_LOCATIONS, MAP_SET_ENTRIES,} from "../lib/store_consts";
   import {mapGetters} from "vuex"
   import MapNavigationDrawer from "../components/map/MapNavigationDrawer";
   import {Marker} from "mapbox-gl";
   import MapNavigationBottomSheet from "../components/map/MapNavigationBottomSheet";
   import {ENTRIES_HAS_FULL_ENTRY, ENTRIES_SAVE_ENTRY} from "../store/entries";
   import {route_change_query} from "../lib/util";
+  import {MAP_GOTO_DONE, MAP_GOTO_LOCATION, MAP_RESET_GOTO_LOCATIONS, MAP_SET_ENTRIES} from "../store/map";
 
 
   // navigation mode!! copy of  MapNvaigationMixin

@@ -75,10 +75,10 @@
     import EntryPreviewList from "../components/EntryPreviewList";
     import EntryAspectView from "../components/EntryAspectView";
     import {NO_DOMAIN} from "../lib/consts";
-    import {MAP_SET_ENTRIES} from "../lib/store_consts";
     import {string_list2options} from "../lib/options";
     import {SEARCH_GET_ENTRIES} from "../store/search";
     import {DOMAIN} from "../store";
+    import {MAP_SET_ENTRIES} from "../store/map";
 
     const SEARCH = "search"
     const ENTRY = "entry"

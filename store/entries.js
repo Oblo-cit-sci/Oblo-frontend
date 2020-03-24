@@ -12,7 +12,7 @@ import {
   loc_remove_last,
   remove_entry_loc
 } from "../lib/aspect";
-import {GET_ENTRY} from "../lib/store_consts";
+
 
 import Vue from "vue"
 import {filter_empty, recursive_unpack} from "../lib/util";
@@ -334,7 +334,7 @@ export const getters = {
   },
   user_rights(state, getters, rootGetters) { // ENTRIES_USER_RIGHTS
     return (uuid) => {
-      const entry = getters[GET_ENTRY](uuid)
+      const entry = getters.get_entry(uuid)
       if (ld.find([entry.actors.creator] + entry.actors.owners, actor => actor.registered_name === rootGetters.name)) {
         return EDIT
       } else {

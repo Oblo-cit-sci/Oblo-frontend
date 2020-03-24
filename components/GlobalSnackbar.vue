@@ -5,7 +5,7 @@
 
 <script>
   import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
-  import {SNACKBAR_TRIGGER} from "../lib/store_consts";
+  import {SNACKBAR_TRIGGER} from "../store";
 
   export default {
     name: "GlobalSnackbar",

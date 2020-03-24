@@ -1,5 +1,5 @@
-import {MAP_GOTO_LOCATION, MAP_LAST_GOTO_LOCATION} from "~/lib/store_consts";
 import {MODE_NORMAL} from "~/lib/consts";
+import {MAP_GOTO_LOCATION, MAP_LAST_GOTO_LOCATION} from "~/store/map";
 
 /**
  * at the moment, it requires a this-entry to exist

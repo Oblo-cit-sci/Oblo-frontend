@@ -1,4 +1,4 @@
-import {SNACKBAR, SNACKBAR_RESET} from "../lib/store_consts";
+import {SNACKBAR, SNACKBAR_RESET} from "~/store";
 
 export default {
       name: "TriggerSnackbarMixin",

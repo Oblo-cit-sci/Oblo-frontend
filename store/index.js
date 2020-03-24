@@ -292,3 +292,7 @@ export const actions = {
     context.commit(ADD_CODES, entries.filter(e => e.type === "code"))
   }
 }
+// ******** SNACKBAR
+export const SNACKBAR = "snackbar"
+export const SNACKBAR_RESET = "snackbar_reset"
+export const SNACKBAR_TRIGGER = "snackbar_trigger"
