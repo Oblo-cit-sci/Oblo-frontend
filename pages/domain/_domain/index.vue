@@ -29,12 +29,12 @@
   import EntryCreateList from "../../../components/EntryCreateList";
   import {global_context_filter} from "../../../lib/search";
   import Search from "../../../components/Search";
-  import {USER_LOGGED_IN} from "../../../lib/store_consts";
   import {entrytype_filter_options} from "../../../lib/filter_option_consts";
 
   import {mapGetters} from "vuex"
   import {DOMAIN, DOMAIN_BY_NAME, SET_DOMAIN} from "../../../store";
   import {ENTRYTYPES_OF_DOMAIN} from "../../../store/entrytypes";
+  import {USER_LOGGED_IN} from "../../../store/user";
 
   export default {
     name: "index",

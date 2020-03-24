@@ -1,5 +1,5 @@
-import {USER_LOGIN} from "~/lib/store_consts";
 import PersistentStorageMixin from "~/components/PersistentStorageMixin";
+import {USER_LOGIN} from "~/store/user";
 
 export default {
   name: "LoginMixin",

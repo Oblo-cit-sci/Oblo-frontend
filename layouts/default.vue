@@ -59,11 +59,6 @@
 
 
 <script>
-  import {
-    USER_LOGGED_IN,
-    USER_LOGOUT,
-    USER_LOGIN, USER_RESET_AUTH_TOKEN, USER_GET_AUTH_TOKEN
-  } from "../lib/store_consts"
   import GlobalSnackbar from "../components/GlobalSnackbar"
   import {HOME} from "../lib/consts"
   import Footer from "../components/Footer"
@@ -77,6 +72,7 @@
   import PersistentStorageMixin from "../components/PersistentStorageMixin";
   import {SEARCH_SET_ENTRIES} from "../store/search";
   import {CONNECTED, CONNECTING, DB_LOADED, DOMAIN, INITIALIZED} from "../store";
+  import {USER_GET_AUTH_TOKEN, USER_LOGGED_IN, USER_LOGIN, USER_LOGOUT, USER_RESET_AUTH_TOKEN} from "../store/user";
 
 
   let require_login = ["Profile", "Logout"]

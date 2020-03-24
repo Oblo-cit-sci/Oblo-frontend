@@ -4,7 +4,16 @@
 
 import {VISITOR} from "../lib/consts";
 
-const uuidv4 = require('uuid/v4')
+
+// Mutations
+export const USER_LOGIN = "user/login"
+export const USER_LOGOUT = "user/logout"
+export const USER_LOGGED_IN = "user/logged_in"
+export const USER_SET_USER_DATA = "user/set_user_data"
+export const USER_RESET_AUTH_TOKEN = "user/reset_auth_token"
+export const USER_SET_AUTH_TOKEN = "user/set_auth_token"
+export const USER_GET_AUTH_TOKEN = "user/get_auth_token"
+
 
 let default_user_data = {
   global_role: VISITOR,
@@ -82,5 +91,4 @@ export const actions = {
     commit("logout")
   }
 }
-
 

@@ -27,9 +27,9 @@
   import DomainCard from "../components/DomainCard";
   import {get_release_mode} from "../lib/util";
   import {LICCI_PARTNERS} from "../lib/consts";
-  import {USER_LOGGED_IN} from "../lib/store_consts";
   import Footer from "../components/Footer";
   import {CLEAR_DOMAIN, CONNECTED, DOMAINS} from "../store";
+  import {USER_LOGGED_IN} from "../store/user";
 
   export default {
     data() {
