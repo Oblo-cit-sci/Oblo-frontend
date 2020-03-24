@@ -5,6 +5,7 @@ import {aspect_loc_str2arr, loc_append, loc_prepend} from "~/lib/aspect";
 import {ASPECT, EDIT, ENTRY, GLOBAL, META, META_ASPECT_LIST, VIEW} from "~/lib/consts";
 import {check_str_is_uuid} from "~/lib/fixes";
 import {
+  ENTRIES_GET_EDIT,
   ENTRIES_GET_ENTRY,
   ENTRIES_GET_ENTRY_TITLE,
   ENTRIES_GET_PARENT,
@@ -54,7 +55,12 @@ export default {
       return this.$store.getters[ENTRIES_HAS_ENTRY](this.uuid)
     },
     entry() {
-      let entry = this.$store.getters[ENTRIES_GET_ENTRY](this.uuid)
+      let entry = null
+      if (this.is_edit_mode) {
+        entry = this.$store.getters[ENTRIES_GET_EDIT]()
+      } else {
+        entry = this.$store.getters[ENTRIES_GET_ENTRY](this.uuid)
+      }
       if (!entry) {
         console.log("WARNING, ENTRY MISSING IN CACHE")
         return null
@@ -80,6 +86,9 @@ export default {
       return this.entry.actors
     },
     template_slug() {
+      if(!this.entry) {
+        console.log("No entry", this.uuid)
+      }
       return this.entry.template.slug
     },
     base_cols() {

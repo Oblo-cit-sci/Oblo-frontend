@@ -29,6 +29,7 @@ export const ENTRIES_UPDATE_IMAGE = "entries/update_image"
 export const ENTRIES_ADD_FILE_ATTACHMENT = "entries/add_file_attachment"
 export const ENTRIES_REMOVE_FILE_ATTACHMENT = "entries/remove_file_attachment"
 export const ENTRIES_SET_FROM_ARRAY = "entries/set_from_array"
+export const ENTRIES_RESET_EDIT = "entries/reset_edit"
 // internal
 export const _SET_ENTRY_VALUE = "_set_entry_value"
 export const UPDATE_TAGS = "update_tags"
@@ -85,7 +86,7 @@ export const mutations = {
   save_entry(state, entry) {
     state.entries.set(entry.uuid, entry)
   },
-  delete_edit_entry(state) {
+  reset_edit(state) {
     state.edit = null
   },
   set_downladed(state, uuid) {

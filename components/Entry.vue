@@ -129,12 +129,6 @@
           return [ENTRY, this.uuid]
         }
       },
-      is_view_mode() {
-        return this.mode === VIEW
-      },
-      is_edit_mode() {
-        return this.mode === EDIT
-      },
       license_aspect() {
         return license_aspect(this.$store, ["cc_licenses"], [])
       },
@@ -174,15 +168,19 @@
         return this.entry.image
       },
       is_dirty() {
-        console.log("dirt check")
-        const edit_entry = this.$store.getters[ENTRIES_GET_EDIT]()
-        const original_entry = this.$store.getters[ENTRIES_GET_ENTRY](this.uuid)
-        // todo local might disturb that
-        // console.log(edit_entry, original_entry)
-        for (let k in edit_entry) {
-          console.log(k, this.$_.isEqual(edit_entry[k], original_entry[k]))
-        }
-        return !this.$_.isEqual(edit_entry, original_entry)
+        const edit_entry = this.$_.omit(this.$store.getters[ENTRIES_GET_EDIT](),["local"])
+        const original_entry = this.$_.omit(this.$store.getters[ENTRIES_GET_ENTRY](this.uuid),["local"])
+        // for (let k in edit_entry) {
+        //   if(!this.$_.isEqual(edit_entry[k], original_entry[k]))
+        //     console.log(k, this.$_.isEqual(edit_entry[k], original_entry[k]))
+        //   if(!original_entry.hasOwnProperty(k))
+        //     console.log("new", k)
+        // }
+        // for (let k in original_entry) {
+        //   if(!edit_entry.hasOwnProperty(k))
+        //     console.log("del", k)
+        // }
+        return  !this.$_.isEqual(edit_entry, original_entry)
       },
     }
   }

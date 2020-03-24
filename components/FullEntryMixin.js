@@ -1,6 +1,6 @@
 
   import {privacy_icon} from "../lib/util";
-  import {VIEW} from "../lib/consts";
+  import {EDIT, VIEW} from "../lib/consts";
   import {unsaved_changes_default_dialog} from "../lib/dialogs";
 
   export default {
@@ -25,6 +25,12 @@
         set(mode) {
           this.to_entry(this.uuid, mode)
         }
+      },
+      is_view_mode() {
+        return this.mode === VIEW
+      },
+      is_edit_mode() {
+        return this.mode === EDIT
       },
       meta_aspects_privacy() {
         let result = []
