@@ -2,35 +2,6 @@
   div
     h1 Settings
     br
-    div(v-if="partner_settings")
-      h3 User key: Upload to the LICCI Repo (temporary option)
-      div During the main data collection period of LICCI partners, partners can upload collected data to the LICCI data repository. AUTOMATICALLY SAVED
-      TextShort(
-        :aspect="user_key_aspect"
-        :ext_value="user_key"
-        mode="edit"
-        v-on:update_value="update_user_key($event)")
-      v-btn(@click="test_save" :loading="test_save_connect_loading") Test and save
-      br
-      v-expansion-panels
-        v-expansion-panel
-          v-expansion-panel-header Hot fixes!
-          v-expansion-panel-content
-            div
-              span Basic sanity check of all entries
-              v-btn(@click="fix('all_basic_sanity')") sanity check
-            div
-              span List orphans (entries that unintentionally got detached from their parent entry)
-              v-btn(@click="fix('orphans')") orphans
-              EntryPreviewList(
-                :entries="orphans"
-                :preview_options="orphan_preview_options")
-            div
-              span Fix entrylists, that include missing or unknown entries
-              v-btn(@click="fix('fix_check_entrylist_references')") Fix entrylists
-            v-btn(@click="fix('add_remove')") compare to type...
-            v-btn(@click="fix('clean_site')") clean site
-      v-divider.wide-divider
     h3 Export data
     div Export all your entries
     v-btn(@click="export_entries") Export
@@ -40,46 +11,30 @@
     LoadFileButton(@fileload="load_file($event)" )
     br
     v-divider.wide-divider
-    h3 Clear entries
-    div delete all entries. Make sure that you made backups of the entries you made
-    v-btn(@click="show_clear_entries" color="error") Clear
+    <!--    h3 Clear entries-->
+    <!--    div delete all entries. Make sure that you made backups of the entries you made-->
+    <!--    v-btn(@click="show_clear_entries" color="error") Clear-->
     DecisionDialog(
       v-bind="dialog_data"
       :open.sync="show_dialog"
       @action="dialog_action($event)")
-    <!--    VDialog(v-bind="dialog_content")-->
-    <!--    v-card-->
-    v-btn(@click="load_etypes") load entry types, just 6.17 for now
 </template>
 
 <script>
 
 
   import Aspect from "../components/Aspect";
-  import {pack_value} from "../lib/aspect";
   import LoadFileButton from "../components/LoadFileButton";
   import DecisionDialog from "../components/DecisionDialog";
   import TextShort from "../components/aspects/TextShortAspect";
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
   import {export_data, merge_imported_entries} from "../lib/import_export";
-  import {
-    ADD_META, CLEAR_ENTRIES,
-    ENTRYTYPES_SET_TYPES,
-    USER_KEY
-  } from "../lib/store_consts";
+  import {CLEAR_ENTRIES} from "../lib/store_consts";
   import {get_release_mode} from "../lib/util";
-  import {LICCI_PARTNERS, TYPE_SLUG} from "../lib/consts";
+  import {LICCI_PARTNERS} from "../lib/consts";
   import PersistentStorageMixin from "../components/PersistentStorageMixin";
-  import {
-    all_fix_broken_aspect_value_structure, all_kick_redundent_values,
-    check_all_values_basic_sanity,
-    find_orhpans, fix_0_16_multi_select_errors,
-    fix_add_licci_domain, fix_broken_aspect_value_structure,
-    fix_check_entrylist_references
-  } from "../lib/fixes";
-  import {filter_required} from "../lib/search";
+  import {fix_add_licci_domain} from "../lib/fixes";
   import EntryPreviewList from "../components/EntryPreviewList";
-  import {ENTRIES_ALL_ENTRIES_ARRAY, ENTRIES_GET_ENTRIES, ENTRIES_GET_ENTRY} from "../store/entries";
 
 
   export default {
@@ -87,16 +42,6 @@
     components: {EntryPreviewList, TextShort, DecisionDialog, LoadFileButton, Aspect},
     mixins: [TriggerSnackbarMixin, PersistentStorageMixin],
     created() {
-      fix_add_licci_domain(this.$store)
-      find_orhpans(this.$store)
-      // fix_0_16_multi_select_errors(this.$store)
-
-      // const orphans = this.$_.filter(this.$store.getters[ENTRIES_ALL_ENTRIES_ARRAY](), e => e.status === "orphan")
-      // const entries = this.$store.getters[ENTRIES_ALL_ENTRIES_ARRAY]()
-      // const sanity_cheks = check_all_values_basic_sanity(entries)
-
-      // fix_broken_aspect_value_structure(this.$store)
-
     },
     data() {
       return {
@@ -118,93 +63,11 @@
           cancel_color: "",
           show_cancel: false
         },
-        user_key_aspect: {
-          name: "User key",
-          description: "For that purpose, in order to identify each partner, you need to paste your user key here, which you received from the LICCI core team",
-          type: "str",
-          attr: {
-            max: 40
-          }
-        },
         show_dialog: false,
         // temporary for hot fix
-        orphans: [],
-        orphan_preview_options: {
-          show_date: false,
-          show_meta_aspects: false,
-          actions: [{
-            key: "Delete",
-            name: "Delete",
-            type: "delete",
-            color: "red"
-          }]
-        }
       }
     },
     methods: {
-      fix(method) {
-        switch (method) {
-          case "all_basic_sanity":
-            find_orhpans(this.$store)
-            const entries = filter_required(this.$store.getters[ENTRIES_ALL_ENTRIES_ARRAY](), [{
-              name: "meta_aspect",
-              meta_aspect_name: "status",
-              conditional_value: "orphan",
-              compare: "unequal"
-            }])
-            console.log(entries.length)
-            const failed = check_all_values_basic_sanity(entries)
-            if (failed.length === 0) {
-              this.ok_snackbar("All entry values seem in propper shape")
-            }
-            for (let uuid_result of failed) {
-              const e = this.$store.getters[ENTRIES_GET_ENTRY](uuid_result[0])
-              console.log(e)
-              console.log(e.title)
-            }
-            // console.log(failed)
-            break
-          case "orphans":
-            const result = find_orhpans(this.$store)
-            console.log(result)
-            console.log(this.$store.getters[ENTRIES_GET_ENTRIES](result))
-            this.orphans = this.$store.getters[ENTRIES_GET_ENTRIES](result)
-            break
-          case "fix_check_entrylist_references":
-            fix_check_entrylist_references(this.$store)
-          case "add_remove":
-            all_fix_broken_aspect_value_structure(this.$store)
-            break
-          case "clean_site":
-            all_kick_redundent_values(this.$store, ["site"])
-            break
-          default:
-            console.log("invalid method:", method)
-        }
-      },
-      test_save() {
-        this.test_save_connect_loading = true
-        let data = {user_key: this.$store.state.meta.repository.user_key}
-        this.$axios.post("https://licci.uab.cat/cgi-bin/test_user.py", data, {
-          headers: {
-            "accept": "*",
-            "Access-Control-Allow-Headers": "accept",
-            'Access-Control-Allow-Origin': '*',
-          }
-        }).then(res => {
-          // TODO the whole thing is not super elegant. stored in vuex on key, but in browser only on save...
-          this.snackbar(res.data.status, res.data.msg)
-          this.test_save_connect_loading = false
-          if (res.data.status) {
-            this.persist_user_key()
-            this.$router.push("/")
-          }
-        }).catch(err => {
-          console.log(err)
-          this.test_save_connect_loading = false
-          this.error_snackbar("Something went horribly wrong")
-        })
-      },
       export_entries() {
         const entries = Array.from(this.$store.state.entries.entries.values())
         export_data({entries: entries}, "all_entries.json")
@@ -212,13 +75,6 @@
       show_clear_entries() {
         this.show_dialog = true
         this.dialog_data = this.clear_dialog_data
-      },
-      update_user_key(event) {
-        this.$store.commit(ADD_META, {
-          repository: {
-            user_key: event.value
-          }
-        })
       },
       load_file(event) {
         if (event.ok) {
@@ -266,23 +122,8 @@
         this.persist_entries()
         this.persist_draft_numbers()
       },
-      load_etypes() {
-        const etypes = require("../lib/data_backups/v.0.6.17")
-        this.$store.commit(ENTRYTYPES_SET_TYPES, etypes)
-        // console.log(etypes)
-      }
     },
-    computed: {
-      user_key() {
-        return pack_value(this.$store.getters[USER_KEY])
-      },
-      partner_settings() {
-        return get_release_mode(this.$store) === LICCI_PARTNERS
-      },
-      dialog_content() {
-        return ""
-      }
-    }
+    computed: {}
   }
 </script>
 

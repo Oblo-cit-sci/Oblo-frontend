@@ -120,16 +120,16 @@
             },
             value: null
           },
-          {
-            name: "Interested topics",
-            description: "LICCIs you are interested in",
-            type: "multiselect",
-            items: ["empty upsi"],
-            attr: {
-              unpacked: true
-            },
-            value: []
-          },
+          // {
+          //   name: "Interested topics",
+          //   description: "LICCIs you are interested in",
+          //   type: "multiselect",
+          //   items: ["empty upsi"],
+          //   attr: {
+          //     unpacked: true
+          //   },
+          //   value: []
+          // },
           {
             name: "email",
             label: "Email address",
