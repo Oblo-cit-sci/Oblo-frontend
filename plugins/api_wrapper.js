@@ -8,9 +8,12 @@ class APIWrapper {
     this.axios = null
   }
 
-  init(axios) {
+  init(axios, baseURL = null) {
     this.axios = axios
-    this.axios_baseURL = axios.defaults.baseURL
+    if(baseURL)
+      this.axios_baseURL = baseURL
+    else
+      this.axios_baseURL = axios.defaults.baseURL
     this.api_baseURL = this.axios_baseURL + "/api"
     //
     this.domain_baseURL = this.api_baseURL + "/domain"

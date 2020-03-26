@@ -20,10 +20,10 @@
         v-btn(v-if="is_draft" color="success" @click="save") {{save_word}}
         v-btn(v-if="!is_draft" color="error" @click="show_delete") Delete
         v-btn(
-          v-if="can_submit"
+          v-if="show_submit"
           color="success"
           @click="submit"
-          :disabled="!connected || !entry_complete || !is_dirty"
+          :disabled="disable_submit"
           :loading="sending") {{published ? 'update' : 'submit'}}
       // v-if="private_local" todo for now, download for everyone
       v-btn(v-if="can_download" :disabled="disable_download"  @click="download") download
@@ -181,14 +181,16 @@
             for (let attachment_data of attachments_data) {
               const file_uuid = attachment_data.file_uuid
               const stored_file = this.$store.getters[FILES_GET_FILE](file_uuid)
-              const blob = base64file_to_blob(stored_file.meta.type, stored_file.data)
-              const formData = new FormData()
-              formData.append("file", blob, stored_file.meta.name)
-              this.$api.post_entry__$uuid__attachment__$file_uuid(this.uuid, file_uuid, formData).then((res) => {
-                this.$store.commit(FILES_REMOVE_FILE, file_uuid)
-              }).catch(err => {
-                this.error_snackbar("File could not be uploaded", stored_file.meta.name)
-              })
+              if (stored_file) {
+                const blob = base64file_to_blob(stored_file.meta.type, stored_file.data)
+                const formData = new FormData()
+                formData.append("file", blob, stored_file.meta.name)
+                this.$api.post_entry__$uuid__attachment__$file_uuid(this.uuid, file_uuid, formData).then((res) => {
+                  this.$store.commit(FILES_REMOVE_FILE, file_uuid)
+                }).catch(err => {
+                  this.error_snackbar("File could not be uploaded", stored_file.meta.name)
+                })
+              }
             }
             this.sending = false
             // this.entry.status = PUBLISHED
@@ -275,8 +277,11 @@
         let relation = entry_actor_relation(this.entry, this.$store.getters.user)
         return relation === CREATOR.actors_key
       },
-      can_submit() {
+      show_submit() {
         return !this.private_local && !this.view && !this.in_context && !this.partner_mode
+      },
+      disable_submit() {
+        return !this.connected || !this.entry_complete || (!this.is_dirty && !this.is_draft)
       },
       is_draft() {
         return this.entry.status === DRAFT
