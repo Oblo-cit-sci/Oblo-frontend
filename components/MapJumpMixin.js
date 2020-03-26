@@ -45,7 +45,7 @@ export default {
         }
       }
       if(select_uuid) {
-        route.query.select = select_uuid
+        route.query.uuid = select_uuid
       }
       this.$router.push(route)
     }

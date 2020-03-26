@@ -37,7 +37,7 @@
   export const SEARCH = "search"
   export const ENTRY = "entry"
 
-  const selected_color = "#C6780A"
+  const selected_color = "#f5ffed"
 
   export default {
     name: "Map",
@@ -60,6 +60,7 @@
         mapCssStyle: "",
         mapStyle: licci_style_map,
         center_coordinates: [-0.8844128193341589, 37.809519042232694],
+        map_loaded: false,
         markers: [],
       }
     },
@@ -67,18 +68,10 @@
       this.map = null
       this.$api.entries_map_entries().then(({data}) => {
         this.$store.dispatch(MAP_SET_ENTRIES, data.data)
-        // console.log("received", data.data.length, "map relevant entries")
+        console.log("received", data.data.length, "map relevant entries")
       }).catch(err => {
         console.log("map entries error")
       })
-      const goto_location = this.$store.getters[MAP_GOTO_LOCATION]()
-      if (goto_location) {
-        this.center_coordinates = this.transform_loc(goto_location.coordinates)
-      }
-      console.log("map create query.select", this.$route.query.uuid)
-      if (this.$route.query.uuid) {
-        this.update_navigation_mode(this.$route.query.select, VIEW)
-      }
     },
     mounted() {
       this.mapCssStyle = "height: " + document.getElementById("fullContainer").clientHeight + "px"
@@ -115,8 +108,21 @@
     methods: {
       onMapLoaded(event) {
         this.map = event.map
-        // console.log("map loaded")
-        this.create_markers()
+        this.map_loaded = true
+        console.log("map loaded")
+        if (this.entries) {
+          this.create_markers()
+          this.markers_and_map_done()
+        }
+      },
+      markers_and_map_done() {
+        console.log("markers_and_map_done?")
+        if (this.entries.length > 0 && this.map_loaded) {
+          console.log("markers_and_map_done")
+          if (this.$route.query.uuid) {
+            this.update_navigation_mode(this.$route.query.uuid, VIEW)
+          }
+        }
       },
       // todo later use dispatch, like in create?
       update_map_entries(entries) {
@@ -205,7 +211,6 @@
             }
           }
         }
-        // console.log(this.markers.length, "markers")
       },
       map_goto_location(location) {
         const center = this.transform_loc(location.coordinates)
@@ -256,6 +261,7 @@
         // todo, a bit ineficient. is called whenever we go back from an entry to the search
         if (this.map) {
           this.create_markers()
+          this.markers_and_map_done()
         } else {
           console.log("entries, ... but no map")
         }
