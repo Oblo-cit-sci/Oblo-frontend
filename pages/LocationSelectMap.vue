@@ -27,6 +27,7 @@
   import {ENTRIES_SET_ENTRY_VALUE} from "../store/entries";
   import {place2str} from "../lib/location";
   import {MAP_RESET_TO_SELECT_ASPECT_LOCATION, MAP_SELECTED_LOCATION} from "../store/map";
+  import {alt_rev_geocode} from "../lib/services/nomination";
 
 
   export default {
@@ -103,6 +104,11 @@
         this.selected_coordinates = [mapboxEvent.lngLat.lng, mapboxEvent.lngLat.lat]
         this.selected_place = null
         this.selected_place_text = "querying location name..."
+        // alt_rev_geocode(this.$axios, {lon: mapboxEvent.lngLat.lng, lat: mapboxEvent.lngLat.lat}).then(data => {
+        //   console.log("alternative", data)
+        // }).catch(err => {
+        //   console.log(err)
+        // })
         rev_geocode(this.$axios, {lon: mapboxEvent.lngLat.lng, lat: mapboxEvent.lngLat.lat}).then(data => {
           this.querying_location = false
           if (data.features.length === 0) { // oceans

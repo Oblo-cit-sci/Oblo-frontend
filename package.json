@@ -1,6 +1,6 @@
 {
   "name": "licci",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "description": "Local Indicators of Climate change impacts",
   "author": "Ramin S",
   "private": true,
@@ -15,8 +15,8 @@
     "to_eovalue": "rm -r eovalue; mv -r eovalue eovalue;",
     "move2server": "node util/move2server.js",
     "move2server.staging": "SERVER=staging node util/move2server.js",
-    "build.local and move": "SERVER=local nuxt build --spa --pwa; npm run move2server",
-    "build and move": "nuxt build --spa --pwa && npm run move2server",
+    "build.local and move": "SERVER=local nuxt build --spa --pwa; SERVER=local node util/move2server.js",
+    "build and move": "nuxt build --spa --pwa; node util/move2server.js",
     "build and move_staging": "SERVER=staging nuxt build --spa --pwa; npm run move2server.staging",
     "upload": "sudo python3 /media/ra/hd/projects/2019/liccibackend/helpers/app_upload.py",
     "test": "jest"

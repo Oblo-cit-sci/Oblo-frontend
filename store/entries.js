@@ -389,7 +389,7 @@ export const getters = {
   // todo: get edit title, but will be simpler...?
   get_entry_title: function (state, getters) { // ENTRIES_GET_ENTRY_TITLE
     return (uuid) => {
-      console.log("get entry title ", uuid)
+      // console.log("get entry title ", uuid)
       const entry = getters.get_entry(uuid)
       const type = getters.get_entry_type(entry.template.slug)
       let titleAspect = get_entry_titleAspect(type)
@@ -408,11 +408,14 @@ export const getters = {
       }
     }
   },
-  entry_location: function (state, getters) {
+    entry_location: function (state, getters) {
     return (uuid) => {
       const entry = getters.get_entry(uuid)
       const entry_type = getters.get_entry_type(entry.template.slug)
       const locationAspect = entry_type.rules.locationAspect
+      if(!locationAspect) {
+        return null
+      }
       let location = null
       if (locationAspect) {
         location = select_aspect_loc(state, loc_prepend(ENTRY, uuid, aspect_loc_str2arr(locationAspect)))
@@ -451,14 +454,12 @@ export const getters = {
         const aspect_tag_location = tagsAspect[tags_type]
         let tags = select_aspect_loc(state, loc_prepend(ENTRY, uuid, aspect_loc_str2arr(aspect_tag_location)))
         tags = recursive_unpack(tags)
-        //
         tags = guarantee_array(tags)
         tags = ld.flattenDeep(tags)
-        tags = tags.filter(t => t)
+        // console.log("unpacked & flat tags", tags)
+        tags = tags.filter(t => !ld.isEmpty(t))
+        // console.log("unpacked & flat, cleaned tags", tags)
         tags = Array.from(new Set(tags))
-        // tags = ld.uniqBy(tags, t => t.value)
-        // tags = ld.filter(tags, t => t.value) // kickout empty string
-        // tags = ld.map(tags, t => t.value) // tag format // todo icons...
         if (tags.length > 0) {
           all_tags[tags_type] = tags
         }
@@ -499,13 +500,15 @@ export const actions = {
     const entry_title = context.getters.get_entry_title(uuid)
     context.commit("update_title", {uuid, title: entry_title})
     const location = context.getters.entry_location(uuid)
+    // console.log("update_entry. location",location)
     if (location) {
-      // console.log("save_entry. loc",location )
-      console.log(recursive_unpack(location))
+      // console.log(recursive_unpack(location))
       const simple_location = filter_empty(recursive_unpack(location))
       context.commit("update_location", {uuid, location: simple_location})
     }
+    // console.log("tags")
     const tags = context.getters.entry_tags(uuid)
+    // console.log("tags", tags)
     if (tags) {
       context.commit(UPDATE_TAGS, {uuid, tags: tags})
     }
@@ -522,7 +525,7 @@ export const actions = {
     context.commit("_remove_entry_ref_index", {uuid, child_uuid, aspect_loc})
   },
   delete_entry(context, uuid) { // ENTRIES_DELETE_ENTRY
-    console.log(uuid)
+    // console.log(uuid)
     const entry = context.state.entries.get(uuid)
     if (entry) {
       for (let child_uuid in entry.refs.children) {

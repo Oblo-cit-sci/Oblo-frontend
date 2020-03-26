@@ -3,6 +3,7 @@
     div
       v-btn(icon small @click="$emit('selected', null)")
         v-icon mdi-close
+    div {{act_level}},  {{act_edit_mode}}
     v-list(v-if="has_selection")
       v-list-item(v-for="(node, index) of selection", :key="node.title")
         v-list-item-content
@@ -12,7 +13,13 @@
             v-icon mdi-close-circle-outline
     v-divider(v-if="has_both()")
     v-subheader#subheader(v-if="has_level_names") {{act_levelname}}
-    SingleSelect.pb-1(v-if="has_options" :options="act_options" v-on:selection="select($event)" :select_sync="false" :highlight="false")
+
+    div(v-if="has_options")
+      SingleSelect.pb-1(v-if="edit_mode_list" :options="act_options" v-on:selection="select($event)" :select_sync="false" :highlight="false")
+      SelectGrid(v-if="edit_mode_matrix" :options="act_options" v-on:selection="select($event)")
+      Paginated_Select(v-if="edit_mode_paginated" :options="act_options" :edit_mode="level_edit_mode(act_level + 1)" v-on:selection="select($event)")
+
+
     .ml-3(v-if="last_description")
       div Description:
       div {{last_description}}
@@ -31,11 +38,13 @@
     import SingleSelect from "./SingleSelect";
     import TextShort from "../aspects/TextShortAspect";
     import {object_list2options} from "../../lib/options";
+    import SelectGrid from "../aspect_utils/SelectGrid";
+    import Paginated_Select from "../aspect_utils/Paginated_Select";
 
 
     export default {
         name: "TreleafPicker",
-        components: {TextShort, SingleSelect},
+        components: {Paginated_Select, SelectGrid, TextShort, SingleSelect},
         props: {
             tree: {
                 type: Object
@@ -67,21 +76,21 @@
         },
         computed: {
             act_options() {
-                let options = [];
+                let options = []
                 if (this.selection.length === 0) {
                     options = this.tree.root.children
                 } else {
-                    options = this.$_.last(this.selection).children || [];
+                    options = this.$_.last(this.selection).children || []
                 }
                 for (let index in options) {
-                    let node = options[index];
-                    node["title"] = node["name"];
-                    node["id"] = parseInt(index);
+                    let node = options[index]
+                    node["title"] = node["name"]
+                    node["id"] = parseInt(index)
                 }
-                //options = this.$_.map(options, (o) => {return o.name})
-                return object_list2options(options, "title", "title"); //string_list2options(options);
+                return object_list2options(options, "title", "title")
             },
             done_available() {
+                console.log("done?", this.attr.allow_select_levels, this.act_level)
                 if (this.attr.hasOwnProperty("allow_select_levels")) {
                     return (this.$_.includes(this.attr.allow_select_levels, this.act_level))
                 } else {
@@ -92,7 +101,7 @@
                 if(this.selection.length === 0) {
                     return ""
                 } else {
-                    return this.selection[this.act_level].description || ""
+                    return this.selection[this.act_level - 1].description || ""
                 }
             },
             has_level_names() {
@@ -102,10 +111,10 @@
                 return this.selection.length > 0
             },
             act_level() {
-                return this.selection.length - 1
+                return this.selection.length
             },
             has_options() {
-                return this.act_options.length  > 0
+                return this.act_options.length > 0
             },
             act_levelname() {
                 return this.level_names[this.selection.length]
@@ -118,6 +127,18 @@
                     required: true,
                     type: "str"
                 }
+            },
+            act_edit_mode() {
+                return this.level_edit_mode(this.act_level)
+            },
+            edit_mode_list() {
+                return this.act_edit_mode === "list"
+            },
+            edit_mode_matrix() {
+                return this.act_edit_mode === "matrix"
+            },
+            edit_mode_paginated() {
+                return this.act_edit_mode === "paginated"
             }
         },
         created() {
@@ -128,6 +149,7 @@
         },
         methods: {
             select(value) {
+                console.log("select", value)
                 this.selection.push(value)
             },
             remove(index) {
@@ -149,6 +171,9 @@
                 )
                 this.extra_value = ""
                 this.selection = []
+            },
+            level_edit_mode(level) {
+                return this.$_.get(this.attr, `edit[${level}]`, "list")
             }
         }
     }

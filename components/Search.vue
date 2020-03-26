@@ -211,7 +211,6 @@
 
         if(before_last) {
           const ts = this.$store.getters[SEARCH_GET_SEARCHTIME]
-          console.log(ts)
           configuration.required.push({name: "before_ts", ts: ts})
         }
         if (this.keyword) {

@@ -3,18 +3,9 @@
     client-only
       .buttongroup
         div
-          v-btn(dark fab bottom right x-large color="blue" @click="drawer = !drawer")
+          v-btn(dark fab bottom right large color="blue" @click="drawer = !drawer")
             v-icon mdi-menu
-      MapNavigationBottomSheet(
-        v-if="display_mdDown"
-        :drawer="drawer"
-        :layers="layers"
-        :navigation_mode="navigation_mode"
-        @navigation_mode_entry="navigate_entry"
-        @navigation_mode_search="unselect_entry"
-        @layer_select_change="layer_select_change($event)")
-      MapNavigationDrawer(
-        v-else
+      component(:is="navgiagtion_component"
         :drawer="drawer"
         :layers="layers"
         :navigation_mode="navigation_mode"
@@ -101,6 +92,12 @@
       display_mdDown() {
         return this.$vuetify.breakpoint.mdAndDown
       },
+      navgiagtion_component() {
+        if (this.display_mdDown)
+          return MapNavigationBottomSheet
+        else
+          return MapNavigationDrawer
+      },
       goto_location() {
         console.log("map, goto_location, map-store", this.$store.getters[MAP_GOTO_LOCATION]())
         return this.$store.getters[MAP_GOTO_LOCATION]()
@@ -158,27 +155,23 @@
             }
           }
           this.update_navigation_mode(entry_uuid, VIEW)
-
-          this.drawer = true
         } else {
-          // console.log("grabbing entry")
+          console.log("fetching entry")
           this.$api.entry__$uuid(entry_uuid).then(({data}) => {
             if (data.data) {
               if (this.selected_entry) {
                 this.change_entry_markers_mode(this.selected_entry, false)
               }
-
               const entry = data.data
-              this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
-              this.update_navigation_mode(entry_uuid, VIEW)
 
-              this.drawer = true
+              this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
+              console.log("received refs", entry.refs)
+              this.update_navigation_mode(entry_uuid, VIEW)
             }
           }).catch(err => {
             console.log("error fetching entry")
           })
         }
-        this.update_navigation_mode(entry_uuid, "view")
       },
       change_entry_markers_mode(entry_uuid, selected) {
         // console.log("change_entry_markers_mode", entry_uuid, selected, this.selected_entry)
@@ -228,7 +221,7 @@
       unselect_entry() {
         this.update_navigation_mode(null)
       },
-      update_navigation_mode(entry_uuid, mode){
+      update_navigation_mode(entry_uuid, entry_mode) {
         if (this.selected_entry) {
           this.change_entry_markers_mode(this.selected_entry, false)
         }
@@ -239,8 +232,9 @@
         if (entry_uuid) {
           query.uuid = entry_uuid
         }
-        if(mode) {
-          query.entry_mode = mode
+        if (entry_mode) {
+          query.entry_mode = entry_mode
+          this.drawer = true
         }
         this.change_entry_markers_mode(entry_uuid, true)
         this.$router.push(route_change_query(this.$route, query, true))

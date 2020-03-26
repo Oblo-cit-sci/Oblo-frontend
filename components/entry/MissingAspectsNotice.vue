@@ -31,7 +31,7 @@
       return {}
     },
     created() {
-      console.log("this.missing", this.missing)
+      // console.log("this.missing", this.missing)
       if(this.missing.length === 0) {
         this.$emit("input", true)
       }

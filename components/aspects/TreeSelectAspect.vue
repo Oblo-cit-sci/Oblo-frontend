@@ -26,7 +26,7 @@
 <script>
   import TreleafPicker from "../input/TreleafPicker";
   import TextShort from "./TextShortAspect";
-  import {flatten_tree_to_options, get_codes_as_options, get_codes_as_tree} from "../../lib/options";
+  import {flatten_tree_to_options, get_codes_as_tree} from "../../lib/options";
   import {EDIT} from "../../lib/consts";
   import AspectComponentMixin from "./AspectComponentMixin";
 
@@ -46,25 +46,22 @@
       if (this.mode === EDIT) {
         // build the given_options (all tree available) from what is passed
         // let passed_tree = this.aspect.items;
-        this.tree = get_codes_as_tree(this.$store, this.aspect.items)
 
-        // a "*" means, lookup code and set the values as tree
+        if(typeof this.aspect.items === "string"){
+          this.tree = get_codes_as_tree(this.$store, this.aspect.items)
+        } else {
+          this.tree = this.aspect.items
+        }
 
-        // if (typeof (passed_tree) === "string") {
-        //     let type_char = passed_tree.charAt(0);
-        //     //console.log("tree, cja", type_char, )
-        //     if (type_char === "*") {
-        //         //console.log("tree")
-        //         this.tree = this.$store.getters.get_code(passed_tree.substring(1));
-        //     }
-        // }
-        // flat_options // TODO maybe store them...
         let options = {}
         if (this.aspect.attr.allow_select_levels) {
           options.include_levels = this.aspect.attr.allow_select_levels
+        } else {
+          options.include_levels = [this.tree.level_names.length - 1]
         }
+        // console.log(this.tree, options.include_levels)
         this.flat_options = flatten_tree_to_options(this.tree, options)
-        //console.log(this.flat_options)
+
       }
     },
     methods: {

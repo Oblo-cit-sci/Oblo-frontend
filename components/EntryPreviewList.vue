@@ -70,7 +70,7 @@
         return this.num_entries > 0
       },
       num_entries() {
-        console.log("num_entries", this.total_count)
+        // console.log("num_entries", this.total_count)
         if (this.total_count !== undefined)
           return this.total_count
         else

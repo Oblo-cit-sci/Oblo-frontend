@@ -109,7 +109,7 @@
       }
     },
     created() {
-      console.log("Selection create", this.selection)
+      // console.log("Selection create", this.selection)
       this.emit_only_value = this.only_value
       if (this.selection) {
         this.set_selected_item(false)

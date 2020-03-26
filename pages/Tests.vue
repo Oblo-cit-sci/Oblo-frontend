@@ -6,7 +6,7 @@
 <script>
 
 
-  import SelectGrid from "../components/aspects/SelectGrid";
+  import SelectGrid from "../components/aspect_utils/SelectGrid";
   import SimplePaginate from "../components/SimplePaginate";
   import ActorSearch from "../components/ActorSearch";
 

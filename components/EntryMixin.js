@@ -9,7 +9,6 @@ import {
   ENTRIES_GET_ENTRY_TITLE,
   ENTRIES_GET_PARENT,
   ENTRIES_GET_RECURSIVE_ENTRIES,
-  ENTRIES_HAS_ENTRY,
   ENTRIES_SET_DOWNLOADED,
   ENTRIES_VALUE
 } from "~/store/entries";
@@ -53,6 +52,7 @@ export default {
       return this.template.rules.context !== GLOBAL || this.entry.refs.parent
     },
     entry() {
+      // console.log("entry", this.uuid, this.is_edit_mode)
       let entry = null
       if (this.is_edit_mode) {
         entry = this.$store.getters[ENTRIES_GET_EDIT]()
@@ -83,9 +83,6 @@ export default {
       return this.entry.actors
     },
     template_slug() {
-      if(!this.entry) {
-        console.log("No entry", this.uuid)
-      }
       return this.entry.template.slug
     },
     base_cols() {
@@ -111,14 +108,18 @@ export default {
     //   return this.$store.getters[ENTRIES_GET_ENTRY_TITLE](this.uuid)
     // },
     entry_title() {
-      let titleAspect = get_entry_titleAspect(this.template)
-      if (!titleAspect) {
+      if (this.is_edit_mode) {
+        let titleAspect = get_entry_titleAspect(this.template)
+        if (!titleAspect) {
+          return this.entry.title
+        }
+        // todo maybe it would be cleaner to add "entry "+uuid , so that  aspect_loc_str2arr/is wrapped around
+        let title = this.$store.getters[ENTRIES_VALUE](loc_prepend(EDIT, this.uuid, aspect_loc_str2arr(titleAspect)))
+        title = this.$_.get(title, "value", "")
+        return this.template.title + (title ? ": " + title : "")
+      } else {
         return this.entry.title
       }
-      // todo maybe it would be cleaner to add "entry "+uuid , so that  aspect_loc_str2arr/is wrapped around
-      let title = this.$store.getters[ENTRIES_VALUE](loc_prepend(EDIT, this.uuid, aspect_loc_str2arr(titleAspect)))
-      title = this.$_.get(title, "value", "")
-      return this.template.title + (title ? ": " + title : "")
     },
     entry_image() {
       if (this.entry.image) {
@@ -199,7 +200,7 @@ export default {
       this.$store.commit(ENTRIES_SET_DOWNLOADED, this.entry.uuid)
     },
     update_aspect_locs() {
-      console.log("update_aspect_locs", this.entry !== null)
+      // console.log("update_aspect_locs", this.entry !== null)
       if (this.entry !== null) {
         for (let aspect of this.template.aspects) {
           this.aspect_locs[aspect.name] = loc_append([this.aspect_loc], ASPECT, aspect.name)

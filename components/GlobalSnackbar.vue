@@ -19,7 +19,7 @@
     },
     created: function () {
       this.$store.watch(state => state.snackbar.trigger, () => {
-        console.log("snackbar trigger watcher")
+        // console.log("snackbar trigger watcher")
           let snackbar = this.$store.state.snackbar
           if (snackbar.trigger) {
             this.show = true

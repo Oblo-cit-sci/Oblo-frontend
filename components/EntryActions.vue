@@ -177,7 +177,7 @@
           try {
             const res = await this.$api[method](this.entry.uuid, sending_entry)
             const attachments_data = this.get_attachments_to_post(sending_entry)
-            console.log(attachments_data)
+            // console.log(attachments_data)
             for (let attachment_data of attachments_data) {
               const file_uuid = attachment_data.file_uuid
               const stored_file = this.$store.getters[FILES_GET_FILE](file_uuid)

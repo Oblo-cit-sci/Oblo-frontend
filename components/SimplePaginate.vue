@@ -2,7 +2,7 @@
   div
     v-btn(:disabled="!_has_prev" @click="change_page(-1)" outlined color="blue") Back
     v-btn(:disabled="!_has_next" @click="change_page(1)" outlined color="blue" :loading="next_loading") Next
-    div.ml-2
+    div.ml-2(v-if="show_page_index")
       span page: {{page}} &nbsp;
       span(v-if="total_pages") / {{total_pages}}
 
@@ -17,7 +17,11 @@
       value: Number,
       total_pages: Number,
       has_next: Boolean,
-      next_loading: Boolean
+      next_loading: Boolean,
+      show_page_index: {
+        type: Boolean,
+        default: true
+      }
     },
     data() {
       return {}

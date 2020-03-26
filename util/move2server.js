@@ -10,18 +10,26 @@ const source = "dist"
 destination_folder = "fe"
 
 console.log("preparing copying")
+
 server = process.env.SERVER || "production"
+console.log("env.server", server)
+
+if(process.env.SERVER === "local") {
+  destination_folder = "fe_local"
+}
+
 if(process.env.SERVER === "staging") {
   destination_folder = "fe.s"
 }
 
+console.log("destination", destination_folder)
+
 const destination = server_static_dir + destination_folder
 
-
 const deleteFolderRecursive = function(path) {
-  if(path === "" ) {
-    console.log("nope")
-  }
+  // if(path === "" ) {
+    // console.log("nope")
+  // }
   if (fs.existsSync(path)) {
     fs.readdirSync(path).forEach((file, index) => {
       const curPath = pathf.join(path, file);
