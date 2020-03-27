@@ -100,7 +100,7 @@
       if (!this.$store.getters[DB_LOADED]())
         reload_storage(this.$store, this.$localForage)
       if (!this.$api.is_initialized()) {
-        this.$api.init(this.$axios)
+        this.$api.init(this.$axios) // , "https://opentek.eu"
       }
     },
     computed: {
@@ -151,7 +151,8 @@
         return this.domain ? this.domain.title : HOME
       },
       domain_icon() {
-        return this.domain ? static_file_path(this.$store, this.domain.icon) : undefined
+        // todo only use name, but set change it in no_domain
+        return this.$api.static_url_$domain_name_icon(this.domain.name || this.domain.value)
       }
     },
     methods: {

@@ -14,7 +14,7 @@
     div
       v-divider.wide_divider
       h2 Entries
-      EntryPreviewList(:entries="entries.entry_uuids" :total_count="entries.count")
+      EntryListWrapper(:configuration="{required:[{name:'actor', registerd_name:'admin'}]}")
 </template>
 
 <script>
@@ -22,11 +22,13 @@
   import Aspect from "../../../components/Aspect";
   import Taglist from "../../../components/Taglist";
   import {process_cachable_entries} from "../../../lib/client";
+  import EntryListWrapper from "../../../components/EntryListWrapper"
 
   export default {
     name: "index",
     mixins: [],
     components: {
+      EntryListWrapper,
       EntryPreviewList,
       Aspect,
       Taglist

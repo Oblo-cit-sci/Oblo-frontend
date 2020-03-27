@@ -40,7 +40,7 @@
         return "domain/" + this.domain.value
       },
       domain_image() {
-        return static_file_path(this.$store, this.domain.img_src)
+        return this.$api.static_url_$domain_name_banner(this.domain.name)
       }
     }
   }

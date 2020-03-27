@@ -326,7 +326,6 @@ export const getters = {
   get_own_entries_uuids(state, getters) {
     let result = []
     for (let e of state.entries.values()) {
-
       if (getters.user_rights(e.uuid) === EDIT)
         result.push(e.uuid)
     }

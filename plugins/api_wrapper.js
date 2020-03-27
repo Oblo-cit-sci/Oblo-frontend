@@ -20,6 +20,7 @@ class APIWrapper {
     this.actor_baseURL = this.api_baseURL + "/actor"
     this.entry_baseURL = this.api_baseURL + "/entry"
     this.entries_baseURL = this.api_baseURL + "/entries"
+    this.static_baseURL =  this.axios_baseURL + "/static"
   }
 
   is_initialized() {
@@ -83,6 +84,14 @@ class APIWrapper {
 
   url_actor__$registered_name__profile_pic(registered_name) {
     return `${this.actor_baseURL}/${registered_name}/profile_pic`
+  }
+
+  static_url_$domain_name_banner(domain_name) {
+    return `${this.static_baseURL}/images/domains/${domain_name}/banner.jpg`
+  }
+
+  static_url_$domain_name_icon(domain_name) {
+      return `${this.static_baseURL}/images/domains/${domain_name}/icon.png`
   }
 
   post_actor__me(profile_data) {
@@ -154,7 +163,7 @@ class APIWrapper {
   }
 
 
-  entries_search(limit, offset, search_query) {
+  async entries_search(limit, offset, search_query) {
     return this.axios.post(`${this.entries_baseURL}/search`, search_query, {
       params: {
         limit,
