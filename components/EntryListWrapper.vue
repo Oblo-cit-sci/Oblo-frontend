@@ -5,7 +5,7 @@
       v-col(offset="5" cols=2)
         v-progress-circular(indeterminate center size="35" color="success")
     EntryPreviewList(v-if="!prepend_query"
-      :entries="entries"
+      :entries="entries_uuids"
       :requesting_entries="quering"
       :total_count="total_count"
       :preview_options="null"
@@ -16,39 +16,58 @@
 <script>
 
   // like Search, but with fixed params (no text field)
-  import {debounced_search, search_entries} from "../lib/client"
   import EntryPreviewList from "./EntryPreviewList"
+  import {async_entry_search, process_cachable_entries} from "../lib/client"
+  import TriggerSnackbarMixin from "./TriggerSnackbarMixin"
 
   export default {
     name: "EntryListWrapper",
+    mixins: [TriggerSnackbarMixin],
     components: {EntryPreviewList},
     props: {
       configuration: Object,
+      wait: Boolean, // created but parent still waits for other data, so show loading
     },
     data() {
       return {
-        entries: [],
+        entries_uuids: [],
         prepend_query: false,
         quering: false,
         total_count: null
       }
     },
     created() {
-      this.prepend_query=true
-      this.request_more().then(() => {
-        this.prepend_query=false
-      })
+      this.prepend_query = true
+
     },
     methods: {
-      async request_more() {
+      request_more() {
         this.searching = true
-        const offset = this.entries.length
-        const new_entries = await search_entries(this.$api, null, this.configuration, offset)
-        console.log("new entries", new_entries)
-        this.entries = this.$_.concat(this.entries, new_entries.entries)
-        if(this.total_count === null) {
-          this.total_count = new_entries.count
-        }
+        const conf = Object.assign(this.configuration, {
+          page: {
+            offset: this.entries_uuids.length
+          }
+        })
+        console.log("conf", conf)
+        async_entry_search(this.$api, conf).then(({data}) => {
+          const result = data.data
+          const entry_uuids = process_cachable_entries(this.$store, result.entries)
+          this.entries_uuids = this.$_.concat(this.entries_uuids, entry_uuids)
+          if (this.total_count === null) {
+            this.total_count = result.count
+          }
+        }).catch(err => {
+          console.log(err)
+          this.error_snackbar("Could not fetch entries")
+        }).finally(() => {
+          this.searching = false
+          this.prepend_query = false
+        })
+      }
+    },
+    watch: {
+      wait() {
+        this.request_more()
       }
     }
   }

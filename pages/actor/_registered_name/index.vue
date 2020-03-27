@@ -14,7 +14,9 @@
     div
       v-divider.wide_divider
       h2 Entries
-      EntryListWrapper(:configuration="{required:[{name:'actor', registerd_name:'admin'}]}")
+      EntryListWrapper(
+        :wait="waiting"
+        :configuration="{required:[{name:'actor', registered_name:user_data.registered_name}]}")
 </template>
 
 <script>
@@ -36,6 +38,7 @@
     props: {},
     data() {
       return {
+        waiting: true,
         user_data: {},
         profile_aspects: [
           {
@@ -83,20 +86,12 @@
           //   value: []
           // }
         ],
-        entries: {
-          entry_uuids: [],
-          count: null
-        }
       }
     },
     created() {
       this.$api.actor__$registered_name__basic(this.registered_name).then(({data}) => {
-        console.log(data.data.entries)
         this.user_data = data.data
-        this.entries = {
-          entry_uuids: process_cachable_entries(this.$store, data.data.entries.entries),
-          count: data.data.entries.count
-        }
+        this.waiting = false
       }).catch(err => {
         console.log(err)
       })

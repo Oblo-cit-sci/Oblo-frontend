@@ -163,7 +163,7 @@ class APIWrapper {
   }
 
 
-  async entries_search(limit, offset, search_query) {
+  entries_search(limit, offset, search_query) {
     return this.axios.post(`${this.entries_baseURL}/search`, search_query, {
       params: {
         limit,

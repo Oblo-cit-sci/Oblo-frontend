@@ -156,6 +156,7 @@
           this.viewStyle = AUTOCOMPLETE
         }
       },
+      // todo dont do that. take it from the real server. the last function that usess: server_icon_path
       icon_path(item) {
         if (item.icon) {
           return server_icon_path(this.$axios, item.icon)
