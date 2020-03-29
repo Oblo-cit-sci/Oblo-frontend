@@ -11,7 +11,7 @@
     "generate": "nuxt generate",
     "doc": "jsdoc lib/*.js",
     "python": "python3 -m http.server",
-    "localtest": "nuxt build --spa --pwa; rm -r fe;  rm -r dist/images/entry_images/; mv dist fe",
+    "localtest": "nuxt build --spa --pwa; rm -r dist;  rm -r dist/images/entry_images/; mv dist dist",
     "to_eovalue": "rm -r eovalue; mv -r eovalue eovalue;",
     "move2server": "node util/move2server.js",
     "move2server.staging": "SERVER=staging node util/move2server.js",

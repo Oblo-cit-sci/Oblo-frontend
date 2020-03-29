@@ -65,7 +65,7 @@ class APIWrapper {
   /**
    * all templates and codes of a domain
    */
-  domain__$domain_name__basic_entries(domain_name) {
+  async domain__$domain_name__basic_entries(domain_name) {
     return this.axios.get(`${this.domain_baseURL}/${domain_name}/basic_entries`)
   }
 

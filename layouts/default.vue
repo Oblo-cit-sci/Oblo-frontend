@@ -64,13 +64,11 @@
   import Footer from "../components/Footer"
 
   import {check_clear_cache, initialize, reload_storage} from "../lib/client"
-  import {static_file_path} from "../lib/util";
   import {all_pages_n_actions} from "../lib/pages";
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
 
   import {mapGetters} from "vuex"
   import PersistentStorageMixin from "../components/PersistentStorageMixin";
-  import {SEARCH_SET_ENTRIES} from "../store/search";
   import {CONNECTED, CONNECTING, DB_LOADED, DOMAIN, INITIALIZED} from "../store";
   import {USER_GET_AUTH_TOKEN, USER_LOGGED_IN, USER_LOGIN, USER_LOGOUT, USER_RESET_AUTH_TOKEN} from "../store/user";
 
@@ -99,7 +97,7 @@
     created() {
       if (!this.$store.getters[DB_LOADED]())
         reload_storage(this.$store, this.$localForage)
-      if (!this.$api.is_initialized()) {
+      if (!this.$api.is_initialized("https://opentek.eu")) {
         this.$api.init(this.$axios) // , "https://opentek.eu"
       }
     },
@@ -190,23 +188,7 @@
         console.log("db loaded", this.initialized)
         if (val && !this.initialized) {
           console.log("layout. initializing")
-          initialize(this.$api, this.$store, this.$route).then(() => {
-            console.log("layout init done, promise done")
-          })
-          console.log("layout init done")
-          const auth_token = this.$store.getters[USER_GET_AUTH_TOKEN]
-          if (auth_token.access_token) {
-            this.$api.actor__validate_token(auth_token).then(res => {
-              if (res.data.token_valid) {
-                this.$store.commit(USER_LOGIN)
-                this.$axios.setToken("Bearer " + auth_token.access_token)
-                check_clear_cache(this.$store, this.$api)
-              } else {
-                this.$store.commit(USER_RESET_AUTH_TOKEN)
-                this.error_snackbar("You are logged out")
-              }
-            })
-          }
+          initialize(this.$api, this.$store, this.$route)
         }
       }
     }
