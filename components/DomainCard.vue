@@ -6,8 +6,7 @@
 </template>
 
 <script>
-  import {static_file_path} from "../lib/util";
-  import {GET_DOMAIN_TEMPLATES_FETCHED, SET_DOMAIN, SET_TEMPLATES_CODES_FOR_DOMAIN} from "../store";
+  // import {GET_DOMAIN_TEMPLATES_FETCHED, SET_DOMAIN, SET_TEMPLATES_CODES_FOR_DOMAIN} from "../store";
 
   export default {
     name: "DomainCard",
@@ -18,21 +17,22 @@
     },
     methods: {
       goto_domain(domain) {
-        if(!this.$store.getters[GET_DOMAIN_TEMPLATES_FETCHED](domain.name)) {
-          // console.log("templates not fetched")
-          this.$api.domain__$domain_name__basic_entries(domain.name).then(({data}) => {
-            // console.log("tempaltes fetch res", data)
-            this.$store.dispatch(SET_TEMPLATES_CODES_FOR_DOMAIN, {
-              domain_name: domain.name,
-              entries: data.data
-            })
-              this.$store.commit(SET_DOMAIN, this.domain)
-              this.$router.push("/domain/" + domain.name)
-          }).catch(err => {
-            console.log("problems fetching domains")
-            console.log(err)
-          })
-        }
+        this.$router.push("/domain/" + domain.name)
+        // if(!this.$store.getters[GET_DOMAIN_TEMPLATES_FETCHED](domain.name)) {
+        //   // console.log("templates not fetched")
+        //   this.$api.domain__$domain_name__basic_entries(domain.name).then(({data}) => {
+        //     // console.log("tempaltes fetch res", data)
+        //     this.$store.dispatch(SET_TEMPLATES_CODES_FOR_DOMAIN, {
+        //       domain_name: domain.name,
+        //       entries: data.data
+        //     })
+        //       this.$store.commit(SET_DOMAIN, this.domain)
+        //
+        //   }).catch(err => {
+        //     console.log("problems fetching domains")
+        //     console.log(err)
+        //   })
+        // }
       },
     },
     computed: {

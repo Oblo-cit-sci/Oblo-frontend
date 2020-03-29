@@ -9,17 +9,17 @@ export const CLEAR = "clear"
 export const UPDATE_DRAFT_NUMBER = "update_draft_number"
 export const ADD_META = "add_meta"
 export const DELETE_DOMAIN = "delete_domain"
-export const INIT = "init"
+// export const INIT = "init"
 export const INITIALIZED = "initialized"
 export const CONNECTION = "connection"
 export const CONNECTING = "connecting"
 export const SET_STORED_ENTRIES = "set_stored_entries"
 export const SET_DRAFT_NUMBERS = "set_draft_numbers"
 export const SET_DOMAINS = "set_domains"
-export const SET_DOMAIN_TEMPLATES_FETCHED = "set_domain_templates_fetched"
-export const BACKUP_INIT = "backup_init"
+// export const SET_DOMAIN_TEMPLATES_FETCHED = "set_domain_templates_fetched"
+// export const BACKUP_INIT = "backup_init"
 export const GET_CODE = "get_code"
-export const SET_TEMPLATES_CODES_FOR_DOMAIN = "set_templates_codes_for_domain"
+export const SET_TEMPLATES_CODES = "set_templates_codes"
 export const CLEAR_ENTRIES = "clear_entries"
 // export const RELEASE_MODE = "release_mode"
 export const DB_LOADED = "db_loaded"
@@ -28,7 +28,7 @@ export const SET_DOMAIN = "set_domain"
 export const INIT_PAGE_PATH = "init_page_path"
 export const PUSH_PAGE_PATH = "push_page_path"
 export const POP_LAST_PAGE_PATH = "pop_last_page_path"
-export const GET_DOMAIN_TEMPLATES_FETCHED = "get_domain_templates_fetched"
+// export const GET_DOMAIN_TEMPLATES_FETCHED = "get_domain_templates_fetched"
 export const UPDATE_DRAFT_NUMBERS = "update_draft_numbers"
 export const CONNECTED = "connected"
 export const USER_GET_USER_DATA = "user/get_user_data"
@@ -71,22 +71,12 @@ export const state = () => ({
 const ld = require('lodash')
 
 export const mutations = {
-  // for db setter during INIT
-  //
-  init(state, data) {
-    state.codes = {...data.codes}
-    // TODO dispatch
-    state.entrytypes.entry_types = new Map(data.entryTemplates);
-    state.related_users = data.related_users || {};
-    state.domains = data.domains
+  initialized(state) {
     state.initialized = true
+    state.connected = true
   },
   set_domains(state, domain_arr) {
     state.domains = domain_arr
-    state.initialized = true
-  },
-  set_domain_templates_fetched(state, domain_name) {
-    state.domains.filter(d => d.name === domain_name)[0].templates_fetched = true
   },
   add_codes(state, code_arr) {
     for(let code_entry of code_arr) {
@@ -95,22 +85,6 @@ export const mutations = {
   },
   db_loaded(state) {
     state.db_loaded= true
-  },
-  backup_init(state, data) {
-    // called in the middleware
-    if (!state.initialized) {
-      state.codes = {...data.codes}
-      // TODO dispatch
-      console.log(data.entryTemplates)
-      // backup_used_entrytype_versions()
-      state.entrytypes.entry_types = new Map(data.entryTemplates)
-      state.domains = data.domains
-      console.log("store backup_init, setting init")
-      //console.log("backup etypes", state.entry_types)
-      state.initialized = true
-    } else {
-      console.log("store.backup_init: already initialized")
-    }
   },
   set_related_users(state, related_users) {
     state.related_users = related_users
@@ -195,11 +169,11 @@ export const getters = {
       return state.snackbar.trigger
     }
   },
-  get_domain_templates_fetched(state) {
-    return (domain_name) => {
-      return state.domains.filter(d => d.name === domain_name).templates_fetched
-    }
-  },
+  // get_domain_templates_fetched(state) {
+  //   return (domain_name) => {
+  //     return state.domains.filter(d => d.name === domain_name).templates_fetched
+  //   }
+  // },
   visitor(state) {
     //console.log("visitor check");
     return state.user.user_data.global_role === VISITOR
@@ -284,10 +258,7 @@ export const actions = {
     commit("search/clear")
     commit("clear_draft_numbers")
   },
-  set_templates_codes_for_domain(context, {domain_name, entries}) {
-    if(domain_name !== NO_DOMAIN) {
-      context.commit(SET_DOMAIN_TEMPLATES_FETCHED, domain_name)
-    }
+  set_templates_codes(context, entries) {
     context.commit(TEMPLATES_ADD_TEMPLATES, entries.filter(e => e.type === "template"))
     context.commit(ADD_CODES, entries.filter(e => e.type === "code"))
   }

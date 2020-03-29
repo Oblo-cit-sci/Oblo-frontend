@@ -54,6 +54,9 @@ class APIWrapper {
     })
   }
 
+  init_data() {
+    return this.axios.get(`${this.api_baseURL}/basic/init_data`)
+  }
   /**
    * basic information of all domains
    * @returns {*} promise
