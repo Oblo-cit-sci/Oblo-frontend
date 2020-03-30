@@ -52,7 +52,7 @@ export default {
       return this.template.rules.context !== GLOBAL || this.entry.refs.parent
     },
     entry() {
-      // console.log("entry", this.uuid, this.is_edit_mode)
+      console.log("entry", this.uuid, this.is_edit_mode)
       let entry = null
       if (this.is_edit_mode) {
         entry = this.$store.getters[ENTRIES_GET_EDIT]()

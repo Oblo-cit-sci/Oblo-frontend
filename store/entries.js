@@ -343,7 +343,6 @@ export const getters = {
   },
   get_parent(state, getters) { // ENTRIES_GET_PARENT
     return (uuid) => {
-      //console.log("getter", entry, entry.refs)
       return getters.get_entry(getters.get_entry(uuid).refs.parent.uuid)
     }
   },

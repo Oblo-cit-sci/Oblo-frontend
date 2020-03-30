@@ -131,7 +131,7 @@ class APIWrapper {
     return this.axios.get(`${this.actor_baseURL}/logout`)
   }
 
-  entry__$uuid(uuid) {
+  async entry__$uuid(uuid) {
     return this.axios.get(`${this.entry_baseURL}/${uuid}`)
   }
 

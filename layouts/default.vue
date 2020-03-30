@@ -188,7 +188,7 @@
         console.log("db loaded", this.initialized)
         if (val && !this.initialized) {
           console.log("layout. initializing")
-          initialize(this.$api, this.$store, this.$route)
+          initialize(this.$api, this.$store, this.$route, this.$router)
         }
       }
     }
