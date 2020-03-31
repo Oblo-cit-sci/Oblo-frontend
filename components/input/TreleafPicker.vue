@@ -3,7 +3,6 @@
     div
       v-btn(icon small @click="$emit('selected', null)")
         v-icon mdi-close
-    div {{act_level}},  {{act_edit_mode}}
     v-list(v-if="has_selection")
       v-list-item(v-for="(node, index) of selection", :key="node.title")
         v-list-item-content
