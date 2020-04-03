@@ -162,16 +162,7 @@
     },
     methods: {
       getEntries(before_last= false) {
-        // this.searching = true
-        // console.log("getting entries")
         let config = this.searchConfiguration(before_last)
-        // if(before_last) {
-        //   if (this.entries().length > 0) {
-        //     // const before_ts = this.$store.getters[]
-        //     config.required.push({name: "before_ts", ts: before_ts})
-        //   }
-        // }
-        // build_config merges 2 objects,
         this.$store.commit(SEARCH_SET_SEARCHING, true)
         // const prepend = this.entries().length > 0
         debounced_search(this.$api, this.$store, config)

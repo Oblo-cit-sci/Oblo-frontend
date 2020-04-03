@@ -272,8 +272,6 @@
         }
       },
       can_edit() {
-        if (get_release_mode(this.$store) === LICCI_PARTNERS)
-          return true
         let relation = entry_actor_relation(this.entry, this.$store.getters.user)
         return relation === CREATOR.actors_key
       },
