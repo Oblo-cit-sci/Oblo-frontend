@@ -58,7 +58,6 @@
   import MetaChips from "../components/MetaChips"
   import Taglist from "../components/Taglist"
   import {create_entry, get_proper_mode} from "../lib/entry"
-  import {CREATOR, entry_actor_relation} from "../lib/actors";
   import MapJumpMixin from "./MapJumpMixin";
   import EntryMixin from "./EntryMixin";
   import PersistentStorageMixin from "./PersistentStorageMixin";
@@ -134,14 +133,6 @@
           return "update"
         else
           return this.proper_mode
-      },
-      creator() {
-        const public_name = this.entry.actors.creator.public_name
-        //console.log(public_name)
-        let relation = entry_actor_relation(this.entry, this.$store.getters.user)
-        if (relation === CREATOR.key)
-          return "From yourself"
-        return public_name
       },
       show_image() {
         return this.entry.image // ![undefined, null, ""].includes(this.entry.image)

@@ -42,7 +42,7 @@
   import EntryNavMixin from "./EntryNavMixin";
 
   import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
-  import {CREATOR, entry_actor_relation} from "../lib/actors";
+  import {can_edit} from "../lib/actors";
   import {base64file_to_blob, get_release_mode} from "../lib/util";
   import PersistentStorageMixin from "./PersistentStorageMixin";
   import {FILES_GET_FILE, FILES_REMOVE_FILE} from "../store/files";
@@ -272,8 +272,8 @@
         }
       },
       can_edit() {
-        let relation = entry_actor_relation(this.entry, this.$store.getters.user)
-        return relation === CREATOR.actors_key
+        // let relation = entry_actor_relation(this.entry, this.$store.getters.user)
+        return can_edit(this.entry,  this.$store.getters.user)//relation === CREATOR.actors_key
       },
       show_submit() {
         return !this.private_local && !this.view && !this.in_context && !this.partner_mode

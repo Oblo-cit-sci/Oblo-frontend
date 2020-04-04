@@ -26,6 +26,7 @@
     components: {EntryPreviewList},
     props: {
       configuration: Object,
+      init_request: Boolean,
       wait: Boolean, // created but parent still waits for other data, so show loading
     },
     data() {
@@ -38,7 +39,9 @@
     },
     created() {
       this.prepend_query = true
-
+      if(this.init_request) {
+        this.request_more()
+      }
     },
     methods: {
       request_more() {

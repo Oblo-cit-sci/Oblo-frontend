@@ -43,7 +43,11 @@
     div(v-if="!edit_mode")
       v-divider.wide_divider
       h2 Your Entries
-      EntryPreviewList(:entries="own_entries_uuids" :total_count="own_entries_uuids.length")
+      EntryListWrapper(
+        :wait="waiting"
+        :init_request="true"
+        :configuration="{required:[{name:'actor', registered_name:user_data.registered_name}]}")
+
 </template>
 
 <script>
@@ -68,10 +72,12 @@
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
   import {USER_GET_USER_DATA} from "../store";
   import {USER_SET_USER_DATA} from "../store/user";
+  import EntryListWrapper from "../components/EntryListWrapper"
 
   export default {
     name: "profile",
     components: {
+      EntryListWrapper,
       EntryPreviewList,
       LoadFileButton,
       Aspect,
@@ -159,7 +165,8 @@
           password_confirm: this.$_.merge(this.$_.cloneDeep(password_confirm_aspect()), {attr: {extra:{rules: [
                   v => v === this.password_aspects.password.value || "Passwords do not match"
                 ]}}}),
-        }
+        },
+        waiting: false,
       }
     },
     created() {
