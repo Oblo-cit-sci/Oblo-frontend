@@ -4,7 +4,7 @@
       v-col(v-for="(img_data, index) in images" :key="index" :cols="num_cols")
         v-img(:src="get_image_data(index)" @click="open_image(index)" max-height="300" contain)
           v-badge(v-if="cover_image_index===index" color="yellow" inline)
-    LoadFileButton(label="Add image" filetype="image" @fileload="add_image($event)")
+    LoadFileButton(v-if="is_edit_mode" label="Add image" filetype="image" @fileload="add_image($event)")
     v-dialog(v-model="image_open" overlay-opacity="100" fullscreen)
       ImageCard(
         v-if="image_open"
@@ -56,7 +56,6 @@
     name: "ImageAspect",
     components: {
       ImageCard,
-      Aspect,
       LoadFileButton
     },
     mixins: [AspectComponentMixin, AttachedFilesMixin],

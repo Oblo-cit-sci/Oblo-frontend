@@ -57,6 +57,12 @@ export default {
     },
     hide_details() {
       return !this.hint && !this.$_.get(this.aspect.attr, "extra.rules", null)
+    },
+    is_edit_mode() {
+      return this.mode === EDIT
+    },
+    is_view_mode() {
+      return this.mode === VIEW
     }
   },
   methods: {
