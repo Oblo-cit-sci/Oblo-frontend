@@ -8,8 +8,7 @@
           v-row
             v-col(class="entry-meta" cols=12)
               div.caption(v-if="show_date") {{entry_date}} {{is_draft ? "DRAFT" : ""}}
-              p.subtitle-1.mb-2 {{template_title}}:
-                span.subtitle-1 &nbsp; {{entry.title}}
+              p.subtitle-1.mb-2 {{full_title}}
                 v-btn(v-if="show_title_action" @click="goto()" depressed small)
                   v-icon(:class="default_action_icon")
           v-row.pl-3
@@ -57,7 +56,7 @@
   import {EDIT, ENTRY, VIEW} from "../lib/consts"
   import MetaChips from "../components/MetaChips"
   import Taglist from "../components/Taglist"
-  import {create_entry, get_proper_mode} from "../lib/entry"
+  import {create_entry, full_title, get_proper_mode} from "../lib/entry"
   import MapJumpMixin from "./MapJumpMixin";
   import EntryMixin from "./EntryMixin";
   import PersistentStorageMixin from "./PersistentStorageMixin";
@@ -118,6 +117,9 @@
       },
       is_draft() {
         return this.entry.status === "draft"
+      },
+      full_title() {
+        return full_title(this.$store, this.entry)
       },
       action_loading() {
         return this.additional_action_loading

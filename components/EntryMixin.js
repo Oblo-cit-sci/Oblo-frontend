@@ -14,7 +14,8 @@ import {
 } from "~/store/entries";
 import {FILES_GET_FILE} from "~/store/files";
 import {check_str_is_uuid} from "~/lib/util";
-import {TEMPLATES_TYPE} from "~/store/templates";
+import {TEMPLATES_TYPE, TEMPLATES_TYPENAME} from "~/store/templates";
+import {full_title} from "~/lib/entry"
 
 export default {
   name: "EntryMixin",
@@ -115,9 +116,9 @@ export default {
         // todo maybe it would be cleaner to add "entry "+uuid , so that  aspect_loc_str2arr/is wrapped around
         let title = this.$store.getters[ENTRIES_VALUE](loc_prepend(EDIT, this.uuid, aspect_loc_str2arr(titleAspect)))
         title = this.$_.get(title, "value", "")
-        return this.template.title + (title ? ": " + title : "")
+        return this.template.title +(title ? ": " + title : "")
       } else {
-        return this.entry.title
+        return full_title(this.$store, this.entry)
       }
     },
     entry_image() {
