@@ -184,7 +184,7 @@ class APIWrapper {
   }
 
   entries_map_entries() {
-    return this.axios.get(`${this.entries_baseURL}/map_entries`)
+    return this.axios.post(`${this.entries_baseURL}/map_entries`)
   }
 
   actor__$registered_name__basic(registerd_name) {
