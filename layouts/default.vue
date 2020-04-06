@@ -63,14 +63,14 @@
   import {HOME} from "../lib/consts"
   import Footer from "../components/Footer"
 
-  import {check_clear_cache, initialize, reload_storage} from "../lib/client"
+  import {initialize, reload_storage} from "../lib/client"
   import {all_pages_n_actions} from "../lib/pages";
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
 
   import {mapGetters} from "vuex"
   import PersistentStorageMixin from "../components/PersistentStorageMixin";
   import {CONNECTED, CONNECTING, DB_LOADED, DOMAIN, INITIALIZED} from "../store";
-  import {USER_GET_AUTH_TOKEN, USER_LOGGED_IN, USER_LOGIN, USER_LOGOUT, USER_RESET_AUTH_TOKEN} from "../store/user";
+  import {USER_LOGGED_IN, USER_LOGOUT} from "../store/user";
 
 
   let require_login = ["Profile", "Logout"]
@@ -188,7 +188,7 @@
         console.log("db loaded", this.initialized)
         if (val && !this.initialized) {
           console.log("layout. initializing")
-          initialize(this.$api, this.$store, this.$route, this.$router)
+          initialize(this.$api, this.$store, this.$route, this.$router, this.$localForage)
         }
       }
     }

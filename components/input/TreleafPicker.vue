@@ -1,31 +1,30 @@
 <template lang="pug">
-  .treeselect
-    div
-      v-btn(icon small @click="$emit('selected', null)")
-        v-icon mdi-close
-    v-list(v-if="has_selection")
-      v-list-item(v-for="(node, index) of selection", :key="node.title")
-        v-list-item-content
-          v-list-item-title {{node.name}}
-        v-list-item-action
-          v-btn(icon @click="remove(index)")
-            v-icon mdi-close-circle-outline
-    v-divider(v-if="has_both()")
-    v-subheader#subheader(v-if="has_level_names") {{act_levelname}}
+    .treeselect
+        div
+            v-btn(icon small @click="$emit('selected', null)")
+                v-icon mdi-close
+        v-list(v-if="has_selection")
+            v-list-item(v-for="(node, index) of selection", :key="node.title")
+                v-list-item-content
+                    v-list-item-title {{node.name}}
+                v-list-item-action
+                    v-btn(icon @click="remove(index)")
+                        v-icon mdi-close-circle-outline
+        v-divider(v-if="has_both()")
+        v-subheader#subheader(v-if="has_levels") {{act_levelname}}
+        div(v-if="has_options")
+            SingleSelect.pb-1(v-if="edit_mode_list" :options="act_options" v-on:selection="select($event)" :select_sync="false" :highlight="false")
+            SelectGrid(v-if="edit_mode_matrix" :options="act_options" v-on:selection="select($event)")
+            Paginated_Select(v-if="edit_mode_paginated" :options="act_options" :edit_mode="level_edit_mode(act_level + 1)" v-on:selection="select($event)")
 
-    div(v-if="has_options")
-      SingleSelect.pb-1(v-if="edit_mode_list" :options="act_options" v-on:selection="select($event)" :select_sync="false" :highlight="false")
-      SelectGrid(v-if="edit_mode_matrix" :options="act_options" v-on:selection="select($event)")
-      Paginated_Select(v-if="edit_mode_paginated" :options="act_options" :edit_mode="level_edit_mode(act_level + 1)" v-on:selection="select($event)")
 
-
-    .ml-3(v-if="last_description")
-      div Description:
-      div {{last_description}}
-    v-btn(v-if="done_available" @click="done" color="success") Done
-    div(v-if="allows_extra")
-      TextShort(v-bind:aspect="extra_value_aspect" :edit="true" v-bind:value.sync="extra_value")
-      v-btn(:disabled="extra_value === ''" @click="done_extra" color="warning") Use {{extra_value_name}}
+        .ml-3(v-if="last_description")
+            div Description:
+            div {{last_description}}
+        v-btn(v-if="done_available" @click="done" color="success") Done
+        div(v-if="allows_extra")
+            TextShort(v-bind:aspect="extra_value_aspect" :edit="true" v-bind:value.sync="extra_value")
+            v-btn(:disabled="extra_value === ''" @click="done_extra" color="warning") Use {{extra_value_name}}
 </template>
 
 <script>
@@ -69,7 +68,7 @@
         data: function () {
             return {
                 selection: [], // indices of children
-                level_names: false,
+                levels: false,
                 extra_value: []
             }
         },
@@ -97,14 +96,14 @@
                 }
             },
             last_description() {
-                if(this.selection.length === 0) {
+                if (this.selection.length === 0) {
                     return ""
                 } else {
                     return this.selection[this.act_level - 1].description || ""
                 }
             },
-            has_level_names() {
-                return this.level_names && this.$_.size(this.act_options) > 0;
+            has_levels() {
+                return this.levels && this.$_.size(this.act_options) > 0;
             },
             has_selection() {
                 return this.selection.length > 0
@@ -116,7 +115,11 @@
                 return this.act_options.length > 0
             },
             act_levelname() {
-                return this.level_names[this.selection.length]
+                if (typeof this.levels[this.selection.length] === "string") {
+                    console.log("levels structure depracated. use an object, with name key")
+                    return this.levels[this.selection.length]
+                }
+                return this.levels[this.selection.length].name
             },
             extra_value_aspect() {
                 return {
@@ -141,9 +144,11 @@
             }
         },
         created() {
-            //console.log("CREATED DIALOG")
             if (this.tree.hasOwnProperty("level_names")) {
-                this.level_names = this.tree.level_names;
+                console.log("attribute level_names is depracated, use levels")
+                this.levels = this.tree.level_names;
+            } else if (this.tree.hasOwnProperty("levels")) {
+                this.levels = this.tree.levels
             }
         },
         methods: {
@@ -180,12 +185,12 @@
 
 <style scoped>
 
-  .treeselect {
-    text-transform: none;
-    background: white;
-  }
+    .treeselect {
+        text-transform: none;
+        background: white;
+    }
 
-  #subheader {
-    background: white;
-  }
+    #subheader {
+        background: white;
+    }
 </style>
