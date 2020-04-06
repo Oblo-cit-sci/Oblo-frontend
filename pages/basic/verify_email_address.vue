@@ -1,0 +1,35 @@
+<template>
+
+</template>
+
+<script>
+  import {USER_LOGGED_IN} from "../../store/user"
+  import {check_clear_cache} from "../../lib/client"
+  import TriggerSnackbarMixin from "../../components/TriggerSnackbarMixin"
+  import LoginMixin from "../../components/actor/LoginMixin"
+
+  export default {
+    name: "verify_email_address",
+    mixins: [TriggerSnackbarMixin, LoginMixin],
+    created() {
+      const logged_in = this.$store.getters[USER_LOGGED_IN]
+      this.$api.verify_email_address(this.$route.query.user, this.$route.query.code).then(({data}) => {
+        if (!logged_in && data.user) {
+          this.ok_snackbar("Email address verified")
+          this.process_login(data)
+          this.$router.push("/")
+          check_clear_cache(this.$store, this.$api)
+        } else {
+          this.ok_snackbar(data.data)
+          this.$router.push("/")
+        }
+      }).catch(err => {
+        this.error_snackbar(err.response.error.msg)
+      })
+    },
+  }
+</script>
+
+<style scoped>
+
+</style>

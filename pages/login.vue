@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-flex
+  v-flex(xs12 sm10 md6)
     h2.mb-2 Login
     v-form
       Aspect(v-for="a of aspects"
@@ -9,6 +9,8 @@
         mode="edit"
         @update:error="a.error = $event")
     v-btn(@click='login' color='success' autofocus :disabled="any_invalid") Login
+    div.mt-3
+      a(href="basic/password_reset") Forgot password?
     v-alert(:value='errorMsg != null' type='error' prominent transition="scroll-y-reverse-transition") {{errorMsg}}
 </template>
 

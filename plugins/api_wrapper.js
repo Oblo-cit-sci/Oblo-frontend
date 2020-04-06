@@ -10,17 +10,18 @@ class APIWrapper {
 
   init(axios, baseURL = null) {
     this.axios = axios
-    if(baseURL)
+    if (baseURL)
       this.axios_baseURL = baseURL
     else
       this.axios_baseURL = axios.defaults.baseURL
     this.api_baseURL = this.axios_baseURL + "/api"
     //
+    this.basic_baseURL = this.api_baseURL + "/basic"
     this.domain_baseURL = this.api_baseURL + "/domain"
     this.actor_baseURL = this.api_baseURL + "/actor"
     this.entry_baseURL = this.api_baseURL + "/entry"
     this.entries_baseURL = this.api_baseURL + "/entries"
-    this.static_baseURL =  this.axios_baseURL + "/static"
+    this.static_baseURL = this.axios_baseURL + "/static"
   }
 
   is_initialized() {
@@ -55,8 +56,18 @@ class APIWrapper {
   }
 
   init_data() {
-    return this.axios.get(`${this.api_baseURL}/basic/init_data`)
+    return this.axios.get(`${this.basic_baseURL}/init_data`)
   }
+
+  verify_email_address(registered_name, verification_code) {
+    return this.axios.get(`${this.basic_baseURL}/verify_email_address`, {
+      params: {
+        registered_name,
+        verification_code
+      }
+    })
+  }
+
   /**
    * basic information of all domains
    * @returns {*} promise
@@ -94,7 +105,7 @@ class APIWrapper {
   }
 
   static_url_$domain_name_icon(domain_name) {
-      return `${this.static_baseURL}/images/domains/${domain_name}/icon.png`
+    return `${this.static_baseURL}/images/domains/${domain_name}/icon.png`
   }
 
   post_actor__me(profile_data) {
@@ -190,6 +201,15 @@ class APIWrapper {
   actor__$registered_name__basic(registerd_name) {
     return this.axios.get(`${this.actor_baseURL}/${registerd_name}/basic`)
   }
+
+  actor__init_password_reset(email_or_username) {
+    return this.axios.get(`${this.actor_baseURL}/init_password_reset`, {
+      params: {
+        email_or_username
+      }
+    })
+  }
+
 }
 
 

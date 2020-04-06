@@ -9,8 +9,8 @@
         @update:error="a.error = $event"
         :extra="{clearable:false}"
         mode="edit")
-      span learn more about &nbsp;
-      a(href="https://creativecommons.org/choose/" target="_blank") creative commons licences
+      <!--      span learn more about &nbsp;-->
+      <!--      a(href="https://creativecommons.org/choose/" target="_blank") creative commons licences-->
     v-btn.m-4(@click='submit' x-large :disabled="any_invalid || submitStatus === 'PENDING'" color='success') Register
     v-alert(:value='errorMsg !== null' type='error' prominent) {{errorMsg}}
 </template>
@@ -21,7 +21,7 @@
 
   import Aspect from "../components/Aspect";
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
-  import {license_aspect, password_aspect, password_confirm_aspect, privacy_aspect} from "../lib/typical_aspects";
+  import {password_aspect, password_confirm_aspect} from "../lib/typical_aspects";
   import LoginMixin from "../components/actor/LoginMixin";
 
   export default {
@@ -29,11 +29,11 @@
     components: {Aspect},
     mixins: [validationMixin, TriggerSnackbarMixin, LoginMixin],
     data() {
-      const default_license = this.$_.cloneDeep(license_aspect(this.$store, ["cc_licenses"]))
-      default_license.name = "default_licence"
-      default_license.label = "Default licence"
-      default_license.value = "CC-BY"
-      default_license.attr.unpacked = true
+      // const default_license = this.$_.cloneDeep(license_aspect(this.$store, ["cc_licenses"]))
+      // default_license.name = "default_licence"
+      // default_license.label = "Default licence"
+      // default_license.value = "CC-BY"
+      // default_license.attr.unpacked = true
       return {
         aspects: {
           registered_name: {
@@ -68,13 +68,19 @@
             error: true
           },
           password: this.$_.cloneDeep(password_aspect()),
-          password_confirm: this.$_.merge(this.$_.cloneDeep(password_confirm_aspect()), {attr: {extra:{rules: [
-        v => v === this.aspects.password.value || "Passwords do not match"
-      ]}}}),
-          default_privacy: Object.assign(privacy_aspect(),
-            {value: "public", description: "Choose a default privacy for all your entries"}),
-          default_license: Object.assign(license_aspect(this.$store, ["cc_licenses"]),
-            {value: "CC-BY", description: "Choose a default license for your entries"})
+          password_confirm: this.$_.merge(this.$_.cloneDeep(password_confirm_aspect()), {
+            attr: {
+              extra: {
+                rules: [
+                  v => v === this.aspects.password.value || "Passwords do not match"
+                ]
+              }
+            }
+          })
+          // default_privacy: Object.assign(privacy_aspect(),
+          //   {value: "public", description: "Choose a default privacy for all your entries"}),
+          // default_license: Object.assign(license_aspect(this.$store, ["cc_licenses"]),
+          //   {value: "CC-BY", description: "Choose a default license for your entries"})
         },
         submitStatus: null,
         errorMsg: null
@@ -94,8 +100,8 @@
           email: this.aspects.email.value,
           password: this.aspects.password.value,
           password_confirm: this.aspects.password_confirm.value,
-          default_privacy: this.aspects.default_privacy.value,
-          default_license: this.aspects.default_license.value
+          // default_privacy: this.aspects.default_privacy.value,
+          // default_license: this.aspects.default_license.value
         }).then(({data}) => {
           if (data.data) {
             this.$router.push("/login")
@@ -107,6 +113,8 @@
           }
         }).catch((err) => {
           console.log("err", err)
+          this.errorMsg = err.response.data.error.msg
+          setTimeout(() => this.errorMsg = null, 2000)
         })
       }
     }
