@@ -42,6 +42,7 @@
         border: 1px grey solid;
         max-width: 160px;
         margin: 0 2px;
+        margin-bottom: 2px;
     }
 
     .sel_cursor {
