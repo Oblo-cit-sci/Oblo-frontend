@@ -169,6 +169,7 @@
             this.remove_from_storage("auth_token")
             // todo, remove draft entries and update storage, to leave no traces...
             this.$store.dispatch(USER_LOGOUT)
+            this.drawer = false
             this.$router.push("/")
           }).catch((err) => {
             console.log("logout error", err.response);
