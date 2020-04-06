@@ -1,7 +1,7 @@
 {
-  "name": "licci",
-  "version": "0.7.6",
-  "description": "Local Indicators of Climate change impacts",
+  "name": "opentek",
+  "version": "0.7.7",
+  "description": "Sharing Traditional Ecological Knowledge related to biodiversity and local indicators of climate change impacts.",
   "author": "Ramin S",
   "private": true,
   "scripts": {
