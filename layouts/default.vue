@@ -172,8 +172,13 @@
             this.drawer = false
             this.$router.push("/")
           }).catch((err) => {
-            console.log("logout error", err.response);
+            console.log("logout error", err.response)
             if (err.response.status === 401) {
+              this.ok_snackbar("You are logged out")
+              this.remove_from_storage("auth_token")
+              this.$store.dispatch(USER_LOGOUT)
+              this.drawer = false
+              this.$router.push("/")
             }
           })
         }

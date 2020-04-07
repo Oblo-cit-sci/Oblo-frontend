@@ -60,7 +60,7 @@ class APIWrapper {
   }
 
   verify_email_address(registered_name, verification_code) {
-    return this.axios.get(`${this.basic_baseURL}/verify_email_address`, {
+    return this.axios.get(`${this.actor_baseURL}/verify_email_address`, {
       params: {
         registered_name,
         verification_code
@@ -210,6 +210,9 @@ class APIWrapper {
     })
   }
 
+  post_actor__reset_password(data) {
+        return this.axios.post(`${this.actor_baseURL}/reset_password`, data)
+  }
 }
 
 

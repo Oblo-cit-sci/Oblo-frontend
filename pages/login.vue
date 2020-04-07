@@ -10,7 +10,7 @@
         @update:error="a.error = $event")
     v-btn(@click='login' color='success' autofocus :disabled="any_invalid") Login
     div.mt-3
-      a(href="basic/password_reset") Forgot password?
+      a(href="basic/init_password_reset") Forgot password?
     v-alert(:value='errorMsg != null' type='error' prominent transition="scroll-y-reverse-transition") {{errorMsg}}
 </template>
 
@@ -79,7 +79,7 @@
           if (data.user) {
             this.ok_snackbar("Login successful")
             this.process_login(data)
-            this.$router.back()
+            this.$router.push("/")
             check_clear_cache(this.$store, this.$api)
           } else {
             // console.log("todo handle login error")

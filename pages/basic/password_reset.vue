@@ -1,16 +1,20 @@
 <template lang="pug">
-  v-flex(xs12 sm10 md6)
-    h2 Password reset
-    Aspect(:aspect="query"
-      :ext_value.sync="query.value"
-      mode="edit"
-      @update:error="query.error = $event")
-    v-btn(@click='send' color='success' autofocus :disabled="query.error") Search
-    v-alert(:value='errorMsg != null' type='error' prominent transition="scroll-y-reverse-transition") {{errorMsg}}
+  v-flex(xs12 sm10 md8)
+    h2 Reset your Password
+    v-row(v-for="a of password_aspects" :key="a.name")
+      v-col(cols=10)
+        Aspect(
+          :aspect="a"
+          :ext_value.sync="a.value"
+          @update:error="a.error = $event"
+          :extra="{clearable:false}"
+          mode="edit")
+    v-btn(color="success" @click="change_password" :disabled="any_invalid") Save password
 </template>
 
 <script>
-  import {STR} from "../../lib/consts"
+  import {password_aspect, password_confirm_aspect} from "../../lib/typical_aspects"
+  import {extract_unpacked_values} from "../../lib/aspect"
   import Aspect from "../../components/Aspect"
   import TriggerSnackbarMixin from "../../components/TriggerSnackbarMixin"
 
@@ -20,34 +24,37 @@
     mixins: [TriggerSnackbarMixin],
     data() {
       return {
-        query: {
-          type: STR,
-          label: "",
-          name: "query",
-          description: "Enter your email or username",
-          attr: {
-            max: 30,
-            unpacked: true,
-            extra: {
-              rules: [
-                v => v.length > 0,
-              ]
+        password_aspects: {
+          password: this.$_.cloneDeep(password_aspect()),
+          password_confirm: this.$_.merge(this.$_.cloneDeep(password_confirm_aspect()), {
+            attr: {
+              extra: {
+                rules: [
+                  v => v === this.password_aspects.password.value || "Passwords do not match"
+                ]
+              }
             }
-          },
-          error: true,
-          value: ""
+          }),
         },
-        errorMsg: null
+      }
+    },
+    computed: {
+      any_invalid() {
+        // todo could also have  '|| !a.value'  but we should then be able to pass down the rules to the selectes
+        return this.$_.some(this.password_aspects, (a) => a.hasOwnProperty("error") && a.error)
       }
     },
     methods: {
-      send() {
-        this.$api.actor__init_password_reset(this.query.value).then(({data}) => {
-          this.ok_snackbar(data.data.msg)
-          this.$router.push("reset_mail_sent")
-        }).catch(err => {
-          this.errorMsg = err.response.data.error.msg
-          setTimeout(() => this.errorMsg = null, 2000)
+      change_password() {
+        const data = extract_unpacked_values(this.password_aspects)
+        data.registered_name = this.$route.query.user
+        data.code = this.$route.query.code
+        this.$api.post_actor__reset_password(data).then(({data}) => {
+          this.ok_snackbar("Password updated")
+          this.$router.push("/login")
+        }).catch((err) => {
+          // console.log("err", err.response)
+          this.error_snackbar(err.response.data.error.msg)
         })
       }
     }

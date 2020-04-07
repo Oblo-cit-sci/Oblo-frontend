@@ -2,9 +2,10 @@
   v-layout.map.row
     client-only
       .buttongroup
-        div
-          v-btn(dark fab bottom right large color="blue" @click="drawer = !drawer")
-            v-icon mdi-menu
+        v-btn(dark fab large color="blue" @click="drawer = !drawer")
+          v-icon mdi-menu
+        v-btn(v-if="!drawer" fab @click="back" transition="fade-transition")
+          v-icon mdi-home
       component(:is="navgiagtion_component"
         :drawer="drawer"
         :layers="layers"
