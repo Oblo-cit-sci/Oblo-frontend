@@ -7,11 +7,9 @@ export default {
     to_entry(uuid, mode = VIEW, query = {}) {
       // console.log("to entry")
       let route = {
-        name: "entry-uuid",
-        params: {
-          uuid: uuid
-        },
+        name: "entry",
         query: {
+          uuid,
           entry_mode: mode,
           ...query
         }
