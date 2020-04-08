@@ -9,7 +9,6 @@
     import {domain_filter_options, entrytype_filter_options} from "../lib/filter_option_consts";
     import FilterMixin from "../components/FilterMixin";
     import {pack_value} from "../lib/aspect";
-    import {get_release_mode} from "../lib/util";
     import Search from "../components/Search";
     import {ENTRIES_ALL_ENTRIES_ARRAY} from "../store/entries";
 
@@ -21,9 +20,6 @@
         mixins: [FilterMixin],
         data() {
             let filters = all_filters
-            if (get_release_mode(this.$store) === LICCI_PARTNERS) {
-                filters = all_filters.filter(f => f.name !== "Domain")
-            }
             return {
                 filters: filters,
                 filter_values: {},

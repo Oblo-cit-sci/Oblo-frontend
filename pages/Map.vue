@@ -4,7 +4,7 @@
       .buttongroup
         v-btn(dark fab large color="blue" @click="drawer = !drawer")
           v-icon mdi-menu
-        v-btn(v-if="!drawer" fab @click="back" transition="fade-transition")
+        v-btn(v-if="!drawer" fab @click="go_home" transition="fade-transition")
           v-icon mdi-home
       component(:is="navgiagtion_component"
         :drawer="drawer"
@@ -148,6 +148,9 @@
       },
       back() {
         this.$router.back()
+      },
+      go_home() {
+        this.$router.push("/")
       },
       touch({mapboxEvent}) {
       },

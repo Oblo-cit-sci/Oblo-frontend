@@ -17,7 +17,7 @@
     v-row(justify="center")
       v-btn(text nuxt to="about") About The Project
       v-btn(text nuxt to="about#privacy") Privacy Policy
-    Footer(v-if="not_partner")
+    Footer
 </template>
 
 <script>
@@ -25,7 +25,6 @@
   import {mapGetters} from "vuex"
 
   import DomainCard from "../components/DomainCard";
-  import {get_release_mode} from "../lib/util";
   import {LICCI_PARTNERS} from "../lib/consts";
   import Footer from "../components/Footer";
   import {CLEAR_DOMAIN, CONNECTED, DOMAINS} from "../store";
@@ -48,9 +47,6 @@
       server_name() {
         // todo
         return "OpenTEK.eu"
-      },
-      not_partner() {
-        return get_release_mode(this.$store) !== LICCI_PARTNERS
       },
       // todo should make a request to the uab page.
       partner_needs_update() {

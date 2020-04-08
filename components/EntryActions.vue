@@ -43,7 +43,7 @@
 
   import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
   import {can_edit} from "../lib/actors";
-  import {base64file_to_blob, get_release_mode} from "../lib/util";
+  import {base64file_to_blob} from "../lib/util";
   import PersistentStorageMixin from "./PersistentStorageMixin";
   import {FILES_GET_FILE, FILES_REMOVE_FILE} from "../store/files";
   import {
@@ -276,7 +276,7 @@
         return can_edit(this.entry,  this.$store.getters.user)//relation === CREATOR.actors_key
       },
       show_submit() {
-        return !this.private_local && !this.view && !this.in_context && !this.partner_mode
+        return !this.private_local && !this.view && !this.in_context
       },
       disable_submit() {
         return !this.connected || !this.entry_complete || (!this.is_dirty && !this.is_draft)
@@ -286,10 +286,7 @@
       },
       can_download() {
         //console.log(this.template.rules.download)
-        return this.partner_mode && this.template.rules.download
-      },
-      partner_mode() {
-        return get_release_mode(this.$store) === LICCI_PARTNERS
+        return this.template.rules.download
       }
     }
   }

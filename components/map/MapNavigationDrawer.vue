@@ -14,7 +14,7 @@
     div.ml-2.mr-3
       v-row
         v-col(cols=3)
-          v-btn(@click="back" nuxt)
+          v-btn(@click="go_home()")
             v-icon mdi-home
             span Back
         v-col(cols=7)

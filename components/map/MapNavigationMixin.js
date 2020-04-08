@@ -73,6 +73,9 @@ export default {
     back() {
       this.$router.back()
     },
+    go_home() {
+      this.$router.push("/")
+    },
     layer_select_change(active_layers) {
       this.$emit("layerstatus", active_layers)
     },
