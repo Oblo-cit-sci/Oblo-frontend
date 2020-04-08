@@ -17,7 +17,7 @@
     },
     methods: {
       goto_domain(domain) {
-        this.$router.push("/domain/" + domain.name)
+        this.$router.push({path: "/domain", query: {d: domain.name}})
         // if(!this.$store.getters[GET_DOMAIN_TEMPLATES_FETCHED](domain.name)) {
         //   // console.log("templates not fetched")
         //   this.$api.domain__$domain_name__basic_entries(domain.name).then(({data}) => {
