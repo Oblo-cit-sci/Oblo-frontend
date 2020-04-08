@@ -14,7 +14,7 @@
           v-row.pl-3
             MetaChips(v-if="show_meta_aspects" :meta_aspects="meta_aspects")
           v-row.pl-3.mt-3
-              EntryActorList(:actors="actors")
+              ActorChip(:actor="creator")
           v-row.pl-3
             Taglist(v-if="show_tags" :tags="tags")
           v-row.pl-3
@@ -74,6 +74,7 @@
     ENTRIES_VALUE
   } from "../store/entries";
   import {TEMPLATES_HAS_TYPE, TEMPLATES_TYPENAME} from "../store/templates";
+  import ActorChip from "./ActorChip"
 
   /**
    * ISSUE is not working atm, to responsive
@@ -81,7 +82,7 @@
 
   export default {
     name: "Entrypreview",
-    components: {EntryActorList, Aspect, MetaChips, Taglist},
+    components: {ActorChip, EntryActorList, Aspect, MetaChips, Taglist},
     mixins: [EntryNavMixin, MapJumpMixin, EntryMixin, MapJumpMixin,
       PersistentStorageMixin, ChildCreateMixin],
     data() {

@@ -11,6 +11,7 @@
     v-row(v-for="aspect in profile_aspects" :key="aspect.name")
       v-col(cols=10)
         Aspect(:aspect="aspect" :ext_value.sync="user_data[aspect.name]")
+    ActorAdminEdit(v-if="user_loaded && is_admin" :actor="user_data")
     div
       v-divider.wide_divider
       h2 Entries
@@ -24,11 +25,14 @@
   import Aspect from "../components/Aspect";
   import Taglist from "../components/Taglist";
   import EntryListWrapper from "../components/EntryListWrapper"
+  import ActorAdminEdit from "~/components/actor/ActorAdminEdit"
+  import IsAdminMixin from "~/components/actor/IsAdminMixin"
 
   export default {
     name: "actor",
-    mixins: [],
+    mixins: [IsAdminMixin],
     components: {
+      ActorAdminEdit,
       EntryListWrapper,
       EntryPreviewList,
       Aspect,
@@ -39,6 +43,7 @@
       return {
         waiting: true,
         user_data: {},
+        user_loaded: false,
         profile_aspects: [
           {
             name: "public_name",
@@ -89,7 +94,8 @@
     },
     created() {
       this.$api.actor__$registered_name__basic(this.registered_name).then(({data}) => {
-        this.user_data = data
+        this.user_data = data.data
+        this.user_loaded = true
         this.waiting = false
       }).catch(err => {
         console.log(err)
