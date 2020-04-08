@@ -71,7 +71,7 @@
   import PersistentStorageMixin from "../components/PersistentStorageMixin";
   import {DOMAIN} from "../store";
   import {USER_LOGGED_IN, USER_LOGOUT} from "../store/user";
-  import {APP_DB_LOADED, APP_CONNECTING, APP_CONNECTED, APP_INITIALIZED} from "../store/app"
+  import {APP_CONNECTED, APP_CONNECTING, APP_DB_LOADED, APP_INITIALIZED} from "../store/app"
 
 
   let require_login = ["Profile", "Logout"]
@@ -96,19 +96,19 @@
       }
     },
     created() {
-      if (!this.$store.getters[APP_DB_LOADED]())
+      if (!this.db_loaded)
         reload_storage(this.$store, this.$localForage)
-      if (!this.$api.is_initialized("https://opentek.eu")) {
+      if (!this.$api.is_initialized()) {
         this.$api.init(this.$axios) // , "https://opentek.eu"
       }
     },
     computed: {
-      ...mapGetters([APP_CONNECTING, APP_CONNECTED, USER_LOGGED_IN, DOMAIN]),
-      ...mapGetters({logged_in: USER_LOGGED_IN}),
+      ...mapGetters([APP_CONNECTING, USER_LOGGED_IN, DOMAIN]),
+      ...mapGetters({db_loaded: APP_DB_LOADED, logged_in: USER_LOGGED_IN, connected: APP_CONNECTED, initialized: APP_INITIALIZED}),
       groups() {
         const home = all_pages_n_actions[0]
         let other_pages = this.$_.tail(all_pages_n_actions)
-        if (this.$store.getters[APP_CONNECTED]) {
+        if (this.connected) {
         } else {
           other_pages = other_pages.filter(p => !hide_no_be.includes(p.title))
         }
@@ -125,14 +125,14 @@
         return [{name: "home", items: [home]},
           {name: "other", items: other_pages}]
       },
-      db_loaded() {
-        return this.$store.getters[APP_DB_LOADED]()
-      },
-      initialized() {
-        const is_initialized = this.$store.getters[APP_INITIALIZED]()
-        console.log("layout.default: calling init?", is_initialized)
-        return is_initialized
-      },
+      // db_loaded() {
+      //   return this.$store.getters[APP_DB_LOADED]()
+      // },
+      // initialized() {
+      //   const is_initialized = this.$store.getters[APP_INITIALIZED]()
+      //   console.log("layout.default: calling init?", is_initialized)
+      //   return is_initialized
+      // },
       connected_icon() {
         if (this.connected) {
           return "wifi"
@@ -192,9 +192,9 @@
           lastDomain = newValue
         }
       },
-      db_loaded(val, old) {
-        console.log("db loaded", this.initialized)
-        if (val && !this.initialized) {
+      db_loaded(val) {
+        // console.log("db loaded", this.initialized)
+        if (val) {
           console.log("layout. initializing")
           initialize(this.$api, this.$store, this.$route, this.$router, this.$localForage)
         }

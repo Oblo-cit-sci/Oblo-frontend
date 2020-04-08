@@ -24,7 +24,7 @@
 
   import DomainCard from "../components/DomainCard";
   import Footer from "../components/Footer";
-  import {CLEAR_DOMAIN, CONNECTED, DOMAINS} from "../store";
+  import {CLEAR_DOMAIN, DOMAINS} from "../store";
   import {USER_LOGGED_IN} from "../store/user";
 
   export default {
@@ -39,7 +39,7 @@
       DomainCard,
     },
     computed: {
-      ...mapGetters([DOMAINS, CONNECTED]),
+      ...mapGetters([DOMAINS]),
       ...mapGetters({logged_in: USER_LOGGED_IN}),
       server_name() {
         // todo

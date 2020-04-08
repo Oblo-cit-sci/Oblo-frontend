@@ -4,30 +4,19 @@ import {TEMPLATES_ADD_TEMPLATES, TEMPLATES_TYPENAME} from "~/store/templates";
 
 // *********** Index
 export const CLEAR_DOMAIN = "clear_domain"
-// export const CLEAR = "clear"
 export const UPDATE_DRAFT_NUMBER = "update_draft_number"
-export const ADD_META = "add_meta"
 export const DELETE_DOMAIN = "delete_domain"
-// export const INIT = "init"
-// export const INITIALIZED = "initialized"
-// export const CONNECTION = "connection"
-// export const CONNECTING = "connecting"
 export const SET_STORED_ENTRIES = "set_stored_entries"
 export const SET_DRAFT_NUMBERS = "set_draft_numbers"
 export const SET_DOMAINS = "set_domains"
-// export const SET_DOMAIN_TEMPLATES_FETCHED = "set_domain_templates_fetched"
-// export const BACKUP_INIT = "backup_init"
 export const GET_CODE = "get_code"
 export const SET_TEMPLATES_CODES = "set_templates_codes"
 export const CLEAR_ENTRIES = "clear_entries"
-// export const RELEASE_MODE = "release_mode"
-// export const DB_LOADED = "db_loaded"
 export const DOMAINS = "domains"
 export const SET_DOMAIN = "set_domain"
 export const INIT_PAGE_PATH = "init_page_path"
 export const PUSH_PAGE_PATH = "push_page_path"
 export const POP_LAST_PAGE_PATH = "pop_last_page_path"
-// export const GET_DOMAIN_TEMPLATES_FETCHED = "get_domain_templates_fetched"
 export const UPDATE_DRAFT_NUMBERS = "update_draft_numbers"
 export const CONNECTED = "connected"
 export const USER_GET_USER_DATA = "user/get_user_data"
@@ -39,23 +28,17 @@ export const LAST_BASE_PAGE_PATH = "last_page_path"
 // internal mutations
 export const ADD_CODES = "add_codes"
 
-
+// ******** SNACKBAR
+export const SNACKBAR = "snackbar"
+export const SNACKBAR_RESET = "snackbar_reset"
+export const SNACKBAR_TRIGGER = "snackbar_trigger"
 
 
 export const state = () => ({
   // comes by init
-  // db_loaded: false,
-  initialized: false,
-  _connecting: false,
-  connected: false,
   codes: {},
-  // recent
-  // momentary
   snackbar: {message: "", status: "ok", trigger: false},
   draft_numbers: {},
-  meta: {
-    repository: {}
-  },
   domains: [],
   domain: {
     value: NO_DOMAIN,
@@ -70,10 +53,6 @@ export const state = () => ({
 const ld = require('lodash')
 
 export const mutations = {
-  initialized(state) {
-    state.initialized = true
-    state.connected = true
-  },
   set_domains(state, domain_arr) {
     state.domains = domain_arr
   },
@@ -82,12 +61,6 @@ export const mutations = {
       state.codes[code_entry.slug] = code_entry
     }
   },
-  // db_loaded(state) {
-  //   state.db_loaded= true
-  // },
-  set_related_users(state, related_users) {
-    state.related_users = related_users
-  },
   snackbar(state, snackbar) {
     state.snackbar = Object.assign(snackbar, {trigger: true})
     // console.log("final snackbar", state.snackbar.trigger)
@@ -95,21 +68,8 @@ export const mutations = {
   snackbar_reset(state) {
     state.snackbar.trigger = false
   },
-  connection(state, connected) {
-    state.connected = connected
-  },
-  clear(state) {
-    state.initialized = false
-  },
   update_draft_number(state, type_slug) {
     state.draft_numbers[type_slug] = (state.draft_numbers[type_slug] || 0) + 1
-  },
-  connecting(state, conn) {
-    state._connecting = conn
-  },
-  add_meta(state, data) {
-    //console.log("store, add_meta", state.meta, data)
-    state.meta = {...state.meta, ...data}
   },
   clear_draft_numbers(state) {
     state.draft_numbers = {}
@@ -147,21 +107,11 @@ export const mutations = {
 };
 
 export const getters = {
-  // db_loaded(state) {
-  //   return () => {
-  //     return state.db_loaded
-  //   }
-  // },
   snackbar_trigger(state) {
     return () => {
       return state.snackbar.trigger
     }
   },
-  // get_domain_templates_fetched(state) {
-  //   return (domain_name) => {
-  //     return state.domains.filter(d => d.name === domain_name).templates_fetched
-  //   }
-  // },
   visitor(state) {
     //console.log("visitor check");
     return state.user.user_data.global_role === VISITOR
@@ -184,20 +134,6 @@ export const getters = {
     return (type_slug) => {
       return state.draft_numbers[type_slug] || 0
     }
-  },
-  user_key(state) {
-    return state.meta.repository.user_key || ""
-  },
-  initialized(state) {
-    return () => {
-      return state.initialized
-    }
-  },
-  connecting(state) {
-    return state._connecting
-  },
-  connected(state) {
-    return state.connected
   },
   domain(state) {
     return state.domain
@@ -251,7 +187,4 @@ export const actions = {
     context.commit(ADD_CODES, entries.filter(e => e.type === "code"))
   }
 }
-// ******** SNACKBAR
-export const SNACKBAR = "snackbar"
-export const SNACKBAR_RESET = "snackbar_reset"
-export const SNACKBAR_TRIGGER = "snackbar_trigger"
+

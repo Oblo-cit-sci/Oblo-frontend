@@ -18,7 +18,6 @@ export const mutations = {
   },
   initialized(state) {
     state.initialized = true
-    // state.connected = true
   },
   connecting(state, connecting) {
     state.connecting = connecting
@@ -30,14 +29,10 @@ export const mutations = {
 
 export const getters = {
   db_loaded(state) {
-    return () => {
-      return state.db_loaded
-    }
+    return state.db_loaded
   },
   initialized(state) {
-    return () => {
       return state.initialized
-    }
   },
   connecting(state) {
     return state.connecting
@@ -47,3 +42,9 @@ export const getters = {
   },
 }
 
+export const actions = {
+  connected({commit}) {
+    commit("connecting",false)
+    commit("connected", true)
+  }
+}
