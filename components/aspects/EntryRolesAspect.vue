@@ -48,7 +48,7 @@
         return this.value.map(ra => ra.actor.registered_name)
       },
       available_roles() {
-        const roles = ["owner"]
+        const roles = ["collaborator"]
         if (this.entry_is_private) {
           roles.push("shared")
         }

@@ -1,6 +1,6 @@
 <template lang="pug">
   v-container(fluid)
-    div(v-if="!logged_in && connected")
+    div(v-if="!logged_in")
       v-row With an account on {{server_name}} you'll be able to create entries and join groups.
       v-row(align="center")
         v-col(sm="4" offset="1")

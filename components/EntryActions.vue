@@ -58,6 +58,9 @@
   import {LAST_BASE_PAGE_PATH, POP_LAST_PAGE_PATH} from "../store";
   import {TEMPLATES_TYPE} from "../store/templates";
 
+  import {mapGetters} from "vuex"
+  import {APP_CONNECTED} from "../store/app"
+
   export default {
     name: "EntryActions",
     components: {DecisionDialog, Paginate},
@@ -229,6 +232,7 @@
       uuid() {
         return this.entry.uuid
       },
+      ... mapGetters({connected: APP_CONNECTED}),
       template() {
         return this.$store.getters[TEMPLATES_TYPE](this.template_slug)
       },
@@ -243,9 +247,6 @@
       },
       private_local() {
         return (this.template.rules.privacy || PUBLIC) === PRIVATE_LOCAL
-      },
-      connected() {
-        return this.$store.state.connected
       },
       has_pages() {
         return has_pages(this.template)

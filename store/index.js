@@ -5,7 +5,7 @@ import {TEMPLATES_ADD_TEMPLATES, TEMPLATES_TYPENAME} from "~/store/templates";
 // *********** Index
 export const CLEAR_DOMAIN = "clear_domain"
 export const UPDATE_DRAFT_NUMBER = "update_draft_number"
-export const DELETE_DOMAIN = "delete_domain"
+// export const DELETE_DOMAIN = "delete_domain"
 export const SET_STORED_ENTRIES = "set_stored_entries"
 export const SET_DRAFT_NUMBERS = "set_draft_numbers"
 export const SET_DOMAINS = "set_domains"
@@ -18,7 +18,6 @@ export const INIT_PAGE_PATH = "init_page_path"
 export const PUSH_PAGE_PATH = "push_page_path"
 export const POP_LAST_PAGE_PATH = "pop_last_page_path"
 export const UPDATE_DRAFT_NUMBERS = "update_draft_numbers"
-export const CONNECTED = "connected"
 export const USER_GET_USER_DATA = "user/get_user_data"
 export const DOMAIN = "domain"
 export const DOMAIN_BY_NAME = "domain_by_name"
@@ -42,8 +41,8 @@ export const state = () => ({
   domains: [],
   domain: {
     value: NO_DOMAIN,
-    title: "OpenTEK",
-    icon: "images/openTEK_icon.png"
+    title: "OpenTEK"
+    // icon: "images/openTEK_icon.png"
   },
   // prevent that the save and back is messing up, should not go back to a child. e.g.
   // stores either domain or my entries page or a parent entry

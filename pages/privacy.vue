@@ -1,13 +1,11 @@
 <template>
-  <div>
-    <nuxt/>
-  </div>
+
 </template>
 
 <script>
-export default {
-name: "simple"
-}
+    export default {
+        name: "privacy"
+    }
 </script>
 
 <style scoped>
