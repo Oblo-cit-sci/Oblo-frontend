@@ -69,8 +69,9 @@
 
   import {mapGetters} from "vuex"
   import PersistentStorageMixin from "../components/PersistentStorageMixin";
-  import {CONNECTED, CONNECTING, DB_LOADED, DOMAIN, INITIALIZED} from "../store";
+  import {DOMAIN} from "../store";
   import {USER_LOGGED_IN, USER_LOGOUT} from "../store/user";
+  import {APP_DB_LOADED, APP_CONNECTING, APP_CONNECTED, APP_INITIALIZED} from "../store/app"
 
 
   let require_login = ["Profile", "Logout"]
@@ -95,19 +96,19 @@
       }
     },
     created() {
-      if (!this.$store.getters[DB_LOADED]())
+      if (!this.$store.getters[APP_DB_LOADED]())
         reload_storage(this.$store, this.$localForage)
       if (!this.$api.is_initialized("https://opentek.eu")) {
         this.$api.init(this.$axios) // , "https://opentek.eu"
       }
     },
     computed: {
-      ...mapGetters([CONNECTING, CONNECTED, USER_LOGGED_IN, DOMAIN]),
+      ...mapGetters([APP_CONNECTING, APP_CONNECTED, USER_LOGGED_IN, DOMAIN]),
       ...mapGetters({logged_in: USER_LOGGED_IN}),
       groups() {
         const home = all_pages_n_actions[0]
         let other_pages = this.$_.tail(all_pages_n_actions)
-        if (this.$store.getters[CONNECTED]) {
+        if (this.$store.getters[APP_CONNECTED]) {
         } else {
           other_pages = other_pages.filter(p => !hide_no_be.includes(p.title))
         }
@@ -125,11 +126,12 @@
           {name: "other", items: other_pages}]
       },
       db_loaded() {
-        return this.$store.getters[DB_LOADED]()
+        return this.$store.getters[APP_DB_LOADED]()
       },
       initialized() {
-        console.log("layout.default: calling init?", this.$store.getters[INITIALIZED]())
-        return this.$store.getters[INITIALIZED]()
+        const is_initialized = this.$store.getters[APP_INITIALIZED]()
+        console.log("layout.default: calling init?", is_initialized)
+        return is_initialized
       },
       connected_icon() {
         if (this.connected) {

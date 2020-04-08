@@ -12,8 +12,6 @@
       v-col(class="col-lg-6 col-xs-12")
         div(v-for="domain in domains" :key="domain.title")
           DomainCard(:domain="domain")
-    v-row(v-if="partner_needs_update")
-      v-btn(@click="reload_page") Update application
     v-row(justify="center")
       v-btn(text nuxt to="about") About The Project
       v-btn(text nuxt to="about#privacy") Privacy Policy
@@ -25,7 +23,6 @@
   import {mapGetters} from "vuex"
 
   import DomainCard from "../components/DomainCard";
-  import {LICCI_PARTNERS} from "../lib/consts";
   import Footer from "../components/Footer";
   import {CLEAR_DOMAIN, CONNECTED, DOMAINS} from "../store";
   import {USER_LOGGED_IN} from "../store/user";
@@ -48,16 +45,8 @@
         // todo
         return "OpenTEK.eu"
       },
-      // todo should make a request to the uab page.
-      partner_needs_update() {
-        return this.release_mode === LICCI_PARTNERS
-      }
     },
-    methods: {
-      reload_page() {
-        location.reload()
-      }
-    }
+    methods: {}
   }
 </script>
 

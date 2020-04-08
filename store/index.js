@@ -2,17 +2,16 @@ import {NO_DOMAIN, TITLE, VISITOR} from "../lib/consts";
 import {object_list2options} from "../lib/options";
 import {TEMPLATES_ADD_TEMPLATES, TEMPLATES_TYPENAME} from "~/store/templates";
 
-
 // *********** Index
 export const CLEAR_DOMAIN = "clear_domain"
-export const CLEAR = "clear"
+// export const CLEAR = "clear"
 export const UPDATE_DRAFT_NUMBER = "update_draft_number"
 export const ADD_META = "add_meta"
 export const DELETE_DOMAIN = "delete_domain"
 // export const INIT = "init"
-export const INITIALIZED = "initialized"
-export const CONNECTION = "connection"
-export const CONNECTING = "connecting"
+// export const INITIALIZED = "initialized"
+// export const CONNECTION = "connection"
+// export const CONNECTING = "connecting"
 export const SET_STORED_ENTRIES = "set_stored_entries"
 export const SET_DRAFT_NUMBERS = "set_draft_numbers"
 export const SET_DOMAINS = "set_domains"
@@ -22,7 +21,7 @@ export const GET_CODE = "get_code"
 export const SET_TEMPLATES_CODES = "set_templates_codes"
 export const CLEAR_ENTRIES = "clear_entries"
 // export const RELEASE_MODE = "release_mode"
-export const DB_LOADED = "db_loaded"
+// export const DB_LOADED = "db_loaded"
 export const DOMAINS = "domains"
 export const SET_DOMAIN = "set_domain"
 export const INIT_PAGE_PATH = "init_page_path"
@@ -45,7 +44,7 @@ export const ADD_CODES = "add_codes"
 
 export const state = () => ({
   // comes by init
-  db_loaded: false,
+  // db_loaded: false,
   initialized: false,
   _connecting: false,
   connected: false,
@@ -83,24 +82,13 @@ export const mutations = {
       state.codes[code_entry.slug] = code_entry
     }
   },
-  db_loaded(state) {
-    state.db_loaded= true
-  },
+  // db_loaded(state) {
+  //   state.db_loaded= true
+  // },
   set_related_users(state, related_users) {
     state.related_users = related_users
   },
   snackbar(state, snackbar) {
-    // console.log(state.snackbar.trigger)
-    // console.log("snack", snackbar, "state", state.snackbar)
-    // should be set with {message: str, ok: boolean}
-    // method 1 . verbose
-    // state.snackbar.message = snackbar.message
-    // state.snackbar.trigger = true
-    // state.snackbar.ok = snackbar.ok
-    // method 2 . as lame as anything
-    // Object.assign(state.snackbar, snackbar)
-    // state.snackbar.trigger = true
-    // method
     state.snackbar = Object.assign(snackbar, {trigger: true})
     // console.log("final snackbar", state.snackbar.trigger)
   },
@@ -159,11 +147,11 @@ export const mutations = {
 };
 
 export const getters = {
-  db_loaded(state) {
-    return () => {
-      return state.db_loaded
-    }
-  },
+  // db_loaded(state) {
+  //   return () => {
+  //     return state.db_loaded
+  //   }
+  // },
   snackbar_trigger(state) {
     return () => {
       return state.snackbar.trigger
