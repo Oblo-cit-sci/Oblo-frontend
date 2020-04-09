@@ -51,15 +51,14 @@
 </template>
 
 <script>
-  import {DRAFT, EDIT, PRIVATE_LOCAL, PUBLIC, PUBLISHED, REQUIRES_REVIEW, REVIEW, VIEW} from "~/lib/consts";
+  import {DRAFT, EDIT, PRIVATE_LOCAL, PUBLIC, PUBLISHED, REQUIRES_REVIEW} from "~/lib/consts";
   import Paginate from "./Paginate";
-  import {current_user_is_owner, has_pages} from "~/lib/entry";
+  import {current_user_is_owner} from "~/lib/entry";
 
   import DecisionDialog from "./DecisionDialog";
   import EntryNavMixin from "./EntryNavMixin";
 
   import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
-  import {can_edit} from "~/lib/actors";
   import {base64file_to_blob} from "~/lib/util";
   import PersistentStorageMixin from "./PersistentStorageMixin";
   import {FILES_GET_FILE, FILES_REMOVE_FILE} from "~/store/files";
@@ -73,7 +72,6 @@
   import EntryMixin from "./EntryMixin";
   import {SEARCH_DELETE_ENTRY} from "~/store/search";
   import {LAST_BASE_PAGE_PATH, POP_LAST_PAGE_PATH} from "~/store";
-  import {TEMPLATES_TYPE} from "~/store/templates";
 
   import {mapGetters} from "vuex"
   import {APP_CONNECTED} from "~/store/app"
@@ -194,7 +192,7 @@
         }
         if (method) {
           try {
-            const res = await this.$api[method](this.entry.uuid, sending_entry)
+            const res = await this.$api[method](sending_entry)
 
             const attachments_data = this.get_attachments_to_post(sending_entry)
             // console.log(attachments_data)
@@ -229,11 +227,37 @@
           this.sending = false
         }
       },
-      accept() {
-
+      async accept() {
+        this.sending = true
+        try {
+          const res = await this.$api.patch_entry__$uuid_accept(this.entry)
+          this.sending = false
+          this.ok_snackbar("Entry reviewed")
+          this.$store.commit(ENTRIES_SAVE_ENTRY, res.data.data)
+          this.$store.dispatch(ENTRIES_UPDATE_ENTRY, this.uuid)
+          this.$store.commit(ENTRIES_RESET_EDIT)
+          this.back()
+        } catch (e) {
+          const message = this.$_.get(e, "response.data.error.msg", "Something went wrong")
+          // todo for entry exists already, there could be a change in the button label, but maybe the data of that entry should be fetched
+          this.error_snackbar(message)
+        }
       },
-      reject() {
-
+      async reject() {
+        this.sending = true
+        try {
+          const res = await this.$api.patch_entry__$uuid_reject(this.entry)
+          this.sending = false
+          this.ok_snackbar("Entry reviewed")
+          this.$store.commit(ENTRIES_DELETE_ENTRY, res.data.data.uuid)
+          this.$store.commit(SEARCH_DELETE_ENTRY, res.data.data.uuid)
+          this.$store.commit(ENTRIES_RESET_EDIT)
+          this.back()
+        } catch (e) {
+          const message = this.$_.get(e, "response.data.error.msg", "Something went wrong")
+          // todo for entry exists already, there could be a change in the button label, but maybe the data of that entry should be fetched
+          this.error_snackbar(message)
+        }
       },
       lastpage_reached($event) {
         console.log("an action lastpage_reached", $event)

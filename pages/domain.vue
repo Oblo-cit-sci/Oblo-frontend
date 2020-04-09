@@ -8,13 +8,6 @@
         h3 {{domain_data.page_index.action_text}}
       v-divider
       EntryCreateList(:entrytypes_entries="entrytypes_entries")
-    div.mt-2
-      <!--      div.font-weight-bold You have to be registered in order to create entries-->
-      v-row(align="center")
-        v-col(sm="4" offset="1")
-          v-btn.mt-4.mb-8(large to="/register" rounded outlined) Register
-        v-col(sm="4")
-          v-btn.mt-4.mb-8(large to="/login" rounded outlined) Login
     Search(
       :init_clear="false"
       :fixed_filters="domain_pre_filter",

@@ -1,11 +1,11 @@
-import {EDIT, LIST_INDEX, REGULAR, VIEW} from "../../lib/consts";
+import {EDIT, LIST_INDEX, REGULAR, VIEW} from "~/lib/consts";
 import {
   aspect_default_value,
   aspect_loc_str2arr,
   aspect_loc_uuid,
   aspect_raw_default_value, check_condition_value,
   complete_aspect_loc, pack_value
-} from "../../lib/aspect";
+} from "~/lib/aspect";
 import {ENTRIES_GET_ENTRY, ENTRIES_SET_ENTRY_VALUE, ENTRIES_VALUE} from "~/store/entries";
 
 const ld = require("lodash")
