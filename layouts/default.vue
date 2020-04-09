@@ -59,19 +59,20 @@
 
 
 <script>
-  import GlobalSnackbar from "../components/GlobalSnackbar"
-  import {HOME} from "../lib/consts"
-  import Footer from "../components/Footer"
+  import GlobalSnackbar from "~/components/GlobalSnackbar"
+  import {HOME} from "~/lib/consts"
+  import Footer from "~/components/Footer"
 
-  import {initialize, reload_storage} from "../lib/client"
-  import {all_pages_n_actions} from "../lib/pages";
-  import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
+  import {initialize, reload_storage} from "~/lib/client"
+  import {all_pages_n_actions} from "~/lib/pages";
+  import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin";
 
   import {mapGetters} from "vuex"
-  import PersistentStorageMixin from "../components/PersistentStorageMixin";
-  import {DOMAIN} from "../store";
-  import {USER_LOGGED_IN, USER_LOGOUT} from "../store/user";
-  import {APP_CONNECTED, APP_CONNECTING, APP_DB_LOADED, APP_INITIALIZED} from "../store/app"
+  import PersistentStorageMixin from "~/components/PersistentStorageMixin";
+  import {DOMAIN} from "~/store";
+  import {USER_LOGGED_IN, USER_LOGOUT} from "~/store/user";
+  import {APP_CONNECTED, APP_CONNECTING, APP_DB_LOADED, APP_INITIALIZED} from "~/store/app"
+  import {LOGOUT} from "~/store"
 
 
   let require_login = ["Profile", "Logout"]
@@ -79,7 +80,7 @@
   let hide_no_be = ["Register", "Login"] // if not connected out and if logged in out
   let show_inDev = ["Tests"] //, "Types", "Entrytypes", "Aspectbuild"]
   let lastDomain = ''
-  const pkg = require('../package')
+  const pkg = require('~/package')
 
   export default {
     components: {GlobalSnackbar, Footer},
@@ -170,7 +171,7 @@
             this.ok_snackbar("You are logged out")
             this.remove_from_storage("auth_token")
             // todo, remove draft entries and update storage, to leave no traces...
-            this.$store.dispatch(USER_LOGOUT)
+            this.$store.dispatch(LOGOUT)
             this.drawer = false
             this.$router.push("/")
           }).catch((err) => {

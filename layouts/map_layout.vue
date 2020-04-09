@@ -4,7 +4,6 @@
       v-container(id="fullContainer")
         nuxt
       GlobalSnackbar
-
 </template>
 
 <script>
@@ -13,26 +12,6 @@ export default {
       name: "map_layout",
       mixins: [],
       components: {GlobalSnackbar},
-      props: {
-
-      },
-      data() {
-          return {
-
-          }
-      },
-      created() {
-
-      },
-      computed: {
-
-      },
-      methods: {
-
-      },
-      watch: {
-
-      }
 }
 </script>
 
@@ -42,5 +21,6 @@ export default {
   #fullContainer {
     max-width: 100%;
     padding: 0;
+    height: 100%;
   }
 </style>

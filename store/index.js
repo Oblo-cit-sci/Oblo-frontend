@@ -1,6 +1,8 @@
 import {NO_DOMAIN, TITLE, VISITOR} from "../lib/consts";
 import {object_list2options} from "../lib/options";
 import {TEMPLATES_ADD_TEMPLATES, TEMPLATES_TYPENAME} from "~/store/templates";
+import {USER_LOGOUT} from "~/store/user"
+import {SEARCH_CLEAR} from "~/store/search"
 
 // *********** Index
 export const CLEAR_DOMAIN = "clear_domain"
@@ -24,6 +26,7 @@ export const DOMAIN_BY_NAME = "domain_by_name"
 export const DOMAIN_TITLE = "domain_title"
 export const DRAFT_NO = "draft_no"
 export const LAST_BASE_PAGE_PATH = "last_page_path"
+export const LOGOUT = "logout"
 // internal mutations
 export const ADD_CODES = "add_codes"
 
@@ -56,7 +59,7 @@ export const mutations = {
     state.domains = domain_arr
   },
   add_codes(state, code_arr) {
-    for(let code_entry of code_arr) {
+    for (let code_entry of code_arr) {
       state.codes[code_entry.slug] = code_entry
     }
   },
@@ -184,6 +187,11 @@ export const actions = {
   set_templates_codes(context, entries) {
     context.commit(TEMPLATES_ADD_TEMPLATES, entries.filter(e => e.type === "template"))
     context.commit(ADD_CODES, entries.filter(e => e.type === "code"))
+  },
+  logout({commit, dispatch}) {
+    dispatch(CLEAR_ENTRIES)
+    dispatch(USER_LOGOUT)
+    commit(SEARCH_CLEAR)
   }
 }
 

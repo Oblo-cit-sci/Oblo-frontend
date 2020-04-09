@@ -85,7 +85,7 @@ export default {
     creator() {
       // todo this is just a workaround...
       // should be
-      // this.entry.actors.filter(er => er.role === "creator")[0].actor
+      // console.log(this.entry.actors.filter(er => er.role === "creator")[0].actor)
       return this.$_.get(this.entry.actors.filter(er => er.role === "creator"),"0.actor", "")
     },
     template_slug() {

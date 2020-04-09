@@ -89,6 +89,7 @@ export const actions = {
   logout({commit}) {
     commit("set_user_data", default_user_data)
     commit("logout")
+    commit("reset_auth_token")
   }
 }
 

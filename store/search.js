@@ -60,6 +60,8 @@ export const mutations = {
     state.entries = []
     state.entry_aspects = []
     state.search_count = 0
+    state.path = ""
+    state.searchtime = null
   },
   set_search_count(state, count) {
     state.search_count = count

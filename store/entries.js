@@ -1,8 +1,8 @@
 /*
   this is for the own entries
  */
-import {ASPECT, COMPONENT, DRAFT, EDIT, ENTRY, INDEX, PRIVATE_LOCAL, VIEW} from "../lib/consts";
-import {default_values, get_entry_titleAspect, select_aspect_loc} from "../lib/entry";
+import {ASPECT, COMPONENT, DRAFT, EDIT, ENTRY, INDEX, PRIVATE_LOCAL, VIEW} from "~/lib/consts";
+import {default_values, get_entry_titleAspect, select_aspect_loc} from "~/lib/entry";
 import {
   aspect_loc_str,
   aspect_loc_str2arr,
@@ -11,11 +11,11 @@ import {
   loc_prepend,
   loc_remove_last,
   remove_entry_loc
-} from "../lib/aspect";
+} from "~/lib/aspect";
 
 
 import Vue from "vue"
-import {filter_empty, recursive_unpack} from "../lib/util";
+import {filter_empty, recursive_unpack} from "~/lib/util";
 import {META} from "~/lib/consts";
 import {guarantee_array} from "~/lib/util";
 import {TEMPLATES_TYPE} from "~/store/templates";
@@ -30,6 +30,7 @@ export const ENTRIES_ADD_FILE_ATTACHMENT = "entries/add_file_attachment"
 export const ENTRIES_REMOVE_FILE_ATTACHMENT = "entries/remove_file_attachment"
 export const ENTRIES_SET_FROM_ARRAY = "entries/set_from_array"
 export const ENTRIES_RESET_EDIT = "entries/reset_edit"
+export const ENTRIES_CLEAR = "entries/clear"
 // internal
 export const _SET_ENTRY_VALUE = "_set_entry_value"
 export const UPDATE_TAGS = "update_tags"
@@ -73,16 +74,12 @@ const DELETE_ENTRY = "delete_entry"
 const DELETE_REF_CHILD = "delete_ref_child"
 
 export const state = () => ({
-  timeline_entries: [],
   entries: new Map(),
   edit: null
 });
 
 // commmit
 export const mutations = {
-  add_timeline_entries(state, entries) {
-    state.timeline_entries = entries;
-  },
   save_entry(state, entry) {
     state.entries.set(entry.uuid, entry)
   },
@@ -117,7 +114,6 @@ export const mutations = {
   clear(state) {
     state.entries.clear()
     state.edit = null
-    state.timeline_entries = []
   },
   _set_entry_value(state, {aspect_loc, value}) { // ENTRIES_SET_ENTRY_VALUE
     // console.log("set entry value", aspect_loc, value)
@@ -406,12 +402,12 @@ export const getters = {
       }
     }
   },
-    entry_location: function (state, getters) {
+  entry_location: function (state, getters) {
     return (uuid) => {
       const entry = getters.get_entry(uuid)
       const entry_type = getters.get_entry_type(entry.template.slug)
       const locationAspect = entry_type.rules.locationAspect
-      if(!locationAspect) {
+      if (!locationAspect) {
         return null
       }
       let location = null
