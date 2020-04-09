@@ -3,13 +3,13 @@
     div(class="header-domain")
       p.display-1 {{domain_data.page_index.title}}
       p.heading {{domain_data.page_index.description}}
-    div(v-if="logged_in")
+    div
       p
         h3 {{domain_data.page_index.action_text}}
       v-divider
       EntryCreateList(:entrytypes_entries="entrytypes_entries")
-    div.mt-2(v-else)
-      div.font-weight-bold You have to be registered in order to create entries
+    div.mt-2
+      <!--      div.font-weight-bold You have to be registered in order to create entries-->
       v-row(align="center")
         v-col(sm="4" offset="1")
           v-btn.mt-4.mb-8(large to="/register" rounded outlined) Register

@@ -169,7 +169,7 @@
         if (action_type === "logout") {
           this.$api.actor__logout().then(() => {
             this.ok_snackbar("You are logged out")
-            this.remove_from_storage("auth_token")
+            this.clear_storage()
             // todo, remove draft entries and update storage, to leave no traces...
             this.$store.dispatch(LOGOUT)
             this.drawer = false

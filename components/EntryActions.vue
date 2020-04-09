@@ -11,66 +11,84 @@
       :pages="template.rules.pages"
       @lastpage="more_follow_page = ($event)")
       // todo this can come back
-    span(v-if="can_edit")
-      span(v-if="view && can_edit")
+    div
+      v-alert(v-if="can_edit && !logged_in" color="orange" type="warning")
+        b You are not logged in
+        div You can submit observations but they need to be reviewed before they get published. In addition to that their privacy is automatically set to public and their License is set to public domain - "No Rights reserved".
+    div
+      span(v-if="can_edit")
+        span(v-if="is_view_mode && can_edit")
+          v-btn(@click="back") back
+          v-btn(color="secondary" @click="edit") edit
+        span(v-else-if="can_edit")
+          v-btn(v-if="!is_view_mode" @click="show_cancel") {{cancel_word}}
+          v-btn(v-if="is_draft" color="success" @click="save") {{save_word}}
+          v-btn(v-if="!is_draft" color="error" @click="show_delete") Delete
+          v-btn(
+            v-if="show_submit"
+            color="success"
+            @click="submit"
+            :disabled="disable_submit"
+            :loading="sending") {{submit_word}}
+          v-btn(
+            v-if="is_review_mode"
+            color="success"
+            @click="accept"
+            :disabled="disable_submit"
+            :loading="sending") accept
+          v-btn(
+            v-if="is_review_mode"
+            color="warning"
+            @click="reject"
+            :disabled="disable_submit"
+            :loading="sending") reject
+        // v-if="private_local" todo for now, download for everyone
+        v-btn(v-if="can_download" :disabled="disable_download"  @click="download") download
+          v-icon.ml-2 mdi-download
+      span(v-else)
         v-btn(@click="back") back
-        v-btn(color="secondary" @click="edit") edit
-      span(v-else-if="can_edit")
-        v-btn(v-if="!view" @click="show_cancel") {{cancel_word}}
-        v-btn(v-if="is_draft" color="success" @click="save") {{save_word}}
-        v-btn(v-if="!is_draft" color="error" @click="show_delete") Delete
-        v-btn(
-          v-if="show_submit"
-          color="success"
-          @click="submit"
-          :disabled="disable_submit"
-          :loading="sending") {{published ? 'update' : 'submit'}}
-      // v-if="private_local" todo for now, download for everyone
-      v-btn(v-if="can_download" :disabled="disable_download"  @click="download") download
-        v-icon.ml-2 mdi-download
-    span(v-else)
-      v-btn(@click="back") back
     DecisionDialog(v-bind="dialog_data" :open.sync="dialog_visible" v-on:action="dialog_action($event)")
 </template>
 
 <script>
-  import {DRAFT, EDIT, LICCI_PARTNERS, PRIVATE_LOCAL, PUBLIC, PUBLISHED, VIEW} from "../lib/consts";
+  import {DRAFT, EDIT, PRIVATE_LOCAL, PUBLIC, PUBLISHED, REQUIRES_REVIEW, REVIEW, VIEW} from "~/lib/consts";
   import Paginate from "./Paginate";
-  import {current_user_is_owner, has_pages} from "../lib/entry";
+  import {current_user_is_owner, has_pages} from "~/lib/entry";
 
   import DecisionDialog from "./DecisionDialog";
   import EntryNavMixin from "./EntryNavMixin";
 
   import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
-  import {can_edit} from "../lib/actors";
-  import {base64file_to_blob} from "../lib/util";
+  import {can_edit} from "~/lib/actors";
+  import {base64file_to_blob} from "~/lib/util";
   import PersistentStorageMixin from "./PersistentStorageMixin";
-  import {FILES_GET_FILE, FILES_REMOVE_FILE} from "../store/files";
+  import {FILES_GET_FILE, FILES_REMOVE_FILE} from "~/store/files";
   import {
     ENTRIES_DELETE_ENTRY,
     ENTRIES_GET_ENTRY,
     ENTRIES_RESET_EDIT,
     ENTRIES_SAVE_ENTRY,
     ENTRIES_UPDATE_ENTRY
-  } from "../store/entries";
-  import EntryMixin2 from "./EntryMixin2";
-  import {SEARCH_DELETE_ENTRY} from "../store/search";
-  import {LAST_BASE_PAGE_PATH, POP_LAST_PAGE_PATH} from "../store";
-  import {TEMPLATES_TYPE} from "../store/templates";
+  } from "~/store/entries";
+  import EntryMixin from "./EntryMixin";
+  import {SEARCH_DELETE_ENTRY} from "~/store/search";
+  import {LAST_BASE_PAGE_PATH, POP_LAST_PAGE_PATH} from "~/store";
+  import {TEMPLATES_TYPE} from "~/store/templates";
 
   import {mapGetters} from "vuex"
-  import {APP_CONNECTED} from "../store/app"
+  import {APP_CONNECTED} from "~/store/app"
+  import {USER_LOGGED_IN} from "~/store/user"
 
   export default {
     name: "EntryActions",
     components: {DecisionDialog, Paginate},
-    mixins: [EntryNavMixin, TriggerSnackbarMixin, PersistentStorageMixin, EntryMixin2],
+    mixins: [EntryNavMixin, TriggerSnackbarMixin, PersistentStorageMixin, EntryMixin],
     props: {
-      entry: Object,
-      template_slug: String,
-      mode: {
-        type: String // view, create edit
-      },
+      // entry: Object,
+      // template_slug: String,
+      // mode: {
+      //   type: String // view, create edit
+      // },
       show_back_button: {
         type: Boolean
       },
@@ -154,7 +172,6 @@
       },
       save() {
         // todo not if it is an aspect page
-        //save_entry(this.$store, this.entry)
         this.$store.commit(ENTRIES_SAVE_ENTRY, this.entry)
         this.$store.dispatch(ENTRIES_UPDATE_ENTRY, this.uuid)
         this.persist_entries()
@@ -163,13 +180,12 @@
       },
       async submit() {
         this.sending = true
-
         // TODO not good. call update functions
         this.$store.commit(ENTRIES_SAVE_ENTRY, this.entry)
         this.$store.dispatch(ENTRIES_UPDATE_ENTRY, this.uuid)
         const sending_entry = this.$store.getters[ENTRIES_GET_ENTRY](this.uuid)
 
-        // would be the same as checking published
+        // would be the same as checking is_published
         let method = null
         if (this.entry.status === DRAFT) {
           method = "post_entry__$uuid"
@@ -179,6 +195,7 @@
         if (method) {
           try {
             const res = await this.$api[method](this.entry.uuid, sending_entry)
+
             const attachments_data = this.get_attachments_to_post(sending_entry)
             // console.log(attachments_data)
             for (let attachment_data of attachments_data) {
@@ -196,23 +213,26 @@
               }
             }
             this.sending = false
-            // this.entry.status = PUBLISHED
             this.ok_snackbar("Entry submitted")
             this.$store.commit(ENTRIES_SAVE_ENTRY, res.data.data)
             this.$store.dispatch(ENTRIES_UPDATE_ENTRY, this.uuid)
             this.$store.commit(ENTRIES_RESET_EDIT)
             this.back()
           } catch (e) {
-            console.log(e)
             this.sending = false
-            this.error_snackbar("Something went wrong")
-            // console.log(res)
+            const message = this.$_.get(e, "response.data.error.msg", "Something went wrong")
+            // todo for entry exists already, there could be a change in the button label, but maybe the data of that entry should be fetched
+            this.error_snackbar(message)
           }
-
         } else {
           this.error_snackbar("not yet implemented for this status:", this.entry.status)
           this.sending = false
         }
+      },
+      accept() {
+
+      },
+      reject() {
 
       },
       lastpage_reached($event) {
@@ -229,27 +249,12 @@
       }
     },
     computed: {
-      uuid() {
-        return this.entry.uuid
-      },
-      ... mapGetters({connected: APP_CONNECTED}),
-      template() {
-        return this.$store.getters[TEMPLATES_TYPE](this.template_slug)
-      },
-      view() {
-        return this.mode === VIEW
-      },
+      ...mapGetters({connected: APP_CONNECTED, logged_in: USER_LOGGED_IN}),
       dirty() {
         return this.entry.local.dirty
       },
-      published() {
-        return this.entry.status === PUBLISHED
-      },
       private_local() {
         return (this.template.rules.privacy || PUBLIC) === PRIVATE_LOCAL
-      },
-      has_pages() {
-        return has_pages(this.template)
       },
       disable_download() {
         return false; // this.has_pages && !this.last_page
@@ -272,18 +277,28 @@
           return "save"
         }
       },
-      can_edit() {
-        // let relation = entry_actor_relation(this.entry, this.$store.getters.user)
-        return can_edit(this.entry,  this.$store.getters.user)//relation === CREATOR.actors_key
+      submit_word() {
+        if (this.is_published) {
+          return 'update'
+        } else if (this.is_draft) {
+          return "submit"
+        } else if (this.entry.status === REQUIRES_REVIEW) {
+          return "accept"
+        }
       },
       show_submit() {
-        return !this.private_local && !this.view && !this.in_context
+        return !this.private_local && !this.is_view_mode && !this.is_review_mode && !this.in_context
       },
       disable_submit() {
-        return !this.connected || !this.entry_complete || (!this.is_dirty && !this.is_draft)
-      },
-      is_draft() {
-        return this.entry.status === DRAFT
+        if (!this.connected || !this.entry_complete) {
+          return true
+        } else {
+          if (this.entry.status === REQUIRES_REVIEW) {
+            return false
+          } else {
+            return !this.is_dirty && !this.is_draft
+          }
+        }
       },
       can_download() {
         //console.log(this.template.rules.download)

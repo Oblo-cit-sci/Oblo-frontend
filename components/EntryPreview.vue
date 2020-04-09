@@ -38,8 +38,8 @@
       v-divider(light v-bind:class="{draft: is_draft}")
       v-card-actions
         div
-          v-btn(v-if="has_type" small text outlined @click="goto(entry.uuid)") {{goto_text}}
-          v-btn(v-if="has_type && proper_mode==='edit'" small text outlined @click="goto(entry.uuid, 'view')") view
+          v-btn(small text outlined @click="goto(entry.uuid)") {{goto_text}}
+          v-btn(v-if="show_view" small text outlined @click="goto(entry.uuid, 'view')") view
           v-btn(small text outlined :color="act.color || 'green'"
             v-for="act in additional_actions"
             :key="act.name"
@@ -52,29 +52,30 @@
 <script>
 
   import EntryNavMixin from "./EntryNavMixin";
-  import {privacy_icon, printDate} from "../lib/util"
-  import {EDIT, ENTRY, VIEW} from "../lib/consts"
+  import {privacy_icon, printDate} from "~/lib/util"
+  import {EDIT, ENTRY, VIEW} from "~/lib/consts"
   import MetaChips from "../components/MetaChips"
   import Taglist from "../components/Taglist"
-  import {create_entry, full_title, get_proper_mode} from "../lib/entry"
+  import {create_entry, full_title, get_proper_mode} from "~/lib/entry"
   import MapJumpMixin from "./MapJumpMixin";
   import EntryMixin from "./EntryMixin";
   import PersistentStorageMixin from "./PersistentStorageMixin";
   import ChildCreateMixin from "./ChildCreateMixin";
   import {aspect_loc_str2arr, loc_prepend} from "../lib/aspect";
   import Aspect from "./Aspect";
-  import {mapGetters} from "vuex"
   import EntryActorList from "./entry/EntryActorList";
-  import {SEARCH_ENTRY_ASPECT} from "../store/search";
+  import {SEARCH_ENTRY_ASPECT} from "~/store/search";
   import {
     EDIT_UUID, ENTRIES_DELETE_ENTRY,
     ENTRIES_DOMAIN,
     ENTRIES_HAS_ENTRY,
     ENTRIES_SAVE_CHILD_N_REF,
     ENTRIES_VALUE
-  } from "../store/entries";
-  import {TEMPLATES_HAS_TYPE, TEMPLATES_TYPENAME} from "../store/templates";
+  } from "~/store/entries";
+  import {TEMPLATES_TYPENAME} from "~/store/templates";
   import ActorChip from "./ActorChip"
+  import {REVIEW} from "~/lib/consts"
+  import {privacy_color, review_color} from "~/lib/util"
 
   /**
    * ISSUE is not working atm, to responsive
@@ -112,12 +113,14 @@
       },
     },
     computed: {
-      ...mapGetters({has_type: TEMPLATES_HAS_TYPE}),
       deleted_entry() {
         return !this.$store.getters[ENTRIES_HAS_ENTRY](this.uuid)
       },
       is_draft() {
         return this.entry.status === "draft"
+      },
+      show_view() {
+        return [EDIT, REVIEW].includes(this.proper_mode)
       },
       full_title() {
         return full_title(this.$store, this.entry)
@@ -145,10 +148,13 @@
       },
       meta_aspects() {
         let result = []
-        result.push({icon: privacy_icon(this.entry.privacy), name: this.entry.privacy})
+        result.push({icon: privacy_icon(this.entry.privacy), name: this.entry.privacy, color: privacy_color(this.entry.privacy)})
         result.push({name: "License: " + this.entry.license})
         if (this.include_domain_tag) {
           result.push({name: this.$store.getters[ENTRIES_DOMAIN](this.entry.uuid)})
+        }
+        if(this.entry.status === "requires_review") {
+          result.unshift({icon: "mdi-file-find-outline", name: "Requires review", color:review_color()})
         }
         if (this.entry.status === "orphan") {
           result.push({name: "Orphan"})

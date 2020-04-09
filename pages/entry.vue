@@ -1,7 +1,6 @@
 <template lang="pug">
-  div(v-if="entry")
-    div(v-if="!delete_entry")
-      Entry
+  div(v-if="entry && !delete_entry")
+    Entry
 </template>
 
 <script>
@@ -11,7 +10,7 @@
   import EntryActions from "../components/EntryActions";
   import {
     EDIT, PRIVATE_LOCAL, VIEW
-  } from "../lib/consts";
+  } from "~/lib/consts";
   import Aspect from "../components/Aspect";
 
   import goTo from 'vuetify/lib/services/goto'
@@ -19,29 +18,25 @@
   import DecisionDialog from "../components/DecisionDialog";
   import EntryMixin from "../components/EntryMixin";
   import MetaChips from "../components/MetaChips"
-  import {privacy_icon} from "../lib/util"
+  import {privacy_icon} from "~/lib/util"
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
   import PersistentStorageMixin from "../components/PersistentStorageMixin";
   import FullEntryMixin from "../components/FullEntryMixin";
-  import {entry_roles_aspect, license_aspect, privacy_aspect} from "../lib/typical_aspects";
+  import {entry_roles_aspect, license_aspect, privacy_aspect} from "~/lib/typical_aspects";
   import EntryActorList from "../components/entry/EntryActorList";
   import {
     ENTRIES_GET_EDIT,
     ENTRIES_SET_EDIT, ENTRIES_UPDATE_ENTRY,
     ENTRIES_UPDATE_PARENT_VERSION
-  } from "../store/entries";
-  import EntryEdit from "../components/EntryEdit";
-  import EntryView from "../components/entry/EntryView";
+  } from "~/store/entries";
   import Entry from "../components/Entry";
-  import {TEMPLATES_TYPE, TEMPLATES_TYPES} from "../store/templates";
+  import {TEMPLATES_TYPE, TEMPLATES_TYPES} from "~/store/templates";
 
   export default {
-    name: "e",
+    name: "entry",
     mixins: [EntryNavMixin, EntryMixin, TriggerSnackbarMixin, PersistentStorageMixin, FullEntryMixin],
     components: {
       Entry,
-      EntryView,
-      EntryEdit,
       DecisionDialog,
       Aspect,
       EntryActions,

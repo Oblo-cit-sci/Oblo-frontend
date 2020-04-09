@@ -1,5 +1,4 @@
 import {
-  ENTRIES_ALL_ENTRIES_ARRAY,
   ENTRIES_ALL_ENTRIES_UUID_ENTRY_ARR,
   ENTRIES_GET_ENTRIES
 } from "~/store/entries";
@@ -16,6 +15,9 @@ export default {
         console.log("browser db error")
         console.log(err)
       })
+    },
+    clear_storage() {
+      this.$localForage.clear()
     },
     remove_from_storage(key) {
       this.$localForage.removeItem(key)

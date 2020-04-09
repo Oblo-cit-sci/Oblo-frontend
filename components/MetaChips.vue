@@ -4,7 +4,7 @@
       :ripple="false"
       small
       class="mr-4"
-      :color="color(item)"
+      :color="item.color"
       label)
       v-avatar(v-if="item.icon")
         v-icon(small) {{item.icon}}
@@ -21,15 +21,6 @@
       meta_aspects: {
         type: Array,
         default: () => []
-      }
-    },
-    methods: {
-      color(item) {
-        if (item.name === PUBLIC) {
-          return "#d3e6d0"
-        } else if (item.name === PRIVATE) {
-          return "#e6dbd0"
-        }
       }
     }
   }

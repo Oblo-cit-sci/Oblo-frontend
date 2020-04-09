@@ -53,7 +53,7 @@
         v-col(alignSelf="stretch" :cols="base_cols")
           Aspect(:aspect="entry_roles_aspect" :aspect_loc="aspect_locs[entry_roles_aspect.name]" :extra="{entry_is_private: entry.privacy==='private'}")
       v-divider(v-if="is_first_page" class="wide_divider")
-    div(v-if="is_edit_mode")
+    div(v-if="show_validation_comp")
       v-row(v-if="last_page")
         MissingAspectsNotice(:entry="entry" :template_slug="template_slug" v-model="entry_complete")
       v-row(v-if="is_dirty")
@@ -131,6 +131,9 @@
           return [ENTRY, this.uuid]
         }
       },
+      show_validation_comp() {
+        return this.is_edit_mode || this.is_review_mode
+      },
       license_aspect() {
         return license_aspect(this.$store, ["cc_licenses"], [])
       },
@@ -170,8 +173,8 @@
         return this.entry.image
       },
       is_dirty() {
-        const edit_entry = this.$_.omit(this.$store.getters[ENTRIES_GET_EDIT](),["local"])
-        const original_entry = this.$_.omit(this.$store.getters[ENTRIES_GET_ENTRY](this.uuid),["local"])
+        const edit_entry = this.$_.omit(this.$store.getters[ENTRIES_GET_EDIT](), ["local"])
+        const original_entry = this.$_.omit(this.$store.getters[ENTRIES_GET_ENTRY](this.uuid), ["local"])
         // for (let k in edit_entry) {
         //   if(!this.$_.isEqual(edit_entry[k], original_entry[k]))
         //     console.log(k, this.$_.isEqual(edit_entry[k], original_entry[k]))
@@ -182,7 +185,7 @@
         //   if(!edit_entry.hasOwnProperty(k))
         //     console.log("del", k)
         // }
-        return  !this.$_.isEqual(edit_entry, original_entry)
+        return !this.$_.isEqual(edit_entry, original_entry)
       },
     }
   }

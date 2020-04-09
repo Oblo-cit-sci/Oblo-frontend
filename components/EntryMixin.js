@@ -1,7 +1,19 @@
-import {get_entry_titleAspect, has_parent} from "../lib/entry";
+import {get_entry_titleAspect, has_pages, has_parent} from "../lib/entry";
 import {export_data} from "../lib/import_export";
 import {aspect_loc_str2arr, loc_append, loc_prepend} from "~/lib/aspect";
-import {ASPECT, EDIT, ENTRY, GLOBAL, META, META_ASPECT_LIST, VIEW} from "~/lib/consts";
+import {
+  ASPECT,
+  DRAFT,
+  EDIT,
+  ENTRY,
+  GLOBAL,
+  META,
+  META_ASPECT_LIST,
+  PUBLISHED,
+  REQUIRES_REVIEW,
+  REVIEW,
+  VIEW
+} from "~/lib/consts";
 
 import {
   ENTRIES_GET_EDIT,
@@ -14,8 +26,9 @@ import {
 } from "~/store/entries";
 import {FILES_GET_FILE} from "~/store/files";
 import {check_str_is_uuid} from "~/lib/util";
-import {TEMPLATES_TYPE, TEMPLATES_TYPENAME} from "~/store/templates";
+import {TEMPLATES_TYPE} from "~/store/templates";
 import {full_title} from "~/lib/entry"
+import {can_edit} from "~/lib/actors"
 
 export default {
   name: "EntryMixin",
@@ -86,7 +99,11 @@ export default {
       // todo this is just a workaround...
       // should be
       // console.log(this.entry.actors.filter(er => er.role === "creator")[0].actor)
-      return this.$_.get(this.entry.actors.filter(er => er.role === "creator"),"0.actor", "")
+      return this.$_.get(this.entry.actors.filter(er => er.role === "creator"), "0.actor", "")
+    },
+    can_edit() {
+      // let relation = entry_actor_relation(this.entry, this.$store.getters.user)
+      return can_edit(this.entry, this.$store.getters.user)//relation === CREATOR.actors_key
     },
     template_slug() {
       return this.entry.template.slug
@@ -122,7 +139,7 @@ export default {
         // todo maybe it would be cleaner to add "entry "+uuid , so that  aspect_loc_str2arr/is wrapped around
         let title = this.$store.getters[ENTRIES_VALUE](loc_prepend(EDIT, this.uuid, aspect_loc_str2arr(titleAspect)))
         title = this.$_.get(title, "value", "")
-        return this.template.title +(title ? ": " + title : "")
+        return this.template.title + (title ? ": " + title : "")
       } else {
         return full_title(this.$store, this.entry)
       }
@@ -154,7 +171,7 @@ export default {
       return this.template.title
     },
     has_pages() {
-      return this.template.rules.hasOwnProperty("pages")
+      return has_pages(this.template)
     },
     named_pages() {
       return this.template.rules.hasOwnProperty("named_pages") || false
@@ -172,7 +189,7 @@ export default {
       if (this.has_pages) {
         return this.$_.filter(this.template.aspects, (a) => {
           return (this.page === 0 && (a.attr.page === 0 || a.attr.page === undefined) ||
-            (this.page > 0 && a.attr.page === this.page))
+              (this.page > 0 && a.attr.page === this.page))
         })
       }
       return this.template.aspects
@@ -185,7 +202,25 @@ export default {
       // todo title, wont update in real time
       const entry_title = this.$store.getters[ENTRIES_GET_ENTRY_TITLE](this.entry.uuid)
       return (this.type_name + "_" + entry_title).replace(" ", "_") + ".json"
-    }
+    },
+    is_draft() {
+      return this.entry.status === DRAFT
+    },
+    is_published() {
+      return this.entry.status === PUBLISHED
+    },
+    is_requires_review() {
+      return this.entry.status === REQUIRES_REVIEW
+    },
+    is_view_mode() {
+      return this.mode === VIEW
+    },
+    is_edit_mode() {
+      return this.mode === EDIT
+    },
+    is_review_mode() {
+      return this.mode === REVIEW
+    },
   },
   beforeMount() {
     this.update_aspect_locs()

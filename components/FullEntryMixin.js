@@ -1,6 +1,7 @@
   import {privacy_icon} from "../lib/util";
   import {EDIT, VIEW} from "../lib/consts";
   import {unsaved_changes_default_dialog} from "../lib/dialogs";
+  import {REVIEW} from "~/lib/consts"
 
   export default {
     data() {
@@ -25,12 +26,7 @@
           this.to_entry(this.uuid, mode)
         }
       },
-      is_view_mode() {
-        return this.mode === VIEW
-      },
-      is_edit_mode() {
-        return this.mode === EDIT
-      },
+
       meta_aspects_privacy() {
         let result = []
         result.push({icon: privacy_icon(this.entry.privacy), name: this.entry.privacy})

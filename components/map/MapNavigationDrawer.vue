@@ -36,8 +36,6 @@
 
 <script>
   import MapNavigationMixin from "./MapNavigationMixin";
-  import EntryEdit from "../EntryEdit";
-  import EntryView from "../entry/EntryView";
   import Entry from "../Entry";
 
   // search:
@@ -45,7 +43,7 @@
 
   export default {
     name: "MapNavigationDrawer",
-    components: {Entry, EntryView, EntryEdit},
+    components: {Entry},
     mixins: [MapNavigationMixin],
     computed: {
       drawer_width() {

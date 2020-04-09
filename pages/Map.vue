@@ -38,7 +38,7 @@
   export const SEARCH = "search"
   export const ENTRY = "entry"
 
-  const selected_color = "#f5ffed"
+  const selected_color = "#f9992a"
 
   export default {
     name: "Map",
@@ -117,9 +117,9 @@
         }
       },
       markers_and_map_done() {
-        console.log("markers_and_map_done?")
+        // console.log("markers_and_map_done?")
         if (this.entries.length > 0 && this.map_loaded) {
-          console.log("markers_and_map_done")
+          // console.log("markers_and_map_done")
           if (this.$route.query.uuid) {
             this.update_navigation_mode(this.$route.query.uuid, VIEW)
           }
