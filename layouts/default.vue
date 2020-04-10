@@ -104,7 +104,7 @@
       }
     },
     computed: {
-      ...mapGetters([APP_CONNECTING, USER_LOGGED_IN, DOMAIN]),
+      ...mapGetters([APP_CONNECTING, DOMAIN]),
       ...mapGetters({db_loaded: APP_DB_LOADED, logged_in: USER_LOGGED_IN, connected: APP_CONNECTED, initialized: APP_INITIALIZED}),
       groups() {
         const home = all_pages_n_actions[0]

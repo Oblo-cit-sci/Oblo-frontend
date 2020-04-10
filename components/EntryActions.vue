@@ -14,7 +14,9 @@
     div
       v-alert(v-if="can_edit && !logged_in" color="orange" type="warning")
         b You are not logged in
-        div You can submit observations but they need to be reviewed before they get published. In addition to that their privacy is automatically set to public and their License is set to public domain - "No Rights reserved".
+        div
+          span You can submit observations but they need to be reviewed before they get published. In addition to that their privacy is automatically set to public and their license is set to (CC0) - No Rights reserved/public domain.&nbsp;
+          a(href="https://creativecommons.org/share-your-work/public-domain/cc0/" target="_blank" style="color:white") Read more about CC0.
     div
       span(v-if="can_edit")
         span(v-if="is_view_mode && can_edit")

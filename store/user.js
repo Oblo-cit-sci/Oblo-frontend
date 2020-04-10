@@ -2,7 +2,7 @@
   this is for the user (and maybe others)
  */
 
-import {VISITOR} from "../lib/consts";
+import {VISITOR} from "~/lib/consts";
 
 
 // Mutations
@@ -26,8 +26,8 @@ let default_user_data = {
   // https://stackoverflow.com/questions/1253499/simple-calculations-for-working-with-lat-lon-km-distance
   // of 1 degree will result in error of around 50km per coordinate -0.5, +0.5 degree change around the real location
   location_error: 2,
-  defaultLicense: "CC-BY", // should come from the server
-  defaultPrivacy: "public",
+  default_license: "CC0", // should come from the server
+  default_privacy: "public",
   location: "",
 }
 

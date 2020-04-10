@@ -14,11 +14,15 @@
     div(v-if="value")
       p(v-if="select_check" class="text-uppercase") {{check_box_value ? options[1].text : options[0].text}}
       p.body-1.readonly-aspect(v-else) {{selection.text}}
+      div(v-if="selection.description") Description: {{selection.description}}
+      div(v-if="has_some_icons")
+        v-img(:src="icon_path(selection)" contain max-height="40")
 </template>
 
 <script>
   import SelectMixin from "./SelectMixin";
   import AspectComponentMixin from "./AspectComponentMixin";
+  import {server_icon_path} from "~/lib/client"
 
   export default {
     name: "SelectAspect",
@@ -60,12 +64,20 @@
           this.init = false
         }
         //console.log('SELECT', this.selection)
-      }
+      },
+      icon_path(item) {
+        if (item.icon) {
+          return server_icon_path(this.$axios, item.icon)
+        } else return ""
+      },
     },
     computed: {
       force_view() {
         return this.aspect.attr.force_view
-      }
+      },
+      has_some_icons() {
+        return this.$_.find(this.options, (o) => o.icon && o.icon !== "") !== undefined
+      },
     },
     watch: {
       value() {

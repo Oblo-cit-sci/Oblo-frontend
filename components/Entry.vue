@@ -44,12 +44,12 @@
       v-row
         v-col(:cols="base_cols")
           v-divider.wide_divider
-      v-row
+      v-row(v-if="logged_in")
         v-col(alignSelf="stretch" :cols="base_cols" :lg="base_cols/2")
-          Aspect(:aspect="license_aspect" :aspect_loc="aspect_locs[license_aspect.name]" :extra="aspect_extras" :mode="mode")
+          Aspect(:aspect="license_aspect" :aspect_loc="aspect_locs[license_aspect.name]" :mode="license_privacy_mode")
         v-col(alignSelf="stretch" :cols="base_cols" :lg="base_cols/2")
-          Aspect(:aspect="privacy_aspect" :aspect_loc="aspect_locs[privacy_aspect.name]" :mode="mode")
-      v-row
+          Aspect(:aspect="privacy_aspect" :aspect_loc="aspect_locs[privacy_aspect.name]" :mode="license_privacy_mode")
+      v-row(v-if="logged_in")
         v-col(alignSelf="stretch" :cols="base_cols")
           Aspect(:aspect="entry_roles_aspect" :aspect_loc="aspect_locs[entry_roles_aspect.name]" :extra="{entry_is_private: entry.privacy==='private'}")
       v-divider(v-if="is_first_page" class="wide_divider")
@@ -74,6 +74,8 @@
 </template>
 
 <script>
+
+  import {mapGetters} from "vuex"
   import DecisionDialog from "./DecisionDialog";
   import Aspect from "./Aspect";
   import EntryActions from "./EntryActions";
@@ -92,6 +94,7 @@
   import MetaChips from "./MetaChips";
   import EntryActorList from "./entry/EntryActorList";
   import {TEMPLATES_TYPE} from "../store/templates";
+  import {USER_LOGGED_IN} from "~/store/user"
 
   export default {
     name: "Entry",
@@ -121,9 +124,7 @@
       }
     },
     computed: {
-      // entry() {
-      //   return this.$store.getters[ENTRIES_GET_EDIT]()
-      // },
+      ...mapGetters({logged_in: USER_LOGGED_IN}),
       aspect_loc() {
         if (this.is_edit_mode) {
           return [EDIT, this.uuid]
@@ -146,8 +147,8 @@
       aspects() {
         return this.$store.getters[TEMPLATES_TYPE](this.template_slug).aspects
       },
-      licence_mode() {
-        if (this.entry.refs.parent || this.entry.privacy === PRIVATE_LOCAL) {
+      license_privacy_mode() {
+        if (this.entry.refs.parent || this.entry.privacy === PRIVATE_LOCAL || !this.logged_in) {
           return VIEW
         } else {
           return EDIT
