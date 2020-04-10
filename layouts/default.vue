@@ -54,6 +54,28 @@
       </v-container>
     </v-content>
     <GlobalSnackbar></GlobalSnackbar>
+    <v-bottom-sheet hide-overlay :value="privacy_sheet_open">
+      <div style="background: white;height: 100%; width: 100%">
+        <div class="pt-5 pl-5 pb-7">
+          <h3 class="mb-3">Your Privacy</h3>
+          <v-container style="margin: 0;">
+            <v-row>
+              <v-col cols="12" lg="8">
+                <div style="font-size: 1.2rem">
+                  We do not use cookies nor do we include any 3rd party cookies. We only store the data that you
+                  directly
+                  provide in your public user profile or in the entries you create or contribute to.
+                </div>
+              </v-col>
+              <v-spacer></v-spacer>
+              <v-col>
+                <v-btn @click="privacy_sheet_open=false">Thank you</v-btn>
+              </v-col>
+            </v-row>
+          </v-container>
+        </div>
+      </div>
+    </v-bottom-sheet>
   </v-app>
 </template>
 
@@ -69,10 +91,9 @@
 
   import {mapGetters} from "vuex"
   import PersistentStorageMixin from "~/components/PersistentStorageMixin";
-  import {DOMAIN} from "~/store";
+  import {DOMAIN, LOGOUT} from "~/store";
   import {USER_LOGGED_IN, USER_LOGOUT} from "~/store/user";
   import {APP_CONNECTED, APP_CONNECTING, APP_DB_LOADED, APP_INITIALIZED} from "~/store/app"
-  import {LOGOUT} from "~/store"
 
 
   let require_login = ["Profile", "Logout"]
@@ -94,6 +115,7 @@
         clipped: false,
         miniVariant: false,
         title: this.$store.getters[DOMAIN] ? this.$store.state.domain.title : HOME,
+        privacy_sheet_open: true
       }
     },
     created() {
@@ -105,7 +127,12 @@
     },
     computed: {
       ...mapGetters([APP_CONNECTING, DOMAIN]),
-      ...mapGetters({db_loaded: APP_DB_LOADED, logged_in: USER_LOGGED_IN, connected: APP_CONNECTED, initialized: APP_INITIALIZED}),
+      ...mapGetters({
+        db_loaded: APP_DB_LOADED,
+        logged_in: USER_LOGGED_IN,
+        connected: APP_CONNECTED,
+        initialized: APP_INITIALIZED
+      }),
       groups() {
         const home = all_pages_n_actions[0]
         let other_pages = this.$_.tail(all_pages_n_actions)
