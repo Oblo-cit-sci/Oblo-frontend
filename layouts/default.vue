@@ -1,82 +1,50 @@
-<template>
-  <v-app>
-    <v-navigation-drawer
+<template lang="pug">
+  v-app
+    v-navigation-drawer(
       v-model="drawer"
       v-show="initialized"
       :mini-variant="miniVariant"
       :clipped="clipped"
-      app
-    >
-      <v-list>
-        <v-list-item-group v-for="group in groups" :key="group.name">
-          <v-list-item v-for="item in group.items"
-                       :key="item.to"
-                       :to="item.to"
-                       router
-                       nuxt
-                       @click="item.action ? action(item.action) : ''"
-                       exact>
-            <v-list-item-icon>
-              <v-icon>{{item.icon}}</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title v-text="item.title"></v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-item-group>
-        <v-list-item>
-          <p class="package-version"> v{{version}} </p>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-    <v-app-bar
-      :clipped-left="clipped"
+      app)
+      v-list
+        v-list-item-group(v-for="group in groups" :key="group.name")
+          v-list-item(v-for="item in group.items"
+            :key="item.to"
+            :to="item.to"
+            router
+            nuxt
+            @click="item.action ? action(item.action) : ''"
+            exact)
+            v-list-item-icon
+              v-icon {{item.icon}}
+            v-list-item-content
+              v-list-item-title(v-text="item.title")
+        v-list-item
+          p(class="package-version") v{{version}}
+    v-app-bar(:clipped-left="clipped"
       true
-      app
-    >
-      <v-app-bar-nav-icon v-show="initialized" @click="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title class="pa-0" v-if="initialized">
-        <v-list-item class="pl-0">
-          <v-list-item-avatar class="header-avatar" @click="goTo" :src="domain_icon" width="55" height="auto" tile>
-            <v-img contain :src="domain_icon"></v-img>
-          </v-list-item-avatar>
-          <v-list-item-content>
-            <v-list-item-title class="headline">
-              {{domain_title}}
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-toolbar-title>
-    </v-app-bar>
-    <v-content>
-      <v-container v-if="initialized">
-        <nuxt/>
-      </v-container>
-    </v-content>
-    <GlobalSnackbar></GlobalSnackbar>
-    <v-bottom-sheet hide-overlay :value="privacy_sheet_open">
-      <div style="background: white;height: 100%; width: 100%">
-        <div class="pt-5 pl-5 pb-7">
-          <h3 class="mb-3">Your Privacy</h3>
-          <v-container style="margin: 0;">
-            <v-row>
-              <v-col cols="12" lg="8">
-                <div style="font-size: 1.2rem">
-                  We do not use cookies nor do we include any 3rd party cookies. We only store the data that you
-                  directly
-                  provide in your public user profile or in the entries you create or contribute to.
-                </div>
-              </v-col>
-              <v-spacer></v-spacer>
-              <v-col>
-                <v-btn @click="privacy_sheet_open=false">Thank you</v-btn>
-              </v-col>
-            </v-row>
-          </v-container>
-        </div>
-      </div>
-    </v-bottom-sheet>
-  </v-app>
+      app)
+      v-app-bar-nav-icon(v-show="initialized" @click="drawer = !drawer")
+      v-toolbar-title.pa-0(v-if="initialized")
+        v-list-item.pl-0
+          v-list-item-avatar.header-avatar(@click="goTo" :src="domain_icon" width="55" height="auto" tile)
+          v-list-item-content
+            v-list-item-title.headline {{domain_title}}
+    v-content
+      v-container(v-if="initialized")
+        nuxt
+    GlobalSnackbar
+    v-bottom-sheet(hide-overlay :value="privacy_sheet_open")
+      div(style="background: white;height: 100%; width: 100%")
+        div.pt-5.pl-5.pb-7
+          h3.mb-3 Your Privacy
+            v-container(style="margin: 0")
+              v-row
+                v-col(cols="12" lg="8")
+                  div(style="font-size: 1.2rem") We do not use cookies nor do we include any 3rd party cookies. We only store the data that you directly provide in your public user profile or in the entries you create or contribute to. <a href="/about#privacy">Read our privacy policy for more information.</a>
+                v-spacer
+                v-col
+                  v-btn(@click="privacy_sheet_open=false") Thank you
 </template>
 
 
