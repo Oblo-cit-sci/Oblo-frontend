@@ -39,6 +39,10 @@ class APIWrapper {
     return this.axios.post(`${this.actor_baseURL}/`, data)
   }
 
+  delete_account(data) {
+    return this.axios.post(`${this.actor_baseURL}/delete`, data)
+  }
+
   /**
    * login
    */

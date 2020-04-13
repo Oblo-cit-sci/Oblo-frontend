@@ -1,6 +1,14 @@
 <template lang="pug">
   div
     LargeSelectList
+    div.mb-5.mt-5
+    v-expansion-panels(flat)
+      v-expansion-panel
+        v-expansion-panel-header more options
+        v-expansion-panel-content
+          div
+            div Cool
+            div click here
 </template>
 
 <script>

@@ -1,12 +1,12 @@
 <template lang="pug">
   div
-    div {{selected}}
     v-item-group(v-model="selected")
       v-item.select_item(v-for="a in options" :key="a.name" v-slot:default="{ toggle }")
         v-card(@click="toggle" outlined)
           v-img.card_img(src="https://cdn.vuetifyjs.com/images/cards/store.jpg")
           v-card-title {{a.name}}
           v-card-text.card_text {{a.description}}
+    div {{selected || "nothing selected" }}
 </template>
 
 <script>
