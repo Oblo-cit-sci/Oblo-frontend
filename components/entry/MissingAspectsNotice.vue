@@ -1,8 +1,10 @@
 <template lang="pug">
   div
     h3 Validation
-    b(v-if="has_missing") Missing or incomplete aspects:
-    div(v-else) All values in this entry seem ok
+    div(v-if="has_missing")
+      b Missing or incomplete aspects:
+      div Only entries without missing information can be submitted. Please, complete missing information or safe your entry as a draft.
+    div(v-else) All values in this entry are ok
     .required_aspect.red--text(v-for="(aspect, i) in missing" :key="i") {{aspect}}
 </template>
 
