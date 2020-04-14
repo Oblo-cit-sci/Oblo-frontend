@@ -106,9 +106,7 @@
         }).then(({data}) => {
           if (data.data) {
             this.$router.push("/login")
-            this.ok_snackbar("Registration successful")
-            this.process_login(data.data)
-            this.$router.push("/")
+            this.ok_snackbar(data.data)
           } else {
             this.errorMsg = data.error.msg
           }

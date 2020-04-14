@@ -11,6 +11,8 @@
     v-btn(@click='login' color='success' autofocus :disabled="any_invalid") Login
     div.mt-3
       a(href="basic/init_password_reset") Forgot password?
+    div.mt-2(v-if="add_verification_resend_link")
+      v-btn(@click="request_verification_mail" color="success") Resend verification email
     v-alert(:value='errorMsg != null' type='error' prominent transition="scroll-y-reverse-transition") {{errorMsg}}
 </template>
 
@@ -55,7 +57,9 @@
             error: true
           }
         ],
-        errorMsg: null
+        errorMsg: null,
+        add_verification_resend_link: false,
+        registered_name: null
       }
     },
     computed: {
@@ -81,8 +85,24 @@
           }
         }).catch((err) => {
           console.log("err", err.response)
-          this.errorMsg = err.response.data.error.msg
-          setTimeout(() => this.errorMsg = null, 2000)
+          const response = err.response
+          this.errorMsg = response.data.error.msg
+          if(this.$_.get(response, "data.error.data.error_type", 0) === 1) {
+            this.add_verification_resend_link = true
+            this.registered_name = response.data.error.data.registered_name
+          }
+          setTimeout(() => this.errorMsg = null, 5000)
+        })
+      },
+      request_verification_mail() {
+        this.$api.actor__resend_email_verification_mail(this.registered_name).then(({data}) => {
+          this.ok_snackbar(data.data)
+          this.add_verification_resend_link = false
+        }).catch(err => {
+          const response = err.repsonse
+          if(this.$_.get(response, "data.error.msg")) {
+            this.error_snackbar(response.data.error.msg)
+          }
         })
       }
     }

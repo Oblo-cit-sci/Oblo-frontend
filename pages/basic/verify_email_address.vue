@@ -24,7 +24,9 @@
           this.$router.push("/")
         }
       }).catch(err => {
-        this.error_snackbar(err.response.error.msg)
+        const response = err.response
+        const msg = this.$_.get(response, "data.error.msg", "Something went wrong")
+        this.error_snackbar(msg)
       })
     },
   }

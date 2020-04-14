@@ -59,6 +59,14 @@ class APIWrapper {
     })
   }
 
+  actor__resend_email_verification_mail(registered_name) {
+    return this.axios.get(`${this.actor_baseURL}/resend_email_verification_mail`, {
+      params: {
+        registered_name
+      }
+    })
+  }
+
   init_data() {
     return this.axios.get(`${this.basic_baseURL}/init_data`)
   }
