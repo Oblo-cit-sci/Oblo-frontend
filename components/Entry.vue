@@ -49,7 +49,7 @@
           Aspect(:aspect="license_aspect" :aspect_loc="aspect_locs[license_aspect.name]" :mode="license_privacy_mode")
         v-col(alignSelf="stretch" :cols="base_cols" :lg="base_cols/2")
           Aspect(:aspect="privacy_aspect" :aspect_loc="aspect_locs[privacy_aspect.name]" :mode="license_privacy_mode")
-      v-row(v-if="logged_in")
+      v-row
         v-col(alignSelf="stretch" :cols="base_cols")
           Aspect(:aspect="entry_roles_aspect" :aspect_loc="aspect_locs[entry_roles_aspect.name]" :extra="{entry_is_private: entry.privacy==='private'}")
       v-divider(v-if="is_first_page" class="wide_divider")
