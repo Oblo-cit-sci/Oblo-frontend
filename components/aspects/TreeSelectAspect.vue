@@ -42,26 +42,8 @@
       }
     },
     created() {
-      // todo move this to a function
       if (this.mode === EDIT) {
-        // build the given_options (all tree available) from what is passed
-        // let passed_tree = this.aspect.items;
-
-        if(typeof this.aspect.items === "string"){
-          this.tree = get_codes_as_tree(this.$store, this.aspect.items)
-        } else {
-          this.tree = this.aspect.items
-        }
-
-        let options = {}
-        if (this.aspect.attr.allow_select_levels) {
-          options.include_levels = this.aspect.attr.allow_select_levels
-        } else {
-          options.include_levels = [this.tree.level_names.length - 1]
-        }
-        // console.log(this.tree, options.include_levels)
-        this.flat_options = flatten_tree_to_options(this.tree, options)
-
+        this.calc_options()
       }
     },
     methods: {
@@ -75,11 +57,35 @@
         if (val) {
           this.update_value(val.value)
         }
+      },
+      calc_options() {
+        // build the given_options (all tree available) from what is passed
+        // let passed_tree = this.aspect.items;
+        if (typeof this.aspect.items === "string") {
+          this.tree = get_codes_as_tree(this.$store, this.aspect.items)
+        } else {
+          this.tree = this.aspect.items
+        }
+        let options = {}
+        if (this.aspect.attr.allow_select_levels) {
+          options.include_levels = this.aspect.attr.allow_select_levels
+        } else {
+          options.include_levels = [this.tree.level_names.length - 1]
+        }
+        // console.log(this.tree, options.include_levels)
+        this.flat_options = flatten_tree_to_options(this.tree, options)
       }
     },
     computed: {
       prependIcon() {
         return this.readOnly ? '' : 'mdi-file-tree'
+      }
+    },
+    watch: {
+      mode(new_mode) {
+        if (new_mode === EDIT && this.$_.isEmpty(this.tree)) {
+          this.calc_options()
+        }
       }
     }
   }
