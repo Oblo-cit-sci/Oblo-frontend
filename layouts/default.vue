@@ -27,7 +27,8 @@
       v-app-bar-nav-icon(v-show="initialized" @click="drawer = !drawer")
       v-toolbar-title.pa-0(v-if="initialized")
         v-list-item.pl-0
-          v-list-item-avatar.header-avatar(@click="goTo" :src="domain_icon" width="55" height="auto" tile)
+          v-list-item-avatar.header-avatar(@click="goTo" width="50" height="auto" tile)
+            v-img(contain :src="domain_icon" )
           v-list-item-content
             v-list-item-title.headline {{domain_title}}
     v-content
@@ -154,11 +155,9 @@
     methods: {
       goTo() {
         let domain = this.$store.getters[DOMAIN]
-        if (this.$route.path !== domain.to) {
           this.$router.push({
-            path: domain.to ? domain.to : '/'
-          })
-        }
+            path: "domain", query: {d: domain.name}
+        })
       },
       action(action_type) {
         if (action_type === "logout") {
