@@ -5,14 +5,14 @@
       :ext_value.sync="query.value"
       mode="edit"
       @update:error="query.error = $event")
-    v-btn(@click='send' color='success' autofocus :disabled="query.error") Search
+    v-btn(@click='send' color='success' autofocus :disabled="query.error") Send email
     v-alert(:value='errorMsg != null' type='error' prominent transition="scroll-y-reverse-transition") {{errorMsg}}
 </template>
 
 <script>
-  import {STR} from "../../lib/consts"
-  import Aspect from "../../components/Aspect"
-  import TriggerSnackbarMixin from "../../components/TriggerSnackbarMixin"
+  import {STR} from "~/lib/consts"
+  import Aspect from "~/components/Aspect"
+  import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
 
   export default {
     name: "init_password_reset",
