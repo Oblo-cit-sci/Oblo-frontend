@@ -22,6 +22,8 @@
   import {password_aspect, password_confirm_aspect} from "../lib/typical_aspects";
   import LoginMixin from "../components/actor/LoginMixin";
 
+  let username_regex = new RegExp('^[a-z][a-z0-9_]*$');
+
   export default {
     name: "register",
     components: {Aspect},
@@ -43,6 +45,7 @@
               extra: {
                 rules: [
                   v => v && v.length >= 4 || 'Username must have at 4 characters',
+                  v => username_regex.test(v) || "Only lowercase characters are allowed"
                 ]
               }
             },
