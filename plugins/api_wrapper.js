@@ -48,7 +48,7 @@ class APIWrapper {
    */
   post_actor__login(username, password) {
     return this.axios.post(`${this.actor_baseURL}/login`, qs.stringify({
-      username,
+      username, // actually both username or email, but the given class on the backend calls it username
       password,
       grant_type: "password",
       swagger_compatible_fields: false

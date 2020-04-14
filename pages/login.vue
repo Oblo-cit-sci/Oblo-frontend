@@ -15,12 +15,12 @@
 </template>
 
 <script>
-  import Aspect from "../components/Aspect";
+  import Aspect from "~/components/Aspect";
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
-  import {STR} from "../lib/consts";
+  import {STR} from "~/lib/consts";
   import PersistentStorageMixin from "../components/PersistentStorageMixin";
   import LoginMixin from "../components/actor/LoginMixin";
-  import {check_clear_cache} from "../lib/client";
+  import {check_clear_cache} from "~/lib/client";
 
   export default {
     name: "Login",
@@ -30,19 +30,13 @@
       return {
         aspects: [{
           type: STR,
-          label: "Username",
-          name: "registered_name",
+          label: "Username or email",
+          name: "user_query",
           attr: {
-            max: 30,
+            max: 90,
             unpacked: true,
-            extra: {
-              rules: [
-                v => v && v.length >= 4 || 'Username must have at 4 characters',
-              ]
-            }
           },
           value: "",
-          error: true
         },
           {
             type: STR,
