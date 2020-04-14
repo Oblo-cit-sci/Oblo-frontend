@@ -12,6 +12,7 @@
       hide-no-data
       hide-selected
       hide-details
+      placeholder="type in order to search for other users"
       item-text="public_name"
       item-value="registered_name"
       prepend-inner-icon="mdi-account-search"
