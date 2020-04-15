@@ -1,7 +1,7 @@
 <template lang="pug">
   v-layout.map.row
     client-only
-      .buttongroup
+      .buttongroup(style="right:0")
         v-btn(dark fab large color="blue" @click="drawer = !drawer")
           v-icon mdi-menu
         v-btn(v-if="!drawer" fab @click="go_home" transition="fade-transition")

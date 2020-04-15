@@ -221,6 +221,9 @@ export default {
     is_review_mode() {
       return this.mode === REVIEW
     },
+    tags() {
+      return this.entry.tags || []
+    },
   },
   beforeMount() {
     this.update_aspect_locs()

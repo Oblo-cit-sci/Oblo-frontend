@@ -16,7 +16,6 @@
         v-col(cols=3)
           v-btn(@click="go_home()")
             v-icon mdi-home
-            span Back
         v-col(cols=7)
           v-select(label="Layers" :items="layer_options" multiple small-chips v-on:change="$emit('layer_select_change', $event)")
       v-row.ma-1(wrap justify-center)

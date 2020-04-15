@@ -170,9 +170,6 @@
         else
           return "fa fa-edit"
       },
-      tags() {
-        return this.entry.tags || []
-      },
       additional_actions() {
         const pw_actions = this.$_.cloneDeep(this.template.rules.preview_actions) || []
         // console.log(this.template.slug, pw_actions)

@@ -11,7 +11,6 @@
         v-col(cols=3)
           v-btn(@click="go_home()")
             v-icon mdi-home
-            span Back
       v-card-text
         v-row.ma-1(wrap justify-center)
           <!-- the v-show prevents reloading every time, when switching between entry and search-->

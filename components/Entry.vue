@@ -16,6 +16,8 @@
         MetaChips(:meta_aspects="meta_aspects_privacy")
       v-row
         EntryActorList.mt-2(:actors="actors")
+      v-row
+        Taglist(v-if="show_tags" :tags="tags" :slide="false")
       v-row(justify="center" v-if="entry_image")
         v-col.col-md-10.col-sm-12(cols=12 alignSelf="center")
           v-img.float-md-right.float-sm-left.entry-display-size(
@@ -95,11 +97,13 @@
   import EntryActorList from "./entry/EntryActorList";
   import {TEMPLATES_TYPE} from "../store/templates";
   import {USER_LOGGED_IN} from "~/store/user"
+  import Taglist from "~/components/Taglist"
 
   export default {
     name: "Entry",
     mixins: [EntryNavMixin, EntryMixin, TriggerSnackbarMixin, PersistentStorageMixin, FullEntryMixin],
     components: {
+      Taglist,
       EntryActorList,
       MetaChips,
       ChangedAspectNotice,
@@ -187,6 +191,9 @@
         //     console.log("del", k)
         // }
         return !this.$_.isEqual(edit_entry, original_entry)
+      },
+      show_tags() {
+        return this.entry.tags && Object.keys(this.entry.tags).length > 0
       },
     }
   }

@@ -152,12 +152,12 @@
       },
       search_location() {
         this.btn_loading_search_location = true
-        location_search(this.$axios, this.search_query, {types: default_place_type}).then(data => {
+        location_search(this.$axios, this.search_query, {types: default_place_type, language: "en"}).then(data => {
           this.btn_loading_search_location = false
           if (data.features.length === 0) {
             this.error_snackbar("No place with that name")
           } else {
-            this.search_results = data.features
+            this.search_results = data.features.filter(res => res.relevance > 0.34)
           }
         }).catch(err => {
           console.log(err)

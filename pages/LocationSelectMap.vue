@@ -3,10 +3,17 @@
     client-only
       .buttongroup
         div
-          v-btn(dark fab bottom right large color="warning" @click="back")
+          v-btn(dark fab bottom right color="warning" @click="back")
             v-icon mdi-arrow-left
-          v-btn(v-if="show_select_confirm" dark fab bottom right large color="green" @click="confirm_select")
+          v-btn(v-if="show_select_confirm" dark fab bottom right color="green" @click="confirm_select")
             v-icon mdi-map-marker-check
+          v-text-field.mt-4(solo small
+          v-model="search_query"
+            hint="press enter or click the search button"
+            append-outer-icon="mdi-magnify"
+            @click:append-outer="search_location"
+            @keydown="search_keypress($event)"
+            :loading="btn_loading_search_location")
         v-snackbar(:value="selected_coordinates" :timeout="0" selected_place right top) {{selected_place_text}}
       MglMap(:style="mapCssStyle"
         :access-token="accessToken"
@@ -19,7 +26,7 @@
 
 <script>
   import {MglMarker, MglPopup} from "vue-mapbox";
-  import {access_token, licci_style_map, rev_geocode} from "../lib/services/mapbox";
+  import {access_token, licci_style_map, location_search, rev_geocode} from "../lib/services/mapbox";
   import {pack_value} from "../lib/aspect";
   import {arr2coords} from "../lib/map_utils";
   import MapNavigationDrawer from "../components/map/MapNavigationDrawer";
@@ -27,7 +34,7 @@
   import {ENTRIES_SET_ENTRY_VALUE} from "../store/entries";
   import {place2str} from "../lib/location";
   import {MAP_RESET_TO_SELECT_ASPECT_LOCATION, MAP_SELECTED_LOCATION} from "../store/map";
-  import {alt_rev_geocode} from "../lib/services/nomination";
+  import {default_place_type} from "~/lib/consts"
 
 
   export default {
@@ -55,6 +62,9 @@
         querying_location: false,
         selected_place: null,
         selected_place_text: null,
+        //
+        search_query: "",
+        btn_loading_search_location: false
       }
     },
     created() {
@@ -85,6 +95,26 @@
       },
       back() {
         this.$router.back()
+      },
+      search_keypress(keyEvent) {
+        // Enter,  this is the most robust among all platforms (desktop, mobile, chrome, ff)
+        if (keyEvent.keyCode === 13) {
+          this.search_location()
+        }
+      },
+      search_location() {
+        this.btn_loading_search_location = true
+        location_search(this.$axios, this.search_query, {types: default_place_type, language: "en"}).then(data => {
+          this.btn_loading_search_location = false
+          if (data.features.length === 0) {
+            this.error_snackbar("No place with that name")
+          } else {
+           this.map.fitBounds(data.features[0].bbox)
+          }
+        }).catch(err => {
+          console.log(err)
+          this.btn_loading_search_location = false
+        })
       },
       confirm_select() {
         const value = pack_value({
