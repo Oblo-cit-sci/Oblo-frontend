@@ -2,13 +2,7 @@
   div
     LargeSelectList
     div.mb-5.mt-5
-    v-expansion-panels(flat)
-      v-expansion-panel
-        v-expansion-panel-header more options
-        v-expansion-panel-content
-          div
-            div Cool
-            div click here
+      SimpleExpansionPanel(title="more options" :content_texts="['cool','not cool']")
 </template>
 
 <script>
@@ -18,12 +12,13 @@
   import SimplePaginate from "../components/SimplePaginate";
   import ActorSearch from "../components/ActorSearch";
   import LargeSelectList from "../components/aspect_utils/LargeSelectList"
+  import SimpleExpansionPanel from "~/components/SimpleExpansionPanel"
 
   const ld = require("lodash")
 
   export default {
     name: "Tests",
-    components: {LargeSelectList, SelectGrid},
+    components: {SimpleExpansionPanel, LargeSelectList, SelectGrid},
     mounted() {
     },
     created() {
