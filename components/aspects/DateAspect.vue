@@ -1,6 +1,6 @@
 <template>
   <div v-if="readOnly" class="mb-2 mt-2">
-    <v-icon readonly  solo flat> mdi-calendar</v-icon>
+    <v-icon readonly solo flat> mdi-calendar</v-icon>
     <span class="ml-2">{{value}}</span>
   </div>
   <div v-else>
@@ -17,6 +17,8 @@
           v-bind:value="value_str"
           outlined
           single-line
+          clearable
+          @input="clear_date"
           :label="aspect.name"
           :hide_details="hide_details"
           prepend-icon="mdi-calendar"
@@ -24,7 +26,15 @@
           v-on="on"
         ></v-text-field>
       </template>
-      <v-date-picker :value="value" :hide_details="hide_details" :show-current="false" @change="update_value($event)" no-title @input="menu = false"></v-date-picker>
+      <v-date-picker
+        :value="value"
+        :hide_details="hide_details"
+        :max="future"
+        :show-current="false"
+        @change="update_value($event)"
+        no-title
+        @input="menu = false">
+      </v-date-picker>
     </v-menu>
   </div>
 
@@ -44,10 +54,18 @@
     },
     computed: {
       value_str() {
-        if(this.value)
-          return this.value.toString().substring(0,10)
+        if (this.value)
+          return this.value.toString().substring(0, 10)
         else
           return ""
+      },
+      future() {
+        return new Date().toISOString()
+      }
+    },
+    methods: {
+      clear_date() {
+        this.update_value(null)
       }
     }
   }

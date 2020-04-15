@@ -21,7 +21,7 @@
       span(v-if="can_edit")
         span(v-if="is_view_mode && can_edit")
           v-btn(@click="back") back
-          v-btn(color="secondary" @click="edit") edit
+          v-btn(color="info" @click="edit") edit
         span(v-else-if="can_edit")
           v-btn(v-if="!is_view_mode" @click="show_cancel") {{cancel_word}}
           v-btn(v-if="is_draft" color="success" @click="save") {{save_word}}
