@@ -33,7 +33,7 @@
               :extra="{clearable:false}"
               mode="edit")
       v-btn(v-if="password_edit" @click="password_edit=false") Cancel
-      v-btn(v-if="password_edit" color="success" @click="change_password") Save password
+      v-btn(v-if="password_edit" color="success" @click="change_password" :disabled="any_password_invalid") Save password
       v-divider.wide_divider
     div(v-if="!visitor")
       v-btn(v-if="!edit_mode" color="info" @click="setEdit") Edit profile
@@ -85,7 +85,11 @@
       Taglist
     },
     mixins: [PersistentStorageMixin, TriggerSnackbarMixin],
-    data: function () {
+    data() {
+      const new_pwd = this.$_.cloneDeep(password_aspect())
+      new_pwd.label = "New password"
+      const new_pwd_confirm = this.$_.cloneDeep(password_confirm_aspect())
+      new_pwd_confirm.label = "Repeat new password"
       return {
         profile_pic_upload_loading: false,
         profile_version_ts: Math.floor(new Date().getTime() / 1000),
@@ -168,6 +172,22 @@
               description: "Choose a default license for your entries"
             })
         ],
+        password_aspects: {
+          actual_password: Object.assign(this.$_.cloneDeep(password_aspect()), {
+            name: "actual_password",
+            label: "Current password"
+          }),
+          password: new_pwd,
+          password_confirm: this.$_.merge(new_pwd_confirm, {
+            attr: {
+              extra: {
+                rules: [
+                  v => v === this.password_aspects.password.value || "Passwords do not match"
+                ]
+              }
+            }
+          })
+        },
         waiting: false,
       }
     },
@@ -225,11 +245,11 @@
         this.$api.post_actor__change_password(new_password).then(({data}) => {
           this.password_edit = false;
           this.ok_snackbar("Password updated")
+          this.goto_top()
         }).catch((err) => {
           console.log("err", err)
-          this.error_snackbar("Something went wrong")
-        }).finally(() => {
-          this.goto_top()
+          const msg = this.$_.get(err.response, "data.error.msg", "Something went wrong")
+          this.error_snackbar(msg)
         })
       },
       profile_pic_added(image) {
@@ -261,28 +281,9 @@
       profile_pic() {
         return this.$api.url_actor__$registered_name__profile_pic(this.user_data.registered_name) + "?q=" + this.profile_version_ts
       },
-      password_aspects() {
-        const new_pwd = this.$_.cloneDeep(password_aspect())
-        new_pwd.label = "New password"
-        const new_pwd_confirm = this.$_.cloneDeep(password_confirm_aspect())
-        new_pwd_confirm.label = "Repeat new password"
-        return {
-          actual_password: Object.assign(this.$_.cloneDeep(password_aspect()), {
-            name: "actual_password",
-            label: "Current password"
-          }),
-          password: new_pwd,
-          password_confirm: this.$_.merge(new_pwd_confirm, {
-            attr: {
-              extra: {
-                rules: [
-                  v => v === this.password_aspects.password.value || "Passwords do not match"
-                ]
-              }
-            }
-          })
-        }
-      },
+      any_password_invalid() {
+        return this.$_.some(this.password_aspects, (a) => a.hasOwnProperty("error") && a.error)
+      }
     }
   }
 </script>

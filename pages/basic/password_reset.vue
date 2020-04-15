@@ -13,20 +13,24 @@
 </template>
 
 <script>
-  import {password_aspect, password_confirm_aspect} from "../../lib/typical_aspects"
-  import {extract_unpacked_values} from "../../lib/aspect"
-  import Aspect from "../../components/Aspect"
-  import TriggerSnackbarMixin from "../../components/TriggerSnackbarMixin"
+  import {password_aspect, password_confirm_aspect} from "~/lib/typical_aspects"
+  import {extract_unpacked_values} from "~/lib/aspect"
+  import Aspect from "~/components/Aspect"
+  import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
 
   export default {
     name: "password_reset",
     components: {Aspect},
     mixins: [TriggerSnackbarMixin],
     data() {
+      const new_pwd = this.$_.cloneDeep(password_aspect())
+      new_pwd.label = "New password"
+      const new_pwd_confirm = this.$_.cloneDeep(password_confirm_aspect())
+      new_pwd_confirm.label = "Repeat new password"
       return {
         password_aspects: {
-          password: this.$_.cloneDeep(password_aspect()),
-          password_confirm: this.$_.merge(this.$_.cloneDeep(password_confirm_aspect()), {
+          password: new_pwd,
+          password_confirm: this.$_.merge(new_pwd_confirm, {
             attr: {
               extra: {
                 rules: [
@@ -34,8 +38,8 @@
                 ]
               }
             }
-          }),
-        },
+          })
+        }
       }
     },
     computed: {
