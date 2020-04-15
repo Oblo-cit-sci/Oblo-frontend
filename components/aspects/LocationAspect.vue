@@ -20,9 +20,9 @@
             div From place search
             v-text-field(
               v-model="search_query"
+              hint="press enter or click the search button"
               append-outer-icon="mdi-magnify"
               @click:append-outer="search_location"
-              hide-details
               @keydown="search_keypress($event)"
               :loading="btn_loading_search_location")
             SingleSelect(
