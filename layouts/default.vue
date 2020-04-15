@@ -62,7 +62,13 @@
   import PersistentStorageMixin from "~/components/PersistentStorageMixin";
   import {DOMAIN, LOGOUT} from "~/store";
   import {USER_LOGGED_IN, USER_LOGOUT} from "~/store/user";
-  import {APP_CONNECTED, APP_CONNECTING, APP_DB_LOADED, APP_INITIALIZED} from "~/store/app"
+  import {
+    APP_CONNECTED,
+    APP_CONNECTING,
+    APP_DB_LOADED,
+    APP_INITIALIZED,
+    APP_PRIVACY_SHOWN,
+  } from "~/store/app"
 
 
   let require_login = ["Profile", "Logout"]
@@ -84,7 +90,8 @@
         clipped: false,
         miniVariant: false,
         title: this.$store.getters[DOMAIN] ? this.$store.state.domain.title : HOME,
-        privacy_sheet_open: true
+        privacy_shown: false,
+        privacy_sheet_open: false
       }
     },
     created() {
@@ -92,6 +99,7 @@
         reload_storage(this.$store, this.$localForage)
       if (!this.$api.is_initialized()) {
         this.$api.init(this.$axios) // , "https://opentek.eu"
+        this.privacy_sheet_open = true
       }
     },
     computed: {
@@ -100,7 +108,7 @@
         db_loaded: APP_DB_LOADED,
         logged_in: USER_LOGGED_IN,
         connected: APP_CONNECTED,
-        initialized: APP_INITIALIZED
+        initialized: APP_INITIALIZED,
       }),
       groups() {
         const home = all_pages_n_actions[0]

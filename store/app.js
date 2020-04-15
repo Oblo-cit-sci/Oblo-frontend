@@ -3,7 +3,6 @@ export const APP_INITIALIZED = "app/initialized"
 export const APP_CONNECTING = "app/connecting"
 export const APP_CONNECTED = "app/connected"
 
-
 export const state = () => ({
     db_loaded: false,
     initialized: false,
@@ -24,7 +23,7 @@ export const mutations = {
   },
   connected(state, connected) {
     state.connected = connected
-  },
+  }
 }
 
 export const getters = {
@@ -39,7 +38,7 @@ export const getters = {
   },
   connected(state) {
     return state.connected
-  },
+  }
 }
 
 export const actions = {

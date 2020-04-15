@@ -16,7 +16,7 @@
           v-row.pl-3.mt-3
               ActorChip(:actor="creator")
           v-row.pl-3
-            Taglist(v-if="show_tags" :tags="tags")
+            Taglist(v-if="show_tags" :tags="tags" :slide="true")
           v-row.pl-3
             .orange--text.mt-2(v-if="outdated")
               v-icon(color="orange") mdi-alert-outline
