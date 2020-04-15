@@ -11,7 +11,7 @@
       chips
       hide-no-data
       hide-selected
-      hide-details
+      :error-messages="errorMsg"
       placeholder="type in order to search for other users"
       item-text="public_name"
       item-value="registered_name"
@@ -56,6 +56,7 @@
         actors: [],
         isLoading: false,
         search: "",
+        errorMsg: null
       }
     },
     created() {
@@ -93,6 +94,7 @@
     },
     watch: {
       search(val) {
+        this.errorMsg = null
         if (!val) {
           return
         }
@@ -101,13 +103,16 @@
             // todo remove first one
           }
         }
-
         if (this.isLoading || val.length < 4) return
         this.isLoading = true
 
         // Lazily load input items
         this.$api.actor_search({name: val}).then(({data}) => {
+
           this.actors = data.data.filter(actor => !this.exclude_reg_names.includes(actor.registered_name))
+          if(this.actors.length === 0) {
+            this.errorMsg = "No user found"
+          }
         }).catch(err => {
           console.log(err)
         }).finally(() => (this.isLoading = false))

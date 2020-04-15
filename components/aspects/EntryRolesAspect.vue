@@ -1,10 +1,11 @@
 <template lang="pug">
   div
-    div(v-for="role in available_roles" :key="role")
-      div.text-capitalize {{role}}
+    div(v-for="role in available_roles" :key="role.name")
+      h4 {{role.label}}
+      div {{role.description}}
       ActorSearch(
         multiple
-        v-model="grouped_roles[role]"
+        v-model="grouped_roles[role.name]"
         @input="role_set(role, $event)"
         :exclude_reg_names="all_actors_reg_names")
 </template>
@@ -48,7 +49,7 @@
         return this.value.map(ra => ra.actor.registered_name)
       },
       available_roles() {
-        const roles = ["collaborator"]
+        const roles = [{name:"collaborator", label:"Collaborators", description: "Collaborators can edit this entry as you can"}]
         if (this.entry_is_private) {
           roles.push("shared")
         }

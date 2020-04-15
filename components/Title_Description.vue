@@ -56,7 +56,7 @@
         },
         computed: {
             multiple_descriptions() {
-                return this.description.constructor === Array
+                return (this.description || "").constructor === Array
             },
             readOnly() {
                 return this.mode === VIEW
