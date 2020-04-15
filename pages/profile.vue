@@ -88,7 +88,7 @@
     data: function () {
       return {
         profile_pic_upload_loading: false,
-        profile_version_ts: Math.floor(new Date().getTime()/1000),
+        profile_version_ts: Math.floor(new Date().getTime() / 1000),
         grab_map_selection: false, // when coming back from the map
         edit_mode: false,
         password_edit: false,
@@ -108,7 +108,7 @@
           {
             name: "description",
             label: "Description",
-            description: "",
+            description: "Write something about yourself and about your background",
             type: "str",
             attr: {
               max: 980,
@@ -119,7 +119,7 @@
           {
             name: "location",
             label: "Location",
-            description: "main location",
+            description: "Where are you based?",
             type: "location",
             attr: {
               max: 80,
@@ -156,17 +156,18 @@
             value: ""
           },
           Object.assign(privacy_aspect(),
-            {name: "default_privacy", label:"Default privacy", description: "Choose a default privacy for all your entries"}),
+            {
+              name: "default_privacy",
+              label: "Default privacy",
+              description: "Choose a default privacy for all your entries"
+            }),
           Object.assign(license_aspect(this.$store, ["cc_licenses"]),
-            {name: "default_license", label:"Default License", description: "Choose a default license for your entries"})
+            {
+              name: "default_license",
+              label: "Default License",
+              description: "Choose a default license for your entries"
+            })
         ],
-        password_aspects: {
-          actual_password: Object.assign(this.$_.cloneDeep(password_aspect()),{name:"actual_password", label: "Actual password"}),
-          password: this.$_.cloneDeep(password_aspect()),
-          password_confirm: this.$_.merge(this.$_.cloneDeep(password_confirm_aspect()), {attr: {extra:{rules: [
-                  v => v === this.password_aspects.password.value || "Passwords do not match"
-                ]}}}),
-        },
         waiting: false,
       }
     },
@@ -176,7 +177,7 @@
     // todo this could help us to get the map location, but not sure where to get it in the lifecycle
     beforeRouteEnter(to, from, next) {
       next(vm => {
-        if(from.fullPath === "/map?mode=m_mode_point") {
+        if (from.fullPath === "/map?mode=m_mode_point") {
           console.log("MAP!")
           vm.grab_map_selection = true
         }
@@ -187,7 +188,7 @@
         setTimeout(() => goTo("body", {
           duration: 300,
           easing: "easeOutCubic"
-        }),50)
+        }), 50)
       },
       reset_edit_values() {
         const user_data = this.$_.cloneDeep(this.user_data)
@@ -239,7 +240,7 @@
           this.profile_pic_upload_loading = true
           this.$api.post_profile_pic(formData)
             .then(() => {
-              this.profile_version_ts= Math.floor(new Date().getTime()/1000)
+              this.profile_version_ts = Math.floor(new Date().getTime() / 1000)
             })
             .catch(function () {
               this.ok_snackbar("Something went wrong")
@@ -259,7 +260,29 @@
       },
       profile_pic() {
         return this.$api.url_actor__$registered_name__profile_pic(this.user_data.registered_name) + "?q=" + this.profile_version_ts
-      }
+      },
+      password_aspects() {
+        const new_pwd = this.$_.cloneDeep(password_aspect())
+        new_pwd.label = "New password"
+        const new_pwd_confirm = this.$_.cloneDeep(password_confirm_aspect())
+        new_pwd_confirm.label = "Repeat new password"
+        return {
+          actual_password: Object.assign(this.$_.cloneDeep(password_aspect()), {
+            name: "actual_password",
+            label: "Current password"
+          }),
+          password: new_pwd,
+          password_confirm: this.$_.merge(new_pwd_confirm, {
+            attr: {
+              extra: {
+                rules: [
+                  v => v === this.password_aspects.password.value || "Passwords do not match"
+                ]
+              }
+            }
+          })
+        }
+      },
     }
   }
 </script>

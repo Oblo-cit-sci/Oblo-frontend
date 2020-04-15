@@ -111,9 +111,8 @@
             this.errorMsg = data.error.msg
           }
         }).catch((err) => {
-          console.log("err", err)
-          this.errorMsg = err.response.data.error.msg
-          setTimeout(() => this.errorMsg = null, 2000)
+          this.errorMsg = this.$_.get(err.response, "data.error.msg", "Something went wrong")
+          setTimeout(() => this.errorMsg = null, 12000)
         })
       }
     }

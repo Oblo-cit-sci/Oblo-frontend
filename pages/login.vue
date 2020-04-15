@@ -87,7 +87,7 @@
           console.log("err", err.response)
           const response = err.response
           this.errorMsg = response.data.error.msg
-          if(this.$_.get(response, "data.error.data.error_type", 0) === 1) {
+          if (this.$_.get(response, "data.error.data.error_type", 0) === 1) {
             this.add_verification_resend_link = true
             this.registered_name = response.data.error.data.registered_name
           }
@@ -98,11 +98,10 @@
         this.$api.actor__resend_email_verification_mail(this.registered_name).then(({data}) => {
           this.ok_snackbar(data.data)
           this.add_verification_resend_link = false
+          this.errorMsg = null
         }).catch(err => {
-          const response = err.repsonse
-          if(this.$_.get(response, "data.error.msg")) {
-            this.error_snackbar(response.data.error.msg)
-          }
+          const msg = this.$_.get(err.response, "data.error.msg", "Something went wrong")
+          this.error_snackbar(msg)
         })
       }
     }
