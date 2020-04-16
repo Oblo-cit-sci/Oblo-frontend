@@ -44,7 +44,7 @@
       send() {
         this.$api.actor__init_password_reset(this.query.value.toLowerCase()).then(({data}) => {
           this.ok_snackbar(data.data.msg)
-          this.$router.push("reset_mail_sent")
+          this.$router.push("/basic/reset_mail_sent")
         }).catch(err => {
           this.errorMsg = err.response.data.error.msg
           setTimeout(() => this.errorMsg = null, 2000)
