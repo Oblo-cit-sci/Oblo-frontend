@@ -1,6 +1,6 @@
 <template lang="pug">
   div(v-if="!readOnly")
-    v-autocomplete(
+    v-autocomplete(v-if="direct_select"
       outlined
       single-line
       :disabled="disabled"
@@ -12,11 +12,17 @@
       :aspect_loc="aspect_loc"
       :prependIcon="prependIcon"
       @click:prepend="openDialog()")
+    div(v-if="!direct_select")
+      v-btn(:color="button_color" @click="openDialog")
+        v-icon {{prependIcon}}
+        span {{button_text}}
+      span {{value_text}}
     v-dialog(width="800" v-model="dialogOpen")
       TreleafPicker(
         :tree="tree"
         :attr="aspect.attr"
-        v-on:selected="selected($event)"
+        :data_source="data_source"
+        @selected="selected($event)"
         :disabled="disabled"
         :keep_selection="true")
   div(v-else)
@@ -26,14 +32,15 @@
 <script>
   import TreleafPicker from "../input/TreleafPicker";
   import TextShort from "./TextShortAspect";
-  import {flatten_tree_to_options, get_codes_as_tree} from "../../lib/options";
-  import {EDIT} from "../../lib/consts";
+  import {flatten_tree_to_options, get_codes_as_tree} from "~/lib/options";
+  import {EDIT} from "~/lib/consts";
   import AspectComponentMixin from "./AspectComponentMixin";
+  import GeneralSelectMixin from "~/components/aspect_utils/GeneralSelectMixin"
 
   export default {
     name: "TreeSelectAspect",
     components: {TextShort, TreleafPicker},
-    mixins: [AspectComponentMixin],
+    mixins: [AspectComponentMixin, GeneralSelectMixin],
     data() {
       return {
         tree: {},
@@ -79,6 +86,36 @@
     computed: {
       prependIcon() {
         return this.readOnly ? '' : 'mdi-file-tree'
+      },
+      direct_select() {
+        console.log(this.aspect.attr.direct_select)
+        if (!this.aspect.attr.hasOwnProperty("direct_select"))
+          return true
+        else {
+          return this.aspect.attr.direct_select
+        }
+      },
+      button_color() {
+        if(this.value) {
+          return null
+        } else {
+          return "success"
+        }
+      },
+      button_text() {
+        if (this.value)
+          return ""
+        else
+          return "click to select"
+      },
+      value_text() {
+        if (this.value) {
+          if(this.value.constructor === Array) {
+            return this.value.map(v => v.text).join(" \u21D2 ")
+          } else {
+            return this.value
+          }
+        }
       }
     },
     watch: {

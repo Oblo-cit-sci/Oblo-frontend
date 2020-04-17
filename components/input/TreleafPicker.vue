@@ -1,30 +1,30 @@
 <template lang="pug">
-  .treeselect
-    div
-      v-btn(icon small @click="$emit('selected', null)")
-        v-icon mdi-close
-    v-list(v-if="has_selection")
-      div.ml-3 Current selection
-      v-list-item(v-for="(node, index) of selection", :key="index")
-        v-list-item-content
-          v-list-item-title {{levelname(index)}}: {{node.name}}
-        v-list-item-action
-          v-btn(icon @click="remove(index)")
-            v-icon mdi-close-circle-outline
-    v-divider.mb-1(v-if="has_both()")
-    Title_Description.ml-3(v-if="has_levels" :title="act_levelname" :description="act_level_description" mode="edit")
-    div(v-if="has_options")
-      SingleSelect.pb-1(v-if="edit_mode_list" :options="act_options" v-on:selection="select($event)" :select_sync="false" :highlight="false")
-      LargeSelectList(v-if="edit_mode_large_list" :options="act_options" v-on:selection="select($event)" :select_sync="false" :highlight="false")
-      SelectGrid(v-if="edit_mode_matrix" :options="act_options" v-on:selection="select($event)")
-      Paginated_Select(v-if="edit_mode_paginated" :options="act_options" :edit_mode="level_edit_mode(act_level + 1)" v-on:selection="select($event)")
-    .ml-3(v-if="last_description")
-      div Description:
-      div {{last_description}}
-    v-btn(v-if="done_available" @click="done" color="success") Done
-    div(v-if="allows_extra")
-      TextShort(v-bind:aspect="extra_value_aspect" :edit="true" v-bind:value.sync="extra_value")
-      v-btn(:disabled="extra_value === ''" @click="done_extra" color="warning") Use {{extra_value_name}}
+    .treeselect
+        div
+            v-btn(icon small @click="$emit('selected', null)")
+                v-icon mdi-close
+        v-list(v-if="has_selection")
+            div.ml-3 Current selection
+            v-list-item(v-for="(node, index) of selection", :key="index")
+                v-list-item-content
+                    v-list-item-title {{levelname(index)}}: {{node.name}}
+                v-list-item-action
+                    v-btn(icon @click="remove(index)")
+                        v-icon mdi-close-circle-outline
+        v-divider.mb-1(v-if="has_both()")
+        Title_Description.ml-3(v-if="has_levels" :title="act_levelname" :description="act_level_description" mode="edit")
+        div(v-if="has_options")
+            SingleSelect.pb-1(v-if="edit_mode_list" :options="act_options" v-on:selection="select($event)" :select_sync="false" :highlight="false")
+            LargeSelectList(v-if="edit_mode_large_list" :options="act_options" v-on:selection="select($event)" :select_sync="false" :highlight="false" :data_source="data_source")
+            SelectGrid(v-if="edit_mode_matrix" :options="act_options" v-on:selection="select($event)")
+            Paginated_Select(v-if="edit_mode_paginated" :options="act_options" :edit_mode="level_edit_mode(act_level + 1)" v-on:selection="select($event)")
+        .ml-3(v-if="last_description")
+            div Description:
+            div {{last_description}}
+        v-btn(v-if="done_available" @click="done" color="success") Done
+        div(v-if="allows_extra")
+            TextShort(v-bind:aspect="extra_value_aspect" :edit="true" v-bind:value.sync="extra_value")
+            v-btn(:disabled="extra_value === ''" @click="done_extra" color="warning") Use {{extra_value_name}}
 </template>
 
 <script>
@@ -40,6 +40,7 @@
   import Paginated_Select from "../aspect_utils/Paginated_Select";
   import Title_Description from "../Title_Description"
   import LargeSelectList from "~/components/aspect_utils/LargeSelectList"
+  import {pack_value} from "~/lib/aspect"
 
 
   export default {
@@ -65,7 +66,9 @@
         default: () => {
           return {}
         }
-      } // OuterRef is for the LICCI aspect, cuz JS messes up loops and events (always takes the
+      }, // OuterRef is for the LICCI aspect, cuz JS messes up loops and events (always takes the
+      // this contains the slug of the code entry, in order to calculate the icon routes
+      data_source: String
     },
     data: function () {
       return {
@@ -179,15 +182,21 @@
         return this.selection.length > 0 && this.act_options.length > 0
       },
       done() {
-        this.$emit("selected", this.$_.last(this.selection))
+        if (this.$_.get(this.attr, "store_all_levels", false)) {
+          this.$emit("selected", pack_value(this.selection.map(e => {
+            return {text: e.text, value: e.value}
+          })))
+        } else {
+          this.$emit("selected", this.$_.last(this.selection))
+        }
         if (!this.keep_selection)
           this.selection = [];
       },
       done_extra() {
         this.$emit("selected", {
-            name: this.extra_value,
-            id: 0 // TODO, is that ok?
-          }
+              name: this.extra_value,
+              id: 0 // TODO, is that ok?
+            }
         )
         this.extra_value = ""
         this.selection = []
@@ -201,12 +210,12 @@
 
 <style scoped>
 
-  .treeselect {
-    text-transform: none;
-    background: white;
-  }
+    .treeselect {
+        text-transform: none;
+        background: white;
+    }
 
-  #subheader {
-    background: white;
-  }
+    #subheader {
+        background: white;
+    }
 </style>

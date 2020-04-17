@@ -192,6 +192,10 @@ class APIWrapper {
     return `${this.entry_baseURL}/${uuid}/attachment/${file_uuid}`
   }
 
+  url_entry__$slug__entry_file__$file_name(slug, file_name) {
+    return `${this.entry_baseURL}/${slug}/entry_file/${file_name}`
+  }
+
   delete_entry__$uuid__attachment__$file_uuid(uuid, file_uuid) {
     return this.axios.delete(`${this.entry_baseURL}/${uuid}/attachment/${file_uuid}`)
   }
