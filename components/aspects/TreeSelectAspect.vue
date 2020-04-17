@@ -17,7 +17,7 @@
         v-icon {{prependIcon}}
         span {{button_text}}
       span {{value_text}}
-    v-dialog(width="800" v-model="dialogOpen")
+    v-dialog(width="800" v-model="dialogOpen" height="100%")
       TreleafPicker(
         :tree="tree"
         :attr="aspect.attr"

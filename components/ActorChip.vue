@@ -6,7 +6,7 @@
 </template>
 
 <script>
-  import {USER_GET_USER_DATA} from "../store"
+  import {USER_GET_USER_DATA} from "~/store"
   import {VISITOR} from "~/lib/consts"
 
   export default {

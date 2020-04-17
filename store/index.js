@@ -1,5 +1,5 @@
-import {NO_DOMAIN, TITLE, VISITOR} from "../lib/consts";
-import {object_list2options} from "../lib/options";
+import {NO_DOMAIN, TITLE, VISITOR} from "~/lib/consts";
+import {object_list2options} from "~/lib/options";
 import {TEMPLATES_ADD_TEMPLATES, TEMPLATES_TYPENAME} from "~/store/templates";
 import {USER_LOGOUT} from "~/store/user"
 import {SEARCH_CLEAR} from "~/store/search"
