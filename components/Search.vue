@@ -184,7 +184,6 @@
         for (let filter of this.fixed_filters) {
           configuration.required.push(filter)
         }
-
         if(before_last) {
           const ts = this.$store.getters[SEARCH_GET_SEARCHTIME]
           configuration.required.push({name: "before_ts", ts: ts})

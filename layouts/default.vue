@@ -37,7 +37,7 @@
     GlobalSnackbar
     v-bottom-sheet(hide-overlay :value="privacy_sheet_open")
       div(style="background: white;height: 100%; width: 100%")
-        div.pt-5.pl-5.pb-7
+        div.pt-5.pl-5.pb-2
           h3.mb-3 Your Privacy
             v-container(style="margin: 0")
               v-row

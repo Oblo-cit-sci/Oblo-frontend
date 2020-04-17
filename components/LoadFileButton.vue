@@ -11,7 +11,6 @@
 
   const accepted_filetypes = ["json","image"]
 
-
   export default {
     name: "LoadFileButton",
     props: {
@@ -51,7 +50,7 @@
           case "json" :
             return "application/json"
           case "image":
-            return "image/jpg"
+            return [".jpg", ".png", ".gif", ".jpeg"]//"image/jpg"
           default:
             return ""
         }

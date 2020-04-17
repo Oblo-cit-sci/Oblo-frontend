@@ -2,7 +2,7 @@
   div
     v-row
       v-col(v-for="(img_data, index) in images" :key="index" :cols="num_cols")
-        v-img.a_image(:src="get_image_data(index)" @click="open_image(index)" max-height="300" contain)
+        v-img.a_image(:src="get_image_data(index)" @click="open_image(index)" max-height="300" contain @error="image_error($event, index)")
           v-badge(v-if="cover_image_index===index" color="yellow" inline)
     LoadFileButton(v-if="is_edit_mode" label="Add image" filetype="image" @fileload="add_image($event)")
     v-dialog(v-model="image_open" overlay-opacity="100" fullscreen)
@@ -47,6 +47,7 @@
   import {loc_append, remove_entry_loc} from "../../lib/aspect";
   import {FILES_ADD_FILE, FILES_GET_FILE} from "../../store/files";
   import {ENTRIES_GET_ENTRY, ENTRIES_UPDATE_IMAGE} from "../../store/entries";
+  import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
 
   const uuidv4 = require('uuid/v4')
 
@@ -58,7 +59,7 @@
       ImageCard,
       LoadFileButton
     },
-    mixins: [AspectComponentMixin, AttachedFilesMixin],
+    mixins: [AspectComponentMixin, AttachedFilesMixin, TriggerSnackbarMixin],
     data() {
       return {
         selected_image_index: -1,
@@ -112,6 +113,12 @@
           license: "No license",
           meta: image_result.meta
         }]))
+      },
+      image_error(error, index) {
+        console.log("err", error)
+        // console.log("error", index)
+        this.delete_image(index)
+        this.error_snackbar("Image could not be loaded")
       },
       open_image(index) {
         this.selected_image_index = index

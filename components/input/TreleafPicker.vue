@@ -5,7 +5,7 @@
         v-icon mdi-close
     v-list(v-if="has_selection")
       div.ml-3 Current selection
-      v-list-item(v-for="(node, index) of selection", :key="node.title")
+      v-list-item(v-for="(node, index) of selection", :key="index")
         v-list-item-content
           v-list-item-title {{levelname(index)}}: {{node.name}}
         v-list-item-action
@@ -15,6 +15,7 @@
     Title_Description.ml-3(v-if="has_levels" :title="act_levelname" :description="act_level_description" mode="edit")
     div(v-if="has_options")
       SingleSelect.pb-1(v-if="edit_mode_list" :options="act_options" v-on:selection="select($event)" :select_sync="false" :highlight="false")
+      LargeSelectList(v-if="edit_mode_large_list" :options="act_options" v-on:selection="select($event)" :select_sync="false" :highlight="false")
       SelectGrid(v-if="edit_mode_matrix" :options="act_options" v-on:selection="select($event)")
       Paginated_Select(v-if="edit_mode_paginated" :options="act_options" :edit_mode="level_edit_mode(act_level + 1)" v-on:selection="select($event)")
     .ml-3(v-if="last_description")
@@ -34,15 +35,16 @@
 
   import SingleSelect from "./SingleSelect";
   import TextShort from "../aspects/TextShortAspect";
-  import {object_list2options} from "../../lib/options";
+  import {object_list2options} from "~/lib/options";
   import SelectGrid from "../aspect_utils/SelectGrid";
   import Paginated_Select from "../aspect_utils/Paginated_Select";
   import Title_Description from "../Title_Description"
+  import LargeSelectList from "~/components/aspect_utils/LargeSelectList"
 
 
   export default {
     name: "TreleafPicker",
-    components: {Title_Description, Paginated_Select, SelectGrid, TextShort, SingleSelect},
+    components: {LargeSelectList, Title_Description, Paginated_Select, SelectGrid, TextShort, SingleSelect},
     props: {
       tree: {
         type: Object
@@ -139,6 +141,9 @@
       },
       edit_mode_list() {
         return this.act_edit_mode === "list"
+      },
+      edit_mode_large_list() {
+        return this.act_edit_mode === "large_list"
       },
       edit_mode_matrix() {
         return this.act_edit_mode === "matrix"

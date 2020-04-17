@@ -1,35 +1,27 @@
 <template lang="pug">
-  div
-    v-item-group(v-model="selected")
-      v-item.select_item(v-for="a in options" :key="a.name" v-slot:default="{ toggle }")
-        v-card(@click="toggle" outlined)
-          v-img.card_img(src="https://cdn.vuetifyjs.com/images/cards/store.jpg")
-          v-card-title {{a.name}}
-          v-card-text.card_text {{a.description}}
-    div {{selected || "nothing selected" }}
+  v-item-group.pb-2(v-model="selected")
+    v-item.p-2.ml-1.mr-1.select_item(v-for="a in options" :key="a.name" v-slot:default="{ toggle }")
+      v-card(@click="toggle" outlined)
+        v-img.card_img(src="https://cdn.vuetifyjs.com/images/cards/store.jpg")
+        v-card-title {{a.name}}
+        v-card-text.card_text {{a.description}}
 </template>
 
 <script>
   export default {
     name: "LargeSelectList",
+    props: {
+      options: Array, // of objects: text, value, icon (url)
+    },
     data() {
       return {
         selected: null,
-        options: [
-          {
-            name: "adsadkldklaskldklklf daslkldaskld djsakjdkjskdjkjdas dasjkdjksjad ",
-            description: "kjdkasjdkjakdjakdjksadkasdjksakjdkasjdkjakdjakdjksadkasdjksakjdkasjdkjakdjakdjksadkasdjksa" +
-              "kjdkasjdkjakdjakdjksadkasdjksa"
-          },
-          {
-            name: "b",
-            description: "kjdkasjdkjakdjakdjksadkasdjksa"
-          },
-          {
-            name: "c",
-            description: "kjdkasjdkjakdjakdjksadkasdjksa"
-          }
-        ]
+      }
+    },
+    watch: {
+      selected(value) {
+        console.log("select", value)
+        this.$emit("selection", this.options[value])
       }
     }
   }
@@ -38,8 +30,8 @@
 <style scoped>
 
   .select_item {
-    width: 400px;
-    margin: 3px;
+    /*width: 98%;*/
+    margin-bottom: 4px;
   }
 
   .card_img {
