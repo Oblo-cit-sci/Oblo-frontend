@@ -8,6 +8,7 @@
           single-line
           :hint="search_hint"
           append-outer-icon="mdi-magnify"
+          @keydown="search_keypress($event)"
           @click:append-outer="getEntries"
           clearable
           :loading="searching ? 'success' : false")
@@ -37,9 +38,13 @@
   import {
     SEARCH_CLEAR,
     SEARCH_GET_ENTRIES,
-    SEARCH_GET_PATH, SEARCH_GET_SEARCH_COUNT, SEARCH_GET_SEARCHING, SEARCH_GET_SEARCHTIME,
+    SEARCH_GET_PATH,
+    SEARCH_GET_SEARCH_COUNT,
+    SEARCH_GET_SEARCHING,
+    SEARCH_GET_SEARCHTIME,
     SEARCH_RECEIVED_ENTRIES,
-    SEARCH_SET_PATH, SEARCH_SET_SEARCHING
+    SEARCH_SET_PATH,
+    SEARCH_SET_SEARCHING
   } from "../store/search";
   import PersistentStorageMixin from "./PersistentStorageMixin";
   import {ENTRIES_DOMAIN_DRAFTS_UUIDS} from "../store/entries";
@@ -92,23 +97,25 @@
       // console.log(this.init_clear, this.init_full, this.searching, this.entries().length)
       let start_search = false
       const last_path = this.$store.getters[SEARCH_GET_PATH]
-      if(last_path !== this.$route.path) {
-        this.prepend_search= true
+      if (this.$route.query.search) {
+        console.log("ST", this.$route.query.search)
+        this.keyword = this.$route.query.search
+      }
+      if (last_path !== this.$route.path) {
+        this.prepend_search = true
         this.clear()
         this.$store.commit(SEARCH_SET_PATH, this.$route.path)
         start_search = true
         this.getEntries()
       } else {
-        this.prepend_search= true
+        this.prepend_search = true
         this.getEntries(true)
       }
-
       if (this.init_clear) {
         this.clear()
         start_search = true
       }
-
-      if(start_search) {
+      if (start_search) {
         this.getEntries()
       }
     },
@@ -121,7 +128,7 @@
           // could later be replaced by, last search or all local in that domain (like it is now)
           this.$router.push(route_change_query(this.$route))
           this.getEntries()
-        } else if (kw.length >= this.kw_char_thresh) {
+        } else if (kw.length >= this.kw_char_thresh && kw.slice(-1) === " ") {
           this.$router.push(route_change_query(this.$route, {"search": kw}))
           this.getEntries()
         }
@@ -131,10 +138,14 @@
       },
     },
     computed: {
-      ...mapGetters({entries: SEARCH_GET_ENTRIES, get_searching: SEARCH_GET_SEARCHING, total_count: SEARCH_GET_SEARCH_COUNT}),
+      ...mapGetters({
+        entries: SEARCH_GET_ENTRIES,
+        get_searching: SEARCH_GET_SEARCHING,
+        total_count: SEARCH_GET_SEARCH_COUNT
+      }),
       searching() {
         const is_searching = this.get_searching()
-        if(is_searching === false) {
+        if (is_searching === false) {
           this.$emit("received_search_results", this.entries())
           this.prepend_search = false
         }
@@ -147,7 +158,7 @@
       },
       filtered_entries() {
         let result_entries = this.entries() // must be a call
-        if(this.mixin_domain_drafts) {
+        if (this.mixin_domain_drafts) {
           const drafts = this.$store.getters[ENTRIES_DOMAIN_DRAFTS_UUIDS](this.mixin_domain_drafts).reverse()
           result_entries = drafts.concat(result_entries)
         }
@@ -161,7 +172,13 @@
       }
     },
     methods: {
-      getEntries(before_last= false) {
+      search_keypress(keyEvent) {
+        if (keyEvent.keyCode === 13) {
+          this.$router.push(route_change_query(this.$route))
+          this.getEntries()
+        }
+      },
+      getEntries(before_last = false) {
         let config = this.searchConfiguration(before_last)
         this.$store.commit(SEARCH_SET_SEARCHING, true)
         // const prepend = this.entries().length > 0
@@ -184,7 +201,7 @@
         for (let filter of this.fixed_filters) {
           configuration.required.push(filter)
         }
-        if(before_last) {
+        if (before_last) {
           const ts = this.$store.getters[SEARCH_GET_SEARCHTIME]
           configuration.required.push({name: "before_ts", ts: ts})
         }
