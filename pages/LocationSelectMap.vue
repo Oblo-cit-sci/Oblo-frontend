@@ -8,10 +8,10 @@
           v-btn(v-if="show_select_confirm" dark fab bottom right color="green" @click="confirm_select")
             v-icon mdi-map-marker-check
           v-text-field.mt-4(solo small
-          v-model="search_query"
-            hint="press enter or click the search button"
-            append-outer-icon="mdi-magnify"
-            @click:append-outer="search_location"
+            v-model="search_query"
+            placeholder="search a location"
+            append-icon="mdi-magnify"
+            @click:append="search_location"
             @keydown="search_keypress($event)"
             :loading="btn_loading_search_location")
         v-snackbar(:value="selected_coordinates" :timeout="0" selected_place right top) {{selected_place_text}}
