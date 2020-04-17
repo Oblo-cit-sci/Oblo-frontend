@@ -12,10 +12,9 @@
       :prependIcon="prependIcon"
       :type="aspect.attr.component_type === 'password' ? 'password' : 'text'"
       @click:prepend="$emit('clickPrepend')"
-
+      @keydown="keydown($event)"
       :append-outer-icon="clearIcon"
       @click:append-outer="$emit('aspectAction', {action: 'clear'})"
-
       :value="value"
       @input="update_value($event)"
       @update:error="$emit('update:error', $event)")
@@ -33,6 +32,13 @@
         // probably not used atm
       prependIcon: String
     },
+    methods: {
+      keydown(keyEvent) {
+        if(keyEvent.keyCode === 13 && this.aspect.extra.hasOwnProperty("enter_pressed")) {
+          this.$emit("aspectAction", "enter_pressed")
+        }
+      }
+    }
   }
 </script>
 

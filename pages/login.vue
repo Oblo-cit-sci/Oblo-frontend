@@ -7,8 +7,9 @@
         :aspect="a"
         :ext_value.sync="a.value"
         mode="edit"
+        @aspectAction="aspect_action($event)"
         @update:error="a.error = $event")
-    v-btn(@click='login' color='success' autofocus :disabled="any_invalid") Login
+    v-btn(@click='login' color='success' autofocus :disabled="any_invalid" :loading="login_loading") Login
     div.mt-3
       a(href="basic/init_password_reset") Forgot password?
     div.mt-2(v-if="add_verification_resend_link")
@@ -50,13 +51,17 @@
               extra: {
                 rules: [
                   v => v && v.length >= 8 || 'Password must have at least 8 characters',
-                ]
+                ],
               }
             },
             value: "",
+            extra: {
+              enter_pressed: true
+            },
             error: true
           }
         ],
+        login_loading: false,
         errorMsg: null,
         add_verification_resend_link: false,
         registered_name: null
@@ -69,7 +74,13 @@
       }
     },
     methods: {
+      aspect_action(event) {
+        if (event === "enter_pressed") {
+          this.login()
+        }
+      },
       login() {
+        this.login_loading = true
         this.$api.post_actor__login(
           this.aspects[0].value,
           this.aspects[1].value
@@ -84,7 +95,7 @@
             this.errorMsg = data.error.msg
           }
         }).catch((err) => {
-          console.log("err", err.response)
+          // console.log("err", err.response)
           const response = err.response
           this.errorMsg = response.data.error.msg
           if (this.$_.get(response, "data.error.data.error_type", 0) === 1) {
@@ -92,6 +103,8 @@
             this.registered_name = response.data.error.data.registered_name
           }
           setTimeout(() => this.errorMsg = null, 5000)
+        }).finally(() => {
+          this.login_loading = false
         })
       },
       request_verification_mail() {
