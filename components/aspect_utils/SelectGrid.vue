@@ -4,7 +4,7 @@
       div.d-flex.flex-wrap
         .cell(v-for="(c, i) in options" :key="i" cols="1")
           v-row.mt-2.justify-center
-            v-img.sel_cursor(:src="get_icon_url(c.icon)" width="80%"
+            v-img.sel_cursor(v-if="c.icon" :src="get_icon_url(c.icon)" width="80%"
               max-width="120px" max-height="120px" contain @click="select(c)" class="")
           v-row.mt-3.mb-2.justify-center
             div.sel_cursor(@click="select(c)") {{c.text}}
