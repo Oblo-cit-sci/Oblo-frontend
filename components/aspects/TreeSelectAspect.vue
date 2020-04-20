@@ -13,10 +13,17 @@
       :prependIcon="prependIcon"
       @click:prepend="openDialog()")
     div(v-if="!direct_select")
-      v-btn(:color="button_color" @click="openDialog")
-        v-icon {{prependIcon}}
-        span {{button_text}}
-      span {{value_text}}
+      v-container(flow)
+        v-row
+          v-col(cols=2)
+            v-btn(:color="button_color" @click="openDialog")
+              v-icon {{prependIcon}}
+              span {{button_text}}
+          v-col(cols=9)
+            div.pl-3 {{value_text}}
+          v-col(cols=1)
+            v-btn(icon @click="clear" v-show="value")
+              v-icon mdi-window-close
     v-dialog(width="800" v-model="dialogOpen" height="100%")
       TreleafPicker(
         :tree="tree"
@@ -81,6 +88,9 @@
         }
         // console.log(this.tree, options.include_levels)
         this.flat_options = flatten_tree_to_options(this.tree, options)
+      },
+      clear() {
+        this.update_value(null)
       }
     },
     computed: {
