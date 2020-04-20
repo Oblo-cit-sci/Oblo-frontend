@@ -26,7 +26,7 @@
         :disabled="disabled"
         :keep_selection="true")
   div(v-else)
-    div {{value}}
+    div {{value_text}}
 </template>
 
 <script>
