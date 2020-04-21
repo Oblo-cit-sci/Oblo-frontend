@@ -501,8 +501,9 @@ export const actions = {
       context.commit("update_location", {uuid, location: simple_location})
     }
     // console.log("tags")
+    // debugger
     const tags = context.getters.entry_tags(uuid)
-    // console.log("tags", tags)
+    console.log("tags", tags)
     if (tags) {
       context.commit(UPDATE_TAGS, {uuid, tags: tags})
     }

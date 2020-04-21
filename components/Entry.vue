@@ -24,6 +24,9 @@
             contain
             :src="entry_image"
             max-height="500")
+    div(v-else)
+     v-row
+      ActorChip(:actor="creator")
     v-row
       v-col(:cols="base_cols")
         v-divider.wide_divider(v-if="is_first_page")
@@ -98,11 +101,13 @@
   import {TEMPLATES_TYPE} from "../store/templates";
   import {USER_LOGGED_IN} from "~/store/user"
   import Taglist from "~/components/Taglist"
+  import ActorChip from "~/components/ActorChip"
 
   export default {
     name: "Entry",
     mixins: [EntryNavMixin, EntryMixin, TriggerSnackbarMixin, PersistentStorageMixin, FullEntryMixin],
     components: {
+      ActorChip,
       Taglist,
       EntryActorList,
       MetaChips,

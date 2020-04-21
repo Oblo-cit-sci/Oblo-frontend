@@ -44,7 +44,7 @@
 
 
   export default {
-    name: "TreleafPicker",
+    name: "TreeleafPicker",
     components: {LargeSelectList, Title_Description, Paginated_Select, SelectGrid, TextShort, SingleSelect},
     props: {
       tree: {
@@ -93,7 +93,7 @@
         return object_list2options(options, "title", "title")
       },
       done_available() {
-        console.log("done?", this.attr.allow_select_levels, this.act_level)
+        // console.log("done?", this.attr.allow_select_levels, this.act_level)
         if (this.attr.hasOwnProperty("allow_select_levels")) {
           return (this.$_.includes(this.attr.allow_select_levels, this.act_level))
         } else {
@@ -165,7 +165,6 @@
     },
     methods: {
       select(value) {
-        console.log("select", value)
         this.selection.push(value)
       },
       levelname(index) {

@@ -9,8 +9,8 @@
       :search-input.sync="search"
       color="grey"
       chips
-      hide-no-data
-      hide-selected
+      no-filter
+      no-data-text="No user found"
       :error-messages="errorMsg"
       placeholder="type in order to search for other users"
       item-text="public_name"

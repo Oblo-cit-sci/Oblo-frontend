@@ -25,7 +25,7 @@
             v-btn(icon @click="clear" v-show="value")
               v-icon mdi-window-close
     v-dialog(width="800" v-model="dialogOpen" height="100%")
-      TreleafPicker(
+      TreeleafPicker(
         :tree="tree"
         :attr="aspect.attr"
         :data_source="data_source"
@@ -37,7 +37,7 @@
 </template>
 
 <script>
-  import TreleafPicker from "../input/TreleafPicker";
+  import TreeleafPicker from "../input/TreeleafPicker";
   import TextShort from "./TextShortAspect";
   import {flatten_tree_to_options, get_codes_as_tree} from "~/lib/options";
   import {EDIT} from "~/lib/consts";
@@ -46,7 +46,7 @@
 
   export default {
     name: "TreeSelectAspect",
-    components: {TextShort, TreleafPicker},
+    components: {TextShort, TreeleafPicker},
     mixins: [AspectComponentMixin, GeneralSelectMixin],
     data() {
       return {
