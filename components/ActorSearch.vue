@@ -10,7 +10,8 @@
       color="grey"
       chips
       no-filter
-      no-data-text="No user found"
+      hide-selected
+      hide-no-data
       :error-messages="errorMsg"
       placeholder="type in order to search for other users"
       item-text="public_name"
@@ -44,7 +45,8 @@
     props: {
       multiple: Boolean,
       value: {
-        type: [Object, Array]
+        type: [Object, Array],
+        default: () => []
       },
       exclude_reg_names: {
         type: Array,
@@ -108,9 +110,9 @@
 
         // Lazily load input items
         this.$api.actor_search({name: val}).then(({data}) => {
-
-          this.actors = data.data.filter(actor => !this.exclude_reg_names.includes(actor.registered_name))
-          if(this.actors.length === 0) {
+          const result = data.data.filter(actor => !this.exclude_reg_names.includes(actor.registered_name))
+          this.actors = this.$_.concat(this.value, result)
+          if(result.length === 0) {
             this.errorMsg = "No user found"
           }
         }).catch(err => {

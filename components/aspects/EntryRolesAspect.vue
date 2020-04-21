@@ -41,9 +41,6 @@
         assigned_roles: {}
       }
     },
-    created() {
-
-    },
     computed: {
       all_actors_reg_names() {
         return this.value.map(ra => ra.actor.registered_name)
