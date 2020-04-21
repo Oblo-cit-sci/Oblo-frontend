@@ -11,12 +11,14 @@
       :hide_details="hide_details"
       :clearable="!is_required")
   div(v-else)
-    div(v-if="value")
-      p(v-if="select_check" class="text-uppercase") {{check_box_value ? options[1].text : options[0].text}}
-      p.body-1.readonly-aspect(v-else) {{selection.text}}
-      div(v-if="selection.description") Description: {{selection.description}}
-      div(v-if="has_some_icons")
-        v-img(:src="icon_path(selection)" contain max-height="40")
+    div.mt-3(v-if="value")
+      div
+        div.px-2(v-if="has_some_icons" style="float:left")
+          v-img(:src="icon_path(selection)" contain max-height="40")
+        div
+          p.pl-2(v-if="select_check" class="text-uppercase") {{check_box_value ? options[1].text : options[0].text}}
+          p.body-1.readonly-aspect.pl-3(v-else) {{selection.text}}
+        div.pt-2(v-if="selection.description" style="clear:left") Description: {{selection.description}}
 </template>
 
 <script>
@@ -66,9 +68,7 @@
         //console.log('SELECT', this.selection)
       },
       icon_path(item) {
-        if (item.icon) {
-          return server_icon_path(this.$axios, item.icon)
-        } else return ""
+        return server_icon_path(this.$axios, item.icon)
       },
     },
     computed: {
@@ -76,6 +76,7 @@
         return this.aspect.attr.force_view
       },
       has_some_icons() {
+        // o._icon is basically just for privacy, check if
         return this.$_.find(this.options, (o) => o.icon && o.icon !== "") !== undefined
       },
     },

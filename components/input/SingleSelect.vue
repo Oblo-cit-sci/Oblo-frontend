@@ -14,7 +14,7 @@
           <!--          v-list-item-avatar(v-if="" tile)  TODO HAS SOME IMAGE...?-->
           <!--            v-img(:src="icon_path(item)" contain)-->
           v-list-item-icon(v-if="has_some_icons")
-            v-icon(:v-text="item.icon") {{item.icon}}
+            v-img(:src="icon_path(item)"  contain max-height="40")
           v-list-item-content.align-self-center
             v-list-item-title {{item.text}}
             v-list-item-subtitle {{item.description}}
@@ -158,9 +158,7 @@
       },
       // todo dont do that. take it from the real server. the last function that usess: server_icon_path
       icon_path(item) {
-        if (item.icon) {
-          return server_icon_path(this.$axios, item.icon)
-        } else return ""
+        return server_icon_path(this.$axios, item.icon)
       },
       marked(key) {
         if (this.selection)
