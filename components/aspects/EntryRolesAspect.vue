@@ -51,7 +51,7 @@
       available_roles() {
         const roles = [{name:"collaborator", label:"Collaborators", description: "Collaborators can edit this entry as you can"}]
         if (this.entry_is_private) {
-          roles.push("shared")
+          roles.push({name:"shared", label:"Visible to", description: "The following users can still read your entry"})
         }
         return roles
       },
