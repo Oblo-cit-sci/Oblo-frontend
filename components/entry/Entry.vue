@@ -91,14 +91,14 @@
   import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
   import PersistentStorageMixin from "../util/PersistentStorageMixin";
   import MissingAspectsNotice from "./MissingAspectsNotice";
-  import {ENTRIES_GET_EDIT, ENTRIES_GET_ENTRY} from "../../store/entries";
-  import {EDIT, ENTRY, PRIVATE_LOCAL, VIEW} from "../../lib/consts";
-  import {entry_roles_aspect, license_aspect, privacy_aspect} from "../../lib/typical_aspects";
-  import {privacy_icon} from "../../lib/util";
+  import {ENTRIES_GET_EDIT, ENTRIES_GET_ENTRY} from "~/store/entries";
+  import {EDIT, ENTRY, PRIVATE_LOCAL, VIEW} from "~/lib/consts";
+  import {entry_roles_aspect, license_aspect, privacy_aspect} from "~/lib/typical_aspects";
+  import {privacy_icon} from "~/lib/util";
   import ChangedAspectNotice from "./ChangedAspectNotice";
   import MetaChips from "./MetaChips";
   import EntryActorList from "./EntryActorList";
-  import {TEMPLATES_TYPE} from "../../store/templates";
+  import {TEMPLATES_TYPE} from "~/store/templates";
   import {USER_LOGGED_IN} from "~/store/user"
   import Taglist from "~/components/global/Taglist"
   import ActorChip from "~/components/actor/ActorChip"
