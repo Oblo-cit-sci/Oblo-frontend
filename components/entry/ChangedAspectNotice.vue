@@ -10,11 +10,14 @@
 
   export default {
     name: "ChangedAspectNotice",
+    props: {
+      is_draft: Boolean
+    },
     computed: {
       changes() {
         const edit_entry = this.$store.getters[ENTRIES_GET_EDIT]()
         const original_entry = this.$store.getters[ENTRIES_GET_ENTRY](edit_entry.uuid)
-        return compare_entries(original_entry, edit_entry)
+        return compare_entries(original_entry, edit_entry, this.is_draft ? ["values"] : [])
       },
     }
   }

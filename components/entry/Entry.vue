@@ -25,8 +25,8 @@
             :src="entry_image"
             max-height="500")
     div(v-else)
-     v-row
-      ActorChip(:actor="creator")
+      v-row
+        ActorChip(:actor="creator")
     v-row
       v-col(:cols="base_cols")
         v-divider.wide_divider(v-if="is_first_page")
@@ -62,7 +62,7 @@
       v-row(v-if="last_page")
         MissingAspectsNotice(:entry="entry" :template_slug="template_slug" v-model="entry_complete")
       v-row(v-if="is_dirty")
-        ChangedAspectNotice
+        ChangedAspectNotice(:is_draft="is_draft")
     v-row
       EntryActions(
         v-bind="entry_actions_props"
@@ -185,16 +185,17 @@
       is_dirty() {
         const edit_entry = this.$_.omit(this.$store.getters[ENTRIES_GET_EDIT](), ["local"])
         const original_entry = this.$_.omit(this.$store.getters[ENTRIES_GET_ENTRY](this.uuid), ["local"])
-        // for (let k in edit_entry) {
-        //   if(!this.$_.isEqual(edit_entry[k], original_entry[k]))
-        //     console.log(k, this.$_.isEqual(edit_entry[k], original_entry[k]))
-        //   if(!original_entry.hasOwnProperty(k))
-        //     console.log("new", k)
-        // }
-        // for (let k in original_entry) {
-        //   if(!edit_entry.hasOwnProperty(k))
-        //     console.log("del", k)
-        // }
+
+        for (let k in edit_entry) {
+          if (!this.$_.isEqual(edit_entry[k], original_entry[k]))
+            console.log(k, this.$_.isEqual(edit_entry[k], original_entry[k]))
+          if (!original_entry.hasOwnProperty(k))
+            console.log("new", k)
+        }
+        for (let k in original_entry) {
+          if (!edit_entry.hasOwnProperty(k))
+            console.log("del", k)
+        }
         return !this.$_.isEqual(edit_entry, original_entry)
       },
       show_tags() {

@@ -224,6 +224,9 @@ export default {
     tags() {
       return this.entry.tags || []
     },
+    version() {
+      return this.entry.version
+    }
   },
   beforeMount() {
     this.update_aspect_locs()
