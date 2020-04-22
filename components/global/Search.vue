@@ -187,7 +187,11 @@
         return result_entries
       },
       filterlist_options() {
-        return this.$_.concat([privacy_filter_options], this.include_filters)
+        const filter = this.include_filters
+        if(!this.$store.getters.is_visitor) {
+          filter.push(privacy_filter_options)
+        }
+        return this.$_.concat(filter)
       }
     },
     methods: {

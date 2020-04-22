@@ -53,8 +53,6 @@
       }
     },
     created() {
-      console.log("e-create")
-      console.log(this.$store.getters[TEMPLATES_TYPES])
       this.$store.dispatch(ENTRIES_SET_EDIT, this.uuid)
     },
     mounted() {

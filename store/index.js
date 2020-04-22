@@ -23,8 +23,6 @@ export const UPDATE_DRAFT_NUMBERS = "update_draft_numbers"
 export const USER_GET_USER_DATA = "user/get_user_data"
 export const DOMAIN = "domain"
 export const DOMAIN_BY_NAME = "domain_by_name"
-export const DOMAIN_TITLE = "domain_title"
-export const DRAFT_NO = "draft_no"
 export const LAST_BASE_PAGE_PATH = "last_page_path"
 export const LOGOUT = "logout"
 // internal mutations
@@ -114,7 +112,7 @@ export const getters = {
       return state.snackbar.trigger
     }
   },
-  visitor(state) {
+  is_visitor(state) {
     //console.log("visitor check");
     return state.user.user_data.global_role === VISITOR
   },

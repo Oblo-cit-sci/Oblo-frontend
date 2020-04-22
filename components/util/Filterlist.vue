@@ -11,7 +11,7 @@
             v-icon mdi-window-close
     v-menu
       template(v-slot:activator="{ on: menu }")
-        v-btn.mt-4(v-on="{...menu}") add filter
+        v-btn.mt-4(v-on="{...menu}" :disabled="no_available_filters" ) add filter
           v-icon mdi-plus
       v-list
         v-list-item(v-for="filter in available_filter"
@@ -51,13 +51,16 @@
     },
     computed: {
       available_filter() {
-        return this.filter_options
+        return this.$_.differenceBy(this.filter_options, this.applied_filters, f => f.name)
       },
       has_applied_filters() {
         return this.applied_filters.length > 0
       },
       applied_filters() {
         return this.value
+      },
+      no_available_filters() {
+        return this.available_filter.length === 0
       }
     },
     methods: {
@@ -90,12 +93,8 @@
             "text": text
           })
         }
-        console.log(new_value)
         this.$emit("input", new_value)
         this.dialog_open = false
-        setTimeout(() => {
-          this.active_filter = null
-        }, 100)
       },
       edit_filter(index) {
         this.active_filter = Object.assign({}, this.filter_option_by_name(this.applied_filters[index].name))
@@ -111,6 +110,17 @@
           return existing_filter.value
         } else {
           return aspect_default_value(this.filter_option_by_name(name).aspect)
+        }
+      }
+    },
+    watch: {
+      // this catches the problem, that if selection is cancelled (clicking outside)
+      // the aspect is not deleted, and the options wont change, when another filter is selected
+      dialog_open(val) {
+        if (val === false) {
+          setTimeout(() => {
+            this.active_filter = null
+          }, 100)
         }
       }
     }

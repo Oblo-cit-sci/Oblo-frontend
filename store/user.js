@@ -4,8 +4,6 @@
 
 import {VISITOR} from "~/lib/consts";
 
-
-// Mutations
 export const USER_LOGIN = "user/login"
 export const USER_LOGOUT = "user/logout"
 export const USER_LOGGED_IN = "user/logged_in"
@@ -54,6 +52,9 @@ export const getters = {
   },
   get_auth_token(state) {
     return state.auth_token
+  },
+  global_role(state) {
+    return state.user_data.global_role
   }
 }
 

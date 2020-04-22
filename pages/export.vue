@@ -62,7 +62,7 @@
       }
     },
     created() {
-      if (this.$store.state.user.user_data.global_role === "visitor") {
+      if (this.$store.getter.is_visitor) {
         this.disabled.push("profile")
         // kindof dangerous to use array index
         this.options[0].description = "You are a visitor"

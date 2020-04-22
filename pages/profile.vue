@@ -35,7 +35,7 @@
       v-btn(v-if="password_edit" @click="password_edit=false") Cancel
       v-btn(v-if="password_edit" color="success" @click="change_password" :disabled="any_password_invalid") Save password
       v-divider.wide_divider
-    div(v-if="!visitor")
+    div(v-if="!is_visitor")
       v-btn(v-if="!edit_mode" color="info" @click="setEdit") Edit profile
       <!--      v-btn(v-if="!edit_mode" color="error" @click="delete_account" to="/basic/delete_account") Delete account-->
       div(v-else)
@@ -59,20 +59,20 @@
 
   import Taglist from "../components/global/Taglist.vue"
   import Aspect from "../components/Aspect";
-  import {EDIT, VIEW} from "../lib/consts";
+  import {EDIT, VIEW} from "~/lib/consts";
 
   import {mapGetters} from "vuex"
-  import {extract_unpacked_values} from "../lib/aspect";
+  import {extract_unpacked_values} from "~/lib/aspect";
   import PersistentStorageMixin from "../components/util/PersistentStorageMixin";
   import EntryPreviewList from "../components/entry/EntryPreviewList";
 
-  import {ENTRIES_GET_OWN_ENTRIES_UUIDS} from "../store/entries";
-  import {license_aspect, password_aspect, password_confirm_aspect, privacy_aspect} from "../lib/typical_aspects";
+  import {ENTRIES_GET_OWN_ENTRIES_UUIDS} from "~/store/entries";
+  import {license_aspect, password_aspect, password_confirm_aspect, privacy_aspect} from "~/lib/typical_aspects";
   import LoadFileButton from "../components/util/LoadFileButton";
-  import {base64file_to_blob} from "../lib/util";
+  import {base64file_to_blob} from "~/lib/util";
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
-  import {USER_GET_USER_DATA} from "../store";
-  import {USER_SET_USER_DATA} from "../store/user";
+  import {USER_GET_USER_DATA} from "~/store";
+  import {USER_SET_USER_DATA} from "~/store/user";
   import EntryListWrapper from "../components/EntryListWrapper"
 
   export default {
@@ -275,8 +275,8 @@
       mode() {
         return this.edit_mode ? EDIT : VIEW
       },
-      visitor() {
-        return this.$store.getters.visitor
+      is_visitor() {
+        return this.$store.getters.is_visitor
       },
       profile_pic() {
         return this.$api.url_actor__$registered_name__profile_pic(this.user_data.registered_name) + "?q=" + this.profile_version_ts

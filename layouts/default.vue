@@ -145,13 +145,6 @@
           return "wifi_off"
         }
       },
-      userrole_icon() {
-        if (this.$store.getters.visitor) {
-          return "person_outline"
-        } else {
-          return "person"
-        }
-      },
       domain_title() {
         return this.domain ? this.domain.title : HOME
       },
