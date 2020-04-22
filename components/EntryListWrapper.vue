@@ -16,7 +16,7 @@
 <script>
 
   // like Search, but with fixed params (no text field)
-  import EntryPreviewList from "./EntryPreviewList"
+  import EntryPreviewList from "./entry/EntryPreviewList"
   import {async_entry_search, process_cachable_entries} from "../lib/client"
   import TriggerSnackbarMixin from "./TriggerSnackbarMixin"
 

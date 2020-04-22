@@ -4,7 +4,7 @@
 </template>
 
 <script>
-  import ActorChip from "../ActorChip"
+  import ActorChip from "../actor/ActorChip"
 
   export default {
     name: "EntryActorList",

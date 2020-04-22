@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import EntryMixin from "../components/EntryMixin";
+import EntryMixin from "../components/entry/EntryMixin";
 
 export default {
       name: "Codes",

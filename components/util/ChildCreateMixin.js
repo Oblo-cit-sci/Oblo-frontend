@@ -1,6 +1,6 @@
-import {aspect_loc_uuid, pack_value} from "../lib/aspect";
-import {create_entry} from "../lib/entry";
-import {EDIT, ENTRY_INDEX} from "../lib/consts";
+import {aspect_loc_uuid, pack_value} from "~/lib/aspect";
+import {create_entry} from "~/lib/entry";
+import {EDIT, ENTRY_INDEX} from "~/lib/consts";
 import {ENTRIES_SAVE_CHILD_N_REF, ENTRIES_SET_ENTRY_VALUE, ENTRIES_VALUE} from "~/store/entries";
 
 export default {

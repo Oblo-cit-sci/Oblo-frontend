@@ -4,8 +4,8 @@
 </template>
 
 <script>
-  import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
-  import {SNACKBAR_TRIGGER} from "../store";
+  import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
+  import {SNACKBAR_TRIGGER} from "../../store";
 
   export default {
     name: "GlobalSnackbar",

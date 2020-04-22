@@ -12,7 +12,7 @@
   import SelectGrid from "./SelectGrid";
   import {object_list2options} from "../../lib/options";
   import SimplePaginate from "../SimplePaginate";
-  import Title_Description from "../Title_Description"
+  import Title_Description from "../util/Title_Description"
   /**
    * A selection of values of 2 levels (this implementation) of a tree.
    * Could also be used in order to split lists...

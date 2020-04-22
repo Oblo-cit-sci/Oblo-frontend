@@ -24,13 +24,13 @@
 
 
   import Aspect from "../components/Aspect";
-  import LoadFileButton from "../components/LoadFileButton";
-  import DecisionDialog from "../components/DecisionDialog";
+  import LoadFileButton from "../components/util/LoadFileButton";
+  import DecisionDialog from "../components/util/DecisionDialog";
   import TextShort from "../components/aspects/TextShortAspect";
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
   import {export_data, merge_imported_entries} from "../lib/import_export";
-  import PersistentStorageMixin from "../components/PersistentStorageMixin";
-  import EntryPreviewList from "../components/EntryPreviewList";
+  import PersistentStorageMixin from "../components/util/PersistentStorageMixin";
+  import EntryPreviewList from "../components/entry/EntryPreviewList";
   import {CLEAR_ENTRIES} from "../store";
 
 

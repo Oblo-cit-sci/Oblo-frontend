@@ -50,16 +50,16 @@
 
 
 <script>
-  import GlobalSnackbar from "~/components/GlobalSnackbar"
+  import GlobalSnackbar from "~/components/global/GlobalSnackbar"
   import {HOME} from "~/lib/consts"
-  import Footer from "~/components/Footer"
+  import Footer from "~/components/global/Footer"
 
   import {initialize, reload_storage} from "~/lib/client"
   import {all_pages_n_actions} from "~/lib/pages";
   import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin";
 
   import {mapGetters} from "vuex"
-  import PersistentStorageMixin from "~/components/PersistentStorageMixin";
+  import PersistentStorageMixin from "~/components/util/PersistentStorageMixin";
   import {DOMAIN, LOGOUT} from "~/store";
   import {USER_LOGGED_IN, USER_LOGOUT} from "~/store/user";
   import {

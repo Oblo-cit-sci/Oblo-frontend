@@ -30,7 +30,7 @@
 
 <script>
   import MapNavigationMixin from "./MapNavigationMixin";
-  import Entry from "../Entry";
+  import Entry from "../entry/Entry";
 
   export default {
     name: "MapNavigationBottomSheet",

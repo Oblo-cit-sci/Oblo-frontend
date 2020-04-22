@@ -81,27 +81,27 @@
 <script>
 
   import {mapGetters} from "vuex"
-  import DecisionDialog from "./DecisionDialog";
-  import Aspect from "./Aspect";
+  import DecisionDialog from "../util/DecisionDialog";
+  import Aspect from "../Aspect";
   import EntryActions from "./EntryActions";
-  import Title_Description from "./Title_Description";
-  import EntryNavMixin from "./EntryNavMixin";
+  import Title_Description from "../util/Title_Description";
+  import EntryNavMixin from "../EntryNavMixin";
   import EntryMixin from "./EntryMixin";
   import FullEntryMixin from "./FullEntryMixin";
-  import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
-  import PersistentStorageMixin from "./PersistentStorageMixin";
-  import MissingAspectsNotice from "./entry/MissingAspectsNotice";
-  import {ENTRIES_GET_EDIT, ENTRIES_GET_ENTRY} from "../store/entries";
-  import {EDIT, ENTRY, PRIVATE_LOCAL, VIEW} from "../lib/consts";
-  import {entry_roles_aspect, license_aspect, privacy_aspect} from "../lib/typical_aspects";
-  import {privacy_icon} from "../lib/util";
-  import ChangedAspectNotice from "./entry/ChangedAspectNotice";
+  import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
+  import PersistentStorageMixin from "../util/PersistentStorageMixin";
+  import MissingAspectsNotice from "./MissingAspectsNotice";
+  import {ENTRIES_GET_EDIT, ENTRIES_GET_ENTRY} from "../../store/entries";
+  import {EDIT, ENTRY, PRIVATE_LOCAL, VIEW} from "../../lib/consts";
+  import {entry_roles_aspect, license_aspect, privacy_aspect} from "../../lib/typical_aspects";
+  import {privacy_icon} from "../../lib/util";
+  import ChangedAspectNotice from "./ChangedAspectNotice";
   import MetaChips from "./MetaChips";
-  import EntryActorList from "./entry/EntryActorList";
-  import {TEMPLATES_TYPE} from "../store/templates";
+  import EntryActorList from "./EntryActorList";
+  import {TEMPLATES_TYPE} from "../../store/templates";
   import {USER_LOGGED_IN} from "~/store/user"
-  import Taglist from "~/components/Taglist"
-  import ActorChip from "~/components/ActorChip"
+  import Taglist from "~/components/global/Taglist"
+  import ActorChip from "~/components/actor/ActorChip"
 
   export default {
     name: "Entry",

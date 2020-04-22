@@ -51,19 +51,19 @@
 
 <script>
 
-  import EntryNavMixin from "./EntryNavMixin";
+  import EntryNavMixin from "../EntryNavMixin";
   import {privacy_icon, printDate} from "~/lib/util"
   import {EDIT, ENTRY, VIEW} from "~/lib/consts"
-  import MetaChips from "../components/MetaChips"
-  import Taglist from "../components/Taglist"
+  import MetaChips from "./MetaChips"
+  import Taglist from "../global/Taglist"
   import {create_entry, full_title, get_proper_mode} from "~/lib/entry"
-  import MapJumpMixin from "./MapJumpMixin";
+  import MapJumpMixin from "../map/MapJumpMixin";
   import EntryMixin from "./EntryMixin";
-  import PersistentStorageMixin from "./PersistentStorageMixin";
-  import ChildCreateMixin from "./ChildCreateMixin";
-  import {aspect_loc_str2arr, loc_prepend} from "../lib/aspect";
-  import Aspect from "./Aspect";
-  import EntryActorList from "./entry/EntryActorList";
+  import PersistentStorageMixin from "../util/PersistentStorageMixin";
+  import ChildCreateMixin from "../util/ChildCreateMixin";
+  import {aspect_loc_str2arr, loc_prepend} from "../../lib/aspect";
+  import Aspect from "../Aspect";
+  import EntryActorList from "./EntryActorList";
   import {SEARCH_ENTRY_ASPECT} from "~/store/search";
   import {
     EDIT_UUID, ENTRIES_DELETE_ENTRY,
@@ -73,7 +73,7 @@
     ENTRIES_VALUE
   } from "~/store/entries";
   import {TEMPLATES_TYPENAME} from "~/store/templates";
-  import ActorChip from "./ActorChip"
+  import ActorChip from "../actor/ActorChip"
   import {REVIEW} from "~/lib/consts"
   import {privacy_color, review_color} from "~/lib/util"
 

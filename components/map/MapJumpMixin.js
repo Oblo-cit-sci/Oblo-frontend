@@ -13,7 +13,6 @@ export default {
     return {}
   },
   created() {
-
   },
   computed: {
     // works only for entries, not aspects

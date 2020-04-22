@@ -56,7 +56,7 @@
     get_aspect_vue_component,
     remove_entry_loc, complete_aspect_loc, aspect_loc_uuid, aspect_loc_str2arr, pack_value, aspect_raw_default_value
   } from "../../lib/aspect";
-  import Paginate from "../Paginate";
+  import Paginate from "../global/Paginate";
   import MinMaxIndicators from '../list_components/MinMaxIndicators'
 
   import ListPagination from "../aspect_utils/ListPagination";

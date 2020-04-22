@@ -18,11 +18,11 @@
 </template>
 
 <script>
-  import Entrypreview from "../components/EntryPreview";
+  import Entrypreview from "~/components/entry/EntryPreview";
   import goTo from 'vuetify/lib/services/goto'
-  import SimplePaginate from "./SimplePaginate";
-  import {ENTRIES_HAS_ENTRY} from "../store/entries";
-  import {TEMPLATES_TYPE} from "../store/templates";
+  import SimplePaginate from "../SimplePaginate";
+  import {ENTRIES_HAS_ENTRY} from "~/store/entries";
+  import {TEMPLATES_TYPE} from "~/store/templates";
 
   export default {
     name: "EntryPreviewList",

@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import GlobalSnackbar from "../components/GlobalSnackbar";
+import GlobalSnackbar from "../components/global/GlobalSnackbar";
 export default {
       name: "map_layout",
       mixins: [],

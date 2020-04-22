@@ -22,8 +22,8 @@
 
   import {mapGetters} from "vuex"
 
-  import DomainCard from "../components/DomainCard";
-  import Footer from "../components/Footer";
+  import DomainCard from "../components/global/DomainCard";
+  import Footer from "../components/global/Footer";
   import {CLEAR_DOMAIN, DOMAINS} from "../store";
   import {USER_LOGGED_IN} from "../store/user";
 

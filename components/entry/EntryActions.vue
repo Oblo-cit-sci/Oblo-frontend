@@ -54,15 +54,15 @@
 
 <script>
   import {DRAFT, EDIT, PRIVATE_LOCAL, PUBLIC, PUBLISHED, REQUIRES_REVIEW} from "~/lib/consts";
-  import Paginate from "./Paginate";
+  import Paginate from "../global/Paginate";
   import {current_user_is_owner} from "~/lib/entry";
 
-  import DecisionDialog from "./DecisionDialog";
-  import EntryNavMixin from "./EntryNavMixin";
+  import DecisionDialog from "../util/DecisionDialog";
+  import EntryNavMixin from "../EntryNavMixin";
 
-  import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
+  import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
   import {base64file_to_blob} from "~/lib/util";
-  import PersistentStorageMixin from "./PersistentStorageMixin";
+  import PersistentStorageMixin from "../util/PersistentStorageMixin";
   import {FILES_GET_FILE, FILES_REMOVE_FILE} from "~/store/files";
   import {
     ENTRIES_DELETE_ENTRY,

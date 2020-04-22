@@ -57,18 +57,18 @@
 
   import goTo from 'vuetify/lib/services/goto'
 
-  import Taglist from "../components/Taglist.vue"
+  import Taglist from "../components/global/Taglist.vue"
   import Aspect from "../components/Aspect";
   import {EDIT, VIEW} from "../lib/consts";
 
   import {mapGetters} from "vuex"
   import {extract_unpacked_values} from "../lib/aspect";
-  import PersistentStorageMixin from "../components/PersistentStorageMixin";
-  import EntryPreviewList from "../components/EntryPreviewList";
+  import PersistentStorageMixin from "../components/util/PersistentStorageMixin";
+  import EntryPreviewList from "../components/entry/EntryPreviewList";
 
   import {ENTRIES_GET_OWN_ENTRIES_UUIDS} from "../store/entries";
   import {license_aspect, password_aspect, password_confirm_aspect, privacy_aspect} from "../lib/typical_aspects";
-  import LoadFileButton from "../components/LoadFileButton";
+  import LoadFileButton from "../components/util/LoadFileButton";
   import {base64file_to_blob} from "../lib/util";
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
   import {USER_GET_USER_DATA} from "../store";

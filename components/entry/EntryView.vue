@@ -58,15 +58,15 @@
 
 <script>
   import EntryNavMixin from "../EntryNavMixin";
-  import EntryMixin from "../EntryMixin";
+  import EntryMixin from "./EntryMixin";
   import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
-  import PersistentStorageMixin from "../PersistentStorageMixin";
-  import FullEntryMixin from "../FullEntryMixin";
-  import DecisionDialog from "../DecisionDialog";
+  import PersistentStorageMixin from "../util/PersistentStorageMixin";
+  import FullEntryMixin from "./FullEntryMixin";
+  import DecisionDialog from "../util/DecisionDialog";
   import Aspect from "../Aspect";
-  import EntryActions from "../EntryActions";
-  import Title_Description from "../Title_Description";
-  import MetaChips from "../MetaChips";
+  import EntryActions from "./EntryActions";
+  import Title_Description from "../util/Title_Description";
+  import MetaChips from "./MetaChips";
   import EntryActorList from "./EntryActorList";
 
   export default {

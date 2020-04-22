@@ -1,4 +1,4 @@
-import PersistentStorageMixin from "~/components/PersistentStorageMixin";
+import PersistentStorageMixin from "~/components/util/PersistentStorageMixin";
 import {USER_LOGIN} from "~/store/user";
 
 export default {

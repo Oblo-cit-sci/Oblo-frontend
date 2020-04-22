@@ -23,9 +23,9 @@
 
 <script>
 
-    import {static_file_path} from "../lib/util";
+    import {static_file_path} from "../../lib/util";
 
-    const pkg = require('../package')
+    const pkg = require('../../package.json')
     export default {
         name: "Footer",
         data() {

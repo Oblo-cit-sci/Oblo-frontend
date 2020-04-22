@@ -11,7 +11,7 @@
   import SelectGrid from "../components/aspect_utils/SelectGrid";
 
   import LargeSelectList from "../components/aspect_utils/LargeSelectList"
-  import SimpleExpansionPanel from "~/components/SimpleExpansionPanel"
+  import SimpleExpansionPanel from "~/components/util/SimpleExpansionPanel"
 
   const ld = require("lodash")
 

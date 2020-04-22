@@ -6,8 +6,8 @@
 <script>
 
 
-  import Title_Description from "../components/Title_Description"
-  import EntryActions from "../components/EntryActions";
+  import Title_Description from "../components/util/Title_Description"
+  import EntryActions from "../components/entry/EntryActions";
   import {
     EDIT, PRIVATE_LOCAL, VIEW
   } from "~/lib/consts";
@@ -15,13 +15,13 @@
 
   import goTo from 'vuetify/lib/services/goto'
   import EntryNavMixin from "../components/EntryNavMixin";
-  import DecisionDialog from "../components/DecisionDialog";
-  import EntryMixin from "../components/EntryMixin";
-  import MetaChips from "../components/MetaChips"
+  import DecisionDialog from "../components/util/DecisionDialog";
+  import EntryMixin from "../components/entry/EntryMixin";
+  import MetaChips from "../components/entry/MetaChips"
   import {privacy_icon} from "~/lib/util"
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
-  import PersistentStorageMixin from "../components/PersistentStorageMixin";
-  import FullEntryMixin from "../components/FullEntryMixin";
+  import PersistentStorageMixin from "../components/util/PersistentStorageMixin";
+  import FullEntryMixin from "../components/entry/FullEntryMixin";
   import {entry_roles_aspect, license_aspect, privacy_aspect} from "~/lib/typical_aspects";
   import EntryActorList from "../components/entry/EntryActorList";
   import {
@@ -29,7 +29,7 @@
     ENTRIES_SET_EDIT, ENTRIES_UPDATE_ENTRY,
     ENTRIES_UPDATE_PARENT_VERSION
   } from "~/store/entries";
-  import Entry from "../components/Entry";
+  import Entry from "../components/entry/Entry";
   import {TEMPLATES_TYPE, TEMPLATES_TYPES} from "~/store/templates";
 
   export default {

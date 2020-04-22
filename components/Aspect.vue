@@ -42,16 +42,16 @@
 
 <script>
 
-  import {VIEW} from "../lib/consts";
+  import {VIEW} from "~/lib/consts";
 
-  import Title_Description from "./Title_Description";
+  import Title_Description from "./util/Title_Description";
   import {
     aspect_loc2aspect_descr_loc,
     aspect_loc_str,
     get_aspect_vue_component, label
-  } from "../lib/aspect";
+  } from "~/lib/aspect";
   import AspectMixin from "./aspects/AspectMixin";
-  import {TEMPLATES_NOTE} from "../store/templates";
+  import {TEMPLATES_NOTE} from "~/store/templates";
 
   export default {
     name: "Aspect",

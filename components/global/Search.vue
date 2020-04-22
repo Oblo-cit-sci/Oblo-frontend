@@ -12,6 +12,9 @@
           @click:append-outer="getEntries"
           clearable
           :loading="searching ? 'success' : false")
+    v-row
+      v-col(cols="12")
+        Filterlist(:filter_options="filterlist_options")
       <!--    v-row-->
       <!--      v-col.col-md-6.col-xs-12(v-for="(config, index) in Object.values(filter_configs)" cols="12"  :key="index")-->
       <!--        FilterSelect(v-bind="config" :selection.sync="filter_values[config.name]")-->
@@ -30,11 +33,11 @@
 <script>
 
   import {mapGetters, mapMutations} from "vuex"
-  import EntryPreviewList from "../components/EntryPreviewList"
-  import {debounced_search} from "../lib/client"
-  import FilterSelect from "./FilterSelect";
-  import FilterMixin from "./FilterMixin";
-  import NavBaseMixin from "./NavBaseMixin";
+  import EntryPreviewList from "../entry/EntryPreviewList"
+  import {debounced_search} from "~/lib/client"
+  import FilterSelect from "../FilterSelect";
+  import FilterMixin from "../FilterMixin";
+  import NavBaseMixin from "../NavBaseMixin";
   import {
     SEARCH_CLEAR,
     SEARCH_GET_ENTRIES,
@@ -45,16 +48,18 @@
     SEARCH_RECEIVED_ENTRIES,
     SEARCH_SET_PATH,
     SEARCH_SET_SEARCHING
-  } from "../store/search";
-  import PersistentStorageMixin from "./PersistentStorageMixin";
-  import {ENTRIES_DOMAIN_DRAFTS_UUIDS} from "../store/entries";
-  import {route_change_query} from "../lib/util";
+  } from "~/store/search";
+  import PersistentStorageMixin from "../util/PersistentStorageMixin";
+  import {ENTRIES_DOMAIN_DRAFTS_UUIDS} from "~/store/entries";
+  import {route_change_query} from "~/lib/util";
+  import Filterlist from "~/components/util/Filterlist"
+  import {license_filter_options, privacy_filter_options} from "~/lib/filter_option_consts"
 
   const LOG = false
 
   export default {
     name: "Search",
-    components: {FilterSelect, EntryPreviewList},
+    components: {Filterlist, FilterSelect, EntryPreviewList},
     mixins: [FilterMixin, NavBaseMixin, PersistentStorageMixin],
     props: {
       init_clear: Boolean,
@@ -169,6 +174,9 @@
         }
         this.persist_entries()
         return result_entries
+      },
+      filterlist_options() {
+        return [privacy_filter_options, license_filter_options]
       }
     },
     methods: {
@@ -213,7 +221,6 @@
         return configuration
       }
     },
-
   }
 </script>
 

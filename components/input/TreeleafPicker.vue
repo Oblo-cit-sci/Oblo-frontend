@@ -38,7 +38,7 @@
   import {object_list2options} from "~/lib/options";
   import SelectGrid from "../aspect_utils/SelectGrid";
   import Paginated_Select from "../aspect_utils/Paginated_Select";
-  import Title_Description from "../Title_Description"
+  import Title_Description from "../util/Title_Description"
   import LargeSelectList from "~/components/aspect_utils/LargeSelectList"
   import {pack_value} from "~/lib/aspect"
 

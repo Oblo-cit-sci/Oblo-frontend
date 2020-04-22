@@ -38,7 +38,7 @@
 </template>
 
 <script>
-  import LoadFileButton from "../LoadFileButton";
+  import LoadFileButton from "../util/LoadFileButton";
   import Aspect from "../Aspect";
   import ImageCard from "../aspect_utils/ImageCard";
   import AttachedFilesMixin from "../aspect_utils/AttachedFilesMixin";

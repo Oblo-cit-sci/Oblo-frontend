@@ -21,10 +21,10 @@
 </template>
 
 <script>
-  import EntryPreviewList from "../components/EntryPreviewList";
-  import Aspect from "../components/Aspect";
-  import Taglist from "../components/Taglist";
-  import EntryListWrapper from "../components/EntryListWrapper"
+  import EntryPreviewList from "~/components/entry/EntryPreviewList";
+  import Aspect from "~/components/Aspect";
+  import Taglist from "~/components/global/Taglist";
+  import EntryListWrapper from "~/components/EntryListWrapper"
   import ActorAdminEdit from "~/components/actor/ActorAdminEdit"
   import IsAdminMixin from "~/components/actor/IsAdminMixin"
 

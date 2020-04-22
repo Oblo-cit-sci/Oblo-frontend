@@ -6,8 +6,18 @@
     div
       p
         h3 {{domain_data.page_index.action_text}}
-      v-divider
-      EntryCreateList(:entrytypes_entries="entrytypes_entries")
+      div(v-if="main_template")
+        v-card(color='#85DCB0' @click="create_from_main_template")
+          v-card-title {{main_template.title}}
+          v-card-text {{main_template.description}}
+        v-expansion-panels.mt-3(flat dense)
+          v-expansion-panel
+            v-expansion-panel-header Other types of entries...
+            v-expansion-panel-content
+              EntryCreateList(:template_entries="template_entries")
+      div(v-else)
+        v-divider
+        EntryCreateList(:template_entries="template_entries")
     Search(
       :init_clear="false"
       :fixed_filters="domain_pre_filter",
@@ -17,34 +27,53 @@
 
 <script>
 
-  import EntryCreateList from "../components/EntryCreateList";
-  import {global_context_filter} from "../lib/search";
-  import Search from "../components/Search";
-  import {entrytype_filter_options} from "../lib/filter_option_consts";
+  import EntryCreateList from "~/components/EntryCreateList";
+  import {global_context_filter} from "~/lib/search";
+  import Search from "~/components/global/Search";
+  import {entrytype_filter_options} from "~/lib/filter_option_consts";
 
   import {mapGetters} from "vuex"
-  import {DOMAIN, DOMAIN_BY_NAME, SET_DOMAIN} from "../store";
-  import {TEMPLATES_OF_DOMAIN} from "../store/templates";
-  import {USER_LOGGED_IN} from "../store/user";
+  import {DOMAIN, DOMAIN_BY_NAME, INIT_PAGE_PATH, SET_DOMAIN} from "~/store";
+  import {TEMPLATES_OF_DOMAIN} from "~/store/templates";
+  import {USER_LOGGED_IN} from "~/store/user";
+  import {create_entry} from "~/lib/entry"
+  import {ENTRIES_SAVE_ENTRY} from "~/store/entries"
+  import {EDIT} from "~/lib/consts"
+  import EntryNavMixin from "~/components/EntryNavMixin"
+  import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
 
   export default {
     name: "domain",
+    mixins: [EntryNavMixin, PersistentStorageMixin],
     components: {EntryCreateList, Search},
+    data() {
+      return {
+        main_template: null
+      }
+    },
     created() {
       if (this.domain_data.name !== this.$store.getters[DOMAIN]) {
         this.$store.commit(SET_DOMAIN, this.domain_data)
       }
+      if (this.domain_data.page_index.main_template) {
+        this.main_template = this.template_entries.filter(e => e.slug === this.domain_data.page_index.main_template)[0]
+      }
     },
     computed: {
-      ...mapGetters({logged_in:USER_LOGGED_IN}),
+      ...mapGetters({logged_in: USER_LOGGED_IN, domain_templtes: TEMPLATES_OF_DOMAIN, domains: DOMAIN_BY_NAME}),
       domain_name() {
         return this.$route.query.d
       },
-      entrytypes_entries() {
-        return global_context_filter(this.$store.getters[TEMPLATES_OF_DOMAIN](this.domain_name))
+      template_entries() {
+        let templates = global_context_filter(this.domain_templtes(this.domain_name))
+        console.log(this.main_template)
+        if(this.main_template) {
+          templates = templates.filter(t => t.slug !== this.main_template.slug)
+        }
+        return templates
       },
       domain_data() {
-        return this.$store.getters[DOMAIN_BY_NAME](this.domain_name)
+        return this.domains(this.domain_name)
       },
       filters() {
         return [entrytype_filter_options]
@@ -57,8 +86,15 @@
         }]
       }
     },
-    methods: {},
-    watch: {}
+    methods: {
+      create_from_main_template() {
+        const entry = create_entry(this.$store, this.main_template.slug)
+        this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
+        this.$store.commit(INIT_PAGE_PATH, this.$route)
+        this.persist_draft_numbers()
+        this.to_entry(entry.uuid, EDIT)
+      }
+    }
   }
 </script>
 

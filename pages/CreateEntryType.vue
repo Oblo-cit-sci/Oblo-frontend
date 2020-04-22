@@ -12,7 +12,7 @@
       div Select mode
         SingleSelect(:options="mode_options"  :select_sync="true" :selection.sync="mode" force_view="radiogroup" :only_value="true")
       div(v-if="mode==='view'")
-        EntryAspectView(:entry="entry")
+        div here should be the Entry component...
       div(v-else-if="mode==='edit'")
         div(v-for="(a, index) in aspects" :key="a.aspect.name")
           Title_Description(:title="a.aspect.name + ' (' + a.aspect.type + ')'")
@@ -28,18 +28,16 @@
 </template>
 
 <script>
-    import Title_Description from "../components/Title_Description";
+    import Title_Description from "../components/util/Title_Description";
     import SingleSelect from "../components/input/SingleSelect";
     import {create_entry} from "../lib/entry";
-    import EntryAspectView from "../components/EntryAspectView";
-    import {mapGetters} from "vuex"
     import {object_list2options, string_list2options} from "../lib/options";
     import {TEMPLATES_TYPE} from "../store/templates";
 
 
     export default {
         name: "CreateEntryType",
-        components: {EntryAspectView, SingleSelect, Title_Description},
+        components: {SingleSelect, Title_Description},
         mixins: [],
         data() {
             return {

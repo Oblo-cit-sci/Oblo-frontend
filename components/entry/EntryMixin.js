@@ -1,5 +1,5 @@
-import {get_entry_titleAspect, has_pages, has_parent} from "../lib/entry";
-import {export_data} from "../lib/import_export";
+import {get_entry_titleAspect, has_pages, has_parent} from "../../lib/entry";
+import {export_data} from "../../lib/import_export";
 import {aspect_loc_str2arr, loc_append, loc_prepend} from "~/lib/aspect";
 import {
   ASPECT,

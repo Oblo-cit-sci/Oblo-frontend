@@ -6,18 +6,19 @@
       @selection="selection($event)"
       :select_sync="false"
       :highlight="false"
+      only_value
       :create="true")
 </template>
 
 <script>
 
     import SingleSelect from "./input/SingleSelect";
-    import {create_entry} from "../lib/entry";
-    import {EDIT} from "../lib/consts";
+    import {create_entry} from "~/lib/entry";
+    import {EDIT} from "~/lib/consts";
     import EntryNavMixin from "./EntryNavMixin";
-    import PersistentStorageMixin from "./PersistentStorageMixin";
-    import {ENTRIES_SAVE_ENTRY} from "../store/entries";
-    import {INIT_PAGE_PATH} from "../store";
+    import PersistentStorageMixin from "./util/PersistentStorageMixin";
+    import {ENTRIES_SAVE_ENTRY} from "~/store/entries";
+    import {INIT_PAGE_PATH} from "~/store";
 
     const ENTRY_TYPE = "etype";
     const DRAFT = "draft";
@@ -27,17 +28,14 @@
         components: {SingleSelect},
         mixins: [EntryNavMixin, PersistentStorageMixin],
         props: {
-            entrytypes_entries: {
+            template_entries: {
                 type: Array,
                 required: true
-            },
-            draft_entries: {
-                type: Array
             }
         },
         computed: {
             options() {
-                let options = this.$_.map(this.entrytypes_entries, o => {
+                return this.$_.map(this.template_entries, o => {
                     return {
                         text: o.title,
                         value: o.slug,
@@ -45,26 +43,13 @@
                         description: o.description,
                     }
                 })
-
-                let drafts = this.$_.map(this.draft_entries, d => {
-                    return {
-                        text: d.title,
-                        value: d.uuid,
-                        type: DRAFT,
-                        description: "Created " + format(d.creation_datetime)
-                    }
-                })
-                if (drafts.length > 0) {
-                    options.push({text: "Drafts", type: "category"}, ...drafts)
-                }
-                return options
             }
         },
         methods: {
-            selection({type, value}) {
+            selection(slug) {
                 let uuid = null
                 if (type === ENTRY_TYPE) {
-                    const entry = create_entry(this.$store, value)
+                    const entry = create_entry(this.$store, slug)
                     this.persist_draft_numbers()
                     this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
                     uuid = entry.uuid

@@ -12,7 +12,7 @@
 
 <script>
   import AspectComponentMixin from "./AspectComponentMixin";
-  import ActorSearch from "../ActorSearch";
+  import ActorSearch from "../actor/ActorSearch";
 
   /**
    * In the entry and in the DB they are stored as array per each item is

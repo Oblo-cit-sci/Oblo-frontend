@@ -1,6 +1,6 @@
-import {get_proper_mode} from "../lib/entry";
-import { GLOBAL, NO_DOMAIN, VIEW} from "../lib/consts";
-import {aspect_loc_str} from "../lib/aspect";
+import {get_proper_mode} from "~/lib/entry";
+import { GLOBAL, NO_DOMAIN, VIEW} from "~/lib/consts";
+import {aspect_loc_str} from "~/lib/aspect";
 import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
 import NavBaseMixin from "./NavBaseMixin";
 import {
@@ -12,7 +12,6 @@ import {
 import {DOMAIN, INIT_PAGE_PATH, POP_LAST_PAGE_PATH} from "~/store";
 import {TEMPLATES_GET_ASPECT_DEF} from "~/store/templates";
 
-const ld = require("lodash")
 
 export default {
   mixins: [TriggerSnackbarMixin, NavBaseMixin],

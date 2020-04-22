@@ -14,7 +14,7 @@
 </template>
 
 <script>
-    import {VIEW} from "../lib/consts";
+    import {VIEW} from "../../lib/consts";
 
     /*
       put 2 times behind the header component

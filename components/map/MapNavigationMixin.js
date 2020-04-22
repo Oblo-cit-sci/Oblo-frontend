@@ -1,8 +1,6 @@
-import {string_list2options} from "../../lib/options";
-import {LOCATION, MODE_ASPECT_POINT, MODE_NORMAL} from "../../lib/consts";
-import {get_location} from "~/lib/location";
-import EntryAspectView from "~/components/EntryAspectView";
-import Search from "~/components/Search";
+import {string_list2options} from "~/lib/options";
+import {LOCATION} from "~/lib/consts";
+import Search from "~/components/global/Search";
 import {SEARCH_GET_ENTRIES} from "~/store/search";
 import {ENTRIES_GET_ENTRY} from "~/store/entries";
 import {MAP_SET_ENTRIES} from "~/store/map";
@@ -14,7 +12,7 @@ export const ENTRY = "entry"
 
 export default {
   name: "MapNavigationMixin",
-  components: {EntryAspectView, Search},
+  components: {Search},
   props: {
     drawer: Boolean,
     layers: Array,

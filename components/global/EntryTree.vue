@@ -11,8 +11,8 @@
 </template>
 
 <script>
-import {entries2vuetify_tree} from "../lib/entry_collections";
-import {TEMPLATES_TYPES} from "../store/templates";
+import {entries2vuetify_tree} from "../../lib/entry_collections";
+import {TEMPLATES_TYPES} from "../../store/templates";
 
 /**
  * not used atm

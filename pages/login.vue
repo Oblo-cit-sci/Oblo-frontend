@@ -21,7 +21,7 @@
   import Aspect from "~/components/Aspect";
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
   import {STR} from "~/lib/consts";
-  import PersistentStorageMixin from "../components/PersistentStorageMixin";
+  import PersistentStorageMixin from "../components/util/PersistentStorageMixin";
   import LoginMixin from "../components/actor/LoginMixin";
   import {check_clear_cache} from "~/lib/client";
 

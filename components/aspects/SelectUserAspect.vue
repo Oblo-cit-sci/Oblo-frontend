@@ -6,7 +6,7 @@
 
 <script>
   import AspectMixin from "./AspectMixin";
-  import Title_Description from "../Title_Description";
+  import Title_Description from "../util/Title_Description";
   import SingleSelect from "../input/SingleSelect";
 
   // SingleSelect(:options="users" :selection="value")

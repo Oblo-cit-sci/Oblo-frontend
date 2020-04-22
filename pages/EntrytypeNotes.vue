@@ -42,11 +42,11 @@
 
   import SingleSelect from "../components/input/SingleSelect";
   import AspectDescription from "../components/AspectDescription";
-  import PersistentStorageMixin from "../components/PersistentStorageMixin";
+  import PersistentStorageMixin from "../components/util/PersistentStorageMixin";
   import {export_data} from "../lib/import_export";
-  import LoadFileButton from "../components/LoadFileButton";
-  import Paginate from "../components/Paginate";
-  import Title_Description from "../components/Title_Description";
+  import LoadFileButton from "../components/util/LoadFileButton";
+  import Paginate from "../components/global/Paginate";
+  import Title_Description from "../components/util/Title_Description";
   import EntrytypePageMixin from "../components/EntrytypePageMixin";
   import goTo from 'vuetify/lib/services/goto'
 

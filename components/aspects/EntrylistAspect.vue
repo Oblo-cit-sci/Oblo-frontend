@@ -45,14 +45,14 @@
     EDIT,
     ENTRY_INDEX
   } from "../../lib/consts";
-  import DecisionDialog from "../DecisionDialog";
+  import DecisionDialog from "../util/DecisionDialog";
   import {create_entry} from "../../lib/entry";
   import EntryNavMixin from "../EntryNavMixin";
   import ListMixin from "../ListMixin";
   import {aspect_loc_str} from "../../lib/aspect";
   import {no_duplicate_texts} from "../../lib/options";
   import ListPagination from "../aspect_utils/ListPagination";
-  import PersistentStorageMixin from "../PersistentStorageMixin";
+  import PersistentStorageMixin from "../util/PersistentStorageMixin";
   import AspectComponentMixin from "./AspectComponentMixin";
   import {
     EDIT_UUID,

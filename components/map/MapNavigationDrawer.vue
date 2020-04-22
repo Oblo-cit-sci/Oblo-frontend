@@ -35,7 +35,7 @@
 
 <script>
   import MapNavigationMixin from "./MapNavigationMixin";
-  import Entry from "../Entry";
+  import Entry from "../entry/Entry";
 
   // search:
   //   <!--          :fixed_filters="location_pre_filter"-->

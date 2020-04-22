@@ -1,7 +1,6 @@
-  import {privacy_icon} from "../lib/util";
-  import {EDIT, VIEW} from "../lib/consts";
-  import {unsaved_changes_default_dialog} from "../lib/dialogs";
-  import {REVIEW} from "~/lib/consts"
+  import {privacy_icon} from "~/lib/util";
+  import {VIEW} from "~/lib/consts";
+  import {unsaved_changes_default_dialog} from "~/lib/dialogs";
 
   export default {
     data() {
