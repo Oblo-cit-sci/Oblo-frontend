@@ -3,16 +3,16 @@
     h3 Validation
     div(v-if="has_missing")
       b Missing or incomplete aspects:
-      div Only entries without missing information can be submitted. Please, complete missing information or safe your entry as a draft.
+      div Incomplete entries cannot be submitted. Please, add the missing information or safe your entry as a draft.
     div(v-else) All values in this entry are ok
     .required_aspect.red--text(v-for="(aspect, i) in missing" :key="i") {{aspect}}
 </template>
 
 <script>
-  import {aspect_raw_default_value, disabled_by_condition, label, loc_append, pack_value} from "../../lib/aspect";
-  import {ASPECT, COMPONENT, COMPOSITE, EDIT, ENTRYLIST, INDEX, LIST} from "../../lib/consts";
-  import {item_count_name} from "../../lib/listaspects";
-  import {TEMPLATES_TYPE} from "../../store/templates";
+  import {aspect_raw_default_value, disabled_by_condition, label, loc_append, pack_value} from "~/lib/aspect";
+  import {ASPECT, COMPONENT, COMPOSITE, EDIT, ENTRYLIST, INDEX, LIST} from "~/lib/consts";
+  import {item_count_name} from "~/lib/listaspects";
+  import {TEMPLATES_TYPE} from "~/store/templates";
 
 
   const OK = 0

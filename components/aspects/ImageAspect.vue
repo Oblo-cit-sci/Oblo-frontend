@@ -4,7 +4,11 @@
       v-col(v-for="(img_data, index) in images" :key="index" :cols="num_cols")
         v-img.a_image(:src="get_image_data(index)" @click="open_image(index)" max-height="300" contain @error="image_error($event, index)")
           v-badge(v-if="cover_image_index===index" color="yellow" inline)
-    LoadFileButton(v-if="is_edit_mode" label="Add image" filetype="image" @fileload="add_image($event)")
+    LoadFileButton(v-if="is_edit_mode"
+      label="Add image"
+      filetype="image"
+      :size_limit="max_image_size"
+      @fileload="add_image($event)")
     v-dialog(v-model="image_open" overlay-opacity="100" fullscreen)
       ImageCard(
         v-if="image_open"
@@ -43,11 +47,12 @@
   import ImageCard from "../aspect_utils/ImageCard";
   import AttachedFilesMixin from "../aspect_utils/AttachedFilesMixin";
   import AspectComponentMixin from "./AspectComponentMixin";
-  import {DRAFT, INDEX} from "../../lib/consts";
-  import {loc_append, remove_entry_loc} from "../../lib/aspect";
-  import {FILES_ADD_FILE, FILES_GET_FILE} from "../../store/files";
-  import {ENTRIES_GET_ENTRY, ENTRIES_UPDATE_IMAGE} from "../../store/entries";
+  import {DRAFT, INDEX} from "~/lib/consts";
+  import {loc_append, remove_entry_loc} from "~/lib/aspect";
+  import {FILES_ADD_FILE, FILES_GET_FILE} from "~/store/files";
+  import {ENTRIES_GET_ENTRY, ENTRIES_UPDATE_IMAGE} from "~/store/entries";
   import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
+  import {common_filesize} from "~/lib/util"
 
   const uuidv4 = require('uuid/v4')
 
@@ -91,6 +96,9 @@
       },
       images() {
         return this.value
+      },
+      max_image_size() {
+        return common_filesize(8, "MB")
       },
       selected_img_data() {
         return this.images[this.selected_image_index]

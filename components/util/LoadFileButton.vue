@@ -70,7 +70,7 @@
           size: file.size
         }
         if(file.size > this.size_limit) {
-          this.error_snackbar(`File cannot be larger then ${humanFileSize(this.size_limit)}`)
+          this.error_snackbar(`File cannot be larger than ${humanFileSize(this.size_limit)}`)
           return
         }
         let reader = new FileReader()
