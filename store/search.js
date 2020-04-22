@@ -4,7 +4,7 @@ export const SEARCH_ENTRY_ASPECT = "search/get_entry_aspects"
 export const SEARCH_CLEAR = "search/clear"
 export const SEARCH_SET_ENTRIES = "search/set_entries"
 export const SEARCH_APPEND_ENTRIES = "search/append_entries"
-export const SEARCH_SET_PATH = "search/set_path"
+export const SEARCH_SET_ROUTE = "search/set_route"
 export const SEARCH_SET_SEARCHING = "search/set_searching"
 export const SEARCH_SET_SEARCHTIME = "search/set_searchtime"
 export const SEARCH_SET_SEARCH_COUNT = "search/set_search_count"
@@ -16,7 +16,7 @@ export const SEARCH_GET_ENTRY = "search/get_entry"
 
 export const SEARCH_GET_SEARCH_COUNT = "search/get_search_count"
 export const SEARCH_RECEIVED_ENTRIES = "search/get_received_entries"
-export const SEARCH_GET_PATH = "search/get_path"
+export const SEARCH_GET_ROUTE = "search/get_route"
 export const SEARCH_GET_SEARCHING = "search/get_searching"
 export const SEARCH_GET_SEARCHTIME = "search/get_searchtime"
 
@@ -24,6 +24,7 @@ const ld = require("lodash")
 
 export const state = () => ({
   path: "",
+  relevant_path_query_values: {},
   search_term: "",
   searching: false, // flag for loadin
   entries: [], // result
@@ -36,8 +37,9 @@ export const mutations = {
   set_entries(state, entries) {
     state.entries = entries
   },
-  set_path(state, path) {
+  set_route(state, {path, params}) {
     state.path = path
+    state.relevant_path_query_values = params
   },
   set_searchtime(state, time) {
     state.searchtime = time
@@ -78,8 +80,8 @@ export const getters = {
   get_entries(state) {
     return () => state.entries
   },
-  get_path(state) {
-    return state.path
+  get_route(state) {
+    return {path: state.path, params: state.relevant_path_query_values}
   },
   get_entry_aspects(state) {
     return () => {

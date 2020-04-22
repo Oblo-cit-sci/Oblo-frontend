@@ -1,4 +1,4 @@
-import {VIEW} from "../lib/consts";
+import {VIEW, UUID} from "~/lib/consts";
 import {get_proper_mode} from "~/lib/entry";
 
 export default {

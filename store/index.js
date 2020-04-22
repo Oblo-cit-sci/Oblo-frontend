@@ -156,20 +156,6 @@ export const getters = {
       return object_list2options(state.domains, TITLE)
     }
   },
-  containing_template_options(state, getters) {
-    return () => {
-      const types = new Set()
-      console.log("containing_template_options", typeof (state.entries.entries), state.entries.entries.constructor)
-      for (let entry of state.entries.entries.values()) {
-        types.add(entry.template.slug)
-      }
-      // console.log("conaining_types_options", types)
-      // console.log("as array", Array.from(types))
-      return Array.from(types).map(type => {
-        return {value: type, text: getters[TEMPLATES_TYPENAME](type)}
-      })
-    }
-  },
   last_page_path(state) {
     if (state.page_path.length > 0)
       return state.page_path[state.page_path.length - 1]

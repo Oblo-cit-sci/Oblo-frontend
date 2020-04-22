@@ -15,9 +15,6 @@
     v-row
       v-col(cols="12")
         Filterlist(:filter_options="filterlist_options")
-      <!--    v-row-->
-      <!--      v-col.col-md-6.col-xs-12(v-for="(config, index) in Object.values(filter_configs)" cols="12"  :key="index")-->
-      <!--        FilterSelect(v-bind="config" :selection.sync="filter_values[config.name]")-->
     v-row(v-if="prepend_search")
       v-col(offset="5" cols=2)
         v-progress-circular(indeterminate center size="35" color="success")
@@ -41,12 +38,12 @@
   import {
     SEARCH_CLEAR,
     SEARCH_GET_ENTRIES,
-    SEARCH_GET_PATH,
+    SEARCH_GET_ROUTE,
     SEARCH_GET_SEARCH_COUNT,
     SEARCH_GET_SEARCHING,
     SEARCH_GET_SEARCHTIME,
     SEARCH_RECEIVED_ENTRIES,
-    SEARCH_SET_PATH,
+    SEARCH_SET_ROUTE,
     SEARCH_SET_SEARCHING
   } from "~/store/search";
   import PersistentStorageMixin from "../util/PersistentStorageMixin";
@@ -54,8 +51,11 @@
   import {route_change_query} from "~/lib/util";
   import Filterlist from "~/components/util/Filterlist"
   import {license_filter_options, privacy_filter_options} from "~/lib/filter_option_consts"
+  import {QP_D} from "~/lib/consts"
 
   const LOG = false
+
+  const relevant_query_keys = [QP_D]
 
   export default {
     name: "Search",
@@ -72,7 +72,7 @@
         type: Object
       },
       // filter all entries before
-      fixed_filters: {
+      search_config: {
         type: Array,
         default: () => []
       },
@@ -86,30 +86,27 @@
     },
     data() {
       return {
-        // view_mode: "search",
-        //
-        filter_configs: this.$_.mapKeys(this.include_filters, v => v.name),
         filter_values: {},
-
         keyword: '',
         kw_char_thresh: 4,
-
         prepend_search: false
       }
     },
     created() {
-      // console.log("search created!")
-      // console.log(this.init_clear, this.init_full, this.searching, this.entries().length)
       let start_search = false
-      const last_path = this.$store.getters[SEARCH_GET_PATH]
+      // debugger
+      const last_route = this.$store.getters[SEARCH_GET_ROUTE]
       if (this.$route.query.search) {
-        console.log("ST", this.$route.query.search)
         this.keyword = this.$route.query.search
       }
-      if (last_path !== this.$route.path) {
+      const this_route_data = {
+        path: this.$route.path,
+        params: this.$_.pick(this.$route.query, relevant_query_keys)
+      }
+      if (!this.$_.isEqual(last_route, this_route_data)) {
         this.prepend_search = true
         this.clear()
-        this.$store.commit(SEARCH_SET_PATH, this.$route.path)
+        this.$store.commit(SEARCH_SET_ROUTE, this_route_data)
         start_search = true
         this.getEntries()
       } else {
@@ -176,7 +173,7 @@
         return result_entries
       },
       filterlist_options() {
-        return [privacy_filter_options, license_filter_options]
+        return this.$_.concat([privacy_filter_options, license_filter_options], this.include_filters)
       }
     },
     methods: {
@@ -206,7 +203,7 @@
           required: [],
           include: {}
         }
-        for (let filter of this.fixed_filters) {
+        for (let filter of this.search_config) {
           configuration.required.push(filter)
         }
         if (before_last) {

@@ -20,7 +20,7 @@
         EntryCreateList(:template_entries="template_entries")
     Search(
       :init_clear="false"
-      :fixed_filters="domain_pre_filter",
+      :search_config="domain_pre_filter",
       :mixin_domain_drafts="domain_name",
       :include_filters="filters")
 </template>
@@ -38,9 +38,10 @@
   import {USER_LOGGED_IN} from "~/store/user";
   import {create_entry} from "~/lib/entry"
   import {ENTRIES_SAVE_ENTRY} from "~/store/entries"
-  import {EDIT} from "~/lib/consts"
+  import {EDIT, QP_D} from "~/lib/consts"
   import EntryNavMixin from "~/components/EntryNavMixin"
   import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
+  import {object_list2options} from "~/lib/options"
 
   export default {
     name: "domain",
@@ -62,12 +63,11 @@
     computed: {
       ...mapGetters({logged_in: USER_LOGGED_IN, domain_templtes: TEMPLATES_OF_DOMAIN, domains: DOMAIN_BY_NAME}),
       domain_name() {
-        return this.$route.query.d
+        return this.$route.query[QP_D]
       },
       template_entries() {
         let templates = global_context_filter(this.domain_templtes(this.domain_name))
-        console.log(this.main_template)
-        if(this.main_template) {
+        if (this.main_template) {
           templates = templates.filter(t => t.slug !== this.main_template.slug)
         }
         return templates
@@ -76,7 +76,11 @@
         return this.domains(this.domain_name)
       },
       filters() {
-        return [entrytype_filter_options]
+        const template_filter_options = Object.assign({}, entrytype_filter_options)
+        template_filter_options.aspect.items = object_list2options(
+          this.$store.getters[TEMPLATES_OF_DOMAIN](this.domain_name), "title", "slug", true)
+        // console.log(template_filter_options)
+        return [template_filter_options]
       },
       domain_pre_filter() {
         return [{

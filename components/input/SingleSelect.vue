@@ -45,7 +45,7 @@
   and optional "description"
    */
 
-  import {server_icon_path} from "../../lib/client";
+  import {server_icon_path} from "~/lib/client";
 
   let select_tresh = 6;
   let autocomplet_thresh = 20

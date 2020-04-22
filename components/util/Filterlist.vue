@@ -4,7 +4,7 @@
       h4 Applied filters
       v-list
         v-list-item(v-for="(filter, index) in applied_filters" :key="filter.name")
-          v-list-item-title {{filter.label}}:&nbsp;{{filter.value}}
+          v-list-item-title {{filter.label}}:&nbsp;{{filter.text}}
           v-list-item-icon
             v-btn(icon @click="edit_filter(index)")
               v-icon mdi-filter
@@ -33,6 +33,7 @@
   import FilterSelect from "~/components/FilterSelect"
   import Aspect from "~/components/Aspect"
   import {aspect_default_value} from "~/lib/aspect"
+  import {SELECT} from "~/lib/consts"
 
   export default {
     name: "Filterlist",
@@ -66,6 +67,13 @@
         this.dialog_open = true
       },
       set_filter_value(name, value) {
+        console.log("set filter", value)
+        let text = value
+        if (this.active_filter.aspect.type === SELECT) {
+          // debugger
+          const selected_option = this.active_filter.aspect.items.find(i => i.value === value)
+          text = this.$_.get(selected_option, "text", value)
+        }
         const existing_filter = this.applied_filters.find(f => f.name === name)
         if (existing_filter) {
           existing_filter.value = value
@@ -73,7 +81,8 @@
           this.applied_filters.push({
             "name": this.active_filter.name,
             "label": this.active_filter.label,
-            "value": value
+            "value": value,
+            "text": text
           })
         }
         this.dialog_open = false
