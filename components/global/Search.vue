@@ -14,7 +14,11 @@
           :loading="searching ? 'success' : false")
     v-row
       v-col(cols="12")
-        Filterlist(:filter_options="filterlist_options")
+        Filterlist(
+          :filter_options="filterlist_options"
+          v-model="filter_data"
+          :search_button="filter_search_button"
+          @search="getEntries")
     v-row(v-if="prepend_search")
       v-col(offset="5" cols=2)
         v-progress-circular(indeterminate center size="35" color="success")
@@ -89,7 +93,9 @@
         filter_values: {},
         keyword: '',
         kw_char_thresh: 4,
-        prepend_search: false
+        prepend_search: false,
+        filter_data: [],
+        filter_changed: false
       }
     },
     created() {
@@ -138,6 +144,9 @@
       view_mode(val) {
         this.$emit("update:view_mode", val)
       },
+      filter_data() {
+        this.filter_changed = true
+      }
     },
     computed: {
       ...mapGetters({
@@ -158,6 +167,11 @@
           return "type 4 characters to trigger search"
         }
       },
+      filter_search_button() {
+        return {
+          color: this.filter_changed ? "success" : null
+        }
+      },
       filtered_entries() {
         let result_entries = this.entries() // must be a call
         if (this.mixin_domain_drafts) {
@@ -173,7 +187,7 @@
         return result_entries
       },
       filterlist_options() {
-        return this.$_.concat([privacy_filter_options, license_filter_options], this.include_filters)
+        return this.$_.concat([privacy_filter_options], this.include_filters)
       }
     },
     methods: {
@@ -206,6 +220,14 @@
         for (let filter of this.search_config) {
           configuration.required.push(filter)
         }
+
+        const filterlist_options = this.filterlist_options
+        for (let filter of this.filter_data) {
+          const config = filterlist_options.find(fo => fo.name === filter.name).search_config
+          config.conditional_value = filter.value
+          console.log(config)
+          configuration.required.push(config)
+        }
         if (before_last) {
           const ts = this.$store.getters[SEARCH_GET_SEARCHTIME]
           configuration.required.push({name: "before_ts", ts: ts})
@@ -217,7 +239,7 @@
         }
         return configuration
       }
-    },
+    }
   }
 </script>
 

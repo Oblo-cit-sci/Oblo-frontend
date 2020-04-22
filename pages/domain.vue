@@ -11,13 +11,14 @@
           v-card-title {{main_template.title}}
           v-card-text {{main_template.description}}
         v-expansion-panels.mt-3(flat dense)
-          v-expansion-panel
-            v-expansion-panel-header Other types of entries...
+          v-expansion-panel(style="backgroundColor: 'none'")
+            v-expansion-panel-header(style="backgroundColor: 'none'") Create ther types of entries...
             v-expansion-panel-content
               EntryCreateList(:template_entries="template_entries")
       div(v-else)
         v-divider
         EntryCreateList(:template_entries="template_entries")
+    v-divider.wide-divider
     Search(
       :init_clear="false"
       :search_config="domain_pre_filter",
@@ -106,5 +107,9 @@
   .header-domain {
     background-color: white;
     padding: 10px;
+  }
+
+  .wide-divider {
+    margin: 10px 0;
   }
 </style>

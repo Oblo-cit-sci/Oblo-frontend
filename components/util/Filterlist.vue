@@ -1,25 +1,24 @@
 <template lang="pug">
   div
     div(v-if="has_applied_filters")
-      h4 Applied filters
-      v-list
+      h4.mb-2 Applied filters
+      v-list(dense)
         v-list-item(v-for="(filter, index) in applied_filters" :key="filter.name")
           v-list-item-title {{filter.label}}:&nbsp;{{filter.text}}
-          v-list-item-icon
-            v-btn(icon @click="edit_filter(index)")
-              v-icon mdi-filter
-          v-list-item-icon
-            v-btn(icon @click="remove_filter(index)")
-              v-icon mdi-window-close
+          v-btn(icon @click="edit_filter(index)")
+            v-icon mdi-filter
+          v-btn(icon @click="remove_filter(index)")
+            v-icon mdi-window-close
     v-menu
       template(v-slot:activator="{ on: menu }")
-        v-btn(v-on="{...menu}") add filter
+        v-btn.mt-4(v-on="{...menu}") add filter
           v-icon mdi-plus
       v-list
         v-list-item(v-for="filter in available_filter"
           :key="filter.name"
           @click="create_filter(filter.name)")
           v-list-item-title {{filter.label}}
+    v-btn.mt-4(v-if="search_button" :color="search_button.color" @click="$emit('search')") {{search_button.text || 'Search'}}
     v-dialog(v-model="dialog_open")
       div.pl-2.pt-3(style="background:white")
         Aspect(v-if="active_filter"
@@ -40,11 +39,12 @@
     mixins: [],
     components: {Aspect, FilterSelect},
     props: {
-      filter_options: Array
+      filter_options: Array,
+      value: Array,
+      search_button: Object
     },
     data() {
       return {
-        applied_filters: [],
         dialog_open: false,
         active_filter: null
       }
@@ -55,6 +55,9 @@
       },
       has_applied_filters() {
         return this.applied_filters.length > 0
+      },
+      applied_filters() {
+        return this.value
       }
     },
     methods: {
@@ -63,28 +66,32 @@
       },
       create_filter(name) {
         this.active_filter = Object.assign({}, this.filter_option_by_name(name))
-        console.log("active filter", this.active_filter)
+        // console.log("active filter", this.active_filter)
         this.dialog_open = true
       },
       set_filter_value(name, value) {
-        console.log("set filter", value)
+        // console.log("set filter", value)
+        const new_value = this.$_.cloneDeep(this.value)
+        // TODO this should maybe go to lib/aspect
         let text = value
         if (this.active_filter.aspect.type === SELECT) {
-          // debugger
           const selected_option = this.active_filter.aspect.items.find(i => i.value === value)
           text = this.$_.get(selected_option, "text", value)
         }
-        const existing_filter = this.applied_filters.find(f => f.name === name)
+        const existing_filter = new_value.find(f => f.name === name)
         if (existing_filter) {
           existing_filter.value = value
+          existing_filter.text = text
         } else {
-          this.applied_filters.push({
+          new_value.push({
             "name": this.active_filter.name,
             "label": this.active_filter.label,
             "value": value,
             "text": text
           })
         }
+        console.log(new_value)
+        this.$emit("input", new_value)
         this.dialog_open = false
         setTimeout(() => {
           this.active_filter = null
@@ -98,7 +105,7 @@
         this.applied_filters.splice(index, 1)
       },
       filter_value(name) {
-        console.log("filter_value")
+        // console.log("filter_value")
         const existing_filter = this.applied_filters.find(f => f.name === name)
         if (existing_filter) {
           return existing_filter.value
