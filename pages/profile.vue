@@ -15,6 +15,7 @@
               btn_icon="mdi-camera"
               filetype="image"
               :force_load="profile_pic_upload_loading"
+              :size_limit="profile_pic_max_size"
               @fileload="profile_pic_added($event)")
     h2 General information
     v-row(v-for="aspect in profile_aspects" :key="aspect.name")
@@ -69,7 +70,7 @@
   import {ENTRIES_GET_OWN_ENTRIES_UUIDS} from "~/store/entries";
   import {license_aspect, password_aspect, password_confirm_aspect, privacy_aspect} from "~/lib/typical_aspects";
   import LoadFileButton from "../components/util/LoadFileButton";
-  import {base64file_to_blob} from "~/lib/util";
+  import {base64file_to_blob, common_filesize} from "~/lib/util";
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
   import {USER_GET_USER_DATA} from "~/store";
   import {USER_SET_USER_DATA} from "~/store/user";
@@ -283,7 +284,10 @@
       },
       any_password_invalid() {
         return this.$_.some(this.password_aspects, (a) => a.hasOwnProperty("error") && a.error)
-      }
+      },
+      profile_pic_max_size() {
+        return common_filesize(5, "MB")
+      },
     }
   }
 </script>

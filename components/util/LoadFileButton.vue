@@ -9,10 +9,14 @@
 
 <script>
 
+  import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
+  import {humanFileSize} from "~/lib/util"
+
   const accepted_filetypes = ["json","image"]
 
   export default {
     name: "LoadFileButton",
+    mixins: [TriggerSnackbarMixin],
     props: {
       filetype: {
         type: String,
@@ -58,18 +62,23 @@
     },
     methods: {
       filesChange(files) {
-        this.loading = true
         const file = files[0]
+        // todo could use lodash pick?
         this.file_meta = {
           name: file.name,
           type: file.type,
           size: file.size
         }
+        if(file.size > this.size_limit) {
+          this.error_snackbar(`File cannot be larger then ${humanFileSize(this.size_limit)}`)
+          return
+        }
         let reader = new FileReader()
         reader.onerror = (event) => {
           this.$emit("fileload", {ok: false, meta: this.file_meta})
           this.loading = false
-        };
+        }
+        this.loading = true
         switch (this.filetype) {
           case "json":
             reader.onload = this.onload_json
