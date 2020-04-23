@@ -20,7 +20,7 @@
     div
       span(v-if="can_edit")
         span(v-if="is_view_mode && can_edit")
-          v-btn(@click="back") back
+          v-btn(@click="back()") back
           v-btn(color="info" @click="edit") edit
         span(v-else-if="can_edit")
           v-btn(v-if="!is_view_mode" @click="show_cancel") {{cancel_word}}
@@ -48,7 +48,7 @@
         v-btn(v-if="can_download" :disabled="disable_download"  @click="download") download
           v-icon.ml-2 mdi-download
       span(v-else)
-        v-btn(@click="back") back
+        v-btn(@click="back()") back
     DecisionDialog(v-bind="dialog_data" :open.sync="dialog_visible" v-on:action="dialog_action($event)")
 </template>
 
@@ -267,6 +267,7 @@
       back(remove_params = []) {
         // todo maybe use util.route_change_query
         const last_path = Object.assign({}, this.$store.getters[LAST_BASE_PAGE_PATH])
+        console.log(remove_params)
         for (let p of remove_params) {
           delete last_path.query[p]
         }
