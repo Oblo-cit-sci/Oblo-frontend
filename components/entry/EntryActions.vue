@@ -217,7 +217,7 @@
             this.$store.commit(ENTRIES_SAVE_ENTRY, res.data.data)
             this.$store.dispatch(ENTRIES_UPDATE_ENTRY, this.uuid)
             this.$store.commit(ENTRIES_RESET_EDIT)
-            this.back()
+            this.back(["search"])
           } catch (e) {
             this.sending = false
             const message = this.$_.get(e, "response.data.error.msg", "Something went wrong")
@@ -264,11 +264,15 @@
       lastpage_reached($event) {
         console.log("an action lastpage_reached", $event)
       },
-      back() {
-        const last_path = this.$store.getters[LAST_BASE_PAGE_PATH]
+      back(remove_params = []) {
+        // todo maybe use util.route_change_query
+        const last_path = Object.assign({}, this.$store.getters[LAST_BASE_PAGE_PATH])
+        for (let p of remove_params) {
+          delete last_path.query[p]
+        }
         this.$store.commit(POP_LAST_PAGE_PATH)
         if (last_path) {
-          this.$router.push(last_path.fullPath)
+          this.$router.push(last_path)
         } else {
           this.$router.back()
         }

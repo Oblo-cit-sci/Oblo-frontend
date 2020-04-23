@@ -54,12 +54,12 @@
   import {ENTRIES_DOMAIN_DRAFTS_UUIDS} from "~/store/entries";
   import {route_change_query} from "~/lib/util";
   import Filterlist from "~/components/util/Filterlist"
-  import {license_filter_options, privacy_filter_options} from "~/lib/filter_option_consts"
-  import {QP_D} from "~/lib/consts"
+  import {privacy_filter_options} from "~/lib/filter_option_consts"
+  import {QP_D, QP_SEARCH} from "~/lib/consts"
 
   const LOG = false
 
-  const relevant_query_keys = [QP_D]
+  const relevant_query_keys = [QP_D, QP_SEARCH]
 
   export default {
     name: "Search",
@@ -105,10 +105,7 @@
       if (this.$route.query.search) {
         this.keyword = this.$route.query.search
       }
-      const this_route_data = {
-        path: this.$route.path,
-        params: this.$_.pick(this.$route.query, relevant_query_keys)
-      }
+      const this_route_data = this.act_relevant_route_data()
       if (!this.$_.isEqual(last_route, this_route_data)) {
         this.prepend_search = true
         this.clear()
@@ -134,9 +131,9 @@
           // TODO
           // this uses now, the domain only filter.
           // could later be replaced by, last search or all local in that domain (like it is now)
-          this.$router.push(route_change_query(this.$route))
+          this.$router.push(route_change_query(this.$route, {}, false, ["search"]))
           this.getEntries()
-        } else if (kw.length >= this.kw_char_thresh && kw.slice(-1) === " ") {
+        } else if (kw.length >= this.kw_char_thresh) {
           this.$router.push(route_change_query(this.$route, {"search": kw}))
           this.getEntries()
         }
@@ -174,6 +171,8 @@
       },
       filtered_entries() {
         let result_entries = this.entries() // must be a call
+        // todo this should just check if QP_D is set and make the filter manual
+        // so that drafts are also shown on the profile
         if (this.mixin_domain_drafts) {
           const drafts = this.$store.getters[ENTRIES_DOMAIN_DRAFTS_UUIDS](this.mixin_domain_drafts).reverse()
           result_entries = drafts.concat(result_entries)
@@ -188,7 +187,7 @@
       },
       filterlist_options() {
         const filter = this.include_filters
-        if(!this.$store.getters.is_visitor) {
+        if (!this.$store.getters.is_visitor) {
           filter.push(privacy_filter_options)
         }
         return this.$_.concat(filter)
@@ -203,6 +202,7 @@
       },
       getEntries(before_last = false) {
         let config = this.searchConfiguration(before_last)
+        this.$store.commit(SEARCH_SET_ROUTE, this.act_relevant_route_data())
         this.$store.commit(SEARCH_SET_SEARCHING, true)
         // const prepend = this.entries().length > 0
         debounced_search(this.$api, this.$store, config)
@@ -224,7 +224,6 @@
         for (let filter of this.search_config) {
           configuration.required.push(filter)
         }
-
         const filterlist_options = this.filterlist_options
         for (let filter of this.filter_data) {
           const config = filterlist_options.find(fo => fo.name === filter.name).search_config
@@ -242,6 +241,12 @@
           }
         }
         return configuration
+      },
+      act_relevant_route_data() {
+        return {
+          path: this.$route.path,
+          params: this.$_.pick(this.$route.query, relevant_query_keys)
+        }
       }
     }
   }
