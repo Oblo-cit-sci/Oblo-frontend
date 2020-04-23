@@ -27,6 +27,8 @@
       v-on:update_value="update_value($event)"
       @update:error="$emit('update:error', ($event))"
       v-on:aspectAction="$emit('aspectAction',$event)")
+    div(v-if="has_action")
+      AspectAction(:aspect="aspect" :mvalue="mvalue")
     div(v-if="!use_regular && aspect.attr.alternative !== undefined")
       Title_Description(v-bind="title_description(aspect.attr.alternative)")
       component(
@@ -52,10 +54,12 @@
   } from "~/lib/aspect";
   import AspectMixin from "./aspects/AspectMixin";
   import {TEMPLATES_NOTE} from "~/store/templates";
+  import AspectAction from "~/components/aspect_utils/AspectAction"
 
   export default {
     name: "Aspect",
     components: {
+      AspectAction,
       Title_Description
     },
     mixins: [AspectMixin],
@@ -113,6 +117,9 @@
       },
       disable() {
         return this.condition_fail || (this.aspect.attr && this.aspect.attr.disable)
+      },
+      has_action() {
+        return this.aspect.attr.hasOwnProperty("action")
       },
       regular_disable() {
         return this.disable || !this.use_regular
