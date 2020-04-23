@@ -11,6 +11,7 @@ export const USER_SET_USER_DATA = "user/set_user_data"
 export const USER_RESET_AUTH_TOKEN = "user/reset_auth_token"
 export const USER_SET_AUTH_TOKEN = "user/set_auth_token"
 export const USER_GET_AUTH_TOKEN = "user/get_auth_token"
+export const USER_GET_REGISTERED_NAME = "user/registered_name"
 
 
 let default_user_data = {

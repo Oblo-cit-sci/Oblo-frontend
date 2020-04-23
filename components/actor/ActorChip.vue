@@ -4,7 +4,6 @@
       v-img(:src="avatar(actor)")
     span(style="user-select:none") {{actor.public_name}}
     v-icon.pl-1(v-if="role") {{role_icon}}
-
 </template>
 
 <script>

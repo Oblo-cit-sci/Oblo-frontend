@@ -2,8 +2,8 @@
   v-flex#top(xs12 sm10 md10)
     v-row
       v-col
-        div Username: {{$store.state.user.user_data.registered_name}}
-        v-chip(outlined disabled small) {{$store.state.user.user_data.global_role}}
+        div Username: {{user_data.registered_name}}
+        v-chip(outlined disabled small) {{user_data.global_role}}
       v-col
         v-row
           v-img(:src="profile_pic" max-height=200 contain)
@@ -261,7 +261,14 @@
           this.profile_pic_upload_loading = true
           this.$api.post_profile_pic(formData)
             .then(() => {
+              // request the avatar to refill the browser cache
               this.profile_version_ts = Math.floor(new Date().getTime() / 1000)
+              this.$axios.get(this.$api.url_actor__$registered_name__avatar(this.user_data.registered_name), {
+                withCredentials: false,
+                headers: {
+                  "accept": "image/jpeg"
+                }
+              })
             })
             .catch(function () {
               this.ok_snackbar("Something went wrong")
