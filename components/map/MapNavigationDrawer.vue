@@ -8,7 +8,7 @@
     clipped
     hide-overlay
     temporary
-    right
+    left
     :width="drawer_width"
     fixed)
     div.ml-2.mr-3

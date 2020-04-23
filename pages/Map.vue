@@ -1,7 +1,7 @@
 <template lang="pug">
   v-layout.map.row
     client-only
-      .buttongroup(style="right:0")
+      .buttongroup(:style="button_group_shift")
         v-btn(dark fab large color="blue" @click="drawer = !drawer")
           v-icon mdi-menu
         v-btn(v-if="!drawer" fab @click="go_home" transition="fade-transition")
@@ -85,6 +85,15 @@
       }),
       display_mdDown() {
         return this.$vuetify.breakpoint.mdAndDown
+      },
+      button_group_shift() {
+        let shift = "0.5%"
+        if(this.drawer) {
+         shift = this.$vuetify.breakpoint.lgAndUp ? "600px" : "400px"
+        }
+        return {
+          "left": shift
+        }
       },
       navgiagtion_component() {
         if (this.display_mdDown)
@@ -280,12 +289,16 @@
 
   .buttongroup {
     top: 2%;
-    left: 0.5%;
+    transition: left 0.2s;
+    transition-timing-function: ease-out;
     position: fixed;
     height: 5%;
     z-index: 1
   }
 
+  .shifted {
+    left:
+  }
   /*.article_marker {*/
   /*    background-image: url('../appbeta/icons/svgs/library-15.svg');*/
   /*    background-size: cover;*/
