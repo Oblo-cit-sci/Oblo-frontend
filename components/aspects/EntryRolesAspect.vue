@@ -13,6 +13,7 @@
 <script>
   import AspectComponentMixin from "./AspectComponentMixin";
   import ActorSearch from "../actor/ActorSearch";
+  import {COLLABORATOR, SHARED} from "~/lib/actors"
 
   /**
    * In the entry and in the DB they are stored as array per each item is
@@ -46,9 +47,9 @@
         return this.value.map(ra => ra.actor.registered_name)
       },
       available_roles() {
-        const roles = [{name:"collaborator", label:"Collaborators", description: "Collaborators can edit this entry as you can"}]
+        const roles = [{name:COLLABORATOR, label:"Collaborators", description: "Collaborators can edit this entry as you can"}]
         if (this.entry_is_private) {
-          roles.push({name:"shared", label:"Visible to", description: "The following users can still read your entry"})
+          roles.push({name:SHARED, label:"Visible to", description: "The following users can still read your entry"})
         }
         return roles
       },
