@@ -219,6 +219,7 @@
             this.$store.commit(ENTRIES_RESET_EDIT)
             this.back(["search"])
           } catch (e) {
+            console.log(e)
             this.sending = false
             const message = this.$_.get(e, "response.data.error.msg", "Something went wrong")
             // todo for entry exists already, there could be a change in the button label, but maybe the data of that entry should be fetched
@@ -267,15 +268,15 @@
       back(remove_params = []) {
         // todo maybe use util.route_change_query
         const last_path = Object.assign({}, this.$store.getters[LAST_BASE_PAGE_PATH])
-        console.log(remove_params)
-        for (let p of remove_params) {
-          delete last_path.query[p]
-        }
+        console.log(remove_params, "lp", last_path)
         this.$store.commit(POP_LAST_PAGE_PATH)
-        if (last_path) {
+        if (!this.$_.isEmpty(last_path)) {
+          for (let p of remove_params) {
+            delete last_path.query[p]
+          }
           this.$router.push(last_path)
         } else {
-          this.$router.back()
+          this.$router.push("/")
         }
       }
     },

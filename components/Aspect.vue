@@ -27,7 +27,7 @@
       v-on:update_value="update_value($event)"
       @update:error="$emit('update:error', ($event))"
       v-on:aspectAction="$emit('aspectAction',$event)")
-    div(v-if="has_action")
+    div(v-if="has_action && edit")
       AspectAction(:aspect="aspect" :mvalue="mvalue")
     div(v-if="!use_regular && aspect.attr.alternative !== undefined")
       Title_Description(v-bind="title_description(aspect.attr.alternative)")

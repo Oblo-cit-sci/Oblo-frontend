@@ -9,10 +9,11 @@
   import {ASPECT, EDIT} from "~/lib/consts"
 
   import axios from "axios"
+  import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
 
   export default {
     name: "AspectAction",
-    mixins: [],
+    mixins: [TriggerSnackbarMixin],
     components: {},
     props: {
       aspect: Object,
@@ -56,18 +57,22 @@
           url += this.mvalue.value
         }
         axios.get(url, {}).then(({data}) => {
+          console.log("received", data)
           const processed_data = this.process_result(data)
+          console.log("processed to", processed_data)
           this.handle_result(processed_data)
-          this.done()
+
         }).catch(err => {
           console.log(err)
+          this.handle_error(err)
+        }).finally(() => {
+          this.done()
         })
       },
       process_result(data) {
         const process = this.action.properties.process_result
         const result = []
         for (let i of process) {
-          debugger
           const k = Object.keys(i)[0]
           const v = i[k]
           let read = null
@@ -106,6 +111,12 @@
           })
         } else {
           console.log("unknown handle type")
+        }
+      },
+      handle_error(err) {
+        console.log(err.response)
+        if(this.$_.get(err,"response.status") === 404) {
+          this.error_snackbar("No results")
         }
       },
       done() {

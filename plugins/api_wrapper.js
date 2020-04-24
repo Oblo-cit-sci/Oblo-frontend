@@ -237,6 +237,15 @@ class APIWrapper {
   post_actor__reset_password(data) {
     return this.axios.post(`${this.actor_baseURL}/reset_password`, data)
   }
+
+  post_actor__$registered_name__global_role(registered_name, role, domain) {
+    return this.axios.post(`${this.actor_baseURL}/${registered_name}/global_role`, {}, {
+      params: {
+        role,
+        domain
+      }
+    })
+  }
 }
 
 

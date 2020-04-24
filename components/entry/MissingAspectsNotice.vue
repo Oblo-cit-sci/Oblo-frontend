@@ -9,7 +9,14 @@
 </template>
 
 <script>
-  import {aspect_raw_default_value, disabled_by_condition, label, loc_append, pack_value} from "~/lib/aspect";
+  import {
+    aspect_default_value,
+    aspect_raw_default_value,
+    disabled_by_condition,
+    label,
+    loc_append,
+    pack_value
+  } from "~/lib/aspect";
   import {ASPECT, COMPONENT, COMPOSITE, EDIT, ENTRYLIST, INDEX, LIST} from "~/lib/consts";
   import {item_count_name} from "~/lib/listaspects";
   import {TEMPLATES_TYPE} from "~/store/templates";
@@ -34,7 +41,7 @@
     },
     created() {
       // console.log("this.missing", this.missing)
-      if(this.missing.length === 0) {
+      if (this.missing.length === 0) {
         this.$emit("input", true)
       }
     },
@@ -44,6 +51,7 @@
       },
       missing() {
         const aspects = this.template.aspects
+
         let missing = []
         for (let aspect of aspects) {
           //console.log("val", aspect.name)
@@ -53,9 +61,17 @@
           }
           if (required) {
             // todo, value thing not so elegant...
-            const a_w_value = this.entry.values[aspect.name] || pack_value(null)
+            // todo not always packed
+            const unpacked = this.$_.get(aspect, "attr.unpacked", false)
+            const a_w_value = this.entry.values[aspect.name] || aspect_default_value(aspect)
+
             //console.log("val-", aspect.name, a_w_value)
-            const a_value = a_w_value.value
+            if (unpacked) {
+              const a_value = a_w_value
+            } else {
+              const a_value = a_w_value.value
+            }
+
             const base_aspect_loc = loc_append([[EDIT, this.entry.uuid]], ASPECT, aspect.name)
             const validation = this.validate_aspect(aspect, a_w_value, base_aspect_loc)
             const valid = validation[0]
@@ -96,7 +112,7 @@
         if (!required) {
           return [OK]
         }
-        const raw_value = a_w_value.value
+        const raw_value = this.$_.get(aspect, "attr.unpacked", false) ? a_w_value : a_w_value.value
         //console.log(raw_value)
         if (a_w_value.hasOwnProperty("regular") && a_w_value.regular === false) {
           //console.log("asking alternative for ", aspect.name)

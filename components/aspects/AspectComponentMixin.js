@@ -38,6 +38,7 @@ export default {
       //console.log("AspMix - ", this.aspect.name, this.aspect.type, this.extra)
       return ((this.extra.listitem && this.mode === EDIT) || false) ? "mdi-close" : undefined //this.extra
     },
+    // todo not used atm. also clarify where extra should be, aspect. or aspect.extra
     rules() {
       if (this.$_.get(this.aspect.attr, "extra.rules")) {
         if (this.hasOwnProperty("hideDetails")) {
@@ -63,6 +64,9 @@ export default {
     },
     is_view_mode() {
       return this.mode === VIEW
+    },
+    extra() {
+      return this.aspect.extra || {}
     }
   },
   methods: {

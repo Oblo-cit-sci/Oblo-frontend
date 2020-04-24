@@ -9,11 +9,12 @@
         @update:ext_value="update_value(a, $event)"
         mode="edit"
         @update:error="a.error = $event")
+      v-btn(@click="update()") Update
 </template>
 
 <script>
 
-  import {SELECT} from "~/lib/consts"
+  import {EDITOR, SELECT} from "~/lib/consts"
   import Aspect from "~/components/Aspect"
   import {DOMAINS} from "~/store"
   import {object_list2options} from "~/lib/options"
@@ -68,6 +69,9 @@
     created() {
       const user_data = this.$_.cloneDeep(this.actor)
       this.aspects.global_role.value = user_data.global_role
+      // if(user_data.global_role === EDITOR) {
+      //   this.aspects.editor_for =
+      // }
     },
     methods: {
       domains() {
@@ -77,9 +81,11 @@
         if (aspect.name === "global_role") {
           this.aspects.editor_for.attr.disable = val !== "editor"
         }
+      },
+      update() {
+        this.$api.post_actor__$registered_name__global_role(this.actor.registered_name, this.aspects.global_role.value, this.aspects.editor_for.value)
       }
-    },
-    watch: {}
+    }
   }
 </script>
 

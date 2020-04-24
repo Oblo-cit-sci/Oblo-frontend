@@ -3,8 +3,10 @@ import {
   aspect_default_value,
   aspect_loc_str2arr,
   aspect_loc_uuid,
-  aspect_raw_default_value, check_condition_value,
-  complete_aspect_loc, pack_value
+  aspect_raw_default_value,
+  check_condition_value,
+  complete_aspect_loc,
+  pack_value
 } from "~/lib/aspect";
 import {ENTRIES_GET_ENTRY, ENTRIES_SET_ENTRY_VALUE, ENTRIES_VALUE} from "~/store/entries";
 
@@ -40,7 +42,7 @@ export default {
   methods: {
     // debounce to not to store contantly while typing
     update_value(raw_value, regular = true) {
-      if(raw_value === undefined)
+      if (raw_value === undefined)
         raw_value = null
       //console.log("saving", eveventent, this.aspect.name)
       // switch to unregular value
@@ -53,7 +55,7 @@ export default {
         }
       }
       let up_value = null
-      if(this.aspect.attr.unpacked) {
+      if (this.aspect.attr.unpacked) {
         up_value = raw_value
       } else {
         up_value = pack_value(raw_value)
@@ -109,11 +111,12 @@ export default {
       return this.aspect.attr.alternative
     },
     is_unpacked() {
+      console.log("unpacked?", this.aspect.name, ld.get(this.aspect, "attr.unpacked", false))
       return ld.get(this.aspect, "attr.unpacked", false)
     },
     use_regular: {
       get() {
-        if(this.is_unpacked)
+        if (this.is_unpacked)
           return true
         else
           return this.mvalue.hasOwnProperty("regular") ? this.mvalue.regular : true
@@ -128,7 +131,7 @@ export default {
       }
     },
     value() {
-      if(this.is_unpacked) {
+      if (this.is_unpacked) {
         return this.mvalue
       } else {
         return this.mvalue.value
@@ -140,7 +143,8 @@ export default {
           return this.ext_value
         } else {
           const raw = aspect_raw_default_value(this.aspect)
-          if(this.is_unpacked)
+          console.log("raw", raw, this.is_unpacked)
+          if (this.is_unpacked)
             return raw
           else
             return {value: raw}
@@ -214,7 +218,10 @@ export default {
           this.new_in_update = true
           let raw__new_value = aspect_raw_default_value(this.aspect)
           this.update_value(raw__new_value)
-          return pack_value(raw__new_value)
+          if (this.is_unpacked)
+            return raw__new_value
+          else
+            return pack_value(raw__new_value)
         }
         return value
       }
