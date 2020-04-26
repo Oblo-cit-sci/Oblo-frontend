@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-container(fluid)
+  v-container(fluid :style="main_container_width_style")
     div(class="header-domain")
       p.display-1 {{domain_data.page_index.title}}
       p.heading {{domain_data.page_index.description}}
@@ -43,10 +43,11 @@
   import EntryNavMixin from "~/components/EntryNavMixin"
   import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
   import {object_list2options} from "~/lib/options"
+  import LayoutMixin from "~/components/global/LayoutMixin"
 
   export default {
     name: "domain",
-    mixins: [EntryNavMixin, PersistentStorageMixin],
+    mixins: [EntryNavMixin, PersistentStorageMixin, LayoutMixin],
     components: {EntryCreateList, Search},
     data() {
       return {

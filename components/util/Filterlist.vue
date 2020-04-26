@@ -19,7 +19,7 @@
           @click="create_filter(filter.name)")
           v-list-item-title {{filter.label}}
     v-btn.mt-4(v-if="search_button" :color="search_button.color" @click="$emit('search')") {{search_button.text || 'Search'}}
-    v-dialog(v-model="dialog_open")
+    v-dialog(v-model="dialog_open" :width="main_container_with")
       div.pl-2.pt-3(style="background:white")
         Aspect(v-if="active_filter"
           :aspect="active_filter.aspect"
@@ -33,10 +33,11 @@
   import Aspect from "~/components/Aspect"
   import {aspect_default_value} from "~/lib/aspect"
   import {SELECT} from "~/lib/consts"
+  import LayoutMixin from "~/components/global/LayoutMixin"
 
   export default {
     name: "Filterlist",
-    mixins: [],
+    mixins: [LayoutMixin],
     components: {Aspect, FilterSelect},
     props: {
       filter_options: Array,

@@ -109,7 +109,7 @@ export default {
       return this.entry.template.slug
     },
     base_cols() {
-      if (this.$route.name === "entry-uuid") {
+      if (this.$route.name === "entry") {
         if (this.$vuetify.breakpoint.smAndDown) {
           return 12
         }
