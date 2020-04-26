@@ -64,9 +64,6 @@ export default {
     },
     is_view_mode() {
       return this.mode === VIEW
-    },
-    extra() {
-      return this.aspect.extra || {}
     }
   },
   methods: {

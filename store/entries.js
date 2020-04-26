@@ -1,7 +1,7 @@
 /*
   this is for the own entries
  */
-import {ASPECT, COMPONENT, DRAFT, EDIT, ENTRY, INDEX, PRIVATE_LOCAL, VIEW} from "~/lib/consts";
+import {ASPECT, COMPONENT, DRAFT, EDIT, ENTRY, INDEX, META, PRIVATE_LOCAL, VIEW} from "~/lib/consts";
 import {default_values, get_entry_titleAspect, select_aspect_loc} from "~/lib/entry";
 import {
   aspect_loc_str,
@@ -15,9 +15,7 @@ import {
 
 
 import Vue from "vue"
-import {filter_empty, recursive_unpack} from "~/lib/util";
-import {META} from "~/lib/consts";
-import {guarantee_array} from "~/lib/util";
+import {filter_empty, guarantee_array, recursive_unpack} from "~/lib/util";
 import {TEMPLATES_TYPE} from "~/store/templates";
 
 
@@ -122,7 +120,7 @@ export const mutations = {
     //console.log("final,", final_loc, "select", select, "value", value)
 
     if (final_loc[0] === ASPECT) {
-      select[final_loc[1]] = value
+      $nuxt.$set(select, [final_loc[1]], value)
     } else if (final_loc[0] === COMPONENT) {
       select.value[final_loc[1]] = value
     } else if (final_loc[0] === META) {
