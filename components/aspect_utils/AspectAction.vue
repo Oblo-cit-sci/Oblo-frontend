@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    v-btn(v-if="button_trigger" @click="trigger_action" :loading="button_trigger_loading") {{trigger.button_label}}
+    v-btn(v-if="button_trigger" :disabled="!has_value" @click="trigger_action" :loading="button_trigger_loading") {{trigger.button_label}}
 </template>
 
 <script>
@@ -25,6 +25,10 @@
       }
     },
     computed: {
+      value() {
+        // todo should be somewhere else
+        return this.$_.get(this.mvalue, "value", this.mvalue)
+      },
       action() {
         return this.aspect.attr.action
       },
@@ -36,6 +40,9 @@
       },
       button_trigger() {
         return this.trigger.type === "button"
+      },
+      has_value() {
+        return this.value
       }
     },
     methods: {
