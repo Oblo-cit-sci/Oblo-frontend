@@ -3,7 +3,7 @@
     v-row
       v-col
         div Username: {{user_data.registered_name}}
-        v-chip(outlined disabled small) {{user_data.global_role}}
+        GlobalRoleChip.mt-2(:global_role="user_data.global_role")
       v-col
         v-row
           v-img(:src="profile_pic" max-height=200 contain)
@@ -27,11 +27,13 @@
   import EntryListWrapper from "~/components/EntryListWrapper"
   import ActorAdminEdit from "~/components/actor/ActorAdminEdit"
   import IsAdminMixin from "~/components/actor/IsAdminMixin"
+  import GlobalRoleChip from "~/components/actor/GlobalRoleChip"
 
   export default {
     name: "actor",
     mixins: [IsAdminMixin],
     components: {
+      GlobalRoleChip,
       ActorAdminEdit,
       EntryListWrapper,
       EntryPreviewList,

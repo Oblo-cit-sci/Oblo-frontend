@@ -246,6 +246,14 @@ class APIWrapper {
       }
     })
   }
+
+  actor__get_all(details = false) {
+    return this.axios.get(`${this.actor_baseURL}/get_all`, {
+      params: {
+        details
+      }
+    })
+  }
 }
 
 

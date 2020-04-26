@@ -9,9 +9,11 @@
 <script>
   import {USER_GET_USER_DATA} from "~/store"
   import {VISITOR} from "~/lib/consts"
+  import ActorMixin from "~/components/actor/ActorMixin"
 
   export default {
     name: "ActorChip",
+    mixins: [ActorMixin],
     props: {
       actor: Object,
       role: String
@@ -29,20 +31,6 @@
             console.log("unknown role", this.role)
             return ""
           }
-        }
-      }
-    },
-    methods: {
-      avatar(actor) {
-        return this.$api.url_actor__$registered_name__avatar(actor.registered_name)
-      },
-      goto_actor(actor) {
-        if (actor.registered_name === VISITOR)
-          return
-        if (actor.registered_name === this.$store.getters[USER_GET_USER_DATA].registered_name) {
-          this.$router.push("/profile")
-        } else {
-          this.$router.push({path: "/actor", query: {name: actor.registered_name}})
         }
       }
     }

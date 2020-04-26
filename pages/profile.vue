@@ -268,6 +268,8 @@
                 headers: {
                   "accept": "image/jpeg"
                 }
+              }).catch(err => {
+                console.log("CORS error probably ok")
               })
             })
             .catch(function () {
