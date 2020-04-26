@@ -1,6 +1,6 @@
 <template lang="pug">
   v-list-item
-    v-list-item-avatar
+    v-list-item-avatar()
       v-img.pointer(:src="avatar(actor)"  @click="goto_actor(actor)")
     v-list-item-content
       v-list-item-title

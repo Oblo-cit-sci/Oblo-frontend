@@ -76,8 +76,7 @@
         }
         this.update_value(ungruouped_actors)
       }
-    },
-    watch: {}
+    }
   }
 </script>
 
