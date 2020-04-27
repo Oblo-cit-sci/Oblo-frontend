@@ -7,7 +7,6 @@ export default {
       }
     },
     main_container_with() {
-      console.log("WW")
       if (this.$vuetify.breakpoint.smAndDown) {
         return "100%"
       } else if (this.$vuetify.breakpoint.medium) {

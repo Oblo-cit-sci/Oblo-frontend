@@ -47,6 +47,7 @@
       h2 Your Entries
       EntryListWrapper(
         :wait="waiting"
+        :style="main_container_width_style"
         :init_request="true"
         :configuration="{required:[{name:'actor', registered_name:user_data.registered_name}]}")
 
@@ -75,6 +76,7 @@
   import {USER_GET_USER_DATA} from "~/store";
   import {USER_SET_USER_DATA} from "~/store/user";
   import EntryListWrapper from "../components/EntryListWrapper"
+  import LayoutMixin from "~/components/global/LayoutMixin"
 
   export default {
     name: "profile",
@@ -85,7 +87,7 @@
       Aspect,
       Taglist
     },
-    mixins: [PersistentStorageMixin, TriggerSnackbarMixin],
+    mixins: [PersistentStorageMixin, TriggerSnackbarMixin, LayoutMixin],
     data() {
       const new_pwd = this.$_.cloneDeep(password_aspect())
       new_pwd.label = "New password"

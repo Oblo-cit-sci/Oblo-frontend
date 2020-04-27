@@ -16,6 +16,7 @@
       v-divider.wide_divider
       h2 Entries
       EntryListWrapper(
+        :style="main_container_width_style"
         :wait="waiting"
         :configuration="{required:[{name:'actor', registered_name:user_data.registered_name}]}")
 </template>
@@ -28,10 +29,11 @@
   import ActorAdminEdit from "~/components/actor/ActorAdminEdit"
   import IsAdminMixin from "~/components/actor/IsAdminMixin"
   import GlobalRoleChip from "~/components/actor/GlobalRoleChip"
+  import LayoutMixin from "~/components/global/LayoutMixin"
 
   export default {
     name: "actor",
-    mixins: [IsAdminMixin],
+    mixins: [IsAdminMixin, LayoutMixin],
     components: {
       GlobalRoleChip,
       ActorAdminEdit,
