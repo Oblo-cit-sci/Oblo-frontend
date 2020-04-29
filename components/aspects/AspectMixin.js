@@ -41,7 +41,7 @@ export default {
   methods: {
     // debounce to not to store contantly while typing
     update_value(raw_value, regular = true, comes_unpacked = true) {
-      console.log("received update value", this.aspect.name)
+      // console.log("received update value", this.aspect.name)
       if (raw_value === undefined)
         raw_value = null
       //console.log("saving", eveventent, this.aspect.name)
@@ -148,7 +148,7 @@ export default {
           return this.ext_value
         } else {
           const raw = aspect_raw_default_value(this.aspect)
-          console.log("raw", raw, this.is_unpacked)
+          // console.log("raw", raw, this.is_unpacked)
           if (this.is_unpacked)
             return raw
           else

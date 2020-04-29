@@ -33,7 +33,6 @@
   import FilterSelect from "~/components/FilterSelect"
   import Aspect from "~/components/Aspect"
   import {aspect_default_value, value_text} from "~/lib/aspect"
-  import {SELECT} from "~/lib/consts"
   import LayoutMixin from "~/components/global/LayoutMixin"
   import AspectDialog from "~/components/aspect_utils/AspectDialog"
   import {recursive_unpack2} from "~/lib/util"
@@ -77,10 +76,10 @@
         this.dialog_open = true
       },
       set_filter_value(name, value) {
-        if(!value) {
+        const new_value = recursive_unpack2(this.$_.cloneDeep(value))
+        if (!new_value) {
           return
         }
-        const new_value = recursive_unpack2(this.$_.cloneDeep(value))
         let text = value_text(this.active_filter.aspect, new_value)
         const new_filters = this.$_.cloneDeep(this.applied_filters)
         const existing_filter = new_filters.find(f => f.name === name)

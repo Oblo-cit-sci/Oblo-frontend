@@ -3,7 +3,7 @@
     :width="main_container_with"
     persistent)
     div(v-if="dialog_open && aspect").pl-2.pt-3(style="background:white")
-      div
+      div.scroll
         Aspect(v-if="show_aspect"
           :aspect="aspect"
           :mode="mode"
@@ -50,7 +50,6 @@
         }
       },
       done() {
-        console.log("done")
         this.$emit("update:ext_value", this.int_value)
         this.$emit('update:dialog_open', false)
       }
@@ -60,4 +59,8 @@
 
 <style scoped>
 
+  .scroll {
+    overflow-y: auto;
+    max-height: 800px
+  }
 </style>
