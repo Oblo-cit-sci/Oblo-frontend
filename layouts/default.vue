@@ -51,7 +51,7 @@
 
 <script>
   import GlobalSnackbar from "~/components/global/GlobalSnackbar"
-  import {HOME} from "~/lib/consts"
+  import {ADMIN, HOME} from "~/lib/consts"
   import Footer from "~/components/global/Footer"
 
   import {initialize, reload_storage} from "~/lib/client"
@@ -61,7 +61,7 @@
   import {mapGetters} from "vuex"
   import PersistentStorageMixin from "~/components/util/PersistentStorageMixin";
   import {DOMAIN, LOGOUT} from "~/store";
-  import {USER_LOGGED_IN, USER_LOGOUT} from "~/store/user";
+  import {USER_GLOBAL_ROLE, USER_LOGGED_IN, USER_LOGOUT} from "~/store/user";
   import {
     APP_CONNECTED,
     APP_CONNECTING,
@@ -74,6 +74,7 @@
 
   let require_login = ["Profile", "Logout"]
   let hide_logged_in = ["Login", "Register"]
+  let require_admin = ["Admin"]
   let hide_no_be = ["Register", "Login"] // if not connected out and if logged in out
   let show_inDev = ["Tests"] //, "Types", "Entrytypes", "Aspectbuild"]
   let lastDomain = ''
@@ -124,6 +125,9 @@
           other_pages = other_pages.filter(p => !hide_logged_in.includes(p.title))
         } else {
           other_pages = other_pages.filter(p => !require_login.includes(p.title))
+        }
+        if(this.$store.getters[USER_GLOBAL_ROLE] !== ADMIN) {
+          other_pages = other_pages.filter(p => !require_admin.includes(p.title))
         }
         if (process.env.NODE_ENV !== "development") {
           other_pages = other_pages.filter(p => !show_inDev.includes(p.title))

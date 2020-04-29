@@ -12,7 +12,8 @@ export const USER_RESET_AUTH_TOKEN = "user/reset_auth_token"
 export const USER_SET_AUTH_TOKEN = "user/set_auth_token"
 export const USER_GET_AUTH_TOKEN = "user/get_auth_token"
 export const USER_GET_REGISTERED_NAME = "user/registered_name"
-
+export const USER_GET_USER_DATA = "user/get_user_data"
+export const USER_GLOBAL_ROLE = "user/global_role"
 
 let default_user_data = {
   global_role: VISITOR,
