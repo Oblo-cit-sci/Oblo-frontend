@@ -29,7 +29,7 @@
   import {aspect_default_value} from "~/lib/aspect";
   import SingleSelect from "../input/SingleSelect";
   import {OPTION} from "~/lib/consts";
-  import {string_list2options} from "~/lib/options";
+  import {object_list2options, string_list2options} from "~/lib/options";
   import AspectComponentMixin from "./AspectComponentMixin";
 
   export default {
@@ -41,7 +41,7 @@
         selected_option: null,
         selected_aspect: null,
         opt_values: [],
-        options: string_list2options(this.$_.map(this.aspect.options, o => o.name))
+        options: object_list2options(this.aspect.options, "name", "name", true, ["description"])
       }
     },
     created() {
