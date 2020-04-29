@@ -18,7 +18,7 @@ export default {
       required: true
     },
     ext_value: {
-      type: [Object, String, Number]
+      type: [Object, String, Number, Array]
     },
     mode: { // todo well, this is gonna be messy
       type: String,

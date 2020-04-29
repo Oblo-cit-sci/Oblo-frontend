@@ -227,9 +227,14 @@
         const filterlist_options = this.filterlist_options
         for (let filter of this.filter_data) {
           const config = filterlist_options.find(fo => fo.name === filter.name).search_config
-          config.conditional_value = filter.value
-          console.log(config)
-          configuration.required.push(config)
+          if (config.hasOwnProperty("name")) {
+            config.conditional_value = filter.value
+            configuration.required.push(config)
+          } else if(config.hasOwnProperty("include_as")) {
+            configuration.include[config.include_as] = filter.value
+          } else {
+            console.log("error cannot proccess filter-option", filter.name)
+          }
         }
         if (before_last) {
           const ts = this.$store.getters[SEARCH_GET_SEARCHTIME]

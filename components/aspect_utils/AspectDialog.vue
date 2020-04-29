@@ -28,7 +28,7 @@
       aspect: Object,
       mode: String,
       ext_value: {
-        type: [Object, String, Number]
+        type: [Object, String, Number, Array]
       }
     },
     data() {

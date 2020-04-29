@@ -77,18 +77,21 @@
         this.dialog_open = true
       },
       set_filter_value(name, value) {
+        if(!value) {
+          return
+        }
         const new_value = recursive_unpack2(this.$_.cloneDeep(value))
         let text = value_text(this.active_filter.aspect, new_value)
         const new_filters = this.$_.cloneDeep(this.applied_filters)
         const existing_filter = new_filters.find(f => f.name === name)
         if (existing_filter) {
-          existing_filter.value = value
+          existing_filter.value = new_value
           existing_filter.text = text
         } else {
           new_filters.push({
             "name": this.active_filter.name,
             "label": this.active_filter.label,
-            "value": value,
+            "value": new_value,
             "text": text
           })
         }
