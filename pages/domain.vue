@@ -29,7 +29,7 @@
 <script>
 
   import EntryCreateList from "~/components/EntryCreateList";
-  import {global_context_filter} from "~/lib/search";
+  import {entries_domain_filter, global_context_filter} from "~/lib/search";
   import Search from "~/components/global/Search";
   import {entrytype_filter_options} from "~/lib/filter_option_consts";
 
@@ -44,6 +44,7 @@
   import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
   import {object_list2options} from "~/lib/options"
   import LayoutMixin from "~/components/global/LayoutMixin"
+  import {get_tags_filter_options} from "~/lib/codes"
 
   export default {
     name: "domain",
@@ -81,8 +82,9 @@
         const template_filter_options = Object.assign({}, entrytype_filter_options)
         template_filter_options.aspect.items = object_list2options(
           this.$store.getters[TEMPLATES_OF_DOMAIN](this.domain_name), "title", "slug", true)
-        // console.log(template_filter_options)
-        return [template_filter_options]
+
+        const tags_filter_options = get_tags_filter_options(this.$store, this.domain_name)
+        return [template_filter_options, tags_filter_options]
       },
       domain_pre_filter() {
         return [{

@@ -25,6 +25,7 @@ export const DOMAIN = "domain"
 export const DOMAIN_BY_NAME = "domain_by_name"
 export const LAST_BASE_PAGE_PATH = "last_page_path"
 export const LOGOUT = "logout"
+export const ALL_CODES = "all_codes"
 // internal mutations
 export const ADD_CODES = "add_codes"
 
@@ -159,6 +160,9 @@ export const getters = {
       return state.page_path[state.page_path.length - 1]
     else
       return null
+  },
+  all_codes(state) {
+    return state.codes
   }
 };
 

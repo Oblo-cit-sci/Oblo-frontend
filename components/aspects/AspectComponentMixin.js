@@ -5,7 +5,7 @@ import {ENTRIES_GET_ENTRY} from "~/store/entries";
 export default {
   name: "AspectComponentMixin",
   props: {
-    value: {
+    mvalue: {
       required: true
     },
     aspect: {
@@ -31,6 +31,16 @@ export default {
     }
   },
   computed: {
+    value() {
+      if (this.is_unpacked) {
+        return this.mvalue
+      } else {
+        return this.mvalue.value
+      }
+    },
+    is_unpacked() {
+      return this.$_.get(this.aspect, "attr.unpacked", false)
+    },
     readOnly() {
       return this.mode === VIEW
     },

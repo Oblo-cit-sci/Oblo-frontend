@@ -14,7 +14,7 @@
           v-row.pl-3
             MetaChips(v-if="show_meta_aspects" :meta_aspects="meta_aspects")
           v-row.pl-3.mt-3
-              ActorChip(:actor="creator")
+            ActorChip(:actor="creator")
           v-row.pl-3
             Taglist(v-if="show_tags" :tags="tags" :slide="true")
           v-row.pl-3
@@ -35,7 +35,7 @@
         mode="view"
         :aspect_loc="aspect_locs[aspect.name]")
     div(v-if="show_botton_actions")
-      v-divider(light v-bind:class="{draft: is_draft}")
+      v-divider(light v-bind:class="{draft_clr: is_draft}")
       v-card-actions
         div
           v-btn(small text outlined @click="goto(entry.uuid)") {{goto_text}}
@@ -52,8 +52,8 @@
 <script>
 
   import EntryNavMixin from "../EntryNavMixin";
-  import {privacy_icon, printDate} from "~/lib/util"
-  import {EDIT, ENTRY, VIEW} from "~/lib/consts"
+  import {printDate, privacy_color, privacy_icon, review_color} from "~/lib/util"
+  import {EDIT, ENTRY, REVIEW, VIEW} from "~/lib/consts"
   import MetaChips from "./MetaChips"
   import Taglist from "../global/Taglist"
   import {create_entry, full_title, get_proper_mode} from "~/lib/entry"
@@ -66,7 +66,8 @@
   import EntryActorList from "./EntryActorList";
   import {SEARCH_ENTRY_ASPECT} from "~/store/search";
   import {
-    EDIT_UUID, ENTRIES_DELETE_ENTRY,
+    EDIT_UUID,
+    ENTRIES_DELETE_ENTRY,
     ENTRIES_DOMAIN,
     ENTRIES_HAS_ENTRY,
     ENTRIES_SAVE_CHILD_N_REF,
@@ -74,8 +75,6 @@
   } from "~/store/entries";
   import {TEMPLATES_TYPENAME} from "~/store/templates";
   import ActorChip from "../actor/ActorChip"
-  import {REVIEW} from "~/lib/consts"
-  import {privacy_color, review_color} from "~/lib/util"
 
   /**
    * ISSUE is not working atm, to responsive
@@ -148,13 +147,17 @@
       },
       meta_aspects() {
         let result = []
-        result.push({icon: privacy_icon(this.entry.privacy), name: this.entry.privacy, color: privacy_color(this.entry.privacy)})
+        result.push({
+          icon: privacy_icon(this.entry.privacy),
+          name: this.entry.privacy,
+          color: privacy_color(this.entry.privacy)
+        })
         result.push({name: "License: " + this.entry.license})
         if (this.include_domain_tag) {
           result.push({name: this.$store.getters[ENTRIES_DOMAIN](this.entry.uuid)})
         }
-        if(this.entry.status === "requires_review") {
-          result.unshift({icon: "mdi-file-find-outline", name: "Requires review", color:review_color()})
+        if (this.entry.status === "requires_review") {
+          result.unshift({icon: "mdi-file-find-outline", name: "Requires review", color: review_color()})
         }
         if (this.entry.status === "orphan") {
           result.push({name: "Orphan"})
@@ -299,6 +302,10 @@
 
   .draft {
     border: solid 1px cornflowerblue !important;
+  }
+
+  .draft_clr {
+    border-color: cornflowerblue
   }
 
   @media (max-width: 959px) {

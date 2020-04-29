@@ -10,7 +10,6 @@ import {
 } from "~/lib/aspect";
 import {ENTRIES_GET_ENTRY, ENTRIES_SET_ENTRY_VALUE, ENTRIES_VALUE} from "~/store/entries";
 
-const ld = require("lodash")
 
 export default {
   props: {
@@ -41,7 +40,8 @@ export default {
   },
   methods: {
     // debounce to not to store contantly while typing
-    update_value(raw_value, regular = true) {
+    update_value(raw_value, regular = true, comes_unpacked = true) {
+      console.log("received update value", this.aspect.name)
       if (raw_value === undefined)
         raw_value = null
       //console.log("saving", eveventent, this.aspect.name)
@@ -58,7 +58,12 @@ export default {
       if (this.aspect.attr.unpacked) {
         up_value = raw_value
       } else {
-        up_value = pack_value(raw_value)
+        // we need this for options aspects
+        if(comes_unpacked) {
+          up_value = pack_value(raw_value)
+        } else {
+          up_value = raw_value
+        }
         if (!regular) {
           up_value.regular = false
         }
@@ -111,8 +116,8 @@ export default {
       return this.aspect.attr.alternative
     },
     is_unpacked() {
-      console.log("unpacked?", this.aspect.name, ld.get(this.aspect, "attr.unpacked", false))
-      return ld.get(this.aspect, "attr.unpacked", false)
+      // console.log("unpacked?", this.aspect.name, ld.get(this.aspect, "attr.unpacked", false))
+      return this.$_.get(this.aspect, "attr.unpacked", false)
     },
     use_regular: {
       get() {
@@ -130,13 +135,13 @@ export default {
         }
       }
     },
-    value() {
-      if (this.is_unpacked) {
-        return this.mvalue
-      } else {
-        return this.mvalue.value
-      }
-    },
+    // value() {
+    //   if (this.is_unpacked) {
+    //     return this.mvalue
+    //   } else {
+    //     return this.mvalue.value
+    //   }
+    // },
     mvalue: function () {
       if (!this.aspect_loc) {
         if (this.ext_value !== undefined) {

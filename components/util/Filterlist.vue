@@ -19,26 +19,29 @@
           @click="create_filter(filter.name)")
           v-list-item-title {{filter.label}}
     v-btn.mt-4(v-if="search_button" :color="search_button.color" @click="$emit('search')") {{search_button.text || 'Search'}}
-    v-dialog(v-model="dialog_open" :width="main_container_with")
-      div.pl-2.pt-3(style="background:white")
-        Aspect(v-if="active_filter"
-          :aspect="active_filter.aspect"
-          mode="edit"
-          :ext_value="filter_value(active_filter.name)"
-          @update:ext_value="set_filter_value(active_filter.name, $event)")
+    AspectDialog(
+      :dialog_open.sync="dialog_open"
+      :show_aspect="active_filter !== null"
+      :aspect="$_.get(active_filter, 'aspect')"
+      mode="edit"
+      :ext_value="$_.get(active_filter, 'name') ? filter_value($_.get(active_filter, 'name')) : null"
+      @update:ext_value="set_filter_value(active_filter.name, $event)")
+
 </template>
 
 <script>
   import FilterSelect from "~/components/FilterSelect"
   import Aspect from "~/components/Aspect"
-  import {aspect_default_value} from "~/lib/aspect"
+  import {aspect_default_value, value_text} from "~/lib/aspect"
   import {SELECT} from "~/lib/consts"
   import LayoutMixin from "~/components/global/LayoutMixin"
+  import AspectDialog from "~/components/aspect_utils/AspectDialog"
+  import {recursive_unpack2} from "~/lib/util"
 
   export default {
     name: "Filterlist",
     mixins: [LayoutMixin],
-    components: {Aspect, FilterSelect},
+    components: {AspectDialog, Aspect, FilterSelect},
     props: {
       filter_options: Array,
       value: Array,
@@ -74,27 +77,22 @@
         this.dialog_open = true
       },
       set_filter_value(name, value) {
-        // console.log("set filter", value)
-        const new_value = this.$_.cloneDeep(this.value)
-        // TODO this should maybe go to lib/aspect
-        let text = value
-        if (this.active_filter.aspect.type === SELECT) {
-          const selected_option = this.active_filter.aspect.items.find(i => i.value === value)
-          text = this.$_.get(selected_option, "text", value)
-        }
-        const existing_filter = new_value.find(f => f.name === name)
+        const new_value = recursive_unpack2(this.$_.cloneDeep(value))
+        let text = value_text(this.active_filter.aspect, new_value)
+        const new_filters = this.$_.cloneDeep(this.applied_filters)
+        const existing_filter = new_filters.find(f => f.name === name)
         if (existing_filter) {
           existing_filter.value = value
           existing_filter.text = text
         } else {
-          new_value.push({
+          new_filters.push({
             "name": this.active_filter.name,
             "label": this.active_filter.label,
             "value": value,
             "text": text
           })
         }
-        this.$emit("input", new_value)
+        this.$emit("input", new_filters)
         this.dialog_open = false
       },
       edit_filter(index) {

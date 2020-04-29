@@ -69,6 +69,7 @@
     APP_INITIALIZED,
     APP_PRIVACY_SHOWN,
   } from "~/store/app"
+  import {dev_env} from "~/lib/util"
 
 
   let require_login = ["Profile", "Logout"]
@@ -99,7 +100,9 @@
         reload_storage(this.$store, this.$localForage)
       if (!this.$api.is_initialized()) {
         this.$api.init(this.$axios) // , "https://opentek.eu"
-        this.privacy_sheet_open = true
+        if(!dev_env()) {
+          this.privacy_sheet_open = true
+        }
       }
     },
     computed: {

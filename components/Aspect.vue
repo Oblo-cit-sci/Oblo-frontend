@@ -17,7 +17,7 @@
     component(
       v-if="use_regular && !disable"
       :is="aspectComponent(aspect, mode)"
-      :value="value"
+      :mvalue="mvalue"
       :aspect="aspect"
       :aspect_loc="aspect_loc"
       :disabled="regular_disable"

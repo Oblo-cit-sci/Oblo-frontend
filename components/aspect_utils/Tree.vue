@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    v-treeview(:items="root_items" item-text="name" item-key="name" dense :selectable="selectable")
+    v-treeview(:items="root_items" item-text="name" item-key="name" dense :selectable="selectable" @input="input($event)")
 </template>
 
 <script>
@@ -13,25 +13,23 @@ export default {
   props: {
     tree: Object,
     selectable: [Boolean, Object],
-    value: Object,
-    max_level: Number
+    // value: Object,
   },
   data() {
     return {}
   },
   computed: {
-    processed_tree() {
-      if(this.max_level) {
-        return tree_cut_at_level(this.tree, this.max_level)
-      } else {
-        return this.tree
-      }
-    },
     root_items() {
-      return this.processed_tree.root.children
+      return this.tree.root.children
     }
   },
-  methods: {}
+  methods: {
+    input(selection) {
+      console.log(selection)
+      //this.$emit("input", selection)
+      this.$emit("update_value", selection)
+    }
+  }
 }
 </script>
 

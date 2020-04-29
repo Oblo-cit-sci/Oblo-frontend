@@ -303,6 +303,7 @@
               //console.log(titles[i], "from ", this.value[i], this.aspect.items.components)
               // TODO here we should check if there is a ref_value and grab that
               if (Array.isArray(titles[i])) {
+                console.log("ListAspect. recursive_unpack is depracated, try recursive_unpack2 instead")
                 const list_values = recursive_unpack(this.value[i].value[titleAspectName].value).filter(v => Object.keys(v).length > 0)
                 titles[i] = list_values.join(", ")
               }
