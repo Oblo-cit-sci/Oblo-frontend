@@ -214,10 +214,6 @@ class APIWrapper {
     return this.axios.post(`${this.actor_baseURL}/search`, search_query)
   }
 
-  actor_clear_cache() {
-    return this.axios.get(`${this.actor_baseURL}/clear_cache`)
-  }
-
   entries_map_entries() {
     return this.axios.post(`${this.entries_baseURL}/map_entries`)
   }

@@ -27,13 +27,14 @@
   import Taglist from "~/components/global/Taglist";
   import EntryListWrapper from "~/components/EntryListWrapper"
   import ActorAdminEdit from "~/components/actor/ActorAdminEdit"
-  import IsAdminMixin from "~/components/actor/IsAdminMixin"
   import GlobalRoleChip from "~/components/actor/GlobalRoleChip"
   import LayoutMixin from "~/components/global/LayoutMixin"
+  import {USER_GLOBAL_ROLE} from "~/store/user"
+  import {ADMIN} from "~/lib/consts"
 
   export default {
     name: "actor",
-    mixins: [IsAdminMixin, LayoutMixin],
+    mixins: [LayoutMixin],
     components: {
       GlobalRoleChip,
       ActorAdminEdit,
@@ -111,6 +112,9 @@
       },
       registered_name() {
         return this.$route.query.name
+      },
+      is_admin() {
+        this.$store.getters[USER_GLOBAL_ROLE] === ADMIN
       }
     },
     methods: {},

@@ -23,7 +23,6 @@
   import {STR} from "~/lib/consts";
   import PersistentStorageMixin from "../components/util/PersistentStorageMixin";
   import LoginMixin from "../components/actor/LoginMixin";
-  import {check_clear_cache} from "~/lib/client";
 
   export default {
     name: "Login",
@@ -89,7 +88,6 @@
             this.ok_snackbar("Login successful")
             this.process_login(data)
             this.$router.push("/")
-            check_clear_cache(this.$store, this.$api)
           } else {
             // console.log("todo handle login error")
             this.errorMsg = data.error.msg

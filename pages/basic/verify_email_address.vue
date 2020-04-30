@@ -4,7 +4,6 @@
 
 <script>
   import {USER_LOGGED_IN} from "../../store/user"
-  import {check_clear_cache} from "../../lib/client"
   import TriggerSnackbarMixin from "../../components/TriggerSnackbarMixin"
   import LoginMixin from "../../components/actor/LoginMixin"
 
@@ -18,7 +17,6 @@
           this.ok_snackbar("Email address verified")
           this.process_login(data)
           this.$router.push("/")
-          check_clear_cache(this.$store, this.$api)
         } else {
           this.ok_snackbar(data.data)
           this.$router.push("/")
