@@ -74,9 +74,6 @@ export default {
     go_home() {
       this.$router.push("/")
     },
-    layer_select_change(active_layers) {
-      this.$emit("layerstatus", active_layers)
-    },
     update_map_entries(entries) {
       console.log("map nav, num results", entries.length)
       if (entries.length > 0) {

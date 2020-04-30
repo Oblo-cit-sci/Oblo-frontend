@@ -159,7 +159,7 @@
         return this.$store.getters[TEMPLATES_TYPE](this.template_slug).aspects
       },
       license_privacy_mode() {
-        if (this.entry.refs.parent || this.entry.privacy === PRIVATE_LOCAL || !this.logged_in) {
+        if (!this.logged_in) {
           return VIEW
         } else {
           return EDIT

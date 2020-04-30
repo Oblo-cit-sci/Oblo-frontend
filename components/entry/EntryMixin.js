@@ -63,7 +63,7 @@ export default {
       return this.$route.query.entry_mode || VIEW
     },
     in_context() {
-      return this.template.rules.context !== GLOBAL || this.entry.refs.parent
+      return this.template.rules.context !== GLOBAL || this.entry.entry_refs.parent
     },
     entry() {
       let entry = null

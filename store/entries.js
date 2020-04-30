@@ -314,7 +314,7 @@ export const getters = {
   },
   get_children(state) {
     return (entry) => {
-      return ld.map(entry.refs.children, ref => state.entries.get(ref.uuid))
+      return ld.map(entry.entry_refs.children, ref => state.entries.get(ref.uuid))
     }
   },
   get_own_entries_uuids(state, getters) {
@@ -356,7 +356,7 @@ export const getters = {
       //console.log(entry)
       if (entry) {
         entries.push(entry)
-        const child_keys = Object.keys(entry.refs.children)
+        const child_keys = Object.keys(entry.entry_refs.children)
         const child_entries_list = ld.map(child_keys, uuid => getters.get_recursive_entries(uuid))
         child_entries_list.forEach(ce_list => {
           ce_list.forEach(c_entry => {
@@ -521,12 +521,13 @@ export const actions = {
     // console.log(uuid)
     const entry = context.state.entries.get(uuid)
     if (entry) {
-      for (let child_uuid in entry.refs.children) {
+      for (let child_uuid in entry.entry_refs.children) {
         context.dispatch(DELETE_ENTRY, child_uuid)
       }
-      if (entry.status !== "orphan" && entry.refs.parent) {
-        const parent = entry.refs.parent
-        context.dispatch(DELETE_REF_CHILD, {uuid: parent.uuid, child_uuid: uuid})
+      if (entry.status !== "orphan" && entry.entry_refs.parent) {
+        const parent = entry.entry_refs.parent
+        if(parent)
+          context.dispatch(DELETE_REF_CHILD, {uuid: parent.uuid, child_uuid: uuid})
       }
       context.commit(DELETE_ENTRY, uuid)
     } else {

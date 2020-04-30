@@ -23,6 +23,9 @@
   import {STR} from "~/lib/consts";
   import PersistentStorageMixin from "../components/util/PersistentStorageMixin";
   import LoginMixin from "../components/actor/LoginMixin";
+  import {USER_LOGOUT} from "~/store/user"
+  import {SEARCH_CLEAR} from "~/store/search"
+  import {CLEAR_ENTRIES} from "~/store"
 
   export default {
     name: "Login",
@@ -87,6 +90,8 @@
           if (data.user) {
             this.ok_snackbar("Login successful")
             this.process_login(data)
+                this.$store.dispatch(CLEAR_ENTRIES)
+                this.$store.commit(SEARCH_CLEAR)
             this.$router.push("/")
           } else {
             // console.log("todo handle login error")

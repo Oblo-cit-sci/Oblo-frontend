@@ -23,15 +23,15 @@
 
 <script>
   import {MglMarker, MglPopup} from "vue-mapbox";
-  import {access_token, licci_style_map} from "../lib/services/mapbox";
+  import {access_token, licci_style_map} from "~/lib/services/mapbox";
   import {mapGetters} from "vuex"
   import MapNavigationDrawer from "../components/map/MapNavigationDrawer";
   import {Marker} from "mapbox-gl";
   import MapNavigationBottomSheet from "../components/map/MapNavigationBottomSheet";
-  import {ENTRIES_HAS_FULL_ENTRY, ENTRIES_SAVE_ENTRY} from "../store/entries";
-  import {route_change_query} from "../lib/util";
-  import {MAP_GOTO_DONE, MAP_GOTO_LOCATION, MAP_RESET_GOTO_LOCATIONS, MAP_SET_ENTRIES} from "../store/map";
-  import {VIEW} from "../lib/consts";
+  import {ENTRIES_HAS_FULL_ENTRY, ENTRIES_SAVE_ENTRY} from "~/store/entries";
+  import {route_change_query} from "~/lib/util";
+  import {MAP_GOTO_DONE, MAP_GOTO_LOCATION, MAP_RESET_GOTO_LOCATIONS, MAP_SET_ENTRIES} from "~/store/map";
+  import {VIEW} from "~/lib/consts";
 
 
   // navigation mode!! copy of  MapNvaigationMixin
@@ -120,6 +120,8 @@
         this.map = event.map
         this.map_loaded = true
         console.log("map loaded")
+        // console.log(this.map)
+        this.map.setLayoutProperty('country-label', "visibility", "visible")
         if (this.entries) {
           this.create_markers()
           this.markers_and_map_done()
@@ -139,10 +141,18 @@
         this.$store.commit(MAP_SET_ENTRIES, entries)
       },
       layer_select_change(active_layers) {
+        console.log("layer_select_change", active_layers)
+        // console.log("all layers", this.layers)
+        // debugger
+        console.log(this.$_.keyBy(this.layers), l => active_layers.includes(l))
+        // console.log(this.$_.mapValues(this.$_.keyBy(this.layers), l => active_layers.includes(l)))
+        // console.log("**")
         this.set_layer_status(this.$_.mapValues(this.$_.keyBy(this.layers), l => active_layers.includes(l)))
       },
       set_layer_status(layers = this.layer_status) {
-        //console.log(this.map.style._layers)
+        console.log("hello")
+        debugger
+        console.log(layers)
         for (let layer in layers) {
           this.map.setLayoutProperty(layer, 'visibility', layers[layer] ? "visible" : "none")
         }
@@ -184,7 +194,7 @@
               const entry = data.data
 
               this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
-              console.log("received refs", entry.refs)
+              // console.log("received refs", entry.entry_refs)
               this.update_navigation_mode(entry_uuid, VIEW)
             }
           }).catch(err => {
@@ -296,9 +306,6 @@
     z-index: 1
   }
 
-  .shifted {
-    left:
-  }
   /*.article_marker {*/
   /*    background-image: url('../appbeta/icons/svgs/library-15.svg');*/
   /*    background-size: cover;*/

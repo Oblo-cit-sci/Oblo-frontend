@@ -23,7 +23,7 @@ export const state = () => ({
   selected_entry: null,
   goto_location: null,
   last_goto_location: null,
-  layers: ["Climate types", "Weather stations"],
+  layers: ["Climate types", "Weather stations", "country-label"],
   layer_status: {},
   to_select_aspect_location: null, // when coming from a locationAspect, comes with
   selected_location: null // when there is no "to_select_aspect_location" e.g. profile

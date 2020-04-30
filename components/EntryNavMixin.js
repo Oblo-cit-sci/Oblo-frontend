@@ -73,7 +73,7 @@ export default {
     // },
     to_parent(to_last_element = true, mode = VIEW) {
       if (this.in_context) {
-        const parent_ref = this.entry.refs.parent
+        const parent_ref = this.entry.entry_refs.parent
         let parent_entry_type_slug = this.$store.getters[ENTRIES_GET_ENTRY](parent_ref.uuid).template.slug
 
         const uuid = parent_ref.uuid
@@ -105,7 +105,7 @@ export default {
   ,
   computed: {
     in_context() {
-      return this.template.rules.context !== GLOBAL || this.entry.refs.parent
+      return this.template.rules.context !== GLOBAL || this.entry.entry_refs.parent
     }
     ,
     domain() {

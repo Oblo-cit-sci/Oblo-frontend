@@ -181,7 +181,7 @@
             if (err.response.status === 401) {
               this.ok_snackbar("You are logged out")
               this.remove_from_storage("auth_token")
-              this.$store.dispatch(USER_LOGOUT)
+              this.$store.dispatch(LOGOUT)
               this.drawer = false
               this.$router.push("/")
             }
