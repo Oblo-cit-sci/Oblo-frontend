@@ -274,8 +274,8 @@
                 console.log("CORS error probably ok")
               })
             })
-            .catch(function () {
-              this.ok_snackbar("Something went wrong")
+            .catch(() =>{
+              this.error_snackbar("Something went wrong")
             }).finally(() => {
             this.profile_pic_upload_loading = false
           })
