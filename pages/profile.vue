@@ -20,7 +20,10 @@
     h2 General information
     v-row(v-for="aspect in profile_aspects" :key="aspect.name")
       v-col(cols=10)
-        Aspect(:aspect="aspect" :ext_value.sync="aspect.value" :edit="edit_mode" :mode="mode")
+        Aspect(:aspect="aspect"
+          :ext_value.sync="aspect.value"
+          @update:error="aspect.error = $event"
+          :mode="mode")
     div(v-if="edit_mode")
       h3 Password
       v-btn(color="warning" v-if="!password_edit" @click="password_edit=true") Change password
@@ -40,7 +43,7 @@
       v-btn(v-if="!edit_mode" color="info" @click="setEdit") Edit profile
       div(v-else)
         v-btn(@click="cancelEdit") Cancel
-        v-btn(color="success" @click="doneEdit") Save
+        v-btn(color="success" @click="doneEdit" :disabled="any_invalid") Save
       v-btn(v-if="!edit_mode" color="error" to="/basic/delete_account") Delete account
     div(v-if="!edit_mode")
       v-divider.wide_divider
@@ -50,7 +53,6 @@
         :style="main_container_width_style"
         :init_request="true"
         :configuration="{required:[{name:'actor', registered_name:user_data.registered_name}]}")
-
 </template>
 
 <script>
@@ -107,10 +109,17 @@
             description: "",
             type: "str",
             attr: {
-              max: 40,
-              unpacked: true
+              max: 30,
+              unpacked: true,
+              extra: {
+                rules: [
+                  v => v && v.length >= 2 || 'Public name must have at 2 characters',
+                  v => v && v.length <= 30 || 'Public name can have at most 30 characters',
+                ]
+              }
             },
-            value: ""
+            value: "",
+            error: false
           },
           {
             name: "description",
@@ -274,7 +283,7 @@
                 console.log("CORS error probably ok")
               })
             })
-            .catch(() =>{
+            .catch(() => {
               this.error_snackbar("Something went wrong")
             }).finally(() => {
             this.profile_pic_upload_loading = false
@@ -299,6 +308,9 @@
       profile_pic_max_size() {
         return common_filesize(5, "MB")
       },
+      any_invalid() {
+        return this.$_.some(this.profile_aspects, (a) => a.hasOwnProperty("error") && a.error)
+      }
     }
   }
 </script>
