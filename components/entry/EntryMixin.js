@@ -105,6 +105,9 @@ export default {
       // let relation = entry_actor_relation(this.entry, this.$store.getters.user)
       return can_edit(this.entry, this.$store.getters.user)//relation === CREATOR.actors_key
     },
+    is_creator() {
+      return this.creator.registered_name == this.$store.getters.registered_name
+    },
     template_slug() {
       return this.entry.template.slug
     },

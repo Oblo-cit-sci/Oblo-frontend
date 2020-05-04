@@ -26,7 +26,7 @@
             max-height="500")
     div(v-else)
       v-row
-        ActorChip(:actor="creator")
+        EntryActorList.mt-2(:actors="actors")
     v-row
       v-col(:cols="base_cols")
         v-divider.wide_divider(v-if="is_first_page")
@@ -54,7 +54,7 @@
           Aspect(:aspect="license_aspect" :aspect_loc="aspect_locs[license_aspect.name]" :mode="license_privacy_mode")
         v-col(alignSelf="stretch" :cols="base_cols" :lg="base_cols/2")
           Aspect(:aspect="privacy_aspect" :aspect_loc="aspect_locs[privacy_aspect.name]" :mode="license_privacy_mode")
-      v-row
+      v-row(v-if="is_creator")
         v-col.pb-0(alignSelf="stretch" :cols="base_cols")
           Aspect(:aspect="entry_roles_aspect" :aspect_loc="aspect_locs[entry_roles_aspect.name]" :extra="{entry_is_private: entry.privacy==='private'}")
       v-row
@@ -159,7 +159,7 @@
         return this.$store.getters[TEMPLATES_TYPE](this.template_slug).aspects
       },
       license_privacy_mode() {
-        if (!this.logged_in) {
+        if (!this.logged_in ||  !this.is_creator) {
           return VIEW
         } else {
           return EDIT
