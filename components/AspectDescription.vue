@@ -11,8 +11,8 @@
 
 <script>
     import Title_Description from "./util/Title_Description";
-    import {label} from "../lib/aspect";
-    import {COMPOSITE, EDIT, LIST} from "../lib/consts";
+    import {label} from "~/lib/aspect";
+    import {COMPOSITE, EDIT, LIST} from "~/lib/consts";
     import AsectDescr_NoteInput from "./AsectDescr_NoteInput";
 
     export default {

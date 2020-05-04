@@ -4,7 +4,6 @@
 </template>
 
 <script>
-import {tree_cut_at_level} from "~/lib/options"
 
 export default {
   name: "Tree",

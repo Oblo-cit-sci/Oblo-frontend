@@ -4,7 +4,7 @@
       .buttongroup(:style="button_group_shift")
         v-btn(dark fab large color="blue" @click="drawer = !drawer")
           v-icon mdi-menu
-        v-btn(v-if="!drawer" fab @click="go_home" transition="fade-transition")
+        v-btn(v-if="!drawer" fab @click="go_home")
           v-icon mdi-home
       component(:is="navgiagtion_component"
         :drawer="drawer"
@@ -88,7 +88,7 @@
       },
       button_group_shift() {
         let shift = "0.5%"
-        if(this.drawer) {
+        if(!this.display_mdDown && this.drawer) {
          shift = this.$vuetify.breakpoint.lgAndUp ? "600px" : "400px"
         }
         return {

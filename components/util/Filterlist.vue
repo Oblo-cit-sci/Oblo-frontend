@@ -26,7 +26,6 @@
       mode="edit"
       :ext_value="$_.get(active_filter, 'name') ? filter_value($_.get(active_filter, 'name')) : null"
       @update:ext_value="set_filter_value(active_filter.name, $event)")
-
 </template>
 
 <script>

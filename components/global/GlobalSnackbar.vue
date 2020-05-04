@@ -5,7 +5,7 @@
 
 <script>
   import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
-  import {SNACKBAR_TRIGGER} from "../../store";
+  import {SNACKBAR_TRIGGER} from "~/store";
 
   export default {
     name: "GlobalSnackbar",
@@ -19,7 +19,6 @@
     },
     created: function () {
       this.$store.watch(state => state.snackbar.trigger, () => {
-        // console.log("snackbar trigger watcher")
           let snackbar = this.$store.state.snackbar
           if (snackbar.trigger) {
             this.show = true
