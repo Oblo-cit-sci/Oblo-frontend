@@ -2,7 +2,9 @@
   v-flex(xs12 sm10 md8)
     h2 Delete your account
     p {{text}}
-    div Please provide your credentials to verify your identity
+    h3 The following entries will be deleted
+    CompactEntryList(:entries="entries_to_delete")
+    h3.my-2 Please provide your credentials to verify your identity
     Aspect(v-for="a of aspects"
       :key="a.name"
       :aspect="a"
@@ -16,11 +18,17 @@
 <script>
   import Aspect from "~/components/Aspect"
   import {STR} from "~/lib/consts"
+  import {store_received_entries} from "~/lib/client"
+  import EntryListWrapper from "~/components/EntryListWrapper"
+  import CompactEntryList from "~/components/entry/CompactEntryList"
+  import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
+  import {LOGOUT} from "~/store"
+  import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
 
   export default {
     name: "delete_account",
-    mixins: [],
-    components: {Aspect},
+    mixins: [TriggerSnackbarMixin, PersistentStorageMixin],
+    components: {CompactEntryList, EntryListWrapper, Aspect},
     props: {},
     data() {
       return {
@@ -62,8 +70,14 @@
             value: "",
             error: true
           }
-        }
+        },
+        entries_to_delete: []
       }
+    },
+    created() {
+      this.$api.actor__init_delete().then(({data}) => {
+        this.entries_to_delete = store_received_entries(this.$store, data.data)
+      })
     },
     computed: {
       any_invalid() {
@@ -77,9 +91,13 @@
           registered_name: this.aspects.registered_name.value,
           password: this.aspects.password.value
         }).then(({data}) => {
-          console.log(data)
+          this.ok_snackbar(data.data)
+          this.clear_storage()
+          this.$store.dispatch(LOGOUT)
+          this.$router.push("/")
         }).catch(err => {
           console.log(err)
+          this.error_snackbar("Something went wrong")
         })
       }
     }

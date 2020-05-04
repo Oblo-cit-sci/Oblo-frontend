@@ -3,12 +3,7 @@
     v-list-item-content
       v-list-item-title {{full_title}}
       v-list-item-subtitle.mt-2
-        ActorChip(:actor="creator")
-        v-expansion-panels
-          v-expansion-panel
-            v-expansion-panel-header hello
-            v-expansion-panel-content
-              div this is crazy
+        ActorChip(:actor="creator" :selectable="false")
 </template>
 
 <script>

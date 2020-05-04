@@ -12,6 +12,8 @@ export default {
       return this.$api.url_actor__$registered_name__avatar(actor.registered_name)
     },
     goto_actor(actor) {
+      if(!this.selectable)
+        return
       if (actor.registered_name === VISITOR)
         return
       if (actor.registered_name === this.$store.getters[USER_GET_USER_DATA].registered_name) {

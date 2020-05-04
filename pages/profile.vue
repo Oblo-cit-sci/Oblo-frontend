@@ -38,10 +38,10 @@
       v-divider.wide_divider
     div(v-if="!is_visitor")
       v-btn(v-if="!edit_mode" color="info" @click="setEdit") Edit profile
-      <!--      v-btn(v-if="!edit_mode" color="error" @click="delete_account" to="/basic/delete_account") Delete account-->
       div(v-else)
         v-btn(@click="cancelEdit") Cancel
         v-btn(color="success" @click="doneEdit") Save
+      v-btn(v-if="!edit_mode" color="error" to="/basic/delete_account") Delete account
     div(v-if="!edit_mode")
       v-divider.wide_divider
       h2 Your Entries

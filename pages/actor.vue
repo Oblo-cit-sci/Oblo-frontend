@@ -4,6 +4,7 @@
       v-col
         div Username: {{user_data.registered_name}}
         GlobalRoleChip.mt-2(:global_role="user_data.global_role")
+        div.mt-2(v-if="user_data.account_deactivated" style="color:red") This is user is no longer active
       v-col
         v-row
           v-img(:src="profile_pic" max-height=200 contain)

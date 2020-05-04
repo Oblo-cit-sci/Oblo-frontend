@@ -16,7 +16,11 @@
     mixins: [ActorMixin],
     props: {
       actor: Object,
-      role: String
+      role: String,
+      selectable: {
+        type: Boolean,
+        default: true
+      }
     },
     computed: {
       role_icon() {

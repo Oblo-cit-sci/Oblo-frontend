@@ -67,6 +67,10 @@ class APIWrapper {
     })
   }
 
+  actor__init_delete() {
+    return this.axios.get(`${this.actor_baseURL}/init_delete`)
+  }
+
   init_data() {
     return this.axios.get(`${this.basic_baseURL}/init_data`)
   }

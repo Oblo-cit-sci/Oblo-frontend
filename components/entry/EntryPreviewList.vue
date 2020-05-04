@@ -108,7 +108,7 @@
         if(this.can_request_more) {
           if(page * this.entries_per_page >= this.entries.length) {
             this.$emit("request_more")
-            console.log("time for more")
+            // console.log("time for more")
           }
         }
       }

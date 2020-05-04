@@ -1,16 +1,14 @@
 <template lang="pug">
-  v-list
+  v-list(dense)
     template(v-for="uuid in visible_entries")
       CompactEntry(:passed_uuid="uuid" :key="uuid")
       v-divider
 </template>
 
 <script>
-  import {ENTRIES_GET_ENTRY} from "~/store/entries"
   import ActorChip from "~/components/actor/ActorChip"
   import CompactEntry from "~/components/entry/CompactEntry"
 
-  // v-list-item-title {{entry_data[uuid].title}}
   export default {
     name: "CompactEntryList",
     mixins: [],
