@@ -32,11 +32,11 @@
     props: {},
     data() {
       return {
-        text: "If you have not posted content publicly, all the private entries, " +
+        text: "If you have not posted content publicly, all the private entries " +
           "that you created without any collaborator and user information will be permanently deleted. " +
           "If you have posted entries publicly, these entries will continue to be stored and publicly available, " +
           "and we will continue to retain basic user data (you username and public name) so your connection with them is preserved. " +
-          "All private entries withou other collaborators will be deleted. Those with collaborators will remain",
+          "All private entries without other collaborators will be deleted. Those with collaborators will remain",
         aspects: {
           registered_name: {
             type: STR,
