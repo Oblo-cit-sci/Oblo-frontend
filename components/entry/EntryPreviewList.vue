@@ -44,7 +44,6 @@
     },
     data: function () {
       return {
-        recent: {},
         page: 1,
         deleted: []
       }

@@ -17,13 +17,14 @@
 
   // like Search, but with fixed params (no text field)
   import EntryPreviewList from "./entry/EntryPreviewList"
-  import {async_entry_search, process_cachable_entries} from "../lib/client"
+  import {async_entry_search, process_cachable_entries} from "~/lib/client"
   import TriggerSnackbarMixin from "./TriggerSnackbarMixin"
+  import CompactEntryList from "~/components/entry/CompactEntryList"
 
   export default {
     name: "EntryListWrapper",
     mixins: [TriggerSnackbarMixin],
-    components: {EntryPreviewList},
+    components: {CompactEntryList, EntryPreviewList},
     props: {
       configuration: Object,
       init_request: Boolean,
@@ -46,13 +47,8 @@
     methods: {
       request_more() {
         this.searching = true
-        const conf = Object.assign(this.configuration, {
-          page: {
-            offset: this.entries_uuids.length
-          }
-        })
-        console.log("conf", conf)
-        async_entry_search(this.$api, conf).then(({data}) => {
+        // console.log("conf", conf)
+        async_entry_search(this.$api, this.configuration, this.entries_uuids.length).then(({data}) => {
           const result = data.data
           const entry_uuids = process_cachable_entries(this.$store, result.entries)
           this.entries_uuids = this.$_.concat(this.entries_uuids, entry_uuids)

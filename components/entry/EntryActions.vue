@@ -55,7 +55,7 @@
 <script>
   import {DRAFT, EDIT, PRIVATE_LOCAL, PUBLIC, PUBLISHED, REQUIRES_REVIEW} from "~/lib/consts";
   import Paginate from "../global/Paginate";
-  import {current_user_is_owner} from "~/lib/entry";
+  import {current_user_is_owner, prepare_for_submission} from "~/lib/entry";
 
   import DecisionDialog from "../util/DecisionDialog";
   import EntryNavMixin from "../EntryNavMixin";
@@ -183,7 +183,7 @@
         // TODO not good. call update functions
         this.$store.commit(ENTRIES_SAVE_ENTRY, this.entry)
         this.$store.dispatch(ENTRIES_UPDATE_ENTRY, this.uuid)
-        const sending_entry = this.$store.getters[ENTRIES_GET_ENTRY](this.uuid)
+        const sending_entry = prepare_for_submission(this.$store.getters[ENTRIES_GET_ENTRY](this.uuid))
 
         // would be the same as checking is_published
         let method = null

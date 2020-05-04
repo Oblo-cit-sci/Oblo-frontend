@@ -9,7 +9,7 @@
         @update:error="a.error = $event"
         :extra="{clearable:false}"
         mode="edit")
-    v-btn.m-4(@click='submit' x-large :disabled="any_invalid || submitStatus === 'PENDING'" color='success') Register
+    v-btn.m-4(@click='submit' x-large :disabled="any_invalid || submitStatus === 'PENDING'" :loading="submit_loading" color='success') Register
     v-alert(:value='errorMsg !== null' type='error' prominent) {{errorMsg}}
 </template>
 
@@ -19,7 +19,7 @@
 
   import Aspect from "../components/Aspect";
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
-  import {password_aspect, password_confirm_aspect} from "../lib/typical_aspects";
+  import {password_aspect, password_confirm_aspect} from "~/lib/typical_aspects";
   import LoginMixin from "../components/actor/LoginMixin";
 
   let username_regex = new RegExp('^[a-z][a-z0-9_]*$');
@@ -84,7 +84,8 @@
           //   {value: "CC-BY", description: "Choose a default license for your entries"})
         },
         submitStatus: null,
-        errorMsg: null
+        errorMsg: null,
+        submit_loading: false
       }
     },
     computed: {
@@ -96,6 +97,7 @@
     methods: {
       // use this as a function to select/highlight a privacy from the list
       submit() {
+        this.submit_loading = true
         this.$api.post_actor({
           registered_name: this.aspects.registered_name.value,
           email: this.aspects.email.value,
@@ -113,6 +115,8 @@
         }).catch((err) => {
           this.errorMsg = this.$_.get(err.response, "data.error.msg", "Something went wrong")
           setTimeout(() => this.errorMsg = null, 12000)
+        }).finally(() => {
+          this.submit_loading = false
         })
       }
     }

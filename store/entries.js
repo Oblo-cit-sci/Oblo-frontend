@@ -193,7 +193,7 @@ export const mutations = {
     //remove_entry_loc
   },
   _update_parent_version(state, {uuid, version}) {
-    state.entries.get(uuid).parent_type_version = version
+    state.entries.get(uuid).template_version = version
   },
   insert_missing_default_values(state, {uuid, type_default_values}) {
     let values = state.entries.get(uuid).values
