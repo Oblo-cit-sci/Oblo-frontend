@@ -29,6 +29,7 @@ import {check_str_is_uuid} from "~/lib/util";
 import {TEMPLATES_TYPE} from "~/store/templates";
 import {full_title} from "~/lib/entry"
 import {can_edit} from "~/lib/actors"
+import {USER_GET_REGISTERED_NAME} from "~/store/user"
 
 export default {
   name: "EntryMixin",
@@ -106,7 +107,8 @@ export default {
       return can_edit(this.entry, this.$store.getters.user)//relation === CREATOR.actors_key
     },
     is_creator() {
-      return this.creator.registered_name == this.$store.getters.registered_name
+      console.log(this.creator, this.$store.getters.registered_name)
+      return this.creator.registered_name == this.$store.getters[USER_GET_REGISTERED_NAME]
     },
     template_slug() {
       return this.entry.template.slug
