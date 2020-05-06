@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-layout.map
+  v-layout#map
     client-only
       .buttongroup(:style="button_group_shift")
         v-btn(dark fab large color="blue" @click="drawer = !drawer")
@@ -25,17 +25,17 @@
 <script>
 
   import Mapbox from 'mapbox-gl-vue'
-  import {access_token} from "~/lib/services/mapbox"
-  import {MAP_GOTO_DONE, MAP_GOTO_LOCATION, MAP_SET_ENTRIES} from "~/store/map"
+
+  import {MAP_GOTO_LOCATION, MAP_SET_ENTRIES} from "~/store/map"
   import {VIEW} from "~/lib/consts"
   import {ENTRIES_HAS_FULL_ENTRY, ENTRIES_SAVE_ENTRY} from "~/store/entries"
   import {route_change_query} from "~/lib/util"
   import MapNavigationBottomSheet from "~/components/map/MapNavigationBottomSheet"
   import MapNavigationDrawer from "~/components/map/MapNavigationDrawer"
   import {mapGetters} from "vuex"
+  import MapIncludeMixin from "~/components/map/MapIncludeMixin"
 
-  const c_access_token = "pk.eyJ1IjoicmFtaW4zNiIsImEiOiJjamJ0eGo0cWQxbHo1MzJyMnV0bzhydjhzIn0.-q0FF4Jtuhc-wboaSA2E_A";
-  const licci_style_map = "mapbox://styles/ramin36/cjx2xkz2w030s1cmumgp6y1j8";
+  // const licci_style_map = "mapbox://styles/ramin36/cjx2xkz2w030s1cmumgp6y1j8";
   const mapbox_api_url = "https://api.mapbox.com/geocoding/v5/mapbox.places/";
 
   export const SEARCH = "search"
@@ -45,22 +45,13 @@
   export default {
     name: "Map2",
     layout: "map_layout",
-    mixins: [],
+    mixins: [MapIncludeMixin],
     components: {Mapbox},
     props: {},
-    head() {
-      return {
-        link: [{
-          href: "https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.css",
-          rel: "stylesheet"
-        }]
-      }
-    },
     data() {
       return {
-        access_token: c_access_token,
         options: {
-          style: licci_style_map,
+          style: "mapbox://styles/ramin36/cjx2xkz2w030s1cmumgp6y1j8", //this.default_style_map,
           center: [30, 0],
           zoom: 1
         },
@@ -68,11 +59,9 @@
         selected_place: null,
         //
         drawer: false,
-        accessToken: access_token,
         mapCssStyle: "",
-        mapStyle: licci_style_map,
+
         center_coordinates: [-0.8844128193341589, 37.809519042232694],
-        map_loaded: false,
         markers: [],
       }
     },
@@ -81,9 +70,10 @@
     },
     created() {
       this.map = null
-      this.$api.entries_map_entries().then(({data}) => {
-        this.$store.dispatch(MAP_SET_ENTRIES, data.data)
-        console.log("received", data.data.length, "map relevant entries")
+      this.$api.entries_map_entries(true).then(({data}) => {
+        console.log(data)
+        this.$store.dispatch(MAP_SET_ENTRIES, data)
+        // console.log("received", data.data.length, "map relevant entries")
       }).catch(err => {
         console.log("map entries error")
       })
@@ -127,65 +117,6 @@
       }
     },
     methods: {
-      onMapLoaded(map) {
-        this.map = map
-        this.mapboxgl = require('mapbox-gl/dist/mapbox-gl')
-        this.map_loaded = true
-        console.log("map loaded")
-        // console.log(this.map)
-        this.map.setLayoutProperty('country-label', "visibility", "visible")
-        if (this.entries) {
-          this.create_markers()
-          this.markers_and_map_done()
-        }
-        // // mapboxgl.Marker()
-        setTimeout(() => {
-          const marker = new this.mapboxgl.Marker().setLngLat({lon: 0, lat: 0}).addTo(map)
-          marker.getElement().addEventListener("click", (e) => {
-            console.log(e)
-            console.log(marker.getLngLat())
-            console.log(marker.getOffset())
-          }, 1000)
-
-        })
-        // map.loadImage(
-        //   'marker.png',
-        //   function(error, image) {
-        //     if (error) throw error;
-        //     console.log("cat")
-        //     map.addImage('cat', image);
-        //     map.addSource('point', {
-        //       'type': 'geojson',
-        //       'data': {
-        //         'type': 'FeatureCollection',
-        //         'features': [
-        //           {
-        //             'type': 'Feature',
-        //             id: 999,
-        //             'geometry': {
-        //               'type': 'Point',
-        //               'coordinates': [0, 0]
-        //             },
-        //             properties: {
-        //               title: "cool"
-        //             }
-        //           }
-        //         ]
-        //       }
-        //     });
-        //     map.addLayer({
-        //       'id': 'points',
-        //       'type': 'symbol',
-        //       'source': 'point',
-        //       'layout': {
-        //         'icon-image': 'cat',
-        //         'icon-size': 0.25
-        //       }
-        //     });
-        //     map.on("click", "points", component.clicked)
-        //   }
-        // );
-      },
       clicked(mapbox_event) {
         console.log(mapbox_event.features);
         // this.selected_coordinates = [mapbox_event.lngLat.lng, mapbox_event.lngLat.lat]
@@ -295,6 +226,7 @@
       },
       // OLD MAP page
       markers_and_map_done() {
+
         // console.log("markers_and_map_done?")
         if (this.entries.length > 0 && this.map_loaded) {
           // console.log("markers_and_map_done")
@@ -308,7 +240,7 @@
         this.$store.commit(MAP_SET_ENTRIES, entries)
       },
       layer_select_change(active_layers) {
-        console.log("layer_select_change", active_layers)
+        // console.log("layer_select_change", active_layers)
         // console.log("all layers", this.layers)
         // debugger
         console.log(this.$_.keyBy(this.layers), l => active_layers.includes(l))
@@ -322,14 +254,6 @@
         // console.log(layers)
         for (let layer in layers) {
           this.map.setLayoutProperty(layer, 'visibility', layers[layer] ? "visible" : "none")
-        }
-      },
-      transform_loc(loc) {
-        // todo take the NaN check out and filter earlier...
-        if (loc.hasOwnProperty("lon") && loc.lat && !isNaN(loc.lon) && !isNaN(loc.lat)) {
-          return [loc.lon, loc.lat]
-        } else {
-          return loc
         }
       },
       back() {
@@ -392,23 +316,46 @@
         })
       },
       create_markers() {
-        // console.log("creating markers from", this.entries.length, " entries")
-        this.markers = []
-        for (let e of this.entries) {
-          for (let loc of e.location || []) {
-            if (loc) {
-              this.create_e_marker(loc.coordinates, e.uuid, {})
-            }
-          }
-        }
-      },
-      map_goto_location(location) {
-        const center = this.transform_loc(location.coordinates)
-        this.map.flyTo({
-          center: center,
-          speed: 0.8 // make the flying slow
+
+        console.log(this.entries)
+        this.map.addSource("all_entries", {
+          type: "geojson",
+          data: this.entries
         })
-        this.$store.dispatch(MAP_GOTO_DONE)
+
+
+
+        this.map.addLayer({
+          'id': 'all_entries_styled',
+          'type': 'circle',
+          'source': 'all_entries',
+          'layout': {
+            // 'line-join': 'round',
+            // 'line-cap': 'round'
+          },
+          // todo the colors should come from the templates
+          'paint': {
+            'circle-color': [
+              'match',
+              ['get', "template"],
+              'article_review',
+              '#2ee70c',
+              "local_observation",
+              "#ee2b0b",
+              '#ccc']
+            // 'line-width': 8
+          }
+        })
+
+        // console.log("creating markers from", this.entries.length, " entries")
+        // this.markers = []
+        // for (let e of this.entries) {
+        //   for (let loc of e.location || []) {
+        //     if (loc) {
+        //       this.create_e_marker(loc.coordinates, e.uuid, {})
+        //     }
+        //   }
+        // }
       },
       navigate_entry({uuid, mode}) {
         this.update_navigation_mode(uuid, mode)
@@ -435,11 +382,49 @@
         this.$router.push(route_change_query(this.$route, query, true))
       }
     },
-    // beforeRouteLeave(to, from, next) {
-    //   this.$store.dispatch(MAP_RESET_GOTO_LOCATIONS)
-    //   next()
-    // },
     watch: {
+      map_loaded() {
+        if (this.entries) {
+          this.create_markers()
+          this.markers_and_map_done()
+        }
+//         this.map.addSource('ethnicity', {
+//           type: 'vector',
+//           url: 'mapbox://examples.8fgz4egr'
+//         });
+//         this.map.addLayer({
+//           'id': 'population',
+//           'type': 'circle',
+//           'source': 'ethnicity',
+//           'source-layer': 'sf2010',
+//           'paint': {
+// // make circles larger as the user zooms from z12 to z22
+//             'circle-radius': {
+//               'base': 1.75,
+//               'stops': [
+//                 [12, 2],
+//                 [22, 180]
+//               ]
+//             },
+// color circles by ethnicity, using a match expression
+// https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-match
+//             'circle-color': [
+//               'match',
+//               ['get', 'ethnicity'],
+//               'White',
+//               '#fbb03b',
+//               'Black',
+//               '#223b53',
+//               'Hispanic',
+//               '#e55e5e',
+//               'Asian',
+//               '#3bb2d0',
+//               /* other */ '#ccc'
+//             ]
+//           }
+//         })
+
+      },
       goto_location(location) {
         console.log("map goto location watch")
         if (location) {
@@ -447,13 +432,13 @@
         }
       },
       entries() {
-        // console.log("watch- entries")
+        console.log("watch- entries")
         // todo, a bit ineficient. is called whenever we go back from an entry to the search
         if (this.map) {
           this.create_markers()
           this.markers_and_map_done()
         } else {
-          console.log("entries, ... but no map")
+          // console.log("entries, ... but no map")
         }
       },
     }
@@ -473,6 +458,5 @@
 
   #map {
     width: 100%;
-    height: 1000px;
   }
 </style>

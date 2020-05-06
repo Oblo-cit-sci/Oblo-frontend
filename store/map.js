@@ -19,11 +19,11 @@ export const MAP_RESET_GOTO_LOCATIONS = "map/reset_goto_locations"
 
 export const state = () => ({
   marker: null,
-  entries: [],
+  entries: {},
   selected_entry: null,
   goto_location: null,
   last_goto_location: null,
-  layers: ["Climate types", "Weather stations", "country-label"],
+  layers: ["Climate types", "country-label"],
   layer_status: {},
   to_select_aspect_location: null, // when coming from a locationAspect, comes with
   selected_location: null // when there is no "to_select_aspect_location" e.g. profile
@@ -34,6 +34,7 @@ export const mutations = {
     state.marker = coordinate
   },
   set_entries(state, entries) {
+    console.log("map store entries", entries)
     state.entries = entries
   },
   clear(state) {
@@ -97,8 +98,8 @@ export const actions = {
 
   // filters entries that have a location set
   set_entries({commit}, entries) {
-    const location_entries = ld.filter(entries, e => e.location !== null && e.location !== undefined)
-    commit("set_entries", location_entries)
+    // const location_entries = ld.filter(entries, e => e.location !== null && e.location !== undefined)
+    commit("set_entries", entries)
   },
   goto_done(context) {
     const goto_loc = context.getters.goto_location()

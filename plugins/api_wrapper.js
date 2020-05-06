@@ -218,8 +218,12 @@ class APIWrapper {
     return this.axios.post(`${this.actor_baseURL}/search`, search_query)
   }
 
-  entries_map_entries() {
-    return this.axios.post(`${this.entries_baseURL}/map_entries`)
+  entries_map_entries(as_geojson = false) {
+    return this.axios.post(`${this.entries_baseURL}/map_entries`, {}, {
+      params: {
+        as_geojson
+      }
+    })
   }
 
   actor__$registered_name__basic(registerd_name) {
