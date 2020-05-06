@@ -1,7 +1,11 @@
+
+
 const pkg = require('./package')
 const colors = require('vuetify/es5/util/colors')
 
 var qs = require('qs');
+
+const webpack = require('webpack')
 
 /*
 release mode:
@@ -15,12 +19,12 @@ console.log("NUXT:CONFIG. env:server", process.env.SERVER)
 
 let axios_baseURL = "https://opentek.eu"
 
-if(process.env.SERVER === "staging") {
+if (process.env.SERVER === "staging") {
   console.log("building for staging")
   axios_baseURL = "https://staging.opentek.eu"
 }
 
-if(process.env.NODE_ENV === "development" || process.env.SERVER === "local") {
+if (process.env.NODE_ENV === "development" || process.env.SERVER === "local") {
   console.log("building for localhost")
   axios_baseURL = "http://localhost:8100"
 }
@@ -76,7 +80,7 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    {src: '~/plugins/mapbox', mode: 'client'},
+   /* {src: '~/plugins/mapbox', mode: 'client'}, */
     '~/plugins/lodash.js',
     {src: '~/plugins/api_wrapper'},
   ],
@@ -139,7 +143,11 @@ module.exports = {
         import: ["~assets/style/variables.styl"]
       }
     },
-
+    plugins: [
+      new webpack.ProvidePlugin({
+        mapboxgl: 'mapbox-gl',
+      }),
+    ],
     /*
     ** You can extend webpack config here
     */

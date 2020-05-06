@@ -2,7 +2,7 @@
   v-dialog(v-model="dialog_open"
     :width="main_container_with"
     persistent)
-    div(v-if="dialog_open && aspect").pl-2.pt-3(style="background:white")
+    div.pl-2.pt-3(v-if="dialog_open && aspect" style="background:white")
       div.scroll
         Aspect(v-if="show_aspect"
           :aspect="aspect"

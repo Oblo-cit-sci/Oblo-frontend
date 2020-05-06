@@ -67,7 +67,6 @@
     APP_CONNECTING,
     APP_DB_LOADED,
     APP_INITIALIZED,
-    APP_PRIVACY_SHOWN,
   } from "~/store/app"
   import {dev_env} from "~/lib/util"
 
