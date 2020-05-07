@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-layout.map.row
+  v-layout#map
     client-only
       .buttongroup(:style="button_group_shift")
         v-btn(dark fab large color="blue" @click="drawer = !drawer")
@@ -13,69 +13,74 @@
         @navigation_mode_entry="navigate_entry"
         @navigation_mode_search="unselect_entry"
         @layer_select_change="layer_select_change($event)")
-      MglMap(:style="mapCssStyle"
-        :access-token="accessToken"
-        :map-style="mapStyle"
-        @load="onMapLoaded"
-        :center="center_coordinates"
-        @click="touch($event)")
+      mapbox.crosshair(:style="mapCssStyle"
+        :access-token="access_token"
+        :map-options="options"
+        @map-load="onMapLoaded"
+        @map-zoomend="zoomend"
+        @geolocate-error="geolocateError"
+        @geolocate-geolocate="geolocate")
 </template>
 
 <script>
-  import {MglMarker, MglPopup} from "vue-mapbox";
-  import {access_token, licci_style_map} from "~/lib/services/mapbox";
+
+  import Mapbox from 'mapbox-gl-vue'
+
+  import {MAP_GOTO_LOCATION, MAP_SET_ENTRIES} from "~/store/map"
+  import {VIEW} from "~/lib/consts"
+  import {ENTRIES_HAS_FULL_ENTRY, ENTRIES_SAVE_ENTRY} from "~/store/entries"
+  import {route_change_query} from "~/lib/util"
+  import MapNavigationBottomSheet from "~/components/map/MapNavigationBottomSheet"
+  import MapNavigationDrawer from "~/components/map/MapNavigationDrawer"
   import {mapGetters} from "vuex"
-  import MapNavigationDrawer from "../components/map/MapNavigationDrawer";
-  import {Marker} from "mapbox-gl";
-  import MapNavigationBottomSheet from "../components/map/MapNavigationBottomSheet";
-  import {ENTRIES_HAS_FULL_ENTRY, ENTRIES_SAVE_ENTRY} from "~/store/entries";
-  import {route_change_query} from "~/lib/util";
-  import {MAP_GOTO_DONE, MAP_GOTO_LOCATION, MAP_RESET_GOTO_LOCATIONS, MAP_SET_ENTRIES} from "~/store/map";
-  import {VIEW} from "~/lib/consts";
+  import MapIncludeMixin from "~/components/map/MapIncludeMixin"
+  import {closest_point, latLng_2_2d_arr} from "~/lib/map_utils"
 
+  // const licci_style_map = "mapbox://styles/ramin36/cjx2xkz2w030s1cmumgp6y1j8";
+  const mapbox_api_url = "https://api.mapbox.com/geocoding/v5/mapbox.places/";
 
-  // navigation mode!! copy of  MapNvaigationMixin
   export const SEARCH = "search"
   export const ENTRY = "entry"
-
   const selected_color = "#f9992a"
 
   export default {
     name: "Map",
-    mixins: [],
-    components: {MapNavigationBottomSheet, MapNavigationDrawer, MglMarker, MglPopup},
-    props: {},
     layout: "map_layout",
-    head() {
-      return {
-        link: [{
-          href: "https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css",
-          rel: "stylesheet"
-        }]
-      }
-    },
+    mixins: [MapIncludeMixin],
+    components: {Mapbox},
+    props: {},
     data() {
       return {
+        options: {
+          style: "mapbox://styles/ramin36/cjx2xkz2w030s1cmumgp6y1j8", //this.default_style_map,
+          center: [30, 0],
+          zoom: 1
+        },
+        selected_coordinates: null,
+        selected_place: null,
+        //
         drawer: false,
-        accessToken: access_token,
         mapCssStyle: "",
-        mapStyle: licci_style_map,
+
         center_coordinates: [-0.8844128193341589, 37.809519042232694],
-        map_loaded: false,
         markers: [],
+        act_hoover_id: null,
+        act_hoover_uuid: null,
+        act_popup: null
       }
-    },
-    created() {
-      this.map = null
-      this.$api.entries_map_entries().then(({data}) => {
-        this.$store.dispatch(MAP_SET_ENTRIES, data.data)
-        console.log("received", data.data.length, "map relevant entries")
-      }).catch(err => {
-        console.log("map entries error")
-      })
     },
     mounted() {
       this.mapCssStyle = "height: " + document.getElementById("fullContainer").clientHeight + "px"
+    },
+    created() {
+      this.map = null
+      this.$api.entries_map_entries(true).then(({data}) => {
+        console.log(data)
+        this.$store.dispatch(MAP_SET_ENTRIES, data)
+        // console.log("received", data.data.length, "map relevant entries")
+      }).catch(err => {
+        console.log("map entries error")
+      })
     },
     computed: {
       ...mapGetters({
@@ -88,8 +93,8 @@
       },
       button_group_shift() {
         let shift = "0.5%"
-        if(!this.display_mdDown && this.drawer) {
-         shift = this.$vuetify.breakpoint.lgAndUp ? "600px" : "400px"
+        if (!this.display_mdDown && this.drawer) {
+          shift = this.$vuetify.breakpoint.lgAndUp ? "600px" : "400px"
         }
         return {
           "left": shift
@@ -116,21 +121,116 @@
       }
     },
     methods: {
-      onMapLoaded(event) {
-        this.map = event.map
-        this.map_loaded = true
-        console.log("map loaded")
-        // console.log(this.map)
-        this.map.setLayoutProperty('country-label', "visibility", "visible")
-        if (this.entries) {
-          this.create_markers()
-          this.markers_and_map_done()
-        }
+      clicked(mapbox_event) {
+        console.log(mapbox_event.features);
+        // this.selected_coordinates = [mapbox_event.lngLat.lng, mapbox_event.lngLat.lat]
+        // this.create_marker(this.selected_coordinates)
+        // this.rev_geocode({lon: mapbox_event.lngLat.lng, lat: mapbox_event.lngLat.lat})
       },
+      zoomend(map, e) {
+        // console.log('Map zoomed')
+      },
+      geolocateError(control, positionError) {
+        console.log(positionError)
+      },
+      geolocate(control, position) {
+        console.log(
+          `User position: ${position.coords.latitude}, ${position.coords.longitude}`
+        )
+      },
+      rev_geocode(location, params = {
+        place_types: ["country", "region", "district", "place", "locality"]
+      }) {
+        this.$axios.get(encodeURI(mapbox_api_url + location.lon + "," + location.lat) + ".json",
+          {
+            params: {
+              access_token: c_access_token,
+              types: params.place_types
+            }
+          }).then(({data}) => {
+          // console.log(data)
+          this.selected_place = {};
+          if (data.features.length === 0) { // oceans
+            this.selected_place = null
+          } else {
+            data.features.forEach(feature => {
+              this.selected_place[feature.place_type[0]] = feature.text
+            })
+          }
+        })
+      },
+      create_marker(coordinates) {
+        // this.map.addLayer({
+        //   id: 'points',
+        //   type: 'symbol',
+        //   source: {
+        //     type: 'geojson',
+        //     data: {
+        //       type: 'FeatureCollection',
+        //       features: [
+        //         {
+        //           type: 'Feature',
+        //           geometry: {
+        //             type: 'Point',
+        //             coordinates: [-77.03238901390978, 38.913188059745586],
+        //           },
+        //           properties: {
+        //             title: 'Mapbox DC',
+        //             icon: 'monument',
+        //           },
+        //         },
+        //         {
+        //           type: 'Feature',
+        //           geometry: {
+        //             type: 'Point',
+        //             coordinates: [-122.414, 37.776],
+        //           },
+        //           properties: {
+        //             title: 'Mapbox SF',
+        //             icon: 'harbor',
+        //           },
+        //         },
+        //       ],
+        //     },
+        //   },
+        //   layout: {
+        //     'icon-image': '{icon}-15',
+        //     'text-field': '{title}',
+        //     'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
+        //     'text-offset': [0, 0.6],
+        //     'text-anchor': 'top',
+        //   },
+        // })
+        // console.log(this.map)
+        /*     this.map.addLayer({
+               id: 'points',
+               type: 'symbol',
+               source: {
+                 type: 'geojson',
+                 data: {
+                   type: 'Feature',
+                   geometry: {
+                     type: 'Point',
+                     coordinates: coordinates,
+                   },
+                   properties: {
+                     title: 'Mapbox DC',
+                     icon: 'monument',
+                   },
+                 }
+               },
+               layout: {
+                 'icon-image': '{icon}-15',
+                 'text-field': '{title}',
+                 'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
+                 'text-offset': [0, 0.6],
+                 'text-anchor': 'top',
+               },
+             });*/
+      },
+      // OLD MAP page
       markers_and_map_done() {
-        // console.log("markers_and_map_done?")
         if (this.entries.length > 0 && this.map_loaded) {
-          // console.log("markers_and_map_done")
           if (this.$route.query.uuid) {
             this.update_navigation_mode(this.$route.query.uuid, VIEW)
           }
@@ -141,28 +241,12 @@
         this.$store.commit(MAP_SET_ENTRIES, entries)
       },
       layer_select_change(active_layers) {
-        console.log("layer_select_change", active_layers)
-        // console.log("all layers", this.layers)
-        // debugger
         console.log(this.$_.keyBy(this.layers), l => active_layers.includes(l))
-        // console.log(this.$_.mapValues(this.$_.keyBy(this.layers), l => active_layers.includes(l)))
-        // console.log("**")
         this.set_layer_status(this.$_.mapValues(this.$_.keyBy(this.layers), l => active_layers.includes(l)))
       },
       set_layer_status(layers = this.layer_status) {
-        console.log("hello")
-        debugger
-        console.log(layers)
         for (let layer in layers) {
           this.map.setLayoutProperty(layer, 'visibility', layers[layer] ? "visible" : "none")
-        }
-      },
-      transform_loc(loc) {
-        // todo take the NaN check out and filter earlier...
-        if (loc.hasOwnProperty("lon") && loc.lat && !isNaN(loc.lon) && !isNaN(loc.lat)) {
-          return [loc.lon, loc.lat]
-        } else {
-          return loc
         }
       },
       back() {
@@ -174,9 +258,9 @@
       touch({mapboxEvent}) {
       },
       select_entry_marker(entry_uuid) {
-        console.log("select_entry_marker", entry_uuid)
+        // console.log("select_entry_marker", entry_uuid)
         if (this.$store.getters[ENTRIES_HAS_FULL_ENTRY](entry_uuid)) {
-          console.log("has full entry")
+          // console.log("has full entry")
           if (this.selected_entry) {
             this.change_entry_markers_mode(this.selected_entry, false)
             if (entry_uuid !== this.selected_entry) {
@@ -185,7 +269,7 @@
           }
           this.update_navigation_mode(entry_uuid, VIEW)
         } else {
-          console.log("fetching entry")
+          // console.log("fetching entry")
           this.$api.entry__$uuid(entry_uuid).then(({data}) => {
             if (data.data) {
               if (this.selected_entry) {
@@ -215,8 +299,7 @@
         }
       },
       create_e_marker(coordinates, uuid, options) {
-        // console.log("map.m.create_e_marker")
-        const m = new Marker(options)
+        const m = new this.mapboxgl.Marker(options)
         m.e_uuid = uuid
         m.setLngLat(coordinates).addTo(this.map)
         this.markers.push(m)
@@ -224,24 +307,91 @@
           this.select_entry_marker(m.e_uuid)
         })
       },
-      create_markers() {
-        // console.log("creating markers from", this.entries.length, " entries")
-        this.markers = []
-        for (let e of this.entries) {
-          for (let loc of e.location || []) {
-            if (loc) {
-              this.create_e_marker(loc.coordinates, e.uuid, {})
-            }
-          }
-        }
-      },
-      map_goto_location(location) {
-        const center = this.transform_loc(location.coordinates)
-        this.map.flyTo({
-          center: center,
-          speed: 0.8 // make the flying slow
+      create_entries_layer() {
+        this.map.addSource("all_entries", {
+          type: "geojson",
+          data: this.entries
         })
-        this.$store.dispatch(MAP_GOTO_DONE)
+
+        this.map.addLayer({
+          'id': 'all_entries_layer',
+          'type': 'circle',
+          'source': 'all_entries',
+          'layout': {
+            // 'line-join': 'round',
+            // 'line-cap': 'round'
+          },
+          // todo the colors should come from the templates
+          'paint': {
+            "circle-radius": 8,
+            "circle-opacity": 1,
+            'circle-color': [
+              'match',
+              ['get', "template"],
+              'article_review',
+              '#2ee70c',
+              "local_observation",
+              "#ee2b0b",
+              '#ccc'],
+            "circle-stroke-color": [
+              'case',
+              ['boolean', ['feature-state', 'hover'], false],
+              "#ee2b0b",
+              "#000000"
+            ]
+            // 'line-width': 8
+          }
+        })
+        this.map.on('mousemove', 'all_entries_layer', (e) => {
+          const feature = e.features[0]
+          if (feature.properties.uuid === this.act_hoover_uuid) {
+            return
+          }
+          if (this.act_popup) {
+            this.act_popup.remove()
+          }
+          let coordinates = null
+          if (feature.geometry.type === "MultiPoint") {
+            const cursor_loc = latLng_2_2d_arr(e.lngLat)
+            coordinates = closest_point(cursor_loc, feature.geometry.coordinates)
+          } else {
+            coordinates = feature.geometry.coordinates.slice()
+          }
+          var title = feature.properties.title
+          // while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+          //   coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+          // }
+
+          this.act_hoover_id = feature.id
+          // console.log(feature.id)
+          this.map.setFeatureState(
+            {source: 'all_entries', id: this.act_hoover_id},
+            {hover: true}
+          )
+
+          this.act_hoover_uuid = feature.properties.uuid
+          this.act_popup = new this.mapboxgl.Popup()
+            .setLngLat(coordinates)
+            .setHTML(title)
+            .addTo(this.map)
+        })
+
+        this.map.on("click", "all_entries_layer", (e) => {
+            this.select_entry_marker(e.features[0].properties.uuid)
+        })
+
+        this.map.on('mouseleave', 'all_entries_layer', () => {
+          if (this.act_hoover_uuid) {
+            this.map.setFeatureState(
+              {source: 'all_entries', id: this.act_hoover_id},
+              {hover: false}
+            )
+            this.act_hoover_id = null
+            this.act_hoover_uuid = null
+            this.act_popup.remove()
+            this.act_popup = null
+          }
+        })
       },
       navigate_entry({uuid, mode}) {
         this.update_navigation_mode(uuid, mode)
@@ -254,7 +404,7 @@
           this.change_entry_markers_mode(this.selected_entry, false)
         }
         // this.select_entry_marker(entry_uuid)
-        console.log("selected_entry", entry_uuid)
+        // console.log("selected_entry", entry_uuid)
         const query = {}
         // console.log("navigation_mode", this.navigation_mode)
         if (entry_uuid) {
@@ -268,11 +418,49 @@
         this.$router.push(route_change_query(this.$route, query, true))
       }
     },
-    beforeRouteLeave(to, from, next) {
-      this.$store.dispatch(MAP_RESET_GOTO_LOCATIONS)
-      next()
-    },
     watch: {
+      map_loaded() {
+        if (this.entries) {
+          this.create_entries_layer()
+          this.markers_and_map_done()
+        }
+//         this.map.addSource('ethnicity', {
+//           type: 'vector',
+//           url: 'mapbox://examples.8fgz4egr'
+//         });
+//         this.map.addLayer({
+//           'id': 'population',
+//           'type': 'circle',
+//           'source': 'ethnicity',
+//           'source-layer': 'sf2010',
+//           'paint': {
+// // make circles larger as the user zooms from z12 to z22
+//             'circle-radius': {
+//               'base': 1.75,
+//               'stops': [
+//                 [12, 2],
+//                 [22, 180]
+//               ]
+//             },
+// color circles by ethnicity, using a match expression
+// https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-match
+//             'circle-color': [
+//               'match',
+//               ['get', 'ethnicity'],
+//               'White',
+//               '#fbb03b',
+//               'Black',
+//               '#223b53',
+//               'Hispanic',
+//               '#e55e5e',
+//               'Asian',
+//               '#3bb2d0',
+//               /* other */ '#ccc'
+//             ]
+//           }
+//         })
+
+      },
       goto_location(location) {
         console.log("map goto location watch")
         if (location) {
@@ -280,22 +468,20 @@
         }
       },
       entries() {
-        // console.log("watch- entries")
+        console.log("watch- entries")
         // todo, a bit ineficient. is called whenever we go back from an entry to the search
         if (this.map) {
-          this.create_markers()
+          this.create_entries_layer()
           this.markers_and_map_done()
         } else {
-          console.log("entries, ... but no map")
+          // console.log("entries, ... but no map")
         }
       },
     }
   }
 </script>
 
-<style src="mapbox-gl/dist/mapbox-gl.css"></style>
-
-<style>
+<style scoped>
 
   .buttongroup {
     top: 2%;
@@ -306,12 +492,11 @@
     z-index: 1
   }
 
-  /*.article_marker {*/
-  /*    background-image: url('../appbeta/icons/svgs/library-15.svg');*/
-  /*    background-size: cover;*/
-  /*    width: 25px;*/
-  /*    height: 25px;*/
-  /*    border-radius: 50%;*/
-  /*    cursor: pointer;*/
-  /*}*/
+  #map {
+    width: 100%;
+  }
+
+  .crosshair {
+    cursor: crosshair !important;
+  }
 </style>
