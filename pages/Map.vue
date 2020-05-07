@@ -159,76 +159,6 @@
           }
         })
       },
-      create_marker(coordinates) {
-        // this.map.addLayer({
-        //   id: 'points',
-        //   type: 'symbol',
-        //   source: {
-        //     type: 'geojson',
-        //     data: {
-        //       type: 'FeatureCollection',
-        //       features: [
-        //         {
-        //           type: 'Feature',
-        //           geometry: {
-        //             type: 'Point',
-        //             coordinates: [-77.03238901390978, 38.913188059745586],
-        //           },
-        //           properties: {
-        //             title: 'Mapbox DC',
-        //             icon: 'monument',
-        //           },
-        //         },
-        //         {
-        //           type: 'Feature',
-        //           geometry: {
-        //             type: 'Point',
-        //             coordinates: [-122.414, 37.776],
-        //           },
-        //           properties: {
-        //             title: 'Mapbox SF',
-        //             icon: 'harbor',
-        //           },
-        //         },
-        //       ],
-        //     },
-        //   },
-        //   layout: {
-        //     'icon-image': '{icon}-15',
-        //     'text-field': '{title}',
-        //     'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
-        //     'text-offset': [0, 0.6],
-        //     'text-anchor': 'top',
-        //   },
-        // })
-        // console.log(this.map)
-        /*     this.map.addLayer({
-               id: 'points',
-               type: 'symbol',
-               source: {
-                 type: 'geojson',
-                 data: {
-                   type: 'Feature',
-                   geometry: {
-                     type: 'Point',
-                     coordinates: coordinates,
-                   },
-                   properties: {
-                     title: 'Mapbox DC',
-                     icon: 'monument',
-                   },
-                 }
-               },
-               layout: {
-                 'icon-image': '{icon}-15',
-                 'text-field': '{title}',
-                 'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
-                 'text-offset': [0, 0.6],
-                 'text-anchor': 'top',
-               },
-             });*/
-      },
-      // OLD MAP page
       markers_and_map_done() {
         if (this.entries.length > 0 && this.map_loaded) {
           if (this.$route.query.uuid) {
@@ -310,13 +240,48 @@
       create_entries_layer() {
         this.map.addSource("all_entries", {
           type: "geojson",
-          data: this.entries
+          data: this.entries,
+          cluster: true,
+          clusterMaxZoom: 14, // Max zoom to cluster points on
+          clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
+        })
+
+        this.map.addLayer({
+          id: 'clusters',
+          type: 'circle',
+          source: 'all_entries',
+          filter: ['has', 'point_count'],
+          paint: {
+            'circle-color': '#f1f075',
+            'circle-radius': [
+              'step',
+              ['get', 'point_count'],
+              10,
+              3,
+              15,
+              10,
+              20
+            ]
+          }
+        })
+
+        this.map.addLayer({
+          id: 'cluster-count',
+          type: 'symbol',
+          source: 'all_entries',
+          filter: ['has', 'point_count'],
+          layout: {
+            'text-field': '{point_count_abbreviated}',
+            'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+            'text-size': 12
+          }
         })
 
         this.map.addLayer({
           'id': 'all_entries_layer',
           'type': 'circle',
           'source': 'all_entries',
+          filter: ['!', ['has', 'point_count']],
           'layout': {
             // 'line-join': 'round',
             // 'line-cap': 'round'
@@ -377,7 +342,7 @@
         })
 
         this.map.on("click", "all_entries_layer", (e) => {
-            this.select_entry_marker(e.features[0].properties.uuid)
+          this.select_entry_marker(e.features[0].properties.uuid)
         })
 
         this.map.on('mouseleave', 'all_entries_layer', () => {
