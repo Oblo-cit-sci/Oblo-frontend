@@ -12,7 +12,7 @@
           v-card-text {{main_template.description}}
         v-expansion-panels.mt-3(flat dense)
           v-expansion-panel(style="backgroundColor: 'none'")
-            v-expansion-panel-header(style="backgroundColor: 'none'") Create ther types of entries...
+            v-expansion-panel-header(style="backgroundColor: 'none'") Create other types of entries...
             v-expansion-panel-content
               EntryCreateList(:template_entries="template_entries")
       div(v-else)

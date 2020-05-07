@@ -1,10 +1,4 @@
-import {
-  aspect_loc_str2arr,
-  aspect_loc_uuid,
-  check_condition_value,
-  complete_aspect_loc,
-  delim2str
-} from "~/lib/aspect";
+import {aspect_loc_str2arr, aspect_loc_uuid, check_condition_value, complete_aspect_loc, delim2str} from "~/lib/aspect";
 import {get_codes_as_options, no_duplicate_texts, object_list2options, string_list2options} from "~/lib/options";
 import {ENTRIES_VALUE} from "~/store/entries";
 
@@ -26,18 +20,17 @@ export default {
   },
   created() {
     if (typeof this.aspect.items === "string") {
-      if (this.aspect.items.startsWith("*")) {
+      if (typeof this.aspect.items === "string") {
         this.options = get_codes_as_options(this.$store, this.aspect.items)
-
         // TODO make this a function. str check is reference str begining. however here that should be either
         // clear or not checked like that...
       } else if (Array.from(Object.keys(delim2str)).includes(this.aspect.items[0])) {
         // getting the options from a value (type: list)
-        let aspect_location = complete_aspect_loc(aspect_loc_uuid(this.aspect_loc),aspect_loc_str2arr(this.aspect.items))
+        let aspect_location = complete_aspect_loc(aspect_loc_uuid(this.aspect_loc), aspect_loc_str2arr(this.aspect.items))
         // console.log("referenced items...:", aspect_location)
         let value = this.$store.getters[ENTRIES_VALUE](aspect_location).value
         //console.log("building options from val", value)
-        if(this.aspect.attr.entry_select && this.aspect.attr.filter_entries){
+        if (this.aspect.attr.entry_select && this.aspect.attr.filter_entries) {
           console.log("entry-select", value)
           value = this.$_.filter(value, item => {
             const aspect_location = complete_aspect_loc(item.value, aspect_loc_str2arr(this.aspect.attr.filter_entries.aspect))
@@ -55,7 +48,7 @@ export default {
       if (this.aspect.attr.hasOwnProperty("select") && this.aspect.attr.select === "check") {
         this.select_check = true
       }
-      if(typeof this.aspect.items[0] === "string") {
+      if (typeof this.aspect.items[0] === "string") {
         this.options = string_list2options(this.aspect.items)
       } else { // should be objects that have already text, value, ...
         this.options = this.aspect.items
