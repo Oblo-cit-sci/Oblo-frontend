@@ -9,7 +9,7 @@
           @update:error="a.error = $event"
           :extra="{clearable:false}"
           mode="edit")
-    v-btn(color="success" @click="change_password" :disabled="any_invalid") Save password
+    v-btn(color="success" @click="change_password" :disabled="any_invalid" :loading="save_button_loading" ) Save password
 </template>
 
 <script>
@@ -28,6 +28,7 @@
       const new_pwd_confirm = this.$_.cloneDeep(password_confirm_aspect())
       new_pwd_confirm.label = "Repeat new password"
       return {
+        save_button_loading: false,
         password_aspects: {
           password: new_pwd,
           password_confirm: this.$_.merge(new_pwd_confirm, {
@@ -50,15 +51,19 @@
     },
     methods: {
       change_password() {
+
         const data = extract_unpacked_values(this.password_aspects)
         data.registered_name = this.$route.query.user
         data.code = this.$route.query.code
+        this.save_button_loading = true
         this.$api.post_actor__reset_password(data).then(({data}) => {
           this.ok_snackbar("Password updated")
           this.$router.push("/login")
         }).catch((err) => {
-          // console.log("err", err.response)
-          this.error_snackbar(err.response.data.error.msg)
+          const errorMsg = this.$_.get(err.response, "data.error.msg", "Something went wrong")
+          this.error_snackbar(errorMsg)
+        }).finally(() => {
+          this.save_button_loading = false
         })
       }
     }

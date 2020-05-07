@@ -14,7 +14,6 @@
     computed: {
       obsure_email() {
         return "your email"
-        // return this.$route.query.email
       }
     }
   }

@@ -5,7 +5,7 @@
       :ext_value.sync="query.value"
       mode="edit"
       @update:error="query.error = $event")
-    v-btn(@click='send' color='success' autofocus :disabled="query.error") Send email
+    v-btn(@click='send' color='success' autofocus :disabled="query.error" :loading="send_button_loading") Send email
     v-alert(:value='errorMsg != null' type='error' prominent transition="scroll-y-reverse-transition") {{errorMsg}}
 </template>
 
@@ -37,17 +37,21 @@
           error: true,
           value: ""
         },
-        errorMsg: null
+        errorMsg: null,
+        send_button_loading: false
       }
     },
     methods: {
       send() {
+        this.send_button_loading = true
         this.$api.actor__init_password_reset(this.query.value.toLowerCase()).then(({data}) => {
           this.ok_snackbar(data.data.msg)
           this.$router.push("/basic/reset_mail_sent")
         }).catch(err => {
-          this.errorMsg = err.response.data.error.msg
+          this.errorMsg = this.$_.get(err.response, "data.error.msg", "Something went wrong")
           setTimeout(() => this.errorMsg = null, 2000)
+        }).finally(() => {
+          this.send_button_loading = false
         })
       }
     }

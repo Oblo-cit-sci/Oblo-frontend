@@ -13,7 +13,7 @@
         @navigation_mode_entry="navigate_entry"
         @navigation_mode_search="unselect_entry"
         @layer_select_change="layer_select_change($event)")
-      mapbox(:style="mapCssStyle"
+      mapbox.crosshair(:style="mapCssStyle"
         :access-token="access_token"
         :map-options="options"
         @map-load="onMapLoaded"
@@ -34,6 +34,7 @@
   import MapNavigationDrawer from "~/components/map/MapNavigationDrawer"
   import {mapGetters} from "vuex"
   import MapIncludeMixin from "~/components/map/MapIncludeMixin"
+  import {closest_point, latLng_2_2d_arr} from "~/lib/map_utils"
 
   // const licci_style_map = "mapbox://styles/ramin36/cjx2xkz2w030s1cmumgp6y1j8";
   const mapbox_api_url = "https://api.mapbox.com/geocoding/v5/mapbox.places/";
@@ -63,6 +64,9 @@
 
         center_coordinates: [-0.8844128193341589, 37.809519042232694],
         markers: [],
+        act_hoover_id: null,
+        act_hoover_uuid: null,
+        act_popup: null
       }
     },
     mounted() {
@@ -144,7 +148,7 @@
               types: params.place_types
             }
           }).then(({data}) => {
-          console.log(data)
+          // console.log(data)
           this.selected_place = {};
           if (data.features.length === 0) { // oceans
             this.selected_place = null
@@ -197,7 +201,7 @@
         //     'text-anchor': 'top',
         //   },
         // })
-        console.log(this.map)
+        // console.log(this.map)
         /*     this.map.addLayer({
                id: 'points',
                type: 'symbol',
@@ -226,10 +230,7 @@
       },
       // OLD MAP page
       markers_and_map_done() {
-
-        // console.log("markers_and_map_done?")
         if (this.entries.length > 0 && this.map_loaded) {
-          // console.log("markers_and_map_done")
           if (this.$route.query.uuid) {
             this.update_navigation_mode(this.$route.query.uuid, VIEW)
           }
@@ -240,18 +241,10 @@
         this.$store.commit(MAP_SET_ENTRIES, entries)
       },
       layer_select_change(active_layers) {
-        // console.log("layer_select_change", active_layers)
-        // console.log("all layers", this.layers)
-        // debugger
         console.log(this.$_.keyBy(this.layers), l => active_layers.includes(l))
-        // console.log(this.$_.mapValues(this.$_.keyBy(this.layers), l => active_layers.includes(l)))
-        // console.log("**")
         this.set_layer_status(this.$_.mapValues(this.$_.keyBy(this.layers), l => active_layers.includes(l)))
       },
       set_layer_status(layers = this.layer_status) {
-        // console.log("hello")
-        // debugger
-        // console.log(layers)
         for (let layer in layers) {
           this.map.setLayoutProperty(layer, 'visibility', layers[layer] ? "visible" : "none")
         }
@@ -306,7 +299,6 @@
         }
       },
       create_e_marker(coordinates, uuid, options) {
-        // console.log("map.m.create_e_marker")
         const m = new this.mapboxgl.Marker(options)
         m.e_uuid = uuid
         m.setLngLat(coordinates).addTo(this.map)
@@ -315,18 +307,14 @@
           this.select_entry_marker(m.e_uuid)
         })
       },
-      create_markers() {
-
-        console.log(this.entries)
+      create_entries_layer() {
         this.map.addSource("all_entries", {
           type: "geojson",
           data: this.entries
         })
 
-
-
         this.map.addLayer({
-          'id': 'all_entries_styled',
+          'id': 'all_entries_layer',
           'type': 'circle',
           'source': 'all_entries',
           'layout': {
@@ -335,6 +323,8 @@
           },
           // todo the colors should come from the templates
           'paint': {
+            "circle-radius": 8,
+            "circle-opacity": 1,
             'circle-color': [
               'match',
               ['get', "template"],
@@ -342,20 +332,66 @@
               '#2ee70c',
               "local_observation",
               "#ee2b0b",
-              '#ccc']
+              '#ccc'],
+            "circle-stroke-color": [
+              'case',
+              ['boolean', ['feature-state', 'hover'], false],
+              "#ee2b0b",
+              "#000000"
+            ]
             // 'line-width': 8
           }
         })
+        this.map.on('mousemove', 'all_entries_layer', (e) => {
+          const feature = e.features[0]
+          if (feature.properties.uuid === this.act_hoover_uuid) {
+            return
+          }
+          if (this.act_popup) {
+            this.act_popup.remove()
+          }
+          let coordinates = null
+          if (feature.geometry.type === "MultiPoint") {
+            const cursor_loc = latLng_2_2d_arr(e.lngLat)
+            coordinates = closest_point(cursor_loc, feature.geometry.coordinates)
+          } else {
+            coordinates = feature.geometry.coordinates.slice()
+          }
+          var title = feature.properties.title
+          // while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+          //   coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+          // }
 
-        // console.log("creating markers from", this.entries.length, " entries")
-        // this.markers = []
-        // for (let e of this.entries) {
-        //   for (let loc of e.location || []) {
-        //     if (loc) {
-        //       this.create_e_marker(loc.coordinates, e.uuid, {})
-        //     }
-        //   }
-        // }
+          this.act_hoover_id = feature.id
+          // console.log(feature.id)
+          this.map.setFeatureState(
+            {source: 'all_entries', id: this.act_hoover_id},
+            {hover: true}
+          )
+
+          this.act_hoover_uuid = feature.properties.uuid
+          this.act_popup = new this.mapboxgl.Popup()
+            .setLngLat(coordinates)
+            .setHTML(title)
+            .addTo(this.map)
+        })
+
+        this.map.on("click", "all_entries_layer", (e) => {
+            this.select_entry_marker(e.features[0].properties.uuid)
+        })
+
+        this.map.on('mouseleave', 'all_entries_layer', () => {
+          if (this.act_hoover_uuid) {
+            this.map.setFeatureState(
+              {source: 'all_entries', id: this.act_hoover_id},
+              {hover: false}
+            )
+            this.act_hoover_id = null
+            this.act_hoover_uuid = null
+            this.act_popup.remove()
+            this.act_popup = null
+          }
+        })
       },
       navigate_entry({uuid, mode}) {
         this.update_navigation_mode(uuid, mode)
@@ -385,7 +421,7 @@
     watch: {
       map_loaded() {
         if (this.entries) {
-          this.create_markers()
+          this.create_entries_layer()
           this.markers_and_map_done()
         }
 //         this.map.addSource('ethnicity', {
@@ -435,7 +471,7 @@
         console.log("watch- entries")
         // todo, a bit ineficient. is called whenever we go back from an entry to the search
         if (this.map) {
-          this.create_markers()
+          this.create_entries_layer()
           this.markers_and_map_done()
         } else {
           // console.log("entries, ... but no map")
@@ -458,5 +494,9 @@
 
   #map {
     width: 100%;
+  }
+
+  .crosshair {
+    cursor: crosshair !important;
   }
 </style>
