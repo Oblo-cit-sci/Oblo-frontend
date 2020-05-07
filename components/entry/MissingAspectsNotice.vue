@@ -64,12 +64,9 @@
             // todo not always packed
             const unpacked = this.$_.get(aspect, "attr.unpacked", false)
             const a_w_value = this.entry.values[aspect.name] || aspect_default_value(aspect)
-
-            //console.log("val-", aspect.name, a_w_value)
-            if (unpacked) {
-              const a_value = a_w_value
-            } else {
-              const a_value = a_w_value.value
+            let a_value = a_w_value
+            if (!unpacked) {
+              a_value = a_w_value.value
             }
 
             const base_aspect_loc = loc_append([[EDIT, this.entry.uuid]], ASPECT, aspect.name)
