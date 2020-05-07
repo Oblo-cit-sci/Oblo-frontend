@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-layout.map.row
+  v-layout#map
     client-only
       .buttongroup
         div
@@ -26,14 +26,14 @@
 
 <script>
   import {MglMarker, MglPopup} from "vue-mapbox";
-  import {access_token, licci_style_map, location_search, rev_geocode} from "../lib/services/mapbox";
-  import {pack_value} from "../lib/aspect";
-  import {arr2coords} from "../lib/map_utils";
-  import MapNavigationDrawer from "../components/map/MapNavigationDrawer";
-  import MapNavigationBottomSheet from "../components/map/MapNavigationBottomSheet";
-  import {ENTRIES_SET_ENTRY_VALUE} from "../store/entries";
-  import {place2str} from "../lib/location";
-  import {MAP_RESET_TO_SELECT_ASPECT_LOCATION, MAP_SELECTED_LOCATION} from "../store/map";
+  import {access_token, licci_style_map, location_search, rev_geocode} from "~/lib/services/mapbox";
+  import {pack_value} from "~/lib/aspect";
+  import {arr2coords} from "~/lib/map_utils";
+  import MapNavigationDrawer from "~/components/map/MapNavigationDrawer";
+  import MapNavigationBottomSheet from "~/components/map/MapNavigationBottomSheet";
+  import {ENTRIES_SET_ENTRY_VALUE} from "~/store/entries";
+  import {place2str} from "~/lib/location";
+  import {MAP_RESET_TO_SELECT_ASPECT_LOCATION, MAP_SELECTED_LOCATION} from "~/store/map";
   import {default_place_type} from "~/lib/consts"
 
 

@@ -17,7 +17,6 @@
         :access-token="access_token"
         :map-options="options"
         @map-load="onMapLoaded"
-        @map-zoomend="zoomend"
         @geolocate-error="geolocateError"
         @geolocate-geolocate="geolocate")
 </template>
@@ -36,7 +35,6 @@
   import MapIncludeMixin from "~/components/map/MapIncludeMixin"
   import {closest_point, latLng_2_2d_arr} from "~/lib/map_utils"
 
-  // const licci_style_map = "mapbox://styles/ramin36/cjx2xkz2w030s1cmumgp6y1j8";
   const mapbox_api_url = "https://api.mapbox.com/geocoding/v5/mapbox.places/";
 
   export const SEARCH = "search"
@@ -51,11 +49,6 @@
     props: {},
     data() {
       return {
-        options: {
-          style: "mapbox://styles/ramin36/cjx2xkz2w030s1cmumgp6y1j8", //this.default_style_map,
-          center: [30, 0],
-          zoom: 1
-        },
         selected_coordinates: null,
         selected_place: null,
         //
@@ -127,17 +120,7 @@
         // this.create_marker(this.selected_coordinates)
         // this.rev_geocode({lon: mapbox_event.lngLat.lng, lat: mapbox_event.lngLat.lat})
       },
-      zoomend(map, e) {
-        // console.log('Map zoomed')
-      },
-      geolocateError(control, positionError) {
-        console.log(positionError)
-      },
-      geolocate(control, position) {
-        console.log(
-          `User position: ${position.coords.latitude}, ${position.coords.longitude}`
-        )
-      },
+
       rev_geocode(location, params = {
         place_types: ["country", "region", "district", "place", "locality"]
       }) {
@@ -241,9 +224,10 @@
         this.map.addSource("all_entries", {
           type: "geojson",
           data: this.entries,
+          generateId: true,
           cluster: true,
           clusterMaxZoom: 14, // Max zoom to cluster points on
-          clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
+          clusterRadius: 35 // Radius of each cluster when clustering points (defaults to 50)
         })
 
         this.map.addLayer({

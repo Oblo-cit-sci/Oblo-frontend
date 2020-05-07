@@ -5,7 +5,7 @@ export default {
   head() {
     return {
       link: [{
-        href: "mapbox-gl.css",
+        href: "mapbox-gl.css", //https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.css",
         rel: "stylesheet"
       }]
     }
@@ -14,6 +14,11 @@ export default {
     return {
       access_token: "pk.eyJ1IjoicmFtaW4zNiIsImEiOiJjanUzdmRiaDUwcDM2M3lxYzI4a2g4NjVqIn0.SHnSFZ8clit4mcEQDSakwg",
       map_loaded: false,
+      options: {
+        style: "mapbox://styles/ramin36/cjx2xkz2w030s1cmumgp6y1j8", //this.default_style_map,
+        center: [30, 0],
+        zoom: 1
+      },
     }
   },
   computed: {
@@ -26,6 +31,15 @@ export default {
       this.map = map
       this.mapboxgl = require('mapbox-gl/dist/mapbox-gl')
       this.map_loaded = true
+
+      if(this.map_show_geolocate_ctrl) {
+        this.map.addControl(new this.mapboxgl.GeolocateControl({
+          positionOptions: {
+            enableHighAccuracy: true
+          },
+          trackUserLocation: true
+        }))
+      }
     },
     map_goto_location(location) {
       const center = this.transform_loc(location.coordinates)
@@ -42,6 +56,17 @@ export default {
       } else {
         return loc
       }
+    },
+    zoomend(map, e) {
+      // console.log('Map zoomed')
+    },
+    geolocateError(control, positionError) {
+      console.log(positionError)
+    },
+    geolocate(control, position) {
+      console.log(
+        `User position: ${position.coords.latitude}, ${position.coords.longitude}`
+      )
     },
   }
 }

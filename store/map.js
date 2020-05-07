@@ -3,6 +3,7 @@ const ld = require("lodash")
 
 // Mutations
 export const MAP_SET_ENTRIES = "map/set_entries"
+// not used anymore with the new map
 export const MAP_SET_TO_SELECT_ASPECT_LOCATION = "map/set_to_select_aspect_location"
 export const MAP_RESET_TO_SELECT_ASPECT_LOCATION = "map/reset_to_select_aspect_location"
 export const MAP_GOTO_LOCATION = "map/goto_location"  // also getter
@@ -34,7 +35,6 @@ export const mutations = {
     state.marker = coordinate
   },
   set_entries(state, entries) {
-    console.log("map store entries", entries)
     state.entries = entries
   },
   clear(state) {

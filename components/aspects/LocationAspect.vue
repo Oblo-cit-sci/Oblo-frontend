@@ -4,8 +4,6 @@
       div.mb-1
         div(v-if="location_set")
           span.body-1.readonly-aspect.font-weight-bold {{location_view}}
-          v-btn(icon @click="goto_location(value, entry_uuid())")
-            v-icon mdi-map-marker
           div
             v-btn(small @click="reset_location") reset location
         div(v-else)
@@ -13,12 +11,39 @@
             :loading="btn_loading_device_location"
             :color="!location_set ? 'success' : ''"
             @click="device_position") from device
-          v-btn(v-if="map_location_input_option"
-            :color="!location_set ? 'success' : ''"
-            @click="map_position") from map
           .ml-2.mt-2(v-if="search_location_input_option")
             div From place search
-            v-text-field(
+            v-autocomplete(
+              :search-input.sync="search_query"
+              hint="press enter or click the search button"
+              append-outer-icon="mdi-magnify"
+              @click:append-outer="search_location"
+              @keydown="search_keypress($event)"
+              @input="selected_search_result = $event"
+              :loading="btn_loading_search_location"
+              :items="search_result_options"
+              no-filter
+              hide-no-data
+              auto-select-first
+              clearable)
+    div(v-else)
+      p.body-1.readonly-aspect {{location_view}}
+      v-btn(v-if="location_set" @click="goto_location(value, entry_uuid())")
+        v-icon mdi-map-marker
+    mapbox.crosshair.mt-3(v-if="show_map"
+      style="height:400px"
+      :access-token="access_token"
+      :map-options="options"
+      @map-load="onMapLoaded"
+      @map-zoomend="zoomend"
+      @geolocate-error="geolocateError"
+      @geolocate-geolocate="geolocate")
+</template>
+
+<script>
+
+  /*
+              v-text-field(
               v-model="search_query"
               hint="press enter or click the search button"
               append-outer-icon="mdi-magnify"
@@ -29,22 +54,17 @@
               :options="search_result_options"
               force_view="list"
               :selection.sync="selected_search_result")
-    div(v-else)
-      p.body-1.readonly-aspect {{location_view}}
-      v-btn(v-if="location_set" @click="goto_location(value, entry_uuid())")
-        v-icon mdi-map-marker
-</template>
+   */
 
-<script>
-
-  import {get_location, create_location_error, array2coords, place2str} from "../../lib/location";
+  import Mapbox from 'mapbox-gl-vue'
+  import {array2coords, create_location_error, get_location, place2str} from "~/lib/location";
   import SingleSelect from "../input/SingleSelect";
-  import {location_search, rev_geocode} from "../../lib/services/mapbox";
-  import {default_place_type, MODE_ASPECT_POINT} from "../../lib/consts";
+  import {location_search, rev_geocode} from "~/lib/services/mapbox";
+  import {default_place_type} from "~/lib/consts";
   import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
   import MapJumpMixin from "../map/MapJumpMixin";
   import AspectComponentMixin from "./AspectComponentMixin";
-  import {MAP_SET_TO_SELECT_ASPECT_LOCATION} from "../../store/map";
+  import MapIncludeMixin from "~/components/map/MapIncludeMixin"
 
   // "attr.input" options
   const DEVICE = "device"
@@ -59,11 +79,10 @@
 
   // below place: "locality", "neighborhood"
 
-
   export default {
     name: "LocationAspect",
-    components: {SingleSelect},
-    mixins: [AspectComponentMixin, TriggerSnackbarMixin, MapJumpMixin],
+    components: {SingleSelect, Mapbox},
+    mixins: [AspectComponentMixin, TriggerSnackbarMixin, MapJumpMixin, MapIncludeMixin],
     data() {
       return {
         btn_loading_device_location: false,
@@ -71,12 +90,17 @@
         btn_loading_search_location: false,
         search_results: null,
         selected_search_result: undefined, // this because, clear sets it to that too,
+        //
+        map_show_geolocate_ctrl: true
       }
     },
     computed: {
       //  check for attr.input.___
       device_location_input_option() {
         return this.has_input_option(DEVICE)
+      },
+      show_map() {
+        return this.is_edit_mode && this.map_location_input_option || this.is_view_mode
       },
       map_location_input_option() {
         return this.has_input_option(MAP)
@@ -94,7 +118,7 @@
         if (this.has_output_place && this.has_place) {
           return place2str(this.value.place)
         } else {
-          if(this.location_set) {
+          if (this.location_set) {
             return "No location name"
           } else {
             return ""
@@ -109,7 +133,9 @@
         return this.has_output(PLACE)
       },
       search_result_options() {
-        return this.$_.map(this.search_results, f => {return {value: f.id, text: f.place_name}})
+        return this.$_.map(this.search_results, f => {
+          return {value: f.id, text: f.place_name}
+        })
       }
     },
     created() {
@@ -132,6 +158,8 @@
           console.log("error: mapbox api error", err)
         }) // must be with else, cuz its async
       }
+
+
     },
     methods: {
       reset_location() {
@@ -139,6 +167,10 @@
         this.update_value(null)
         this.search_results = []
         // this.update_value(null)
+      },
+      // temp
+      selected(loc) {
+        console.log(loc)
       },
       search_keypress(keyEvent) {
         // Enter,  this is the most robust among all platforms (desktop, mobile, chrome, ff)
@@ -217,25 +249,28 @@
           }
           this.btn_loading_device_location = false
         })
-      },
-      map_position() {
-        let route = {
-          path: "/locationselectmap",
-          query: {
-            mode: MODE_ASPECT_POINT,
-          }
-        }
-        this.$store.commit(MAP_SET_TO_SELECT_ASPECT_LOCATION, this.aspect_loc)
-        this.$router.push(route)
       }
     },
     watch: {
       selected_search_result(sel) {
+        console.log(sel)
+        console.log(this.search_results)
         if (!sel) {
           this.reset_search_data()
           this.update_value(null)
         } else {
-          const feature = this.$_.find(this.search_results, feature => feature.id === sel.value)
+          const feature = this.$_.find(this.search_results, feature => feature.id === sel)
+          // if (feature.bbox) {
+          //   this.map.fitBounds(feature.bbox)
+          // } else {
+            this.map.flyTo({
+              center: feature.center,
+              essential: true // this animation is considered essential with respect to prefers-reduced-motion
+            })
+          // }
+          const m = new this.mapboxgl.Marker()
+          m.setLngLat(feature.center).addTo(this.map)
+          //
           let value = {
             coordinates: array2coords(feature.geometry.coordinates),
             place: {}
