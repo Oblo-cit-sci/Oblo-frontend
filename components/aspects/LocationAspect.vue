@@ -7,10 +7,6 @@
           div
             v-btn(small @click="reset_location") reset location
         div(v-else)
-          v-btn(v-if="device_location_input_option"
-            :loading="btn_loading_device_location"
-            :color="!location_set ? 'success' : ''"
-            @click="device_position") from device
           .ml-2.mt-2(v-if="search_location_input_option")
             div From place search
             v-autocomplete(
@@ -85,13 +81,10 @@
     mixins: [AspectComponentMixin, TriggerSnackbarMixin, MapJumpMixin, MapIncludeMixin],
     data() {
       return {
-        btn_loading_device_location: false,
         search_query: "",
         btn_loading_search_location: false,
         search_results: null,
         selected_search_result: undefined, // this because, clear sets it to that too,
-        //
-        map_show_geolocate_ctrl: true
       }
     },
     computed: {
@@ -107,6 +100,10 @@
       },
       search_location_input_option() {
         return this.has_input_option(SEARCH)
+      },
+      // this is for the MapIncludeMixin to show the control
+      map_show_geolocate_ctrl() {
+        return this.device_location_input_option
       },
       location_set() {
         return this.value !== null
@@ -168,9 +165,47 @@
         this.search_results = []
         // this.update_value(null)
       },
-      // temp
-      selected(loc) {
-        console.log(loc)
+      geolocate_success(location) {
+        this.reset_search_data()
+        let value = {}
+        if (this.has_output_location) {
+          // todo this should also be called at other situations
+          if (this.aspect.attr.hasOwnProperty("apply_location_error") &&
+            this.aspect.attr.apply_location_error) {
+            value.coordinates = create_location_error(
+              location.coords.longitude,
+              location.coords.latitude,
+              this.$store.state.user.user_data.location_error)
+            // console.log("err.loc", value.location)
+          } else {
+            console.log("exact.loc")
+            value.coordinates = {
+              lon: location.coords.longitude,
+              lat: location.coords.latitude,
+            }
+          }
+        }
+        if ((this.has_output_place)) {
+          const place_types = this.aspect.attr.place_types || default_place_type
+          rev_geocode(this.$axios,
+            {lon: location.coords.longitude, lat: location.coords.latitude},
+            {place_types}).then((data) => {
+            value.place = {}
+            this.$_.forEach(data.features, feature => {
+              value.place[feature.place_type[0]] = feature.text
+            })
+            this.update_value(value)
+            // this.update_value(value)
+          }).catch((err) => {
+            console.log("error: mapbox api error", err)
+          }) // must be with else, cuz its async
+        } else {
+          this.update_value(value)
+          // this.update_value(value)
+        }
+      },
+      geolocate_error() {
+        this.error_snackbar("Could not obtain location")
       },
       search_keypress(keyEvent) {
         // Enter,  this is the most robust among all platforms (desktop, mobile, chrome, ff)
@@ -203,52 +238,8 @@
         return (this.aspect.attr.output || default_output).includes(type)
       },
       device_position() {
-        this.btn_loading_device_location = true
-        this.reset_search_data()
-        get_location((location) => {
-          console.log("device_position", location)
-          if (location !== null) {
-            let value = {}
-            if (this.has_output_location) {
-              // todo this should also be called at other situations
-              if (this.aspect.attr.hasOwnProperty("apply_location_error") &&
-                this.aspect.attr.apply_location_error) {
-                value.coordinates = create_location_error(
-                  location.coords.longitude,
-                  location.coords.latitude,
-                  this.$store.state.user.user_data.location_error)
-                // console.log("err.loc", value.location)
-              } else {
-                console.log("exact.loc")
-                value.coordinates = {
-                  lon: location.coords.longitude,
-                  lat: location.coords.latitude,
-                }
-              }
-            }
-            if ((this.has_output_place)) {
-              const place_types = this.aspect.attr.place_types || default_place_type
-              rev_geocode(this.$axios,
-                {lon: location.coords.longitude, lat: location.coords.latitude},
-                {place_types}).then((data) => {
-                value.place = {}
-                this.$_.forEach(data.features, feature => {
-                  value.place[feature.place_type[0]] = feature.text
-                })
-                this.update_value(value)
-                // this.update_value(value)
-              }).catch((err) => {
-                console.log("error: mapbox api error", err)
-              }) // must be with else, cuz its async
-            } else {
-              this.update_value(value)
-              // this.update_value(value)
-            }
-          } else { // we get null, when error occured, e.g. not beeing connected
-            this.error_snackbar("Could not obtain location")
-          }
-          this.btn_loading_device_location = false
-        })
+        // TODO TEST AGAIN, WE ARE NOW USING THE CTRL IN MAPBOXGL
+        // callbacks are: geolocate_success, geolocate_error
       }
     },
     watch: {
@@ -263,10 +254,10 @@
           // if (feature.bbox) {
           //   this.map.fitBounds(feature.bbox)
           // } else {
-            this.map.flyTo({
-              center: feature.center,
-              essential: true // this animation is considered essential with respect to prefers-reduced-motion
-            })
+          this.map.flyTo({
+            center: feature.center,
+            essential: true // this animation is considered essential with respect to prefers-reduced-motion
+          })
           // }
           const m = new this.mapboxgl.Marker()
           m.setLngLat(feature.center).addTo(this.map)

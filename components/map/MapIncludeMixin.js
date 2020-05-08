@@ -32,13 +32,24 @@ export default {
       this.mapboxgl = require('mapbox-gl/dist/mapbox-gl')
       this.map_loaded = true
 
-      if(this.map_show_geolocate_ctrl) {
-        this.map.addControl(new this.mapboxgl.GeolocateControl({
-          positionOptions: {
-            enableHighAccuracy: true
-          },
-          trackUserLocation: true
-        }))
+
+      if (this.map_show_geolocate_ctrl) {
+        this.add_geolocate_ctrl()
+      }
+
+    },
+    add_geolocate_ctrl() {
+      const geolocate = new this.mapboxgl.GeolocateControl()
+      this.map.addControl(geolocate)
+      if (this.geolocate_success) {
+        geolocate.on('geolocate', this.geolocate_success)
+      } else {
+        console.log("Method geolocate_success missing")
+      }
+      if (this.geolocate_error) {
+        geolocate.on('error', this.geolocate_error)
+      } else {
+        console.log("Method geolocate_error missing")
       }
     },
     map_goto_location(location) {
