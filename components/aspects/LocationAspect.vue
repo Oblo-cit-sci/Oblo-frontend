@@ -28,7 +28,8 @@
       :access-token="access_token"
       :map-options="map_options"
       @map-load="onMapLoaded"
-      @click="map_location_selected")
+      @click="map_location_selected"
+      navControl="is_edit_mode")
 </template>
 
 <script>
@@ -88,7 +89,7 @@
       },
       // this is for the MapIncludeMixin to show the control
       map_show_geolocate_ctrl() {
-        return this.device_location_input_option
+        return this.is_edit_mode && this.device_location_input_option
       },
       location_set() {
         return this.value !== null
@@ -115,7 +116,11 @@
       map_options() {
         if (this.is_view_mode) {
           if (this.value && this.value.coordinates) {
-            return Object.assign(this.default_map_options, {center: this.value.coordinates, zoom: 3, interactive:false})
+            return Object.assign(this.default_map_options, {
+              center: this.value.coordinates,
+              zoom: 3,
+              interactive: false
+            })
           }
         } else {
           return this.default_map_options
@@ -221,7 +226,7 @@
         return (this.aspect.attr.output || default_output).includes(type)
       },
       map_location_selected(map, mapboxEvent) {
-        if(this.is_view_mode)
+        if (this.is_view_mode)
           return
         let value = {
           coordinates: mapboxgl_lngLat2coords(mapboxEvent.lngLat),
@@ -282,10 +287,8 @@
           this.update_marker(true)
       },
       map_loaded() {
-        if (this.is_view_mode) {
-          if (this.value && this.value.coordinates) {
-           this.update_marker()
-          }
+        if (this.is_view_mode && this.value && this.value.coordinates) {
+            this.update_marker()
         }
       }
     }

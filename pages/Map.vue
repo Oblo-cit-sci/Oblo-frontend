@@ -26,7 +26,7 @@
   import Mapbox from 'mapbox-gl-vue'
 
   import {MAP_GOTO_LOCATION, MAP_SET_ENTRIES} from "~/store/map"
-  import {default_place_type, VIEW} from "~/lib/consts"
+  import {VIEW} from "~/lib/consts"
   import {ENTRIES_HAS_FULL_ENTRY, ENTRIES_SAVE_ENTRY} from "~/store/entries"
   import {route_change_query} from "~/lib/util"
   import MapNavigationBottomSheet from "~/components/map/MapNavigationBottomSheet"
