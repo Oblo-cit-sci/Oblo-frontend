@@ -20,13 +20,13 @@
               auto-select-first
               clearable)
     div(v-else)
-      p.body-1.readonly-aspect {{location_view}}
-      v-btn(v-if="location_set" @click="goto_location(value, entry_uuid())")
+      span.body-1.readonly-aspect {{place_name}}
+      v-btn(v-if="show_goto_button" icon)
         v-icon mdi-map-marker
     mapbox.crosshair.mt-3(v-if="show_map"
       style="height:400px"
       :access-token="access_token"
-      :map-options="options"
+      :map-options="map_options"
       @map-load="onMapLoaded"
       @click="map_location_selected")
 </template>
@@ -34,11 +34,10 @@
 <script>
 
   import Mapbox from 'mapbox-gl-vue'
-  import {array2coords, create_location_error} from "~/lib/location";
+  import {array2coords, create_location_error, place2str} from "~/lib/location";
   import SingleSelect from "../input/SingleSelect";
   import {default_place_type} from "~/lib/consts";
   import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
-  import MapJumpMixin from "../map/MapJumpMixin";
   import AspectComponentMixin from "./AspectComponentMixin";
   import MapIncludeMixin from "~/components/map/MapIncludeMixin"
   import {mapboxgl_lngLat2coords, place_feature2place} from "~/lib/map_utils"
@@ -60,7 +59,7 @@
   export default {
     name: "LocationAspect",
     components: {SingleSelect, Mapbox},
-    mixins: [AspectComponentMixin, TriggerSnackbarMixin, MapJumpMixin, MapIncludeMixin, GeocodingMixin],
+    mixins: [AspectComponentMixin, TriggerSnackbarMixin, MapIncludeMixin, GeocodingMixin],
     data() {
       return {
         search_query: "",
@@ -76,7 +75,10 @@
         return this.has_input_option(DEVICE)
       },
       show_map() {
-        return this.is_edit_mode && this.map_location_input_option || this.is_view_mode
+        return this.$route.name !== "Map" && (this.is_edit_mode && this.map_location_input_option || this.is_view_mode)
+      },
+      show_goto_button() {
+        return this.is_view_mode && this.$route.name === "Map"
       },
       map_location_input_option() {
         return this.has_input_option(MAP)
@@ -105,12 +107,26 @@
         return this.$_.map(this.search_results, f => {
           return {value: f.id, text: f.place_name}
         })
+      },
+      place_name() {
+        if (this.value && this.value.place)
+          return place2str(this.value.place)
+      },
+      map_options() {
+        if (this.is_view_mode) {
+          if (this.value && this.value.coordinates) {
+            return Object.assign(this.default_map_options, {center: this.value.coordinates, zoom: 3, interactive:false})
+          }
+        } else {
+          return this.default_map_options
+        }
       }
     },
     created() {
       // if only the coordinates are set (e.g. cuz of importing from some db, this one fills in the place
       const has_coordinates = this.value && this.value.coordinates !== null
       if (this.location_set && has_coordinates && this.has_output_place && !this.has_place) {
+        console.log("TAKEOUT- fetching place name")
         const place_types = this.aspect.attr.place_types || default_place_type
         const coordinates = this.value.coordinates
         this.rev_geocode(
@@ -205,6 +221,8 @@
         return (this.aspect.attr.output || default_output).includes(type)
       },
       map_location_selected(map, mapboxEvent) {
+        if(this.is_view_mode)
+          return
         let value = {
           coordinates: mapboxgl_lngLat2coords(mapboxEvent.lngLat),
           place: {}
@@ -224,6 +242,20 @@
             this.querying_location = false
           }).finally(() => {
             this.update_value(value)
+          })
+        }
+      },
+      update_marker(flyTo = false) {
+        const coordinates = this.value.coordinates
+        if (this.location_marker) {
+          this.location_marker.remove()
+        }
+        this.location_marker = new this.mapboxgl.Marker()
+        this.location_marker.setLngLat(coordinates).addTo(this.map)
+        if (flyTo) {
+          this.map.flyTo({
+            center: coordinates,
+            essential: true // this animation is considered essential with respect to prefers-reduced-motion
           })
         }
       }
@@ -246,16 +278,15 @@
           this.reset()
           return
         }
-        const coords = this.$_.cloneDeep(value.coordinates)
-        this.map.flyTo({
-          center: coords,
-          essential: true // this animation is considered essential with respect to prefers-reduced-motion
-        })
-        if (this.location_marker) {
-          this.location_marker.remove()
+        if (this.map_loaded)
+          this.update_marker(true)
+      },
+      map_loaded() {
+        if (this.is_view_mode) {
+          if (this.value && this.value.coordinates) {
+           this.update_marker()
+          }
         }
-        this.location_marker = new this.mapboxgl.Marker()
-        this.location_marker.setLngLat(coords).addTo(this.map)
       }
     }
   }

@@ -15,7 +15,7 @@
         @layer_select_change="layer_select_change($event)")
       mapbox.crosshair(:style="mapCssStyle"
         :access-token="access_token"
-        :map-options="options"
+        :map-options="default_map_options"
         @map-load="onMapLoaded"
         @geolocate-error="geolocateError"
         @geolocate-geolocate="geolocate")
@@ -26,7 +26,7 @@
   import Mapbox from 'mapbox-gl-vue'
 
   import {MAP_GOTO_LOCATION, MAP_SET_ENTRIES} from "~/store/map"
-  import {VIEW} from "~/lib/consts"
+  import {default_place_type, VIEW} from "~/lib/consts"
   import {ENTRIES_HAS_FULL_ENTRY, ENTRIES_SAVE_ENTRY} from "~/store/entries"
   import {route_change_query} from "~/lib/util"
   import MapNavigationBottomSheet from "~/components/map/MapNavigationBottomSheet"
@@ -116,31 +116,6 @@
     methods: {
       clicked(mapbox_event) {
         console.log(mapbox_event.features);
-        // this.selected_coordinates = [mapbox_event.lngLat.lng, mapbox_event.lngLat.lat]
-        // this.create_marker(this.selected_coordinates)
-        // this.rev_geocode({lon: mapbox_event.lngLat.lng, lat: mapbox_event.lngLat.lat})
-      },
-
-      rev_geocode(location, params = {
-        place_types: ["country", "region", "district", "place", "locality"]
-      }) {
-        this.$axios.get(encodeURI(mapbox_api_url + location.lon + "," + location.lat) + ".json",
-          {
-            params: {
-              access_token: c_access_token,
-              types: params.place_types
-            }
-          }).then(({data}) => {
-          // console.log(data)
-          this.selected_place = {};
-          if (data.features.length === 0) { // oceans
-            this.selected_place = null
-          } else {
-            data.features.forEach(feature => {
-              this.selected_place[feature.place_type[0]] = feature.text
-            })
-          }
-        })
       },
       markers_and_map_done() {
         if (this.entries.length > 0 && this.map_loaded) {
@@ -221,6 +196,10 @@
         })
       },
       create_entries_layer() {
+        console.log("creating layers")
+        if(this.map.style._layers.hasOwnProperty("all_entries_layer")) {
+          return
+        }
         this.map.addSource("all_entries", {
           type: "geojson",
           data: this.entries,

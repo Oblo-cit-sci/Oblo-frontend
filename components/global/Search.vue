@@ -152,7 +152,7 @@
         total_count: SEARCH_GET_SEARCH_COUNT
       }),
       is_pure() {
-        // no serch query nor filter
+        // no search query nor filter
         const no_params = this.$_.isEmpty(this.$_.pick(this.$route.query, [QP_SEARCH]))
         const no_filter = this.filter_data.length === 0
         return no_params && no_filter

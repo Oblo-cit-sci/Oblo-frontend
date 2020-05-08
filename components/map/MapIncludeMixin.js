@@ -1,6 +1,8 @@
 import {MAP_GOTO_DONE} from "~/store/map"
 import MapboxBaseMixin from "~/components/map/MapboxBaseMixin"
 
+const default_mapstyle = "mapbox://styles/ramin36/cjx2xkz2w030s1cmumgp6y1j8"
+
 export default {
   name: "MapIncludeMixin",
   mixins: [MapboxBaseMixin],
@@ -15,17 +17,14 @@ export default {
   data() {
     return {
       map_loaded: false,
-      options: {
-        style: "mapbox://styles/ramin36/cjx2xkz2w030s1cmumgp6y1j8", //this.default_style_map,
+      default_map_options: {
+        style: default_mapstyle, //this.default_style_map,
         center: [30, 0],
         zoom: 1
       },
     }
   },
   computed: {
-    default_style_map() {
-      return "mapbox://styles/ramin36/cjx2xkz2w030s1cmumgp6y1j8"
-    }
   },
   methods: {
     onMapLoaded(map) {
@@ -33,11 +32,9 @@ export default {
       this.mapboxgl = require('mapbox-gl/dist/mapbox-gl')
       this.map_loaded = true
 
-
       if (this.map_show_geolocate_ctrl) {
         this.add_geolocate_ctrl()
       }
-
     },
     add_geolocate_ctrl() {
       const geolocate = new this.mapboxgl.GeolocateControl()
