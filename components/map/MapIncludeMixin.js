@@ -1,18 +1,19 @@
 import {MAP_GOTO_DONE} from "~/store/map"
+import MapboxBaseMixin from "~/components/map/MapboxBaseMixin"
 
 export default {
   name: "MapIncludeMixin",
+  mixins: [MapboxBaseMixin],
   head() {
     return {
       link: [{
-        href: "mapbox-gl.css", //https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.css",
+        href: "https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.css", // "mapbox-gl.css"
         rel: "stylesheet"
       }]
     }
   },
   data() {
     return {
-      access_token: "pk.eyJ1IjoicmFtaW4zNiIsImEiOiJjanUzdmRiaDUwcDM2M3lxYzI4a2g4NjVqIn0.SHnSFZ8clit4mcEQDSakwg",
       map_loaded: false,
       options: {
         style: "mapbox://styles/ramin36/cjx2xkz2w030s1cmumgp6y1j8", //this.default_style_map,
