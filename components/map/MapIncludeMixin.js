@@ -7,7 +7,7 @@ export default {
   head() {
     return {
       link: [{
-        href: "https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.css", // "mapbox-gl.css"
+        href: "mapbox-gl.css", //"https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.css", // "mapbox-gl.css"
         rel: "stylesheet"
       }]
     }

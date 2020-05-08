@@ -29,7 +29,7 @@
 <script>
 
   import EntryCreateList from "~/components/EntryCreateList";
-  import {entries_domain_filter, global_context_filter} from "~/lib/search";
+  import {global_context_filter} from "~/lib/search";
   import Search from "~/components/global/Search";
   import {entrytype_filter_options} from "~/lib/filter_option_consts";
 

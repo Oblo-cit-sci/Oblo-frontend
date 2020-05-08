@@ -151,6 +151,12 @@
         get_searching: SEARCH_GET_SEARCHING,
         total_count: SEARCH_GET_SEARCH_COUNT
       }),
+      is_pure() {
+        // no serch query nor filter
+        const no_params = this.$_.isEmpty(this.$_.pick(this.$route.query, [QP_SEARCH]))
+        const no_filter = this.filter_data.length === 0
+        return no_params && no_filter
+      },
       searching() {
         const is_searching = this.get_searching()
         if (is_searching === false) {
@@ -173,7 +179,8 @@
         let result_entries = this.entries() // must be a call
         // todo this should just check if QP_D is set and make the filter manual
         // so that drafts are also shown on the profile
-        if (this.mixin_domain_drafts) {
+        console.log(this.is_pure)
+        if (this.mixin_domain_drafts && this.is_pure) {
           const drafts = this.$store.getters[ENTRIES_DOMAIN_DRAFTS_UUIDS](this.mixin_domain_drafts).reverse()
           result_entries = drafts.concat(result_entries)
         }
