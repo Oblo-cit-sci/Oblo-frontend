@@ -70,6 +70,9 @@ export default {
       }
       if (this.aspect_loc) {
         this.$store.dispatch(ENTRIES_SET_ENTRY_VALUE, {aspect_loc: this.aspect_loc, value: up_value})
+        if(this.aspect.attr.cache) {
+          this.$store.commit("add_cache", {template: this.get_entry().template.slug, aspect: this.aspect.name, mvalue: up_value})
+        }
       } else {
         this.$emit("update:ext_value", up_value)
       }
@@ -135,13 +138,6 @@ export default {
         }
       }
     },
-    // value() {
-    //   if (this.is_unpacked) {
-    //     return this.mvalue
-    //   } else {
-    //     return this.mvalue.value
-    //   }
-    // },
     mvalue: function () {
       if (!this.aspect_loc) {
         if (this.ext_value !== undefined) {

@@ -118,7 +118,6 @@ export const mutations = {
     let select = select_aspect_loc(state, aspect_loc, true)
     const final_loc = ld.last(aspect_loc)
     //console.log("final,", final_loc, "select", select, "value", value)
-
     if (final_loc[0] === ASPECT) {
       $nuxt.$set(select, [final_loc[1]], value)
     } else if (final_loc[0] === COMPONENT) {

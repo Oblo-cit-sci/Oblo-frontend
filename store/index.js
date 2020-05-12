@@ -1,6 +1,6 @@
 import {NO_DOMAIN, TITLE, VISITOR} from "~/lib/consts";
 import {object_list2options} from "~/lib/options";
-import {TEMPLATES_ADD_TEMPLATES, TEMPLATES_TYPENAME} from "~/store/templates";
+import {TEMPLATES_ADD_TEMPLATES} from "~/store/templates";
 import {USER_LOGOUT} from "~/store/user"
 import {SEARCH_CLEAR} from "~/store/search"
 
@@ -48,7 +48,8 @@ export const state = () => ({
   },
   // prevent that the save and back is messing up, should not go back to a child. e.g.
   // stores either domain or my entries page or a parent entry
-  page_path: []
+  page_path: [],
+  aspect_value_cache: {}
 })
 
 const ld = require('lodash')
@@ -104,6 +105,11 @@ export const mutations = {
   },
   pop_last_page_path(state) {
     state.page_path.pop()
+  },
+  add_cache(state, {template, aspect, mvalue}) {
+    const template_cache = state.aspect_value_cache[template] || {}
+    template_cache[aspect] = mvalue
+    state.aspect_value_cache[template] = template_cache
   }
 };
 
@@ -163,6 +169,15 @@ export const getters = {
   },
   all_codes(state) {
     return state.codes
+  },
+  get_aspect_cache(state) {
+    return (template_slug, aspect_name) => {
+      const template_cache = state.aspect_value_cache[template_slug]
+      console.log("store template_cache", template_cache)
+      if (template_cache) {
+        return template_cache[aspect_name]
+      }
+    }
   }
 };
 

@@ -1,4 +1,5 @@
 import MapboxBaseMixin from "~/components/map/MapboxBaseMixin"
+import {default_place_type} from "~/lib/consts"
 
 export default {
   name: "GeocodingMixin",
@@ -10,7 +11,7 @@ export default {
   },
   methods: {
     async rev_geocode(location, params = {
-      place_types: ["country", "region", "district", "place", "locality"]
+      place_types: default_place_type
     }) {
       let {data} = await this.$axios.get(encodeURI(this.mapbox_api_url + location.lon + "," + location.lat) + ".json",
         {

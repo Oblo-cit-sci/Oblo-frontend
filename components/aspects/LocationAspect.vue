@@ -18,6 +18,7 @@
               no-filter
               hide-no-data
               auto-select-first
+              v-model="place_select__"
               clearable)
     div(v-else)
       span.body-1.readonly-aspect {{place_name}}
@@ -63,11 +64,13 @@
     mixins: [AspectComponentMixin, TriggerSnackbarMixin, MapIncludeMixin, GeocodingMixin],
     data() {
       return {
-        search_query: "",
+        search_query: null,
+        initial_autocomplete_reset: 2, // catch first 2 emit of null: ARGH
         location_marker: null,
         btn_loading_search_location: false,
         search_results: null,
         selected_search_result: undefined, // this because, clear sets it to that too,
+        place_select__: null// this in v-model is only used because of https://github.com/vuetifyjs/vuetify/issues/11383
       }
     },
     computed: {
@@ -128,25 +131,37 @@
       }
     },
     created() {
-      // if only the coordinates are set (e.g. cuz of importing from some db, this one fills in the place
-      const has_coordinates = this.value && this.value.coordinates !== null
-      if (this.location_set && has_coordinates && this.has_output_place && !this.has_place) {
-        console.log("TAKEOUT- fetching place name")
-        const place_types = this.aspect.attr.place_types || default_place_type
-        const coordinates = this.value.coordinates
-        this.rev_geocode(
-          {lon: coordinates.lon, lat: coordinates.lat},
-          {place_types}).then((data) => {
-          const new_value = this.$_.cloneDeep(this.value)
-          new_value.place = {}
-          this.$_.forEach(data.features, feature => {
-            new_value.place[feature.place_type[0]] = feature.text
-          })
-          this.update_value(new_value)
-        }).catch((err) => {
-          console.log("error: mapbox api error", err)
-        }) // must be with else, cuz its async
+      // debugger
+      console.log("loc-asp create", this.place_name)
+
+      if (this.value) {
+        this.search_query = this.place_name
+        this.place_select__ = this.place_name
+        this.search_results = [{id: this.place_name, place_name: this.place_name}]
       }
+
+      // if only the coordinates are set (e.g. cuz of importing from some db, this one fills in the place
+      // const has_coordinates = this.value && this.value.coordinates !== null
+      // if (this.location_set && has_coordinates && this.has_output_place && !this.has_place) {
+      //   console.log("TAKEOUT- fetching place name")
+      //   const place_types = this.aspect.attr.place_types || default_place_type
+      //   const coordinates = this.value.coordinates
+      //   this.rev_geocode(
+      //     {lon: coordinates.lon, lat: coordinates.lat},
+      //     {place_types}).then((data) => {
+      //     const new_value = this.$_.cloneDeep(this.value)
+      //     new_value.place = {}
+      //     this.$_.forEach(data.features, feature => {
+      //       new_value.place[feature.place_type[0]] = feature.text
+      //     })
+      //     this.update_value(new_value)
+      //   }).catch((err) => {
+      //     console.log("error: mapbox api error", err)
+      //   }) // must be with else, cuz its async
+      // }
+    },
+    mounted() {
+      console.log("mounted")
     },
     methods: {
       geolocate_success(location) {
@@ -179,7 +194,6 @@
               value.place[feature.place_type[0]] = feature.text
             })
             this.update_value(value)
-            // this.update_value(value)
           }).catch((err) => {
             console.log("error: mapbox api error", err)
           }) // must be with else, cuz its async
@@ -198,12 +212,16 @@
         }
       },
       clear() {
+        console.log("clear")
         this.update_value(null)
       },
       reset() {
+        console.log("reset")
         this.selected_search_result = undefined
         this.search_query = ""
-        this.location_marker.remove()
+        if (this.location_marker) {
+          this.location_marker.remove()
+        }
       },
       search_location() {
         this.btn_loading_search_location = true
@@ -226,6 +244,7 @@
         return (this.aspect.attr.output || default_output).includes(type)
       },
       map_location_selected(map, mapboxEvent) {
+        console.log("map loc selected")
         if (this.is_view_mode)
           return
         let value = {
@@ -267,6 +286,7 @@
     },
     watch: {
       selected_search_result(sel) {
+        console.log("selected_search_result-watch", sel)
         if (!sel) {
           this.update_value(null)
         } else {
@@ -279,16 +299,22 @@
         }
       },
       value(value) {
+        console.log("location aspect value watch", value)
         if (!value) {
           this.reset()
           return
         }
-        if (this.map_loaded)
+        if (this.map_loaded) {
           this.update_marker(true)
+        }
+        // this when the value comes down as cache /or in whatever way
+        // if(value.place && !this.search_query) {
+        //   this.search_query = place_feature2place(value.place)
+        // }
       },
       map_loaded() {
-        if (this.is_view_mode && this.value && this.value.coordinates) {
-            this.update_marker()
+        if (this.value && this.value.coordinates) {
+          this.update_marker()
         }
       }
     }

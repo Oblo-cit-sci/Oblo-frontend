@@ -1,54 +1,40 @@
 <template lang="pug">
   div
-    v-treeview(:items="testtree" selectable v-model="selected")
-    div {{selected}}
+    v-autocomplete(
+      :search-input.sync="search_query"
+      v-model="value"
+      :items="options"
+    )
 </template>
 
 <script>
 
-  import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
 
   export default {
     name: "Tests",
-    mixins: [TriggerSnackbarMixin],
+    mixins: [],
     components: {},
     created() {
     },
     data() {
       return {
-        selected: [],
-        testtree: [
-          {
-            "name": "A",
-            id: 1,
-            "children": [
-              {
-                "name": "A1",
-                id: 3
-              },
-              {
-                "name": "A2",
-                id: 4
-              }
-            ]
-          },
-          {
-            "name": "B",
-            "id": 2,
-            children: [
-              {
-                "name": "B",
-                id: 5
-              }
-            ]
-          }
-        ]
+        search_query: "super cool",
+        value: "super cool",
+        init_catch: true,
+        options: []
       }
     },
     computed: {},
-    methods: {
-      trigger() {
-        this.ok_snackbar("COOL")
+    methods: {},
+    watch: {
+      search_query(value, old_value) {
+        console.log("watch sq", value)
+        if (!value && this.init_catch) {
+          console.log("catch")
+          this.search_query = old_value
+          this.init_catch = false
+          this.options = [old_value]
+        }
       }
     }
   }
