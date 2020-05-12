@@ -10,6 +10,7 @@
 
   import axios from "axios"
   import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
+  import {aspect_loc_str2arr} from "~/lib/aspect"
 
   export default {
     name: "AspectAction",
@@ -17,6 +18,7 @@
     components: {},
     props: {
       aspect: Object,
+      extra: Object,
       mvalue: Object
     },
     data() {
@@ -41,13 +43,16 @@
       button_trigger() {
         return this.trigger.type === "button"
       },
+      auto_trigger() {
+        return this.trigger.type === "auto"
+      },
       has_value() {
         return this.value
       }
     },
     methods: {
       trigger_action() {
-        if(this.button_trigger) {
+        if (this.button_trigger) {
           this.button_trigger_loading = true
         }
         switch (this.action.type) {
@@ -63,12 +68,26 @@
         if (this.properties.value_emit === "url_attach") {
           url += this.mvalue.value
         }
-        axios.get(url, {}).then(({data}) => {
+        if (url.startsWith("/api")) {
+          url = this.$axios.defaults.baseURL + url
+          console.log("api server")
+        }
+
+        const method = this.properties.method || "get"
+        const request = {
+          method: method,
+          url: url,
+        }
+
+        if(this.properties.value_emit === "content") {
+          request.data = this.mvalue.value
+        }
+
+        axios(request).then(({data}) => {
           console.log("received", data)
           const processed_data = this.process_result(data)
           console.log("processed to", processed_data)
           this.handle_result(processed_data)
-
         }).catch(err => {
           console.log(err)
           this.handle_error(err)
@@ -78,6 +97,9 @@
       },
       process_result(data) {
         const process = this.action.properties.process_result
+        if(!process) {
+          return data
+        }
         const result = []
         for (let i of process) {
           const k = Object.keys(i)[0]
@@ -112,8 +134,9 @@
       handle_result(result) {
         const handle = this.action.properties.handle_result
         if (handle.type === "assign_to_aspect") {
+          console.log(aspect_loc_str2arr(handle.aspect, this.extra.list_index))
           this.$store.dispatch(ENTRIES_SET_ENTRY_VALUE, {
-            aspect_loc: [[EDIT, null], [ASPECT, handle.aspect]],
+            aspect_loc: this.$_.concat([[EDIT, null]], aspect_loc_str2arr(handle.aspect, this.extra.list_index)),
             value: result
           })
         } else {
@@ -122,13 +145,20 @@
       },
       handle_error(err) {
         console.log(err.response)
-        if(this.$_.get(err,"response.status") === 404) {
+        if (this.$_.get(err, "response.status") === 404) {
           this.error_snackbar("No results")
         }
       },
       done() {
-        if(this.button_trigger) {
+        if (this.button_trigger) {
           this.button_trigger_loading = false
+        }
+      }
+    },
+    watch: {
+      mvalue() {
+        if (this.auto_trigger) {
+          this.perform_api_query()
         }
       }
     }
