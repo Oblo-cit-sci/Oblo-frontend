@@ -134,7 +134,6 @@
       handle_result(result) {
         const handle = this.action.properties.handle_result
         if (handle.type === "assign_to_aspect") {
-          console.log(aspect_loc_str2arr(handle.aspect, this.extra.list_index))
           this.$store.dispatch(ENTRIES_SET_ENTRY_VALUE, {
             aspect_loc: this.$_.concat([[EDIT, null]], aspect_loc_str2arr(handle.aspect, this.extra.list_index)),
             value: result
@@ -158,7 +157,7 @@
     watch: {
       mvalue() {
         if (this.auto_trigger) {
-          this.perform_api_query()
+          this.trigger_action()
         }
       }
     }
