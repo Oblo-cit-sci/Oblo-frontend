@@ -10,6 +10,8 @@ export const SEARCH_SET_SEARCHTIME = "search/set_searchtime"
 export const SEARCH_SET_SEARCH_COUNT = "search/set_search_count"
 export const SEARCH_INCREASE_COUNT = "search/increase_search_count"
 export const SEARCH_DELETE_ENTRY = "search/delete_entry"
+export const SEARCH_SET_ALL_UUIDS = "search/set_all_uuids"
+
 
 export const SEARCH_PREPEND_ENTRIES = "search/prepend_entries"
 export const SEARCH_GET_ENTRY = "search/get_entry"
@@ -19,6 +21,7 @@ export const SEARCH_RECEIVED_ENTRIES = "search/get_received_entries"
 export const SEARCH_GET_ROUTE = "search/get_route"
 export const SEARCH_GET_SEARCHING = "search/get_searching"
 export const SEARCH_GET_SEARCHTIME = "search/get_searchtime"
+export const SEARCH_GET_ALL_UUIDS = "search/get_all_uuids"
 
 const ld = require("lodash")
 
@@ -30,7 +33,8 @@ export const state = () => ({
   entries: [], // result
   entry_aspects: [], // result specifics, not used atm
   search_count: 0, // total count in the db, used for requesting more
-  searchtime: null // used to update
+  searchtime: null, // used to update,
+  all_uuids: null
 });
 
 export const mutations = {
@@ -73,6 +77,9 @@ export const mutations = {
   },
   increase_search_count(state, count) {
     state.search_count += count
+  },
+  set_all_uuids(state, uuids) {
+    state.all_uuids = uuids
   }
 }
 
@@ -101,6 +108,9 @@ export const getters = {
   },
   get_searchtime(state) {
     return state.searchtime
+  },
+  get_all_uuids(state) {
+    return () => state.all_uuids
   }
 }
 

@@ -23,6 +23,7 @@
         Search(v-show="nav_mode_search"
           :preview_options="preview_options"
           :fixed_filters="location_pre_filter"
+          @all_received_uuids="$emit('all_received_uuids', $event)"
           @preview_action="preview_action($event)")
         div(v-if="nav_mode_entry")
           v-row

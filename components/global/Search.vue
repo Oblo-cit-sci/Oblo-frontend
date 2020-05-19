@@ -40,7 +40,7 @@
   import FilterMixin from "../FilterMixin";
   import NavBaseMixin from "../NavBaseMixin";
   import {
-    SEARCH_CLEAR,
+    SEARCH_CLEAR, SEARCH_GET_ALL_UUIDS,
     SEARCH_GET_ENTRIES,
     SEARCH_GET_ROUTE,
     SEARCH_GET_SEARCH_COUNT,
@@ -149,7 +149,8 @@
       ...mapGetters({
         entries: SEARCH_GET_ENTRIES,
         get_searching: SEARCH_GET_SEARCHING,
-        total_count: SEARCH_GET_SEARCH_COUNT
+        total_count: SEARCH_GET_SEARCH_COUNT,
+        all_uuids: SEARCH_GET_ALL_UUIDS,
       }),
       is_pure() {
         // no search query nor filter
@@ -162,6 +163,7 @@
         if (is_searching === false) {
           this.$emit("received_search_results", this.entries())
           this.prepend_search = false
+          this.$emit("all_received_uuids", this.all_uuids())
         }
         return is_searching
       },
@@ -179,7 +181,6 @@
         let result_entries = this.entries() // must be a call
         // todo this should just check if QP_D is set and make the filter manual
         // so that drafts are also shown on the profile
-        console.log(this.is_pure)
         if (this.mixin_domain_drafts && this.is_pure) {
           const drafts = this.$store.getters[ENTRIES_DOMAIN_DRAFTS_UUIDS](this.mixin_domain_drafts).reverse()
           result_entries = drafts.concat(result_entries)

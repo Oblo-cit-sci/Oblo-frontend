@@ -20,6 +20,10 @@
               auto-select-first
               v-model="place_select__"
               clearable)
+            span Public location:
+            span
+              v-chip-group(v-if="has_place" active-class="primary--text" mandatory v-model="public_location_precision")
+                v-chip(v-for="(place_part, index) in place_parts" :key="index") {{place_part}}
     div(v-else)
       span.body-1.readonly-aspect {{place_name}}
       v-btn(v-if="show_goto_button" icon)
@@ -70,7 +74,8 @@
         btn_loading_search_location: false,
         search_results: null,
         selected_search_result: undefined, // this because, clear sets it to that too,
-        place_select__: null// this in v-model is only used because of https://github.com/vuetifyjs/vuetify/issues/11383
+        place_select__: null, // this in v-model is only used because of https://github.com/vuetifyjs/vuetify/issues/11383
+        public_location_precision: null
       }
     },
     computed: {
@@ -100,6 +105,19 @@
       has_place() {
         return this.location_set && this.value.place && !this.$_.isEmpty(this.value.place)
       },
+      place_parts() {
+        if (!this.has_place)
+          return []
+        else {
+          const options = []
+          for (let place_type of default_place_type) {
+            if (this.value.place.hasOwnProperty(place_type)) {
+              options.push(this.value.place[place_type])
+            }
+          }
+          return options
+        }
+      },
       //  check for attr.output.___
       has_output_location() {
         return this.has_output(LOCATION)
@@ -113,6 +131,7 @@
         })
       },
       place_name() {
+        // could be just this.has_place
         if (this.value && this.value.place)
           return place2str(this.value.place)
       },
@@ -139,29 +158,8 @@
         this.place_select__ = this.place_name
         this.search_results = [{id: this.place_name, place_name: this.place_name}]
       }
-
-      // if only the coordinates are set (e.g. cuz of importing from some db, this one fills in the place
-      // const has_coordinates = this.value && this.value.coordinates !== null
-      // if (this.location_set && has_coordinates && this.has_output_place && !this.has_place) {
-      //   console.log("TAKEOUT- fetching place name")
-      //   const place_types = this.aspect.attr.place_types || default_place_type
-      //   const coordinates = this.value.coordinates
-      //   this.rev_geocode(
-      //     {lon: coordinates.lon, lat: coordinates.lat},
-      //     {place_types}).then((data) => {
-      //     const new_value = this.$_.cloneDeep(this.value)
-      //     new_value.place = {}
-      //     this.$_.forEach(data.features, feature => {
-      //       new_value.place[feature.place_type[0]] = feature.text
-      //     })
-      //     this.update_value(new_value)
-      //   }).catch((err) => {
-      //     console.log("error: mapbox api error", err)
-      //   }) // must be with else, cuz its async
-      // }
     },
     mounted() {
-      console.log("mounted")
     },
     methods: {
       geolocate_success(location) {
@@ -169,20 +167,10 @@
         let value = {}
         if (this.has_output_location) {
           // todo this should also be called at other situations
-          if (this.aspect.attr.hasOwnProperty("apply_location_error") &&
-            this.aspect.attr.apply_location_error) {
-            value.coordinates = create_location_error(
-              location.coords.longitude,
-              location.coords.latitude,
-              this.$store.state.user.user_data.location_error)
-            // console.log("err.loc", value.location)
-          } else {
-            console.log("exact.loc")
             value.coordinates = {
               lon: location.coords.longitude,
               lat: location.coords.latitude,
             }
-          }
         }
         if ((this.has_output_place)) {
           const place_types = this.aspect.attr.place_types || default_place_type
@@ -191,6 +179,7 @@
             {place_types}).then((data) => {
             value.place = {}
             this.$_.forEach(data.features, feature => {
+              console.log("FF", feature)
               value.place[feature.place_type[0]] = feature.text
             })
             this.update_value(value)
@@ -258,6 +247,7 @@
               // todo add filler
               //this.selected_place_text = "No location name"
             } else {
+              console.log(data.features)
               this.search_query = data.features[0].place_name
               value.place = place_feature2place(data.features[0])
             }
@@ -286,7 +276,7 @@
     },
     watch: {
       selected_search_result(sel) {
-        console.log("selected_search_result-watch", sel)
+        // console.log("selected_search_result-watch", sel)
         if (!sel) {
           this.update_value(null)
         } else {

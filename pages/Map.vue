@@ -12,6 +12,7 @@
         :navigation_mode="navigation_mode"
         @navigation_mode_entry="navigate_entry"
         @navigation_mode_search="unselect_entry"
+        @all_received_uuids="filter_entries($event)"
         @layer_select_change="layer_select_change($event)")
       mapbox.crosshair(:style="mapCssStyle"
         :access-token="access_token"
@@ -175,15 +176,18 @@
         }
       },
       change_entry_markers_mode(entry_uuid, selected) {
-        // console.log("change_entry_markers_mode", entry_uuid, selected, this.selected_entry)
-        const relevant_markers = this.$_.filter(this.markers, (m) => m.e_uuid === entry_uuid)
-        // console.log(relevant_markers)
-        for (let m of relevant_markers) {
-          m.remove()
-          if (selected)
-            this.create_e_marker(m.getLngLat(), entry_uuid, {color: selected_color})
-          else
-            this.create_e_marker(m.getLngLat(), entry_uuid)
+        const features = this.map.getSource("all_entries")._data.features
+        const relevant_features = this.$_.filter(features, (f) => f.properties.uuid === entry_uuid)
+        for (let f of relevant_features) {
+          if (selected) {
+            this.map.setFeatureState(
+              {source: 'all_entries', id: f.id},
+              {"selected": true}
+            )
+          } else
+            this.map.removeFeatureState(
+              {source: 'all_entries', id: f.id}, "selected"
+            )
         }
       },
       create_e_marker(coordinates, uuid, options) {
@@ -197,13 +201,13 @@
       },
       create_entries_layer() {
         console.log("creating layers")
-        if(this.map.style._layers.hasOwnProperty("all_entries_layer")) {
+        if (this.map.style._layers.hasOwnProperty("all_entries_layer")) {
           return
         }
         this.map.addSource("all_entries", {
           type: "geojson",
           data: this.entries,
-          generateId: true,
+          // generateId: true,
           cluster: true,
           clusterMaxZoom: 14, // Max zoom to cluster points on
           clusterRadius: 35 // Radius of each cluster when clustering points (defaults to 50)
@@ -244,14 +248,13 @@
           'id': 'all_entries_layer',
           'type': 'circle',
           'source': 'all_entries',
-          filter: ['!', ['has', 'point_count']],
+          filter: ["any", ['!', ['has', 'point_count']]],
           'layout': {
             // 'line-join': 'round',
             // 'line-cap': 'round'
           },
           // todo the colors should come from the templates
           'paint': {
-            "circle-radius": 8,
             "circle-opacity": 1,
             'circle-color': [
               'match',
@@ -261,15 +264,23 @@
               "local_observation",
               "#ee2b0b",
               '#ccc'],
-            "circle-stroke-color": [
+            "circle-radius": [
               'case',
-              ['boolean', ['feature-state', 'hover'], false],
-              "#ee2b0b",
-              "#000000"
+              ['boolean', ["any", ['feature-state', 'hover'], ['feature-state', 'selected']], false],
+              12,
+              8
+            ],
+            "circle-stroke-color": "#f6ff7a",
+            "circle-stroke-width": [
+              "case",
+              ["boolean", ["feature-state", "selected"], false],
+              2,
+              0
             ]
-            // 'line-width': 8
           }
         })
+
+
         this.map.on('mousemove', 'all_entries_layer', (e) => {
           const feature = e.features[0]
           if (feature.properties.uuid === this.act_hoover_uuid) {
@@ -286,10 +297,6 @@
             coordinates = feature.geometry.coordinates.slice()
           }
           var title = feature.properties.title
-          // while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-          //   coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-          // }
-
           this.act_hoover_id = feature.id
           // console.log(feature.id)
           this.map.setFeatureState(
@@ -344,6 +351,9 @@
         }
         this.change_entry_markers_mode(entry_uuid, true)
         this.$router.push(route_change_query(this.$route, query, true))
+      },
+      filter_entries(uuids){
+        console.log("about to filter these uuids", uuids)
       }
     },
     watch: {
