@@ -5,6 +5,7 @@ const ld = require("lodash")
 export const MAP_SET_ENTRIES = "map/set_entries"
 // not used anymore with the new map
 export const MAP_GOTO_LOCATION = "map/goto_location"  // also getter
+export const MAP_RESET_GOTO_LOCATIONS = "map/reset_goto_locations"
 
 // Getters
 export const MAP_LAST_GOTO_LOCATION = "map/last_goto_location"

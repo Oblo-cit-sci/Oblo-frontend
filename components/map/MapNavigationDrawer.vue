@@ -47,7 +47,7 @@
     mixins: [MapNavigationMixin],
     computed: {
       drawer_width() {
-        return this.$vuetify.breakpoint.lgAndUp ? 600 : 400
+        return this.$vuetify.breakpoint.xl ? 750 : 600
       }
     }
   }

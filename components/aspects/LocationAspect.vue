@@ -26,7 +26,7 @@
                 v-chip(v-for="(place_part, index) in place_parts" :key="index") {{place_part}}
     div(v-else)
       span.body-1.readonly-aspect {{place_name}}
-      v-btn(v-if="show_goto_button" icon)
+      v-btn(v-if="show_goto_button" icon @click="goto_location")
         v-icon mdi-map-marker
     mapbox.crosshair.mt-3(v-if="show_map"
       style="height:400px"
@@ -48,6 +48,7 @@
   import MapIncludeMixin from "~/components/map/MapIncludeMixin"
   import {mapboxgl_lngLat2coords, place_feature2place} from "~/lib/map_utils"
   import GeocodingMixin from "~/components/map/GeocodingMixin"
+  import {MAP_GOTO_LOCATION} from "~/store/map"
 
   // "attr.input" options
   const DEVICE = "device"
@@ -272,6 +273,9 @@
             essential: true // this animation is considered essential with respect to prefers-reduced-motion
           })
         }
+      },
+      goto_location() {
+        this.$store.commit(MAP_GOTO_LOCATION, this.value)
       }
     },
     watch: {

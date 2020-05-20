@@ -8,7 +8,7 @@ export default {
   mixins: [MapboxBaseMixin],
   head() {
     return {
-      link: [{
+      style: [{
         href: "https://api.mapbox.com/mapbox-gl-js/v1.10.1/mapbox-gl.css", //mapbox-gl.css", //"https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.css", // "mapbox-gl.css"
         rel: "stylesheet"
       }]
@@ -52,9 +52,10 @@ export default {
     },
     map_goto_location(location) {
       const center = this.transform_loc(location.coordinates)
-      this.map.flyTo({
+      this.map.easeTo({
         center: center,
-        speed: 0.8 // make the flying slow
+        speed: 0.8, // make the flying slow
+        padding: this.center_padding // comes from the implementing class
       })
       this.$store.dispatch(MAP_GOTO_DONE)
     },

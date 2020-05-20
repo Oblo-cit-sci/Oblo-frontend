@@ -28,7 +28,7 @@
 
   import {MAP_GOTO_LOCATION, MAP_SET_ENTRIES} from "~/store/map"
   import {VIEW} from "~/lib/consts"
-  import {ENTRIES_HAS_FULL_ENTRY, ENTRIES_SAVE_ENTRY} from "~/store/entries"
+  import {ENTRIES_GET_ENTRY, ENTRIES_HAS_FULL_ENTRY, ENTRIES_SAVE_ENTRY} from "~/store/entries"
   import {route_change_query} from "~/lib/util"
   import MapNavigationBottomSheet from "~/components/map/MapNavigationBottomSheet"
   import MapNavigationDrawer from "~/components/map/MapNavigationDrawer"
@@ -47,8 +47,6 @@
     props: {},
     data() {
       return {
-        selected_coordinates: null,
-        selected_place: null,
         //
         drawer: false,
         mapCssStyle: "",
@@ -83,7 +81,7 @@
       button_group_shift() {
         let shift = "0.5%"
         if (!this.display_mdDown && this.drawer) {
-          shift = this.$vuetify.breakpoint.lgAndUp ? "600px" : "400px"
+          shift = this.$vuetify.breakpoint.xl ? "750px" : "600px"
         }
         return {
           "left": shift
@@ -95,8 +93,21 @@
         else
           return MapNavigationDrawer
       },
+      center_padding() {
+        console.log(this.drawer)
+        if(!this.drawer) {
+          return {}
+        }
+        else if (this.display_mdDown) {
+          return {bottom: 400}
+        } else {
+          return {
+            left: this.$vuetify.breakpoint.xl ? 750 : 600
+          }
+        }
+      },
       goto_location() {
-        console.log("map, goto_location, map-store", this.$store.getters[MAP_GOTO_LOCATION]())
+        // console.log("map, goto_location, map-store", this.$store.getters[MAP_GOTO_LOCATION]())
         return this.$store.getters[MAP_GOTO_LOCATION]()
       },
       navigation_mode() {
@@ -110,9 +121,6 @@
       }
     },
     methods: {
-      clicked(mapbox_event) {
-        console.log(mapbox_event.features);
-      },
       markers_and_map_done() {
         if (this.entries && this.entries.features.length > 0 && this.map_loaded) {
           this.create_entries_source_layer(this.entries, "all_entries")
@@ -121,10 +129,6 @@
           }
         }
       },
-      // todo later use dispatch, like in create?
-      // update_map_entries(entries) {
-      //   this.$store.commit(MAP_SET_ENTRIES, entries)
-      // },
       layer_select_change(active_layers) {
         console.log(this.$_.keyBy(this.layers), l => active_layers.includes(l))
         this.set_layer_status(this.$_.mapValues(this.$_.keyBy(this.layers), l => active_layers.includes(l)))
@@ -140,19 +144,17 @@
       go_home() {
         this.$router.push("/")
       },
-      touch({mapboxEvent}) {
-      },
-      select_entry_marker(entry_uuid) {
+      select_entry_marker(feature) {
+        console.log("sel", feature)
+        const entry_uuid = feature.properties.uuid
         // console.log("select_entry_marker", entry_uuid)
         if (this.$store.getters[ENTRIES_HAS_FULL_ENTRY](entry_uuid)) {
           // console.log("has full entry")
           if (this.selected_entry) {
             this.change_entry_markers_mode(this.selected_entry, false)
-            if (entry_uuid !== this.selected_entry) {
-              console.log("setting new entry")
-            }
           }
-          this.update_navigation_mode(entry_uuid, VIEW)
+          this.update_navigation_mode(entry_uuid, VIEW, false)
+          this.map_goto_location(feature.geometry)
         } else {
           // console.log("fetching entry")
           this.$api.entry__$uuid(entry_uuid).then(({data}) => {
@@ -163,8 +165,8 @@
               const entry = data.data
 
               this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
-              // console.log("received refs", entry.entry_refs)
-              this.update_navigation_mode(entry_uuid, VIEW)
+              this.update_navigation_mode(entry_uuid, VIEW, false)
+              this.map_goto_location(feature.geometry)
             }
           }).catch(err => {
             console.log("error fetching entry")
@@ -187,7 +189,6 @@
         }
       },
       create_entries_source_layer(entries, layer_base_id) {
-
         const source_name = layer_base_id + "_source"
         // console.log("S", this.map.getSource(source_name))
         if (!this.map.getSource(source_name)) {
@@ -262,7 +263,7 @@
               '#ccc'],
             "circle-radius": [
               'case',
-              ["any", ["boolean", ['feature-state', 'hover'], false], ["boolean", ['feature-state', 'hover'], false]],
+              ["any", ["boolean", ['feature-state', 'hover'], false], ["boolean", ['feature-state', 'selected'], false]],
               12,
               8
             ],
@@ -305,11 +306,9 @@
             .setHTML(title)
             .addTo(this.map)
         })
-
         this.map.on("click", entries_layer_name, (e) => {
-          this.select_entry_marker(e.features[0].properties.uuid)
+          this.select_entry_marker(e.features[0])
         })
-
         this.map.on('mouseleave', entries_layer_name, () => {
           if (this.act_hoover_uuid) {
             this.map.setFeatureState(
@@ -322,7 +321,6 @@
             this.act_popup = null
           }
         })
-
       },
       navigate_entry({uuid, mode}) {
         this.update_navigation_mode(uuid, mode)
@@ -330,28 +328,38 @@
       unselect_entry() {
         this.update_navigation_mode(null)
       },
-      update_navigation_mode(entry_uuid, entry_mode) {
+      update_navigation_mode(entry_uuid, entry_mode, easeToFirst = true) {
         if (this.selected_entry) {
           this.change_entry_markers_mode(this.selected_entry, false)
         }
-        // this.select_entry_marker(entry_uuid)
-        // console.log("selected_entry", entry_uuid)
         const query = {}
-        // console.log("navigation_mode", this.navigation_mode)
         if (entry_uuid) {
           query.uuid = entry_uuid
         }
         if (entry_mode) {
           query.entry_mode = entry_mode
           this.drawer = true
+          this.change_entry_markers_mode(entry_uuid, true)
+          if(easeToFirst)
+            this.map_goto_location(this.$store.getters[ENTRIES_GET_ENTRY](entry_uuid).location[0])
         }
-        this.change_entry_markers_mode(entry_uuid, true)
+
         this.$router.push(route_change_query(this.$route, query, true))
       },
       filter_entries(uuids) {
-        console.log("about to filter these uuids...")
-        // const features = this.map.getSource("all_entries_source")._data.features
-        // const relevant_features = this.$_.filter(features, (f) => uuids.includes(f.properties.uuid))
+        // console.log("about to filter these uuids...", uuids.length, this.entries.length)
+        if (this.map_loaded && this.entries && this.entries.features.length !== uuids.length && uuids.length > 0) {
+          console.log(this.entries.features.length, uuids.length === this.entries.features.length, this.map.getSource("all_entries_source"))
+          // this.map.getSource("all_entries_source")
+          // console.log(this.entries.features[0].properties)
+          const filtered_entries = this.entries.features.filter(f => uuids.includes(f.properties.uuid))
+          // console.log(uuids, filtered_entries)
+          this.map.getSource("all_entries_source").setData(
+            {
+              type: "FeatureCollection",
+              features: filtered_entries
+            })
+        }
       }
     },
     watch: {
@@ -361,7 +369,6 @@
         }
       },
       goto_location(location) {
-        console.log("map goto location watch")
         if (location) {
           this.map_goto_location(location)
         }
@@ -375,6 +382,9 @@
           // console.log("entries, ... but no map")
         }
       },
+      drawer() {
+        // todo nice to have: map.easeTo with padding adjusted
+      }
     }
   }
 </script>
