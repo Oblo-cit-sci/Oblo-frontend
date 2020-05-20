@@ -28,13 +28,14 @@
       span.body-1.readonly-aspect {{place_name}}
       v-btn(v-if="show_goto_button" icon @click="goto_location")
         v-icon mdi-map-marker
-    mapbox.crosshair.mt-3(v-if="show_map"
-      style="height:400px"
-      :access-token="access_token"
-      :map-options="map_options"
-      @map-load="onMapLoaded"
-      @click="map_location_selected"
-      navControl="is_edit_mode")
+    client-only
+      mapbox.crosshair.mt-3(v-if="show_map"
+        style="height:400px"
+        :access-token="access_token"
+        :map-options="map_options"
+        @map-load="onMapLoaded"
+        @click="map_location_selected"
+        navControl="is_edit_mode")
 </template>
 
 <script>

@@ -68,7 +68,8 @@ module.exports = {
   css: [
     '~/assets/style/app.styl',
     '~/assets/style/main.scss',
-    "@mdi/font/css/materialdesignicons.css"
+    "@mdi/font/css/materialdesignicons.css",
+    "mapbox-gl/dist/mapbox-gl.css"
   ],
 
   router: {
