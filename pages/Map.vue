@@ -14,12 +14,13 @@
         @navigation_mode_search="unselect_entry"
         @all_received_uuids="filter_entries($event)"
         @layer_select_change="layer_select_change($event)")
-      mapbox.crosshair(:style="mapCssStyle"
-        :access-token="access_token"
-        :map-options="default_map_options"
-        @map-load="onMapLoaded"
-        @geolocate-error="geolocateError"
-        @geolocate-geolocate="geolocate")
+      client-only
+        mapbox.crosshair(:style="mapCssStyle"
+          :access-token="access_token"
+          :map-options="default_map_options"
+          @map-load="onMapLoaded"
+          @geolocate-error="geolocateError"
+          @geolocate-geolocate="geolocate")
 </template>
 
 <script>
@@ -34,7 +35,6 @@
   import MapNavigationDrawer from "~/components/map/MapNavigationDrawer"
   import {mapGetters} from "vuex"
   import MapIncludeMixin from "~/components/map/MapIncludeMixin"
-  import {closest_point, latLng_2_2d_arr} from "~/lib/map_utils"
 
   export const SEARCH = "search"
   export const ENTRY = "entry"
@@ -62,12 +62,17 @@
     },
     created() {
       this.map = null
-      this.$api.entries_map_entries(true).then(({data}) => {
-        console.log(data)
-        this.$store.dispatch(MAP_SET_ENTRIES, data)
-      }).catch(err => {
-        console.log("map entries error")
-      })
+      // todo domain specific
+      console.log("entries", this.entries)
+      if (this.$_.isEmpty(this.entries)) {
+        console.log("loading entries")
+        this.$api.entries_map_entries(true).then(({data}) => {
+          console.log(data)
+          this.$store.dispatch(MAP_SET_ENTRIES, data)
+        }).catch(err => {
+          console.log("map entries error")
+        })
+      }
     },
     computed: {
       ...mapGetters({
@@ -95,10 +100,9 @@
       },
       center_padding() {
         console.log(this.drawer)
-        if(!this.drawer) {
+        if (!this.drawer) {
           return {}
-        }
-        else if (this.display_mdDown) {
+        } else if (this.display_mdDown) {
           return {bottom: 400}
         } else {
           return {
@@ -122,7 +126,8 @@
     },
     methods: {
       markers_and_map_done() {
-        if (this.entries && this.entries.features.length > 0 && this.map_loaded) {
+        // console.log("MMd", this.entries)
+        if (!this.$_.isEmpty(this.entries) && this.entries.features.length > 0 && this.map_loaded) {
           this.create_entries_source_layer(this.entries, "all_entries")
           if (this.$route.query.uuid) {
             this.update_navigation_mode(this.$route.query.uuid, VIEW)
@@ -277,35 +282,30 @@
           }
         })
 
-        this.map.on('mousemove', entries_layer_name, (e) => {
-          const feature = e.features[0]
-          if (feature.properties.uuid === this.act_hoover_uuid) {
-            return
-          }
-          if (this.act_popup) {
-            this.act_popup.remove()
-          }
-          let coordinates = null
-          if (feature.geometry.type === "MultiPoint") {
-            const cursor_loc = latLng_2_2d_arr(e.lngLat)
-            coordinates = closest_point(cursor_loc, feature.geometry.coordinates)
-          } else {
-            coordinates = feature.geometry.coordinates.slice()
-          }
-          var title = feature.properties.title
-          this.act_hoover_id = feature.id
-          // console.log(feature.id)
-          this.map.setFeatureState(
-            {source: source_name, id: this.act_hoover_id},
-            {hover: true}
-          )
+        // this.map.on('mousemove', entries_layer_name, (e) => {
+        //   const feature = e.features[0]
+        //   if (feature.properties.uuid === this.act_hoover_uuid) {
+        //     return
+        //   }
+        //   if (this.act_popup) {
+        //     this.act_popup.remove()
+        //   }
+        //   let coordinates = null
+        //   coordinates = feature.geometry.coordinates.slice()
+        //   var title = feature.properties.title
+        //   this.act_hoover_id = feature.id
+        //   // console.log(feature.id)
+        //   this.map.setFeatureState(
+        //     {source: source_name, id: this.act_hoover_id},
+        //     {hover: true}
+        //   )
+        //   this.act_hoover_uuid = feature.properties.uuid
+        //   this.act_popup = new this.mapboxgl.Popup()
+        //     .setLngLat(coordinates)
+        //     .setHTML(title)
+        //     .addTo(this.map)
+        // })
 
-          this.act_hoover_uuid = feature.properties.uuid
-          this.act_popup = new this.mapboxgl.Popup()
-            .setLngLat(coordinates)
-            .setHTML(title)
-            .addTo(this.map)
-        })
         this.map.on("click", entries_layer_name, (e) => {
           this.select_entry_marker(e.features[0])
         })
@@ -340,7 +340,7 @@
           query.entry_mode = entry_mode
           this.drawer = true
           this.change_entry_markers_mode(entry_uuid, true)
-          if(easeToFirst)
+          if (easeToFirst)
             this.map_goto_location(this.$store.getters[ENTRIES_GET_ENTRY](entry_uuid).location[0])
         }
 
@@ -348,7 +348,7 @@
       },
       filter_entries(uuids) {
         // console.log("about to filter these uuids...", uuids.length, this.entries.length)
-        if (this.map_loaded && this.entries && this.entries.features.length !== uuids.length && uuids.length > 0) {
+        if (this.map_loaded && !this.$_.isEmpty(this.entries) && this.entries.features.length !== uuids.length && uuids.length > 0) {
           console.log(this.entries.features.length, uuids.length === this.entries.features.length, this.map.getSource("all_entries_source"))
           // this.map.getSource("all_entries_source")
           // console.log(this.entries.features[0].properties)
@@ -364,9 +364,7 @@
     },
     watch: {
       map_loaded() {
-        if (this.entries) {
-          this.markers_and_map_done()
-        }
+        this.markers_and_map_done()
       },
       goto_location(location) {
         if (location) {
@@ -374,13 +372,7 @@
         }
       },
       entries() {
-        console.log("watch- entries")
-        // todo, a bit ineficient. is called whenever we go back from an entry to the search
-        if (this.map) {
-          this.markers_and_map_done()
-        } else {
-          // console.log("entries, ... but no map")
-        }
+        this.markers_and_map_done()
       },
       drawer() {
         // todo nice to have: map.easeTo with padding adjusted

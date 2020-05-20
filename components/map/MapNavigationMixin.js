@@ -30,11 +30,6 @@ export default {
     }
   },
   created() {
-    const search_entries = this.$store.getters[SEARCH_GET_ENTRIES]()
-    if(search_entries.length > 0) {
-      console.log("setting map entries", search_entries[0])
-      this.$store.commit(MAP_SET_ENTRIES, search_entries)
-    }
   },
   computed: {
     layer_options() {
