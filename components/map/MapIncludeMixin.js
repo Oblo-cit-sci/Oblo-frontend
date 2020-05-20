@@ -6,14 +6,14 @@ const default_mapstyle = "mapbox://styles/ramin36/cjx2xkz2w030s1cmumgp6y1j8"
 export default {
   name: "MapIncludeMixin",
   mixins: [MapboxBaseMixin],
-  // head() {
-  //   return {
-  //     style: [{
-  //       href: "https://api.mapbox.com/mapbox-gl-js/v1.10.1/mapbox-gl.css", //mapbox-gl.css", //"https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.css", // "mapbox-gl.css"
-  //       rel: "stylesheet"
-  //     }]
-  //   }
-  // },
+  head() {
+    return {
+      link: [{
+        href: "mapbox-gl.css",//https://api.mapbox.com/mapbox-gl-js/v1.10.1/mapbox-gl.css", //mapbox-gl.css", //"https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.css", // "mapbox-gl.css"
+        rel: "stylesheet"
+      }]
+    }
+  },
   data() {
     return {
       map_loaded: false,
