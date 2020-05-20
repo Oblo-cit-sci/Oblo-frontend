@@ -36,11 +36,8 @@
   import MapIncludeMixin from "~/components/map/MapIncludeMixin"
   import {closest_point, latLng_2_2d_arr} from "~/lib/map_utils"
 
-  const mapbox_api_url = "https://api.mapbox.com/geocoding/v5/mapbox.places/";
-
   export const SEARCH = "search"
   export const ENTRY = "entry"
-  const selected_color = "#f9992a"
 
   export default {
     name: "Map",
@@ -57,7 +54,6 @@
         mapCssStyle: "",
 
         center_coordinates: [-0.8844128193341589, 37.809519042232694],
-        markers: [],
         act_hoover_id: null,
         act_hoover_uuid: null,
         act_popup: null
@@ -71,7 +67,6 @@
       this.$api.entries_map_entries(true).then(({data}) => {
         console.log(data)
         this.$store.dispatch(MAP_SET_ENTRIES, data)
-        // console.log("received", data.data.length, "map relevant entries")
       }).catch(err => {
         console.log("map entries error")
       })
@@ -119,16 +114,17 @@
         console.log(mapbox_event.features);
       },
       markers_and_map_done() {
-        if (this.entries.length > 0 && this.map_loaded) {
+        if (this.entries && this.entries.features.length > 0 && this.map_loaded) {
+          this.create_entries_source_layer(this.entries, "all_entries")
           if (this.$route.query.uuid) {
             this.update_navigation_mode(this.$route.query.uuid, VIEW)
           }
         }
       },
       // todo later use dispatch, like in create?
-      update_map_entries(entries) {
-        this.$store.commit(MAP_SET_ENTRIES, entries)
-      },
+      // update_map_entries(entries) {
+      //   this.$store.commit(MAP_SET_ENTRIES, entries)
+      // },
       layer_select_change(active_layers) {
         console.log(this.$_.keyBy(this.layers), l => active_layers.includes(l))
         this.set_layer_status(this.$_.mapValues(this.$_.keyBy(this.layers), l => active_layers.includes(l)))
@@ -176,83 +172,83 @@
         }
       },
       change_entry_markers_mode(entry_uuid, selected) {
-        const features = this.map.getSource("all_entries")._data.features
+        const features = this.map.getSource("all_entries_source")._data.features
         const relevant_features = this.$_.filter(features, (f) => f.properties.uuid === entry_uuid)
         for (let f of relevant_features) {
           if (selected) {
             this.map.setFeatureState(
-              {source: 'all_entries', id: f.id},
+              {source: 'all_entries_source', id: f.id},
               {"selected": true}
             )
           } else
             this.map.removeFeatureState(
-              {source: 'all_entries', id: f.id}, "selected"
+              {source: 'all_entries_source', id: f.id}, "selected"
             )
         }
       },
-      create_e_marker(coordinates, uuid, options) {
-        const m = new this.mapboxgl.Marker(options)
-        m.e_uuid = uuid
-        m.setLngLat(coordinates).addTo(this.map)
-        this.markers.push(m)
-        m.getElement().addEventListener("click", () => {
-          this.select_entry_marker(m.e_uuid)
-        })
-      },
-      create_entries_layer() {
-        console.log("creating layers")
-        if (this.map.style._layers.hasOwnProperty("all_entries_layer")) {
-          return
+      create_entries_source_layer(entries, layer_base_id) {
+
+        const source_name = layer_base_id + "_source"
+        // console.log("S", this.map.getSource(source_name))
+        if (!this.map.getSource(source_name)) {
+          console.log("adding source")
+          this.map.addSource(source_name, {
+            type: "geojson",
+            data: entries,
+            cluster: true,
+            clusterMaxZoom: 14,
+            clusterRadius: 35
+          })
+        } else {
+          console.log("source layer exists already")
         }
-        this.map.addSource("all_entries", {
-          type: "geojson",
-          data: this.entries,
-          // generateId: true,
-          cluster: true,
-          clusterMaxZoom: 14, // Max zoom to cluster points on
-          clusterRadius: 35 // Radius of each cluster when clustering points (defaults to 50)
-        })
 
-        this.map.addLayer({
-          id: 'clusters',
-          type: 'circle',
-          source: 'all_entries',
-          filter: ['has', 'point_count'],
-          paint: {
-            'circle-color': '#f1f075',
-            'circle-radius': [
-              'step',
-              ['get', 'point_count'],
-              10,
-              3,
-              15,
-              10,
-              20
-            ]
-          }
-        })
+        const cluster_layer_name = layer_base_id + '_clusters'
+        const cluster_layer = this.map.getLayer(cluster_layer_name)
 
-        this.map.addLayer({
-          id: 'cluster-count',
-          type: 'symbol',
-          source: 'all_entries',
-          filter: ['has', 'point_count'],
-          layout: {
-            'text-field': '{point_count_abbreviated}',
-            'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-            'text-size': 12
-          }
-        })
+        if (!cluster_layer) {
+          console.log("adding cluster layer")
+          this.map.addLayer({
+            id: cluster_layer_name,
+            type: 'circle',
+            source: source_name,
+            filter: ['has', 'point_count'],
+            paint: {
+              'circle-color': '#f1f075',
+              'circle-radius': [
+                'step',
+                ['get', 'point_count'],
+                10,
+                3,
+                15,
+                10,
+                20
+              ]
+            }
+          })
 
+          this.map.addLayer({
+            id: layer_base_id + '_cluster-count',
+            type: 'symbol',
+            source: source_name,
+            filter: ['has', 'point_count'],
+            layout: {
+              'text-field': '{point_count_abbreviated}',
+              'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+              'text-size': 12
+            }
+          })
+        } else {
+          console.log("cluster layer exists already")
+        }
+
+        const entries_layer_name = layer_base_id + '_entries'
         this.map.addLayer({
-          'id': 'all_entries_layer',
+          'id': entries_layer_name,
           'type': 'circle',
-          'source': 'all_entries',
-          filter: ["any", ['!', ['has', 'point_count']]],
-          'layout': {
-            // 'line-join': 'round',
-            // 'line-cap': 'round'
-          },
+          'source': source_name,
+          filter: ['!', ['has', 'point_count']],
+          'layout': {},
           // todo the colors should come from the templates
           'paint': {
             "circle-opacity": 1,
@@ -266,7 +262,7 @@
               '#ccc'],
             "circle-radius": [
               'case',
-              ['boolean', ["any", ['feature-state', 'hover'], ['feature-state', 'selected']], false],
+              ["any", ["boolean", ['feature-state', 'hover'], false], ["boolean", ['feature-state', 'hover'], false]],
               12,
               8
             ],
@@ -280,8 +276,7 @@
           }
         })
 
-
-        this.map.on('mousemove', 'all_entries_layer', (e) => {
+        this.map.on('mousemove', entries_layer_name, (e) => {
           const feature = e.features[0]
           if (feature.properties.uuid === this.act_hoover_uuid) {
             return
@@ -300,7 +295,7 @@
           this.act_hoover_id = feature.id
           // console.log(feature.id)
           this.map.setFeatureState(
-            {source: 'all_entries', id: this.act_hoover_id},
+            {source: source_name, id: this.act_hoover_id},
             {hover: true}
           )
 
@@ -311,14 +306,14 @@
             .addTo(this.map)
         })
 
-        this.map.on("click", "all_entries_layer", (e) => {
+        this.map.on("click", entries_layer_name, (e) => {
           this.select_entry_marker(e.features[0].properties.uuid)
         })
 
-        this.map.on('mouseleave', 'all_entries_layer', () => {
+        this.map.on('mouseleave', entries_layer_name, () => {
           if (this.act_hoover_uuid) {
             this.map.setFeatureState(
-              {source: 'all_entries', id: this.act_hoover_id},
+              {source: source_name, id: this.act_hoover_id},
               {hover: false}
             )
             this.act_hoover_id = null
@@ -327,6 +322,7 @@
             this.act_popup = null
           }
         })
+
       },
       navigate_entry({uuid, mode}) {
         this.update_navigation_mode(uuid, mode)
@@ -352,52 +348,17 @@
         this.change_entry_markers_mode(entry_uuid, true)
         this.$router.push(route_change_query(this.$route, query, true))
       },
-      filter_entries(uuids){
-        console.log("about to filter these uuids", uuids)
+      filter_entries(uuids) {
+        console.log("about to filter these uuids...")
+        // const features = this.map.getSource("all_entries_source")._data.features
+        // const relevant_features = this.$_.filter(features, (f) => uuids.includes(f.properties.uuid))
       }
     },
     watch: {
       map_loaded() {
         if (this.entries) {
-          this.create_entries_layer()
           this.markers_and_map_done()
         }
-//         this.map.addSource('ethnicity', {
-//           type: 'vector',
-//           url: 'mapbox://examples.8fgz4egr'
-//         });
-//         this.map.addLayer({
-//           'id': 'population',
-//           'type': 'circle',
-//           'source': 'ethnicity',
-//           'source-layer': 'sf2010',
-//           'paint': {
-// // make circles larger as the user zooms from z12 to z22
-//             'circle-radius': {
-//               'base': 1.75,
-//               'stops': [
-//                 [12, 2],
-//                 [22, 180]
-//               ]
-//             },
-// color circles by ethnicity, using a match expression
-// https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-match
-//             'circle-color': [
-//               'match',
-//               ['get', 'ethnicity'],
-//               'White',
-//               '#fbb03b',
-//               'Black',
-//               '#223b53',
-//               'Hispanic',
-//               '#e55e5e',
-//               'Asian',
-//               '#3bb2d0',
-//               /* other */ '#ccc'
-//             ]
-//           }
-//         })
-
       },
       goto_location(location) {
         console.log("map goto location watch")
@@ -409,7 +370,6 @@
         console.log("watch- entries")
         // todo, a bit ineficient. is called whenever we go back from an entry to the search
         if (this.map) {
-          this.create_entries_layer()
           this.markers_and_map_done()
         } else {
           // console.log("entries, ... but no map")

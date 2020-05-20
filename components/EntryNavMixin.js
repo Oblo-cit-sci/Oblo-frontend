@@ -21,7 +21,6 @@ export default {
       return this.$store.getters[ENTRIES_HAS_ENTRY](uuid)
     },
     goto(uuid, force_mode) {
-      // console.log("GOTO")
       // todo should push not init?!
       this.$store.commit(INIT_PAGE_PATH, this.$route)
       const has_full_entry = this.$store.getters[ENTRIES_HAS_FULL_ENTRY](uuid)
@@ -37,6 +36,7 @@ export default {
             if (!this.prevent_page_change) {
               this.to_entry(uuid, mode)
             } else {
+              console.log("fetch & preview_action")
               this.$emit("preview_action", {uuid: this.entry.uuid, action: mode})
             }
           }
@@ -48,6 +48,7 @@ export default {
         if (!this.prevent_page_change) {
           this.to_entry(uuid, mode)
         } else {
+          console.log("straight & preview_action")
           this.$emit("preview_action", {uuid: this.entry.uuid, action: mode})
         }
       }

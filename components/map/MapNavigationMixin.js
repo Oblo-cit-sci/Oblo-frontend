@@ -85,7 +85,7 @@ export default {
       this.$emit("navigation_mode_search")
     },
     preview_action({uuid, action}) {
-      this.$emit("navigation_mode_entry", {uuid, mode: action})
+     this.$emit("navigation_mode_entry", {uuid, mode: action})
     }
   },
 }

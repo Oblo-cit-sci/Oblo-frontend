@@ -1,7 +1,7 @@
 <template lang="pug">
   v-app
     v-content
-      v-container(id="fullContainer")
+      v-container(v-if="initialized" id="fullContainer")
         nuxt
       GlobalSnackbar
 </template>

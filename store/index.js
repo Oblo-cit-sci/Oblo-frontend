@@ -98,7 +98,8 @@ export const mutations = {
     }
   },
   init_page_path(state, route) {
-    state.page_path = [route]
+    // todo, maybe it required more!?! check getter
+     state.page_path = [{fullPath: route.fullPath}] //, name:route.name, params: Object.assign({}, route.params), path:route.path,  query:Object.assign({}, route.query)}]
   },
   push_page_path(state, route) {
     state.page_path.push(route)
