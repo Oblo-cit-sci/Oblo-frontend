@@ -54,7 +54,7 @@ export default {
       const center = this.transform_loc(location.coordinates)
       this.map.easeTo({
         center: center,
-        speed: 0.8, // make the flying slow
+        duration: 2000, // make the flying slow
         padding: this.center_padding // comes from the implementing class
       })
       this.$store.dispatch(MAP_GOTO_DONE)

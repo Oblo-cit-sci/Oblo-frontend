@@ -144,6 +144,7 @@ module.exports = {
         import: ["~assets/style/variables.styl"]
       }
     },
+    extractCSS: true,
     plugins: [
       new webpack.ProvidePlugin({
         mapboxgl: 'mapbox-gl',

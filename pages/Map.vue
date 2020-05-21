@@ -1,26 +1,27 @@
 <template lang="pug">
-  v-layout#map
+  v-layout.fullSize(:style="fullHeight")
+    .buttongroup(:style="button_group_shift")
+      v-btn(dark fab large color="blue" @click="drawer = !drawer")
+        v-icon mdi-menu
+      v-btn(v-if="!drawer" fab @click="go_home")
+        v-icon mdi-home
+    component(:is="navgiagtion_component"
+      :drawer="drawer"
+      :layers="layers"
+      :navigation_mode="navigation_mode"
+      @navigation_mode_entry="navigate_entry"
+      @navigation_mode_search="unselect_entry"
+      @all_received_uuids="filter_entries($event)"
+      @layer_select_change="layer_select_change($event)")
     client-only
-      .buttongroup(:style="button_group_shift")
-        v-btn(dark fab large color="blue" @click="drawer = !drawer")
-          v-icon mdi-menu
-        v-btn(v-if="!drawer" fab @click="go_home")
-          v-icon mdi-home
-      component(:is="navgiagtion_component"
-        :drawer="drawer"
-        :layers="layers"
-        :navigation_mode="navigation_mode"
-        @navigation_mode_entry="navigate_entry"
-        @navigation_mode_search="unselect_entry"
-        @all_received_uuids="filter_entries($event)"
-        @layer_select_change="layer_select_change($event)")
-      client-only
-        mapbox.crosshair(:style="mapCssStyle"
-          :access-token="access_token"
-          :map-options="default_map_options"
-          @map-load="onMapLoaded"
-          @geolocate-error="geolocateError"
-          @geolocate-geolocate="geolocate")
+      mapbox.fullSize(
+        :style="fullHeight"
+        :access-token="access_token"
+        :map-options="default_map_options"
+        @click="touch"
+        @map-load="onMapLoaded"
+        @geolocate-error="geolocateError"
+        @geolocate-geolocate="geolocate")
 </template>
 
 <script>
@@ -49,16 +50,12 @@
       return {
         //
         drawer: false,
-        mapCssStyle: "",
 
         center_coordinates: [-0.8844128193341589, 37.809519042232694],
         act_hoover_id: null,
         act_hoover_uuid: null,
         act_popup: null
       }
-    },
-    mounted() {
-      this.mapCssStyle = "height: " + document.getElementById("fullContainer").clientHeight + "px"
     },
     created() {
       this.map = null
@@ -82,6 +79,11 @@
       }),
       display_mdDown() {
         return this.$vuetify.breakpoint.mdAndDown
+      },
+      fullHeight() {
+        return {
+          height: window.innerHeight+"px"
+        }
       },
       button_group_shift() {
         let shift = "0.5%"
@@ -125,14 +127,149 @@
       }
     },
     methods: {
-      markers_and_map_done() {
-        // console.log("MMd", this.entries)
+      touch(map, event) {
+        console.log(this.map.getLayer("all_entries_cluster-count"))
+        // console.log(event.lngLat)
+        // console.log(event.point)
+      },
+      check_entries_map_done() {
         if (!this.$_.isEmpty(this.entries) && this.entries.features.length > 0 && this.map_loaded) {
-          this.create_entries_source_layer(this.entries, "all_entries")
+          this.init_map_source_and_layers(this.entries, "all_entries")
           if (this.$route.query.uuid) {
             this.update_navigation_mode(this.$route.query.uuid, VIEW)
           }
         }
+      },
+      init_map_source_and_layers(entries, layer_base_id) {
+        const source_name = layer_base_id + "_source"
+        // console.log("S", this.map.getSource(source_name))
+        if (!this.map.getSource(source_name)) {
+          console.log("adding source")
+          this.map.addSource(source_name, {
+            type: "geojson",
+            data: entries,
+            cluster: true,
+            tolerance: 0,
+            clusterMaxZoom: 14,
+            clusterRadius: 35
+          })
+        } else {
+          console.log("source layer exists already")
+        }
+
+        const cluster_layer_name = layer_base_id + '_clusters'
+        const cluster_layer = this.map.getLayer(cluster_layer_name)
+
+        if (!cluster_layer) {
+          console.log("adding cluster layer")
+          this.map.addLayer({
+            id: cluster_layer_name,
+            type: 'circle',
+            source: source_name,
+            filter: ['has', 'point_count'],
+            paint: {
+              'circle-color': '#f1f075',
+              'circle-radius': [
+                'step',
+                ['get', 'point_count'],
+                10,
+                3,
+                15,
+                10,
+                20
+              ]
+            }
+          })
+
+          this.map.addLayer({
+            id: layer_base_id + '_cluster-count',
+            type: 'symbol',
+            source: source_name,
+            filter: ['has', 'point_count'],
+            layout: {
+              "text-allow-overlap": true,
+              'text-field': '{point_count_abbreviated}',
+              'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+              'text-size': 14
+            }
+          })
+        } else {
+          console.log("cluster layer exists already")
+        }
+
+        const entries_layer_name = layer_base_id + '_entries'
+        this.map.addLayer({
+          'id': entries_layer_name,
+          'type': 'circle',
+          'source': source_name,
+          filter: ['!', ['has', 'point_count']],
+          'layout': {},
+          // todo the colors should come from the templates
+          'paint': {
+            "circle-opacity": 1,
+            'circle-color': [
+              'match',
+              ['get', "template"],
+              'article_review',
+              '#2ee70c',
+              "local_observation",
+              "#ee2b0b",
+              '#ccc'],
+            "circle-radius": [
+              'case',
+              ["any", ["boolean", ['feature-state', 'hover'], false], ["boolean", ['feature-state', 'selected'], false]],
+              12,
+              8
+            ],
+            "circle-stroke-color": "#f6ff7a",
+            "circle-stroke-width": [
+              "case",
+              ["boolean", ["feature-state", "selected"], false],
+              2,
+              0
+            ]
+          }
+        })
+
+        this.map.on('mousemove', entries_layer_name, (e) => {
+          const feature = e.features[0]
+          if (feature.properties.uuid === this.act_hoover_uuid) {
+            return
+          }
+          if (this.act_popup) {
+            this.act_popup.remove()
+          }
+          let coordinates = null
+          coordinates = feature.geometry.coordinates.slice()
+          var title = feature.properties.title
+          this.act_hoover_id = feature.id
+          // console.log(feature.id)
+          this.map.setFeatureState(
+            {source: source_name, id: this.act_hoover_id},
+            {hover: true}
+          )
+          this.act_hoover_uuid = feature.properties.uuid
+          this.act_popup = new this.mapboxgl.Popup()
+            .setLngLat(coordinates)
+            .setHTML(title)
+            .addTo(this.map)
+        })
+
+        this.map.on("click", entries_layer_name, (e) => {
+          this.select_entry_marker(e.features[0])
+        })
+        this.map.on('mouseleave', entries_layer_name, () => {
+          if (this.act_hoover_uuid) {
+            this.map.setFeatureState(
+              {source: source_name, id: this.act_hoover_id},
+              {hover: false}
+            )
+            this.act_hoover_id = null
+            this.act_hoover_uuid = null
+            this.act_popup.remove()
+            this.act_popup = null
+          }
+        })
       },
       layer_select_change(active_layers) {
         console.log(this.$_.keyBy(this.layers), l => active_layers.includes(l))
@@ -193,135 +330,6 @@
             )
         }
       },
-      create_entries_source_layer(entries, layer_base_id) {
-        const source_name = layer_base_id + "_source"
-        // console.log("S", this.map.getSource(source_name))
-        if (!this.map.getSource(source_name)) {
-          console.log("adding source")
-          this.map.addSource(source_name, {
-            type: "geojson",
-            data: entries,
-            cluster: true,
-            clusterMaxZoom: 14,
-            clusterRadius: 35
-          })
-        } else {
-          console.log("source layer exists already")
-        }
-
-        const cluster_layer_name = layer_base_id + '_clusters'
-        const cluster_layer = this.map.getLayer(cluster_layer_name)
-
-        if (!cluster_layer) {
-          console.log("adding cluster layer")
-          this.map.addLayer({
-            id: cluster_layer_name,
-            type: 'circle',
-            source: source_name,
-            filter: ['has', 'point_count'],
-            paint: {
-              'circle-color': '#f1f075',
-              'circle-radius': [
-                'step',
-                ['get', 'point_count'],
-                10,
-                3,
-                15,
-                10,
-                20
-              ]
-            }
-          })
-
-          this.map.addLayer({
-            id: layer_base_id + '_cluster-count',
-            type: 'symbol',
-            source: source_name,
-            filter: ['has', 'point_count'],
-            layout: {
-              'text-field': '{point_count_abbreviated}',
-              'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-              'text-size': 12
-            }
-          })
-        } else {
-          console.log("cluster layer exists already")
-        }
-
-        const entries_layer_name = layer_base_id + '_entries'
-        this.map.addLayer({
-          'id': entries_layer_name,
-          'type': 'circle',
-          'source': source_name,
-          filter: ['!', ['has', 'point_count']],
-          'layout': {},
-          // todo the colors should come from the templates
-          'paint': {
-            "circle-opacity": 1,
-            'circle-color': [
-              'match',
-              ['get', "template"],
-              'article_review',
-              '#2ee70c',
-              "local_observation",
-              "#ee2b0b",
-              '#ccc'],
-            "circle-radius": [
-              'case',
-              ["any", ["boolean", ['feature-state', 'hover'], false], ["boolean", ['feature-state', 'selected'], false]],
-              12,
-              8
-            ],
-            "circle-stroke-color": "#f6ff7a",
-            "circle-stroke-width": [
-              "case",
-              ["boolean", ["feature-state", "selected"], false],
-              2,
-              0
-            ]
-          }
-        })
-
-        // this.map.on('mousemove', entries_layer_name, (e) => {
-        //   const feature = e.features[0]
-        //   if (feature.properties.uuid === this.act_hoover_uuid) {
-        //     return
-        //   }
-        //   if (this.act_popup) {
-        //     this.act_popup.remove()
-        //   }
-        //   let coordinates = null
-        //   coordinates = feature.geometry.coordinates.slice()
-        //   var title = feature.properties.title
-        //   this.act_hoover_id = feature.id
-        //   // console.log(feature.id)
-        //   this.map.setFeatureState(
-        //     {source: source_name, id: this.act_hoover_id},
-        //     {hover: true}
-        //   )
-        //   this.act_hoover_uuid = feature.properties.uuid
-        //   this.act_popup = new this.mapboxgl.Popup()
-        //     .setLngLat(coordinates)
-        //     .setHTML(title)
-        //     .addTo(this.map)
-        // })
-
-        this.map.on("click", entries_layer_name, (e) => {
-          this.select_entry_marker(e.features[0])
-        })
-        this.map.on('mouseleave', entries_layer_name, () => {
-          if (this.act_hoover_uuid) {
-            this.map.setFeatureState(
-              {source: source_name, id: this.act_hoover_id},
-              {hover: false}
-            )
-            this.act_hoover_id = null
-            this.act_hoover_uuid = null
-            this.act_popup.remove()
-            this.act_popup = null
-          }
-        })
-      },
       navigate_entry({uuid, mode}) {
         this.update_navigation_mode(uuid, mode)
       },
@@ -340,10 +348,13 @@
           query.entry_mode = entry_mode
           this.drawer = true
           this.change_entry_markers_mode(entry_uuid, true)
-          if (easeToFirst)
-            this.map_goto_location(this.$store.getters[ENTRIES_GET_ENTRY](entry_uuid).location[0])
+          if (easeToFirst) {
+            const entry_loc = this.$store.getters[ENTRIES_GET_ENTRY](entry_uuid).location
+            if (entry_loc && entry_loc.length > 0) {
+              this.map_goto_location(entry_loc[0])
+            }
+          }
         }
-
         this.$router.push(route_change_query(this.$route, query, true))
       },
       filter_entries(uuids) {
@@ -364,7 +375,7 @@
     },
     watch: {
       map_loaded() {
-        this.markers_and_map_done()
+        this.check_entries_map_done()
       },
       goto_location(location) {
         if (location) {
@@ -372,7 +383,7 @@
         }
       },
       entries() {
-        this.markers_and_map_done()
+        this.check_entries_map_done()
       },
       drawer() {
         // todo nice to have: map.easeTo with padding adjusted
@@ -392,11 +403,8 @@
     z-index: 1
   }
 
-  #map {
-    width: 100%;
-  }
+   .fullSize {
+     width: 100%;
+   }
 
-  .crosshair {
-    cursor: crosshair !important;
-  }
 </style>
