@@ -5,7 +5,11 @@ import {place2str} from "~/lib/location"
 export default {
   name: "ActorMixin",
   props: {
-    actor: Object
+    actor: Object,
+    selectable: {
+      type: Boolean,
+      default: true
+    }
   },
   methods: {
     avatar(actor) {

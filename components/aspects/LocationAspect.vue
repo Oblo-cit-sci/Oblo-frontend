@@ -20,10 +20,10 @@
               auto-select-first
               v-model="place_select__"
               clearable)
-            span Public location:
-            span
-              v-chip-group(v-if="has_place" active-class="primary--text" mandatory v-model="public_location_precision")
-                v-chip(v-for="(place_part, index) in place_parts" :key="index") {{place_part}}
+            <!--            span Public location:-->
+            <!--            span-->
+            <!--              v-chip-group(v-if="has_place" active-class="primary&#45;&#45;text" mandatory v-model="public_location_precision")-->
+            <!--                v-chip(v-for="(place_part, index) in place_parts" :key="index") {{place_part}}-->
     div(v-else)
       span.body-1.readonly-aspect {{place_name}}
       v-btn(v-if="show_goto_button" icon @click="goto_location")
