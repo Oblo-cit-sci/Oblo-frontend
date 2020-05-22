@@ -15,9 +15,9 @@
         v-row.ma-1(wrap justify-center)
           <!-- the v-show prevents reloading every time, when switching between entry and search-->
           Search(v-show="nav_mode_search"
-            init_full
             :preview_options="preview_options"
             :fixed_filters="location_pre_filter"
+            @all_received_uuids="$emit('all_received_uuids', $event)"
             @preview_action="preview_action($event)")
           div(v-if="nav_mode_entry")
             v-row
@@ -35,7 +35,7 @@
   export default {
     name: "MapNavigationBottomSheet",
     components: {Entry},
-    mixins:[MapNavigationMixin]
+    mixins: [MapNavigationMixin]
   }
 </script>
 

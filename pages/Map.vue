@@ -5,6 +5,7 @@
         v-icon mdi-menu
       v-btn(v-if="!drawer" fab @click="go_home")
         v-icon mdi-home
+    .mypopup(class="COULD BE USED IF MAPBOX POPUP STILL BEHAVES SHITTTY")
     component(:is="navgiagtion_component"
       :drawer="drawer"
       :layers="layers"
@@ -48,13 +49,12 @@
     props: {},
     data() {
       return {
-        //
         drawer: false,
-
         center_coordinates: [-0.8844128193341589, 37.809519042232694],
         act_hoover_id: null,
         act_hoover_uuid: null,
-        act_popup: null
+        act_popup: null,
+        initialized: false,
       }
     },
     created() {
@@ -64,7 +64,7 @@
       if (this.$_.isEmpty(this.entries)) {
         console.log("loading entries")
         this.$api.entries_map_entries(true).then(({data}) => {
-          console.log(data)
+          // console.log(data)
           this.$store.dispatch(MAP_SET_ENTRIES, data)
         }).catch(err => {
           console.log("map entries error")
@@ -82,7 +82,7 @@
       },
       fullHeight() {
         return {
-          height: window.innerHeight+"px"
+          height: window.innerHeight + "px"
         }
       },
       button_group_shift() {
@@ -101,7 +101,6 @@
           return MapNavigationDrawer
       },
       center_padding() {
-        console.log(this.drawer)
         if (!this.drawer) {
           return {}
         } else if (this.display_mdDown) {
@@ -135,14 +134,18 @@
       check_entries_map_done() {
         if (!this.$_.isEmpty(this.entries) && this.entries.features.length > 0 && this.map_loaded) {
           this.init_map_source_and_layers(this.entries, "all_entries")
+          this.initialized = true
           if (this.$route.query.uuid) {
             this.update_navigation_mode(this.$route.query.uuid, VIEW)
           }
         }
       },
       init_map_source_and_layers(entries, layer_base_id) {
+
+        console.log(this.map.style._layers)
+
         const source_name = layer_base_id + "_source"
-        // console.log("S", this.map.getSource(source_name))
+
         if (!this.map.getSource(source_name)) {
           console.log("adding source")
           this.map.addSource(source_name, {
@@ -159,6 +162,9 @@
 
         const cluster_layer_name = layer_base_id + '_clusters'
         const cluster_layer = this.map.getLayer(cluster_layer_name)
+
+        console.log("cluster_layer?", Object.keys(this.map.style._layers).includes(cluster_layer))
+
 
         if (!cluster_layer) {
           console.log("adding cluster layer")
@@ -188,6 +194,7 @@
             filter: ['has', 'point_count'],
             layout: {
               "text-allow-overlap": true,
+              "text-ignore-placement": true,
               'text-field': '{point_count_abbreviated}',
               'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
               'text-size': 14
@@ -231,7 +238,7 @@
           }
         })
 
-        this.map.on('mousemove', entries_layer_name, (e) => {
+        this.map.on('mouseenter', entries_layer_name, (e) => {
           const feature = e.features[0]
           if (feature.properties.uuid === this.act_hoover_uuid) {
             return
@@ -241,7 +248,6 @@
           }
           let coordinates = null
           coordinates = feature.geometry.coordinates.slice()
-          var title = feature.properties.title
           this.act_hoover_id = feature.id
           // console.log(feature.id)
           this.map.setFeatureState(
@@ -249,15 +255,12 @@
             {hover: true}
           )
           this.act_hoover_uuid = feature.properties.uuid
-          this.act_popup = new this.mapboxgl.Popup()
-            .setLngLat(coordinates)
-            .setHTML(title)
-            .addTo(this.map)
+          // this.act_popup = new this.mapboxgl.Popup()
+          //   .setLngLat(coordinates)
+          //   .setText(feature.properties.title)
+          //   .addTo(this.map)
         })
 
-        this.map.on("click", entries_layer_name, (e) => {
-          this.select_entry_marker(e.features[0])
-        })
         this.map.on('mouseleave', entries_layer_name, () => {
           if (this.act_hoover_uuid) {
             this.map.setFeatureState(
@@ -266,9 +269,13 @@
             )
             this.act_hoover_id = null
             this.act_hoover_uuid = null
-            this.act_popup.remove()
-            this.act_popup = null
+            // this.act_popup.remove()
+            // this.act_popup = null
           }
+        })
+
+        this.map.on("click", entries_layer_name, (e) => {
+          this.select_entry_marker(e.features[0])
         })
       },
       layer_select_change(active_layers) {
@@ -358,8 +365,9 @@
         this.$router.push(route_change_query(this.$route, query, true))
       },
       filter_entries(uuids) {
-        // console.log("about to filter these uuids...", uuids.length, this.entries.length)
-        if (this.map_loaded && !this.$_.isEmpty(this.entries) && this.entries.features.length !== uuids.length && uuids.length > 0) {
+        // console.log("about to filter these uuids...", uuids.length, this.initialized)
+
+        if (this.initialized && this.entries.features.length !== uuids.length && uuids.length > 0) {
           console.log(this.entries.features.length, uuids.length === this.entries.features.length, this.map.getSource("all_entries_source"))
           // this.map.getSource("all_entries_source")
           // console.log(this.entries.features[0].properties)
@@ -403,8 +411,19 @@
     z-index: 1
   }
 
-   .fullSize {
-     width: 100%;
-   }
+  .mypopup {
+    top: 1%;
+    right: 50px;
+    width: 260px;
+    max-height: 400px;
+    position: fixed;
+    background-color: white;
+    border: solid 1px darkslategrey;
+    z-index: 1
+  }
+
+  .fullSize {
+    width: 100%;
+  }
 
 </style>

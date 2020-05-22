@@ -8,9 +8,7 @@
 
   import Title_Description from "../components/util/Title_Description"
   import EntryActions from "../components/entry/EntryActions";
-  import {
-    EDIT, PRIVATE_LOCAL, VIEW
-  } from "~/lib/consts";
+  import {EDIT, PRIVATE_LOCAL, VIEW} from "~/lib/consts";
   import Aspect from "../components/Aspect";
 
   import goTo from 'vuetify/lib/services/goto'
@@ -26,11 +24,12 @@
   import EntryActorList from "../components/entry/EntryActorList";
   import {
     ENTRIES_GET_EDIT,
-    ENTRIES_SET_EDIT, ENTRIES_UPDATE_ENTRY,
+    ENTRIES_SET_EDIT,
+    ENTRIES_UPDATE_ENTRY,
     ENTRIES_UPDATE_PARENT_VERSION
   } from "~/store/entries";
   import Entry from "../components/entry/Entry";
-  import {TEMPLATES_TYPE, TEMPLATES_TYPES} from "~/store/templates";
+  import {TEMPLATES_TYPE} from "~/store/templates";
 
   export default {
     name: "entry",
@@ -54,6 +53,13 @@
     },
     created() {
       this.$store.dispatch(ENTRIES_SET_EDIT, this.uuid)
+    },
+    beforeRouteEnter(to, from, next) {
+      if(!to.query.uuid) {
+        next(false)
+      } else {
+        next()
+      }
     },
     mounted() {
       if (this.$route.query.goTo) {

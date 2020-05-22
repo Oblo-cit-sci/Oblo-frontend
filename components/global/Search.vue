@@ -40,7 +40,8 @@
   import FilterMixin from "../FilterMixin";
   import NavBaseMixin from "../NavBaseMixin";
   import {
-    SEARCH_CLEAR, SEARCH_GET_ALL_UUIDS,
+    SEARCH_CLEAR,
+    SEARCH_GET_ALL_UUIDS,
     SEARCH_GET_ENTRIES,
     SEARCH_GET_ROUTE,
     SEARCH_GET_SEARCH_COUNT,
@@ -143,6 +144,13 @@
       },
       filter_data() {
         this.filter_changed = true
+      },
+      searching(is_searching) {
+        if (!is_searching) {
+          this.$emit("received_search_results", this.entries())
+          this.prepend_search = false
+          this.$emit("all_received_uuids", this.all_uuids())
+        }
       }
     },
     computed: {
@@ -159,12 +167,7 @@
         return no_params && no_filter
       },
       searching() {
-        const is_searching = this.get_searching()
-        if (is_searching === false) {
-          this.$emit("received_search_results", this.entries())
-          this.prepend_search = false
-          this.$emit("all_received_uuids", this.all_uuids())
-        }
+        return this.get_searching()
         return is_searching
       },
       search_hint() {
@@ -238,7 +241,7 @@
           if (config.hasOwnProperty("name")) {
             config.conditional_value = filter.value
             configuration.required.push(config)
-          } else if(config.hasOwnProperty("include_as")) {
+          } else if (config.hasOwnProperty("include_as")) {
             configuration.include[config.include_as] = filter.value
           } else {
             console.log("error cannot proccess filter-option", filter.name)
@@ -261,7 +264,7 @@
           params: this.$_.pick(this.$route.query, relevant_query_keys)
         }
       }
-    }
+    },
   }
 </script>
 

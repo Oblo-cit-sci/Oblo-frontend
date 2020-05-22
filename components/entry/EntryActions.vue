@@ -23,7 +23,7 @@
           v-btn(@click="back()") back
           v-btn(color="info" @click="edit") edit
         span(v-else-if="can_edit")
-          v-btn(v-if="!is_view_mode" @click="show_cancel") {{cancel_word}}
+          v-btn(v-if="!is_view_mode" @click="cancel") {{cancel_word}}
           v-btn(v-if="is_draft" color="success" @click="save") {{save_word}}
           v-btn(v-if="!is_draft" color="error" @click="show_delete") Delete
           v-btn(
@@ -84,11 +84,6 @@
     components: {DecisionDialog, Paginate},
     mixins: [EntryNavMixin, TriggerSnackbarMixin, PersistentStorageMixin, EntryMixin],
     props: {
-      // entry: Object,
-      // template_slug: String,
-      // mode: {
-      //   type: String // view, create edit
-      // },
       show_back_button: {
         type: Boolean
       },
@@ -128,8 +123,16 @@
       edit() {
         this.$emit(EDIT)
       },
-      show_cancel() {
-        this.cancel_edit()
+      cancel() {
+        if (this.is_draft) {
+          this.$store.dispatch(ENTRIES_DELETE_ENTRY, this.uuid)
+          this.ok_snackbar("Creation canceled")
+          this.$emit("entryAction", "delete")
+          this.back()
+        } else {
+          this.$store.commit(ENTRIES_RESET_EDIT)
+          this.back()
+        }
       },
       show_delete() {
         this.show_dialog(this.delete_dialog_data)
@@ -150,17 +153,6 @@
               this.$api.delete_entry__$uuid(this.uuid)
             this.delete_entry()
           }
-        }
-      },
-      cancel_edit() {
-        if (this.is_draft) {
-          this.$store.dispatch(ENTRIES_DELETE_ENTRY, this.uuid)
-          this.ok_snackbar("Creation canceled")
-          this.$emit("entryAction", "delete")
-          this.back()
-        } else {
-          this.$store.commit(ENTRIES_RESET_EDIT)
-          this.back()
         }
       },
       delete_entry() {
@@ -266,6 +258,7 @@
         console.log("an action lastpage_reached", $event)
       },
       back(remove_params = []) {
+        debugger
         // todo maybe use util.route_change_query
         const last_path = Object.assign({}, this.$store.getters[LAST_BASE_PAGE_PATH])
         console.log(remove_params, "lp", last_path)
