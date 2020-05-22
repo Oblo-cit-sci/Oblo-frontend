@@ -19,11 +19,12 @@
       v-row
         Taglist(v-if="show_tags" :tags="tags" :slide="false")
       v-row(justify="center" v-if="entry_image")
-        v-col.col-md-10.col-sm-12(cols=12 alignSelf="center")
-          v-img.float-md-right.float-sm-left.entry-display-size(
+        v-col(cols=12 alignSelf="center")
+          v-img.entry-display-size(
+            position="left"
             contain
             :src="entry_image"
-            max-height="500")
+            max-height="400")
     div(v-else)
       v-row
         EntryActorList.mt-2(:actors="actors")
