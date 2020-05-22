@@ -29,7 +29,7 @@
       v-btn(v-if="show_goto_button" icon @click="goto_location")
         v-icon mdi-map-marker
     client-only
-      mapbox.crosshair.mt-3(v-if="show_map"
+      mapbox.crosshair.mt-3(v-if="show_map && (!readOnly || value)"
         style="height:400px"
         :access-token="access_token"
         :map-options="map_options"
@@ -153,8 +153,7 @@
     },
     created() {
       // debugger
-      console.log("loc-asp create", this.place_name)
-
+      console.log("loc-asp create", this.value)
       if (this.value) {
         this.search_query = this.place_name
         this.place_select__ = this.place_name

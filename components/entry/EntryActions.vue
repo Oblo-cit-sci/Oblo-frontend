@@ -258,7 +258,6 @@
         console.log("an action lastpage_reached", $event)
       },
       back(remove_params = []) {
-        debugger
         // todo maybe use util.route_change_query
         const last_path = Object.assign({}, this.$store.getters[LAST_BASE_PAGE_PATH])
         console.log(remove_params, "lp", last_path)
