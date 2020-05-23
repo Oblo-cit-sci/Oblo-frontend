@@ -23,7 +23,6 @@
   import {STR} from "~/lib/consts";
   import PersistentStorageMixin from "../components/util/PersistentStorageMixin";
   import LoginMixin from "../components/actor/LoginMixin";
-  import {USER_LOGOUT} from "~/store/user"
   import {SEARCH_CLEAR} from "~/store/search"
   import {CLEAR_ENTRIES} from "~/store"
 
@@ -90,17 +89,18 @@
           if (data.user) {
             this.ok_snackbar("Login successful")
             this.process_login(data)
-                this.$store.dispatch(CLEAR_ENTRIES)
-                this.$store.commit(SEARCH_CLEAR)
+            this.$store.dispatch(CLEAR_ENTRIES)
+            this.$store.commit(SEARCH_CLEAR)
             this.$router.push("/")
           } else {
-            // console.log("todo handle login error")
-            this.errorMsg = data.error.msg
+            // todo this shouldnt happen...
+            const errorMsg = this.$_.get(err.response, "data.error.msg", "Not a user")
+            setTimeout(() => this.errorMsg = null, 5000)
           }
         }).catch((err) => {
           // console.log("err", err.response)
           const response = err.response
-          this.errorMsg = response.data.error.msg
+          const errorMsg = this.$_.get(err.response, "data.error.msg", "Something went wrong")
           if (this.$_.get(response, "data.error.data.error_type", 0) === 1) {
             this.add_verification_resend_link = true
             this.registered_name = response.data.error.data.registered_name
