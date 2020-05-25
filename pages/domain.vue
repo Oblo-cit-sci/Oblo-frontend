@@ -19,6 +19,7 @@
         v-divider
         EntryCreateList(:template_entries="template_entries")
     v-divider.wide-divider
+    MapWrapper(:height="400")
     Search(
       :init_clear="false"
       :search_config="domain_pre_filter",
@@ -28,6 +29,7 @@
 
 <script>
 
+  import Mapbox from 'mapbox-gl-vue'
   import EntryCreateList from "~/components/EntryCreateList";
   import {global_context_filter} from "~/lib/search";
   import Search from "~/components/global/Search";
@@ -45,11 +47,13 @@
   import {object_list2options} from "~/lib/options"
   import LayoutMixin from "~/components/global/LayoutMixin"
   import {get_tags_filter_options} from "~/lib/codes"
+  import MapIncludeMixin from "~/components/map/MapIncludeMixin"
+  import MapWrapper from "~/components/map/MapWrapper"
 
   export default {
     name: "domain",
-    mixins: [EntryNavMixin, PersistentStorageMixin, LayoutMixin],
-    components: {EntryCreateList, Search},
+    mixins: [EntryNavMixin, PersistentStorageMixin, LayoutMixin, MapIncludeMixin],
+    components: {MapWrapper, EntryCreateList, Search, Mapbox},
     data() {
       return {
         main_template: null
@@ -114,5 +118,9 @@
 
   .wide-divider {
     margin: 10px 0;
+  }
+
+  .fullSize {
+    width: 100%;
   }
 </style>

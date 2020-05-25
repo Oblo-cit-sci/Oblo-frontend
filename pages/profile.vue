@@ -40,6 +40,7 @@
       v-btn(v-if="password_edit" color="success" @click="change_password" :disabled="any_password_invalid") Save password
       v-divider.wide_divider
     div(v-if="!is_visitor")
+      <!--      v-btn(v-if="!edit_mode" to="/settings" nuxt) Settings-->
       v-btn(v-if="!edit_mode" color="info" @click="setEdit") Edit profile
       div(v-else)
         v-btn(@click="cancelEdit") Cancel

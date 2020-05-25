@@ -46,11 +46,11 @@
     layout: "map_layout",
     mixins: [MapIncludeMixin],
     components: {Mapbox},
-    props: {},
+    props: {
+    },
     data() {
       return {
         drawer: false,
-        center_coordinates: [-0.8844128193341589, 37.809519042232694],
         act_hoover_id: null,
         act_hoover_uuid: null,
         act_popup: null,
@@ -60,7 +60,7 @@
     created() {
       this.map = null
       // todo domain specific
-      console.log("entries", this.entries)
+      // console.log("entries", this.entries)
       if (this.$_.isEmpty(this.entries)) {
         console.log("loading entries")
         this.$api.entries_map_entries(true).then(({data}) => {
