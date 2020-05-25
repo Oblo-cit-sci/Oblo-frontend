@@ -3,7 +3,8 @@
     v-row
       v-col(v-for="(img_data, index) in images" :key="index" :cols="num_cols")
         v-img.a_image(:src="get_image_data(index)" @click="open_image(index)" max-height="300" contain @error="image_error($event, index)")
-          v-badge(v-if="cover_image_index===index" color="yellow" inline)
+          .header_image_wrapper(v-if="cover_image_index===index")
+            div.ml-9.font-weight-light cover image
     LoadFileButton(v-if="is_edit_mode"
       label="Add image"
       filetype="image"
@@ -211,5 +212,11 @@
 
   .a_image {
     cursor: zoom-in;
+  }
+
+  .header_image_wrapper {
+    height:20px;
+    width:100%;
+    background: rgba(255, 255, 0, 0.75);
   }
 </style>
