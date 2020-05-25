@@ -1,42 +1,32 @@
 <template lang="pug">
   div
-    v-autocomplete(
-      :search-input.sync="search_query"
-      v-model="value"
-      :items="options"
-    )
+    AspectDialog
 </template>
 
 <script>
 
 
+  import AspectDialog from "~/components/aspect_utils/AspectDialog"
+
   export default {
     name: "Tests",
     mixins: [],
-    components: {},
+    components: {AspectDialog},
     created() {
     },
     data() {
       return {
-        search_query: "super cool",
-        value: "super cool",
-        init_catch: true,
-        options: []
+        domains: {
+          name:"domains",
+          type: "select",
+          attr: {}
+
+        }
       }
     },
     computed: {},
     methods: {},
-    watch: {
-      search_query(value, old_value) {
-        console.log("watch sq", value)
-        if (!value && this.init_catch) {
-          console.log("catch")
-          this.search_query = old_value
-          this.init_catch = false
-          this.options = [old_value]
-        }
-      }
-    }
+    watch: {}
   }
 </script>
 
