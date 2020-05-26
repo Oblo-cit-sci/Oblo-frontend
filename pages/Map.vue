@@ -255,10 +255,10 @@
             {hover: true}
           )
           this.act_hoover_uuid = feature.properties.uuid
-          // this.act_popup = new this.mapboxgl.Popup()
-          //   .setLngLat(coordinates)
-          //   .setText(feature.properties.title)
-          //   .addTo(this.map)
+          this.act_popup = new this.mapboxgl.Popup()
+            .setLngLat(coordinates)
+            .setText(feature.properties.title)
+          this.act_popup.addTo(this.map)
         })
 
         this.map.on('mouseleave', entries_layer_name, () => {
@@ -269,8 +269,8 @@
             )
             this.act_hoover_id = null
             this.act_hoover_uuid = null
-            // this.act_popup.remove()
-            // this.act_popup = null
+            this.act_popup.remove()
+            this.act_popup = null
           }
         })
 
