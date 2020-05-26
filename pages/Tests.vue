@@ -1,32 +1,73 @@
 <template lang="pug">
   div
-    AspectDialog
+    AspectDialog(:aspect="domains" :dialog_open="dialog_open" show_aspect @update:ext_value="select($event)")
+    Aspect(:aspect="o_a" :ext_value="val")
 </template>
 
 <script>
 
-
   import AspectDialog from "~/components/aspect_utils/AspectDialog"
+  import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
+  import OptionsAspect from "~/components/aspects/OptionsAspect"
+  import Aspect from "~/components/Aspect"
 
   export default {
     name: "Tests",
-    mixins: [],
-    components: {AspectDialog},
+    mixins: [TriggerSnackbarMixin],
+    components: {Aspect, OptionsAspect, AspectDialog},
     created() {
     },
     data() {
       return {
+        val: {value: null},
+        o_a: {
+          name: "OA",
+          type: "options",
+          attr: {},
+          options: [
+            {
+              name: "A",
+              type: "str",
+              attr: {max: 90}
+            }, {
+              name: "B",
+              type: "str",
+              attr: {max: 90}
+            }
+          ]
+        },
+        selected_domain: {value: null},
+        dialog_open: true,
         domains: {
-          name:"domains",
+          name: "Domains",
           type: "select",
-          attr: {}
-
+          attr: {
+            force_view: "grid",
+          },
+          items: [
+            {value: "licci", text: "LICCI", icon: "images/domains/licci/icon.png"},
+            {value: "conecte", text: "Conecte", icon: "images/domains/conecte/icon.png"},
+          ]
         }
       }
     },
     computed: {},
-    methods: {},
-    watch: {}
+    methods: {
+      select(domain) {
+        console.log("selected", domain)
+        this.dialog_open = false
+        this.ok_snackbar("cool")
+      },
+      trigger() {
+        this.ok_snackbar("yippi" + (Math.random() * 1000))
+      }
+    },
+    watch: {
+      selected_domain(domain) {
+        console.log("selected", domain)
+        this.dialog_open = false
+      }
+    }
   }
 </script>
 

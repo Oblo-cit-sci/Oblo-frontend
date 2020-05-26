@@ -3,7 +3,7 @@
     v-img(:src="domain_image" max-height="auto")
       v-card-title(class="align-end fill-height shadow") {{domain.title}}
     v-card-text
-      v-img.float-left.mr-3.mb-2(:src="domain_icon" left width="40" height="40")
+      v-img.float-left.mr-3.mb-1(:src="domain_icon" left width="40" height="40")
       span {{domain.description}}
 </template>
 

@@ -33,6 +33,8 @@
   div(v-else-if="view_radiogroup")
     v-radio-group(:row="true"  v-model="selected_item")
       v-radio(v-for="item of options" :key="item.key" :label="item.text" :value="item.value")
+  div(v-else-if="view_grid")
+    SelectGrid(:options="options" v-on:selection="select($event)")
   div(v-else-if="none")
     div Nothing to select from
 </template>
@@ -46,6 +48,7 @@
    */
 
   import {server_icon_path} from "~/lib/client";
+  import SelectGrid from "~/components/aspect_utils/SelectGrid"
 
   let select_tresh = 6;
   let autocomplet_thresh = 20
@@ -56,17 +59,12 @@
   const AUTOCOMPLETE = "autocomplete"
 
   const RADIOGROUP = "radiogroup"
+  const GRID = "grid"
 
-  export const VIEW_OPTIONS = {
-    none: NONE,
-    list: CLEAR_LIST,
-    select: SELECT,
-    autocomplete: AUTOCOMPLETE,
-    radiogroup: RADIOGROUP
-  }
 
   export default {
     name: "SingleSelect",
+    components: {SelectGrid},
     props: {
       options: Array,
       selection: [Object, String],
@@ -103,7 +101,6 @@
       return {
         viewStyle: CLEAR_LIST,
         selected_item: null, // for v-select
-        view_options: VIEW_OPTIONS,
         radioselect_test: "view",
         emit_only_value: false
       }
@@ -115,13 +112,10 @@
         this.set_selected_item(false)
       }
       if (this.force_view) {
-        this.viewStyle = this.view_options[this.force_view];
+        this.viewStyle = this.force_view;
         if (this.viewStyle === RADIOGROUP) {
           this.emit_only_value = true
           this.set_selected_item(false)
-        }
-        if (!this.viewStyle) {
-          console.log("Error unknown force_view", this.force_view, "should be from:", this.view_options)
         }
       } else {
         this.set_view_style()
@@ -218,6 +212,9 @@
       },
       view_radiogroup() {
         return this.viewStyle === RADIOGROUP
+      },
+      view_grid() {
+        return this.viewStyle === GRID
       },
       none() {
         return this.viewStyle === NONE

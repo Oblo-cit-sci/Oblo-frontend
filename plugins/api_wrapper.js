@@ -116,6 +116,10 @@ class APIWrapper {
     return `${this.actor_baseURL}/${registered_name}/profile_pic`
   }
 
+  get_static_url(sub) {
+    return `${this.static_baseURL}/${sub}`
+  }
+
   static_url_$domain_name_banner(domain_name) {
     return `${this.static_baseURL}/images/domains/${domain_name}/banner.jpg`
   }

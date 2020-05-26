@@ -15,7 +15,7 @@
 
 <script>
   import LayoutMixin from "~/components/global/LayoutMixin"
-  import {DATE, LOCATION, SELECT} from "~/lib/consts"
+  import {DATE, EDIT, LOCATION, SELECT} from "~/lib/consts"
   import Aspect from "~/components/Aspect"
 
   export default {
@@ -26,7 +26,10 @@
       dialog_open: Boolean,
       show_aspect: Boolean,
       aspect: Object,
-      mode: String,
+      mode: {
+        type: String,
+        default: EDIT
+      },
       ext_value: {
         type: [Object, String, Number, Array]
       }
