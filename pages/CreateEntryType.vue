@@ -33,12 +33,13 @@
     import {create_entry} from "../lib/entry";
     import {object_list2options, string_list2options} from "../lib/options";
     import {TEMPLATES_TYPE} from "../store/templates";
+    import EntryCreateMixin from "~/components/entry/EntryCreateMixin"
 
 
     export default {
         name: "CreateEntryType",
         components: {SingleSelect, Title_Description},
-        mixins: [],
+        mixins: [EntryCreateMixin],
         data() {
             return {
                 existing_types: [],
@@ -52,8 +53,8 @@
             this.existing_types = object_list2options(Array.from(this.$store.state.entry_types.values()), "title", "slug", true)
         },
         methods: {
-            select_exisisting(event) {
-                this.entry = create_entry(this.$store, event)
+            select_exisisting(slug) {
+                this.entry = this.create_entry(slug, false)
                 this.aspects = this.$_.map(this.entry_type.aspects, a => {
                     return {
                         aspect: a,

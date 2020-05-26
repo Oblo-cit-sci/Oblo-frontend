@@ -1,5 +1,5 @@
-import {get_entry_titleAspect, has_pages, has_parent} from "../../lib/entry";
-import {export_data} from "../../lib/import_export";
+import {get_entry_titleAspect, has_parent} from "~/lib/entry";
+import {export_data} from "~/lib/import_export";
 import {aspect_loc_str2arr, loc_append, loc_prepend} from "~/lib/aspect";
 import {
   ASPECT,
@@ -30,20 +30,21 @@ import {TEMPLATES_TYPE} from "~/store/templates";
 import {full_title} from "~/lib/entry"
 import {can_edit} from "~/lib/actors"
 import {USER_GET_REGISTERED_NAME} from "~/store/user"
+import EntryPagesMixin from "~/components/entry/EntryPagesMixin"
 
 export default {
   name: "EntryMixin",
-  mixins: [],
+  mixins: [EntryPagesMixin],
   props: {
     passed_uuid: {
       type: String
-    }
+    }, // todo: should also be just an entry obj,
+    // no fuzz and crashes?
   },
   data() {
     return {
       aspect_locs: {},
-      aspect_extras: {},
-      page: this.$route.query.page | 0,
+      aspect_extras: {}
     }
   },
   computed: {
@@ -108,7 +109,7 @@ export default {
     },
     is_creator() {
       console.log(this.creator, this.$store.getters.registered_name)
-      return this.creator.registered_name == this.$store.getters[USER_GET_REGISTERED_NAME]
+      return this.creator.registered_name === this.$store.getters[USER_GET_REGISTERED_NAME]
     },
     template_slug() {
       return this.entry.template.slug
@@ -125,9 +126,6 @@ export default {
         }
       } else
         return 12
-    },
-    is_first_page() {
-      return this.page === 0
     },
     template() {
       return this.$store.getters[TEMPLATES_TYPE](this.template_slug)
@@ -175,29 +173,8 @@ export default {
     type_name() {
       return this.template.title
     },
-    has_pages() {
-      return has_pages(this.template)
-    },
-    named_pages() {
-      return this.template.rules.hasOwnProperty("named_pages") || false
-    },
-    pages() {
-      return this.template.rules.pages || []
-    },
-    last_page() {
-      return !this.has_pages || this.page === this.pages.length - 1
-    },
     aspect_loc() {
       return [ENTRY, this.uuid, this.template.slug]
-    },
-    shown_aspects() {
-      if (this.has_pages) {
-        return this.$_.filter(this.template.aspects, (a) => {
-          return (this.page === 0 && (a.attr.page === 0 || a.attr.page === undefined) ||
-              (this.page > 0 && a.attr.page === this.page))
-        })
-      }
-      return this.template.aspects
     },
     outdated() {
       return false

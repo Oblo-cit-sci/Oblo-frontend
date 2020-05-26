@@ -64,7 +64,7 @@
 
   import Taglist from "../components/global/Taglist.vue"
   import Aspect from "../components/Aspect";
-  import {EDIT, VIEW} from "~/lib/consts";
+  import {EDIT, USER, VIEW} from "~/lib/consts";
 
   import {mapGetters} from "vuex"
   import {extract_unpacked_values} from "~/lib/aspect";
@@ -293,7 +293,7 @@
       }
     },
     computed: {
-      ...mapGetters({user_data: USER_GET_USER_DATA, own_entries_uuids: ENTRIES_GET_OWN_ENTRIES_UUIDS}),
+      ...mapGetters({user_data: USER, own_entries_uuids: ENTRIES_GET_OWN_ENTRIES_UUIDS}),
       mode() {
         return this.edit_mode ? EDIT : VIEW
       },

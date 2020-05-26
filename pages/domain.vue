@@ -49,10 +49,11 @@
   import {get_tags_filter_options} from "~/lib/codes"
   import MapIncludeMixin from "~/components/map/MapIncludeMixin"
   import MapWrapper from "~/components/map/MapWrapper"
+  import EntryCreateMixin from "~/components/entry/EntryCreateMixin"
 
   export default {
     name: "domain",
-    mixins: [EntryNavMixin, PersistentStorageMixin, LayoutMixin, MapIncludeMixin],
+    mixins: [EntryNavMixin, PersistentStorageMixin, LayoutMixin, MapIncludeMixin, EntryCreateMixin],
     components: {MapWrapper, EntryCreateList, Search, Mapbox},
     data() {
       return {
@@ -100,10 +101,7 @@
     },
     methods: {
       create_from_main_template() {
-        const entry = create_entry(this.$store, this.main_template.slug)
-        this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
-        this.$store.commit(INIT_PAGE_PATH, this.$route)
-        this.persist_draft_numbers()
+        const entry = this.create_entry(this.main_template.slug)
         this.to_entry(entry.uuid, EDIT)
       }
     }

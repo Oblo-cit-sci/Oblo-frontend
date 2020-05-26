@@ -1,8 +1,5 @@
-/*
-  this is for the user (and maybe others)
- */
-
 import {VISITOR} from "~/lib/consts";
+import {PREC_OPTION_RANDOM} from "~/lib/location"
 
 export const USER_LOGIN = "user/login"
 export const USER_LOGOUT = "user/logout"
@@ -12,8 +9,12 @@ export const USER_RESET_AUTH_TOKEN = "user/reset_auth_token"
 export const USER_SET_AUTH_TOKEN = "user/set_auth_token"
 export const USER_GET_AUTH_TOKEN = "user/get_auth_token"
 export const USER_GET_REGISTERED_NAME = "user/registered_name"
-export const USER_GET_USER_DATA = "user/get_user_data"
 export const USER_GLOBAL_ROLE = "user/global_role"
+
+let default_settings = {
+  location_precision: PREC_OPTION_RANDOM,
+  location_error: 2
+}
 
 let default_user_data = {
   global_role: VISITOR,
@@ -25,7 +26,6 @@ let default_user_data = {
   interested_topics: [],
   // https://stackoverflow.com/questions/1253499/simple-calculations-for-working-with-lat-lon-km-distance
   // of 1 degree will result in error of around 50km per coordinate -0.5, +0.5 degree change around the real location
-  location_error: 2,
   default_license: "CC0", // should come from the server
   default_privacy: "public",
   location: "",
@@ -35,6 +35,7 @@ let default_user_data = {
 export const state = () => ({
   logged_in: false, // todo should go somewhere else, so persist doesnt mess it up.
   user_data: default_user_data,
+  settings: default_settings,
   auth_token: {
     access_token: null,
     token_type: "",
@@ -49,14 +50,14 @@ export const getters = {
   registered_name(state) {
     return state.user_data.registered_name
   },
-  get_user_data(state) {
-    return state.user_data
-  },
   get_auth_token(state) {
     return state.auth_token
   },
   global_role(state) {
     return state.user_data.global_role
+  },
+  get_settings(state) {
+    return state.settings
   }
 }
 
@@ -79,6 +80,9 @@ export const mutations = {
       token_type: "",
       expiration_date: null
     }
+  },
+  set_settings(state, settings) {
+    state.settings = settings
   }
 }
 
@@ -90,7 +94,8 @@ export const actions = {
     commit("login")
   },
   logout({commit}) {
-    commit("set_user_data", default_user_data)
+    commit("set_user_data", Object.assgin({}, default_user_data))
+    commit("set_settings", Object.assgin({}, default_settings))
     commit("logout")
     commit("reset_auth_token")
   }

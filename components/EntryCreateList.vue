@@ -19,6 +19,7 @@
   import PersistentStorageMixin from "./util/PersistentStorageMixin";
   import {ENTRIES_SAVE_ENTRY} from "~/store/entries";
   import {INIT_PAGE_PATH} from "~/store";
+  import EntryCreateMixin from "~/components/entry/EntryCreateMixin"
 
   const ENTRY_TYPE = "etype";
   const DRAFT = "draft";
@@ -26,7 +27,7 @@
   export default {
     name: "EntryCreateList",
     components: {SingleSelect},
-    mixins: [EntryNavMixin, PersistentStorageMixin],
+    mixins: [EntryNavMixin, EntryCreateMixin],
     props: {
       template_entries: {
         type: Array,
@@ -46,11 +47,7 @@
     },
     methods: {
       selection(slug) {
-        const entry = create_entry(this.$store, slug)
-        this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
-        this.$store.commit(INIT_PAGE_PATH, this.$route)
-        this.persist_draft_numbers()
-        this.to_entry(entry.uuid, EDIT)
+        this.to_entry(this.create_entry(slug), EDIT)
       }
     }
   }

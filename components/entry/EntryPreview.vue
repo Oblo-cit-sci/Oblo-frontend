@@ -61,7 +61,7 @@
   import EntryMixin from "./EntryMixin";
   import PersistentStorageMixin from "../util/PersistentStorageMixin";
   import ChildCreateMixin from "../util/ChildCreateMixin";
-  import {aspect_loc_str2arr, loc_prepend} from "../../lib/aspect";
+  import {aspect_loc_str2arr, loc_prepend} from "~/lib/aspect";
   import Aspect from "../Aspect";
   import EntryActorList from "./EntryActorList";
   import {SEARCH_ENTRY_ASPECT} from "~/store/search";
@@ -231,6 +231,7 @@
         }
       },
       create_child_action() {
+        // not sure how/if this still works
         if (this.disabled)
           return
         const index_aspect_loc = this.aspect_loc_for_index(this.value.length)
@@ -244,6 +245,7 @@
         this.$store.dispatch(ENTRIES_SAVE_CHILD_N_REF, {child: child, aspect_loc: index_aspect_loc})
         // TODO this was there before, is it required???
         // this.value_change(this.$_.concat(this.value, [child.uuid]))
+        // todo should be just one call
         this.persist_draft_numbers()
         this.persist_entries()
         this.to_entry(child.uuid, EDIT)

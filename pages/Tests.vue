@@ -2,6 +2,7 @@
   div
     AspectDialog(:aspect="domains" :dialog_open="dialog_open" show_aspect @update:ext_value="select($event)")
     Aspect(:aspect="o_a" :ext_value="val")
+    v-btn(@click="test") test
 </template>
 
 <script>
@@ -10,6 +11,8 @@
   import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
   import OptionsAspect from "~/components/aspects/OptionsAspect"
   import Aspect from "~/components/Aspect"
+
+  import pkg from "~/package"
 
   export default {
     name: "Tests",
@@ -53,6 +56,9 @@
     },
     computed: {},
     methods: {
+      test() {
+        this.ok_snackbar(pkg.version)
+      },
       select(domain) {
         console.log("selected", domain)
         this.dialog_open = false

@@ -35,7 +35,7 @@ export default {
       this.store_value("notes", this.$store.getters[TEMPLATES_ALL_NOTES])
     },
     persist_user_data() {
-      this.store_value("user_data", this.$store.getters[USER_GET_USER_DATA])
+      this.store_value("user_data", this.$store.getters.user)
     },
     persist_auth_token() {
       this.store_value("auth_token", this.$store.getters[USER_GET_AUTH_TOKEN])

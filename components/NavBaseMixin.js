@@ -1,10 +1,10 @@
-import {VIEW, UUID} from "~/lib/consts";
-import {get_proper_mode} from "~/lib/entry";
+import {VIEW} from "~/lib/consts";
+import {INIT_PAGE_PATH} from "~/store"
 
 export default {
   name: "NavBaseMixin",
   methods: {
-    to_entry(uuid, mode = VIEW, query = {}) {
+    to_entry(uuid, mode = VIEW, query = {}, log_page = true) {
       // console.log("to entry")
       let route = {
         name: "entry",
@@ -13,6 +13,9 @@ export default {
           entry_mode: mode,
           ...query
         }
+      }
+      if (log_page) {
+        this.$store.commit(INIT_PAGE_PATH, this.$route)
       }
       this.$router.push(route)
     }

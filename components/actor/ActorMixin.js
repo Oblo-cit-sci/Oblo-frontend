@@ -20,7 +20,7 @@ export default {
         return
       if (actor.registered_name === VISITOR)
         return
-      if (actor.registered_name === this.$store.getters[USER_GET_USER_DATA].registered_name) {
+      if (actor.registered_name === this.$store.getters.user_data.registered_name) {
         this.$router.push("/profile")
       } else {
         this.$router.push({path: "/actor", query: {name: actor.registered_name}})
