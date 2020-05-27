@@ -103,10 +103,6 @@ export default {
       // console.log(this.entry.actors.filter(er => er.role === "creator")[0].actor)
       return this.$_.get(this.entry.actors.filter(er => er.role === "creator"), "0.actor", "")
     },
-    can_edit() {
-      // let relation = entry_actor_relation(this.entry, this.$store.getters.user)
-      return can_edit(this.entry, this.$store.getters.user)
-    },
     is_creator() {
       console.log(this.creator, this.$store.getters.registered_name)
       return this.creator.registered_name === this.$store.getters[USER_GET_REGISTERED_NAME]

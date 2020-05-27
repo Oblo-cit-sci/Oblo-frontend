@@ -13,12 +13,14 @@
   import Aspect from "~/components/Aspect"
 
   import pkg from "~/package"
+  import {ENTRIES_ALL_DRAFTS} from "~/store/entries"
 
   export default {
     name: "Tests",
     mixins: [TriggerSnackbarMixin],
     components: {Aspect, OptionsAspect, AspectDialog},
     created() {
+      console.log(this.$store.getters[ENTRIES_ALL_DRAFTS]())
     },
     data() {
       return {
@@ -40,7 +42,7 @@
           ]
         },
         selected_domain: {value: null},
-        dialog_open: true,
+        dialog_open: false,
         domains: {
           name: "Domains",
           type: "select",

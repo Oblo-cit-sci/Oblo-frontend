@@ -1,4 +1,5 @@
 import {
+  ENTRIES_ALL_DRAFTS,
   ENTRIES_ALL_ENTRIES_UUID_ENTRY_ARR,
   ENTRIES_GET_ENTRIES
 } from "~/store/entries";
@@ -23,7 +24,7 @@ export default {
       this.$localForage.removeItem(key)
     },
     persist_entries() {
-      this.store_value("entries", this.$store.getters[ENTRIES_ALL_ENTRIES_UUID_ENTRY_ARR]())
+      this.store_value("entries", this.$store.getters[ENTRIES_ALL_DRAFTS]())
     },
     persist_user_key() {
       this.store_value("user_key", this.$store.getters.user_key)

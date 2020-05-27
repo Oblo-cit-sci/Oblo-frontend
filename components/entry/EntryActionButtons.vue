@@ -102,7 +102,6 @@
         return !this.private_local && !this.is_view_mode && !this.is_review_mode && !this.in_context
       },
       disable_submit() {
-        debugger
         if (!this.connected || !this.entry_complete) {
           return true
         } else {

@@ -56,7 +56,7 @@ export const ENTRIES_SAVE_CHILD_N_REF = "entries/save_child_n_ref"
 export const ENTRIES_DOMAIN = "entries/domain"
 export const ENTRIES_ALL_ENTRIES_OF_TYPE = "entries/all_entries_of_type"
 export const ENTRIES_VALUE = "entries/value"
-export const ENTRIES_DRAFTS = "entries/all_drafts"
+export const ENTRIES_ALL_DRAFTS = "entries/all_drafts"
 export const EDIT_UUID = "entries/edit_uuid"
 //
 export const ENTRIES_SET_ENTRY_VALUE = "entries/set_entry_value"
@@ -277,13 +277,11 @@ export const getters = {
       }
     }
   },
-
-  // todo depracated...
   all_drafts(state) {
-    // as method prevents caching
     return () => {
-      // todo fuck, how to run a filter over Map class
       let result = []
+      // fuckn mapIterator
+      // return ld.filter(Array.from(state.entries.values()), e => e.status === DRAFT)
       for (let e of state.entries.values()) {
         if (e.status === DRAFT)
           result.push(e)

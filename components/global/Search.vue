@@ -193,7 +193,7 @@
           console.log("Search.filtered_entries. entries:", result_entries.length)
           console.log("e1:", result_entries)
         }
-        this.persist_entries()
+        // this.persist_entries()
         return result_entries
       },
       filterlist_options() {
