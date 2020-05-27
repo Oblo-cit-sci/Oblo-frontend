@@ -21,6 +21,7 @@
       :entry="entry"
       in_entry
       :entry_complete="entry_complete"
+      :is_dirty="is_dirty"
       @mode="$emit('mode', $event)")
 </template>
 

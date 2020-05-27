@@ -11,10 +11,11 @@ import {
 } from "~/store/entries";
 import {DOMAIN, INIT_PAGE_PATH, POP_LAST_PAGE_PATH} from "~/store";
 import {TEMPLATES_GET_ASPECT_DEF} from "~/store/templates";
+import EntryActionsMixin from "~/components/entry/EntryActionsMixin"
 
 
 export default {
-  mixins: [TriggerSnackbarMixin, NavBaseMixin],
+  mixins: [TriggerSnackbarMixin, NavBaseMixin, EntryActionsMixin, EntryActionsMixin],
   methods: {
     // why does has_entry call get entry
     has_entry(uuid) {
@@ -26,7 +27,7 @@ export default {
       const has_full_entry = this.$store.getters[ENTRIES_HAS_FULL_ENTRY](uuid)
       // console.log("has full", has_full_entry)
       const entry = this.$store.getters[ENTRIES_GET_ENTRY](uuid)
-      const mode = force_mode ? force_mode : get_proper_mode(entry, this.$store)
+      const mode = force_mode ? force_mode : this.proper_mode
       if (!has_full_entry) { // todo replace values by entry.local.is_full: Boolean
         // console.log("grabbing")
         this.$api.entry__$uuid(this.entry.uuid).then(({data}) => {
@@ -59,9 +60,8 @@ export default {
           // console.log("downloading entry", res)
           const entry = data.data
           entry.local = {}
-          const proper_mode = get_proper_mode(entry, this.$store)
           this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
-          this.to_entry(uuid, proper_mode)
+          this.to_entry(uuid, this.proper_mode)
         }
       }).catch(() => {
         // todo ENH: could also be an error msg from the server

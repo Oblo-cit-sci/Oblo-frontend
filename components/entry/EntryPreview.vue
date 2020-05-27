@@ -56,7 +56,7 @@
   import {EDIT, ENTRY, REVIEW, VIEW} from "~/lib/consts"
   import MetaChips from "./MetaChips"
   import Taglist from "../global/Taglist"
-  import {create_entry, full_title, get_proper_mode} from "~/lib/entry"
+  import {create_entry, full_title} from "~/lib/entry"
   import MapJumpMixin from "../map/MapJumpMixin";
   import EntryMixin from "./EntryMixin";
   import PersistentStorageMixin from "../util/PersistentStorageMixin";
@@ -75,6 +75,7 @@
   } from "~/store/entries";
   import {TEMPLATES_TYPENAME} from "~/store/templates";
   import ActorChip from "../actor/ActorChip"
+  import EntryActionsMixin from "~/components/entry/EntryActionsMixin"
 
   /**
    * ISSUE is not working atm, to responsive
@@ -84,7 +85,7 @@
     name: "Entrypreview",
     components: {ActorChip, EntryActorList, Aspect, MetaChips, Taglist},
     mixins: [EntryNavMixin, MapJumpMixin, EntryMixin, MapJumpMixin,
-      PersistentStorageMixin, ChildCreateMixin],
+      PersistentStorageMixin, ChildCreateMixin, EntryActionsMixin],
     data() {
       return {
         additional_action_loading: {}
@@ -129,9 +130,6 @@
       },
       entry_date() {
         return printDate(new Date(this.entry.creation_ts))
-      },
-      proper_mode() {
-        return get_proper_mode(this.entry, this.$store)
       },
       goto_text() {
         if (this.outdated)
