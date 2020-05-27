@@ -25,7 +25,6 @@
           this.to_entry(this.uuid, mode)
         }
       },
-
       meta_aspects_privacy() {
         let result = []
         result.push({icon: privacy_icon(this.entry.privacy), name: this.entry.privacy})

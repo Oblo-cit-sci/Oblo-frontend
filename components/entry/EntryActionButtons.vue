@@ -1,9 +1,9 @@
 <template lang="pug">
   div
     span(v-if="can_edit")
-      span(v-if="is_view_mode && can_edit")
+      span(v-if="is_view_mode")
         v-btn(@click="back()") back
-        v-btn(color="info" @click="edit") edit
+        v-btn(color="info" @click="proper_mode") {{view_to_edit_word}}
       span(v-else-if="can_edit")
         v-btn(v-if="!is_view_mode" @click="cancel") {{cancel_word}}
         v-btn(v-if="is_draft" color="success" @click="save") {{save_word}}
@@ -50,7 +50,7 @@
   import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
   import {SEARCH_DELETE_ENTRY} from "~/store/search"
   import EntryNavMixin from "~/components/EntryNavMixin"
-  import {prepare_for_submission} from "~/lib/entry"
+  import {get_proper_mode, prepare_for_submission} from "~/lib/entry"
   import {FILES_GET_FILE, FILES_REMOVE_FILE} from "~/store/files"
   import {base64file_to_blob} from "~/lib/util"
   import {LAST_BASE_PAGE_PATH, POP_LAST_PAGE_PATH} from "~/store"
@@ -99,6 +99,9 @@
       show_submit() {
         return !this.private_local && !this.is_view_mode && !this.is_review_mode && !this.in_context
       },
+      view_to_edit_word() {
+        return get_proper_mode(this.entry, this.$store)
+      },
       disable_submit() {
         if (!this.connected || !this.entry_complete) {
           return true
@@ -137,11 +140,10 @@
           return "accept"
         }
       },
-
     },
     methods: {
-      edit() {
-        this.$emit(EDIT)
+      proper_mode() {
+        this.$emit("mode", this.view_to_edit_word)
       },
       cancel() {
         if (this.is_draft) {

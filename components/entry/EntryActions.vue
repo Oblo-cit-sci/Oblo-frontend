@@ -21,7 +21,7 @@
       :entry="entry"
       in_entry
       :entry_complete="entry_complete"
-      @edit="$emit('edit')")
+      @mode="$emit('mode', $event)")
 </template>
 
 <script>

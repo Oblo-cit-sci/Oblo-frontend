@@ -102,13 +102,11 @@ export default {
         }
       }
     }
-  }
-  ,
+  },
   computed: {
     in_context() {
       return this.template.rules.context !== GLOBAL || this.entry.entry_refs.parent
-    }
-    ,
+    },
     domain() {
       return this.$store.getters[DOMAIN]
     }

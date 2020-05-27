@@ -71,7 +71,7 @@
         v-bind="entry_actions_props"
         :page.sync="page"
         v-on:entryAction="entryAction($event)"
-        v-on:edit="mode='edit'")
+        @mode="mode=$event")
     v-row
       DecisionDialog(
         :open.sync="openSaveDialog"
