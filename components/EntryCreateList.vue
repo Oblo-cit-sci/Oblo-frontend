@@ -47,7 +47,7 @@
     },
     methods: {
       selection(slug) {
-        this.to_entry(this.create_entry(slug), EDIT)
+        this.to_entry(this.create_entry(slug).uuid, EDIT)
       }
     }
   }

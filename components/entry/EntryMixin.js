@@ -105,7 +105,7 @@ export default {
     },
     can_edit() {
       // let relation = entry_actor_relation(this.entry, this.$store.getters.user)
-      return can_edit(this.entry, this.$store.getters.user)//relation === CREATOR.actors_key
+      return can_edit(this.entry, this.$store.getters.user)
     },
     is_creator() {
       console.log(this.creator, this.$store.getters.registered_name)

@@ -94,8 +94,8 @@ export const actions = {
     commit("login")
   },
   logout({commit}) {
-    commit("set_user_data", Object.assgin({}, default_user_data))
-    commit("set_settings", Object.assgin({}, default_settings))
+    commit("set_user_data", Object.assign({}, default_user_data))
+    commit("set_settings", Object.assign({}, default_settings))
     commit("logout")
     commit("reset_auth_token")
   }

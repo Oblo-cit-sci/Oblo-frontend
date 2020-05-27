@@ -61,13 +61,8 @@
   import {mapGetters} from "vuex"
   import PersistentStorageMixin from "~/components/util/PersistentStorageMixin";
   import {DOMAIN, LOGOUT} from "~/store";
-  import {USER_GLOBAL_ROLE, USER_LOGGED_IN, USER_LOGOUT} from "~/store/user";
-  import {
-    APP_CONNECTED,
-    APP_CONNECTING,
-    APP_DB_LOADED,
-    APP_INITIALIZED,
-  } from "~/store/app"
+  import {USER_GLOBAL_ROLE, USER_LOGGED_IN} from "~/store/user";
+  import {APP_CONNECTED, APP_CONNECTING, APP_DB_LOADED, APP_INITIALIZED,} from "~/store/app"
   import {dev_env} from "~/lib/util"
 
 
@@ -100,7 +95,7 @@
         reload_storage(this.$store, this.$localForage)
       if (!this.$api.is_initialized()) {
         this.$api.init(this.$axios) // , "https://opentek.eu"
-        if(!dev_env()) {
+        if (!dev_env()) {
           this.privacy_sheet_open = true
         }
       }
@@ -125,7 +120,7 @@
         } else {
           other_pages = other_pages.filter(p => !require_login.includes(p.title))
         }
-        if(this.$store.getters[USER_GLOBAL_ROLE] !== ADMIN) {
+        if (this.$store.getters[USER_GLOBAL_ROLE] !== ADMIN) {
           other_pages = other_pages.filter(p => !require_admin.includes(p.title))
         }
         if (process.env.NODE_ENV !== "development") {
@@ -162,8 +157,8 @@
     methods: {
       goTo() {
         let domain = this.$store.getters[DOMAIN]
-          this.$router.push({
-            path: "domain", query: {d: domain.name}
+        this.$router.push({
+          path: "domain", query: {d: domain.name}
         })
       },
       action(action_type) {
@@ -171,19 +166,20 @@
           this.$api.actor__logout().then(() => {
             this.ok_snackbar("You are logged out")
             this.clear_storage()
+            debugger
             // todo, remove draft entries and update storage, to leave no traces...
             this.$store.dispatch(LOGOUT)
             this.drawer = false
             this.$router.push("/")
           }).catch((err) => {
-            console.log("logout error", err.response)
-            if (err.response.status === 401) {
+            console.log("logout error", err)
+            if (this.$_.get(err, "response.status") === 401) {
               this.ok_snackbar("You are logged out")
-              this.remove_from_storage("auth_token")
-              this.$store.dispatch(LOGOUT)
-              this.drawer = false
-              this.$router.push("/")
             }
+            this.remove_from_storage("auth_token")
+            this.$store.dispatch(LOGOUT)
+            this.drawer = false
+            this.$router.push("/")
           })
         }
       }
