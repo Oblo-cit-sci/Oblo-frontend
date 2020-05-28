@@ -238,7 +238,7 @@
       },
       search_location() {
         this.btn_loading_search_location = true
-        this.location_search(this.search_query, {types: default_place_type, language: "en"}).then(data => {
+        this.geocode(this.search_query).then(data => {
           this.btn_loading_search_location = false
           if (data.features.length === 0) {
             this.error_snackbar("No place with that name")
@@ -342,7 +342,6 @@
           this.update_value(null)
         } else {
           const feature = this.$_.find(this.search_results, feature => feature.id === sel)
-          console.log(feature)
           const coords = feature.geometry.coordinates
           const context = feature.context.map(c => ({
             text: c.text,
@@ -352,6 +351,7 @@
           const data = await this.rev_geocode({lon: coords[0], lat: coords[1]})
 
           for (let feature of data.features) {
+            console.log(feature)
             const place_type = feature.place_type[0]
             const context_item = context.filter(c => c.place_type === place_type)
             if (context_item.length > 0) {
@@ -373,6 +373,9 @@
           }
           this.update_value(value)
         }
+      },
+      complete_value_from_features(value, features) {
+        return value
       },
       value(value) {
         console.log("location aspect value watch", value)

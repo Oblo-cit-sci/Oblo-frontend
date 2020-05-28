@@ -5,7 +5,7 @@
         v-icon mdi-menu
       v-btn(v-if="!drawer" fab @click="go_home")
         v-icon mdi-home
-    .mypopup(class="COULD BE USED IF MAPBOX POPUP STILL BEHAVES SHITTTY")
+    <!--    .mypopup(class="COULD BE USED IF MAPBOX POPUP STILL BEHAVES SHITTTY")-->
     component(:is="navgiagtion_component"
       :drawer="drawer"
       :layers="layers"
@@ -46,8 +46,7 @@
     layout: "map_layout",
     mixins: [MapIncludeMixin],
     components: {Mapbox},
-    props: {
-    },
+    props: {},
     data() {
       return {
         drawer: false,
@@ -127,7 +126,7 @@
     },
     methods: {
       touch(map, event) {
-        console.log(this.map.getLayer("all_entries_cluster-count"))
+        // console.log(this.map.getLayer("all_entries_cluster-count"))
         // console.log(event.lngLat)
         // console.log(event.point)
       },
@@ -153,8 +152,11 @@
             data: entries,
             cluster: true,
             tolerance: 0,
-            clusterMaxZoom: 14,
-            clusterRadius: 35
+            clusterMaxZoom: 7,
+            clusterRadius: 35,
+            cluserProperties: {
+              "is_place": ["at",["get", "location"], 0]
+            }
           })
         } else {
           console.log("source layer exists already")
@@ -163,8 +165,7 @@
         const cluster_layer_name = layer_base_id + '_clusters'
         const cluster_layer = this.map.getLayer(cluster_layer_name)
 
-        console.log("cluster_layer?", Object.keys(this.map.style._layers).includes(cluster_layer))
-
+        // console.log("cluster_layer?", Object.keys(this.map.style._layers).includes(cluster_layer))
 
         if (!cluster_layer) {
           console.log("adding cluster layer")
@@ -192,6 +193,20 @@
             type: 'symbol',
             source: source_name,
             filter: ['has', 'point_count'],
+            layout: {
+              "text-allow-overlap": true,
+              "text-ignore-placement": true,
+              'text-field': '{point_count_abbreviated}',
+              'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+              'text-size': 14
+            }
+          })
+
+          this.map.addLayer({
+            id: layer_base_id + '_cluster-region-label',
+            type: 'symbol',
+            source: source_name,
+            // filter: ['has', 'point_count'],
             layout: {
               "text-allow-overlap": true,
               "text-ignore-placement": true,
@@ -275,8 +290,13 @@
         })
 
         this.map.on("click", entries_layer_name, (e) => {
+          console.log(e.features)
           this.select_entry_marker(e.features[0])
         })
+
+        // this.map.on("click", entries_layer_name, (e) => {
+        //   this.select_entry_marker(e.features[0])
+        // })
       },
       layer_select_change(active_layers) {
         console.log(this.$_.keyBy(this.layers), l => active_layers.includes(l))

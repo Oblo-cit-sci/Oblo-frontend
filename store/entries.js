@@ -397,6 +397,7 @@ export const getters = {
       }
     }
   },
+  // todo this is more of an meta-aspect generator function
   entry_location: function (state, getters) {
     return (uuid) => {
       const entry = getters.get_entry(uuid)

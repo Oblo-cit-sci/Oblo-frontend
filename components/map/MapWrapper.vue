@@ -74,7 +74,7 @@
             data: entries,
             cluster: true,
             tolerance: 0,
-            clusterMaxZoom: 14,
+            clusterMaxZoom: 20,
             clusterRadius: 35
           })
         } else {
@@ -106,7 +106,6 @@
               ]
             }
           })
-
           this.map.addLayer({
             id: layer_base_id + '_cluster-count',
             type: 'symbol',

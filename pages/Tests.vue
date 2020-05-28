@@ -13,14 +13,18 @@
   import Aspect from "~/components/Aspect"
 
   import pkg from "~/package"
-  import {ENTRIES_ALL_DRAFTS} from "~/store/entries"
+  import GeocodingMixin from "~/components/map/GeocodingMixin"
 
   export default {
     name: "Tests",
-    mixins: [TriggerSnackbarMixin],
+    mixins: [TriggerSnackbarMixin, GeocodingMixin],
     components: {Aspect, OptionsAspect, AspectDialog},
-    created() {
-      console.log(this.$store.getters[ENTRIES_ALL_DRAFTS]())
+    async created() {
+      const location_ = {"lon":24.550781249998096,"lat":47.405785290060095}
+      const data = await this.rev_geocode(location_)
+      console.log(data)
+      const loc_search = await this.geocode("Parva")
+      console.log(loc_search)
     },
     data() {
       return {

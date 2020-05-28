@@ -23,7 +23,7 @@ export default {
         })
       return data
     },
-    async location_search(search_text, params) {
+    async geocode(search_text, params = {types: default_place_type, language: "en"}) {
       const {data} = await this.$axios.get(encodeURI(this.mapbox_api_url + search_text) + ".json",
         {
           params: Object.assign({
