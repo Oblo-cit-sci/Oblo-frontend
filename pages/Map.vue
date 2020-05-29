@@ -41,6 +41,7 @@
   export const SEARCH = "search"
   export const ENTRY = "entry"
 
+
   export default {
     name: "Map",
     layout: "map_layout",
@@ -54,6 +55,7 @@
         act_hoover_uuid: null,
         act_popup: null,
         initialized: false,
+        last_features_updated: []
       }
     },
     created() {
@@ -126,7 +128,9 @@
     },
     methods: {
       touch(map, event) {
-        // console.log(this.map.getLayer("all_entries_cluster-count"))
+        // console.log(this.map)
+        // console.log(this.map.getSource("all_entries_source"))
+        // console.log(this.map.getLayer("all_entries_clusters"))
         // console.log(event.lngLat)
         // console.log(event.point)
       },
@@ -138,6 +142,51 @@
             this.update_navigation_mode(this.$route.query.uuid, VIEW)
           }
         }
+      },
+      check_cluster_states(clusters) {
+        const cluster_ids = clusters.map(c => c.id)
+        if (this.$_.isEqual(this.last_features_updated, cluster_ids)) {
+          return
+        }
+        this.last_features_updated = cluster_ids
+        console.log("debounced m", cluster_ids)
+        const layer_base_id = "all_entries"
+        const source_layer_name = "all_entries_source"
+
+        const source = this.map.getSource(source_layer_name)
+        // source.getClusterExpansionZoom(cluster_id, (error, zoom) => {
+        //   console.log("z", error, zoom)
+        // })
+        //
+        //
+
+        const region_source_features = []
+
+        for (let cluster of clusters) {
+          const cluster_id = cluster.id
+          // console.log(cluster)
+          source.getClusterChildren(cluster_id, (error, kids) => {
+            console.log("c", error, kids)
+            const state = this.map.getFeatureState({
+              id: cluster_id,
+              source: source_layer_name
+            })
+          })
+
+          region_source_features.push({
+            type: "Feature",
+            geometry: cluster.geometry,
+            properties: {region_name: "Minden"}
+          })
+        }
+
+        console.log("region_features", region_source_features)
+        this.map.getSource("cluster_region_names_source").setData({
+          "type": "FeatureCollection",
+          "features": region_source_features
+        });
+      },
+      debounced_cluster_status() {
       },
       init_map_source_and_layers(entries, layer_base_id) {
 
@@ -154,9 +203,6 @@
             tolerance: 0,
             clusterMaxZoom: 7,
             clusterRadius: 35,
-            cluserProperties: {
-              "is_place": ["at",["get", "location"], 0]
-            }
           })
         } else {
           console.log("source layer exists already")
@@ -202,19 +248,30 @@
             }
           })
 
+          const cluster_region_names_source = "cluster_region_names_source"
+          this.map.addSource(cluster_region_names_source, {
+            type: "geojson",
+            data: {
+              type: "FeatureCollection",
+              features: []
+            }
+          })
+
           this.map.addLayer({
-            id: layer_base_id + '_cluster-region-label',
+            id: 'cluster-region-label',
             type: 'symbol',
-            source: source_name,
-            // filter: ['has', 'point_count'],
+            source: cluster_region_names_source,
             layout: {
               "text-allow-overlap": true,
               "text-ignore-placement": true,
-              'text-field': '{point_count_abbreviated}',
+              "text-field": ["get", "region_name"],
               'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+              "text-halo-color": "#f4f0f0",
+              "text-offset": [0,1],
               'text-size': 14
             }
           })
+
         } else {
           console.log("cluster layer exists already")
         }
@@ -294,8 +351,31 @@
           this.select_entry_marker(e.features[0])
         })
 
-        // this.map.on("click", entries_layer_name, (e) => {
-        //   this.select_entry_marker(e.features[0])
+        this.debounced_cluster_status = this.$_.debounce(this.check_cluster_states, 100)
+        this.map.on("render", () => {
+          const clusters = this.map.queryRenderedFeatures(undefined, {layers: [cluster_layer_name]})
+          this.debounced_cluster_status(clusters)
+        })
+
+        // this.map.on("click", cluster_layer_name, (e) => {
+        //   console.log(e.features)
+        //   const cluster_id = e.features[0].properties.cluster_id
+        //   // console.log(cluster_id)
+        //   console.log("map z", this.map.getZoom())
+        //   const pointCount = e.features[0].properties.point_count;
+        //   console.log(this.map.getSource("all_entries_source"))
+        //   const source = this.map.getSource("all_entries_source")
+        //   source.getClusterExpansionZoom(cluster_id, (error, zoom) => {
+        //     console.log("z", error, zoom)
+        //   })
+        //
+        //   source.getClusterChildren(cluster_id, (error, kids) => {
+        //     console.log("c", error, kids)
+        //   })
+        //
+        //   source.getClusterLeaves(cluster_id,pointCount,0, (error, kids) => {
+        //     console.log("l", error, kids)
+        //   })
         // })
       },
       layer_select_change(active_layers) {

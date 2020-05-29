@@ -166,7 +166,6 @@
           this.$api.actor__logout().then(() => {
             this.ok_snackbar("You are logged out")
             this.clear_storage()
-            debugger
             // todo, remove draft entries and update storage, to leave no traces...
             this.$store.dispatch(LOGOUT)
             this.drawer = false

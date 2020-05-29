@@ -7,8 +7,6 @@
 </template>
 
 <script>
-  import {USER_GET_USER_DATA} from "~/store"
-  import {VISITOR} from "~/lib/consts"
   import ActorMixin from "~/components/actor/ActorMixin"
 
   export default {
@@ -31,6 +29,8 @@
             return "mdi-pencil"
           case "shared":
             return "mdi-eye-outline"
+          case "reviewer":
+            return "mdi-file-document-box-check-outline" //"mdi-text-box-check"
           default: {
             console.log("unknown role", this.role)
             return ""

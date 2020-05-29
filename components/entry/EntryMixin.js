@@ -56,6 +56,9 @@ export default {
         return this.$route.params.uuid
       } else if (this.$route.query.uuid) {
         return this.$route.query.uuid
+      } else if(this.delete_entry) {
+        console.log("del")
+        return null
       } else {
         console.log("no UUID for entry/route:", this.$route)
         return null

@@ -22,7 +22,7 @@
           return this.$route.query.entry_mode || VIEW
         },
         set(mode) {
-          this.to_entry(this.uuid, mode)
+          this.to_entry(this.uuid, mode,{}, false)
         }
       },
       meta_aspects_privacy() {
