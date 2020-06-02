@@ -22,6 +22,7 @@
         @click="touch"
         @map-load="onMapLoaded"
         @geolocate-error="geolocateError"
+        @render="render"
         @geolocate-geolocate="geolocate")
 </template>
 
@@ -37,9 +38,12 @@
   import MapNavigationDrawer from "~/components/map/MapNavigationDrawer"
   import {mapGetters} from "vuex"
   import MapIncludeMixin from "~/components/map/MapIncludeMixin"
+  import {LAYER_BASE_ID} from "~/lib/map_utils"
 
   export const SEARCH = "search"
   export const ENTRY = "entry"
+
+  const cluster_layer_name = LAYER_BASE_ID + '_clusters'
 
   async function clusterLeaves(source, cluster_id, le) {
     return await new Promise((resolve, reject) => {
@@ -141,12 +145,16 @@
       }
     },
     methods: {
+      render(map) {
+          if (map.getZoom() > 3.5) {
+            this.cluster_label_layer_visible = true
+            const clusters = this.map.queryRenderedFeatures(undefined, {layers: [cluster_layer_name]})
+            this.debounced_cluster_status(clusters)
+          } else {
+            this.cluster_label_layer_visible = false
+          }
+      },
       touch(map, event) {
-        // console.log(this.map)
-        // console.log(this.map.getSource("all_entries_source"))
-        // console.log(this.map.getLayer("all_entries_clusters"))
-        // console.log(event.lngLat)
-        // console.log(event.point)
       },
       check_entries_map_done() {
         if (!this.$_.isEmpty(this.entries) && this.entries.features.length > 0 && this.map_loaded) {
@@ -205,7 +213,7 @@
             region_source_features.push({
               type: "Feature",
               geometry: cluster.geometry,
-              properties: {region_name: region_name}
+              properties: {region_name: region_name, orig_cluster_id: cluster_id}
             })
           }
         }
@@ -227,14 +235,13 @@
             data: entries,
             cluster: true,
             tolerance: 0,
-            clusterMaxZoom: 7,
+            clusterMaxZoom: 14,
             clusterRadius: 35,
           })
         } else {
           console.log("source layer exists already")
         }
 
-        const cluster_layer_name = layer_base_id + '_clusters'
         const cluster_layer = this.map.getLayer(cluster_layer_name)
 
         // console.log("cluster_layer?", Object.keys(this.map.style._layers).includes(cluster_layer))
@@ -382,17 +389,6 @@
         // })
 
         this.debounced_cluster_status = this.$_.debounce(this.check_cluster_states, 50)
-        this.map.on("render", () => {
-          if (this.map.getZoom() > 3.5) {
-            //
-            // console.log("na")
-            const clusters = this.map.queryRenderedFeatures(undefined, {layers: [cluster_layer_name]})
-            this.debounced_cluster_status(clusters)
-          } else {
-            //
-            this.cluster_label_layer_visible = false
-          }
-        })
 
         // this.map.on("click", cluster_layer_name, (e) => {
         //   console.log(e.features)

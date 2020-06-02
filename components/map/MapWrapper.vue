@@ -14,6 +14,9 @@
   import {VIEW} from "~/lib/consts"
   import {mapGetters} from "vuex"
   import {MAP_SET_ENTRIES} from "~/store/map"
+  import {LAYER_BASE_ID} from "~/lib/map_utils"
+
+
 
   export default {
     name: "MapWrapper",
@@ -54,7 +57,7 @@
     methods: {
       check_entries_map_done() {
         if (!this.$_.isEmpty(this.entries) && this.entries.features.length > 0 && this.map_loaded) {
-          this.init_map_source_and_layers(this.entries, "all_entries")
+          this.init_map_source_and_layers(this.entries, LAYER_BASE_ID)
           this.initialized = true
           if (this.$route.query.uuid) {
             this.update_navigation_mode(this.$route.query.uuid, VIEW)
