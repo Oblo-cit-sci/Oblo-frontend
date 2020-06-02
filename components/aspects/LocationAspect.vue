@@ -369,7 +369,8 @@
             coordinates: array2coords(feature.geometry.coordinates),
             place: place_feature2place(feature),
             place_type: base_place.place_type,
-            context: context
+            context: context,
+            location_precision: PREC_OPTION_REGION
           }
           this.update_value(value)
         }
@@ -398,7 +399,7 @@
       },
       public_location_precision(selection) {
         const option = this.precision_option[selection]
-        this.value.public_precision = option
+        this.value.location_precision = option
         if (option === PREC_OPTION_EXACT_LOC) {
           this.value.public_coordinates = this.value.coordinates
         } else if (option === PREC_OPTION_RANDOM) {
@@ -408,7 +409,7 @@
           // console.log(selection, this.value.context)
           const place_details = this.$_.filter(this.value.context, p => p.text === option)[0]
           this.value.public_coordinates = place_details.coordinates
-          this.value.public_precision = PREC_OPTION_REGION
+          this.value.location_precision = PREC_OPTION_REGION
         }
         this.update_value(this.value)
       }

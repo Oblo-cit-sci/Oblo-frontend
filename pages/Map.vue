@@ -30,7 +30,7 @@
   import Mapbox from 'mapbox-gl-vue'
 
   import {MAP_GOTO_LOCATION, MAP_SET_ENTRIES} from "~/store/map"
-  import {VIEW} from "~/lib/consts"
+  import {default_place_type, VIEW} from "~/lib/consts"
   import {ENTRIES_GET_ENTRY, ENTRIES_HAS_FULL_ENTRY, ENTRIES_SAVE_ENTRY} from "~/store/entries"
   import {route_change_query} from "~/lib/util"
   import MapNavigationBottomSheet from "~/components/map/MapNavigationBottomSheet"
@@ -41,6 +41,17 @@
   export const SEARCH = "search"
   export const ENTRY = "entry"
 
+  async function clusterLeaves(source, cluster_id, le) {
+    return await new Promise((resolve, reject) => {
+      source.getClusterLeaves(cluster_id, le, 0, (err, res) => {
+        if (res) {
+          resolve(res)
+        } else {
+          reject(err)
+        }
+      })
+    })
+  }
 
   export default {
     name: "Map",
@@ -55,6 +66,9 @@
         act_hoover_uuid: null,
         act_popup: null,
         initialized: false,
+        //
+
+        cluster_label_layer_visible: false,
         last_features_updated: []
       }
     },
@@ -143,44 +157,59 @@
           }
         }
       },
-      check_cluster_states(clusters) {
+      async check_cluster_states(clusters) {
         const cluster_ids = clusters.map(c => c.id)
+
+        // console.log(cluster_ids)
         if (this.$_.isEqual(this.last_features_updated, cluster_ids)) {
           return
         }
         this.last_features_updated = cluster_ids
-        console.log("debounced m", cluster_ids)
+        // console.log("debounced m", cluster_ids)
         const layer_base_id = "all_entries"
         const source_layer_name = "all_entries_source"
 
         const source = this.map.getSource(source_layer_name)
-        // source.getClusterExpansionZoom(cluster_id, (error, zoom) => {
-        //   console.log("z", error, zoom)
-        // })
-        //
-        //
 
         const region_source_features = []
 
         for (let cluster of clusters) {
           const cluster_id = cluster.id
           // console.log(cluster)
-          source.getClusterChildren(cluster_id, (error, kids) => {
-            console.log("c", error, kids)
-            const state = this.map.getFeatureState({
-              id: cluster_id,
-              source: source_layer_name
-            })
-          })
+          const leaves = await clusterLeaves(source, cluster_id, cluster.properties.point_count)
+          const num_leaves = leaves.length
+          // console.log("res", leaves)
+          // let show_region = true
+          // let region_name = ""
+          let region_name = null
+          const places = {}
+          for (let pt of default_place_type) {
+            places[pt] = []
+          }
 
-          region_source_features.push({
-            type: "Feature",
-            geometry: cluster.geometry,
-            properties: {region_name: "Minden"}
-          })
+          for (let leave of leaves) {
+            const loc = leave.properties.location[0]
+            for (let pt of default_place_type) {
+              if (loc.place[pt])
+                places[pt].push(loc.place[pt])
+            }
+
+            for (let pt of default_place_type.slice().reverse()) {
+              if (places[pt].length === num_leaves && places[pt].every(p => p === places[pt][0])) {
+                region_name = places[pt][0]
+              }
+            }
+
+          }
+          if (region_name) {
+            region_source_features.push({
+              type: "Feature",
+              geometry: cluster.geometry,
+              properties: {region_name: region_name}
+            })
+          }
         }
 
-        console.log("region_features", region_source_features)
         this.map.getSource("cluster_region_names_source").setData({
           "type": "FeatureCollection",
           "features": region_source_features
@@ -189,9 +218,6 @@
       debounced_cluster_status() {
       },
       init_map_source_and_layers(entries, layer_base_id) {
-
-        console.log(this.map.style._layers)
-
         const source_name = layer_base_id + "_source"
 
         if (!this.map.getSource(source_name)) {
@@ -266,9 +292,13 @@
               "text-ignore-placement": true,
               "text-field": ["get", "region_name"],
               'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-              "text-halo-color": "#f4f0f0",
-              "text-offset": [0,1],
-              'text-size': 14
+              "text-offset": [0, 1],
+              'text-size': 14,
+              //"visibility": ["step", ["zoom"], "none", 3.5  , "visible"]
+            },
+            paint: {
+              "text-halo-color": "#fde7a4",
+              "text-halo-width": 1
             }
           })
 
@@ -346,15 +376,22 @@
           }
         })
 
-        this.map.on("click", entries_layer_name, (e) => {
-          console.log(e.features)
-          this.select_entry_marker(e.features[0])
-        })
+        // this.map.on("click", entries_layer_name, (e) => {
+        //   console.log(e.features)
+        //   this.select_entry_marker(e.features[0])
+        // })
 
-        this.debounced_cluster_status = this.$_.debounce(this.check_cluster_states, 100)
+        this.debounced_cluster_status = this.$_.debounce(this.check_cluster_states, 50)
         this.map.on("render", () => {
-          const clusters = this.map.queryRenderedFeatures(undefined, {layers: [cluster_layer_name]})
-          this.debounced_cluster_status(clusters)
+          if (this.map.getZoom() > 3.5) {
+            //
+            // console.log("na")
+            const clusters = this.map.queryRenderedFeatures(undefined, {layers: [cluster_layer_name]})
+            this.debounced_cluster_status(clusters)
+          } else {
+            //
+            this.cluster_label_layer_visible = false
+          }
         })
 
         // this.map.on("click", cluster_layer_name, (e) => {
@@ -488,6 +525,11 @@
       goto_location(location) {
         if (location) {
           this.map_goto_location(location)
+        }
+      },
+      cluster_label_layer_visible(vis) {
+        if(this.map) {
+          this.map.setLayoutProperty("cluster-region-label", 'visibility', vis ? "visible" : "none")
         }
       },
       entries() {
