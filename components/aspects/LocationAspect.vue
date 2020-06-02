@@ -403,8 +403,9 @@
         if (option === PREC_OPTION_EXACT_LOC) {
           this.value.public_coordinates = this.value.coordinates
         } else if (option === PREC_OPTION_RANDOM) {
-          const location_error = this.$store.getters["user/get_settings"].location_error
-          this.value.public_coordinates = create_location_error(this.value.coordinates, location_error)
+          //const location_error = this.$store.getters["user/get_settings"].location_error
+          // todo no magic number
+          this.value.public_coordinates = create_location_error(this.value.coordinates, 2)
         } else {
           // console.log(selection, this.value.context)
           const place_details = this.$_.filter(this.value.context, p => p.text === option)[0]

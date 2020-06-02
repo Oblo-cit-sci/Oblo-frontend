@@ -2,15 +2,21 @@
   div
     h1 Settings
     br
-    h3 Export data
-    div Export all your entries
-    v-btn(@click="export_entries") Export
-      v-icon.ml-2 mdi-export
-    h3 Import data
-    div Import data from a previously exported (downloaded) json file
-    LoadFileButton(@fileload="load_file($event)" )
+    Aspect(
+      :aspect="aspect_map.location_privacy"
+      :ext_value.sync="aspect_map.location_privacy.value"
+      mode="edit")
     br
-    v-divider.wide-divider
+    v-btn(@click="update_settings" :loading="update_button_loading" ) Update
+    <!--    h3 Export data-->
+    <!--    div Export all your entries-->
+    <!--    v-btn(@click="export_entries") Export-->
+    <!--      v-icon.ml-2 mdi-export-->
+    <!--    h3 Import data-->
+    <!--    div Import data from a previously exported (downloaded) json file-->
+    <!--    LoadFileButton(@fileload="load_file($event)" )-->
+    <!--    br-->
+    <!--    v-divider.wide-divider-->
     <!--    h3 Clear entries-->
     <!--    div delete all entries. Make sure that you made backups of the entries you made-->
     <!--    v-btn(@click="show_clear_entries" color="error") Clear-->
@@ -32,6 +38,9 @@
   import PersistentStorageMixin from "../components/util/PersistentStorageMixin";
   import EntryPreviewList from "../components/entry/EntryPreviewList";
   import {CLEAR_ENTRIES} from "~/store";
+  import {default_settings, settings_aspects} from "~/lib/settings"
+  import {extract_unpacked_values} from "~/lib/aspect"
+  import {USER_SET_SETTINGS, USER_SETTINGS} from "~/store/user"
 
 
   export default {
@@ -39,12 +48,17 @@
     components: {EntryPreviewList, TextShort, DecisionDialog, LoadFileButton, Aspect},
     mixins: [TriggerSnackbarMixin, PersistentStorageMixin],
     created() {
+      const settings = this.$store.getters[USER_SETTINGS]
+      for(let name in this.aspect_map) {
+        this.aspect_map[name].value = settings[name]
+      }
     },
     data() {
       return {
         dialog_data: {
           id: ""
         },
+        settings_aspects: this.$_.cloneDeep(settings_aspects),
         test_save_connect_loading: false,
         // todo move to json files
         clear_dialog_data: {
@@ -61,10 +75,24 @@
           show_cancel: false
         },
         show_dialog: false,
+        update_button_loading: false
         // temporary for hot fix
       }
     },
     methods: {
+      update_settings() {
+        this.update_button_loading = true
+        this.$api.post_actor__me({settings: extract_unpacked_values(this.settings_aspects)}).then(({data}) => {
+          console.log(data.settings)
+          this.ok_snackbar("Settings updated")
+          this.$store.commit(USER_SET_SETTINGS, data.settings)
+          this.persist_user_settings()
+        }).catch(err => {
+          console.log(err)
+        }).finally(() => {
+          this.update_button_loading = false
+        })
+      },
       export_entries() {
         const entries = Array.from(this.$store.state.entries.entries.values())
         export_data({entries: entries}, "all_entries.json")
@@ -118,7 +146,11 @@
         this.persist_draft_numbers()
       },
     },
-    computed: {}
+    computed: {
+      aspect_map() {
+        return this.$_.keyBy(this.settings_aspects, "name")
+      }
+    }
   }
 </script>
 

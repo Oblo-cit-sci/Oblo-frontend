@@ -1,5 +1,5 @@
 import {VISITOR} from "~/lib/consts";
-import {PREC_OPTION_RANDOM} from "~/lib/location"
+import {default_settings} from "~/lib/settings"
 
 export const USER_LOGIN = "user/login"
 export const USER_LOGOUT = "user/logout"
@@ -10,11 +10,8 @@ export const USER_SET_AUTH_TOKEN = "user/set_auth_token"
 export const USER_GET_AUTH_TOKEN = "user/get_auth_token"
 export const USER_GET_REGISTERED_NAME = "user/registered_name"
 export const USER_GLOBAL_ROLE = "user/global_role"
-
-let default_settings = {
-  location_precision: PREC_OPTION_RANDOM,
-  location_error: 2
-}
+export const USER_SETTINGS = "user/settings"
+export const USER_SET_SETTINGS = "user/set_settings"
 
 let default_user_data = {
   global_role: VISITOR,
@@ -56,7 +53,7 @@ export const getters = {
   global_role(state) {
     return state.user_data.global_role
   },
-  get_settings(state) {
+  settings(state) {
     return state.settings
   }
 }
@@ -66,6 +63,7 @@ export const mutations = {
     state.logged_in = false
   },
   set_user_data(state, user_data) {
+    delete user_data.settings
     state.user_data = user_data;
   },
   login(state) {
@@ -88,7 +86,8 @@ export const mutations = {
 
 export const actions = {
   login({commit}, data) {
-    const {access_token, token_type, expiration_date, ...user_data} = data
+    const {access_token, token_type, expiration_date, settings, ...user_data} = data
+    commit("set_settings", user_data.user.settings)
     commit("set_user_data", user_data.user)
     commit("set_auth_token", {access_token, token_type, expiration_date})
     commit("login")
