@@ -23,9 +23,10 @@
             div
               div Public location:&nbsp;
                 span {{public_location_text}}
-                v-chip-group(v-if="public_location_selector_on" active-class="primary--text" mandatory v-model="public_location_precision")
+                v-chip-group(v-if="public_location_selector_on" active-class="primary--text" mandatory)
                   v-chip(v-for="(place_part, index) in precision_options" :key="index"
                     text-color="black"
+                    @click="public_location_precision_selected($event)"
                     color="yellow lighten-3") {{place_part}}
     div(v-else)
       span.body-1.readonly-aspect {{place_name_display}}
@@ -51,7 +52,7 @@
     place2str,
     PREC_OPTION_EXACT,
     PREC_OPTION_RANDOM,
-    PREC_OPTION_RREGION,
+    PREC_OPTION_REGION,
   } from "~/lib/location";
   import SingleSelect from "../input/SingleSelect";
   import {default_place_type} from "~/lib/consts";
@@ -90,7 +91,6 @@
         search_results: null,
         selected_search_result: undefined, // this because, clear sets it to that too,
         place_select__: null, // this in v-model is only used because of https://github.com/vuetifyjs/vuetify/issues/11383
-        public_location_precision: null,
         public_location_marker: null
       }
     },
@@ -120,6 +120,8 @@
             else if (this.privacy_setting === settings_loc_privacy_exact) {
               return "Viewers see the exact location."
             }
+          } else {
+            return "Viewers see the location of the region."
           }
         } else {
           return ""
@@ -314,7 +316,6 @@
                   coordinates: coords,
                   location_precision: LOCATION_PRECISION_POINT,
                 }, data.features)
-                this.reset_public_location()
               }
             }
           ).catch((err) => {
@@ -361,6 +362,15 @@
         else if (this.privacy_setting === settings_loc_privacy_exact) {
           value.public = {coordinates: value.coordinates}
         }
+        // console.log(value)
+        let option = PREC_OPTION_EXACT
+        if (this.settings.location_privacy === settings_loc_privacy_random) {
+          option = PREC_OPTION_RANDOM
+        }
+        if (value.location_precision !== LOCATION_PRECISION_POINT) {
+          option = value.place[value.location_precision].name
+        }
+        value = this.set_public_location_from_option(value, option)
         this.update_value(value)
         // this.public_location_precision = PREC_OPTION_RANDOM
       },
@@ -390,41 +400,34 @@
       goto_location() {
         this.$store.commit(MAP_GOTO_LOCATION, this.value)
       },
-      reset_public_location(option = PREC_OPTION_RANDOM) {
-        // if (this.public_location_precision === option) {
-        this.set_public_location_from_option(option)
-        // } else {
-        //   // watch will handle
-        //   this.public_location_precision = option
-        // }
+      public_location_precision_selected(selection) {
+        console.log("public_location_precision_selected", selection)
       },
-      set_public_location_from_option(option) {
-        if(!this.value)
-          return
-        console.log("set_public_location_from_option",option, this.value)
+      set_public_location_from_option(value, option) {
+        console.log("set_public_location_from_option", value, option)
         const public_loc = {}
         // todo we need this?
         let public_precision = option
 
         if (option === PREC_OPTION_EXACT) {
-          public_loc.coordinates = this.value.coordinates
+          public_loc.coordinates = value.coordinates
           public_loc.location_precision = LOCATION_PRECISION_POINT
-          public_loc.place = this.$_.cloneDeep(this.value.place)
+          public_loc.place = this.$_.cloneDeep(value.place)
           public_loc.place_name = place2str(public_loc.place)
         } else if (option === PREC_OPTION_RANDOM) {
           //   //const location_error = this.$store.getters["user/get_settings"].location_error
-          public_loc.coordinates = create_location_error(this.value.coordinates, 2)
+          public_loc.coordinates = create_location_error(value.coordinates, 2)
           public_loc.location_precision = LOCATION_PRECISION_POINT
-          public_loc.place = this.$_.cloneDeep(this.value.place)
+          public_loc.place = this.$_.cloneDeep(value.place)
           delete public_loc.place["place"] // remove lowest resolution for privacy
           public_loc.place_name = place2str(public_loc.place)
         } else {
-          public_precision = PREC_OPTION_RREGION
+          public_precision = PREC_OPTION_REGION
           public_loc.place = {}
           let add_to_place = false
           debugger
           for (let place_type of default_place_type) {
-            const place = this.value.place[place_type]
+            const place = value.place[place_type]
             // console.log(place_type, place)
             if (place) {
               if (place.name === option) {
@@ -439,7 +442,8 @@
           }
           public_loc.place_name = place2str(public_loc.place)
         }
-        this.update_value(Object.assign(this.value, {public_precision, public_loc}))
+        value = Object.assign(value, {public_precision, public_loc})
+        return value
       }
     },
     watch: {
@@ -455,23 +459,17 @@
               lon: feature.geometry.coordinates[0],
               lat: feature.geometry.coordinates[1]
             })
-
             this.complete_value({
               coordinates: feature.geometry.coordinates,
               location_precision: feature.place_type[0],
             }, result.features)
             // console.log(feature.place_type[0])
             console.log(this.value)
-            setTimeout(() => {
-              // console.log(this.value)
-              this.reset_public_location(feature.place_type[0])
-            }, 50)
           } else {
             this.complete_value({
               coordinates: feature.geometry.coordinates,
               location_precision: feature.place_type[0],
             }, feature)
-            this.reset_public_location()
           }
         }
       },
@@ -498,11 +496,11 @@
           this.update_marker()
         }
       },
-      public_location_precision(selection) {
-        const option = this.precision_options[selection]
-        console.log(selection, option)
-        this.set_public_location_from_option(option)
-      }
+      // public_location_precision(selection) {
+      //   const option = this.precision_options[selection]
+      //   console.log(selection, option)
+      //   this.set_public_location_from_option(option)
+      // }
     }
   }
 </script>
