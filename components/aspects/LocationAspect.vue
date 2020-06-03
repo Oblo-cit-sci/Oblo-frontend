@@ -20,16 +20,16 @@
               auto-select-first
               v-model="place_select__"
               clearable)
-            div(v-if="location_privacy_setting")
+            div
               div Public location:&nbsp;
-                span(v-if="location_privacy_setting === 'randomly moved'") For viewers the exact location is not visible but randomly moved
+                span {{public_location_text}}
             <!--            span-->
             <!--              v-chip-group(v-if="has_place" active-class="primary&#45;&#45;text" mandatory v-model="public_location_precision")-->
             <!--                v-chip(v-for="(place_part, index) in precision_option" :key="index"-->
             <!--                  text-color="black"-->
             <!--                  color="yellow lighten-3") {{place_part}}-->
     div(v-else)
-      span.body-1.readonly-aspect {{place_name}}
+      span.body-1.readonly-aspect {{place_name.text}}
       v-btn(v-if="show_goto_button" icon @click="goto_location")
         v-icon mdi-map-marker
     client-only
@@ -45,7 +45,7 @@
 <script>
 
   import Mapbox from 'mapbox-gl-vue'
-  import {array2coords, place2str, PREC_OPTIONS_AREA, PREC_OPTIONS_POINT,} from "~/lib/location";
+  import {array2coords, create_location_error, place2str, PREC_OPTIONS_AREA, PREC_OPTIONS_POINT,} from "~/lib/location";
   import SingleSelect from "../input/SingleSelect";
   import {default_place_type} from "~/lib/consts";
   import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
@@ -55,7 +55,8 @@
   import GeocodingMixin from "~/components/map/GeocodingMixin"
   import {MAP_GOTO_LOCATION} from "~/store/map"
   import {USER_SETTINGS} from "~/store/user"
-  import {settings_loc_privacy_activate} from "~/lib/settings"
+  import {mapGetters} from "vuex"
+  import {settings_loc_privacy_exact, settings_loc_privacy_random} from "~/lib/settings"
 
   // "attr.input" options
   const DEVICE = "device"
@@ -93,6 +94,23 @@
       show_map() {
         return this.$route.name !== "Map" && (this.is_edit_mode && this.map_location_input_option || this.is_view_mode)
       },
+      ...mapGetters({settings: USER_SETTINGS}),
+      privacy_setting() {
+        return this.settings.location_privacy
+      },
+      public_location_text() {
+        if (this.value) {
+          if (this.value.location_precision === PREC_OPTIONS_POINT) {
+            if (this.privacy_setting === settings_loc_privacy_random)
+              return "For viewers the exact location is not visible but randomly moved."
+            else if (this.privacy_setting === settings_loc_privacy_exact) {
+              return "Viewers see the exact location."
+            }
+          }
+        } else {
+          return ""
+        }
+      },
       show_goto_button() {
         return this.is_view_mode && this.$route.name === "Map"
       },
@@ -103,12 +121,7 @@
         return this.has_input_option(SEARCH)
       },
       location_privacy_setting() {
-        const location_privacy = this.$store.getters[USER_SETTINGS].location_privacy
-        if (settings_loc_privacy_activate.includes(location_privacy)) {
-          return location_privacy
-        } else {
-          return false
-        }
+        return this.$store.getters[USER_SETTINGS].location_privacy
       },
       // this is for the MapIncludeMixin to show the control
       map_show_geolocate_ctrl() {
@@ -149,7 +162,7 @@
         })
       },
       place_name() {
-        console.log("place_name", this.value.place_name)
+        console.log("place_name", this.value)
         if (this.value && this.value.place_name)
           return {text: this.value.place_name, value: this.value.place_name}
       },
@@ -180,8 +193,8 @@
             id: this.value.place_name,
             place_name: this.value.place_name,
             geometry: {coordinates: convert_to_2d_arr(this.value.coordinates)},
-            place_type: this.value.place_type,
-            context: this.value.context
+            place_type: [this.value.place_type],
+            context: this.value.place
           }]
       }
     },
@@ -272,6 +285,8 @@
           coordinates: mapboxgl_lngLat2coords(mapboxEvent.lngLat),
           place: {}
         }
+
+        this.search_results = null
         if (this.has_output_place) {
           const coords = {lon: mapboxEvent.lngLat.lng, lat: mapboxEvent.lngLat.lat}
           this.rev_geocode(coords).then(data => {
@@ -287,6 +302,7 @@
               }
             }
           ).catch((err) => {
+            console.log(err)
             console.log("no location found")
             this.querying_location = false
           }).finally(() => {
@@ -313,7 +329,7 @@
             }
           }
         } else {
-          value.place[features.place_type[0]] = {name:features.text, coordinates: value.coordinates}
+          value.place[features.place_type[0]] = {name: features.text, coordinates: value.coordinates}
           for (let place_type of default_place_type) {
             for (let context of features.context || []) {
               const place_type = context_get_place_type(context)
@@ -324,17 +340,14 @@
         // from selecting one
         value.place_name = place2str(value.place)
         console.log("->", value)
-        this.update_value(value)
-        // for (let feature of features) {
-        //   const place_type = feature.place_type[0]
-        //   const context_item = context.filter(c => c.place_type === place_type)
-        //   if (context_item.length > 0) {
-        //     context_item[0].coordinates = array2coords(feature.geometry.coordinates)
-        //   }
-        // }
 
-        //         const data = await this.rev_geocode({lon: coords[0], lat: coords[1]})
-        // console.log(data)
+        if (this.privacy_setting === settings_loc_privacy_random)
+          value.public = {coordinates: create_location_error(value.coordinates)}
+        else if (this.privacy_setting === settings_loc_privacy_exact) {
+          value.public = {coordinates: value.coordinates}
+        }
+
+        this.update_value(value)
 
         // const context = feature.context.map(c => ({
         //   text: c.text,
@@ -385,7 +398,7 @@
     },
     watch: {
       async selected_search_result(sel) {
-        console.log("selected_search_result-watch", sel)
+        console.log("selected_search_result-watch", sel, this.search_results)
         if (!sel) {
           this.update_value(null)
         } else {
@@ -441,7 +454,7 @@
           this.update_marker(true)
         }
         // this when the value comes down as cache /or in whatever way
-        if(value.place_name) {
+        if (value.place_name) {
           this.search_query = value.place_name
         }
       },
