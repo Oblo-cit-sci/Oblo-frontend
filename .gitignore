@@ -1,7 +1,6 @@
 pages/test/*
 
-crop/
-crop/
+
 # Created by .ignore support plugin (hsz.mobi)
 ### Node template
 # Logs
@@ -88,12 +87,9 @@ dist
 # Service worker
 sw.*
 
-
-/crop/
+/app/
 /out/
 /assets/cc-icons-cc-icons-3c4c93e/
 /static/images/entry_images/
-/eovalue/
-/opentek/
 /appbeta/
 /entry_images/

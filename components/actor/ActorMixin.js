@@ -16,11 +16,12 @@ export default {
       return this.$api.url_actor__$registered_name__avatar(actor.registered_name)
     },
     goto_actor(actor) {
+      // console.log(actor)
       if(!this.selectable)
         return
       if (actor.registered_name === VISITOR)
         return
-      if (actor.registered_name === this.$store.getters.user_data.registered_name) {
+      if (actor.registered_name === this.$store.getters.name) {
         this.$router.push("/profile")
       } else {
         this.$router.push({path: "/actor", query: {name: actor.registered_name}})

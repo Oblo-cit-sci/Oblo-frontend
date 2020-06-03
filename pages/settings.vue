@@ -38,7 +38,7 @@
   import PersistentStorageMixin from "../components/util/PersistentStorageMixin";
   import EntryPreviewList from "../components/entry/EntryPreviewList";
   import {CLEAR_ENTRIES} from "~/store";
-  import {default_settings, settings_aspects} from "~/lib/settings"
+  import {settings_aspects} from "~/lib/settings"
   import {extract_unpacked_values} from "~/lib/aspect"
   import {USER_SET_SETTINGS, USER_SETTINGS} from "~/store/user"
 

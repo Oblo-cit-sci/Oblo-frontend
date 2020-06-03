@@ -23,13 +23,12 @@
             div
               div Public location:&nbsp;
                 span {{public_location_text}}
-            <!--            span-->
-            <!--              v-chip-group(v-if="has_place" active-class="primary&#45;&#45;text" mandatory v-model="public_location_precision")-->
-            <!--                v-chip(v-for="(place_part, index) in precision_option" :key="index"-->
-            <!--                  text-color="black"-->
-            <!--                  color="yellow lighten-3") {{place_part}}-->
+                v-chip-group(v-if="public_location_selector_on" active-class="primary--text" mandatory v-model="public_location_precision")
+                  v-chip(v-for="(place_part, index) in precision_options" :key="index"
+                    text-color="black"
+                    color="yellow lighten-3") {{place_part}}
     div(v-else)
-      span.body-1.readonly-aspect {{place_name.text}}
+      span.body-1.readonly-aspect {{place_name_display}}
       v-btn(v-if="show_goto_button" icon @click="goto_location")
         v-icon mdi-map-marker
     client-only
@@ -45,7 +44,15 @@
 <script>
 
   import Mapbox from 'mapbox-gl-vue'
-  import {array2coords, create_location_error, place2str, PREC_OPTIONS_AREA, PREC_OPTIONS_POINT,} from "~/lib/location";
+  import {
+    array2coords,
+    create_location_error,
+    LOCATION_PRECISION_POINT,
+    place2str,
+    PREC_OPTION_EXACT,
+    PREC_OPTION_RANDOM,
+    PREC_OPTION_RREGION,
+  } from "~/lib/location";
   import SingleSelect from "../input/SingleSelect";
   import {default_place_type} from "~/lib/consts";
   import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
@@ -56,7 +63,7 @@
   import {MAP_GOTO_LOCATION} from "~/store/map"
   import {USER_SETTINGS} from "~/store/user"
   import {mapGetters} from "vuex"
-  import {settings_loc_privacy_exact, settings_loc_privacy_random} from "~/lib/settings"
+  import {settings_loc_privacy_ask, settings_loc_privacy_exact, settings_loc_privacy_random} from "~/lib/settings"
 
   // "attr.input" options
   const DEVICE = "device"
@@ -91,6 +98,13 @@
       device_location_input_option() {
         return this.has_input_option(DEVICE)
       },
+      place_name_display() {
+        if (this.place_name) {
+          return place_name.text
+        } else {
+          return ""
+        }
+      },
       show_map() {
         return this.$route.name !== "Map" && (this.is_edit_mode && this.map_location_input_option || this.is_view_mode)
       },
@@ -100,7 +114,7 @@
       },
       public_location_text() {
         if (this.value) {
-          if (this.value.location_precision === PREC_OPTIONS_POINT) {
+          if (this.value.location_precision === LOCATION_PRECISION_POINT) {
             if (this.privacy_setting === settings_loc_privacy_random)
               return "For viewers the exact location is not visible but randomly moved."
             else if (this.privacy_setting === settings_loc_privacy_exact) {
@@ -110,6 +124,9 @@
         } else {
           return ""
         }
+      },
+      public_location_selector_on() {
+        return this.value && this.privacy_setting === settings_loc_privacy_ask
       },
       show_goto_button() {
         return this.is_view_mode && this.$route.name === "Map"
@@ -140,15 +157,15 @@
           const options = []
           for (let place_type of default_place_type) {
             if (this.value.place.hasOwnProperty(place_type)) {
-              options.push(this.value.place[place_type])
+              options.push(this.value.place[place_type].name)
             }
           }
           return options
         }
       },
-      // precision_option() {
-      //   return [PREC_OPTION_EXACT_LOC, PREC_OPTION_RANDOM].concat(this.place_parts)
-      // },
+      precision_options() {
+        return [PREC_OPTION_EXACT, PREC_OPTION_RANDOM].concat(this.place_parts)
+      },
       //  check for attr.output.___
       has_output_location() {
         return this.has_output(LOCATION)
@@ -162,7 +179,7 @@
         })
       },
       place_name() {
-        console.log("place_name", this.value)
+        // console.log("place_name", this.value)
         if (this.value && this.value.place_name)
           return {text: this.value.place_name, value: this.value.place_name}
       },
@@ -180,7 +197,7 @@
       show_public_location() {
         if (!this.value)
           return false
-        return this.value.public_coordinates && this.value.coordinates !== this.value.public_coordinates
+        return this.value.public_precision !== PREC_OPTION_EXACT
       }
     },
     created() {
@@ -278,7 +295,6 @@
         return (this.aspect.attr.output || default_output).includes(type)
       },
       map_location_selected(map, mapboxEvent) {
-        console.log("map loc selected")
         if (this.is_view_mode)
           return
         let value = {
@@ -290,15 +306,16 @@
         if (this.has_output_place) {
           const coords = {lon: mapboxEvent.lngLat.lng, lat: mapboxEvent.lngLat.lat}
           this.rev_geocode(coords).then(data => {
-              console.log("q", data)
+              // console.log("q", data)
               this.querying_location = false
               if (data.features.length === 0) { // oceans
                 // todo add filler
               } else {
                 this.complete_value({
                   coordinates: coords,
-                  location_precision: PREC_OPTIONS_POINT,
+                  location_precision: LOCATION_PRECISION_POINT,
                 }, data.features)
+                this.reset_public_location()
               }
             }
           ).catch((err) => {
@@ -339,50 +356,29 @@
         }
         // from selecting one
         value.place_name = place2str(value.place)
-        console.log("->", value)
-
+        // console.log("->", value)
         if (this.privacy_setting === settings_loc_privacy_random)
           value.public = {coordinates: create_location_error(value.coordinates)}
         else if (this.privacy_setting === settings_loc_privacy_exact) {
           value.public = {coordinates: value.coordinates}
         }
-
         this.update_value(value)
-
-        // const context = feature.context.map(c => ({
-        //   text: c.text,
-        //   place_type: context_get_plact_type(c)
-        // }))
-        //
-
-        // const base_place = {
-        //   text: feature.text,
-        //   coordinates: array2coords(feature.geometry.coordinates),
-        //   place_type: feature.place_type[0]
-        // }
-        // context.push(base_place)
-        //
-        // this.search_query = data.features[0].place_name
-        // value.place_type = base_place.place_type
-        // value.context = context
-        // value.place = place_feature2place(data.features[0])
+        // this.public_location_precision = PREC_OPTION_RANDOM
       },
       update_marker(flyTo = false) {
-        const coordinates = this.value.coordinates
         if (this.location_marker) {
           this.location_marker.remove()
         }
         if (this.public_location_marker) {
           this.public_location_marker.remove()
         }
-
-        if (this.show_public_location) {
+        if (this.show_public_location && this.$_.get(this.value, "public_loc.coordinates")) {
           this.public_location_marker = new this.mapboxgl.Marker({
             color: "#FFF59D"
           })
-          this.public_location_marker.setLngLat(this.value.public_coordinates).addTo(this.map)
+          this.public_location_marker.setLngLat(this.value.public_loc.coordinates).addTo(this.map)
         }
-
+        const coordinates = this.value.coordinates
         this.location_marker = new this.mapboxgl.Marker()
         this.location_marker.setLngLat(coordinates).addTo(this.map)
         if (flyTo) {
@@ -394,6 +390,54 @@
       },
       goto_location() {
         this.$store.commit(MAP_GOTO_LOCATION, this.value)
+      },
+      reset_public_location() {
+        if(this.public_location_precision === PREC_OPTION_RANDOM) {
+          this.set_public_location_from_option(PREC_OPTION_RANDOM)
+        }else {
+          // watch will handle
+          this.public_location_precision = PREC_OPTION_RANDOM
+        }
+      },
+      set_public_location_from_option(option) {
+        // console.log(option)
+        const public_loc = {}
+        // todo we need this?
+        let public_precision = option
+
+        if (option === PREC_OPTION_EXACT) {
+          public_loc.coordinates = this.value.coordinates
+          public_loc.location_precision = LOCATION_PRECISION_POINT
+          public_loc.place = this.$_.cloneDeep(this.value.place)
+          public_loc.place_name = place2str(public_loc.place)
+        } else if (option === PREC_OPTION_RANDOM) {
+          //   //const location_error = this.$store.getters["user/get_settings"].location_error
+          public_loc.coordinates = create_location_error(this.value.coordinates, 2)
+          public_loc.location_precision = LOCATION_PRECISION_POINT
+          public_loc.place = this.$_.cloneDeep(this.value.place)
+          delete public_loc.place["place"] // remove lowest resolution for privacy
+          public_loc.place_name = place2str(public_loc.place)
+        } else {
+          public_precision = PREC_OPTION_RREGION
+          public_loc.place = {}
+          let add_to_place = false
+          for (let place_type of default_place_type) {
+            const place = this.value.place[place_type]
+            // console.log(place_type, place)
+            if (place) {
+              if (place.name === option) {
+                public_loc.location_precision = place_type
+                public_loc.coordinates = place.coordinates
+                add_to_place = true
+              }
+              if (add_to_place) {
+                public_loc.place[place_type] = place
+              }
+            }
+          }
+          public_loc.place_name = place2str(public_loc.place)
+        }
+        this.update_value(Object.assign(this.value, {public_precision, public_loc}))
       }
     },
     watch: {
@@ -405,47 +449,17 @@
           const feature = this.$_.find(this.search_results, feature => feature.id === sel)
           this.complete_value({
             coordinates: feature.geometry.coordinates,
-            location_precision: PREC_OPTIONS_AREA,
-            // place_type: feature
+            location_precision: feature.place_types[0],
           }, feature)
-          console.log("complete")
-          // const coords = feature.geometry.coordinates
-          // const context = feature.context.map(c => ({
-          //   text: c.text,
-          //   place_type: context_get_plact_type(c)
-          // }))
-
-
-          // for (let feature of data.features) {
-          //   console.log(feature)
-          //   const place_type = feature.place_type[0]
-          //   const context_item = context.filter(c => c.place_type === place_type)
-          //   if (context_item.length > 0) {
-          //     context_item[0].coordinates = array2coords(feature.geometry.coordinates)
-          //   }
-          // }
-
-          // const base_place = {
-          //   text: feature.text,
-          //   coordinates: array2coords(feature.geometry.coordinates),
-          //   place_type: feature.place_type[0]
-          // }
-          // context.push(base_place)
-          // let value = {
-          //   coordinates: array2coords(feature.geometry.coordinates),
-          //   place: place_feature2place(feature),
-          //   place_type: base_place.place_type,
-          //   context: context,
-          //   location_precision: PREC_OPTION_REGION
-          // }
-          // this.update_value(value)
+          this.reset_public_location()
+          // console.log("complete")
         }
       },
       complete_value_from_features(value, features) {
         return value
       },
       value(value) {
-        console.log("location aspect value watch", value)
+        // console.log("location aspect value watch", value)
         if (!value) {
           this.reset()
           return
@@ -457,6 +471,7 @@
         if (value.place_name) {
           this.search_query = value.place_name
         }
+
       },
       map_loaded() {
         if (this.value && this.value.coordinates) {
@@ -464,21 +479,8 @@
         }
       },
       public_location_precision(selection) {
-        const option = this.precision_option[selection]
-        this.value.location_precision = option
-        // if (option === PREC_OPTION_EXACT_LOC) {
-        //   this.value.public_coordinates = this.value.coordinates
-        // } else if (option === PREC_OPTION_RANDOM) {
-        //   //const location_error = this.$store.getters["user/get_settings"].location_error
-        //   // todo no magic number
-        //   this.value.public_coordinates = create_location_error(this.value.coordinates, 2)
-        // } else {
-        //   // console.log(selection, this.value.context)
-        //   const place_details = this.$_.filter(this.value.context, p => p.text === option)[0]
-        //   this.value.public_coordinates = place_details.coordinates
-        //   this.value.location_precision = PREC_OPTION_REGION
-        // }
-        // this.update_value(this.value)
+        const option = this.precision_options[selection]
+        this.set_public_location_from_option(option)
       }
     }
   }
