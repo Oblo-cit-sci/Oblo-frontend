@@ -30,11 +30,14 @@ export default {
     onMapLoaded(map) {
       this.map = map
       this.mapboxgl = require('mapbox-gl/dist/mapbox-gl')
+      this.mapboxgl.prewarm()
       this.map_loaded = true
 
       if (this.map_show_geolocate_ctrl) {
         this.add_geolocate_ctrl()
       }
+      // console.log("map loaded")
+      this.map.resize()
     },
     add_geolocate_ctrl() {
       const geolocate = new this.mapboxgl.GeolocateControl()
