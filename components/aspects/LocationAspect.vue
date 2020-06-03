@@ -301,7 +301,6 @@
           coordinates: mapboxgl_lngLat2coords(mapboxEvent.lngLat),
           place: {}
         }
-
         this.search_results = null
         if (this.has_output_place) {
           const coords = {lon: mapboxEvent.lngLat.lng, lat: mapboxEvent.lngLat.lat}
@@ -391,16 +390,18 @@
       goto_location() {
         this.$store.commit(MAP_GOTO_LOCATION, this.value)
       },
-      reset_public_location() {
-        if(this.public_location_precision === PREC_OPTION_RANDOM) {
-          this.set_public_location_from_option(PREC_OPTION_RANDOM)
-        }else {
-          // watch will handle
-          this.public_location_precision = PREC_OPTION_RANDOM
-        }
+      reset_public_location(option = PREC_OPTION_RANDOM) {
+        // if (this.public_location_precision === option) {
+        this.set_public_location_from_option(option)
+        // } else {
+        //   // watch will handle
+        //   this.public_location_precision = option
+        // }
       },
       set_public_location_from_option(option) {
-        // console.log(option)
+        if(!this.value)
+          return
+        console.log("set_public_location_from_option",option, this.value)
         const public_loc = {}
         // todo we need this?
         let public_precision = option
@@ -421,6 +422,7 @@
           public_precision = PREC_OPTION_RREGION
           public_loc.place = {}
           let add_to_place = false
+          debugger
           for (let place_type of default_place_type) {
             const place = this.value.place[place_type]
             // console.log(place_type, place)
@@ -447,12 +449,30 @@
           this.update_value(null)
         } else {
           const feature = this.$_.find(this.search_results, feature => feature.id === sel)
-          this.complete_value({
-            coordinates: feature.geometry.coordinates,
-            location_precision: feature.place_types[0],
-          }, feature)
-          this.reset_public_location()
-          // console.log("complete")
+          if (this.settings.location_privacy === settings_loc_privacy_ask) {
+            console.log()
+            const result = await this.rev_geocode({
+              lon: feature.geometry.coordinates[0],
+              lat: feature.geometry.coordinates[1]
+            })
+
+            this.complete_value({
+              coordinates: feature.geometry.coordinates,
+              location_precision: feature.place_type[0],
+            }, result.features)
+            // console.log(feature.place_type[0])
+            console.log(this.value)
+            setTimeout(() => {
+              // console.log(this.value)
+              this.reset_public_location(feature.place_type[0])
+            }, 50)
+          } else {
+            this.complete_value({
+              coordinates: feature.geometry.coordinates,
+              location_precision: feature.place_type[0],
+            }, feature)
+            this.reset_public_location()
+          }
         }
       },
       complete_value_from_features(value, features) {
@@ -480,6 +500,7 @@
       },
       public_location_precision(selection) {
         const option = this.precision_options[selection]
+        console.log(selection, option)
         this.set_public_location_from_option(option)
       }
     }
