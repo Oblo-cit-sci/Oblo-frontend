@@ -3,8 +3,8 @@
     .buttongroup(:style="button_group_shift")
       v-btn(dark fab large color="blue" @click="drawer = !drawer")
         v-icon mdi-menu
-      v-btn(v-if="!drawer" fab @click="home()")
-        v-icon mdi-home
+      v-btn(dark color="green" fab @click="open_layer_dialog")
+        v-icon mdi-layers-outline
     <!--    .mypopup(class="COULD BE USED IF MAPBOX POPUP STILL BEHAVES SHITTTY")-->
     component(:is="navgiagtion_component"
       :drawer="drawer"
@@ -14,6 +14,7 @@
       @navigation_mode_search="unselect_entry"
       @all_received_uuids="filter_entries($event)"
       @layer_select_change="layer_select_change($event)")
+    AspectDialog(v-bind="aspect_dialog_data" @update:dialog_open="aspect_dialog_data.dialog_open = $event" @update:ext_value="aspect_dialog_update($event)")
     client-only
       mapbox.fullSize(
         :style="fullHeight"
@@ -40,6 +41,7 @@
   import MapIncludeMixin from "~/components/map/MapIncludeMixin"
   import {LAYER_BASE_ID} from "~/lib/map_utils"
   import NavBaseMixin from "~/components/NavBaseMixin"
+  import AspectDialog from "~/components/aspect_utils/AspectDialog"
 
   export const SEARCH = "search"
   export const ENTRY = "entry"
@@ -62,7 +64,7 @@
     name: "Map",
     layout: "map_layout",
     mixins: [MapIncludeMixin, NavBaseMixin],
-    components: {Mapbox},
+    components: {AspectDialog, Mapbox},
     props: {},
     data() {
       return {
@@ -71,8 +73,8 @@
         act_hoover_uuid: null,
         act_popup: null,
         initialized: false,
+        aspect_dialog_data: null,
         //
-
         cluster_label_layer_visible: false,
         last_features_updated: []
       }
@@ -143,17 +145,17 @@
       },
       selected_entry() {
         return this.$route.query.uuid
-      }
+      },
     },
     methods: {
       render(map) {
-          if (map.getZoom() > 3.5) {
-            this.cluster_label_layer_visible = true
-            const clusters = this.map.queryRenderedFeatures(undefined, {layers: [cluster_layer_name]})
-            this.debounced_cluster_status(clusters)
-          } else {
-            this.cluster_label_layer_visible = false
-          }
+        if (map.getZoom() > 3.5) {
+          this.cluster_label_layer_visible = true
+          const clusters = this.map.queryRenderedFeatures(undefined, {layers: [cluster_layer_name]})
+          this.debounced_cluster_status(clusters)
+        } else {
+          this.cluster_label_layer_visible = false
+        }
       },
       touch(map, event) {
       },
@@ -384,10 +386,10 @@
           }
         })
 
-        // this.map.on("click", entries_layer_name, (e) => {
-        //   console.log(e.features)
-        //   this.select_entry_marker(e.features[0])
-        // })
+        this.map.on("click", entries_layer_name, (e) => {
+          console.log(e.features)
+          this.select_entry_marker(e.features[0])
+        })
 
         this.debounced_cluster_status = this.$_.debounce(this.check_cluster_states, 50)
 
@@ -413,7 +415,7 @@
         // })
       },
       layer_select_change(active_layers) {
-        console.log(this.$_.keyBy(this.layers), l => active_layers.includes(l))
+        // console.log(this.$_.keyBy(this.layers), l => active_layers.includes(l))
         this.set_layer_status(this.$_.mapValues(this.$_.keyBy(this.layers), l => active_layers.includes(l)))
       },
       set_layer_status(layers = this.layer_status) {
@@ -424,7 +426,25 @@
       back() {
         this.$router.back()
       },
-
+      open_layer_dialog() {
+        this.aspect_dialog_data = {
+          aspect: {
+            name: "Visible layers",
+            type: "multiselect",
+            attr: {},
+            items: [
+              "hello",
+              "na"
+            ]
+          },
+          fix_width: 400,
+          ext_value: {value:null},
+          dialog_open: true
+        }
+      },
+      aspect_dialog_update(selection) {
+        console.log(selection)
+      },
       select_entry_marker(feature) {
         console.log("sel", feature)
         const entry_uuid = feature.properties.uuid
@@ -523,7 +543,7 @@
         }
       },
       cluster_label_layer_visible(vis) {
-        if(this.map) {
+        if (this.map) {
           this.map.setLayoutProperty("cluster-region-label", 'visibility', vis ? "visible" : "none")
         }
       },

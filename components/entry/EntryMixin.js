@@ -1,4 +1,4 @@
-import {get_entry_titleAspect, has_parent} from "~/lib/entry";
+import {full_title, get_entry_titleAspect, has_parent} from "~/lib/entry";
 import {export_data} from "~/lib/import_export";
 import {aspect_loc_str2arr, loc_append, loc_prepend} from "~/lib/aspect";
 import {
@@ -27,8 +27,6 @@ import {
 import {FILES_GET_FILE} from "~/store/files";
 import {check_str_is_uuid} from "~/lib/util";
 import {TEMPLATES_TYPE} from "~/store/templates";
-import {full_title} from "~/lib/entry"
-import {can_edit} from "~/lib/actors"
 import {USER_GET_REGISTERED_NAME} from "~/store/user"
 import EntryPagesMixin from "~/components/entry/EntryPagesMixin"
 
@@ -43,7 +41,7 @@ export default {
   },
   data() {
     return {
-      aspect_locs: {},
+      // aspect_locs: {},
       aspect_extras: {}
     }
   },
@@ -56,7 +54,7 @@ export default {
         return this.$route.params.uuid
       } else if (this.$route.query.uuid) {
         return this.$route.query.uuid
-      } else if(this.delete_entry) {
+      } else if (this.delete_entry) {
         console.log("del")
         return null
       } else {
@@ -207,15 +205,25 @@ export default {
     },
     version() {
       return this.entry.version
+    },
+    aspect_locs() {
+      const aspect_locs = {}
+      for (let aspect of this.template.aspects) {
+        aspect_locs[aspect.name] = loc_append([this.aspect_loc], ASPECT, aspect.name)
+      }
+      for (let aspect of META_ASPECT_LIST) {
+        aspect_locs[aspect] = loc_append([this.aspect_loc], META, aspect)
+      }
+      return aspect_locs
     }
   },
-  beforeMount() {
-    this.update_aspect_locs()
-  },
-  beforeUpdate() {
-    // console.log("update")
-    this.update_aspect_locs()
-  },
+  // beforeMount() {
+  //   this.update_aspect_locs()
+  // },
+  // beforeUpdate() {
+  //   // console.log("update")
+  //   this.update_aspect_locs()
+  // },
   methods: {
     download() {
       let entries = this.$store.getters[ENTRIES_GET_RECURSIVE_ENTRIES](this.entry.uuid)
@@ -227,18 +235,18 @@ export default {
       export_data({entries: entries}, this.download_title)
       this.$store.commit(ENTRIES_SET_DOWNLOADED, this.entry.uuid)
     },
-    update_aspect_locs() {
-      // console.log("update_aspect_locs", this.entry !== null)
-      if (this.entry !== null) {
-        for (let aspect of this.template.aspects) {
-          this.aspect_locs[aspect.name] = loc_append([this.aspect_loc], ASPECT, aspect.name)
-          // console.log(aspect.name, this.aspect_locs[aspect.name])
-        }
-        for (let aspect of META_ASPECT_LIST) {
-          this.aspect_locs[aspect] = loc_append([this.aspect_loc], META, aspect)
-        }
-      }
-    },
+    // update_aspect_locs() {
+    //   // console.log("update_aspect_locs", this.entry !== null)
+    //   if (this.entry !== null) {
+    //     for (let aspect of this.template.aspects) {
+    //       this.aspect_locs[aspect.name] = loc_append([this.aspect_loc], ASPECT, aspect.name)
+    //       // console.log(aspect.name, this.aspect_locs[aspect.name])
+    //     }
+    //     for (let aspect of META_ASPECT_LIST) {
+    //       this.aspect_locs[aspect] = loc_append([this.aspect_loc], META, aspect)
+    //     }
+    //   }
+    // },
     get_attachments_to_post() {
       const new_files_data = []
       for (let file of this.entry.attached_files) {

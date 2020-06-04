@@ -3,6 +3,15 @@
     AspectDialog(:aspect="domains" :dialog_open="dialog_open" show_aspect @update:ext_value="select($event)")
     Aspect(:aspect="o_a" :ext_value="val")
     v-btn(@click="test") test
+    div {{bp}}
+    v-container(style="height=400px")
+      v-row
+        v-col.bg2(cols="3" sm="2")
+          v-btn.col_btn press
+        v-col.bg(cols="3" sm="2")
+          v-btn.col_btn press
+        v-col.bg2(cols="8" sm="8")
+          v-text-field(placeholder="cool cool cool")
 </template>
 
 <script>
@@ -60,7 +69,11 @@
         }
       }
     },
-    computed: {},
+    computed: {
+      bp() {
+        return this.$vuetify.breakpoint.name
+      }
+    },
     methods: {
       test() {
         this.ok_snackbar(pkg.version)
@@ -85,4 +98,16 @@
 
 <style scoped>
 
+    .bg {
+      background: #ff0000;
+    }
+
+    .bg2 {
+      background: #ffff00;
+    }
+
+    .col_btn {
+      max-width: 100%;
+      margin: 6px auto;
+    }
 </style>

@@ -4,6 +4,7 @@ import Search from "~/components/global/Search";
 import {SEARCH_GET_ENTRIES} from "~/store/search";
 import {ENTRIES_GET_ENTRY} from "~/store/entries";
 import {MAP_SET_ENTRIES} from "~/store/map";
+import NavBaseMixin from "~/components/NavBaseMixin"
 
 // the navigation either shows the search or one specific entry
 
@@ -13,6 +14,7 @@ export const ENTRY = "entry"
 export default {
   name: "MapNavigationMixin",
   components: {Search},
+  mixins: [NavBaseMixin],
   props: {
     drawer: Boolean,
     layers: Array,

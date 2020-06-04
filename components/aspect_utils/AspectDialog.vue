@@ -1,6 +1,6 @@
 <template lang="pug">
   v-dialog(v-model="dialog_open"
-    :width="main_container_with"
+    :width="width"
     persistent)
     div.pl-2.pt-3(v-if="dialog_open && aspect" style="background:white")
       div.scroll
@@ -10,7 +10,8 @@
           :ext_value="ext_value"
           @update:ext_value="update_value($event)")
       div
-        v-btn(v-if="done_button" @click="done()") Done
+        v-btn(v-if="done_button" @click="cancel()") Cancel
+        v-btn(v-if="done_button" @click="done()" color="success") Done
 </template>
 
 <script>
@@ -24,7 +25,11 @@
     components: {Aspect},
     props: {
       dialog_open: Boolean,
-      show_aspect: Boolean,
+      fix_width: Number,
+      show_aspect: {
+        type: Boolean,
+        default: true
+      },
       aspect: Object,
       mode: {
         type: String,
@@ -42,6 +47,12 @@
     computed: {
       done_button() {
         return ![DATE, SELECT, LOCATION].includes(this.aspect.type)
+      },
+      width() {
+        if(this.fix_width)
+          return this.fix_width
+        else
+          return this.main_container_with
       }
     },
     methods: {
@@ -51,6 +62,9 @@
         } else {
           this.int_value = value
         }
+      },
+      cancel() {
+        this.$emit('update:dialog_open', false)
       },
       done() {
         this.$emit("update:ext_value", this.int_value)
