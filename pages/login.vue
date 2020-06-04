@@ -25,10 +25,11 @@
   import LoginMixin from "../components/actor/LoginMixin";
   import {SEARCH_CLEAR} from "~/store/search"
   import {CLEAR_ENTRIES} from "~/store"
+  import NavBaseMixin from "~/components/NavBaseMixin"
 
   export default {
     name: "Login",
-    mixins: [TriggerSnackbarMixin, PersistentStorageMixin, LoginMixin],
+    mixins: [TriggerSnackbarMixin, PersistentStorageMixin, LoginMixin, NavBaseMixin],
     components: {Aspect},
     data() {
       return {
@@ -91,7 +92,7 @@
             this.process_login(data)
             this.$store.dispatch(CLEAR_ENTRIES)
             this.$store.commit(SEARCH_CLEAR)
-            this.$router.push("/")
+            this.home()
           } else {
             // todo this shouldnt happen...
             const errorMsg = this.$_.get(err.response, "data.error.msg", "Not a user")

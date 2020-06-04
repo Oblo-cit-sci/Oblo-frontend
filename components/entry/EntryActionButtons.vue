@@ -289,7 +289,7 @@
           }
           this.$router.push(last_path)
         } else {
-          this.$router.push("/")
+          this.home()
         }
       }
     }

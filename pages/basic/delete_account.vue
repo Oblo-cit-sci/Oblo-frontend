@@ -24,10 +24,11 @@
   import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
   import {LOGOUT} from "~/store"
   import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
+  import NavBaseMixin from "~/components/NavBaseMixin"
 
   export default {
     name: "delete_account",
-    mixins: [TriggerSnackbarMixin, PersistentStorageMixin],
+    mixins: [TriggerSnackbarMixin, PersistentStorageMixin, NavBaseMixin],
     components: {CompactEntryList, EntryListWrapper, Aspect},
     props: {},
     data() {
@@ -94,7 +95,7 @@
           this.ok_snackbar(data.data)
           this.clear_storage()
           this.$store.dispatch(LOGOUT)
-          this.$router.push("/")
+          this.home()
         }).catch(err => {
           console.log(err)
           this.error_snackbar("Something went wrong")

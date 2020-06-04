@@ -66,9 +66,6 @@ export default {
     back() {
       this.$router.back()
     },
-    go_home() {
-      this.$router.push("/")
-    },
     update_map_entries(entries) {
       console.log("map nav, num results", entries.length)
       if (entries.length > 0) {

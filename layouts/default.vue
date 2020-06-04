@@ -64,6 +64,7 @@
   import {USER_GLOBAL_ROLE, USER_LOGGED_IN} from "~/store/user";
   import {APP_CONNECTED, APP_CONNECTING, APP_DB_LOADED, APP_INITIALIZED,} from "~/store/app"
   import {dev_env} from "~/lib/util"
+  import NavBaseMixin from "~/components/NavBaseMixin"
 
 
   let require_login = ["Profile", "Logout"]
@@ -76,7 +77,7 @@
 
   export default {
     components: {GlobalSnackbar, Footer},
-    mixins: [TriggerSnackbarMixin, PersistentStorageMixin],
+    mixins: [TriggerSnackbarMixin, PersistentStorageMixin, NavBaseMixin],
     data() {
       return {
         ci: "",
@@ -169,7 +170,7 @@
             // todo, remove draft entries and update storage, to leave no traces...
             this.$store.dispatch(LOGOUT)
             this.drawer = false
-            this.$router.push("/")
+            this.home()
           }).catch((err) => {
             console.log("logout error", err)
             if (this.$_.get(err, "response.status") === 401) {
@@ -178,7 +179,7 @@
             this.remove_from_storage("auth_token")
             this.$store.dispatch(LOGOUT)
             this.drawer = false
-            this.$router.push("/")
+            this.home()
           })
         }
       }

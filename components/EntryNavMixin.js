@@ -95,7 +95,7 @@ export default {
         this.to_entry(uuid, mode, query)
       } else {
         if (this.domain.value === NO_DOMAIN) {
-          this.$router.push("/")
+          this.home()
         } else {
           // todo could be a bit nicer (named router, route param...)
           this.$router.push("/domain/" + this.domain.value)

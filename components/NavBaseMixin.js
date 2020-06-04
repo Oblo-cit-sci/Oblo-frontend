@@ -4,6 +4,9 @@ import {INIT_PAGE_PATH} from "~/store"
 export default {
   name: "NavBaseMixin",
   methods: {
+    home() {
+      this.$router.push("/")
+    },
     to_entry(uuid, mode = VIEW, query = {}, log_page = true) {
       // console.log("to entry")
       let route = {

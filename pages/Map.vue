@@ -3,7 +3,7 @@
     .buttongroup(:style="button_group_shift")
       v-btn(dark fab large color="blue" @click="drawer = !drawer")
         v-icon mdi-menu
-      v-btn(v-if="!drawer" fab @click="go_home")
+      v-btn(v-if="!drawer" fab @click="home()")
         v-icon mdi-home
     <!--    .mypopup(class="COULD BE USED IF MAPBOX POPUP STILL BEHAVES SHITTTY")-->
     component(:is="navgiagtion_component"
@@ -39,6 +39,7 @@
   import {mapGetters} from "vuex"
   import MapIncludeMixin from "~/components/map/MapIncludeMixin"
   import {LAYER_BASE_ID} from "~/lib/map_utils"
+  import NavBaseMixin from "~/components/NavBaseMixin"
 
   export const SEARCH = "search"
   export const ENTRY = "entry"
@@ -60,7 +61,7 @@
   export default {
     name: "Map",
     layout: "map_layout",
-    mixins: [MapIncludeMixin],
+    mixins: [MapIncludeMixin, NavBaseMixin],
     components: {Mapbox},
     props: {},
     data() {
@@ -423,9 +424,7 @@
       back() {
         this.$router.back()
       },
-      go_home() {
-        this.$router.push("/")
-      },
+
       select_entry_marker(feature) {
         console.log("sel", feature)
         const entry_uuid = feature.properties.uuid

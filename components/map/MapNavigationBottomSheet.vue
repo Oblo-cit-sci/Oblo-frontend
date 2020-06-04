@@ -9,7 +9,7 @@
     v-card(tile height="400")
       v-row
         v-col(cols=3)
-          v-btn(@click="go_home()")
+          v-btn(@click="home()")
             v-icon mdi-home
       v-card-text
         v-row.ma-1(wrap justify-center)

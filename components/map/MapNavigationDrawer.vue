@@ -14,7 +14,7 @@
     div.ml-2.mr-3
       v-row
         v-col(cols=3)
-          v-btn(@click="go_home()")
+          v-btn(@click="home()")
             v-icon mdi-home
         v-col(cols=7)
           v-select(label="Layers" :items="layer_options" multiple small-chips v-on:change="$emit('layer_select_change', $event)")
