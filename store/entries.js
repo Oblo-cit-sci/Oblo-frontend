@@ -21,14 +21,16 @@ import {TEMPLATES_TYPE} from "~/store/templates";
 
 // Mutations
 export const ENTRIES_SET_DOWNLOADED = "entries/set_downloaded"
+export const ENTRIES_SAVE_ENTRY = "entries/save_entry"
+export const ENTRIES_SAVE_ENTRIES = "entries/save_entries"
 export const ENTRIES_ENTRIES_SET_LOCAL_LIST_PAGE = "entries/entries_set_local_list_page"
-export const ENTRIES_SET_ENTRY_STATUS = "entries/set_entry_status"
 export const ENTRIES_UPDATE_IMAGE = "entries/update_image"
 export const ENTRIES_ADD_FILE_ATTACHMENT = "entries/add_file_attachment"
 export const ENTRIES_REMOVE_FILE_ATTACHMENT = "entries/remove_file_attachment"
 export const ENTRIES_SET_FROM_ARRAY = "entries/set_from_array"
 export const ENTRIES_RESET_EDIT = "entries/reset_edit"
 export const ENTRIES_CLEAR = "entries/clear"
+
 // internal
 export const _SET_ENTRY_VALUE = "_set_entry_value"
 export const UPDATE_TAGS = "update_tags"
@@ -48,7 +50,8 @@ export const ENTRIES_DOMAIN_DRAFTS_UUIDS = "entries/domain_drafts_uuids"
 
 
 // Actions
-export const ENTRIES_SAVE_ENTRY = "entries/save_entry"
+
+
 export const ENTRIES_UPDATE_ENTRY = "entries/update_entry"
 export const ENTRIES_SET_EDIT = "entries/set_edit"
 export const ENTRIES_SAVE_CHILD_N_REF = "entries/save_child_n_ref"
@@ -80,6 +83,11 @@ export const state = () => ({
 export const mutations = {
   save_entry(state, entry) {
     state.entries.set(entry.uuid, entry)
+  },
+  save_entries(state, entries) {
+    for (let entry of entries) {
+      state.entries.set(entry.uuid, entry)
+    }
   },
   reset_edit(state) {
     state.edit = null
@@ -524,7 +532,7 @@ export const actions = {
       }
       if (entry.status !== "orphan" && entry.entry_refs.parent) {
         const parent = entry.entry_refs.parent
-        if(parent)
+        if (parent)
           context.dispatch(DELETE_REF_CHILD, {uuid: parent.uuid, child_uuid: uuid})
       }
       context.commit(DELETE_ENTRY, uuid)

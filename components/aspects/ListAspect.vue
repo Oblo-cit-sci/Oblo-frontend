@@ -49,12 +49,17 @@
 
   import Aspect from "../Aspect";
   import ListMixin from "../ListMixin";
-  import {INDEX, SIMPLE_TYPE, EDIT, COMPOSITE} from "../../lib/consts";
+  import {COMPOSITE, EDIT, INDEX, SIMPLE_TYPE} from "../../lib/consts";
   import {
     aspect_loc_str,
-    packed_aspect_default_value,
+    aspect_loc_str2arr,
+    aspect_loc_uuid,
+    aspect_raw_default_value,
+    complete_aspect_loc,
     get_aspect_vue_component,
-    remove_entry_loc, complete_aspect_loc, aspect_loc_uuid, aspect_loc_str2arr, pack_value, aspect_raw_default_value
+    pack_value,
+    packed_aspect_default_value,
+    remove_entry_loc
   } from "../../lib/aspect";
   import Paginate from "../global/Paginate";
   import MinMaxIndicators from '../list_components/MinMaxIndicators'
@@ -211,12 +216,16 @@
         }
       },
       list_extra(index) {
-        return Object.assign({
+        const extra = Object.assign({
           no_title: this.aspect.attr.hasOwnProperty("no_titles") ? this.aspect.attr.no_titles : true,
           clear: false,
           listitem: true,
           list_index: index
         }, this.extra)
+        if (extra.hasOwnProperty("ref_length")) {
+          delete extra.ref_length
+        }
+        return extra
       },
       panel_id(index) {
         return "L-" + aspect_loc_str(this.$_.slice(this.$_.concat(this.aspect_loc, [[INDEX, index]]), 1))
@@ -241,7 +250,7 @@
       moveable() {
         return this.aspect.attr.moveable || false
       },
-                                                    requires_delete() {
+      requires_delete() {
         let itemtype = this.aspect.items.type
         return !(itemtype === "str" || itemtype === "int" || itemtype === "float");
       },

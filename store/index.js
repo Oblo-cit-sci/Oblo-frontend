@@ -28,6 +28,7 @@ export const LOGOUT = "logout"
 export const ALL_CODES = "all_codes"
 // internal mutations
 export const ADD_CODES = "add_codes"
+export const DOMAIN_TITLE = "domain_title"
 
 // ******** SNACKBAR
 export const SNACKBAR = "snackbar"

@@ -41,7 +41,7 @@
   import {USER_LOGGED_IN} from "~/store/user";
   import {create_entry} from "~/lib/entry"
   import {ENTRIES_SAVE_ENTRY} from "~/store/entries"
-  import {EDIT, QP_D} from "~/lib/consts"
+  import {EDIT, QP_D, QP_F} from "~/lib/consts"
   import EntryNavMixin from "~/components/EntryNavMixin"
   import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
   import {object_list2options} from "~/lib/options"
@@ -71,7 +71,7 @@
     computed: {
       ...mapGetters({logged_in: USER_LOGGED_IN, domain_templtes: TEMPLATES_OF_DOMAIN, domains: DOMAIN_BY_NAME}),
       domain_name() {
-        return this.$route.query[QP_D]
+        return this.$route.query[QP_D] || this.$route.query[QP_F]
       },
       template_entries() {
         let templates = global_context_filter(this.domain_templtes(this.domain_name))

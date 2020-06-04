@@ -8,6 +8,17 @@
       mode="edit")
     br
     v-btn(@click="update_settings" :loading="update_button_loading" ) Update
+    br
+    v-divider
+    br
+    div(v-if="has_fixed_domain")
+      h3 Fixed domain
+      div
+        span You are only seeing the domain &nbsp;
+        b {{fixed_domain_name}}
+        span . However there are more domains to explore. Resetting your fixed domain, will show you a domain overview on the home page. Click the button to reset the fixed domain.
+      v-btn(@click="reset_fixed_domain") Reset fixed domain
+
     <!--    h3 Export data-->
     <!--    div Export all your entries-->
     <!--    v-btn(@click="export_entries") Export-->
@@ -37,10 +48,11 @@
   import {export_data, merge_imported_entries} from "~/lib/import_export";
   import PersistentStorageMixin from "../components/util/PersistentStorageMixin";
   import EntryPreviewList from "../components/entry/EntryPreviewList";
-  import {CLEAR_ENTRIES} from "~/store";
+  import {CLEAR_ENTRIES, DOMAIN_TITLE} from "~/store";
   import {settings_aspects} from "~/lib/settings"
   import {extract_unpacked_values} from "~/lib/aspect"
   import {USER_SET_SETTINGS, USER_SETTINGS} from "~/store/user"
+  import {APP_FIXED_DOMAIN} from "~/store/app"
 
 
   export default {
@@ -80,6 +92,10 @@
       }
     },
     methods: {
+      reset_fixed_domain() {
+        this.$store.commit(APP_FIXED_DOMAIN, null)
+        this.ok_snackbar("Fixed domain reset")
+      },
       update_settings() {
         this.update_button_loading = true
         this.$api.post_actor__me({settings: extract_unpacked_values(this.settings_aspects)}).then(({data}) => {
@@ -149,6 +165,12 @@
     computed: {
       aspect_map() {
         return this.$_.keyBy(this.settings_aspects, "name")
+      },
+      has_fixed_domain() {
+        return this.$store.getters[APP_FIXED_DOMAIN]
+      },
+      fixed_domain_name() {
+        return this.$store.getters[DOMAIN_TITLE]
       }
     }
   }

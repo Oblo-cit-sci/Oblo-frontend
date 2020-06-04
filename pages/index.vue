@@ -25,7 +25,7 @@
   import DomainCard from "../components/global/DomainCard";
   import Footer from "../components/global/Footer";
   import {CLEAR_DOMAIN, DOMAINS} from "../store";
-  import {USER_LOGGED_IN} from "../store/user";
+  import {USER_LOGGED_IN} from "~/store/user";
 
   export default {
     data() {
