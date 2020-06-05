@@ -7,12 +7,18 @@ export default {
   methods: {
     home() {
       // actually the redirect takes care of this...
-      if(this.$store.getters[APP_FIXED_DOMAIN]) {
+      if (this.$store.getters[APP_FIXED_DOMAIN]) {
         return this.$router.push("/domain", {
           f: this.$store.getters[DOMAIN].name
         })
       }
       this.$router.push("/")
+    },
+    to_set_domain() {
+      let domain = this.$store.getters[DOMAIN]
+      this.$router.push({
+        path: "domain", query: {d: domain.name}
+      })
     },
     to_entry(uuid, mode = VIEW, query = {}, log_page = true) {
       // console.log("to entry")

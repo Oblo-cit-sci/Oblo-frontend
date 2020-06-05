@@ -10,6 +10,7 @@ export const state = () => ({
     connecting: false,
     connected: false,
     fixed_domain: null,
+    nav_drawer: false
   }
 )
 
@@ -28,7 +29,13 @@ export const mutations = {
   },
   fixed_domain(state, domain) {
     state.fixed_domain = domain
-  }
+  },
+  nav_drawer(state, nav_drawer) {
+    if(!nav_drawer) {
+      nav_drawer = !state.nav_drawer
+    }
+    state.nav_drawer = nav_drawer
+  },
 }
 
 export const getters = {
@@ -46,6 +53,9 @@ export const getters = {
   },
   fixed_domain(state) {
     return state.fixed_domain
+  },
+  nav_drawer(state) {
+    return state.nav_drawer
   }
 }
 
