@@ -67,19 +67,25 @@
   import {EDIT, USER, VIEW} from "~/lib/consts";
 
   import {mapGetters} from "vuex"
-  import {extract_unpacked_values} from "~/lib/aspect";
+  import {extract_unpacked_values, set_default_values} from "~/lib/aspect";
   import PersistentStorageMixin from "../components/util/PersistentStorageMixin";
   import EntryPreviewList from "../components/entry/EntryPreviewList";
 
   import {ENTRIES_GET_OWN_ENTRIES_UUIDS} from "~/store/entries";
-  import {license_aspect, password_aspect, password_confirm_aspect, privacy_aspect} from "~/lib/typical_aspects";
+  import {
+    default_profile_aspects,
+    license_aspect,
+    password_aspect,
+    password_confirm_aspect,
+    privacy_aspect
+  } from "~/lib/typical_aspects";
   import LoadFileButton from "../components/util/LoadFileButton";
   import {base64file_to_blob, common_filesize} from "~/lib/util";
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
-  import {USER_GET_USER_DATA} from "~/store";
   import {USER_SET_USER_DATA} from "~/store/user";
   import EntryListWrapper from "../components/EntryListWrapper"
   import LayoutMixin from "~/components/global/LayoutMixin"
+  import {APP_FIXED_DOMAIN} from "~/store/app"
 
   export default {
     name: "profile",
@@ -96,6 +102,30 @@
       new_pwd.label = "New password"
       const new_pwd_confirm = this.$_.cloneDeep(password_confirm_aspect())
       new_pwd_confirm.label = "Repeat new password"
+
+      let profile_aspects = default_profile_aspects
+      profile_aspects = profile_aspects.concat(
+        Object.assign(privacy_aspect(),
+          {
+            name: "default_privacy",
+            label: "Default privacy",
+            description: "Choose a default privacy for all your entries"
+          }),
+        Object.assign(license_aspect(this.$store, ["cc_licenses"]),
+          {
+            name: "default_license",
+            label: "Default License",
+            description: "Choose a default license for your entries"
+          }))
+      if (this.$store.getters[APP_FIXED_DOMAIN]) {
+        console.log("fixed")
+        const additional_aspects = this.$_.get(this.$store.getters.domain, "users.profile.additional_aspects",[])
+        if(additional_aspects) {
+          profile_aspects = profile_aspects.concat(additional_aspects)
+        }
+      }
+
+      set_default_values(profile_aspects)
       return {
         profile_pic_upload_loading: false,
         profile_version_ts: Math.floor(new Date().getTime() / 1000),
@@ -103,88 +133,7 @@
         edit_mode: false,
         password_edit: false,
         selected_tab: 0,
-        profile_aspects: [
-          {
-            name: "public_name",
-            label: "Public name",
-            description: "",
-            type: "str",
-            attr: {
-              max: 30,
-              unpacked: true,
-              extra: {
-                rules: [
-                  v => v && v.length >= 2 || 'Public name must have at 2 characters',
-                  v => v && v.length <= 30 || 'Public name can have at most 30 characters',
-                ]
-              }
-            },
-            value: "",
-            error: false
-          },
-          {
-            name: "description",
-            label: "Description",
-            description: "Write something about yourself and about your background",
-            type: "str",
-            attr: {
-              max: 980,
-              unpacked: true
-            },
-            value: ""
-          },
-          {
-            name: "location",
-            label: "Location",
-            description: "Where are you based?",
-            type: "location",
-            attr: {
-              max: 80,
-              unpacked: true,
-              input: ["search"]
-            },
-            value: null
-          },
-          // {
-          //   name: "Interested topics",
-          //   description: "LICCIs you are interested in",
-          //   type: "multiselect",
-          //   items: ["empty upsi"],
-          //   attr: {
-          //     unpacked: true
-          //   },
-          //   value: []
-          // },
-          {
-            name: "email",
-            label: "Email address",
-            description: "",
-            type: "str",
-            attr: {
-              max: 90,
-              unpacked: true,
-              extra: {
-                rules: [
-                  v => !!v || 'E-mail is required',
-                  v => /.+@.+\..+/.test(v) || 'E-mail must be valid'
-                ]
-              }
-            },
-            value: ""
-          },
-          Object.assign(privacy_aspect(),
-            {
-              name: "default_privacy",
-              label: "Default privacy",
-              description: "Choose a default privacy for all your entries"
-            }),
-          Object.assign(license_aspect(this.$store, ["cc_licenses"]),
-            {
-              name: "default_license",
-              label: "Default License",
-              description: "Choose a default license for your entries"
-            })
-        ],
+        profile_aspects: profile_aspects,
         password_aspects: {
           actual_password: Object.assign(this.$_.cloneDeep(password_aspect()), {
             name: "actual_password",
@@ -293,7 +242,10 @@
       }
     },
     computed: {
-      ...mapGetters({user_data: USER, own_entries_uuids: ENTRIES_GET_OWN_ENTRIES_UUIDS}),
+      ...mapGetters({
+        user_data: USER,
+        own_entries_uuids: ENTRIES_GET_OWN_ENTRIES_UUIDS
+      }),
       mode() {
         return this.edit_mode ? EDIT : VIEW
       },

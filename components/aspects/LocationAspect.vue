@@ -364,7 +364,7 @@
         }
         // console.log(value)
         let option = PREC_OPTION_EXACT
-        if (this.settings.location_privacy === settings_loc_privacy_random) {
+        if (this.privacy_setting === settings_loc_privacy_random) {
           option = PREC_OPTION_RANDOM
         }
         if (value.location_precision !== LOCATION_PRECISION_POINT) {

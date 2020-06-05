@@ -6,6 +6,7 @@ import {APP_FIXED_DOMAIN} from "~/store/app"
 
 export default async function (context) {
   // console.log(context.route.path, context.route.query)
+  // console.log(context.$axios)
   if (context.route.query.hasOwnProperty("fixed_domain")) {
     context.store.commit(APP_FIXED_DOMAIN, context.route.query.fixed_domain)
   } else if(context.route.path === "/domain" && context.route.query.hasOwnProperty("f")) {
