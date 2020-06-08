@@ -5,6 +5,10 @@
         v-icon mdi-menu
       v-btn(dark color="green" fab @click="open_layer_dialog")
         v-icon mdi-layers-outline
+    .central_button
+      v-btn(large rounded color="success")
+        b New Observation
+        v-icon mdi-plus
     <!--    .mypopup(class="COULD BE USED IF MAPBOX POPUP STILL BEHAVES SHITTTY")-->
     component(:is="navgiagtion_component"
       :drawer="drawer"
@@ -438,7 +442,7 @@
             ]
           },
           fix_width: 400,
-          ext_value: {value:null},
+          ext_value: {value: null},
           dialog_open: true
         }
       },
@@ -565,7 +569,15 @@
     transition-timing-function: ease-out;
     position: fixed;
     height: 5%;
-    z-index: 1
+    z-index: 1;
+  }
+
+  .central_button {
+    position: fixed;
+    top: 2%;
+    z-index: 1;
+    left: 50%;
+    transform: translate(-50%, 0)
   }
 
   .mypopup {
