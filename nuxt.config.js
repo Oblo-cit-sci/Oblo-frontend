@@ -1,5 +1,3 @@
-
-
 const pkg = require('./package')
 const colors = require('vuetify/es5/util/colors')
 
@@ -81,7 +79,7 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
-   /* {src: '~/plugins/mapbox', mode: 'client'}, */
+    "~/plugins/i18n.js",
     '~/plugins/lodash.js',
     {src: '~/plugins/api_wrapper'},
   ],
@@ -148,7 +146,7 @@ module.exports = {
     plugins: [
       new webpack.ProvidePlugin({
         mapboxgl: 'mapbox-gl',
-      }),
+      })
     ],
     /*
     ** You can extend webpack config here

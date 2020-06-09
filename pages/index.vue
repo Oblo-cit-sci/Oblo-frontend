@@ -1,20 +1,20 @@
 <template lang="pug">
   v-container(fluid)
     div(v-if="!logged_in")
-      v-row With an account on {{server_name}} you'll be able to create entries and join groups.
+      v-row {{$t('index.p1', {server_name: server_name})}}
       v-row(align="center")
         v-col(sm="4" offset="1")
-          v-btn.mt-4.mb-8(large to="/register" rounded outlined) Register
+          v-btn.mt-4.mb-8(large to="/register" rounded outlined) {{$t('index.btn_register')}}
         v-col(sm="4")
-          v-btn.mt-4.mb-8(large to="/login" rounded outlined) Login
-      v-row You can browse through public entries in these domains.
+          v-btn.mt-4.mb-8(large to="/login" rounded outlined) {{$t('index.btn_login')}}
+      v-row {{$t('index.p2')}}
     v-row(align="center" justify="center")
       v-col(class="col-lg-6 col-xs-12")
         div(v-for="domain in domains" :key="domain.title")
           DomainCard(:domain="domain")
     v-row(justify="center")
-      v-btn(text nuxt to="about") About The Project
-      v-btn(text nuxt to="about#privacy") Privacy Policy
+      v-btn(text nuxt to="about") {{$t('index.about_a')}}
+      v-btn(text nuxt to="about#privacy") {{$t('index.privacy_a')}}
     Footer
 </template>
 

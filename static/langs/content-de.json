@@ -1,0 +1,17 @@
+{
+  "menu.home": "Home",
+  "menu.profile": "Profil",
+  "menu.map": "Karte",
+  "menu.login": "Einloggen",
+  "menu.logout": "Ausloggen",
+  "menu.register": "Registrieren",
+  "menu.admin": "Admin",
+  "menu.tests": "Test",
+
+  "index.p1": "Mit einem Account auf {server_name} kannst du Einträge machen und Gruppen beitreten.",
+  "index.p2": "You can browse through public entries in these domains.",
+  "index.about_a": "Über das Projekt",
+  "index.privacy_a": "Datenschutz",
+  "index.btn_login": "Einloggen",
+  "index.btn_register": "Registrieren"
+}

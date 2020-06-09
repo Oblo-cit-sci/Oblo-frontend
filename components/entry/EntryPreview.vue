@@ -1,13 +1,13 @@
 <template lang="pug">
   div(v-if="!uuid")
-    div Deleted Entry, {{uuid}}
+    div
   v-card.mx-auto.custom-card(v-else outlined v-bind:class="{draft: is_draft}")
     v-container.pt-0.pb-0
       v-row
         v-col(v-bind:class="[show_image ? 'col-md-8' : 'col-md-10']")
           v-row
             v-col(class="entry-meta" cols=12)
-              div.caption(v-if="show_date") {{entry_date}} {{is_draft ? "DRAFT" : ""}}
+              div.caption(v-if="show_date") {{entry_date}} {{is_draft ? $t('comp_entrypreview.draft') : ""}}
               p.subtitle-1.mb-2 {{full_title}}
                 v-btn(v-if="show_title_action" @click="goto()" depressed small)
                   v-icon(:class="default_action_icon")

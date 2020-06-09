@@ -12,6 +12,30 @@
           v-btn.col_btn press
         v-col.bg2(cols="8" sm="8")
           v-text-field(placeholder="cool cool cool")
+    v-expansion-panels
+      v-expansion-panel
+        v-expansion-panel-header.px-2.py-1 Entrytypes
+        v-expansion-panel-content.px-2.py-1
+          v-list(dense)
+            v-list-item-group(multiple mandatory)
+              v-list-item(color="green")
+                v-list-item-icon
+                  v-icon(color="green") mdi-checkbox-blank-circle
+                v-list-item-title Local Observation
+              v-list-item(color="red")
+                v-list-item-icon
+                    v-icon(color="red") mdi-checkbox-blank-circle
+                v-list-item-title Article Review
+
+    v-menu(:close-on-content-click="false"
+        :nudge-width="200"
+        offset-y)
+      template(v-slot:activator="{ on, attrs }")
+        v-btn(v-on="on" elevation="2" ) types
+          v-icon mdi-chevron-down
+      v-card
+        v-card-title hi
+
 </template>
 
 <script>
@@ -110,4 +134,17 @@
       max-width: 100%;
       margin: 6px auto;
     }
+
+  .v-expansion-panel--active > .v-expansion-panel-header {
+    min-height: 36px;
+  }
+
+  .v-expansion-panel-header {
+    min-height: 36px;
+  }
+
+  .v-expansion-panel-content__wrap {
+    padding: 0 0 0;
+    background-color: red;
+  }
 </style>

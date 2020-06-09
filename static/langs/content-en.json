@@ -5,7 +5,9 @@
   "menu.login": "Login",
   "menu.logout": "Logout",
   "menu.register": "Register",
-  "index.p1": "With an account on {{server_name}} you'll be able to create entries and join groups.",
+  "menu.admin": "Admin",
+  "menu.tests": "Test",
+  "index.p1": "With an account on {server_name} you'll be able to create entries and join groups.",
   "index.p2": "You can browse through public entries in these domains.",
   "index.about_a": "About The Project",
   "index.privacy_a": "Privacy Policy",
@@ -67,5 +69,6 @@
   "_global_role.admin": "Admin",
   "_global_role.editor": "Editor",
   "_global_role.user": "User",
-  "_global_role.visitor": "Visitor"
+  "_global_role.visitor": "Visitor",
+  "comp_entrypreview.draft": "Draft"
 }

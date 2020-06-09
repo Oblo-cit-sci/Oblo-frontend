@@ -33,11 +33,11 @@
 
   const pkg = require('~/package')
 
-  let require_login = ["Profile", "Logout"]
-  let hide_logged_in = ["Login", "Register"]
-  let require_admin = ["Admin"]
-  let hide_no_be = ["Register", "Login"] // if not connected out and if logged in out
-  let show_inDev = ["Tests"] //, "Types", "Entrytypes", "Aspectbuild"]
+  let require_login = ["menu.profile", "menu.logout"]
+  let hide_logged_in = ["menu.login", "menu.register"]
+  let require_admin = ["menu.admin"]
+  let hide_no_be = ["menu.register", "menu.login"] // if not connected out and if logged in out
+  let show_inDev = ["menu.tests"] //, "Types", "Entrytypes", "Aspectbuild"]
 
   export default {
     name: "MainMenu",
@@ -56,21 +56,24 @@
         nav_drawer: "app/nav_drawer"
       }),
       groups() {
+        for(let page of all_pages_n_actions) {
+          page.title = this.$t(page.t_title)
+        }
         const home = all_pages_n_actions[0]
         let other_pages = this.$_.tail(all_pages_n_actions)
         if (!this.connected) {
-          other_pages = other_pages.filter(p => !hide_no_be.includes(p.title))
+          other_pages = other_pages.filter(p => !hide_no_be.includes(p.t_title))
         }
         if (this.logged_in) {
-          other_pages = other_pages.filter(p => !hide_logged_in.includes(p.title))
+          other_pages = other_pages.filter(p => !hide_logged_in.includes(p.t_title))
         } else {
-          other_pages = other_pages.filter(p => !require_login.includes(p.title))
+          other_pages = other_pages.filter(p => !require_login.includes(p.t_title))
         }
         if (this.$store.getters[USER_GLOBAL_ROLE] !== ADMIN) {
-          other_pages = other_pages.filter(p => !require_admin.includes(p.title))
+          other_pages = other_pages.filter(p => !require_admin.includes(p.t_title))
         }
         if (process.env.NODE_ENV !== "development") {
-          other_pages = other_pages.filter(p => !show_inDev.includes(p.title))
+          other_pages = other_pages.filter(p => !show_inDev.includes(p.t_title))
         } else {
           console.log("in DEV")
         }
