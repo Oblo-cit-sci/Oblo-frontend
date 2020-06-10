@@ -1,6 +1,6 @@
 <template lang="pug">
   v-flex(xs12='' sm8='' md6='')
-    h2.mb-2 Registration
+    h2.mb-2 {{$t('register.h1')}}
     v-form
       Aspect(v-for="a of aspects"
         :aspect="a"
@@ -9,7 +9,7 @@
         @update:error="a.error = $event"
         :extra="{clearable:false}"
         mode="edit")
-    v-btn.m-4(@click='submit' x-large :disabled="any_invalid || submitStatus === 'PENDING'" :loading="submit_loading" color='success') Register
+    v-btn.m-4(@click='submit' x-large :disabled="any_invalid || submitStatus === 'PENDING'" :loading="submit_loading" color='success') {{$t('register.btn_register')}}
     v-alert(:value='errorMsg !== null' type='error' prominent) {{errorMsg}}
 </template>
 
@@ -21,67 +21,22 @@
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
   import {password_aspect, password_confirm_aspect} from "~/lib/typical_aspects";
   import LoginMixin from "../components/actor/LoginMixin";
+  import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
 
   let username_regex = new RegExp('^[a-z][a-z0-9_]*$');
 
   export default {
     name: "register",
     components: {Aspect},
-    mixins: [validationMixin, TriggerSnackbarMixin, LoginMixin],
+    mixins: [validationMixin, TriggerSnackbarMixin, LoginMixin, TypicalAspectMixin],
     data() {
-      // const default_license = this.$_.cloneDeep(license_aspect(this.$store, ["cc_licenses"]))
-      // default_license.name = "default_licence"
-      // default_license.label = "Default licence"
-      // default_license.value = "CC-BY"
-      // default_license.attr.unpacked = true
+      const password =  this.password()
       return {
         aspects: {
-          registered_name: {
-            type: "str",
-            name: "Username",
-            attr: {
-              max: 30,
-              unpacked: true,
-              extra: {
-                rules: [
-                  v => v && v.length >= 4 || 'Username must have at 4 characters',
-                  v => username_regex.test(v) || "Only lowercase characters are allowed"
-                ]
-              }
-            },
-            value: "",
-            error: true
-          },
-          email: {
-            type: "str",
-            name: "email",
-            attr: {
-              max: 40,
-              unpacked: true,
-              extra: {
-                rules: [
-                  v => !!v || 'E-mail is required',
-                  v => /.+@.+\..+/.test(v) || 'E-mail must be valid'
-                ]
-              }
-            },
-            value: "",
-            error: true
-          },
-          password: this.$_.cloneDeep(password_aspect()),
-          password_confirm: this.$_.merge(this.$_.cloneDeep(password_confirm_aspect()), {
-            attr: {
-              extra: {
-                rules: [
-                  v => v === this.aspects.password.value || "Passwords do not match"
-                ]
-              }
-            }
-          })
-          // default_privacy: Object.assign(privacy_aspect(),
-          //   {value: "public", description: "Choose a default privacy for all your entries"}),
-          // default_license: Object.assign(license_aspect(this.$store, ["cc_licenses"]),
-          //   {value: "CC-BY", description: "Choose a default license for your entries"})
+          registered_name: this.registered_name(),
+          email: this.email(),
+          password: password,
+          password_confirm: this.password_confirm(password)
         },
         submitStatus: null,
         errorMsg: null,
@@ -103,8 +58,6 @@
           email: this.aspects.email.value,
           password: this.aspects.password.value,
           password_confirm: this.aspects.password_confirm.value,
-          // default_privacy: this.aspects.default_privacy.value,
-          // default_license: this.aspects.default_license.value
         }).then(({data}) => {
           if (data.data) {
             this.$router.push("/login")
@@ -113,7 +66,7 @@
             this.errorMsg = data.error.msg
           }
         }).catch((err) => {
-          this.errorMsg = this.$_.get(err.response, "data.error.msg", "Something went wrong")
+          this.errorMsg = this.$_.get(err.response, "data.error.msg", this.$t("_global.snack.something_went_wrong"))
           setTimeout(() => this.errorMsg = null, 12000)
         }).finally(() => {
           this.submit_loading = false

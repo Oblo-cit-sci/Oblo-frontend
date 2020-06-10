@@ -16,9 +16,14 @@
             v-icon {{item.icon}}
           v-list-item-content
             v-list-item-title(v-text="item.title")
+      v-divider
+      v-select.mt-5.my-2.px-3(
+        dense flat
+        @change="set_lang($event)"
+        :items="available_languages"
+        label="Language")
       v-list-item
         p(class="package-version") v{{version}}
-
 </template>
 
 <script>
@@ -55,8 +60,11 @@
         connected: APP_CONNECTED,
         nav_drawer: "app/nav_drawer"
       }),
+      available_languages() {
+        return [{text: "English", value: "en"}, {text: "German", value: "de"}]
+      },
       groups() {
-        for(let page of all_pages_n_actions) {
+        for (let page of all_pages_n_actions) {
           page.title = this.$t(page.t_title)
         }
         const home = all_pages_n_actions[0]
@@ -84,7 +92,12 @@
         return pkg.version
       }
     },
-    methods: {}
+    methods: {
+      set_lang(lang) {
+        console.log(this)
+        this._i18n.locale = lang
+      }
+    }
   }
 </script>
 

@@ -1,6 +1,6 @@
 <template lang="pug">
   v-flex(xs12 sm10 md6)
-    h2.mb-2 Login
+    h2.mb-2 {{$t('login.h1')}}
     v-form
       Aspect(v-for="a of aspects"
         :key="a.name"
@@ -9,9 +9,9 @@
         mode="edit"
         @aspectAction="aspect_action($event)"
         @update:error="a.error = $event")
-    v-btn(@click='login' color='success' autofocus :disabled="any_invalid" :loading="login_loading") Login
+    v-btn(@click='login' color='success' autofocus :disabled="any_invalid" :loading="login_loading") {{$t('login.btn_login')}}
     div.mt-3
-      a(href="basic/init_password_reset") Forgot password?
+      a(href="basic/init_password_reset") {{$t('login.btn_forgot')}}
     div.mt-2(v-if="add_verification_resend_link")
       v-btn(@click="request_verification_mail" color="success") Resend verification email
     v-alert(:value='errorMsg != null' type='error' prominent transition="scroll-y-reverse-transition") {{errorMsg}}
@@ -35,7 +35,7 @@
       return {
         aspects: [{
           type: STR,
-          label: "Username or email",
+          t_label: "login.asp_user_query",
           name: "user_query",
           attr: {
             max: 90,
@@ -46,6 +46,7 @@
           {
             type: STR,
             name: "Password",
+            t_label: "login.asp_password",
             attr: {
               max: 40,
               unpacked: true,

@@ -7,7 +7,6 @@
           v-btn.mt-4.mb-8(large to="/register" rounded outlined) {{$t('index.btn_register')}}
         v-col(sm="4")
           v-btn.mt-4.mb-8(large to="/login" rounded outlined) {{$t('index.btn_login')}}
-      v-row {{$t('index.p2')}}
     v-row(align="center" justify="center")
       v-col(class="col-lg-6 col-xs-12")
         div(v-for="domain in domains" :key="domain.title")

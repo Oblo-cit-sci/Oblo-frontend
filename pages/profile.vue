@@ -2,7 +2,7 @@
   v-flex#top(xs12 sm10 md10)
     v-row
       v-col
-        div Username: {{user_data.registered_name}}
+        div {{$t("_global.asp_username.label")}}: {{user_data.registered_name}}
         v-chip(outlined disabled small) {{user_data.global_role}}
       v-col
         v-row
@@ -17,7 +17,7 @@
               :force_load="profile_pic_upload_loading"
               :size_limit="profile_pic_max_size"
               @fileload="profile_pic_added($event)")
-    h2 General information
+    h2 {{$t('profile.h1')}}
     v-row(v-for="aspect in profile_aspects" :key="aspect.name")
       v-col(cols=10)
         Aspect(:aspect="aspect"
@@ -72,14 +72,14 @@
   import EntryPreviewList from "../components/entry/EntryPreviewList";
 
   import {ENTRIES_GET_OWN_ENTRIES_UUIDS} from "~/store/entries";
-  import {license_aspect, password_aspect, password_confirm_aspect, privacy_aspect} from "~/lib/typical_aspects";
+  import {license_aspect, privacy_aspect} from "~/lib/typical_aspects";
   import LoadFileButton from "../components/util/LoadFileButton";
   import {base64file_to_blob, common_filesize} from "~/lib/util";
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
-  import {USER_GET_USER_DATA} from "~/store";
   import {USER_SET_USER_DATA} from "~/store/user";
   import EntryListWrapper from "../components/EntryListWrapper"
   import LayoutMixin from "~/components/global/LayoutMixin"
+  import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
 
   export default {
     name: "profile",
@@ -90,12 +90,9 @@
       Aspect,
       Taglist
     },
-    mixins: [PersistentStorageMixin, TriggerSnackbarMixin, LayoutMixin],
+    mixins: [PersistentStorageMixin, TriggerSnackbarMixin, LayoutMixin, TypicalAspectMixin],
     data() {
-      const new_pwd = this.$_.cloneDeep(password_aspect())
-      new_pwd.label = "New password"
-      const new_pwd_confirm = this.$_.cloneDeep(password_confirm_aspect())
-      new_pwd_confirm.label = "Repeat new password"
+      const new_pwd = this.password("new")
       return {
         profile_pic_upload_loading: false,
         profile_version_ts: Math.floor(new Date().getTime() / 1000),
@@ -106,7 +103,7 @@
         profile_aspects: [
           {
             name: "public_name",
-            label: "Public name",
+            label: this.$t("profile.asp_public_name"),
             description: "",
             type: "str",
             attr: {
@@ -124,7 +121,7 @@
           },
           {
             name: "description",
-            label: "Description",
+            label: this.$t("profile.asp_description"),
             description: "Write something about yourself and about your background",
             type: "str",
             attr: {
@@ -133,73 +130,36 @@
             },
             value: ""
           },
-          {
-            name: "location",
-            label: "Location",
-            description: "Where are you based?",
-            type: "location",
-            attr: {
-              max: 80,
-              unpacked: true,
-              input: ["search"]
-            },
-            value: null
-          },
           // {
-          //   name: "Interested topics",
-          //   description: "LICCIs you are interested in",
-          //   type: "multiselect",
-          //   items: ["empty upsi"],
+          //   name: "location",
+          //   label: "Location",
+          //   description: "Where are you based?",
+          //   type: "location",
           //   attr: {
-          //     unpacked: true
+          //     max: 80,
+          //     unpacked: true,
+          //     input: ["search"]
           //   },
-          //   value: []
+          //   value: null
           // },
-          {
-            name: "email",
-            label: "Email address",
-            description: "",
-            type: "str",
-            attr: {
-              max: 90,
-              unpacked: true,
-              extra: {
-                rules: [
-                  v => !!v || 'E-mail is required',
-                  v => /.+@.+\..+/.test(v) || 'E-mail must be valid'
-                ]
-              }
-            },
-            value: ""
-          },
+          this.email(),
           Object.assign(privacy_aspect(),
             {
               name: "default_privacy",
-              label: "Default privacy",
-              description: "Choose a default privacy for all your entries"
+              label: this.$("_global.asp_default_privacy.label"),
+              description: this.$("_global.asp_default_privacy.descr")
             }),
           Object.assign(license_aspect(this.$store, ["cc_licenses"]),
             {
               name: "default_license",
-              label: "Default License",
-              description: "Choose a default license for your entries"
+              label: this.$("_global.asp_default_license.label"),
+              description: this.$("_global.asp_default_license.descr")
             })
         ],
         password_aspects: {
-          actual_password: Object.assign(this.$_.cloneDeep(password_aspect()), {
-            name: "actual_password",
-            label: "Current password"
-          }),
+          actual_password: this.password("current"),
           password: new_pwd,
-          password_confirm: this.$_.merge(new_pwd_confirm, {
-            attr: {
-              extra: {
-                rules: [
-                  v => v === this.password_aspects.password.value || "Passwords do not match"
-                ]
-              }
-            }
-          })
+          password_confirm: this.password_confirm(new_pwd, "new")
         },
         waiting: false,
       }

@@ -59,7 +59,7 @@ export default {
         up_value = raw_value
       } else {
         // we need this for options aspects
-        if(comes_unpacked) {
+        if (comes_unpacked) {
           up_value = pack_value(raw_value)
         } else {
           up_value = raw_value
@@ -70,8 +70,12 @@ export default {
       }
       if (this.aspect_loc) {
         this.$store.dispatch(ENTRIES_SET_ENTRY_VALUE, {aspect_loc: this.aspect_loc, value: up_value})
-        if(this.aspect.attr.cache) {
-          this.$store.commit("add_cache", {template: this.get_entry().template.slug, aspect: this.aspect.name, mvalue: up_value})
+        if (this.aspect.attr.cache) {
+          this.$store.commit("add_cache", {
+            template: this.get_entry().template.slug,
+            aspect: this.aspect.name,
+            mvalue: up_value
+          })
         }
       } else {
         this.$emit("update:ext_value", up_value)
@@ -229,6 +233,17 @@ export default {
     },
     entry_uuid() {
       return aspect_loc_uuid(this.aspect_loc)
+    },
+    label() {
+      // todo, is only be the case for ui aspects
+      if(this.aspect.t_label) {
+        return this.$t(this.aspect.t_label)
+      }
+      if (this.aspect.label !== undefined) {
+        return this.aspect.label
+      } else {
+        return this.aspect.name
+      }
     }
   },
   watch: {}

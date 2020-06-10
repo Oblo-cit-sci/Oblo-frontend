@@ -51,8 +51,7 @@
     aspect_default_value,
     aspect_loc2aspect_descr_loc,
     aspect_loc_str,
-    get_aspect_vue_component,
-    label
+    get_aspect_vue_component
   } from "~/lib/aspect";
   import AspectMixin from "./aspects/AspectMixin";
   import {TEMPLATES_NOTE} from "~/store/templates";
@@ -173,13 +172,10 @@
           note_text = this.$store.getters[TEMPLATES_NOTE](aspect_descr_loc)
         }
         return {
-          title: this.extra.no_title ? "" : this.aspect_label(aspect),
-          description: aspect.description || "",
+          title: this.extra.no_title ? "" : this.label,
+          description: aspect.t_description ? this.$t(aspect.t_description) : (aspect.description || ""),
           note: {text: note_text, note_class: "note"}
         }
-      },
-      aspect_label(aspect) {
-        return label(aspect)
       },
       aspectComponent(aspect, mode) {
         return get_aspect_vue_component(aspect, mode, this.extra)
