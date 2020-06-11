@@ -72,7 +72,7 @@
   import EntryPreviewList from "../components/entry/EntryPreviewList";
 
   import {ENTRIES_GET_OWN_ENTRIES_UUIDS} from "~/store/entries";
-  import {license_aspect, privacy_aspect} from "~/lib/typical_aspects";
+  import {license_aspect, password_aspect, password_confirm_aspect, privacy_aspect} from "~/lib/typical_aspects";
   import LoadFileButton from "../components/util/LoadFileButton";
   import {base64file_to_blob, common_filesize} from "~/lib/util";
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
@@ -80,6 +80,7 @@
   import EntryListWrapper from "../components/EntryListWrapper"
   import LayoutMixin from "~/components/global/LayoutMixin"
   import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
+  import {APP_FIXED_DOMAIN} from "~/store/app"
 
   export default {
     name: "profile",
@@ -253,7 +254,10 @@
       }
     },
     computed: {
-      ...mapGetters({user_data: USER, own_entries_uuids: ENTRIES_GET_OWN_ENTRIES_UUIDS}),
+      ...mapGetters({
+        user_data: USER,
+        own_entries_uuids: ENTRIES_GET_OWN_ENTRIES_UUIDS
+      }),
       mode() {
         return this.edit_mode ? EDIT : VIEW
       },

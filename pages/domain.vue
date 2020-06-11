@@ -61,12 +61,20 @@
       }
     },
     created() {
+      // this.$route.query[QP_D] || this.$route.query[QP_F]
+      console.log(document.documentURI)
+      window.history.replaceState(null,document.title, "/licci")
+      console.log(this.$route)
       if (this.domain_data.name !== this.$store.getters[DOMAIN]) {
         this.$store.commit(SET_DOMAIN, this.domain_data)
       }
       if (this.domain_data.page_index.main_template) {
         this.main_template = this.template_entries.filter(e => e.slug === this.domain_data.page_index.main_template)[0]
       }
+    },
+    beforeRouteLeave(from, to, next) {
+      window.history.replaceState(null,document.title, this.$route.fullPath)
+      next()
     },
     computed: {
       ...mapGetters({logged_in: USER_LOGGED_IN, domain_templtes: TEMPLATES_OF_DOMAIN, domains: DOMAIN_BY_NAME}),
