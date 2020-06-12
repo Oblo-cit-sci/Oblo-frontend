@@ -5,6 +5,7 @@
     Title_Description(
       v-if="show_title_description"
       :aspect="aspect"
+      :no_title="extra.no_title"
       :note=note
       :disabled="disable"
       :disabled_text="disabled_text"

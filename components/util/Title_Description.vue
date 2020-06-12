@@ -34,6 +34,7 @@
         type: String,
         default: ""
       },
+      no_title: Boolean, // used in order to hide list indices
       header_type: {
         type: String,
         default: "h3"
@@ -63,6 +64,9 @@
     },
     computed: {
       label() {
+        if(this.no_title) {
+          return
+        }
         // todo, is only be the case for ui aspects
         if (this.title) {
           return this.title
