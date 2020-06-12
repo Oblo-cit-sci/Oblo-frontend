@@ -234,17 +234,7 @@ export default {
     entry_uuid() {
       return aspect_loc_uuid(this.aspect_loc)
     },
-    label() {
-      // todo, is only be the case for ui aspects
-      if(this.aspect.t_label) {
-        return this.$t(this.aspect.t_label)
-      }
-      if (this.aspect.label !== undefined) {
-        return this.aspect.label
-      } else {
-        return this.aspect.name
-      }
-    }
+
   },
   watch: {}
 }

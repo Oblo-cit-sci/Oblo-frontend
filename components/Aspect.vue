@@ -4,7 +4,8 @@
     :id="aspect_id" v-if="visible && has_value")
     Title_Description(
       v-if="show_title_description"
-      v-bind="title_description(aspect)"
+      :aspect="aspect"
+      :note=note
       :disabled="disable"
       :disabled_text="disabled_text"
       :mode="real_mode")
@@ -30,7 +31,7 @@
     div(v-if="has_action && edit")
       AspectAction(:aspect="aspect" :mvalue="mvalue" :extra="extra")
     div(v-if="!use_regular && aspect.attr.alternative !== undefined")
-      Title_Description(v-bind="title_description(aspect.attr.alternative)")
+      Title_Description(:aspect="aspect.attr.alternative")
       component(
         :is="aspectComponent(alternative, mode)"
         :value="value"
@@ -158,24 +159,13 @@
       }
     },
     methods: {
-      title_description(aspect) {
-        // todo. probably not needed anymore
-        if (!aspect) {
-          return {
-            title: "",
-            description: ""
-          }
-        }
+      note() {
         let note_text = ""
         if (this.aspect_loc) {
           const aspect_descr_loc = aspect_loc2aspect_descr_loc(this.aspect_loc)
           note_text = this.$store.getters[TEMPLATES_NOTE](aspect_descr_loc)
         }
-        return {
-          title: this.extra.no_title ? "" : this.label,
-          description: aspect.t_description ? this.$t(aspect.t_description) : (aspect.description || ""),
-          note: {text: note_text, note_class: "note"}
-        }
+        return {text: note_text, note_class: "note"}
       },
       aspectComponent(aspect, mode) {
         return get_aspect_vue_component(aspect, mode, this.extra)

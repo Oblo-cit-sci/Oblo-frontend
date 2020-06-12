@@ -1,7 +1,7 @@
 <template lang="pug">
   #pwlisthead
     v-row.col-sm-12(v-if="results_received" wrap justify-center)
-      div {{num_entries}} Entries
+      div {{$tc("comp_entries_pw_list.num_entries", num_entries)}}
     v-row(v-for="uuid in visible_entries"
       :key="uuid")
       v-col(cols=12)

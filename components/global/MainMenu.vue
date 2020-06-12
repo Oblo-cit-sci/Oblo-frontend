@@ -17,11 +17,7 @@
           v-list-item-content
             v-list-item-title(v-text="item.title")
       v-divider
-      v-select.mt-5.my-2.px-3(
-        dense flat
-        @change="set_lang($event)"
-        :items="available_languages"
-        label="Language")
+      LanguageSelector
       v-list-item
         p(class="package-version") v{{version}}
 </template>
@@ -35,6 +31,7 @@
   import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
   import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
   import NavBaseMixin from "~/components/NavBaseMixin"
+  import LanguageSelector from "~/components/LanguageSelector"
 
   const pkg = require('~/package')
 
@@ -47,7 +44,7 @@
   export default {
     name: "MainMenu",
     mixins: [TriggerSnackbarMixin, PersistentStorageMixin, NavBaseMixin],
-    components: {},
+    components: {LanguageSelector},
     props: {
       show: Boolean,
     },
@@ -60,9 +57,6 @@
         connected: APP_CONNECTED,
         nav_drawer: "app/nav_drawer"
       }),
-      available_languages() {
-        return [{text: "English", value: "en"}, {text: "German", value: "de"}]
-      },
       groups() {
         for (let page of all_pages_n_actions) {
           page.title = this.$t(page.t_title)
@@ -90,12 +84,6 @@
       },
       version() {
         return pkg.version
-      }
-    },
-    methods: {
-      set_lang(lang) {
-        console.log(this)
-        this._i18n.locale = lang
       }
     }
   }

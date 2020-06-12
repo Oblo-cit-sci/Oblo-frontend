@@ -36,7 +36,7 @@
           registered_name: this.registered_name(),
           email: this.email(),
           password: password,
-          password_confirm: this.password_confirm(password)
+          password_confirm: this.password_confirm(password, "repeat")
         },
         submitStatus: null,
         errorMsg: null,

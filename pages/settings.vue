@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    h1 Settings
+    h1 {{$t("settings.h1")}}
     br
     Aspect(
       :aspect="aspect_map.location_privacy"

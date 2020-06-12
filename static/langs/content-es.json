@@ -1,0 +1,11 @@
+{
+  "menu.home": "Patria",
+  "menu.profile": "Perfil",
+  "menu.map": "Mapa",
+  "menu.login": "Iniciar la sesión",
+  "menu.logout": "Cerrar sesión",
+  "menu.register": "Registrarse",
+  "menu.admin": "Admin",
+  "menu.tests": "Test",
+  "_global.language.label": "Idioma"
+}

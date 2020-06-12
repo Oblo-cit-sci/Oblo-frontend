@@ -4,14 +4,23 @@ export default {
   name: "TypicalAspectsMixin",
   methods: {
     label(base_name, alt_label) {
-      return this.$t(base_name + "alt_label." + alt_label ? alt_label : "label")
+      return this.$t(this.t_label(base_name, alt_label))
+    },
+    description(base_name, alt_descr) {
+      return this.$t(this.t_description(base_name, alt_descr))
+    },
+    t_label(base_name, alt_label) {
+      return base_name + (alt_label ? "alt_label." + alt_label : "label")
+    },
+    t_description(base_name, alt_descr) {
+      return base_name + (alt_descr ? "alt_descr." + alt_descr : "descr")
     },
     registered_name() {
       return {
         type: "str",
         // todo make small
         name: "Username",
-        label: this.$t("_global.asp_username.label"),
+        t_label: "_global.asp_username.label",
         attr: {
           max: 30,
           unpacked: true,
@@ -30,7 +39,7 @@ export default {
       return {
         type: "str",
         name: "email",
-        label: this.$t("_global.asp_email.label"),
+        t_label: "_global.asp_email.label",
         attr: {
           max: 40,
           unpacked: true,
@@ -40,15 +49,15 @@ export default {
             ]
           }
         },
-        value: "",
-        error: true
+        error: false,
+        value: ""
       }
     },
-    password(alt_label = undefined) {
+    password(name = undefined, alt_label = undefined) {
       return {
         type: "str",
-        name: "password",
-        label: this.label("_global.asp_password.", alt_label),
+        name: name ? name : "password",
+        t_label: this.t_label("_global.asp_password.", alt_label),
         attr: {
           max: 40,
           unpacked: true,
@@ -67,7 +76,7 @@ export default {
       return {
         type: "str",
         name: "repeat password",
-        label: this.label("_global.asp_password_repeat.", alt_label),
+        t_label: this.t_label("_global.asp_password.", alt_label),
         attr: {
           max: 40,
           unpacked: true,
@@ -82,10 +91,38 @@ export default {
         error: true
       }
     },
-    license_aspect(include = [], exclude, alt_label = undefined) {
+    privacy_aspect(name = null, alt_label_descr = undefined) {
+      return {
+        name: name ? name : "privacy",
+        t_label: this.t_label("_global.asp_privacy.", alt_label_descr),
+        t_description: this.t_description("_global.asp_privacy.", alt_label_descr),
+        type: "select",
+        attr: {
+          unpacked: true
+        },
+        items: [{
+          text: this.$t("_global.asp_privacy.item_public.text"),
+          description: this.$t("_global.asp_privacy.item_public.descr"),
+          value: "public",
+          icon: "privacy/earth.png"
+        }, {
+          text: this.$t("_global.asp_privacy.item_private.text"),
+          description: this.$t("_global.asp_privacy.item_private.descr"),
+          value: "private",
+          icon: "privacy/lock-outline.png"
+        }]
+      }
+      // todo privacy mode: something from the entry template rules en-foreces the privacy
+      /*
+            const privacy_set = this.template.rules.privacy
+            return privacy_set ? VIEW : EDIT
+       */
+    },
+    license_aspect(name  = null, include = [], exclude, alt_label_descr = undefined) {
       const aspect = {
-        name: "license",
-        label: this.label("_global.asp_license", alt_label),
+        name: name ? name : "license",
+        t_label: this.t_label("_global.asp_license.", alt_label_descr),
+        t_description: this.t_description("_global.asp_license.", alt_label_descr),
         type: "select",
         attr: {
           unpacked: true,
@@ -96,15 +133,15 @@ export default {
         if (this.$store.state.codes.hasOwnProperty(license_group)) {
           // `.values.licences` should be documentented somewhere or be more flexible
           const licence_entry = this.$store.state.codes[license_group]
-          const select_transform_keys = ld.get(licence_entry, "rules.edit.select_transform_keys", null)
+          const select_transform_keys = this.$_.get(licence_entry, "rules.edit.select_transform_keys", null)
           if (select_transform_keys) {
-            aspect.items = ld.map(licence_entry.values.licenses, (l) => {
-                const transformed = {}
-                ld.forEach(select_transform_keys, (k, v) => {
-                  transformed[v] = l[k]
-                })
-                return Object.assign(transformed, l)
-              }
+            aspect.items = this.$_.map(licence_entry.values.licenses, (l) => {
+                  const transformed = {}
+                  this.$_.forEach(select_transform_keys, (k, v) => {
+                    transformed[v] = l[k]
+                  })
+                  return Object.assign(transformed, l)
+                }
             )
           } else {
             aspect.items = licence_entry.values.licenses

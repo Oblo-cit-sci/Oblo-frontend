@@ -22,11 +22,11 @@
       v-col(cols=10)
         Aspect(:aspect="aspect"
           :ext_value.sync="aspect.value"
-          @update:error="aspect.error = $event"
+          @update:error="$set(aspect, 'error', $event)"
           :mode="mode")
     div(v-if="edit_mode")
-      h3 Password
-      v-btn(color="warning" v-if="!password_edit" @click="password_edit=true") Change password
+      h3 {{$t('_global.asp_password.label')}}
+      v-btn(color="warning" v-if="!password_edit" @click="password_edit=true") {{$t('profile.btn_change_password')}}
       div(v-if="password_edit")
         v-row(v-for="a of password_aspects" :key="a.name")
           v-col(cols=10)
@@ -36,19 +36,19 @@
               @update:error="a.error = $event"
               :extra="{clearable:false}"
               mode="edit")
-      v-btn(v-if="password_edit" @click="password_edit=false") Cancel
+      v-btn(v-if="password_edit" @click="password_edit=false") {{$t('_global.btn_cancel')}}
       v-btn(v-if="password_edit" color="success" @click="change_password" :disabled="any_password_invalid") Save password
       v-divider.wide_divider
     div(v-if="!is_visitor")
-      v-btn(v-if="!edit_mode" to="/settings" nuxt) Settings
-      v-btn(v-if="!edit_mode" color="info" @click="setEdit") Edit profile
+      v-btn(v-if="!edit_mode" to="/settings" nuxt) {{$t("profile.btn_settings")}}
+      v-btn(v-if="!edit_mode" color="info" @click="setEdit") {{$t("profile.btn_edit_profile")}}
       div(v-else)
         v-btn(@click="cancelEdit") Cancel
-        v-btn(color="success" @click="doneEdit" :disabled="any_invalid") Save
-      v-btn(v-if="!edit_mode" color="error" to="/basic/delete_account") Delete account
+        v-btn(color="success" @click="doneEdit" :disabled="any_invalid") {{$t("profile.btn_save")}}
+      v-btn(v-if="!edit_mode" color="error" to="/basic/delete_account") {{$t("profile.btn_delete")}}
     div(v-if="!edit_mode")
       v-divider.wide_divider
-      h2 Your Entries
+      h2 {{$t("profile.h2")}}
       EntryListWrapper(
         :wait="waiting"
         :style="main_container_width_style"
@@ -93,7 +93,7 @@
     },
     mixins: [PersistentStorageMixin, TriggerSnackbarMixin, LayoutMixin, TypicalAspectMixin],
     data() {
-      const new_pwd = this.password("new")
+      const new_pwd = this.password(null,"new")
       return {
         profile_pic_upload_loading: false,
         profile_version_ts: Math.floor(new Date().getTime() / 1000),
@@ -104,16 +104,14 @@
         profile_aspects: [
           {
             name: "public_name",
-            label: this.$t("profile.asp_public_name"),
-            description: "",
+            t_label:"profile.asp_public_name.label",
             type: "str",
             attr: {
               max: 30,
               unpacked: true,
               extra: {
                 rules: [
-                  v => v && v.length >= 2 || 'Public name must have at 2 characters',
-                  v => v && v.length <= 30 || 'Public name can have at most 30 characters',
+                  v => v && v.length >= 2 && v.length <= 30 || this.$t("profile.asp_public_name.rule_length"),
                 ]
               }
             },
@@ -122,13 +120,14 @@
           },
           {
             name: "description",
-            label: this.$t("profile.asp_description"),
-            description: "Write something about yourself and about your background",
+            t_label:"profile.asp_description.label",
+            t_description: "profile.asp_description.descr",
             type: "str",
             attr: {
               max: 980,
               unpacked: true
             },
+            error: false,
             value: ""
           },
           // {
@@ -144,23 +143,13 @@
           //   value: null
           // },
           this.email(),
-          Object.assign(privacy_aspect(),
-            {
-              name: "default_privacy",
-              label: this.$("_global.asp_default_privacy.label"),
-              description: this.$("_global.asp_default_privacy.descr")
-            }),
-          Object.assign(license_aspect(this.$store, ["cc_licenses"]),
-            {
-              name: "default_license",
-              label: this.$("_global.asp_default_license.label"),
-              description: this.$("_global.asp_default_license.descr")
-            })
+          this.privacy_aspect("default_privacy","default" ),
+          this.license_aspect("default_license",["cc_licenses"],null, "default")
         ],
         password_aspects: {
-          actual_password: this.password("current"),
+          actual_password: this.password("actual_password", "current"),
           password: new_pwd,
-          password_confirm: this.password_confirm(new_pwd, "new")
+          password_confirm: this.password_confirm(new_pwd, "repeat_new")
         },
         waiting: false,
       }
@@ -172,7 +161,6 @@
     beforeRouteEnter(to, from, next) {
       next(vm => {
         if (from.fullPath === "/map?mode=m_mode_point") {
-          console.log("MAP!")
           vm.grab_map_selection = true
         }
       })
@@ -184,6 +172,9 @@
           easing: "easeOutCubic"
         }), 50)
       },
+      // set_error(aspect_name, error) {
+      //   this.$set(this.profile_aspects[aspect], error)
+      // },
       reset_edit_values() {
         const user_data = this.$_.cloneDeep(this.user_data)
         for (let aspect of this.profile_aspects) {
@@ -273,8 +264,20 @@
       profile_pic_max_size() {
         return common_filesize(5, "MB")
       },
+      // errors() {
+      //   console.log("rrs")
+      //   return this.profile_aspects.map(a => a.error)
+      // },
       any_invalid() {
+        for(let a of this.profile_aspects) {
+          console.log(a.name, a.error)
+        }
         return this.$_.some(this.profile_aspects, (a) => a.hasOwnProperty("error") && a.error)
+      }
+    },
+    watch: {
+      profile_aspects(v) {
+        console.log(v)
       }
     }
   }

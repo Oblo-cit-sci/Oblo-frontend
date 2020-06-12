@@ -1,0 +1,63 @@
+<template lang="pug">
+  v-flex(xs12 sm10 md6)
+    h2 {{$t('init_password_reset.h1')}}
+    Aspect(:aspect="query"
+      :ext_value.sync="query.value"
+      mode="edit"
+      @update:error="query.error = $event")
+    v-btn(@click='send' color='success' autofocus :disabled="query.error" :loading="send_button_loading") {{$t('init_password_reset.btn_send')}}
+    v-alert(:value='errorMsg != null' type='error' prominent transition="scroll-y-reverse-transition") {{errorMsg}}
+</template>
+
+<script>
+  import {STR} from "~/lib/consts"
+  import Aspect from "~/components/Aspect"
+  import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
+
+  export default {
+    name: "init_password_reset",
+    components: {Aspect},
+    mixins: [TriggerSnackbarMixin],
+    data() {
+      return {
+        query: {
+          type: STR,
+          label: "",
+          name: "query",
+          t_description: "init_password_reset.asp_query_descr",
+          attr: {
+            max: 30,
+            unpacked: true,
+            extra: {
+              rules: [
+                v => v.length > 0,
+              ]
+            }
+          },
+          error: true,
+          value: ""
+        },
+        errorMsg: null,
+        send_button_loading: false
+      }
+    },
+    methods: {
+      send() {
+        this.send_button_loading = true
+        this.$api.actor__init_password_reset(this.query.value.toLowerCase()).then(({data}) => {
+          this.ok_snackbar(data.data.msg)
+          this.$router.push("/basic/reset_mail_sent")
+        }).catch(err => {
+          this.errorMsg = this.$_.get(err.response, "data.error.msg", "Something went wrong")
+          setTimeout(() => this.errorMsg = null, 2000)
+        }).finally(() => {
+          this.send_button_loading = false
+        })
+      }
+    }
+  }
+</script>
+
+<style scoped>
+
+</style>

@@ -13,15 +13,17 @@ export default ({ app }) => {
   // This way we can use it globally in our components through this.$i18n
   app.i18n = new VueI18n({
     // Set the initial locale
-    locale: "en",
+    locale: "de",
 
     // Set the fallback locale in case the current locale can't be found
-    fallbackLocale: "en",
+    fallbackLocale: "de",
 
+    warnHtmlInMessage: true,
     // Associate each locale to a content file
     messages: {
       en: require("~/static/langs/content-en.json"),
-      de: require("~/static/langs/content-de.json")
+      de: require("~/static/langs/content-de.json"),
+      es: require("~/static/langs/content-es.json")
     }
   });
 };

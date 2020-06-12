@@ -11,7 +11,7 @@
         @update:error="a.error = $event")
     v-btn(@click='login' color='success' autofocus :disabled="any_invalid" :loading="login_loading") {{$t('login.btn_login')}}
     div.mt-3
-      a(href="basic/init_password_reset") {{$t('login.btn_forgot')}}
+      nuxt-link(to="init_password_reset") {{$t('login.btn_forgot')}}
     div.mt-2(v-if="add_verification_resend_link")
       v-btn(@click="request_verification_mail" color="success") Resend verification email
     v-alert(:value='errorMsg != null' type='error' prominent transition="scroll-y-reverse-transition") {{errorMsg}}

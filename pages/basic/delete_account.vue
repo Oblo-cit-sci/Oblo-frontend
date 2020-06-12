@@ -25,10 +25,11 @@
   import {LOGOUT} from "~/store"
   import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
   import NavBaseMixin from "~/components/NavBaseMixin"
+  import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
 
   export default {
     name: "delete_account",
-    mixins: [TriggerSnackbarMixin, PersistentStorageMixin, NavBaseMixin],
+    mixins: [TriggerSnackbarMixin, PersistentStorageMixin, NavBaseMixin, TypicalAspectMixin],
     components: {CompactEntryList, EntryListWrapper, Aspect},
     props: {},
     data() {
@@ -39,38 +40,8 @@
           "and we will continue to retain basic user data (you username and public name) so your connection with them is preserved. " +
           "All private entries without other collaborators will be deleted. Those with collaborators will remain",
         aspects: {
-          registered_name: {
-            type: STR,
-            label: "Username",
-            name: "registered_name",
-            attr: {
-              max: 30,
-              unpacked: true,
-              extra: {
-                rules: [
-                  v => v && v.length >= 4 || 'Username must have at 4 characters',
-                ]
-              }
-            },
-            value: "",
-            error: true
-          },
-          password: {
-            type: STR,
-            name: "Password",
-            attr: {
-              max: 40,
-              unpacked: true,
-              component_type: "password",
-              extra: {
-                rules: [
-                  v => v && v.length >= 8 || 'Password must have at least 8 characters',
-                ]
-              }
-            },
-            value: "",
-            error: true
-          }
+          registered_name: this.registered_name(),
+          password: this.password()
         },
         entries_to_delete: []
       }

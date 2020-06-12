@@ -1,6 +1,6 @@
 <template lang="pug">
   div(v-if="!readOnly")
-    component(:is="header_type") {{title}}
+    component(:is="header_type") {{label}}
       span(v-if="disabled") &nbsp;({{disabled_text}})
     div(v-if="multiple_descriptions && !readOnly")
       div(v-for="(description_part, index) in description" :key="index")
@@ -13,7 +13,7 @@
     div(v-if="note && !readOnly")
       div(:class="note.note_class") {{note.text}}
   div(v-else)
-    component(:is="header_type") {{title}}
+    component(:is="header_type") {{label}}
 </template>
 
 <script>
@@ -27,12 +27,13 @@
   export default {
     name: "Title_Description",
     props: {
-      title:
-        {
-          type: String,
-          required: true,
-          default: ""
-        },
+      aspect: {
+        type: Object
+      },
+      title: {
+        type: String,
+        default: ""
+      },
       header_type: {
         type: String,
         default: "h3"
@@ -61,6 +62,36 @@
       }
     },
     computed: {
+      label() {
+        // todo, is only be the case for ui aspects
+        if (this.title) {
+          return this.title
+        }
+        if (this.aspect) {
+          if (this.aspect.t_label) {
+            return this.$t(this.aspect.t_label)
+          }
+          if (this.aspect.label !== undefined) {
+            return this.aspect.label
+          } else {
+            return this.aspect.name
+          }
+        }
+        console.log("no title nor aspect given for title_descr of an aspect")
+        return ""
+      },
+      description_() {
+        if (this.description) {
+          return this.description
+        }
+        if (this.aspect) {
+          if (this.aspect.t_description) {
+            return this.$t(this.aspect.t_description)
+          }
+          return this.aspect.description
+        }
+        return ""
+      },
       multiple_descriptions() {
         return (this.description || "").constructor === Array
       },
@@ -71,7 +102,7 @@
         if (this.multiple_descriptions)
           return this.description[0]
         else
-          return this.description
+          return this.description_
       }
     }
   }

@@ -11,7 +11,6 @@
 
 <script>
   import GlobalSnackbar from "~/components/global/GlobalSnackbar"
-  import {HOME} from "~/lib/consts"
   import Footer from "~/components/global/Footer"
 
   import {initialize, reload_storage} from "~/lib/client"
@@ -19,23 +18,21 @@
 
   import {mapGetters} from "vuex"
   import PersistentStorageMixin from "~/components/util/PersistentStorageMixin";
-  import {USER_LOGGED_IN} from "~/store/user";
   import {APP_CONNECTED, APP_CONNECTING, APP_DB_LOADED, APP_INITIALIZED,} from "~/store/app"
   import {dev_env} from "~/lib/util"
   import NavBaseMixin from "~/components/NavBaseMixin"
   import MainMenu from "~/components/global/MainMenu"
   import PrivacySheet from "~/components/global/PrivacySheet"
   import Appbar from "~/components/global/Appbar"
+  import InitializationMixin from "~/layouts/InitializationMixin"
 
   let lastDomain = ''
 
-
   export default {
     components: {Appbar, PrivacySheet, MainMenu, GlobalSnackbar, Footer},
-    mixins: [TriggerSnackbarMixin, PersistentStorageMixin, NavBaseMixin],
+    mixins: [InitializationMixin, TriggerSnackbarMixin, PersistentStorageMixin, NavBaseMixin],
     data() {
       return {
-        isDev: this.$store.app.context.isDev,
         privacy_sheet_open: false
       }
     },
@@ -64,17 +61,6 @@
         }
       }
     },
-    methods: {
-    },
-    watch: {
-      db_loaded(val) {
-        // console.log("db loaded", this.initialized)
-        if (val) {
-          // console.log("layout. initializing")
-          initialize(this.$api, this.$store, this.$route, this.$router, this.$localForage)
-        }
-      }
-    }
   }
 </script>
 
