@@ -30,13 +30,13 @@
     components: {Aspect},
     mixins: [validationMixin, TriggerSnackbarMixin, LoginMixin, TypicalAspectMixin],
     data() {
-      const password =  this.password()
+      const password =  this.asp_password()
       return {
         aspects: {
-          registered_name: this.registered_name(),
-          email: this.email(),
+          registered_name: this.asp_registered_name(),
+          email: this.asp_email(),
           password: password,
-          password_confirm: this.password_confirm(password, "repeat")
+          password_confirm: this.asp_password_confirm(password, "repeat")
         },
         submitStatus: null,
         errorMsg: null,

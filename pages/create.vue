@@ -8,6 +8,11 @@ import EntryCreateMixin from "~/components/entry/EntryCreateMixin"
 import EntryNavMixin from "~/components/EntryNavMixin"
 import {EDIT} from "~/lib/consts"
 
+/**
+ * query params
+ *  - type (default: entry)
+ *    - template
+ */
 export default {
   name: "create",
   mixins: [EntryCreateMixin, EntryNavMixin],

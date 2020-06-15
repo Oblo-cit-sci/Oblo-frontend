@@ -55,7 +55,7 @@
 
 
   #fullContainer {
-    max-width: 100%;
+    max-width: 100% !important;
     padding: 0;
     height: 100%;
   }

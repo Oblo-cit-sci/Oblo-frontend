@@ -1,8 +1,9 @@
 <template lang="pug">
-  v-select.mt-5.my-2.px-3(
+  v-select.mt-8.my-2.px-3(
     dense flat
     :items="available_languages"
     v-model="language"
+    hide-details
     :label="label")
 </template>
 
@@ -28,7 +29,12 @@
     },
     computed: {
       available_languages() {
-        return [{text: "English", value: "en"}, {text: "German", value: "de"}, {text: "Spanish", value: "es"}]
+        // todo should come from the server
+        const available_languages = ["en", "de", "es", "fr"]
+        return available_languages.map(l => ({
+          "value": l,
+          "text": (this.$t("lang." + l))
+        }))
       },
       label() {
         return this.$t("_global.language.label")

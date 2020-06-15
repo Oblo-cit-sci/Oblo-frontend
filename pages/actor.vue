@@ -2,24 +2,24 @@
   v-flex(xs12 sm10 md10)
     v-row
       v-col
-        div Username: {{user_data.registered_name}}
+        div {{$t(".asp_username.label")}}: {{registered_name}}
         GlobalRoleChip.mt-2(:global_role="user_data.global_role")
-        div.mt-2(v-if="user_data.account_deactivated" style="color:red") This is user is no longer active
+        div.mt-2(v-if="user_data.account_deactivated" style="color:red") {{$t("actor.deactivated")}}
       v-col
         v-row
           v-img(:src="profile_pic" max-height=200 contain)
-    h2 General information
+    h2 {{$t("actor.h1")}}
     v-row(v-for="aspect in profile_aspects" :key="aspect.name")
       v-col(cols=10)
         Aspect(:aspect="aspect" :ext_value.sync="user_data[aspect.name]")
     ActorAdminEdit(v-if="user_loaded && is_admin" :actor="user_data")
     div
       v-divider.wide_divider
-      h2 Entries
+      h2 {{$t("actor.h2")}}
       EntryListWrapper(
         :style="main_container_width_style"
         :wait="waiting"
-        :configuration="{required:[{name:'actor', registered_name:user_data.registered_name}]}")
+        :configuration="{required:[{name:'actor', 'registered_name':registered_name}]}")
 </template>
 
 <script>
@@ -32,10 +32,11 @@
   import LayoutMixin from "~/components/global/LayoutMixin"
   import {USER_GLOBAL_ROLE} from "~/store/user"
   import {ADMIN} from "~/lib/consts"
+  import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
 
   export default {
     name: "actor",
-    mixins: [LayoutMixin],
+    mixins: [LayoutMixin, TypicalAspectMixin],
     components: {
       GlobalRoleChip,
       ActorAdminEdit,
@@ -51,50 +52,8 @@
         user_data: {},
         user_loaded: false,
         profile_aspects: [
-          {
-            name: "public_name",
-            label: "Public name",
-            description: "",
-            type: "str",
-            attr: {
-              max: 40,
-              unpacked: true
-            },
-            value: ""
-          },
-          {
-            name: "description",
-            label: "Description",
-            description: "",
-            type: "str",
-            attr: {
-              max: 980,
-              unpacked: true
-            },
-            value: ""
-          },
-          {
-            name: "location",
-            label: "Location",
-            description: "main location",
-            type: "location",
-            attr: {
-              max: 80,
-              unpacked: true,
-              input: ["search"]
-            },
-            value: null
-          },
-          // {
-          //   name: "Interested topics",
-          //   description: "LICCIs you are interested in",
-          //   type: "multiselect",
-          //   items: ["empty upsi"],
-          //   attr: {
-          //     unpacked: true
-          //   },
-          //   value: []
-          // }
+            this.asp_public_name(),
+            this.asp_actor_description()
         ],
       }
     },
@@ -109,13 +68,13 @@
     },
     computed: {
       profile_pic() {
-        return this.$api.url_actor__$registered_name__profile_pic(this.user_data.registered_name)
+        return this.$api.url_actor__$registered_name__profile_pic(this.registered_name)
       },
       registered_name() {
         return this.$route.query.name
       },
       is_admin() {
-        this.$store.getters[USER_GLOBAL_ROLE] === ADMIN
+        return this.$store.getters[USER_GLOBAL_ROLE] === ADMIN
       }
     },
     methods: {},

@@ -15,7 +15,7 @@ export default {
     t_description(base_name, alt_descr) {
       return base_name + (alt_descr ? "alt_descr." + alt_descr : "descr")
     },
-    registered_name() {
+    asp_registered_name() {
       return {
         type: "str",
         // todo make small
@@ -35,7 +35,39 @@ export default {
         error: true
       }
     },
-    email() {
+    asp_public_name() {
+      return {
+        name: "public_name",
+        t_label: ".asp_public_name.label",
+        type: "str",
+        attr: {
+          max: 30,
+          unpacked: true,
+          extra: {
+            rules: [
+              v => v && v.length >= 2 && v.length <= 30 || this.$t(".asp_public_name.rule_length"),
+            ]
+          }
+        },
+        value: "",
+        error: false
+      }
+    },
+    asp_actor_description() {
+      return {
+        name: "description",
+        t_label: ".asp_user_description.label",
+        t_description: ".asp_user_description.descr",
+        type: "str",
+        attr: {
+          max: 980,
+          unpacked: true
+        },
+        error: false,
+        value: ""
+      }
+    },
+    asp_email() {
       return {
         type: "str",
         name: "email",
@@ -53,7 +85,7 @@ export default {
         value: ""
       }
     },
-    password(name = undefined, alt_label = undefined) {
+    asp_password(name = undefined, alt_label = undefined) {
       return {
         type: "str",
         name: name ? name : "password",
@@ -72,7 +104,7 @@ export default {
         error: true
       }
     },
-    password_confirm(password_aspect, alt_label = undefined) {
+    asp_password_confirm(password_aspect, alt_label = undefined) {
       return {
         type: "str",
         name: "repeat password",
@@ -91,7 +123,7 @@ export default {
         error: true
       }
     },
-    privacy_aspect(name = null, alt_label_descr = undefined) {
+    asp_privacy_aspect(name = null, alt_label_descr = undefined) {
       return {
         name: name ? name : "privacy",
         t_label: this.t_label("_global.asp_privacy.", alt_label_descr),
@@ -118,7 +150,7 @@ export default {
             return privacy_set ? VIEW : EDIT
        */
     },
-    license_aspect(name  = null, include = [], exclude, alt_label_descr = undefined) {
+    asp_license_aspect(name = null, include = [], exclude, alt_label_descr = undefined) {
       const aspect = {
         name: name ? name : "license",
         t_label: this.t_label("_global.asp_license.", alt_label_descr),
@@ -136,12 +168,12 @@ export default {
           const select_transform_keys = this.$_.get(licence_entry, "rules.edit.select_transform_keys", null)
           if (select_transform_keys) {
             aspect.items = this.$_.map(licence_entry.values.licenses, (l) => {
-                  const transformed = {}
-                  this.$_.forEach(select_transform_keys, (k, v) => {
-                    transformed[v] = l[k]
-                  })
-                  return Object.assign(transformed, l)
-                }
+                const transformed = {}
+                this.$_.forEach(select_transform_keys, (k, v) => {
+                  transformed[v] = l[k]
+                })
+                return Object.assign(transformed, l)
+              }
             )
           } else {
             aspect.items = licence_entry.values.licenses

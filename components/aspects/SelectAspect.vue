@@ -18,7 +18,7 @@
         div
           p.pl-2(v-if="select_check" class="text-uppercase") {{check_box_value ? options[1].text : options[0].text}}
           p.body-1.readonly-aspect.pl-3(v-else) {{selection.text}}
-        div.pt-2(v-if="selection.description" style="clear:left") Description: {{selection.description}}
+        div.pt-2(v-if="selection.description" style="clear:left") {{$t('._aspect_select.descr')}} {{selection.description}}
 </template>
 
 <script>

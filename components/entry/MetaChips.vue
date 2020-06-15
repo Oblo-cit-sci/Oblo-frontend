@@ -13,8 +13,6 @@
 
 <script>
 
-  import {PRIVATE, PUBLIC} from "../../lib/consts"
-
   export default {
     name: "MetaChips",
     props: {

@@ -39,6 +39,14 @@
       v-btn(v-if="password_edit" @click="password_edit=false") {{$t('_global.btn_cancel')}}
       v-btn(v-if="password_edit" color="success" @click="change_password" :disabled="any_password_invalid") Save password
       v-divider.wide_divider
+    div(v-if="edit_mode && !$_.isEmpty(domain_specific_aspects)")
+      h2 {{$t("profile.h3")}}
+      v-row(v-for="aspect in domain_specific_aspects" :key="aspect.name")
+        v-col(cols=10)
+          Aspect(:aspect="aspect"
+            :ext_value.sync="aspect.value"
+            @update:error="$set(aspect, 'error', $event)"
+            :mode="mode")
     div(v-if="!is_visitor")
       v-btn(v-if="!edit_mode" to="/settings" nuxt) {{$t("profile.btn_settings")}}
       v-btn(v-if="!edit_mode" color="info" @click="setEdit") {{$t("profile.btn_edit_profile")}}
@@ -72,7 +80,6 @@
   import EntryPreviewList from "../components/entry/EntryPreviewList";
 
   import {ENTRIES_GET_OWN_ENTRIES_UUIDS} from "~/store/entries";
-  import {license_aspect, password_aspect, password_confirm_aspect, privacy_aspect} from "~/lib/typical_aspects";
   import LoadFileButton from "../components/util/LoadFileButton";
   import {base64file_to_blob, common_filesize} from "~/lib/util";
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
@@ -80,7 +87,6 @@
   import EntryListWrapper from "../components/EntryListWrapper"
   import LayoutMixin from "~/components/global/LayoutMixin"
   import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
-  import {APP_FIXED_DOMAIN} from "~/store/app"
 
   export default {
     name: "profile",
@@ -93,7 +99,7 @@
     },
     mixins: [PersistentStorageMixin, TriggerSnackbarMixin, LayoutMixin, TypicalAspectMixin],
     data() {
-      const new_pwd = this.password(null,"new")
+      const new_pwd = this.asp_password(null, "new")
       return {
         profile_pic_upload_loading: false,
         profile_version_ts: Math.floor(new Date().getTime() / 1000),
@@ -102,34 +108,8 @@
         password_edit: false,
         selected_tab: 0,
         profile_aspects: [
-          {
-            name: "public_name",
-            t_label:"profile.asp_public_name.label",
-            type: "str",
-            attr: {
-              max: 30,
-              unpacked: true,
-              extra: {
-                rules: [
-                  v => v && v.length >= 2 && v.length <= 30 || this.$t("profile.asp_public_name.rule_length"),
-                ]
-              }
-            },
-            value: "",
-            error: false
-          },
-          {
-            name: "description",
-            t_label:"profile.asp_description.label",
-            t_description: "profile.asp_description.descr",
-            type: "str",
-            attr: {
-              max: 980,
-              unpacked: true
-            },
-            error: false,
-            value: ""
-          },
+          this.asp_public_name(),
+          this.asp_actor_description(),
           // {
           //   name: "location",
           //   label: "Location",
@@ -142,20 +122,26 @@
           //   },
           //   value: null
           // },
-          this.email(),
-          this.privacy_aspect("default_privacy","default" ),
-          this.license_aspect("default_license",["cc_licenses"],null, "default")
+          this.asp_email(),
+          this.asp_privacy_aspect("default_privacy", "default"),
+          this.asp_license_aspect("default_license", ["cc_licenses"], null, "default")
         ],
         password_aspects: {
-          actual_password: this.password("actual_password", "current"),
+          actual_password: this.asp_password("actual_password", "current"),
           password: new_pwd,
-          password_confirm: this.password_confirm(new_pwd, "repeat_new")
+          password_confirm: this.asp_password_confirm(new_pwd, "repeat_new")
         },
+        domain_specific_aspects: [],
         waiting: false,
       }
     },
     created() {
       this.reset_edit_values()
+      const domain = this.$store.getters["app/fixed_domain"]
+      if (domain) {
+        const domain_data = this.$store.getters["domain_by_name"](domain)
+        this.domain_specific_aspects = this.$_.cloneDeep(this.$_.get(domain_data, "users.profile.additional_aspects", []))
+      }
     },
     // todo this could help us to get the map location, but not sure where to get it in the lifecycle
     beforeRouteEnter(to, from, next) {
@@ -192,18 +178,23 @@
       },
       doneEdit: function () {
         const new_profile = extract_unpacked_values(this.profile_aspects)
-        this.$api.post_actor__me(new_profile).then(({data}) => {
-          this.$store.commit(USER_SET_USER_DATA, data)
-          this.persist_user_data()
-          this.edit_mode = false;
-          this.reset_edit_values()
-          this.ok_snackbar("Profile updated")
-        }).catch((err) => {
-          console.log("err", err)
-          this.error_snackbar("Something went wrong")
-        }).finally(() => {
-          this.goto_top()
-        })
+
+        const domain = this.$store.getters["app/fixed_domain"]
+        if (domain) {
+          new_profile.domain = {domain: extract_unpacked_values(this.domain_specific_aspects)}
+        }
+          this.$api.post_actor__me(new_profile).then(({data}) => {
+            this.$store.commit(USER_SET_USER_DATA, data)
+            this.persist_user_data()
+            this.edit_mode = false;
+            this.reset_edit_values()
+            this.ok_snackbar("Profile updated")
+          }).catch((err) => {
+            console.log("err", err)
+            this.error_snackbar("Something went wrong")
+          }).finally(() => {
+            this.goto_top()
+          })
       },
       change_password() {
         const new_password = extract_unpacked_values(this.password_aspects)
@@ -269,17 +260,10 @@
       //   return this.profile_aspects.map(a => a.error)
       // },
       any_invalid() {
-        for(let a of this.profile_aspects) {
-          console.log(a.name, a.error)
-        }
         return this.$_.some(this.profile_aspects, (a) => a.hasOwnProperty("error") && a.error)
       }
     },
-    watch: {
-      profile_aspects(v) {
-        console.log(v)
-      }
-    }
+    watch: {}
   }
 </script>
 

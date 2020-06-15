@@ -12,19 +12,19 @@
           v-btn.col_btn press
         v-col.bg2(cols="8" sm="8")
           v-text-field(placeholder="cool cool cool")
-    v-expansion-panels
+    v-expansion-panels(:value="[0]" :style="{width:'300px'}")
       v-expansion-panel
-        v-expansion-panel-header.px-2.py-1 Entrytypes
-        v-expansion-panel-content.px-2.py-1
+        v-expansion-panel-header.px-3.py-1 Legend
+        v-expansion-panel-content.px-2.py-1.no-wrap
           v-list(dense)
             v-list-item-group(multiple mandatory)
-              v-list-item(color="green")
+              v-list-item(color="green" :ripple="false")
                 v-list-item-icon
-                  v-icon(color="green") mdi-checkbox-blank-circle
+                  v-icon.mr-0(color="green" x-small) mdi-checkbox-blank-circle
                 v-list-item-title Local Observation
-              v-list-item(color="red")
+              v-list-item(color="red" :ripple="false")
                 v-list-item-icon
-                    v-icon(color="red") mdi-checkbox-blank-circle
+                    v-icon(color="red" x-small) mdi-checkbox-blank-circle
                 v-list-item-title Article Review
 
     v-menu(:close-on-content-click="false"
@@ -35,10 +35,22 @@
           v-icon mdi-chevron-down
       v-card
         v-card-title hi
+    div
+      v-chip(:color="chip_data.color" pill) chip
+        v-avatar(:min-width="80")
+          img(src="https://vuetifyjs.com/apple-touch-icon-180x180.png")
 
 </template>
 
 <script>
+
+  //   primary: '#1976D2',
+  // secondary: '#424242',
+  // accent: '#82B1FF',
+  // error: '#FF5252',
+  // info: '#2196F3',
+  // success: '#4CAF50',
+  // warning: '#FFC107',
 
   import AspectDialog from "~/components/aspect_utils/AspectDialog"
   import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
@@ -61,6 +73,9 @@
     },
     data() {
       return {
+        chip_data: {
+          color:"info"
+        },
         val: {value: null},
         o_a: {
           name: "OA",

@@ -1,6 +1,5 @@
 <template lang="pug">
   v-navigation-drawer(
-    v-else
     app
     :permanent="drawer"
     v-model="drawer"
@@ -8,7 +7,6 @@
     clipped
     hide-overlay
     temporary
-    left
     :width="drawer_width"
     fixed)
     div.ml-2.mr-3
@@ -16,14 +14,14 @@
         v-col(cols=3)
           v-btn(@click="home()")
             v-icon mdi-home
-        v-col(cols=7)
-          v-select(
-            prepend-icon="mdi-layers-outline"
-            label="Layers"
-            :items="layer_options"
-            multiple
-            small-chips
-            v-on:change="$emit('layer_select_change', $event)")
+        <!--        v-col(cols=7)-->
+        <!--          v-select(-->
+        <!--            prepend-icon="mdi-layers-outline"-->
+        <!--            label="Layers"-->
+        <!--            :items="layer_options"-->
+        <!--            multiple-->
+        <!--            small-chips-->
+        <!--            v-on:change="$emit('layer_select_change', $event)")-->
       v-row.ma-1(wrap justify-center)
         <!-- the v-show prevents reloading every time, when switching between entry and search-->
         Search(v-show="nav_mode_search"

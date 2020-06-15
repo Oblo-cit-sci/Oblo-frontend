@@ -6,13 +6,12 @@
       v-btn(dark color="green" fab @click="open_layer_dialog")
         v-icon mdi-layers-outline
     .central_button
-      v-btn(large rounded color="success")
+      v-btn(large rounded color="success" :style="center_button_shift")
         b New Observation
         v-icon mdi-plus
-    <!--    .mypopup(class="COULD BE USED IF MAPBOX POPUP STILL BEHAVES SHITTTY")-->
+      v-btn(x-small dark fab absolute bottom leftcolor="orange" :style="{left: "-2%"}") ...
     component(:is="navgiagtion_component"
       :drawer="drawer"
-      :layers="layers"
       :navigation_mode="navigation_mode"
       @navigation_mode_entry="navigate_entry"
       @navigation_mode_search="unselect_entry"
@@ -38,17 +37,13 @@
   import {MAP_GOTO_LOCATION, MAP_SET_ENTRIES} from "~/store/map"
   import {default_place_type, VIEW} from "~/lib/consts"
   import {ENTRIES_GET_ENTRY, ENTRIES_HAS_FULL_ENTRY, ENTRIES_SAVE_ENTRY} from "~/store/entries"
-  import {route_change_query} from "~/lib/util"
-  import MapNavigationBottomSheet from "~/components/map/MapNavigationBottomSheet"
-  import MapNavigationDrawer from "~/components/map/MapNavigationDrawer"
   import {mapGetters} from "vuex"
   import MapIncludeMixin from "~/components/map/MapIncludeMixin"
   import {LAYER_BASE_ID} from "~/lib/map_utils"
   import NavBaseMixin from "~/components/NavBaseMixin"
   import AspectDialog from "~/components/aspect_utils/AspectDialog"
+  import HasMainNavComponentMixin, {SEARCH} from "~/components/global/HasMainNavComponentMixin"
 
-  export const SEARCH = "search"
-  export const ENTRY = "entry"
 
   const cluster_layer_name = LAYER_BASE_ID + '_clusters'
 
@@ -67,12 +62,11 @@
   export default {
     name: "Map",
     layout: "map_layout",
-    mixins: [MapIncludeMixin, NavBaseMixin],
+    mixins: [MapIncludeMixin, NavBaseMixin, HasMainNavComponentMixin],
     components: {AspectDialog, Mapbox},
     props: {},
     data() {
       return {
-        drawer: false,
         act_hoover_id: null,
         act_hoover_uuid: null,
         act_popup: null,
@@ -120,11 +114,14 @@
           "left": shift
         }
       },
-      navgiagtion_component() {
-        if (this.display_mdDown)
-          return MapNavigationBottomSheet
-        else
-          return MapNavigationDrawer
+      center_button_shift() {
+        let shift = "0.5%"
+        if (!this.display_mdDown && this.drawer) {
+          shift = this.$vuetify.breakpoint.xl ? "375px" : "300px"
+        }
+        return {
+          "left": shift
+        }
       },
       center_padding() {
         if (!this.drawer) {
@@ -140,16 +137,7 @@
       goto_location() {
         // console.log("map, goto_location, map-store", this.$store.getters[MAP_GOTO_LOCATION]())
         return this.$store.getters[MAP_GOTO_LOCATION]()
-      },
-      navigation_mode() {
-        if (this.$route.query.uuid) {
-          return ENTRY
-        } else
-          return SEARCH
-      },
-      selected_entry() {
-        return this.$route.query.uuid
-      },
+      }
     },
     methods: {
       render(map) {
@@ -296,7 +284,6 @@
               features: []
             }
           })
-
           this.map.addLayer({
             id: 'cluster-region-label',
             type: 'symbol',
@@ -315,11 +302,9 @@
               "text-halo-width": 1
             }
           })
-
         } else {
           console.log("cluster layer exists already")
         }
-
         const entries_layer_name = layer_base_id + '_entries'
         this.map.addLayer({
           'id': entries_layer_name,
@@ -450,23 +435,25 @@
         console.log(selection)
       },
       select_entry_marker(feature) {
-        console.log("sel", feature)
+        // console.log("sel", feature)
         const entry_uuid = feature.properties.uuid
         // console.log("select_entry_marker", entry_uuid)
         if (this.$store.getters[ENTRIES_HAS_FULL_ENTRY](entry_uuid)) {
           // console.log("has full entry")
-          if (this.selected_entry) {
-            this.change_entry_markers_mode(this.selected_entry, false)
-          }
+          // todo redo
+          // if (this.selected_entry) {
+          //   this.change_entry_markers_mode(this.selected_entry, false)
+          // }
           this.update_navigation_mode(entry_uuid, VIEW, false)
           this.map_goto_location(feature.geometry)
         } else {
           // console.log("fetching entry")
           this.$api.entry__$uuid(entry_uuid).then(({data}) => {
             if (data.data) {
-              if (this.selected_entry) {
-                this.change_entry_markers_mode(this.selected_entry, false)
-              }
+              // todo redo
+              // if (this.selected_entry) {
+              //   this.change_entry_markers_mode(this.selected_entry, false)
+              // }
               const entry = data.data
 
               this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
@@ -493,36 +480,8 @@
             )
         }
       },
-      navigate_entry({uuid, mode}) {
-        this.update_navigation_mode(uuid, mode)
-      },
-      unselect_entry() {
-        this.update_navigation_mode(null)
-      },
-      update_navigation_mode(entry_uuid, entry_mode, easeToFirst = true) {
-        if (this.selected_entry) {
-          this.change_entry_markers_mode(this.selected_entry, false)
-        }
-        const query = {}
-        if (entry_uuid) {
-          query.uuid = entry_uuid
-        }
-        if (entry_mode) {
-          query.entry_mode = entry_mode
-          this.drawer = true
-          this.change_entry_markers_mode(entry_uuid, true)
-          if (easeToFirst) {
-            const entry_loc = this.$store.getters[ENTRIES_GET_ENTRY](entry_uuid).location
-            if (entry_loc && entry_loc.length > 0) {
-              this.map_goto_location(entry_loc[0])
-            }
-          }
-        }
-        this.$router.push(route_change_query(this.$route, query, true))
-      },
       filter_entries(uuids) {
         // console.log("about to filter these uuids...", uuids.length, this.initialized)
-
         if (this.initialized && this.entries.features.length !== uuids.length && uuids.length > 0) {
           console.log(this.entries.features.length, uuids.length === this.entries.features.length, this.map.getSource("all_entries_source"))
           // this.map.getSource("all_entries_source")
@@ -540,6 +499,15 @@
     watch: {
       map_loaded() {
         this.check_entries_map_done()
+      },
+      selected_entry(uuid, old_uuid) {
+        console.log(uuid, old_uuid)
+        if(old_uuid) {
+          this.change_entry_markers_mode(old_uuid, false)
+        }
+        if(uuid) {
+          this.change_entry_markers_mode(uuid, true)
+        }
       },
       goto_location(location) {
         if (location) {
@@ -569,7 +537,7 @@
     transition-timing-function: ease-out;
     position: fixed;
     height: 5%;
-    z-index: 1;
+    z-index: 3;
   }
 
   .central_button {

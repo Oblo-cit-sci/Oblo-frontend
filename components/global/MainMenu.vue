@@ -1,7 +1,10 @@
 <template lang="pug">
   v-navigation-drawer(
-    :value="nav_drawer"
-    v-show="show"
+    v-model="drawer_state"
+    :temporary="over"
+    :hide-overlay="over"
+    :stateless="over"
+    :style="behind_style"
     app)
     v-list
       v-list-item-group(v-for="group in groups" :key="group.name")
@@ -46,7 +49,7 @@
     mixins: [TriggerSnackbarMixin, PersistentStorageMixin, NavBaseMixin],
     components: {LanguageSelector},
     props: {
-      show: Boolean,
+      over: Boolean
     },
     data() {
       return {}
@@ -57,6 +60,21 @@
         connected: APP_CONNECTED,
         nav_drawer: "app/nav_drawer"
       }),
+      drawer_state: {
+        get: function () {
+          return this.nav_drawer
+        },
+        set(nav_state) {
+          this.$store.commit("app/nav_drawer", nav_state)
+        }
+      },
+      behind_style() {
+        if(this.over) {
+          return {
+            "z-index": 1
+          }
+        }
+      },
       groups() {
         for (let page of all_pages_n_actions) {
           page.title = this.$t(page.t_title)

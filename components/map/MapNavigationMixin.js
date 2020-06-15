@@ -17,7 +17,7 @@ export default {
   mixins: [NavBaseMixin],
   props: {
     drawer: Boolean,
-    layers: Array,
+    // layers: Array,
     navigation_mode: String, // synced
     selected_entry_uuid: String // synced
   },

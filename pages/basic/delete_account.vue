@@ -40,8 +40,8 @@
           "and we will continue to retain basic user data (you username and public name) so your connection with them is preserved. " +
           "All private entries without other collaborators will be deleted. Those with collaborators will remain",
         aspects: {
-          registered_name: this.registered_name(),
-          password: this.password()
+          registered_name: this.asp_registered_name(),
+          password: this.asp_password()
         },
         entries_to_delete: []
       }

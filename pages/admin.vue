@@ -1,7 +1,6 @@
 <template lang="pug">
   div
     ActorList(:actors="actors")
-
 </template>
 
 <script>

@@ -18,6 +18,12 @@
   "profile.btn_save": "Speichern",
   "profile.btn_delete": "Profil löschen",
   "profile.h2": "Ihre Einträge",
+  ".asp_username.label": "Benutzername",
+  "actor.h1": "@:profile.h1",
+  "actor.deactivated": "Dieser account ist nicht mehr aktiv",
+  "actor.admin.asp_global_role": "Globale Rolle",
+  "actor.admin.asp_editor_for_domain": "Editor für die Domäne",
+  "actor.admin.btn_update": "Aktualisieren",
   "index.p1": "Mit einem Account auf {server_name} kannst du Einträge machen und Gruppen beitreten.",
   "index.about_a": "Über das Projekt",
   "index.privacy_a": "Datenschutz",
@@ -48,5 +54,13 @@
   "_global.asp_license.label": "Lizenz",
   "_global.asp_license.alt_label.default": "Voreingestellte Lizenz",
   "_global.asp_license.alt_descr.default": "Wählen sie einen voreingestellten Lizenz für ihre Einträge",
-  "_global.language.label": "Sprache"
+  "_global.language.label": "Sprache",
+  "_global.role.admin": "Admin",
+  "_global.role.editor": "Editor",
+  "_global.role.user": "Benutzer",
+  "_global.role.visitor": "Besucher",
+  "lang.en": "englisch",
+  "lang.es": "spanisch",
+  "lang.de": "deutsch",
+  "lang.fr": "französisch"
 }

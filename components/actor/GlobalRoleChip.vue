@@ -1,7 +1,6 @@
 <template lang="pug">
   v-chip(outlined disabled small color="black" text-color="black")
-    b.text-capitalize {{global_role}}
-
+    b.text-capitalize {{t_global_role}}
 </template>
 
 <script>
@@ -15,7 +14,11 @@ export default {
   data() {
     return {}
   },
-  computed: {},
+  computed: {
+    t_global_role() {
+      return this.$t("_global.role."+this.global_role)
+    }
+  },
   methods: {}
 }
 </script>

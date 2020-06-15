@@ -15,12 +15,13 @@
             MetaChips(v-if="show_meta_aspects" :meta_aspects="meta_aspects")
           v-row.pl-3.mt-3
             ActorChip(:actor="creator")
-          v-row.pl-3
-            Taglist(v-if="show_tags" :tags="tags" :slide="true")
-          v-row.pl-3
-            .orange--text.mt-2(v-if="outdated")
-              v-icon(color="orange") mdi-alert-outline
-              span Created from an outdated version. Some values might change. Download the entry before updating is recommended
+          v-row.pl-3(v-if="show_tags")
+            Taglist(:tags="tags" :slide="true")
+          v-row.pl-3(v-if="show_info")
+            v-list-item(v-if="outdated")
+              v-list-item-icon
+                v-icon(color="orange") mdi-alert-outline
+              v-list-item-content {{$t("comp_e_pw.outdated")}}
         v-col(v-if="show_image" cols=4 class="col-md-4 col-sm-12 entry-image")
           div.float-md-right.float-sm-left.entry-display-size.mr-3
             v-avatar(tile class="entry-image-size")
@@ -39,7 +40,7 @@
       v-card-actions
         div
           v-btn(small text outlined @click="goto(entry.uuid)") {{goto_text}}
-          v-btn(v-if="show_view" small text outlined @click="goto(entry.uuid, 'view')") view
+          v-btn(v-if="show_view" small text outlined @click="goto(entry.uuid, 'view')") {{$t("comp_e_pw.view")}}
           v-btn(small text outlined :color="act.color || 'green'"
             v-for="act in additional_actions"
             :key="act.name"
@@ -111,6 +112,10 @@
         type: Array,
         default: () => []
       },
+      show_info: {
+        type: Boolean,
+        default: true
+      }
     },
     computed: {
       deleted_entry() {
@@ -135,7 +140,7 @@
         if (this.outdated)
           return "update"
         else
-          return this.proper_mode
+          return this.$t("comp_e_pw."+this.proper_mode)
       },
       show_image() {
         return this.entry.image // ![undefined, null, ""].includes(this.entry.image)

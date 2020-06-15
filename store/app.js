@@ -31,11 +31,11 @@ export const mutations = {
     state.fixed_domain = domain
   },
   nav_drawer(state, nav_drawer) {
-    if(!nav_drawer) {
-      nav_drawer = !state.nav_drawer
-    }
     state.nav_drawer = nav_drawer
   },
+  switch_nav_drawer(state) {
+    state.nav_drawer = !state.nav_drawer
+  }
 }
 
 export const getters = {

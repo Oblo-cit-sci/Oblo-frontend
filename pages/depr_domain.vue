@@ -1,20 +1,30 @@
 <template lang="pug">
-  .fullSize()
-    .buttongroup(:style="button_group_shift")
-      v-btn(dark fab large color="blue" @click="switch_nav_drawer")
-        v-icon mdi-menu
-      v-btn(dark color="green" fab @click="open_layer_dialog")
-        v-icon mdi-layers-outline
-    .central_button
-      v-btn(large rounded color="success" :style="center_button_shift")
-        b New Observation
-        v-icon mdi-plus
-    MainMenu(:over="true")
-    client-only
-      mapbox.fullSize(
-        :access-token="access_token"
-        :map-options="default_map_options"
-        @map-load="onMapLoaded")
+  v-container(fluid :style="main_container_width_style")
+    div(class="header-domain")
+      p.display-1 {{domain_data.page_index.title}}
+      p.heading {{domain_data.page_index.description}}
+    div
+      p
+        h3 {{domain_data.page_index.action_text}}
+      div(v-if="main_template")
+        v-card(color='#85DCB0' @click="create_from_main_template")
+          v-card-title {{main_template.title}}
+          v-card-text {{main_template.description}}
+        v-expansion-panels.mt-3(flat dense)
+          v-expansion-panel(style="backgroundColor: 'none'")
+            v-expansion-panel-header(style="backgroundColor: 'none'") Create other types of entries...
+            v-expansion-panel-content
+              EntryCreateList(:template_entries="template_entries")
+      div(v-else)
+        v-divider
+        EntryCreateList(:template_entries="template_entries")
+    v-divider.wide-divider
+    MapWrapper(:height="400")
+    Search(
+      :init_clear="false"
+      :search_config="domain_pre_filter",
+      :mixin_domain_drafts="domain_name",
+      :include_filters="filters")
 </template>
 
 <script>
@@ -39,14 +49,12 @@
   import MapWrapper from "~/components/map/MapWrapper"
   import EntryCreateMixin from "~/components/entry/EntryCreateMixin"
   import {dev_env} from "~/lib/util"
-  import MainMenu from "~/components/global/MainMenu"
-  import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
 
   export default {
     name: "domain",
-    layout: "new_map_layout",
-    mixins: [HasMainNavComponentMixin, EntryNavMixin, PersistentStorageMixin, LayoutMixin, MapIncludeMixin, EntryCreateMixin],
-    components: {MainMenu, MapWrapper, EntryCreateList, Search, Mapbox},
+    layout:"new_map_layout",
+    mixins: [EntryNavMixin, PersistentStorageMixin, LayoutMixin, MapIncludeMixin, EntryCreateMixin],
+    components: {MapWrapper, EntryCreateList, Search, Mapbox},
     data() {
       return {
         main_template: null
@@ -71,24 +79,6 @@
       next()
     },
     computed: {
-      button_group_shift() {
-        let shift = "0.5%"
-        if (!this.display_mdDown && this.drawer) {
-          shift = this.$vuetify.breakpoint.xl ? "750px" : "600px"
-        }
-        return {
-          "left": shift
-        }
-      },
-      center_button_shift() {
-        let shift = "0.5%"
-        if (!this.display_mdDown && this.drawer) {
-          shift = this.$vuetify.breakpoint.xl ? "375px" : "300px"
-        }
-        return {
-          "left": shift
-        }
-      },
       ...mapGetters({logged_in: USER_LOGGED_IN, domain_templtes: TEMPLATES_OF_DOMAIN, domains: DOMAIN_BY_NAME}),
       domain_name() {
         return this.$route.query[QP_D] || this.$route.query[QP_F]
@@ -129,24 +119,6 @@
 </script>
 
 <style scoped>
-
-  .buttongroup {
-    position: absolute;
-    top: 2%;
-    transition: left 0.2s;
-    transition-timing-function: ease-out;
-    height: 5%;
-    z-index: 1;
-  }
-
-  .central_button {
-    position: absolute;
-    top: 2%;
-    z-index: 1;
-    left: 50%;
-    transform: translate(-50%, 0)
-  }
-
   .header-domain {
     background-color: white;
     padding: 10px;
@@ -156,12 +128,7 @@
     margin: 10px 0;
   }
 
-  .fullWidth {
-    width: 100%;
-  }
-
   .fullSize {
     width: 100%;
-    height: 100%;
   }
 </style>
