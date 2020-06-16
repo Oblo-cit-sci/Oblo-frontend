@@ -15,12 +15,12 @@ export default {
     }
   },
   computed: {
-    navgiagtion_component() {
-      if (this.$vuetify.breakpoint.mdAndDown)
-        return MapNavigationBottomSheet
-      else
-        return MapNavigationDrawer
-    },
+    // navgiagtion_component() {
+    //   if (this.$vuetify.breakpoint.mdAndDown)
+    //     return MapNavigationBottomSheet
+    //   else
+    //     return MapNavigationDrawer
+    // },
     navigation_mode() {
       if (this.$route.query.uuid) {
         return ENTRY

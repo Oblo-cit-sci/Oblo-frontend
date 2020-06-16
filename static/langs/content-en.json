@@ -96,6 +96,7 @@
   "comp_e_pw.view": "@:_global.w.view",
   "comp_e_pw.edit": "@:_global.w.edit",
   "comp_e_pw.review": "review",
+  "comp_lgd.legend" : "Legend",
   "_global.w.view": "view",
   "_global.w.edit": "edit",
   "comp_actor_litem.deactivated": "deactivated",

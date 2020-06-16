@@ -9,7 +9,11 @@
       v-btn.shift_anim(large rounded color="success" :style="center_button_shift" @click="create_from_main_template")
         b {{main_template.create_text}}
         v-icon mdi-plus
-    MenuContainer(:over="true" :mode.sync="menu_mode" @menu_width="menu_width=$event")
+    MenuContainer(
+      :over="true"
+      :mode.sync="menu_mode"
+      :domain_navigation_mode="navigation_mode"
+      @menu_width="menu_width=$event")
     client-only
       MapWrapper(height="100%" :domain="domain_name")
 </template>

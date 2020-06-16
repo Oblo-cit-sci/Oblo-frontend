@@ -17,7 +17,7 @@
         v-tab-item
           MainMenuList
         v-tab-item
-          DomainMenu
+          DomainMenu(:navigation_mode="domain_navigation_mode")
       MainMenuList(v-if="menu_mode_fixed")
 </template>
 
@@ -42,7 +42,8 @@
         default: MENU_MODE_MAIN
       },
       menu_mode_fixed: Boolean,
-      over: Boolean
+      over: Boolean,
+      domain_navigation_mode: String
     },
     data() {
       return {}
