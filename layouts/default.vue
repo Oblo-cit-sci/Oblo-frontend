@@ -1,6 +1,6 @@
 <template lang="pug">
   v-app
-    MainMenu(:show="initialized")
+    MenuContainer(:show="initialized" :menu_mode_fixed="true")
     Appbar
     v-content
       v-container(v-if="initialized")
@@ -21,15 +21,16 @@
   import {APP_CONNECTED, APP_CONNECTING, APP_DB_LOADED, APP_INITIALIZED,} from "~/store/app"
   import {dev_env} from "~/lib/util"
   import NavBaseMixin from "~/components/NavBaseMixin"
-  import MainMenu from "~/components/global/MainMenu"
+  import MainMenu from "~/components/menu/MainMenu"
   import PrivacySheet from "~/components/global/PrivacySheet"
   import Appbar from "~/components/global/Appbar"
   import InitializationMixin from "~/layouts/InitializationMixin"
+  import MenuContainer from "~/components/menu/MenuContainer"
 
   let lastDomain = ''
 
   export default {
-    components: {Appbar, PrivacySheet, MainMenu, GlobalSnackbar, Footer},
+    components: {MenuContainer, Appbar, PrivacySheet, MainMenu, GlobalSnackbar, Footer},
     mixins: [InitializationMixin, TriggerSnackbarMixin, PersistentStorageMixin, NavBaseMixin],
     data() {
       return {

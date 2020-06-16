@@ -13,19 +13,20 @@
   import MapIncludeMixin from "~/components/map/MapIncludeMixin"
   import {VIEW} from "~/lib/consts"
   import {mapGetters} from "vuex"
-  import {MAP_SET_ENTRIES} from "~/store/map"
   import {LAYER_BASE_ID} from "~/lib/map_utils"
-
-
+  import DomainMapMixin from "~/components/map/DomainMapMixin"
 
   export default {
     name: "MapWrapper",
-    mixins: [MapIncludeMixin],
+    mixins: [MapIncludeMixin, DomainMapMixin],
     components: {Mapbox},
     props: {
       height: {
-        type: Number,
+        type: [String, Number],
         default: 400
+      },
+      domain: {
+        type: String
       }
     },
     data() {
@@ -33,29 +34,27 @@
     },
     computed: {
       ...mapGetters({
-        entries: "map/entries",
+        all_map_entries: "map/entries",
         layers: "map/layers",
         layer_status: "map/layer_status"
       }),
+      entries() {
+        return this.all_map_entries(this.domain)
+      },
       map_height() {
         return {
-          height: (this.height ? this.height : window.innerHeight) + "px"
+          height: (this.height ? this.height : window.innerHeight) + (typeof(this.height) === "number" ? "px": "")
         }
       }
     },
     created() {
-      if (this.$_.isEmpty(this.entries)) {
-        console.log("loading entries")
-        this.$api.entries_map_entries(true).then(({data}) => {
-          // console.log(data)
-          this.$store.dispatch(MAP_SET_ENTRIES, data)
-        }).catch(err => {
-          console.log("map entries error")
-        })
+      if (this.domain) {
+        this.load_map_entries()
       }
     },
     methods: {
       check_entries_map_done() {
+        // console.log("check_entries_map_done", this.entries)
         if (!this.$_.isEmpty(this.entries) && this.entries.features.length > 0 && this.map_loaded) {
           this.init_map_source_and_layers(this.entries, LAYER_BASE_ID)
           this.initialized = true

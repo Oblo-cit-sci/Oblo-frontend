@@ -1,4 +1,3 @@
-
 const ld = require("lodash")
 
 // Mutations
@@ -22,8 +21,9 @@ export const state = () => ({
 })
 
 export const mutations = {
-  set_entries(state, entries) {
-    state.entries = entries
+  set_entries(state, {domain, entries}) {
+    // console.log("setting", domain, entries)
+    $nuxt.$set(state.entries, domain, entries)
   },
   clear(state) {
     state.entries.clear()
@@ -41,7 +41,9 @@ export const mutations = {
 
 export const getters = {
   entries(state) {
-    return state.entries
+    return (domain) => {
+      return state.entries[domain] || {}
+    }
   },
   goto_location(state) {
     return () => {
@@ -64,9 +66,10 @@ export const getters = {
 export const actions = {
 
   // filters entries that have a location set
-  set_entries({commit}, entries) {
+  set_entries({commit}, data) {
+    // console.log("set entries", data.domain, data.entries)
     // const location_entries = ld.filter(entries, e => e.location !== null && e.location !== undefined)
-    commit("set_entries", entries)
+    commit("set_entries", data)
   },
   goto_done(context) {
     const goto_loc = context.getters.goto_location()

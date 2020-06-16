@@ -1,28 +1,22 @@
 <template lang="pug">
-  v-navigation-drawer(
-    v-model="drawer_state"
-    :temporary="over"
-    :hide-overlay="over"
-    :stateless="over"
-    :style="behind_style"
-    app)
-    v-list
-      v-list-item-group(v-for="group in groups" :key="group.name")
-        v-list-item(v-for="item in group.items"
-          :key="item.to"
-          :to="item.to"
-          router
-          nuxt
-          @click="item.action ? action(item.action) : ''"
-          exact)
-          v-list-item-icon
-            v-icon {{item.icon}}
-          v-list-item-content
-            v-list-item-title(v-text="item.title")
-      v-divider
-      LanguageSelector
-      v-list-item
-        p(class="package-version") v{{version}}
+  v-list
+    v-list-item-group(v-for="group in groups" :key="group.name")
+      v-list-item(v-for="item in group.items"
+        :key="item.to"
+        :to="item.to"
+        router
+        nuxt
+        @click="item.action ? action(item.action) : ''"
+        exact)
+        v-list-item-icon
+          v-icon {{item.icon}}
+        v-list-item-content
+          v-list-item-title(v-text="item.title")
+    v-divider
+    LanguageSelector
+    v-list-item
+      p(class="package-version") v{{version}}
+
 </template>
 
 <script>
@@ -31,12 +25,9 @@
   import {ADMIN} from "~/lib/consts"
   import {APP_CONNECTED} from "~/store/app"
   import {mapGetters} from "vuex"
-  import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
-  import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
-  import NavBaseMixin from "~/components/NavBaseMixin"
   import LanguageSelector from "~/components/LanguageSelector"
 
-  const pkg = require('~/package')
+  const pkg = require('~/package.json')
 
   let require_login = ["menu.profile", "menu.logout"]
   let hide_logged_in = ["menu.login", "menu.register"]
@@ -44,37 +35,21 @@
   let hide_no_be = ["menu.register", "menu.login"] // if not connected out and if logged in out
   let show_inDev = ["menu.tests"] //, "Types", "Entrytypes", "Aspectbuild"]
 
+
   export default {
-    name: "MainMenu",
-    mixins: [TriggerSnackbarMixin, PersistentStorageMixin, NavBaseMixin],
+    name: "MainMenuList",
+    mixins: [],
     components: {LanguageSelector},
-    props: {
-      over: Boolean
-    },
+    props: {},
     data() {
       return {}
     },
     computed: {
       ...mapGetters({
-        logged_in: USER_LOGGED_IN,
-        connected: APP_CONNECTED,
-        nav_drawer: "app/nav_drawer"
-      }),
-      drawer_state: {
-        get: function () {
-          return this.nav_drawer
-        },
-        set(nav_state) {
-          this.$store.commit("app/nav_drawer", nav_state)
+          logged_in: USER_LOGGED_IN,
+          connected: APP_CONNECTED
         }
-      },
-      behind_style() {
-        if(this.over) {
-          return {
-            "z-index": 1
-          }
-        }
-      },
+      ),
       groups() {
         for (let page of all_pages_n_actions) {
           page.title = this.$t(page.t_title)
@@ -103,7 +78,8 @@
       version() {
         return pkg.version
       }
-    }
+    },
+    methods: {}
   }
 </script>
 

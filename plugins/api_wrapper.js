@@ -222,8 +222,8 @@ class APIWrapper {
     return this.axios.post(`${this.actor_baseURL}/search`, search_query)
   }
 
-  entries_map_entries(as_geojson = false) {
-    return this.axios.post(`${this.entries_baseURL}/map_entries`, {}, {
+  entries_map_entries(config = {}, as_geojson = false) {
+    return this.axios.post(`${this.entries_baseURL}/map_entries`, config, {
       params: {
         as_geojson
       }

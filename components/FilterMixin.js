@@ -1,8 +1,9 @@
+import {DOMAIN} from "~/store"
 
 export default {
   name: "FilterMixin",
   methods: {
-    domain(entries, domains) {
+    filter_entries_by_domains(entries, domains) {
       // todo check if string instead
       if (domains.constructor !== Array) {
         domains = [domains]
@@ -32,6 +33,13 @@ export default {
       return this.$_.filter(entries, e => {
         return this.$_.includes(entrytypes, e.type_slug)
       })
+    },
+    get_domain_filter(domain_name) {
+      return {
+        name: "meta",
+        column: DOMAIN,
+        conditional_value: domain_name
+      }
     }
   }
 }

@@ -1,27 +1,23 @@
 <template lang="pug">
   .fullSize()
-    .buttongroup(:style="button_group_shift")
+    .buttongroup.shift_anim(:style="button_group_shift")
       v-btn(dark fab large color="blue" @click="switch_nav_drawer")
         v-icon mdi-menu
       v-btn(dark color="green" fab @click="open_layer_dialog")
         v-icon mdi-layers-outline
     .central_button
-      v-btn(large rounded color="success" :style="center_button_shift")
-        b New Observation
+      v-btn.shift_anim(large rounded color="success" :style="center_button_shift" @click="create_from_main_template")
+        b {{main_template.create_text}}
         v-icon mdi-plus
-    MainMenu(:over="true")
+    MenuContainer(:over="true" :mode.sync="menu_mode" @menu_width="menu_width=$event")
     client-only
-      mapbox.fullSize(
-        :access-token="access_token"
-        :map-options="default_map_options"
-        @map-load="onMapLoaded")
+      MapWrapper(height="100%" :domain="domain_name")
 </template>
 
 <script>
 
   import Mapbox from 'mapbox-gl-vue'
   import EntryCreateList from "~/components/EntryCreateList";
-  import {global_context_filter} from "~/lib/search";
   import Search from "~/components/global/Search";
   import {entrytype_filter_options} from "~/lib/filter_option_consts";
 
@@ -29,7 +25,6 @@
   import {DOMAIN, DOMAIN_BY_NAME, SET_DOMAIN} from "~/store";
   import {TEMPLATES_OF_DOMAIN} from "~/store/templates";
   import {USER_LOGGED_IN} from "~/store/user";
-  import {EDIT, QP_D, QP_F} from "~/lib/consts"
   import EntryNavMixin from "~/components/EntryNavMixin"
   import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
   import {object_list2options} from "~/lib/options"
@@ -37,19 +32,24 @@
   import {get_tags_filter_options} from "~/lib/codes"
   import MapIncludeMixin from "~/components/map/MapIncludeMixin"
   import MapWrapper from "~/components/map/MapWrapper"
-  import EntryCreateMixin from "~/components/entry/EntryCreateMixin"
   import {dev_env} from "~/lib/util"
-  import MainMenu from "~/components/global/MainMenu"
+  import MainMenu from "~/components/menu/MainMenu"
   import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
+  import MenuContainer from "~/components/menu/MenuContainer"
+  import DomainMixin from "~/components/DomainMixin"
+  import {MENU_MODE_DOMAIN_OVERVIEW} from "~/lib/consts"
+  import DomainMapMixin from "~/components/map/DomainMapMixin"
 
   export default {
     name: "domain",
     layout: "new_map_layout",
-    mixins: [HasMainNavComponentMixin, EntryNavMixin, PersistentStorageMixin, LayoutMixin, MapIncludeMixin, EntryCreateMixin],
-    components: {MainMenu, MapWrapper, EntryCreateList, Search, Mapbox},
+    mixins: [DomainMixin, HasMainNavComponentMixin, EntryNavMixin,
+      PersistentStorageMixin, LayoutMixin, MapIncludeMixin],
+    components: {MenuContainer, MainMenu, MapWrapper, EntryCreateList, Search, Mapbox},
     data() {
       return {
-        main_template: null
+        menu_mode: MENU_MODE_DOMAIN_OVERVIEW,
+        menu_width: null
       }
     },
     created() {
@@ -59,9 +59,6 @@
       }
       if (this.domain_data.name !== this.$store.getters[DOMAIN]) {
         this.$store.commit(SET_DOMAIN, this.domain_data)
-      }
-      if (this.domain_data.page_index.main_template) {
-        this.main_template = this.template_entries.filter(e => e.slug === this.domain_data.page_index.main_template)[0]
       }
     },
     beforeRouteLeave(from, to, next) {
@@ -73,36 +70,26 @@
     computed: {
       button_group_shift() {
         let shift = "0.5%"
-        if (!this.display_mdDown && this.drawer) {
-          shift = this.$vuetify.breakpoint.xl ? "750px" : "600px"
+        if (!this.display_mdDown && this.nav_drawer) {
+          shift = this.menu_width + "px"
         }
         return {
           "left": shift
         }
       },
       center_button_shift() {
-        let shift = "0.5%"
-        if (!this.display_mdDown && this.drawer) {
-          shift = this.$vuetify.breakpoint.xl ? "375px" : "300px"
+        let shift = "0"
+        if (!this.display_mdDown && this.nav_drawer) {
+          shift = this.menu_width / 2 + "px"
         }
         return {
           "left": shift
         }
       },
-      ...mapGetters({logged_in: USER_LOGGED_IN, domain_templtes: TEMPLATES_OF_DOMAIN, domains: DOMAIN_BY_NAME}),
-      domain_name() {
-        return this.$route.query[QP_D] || this.$route.query[QP_F]
-      },
-      template_entries() {
-        let templates = global_context_filter(this.domain_templtes(this.domain_name))
-        if (this.main_template) {
-          templates = templates.filter(t => t.slug !== this.main_template.slug)
-        }
-        return templates
-      },
-      domain_data() {
-        return this.domains(this.domain_name)
-      },
+      ...mapGetters({
+        domains: DOMAIN_BY_NAME,
+        nav_drawer: "app/nav_drawer"
+      }),
       filters() {
         const template_filter_options = Object.assign({}, entrytype_filter_options)
         template_filter_options.aspect.items = object_list2options(
@@ -110,19 +97,11 @@
 
         const tags_filter_options = get_tags_filter_options(this.$store, this.domain_name)
         return [template_filter_options, tags_filter_options]
-      },
-      domain_pre_filter() {
-        return [{
-          name: "meta",
-          column: DOMAIN,
-          conditional_value: this.domain_data.name
-        }]
       }
     },
     methods: {
-      create_from_main_template() {
-        const entry = this.create_entry(this.main_template.slug)
-        this.to_entry(entry.uuid, EDIT)
+      open_layer_dialog() {
+
       }
     }
   }
@@ -133,8 +112,6 @@
   .buttongroup {
     position: absolute;
     top: 2%;
-    transition: left 0.2s;
-    transition-timing-function: ease-out;
     height: 5%;
     z-index: 1;
   }
@@ -145,6 +122,11 @@
     z-index: 1;
     left: 50%;
     transform: translate(-50%, 0)
+  }
+
+  .shift_anim {
+    transition: left 0.2s;
+    transition-timing-function: ease-out;
   }
 
   .header-domain {
