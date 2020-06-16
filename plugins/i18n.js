@@ -16,7 +16,7 @@ export default ({ app }) => {
     locale: "de",
 
     // Set the fallback locale in case the current locale can't be found
-    fallbackLocale: "de",
+    fallbackLocale: "en",
 
     warnHtmlInMessage: true,
     // Associate each locale to a content file

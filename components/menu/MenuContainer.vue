@@ -49,8 +49,8 @@
       return {}
     },
     created() {
-      console.log("menu created")
-              this.$emit("menu_width", this.menu_width)
+      console.log("menu created", this.$vuetify.goTo)
+      this.$emit("menu_width", this.menu_width)
     },
     computed: {
       ...mapGetters({

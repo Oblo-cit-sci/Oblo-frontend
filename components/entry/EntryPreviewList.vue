@@ -1,8 +1,8 @@
 <template lang="pug">
   #pwlisthead
-    v-row.col-sm-12(v-if="results_received" wrap justify-center)
-      div {{$tc("comp_entries_pw_list.num_entries", num_entries)}}
-    v-row(v-for="uuid in visible_entries"
+    <!--    v-row.col-sm-12(v-if="results_received" wrap justify-center)-->
+    <!--      div {{$tc("comp_entries_pw_list.num_entries", num_entries)}}-->
+    v-row.mx-1(v-for="uuid in visible_entries"
       :key="uuid")
       v-col(cols=12)
         Entrypreview(
@@ -10,11 +10,11 @@
           v-bind="preview_options"
           @delete_e="delete_e($event)"
           @preview_action="$emit('preview_action',$event)")
-    v-row(v-if="requesting_entries && !next_loading")
-      v-col(offset="5" cols=2)
-        v-progress-circular(indeterminate center size="35" color="success")
-    v-row(v-if="has_entries")
-      SimplePaginate(v-if="entries.length>entries_per_page" v-model="page" :has_next="has_more_pages" :next_loading="next_loading")
+    <!--    v-row(v-if="requesting_entries && !next_loading")-->
+    <!--      v-col(offset="5" cols=2)-->
+    <!--        v-progress-circular(indeterminate center size="35" color="success")-->
+    <!--    v-row(v-if="has_entries")-->
+    <!--      SimplePaginate(v-if="entries.length>entries_per_page" v-model="page" :has_next="has_more_pages" :next_loading="next_loading")-->
 </template>
 
 <script>
@@ -117,4 +117,11 @@
 </script>
 
 <style scoped>
+
+  #pwlisthead {
+    width: 100%;
+    overflow-y: auto;
+    max-height: 600px;
+  }
+
 </style>

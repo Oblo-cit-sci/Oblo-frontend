@@ -2,7 +2,7 @@
   v-app
     MenuContainer(:show="initialized" :menu_mode_fixed="true")
     Appbar
-    v-content
+    v-main
       v-container(v-if="initialized")
         nuxt
     GlobalSnackbar
