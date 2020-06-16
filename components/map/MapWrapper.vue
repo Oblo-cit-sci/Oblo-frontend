@@ -43,7 +43,7 @@
       },
       map_height() {
         return {
-          height: (this.height ? this.height : window.innerHeight) + (typeof(this.height) === "number" ? "px": "")
+          height: (this.height ? this.height : window.innerHeight) + (typeof (this.height) === "number" ? "px" : "")
         }
       }
     },
@@ -205,6 +205,7 @@
       map_loaded() {
         this.check_entries_map_done()
       },
+      entrylist with just one entry doesnt show the max.select - asp can filter empty strings
       entries() {
         this.check_entries_map_done()
       }
