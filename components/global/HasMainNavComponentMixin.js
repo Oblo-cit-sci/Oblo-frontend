@@ -1,18 +1,17 @@
-import MapNavigationBottomSheet from "~/components/map/MapNavigationBottomSheet"
-import MapNavigationDrawer from "~/components/map/MapNavigationDrawer"
 import {ENTRIES_GET_ENTRY} from "~/store/entries"
 import {route_change_query} from "~/lib/util"
 import {mapMutations} from "vuex"
+import URLQueryMixin from "~/components/util/URLQueryMixin"
+import {mapGetters} from "vuex"
 
 export const SEARCH = "search"
 export const ENTRY = "entry"
 
 export default {
   name: "HasMainNavComponentMixin",
+  mixins: [URLQueryMixin],
   data() {
-    return {
-      drawer: false
-    }
+    return {}
   },
   computed: {
     // navgiagtion_component() {
@@ -21,6 +20,9 @@ export default {
     //   else
     //     return MapNavigationDrawer
     // },
+    ...mapGetters({
+      nav_drawer: "app/nav_drawer"
+    }),
     navigation_mode() {
       if (this.$route.query.uuid) {
         return ENTRY
@@ -35,7 +37,7 @@ export default {
     nav() {
       console.log("nav")
     },
-    ...mapMutations({switch_nav_drawer: 'app/switch_nav_drawer'}),
+    ...mapMutations({switch_nav_drawer: 'app/switch_nav_drawer', set_nav_drawer: "app/nav_drawer"}),
     navigate_entry({uuid, mode}) {
       this.update_navigation_mode(uuid, mode)
     },
@@ -43,6 +45,7 @@ export default {
       this.update_navigation_mode(null)
     },
     update_navigation_mode(entry_uuid, entry_mode, easeToFirst = true) {
+      console.log("update_navigation_mode", easeToFirst)
       if (this.selected_entry) {
         // todo move to map logic
         // this.change_entry_markers_mode(this.selected_entry, false)
@@ -53,9 +56,8 @@ export default {
       }
       if (entry_mode) {
         query.entry_mode = entry_mode
-        this.drawer = true
-        // todo MAP
-        // this.change_entry_markers_mode(entry_uuid, true)
+        this.set_nav_drawer(true)
+        // TODO bring it back
         if (easeToFirst) {
           const entry_loc = this.$store.getters[ENTRIES_GET_ENTRY](entry_uuid).location
           if (entry_loc && entry_loc.length > 0) {
@@ -63,6 +65,7 @@ export default {
           }
         }
       }
+      Object.assign(query, this.query_param_domain)
       this.$router.push(route_change_query(this.$route, query, true))
     },
   }

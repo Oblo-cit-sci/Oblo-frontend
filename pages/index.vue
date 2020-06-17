@@ -10,7 +10,7 @@
     v-row(align="center" justify="center")
       v-col(class="col-lg-6 col-xs-12")
         div(v-for="domain in domains" :key="domain.title")
-          DomainCard(:domain="domain")
+          DomainCard(:set_domain_data="domain")
     v-row(justify="center")
       v-btn(text nuxt to="about") {{$t('index.about_a')}}
       v-btn(text nuxt to="about#privacy") {{$t('index.privacy_a')}}

@@ -3,7 +3,7 @@
     mapbox.fullSize(
       :style="map_height"
       :access-token="access_token"
-      :map-options="default_map_options"
+      :map-options="map_options"
       @map-load="onMapLoaded")
 </template>
 
@@ -13,25 +13,27 @@
   import MapIncludeMixin from "~/components/map/MapIncludeMixin"
   import {VIEW} from "~/lib/consts"
   import {mapGetters} from "vuex"
-  import {LAYER_BASE_ID} from "~/lib/map_utils"
   import DomainMapMixin from "~/components/map/DomainMapMixin"
   import {TEMPLATES_OF_DOMAIN} from "~/store/templates"
+  import {ENTRIES_HAS_FULL_ENTRY, ENTRIES_SAVE_ENTRY} from "~/store/entries"
+  import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
+  import {MAP_GOTO_LOCATION} from "~/store/map"
 
   export default {
     name: "MapWrapper",
-    mixins: [MapIncludeMixin, DomainMapMixin],
+    mixins: [MapIncludeMixin, DomainMapMixin, HasMainNavComponentMixin],
     components: {Mapbox},
     props: {
       height: {
         type: [String, Number],
         default: 400
-      },
-      domain: {
-        type: String
       }
     },
     data() {
-      return {}
+      return {
+        act_popup: null,
+        act_hoover_uuid: null
+      }
     },
     computed: {
       ...mapGetters({
@@ -51,13 +53,41 @@
         const templates = this.$store.getters[TEMPLATES_OF_DOMAIN](this.domain)
         // console.log(templates)
         let template_color_arr = []
-        for(let temp of templates) {
-          if(temp.rules.map) {
+        for (let temp of templates) {
+          if (temp.rules.map) {
             template_color_arr.push(temp.slug)
             template_color_arr.push(temp.rules.map.marker_color)
           }
         }
         return template_color_arr
+      },
+      map_options() {
+        console.log()
+        const default_camera = this.$_.get(this.$store.getters["domain_by_name"](this.domain), "map.default_camera")
+        if (default_camera) {
+          return Object.assign(this.default_map_options, default_camera)
+        } else {
+          return this.default_map_options
+        }
+      },
+      display_mdDown() {
+        return this.$vuetify.breakpoint.mdAndDown
+      },
+      center_padding() {
+        console.log("center padding?", this.nav_drawer)
+        if (!this.nav_drawer) {
+          return {}
+        } else if (this.display_mdDown) {
+          return {bottom: 400}
+        } else {
+          return {
+            left: this.$vuetify.breakpoint.xl ? 750 : 600
+          }
+        }
+      },
+      goto_location() {
+        // console.log("map, goto_location, map-store", this.$store.getters[MAP_GOTO_LOCATION]())
+        return this.$store.getters[MAP_GOTO_LOCATION]()
       }
     },
     created() {
@@ -69,15 +99,17 @@
       check_entries_map_done() {
         // console.log("check_entries_map_done", this.entries)
         if (!this.$_.isEmpty(this.entries) && this.entries.features.length > 0 && this.map_loaded) {
-          this.init_map_source_and_layers(this.entries, LAYER_BASE_ID)
+          this.init_map_source_and_layers(this.entries)
           this.initialized = true
           if (this.$route.query.uuid) {
             this.update_navigation_mode(this.$route.query.uuid, VIEW)
+            this.change_entry_markers_mode(this.$route.query.uuid, true)
           }
         }
       },
-      init_map_source_and_layers(entries, layer_base_id) {
-        // console.log(this.map.style._layers)
+      init_map_source_and_layers(entries, layer_base_id = "all_entries") {
+
+        // add source
         const source_name = layer_base_id + "_source"
         if (!this.map.getSource(source_name)) {
           console.log("adding source")
@@ -86,13 +118,14 @@
             data: entries,
             cluster: true,
             tolerance: 0,
-            clusterMaxZoom: 20,
+            clusterMaxZoom: 14,
             clusterRadius: 35
           })
         } else {
           console.log("source layer exists already")
         }
 
+        // cluster layer
         const cluster_layer_name = layer_base_id + '_clusters'
         const cluster_layer = this.map.getLayer(cluster_layer_name)
         // console.log("cluster_layer?", Object.keys(this.map.style._layers).includes(cluster_layer))
@@ -116,6 +149,8 @@
               ]
             }
           })
+
+          // 2nd cluster count layer
           this.map.addLayer({
             id: layer_base_id + '_cluster-count',
             type: 'symbol',
@@ -133,10 +168,8 @@
           console.log("cluster layer exists already")
         }
 
+        // entries layer
         const entries_layer_name = layer_base_id + '_entries'
-        // const templates_color_list =
-        // console.log(templates_color_list)
-
         this.map.addLayer({
           'id': entries_layer_name,
           'type': 'circle',
@@ -167,56 +200,125 @@
           }
         })
 
-        // this.map.on('mouseenter', entries_layer_name, (e) => {
-        //   const feature = e.features[0]
-        //   if (feature.properties.uuid === this.act_hoover_uuid) {
-        //     return
-        //   }
-        //   if (this.act_popup) {
-        //     this.act_popup.remove()
-        //   }
-        //   let coordinates = null
-        //   coordinates = feature.geometry.coordinates.slice()
-        //   this.act_hoover_id = feature.id
-        //   // console.log(feature.id)
-        //   this.map.setFeatureState(
-        //     {source: source_name, id: this.act_hoover_id},
-        //     {hover: true}
-        //   )
-        //   this.act_hoover_uuid = feature.properties.uuid
-        //   // this.act_popup = new this.mapboxgl.Popup()
-        //   //   .setLngLat(coordinates)
-        //   //   .setText(feature.properties.title)
-        //   //   .addTo(this.map)
-        // })
-        //
-        // this.map.on('mouseleave', entries_layer_name, () => {
-        //   if (this.act_hoover_uuid) {
-        //     this.map.setFeatureState(
-        //       {source: source_name, id: this.act_hoover_id},
-        //       {hover: false}
-        //     )
-        //     this.act_hoover_id = null
-        //     this.act_hoover_uuid = null
-        //     // this.act_popup.remove()
-        //     // this.act_popup = null
-        //   }
-        // })
-        //
-        // this.map.on("click", entries_layer_name, (e) => {
-        //   this.select_entry_marker(e.features[0])
-        // })
+        // Interactions
+        // 1. ENTRIES Hoover
+        this.map.on('mouseenter', entries_layer_name, (e) => {
+          const feature = e.features[0]
+          if (feature.properties.uuid === this.act_hoover_uuid) {
+            return
+          }
+          if (this.act_popup) {
+            this.act_popup.remove()
+          }
+          let coordinates = null
+          coordinates = feature.geometry.coordinates.slice()
+          // ensure correct popup position, when zoomed out and there are multiple copies
+          while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+          }
 
+          this.act_hoover_id = feature.id
+          // console.log(feature.id)
+          this.map.setFeatureState(
+            {source: source_name, id: this.act_hoover_id},
+            {hover: true}
+          )
+          this.act_hoover_uuid = feature.properties.uuid
+          this.act_popup = new this.mapboxgl.Popup()
+            .setLngLat(coordinates)
+            .setText(feature.properties.title)
+          this.act_popup.addTo(this.map)
+        })
+
+        // Interactions
+        // 1. ENTRIES Hoover leave
+        this.map.on('mouseleave', entries_layer_name, () => {
+          if (this.act_hoover_uuid) {
+            this.map.setFeatureState(
+              {source: source_name, id: this.act_hoover_id},
+              {hover: false}
+            )
+            this.act_hoover_id = null
+            this.act_hoover_uuid = null
+            this.act_popup.remove()
+            this.act_popup = null
+          }
+        })
+
+        this.map.on("click", entries_layer_name, (e) => {
+          // console.log(e.features)
+          this.select_entry_marker(e.features[0])
+        })
+      },
+      select_entry_marker(feature) {
+        console.log("select_entry_marker")
+        const entry_uuid = feature.properties.uuid
+        // console.log("select_entry_marker", entry_uuid)
+        if (this.$store.getters[ENTRIES_HAS_FULL_ENTRY](entry_uuid)) {
+          // console.log("has full entry")
+          // todo redo
+          // if (this.selected_entry) {
+          //   this.change_entry_markers_mode(this.selected_entry, false)
+          // }
+          // todo bring back
+          this.update_navigation_mode(entry_uuid, VIEW, false)
+          // this.map_goto_location(feature.geometry)
+        } else {
+          // console.log("fetching entry")
+          this.$api.entry__$uuid(entry_uuid).then(({data}) => {
+            if (data.data) {
+              const entry = data.data
+
+              this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
+              // todo bring back
+              this.update_navigation_mode(entry_uuid, VIEW, false)
+              // this.map_goto_location(feature.geometry)
+            }
+          }).catch(err => {
+            console.log("error fetching entry")
+          })
+        }
+      },
+      change_entry_markers_mode(entry_uuid, selected) {
+        console.log("MapWrapper.change_entry_markers_mode")
+        const features = this.map.getSource("all_entries_source")._data.features
+        const relevant_features = this.$_.filter(features, (f) => f.properties.uuid === entry_uuid)
+        for (let f of relevant_features) {
+          if (selected) {
+            this.map.setFeatureState(
+              {source: 'all_entries_source', id: f.id},
+              {"selected": true}
+            )
+          } else
+            this.map.removeFeatureState(
+              {source: 'all_entries_source', id: f.id}, "selected"
+            )
+        }
       },
     },
     watch: {
       map_loaded() {
         this.check_entries_map_done()
-        console.log("TEMPS", this.template_color_list)
       },
       entries() {
         this.check_entries_map_done()
-      }
+      },
+      selected_entry(uuid, old_uuid) {
+        console.log("MapWrapper.watch.selected_entry", uuid, old_uuid)
+        if (old_uuid) {
+          this.change_entry_markers_mode(old_uuid, false)
+        }
+        if (uuid) {
+          this.change_entry_markers_mode(uuid, true)
+          this.$emit("force_menu_mode_domain")
+        }
+      },
+      goto_location(location) {
+        console.log("MapWrapper.watch.goto_location")
+        if (location) {
+          this.map_goto_location(location)
+        }
+      },
     }
   }
 </script>

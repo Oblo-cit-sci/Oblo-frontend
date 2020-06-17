@@ -1,7 +1,6 @@
 import {string_list2options} from "~/lib/options";
 import {LOCATION} from "~/lib/consts";
 import Search from "~/components/global/Search";
-import {SEARCH_GET_ENTRIES} from "~/store/search";
 import {ENTRIES_GET_ENTRY} from "~/store/entries";
 import {MAP_SET_ENTRIES} from "~/store/map";
 import NavBaseMixin from "~/components/NavBaseMixin"
@@ -16,9 +15,9 @@ export default {
   components: {Search},
   mixins: [NavBaseMixin],
   props: {
-    drawer: Boolean,
+    // drawer: Boolean,
     // layers: Array,
-    navigation_mode: String, // synced
+    // navigation_mode: String, // synced
     selected_entry_uuid: String // synced
   },
   data() {

@@ -284,6 +284,7 @@
               features: []
             }
           })
+
           this.map.addLayer({
             id: 'cluster-region-label',
             type: 'symbol',
@@ -305,6 +306,7 @@
         } else {
           console.log("cluster layer exists already")
         }
+
         const entries_layer_name = layer_base_id + '_entries'
         this.map.addLayer({
           'id': entries_layer_name,

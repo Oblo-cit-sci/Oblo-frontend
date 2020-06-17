@@ -42,7 +42,6 @@
         domain_data: DOMAIN_BY_NAME
       }),
       reduce_when_small() {
-        console.log(this.$vuetify.breakpoint.sm)
         if(this.$vuetify.breakpoint.smAndDown) {
           return {"font-size": "80%"}
         } else {

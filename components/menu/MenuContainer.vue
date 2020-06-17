@@ -18,7 +18,7 @@
           v-tab-item
             MainMenuList
           v-tab-item
-            DomainMenu(:navigation_mode="domain_navigation_mode")
+            DomainMenu(:navigation_mode="domain_navigation_mode" @force_menu_mode="this.mode=1")
       MainMenuList(v-if="menu_mode_fixed")
 </template>
 
@@ -50,7 +50,6 @@
       return {}
     },
     created() {
-      console.log("menu created", this.$vuetify.goTo)
       this.$emit("menu_width", this.menu_width)
     },
     computed: {

@@ -15,7 +15,7 @@
       :domain_navigation_mode="navigation_mode"
       @menu_width="menu_width=$event")
     client-only
-      MapWrapper(height="100%" :domain="domain_name")
+      MapWrapper(height="100%" :domain="domain_name" @force_menu_mode_domain="menu_mode=1")
 </template>
 
 <script>
@@ -41,7 +41,7 @@
   import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
   import MenuContainer from "~/components/menu/MenuContainer"
   import DomainMixin from "~/components/DomainMixin"
-  import {MENU_MODE_DOMAIN_OVERVIEW} from "~/lib/consts"
+  import {MENU_MODE_DOMAIN_OVERVIEW, QP_D, QP_F} from "~/lib/consts"
   import DomainMapMixin from "~/components/map/DomainMapMixin"
 
   export default {
@@ -54,6 +54,14 @@
       return {
         menu_mode: MENU_MODE_DOMAIN_OVERVIEW,
         menu_width: null
+      }
+    },
+    beforeRouteEnter(to, from, next) {
+      if (!(to.query[QP_D] || to.query[QP_F])) {
+        // todo somehow doesn't load...
+        next("/")
+      } else {
+        next()
       }
     },
     created() {

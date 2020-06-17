@@ -6,18 +6,22 @@ import {DOMAIN, DOMAIN_BY_NAME} from "~/store"
 import {mapGetters} from "vuex"
 import {EDIT, QP_D, QP_F} from "~/lib/consts"
 import EntryCreateMixin from "~/components/entry/EntryCreateMixin"
+import URLQueryMixin from "~/components/util/URLQueryMixin"
 
 export default {
   name: "DomainMixin",
-  mixins: [EntryCreateMixin],
+  mixins: [EntryCreateMixin, URLQueryMixin],
+  props: {
+    set_domain_data: Object
+  },
   computed: {
-    ...mapGetters({logged_in: USER_LOGGED_IN, domain_templates: TEMPLATES_OF_DOMAIN, domains: DOMAIN_BY_NAME}),
+    ...mapGetters({logged_in: USER_LOGGED_IN, domain_templates: TEMPLATES_OF_DOMAIN, all_domains: DOMAIN_BY_NAME}),
     domain_name() {
       // todo maybe first a prop...
-      return this.$route.query[QP_D] || this.$route.query[QP_F]
+      return this.$_.get(this.set_domain_data, "name") || this.query_param_domain_name
     },
     domain_data() {
-      return this.domains(this.domain_name)
+      return this.set_domain_data || this.all_domains(this.domain_name)
     },
     template_entries() {
       let templates = global_context_filter(this.domain_templates(this.domain_name))
@@ -36,6 +40,16 @@ export default {
         column: DOMAIN,
         conditional_value: this.domain_data.name
       }]
+    },
+    domain_language_tags() {
+      const domain_lang_codes = this.domain_data.languages
+      return domain_lang_codes.map(lang => this.$t("lang."+lang))
+
+      // const language_names = this.$_.keyBy(this.$store.getters["get_code"]("languages")
+      //   .values.values.filter(lang => domain_lang_codes.includes(lang.code)), "code")
+      // const languages = domain_lang_codes.map(lang_code => language_names[lang_code].name)
+      // console.log(languages)
+      // return languages //domain_lang_codes.map()
     }
   },
   methods: {

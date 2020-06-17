@@ -106,7 +106,7 @@
         }
       },
       show_map() {
-        return this.$route.name !== "Map" && (this.is_edit_mode && this.map_location_input_option || this.is_view_mode)
+        return this.$route.name !== "domain" && (this.is_edit_mode && this.map_location_input_option || this.is_view_mode)
       },
       ...mapGetters({settings: USER_SETTINGS}),
       privacy_setting() {
@@ -131,7 +131,7 @@
         return this.value && this.privacy_setting === settings_loc_privacy_ask
       },
       show_goto_button() {
-        return this.is_view_mode && this.$route.name === "Map"
+        return this.is_view_mode && this.$route.name === "domain"
       },
       map_location_input_option() {
         return this.has_input_option(MAP)

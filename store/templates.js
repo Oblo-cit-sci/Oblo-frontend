@@ -1,6 +1,6 @@
-import {COMPOSITE, LIST} from "../lib/consts";
-import {object_list2options} from "../lib/options";
-import {entries_domain_filter} from "../lib/search";
+import {COMPOSITE, LIST} from "~/lib/consts";
+import {object_list2options} from "~/lib/options";
+import {entries_domain_filter} from "~/lib/search";
 import {ASPECT, ENTRYLIST} from "~/lib/consts";
 
 // Mutations

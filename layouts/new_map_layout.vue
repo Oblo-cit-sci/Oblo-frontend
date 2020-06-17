@@ -1,6 +1,6 @@
 <template lang="pug">
   v-app
-    v-main
+    v-content
       Appbar(:show_nav_icon="false")
       v-container(v-if="initialized" id="fullContainer")
         nuxt
