@@ -117,7 +117,7 @@
     position: absolute;
     top: 2%;
     height: 5%;
-    z-index: 1;
+    z-index: 2;
   }
 
   .central_button {

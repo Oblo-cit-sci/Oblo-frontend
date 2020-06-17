@@ -15,6 +15,7 @@
   import {mapGetters} from "vuex"
   import {LAYER_BASE_ID} from "~/lib/map_utils"
   import DomainMapMixin from "~/components/map/DomainMapMixin"
+  import {TEMPLATES_OF_DOMAIN} from "~/store/templates"
 
   export default {
     name: "MapWrapper",
@@ -45,6 +46,18 @@
         return {
           height: (this.height ? this.height : window.innerHeight) + (typeof (this.height) === "number" ? "px" : "")
         }
+      },
+      templates_color_list() {
+        const templates = this.$store.getters[TEMPLATES_OF_DOMAIN](this.domain)
+        // console.log(templates)
+        let template_color_arr = []
+        for(let temp of templates) {
+          if(temp.rules.map) {
+            template_color_arr.push(temp.slug)
+            template_color_arr.push(temp.rules.map.marker_color)
+          }
+        }
+        return template_color_arr
       }
     },
     created() {
@@ -64,11 +77,8 @@
         }
       },
       init_map_source_and_layers(entries, layer_base_id) {
-
-        console.log(this.map.style._layers)
-
+        // console.log(this.map.style._layers)
         const source_name = layer_base_id + "_source"
-
         if (!this.map.getSource(source_name)) {
           console.log("adding source")
           this.map.addSource(source_name, {
@@ -85,9 +95,7 @@
 
         const cluster_layer_name = layer_base_id + '_clusters'
         const cluster_layer = this.map.getLayer(cluster_layer_name)
-
-        console.log("cluster_layer?", Object.keys(this.map.style._layers).includes(cluster_layer))
-
+        // console.log("cluster_layer?", Object.keys(this.map.style._layers).includes(cluster_layer))
         if (!cluster_layer) {
           console.log("adding cluster layer")
           this.map.addLayer({
@@ -126,6 +134,9 @@
         }
 
         const entries_layer_name = layer_base_id + '_entries'
+        // const templates_color_list =
+        // console.log(templates_color_list)
+
         this.map.addLayer({
           'id': entries_layer_name,
           'type': 'circle',
@@ -138,10 +149,7 @@
             'circle-color': [
               'match',
               ['get', "template"],
-              'article_review',
-              '#2ee70c',
-              "local_observation",
-              "#ee2b0b",
+              ...this.templates_color_list,
               '#ccc'],
             "circle-radius": [
               'case',
@@ -204,6 +212,7 @@
     watch: {
       map_loaded() {
         this.check_entries_map_done()
+        console.log("TEMPS", this.template_color_list)
       },
       entries() {
         this.check_entries_map_done()

@@ -10,14 +10,15 @@
       :width="menu_width"
       app)
       div(v-if="over" :style="{'height':'60px'}")
-      v-tabs(v-if="!menu_mode_fixed" :value="mode" @change="$emit('update:mode', $event)" grow active-class="active_tab")
-        v-tab main
-        v-tab domain
-      v-tabs-items(v-model="mode")
-        v-tab-item
-          MainMenuList
-        v-tab-item
-          DomainMenu(:navigation_mode="domain_navigation_mode")
+      div(v-if="!menu_mode_fixed")
+        v-tabs(:value="mode" @change="$emit('update:mode', $event)" grow active-class="active_tab")
+          v-tab main
+          v-tab domain
+        v-tabs-items(v-model="mode")
+          v-tab-item
+            MainMenuList
+          v-tab-item
+            DomainMenu(:navigation_mode="domain_navigation_mode")
       MainMenuList(v-if="menu_mode_fixed")
 </template>
 

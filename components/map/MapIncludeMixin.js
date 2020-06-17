@@ -20,7 +20,8 @@ export default {
       default_map_options: {
         style: default_mapstyle, //this.default_style_map,
         center: [30, 0],
-        zoom: 1
+        zoom: 1,
+        logoPosition: "bottom-right"
       },
     }
   },

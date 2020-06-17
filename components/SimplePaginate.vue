@@ -5,7 +5,6 @@
     div.ml-2(v-if="show_page_index")
       span page: {{page}} &nbsp;
       span(v-if="total_pages") / {{total_pages}}
-
 </template>
 
 <script>
