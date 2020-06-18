@@ -10,6 +10,7 @@ export default {
       this.persist_user_data()
       this.persist_auth_token()
       const ui_lang = this.$store.getters["user/settings"]["ui_language"] || null
+      this.$store.commit("app/ui_language", ui_lang)
       if(ui_lang) {
         this._i18n.locale = ui_lang
       }

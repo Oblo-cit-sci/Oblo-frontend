@@ -16,12 +16,7 @@
     components: {},
     props: {},
     data() {
-      // todo from profile?
-      const settings_ui_lang = this.$store.getters["user/settings"]["ui_language"] || null
-      // console.log("settings_ui_lang", settings_ui_lang)
-      return {
-        language: settings_ui_lang
-      }
+      return {}
     },
     mounted() {
       if (!this.language) {
@@ -37,6 +32,15 @@
           "text": (this.$t("lang." + l))
         }))
       },
+      language: {
+        get: function () {
+          // console.log("lang get", this.$store.getters["app/ui_language"] || "en")
+          return this.$store.getters["app/ui_language"] || "en"
+        },
+        set: function (lang) {
+          this.$store.commit("app/ui_language", lang)
+        }
+      },
       label() {
         return this.$t("_global.language.label")
       }
@@ -45,8 +49,8 @@
       language(lang) {
         this._i18n.locale = lang
         if (this.$store.getters[USER_LOGGED_IN]) {
-          console.log(this.$store.getters["user/settings"]["ui_language"], lang)
-          if(this.$store.getters["user/settings"]["ui_language"] !== lang) {
+          // console.log(this.$store.getters["user/settings"]["ui_language"], lang)
+          if (this.$store.getters["user/settings"]["ui_language"] !== lang) {
             this.$api.post_actor__me({settings: {ui_language: lang}})
           }
         } else {

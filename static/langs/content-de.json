@@ -62,5 +62,10 @@
   "lang.en": "englisch",
   "lang.es": "spanisch",
   "lang.de": "deutsch",
-  "lang.fr": "französisch"
+  "lang.fr": "französisch",
+  "_global.w.entries": "Einträge",
+  "_global.w.description": "Beschreibung",
+  "_global.w.update": "aktualisieren",
+  "_global.w.search": "Suche",
+  "comp_search.txt_field_search.label": "@:_global.w.search"
 }

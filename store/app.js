@@ -10,7 +10,8 @@ export const state = () => ({
     connecting: false,
     connected: false,
     fixed_domain: null,
-    nav_drawer: false
+    nav_drawer: false,
+    ui_language: null
   }
 )
 
@@ -35,6 +36,9 @@ export const mutations = {
   },
   switch_nav_drawer(state) {
     state.nav_drawer = !state.nav_drawer
+  },
+  ui_language(state, ui_language) {
+    state.ui_language = ui_language
   }
 }
 
@@ -56,6 +60,9 @@ export const getters = {
   },
   nav_drawer(state) {
     return state.nav_drawer
+  },
+  ui_language(state) {
+    return state.ui_language
   }
 }
 
