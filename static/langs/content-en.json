@@ -95,6 +95,7 @@
   "_global.asp_license.label": "License",
   "_global.asp_license.alt_label.default": "Default license",
   "_global.asp_license.alt_descr.default": "Choose a default license for your entries",
+  "_global.asp_license.descr": "Choose a license for this entry",
   "_global.language.label": "Language",
   "_global.asp_location_privacy.labal": "Location privacy",
   "_global.asp_location_privacy.descr": "Specify the settings for the protection of the exact locations of your entries",

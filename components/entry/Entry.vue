@@ -95,7 +95,7 @@
   import PersistentStorageMixin from "../util/PersistentStorageMixin";
   import MissingAspectsNotice from "./MissingAspectsNotice";
   import {ENTRIES_GET_EDIT, ENTRIES_GET_ENTRY} from "~/store/entries";
-  import {EDIT, ENTRY, PRIVATE_LOCAL, VIEW} from "~/lib/consts";
+  import {EDIT, ENTRY, VIEW} from "~/lib/consts";
   import {entry_roles_aspect, license_aspect, privacy_aspect} from "~/lib/typical_aspects";
   import {privacy_icon} from "~/lib/util";
   import ChangedAspectNotice from "./ChangedAspectNotice";
@@ -105,10 +105,11 @@
   import {USER_LOGGED_IN} from "~/store/user"
   import Taglist from "~/components/global/Taglist"
   import ActorChip from "~/components/actor/ActorChip"
+  import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
 
   export default {
     name: "Entry",
-    mixins: [EntryNavMixin, EntryMixin, TriggerSnackbarMixin, PersistentStorageMixin, FullEntryMixin],
+    mixins: [EntryNavMixin, EntryMixin, TriggerSnackbarMixin, TypicalAspectMixin, PersistentStorageMixin, FullEntryMixin],
     components: {
       ActorChip,
       Taglist,
@@ -148,7 +149,7 @@
         return this.is_edit_mode || this.is_review_mode
       },
       license_aspect() {
-        return license_aspect(this.$store, ["cc_licenses"], [])
+        return this.asp_license_aspect("license", ["cc_licenses"], null)
       },
       privacy_aspect() {
         return privacy_aspect(this.$store)
