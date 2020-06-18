@@ -15,6 +15,7 @@
   // import {GET_DOMAIN_TEMPLATES_FETCHED, SET_DOMAIN, SET_TEMPLATES_CODES_FOR_DOMAIN} from "../store";
 
   import DomainMixin from "~/components/DomainMixin"
+  import {PAGE_DOMAIN} from "~/lib/pages"
 
   export default {
     name: "DomainCard",
@@ -22,7 +23,7 @@
     props: {},
     methods: {
       goto_domain() {
-        this.$router.push({path: "/domain", query: {d: this.domain_name}})
+        this.$router.push({name: PAGE_DOMAIN, query: {d: this.domain_name}})
       },
     },
     computed: {
@@ -32,9 +33,6 @@
       description() {
         return this.domain_data.description
       },
-      // domain_url() {
-      //   return "domain/" + this.domain_data.value
-      // },
       image() {
         return this.$api.static_url_$domain_name_banner(this.domain_name)
       },

@@ -19,10 +19,10 @@
 
   import Aspect from "../components/Aspect";
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
-  import {password_aspect, password_confirm_aspect} from "~/lib/typical_aspects";
   import LoginMixin from "../components/actor/LoginMixin";
   import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
   import {APP_FIXED_DOMAIN} from "~/store/app"
+  import {PAGE_LOGIN} from "~/lib/pages"
 
   let username_regex = new RegExp('^[a-z][a-z0-9_]*$');
 
@@ -66,7 +66,7 @@
           settings: settings
         }).then(({data}) => {
           if (data.data) {
-            this.$router.push("/login")
+            this.$router.push({name:PAGE_LOGIN})
             this.ok_snackbar(data.data)
           } else {
             this.errorMsg = data.error.msg
