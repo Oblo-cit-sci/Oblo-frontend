@@ -26,44 +26,17 @@
   import {SEARCH_CLEAR} from "~/store/search"
   import {CLEAR_ENTRIES} from "~/store"
   import NavBaseMixin from "~/components/NavBaseMixin"
+  import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
 
   export default {
     name: "Login",
-    mixins: [TriggerSnackbarMixin, PersistentStorageMixin, LoginMixin, NavBaseMixin],
+    mixins: [TypicalAspectMixin, TriggerSnackbarMixin, PersistentStorageMixin, LoginMixin, NavBaseMixin],
     components: {Aspect},
     data() {
+      const asp_password = this.asp_password()
+      asp_password.attr.extra.enter_pressed = true
       return {
-        aspects: [{
-          type: STR,
-          t_label: "login.asp_user_query",
-          name: "user_query",
-          attr: {
-            max: 90,
-            unpacked: true,
-          },
-          value: "",
-        },
-          {
-            type: STR,
-            name: "Password",
-            t_label: "login.asp_password",
-            attr: {
-              max: 40,
-              unpacked: true,
-              component_type: "password",
-              extra: {
-                rules: [
-                  v => v && v.length >= 8 || 'Password must have at least 8 characters',
-                ],
-              }
-            },
-            value: "",
-            extra: {
-              enter_pressed: true
-            },
-            error: true
-          }
-        ],
+        aspects: [this.asp_user_query(), asp_password],
         login_loading: false,
         errorMsg: null,
         add_verification_resend_link: false,
@@ -78,7 +51,7 @@
     },
     methods: {
       aspect_action(event) {
-        if (event === "enter_pressed") {
+        if (event === "enter_pressed" && !this.any_invalid) {
           this.login()
         }
       },

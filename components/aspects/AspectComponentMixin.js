@@ -74,6 +74,9 @@ export default {
     },
     is_view_mode() {
       return this.mode === VIEW
+    },
+    extras() {
+      return Object.assign(Object.assign({},this.extra), this.aspect.attr.extra)
     }
   },
   methods: {

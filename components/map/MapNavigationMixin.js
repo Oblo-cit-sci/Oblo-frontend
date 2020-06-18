@@ -53,7 +53,7 @@ export default {
           title: "",
           icon: "mdi-map-marker"
         }],
-        prevent_page_change: true
+        prevent_view_page_change: true
       }
       // return {}
     },

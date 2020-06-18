@@ -107,7 +107,7 @@
       },
       include_domain_tag: Boolean,
       show_title_action: Boolean,
-      prevent_page_change: Boolean,
+      prevent_view_page_change: Boolean,
       actions: {
         type: Array,
         default: () => []

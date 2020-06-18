@@ -75,6 +75,7 @@
   "_global.asp_username.label": "Username",
   "_global.asp_username.rule_length": "Username must have at 4 characters",
   "_global.asp_username.rule_pattern": "Only lowercase characters are allowed",
+  "_global.asp_user_query.rule" : "Input doesnt seem to be a valid username nor email address",
   "_global.asp_email.label": "Email",
   "_global.asp_email.rule.valid": "Email not valid",
   "_global.asp_password.label": "Password",

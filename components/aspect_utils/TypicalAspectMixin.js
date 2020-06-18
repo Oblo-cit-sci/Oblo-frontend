@@ -1,4 +1,5 @@
 import {settings_loc_privacy_random} from "~/lib/settings"
+import {STR} from "~/lib/consts"
 
 let username_regex = new RegExp('^[a-z][a-z0-9_]*$');
 
@@ -35,6 +36,22 @@ export default {
         },
         value: "",
         error: true
+      }
+    },
+    asp_user_query() {
+      return {
+        type: STR,
+        t_label: "login.asp_user_query",
+        name: "user_query",
+        attr: {
+          max: 90,
+          unpacked: true,
+          extra: {
+            rules: [
+              v => v && ((v.length >= 4 && username_regex.test(v)) || (/.+@.+\..+/.test(v))) || this.$t("_global.asp_user_query.rule")
+            ]
+          }
+        }
       }
     },
     asp_public_name() {

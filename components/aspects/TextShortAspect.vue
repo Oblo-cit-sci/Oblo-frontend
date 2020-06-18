@@ -34,7 +34,7 @@
     },
     methods: {
       keydown(keyEvent) {
-        if(keyEvent.keyCode === 13 && this.extra.enter_pressed) {
+        if(keyEvent.keyCode === 13 && this.extras.enter_pressed) {
           this.$emit("aspectAction", "enter_pressed")
         }
       }

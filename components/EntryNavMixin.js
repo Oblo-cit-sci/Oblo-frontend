@@ -1,5 +1,5 @@
 import {get_proper_mode} from "~/lib/entry";
-import { GLOBAL, NO_DOMAIN, VIEW} from "~/lib/consts";
+import {EDIT, GLOBAL, NO_DOMAIN, VIEW} from "~/lib/consts";
 import {aspect_loc_str} from "~/lib/aspect";
 import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
 import NavBaseMixin from "./NavBaseMixin";
@@ -46,7 +46,7 @@ export default {
         })
       } else {
         // console.log("prevent_page_change", this.prevent_page_change)
-        if (!this.prevent_page_change) {
+        if (!this.prevent_view_page_change || mode === EDIT) {
           this.to_entry(uuid, mode)
         } else {
           console.log("straight & preview_action")
