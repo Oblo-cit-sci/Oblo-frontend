@@ -18,6 +18,7 @@ export const state = () => ({
   last_goto_location: null,
   layers: ["Climate types", "country-label"],
   layer_status: {},
+  cached_camera_options: {}
 })
 
 export const mutations = {
@@ -37,6 +38,9 @@ export const mutations = {
   set_layer_status(state, layer_status) {
     state.layer_status = layer_status
   },
+  set_camera_options_cache(state, {domain, options}) {
+    state.cached_camera_options[domain] = options
+  }
 }
 
 export const getters = {
@@ -60,6 +64,11 @@ export const getters = {
   },
   layer_status(state) {
     return state.layer_status
+  },
+  cached_camera_options(state) {
+    return (domain) => {
+      return state.cached_camera_options[domain]
+    }
   }
 }
 

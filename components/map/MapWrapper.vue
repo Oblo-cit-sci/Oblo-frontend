@@ -62,13 +62,17 @@
         return template_color_arr
       },
       map_options() {
-        console.log()
         const default_camera = this.$_.get(this.$store.getters["domain_by_name"](this.domain), "map.default_camera")
+        let options = this.$_.cloneDeep(this.default_map_options)
         if (default_camera) {
-          return Object.assign(this.default_map_options, default_camera)
-        } else {
-          return this.default_map_options
+          Object.assign(options, default_camera)
         }
+        const cached_options = this.$store.getters["map/cached_camera_options"](this.domain)
+        console.log(cached_options)
+        if (cached_options) {
+          Object.assign(options, cached_options)
+        }
+        return options
       },
       display_mdDown() {
         return this.$vuetify.breakpoint.mdAndDown
@@ -94,6 +98,15 @@
       if (this.domain) {
         this.load_map_entries()
       }
+    },
+    beforeDestroy() {
+      // todo consider padding from menu
+      this.$store.commit("map/set_camera_options_cache", {
+        domain: this.domain, options: {
+          zoom: this.map.getZoom(),
+          center: this.map.getCenter()
+        }
+      })
     },
     methods: {
       check_entries_map_done() {

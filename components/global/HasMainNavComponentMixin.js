@@ -10,9 +10,6 @@ export const ENTRY = "entry"
 export default {
   name: "HasMainNavComponentMixin",
   mixins: [URLQueryMixin],
-  data() {
-    return {}
-  },
   computed: {
     // navgiagtion_component() {
     //   if (this.$vuetify.breakpoint.mdAndDown)

@@ -14,8 +14,7 @@
       :mode.sync="menu_mode"
       :domain_navigation_mode="navigation_mode"
       @menu_width="menu_width=$event")
-    client-only
-      MapWrapper(height="100%" :domain="domain_name" @force_menu_mode_domain="menu_mode=1")
+    MapWrapper(height="100%" :domain="domain_name" @force_menu_mode_domain="menu_mode=1")
 </template>
 
 <script>
@@ -113,7 +112,6 @@
     },
     methods: {
       open_layer_dialog() {
-
       }
     }
   }
