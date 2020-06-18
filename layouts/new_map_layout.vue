@@ -1,7 +1,7 @@
 <template lang="pug">
   v-app
+    Appbar(:show_nav_icon="false")
     v-content
-      Appbar(:show_nav_icon="false")
       v-container(v-if="initialized" id="fullContainer")
         nuxt
 </template>
@@ -13,11 +13,12 @@
   import Appbar from "~/components/global/Appbar"
   import InitializationMixin from "~/layouts/InitializationMixin"
   import {dev_env} from "~/lib/util"
+  import NotificationBanner from "~/components/global/NotificationBanner"
 
   export default {
     name: "new_map_layout",
     mixins: [InitializationMixin],
-    components: {Appbar},
+    components: {NotificationBanner, Appbar},
     props: {},
     data() {
       return {}

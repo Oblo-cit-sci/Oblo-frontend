@@ -1,5 +1,5 @@
 <template lang="pug">
-  #pwlisthead
+  #pwlisthead(:style="list_style")
     v-row.col-sm-12(v-if="results_received")
       div {{$tc("comp_entries_pw_list.num_entries", num_entries)}}
     v-row.mx-1(v-for="uuid in visible_entries"
@@ -45,13 +45,28 @@
     data: function () {
       return {
         page: 1,
-        deleted: []
+        deleted: [],
+        start_y: 0
       }
     },
     beforeUpdate() {
       this.deleted = this.$_.filter(this.deleted, uuid => !this.$store.getters[ENTRIES_HAS_ENTRY](uuid))
     },
+    mounted() {
+      console.log("!!", document.getElementById('pwlisthead').offsetTop)
+      this.start_y = document.getElementById('pwlisthead').offsetTop
+    },
     computed: {
+      on_overflow_page() {
+        console.log(this.$route.name)
+        return this.$route.name === "domain"
+      },
+      list_style() {
+        return {
+          'overflow-y': this.on_overflow_page ? 'auto' : 'visible',
+          'max-height': window.innerHeight - this.start_y
+        }
+      },
       results_received() {
         return this.entries !== undefined
       },
@@ -104,9 +119,9 @@
         setTimeout(() => goTo("#pwlisthead", {
           duration: 1200,
           easing: "easeOutCubic"
-        }),50)
-        if(this.can_request_more) {
-          if(page * this.entries_per_page >= this.entries.length) {
+        }), 50)
+        if (this.can_request_more) {
+          if (page * this.entries_per_page >= this.entries.length) {
             this.$emit("request_more")
             // console.log("time for more")
           }
@@ -120,7 +135,6 @@
 
   #pwlisthead {
     width: 100%;
-    overflow-y: auto;
     max-height: 600px;
   }
 

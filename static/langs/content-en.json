@@ -45,6 +45,7 @@
   "profile.btn_edit_profile": "Edit profile",
   "profile.btn_cancel": "Cancel",
   "profile.btn_save": "Save",
+  "profile.btn_save_password": "Save password",
   "profile.btn_delete": "Delete account",
   "profile.h2": "Your @:_global.w.entries",
   "profile.h3": "Domain specific questions",

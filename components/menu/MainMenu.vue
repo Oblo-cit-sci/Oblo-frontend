@@ -18,11 +18,12 @@
   import NavBaseMixin from "~/components/NavBaseMixin"
   import LanguageSelector from "~/components/LanguageSelector"
   import MainMenuList from "~/components/menu/MainMenuList"
+  import NotificationBanner from "~/components/global/NotificationBanner"
 
   export default {
     name: "MainMenu",
     mixins: [TriggerSnackbarMixin, PersistentStorageMixin, NavBaseMixin],
-    components: {MainMenuList, LanguageSelector},
+    components: {NotificationBanner, MainMenuList, LanguageSelector},
     props: {
       over: Boolean
     },

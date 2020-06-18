@@ -14,6 +14,7 @@
         v-tabs(:value="mode" @change="$emit('update:mode', $event)" grow active-class="active_tab")
           v-tab main
           v-tab domain
+        NotificationBanner
         v-tabs-items(v-model="mode")
           v-tab-item
             MainMenuList
@@ -30,13 +31,14 @@
   import {mapGetters} from "vuex"
   import MapNavigationDrawer from "~/components/map/MapNavigationDrawer"
   import DomainMenu from "~/components/menu/DomainMenu"
+  import NotificationBanner from "~/components/global/NotificationBanner"
 
   const mode_indices = [MENU_MODE_MAIN, MENU_MODE_DOMAIN_OVERVIEW]
 
   export default {
     name: "MenuContainer",
     mixins: [],
-    components: {DomainMenu, MapNavigationDrawer, MainMenuList, MainMenu},
+    components: {NotificationBanner, DomainMenu, MapNavigationDrawer, MainMenuList, MainMenu},
     props: {
       mode: {
         type: Number,

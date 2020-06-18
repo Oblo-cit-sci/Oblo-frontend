@@ -3,6 +3,7 @@
     MenuContainer(:show="initialized" :menu_mode_fixed="true")
     Appbar
     v-content
+      NotificationBanner
       v-container(v-if="initialized")
         nuxt
     GlobalSnackbar
@@ -26,11 +27,13 @@
   import Appbar from "~/components/global/Appbar"
   import InitializationMixin from "~/layouts/InitializationMixin"
   import MenuContainer from "~/components/menu/MenuContainer"
+  import NotificationBanner from "~/components/global/NotificationBanner"
+  import {USER} from "~/store"
 
   let lastDomain = ''
 
   export default {
-    components: {MenuContainer, Appbar, PrivacySheet, MainMenu, GlobalSnackbar, Footer},
+    components: {NotificationBanner, MenuContainer, Appbar, PrivacySheet, MainMenu, GlobalSnackbar, Footer},
     mixins: [InitializationMixin, TriggerSnackbarMixin, PersistentStorageMixin, NavBaseMixin],
     data() {
       return {

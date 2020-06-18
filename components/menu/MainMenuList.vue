@@ -26,6 +26,7 @@
   import {APP_CONNECTED} from "~/store/app"
   import {mapGetters} from "vuex"
   import LanguageSelector from "~/components/LanguageSelector"
+  import NotificationBanner from "~/components/global/NotificationBanner"
 
   const pkg = require('~/package.json')
 
@@ -39,7 +40,7 @@
   export default {
     name: "MainMenuList",
     mixins: [],
-    components: {LanguageSelector},
+    components: {NotificationBanner, LanguageSelector},
     props: {},
     data() {
       return {}

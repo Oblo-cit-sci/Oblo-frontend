@@ -23,7 +23,7 @@
         Aspect(:aspect="aspect"
           :ext_value.sync="aspect.value"
           @update:error="$set(aspect, 'error', $event)"
-          :mode="mode")
+          :mode="aspect_mode")
     div(v-if="edit_mode")
       h3 {{$t('_global.asp_password.label')}}
       v-btn(color="warning" v-if="!password_edit" @click="password_edit=true") {{$t('profile.btn_change_password')}}
@@ -37,7 +37,7 @@
               :extra="{clearable:false}"
               mode="edit")
       v-btn(v-if="password_edit" @click="password_edit=false") {{$t('_global.btn_cancel')}}
-      v-btn(v-if="password_edit" color="success" @click="change_password" :disabled="any_password_invalid") Save password
+      v-btn(v-if="password_edit" color="success" @click="change_password" :disabled="any_password_invalid") {{$t('profile.btn_save_password')}}
       v-divider.wide_divider
     div(v-if="edit_mode && !$_.isEmpty(domain_specific_aspects)")
       h2 {{$t("profile.h3")}}
@@ -46,10 +46,10 @@
           Aspect(:aspect="aspect"
             :ext_value.sync="aspect.value"
             @update:error="$set(aspect, 'error', $event)"
-            :mode="mode")
+            mode="edit")
     div(v-if="!is_visitor")
       v-btn(v-if="!edit_mode" to="/settings" nuxt) {{$t("profile.btn_settings")}}
-      v-btn(v-if="!edit_mode" color="info" @click="setEdit") {{$t("profile.btn_edit_profile")}}
+      v-btn(v-if="!edit_mode" color="info" @click="setEdit()") {{$t("profile.btn_edit_profile")}}
       div(v-else)
         v-btn(@click="cancelEdit") Cancel
         v-btn(color="success" @click="doneEdit" :disabled="any_invalid") {{$t("profile.btn_save")}}
@@ -81,7 +81,7 @@
 
   import {ENTRIES_GET_OWN_ENTRIES_UUIDS} from "~/store/entries";
   import LoadFileButton from "../components/util/LoadFileButton";
-  import {base64file_to_blob, common_filesize} from "~/lib/util";
+  import {base64file_to_blob, common_filesize, route_change_query} from "~/lib/util";
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
   import {USER_SET_USER_DATA} from "~/store/user";
   import EntryListWrapper from "../components/EntryListWrapper"
@@ -104,7 +104,7 @@
         profile_pic_upload_loading: false,
         profile_version_ts: Math.floor(new Date().getTime() / 1000),
         grab_map_selection: false, // when coming back from the map
-        edit_mode: false,
+
         password_edit: false,
         selected_tab: 0,
         profile_aspects: [
@@ -136,12 +136,12 @@
       }
     },
     created() {
-      this.reset_edit_values()
       const domain = this.$store.getters["app/fixed_domain"]
       if (domain) {
         const domain_data = this.$store.getters["domain_by_name"](domain)
         this.domain_specific_aspects = this.$_.cloneDeep(this.$_.get(domain_data, "users.profile.additional_aspects", []))
       }
+      this.reset_edit_values()
     },
     // todo this could help us to get the map location, but not sure where to get it in the lifecycle
     beforeRouteEnter(to, from, next) {
@@ -166,13 +166,22 @@
         for (let aspect of this.profile_aspects) {
           aspect.value = user_data[aspect.name]
         }
+
+        const domain = this.$store.getters["app/fixed_domain"]
+
+        if (this.$_.get(user_data.config_share, `domain${domain}`)) {
+          const domain_values = user_data.config_share.domain[domain]
+          for (let aspect of this.domain_specific_aspects) {
+            aspect.value = domain_values[aspect.name]
+          }
+        }
       },
-      setEdit: function () {
-        this.edit_mode = true
+      setEdit: function (mode = true) {
+        this.$router.push(route_change_query(this.$route, {"edit": mode}))
         this.goto_top()
       },
       cancelEdit: function () {
-        this.edit_mode = false;
+        this.setEdit(false)
         this.reset_edit_values()
         this.goto_top()
       },
@@ -181,20 +190,21 @@
 
         const domain = this.$store.getters["app/fixed_domain"]
         if (domain) {
-          new_profile.domain = {domain: extract_unpacked_values(this.domain_specific_aspects)}
+          new_profile.domain = {}
+          new_profile.domain[domain] = extract_unpacked_values(this.domain_specific_aspects)
         }
-          this.$api.post_actor__me(new_profile).then(({data}) => {
-            this.$store.commit(USER_SET_USER_DATA, data)
-            this.persist_user_data()
-            this.edit_mode = false;
-            this.reset_edit_values()
-            this.ok_snackbar("Profile updated")
-          }).catch((err) => {
-            console.log("err", err)
-            this.error_snackbar("Something went wrong")
-          }).finally(() => {
-            this.goto_top()
-          })
+        this.$api.post_actor__me(new_profile).then(({data}) => {
+          this.$store.commit(USER_SET_USER_DATA, data)
+          this.persist_user_data()
+          this.setEdit(false)
+          this.reset_edit_values()
+          this.ok_snackbar("Profile updated")
+        }).catch((err) => {
+          console.log("err", err)
+          this.error_snackbar("Something went wrong")
+        }).finally(() => {
+          this.goto_top()
+        })
       },
       change_password() {
         const new_password = extract_unpacked_values(this.password_aspects)
@@ -240,7 +250,10 @@
         user_data: USER,
         own_entries_uuids: ENTRIES_GET_OWN_ENTRIES_UUIDS
       }),
-      mode() {
+      edit_mode() {
+        return this.$route.query.edit || false
+      },
+      aspect_mode() {
         return this.edit_mode ? EDIT : VIEW
       },
       is_visitor() {

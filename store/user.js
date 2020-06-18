@@ -26,6 +26,7 @@ let default_user_data = {
   default_license: "CC0", // should come from the server
   default_privacy: "public",
   location: "",
+  config_share: {}
 }
 
 
