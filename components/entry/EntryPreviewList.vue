@@ -1,5 +1,5 @@
 <template lang="pug">
-  #pwlisthead(:style="list_style")
+  #pwlist-container(:style="list_style")
     v-row.col-sm-12#pwlist-top(v-if="results_received")
       div {{$tc("comp_entries_pw_list.num_entries", num_entries)}}
     v-row.mx-1(v-for="uuid in visible_entries"
@@ -53,7 +53,7 @@
       this.deleted = this.$_.filter(this.deleted, uuid => !this.$store.getters[ENTRIES_HAS_ENTRY](uuid))
     },
     mounted() {
-      this.start_y = document.getElementById('pwlisthead').offsetTop
+      this.start_y = document.getElementById('pwlist-container').offsetTop
     },
     computed: {
       on_overflow_page() {
@@ -115,18 +115,14 @@
     watch: {
       page(page) {
         console.log(this.on_overflow_page)
-        if (this.on_overflow_page) {
-          setTimeout(() => goTo("#pwlist-top", {
-            duration: 1200,
-            easing: "easeOutCubic",
-            container:"#pwlisthead"
-          }), 50)
-        } else {
-          setTimeout(() => goTo("#pwlisthead", {
-            duration: 1200,
-            easing: "easeOutCubic"
-          }), 50)
+        const options = {
+          duration: 1200,
+          easing: "easeOutCubic",
         }
+        if (this.on_overflow_page) {
+          options.container = "#pwlist-container"
+        }
+        setTimeout(() => goTo("#pwlist-top", options), 80)
         if (this.can_request_more) {
           if (page * this.entries_per_page >= this.entries.length) {
             this.$emit("request_more")
@@ -140,7 +136,7 @@
 
 <style scoped>
 
-  #pwlisthead {
+  #pwlist-container {
     width: 100%;
     max-height: 600px;
   }
