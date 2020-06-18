@@ -65,6 +65,7 @@
         } else {
           other_pages = other_pages.filter(p => !require_login.includes(p.t_title))
         }
+        // console.log(this.$store.getters[USER_GLOBAL_ROLE])
         if (this.$store.getters[USER_GLOBAL_ROLE] !== ADMIN) {
           other_pages = other_pages.filter(p => !require_admin.includes(p.t_title))
         }

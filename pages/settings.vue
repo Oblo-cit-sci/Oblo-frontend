@@ -6,11 +6,6 @@
       :aspect="aspect_map.location_privacy"
       :ext_value.sync="aspect_map.location_privacy.value"
       mode="edit")
-    br
-    v-btn(@click="update_settings" :loading="update_button_loading" ) Update
-    br
-    v-divider
-    br
     div(v-if="has_fixed_domain")
       h3 Fixed domain
       div
@@ -18,7 +13,9 @@
         b {{fixed_domain_name}}
         span . However there are more domains to explore. Resetting your fixed domain, will show you a domain overview on the home page. Click the button to reset the fixed domain.
       v-btn(@click="reset_fixed_domain") Reset fixed domain
-
+    br
+    v-btn(@click="update_settings" :loading="update_button_loading" color="success") {{$t('settings.btn_update')}}
+    br
     <!--    h3 Export data-->
     <!--    div Export all your entries-->
     <!--    v-btn(@click="export_entries") Export-->

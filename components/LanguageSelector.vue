@@ -17,13 +17,14 @@
     props: {},
     data() {
       // todo from profile?
+      const settings_ui_lang = this.$store.getters["user/settings"]["ui_language"] || null
+      // console.log("settings_ui_lang", settings_ui_lang)
       return {
-        language: null
+        language: settings_ui_lang
       }
     },
     mounted() {
-      let language = null
-      if (!language) {
+      if (!this.language) {
         this.language = navigator.language.split("-")[0]
       }
     },
@@ -44,8 +45,10 @@
       language(lang) {
         this._i18n.locale = lang
         if (this.$store.getters[USER_LOGGED_IN]) {
-          console.log("todo, send selected language to server")
-          this.$api.post_actor__me({settings: {ui_language: lang}})
+          console.log(this.$store.getters["user/settings"]["ui_language"], lang)
+          if(this.$store.getters["user/settings"]["ui_language"] !== lang) {
+            this.$api.post_actor__me({settings: {ui_language: lang}})
+          }
         } else {
           this.$api.axios.defaults.headers.common["Content-Language"] = lang + "-" + lang.toUpperCase()
         }

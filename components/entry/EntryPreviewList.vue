@@ -53,12 +53,10 @@
       this.deleted = this.$_.filter(this.deleted, uuid => !this.$store.getters[ENTRIES_HAS_ENTRY](uuid))
     },
     mounted() {
-      console.log("!!", document.getElementById('pwlisthead').offsetTop)
       this.start_y = document.getElementById('pwlisthead').offsetTop
     },
     computed: {
       on_overflow_page() {
-        console.log(this.$route.name)
         return this.$route.name === "domain"
       },
       list_style() {

@@ -140,6 +140,7 @@
       if (domain) {
         const domain_data = this.$store.getters["domain_by_name"](domain)
         this.domain_specific_aspects = this.$_.cloneDeep(this.$_.get(domain_data, "users.profile.additional_aspects", []))
+        // todo here call a function that assigns external conditions
       }
       this.reset_edit_values()
     },
@@ -251,7 +252,8 @@
         own_entries_uuids: ENTRIES_GET_OWN_ENTRIES_UUIDS
       }),
       edit_mode() {
-        return this.$route.query.edit || false
+        const e = this.$route.query.edit
+        return e || (typeof(e) === "string" && e === "true")
       },
       aspect_mode() {
         return this.edit_mode ? EDIT : VIEW

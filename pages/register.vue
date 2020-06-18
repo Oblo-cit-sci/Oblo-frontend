@@ -22,6 +22,7 @@
   import {password_aspect, password_confirm_aspect} from "~/lib/typical_aspects";
   import LoginMixin from "../components/actor/LoginMixin";
   import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
+  import {APP_FIXED_DOMAIN} from "~/store/app"
 
   let username_regex = new RegExp('^[a-z][a-z0-9_]*$');
 
@@ -53,11 +54,16 @@
       // use this as a function to select/highlight a privacy from the list
       submit() {
         this.submit_loading = true
+        const settings = {}
+        if(this.$store.getters[APP_FIXED_DOMAIN]) {
+          settings.fixed_domain = this.$store.getters[APP_FIXED_DOMAIN]
+        }
         this.$api.post_actor({
           registered_name: this.aspects.registered_name.value,
           email: this.aspects.email.value,
           password: this.aspects.password.value,
           password_confirm: this.aspects.password_confirm.value,
+          settings: settings
         }).then(({data}) => {
           if (data.data) {
             this.$router.push("/login")

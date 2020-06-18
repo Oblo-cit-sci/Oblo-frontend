@@ -1,3 +1,5 @@
+import {settings_loc_privacy_random} from "~/lib/settings"
+
 let username_regex = new RegExp('^[a-z][a-z0-9_]*$');
 
 export default {
@@ -183,6 +185,23 @@ export default {
         }
       }
       return aspect
+    },
+    asp_location_privacy() {
+      return {
+        name: "location_privacy",
+        t_label: "_global.asp_location_privacy.label",
+        t_description: "_global.asp_location_privacy.descr",
+        type: "select",
+        attr: {
+          unpacked: true
+        },
+        items: [
+          "exact location",
+          settings_loc_privacy_random,
+          // settings_loc_privacy_ask
+        ],
+        value: null,
+      }
     }
   }
 }
