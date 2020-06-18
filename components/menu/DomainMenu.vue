@@ -3,6 +3,7 @@
     Search(v-show="nav_mode_search"
       :preview_options="preview_options"
       :fixed_filters="location_pre_filter"
+      :mixin_domain_drafts="domain_name",
       @all_received_uuids="$emit('all_received_uuids', $event)"
       @preview_action="preview_action($event)")
     div(v-if="nav_mode_entry")
@@ -19,18 +20,16 @@
   import MapNavigationMixin from "~/components/map/MapNavigationMixin"
   import Entry from "~/components/entry/Entry"
   import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
+  import {QP_D, QP_F} from "~/lib/consts"
 
   export default {
     name: "DomainMenu",
     mixins: [MapNavigationMixin, HasMainNavComponentMixin],
     components: {Entry, Search},
-    props: {
-      domain: String
-    },
-    data() {
-      return {}
-    },
     computed: {
+      domain_name() {
+        return this.$route.query[QP_D] || this.$route.query[QP_F]
+      }
     },
     methods: {},
     watch: {

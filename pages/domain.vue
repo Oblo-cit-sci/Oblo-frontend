@@ -64,7 +64,6 @@
       }
     },
     created() {
-      // this.$route.query[QP_D] || this.$route.query[QP_F]
       if (!dev_env()) {
         window.history.replaceState(null, document.title, "/licci")
       }
