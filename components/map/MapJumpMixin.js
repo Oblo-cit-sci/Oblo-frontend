@@ -1,5 +1,6 @@
-import {MODE_NORMAL} from "~/lib/consts";
+import {MODE_NORMAL, QP_D} from "~/lib/consts";
 import {MAP_GOTO_LOCATION, MAP_LAST_GOTO_LOCATION} from "~/store/map";
+import {PAGE_DOMAIN} from "~/lib/pages"
 
 /**
  * at the moment, it requires a this-entry to exist
@@ -24,31 +25,36 @@ export default {
     }
   },
   methods: {
-    goto_next_location(entry_location) {
+    goto_next_location(entry_location, uuid) {
       const act_loc = this.$store.getters[MAP_LAST_GOTO_LOCATION]()
       const index = this.$_.findIndex(entry_location, (l) => l === act_loc)
       const next_index = (index + 1) % entry_location.length
-      this.goto_location(entry_location[next_index])
+      this.goto_location(entry_location[next_index], uuid)
     },
-
-    goto_location(location, select_uuid) {
-      console.log("mapjump mixin.goto_location uuid",select_uuid)
-      /**
-       * needs uuid if this.entry does not exist (in aspects)
-       */
-      console.log("route", this.$route.name , this.$route.name !== "Map", this.entry)
+    goto_location(location, uuid = null) {
+      console.log("mapjump mixin.goto_location uuid", location)
+      let domain = null
+      if (uuid) {
+        const entry = this.$store.getters["entries/get_entry"](uuid)
+        // console.log(entry.domain)
+        domain = entry.domain
+      } else {
+        // todo this could be gloabl...
+        domain = this.$store.getters["domain"].name || this.$store.getters.domains[0].name
+      }
       this.$store.commit(MAP_GOTO_LOCATION, location)
-      let route = {
-        path: "/Map",
-        query: {
-          mode: MODE_NORMAL,
+      if (this.$route.name !== PAGE_DOMAIN) {
+        let route = {
+          path: "/domain",
+          query: {
+            [QP_D]: domain
+          }
         }
+        if (uuid) {
+          route.query.uuid = uuid
+        }
+        this.$router.push(route)
       }
-      if(select_uuid) {
-        route.query.uuid = select_uuid
-      }
-      this.$router.push(route)
     }
-  },
-  watch: {}
+  }
 }

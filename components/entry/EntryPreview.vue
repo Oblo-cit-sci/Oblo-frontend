@@ -230,7 +230,7 @@
       },
       goto_next_entry_location() {
         if (this.entry.location) {
-          this.goto_next_location(this.entry.location)
+          this.goto_next_location(this.entry.location, this.uuid)
         }
       },
       create_child_action() {

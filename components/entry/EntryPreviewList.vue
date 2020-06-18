@@ -1,6 +1,6 @@
 <template lang="pug">
   #pwlisthead(:style="list_style")
-    v-row.col-sm-12(v-if="results_received")
+    v-row.col-sm-12#pwlist-top(v-if="results_received")
       div {{$tc("comp_entries_pw_list.num_entries", num_entries)}}
     v-row.mx-1(v-for="uuid in visible_entries"
       :key="uuid")
@@ -114,10 +114,19 @@
     },
     watch: {
       page(page) {
-        setTimeout(() => goTo("#pwlisthead", {
-          duration: 1200,
-          easing: "easeOutCubic"
-        }), 50)
+        console.log(this.on_overflow_page)
+        if (this.on_overflow_page) {
+          setTimeout(() => goTo("#pwlist-top", {
+            duration: 1200,
+            easing: "easeOutCubic",
+            container:"#pwlisthead"
+          }), 50)
+        } else {
+          setTimeout(() => goTo("#pwlisthead", {
+            duration: 1200,
+            easing: "easeOutCubic"
+          }), 50)
+        }
         if (this.can_request_more) {
           if (page * this.entries_per_page >= this.entries.length) {
             this.$emit("request_more")
