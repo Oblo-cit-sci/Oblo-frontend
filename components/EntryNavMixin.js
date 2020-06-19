@@ -35,15 +35,16 @@ export default {
       if (!has_full_entry) { // todo replace values by entry.local.is_full: Boolean
         // console.log("grabbing")
         console.log("fetching...")
+        // todo, wanted to use this.fetch but doesnt work...
         this.$api.entry__$uuid(this.entry.uuid).then(({data}) => {
           if (data.data) {
             const entry = data.data
             this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
             if (!this.prevent_view_page_change) {
-              console.log("fetch & nav")
+              // console.log("fetch & nav")
               this.to_entry(uuid, mode)
             } else {
-              console.log("fetch & show")
+              // console.log("fetch & show")
               this.show_in_route(uuid, mode)
             }
           }
@@ -53,21 +54,38 @@ export default {
       } else {
         console.log("straight")
         if (!this.prevent_view_page_change || mode === EDIT) {
-          console.log("straight & nav")
+          // console.log("straight & nav")
           this.to_entry(uuid, mode)
         } else {
-          console.log("straight & show")
+          // console.log("straight & show")
           this.show_in_route(uuid, mode)
           // this.$emit("preview_action", {uuid: this.entry.uuid, action: mode})
         }
       }
     },
-    fetch_and_nav(uuid) {
+    async fetch(uuid) {
+      // todo, not working... ?!
+      console.log("FETCH", uuid)
       this.$api.entry__$uuid(uuid).then(({data}) => {
+        console.log(data)
         if (data.data) {
           // console.log("downloading entry", res)
           const entry = data.data
           entry.local = {}
+          this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
+          resolve()
+        }
+      }).catch(() => {
+        // todo ENH: could also be an error msg from the server
+        this.error_snackbar("Couldn't fetch entry")
+        reject()
+      })
+    },
+    fetch_and_nav(uuid) {
+      this.$api.entry__$uuid(uuid).then(({data}) => {
+        if (data.data) {
+          // console.log("downloading entry", res)
+          const entry = Object.assign(data.data, {local: {}})
           this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
           this.to_entry(uuid, this.proper_mode)
         }
@@ -78,9 +96,9 @@ export default {
     },
     show_in_route(uuid, entry_mode) {
       // todo something here takes a long time... or maybe showing the preview
-      const query =  {uuid, entry_mode, ...this.query_param_domain}
+      const query = {uuid, entry_mode, ...this.query_param_domain}
       // this.$router.push(route_change_query(this.$route, query, true))
-      this.$router.push({name:this.$route.name, query: query})
+      this.$router.push({name: this.$route.name, query: query})
       this.map_goto(uuid)
     },
     map_goto(entry_uuid) {
