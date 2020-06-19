@@ -425,7 +425,6 @@
           public_precision = PREC_OPTION_REGION
           public_loc.place = {}
           let add_to_place = false
-          debugger
           for (let place_type of default_place_type) {
             const place = value.place[place_type]
             // console.log(place_type, place)

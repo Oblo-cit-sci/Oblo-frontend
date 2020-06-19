@@ -21,7 +21,9 @@ export default {
         style: default_mapstyle, //this.default_style_map,
         center: [30, 0],
         zoom: 1,
-        logoPosition: "bottom-right"
+        logoPosition: "bottom-right",
+        maxPitch: 0,
+        dragRotate: false
       },
     }
   },

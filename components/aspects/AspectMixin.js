@@ -5,7 +5,7 @@ import {
   aspect_loc_uuid,
   aspect_raw_default_value,
   check_condition_value,
-  complete_aspect_loc,
+  complete_aspect_loc, loc_prepend,
   pack_value
 } from "~/lib/aspect";
 import {ENTRIES_GET_ENTRY, ENTRIES_SET_ENTRY_VALUE, ENTRIES_VALUE} from "~/store/entries";
@@ -93,18 +93,16 @@ export default {
       return this.mode === EDIT
     },
     condition_fail() {
-      //console.log("condition_fail?", this.aspect, this.aspect.name, this.condition)
       // todo this getting of the value, could mayeb also go into the helper...
       if (this.aspect.hasOwnProperty("attr") && this.aspect.attr.hasOwnProperty("condition")) {
-        //console.log("condition", this.aspect.name, this.extra[LIST_INDEX])
-        let aspect_location = complete_aspect_loc(
-          aspect_loc_uuid(this.aspect_loc),
-          aspect_loc_str2arr(this.aspect.attr.condition.aspect),
-          this.extra[LIST_INDEX])
+        console.log("condition", this.aspect.name)
+        let aspect_location = loc_prepend(EDIT, "",
+          aspect_loc_str2arr(this.aspect.attr.condition.aspect))
+
         // console.log("checking condition for", this.aspect.name)
         // console.log("condition aspect-loc", aspect_location)
         let condition_value = this.$store.getters[ENTRIES_VALUE](aspect_location)
-        // console.log("condition value", condition_value, check_condition_value(condition_value, this.aspect.attr.condition))
+        console.log("condition value", aspect_location, condition_value)
         return !check_condition_value(condition_value, this.aspect.attr.condition)
       } else {
         return false

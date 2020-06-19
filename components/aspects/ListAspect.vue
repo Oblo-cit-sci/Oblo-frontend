@@ -49,7 +49,7 @@
 
   import Aspect from "../Aspect";
   import ListMixin from "../ListMixin";
-  import {COMPOSITE, EDIT, INDEX, SIMPLE_TYPE} from "../../lib/consts";
+  import {COMPOSITE, EDIT, INDEX, SIMPLE_TYPE} from "~/lib/consts";
   import {
     aspect_loc_str,
     aspect_loc_str2arr,
@@ -60,15 +60,15 @@
     pack_value,
     packed_aspect_default_value,
     remove_entry_loc
-  } from "../../lib/aspect";
+  } from "~/lib/aspect";
   import Paginate from "../global/Paginate";
   import MinMaxIndicators from '../list_components/MinMaxIndicators'
 
   import ListPagination from "../aspect_utils/ListPagination";
   import goTo from 'vuetify/lib/services/goto'
-  import {recursive_unpack} from "../../lib/util";
+  import {recursive_unpack} from "~/lib/util";
   import AspectComponentMixin from "./AspectComponentMixin";
-  import {ENTRIES_VALUE} from "../../store/entries";
+  import {ENTRIES_VALUE} from "~/store/entries";
   import ListitemActions from "../aspect_utils/ListitemActions";
 
   const SIMPLE = "simple"
@@ -141,6 +141,7 @@
         return get_aspect_vue_component(aspect, this.mode)
       },
       add_value(n = 1) {
+        console.log("add")
         let additional = []
         //console.log("list has length", this.value)
         for (let i = 0; i < n; i++) {
@@ -155,7 +156,8 @@
             }
           }, 20)
         }
-        this.new_edit.push(this.value.length);
+        console.log(this.value)
+        this.new_edit.push(this.value.length)
       },
       list_aspect_props(index) {
         return {
