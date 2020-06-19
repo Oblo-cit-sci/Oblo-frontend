@@ -1,5 +1,5 @@
 import {get_proper_mode} from "~/lib/entry";
-import {EDIT, GLOBAL, NO_DOMAIN, VIEW} from "~/lib/consts";
+import {EDIT, GLOBAL, NO_DOMAIN, QP_D, VIEW} from "~/lib/consts";
 import {aspect_loc_str} from "~/lib/aspect";
 import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
 import NavBaseMixin from "./NavBaseMixin";
@@ -44,10 +44,7 @@ export default {
               this.to_entry(uuid, mode)
             } else {
               console.log("fetch & show")
-              const query = {uuid, entry_mode: mode}
-              Object.assign(query, this.query_param_domain)
-              this.$router.push(route_change_query(this.$route, query, true))
-              this.map_goto(uuid)
+              this.show_in_route(uuid, mode)
             }
           }
         }).catch(err => {
@@ -60,10 +57,7 @@ export default {
           this.to_entry(uuid, mode)
         } else {
           console.log("straight & show")
-          const query = {uuid, entry_mode: mode}
-          Object.assign(query, this.query_param_domain)
-          this.$router.push(route_change_query(this.$route, query, true))
-          this.map_goto(uuid)
+          this.show_in_route(uuid, mode)
           // this.$emit("preview_action", {uuid: this.entry.uuid, action: mode})
         }
       }
@@ -81,6 +75,13 @@ export default {
         // todo ENH: could also be an error msg from the server
         this.error_snackbar("Couldn't fetch entry")
       })
+    },
+    show_in_route(uuid, entry_mode) {
+      // todo something here takes a long time... or maybe showing the preview
+      const query =  {uuid, entry_mode, ...this.query_param_domain}
+      // this.$router.push(route_change_query(this.$route, query, true))
+      this.$router.push({name:this.$route.name, query: query})
+      this.map_goto(uuid)
     },
     map_goto(entry_uuid) {
       const entry_loc = this.$store.getters[ENTRIES_GET_ENTRY](entry_uuid).location
