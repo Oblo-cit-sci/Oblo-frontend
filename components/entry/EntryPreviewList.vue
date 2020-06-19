@@ -8,8 +8,7 @@
         Entrypreview(
           :passed_uuid="uuid"
           v-bind="preview_options"
-          @delete_e="delete_e($event)"
-          @preview_action="$emit('preview_action',$event)")
+          @delete_e="delete_e($event)")
     v-row(v-if="requesting_entries && !next_loading")
       v-col(offset="5" cols=2)
         v-progress-circular(indeterminate center size="35" color="success")

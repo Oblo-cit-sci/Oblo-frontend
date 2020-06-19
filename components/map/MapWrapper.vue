@@ -268,12 +268,6 @@
         const entry_uuid = feature.properties.uuid
         // console.log("select_entry_marker", entry_uuid)
         if (this.$store.getters[ENTRIES_HAS_FULL_ENTRY](entry_uuid)) {
-          // console.log("has full entry")
-          // todo redo
-          // if (this.selected_entry) {
-          //   this.change_entry_markers_mode(this.selected_entry, false)
-          // }
-          // todo bring back
           this.update_navigation_mode(entry_uuid, VIEW, false)
           // this.map_goto_location(feature.geometry)
         } else {
@@ -281,9 +275,7 @@
           this.$api.entry__$uuid(entry_uuid).then(({data}) => {
             if (data.data) {
               const entry = data.data
-
               this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
-              // todo bring back
               this.update_navigation_mode(entry_uuid, VIEW, false)
               // this.map_goto_location(feature.geometry)
             }

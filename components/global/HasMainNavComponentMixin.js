@@ -43,10 +43,6 @@ export default {
     },
     update_navigation_mode(entry_uuid, entry_mode, easeToFirst = true) {
       console.log("update_navigation_mode", easeToFirst)
-      if (this.selected_entry) {
-        // todo move to map logic
-        // this.change_entry_markers_mode(this.selected_entry, false)
-      }
       const query = {}
       if (entry_uuid) {
         query.uuid = entry_uuid
