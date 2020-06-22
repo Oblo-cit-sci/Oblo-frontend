@@ -32,7 +32,7 @@ export default {
   },
   methods: {
     nav() {
-      console.log("nav")
+      // console.log("nav")
     },
     ...mapMutations({switch_nav_drawer: 'app/switch_nav_drawer', set_nav_drawer: "app/nav_drawer"}),
     navigate_entry({uuid, mode}) {
@@ -42,7 +42,7 @@ export default {
       this.update_navigation_mode(null)
     },
     update_navigation_mode(entry_uuid, entry_mode, easeToFirst = true) {
-      console.log("update_navigation_mode", easeToFirst)
+      // console.log("update_navigation_mode", easeToFirst)
       const query = {}
       if (entry_uuid) {
         query.uuid = entry_uuid

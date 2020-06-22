@@ -101,6 +101,7 @@
   "_global.asp_location_privacy.labal": "Location privacy",
   "_global.asp_location_privacy.descr": "Specify the settings for the protection of the exact locations of your entries",
   "._aspect_select.descr": "@.capitalize:_global.w.description",
+  "comp_e_pw.created": "created",
   "comp_e_pw.outdated":"Created from an outdated version. Some values might change. Download the entry before updating is recommended",
   "comp_e_pw.view": "@:_global.w.view",
   "comp_e_pw.edit": "@:_global.w.edit",

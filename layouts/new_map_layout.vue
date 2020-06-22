@@ -4,6 +4,7 @@
     v-content
       v-container(v-if="initialized" id="fullContainer")
         nuxt
+    PrivacySheet(:privacy_sheet_open.sync="privacy_sheet_open")
 </template>
 
 <script>
@@ -14,20 +15,14 @@
   import InitializationMixin from "~/layouts/InitializationMixin"
   import {dev_env} from "~/lib/util"
   import NotificationBanner from "~/components/global/NotificationBanner"
+  import GlobalSnackbar from "~/components/global/GlobalSnackbar"
+  import PrivacySheet from "~/components/global/PrivacySheet"
 
   export default {
     name: "new_map_layout",
     mixins: [InitializationMixin],
-    components: {NotificationBanner, Appbar},
+    components: {PrivacySheet, GlobalSnackbar, NotificationBanner, Appbar},
     props: {},
-    data() {
-      return {}
-    },
-    created() {
-      if (!dev_env()) {
-        this.privacy_sheet_open = true
-      }
-    },
     computed: {
       ...mapGetters({
         db_loaded: APP_DB_LOADED,

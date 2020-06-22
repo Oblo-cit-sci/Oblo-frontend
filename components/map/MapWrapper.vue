@@ -27,6 +27,9 @@
       height: {
         type: [String, Number],
         default: 400
+      },
+      search_time: {
+        type: Date
       }
     },
     data() {
@@ -37,6 +40,7 @@
     },
     computed: {
       ...mapGetters({
+        entries_loaded: "map/entries_loaded",
         all_map_entries: "map/entries",
         layers: "map/layers",
         layer_status: "map/layer_status"
@@ -68,7 +72,6 @@
           Object.assign(options, default_camera)
         }
         const cached_options = this.$store.getters["map/cached_camera_options"](this.domain)
-        console.log(cached_options)
         if (cached_options) {
           Object.assign(options, cached_options)
         }
@@ -78,7 +81,6 @@
         return this.$vuetify.breakpoint.mdAndDown
       },
       center_padding() {
-        console.log("center padding?", this.nav_drawer)
         if (!this.nav_drawer) {
           return {}
         } else if (this.display_mdDown) {
@@ -95,23 +97,26 @@
       }
     },
     created() {
+      // console.log("wrapper created")
       if (this.domain) {
         this.load_map_entries()
       }
     },
     beforeDestroy() {
       // todo consider padding from menu
-      this.$store.commit("map/set_camera_options_cache", {
-        domain: this.domain, options: {
-          zoom: this.map.getZoom(),
-          center: this.map.getCenter()
-        }
-      })
+      if (this.map) {
+        this.$store.commit("map/set_camera_options_cache", {
+          domain: this.domain, options: {
+            zoom: this.map.getZoom(),
+            center: this.map.getCenter()
+          }
+        })
+      }
     },
     methods: {
       check_entries_map_done() {
         // console.log("check_entries_map_done", this.entries)
-        if (!this.$_.isEmpty(this.entries) && this.entries.features.length > 0 && this.map_loaded) {
+        if (this.entries_loaded && this.entries.features.length > 0 && this.map_loaded) {
           this.init_map_source_and_layers(this.entries)
           this.initialized = true
           if (this.$route.query.uuid) {
@@ -121,18 +126,19 @@
         }
       },
       init_map_source_and_layers(entries, layer_base_id = "all_entries") {
-
         // add source
+        console.log(this.entries.features.length)
         const source_name = layer_base_id + "_source"
         if (!this.map.getSource(source_name)) {
-          console.log("adding source")
+          // console.log("adding source")
           this.map.addSource(source_name, {
             type: "geojson",
             data: entries,
             cluster: true,
             tolerance: 0,
             clusterMaxZoom: 14,
-            clusterRadius: 35
+            clusterRadius: 35,
+            generateId: true
           })
         } else {
           console.log("source layer exists already")
@@ -143,7 +149,7 @@
         const cluster_layer = this.map.getLayer(cluster_layer_name)
         // console.log("cluster_layer?", Object.keys(this.map.style._layers).includes(cluster_layer))
         if (!cluster_layer) {
-          console.log("adding cluster layer")
+          // console.log("adding cluster layer")
           this.map.addLayer({
             id: cluster_layer_name,
             type: 'circle',
@@ -191,7 +197,6 @@
           'layout': {},
           // todo the colors should come from the templates
           'paint': {
-            "circle-opacity": 1,
             'circle-color': [
               'match',
               ['get', "template"],
@@ -264,7 +269,7 @@
         })
       },
       select_entry_marker(feature) {
-        console.log("select_entry_marker")
+        // console.log("select_entry_marker")
         const entry_uuid = feature.properties.uuid
         // console.log("select_entry_marker", entry_uuid)
         if (this.$store.getters[ENTRIES_HAS_FULL_ENTRY](entry_uuid)) {
@@ -285,31 +290,41 @@
         }
       },
       change_entry_markers_mode(entry_uuid, selected) {
-        console.log("MapWrapper.change_entry_markers_mode")
+        // console.log("MapWrapper.change_entry_markers_mode")
         const features = this.map.getSource("all_entries_source")._data.features
+        // console.log("all features", features)
         const relevant_features = this.$_.filter(features, (f) => f.properties.uuid === entry_uuid)
+        // console.log(entry_uuid, selected)
+        // this.map.setLayoutProperty(
+        //   "all_entries_cluster-count",
+        //   'visibility',
+        //   selected ? 'none' : 'visible'
+        // )
         for (let f of relevant_features) {
           if (selected) {
             this.map.setFeatureState(
               {source: 'all_entries_source', id: f.id},
               {"selected": true}
             )
-          } else
+          } else {
             this.map.removeFeatureState(
-              {source: 'all_entries_source', id: f.id}, "selected"
-            )
+              {source: 'all_entries_source', id: f.id}, "selected")
+          }
         }
       },
     },
     watch: {
       map_loaded() {
         this.check_entries_map_done()
+        this.$emit("map", this.map)
       },
-      entries() {
-        this.check_entries_map_done()
+      entries_loaded(loaded) {
+        // console.log("entries loaded", loaded)
+        if (loaded)
+          this.check_entries_map_done()
       },
       selected_entry(uuid, old_uuid) {
-        console.log("MapWrapper.watch.selected_entry", uuid, old_uuid)
+        // console.log("MapWrapper.watch.selected_entry", uuid, old_uuid)
         if (old_uuid) {
           this.change_entry_markers_mode(old_uuid, false)
         }
@@ -319,7 +334,7 @@
         }
       },
       goto_location(location) {
-        console.log("MapWrapper.watch.goto_location")
+        // console.log("MapWrapper.watch.goto_location")
         if (location) {
           this.map_goto_location(location)
         }

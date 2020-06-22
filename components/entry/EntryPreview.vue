@@ -6,15 +6,17 @@
       v-row
         v-col(v-bind:class="[show_image ? 'col-md-8' : 'col-md-10']")
           v-row
-            v-col(class="entry-meta" cols=12)
-              div.caption(v-if="show_date") {{entry_date}} {{is_draft ? $t('comp_entrypreview.draft') : ""}}
-              p.subtitle-1.mb-2 {{full_title}}
+            v-col.py-1(class="entry-meta" cols=12)
+              p.subtitle-1.mb-1 {{full_title}}
                 v-btn(v-if="show_title_action" @click="goto()" depressed small)
                   v-icon(:class="default_action_icon")
           v-row.pl-3
             MetaChips(v-if="show_meta_aspects" :meta_aspects="meta_aspects")
-          v-row.pl-3.mt-3
-            ActorChip(:actor="creator")
+          v-row.pl-3(justify="space-between")
+            v-col.py-0
+              ActorChip(:actor="creator")
+            v-col.py-0(:style="{'text-align': 'right'}")
+              span.my-auto(v-if="show_date") {{$t("comp_e_pw.created")}} {{entry_date}} {{is_draft ? $t('comp_entrypreview.draft') : ""}}
           v-row.pl-3(v-if="show_tags")
             Taglist(:tags="tags" :slide="true")
           v-row.pl-3(v-if="show_info")
@@ -99,7 +101,7 @@
       },
       show_meta_aspects: {
         type: Boolean,
-        default: true
+        default: false
       },
       show_botton_actions: {
         type: Boolean,

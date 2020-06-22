@@ -20,7 +20,7 @@
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
   import PersistentStorageMixin from "../components/util/PersistentStorageMixin";
   import FullEntryMixin from "../components/entry/FullEntryMixin";
-  import {entry_roles_aspect, license_aspect, privacy_aspect} from "~/lib/typical_aspects";
+  import {entry_roles_aspect, privacy_aspect} from "~/lib/typical_aspects";
   import EntryActorList from "../components/entry/EntryActorList";
   import {
     ENTRIES_GET_EDIT,
@@ -55,6 +55,7 @@
       this.$store.dispatch(ENTRIES_SET_EDIT, this.uuid)
     },
     beforeRouteEnter(to, from, next) {
+      console.log("entry enter.. to", to)
       if(!to.query.uuid) {
         next(false)
       } else {
@@ -76,6 +77,7 @@
       }
     },
     beforeRouteLeave(to, from, next) {
+      console.log("entry leave")
       // BEWARE, this is not called when navigating from one entry to another
       this.persist_entries()
       next()

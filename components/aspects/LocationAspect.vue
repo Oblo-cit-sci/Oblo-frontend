@@ -100,7 +100,7 @@
       },
       place_name_display() {
         if (this.place_name) {
-          return place_name.text
+          return this.place_name.text
         } else {
           return ""
         }
@@ -356,13 +356,6 @@
         }
         // from selecting one
         value.place_name = place2str(value.place)
-        // console.log("->", value)
-        if (this.privacy_setting === settings_loc_privacy_random)
-          value.public = {coordinates: create_location_error(value.coordinates)}
-        else if (this.privacy_setting === settings_loc_privacy_exact) {
-          value.public = {coordinates: value.coordinates}
-        }
-        // console.log(value)
         let option = PREC_OPTION_EXACT
         if (this.privacy_setting === settings_loc_privacy_random) {
           option = PREC_OPTION_RANDOM
@@ -488,7 +481,6 @@
         if (value.place_name) {
           this.search_query = value.place_name
         }
-
       },
       map_loaded() {
         if (this.value && this.value.coordinates) {

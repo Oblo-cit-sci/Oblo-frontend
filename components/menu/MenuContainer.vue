@@ -48,9 +48,6 @@
       over: Boolean,
       domain_navigation_mode: String
     },
-    data() {
-      return {}
-    },
     created() {
       this.$emit("menu_width", this.menu_width)
     },
@@ -82,9 +79,11 @@
         }
       }
     },
-    methods: {},
     watch: {
       mode(mode) {
+        this.$emit("menu_width", this.menu_width)
+      },
+      menu_width() {
         this.$emit("menu_width", this.menu_width)
       }
     }

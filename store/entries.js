@@ -38,16 +38,12 @@ export const UPDATE_TAGS = "update_tags"
 export const ENTRIES_HAS_ENTRY = "entries/has_entry"
 export const ENTRIES_GET_ENTRY = "entries/get_entry"
 export const ENTRIES_HAS_FULL_ENTRY = "entries/has_full_entry"
-export const ENTRIES_GET_ENTRIES = "entries/get_entries"
 export const ENTRIES_GET_OWN_ENTRIES_UUIDS = "entries/get_own_entries_uuids"
-export const ENTRIES_ALL_ENTRIES_UUID_ENTRY_ARR = "entries/all_entries_uuid_entry_arr"
 export const ENTRIES_ALL_ENTRIES_ARRAY = "entries/all_entries_array"
 export const ENTRIES_GET_ENTRY_TITLE = "entries/get_entry_title"
 export const ENTRIES_GET_PARENT = "entries/get_parent"
-export const ENTRIES_SIZE = "entries/get_size"
 export const ENTRIES_GET_EDIT = "entries/get_edit"
 export const ENTRIES_DOMAIN_DRAFTS_UUIDS = "entries/domain_drafts_uuids"
-
 
 // Actions
 

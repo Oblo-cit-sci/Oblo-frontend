@@ -57,7 +57,7 @@ export default {
       }
     },
     map_goto_location(location) {
-      console.log("MapIncldeMixin.map_goto_location", location)
+      // console.log("MapIncldeMixin.map_goto_location", location)
       // debugger
       const center = this.transform_loc(location.coordinates)
       this.map.easeTo({

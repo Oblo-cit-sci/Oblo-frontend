@@ -1,4 +1,4 @@
-import {EDIT, LIST_INDEX, REGULAR, VIEW} from "~/lib/consts";
+import {EDIT, ENTRY, LIST_INDEX, REGULAR, VIEW} from "~/lib/consts";
 import {
   aspect_default_value,
   aspect_loc_str2arr,
@@ -93,16 +93,19 @@ export default {
       return this.mode === EDIT
     },
     condition_fail() {
+      // todo pass if edit
       // todo this getting of the value, could mayeb also go into the helper...
+
       if (this.aspect.hasOwnProperty("attr") && this.aspect.attr.hasOwnProperty("condition")) {
-        console.log("condition", this.aspect.name)
-        let aspect_location = loc_prepend(EDIT, "",
+
+
+        let aspect_location = loc_prepend(this.edit ? EDIT : ENTRY, this.entry_uuid,
           aspect_loc_str2arr(this.aspect.attr.condition.aspect))
 
         // console.log("checking condition for", this.aspect.name)
         // console.log("condition aspect-loc", aspect_location)
         let condition_value = this.$store.getters[ENTRIES_VALUE](aspect_location)
-        console.log("condition value", aspect_location, condition_value)
+        // console.log("condition value", aspect_location, condition_value)
         return !check_condition_value(condition_value, this.aspect.attr.condition)
       } else {
         return false
@@ -231,8 +234,7 @@ export default {
     },
     entry_uuid() {
       return aspect_loc_uuid(this.aspect_loc)
-    },
-
+    }
   },
   watch: {}
 }

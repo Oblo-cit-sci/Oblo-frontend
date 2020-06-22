@@ -1,6 +1,7 @@
 import {initialize, reload_storage} from "~/lib/client"
 import {mapGetters} from "vuex"
 import {APP_DB_LOADED} from "~/store/app"
+import {dev_env} from "~/lib/util"
 
 export default {
   name: "InitializationMixin",
@@ -9,6 +10,14 @@ export default {
       reload_storage(this.$store, this.$localForage)
     if (!this.$api.is_initialized()) {
       this.$api.init(this.$axios) // , "https://opentek.eu"
+      if (!dev_env()) {
+        this.privacy_sheet_open = true
+      }
+    }
+  },
+  data() {
+    return {
+      privacy_sheet_open: false
     }
   },
   computed: {

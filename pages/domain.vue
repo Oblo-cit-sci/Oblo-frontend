@@ -14,7 +14,7 @@
       :mode.sync="menu_mode"
       :domain_navigation_mode="navigation_mode"
       @menu_width="menu_width=$event")
-    MapWrapper(height="100%" :domain="domain_name" @force_menu_mode_domain="menu_mode=1")
+    MapWrapper(height="100%" :domain="domain_name" @force_menu_mode_domain="menu_mode=1" @map="map=$event")
 </template>
 
 <script>
@@ -27,7 +27,6 @@
   import {mapGetters} from "vuex"
   import {DOMAIN, DOMAIN_BY_NAME, SET_DOMAIN} from "~/store";
   import {TEMPLATES_OF_DOMAIN} from "~/store/templates";
-  import {USER_LOGGED_IN} from "~/store/user";
   import EntryNavMixin from "~/components/EntryNavMixin"
   import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
   import {object_list2options} from "~/lib/options"
@@ -41,7 +40,6 @@
   import MenuContainer from "~/components/menu/MenuContainer"
   import DomainMixin from "~/components/DomainMixin"
   import {MENU_MODE_DOMAIN_OVERVIEW, QP_D, QP_F} from "~/lib/consts"
-  import DomainMapMixin from "~/components/map/DomainMapMixin"
 
   export default {
     name: "domain",
@@ -64,6 +62,7 @@
       }
     },
     created() {
+      // console.log("domain page created", this.$route.fullPath)
       if (!dev_env()) {
         window.history.replaceState(null, document.title, "/licci")
       }

@@ -59,6 +59,10 @@
       if (this.mode === EDIT) {
         this.calc_options()
       }
+      console.log("created", this.extra, this.value)
+      if(this.extra.listitem && !this.value) {
+        this.dialogOpen = true
+      }
     },
     methods: {
       openDialog(short_persistence) {
@@ -98,7 +102,7 @@
         return this.readOnly ? '' : 'mdi-file-tree'
       },
       direct_select() {
-        console.log(this.aspect.attr.direct_select)
+        // console.log(this.aspect.attr.direct_select)
         if (!this.aspect.attr.hasOwnProperty("direct_select"))
           return true
         else {

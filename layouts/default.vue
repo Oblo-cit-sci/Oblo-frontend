@@ -35,21 +35,6 @@
   export default {
     components: {NotificationBanner, MenuContainer, Appbar, PrivacySheet, MainMenu, GlobalSnackbar, Footer},
     mixins: [InitializationMixin, TriggerSnackbarMixin, PersistentStorageMixin, NavBaseMixin],
-    data() {
-      return {
-        privacy_sheet_open: false
-      }
-    },
-    created() {
-      if (!this.db_loaded)
-        reload_storage(this.$store, this.$localForage)
-      if (!this.$api.is_initialized()) {
-        this.$api.init(this.$axios) // , "https://opentek.eu"
-        if (!dev_env()) {
-          this.privacy_sheet_open = true
-        }
-      }
-    },
     computed: {
       ...mapGetters([APP_CONNECTING]),
       ...mapGetters({
