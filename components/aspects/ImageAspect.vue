@@ -5,6 +5,8 @@
         v-img.a_image(:src="get_image_data(index)" @click="open_image(index)" max-height="300" contain @error="image_error($event, index)")
           .header_image_wrapper(v-if="cover_image_index===index")
             div.ml-9.font-weight-light cover image
+      v-col(v-if="readOnly && !has_images")
+        div {{$t('comp_image_aspect.no_images')}}
     LoadFileButton(v-if="is_edit_mode"
       label="Add image"
       filetype="image"
@@ -106,6 +108,9 @@
       },
       selected_is_cover() {
         return this.selected_image_index === this.cover_image_index
+      },
+      has_images() {
+        return this.images.length
       }
     },
     methods: {

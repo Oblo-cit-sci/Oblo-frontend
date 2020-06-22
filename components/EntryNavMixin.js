@@ -24,17 +24,17 @@ export default {
       return this.$store.getters[ENTRIES_HAS_ENTRY](uuid)
     },
     goto(uuid, force_mode) {
-      console.log("gotoooo")
+      // console.log("gotoooo")
       // todo should push not init?!
       this.$store.commit(INIT_PAGE_PATH, this.$route)
       const has_full_entry = this.$store.getters[ENTRIES_HAS_FULL_ENTRY](uuid)
       // console.log("has full", has_full_entry)
       const entry = this.$store.getters[ENTRIES_GET_ENTRY](uuid)
       const mode = force_mode ? force_mode : this.proper_mode
-      console.log("full?", has_full_entry)
+      // console.log("full?", has_full_entry)
       if (!has_full_entry) { // todo replace values by entry.local.is_full: Boolean
         // console.log("grabbing")
-        console.log("fetching...")
+        // console.log("fetching...")
         // todo, wanted to use this.fetch but doesnt work...
         this.$api.entry__$uuid(this.entry.uuid).then(({data}) => {
           if (data.data) {
@@ -52,7 +52,7 @@ export default {
           console.log("error fetching entry")
         })
       } else {
-        console.log("straight")
+        // console.log("straight")
         if (!this.prevent_view_page_change || mode === EDIT) {
           // console.log("straight & nav")
           this.to_entry(uuid, mode)
@@ -65,7 +65,7 @@ export default {
     },
     async fetch(uuid) {
       // todo, not working... ?!
-      console.log("FETCH", uuid)
+      // console.log("FETCH", uuid)
       this.$api.entry__$uuid(uuid).then(({data}) => {
         console.log(data)
         if (data.data) {

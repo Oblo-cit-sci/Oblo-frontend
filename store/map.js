@@ -28,8 +28,8 @@ export const mutations = {
   add_entries(state, {domain, entries}) {
     if(state.entries.hasOwnProperty(domain)) {
       // console.log("setting", domain, entries)
-      console.log("LLEE", state.entries[domain].features.length)
-      console.log("+", entries.features.length)
+      // console.log("LLEE", state.entries[domain].features.length)
+      // console.log("+", entries.features.length)
       state.entries[domain].features.push(...entries.features)
     } else {
       $nuxt.$set(state.entries, domain, entries)

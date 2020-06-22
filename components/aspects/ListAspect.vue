@@ -6,13 +6,15 @@
           b.m-1(v-if="has_indexTitle") {{titles[index]|| index + 1}}
           Aspect(
             v-bind="list_aspect_props(index)"
-            v-on:aspectAction="handleAspectAction($event, index)"
+            @aspectAction="handleAspectAction($event, index)"
             v-on:append-outer="remove_value(index)")
           ListitemActions(
             v-if="!readOnly"
             v-bind="listitem_actions_prop(index)"
-            v-on:remove_value="remove_value($event)"
+            @remove_value="remove_value($event)"
             v-on:move="move($event)")
+      div(v-if="readOnly && is_empty")
+        .ml-2 {{aspect.attr.default_view}}
     div(v-else class="mb-1 mt-1")
       v-expansion-panels(
         multiple
@@ -30,6 +32,8 @@
               v-bind="listitem_actions_prop(index)"
               v-on:remove_value="remove_value($event)"
               v-on:move="move($event)")
+      div(v-if="readOnly && is_empty")
+        .ml-2 {{aspect.attr.default_view}}
     MinMaxIndicators(
       v-if="!readOnly && !disabled"
       v-bind="min_max_props")
@@ -254,7 +258,7 @@
       },
       requires_delete() {
         let itemtype = this.aspect.items.type
-        return !(itemtype === "str" || itemtype === "int" || itemtype === "float");
+        return !(itemtype === "str" || itemtype === "int" || itemtype === "float" || itemtype === "tree")
       },
       titles() {
         let titles = new Array(this.value.length)
@@ -346,6 +350,9 @@
           min: this.min,
           max: this.max
         }
+      },
+      is_empty() {
+        return this.value.length === 0
       }
     },
     beforeUpdate() {

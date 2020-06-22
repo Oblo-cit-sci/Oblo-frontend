@@ -95,6 +95,7 @@
       },
       clear() {
         this.update_value(null)
+        this.$emit("aspectAction", {action:"clear"})
       }
     },
     computed: {

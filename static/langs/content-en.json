@@ -114,5 +114,6 @@
   "lang.en": "english",
   "lang.es": "spanish",
   "lang.de": "german",
-  "lang.fr": "french"
+  "lang.fr": "french",
+  "comp_image_aspect.no_images": "No images"
 }

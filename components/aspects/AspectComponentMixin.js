@@ -1,5 +1,5 @@
 import {EDIT, VIEW} from "~/lib/consts";
-import {aspect_loc_uuid} from "~/lib/aspect";
+import {aspect_loc_uuid, aspect_raw_default_value, disabled_by_condition} from "~/lib/aspect";
 import {ENTRIES_GET_ENTRY} from "~/store/entries";
 
 export default {
@@ -76,7 +76,10 @@ export default {
       return this.mode === VIEW
     },
     extras() {
-      return Object.assign(Object.assign({},this.extra), this.aspect.attr.extra)
+      return Object.assign(Object.assign({}, this.extra), this.aspect.attr.extra)
+    },
+    is_set() {
+      return (this.value === aspect_raw_default_value(this.aspect))
     }
   },
   methods: {
