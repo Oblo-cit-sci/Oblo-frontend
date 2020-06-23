@@ -43,7 +43,8 @@
         entries_loaded: "map/entries_loaded",
         all_map_entries: "map/entries",
         layers: "map/layers",
-        layer_status: "map/layer_status"
+        layer_status: "map/layer_status",
+        legend_selection: "map/get_filter_config"
       }),
       entries() {
         return this.all_map_entries(this.domain)
@@ -117,7 +118,7 @@
       check_entries_map_done() {
         // console.log("check_entries_map_done", this.entries)
         if (this.entries_loaded && this.entries.features.length > 0 && this.map_loaded) {
-          this.init_map_source_and_layers(this.entries)
+          this.init_map_source_and_layers()
           this.initialized = true
           if (this.$route.query.uuid) {
             this.update_navigation_mode(this.$route.query.uuid, VIEW)
@@ -125,24 +126,28 @@
           }
         }
       },
-      init_map_source_and_layers(entries, layer_base_id = "all_entries") {
+      init_map_source_and_layers(layer_base_id = "all_entries") {
         // add source
-        console.log(this.entries.features.length)
+        // console.log(this.entries.features.length)
+
+        // const all_entries_source_name = layer_base_id + "_all_source"
+        // if (!this.map.getSource(all_entries_source_name)) {
+        //   // console.log("adding source")
+        //   this.map.addSource(all_entries_source_name, {
+        //     type: "geojson",
+        //     data: this.entries,
+        //     cluster: true,
+        //     tolerance: 0,
+        //     clusterMaxZoom: 14,
+        //     clusterRadius: 35,
+        //     generateId: true
+        //   })
+        // } else {
+        //   console.log("source layer exists already")
+        // }
+
         const source_name = layer_base_id + "_source"
-        if (!this.map.getSource(source_name)) {
-          // console.log("adding source")
-          this.map.addSource(source_name, {
-            type: "geojson",
-            data: entries,
-            cluster: true,
-            tolerance: 0,
-            clusterMaxZoom: 14,
-            clusterRadius: 35,
-            generateId: true
-          })
-        } else {
-          console.log("source layer exists already")
-        }
+        this.update_filtered_source()
 
         // cluster layer
         const cluster_layer_name = layer_base_id + '_clusters'
@@ -268,6 +273,26 @@
           this.select_entry_marker(e.features[0])
         })
       },
+      update_filtered_source() {
+        const included_templates = this.legend_selection.map(s => s.value)
+        const filtered_entries = {
+          type: "FeatureCollection",
+          features: this.entries.features.filter(e => included_templates.includes(e.properties.template))
+        }
+        if (!this.map.getSource("all_entries_source")) {
+          this.map.addSource("all_entries_source", {
+            type: "geojson",
+            data: filtered_entries,
+            cluster: true,
+            tolerance: 0,
+            clusterMaxZoom: 14,
+            clusterRadius: 35,
+            generateId: true
+          })
+        } else {
+          this.map.getSource("all_entries_source").setData(filtered_entries)
+        }
+      },
       select_entry_marker(feature) {
         // console.log("select_entry_marker")
         const entry_uuid = feature.properties.uuid
@@ -339,6 +364,9 @@
           this.map_goto_location(location)
         }
       },
+      legend_selection(selection) {
+        this.update_filtered_source()
+      }
     }
   }
 </script>
