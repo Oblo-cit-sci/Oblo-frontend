@@ -16,7 +16,7 @@
       :mode.sync="menu_mode"
       :domain_navigation_mode="navigation_mode"
       @menu_width="menu_width=$event")
-    <!--    MapWrapper(height="100%" :domain="domain_name" @force_menu_mode_domain="menu_mode=1" @map="map=$event")-->
+    MapWrapper(height="100%" :domain="domain_name" @force_menu_mode_domain="menu_mode=1" @map="map=$event")
 </template>
 
 <script>

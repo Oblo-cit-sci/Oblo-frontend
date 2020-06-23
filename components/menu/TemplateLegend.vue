@@ -1,10 +1,10 @@
 <template lang="pug">
-  v-expansion-panels(:value="[0]" :style="{width:'300px'}")
+  v-expansion-panels(:style="{width:'300px'}")
     v-expansion-panel
       v-expansion-panel-header.px-3.py-1 Legend
       v-expansion-panel-content.px-2.py-1.no-wrap
         v-list(dense)
-          v-list-item-group(multiple mandatory @change="change($event)")
+          v-list-item-group(multiple mandatory :value="selected" @change="change($event)")
             v-list-item(v-for="t in templates" :key="t.value" :color="t.color" :ripple="false")
               v-list-item-icon
                 v-icon.mr-0(:color="t.color" x-small) mdi-checkbox-blank-circle
@@ -28,14 +28,21 @@
         this.$store.getters["templates/templates_of_domain"](this.domain_name), "title", "slug", true, [{"color": "rules.map.marker_color"}])
       return {
         templates,
-        selected: []
       }
     },
-    computed: {},
+    computed: {
+      selected: {
+        get: function() {
+          return this.$store.getters["map/get_filter_config"]
+            .map(f => this.$_.findIndex(this.templates, t => t.value === f.value))
+        }
+      }
+    },
     created() {
     },
     methods: {
       change(selected_templates) {
+        // console.log(selected_templates)
         selected_templates = selected_templates.map(i =>
           Object.assign(
             this.templates[i], {name: "template", "label": "Entrytype"})

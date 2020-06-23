@@ -216,7 +216,7 @@
         this.map.getSource("cluster_region_names_source").setData({
           "type": "FeatureCollection",
           "features": region_source_features
-        });
+        })
       },
       debounced_cluster_status() {
       },
