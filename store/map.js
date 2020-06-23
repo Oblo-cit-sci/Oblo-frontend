@@ -22,11 +22,12 @@ export const state = () => ({
   layer_status: {},
   cached_camera_options: {},
   searchtime: null,
+  filter_config: []
 })
 
 export const mutations = {
   add_entries(state, {domain, entries}) {
-    if(state.entries.hasOwnProperty(domain)) {
+    if (state.entries.hasOwnProperty(domain)) {
       // console.log("setting", domain, entries)
       // console.log("LLEE", state.entries[domain].features.length)
       // console.log("+", entries.features.length)
@@ -58,6 +59,9 @@ export const mutations = {
   },
   set_loading_entries(state, loading) {
     state.loading_entries = loading
+  },
+  set_filter_config(state, filter_config) {
+    state.filter_config = filter_config
   }
 }
 
@@ -96,6 +100,9 @@ export const getters = {
     return (domain) => {
       return state.cached_camera_options[domain]
     }
+  },
+  get_filter_config(state) {
+    return state.filter_config
   }
 }
 

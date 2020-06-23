@@ -115,5 +115,10 @@
   "lang.es": "spanish",
   "lang.de": "german",
   "lang.fr": "french",
-  "comp_image_aspect.no_images": "No images"
+  "comp_image_aspect.no_images": "No images",
+  "comp_location.public_loc.base": "Public location",
+  "comp_location.public_loc.option_rnd": "For viewers the exact location is not visible but randomly moved.",
+  "comp_location.public_loc.option_exact": "Viewers see the exact location.",
+     "comp_location.public_loc.option_region": "Viewers see the location of the region."
+
 }

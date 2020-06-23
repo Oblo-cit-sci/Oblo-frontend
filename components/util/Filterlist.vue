@@ -3,7 +3,7 @@
     div(v-if="has_applied_filters")
       h4.mb-2 Applied filters
       v-list(dense)
-        v-list-item(v-for="(filter, index) in applied_filters" :key="filter.name")
+        v-list-item(v-for="(filter, index) in applied_filters" :key="index")
           v-list-item-title {{filter.label}}:&nbsp;{{filter.text}}
           v-btn(icon @click="edit_filter(index)")
             v-icon mdi-filter
@@ -101,7 +101,7 @@
         this.dialog_open = true
       },
       remove_filter(index) {
-        this.applied_filters.splice(index, 1)
+        this.$emit("input", this.$_.filter(this.value, (v, i) => i !== index))
       },
       filter_value(name) {
         // console.log("filter_value")

@@ -16,7 +16,7 @@
       v-col(cols="12")
         Filterlist(
           :filter_options="filterlist_options"
-          v-model="filter_data"
+          v-model="act_config"
           :search_button="filter_search_button"
           @search="getEntries")
     v-row(v-if="prepend_search")
@@ -87,7 +87,7 @@
       },
       mixin_domain_drafts: {
         type: String
-      }
+      },
     },
     data() {
       return {
@@ -142,9 +142,6 @@
       view_mode(val) {
         this.$emit("update:view_mode", val)
       },
-      filter_data() {
-        this.filter_changed = true
-      },
       searching(is_searching) {
         if (!is_searching) {
           this.$emit("received_search_results", this.entries())
@@ -165,6 +162,15 @@
         const no_params = this.$_.isEmpty(this.$_.pick(this.$route.query, [QP_SEARCH]))
         const no_filter = this.filter_data.length === 0
         return no_params && no_filter
+      },
+      act_config: {
+        get: function () {
+          return this.$store.getters["search/get_act_config"]
+        },
+        set: function (val) {
+          this.filter_changed = true
+          this.$store.commit("search/set_act_config", val)
+        }
       },
       searching() {
         return this.get_searching()
@@ -198,9 +204,6 @@
       },
       filterlist_options() {
         const filter = this.include_filters
-        if (!this.$store.getters.is_visitor) {
-          filter.push(privacy_filter_options)
-        }
         return this.$_.concat(filter)
       }
     },
@@ -236,7 +239,7 @@
           configuration.required.push(filter)
         }
         const filterlist_options = this.filterlist_options
-        for (let filter of this.filter_data) {
+        for (let filter of this.act_config) {
           const config = filterlist_options.find(fo => fo.name === filter.name).search_config
           if (config.hasOwnProperty("name")) {
             config.conditional_value = filter.value

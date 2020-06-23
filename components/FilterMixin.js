@@ -40,6 +40,7 @@ export default {
         column: DOMAIN,
         conditional_value: domain_name
       }
-    }
+    },
+
   }
 }

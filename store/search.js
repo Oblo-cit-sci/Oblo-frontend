@@ -26,9 +26,10 @@ export const SEARCH_GET_ALL_UUIDS = "search/get_all_uuids"
 const ld = require("lodash")
 
 export const state = () => ({
-  path: "",
-  relevant_path_query_values: {},
+  path: "", // check
+  relevant_path_query_values: {}, // ?
   search_term: "",
+  act_config: [], // config before search. set by domainMenu.search.filterlist and map_overlays.legend,
   searching: false, // flag for loadin
   entries: [], // result
   entry_aspects: [], // result specifics, not used atm
@@ -80,6 +81,9 @@ export const mutations = {
   },
   set_all_uuids(state, uuids) {
     state.all_uuids = uuids
+  },
+  set_act_config(state, config) {
+    state.act_config = config
   }
 }
 
@@ -111,6 +115,9 @@ export const getters = {
   },
   get_all_uuids(state) {
     return () => state.all_uuids
+  },
+  get_act_config(state) {
+    return state.act_config
   }
 }
 

@@ -9,12 +9,14 @@
       v-btn.shift_anim(large rounded color="success" :style="center_button_shift" @click="create_from_main_template")
         b {{main_template.create_text}}
         v-icon mdi-plus
+    .overlay_menu
+      TemplateLegend(:domain_name="domain_name")
     MenuContainer(
       :over="true"
       :mode.sync="menu_mode"
       :domain_navigation_mode="navigation_mode"
       @menu_width="menu_width=$event")
-    MapWrapper(height="100%" :domain="domain_name" @force_menu_mode_domain="menu_mode=1" @map="map=$event")
+    <!--    MapWrapper(height="100%" :domain="domain_name" @force_menu_mode_domain="menu_mode=1" @map="map=$event")-->
 </template>
 
 <script>
@@ -40,13 +42,14 @@
   import MenuContainer from "~/components/menu/MenuContainer"
   import DomainMixin from "~/components/DomainMixin"
   import {MENU_MODE_DOMAIN_OVERVIEW, QP_D, QP_F} from "~/lib/consts"
+  import TemplateLegend from "~/components/menu/TemplateLegend"
 
   export default {
     name: "domain",
     layout: "new_map_layout",
     mixins: [DomainMixin, HasMainNavComponentMixin, EntryNavMixin,
       PersistentStorageMixin, LayoutMixin, MapIncludeMixin],
-    components: {MenuContainer, MainMenu, MapWrapper, EntryCreateList, Search, Mapbox},
+    components: {TemplateLegend, MenuContainer, MainMenu, MapWrapper, EntryCreateList, Search, Mapbox},
     data() {
       return {
         menu_mode: MENU_MODE_DOMAIN_OVERVIEW,
@@ -130,6 +133,13 @@
     z-index: 1;
     left: 50%;
     transform: translate(-50%, 0)
+  }
+
+  .overlay_menu {
+    position: absolute;
+    top: 2%;
+    z-index: 1;
+    right: 5%;
   }
 
   .shift_anim {

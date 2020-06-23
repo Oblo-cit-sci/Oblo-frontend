@@ -20,14 +20,13 @@
               auto-select-first
               v-model="place_select__"
               clearable)
-            div
-              div Public location:&nbsp;
-                span {{public_location_text}}
-                v-chip-group(v-if="public_location_selector_on" active-class="primary--text" mandatory)
-                  v-chip(v-for="(place_part, index) in precision_options" :key="index"
-                    text-color="black"
-                    @click="public_location_precision_selected($event)"
-                    color="yellow lighten-3") {{place_part}}
+            div(v-if="value") {{$t("comp_location.public_loc")}}}:&nbsp;
+              span {{public_location_text}}
+              v-chip-group(v-if="public_location_selector_on" active-class="primary--text" mandatory)
+                v-chip(v-for="(place_part, index) in precision_options" :key="index"
+                  text-color="black"
+                  @click="public_location_precision_selected($event)"
+                  color="yellow lighten-3") {{place_part}}
     div(v-else)
       span.body-1.readonly-aspect {{place_name_display}}
       v-btn(v-if="show_goto_button" icon @click="goto_location")
@@ -116,12 +115,12 @@
         if (this.value) {
           if (this.value.location_precision === LOCATION_PRECISION_POINT) {
             if (this.privacy_setting === settings_loc_privacy_random)
-              return "For viewers the exact location is not visible but randomly moved."
+              return this.$t("comp_location.public_loc.option_rnd")
             else if (this.privacy_setting === settings_loc_privacy_exact) {
-              return "Viewers see the exact location."
+              return this.$t("comp_location.public_loc.option_exact")
             }
           } else {
-            return "Viewers see the location of the region."
+            return this.$t("comp_location.public_loc.option_region")
           }
         } else {
           return ""

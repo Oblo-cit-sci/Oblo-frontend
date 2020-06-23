@@ -16,7 +16,7 @@ export const TEMPLATES_HAS_TYPE = "templates/has_type"
 export const TEMPLATES_TYPE = "templates/entry_type"
 export const TEMPLATES_TYPENAME = "templates/type_name"
 export const TEMPLATES_TYPES = "templates/entrytypes"
-export const TEMPLATES_OF_DOMAIN = "templates/entrytypes_of_domain"
+export const TEMPLATES_OF_DOMAIN = "templates/templates_of_domain"
 export const TEMPLATES_GET_ASPECT_DEF = "templates/get_aspect_def"
 export const TEMPLATES_TYPES_ARRAY = "templates/entry_types_array"
 export const TEMPLATES_ALL_NOTES = "templates/all_notes"
@@ -76,7 +76,7 @@ export const getters = {
   entrytypes(state) { // TEMPLATES_TYPES
     return Object.fromEntries(state.entry_types)
   },
-  entrytypes_of_domain(state) { // TEMPLATES_OF_DOMAIN
+  templates_of_domain(state) { // TEMPLATES_OF_DOMAIN
     return domain => {
       return entries_domain_filter(Array.from(state.entry_types.values()), domain)
     }
