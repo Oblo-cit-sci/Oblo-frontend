@@ -4,7 +4,7 @@
       v-expansion-panel-header.px-3.py-1 Legend
       v-expansion-panel-content.px-2.py-1.no-wrap
         v-list(dense)
-          v-list-item-group(multiple mandatory :value="selected" @change="change($event)")
+          v-list-item-group(multiple mandatory  v-model="selected")
             v-list-item(v-for="t in templates" :key="t.value" :color="t.color" :ripple="false")
               v-list-item-icon
                 v-icon.mr-0(:color="t.color" x-small) mdi-checkbox-blank-circle
@@ -32,9 +32,21 @@
     },
     computed: {
       selected: {
-        get: function() {
+        get: function () {
           return this.$store.getters["map/get_filter_config"]
             .map(f => this.$_.findIndex(this.templates, t => t.value === f.value))
+        },
+        set(selected_templates) {
+          selected_templates = selected_templates.map(i =>
+            Object.assign(
+              this.templates[i], {name: "template", "label": "Entrytype"})
+          )
+          const act_config = this.$store.getters["map/get_filter_config"]
+          const new_conf = act_config.filter(conf => conf.name !== "template")
+          for (let t of selected_templates) {
+            new_conf.push(t)
+          }
+          this.$store.commit("map/set_filter_config", new_conf)
         }
       }
     },

@@ -137,7 +137,7 @@
 
   #pwlist-container {
     width: 100%;
-    /*max-height: 600px;*/
+    max-height: 600px;
   }
 
 </style>
