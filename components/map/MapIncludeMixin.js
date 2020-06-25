@@ -28,6 +28,9 @@ export default {
     }
   },
   computed: {
+    language() {
+      return this.$store.getters["app/ui_language"]
+    }
   },
   methods: {
     onMapLoaded(map) {
@@ -86,5 +89,24 @@ export default {
         `User position: ${position.coords.latitude}, ${position.coords.longitude}`
       )
     },
+    download_image() {
+      // doesnt contain the marker yet
+      console.log(this.map)
+      debugger
+      let image = this.map.getCanvas().toDataURL("image/png")
+        .replace("image/png", "image/octet-stream")
+      let a = document.createElement('a')
+      a.href = image
+      a.download = "neat.png"
+      a.click()
+    }
+  },
+  watch: {
+    language(val) {
+      this.map.setLayoutProperty('country-label', 'text-field', [
+        'get',
+        'name_' + val
+      ])
+    }
   }
 }

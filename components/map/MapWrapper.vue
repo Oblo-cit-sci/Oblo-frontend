@@ -1,10 +1,15 @@
 <template lang="pug">
-  client-only
-    mapbox.fullSize(
-      :style="map_height"
-      :access-token="access_token"
-      :map-options="map_options"
-      @map-load="onMapLoaded")
+  .fullsize
+    .buttons
+      v-btn(fab @click="set_dl=true" x-small dark)
+        v-icon mdi-camera
+    client-only
+      mapbox.fullSize(
+        :style="map_height"
+        :access-token="access_token"
+        :map-options="map_options"
+        @render="render"
+        @map-load="onMapLoaded")
 </template>
 
 <script>
@@ -35,7 +40,8 @@
     data() {
       return {
         act_popup: null,
-        act_hoover_uuid: null
+        act_hoover_uuid: null,
+        set_dl: false
       }
     },
     computed: {
@@ -115,6 +121,22 @@
       }
     },
     methods: {
+      trigger_dl() {
+        this.set_dl=true
+        this.map.triggerRepaint()
+      },
+      render(re) {
+        if(!this.set_dl)
+          return
+        this.set_dl = false
+        // console.log(re)
+        let image = re.getCanvas().toDataURL("image/png")
+          .replace("image/png", "image/octet-stream")
+        let a = document.createElement('a')
+        a.href = image
+        a.download = "neat.png"
+        a.click()
+      },
       check_entries_map_done() {
         // console.log("check_entries_map_done", this.entries)
         if (this.entries_loaded && this.entries.features.length > 0 && this.map_loaded) {
@@ -267,7 +289,6 @@
             this.act_popup = null
           }
         })
-
         this.map.on("click", entries_layer_name, (e) => {
           // console.log(e.features)
           this.select_entry_marker(e.features[0])
@@ -286,7 +307,7 @@
             cluster: true,
             tolerance: 0,
             clusterMaxZoom: 14,
-            clusterRadius: 35,
+            clusterRadius: 15,
             generateId: true
           })
         } else {
@@ -372,5 +393,16 @@
 </script>
 
 <style scoped>
+  .buttons {
+    position: absolute;
+    top: 2%;
+    z-index: 1;
+    left: 13%;
+    transform: translate(-50%, 0)
+  }
 
+  .fullsize {
+    width: 100%;
+    height: 100%;
+  }
 </style>

@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-expansion-panels(:style="{width:'300px'}")
+  v-expansion-panels(:style="{width:'300px', opacity:'0.8'}")
     v-expansion-panel
       v-expansion-panel-header.px-3.py-1 Legend
       v-expansion-panel-content.px-2.py-1.no-wrap

@@ -4,7 +4,7 @@
   v-card.mx-auto.custom-card(v-else outlined v-bind:class="{draft: is_draft}")
     v-container.pt-0.pb-0
       v-row
-        v-col(v-bind:class="[show_image ? 'col-md-8' : 'col-md-10']")
+        v-col(v-bind:class="[show_image ? 'col-md-8' : 'col-md-12']")
           v-row
             v-col.py-1(class="entry-meta" cols=12)
               p.subtitle-1.mb-1 {{full_title}}
