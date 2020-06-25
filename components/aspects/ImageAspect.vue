@@ -46,7 +46,6 @@
 
 <script>
   import LoadFileButton from "../util/LoadFileButton";
-  import Aspect from "../Aspect";
   import ImageCard from "../aspect_utils/ImageCard";
   import AttachedFilesMixin from "../aspect_utils/AttachedFilesMixin";
   import AspectComponentMixin from "./AspectComponentMixin";
@@ -75,9 +74,11 @@
       }
     },
     created() {
-      // todo this, should be more direct for EntryAspectMixin (future)
+    },
+    beforeUpdate() {
+      console.log("ImageAsp:beforeUpdate")
       const entry_image = this.$store.getters[ENTRIES_GET_ENTRY](this.entry_uuid()).image
-      if(entry_image) {
+      if (entry_image) {
         this.cover_image_index = this.images.findIndex(img => img.file_uuid === entry_image)
       }
     },
@@ -141,12 +142,15 @@
         this.selected_image_index = -1
       },
       set_cover_image(index) {
+        console.log(this.entry_uuid())
         this.cover_image_index = index
+        console.log("set_cover_image", index, this.images.index)
         this.$store.commit(ENTRIES_UPDATE_IMAGE, this.images[index].file_uuid)
       },
       unset_cover_image() {
         this.cover_image_index = -1
-        this.$store.commit(ENTRIES_UPDATE_IMAGE,  null)
+        console.log("unset_cover_image")
+        this.$store.commit(ENTRIES_UPDATE_IMAGE, null)
       },
       // todo needs to be called from the ImageCard component
       make_selected_cover(index = this.selected_image_index) {
@@ -174,18 +178,18 @@
         const file_uuid = this.images[index].file_uuid
         // console.log(entry)
 
-        const del_all = ()  => {
+        const del_all = () => {
           this.update_value(this.$_.filter(this.value, (val, i) => {
             return index !== i
           }))
-          if(this.cover_image_index === index) {
+          if (this.cover_image_index === index) {
             this.unset_cover_image()
           }
           this.remove_file_attachment(entry_uuid, file_uuid)
         }
 
-        if(entry) {
-          if(entry.status === DRAFT) {
+        if (entry) {
+          if (entry.status === DRAFT) {
             del_all()
           } else {
             const file_uuid = this.value[index].file_uuid
@@ -199,14 +203,16 @@
     },
     watch: {
       images(new_val, prev_val) {
-        // image added
-        if (new_val.length > prev_val.length) {
-          const new_img_index = this.images.length - 1
-          if (new_img_index === 0) {
-            this.set_cover_image(0)
+        if(this.is_edit_mode) {
+          // image added
+          if (new_val.length > prev_val.length) {
+            const new_img_index = this.images.length - 1
+            if (new_img_index === 0) {
+              this.set_cover_image(0)
+            }
+            this.add_file_attachment(null, "image",
+              this.images[new_img_index].file_uuid, this.image_location(new_img_index))
           }
-          this.add_file_attachment(null, "image",
-            this.images[new_img_index].file_uuid, this.image_location(new_img_index))
         }
       }
     }
@@ -220,8 +226,8 @@
   }
 
   .header_image_wrapper {
-    height:20px;
-    width:100%;
+    height: 20px;
+    width: 100%;
     background: rgba(255, 255, 0, 0.75);
   }
 </style>

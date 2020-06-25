@@ -1,8 +1,8 @@
 <template lang="pug">
   .fullsize
-    .buttons
-      v-btn(fab @click="set_dl=true" x-small dark)
-        v-icon mdi-camera
+    <!--    .buttons-->
+    <!--      v-btn(fab @click="set_dl=true" x-small dark)-->
+    <!--        v-icon mdi-camera-->
     client-only
       mapbox.fullSize(
         :style="map_height"
