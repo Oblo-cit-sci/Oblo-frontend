@@ -34,18 +34,17 @@ export default {
       // console.log("full?", has_full_entry)
       if (!has_full_entry) { // todo replace values by entry.local.is_full: Boolean
         // console.log("grabbing")
-        // console.log("fetching...")
+        console.log("fetching...")
         // todo, wanted to use this.fetch but doesnt work...
         this.$api.entry__$uuid(this.entry.uuid).then(({data}) => {
           if (data.data) {
             const entry = data.data
             this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
-            if (!this.prevent_view_page_change) {
-              // console.log("fetch & nav")
-              this.to_entry(uuid, mode)
-            } else {
-              // console.log("fetch & show")
+            console.log("prevent change", this.prevent_view_page_change)
+            if (this.prevent_view_page_change && mode === VIEW) {
               this.show_in_route(uuid, mode)
+            } else {
+              this.to_entry(uuid, mode)
             }
           }
         }).catch(err => {

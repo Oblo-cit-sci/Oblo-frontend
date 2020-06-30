@@ -195,7 +195,7 @@
         this.sending = true
         // TODO not good. call update functions
         this.$store.commit(ENTRIES_SAVE_ENTRY, this.entry)
-        this.$store.dispatch(ENTRIES_UPDATE_ENTRY, this.uuid)
+        this.$store.dispatch("entries/update_entry", this.uuid)
         // todo just this.entry ???
         const sending_entry = prepare_for_submission(this.$store.getters[ENTRIES_GET_ENTRY](this.uuid))
 

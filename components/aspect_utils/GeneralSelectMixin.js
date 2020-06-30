@@ -8,7 +8,12 @@ export default {
   computed: {
     data_source() {
       if (typeof this.aspect.items === "string") {
-        return this.aspect.items.substring(1)
+        if(this.aspect.items.startsWith("*")) {
+          console.log("depracated entry access with '*', just specify the name")
+          return this.aspect.items.substring(1)
+        } else {
+          return this.aspect.items
+        }
       }
     }
   }

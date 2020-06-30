@@ -7,7 +7,7 @@
             v-img.sel_cursor(v-if="c.icon" :src="get_icon_url(c.icon)" width="80%"
               max-width="120px" max-height="120px" contain @click="select(c)" class="")
           v-row.mt-3.mb-2.justify-center
-            div.sel_cursor(@click="select(c)") {{c.text}}
+            div.sel_cursor.px-1(@click="select(c)" :style="text_size(c)") {{c.text}}
 </template>
 
 <script>
@@ -36,6 +36,11 @@
       select(value) {
         this.$emit("selection", value)
       },
+      text_size(item) {
+        if (item.text.length > 60) {
+          return {'font-size': '90%'}
+        }
+      }
     },
     watch: {}
   }
