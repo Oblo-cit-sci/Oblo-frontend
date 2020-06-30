@@ -37,6 +37,7 @@
             .map(f => this.$_.findIndex(this.templates, t => t.value === f.value))
         },
         set(selected_templates) {
+          console.log(selected_templates)
           selected_templates = selected_templates.map(i =>
             Object.assign(
               this.templates[i], {name: "template", "label": "Entrytype"})
@@ -51,6 +52,17 @@
       }
     },
     created() {
+      if (this.$_.isEmpty(this.selected.length === 0)) {
+        const domain_data = this.$store.getters["domain_by_name"](this.domain_name)
+        const overlay_menu = this.$_.get(domain_data, "map.overlay_menu")
+        if(overlay_menu) {
+          const legend = this.$_.find(overlay_menu, m => m.name === "legend")
+          if(legend) {
+            const default_value = this.$_.get(legend, "attr.default")
+            this.selected = default_value.map(v => (this.$_.findIndex(this.templates, t => t.value === v)))
+          }
+        }
+      }
     },
     methods: {
       change(selected_templates) {

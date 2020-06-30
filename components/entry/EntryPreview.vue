@@ -10,13 +10,13 @@
               p.subtitle-1.mb-1 {{full_title}}
                 v-btn(v-if="show_title_action" @click="goto()" depressed small)
                   v-icon(:class="default_action_icon")
+            <!--            v-col.py-0(:style="{'text-align': 'right', 'font-size':'80%'}")-->
+            <!--              span.my-auto(v-if="show_date") {{$t("comp_e_pw.created")}} {{entry_date}} {{is_draft ? $t('comp_entrypreview.draft') : ""}}-->
           v-row.pl-3
             MetaChips(v-if="show_meta_aspects" :meta_aspects="meta_aspects")
           v-row.pl-3(justify="space-between")
             v-col.py-0
               ActorChip(:actor="creator")
-            v-col.py-0(:style="{'text-align': 'right'}")
-              span.my-auto(v-if="show_date") {{$t("comp_e_pw.created")}} {{entry_date}} {{is_draft ? $t('comp_entrypreview.draft') : ""}}
           v-row.pl-3(v-if="show_tags")
             Taglist(:tags="tags" :slide="true")
           v-row.pl-3(v-if="show_info")
