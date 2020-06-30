@@ -37,7 +37,6 @@
             .map(f => this.$_.findIndex(this.templates, t => t.value === f.value))
         },
         set(selected_templates) {
-          console.log(selected_templates)
           selected_templates = selected_templates.map(i =>
             Object.assign(
               this.templates[i], {name: "template", "label": "Entrytype"})

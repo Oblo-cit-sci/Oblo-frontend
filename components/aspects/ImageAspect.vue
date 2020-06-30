@@ -73,10 +73,7 @@
         cover_image_index: -1,
       }
     },
-    created() {
-    },
     beforeUpdate() {
-      console.log("ImageAsp:beforeUpdate")
       const entry_image = this.$store.getters[ENTRIES_GET_ENTRY](this.entry_uuid()).image
       if (entry_image) {
         this.cover_image_index = this.images.findIndex(img => img.file_uuid === entry_image)

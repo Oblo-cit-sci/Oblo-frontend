@@ -320,15 +320,16 @@
         // console.log("select_entry_marker", entry_uuid)
         if (this.$store.getters[ENTRIES_HAS_FULL_ENTRY](entry_uuid)) {
           this.update_navigation_mode(entry_uuid, VIEW, false)
-          // this.map_goto_location(feature.geometry)
+          this.map_goto_location(feature.geometry)
         } else {
           // console.log("fetching entry")
           this.$api.entry__$uuid(entry_uuid).then(({data}) => {
+            // this.$store.commit("map/goto_location",)
             if (data.data) {
               const entry = data.data
               this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
-              this.update_navigation_mode(entry_uuid, VIEW, false)
-              // this.map_goto_location(feature.geometry)
+              this.update_navigation_mode(entry_uuid,   VIEW, false)
+              this.map_goto_location(feature.geometry)
             }
           }).catch(err => {
             console.log("error fetching entry")
@@ -380,7 +381,7 @@
         }
       },
       goto_location(location) {
-        // console.log("MapWrapper.watch.goto_location")
+        console.log("MapWrapper.watch.goto_location")
         if (location) {
           this.map_goto_location(location)
         }

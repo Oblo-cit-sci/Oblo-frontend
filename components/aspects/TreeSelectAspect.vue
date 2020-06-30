@@ -59,7 +59,7 @@
       if (this.mode === EDIT) {
         this.calc_options()
       }
-      console.log("created", this.extra, this.value)
+      // console.log("created", this.extra, this.value)
       if(this.extra.listitem && !this.value) {
         this.dialogOpen = true
       }
