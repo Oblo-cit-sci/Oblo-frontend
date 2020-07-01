@@ -34,7 +34,7 @@ export default {
       // console.log("full?", has_full_entry)
       if (!has_full_entry) { // todo replace values by entry.local.is_full: Boolean
         // console.log("grabbing")
-        console.log("fetching...")
+        // console.log("fetching...")
         // todo, wanted to use this.fetch but doesnt work...
         this.$api.entry__$uuid(this.entry.uuid).then(({data}) => {
           if (data.data) {

@@ -13,7 +13,7 @@
         b {{main_template.create_text}}
         v-icon mdi-plus
     .overlay_menu
-      TemplateLegend(:domain_name="domain")
+      TemplateLegend(:domain_name="domain" ref="legendComponent")
     AspectDialog(v-bind="aspectdialog_data" @update:dialog_open="aspectdialog_data.dialog_open = $event" :ext_value="layer_status" @update:ext_value="aspect_dialog_update($event)")
     client-only
       mapbox.fullSize(
@@ -74,7 +74,7 @@
             name: "Visible layers",
             type: "multiselect",
             attr: {
-              unpacked:true
+              unpacked: true
             },
             items: this.available_layers
           },
@@ -171,7 +171,7 @@
     },
     methods: {
       click(e, m) {
-        console.log("click")
+        this.$refs.legendComponent.force_close();
       },
       open_layer_dialog() {
         // to much computation?
@@ -338,7 +338,7 @@
         })
       },
       update_filtered_source() {
-        console.log("update_filtered_source")
+        // console.log("update_filtered_source")
         if (!this.entries_loaded) {
           return
         }
@@ -409,7 +409,7 @@
       },
       aspect_dialog_update(selected_layers) {
         // todo could be fixed by making multiselects default: []
-        if(!selected_layers) {
+        if (!selected_layers) {
           selected_layers = []
         }
         const layer_option_values = transform_options_list(this.available_layers).map(o => o.value)

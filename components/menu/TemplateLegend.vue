@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-expansion-panels(:style="{width:'300px', opacity:'0.8'}")
+  v-expansion-panels(:style="{width:'300px', opacity:'0.8'}" v-model="panel_state")
     v-expansion-panel
       v-expansion-panel-header.px-3.py-1 Legend
       v-expansion-panel-content.px-2.py-1.no-wrap
@@ -28,6 +28,7 @@
         this.$store.getters["templates/templates_of_domain"](this.domain_name), "title", "slug", true, [{"color": "rules.map.marker_color"}])
       return {
         templates,
+        panel_state: false
       }
     },
     computed: {
@@ -54,9 +55,9 @@
       if (this.$_.isEmpty(this.selected.length === 0)) {
         const domain_data = this.$store.getters["domain_by_name"](this.domain_name)
         const overlay_menu = this.$_.get(domain_data, "map.overlay_menu")
-        if(overlay_menu) {
+        if (overlay_menu) {
           const legend = this.$_.find(overlay_menu, m => m.name === "legend")
-          if(legend) {
+          if (legend) {
             const default_value = this.$_.get(legend, "attr.default")
             this.selected = default_value.map(v => (this.$_.findIndex(this.templates, t => t.value === v)))
           }
@@ -76,6 +77,9 @@
           new_conf.push(t)
         }
         this.$store.commit("map/set_filter_config", new_conf)
+      },
+      force_close() {
+        this.panel_state = false
       }
     }
   }

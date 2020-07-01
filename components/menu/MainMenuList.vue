@@ -72,7 +72,7 @@
         if (process.env.NODE_ENV !== "development") {
           other_pages = other_pages.filter(p => !show_inDev.includes(p.t_title))
         } else {
-          console.log("in DEV")
+          //console.log("in DEV")
         }
         return [{name: "home", items: [home]},
           {name: "other", items: other_pages}]

@@ -23,7 +23,7 @@ export default {
   },
   methods: {
     load_map_entries() {
-      console.log("loading entries", this.$store.getters["map/loading_entries"])
+      // console.log("loading entries", this.$store.getters["map/loading_entries"])
       if(this.$store.getters["map/loading_entries"]) {
         console.warn("catching double page create")
         return
