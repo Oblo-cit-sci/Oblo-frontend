@@ -3,7 +3,6 @@ import {route_change_query} from "~/lib/util"
 import {mapMutations} from "vuex"
 import URLQueryMixin from "~/components/util/URLQueryMixin"
 import {mapGetters} from "vuex"
-import {MENU_MODE_DOMAIN_OVERVIEW} from "~/lib/consts"
 
 export const SEARCH = "search"
 export const ENTRY = "entry"
@@ -20,7 +19,7 @@ export default {
     // },
     ...mapGetters({
       menu_open: "menu/open",
-      menu_mode:"menu/menu_mode",
+      menu_state:"menu/menu_state",
       menu_width: "menu/menu_width",
     }),
     navigation_mode() {
@@ -34,9 +33,6 @@ export default {
     }
   },
   methods: {
-    nav() {
-      // console.log("nav")
-    },
     ...mapMutations({switch_menu_open: 'menu/switch_open', set_menu_open: "menu/open"}),
     navigate_entry({uuid, mode}) {
       this.update_navigation_mode(uuid, mode)

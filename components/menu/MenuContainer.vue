@@ -1,7 +1,7 @@
 <template lang="pug">
   div
     v-navigation-drawer(
-      v-model="drawer_state"
+      :value="menu_open"
       :temporary="over"
       :hide-overlay="over"
       :stateless="over"
@@ -20,7 +20,7 @@
             MainMenuList
           v-tab-item
             DomainMenu(:navigation_mode="domain_navigation_mode" @force_menu_mode="this.mode=1")
-      MainMenuList(v-if="menu_mode_fixed")
+      MainMenuList(v-else)
 </template>
 
 <script>
@@ -44,12 +44,16 @@
       domain_navigation_mode: String
     },
     created() {
+      if(this.menu_mode_fixed) {
+        this.menu_state = MENU_MODE_MAIN
+      } else {
+        this.menu_state = MENU_MODE_DOMAIN_OVERVIEW
+      }
       this.$store.commit("menu/menu_width", this.menu_width)
     },
     computed: {
       ...mapGetters({
         menu_open: "menu/open",
-        // state: "menu/state"
       }),
       menu_state: {
         get() {
@@ -66,20 +70,12 @@
           }
         }
       },
-      drawer_state: {
-        get: function () {
-          return this.menu_open
-        },
-        set(nav_state) {
-          this.$store.commit("menu/open", nav_state)
-        }
-      },
       menu_width() {
         switch (this.menu_state) {
           case MENU_MODE_MAIN:
             return 256;
           case MENU_MODE_DOMAIN_OVERVIEW:
-            return this.$vuetify.breakpoint.xl ? 750 : 600
+            return this.$vuetify.breakpoint.xl ? 700 : 600
         }
       }
     },
