@@ -125,7 +125,7 @@
           return {bottom: 400}
         } else {
           return {
-            left: this.$vuetify.breakpoint.xl ? 750 : 600
+            left: this.$store.getters["menu/menu_width"]
           }
         }
       },
@@ -408,7 +408,6 @@
         }
       },
       goto_location(location) {
-        console.log("MapWrapper.watch.goto_location")
         if (location) {
           this.map_goto_location(location)
         }

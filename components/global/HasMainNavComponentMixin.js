@@ -1,8 +1,8 @@
 import {ENTRIES_GET_ENTRY} from "~/store/entries"
 import {route_change_query} from "~/lib/util"
-import {mapMutations} from "vuex"
+import {mapMutations, mapGetters} from "vuex"
 import URLQueryMixin from "~/components/util/URLQueryMixin"
-import {mapGetters} from "vuex"
+import {} from "vuex"
 
 export const SEARCH = "search"
 export const ENTRY = "entry"
@@ -33,7 +33,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations({switch_menu_open: 'menu/switch_open', set_menu_open: "menu/open"}),
+    ...mapMutations({switch_menu_open: 'menu/switch_open', set_menu_open: "menu/open", set_menu_state:"menu/menu_state"}),
     navigate_entry({uuid, mode}) {
       this.update_navigation_mode(uuid, mode)
     },

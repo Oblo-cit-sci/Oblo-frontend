@@ -19,7 +19,7 @@
           v-tab-item
             MainMenuList
           v-tab-item
-            DomainMenu(:navigation_mode="domain_navigation_mode" @force_menu_mode="this.mode=1")
+            DomainMenu(:navigation_mode="domain_navigation_mode" @force_menu_mode="this.menu_state=1")
       MainMenuList(v-else)
 </template>
 
