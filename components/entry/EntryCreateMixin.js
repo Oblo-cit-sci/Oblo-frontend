@@ -8,10 +8,11 @@ import {default_values, set_titleAspect} from "~/lib/entry"
 import {CREATOR, user_ref} from "~/lib/actors"
 import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
 import {ENTRIES_SAVE_ENTRY} from "~/store/entries"
+import NavBaseMixin from "~/components/NavBaseMixin"
 
 export default {
   name: "EntryCreateMixin",
-  mixins: [PersistentStorageMixin],
+  mixins: [PersistentStorageMixin, NavBaseMixin],
   methods: {
     // todo different owner in case of visitor
     // console.log("entry of template_slug", type_slug)

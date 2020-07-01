@@ -20,7 +20,7 @@
               auto-select-first
               v-model="place_select__"
               clearable)
-            div(v-if="value") {{$t("comp_location.public_loc")}}}:&nbsp;
+            div(v-if="value") {{$t("comp_location.public_loc.base")}}:&nbsp;
               span {{public_location_text}}
               v-chip-group(v-if="public_location_selector_on" active-class="primary--text" mandatory)
                 v-chip(v-for="(place_part, index) in precision_options" :key="index"
