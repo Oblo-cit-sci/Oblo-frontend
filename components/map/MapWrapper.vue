@@ -29,7 +29,7 @@
 
   import Mapbox from 'mapbox-gl-vue'
   import MapIncludeMixin from "~/components/map/MapIncludeMixin"
-  import {VIEW} from "~/lib/consts"
+  import {default_place_type, VIEW} from "~/lib/consts"
   import {mapGetters} from "vuex"
   import DomainMapMixin from "~/components/map/DomainMapMixin"
   import {TEMPLATES_OF_DOMAIN} from "~/store/templates"
@@ -39,6 +39,21 @@
   import TemplateLegend from "~/components/menu/TemplateLegend"
   import AspectDialog from "~/components/aspect_utils/AspectDialog"
   import {transform_options_list} from "~/lib/options"
+  import {LAYER_BASE_ID} from "~/lib/map_utils"
+
+  const cluster_layer_name = LAYER_BASE_ID + '_clusters'
+
+  async function clusterLeaves(source, cluster_id, le) {
+    return await new Promise((resolve, reject) => {
+      source.getClusterLeaves(cluster_id, le, 0, (err, res) => {
+        if (res) {
+          resolve(res)
+        } else {
+          reject(err)
+        }
+      })
+    })
+  }
 
   export default {
     name: "MapWrapper",
@@ -182,17 +197,32 @@
         this.set_dl = true
         this.map.triggerRepaint()
       },
-      render(re) {
-        if (!this.set_dl)
-          return
+      download(map) {
+
         this.set_dl = false
         // console.log(re)
-        let image = re.getCanvas().toDataURL("image/png")
+        let image = map.getCanvas().toDataURL("image/png")
           .replace("image/png", "image/octet-stream")
         let a = document.createElement('a')
         a.href = image
         a.download = "neat.png"
         a.click()
+      },
+      render(map) {
+        if (this.set_dl)
+          download(map)
+
+        if (map.getZoom() > 3.5) {
+          this.cluster_label_layer_visible = true
+          const clusters = map.queryRenderedFeatures(undefined, {layers: [cluster_layer_name]})
+          // not defined right from the begining
+          if (this.debounced_cluster_status) {
+            this.debounced_cluster_status(clusters)
+          }
+        } else {
+          this.cluster_label_layer_visible = false
+        }
+
       },
       check_entries_map_done() {
         // console.log("check_entries_map_done", this.entries)
@@ -206,11 +236,7 @@
         }
       },
       init_map_source_and_layers(layer_base_id = "all_entries") {
-        // add source
         // console.log(this.entries.features.length)
-
-        // const all_entries_source_name = layer_base_id + "_all_source"
-
         const source_name = layer_base_id + "_source"
         this.update_filtered_source()
 
@@ -253,6 +279,39 @@
               'text-size': 14
             }
           })
+
+          // 3rd a source layer for region names
+          // dynamically updated
+          const cluster_region_names_source = "cluster_region_names_source"
+          this.map.addSource(cluster_region_names_source, {
+            type: "geojson",
+            data: {
+              type: "FeatureCollection",
+              features: []
+            }
+          })
+
+          // 4th, region name layer
+          this.map.addLayer({
+            id: 'cluster-region-label',
+            type: 'symbol',
+            source: cluster_region_names_source,
+            layout: {
+              "text-allow-overlap": true,
+              "text-ignore-placement": true,
+              "text-field": ["get", "region_name"],
+              'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+              "text-offset": [0, 1],
+              'text-size': 14,
+            },
+            paint: {
+              "text-halo-color": "#fde7a4",
+              "text-halo-width": 1
+            }
+          })
+
+          this.debounced_cluster_status = this.$_.debounce(this.check_cluster_states, 50)
+
         } else {
           console.log("cluster layer exists already")
         }
@@ -337,6 +396,79 @@
           this.select_entry_marker(e.features[0])
         })
       },
+      async check_cluster_states(clusters) {
+        const cluster_ids = clusters.map(c => c.id)
+
+        // console.log(cluster_ids)
+        if (this.$_.isEqual(this.last_features_updated, cluster_ids)) {
+          return
+        }
+        this.last_features_updated = cluster_ids
+        // console.log("debounced m", cluster_ids)
+        const layer_base_id = "all_entries"
+        const source_layer_name = "all_entries_source"
+
+        const source = this.map.getSource(source_layer_name)
+
+        const region_source_features = []
+
+        for (let cluster of clusters) {
+          const cluster_id = cluster.id
+          // console.log(cluster)
+          const leaves = await clusterLeaves(source, cluster_id, cluster.properties.point_count)
+
+          const num_leaves = leaves.length
+
+          // console.log("res", leaves, num_leaves)
+
+          let region_name = null
+          const places = {}
+
+          const consider_place_types = this.$_.cloneDeep(default_place_type)
+          for (let leave of leaves) {
+            const loc = leave.properties.location[0]
+            if (this.$_.isEmpty(places)) {
+              for (let pt of consider_place_types) {
+                if (loc.place[pt]) {
+                  places[pt] = loc.place[pt].name
+                }
+              }
+              // console.log("place?", places)
+            } else {
+              // console.log("after1,", consider_place_types, places)
+              // console.log(loc)
+              for (let pt of consider_place_types) {
+                if (loc.place[pt]) {
+                  if (loc.place[pt].name !== places[pt]) {
+                    consider_place_types.splice(consider_place_types.indexOf(pt), 1)
+                  }
+                } else {
+                  // console.log("kickout", pt)
+                  consider_place_types.splice(consider_place_types.indexOf(pt), 1)
+                }
+              }
+            }
+            // console.log("le", consider_place_types.length)
+            if (consider_place_types.length === 0) {
+              break
+            }
+          }
+
+          if (consider_place_types.length > 0) {
+            region_name = places[consider_place_types[0]]
+            region_source_features.push({
+              type: "Feature",
+              geometry: cluster.geometry,
+              properties: {region_name: region_name, orig_cluster_id: cluster_id}
+            })
+          }
+        }
+
+        this.map.getSource("cluster_region_names_source").setData({
+          "type": "FeatureCollection",
+          "features": region_source_features
+        })
+      },
       update_filtered_source() {
         // console.log("update_filtered_source")
         if (!this.entries_loaded) {
@@ -356,7 +488,7 @@
             cluster: true,
             tolerance: 0,
             clusterMaxZoom: 14,
-            clusterRadius: 15
+            clusterRadius: 25
           })
         } else {
           this.map.getSource("all_entries_source").setData(filtered_entries)
