@@ -4,7 +4,7 @@
     <!--      v-btn(fab @click="set_dl=true" x-small dark)-->
     <!--        v-icon mdi-camera-->
     .buttongroup.shift_anim(:style="button_group_shift")
-      v-btn(dark fab large color="blue" @click="switch_nav_drawer")
+      v-btn(dark fab large color="blue" @click="switch_menu_open")
         v-icon mdi-menu
       v-btn(dark color="green" fab @click="open_layer_dialog")
         v-icon mdi-layers-outline
@@ -67,7 +67,7 @@
       }),
       button_group_shift() {
         let shift = "0.5%"
-        if (!this.display_mdDown && this.nav_drawer) {
+        if (!this.display_mdDown && this.menu_open) {
           shift = this.menu_width + "px"
         }
         return {
@@ -76,7 +76,7 @@
       },
       center_button_shift() {
         let shift = "0"
-        if (!this.display_mdDown && this.nav_drawer) {
+        if (!this.display_mdDown && this.menu_open) {
           shift = this.menu_width / 2 + "px"
         }
         return {
@@ -119,7 +119,7 @@
         return this.$vuetify.breakpoint.mdAndDown
       },
       center_padding() {
-        if (!this.nav_drawer) {
+        if (!this.menu_open) {
           return {}
         } else if (this.display_mdDown) {
           return {bottom: 400}

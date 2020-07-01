@@ -19,7 +19,7 @@ export default {
     //     return MapNavigationDrawer
     // },
     ...mapGetters({
-      nav_drawer: "app/nav_drawer",
+      menu_open: "menu/open",
       menu_mode:"menu/menu_mode",
       menu_width: "menu/menu_width",
     }),
@@ -37,7 +37,7 @@ export default {
     nav() {
       // console.log("nav")
     },
-    ...mapMutations({switch_nav_drawer: 'app/switch_nav_drawer', set_nav_drawer: "app/nav_drawer"}),
+    ...mapMutations({switch_menu_open: 'menu/switch_open', set_menu_open: "menu/open"}),
     navigate_entry({uuid, mode}) {
       this.update_navigation_mode(uuid, mode)
     },
@@ -52,7 +52,7 @@ export default {
       }
       if (entry_mode) {
         query.entry_mode = entry_mode
-        this.set_nav_drawer(true)
+        this.set_menu_open(true)
         // TODO bring it back
         if (easeToFirst) {
           const entry_loc = this.$store.getters[ENTRIES_GET_ENTRY](entry_uuid).location

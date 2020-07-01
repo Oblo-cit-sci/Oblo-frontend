@@ -1,6 +1,6 @@
 <template lang="pug">
   v-app-bar(true app elevation="2" )
-    v-app-bar-nav-icon(v-if="show_nav_icon" v-show="initialized" @click="switch_nav_drawer")
+    v-app-bar-nav-icon(v-if="show_nav_icon" v-show="initialized" @click="switch_menu_open")
     v-toolbar-title.pa-0(v-if="initialized")
       v-list-item.pl-0
         v-list-item-avatar.header-avatar(@click="to_set_domain" width="50" height="auto" tile)
@@ -61,7 +61,7 @@
       }
     },
     methods: {
-      ...mapMutations({switch_nav_drawer: 'app/switch_nav_drawer'}),
+      ...mapMutations({switch_menu_open: 'menu/switch_open'}),
     }
   }
 </script>

@@ -25,7 +25,6 @@
 
 <script>
 
-  import MainMenu from "~/components/menu/MainMenu"
   import {MENU_MODE_DOMAIN_OVERVIEW, MENU_MODE_MAIN} from "~/lib/consts"
   import MainMenuList from "~/components/menu/MainMenuList"
   import {mapGetters} from "vuex"
@@ -49,7 +48,7 @@
     },
     computed: {
       ...mapGetters({
-        nav_drawer: "app/nav_drawer",
+        menu_open: "menu/open",
         // state: "menu/state"
       }),
       menu_state: {
@@ -69,10 +68,10 @@
       },
       drawer_state: {
         get: function () {
-          return this.nav_drawer
+          return this.menu_open
         },
         set(nav_state) {
-          this.$store.commit("app/nav_drawer", nav_state)
+          this.$store.commit("menu/open", nav_state)
         }
       },
       menu_width() {

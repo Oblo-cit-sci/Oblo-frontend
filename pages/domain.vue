@@ -23,7 +23,6 @@
   import MapIncludeMixin from "~/components/map/MapIncludeMixin"
   import MapWrapper from "~/components/map/MapWrapper"
   import {dev_env} from "~/lib/util"
-  import MainMenu from "~/components/menu/MainMenu"
   import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
   import MenuContainer from "~/components/menu/MenuContainer"
   import DomainMixin from "~/components/DomainMixin"

@@ -20,15 +20,12 @@
   import {mapGetters} from "vuex"
   import PersistentStorageMixin from "~/components/util/PersistentStorageMixin";
   import {APP_CONNECTED, APP_CONNECTING, APP_DB_LOADED, APP_INITIALIZED,} from "~/store/app"
-  import {dev_env} from "~/lib/util"
   import NavBaseMixin from "~/components/NavBaseMixin"
-  import MainMenu from "~/components/menu/MainMenu"
   import PrivacySheet from "~/components/global/PrivacySheet"
   import Appbar from "~/components/global/Appbar"
   import InitializationMixin from "~/layouts/InitializationMixin"
   import MenuContainer from "~/components/menu/MenuContainer"
   import NotificationBanner from "~/components/global/NotificationBanner"
-  import {USER} from "~/store"
 
   let lastDomain = ''
 

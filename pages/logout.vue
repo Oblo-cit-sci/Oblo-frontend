@@ -25,7 +25,7 @@
         this.clear_storage()
         // todo, remove draft entries and update storage, to leave no traces...
         this.$store.dispatch(LOGOUT)
-        this.$store.commit("app/nav_drawer", false)
+        this.$store.commit("menu/open", false)
         this.home()
       }).catch((err) => {
         console.log("logout error", err)
@@ -34,7 +34,7 @@
         }
         this.remove_from_storage("auth_token")
         this.$store.dispatch(LOGOUT)
-        this.$store.commit("app/nav_drawer", false)
+        this.$store.commit("menu/open", false)
         this.home()
       })
     }
