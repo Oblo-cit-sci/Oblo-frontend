@@ -55,7 +55,7 @@
   },
   "actor": {
     "h1": "@:profile.h1",
-    "h2": "@.capitalize:global.w.entries",
+    "h2": "@.capitalize:_global.w.entries",
     "deactivated": "This is user is no longer active",
     "admin.asp_global_role": "Global role",
     "admin.asp_editor_for_domain": "Editor for domain",

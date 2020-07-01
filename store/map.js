@@ -18,8 +18,7 @@ export const state = () => ({
   entries: {},
   goto_location: null,
   last_goto_location: null,
-  layers: ["Climate types", "country-label"],
-  layer_status: {},
+  layer_status: null,
   cached_camera_options: {},
   searchtime: null,
   filter_config: []

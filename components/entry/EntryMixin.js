@@ -25,7 +25,7 @@ import {
   ENTRIES_VALUE
 } from "~/store/entries";
 import {FILES_GET_FILE} from "~/store/files";
-import {check_str_is_uuid} from "~/lib/util";
+import {check_str_is_uuid, printDate} from "~/lib/util";
 import {TEMPLATES_TYPE} from "~/store/templates";
 import {USER_GET_REGISTERED_NAME} from "~/store/user"
 import EntryPagesMixin from "~/components/entry/EntryPagesMixin"
@@ -64,6 +64,9 @@ export default {
     },
     mode() {
       return this.$route.query.entry_mode || VIEW
+    },
+    entry_date() {
+      return printDate(new Date(this.entry.creation_ts))
     },
     in_context() {
       return this.template.rules.context !== GLOBAL || this.entry.entry_refs.parent

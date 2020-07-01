@@ -1,9 +1,8 @@
 <template lang="pug">
   div
-    v-chip(v-for="(item, index) in meta_aspects" :key="index"
+    v-chip.mr-4(v-for="(item, index) in meta_aspects" :key="index"
       :ripple="false"
       small
-      class="mr-4"
       :color="item.color"
       label)
       v-avatar(v-if="item.icon")

@@ -12,8 +12,10 @@
         span This entry is part of:&nbsp
         a(@click="to_parent(true, mode)") {{parent_title}}
     div(v-if="is_view_mode")
+      v-row(:style="{'text-align': 'right', 'font-size':'80%'}")
+       span.my-auto {{$t("comp_e_pw.created")}} {{entry_date}} {{is_draft ? $t('comp_entrypreview.draft') : ""}}
       v-row
-        MetaChips(:meta_aspects="meta_aspects_privacy")
+        MetaChips(:meta_aspects="meta_aspects")
       v-row
         EntryActorList.mt-2(:actors="actors")
       v-row
@@ -97,7 +99,7 @@
   import {ENTRIES_GET_EDIT, ENTRIES_GET_ENTRY} from "~/store/entries";
   import {EDIT, ENTRY, VIEW} from "~/lib/consts";
   import {entry_roles_aspect, license_aspect, privacy_aspect} from "~/lib/typical_aspects";
-  import {privacy_icon} from "~/lib/util";
+  import {privacy_color, privacy_icon} from "~/lib/util";
   import ChangedAspectNotice from "./ChangedAspectNotice";
   import MetaChips from "./MetaChips";
   import EntryActorList from "./EntryActorList";
@@ -177,9 +179,9 @@
           return null
       },
       // wrong, create should be for all that are not local/saved or published
-      meta_aspects_privacy() {
+      meta_aspects() {
         let result = []
-        result.push({icon: privacy_icon(this.entry.privacy), name: this.entry.privacy})
+        result.push({icon: privacy_icon(this.entry.privacy), name: this.entry.privacy, color: privacy_color(this.entry.privacy)})
         result.push({name: "License: " + this.entry.license})
         return result
       },

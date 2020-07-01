@@ -15,9 +15,11 @@ export default {
   computed: {
     ...mapGetters({
       entries: "map/entries",
-      layers: "map/layers",
       layer_status: "map/layer_status"
-    })
+    }),
+    available_layers() {
+      return this.$_.get(this.domain_data,"map.layers")
+    },
   },
   methods: {
     load_map_entries() {

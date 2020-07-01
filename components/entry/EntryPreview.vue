@@ -10,9 +10,9 @@
               p.subtitle-1.mb-1 {{full_title}}
                 v-btn(v-if="show_title_action" @click="goto()" depressed small)
                   v-icon(:class="default_action_icon")
-            <!--            v-col.py-0(:style="{'text-align': 'right', 'font-size':'80%'}")-->
-            <!--              span.my-auto(v-if="show_date") {{$t("comp_e_pw.created")}} {{entry_date}} {{is_draft ? $t('comp_entrypreview.draft') : ""}}-->
-          v-row.pl-3
+          v-row.pl-3(:style="{'text-align': 'right', 'font-size':'80%'}")
+            span.my-auto(v-if="show_date") {{$t("comp_e_pw.created")}} {{entry_date}} {{is_draft ? $t('comp_entrypreview.draft') : ""}}
+          v-row.pl-3.py-1
             MetaChips(v-if="show_meta_aspects" :meta_aspects="meta_aspects")
           v-row.pl-3(justify="space-between")
             v-col.py-0
@@ -97,7 +97,7 @@
     props: {
       show_date: {
         type: Boolean,
-        default: true
+        default: false
       },
       show_meta_aspects: {
         type: Boolean,
@@ -134,9 +134,6 @@
       },
       action_loading() {
         return this.additional_action_loading
-      },
-      entry_date() {
-        return printDate(new Date(this.entry.creation_ts))
       },
       goto_text() {
         if (this.outdated)

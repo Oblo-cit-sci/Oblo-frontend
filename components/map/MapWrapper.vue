@@ -14,6 +14,7 @@
         v-icon mdi-plus
     .overlay_menu
       TemplateLegend(:domain_name="domain")
+    AspectDialog(v-bind="aspectdialog_data" @update:dialog_open="aspectdialog_data.dialog_open = $event" :ext_value="layer_status" @update:ext_value="aspect_dialog_update($event)")
     client-only
       mapbox.fullSize(
         :style="map_height"
@@ -36,11 +37,13 @@
   import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
   import {MAP_GOTO_LOCATION} from "~/store/map"
   import TemplateLegend from "~/components/menu/TemplateLegend"
+  import AspectDialog from "~/components/aspect_utils/AspectDialog"
+  import {transform_options_list} from "~/lib/options"
 
   export default {
     name: "MapWrapper",
     mixins: [MapIncludeMixin, DomainMapMixin, HasMainNavComponentMixin],
-    components: {TemplateLegend, Mapbox},
+    components: {AspectDialog, TemplateLegend, Mapbox},
     props: {
       height: {
         type: [String, Number],
@@ -55,16 +58,31 @@
         act_popup: null,
         act_hoover_uuid: null,
         set_dl: false,
+        aspectdialog_data: null
       }
     },
     computed: {
       ...mapGetters({
         entries_loaded: "map/entries_loaded",
         all_map_entries: "map/entries",
-        layers: "map/layers",
-        layer_status: "map/layer_status",
-        legend_selection: "map/get_filter_config"
+        legend_selection: "map/get_filter_config",
+        layer_status: "map/layer_status"
       }),
+      layer_aspectdialog_data() {
+        return {
+          aspect: {
+            name: "Visible layers",
+            type: "multiselect",
+            attr: {
+              unpacked:true
+            },
+            items: this.available_layers
+          },
+          fix_width: 400,
+          ext_value: {value: null},
+          dialog_open: true
+        }
+      },
       button_group_shift() {
         let shift = "0.5%"
         if (!this.display_mdDown && this.menu_open) {
@@ -156,6 +174,9 @@
         console.log("click")
       },
       open_layer_dialog() {
+        // to much computation?
+        this.aspectdialog_data = this.layer_aspectdialog_data
+        this.aspectdialog_data.dialog_open = true
       },
       trigger_dl() {
         this.set_dl = true
@@ -364,11 +385,11 @@
         }
       },
       change_entry_markers_mode(entry_uuid, selected) {
-        console.log("MapWrapper.change_entry_markers_mode", selected)
+        // console.log("MapWrapper.change_entry_markers_mode", selected)
         const features = this.map.getSource("all_entries_source")._data.features
         // console.log("all features", features)
         const relevant_features = this.$_.filter(features, (f) => f.properties.uuid === entry_uuid)
-        console.log(relevant_features, selected)
+        // console.log(relevant_features, selected)
         // this.map.setLayoutProperty(
         //   "all_entries_cluster-count",
         //   'visibility',
@@ -386,6 +407,18 @@
           }
         }
       },
+      aspect_dialog_update(selected_layers) {
+        // todo could be fixed by making multiselects default: []
+        if(!selected_layers) {
+          selected_layers = []
+        }
+        const layer_option_values = transform_options_list(this.available_layers).map(o => o.value)
+        const layer_statuses = this.$_.mapValues(this.$_.keyBy(layer_option_values), l => selected_layers.includes(l))
+        for (let layer in layer_statuses) {
+          this.map.setLayoutProperty(layer, 'visibility', layer_statuses[layer] ? "visible" : "none")
+        }
+        this.$store.commit("map/set_layer_status", selected_layers)
+      }
     },
     watch: {
       map_loaded() {
