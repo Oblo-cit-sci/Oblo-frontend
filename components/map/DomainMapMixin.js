@@ -2,10 +2,11 @@ import {MAP_SET_ENTRIES} from "~/store/map"
 
 import {mapGetters} from "vuex"
 import FilterMixin from "~/components/FilterMixin"
+import DomainMixin from "~/components/DomainMixin"
 
 export default {
   name: "DomainMapMixin",
-  mixins: [FilterMixin],
+  mixins: [FilterMixin, DomainMixin],
   props: {
     domain: {
       type: String

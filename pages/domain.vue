@@ -1,21 +1,8 @@
 <template lang="pug">
   .fullSize()
-    .buttongroup.shift_anim(:style="button_group_shift")
-      v-btn(dark fab large color="blue" @click="switch_nav_drawer")
-        v-icon mdi-menu
-      v-btn(dark color="green" fab @click="open_layer_dialog")
-        v-icon mdi-layers-outline
-    .central_button
-      v-btn.shift_anim(large rounded color="success" :style="center_button_shift" @click="create_from_main_template")
-        b {{main_template.create_text}}
-        v-icon mdi-plus
-    .overlay_menu
-      TemplateLegend(:domain_name="domain_name")
     MenuContainer(
       :over="true"
-      :mode.sync="menu_mode"
-      :domain_navigation_mode="navigation_mode"
-      @menu_width="menu_width=$event")
+      :domain_navigation_mode="navigation_mode")
     MapWrapper(height="100%" :domain="domain_name" @force_menu_mode_domain="menu_mode=1" @map="map=$event")
 </template>
 
@@ -26,8 +13,7 @@
   import Search from "~/components/global/Search";
   import {entrytype_filter_options} from "~/lib/filter_option_consts";
 
-  import {mapGetters} from "vuex"
-  import {DOMAIN, DOMAIN_BY_NAME, SET_DOMAIN} from "~/store";
+  import {DOMAIN, SET_DOMAIN} from "~/store";
   import {TEMPLATES_OF_DOMAIN} from "~/store/templates";
   import EntryNavMixin from "~/components/EntryNavMixin"
   import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
@@ -49,13 +35,7 @@
     layout: "new_map_layout",
     mixins: [DomainMixin, HasMainNavComponentMixin, EntryNavMixin,
       PersistentStorageMixin, LayoutMixin, MapIncludeMixin],
-    components: {TemplateLegend, MenuContainer, MainMenu, MapWrapper, EntryCreateList, Search, Mapbox},
-    data() {
-      return {
-        menu_mode: MENU_MODE_DOMAIN_OVERVIEW,
-        menu_width: null
-      }
-    },
+    components: {TemplateLegend, MenuContainer, MapWrapper, EntryCreateList, Search, Mapbox},
     beforeRouteEnter(to, from, next) {
       if (!(to.query[QP_D] || to.query[QP_F])) {
         // todo somehow doesn't load...
@@ -80,28 +60,6 @@
       next()
     },
     computed: {
-      button_group_shift() {
-        let shift = "0.5%"
-        if (!this.display_mdDown && this.nav_drawer) {
-          shift = this.menu_width + "px"
-        }
-        return {
-          "left": shift
-        }
-      },
-      center_button_shift() {
-        let shift = "0"
-        if (!this.display_mdDown && this.nav_drawer) {
-          shift = this.menu_width / 2 + "px"
-        }
-        return {
-          "left": shift
-        }
-      },
-      ...mapGetters({
-        domains: DOMAIN_BY_NAME,
-        nav_drawer: "app/nav_drawer"
-      }),
       filters() {
         const template_filter_options = Object.assign({}, entrytype_filter_options)
         template_filter_options.aspect.items = object_list2options(
@@ -110,42 +68,11 @@
         const tags_filter_options = get_tags_filter_options(this.$store, this.domain_name)
         return [template_filter_options, tags_filter_options]
       }
-    },
-    methods: {
-      open_layer_dialog() {
-      }
     }
   }
 </script>
 
 <style scoped>
-
-  .buttongroup {
-    position: absolute;
-    top: 2%;
-    height: 5%;
-    z-index: 2;
-  }
-
-  .central_button {
-    position: absolute;
-    top: 2%;
-    z-index: 1;
-    left: 50%;
-    transform: translate(-50%, 0)
-  }
-
-  .overlay_menu {
-    position: absolute;
-    top: 2%;
-    z-index: 1;
-    right: 5%;
-  }
-
-  .shift_anim {
-    transition: left 0.2s;
-    transition-timing-function: ease-out;
-  }
 
   .header-domain {
     background-color: white;

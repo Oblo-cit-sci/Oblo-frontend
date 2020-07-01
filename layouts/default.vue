@@ -33,7 +33,7 @@
   let lastDomain = ''
 
   export default {
-    components: {NotificationBanner, MenuContainer, Appbar, PrivacySheet, MainMenu, GlobalSnackbar, Footer},
+    components: {NotificationBanner, MenuContainer, Appbar, PrivacySheet, GlobalSnackbar, Footer},
     mixins: [InitializationMixin, TriggerSnackbarMixin, PersistentStorageMixin, NavBaseMixin],
     computed: {
       ...mapGetters([APP_CONNECTING]),

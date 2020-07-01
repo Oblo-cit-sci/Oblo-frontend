@@ -3,6 +3,7 @@ import {route_change_query} from "~/lib/util"
 import {mapMutations} from "vuex"
 import URLQueryMixin from "~/components/util/URLQueryMixin"
 import {mapGetters} from "vuex"
+import {MENU_MODE_DOMAIN_OVERVIEW} from "~/lib/consts"
 
 export const SEARCH = "search"
 export const ENTRY = "entry"
@@ -18,7 +19,9 @@ export default {
     //     return MapNavigationDrawer
     // },
     ...mapGetters({
-      nav_drawer: "app/nav_drawer"
+      nav_drawer: "app/nav_drawer",
+      menu_mode:"menu/menu_mode",
+      menu_width: "menu/menu_width",
     }),
     navigation_mode() {
       if (this.$route.query.uuid) {

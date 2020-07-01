@@ -15,6 +15,7 @@ export default {
     set_domain_data: Object
   },
   computed: {
+    // why user_logged_in
     ...mapGetters({logged_in: USER_LOGGED_IN, domain_templates: TEMPLATES_OF_DOMAIN, all_domains: DOMAIN_BY_NAME}),
     domain_name() {
       // todo maybe first a prop...

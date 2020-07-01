@@ -11,11 +11,11 @@
       app)
       div(v-if="over" :style="{'height':'60px'}")
       div(v-if="!menu_mode_fixed")
-        v-tabs(:value="mode" @change="$emit('update:mode', $event)" grow active-class="active_tab")
-          v-tab main
-          v-tab domain
+        v-tabs(v-model="menu_state" grow active-class="active_tab")
+          v-tab {{$t("_comp.menucontainer.tab_main")}}
+          v-tab {{$t("_comp.menucontainer.tab_domain")}}
         NotificationBanner
-        v-tabs-items(v-model="mode")
+        v-tabs-items(v-model="menu_state")
           v-tab-item
             MainMenuList
           v-tab-item
@@ -38,23 +38,28 @@
   export default {
     name: "MenuContainer",
     mixins: [],
-    components: {NotificationBanner, DomainMenu, MapNavigationDrawer, MainMenuList, MainMenu},
+    components: {NotificationBanner, DomainMenu, MapNavigationDrawer, MainMenuList},
     props: {
-      mode: {
-        type: Number,
-        default: MENU_MODE_MAIN
-      },
       menu_mode_fixed: Boolean,
       over: Boolean,
       domain_navigation_mode: String
     },
     created() {
-      this.$emit("menu_width", this.menu_width)
+      this.$store.commit("menu/menu_width", this.menu_width)
     },
     computed: {
       ...mapGetters({
-        nav_drawer: "app/nav_drawer"
+        nav_drawer: "app/nav_drawer",
+        // state: "menu/state"
       }),
+      menu_state: {
+        get() {
+          return this.$store.getters["menu/menu_state"]
+        },
+        set(state) {
+          this.$store.commit("menu/menu_state", state)
+        }
+      },
       behind_style() {
         if (this.over) {
           return {
@@ -71,7 +76,7 @@
         }
       },
       menu_width() {
-        switch (this.mode) {
+        switch (this.menu_state) {
           case MENU_MODE_MAIN:
             return 256;
           case MENU_MODE_DOMAIN_OVERVIEW:
@@ -80,11 +85,11 @@
       }
     },
     watch: {
-      mode(mode) {
-        this.$emit("menu_width", this.menu_width)
+      state() {
+        this.$store.commit("menu/menu_width", this.menu_width)
       },
       menu_width() {
-        this.$emit("menu_width", this.menu_width)
+        this.$store.commit("menu/menu_width", this.menu_width)
       }
     }
   }

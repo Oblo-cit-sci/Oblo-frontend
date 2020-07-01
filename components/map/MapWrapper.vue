@@ -3,11 +3,23 @@
     <!--    .buttons-->
     <!--      v-btn(fab @click="set_dl=true" x-small dark)-->
     <!--        v-icon mdi-camera-->
+    .buttongroup.shift_anim(:style="button_group_shift")
+      v-btn(dark fab large color="blue" @click="switch_nav_drawer")
+        v-icon mdi-menu
+      v-btn(dark color="green" fab @click="open_layer_dialog")
+        v-icon mdi-layers-outline
+    .central_button
+      v-btn.shift_anim(large rounded color="success" :style="center_button_shift" @click="create_from_main_template")
+        b {{main_template.create_text}}
+        v-icon mdi-plus
+    .overlay_menu
+      TemplateLegend(:domain_name="domain")
     client-only
       mapbox.fullSize(
         :style="map_height"
         :access-token="access_token"
         :map-options="map_options"
+        @click="click"
         @render="render"
         @map-load="onMapLoaded")
 </template>
@@ -23,11 +35,12 @@
   import {ENTRIES_HAS_FULL_ENTRY, ENTRIES_SAVE_ENTRY} from "~/store/entries"
   import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
   import {MAP_GOTO_LOCATION} from "~/store/map"
+  import TemplateLegend from "~/components/menu/TemplateLegend"
 
   export default {
     name: "MapWrapper",
     mixins: [MapIncludeMixin, DomainMapMixin, HasMainNavComponentMixin],
-    components: {Mapbox},
+    components: {TemplateLegend, Mapbox},
     props: {
       height: {
         type: [String, Number],
@@ -41,7 +54,7 @@
       return {
         act_popup: null,
         act_hoover_uuid: null,
-        set_dl: false
+        set_dl: false,
       }
     },
     computed: {
@@ -52,6 +65,24 @@
         layer_status: "map/layer_status",
         legend_selection: "map/get_filter_config"
       }),
+      button_group_shift() {
+        let shift = "0.5%"
+        if (!this.display_mdDown && this.nav_drawer) {
+          shift = this.menu_width + "px"
+        }
+        return {
+          "left": shift
+        }
+      },
+      center_button_shift() {
+        let shift = "0"
+        if (!this.display_mdDown && this.nav_drawer) {
+          shift = this.menu_width / 2 + "px"
+        }
+        return {
+          "left": shift
+        }
+      },
       entries() {
         return this.all_map_entries(this.domain)
       },
@@ -121,12 +152,17 @@
       }
     },
     methods: {
+      click(e, m) {
+        console.log("click")
+      },
+      open_layer_dialog() {
+      },
       trigger_dl() {
-        this.set_dl=true
+        this.set_dl = true
         this.map.triggerRepaint()
       },
       render(re) {
-        if(!this.set_dl)
+        if (!this.set_dl)
           return
         this.set_dl = false
         // console.log(re)
@@ -153,20 +189,6 @@
         // console.log(this.entries.features.length)
 
         // const all_entries_source_name = layer_base_id + "_all_source"
-        // if (!this.map.getSource(all_entries_source_name)) {
-        //   // console.log("adding source")
-        //   this.map.addSource(all_entries_source_name, {
-        //     type: "geojson",
-        //     data: this.entries,
-        //     cluster: true,
-        //     tolerance: 0,
-        //     clusterMaxZoom: 14,
-        //     clusterRadius: 35,
-        //     generateId: true
-        //   })
-        // } else {
-        //   console.log("source layer exists already")
-        // }
 
         const source_name = layer_base_id + "_source"
         this.update_filtered_source()
@@ -295,10 +317,16 @@
         })
       },
       update_filtered_source() {
+        console.log("update_filtered_source")
+        if (!this.entries_loaded) {
+          return
+        }
+        // console.log(this.map.getSource("all_entries_source"))
         const included_templates = this.legend_selection.map(s => s.value)
         const filtered_entries = {
           type: "FeatureCollection",
-          features: this.entries.features.filter(e => included_templates.includes(e.properties.template))
+          features: this.entries.features.filter(e => included_templates.includes(e.properties.template) ||
+            (e.properties.uuid === this.selected_entry))
         }
         if (!this.map.getSource("all_entries_source")) {
           this.map.addSource("all_entries_source", {
@@ -307,8 +335,7 @@
             cluster: true,
             tolerance: 0,
             clusterMaxZoom: 14,
-            clusterRadius: 15,
-            generateId: true
+            clusterRadius: 15
           })
         } else {
           this.map.getSource("all_entries_source").setData(filtered_entries)
@@ -328,7 +355,7 @@
             if (data.data) {
               const entry = data.data
               this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
-              this.update_navigation_mode(entry_uuid,   VIEW, false)
+              this.update_navigation_mode(entry_uuid, VIEW, false)
               this.map_goto_location(feature.geometry)
             }
           }).catch(err => {
@@ -337,11 +364,11 @@
         }
       },
       change_entry_markers_mode(entry_uuid, selected) {
-        // console.log("MapWrapper.change_entry_markers_mode")
+        console.log("MapWrapper.change_entry_markers_mode", selected)
         const features = this.map.getSource("all_entries_source")._data.features
         // console.log("all features", features)
         const relevant_features = this.$_.filter(features, (f) => f.properties.uuid === entry_uuid)
-        // console.log(entry_uuid, selected)
+        console.log(relevant_features, selected)
         // this.map.setLayoutProperty(
         //   "all_entries_cluster-count",
         //   'visibility',
@@ -405,5 +432,32 @@
   .fullsize {
     width: 100%;
     height: 100%;
+  }
+
+  .buttongroup {
+    position: absolute;
+    top: 2%;
+    height: 5%;
+    z-index: 2;
+  }
+
+  .central_button {
+    position: absolute;
+    top: 2%;
+    z-index: 1;
+    left: 50%;
+    transform: translate(-50%, 0)
+  }
+
+  .overlay_menu {
+    position: absolute;
+    top: 2%;
+    z-index: 1;
+    right: 5%;
+  }
+
+  .shift_anim {
+    transition: left 0.2s;
+    transition-timing-function: ease-out;
   }
 </style>
