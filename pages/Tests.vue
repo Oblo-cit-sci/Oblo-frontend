@@ -1,9 +1,6 @@
 <template lang="pug">
   div
     AspectDialog(:aspect="domains" :dialog_open="dialog_open" show_aspect @update:ext_value="select($event)")
-    Aspect(:aspect="o_a" :ext_value="val")
-    v-btn(@click="test") test
-    div {{bp}}
     v-container(style="height=400px")
       v-row
         v-col.bg2(cols="3" sm="2")
@@ -12,20 +9,6 @@
           v-btn.col_btn press
         v-col.bg2(cols="8" sm="8")
           v-text-field(placeholder="cool cool cool")
-    v-expansion-panels(:value="[0]" :style="{width:'300px'}")
-      v-expansion-panel
-        v-expansion-panel-header.px-3.py-1 Legend
-        v-expansion-panel-content.px-2.py-1.no-wrap
-          v-list(dense)
-            v-list-item-group(multiple mandatory)
-              v-list-item(color="green" :ripple="false")
-                v-list-item-icon
-                  v-icon.mr-0(color="green" x-small) mdi-checkbox-blank-circle
-                v-list-item-title Local Observation
-              v-list-item(color="red" :ripple="false")
-                v-list-item-icon
-                    v-icon(color="red" x-small) mdi-checkbox-blank-circle
-                v-list-item-title Article Review
 
     v-menu(:close-on-content-click="false"
         :nudge-width="200"
@@ -35,10 +18,7 @@
           v-icon mdi-chevron-down
       v-card
         v-card-title hi
-    div
-      v-chip(:color="chip_data.color" pill) chip
-        v-avatar(:min-width="80")
-          img(src="https://vuetifyjs.com/apple-touch-icon-180x180.png")
+
 
 </template>
 

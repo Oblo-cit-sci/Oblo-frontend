@@ -1,5 +1,11 @@
 <template lang="pug">
   div
+    v-row(v-if="!fixed_domain" :style="{'background-color':'#00A0A080'}")
+      v-list-item
+        v-list-item-content {{$t('comp_domain_menu.fix_label', {domain_name})}}
+        v-list-item-action
+          v-btn(small @click="fix_domain(domain_name)")
+            v-icon mdi-book-lock
     Search(v-show="nav_mode_search"
       :preview_options="preview_options"
       :fixed_filters="location_pre_filter"
@@ -24,14 +30,16 @@
   import {QP_D, QP_F} from "~/lib/consts"
   import {entrytype_filter_options} from "~/lib/filter_option_consts"
   import {object_list2options} from "~/lib/options"
-  import {TEMPLATES_OF_DOMAIN} from "~/store/templates"
   import {get_tags_filter_options} from "~/lib/codes"
+  import {mapGetters, mapMutations} from "vuex"
 
   export default {
     name: "DomainMenu",
     mixins: [MapNavigationMixin, HasMainNavComponentMixin],
     components: {Entry, Search},
     computed: {
+      ...mapGetters({fixed_domain:"app/fixed_domain"}),
+
       domain_name() {
         return this.$route.query[QP_D] || this.$route.query[QP_F]
       },
@@ -42,13 +50,12 @@
 
         const tags_filter_options = get_tags_filter_options(this.$store, this.domain_name)
         return [template_filter_options, tags_filter_options]
-      },
+      }
     },
-    methods: {},
+    methods: {
+      ...mapMutations({fix_domain:"app/fixed_domain"})
+    },
     watch: {
-      // domain_navigation_mode(mode, old_mode) {
-      //   console.log("DomainMenu.watch.domain_navigation_mode", mode)
-      // }
     }
   }
 </script>

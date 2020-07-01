@@ -133,6 +133,7 @@
   "comp_e_pw.edit": "@:_global.w.edit",
   "comp_e_pw.review": "review",
   "comp_lgd.legend": "Legend",
+  "comp_domain_menu.fix_label": "Stay within {domain_name}",
   "comp_search.txt_field_search.label": "@:_global.w.search",
   "comp_actor_litem.deactivated": "deactivated",
   "lang": {

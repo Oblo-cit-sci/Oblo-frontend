@@ -55,6 +55,8 @@
     })
   }
 
+  const CLUSTER_PLACENAME_ZOOM_THRESH = 3
+
   export default {
     name: "MapWrapper",
     mixins: [MapIncludeMixin, DomainMapMixin, HasMainNavComponentMixin],
@@ -198,7 +200,6 @@
         this.map.triggerRepaint()
       },
       download(map) {
-
         this.set_dl = false
         // console.log(re)
         let image = map.getCanvas().toDataURL("image/png")
@@ -212,7 +213,7 @@
         if (this.set_dl)
           download(map)
 
-        if (map.getZoom() > 3.5) {
+        if (this.entries_loaded && map.getZoom() > CLUSTER_PLACENAME_ZOOM_THRESH) {
           this.cluster_label_layer_visible = true
           const clusters = map.queryRenderedFeatures(undefined, {layers: [cluster_layer_name]})
           // not defined right from the begining
@@ -427,13 +428,16 @@
           const consider_place_types = this.$_.cloneDeep(default_place_type)
           for (let leave of leaves) {
             const loc = leave.properties.location[0]
+
             if (this.$_.isEmpty(places)) {
               for (let pt of consider_place_types) {
                 if (loc.place[pt]) {
                   places[pt] = loc.place[pt].name
+                } else {
+                  consider_place_types.splice(consider_place_types.indexOf(pt), 1)
                 }
               }
-              // console.log("place?", places)
+              // console.log(loc, "place?", places)
             } else {
               // console.log("after1,", consider_place_types, places)
               // console.log(loc)
@@ -443,7 +447,7 @@
                     consider_place_types.splice(consider_place_types.indexOf(pt), 1)
                   }
                 } else {
-                  // console.log("kickout", pt)
+                  // console.log("kickout", pt, "for",loc.place)
                   consider_place_types.splice(consider_place_types.indexOf(pt), 1)
                 }
               }
@@ -455,7 +459,11 @@
           }
 
           if (consider_place_types.length > 0) {
+            // console.log("--->")
+            // console.log(consider_place_types[0])
+            // console.log(places)
             region_name = places[consider_place_types[0]]
+            // console.log(region_name)
             region_source_features.push({
               type: "Feature",
               geometry: cluster.geometry,
