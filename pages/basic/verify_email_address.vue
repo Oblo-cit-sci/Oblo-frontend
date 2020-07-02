@@ -23,7 +23,8 @@
           this.home()
         }
       }).catch(err => {
-        const msg = this.$_.get(err.response, "data.error.msg", "Something went wrong")
+        console.log(err)
+        const msg = this.$_.get(err, "response.data.error.msg", "Something went wrong")
         this.error_snackbar(msg)
       })
     },

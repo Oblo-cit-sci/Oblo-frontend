@@ -13,6 +13,7 @@ export const USER_GLOBAL_ROLE = "user/global_role"
 export const USER_SETTINGS = "user/settings"
 export const USER_SET_SETTINGS = "user/set_settings"
 
+
 let default_user_data = {
   global_role: VISITOR,
   public_name: VISITOR,
@@ -64,7 +65,7 @@ export const mutations = {
     state.logged_in = false
   },
   set_user_data(state, user_data) {
-    delete user_data.settings
+    // delete user_data.settings
     state.user_data = user_data;
   },
   login(state) {
@@ -87,9 +88,10 @@ export const mutations = {
 
 export const actions = {
   login({commit}, data) {
-    const {access_token, token_type, expiration_date, settings, ...user_data} = data
-    commit("set_settings", user_data.user.settings)
-    commit("set_user_data", user_data.user)
+    const {access_token, token_type, expiration_date, ...user_data} = data
+    const {settings, ...user} = user_data.user
+    commit("set_settings", settings)
+    commit("set_user_data", user)
     commit("set_auth_token", {access_token, token_type, expiration_date})
     commit("login")
   },
