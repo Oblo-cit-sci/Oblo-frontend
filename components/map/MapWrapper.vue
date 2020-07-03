@@ -77,7 +77,8 @@
         set_dl: false,
         aspectdialog_data: null,
         act_cluster: null,
-        act_cluster_expansion_zoom: null
+        act_cluster_expansion_zoom: null,
+        last_zoom: null
       }
     },
     computed: {
@@ -228,13 +229,18 @@
 
         // console.log(this.act_hoover_id, this.act_hoover_uuid)
         if (this.act_cluster) {
-          if(this.map.getZoom() > this.act_cluster_expansion_zoom) {
+          const zoom = this.map.getZoom()
+          if (zoom > this.act_cluster_expansion_zoom || zoom < this.last_zoom) {
             this.act_hoover_id = null
             this.act_cluster = null
-            this.act_popup.remove()
-            this.act_popup = null
+            // ?!?!?
+            if (this.act_popup) {
+              this.act_popup.remove()
+              this.act_popup = null
+            }
+          } else {
+            this.last_zoom = zoom
           }
-          // console.log(this.act_cluster)
         }
       },
       check_entries_map_done() {
@@ -284,7 +290,7 @@
 
           this.map.on('mouseenter', cluster_layer_name, (e) => {
             const cluster = e.features[0]
-            console.log(cluster)
+            // console.log(cluster)
             if (cluster.id === this.act_hoover_id) {
               return
             }
@@ -295,40 +301,42 @@
               this.act_hoover_id = cluster.id
               this.act_cluster = cluster
 
-              // not needed? cuz they are already big?
-              // this.map.setFeatureState(
-              //   {source: "all_entries_source", id: this.act_hoover_id},
-              //   {hover: true}
-              // )
-
               const source = this.map.getSource("all_entries_source")
-
-              source.getClusterExpansionZoom(cluster.id, (err,zoom) => {
+              source.getClusterExpansionZoom(cluster.id, (err, zoom) => {
                 // console.log("zoom", zoom)
                 this.act_cluster_expansion_zoom = zoom
               })
 
               clusterLeaves(source, cluster.id, cluster.properties.point_count).then(features => {
-                console.log(features)
-
+                // console.log(features)
                 let coordinates = null
                 coordinates = cluster.geometry.coordinates.slice()
                 // ensure correct popup position, when zoomed out and there are multiple copies
                 while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
                   coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
                 }
-
                 // this.act_hoover_uuid = feature.properties.uuid
                 this.act_popup = new this.mapboxgl.Popup()
                   .setLngLat(coordinates)
                   .setText(features.map(f => f.properties.title).join(","))
                 this.act_popup.addTo(this.map)
-
+                this.last_zoom = this.map.getZoom()
               }).catch(err => {
                 console.log(err)
               })
             }
+          })
 
+          this.map.on('mouseleave', cluster_layer_name, (e) => {
+            if (this.act_hoover_id) {
+              this.act_hoover_id = null
+              if (this.act_popup) {
+                this.act_popup.remove()
+                this.act_popup = null
+              }
+              this.act_cluster = null
+              this.last_zoom = null
+            }
           })
 
           // 2nd cluster count layer

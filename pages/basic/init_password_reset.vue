@@ -13,30 +13,15 @@
   import {STR} from "~/lib/consts"
   import Aspect from "~/components/Aspect"
   import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
+  import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
 
   export default {
     name: "init_password_reset",
     components: {Aspect},
-    mixins: [TriggerSnackbarMixin],
+    mixins: [TypicalAspectMixin, TriggerSnackbarMixin],
     data() {
       return {
-        query: {
-          type: STR,
-          label: "",
-          name: "query",
-          t_description: "init_password_reset.asp_query_descr",
-          attr: {
-            max: 30,
-            unpacked: true,
-            extra: {
-              rules: [
-                v => v.length > 0,
-              ]
-            }
-          },
-          error: true,
-          value: ""
-        },
+        query: this.asp_user_query(),
         errorMsg: null,
         send_button_loading: false
       }
