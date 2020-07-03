@@ -19,7 +19,15 @@
       v-card
         v-card-title hi
 
-
+    v-text-field(
+      prepend-icon="mdi-file-tree"
+      @click:prepend="test"
+      hide-details
+      readonly
+      solo
+      clearable
+      flat
+      value="cool > na > nono" )
 </template>
 
 <script>
@@ -46,10 +54,10 @@
     components: {Aspect, OptionsAspect, AspectDialog},
     async created() {
       const location_ = {"lon":24.550781249998096,"lat":47.405785290060095}
-      const data = await this.rev_geocode(location_)
-      console.log(data)
-      const loc_search = await this.geocode("Parva")
-      console.log(loc_search)
+      // const data = await this.rev_geocode(location_)
+      // console.log(data)
+      // const loc_search = await this.geocode("Parva")
+      // console.log(loc_search)
     },
     data() {
       return {

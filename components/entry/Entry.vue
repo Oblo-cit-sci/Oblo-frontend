@@ -59,7 +59,7 @@
           Aspect(:aspect="asp_privacy()" :aspect_loc="aspect_locs[asp_privacy().name]" :mode="license_privacy_mode")
       v-row(v-if="is_creator")
         v-col.pb-0(alignSelf="stretch" :cols="base_cols")
-          Aspect(:aspect="entry_roles_aspect" :aspect_loc="aspect_locs[entry_roles_aspect.name]" :extra="{entry_is_private: entry.privacy==='private'}")
+          Aspect(:aspect="asp_entry_roles()" :aspect_loc="aspect_locs[asp_entry_roles().name]" :extra="{entry_is_private: entry.privacy==='private'}")
       v-row
         v-col(alignSelf="stretch" :cols="base_cols")
           v-divider
@@ -98,7 +98,6 @@
   import MissingAspectsNotice from "./MissingAspectsNotice";
   import {ENTRIES_GET_EDIT, ENTRIES_GET_ENTRY} from "~/store/entries";
   import {EDIT, ENTRY, VIEW} from "~/lib/consts";
-  import {entry_roles_aspect} from "~/lib/typical_aspects";
   import {privacy_color, privacy_icon} from "~/lib/util";
   import ChangedAspectNotice from "./ChangedAspectNotice";
   import MetaChips from "./MetaChips";
@@ -152,9 +151,6 @@
       },
       license_aspect() {
         return this.asp_license("license", ["cc_licenses"], null)
-      },
-      entry_roles_aspect() {
-        return entry_roles_aspect(this.$store)
       },
       aspects() {
         return this.$store.getters[TEMPLATES_TYPE](this.template_slug).aspects

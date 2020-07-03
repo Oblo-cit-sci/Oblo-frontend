@@ -219,6 +219,16 @@ export default {
         ],
         value: null,
       }
+    },
+    asp_entry_roles() {
+      return {
+        name: "actors",
+        t_label: "asp.entry_role.label",
+        type: "entry_roles",
+        attr: {
+          unpacked: true
+        }
+      }
     }
   }
 }

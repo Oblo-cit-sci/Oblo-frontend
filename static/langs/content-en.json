@@ -138,6 +138,9 @@
       "alt_descr": {
         "default": "Choose a default license for your entries"
       }
+    },
+    "entry_role": {
+      "label": "Collaborators and entry access"
     }
   },
   "_comp": {
