@@ -7,7 +7,7 @@
         span.pointer(@click="goto_actor(actor)")
           span {{actor.public_name}}
           span(style="font-size:small") &nbsp; {{actor.registered_name}}
-        v-chip.ml-2(v-if="actor.account_deactivated" small color="indianred") {{$t("comp_actor_litem.deactivated")}}
+        v-chip.ml-2(v-if="actor.account_deactivated" small color="indianred") {{$t("comp.actor..deactivated")}}
         GlobalRoleChip.ml-2(:global_role="actor.global_role")
       v-list-item-subtitle {{actor.description}}
       v-list-item-subtitle {{place(actor.location)}}

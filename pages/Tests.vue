@@ -28,6 +28,8 @@
       clearable
       flat
       value="cool > na > nono" )
+    div
+      v-skeleton-loader(type="image" width="300" height="300")
 </template>
 
 <script>

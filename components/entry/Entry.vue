@@ -65,7 +65,7 @@
           v-divider
     div(v-if="show_validation_comp")
       v-row(v-if="last_page")
-        MissingAspectsNotice(:entry="entry" :template_slug="template_slug" v-model="entry_complete")
+        EntryValidation(:entry="entry" :template_slug="template_slug" v-model="entry_complete")
       v-row(v-if="is_dirty")
         ChangedAspectNotice(:is_draft="is_draft")
     v-row
@@ -95,7 +95,7 @@
   import FullEntryMixin from "./FullEntryMixin";
   import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
   import PersistentStorageMixin from "../util/PersistentStorageMixin";
-  import MissingAspectsNotice from "./MissingAspectsNotice";
+  import EntryValidation from "./EntryValidation";
   import {ENTRIES_GET_EDIT, ENTRIES_GET_ENTRY} from "~/store/entries";
   import {EDIT, ENTRY, VIEW} from "~/lib/consts";
   import {privacy_color, privacy_icon} from "~/lib/util";
@@ -117,7 +117,7 @@
       EntryActorList,
       MetaChips,
       ChangedAspectNotice,
-      MissingAspectsNotice,
+      EntryValidation,
       DecisionDialog,
       Aspect,
       EntryActions,

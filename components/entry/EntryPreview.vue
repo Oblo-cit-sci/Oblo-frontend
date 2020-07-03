@@ -11,7 +11,7 @@
                 v-btn(v-if="show_title_action" @click="goto()" depressed small)
                   v-icon(:class="default_action_icon")
           v-row.pl-3(:style="{'text-align': 'right', 'font-size':'80%'}")
-            span.my-auto(v-if="show_date") {{$t("comp_e_pw.created")}} {{entry_date}} {{is_draft ? $t('comp_entrypreview.draft') : ""}}
+            span.my-auto(v-if="show_date") {{$t("comp.entrypreview.created")}} {{entry_date}} {{is_draft ? $t('comp.entrypreview.draft') : ""}}
           v-row.pl-3.py-1
             MetaChips(v-if="show_meta_aspects" :meta_aspects="meta_aspects")
           v-row.pl-3(justify="space-between")
@@ -23,7 +23,7 @@
             v-list-item(v-if="outdated")
               v-list-item-icon
                 v-icon(color="orange") mdi-alert-outline
-              v-list-item-content {{$t("comp_e_pw.outdated")}}
+              v-list-item-content {{$t("comp.entrypreview.outdated")}}
         v-col(v-if="show_image" cols=4 class="col-md-4 col-sm-12 entry-image")
           div.float-md-right.float-sm-left.entry-display-size.mr-3
             v-avatar(tile class="entry-image-size")
@@ -42,7 +42,7 @@
       v-card-actions
         div
           v-btn(small text outlined @click="goto(entry.uuid)") {{goto_text}}
-          v-btn(v-if="show_view" small text outlined @click="goto(entry.uuid, 'view')") {{$t("comp_e_pw.view")}}
+          v-btn(v-if="show_view" small text outlined @click="goto(entry.uuid, 'view')") {{$t("comp.entrypreview.view")}}
           v-btn(small text outlined :color="act.color || 'green'"
             v-for="act in additional_actions"
             :key="act.name"
@@ -137,9 +137,9 @@
       },
       goto_text() {
         if (this.outdated)
-          return "update"
+          return this.$t("comp.entrypreview.update")
         else
-          return this.$t("comp_e_pw."+this.proper_mode)
+          return this.$t("comp.entrypreview." + this.proper_mode)
       },
       show_image() {
         return this.entry.image // ![undefined, null, ""].includes(this.entry.image)

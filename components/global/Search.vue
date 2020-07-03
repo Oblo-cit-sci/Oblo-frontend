@@ -4,7 +4,7 @@
       v-col(cols="12")
         v-text-field(
           v-model="keyword"
-          :label="$t('comp_search.txt_field_search.label')"
+          :label="$t('comp.search.txt_field_label')"
           single-line
           :hint="search_hint"
           append-outer-icon="mdi-magnify"

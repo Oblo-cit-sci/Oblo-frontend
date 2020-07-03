@@ -206,15 +206,20 @@ export default {
     asp_location_privacy() {
       return {
         name: "location_privacy",
-        t_label: "_global.asp_location_privacy.label",
-        t_description: "_global.asp_location_privacy.descr",
+        t_label: "settings.asp.location_privacy.label",
+        t_description: "settings.asp.location_privacy.descr",
         type: "select",
         attr: {
           unpacked: true
         },
         items: [
-          "exact location",
-          settings_loc_privacy_random,
+          {
+            value: settings_loc_privacy_exact,
+            text: this.$t("settings.asp.location_privacy.options.exact")
+          }, {
+            value: settings_loc_privacy_random,
+            text: this.$t("settings.asp.location_privacy.options.random")
+          }
           // settings_loc_privacy_ask
         ],
         value: null,

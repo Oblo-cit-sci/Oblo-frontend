@@ -2,7 +2,7 @@
   div
     v-row(v-if="!fixed_domain" :style="{'background-color':'#00A0A080'}")
       v-list-item
-        v-list-item-content {{$t('comp_domain_menu.fix_label', {domain_name})}}
+        v-list-item-content {{$t('comp.domain_menu.fix_label', {domain_title})}}
         v-list-item-action
           v-btn(small @click="fix_domain(domain_name)")
             v-icon mdi-book-lock
@@ -27,22 +27,18 @@
   import MapNavigationMixin from "~/components/map/MapNavigationMixin"
   import Entry from "~/components/entry/Entry"
   import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
-  import {QP_D, QP_F} from "~/lib/consts"
   import {entrytype_filter_options} from "~/lib/filter_option_consts"
   import {object_list2options} from "~/lib/options"
   import {get_tags_filter_options} from "~/lib/codes"
   import {mapGetters, mapMutations} from "vuex"
+  import DomainMixin from "~/components/DomainMixin"
 
   export default {
     name: "DomainMenu",
-    mixins: [MapNavigationMixin, HasMainNavComponentMixin],
+    mixins: [MapNavigationMixin, HasMainNavComponentMixin, DomainMixin],
     components: {Entry, Search},
     computed: {
       ...mapGetters({fixed_domain:"app/fixed_domain"}),
-
-      domain_name() {
-        return this.$route.query[QP_D] || this.$route.query[QP_F]
-      },
       filters() {
         const template_filter_options = Object.assign({}, entrytype_filter_options)
         template_filter_options.aspect.items = object_list2options(
@@ -54,8 +50,6 @@
     },
     methods: {
       ...mapMutations({fix_domain:"app/fixed_domain"})
-    },
-    watch: {
     }
   }
 </script>

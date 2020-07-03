@@ -66,8 +66,16 @@
   },
   "settings": {
     "h1": "Settings",
-    "asp_location_privacy": "Location privacy",
-    "asp_location_privacy_descr": "Specify the settings for the protection of the exact locations of your entries",
+    "asp": {
+      "location_privacy": {
+        "label": "Location privacy",
+        "descr": "Specify the settings for the protection of the exact locations of your entries",
+        "options": {
+          "exact": "Exact location",
+          "random": "Randomly moved"
+        }
+      }
+    },
     "btn_update": "@:_global.w.update"
   },
   "asp": {
@@ -153,14 +161,67 @@
       }
     }
   },
-  "_comp": {
+  "comp": {
+    "entry_validation": {
+      "h1": "Validation",
+      "has_missing": "Missing or incomplete aspects:",
+      "has_missing_t": "Incomplete entries cannot be submitted. Please, add the missing information or safe your entry as a draft.",
+      "ok": "All values in this entry are ok.",
+      "msgs": {
+        "missing": "{aspect_label} missing",
+        "list_not_enough": "{aspect_label} requires more {item_name}",
+        "composite_incomplete": "  is not complete: missing components: {invalid_components_msgs}",
+        "listitem_incomplete": "{aspect_label} has at least one incomplete item: {invalid_item_msgs}"
+      }
+    },
+    "location_asp": {
+      "public_loc": {
+        "base": "Public location",
+        "options": {
+          "rnd": "For viewers the exact location is not visible but randomly moved (yellow marker)",
+          "exact": "Viewers see the exact location.",
+          "region": "Viewers see the location of the region."
+        }
+      }
+    },
+    "previewlist": {
+      "num_entries": "@:_global.wn.entries"
+    },
+    "entrypreview": {
+      "draft": "Draft",
+      "created": "created",
+      "outdated": "Created from an outdated version. Some values might change. Download the entry before updating is recommended",
+      "view": "@:_global.w.view",
+      "edit": "@:_global.w.edit",
+      "update": "update",
+      "review": "review"
+    },
     "menucontainer": {
       "tab_main": "Main",
       "tab_domain": "Domain"
+    },
+    "image_asp": {
+      "no_images": "No images"
+    },
+    "legend": {
+      "legend": "Legend"
+    },
+    "select_asp": {
+      "description": "@.capitalize:_global.w.description"
+    },
+    "domain_menu": {
+      "fix_label": "Stay within {domain_title}"
+    },
+    "search": {
+      "txt_field_label": "@.capitalize:w.search"
+    },
+    "actor": {
+      "deactivated": "deactivated"
     }
   },
-  "comp_entries_pw_list.num_entries": "@:_global.wn.entries",
-  "comp_entrypreview.draft": "Draft",
+  "w": {
+    "search": "search"
+  },
   "_global.w.entries": "entries",
   "_global.wn.entries": "No entries | {n} entry | {n} entries",
   "_global.w.description": "description",
@@ -178,25 +239,10 @@
   "_global.language.label": "Language",
   "_global.asp_location_privacy.labal": "Location privacy",
   "_global.asp_location_privacy.descr": "Specify the settings for the protection of the exact locations of your entries",
-  "._aspect_select.descr": "@.capitalize:_global.w.description",
-  "comp_e_pw.created": "created",
-  "comp_e_pw.outdated": "Created from an outdated version. Some values might change. Download the entry before updating is recommended",
-  "comp_e_pw.view": "@:_global.w.view",
-  "comp_e_pw.edit": "@:_global.w.edit",
-  "comp_e_pw.review": "review",
-  "comp_lgd.legend": "Legend",
-  "comp_domain_menu.fix_label": "Stay within {domain_name}",
-  "comp_search.txt_field_search.label": "@:_global.w.search",
-  "comp_actor_litem.deactivated": "deactivated",
   "lang": {
     "en": "english",
     "es": "spanish",
     "de": "german",
     "fr": "french"
-  },
-  "comp_image_aspect.no_images": "No images",
-  "comp_location.public_loc.base": "Public location",
-  "comp_location.public_loc.option_rnd": "For viewers the exact location is not visible but randomly moved (yellow marker)",
-  "comp_location.public_loc.option_exact": "Viewers see the exact location.",
-  "comp_location.public_loc.option_region": "Viewers see the location of the region."
+  }
 }
