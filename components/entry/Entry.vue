@@ -56,7 +56,7 @@
         v-col(alignSelf="stretch" :cols="base_cols" :lg="base_cols/2" :xl="base_cols/3")
           Aspect(:aspect="license_aspect" :aspect_loc="aspect_locs[license_aspect.name]" :mode="license_privacy_mode")
         v-col(alignSelf="stretch" :cols="base_cols" :lg="base_cols/2")
-          Aspect(:aspect="privacy_aspect" :aspect_loc="aspect_locs[privacy_aspect.name]" :mode="license_privacy_mode")
+          Aspect(:aspect="asp_privacy()" :aspect_loc="aspect_locs[asp_privacy().name]" :mode="license_privacy_mode")
       v-row(v-if="is_creator")
         v-col.pb-0(alignSelf="stretch" :cols="base_cols")
           Aspect(:aspect="entry_roles_aspect" :aspect_loc="aspect_locs[entry_roles_aspect.name]" :extra="{entry_is_private: entry.privacy==='private'}")
@@ -98,7 +98,7 @@
   import MissingAspectsNotice from "./MissingAspectsNotice";
   import {ENTRIES_GET_EDIT, ENTRIES_GET_ENTRY} from "~/store/entries";
   import {EDIT, ENTRY, VIEW} from "~/lib/consts";
-  import {entry_roles_aspect, license_aspect, privacy_aspect} from "~/lib/typical_aspects";
+  import {entry_roles_aspect} from "~/lib/typical_aspects";
   import {privacy_color, privacy_icon} from "~/lib/util";
   import ChangedAspectNotice from "./ChangedAspectNotice";
   import MetaChips from "./MetaChips";
@@ -151,10 +151,7 @@
         return this.is_edit_mode || this.is_review_mode
       },
       license_aspect() {
-        return this.asp_license_aspect("license", ["cc_licenses"], null)
-      },
-      privacy_aspect() {
-        return privacy_aspect(this.$store)
+        return this.asp_license("license", ["cc_licenses"], null)
       },
       entry_roles_aspect() {
         return entry_roles_aspect(this.$store)

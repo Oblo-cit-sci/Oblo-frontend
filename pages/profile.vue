@@ -2,7 +2,7 @@
   v-flex#top(xs12 sm10 md10)
     v-row
       v-col
-        div {{$t("_global.asp_username.label")}}: {{user_data.registered_name}}
+        div {{$t("asp.username.label")}}: {{user_data.registered_name}}
         v-chip(outlined disabled small) {{user_data.global_role}}
       v-col
         v-row
@@ -25,7 +25,7 @@
           @update:error="$set(aspect, 'error', $event)"
           :mode="aspect_mode")
     div(v-if="edit_mode")
-      h3 {{$t('_global.asp_password.label')}}
+      h3 {{$t('asp.password.label')}}
       v-btn(color="warning" v-if="!password_edit" @click="password_edit=true") {{$t('profile.btn_change_password')}}
       div(v-if="password_edit")
         v-row(v-for="a of password_aspects" :key="a.name")
@@ -123,8 +123,8 @@
           //   value: null
           // },
           this.asp_email(),
-          this.asp_privacy_aspect("default_privacy", "default"),
-          this.asp_license_aspect("default_license", ["cc_licenses"], null, "default")
+          this.asp_privacy("default_privacy", "default"),
+          this.asp_license("default_license", ["cc_licenses"], null, "default")
         ],
         password_aspects: {
           actual_password: this.asp_password("actual_password", "current"),

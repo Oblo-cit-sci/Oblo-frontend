@@ -6,22 +6,15 @@
 <script>
 
 
-  import Title_Description from "../components/util/Title_Description"
-  import EntryActions from "../components/entry/EntryActions";
   import {EDIT, PRIVATE_LOCAL, VIEW} from "~/lib/consts";
-  import Aspect from "../components/Aspect";
 
   import goTo from 'vuetify/lib/services/goto'
   import EntryNavMixin from "../components/EntryNavMixin";
-  import DecisionDialog from "../components/util/DecisionDialog";
   import EntryMixin from "../components/entry/EntryMixin";
-  import MetaChips from "../components/entry/MetaChips"
-  import {privacy_icon} from "~/lib/util"
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
   import PersistentStorageMixin from "../components/util/PersistentStorageMixin";
   import FullEntryMixin from "../components/entry/FullEntryMixin";
-  import {entry_roles_aspect, privacy_aspect} from "~/lib/typical_aspects";
-  import EntryActorList from "../components/entry/EntryActorList";
+  import {entry_roles_aspect} from "~/lib/typical_aspects";
   import {
     ENTRIES_GET_EDIT,
     ENTRIES_SET_EDIT,
@@ -35,13 +28,7 @@
     name: "entry",
     mixins: [EntryNavMixin, EntryMixin, TriggerSnackbarMixin, PersistentStorageMixin, FullEntryMixin],
     components: {
-      Entry,
-      DecisionDialog,
-      Aspect,
-      EntryActions,
-      Title_Description,
-      MetaChips,
-      EntryActorList
+      Entry
     },
     data() {
       return {
@@ -110,9 +97,6 @@
       license_aspect() {
         return license_aspect(this.$store, ["cc_licenses"], [])
       },
-      privacy_aspect() {
-        return privacy_aspect(this.$store)
-      },
       entry_roles_aspect() {
         return entry_roles_aspect(this.$store)
       },
@@ -134,13 +118,6 @@
           return this.template.rules.pages[this.page]
         else
           return null
-      },
-      // wrong, create should be for all that are not local/saved or published
-      meta_aspects_privacy() {
-        let result = []
-        result.push({icon: privacy_icon(this.entry.privacy), name: this.entry.privacy})
-        result.push({name: "License: " + this.entry.license})
-        return result
       },
       show_image() {
         return this.entry.image

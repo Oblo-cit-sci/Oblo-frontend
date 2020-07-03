@@ -2,7 +2,7 @@
   v-flex(xs12 sm10 md10)
     v-row
       v-col
-        div {{$t(".asp_username.label")}}: {{registered_name}}
+        div {{$t("asp.username.label")}}: {{registered_name}}
         GlobalRoleChip.mt-2(:global_role="user_data.global_role")
         div.mt-2(v-if="user_data.account_deactivated" style="color:red") {{$t("actor.deactivated")}}
       v-col

@@ -35,8 +35,6 @@
   },
   "login": {
     "h1": "Login",
-    "asp_user_query": "Username or email",
-    "asp_password": "Password",
     "btn_login": "Login",
     "btn_forgot": "Forgot password?"
   },
@@ -72,11 +70,76 @@
     "asp_location_privacy_descr": "Specify the settings for the protection of the exact locations of your entries",
     "btn_update": "@:_global.w.update"
   },
-  ".asp_public_name.label": "Public name",
-  ".asp_public_name.rule_length": "Your public name must have between 2 and 30 characters",
-  ".asp_user_description.label": "@.capitalize:_global.w.description",
-  ".asp_user_description.descr": "Write something about yourself and about your background",
-  ".asp_username.label": "@:_global.w.username",
+  "asp": {
+    "username": {
+      "label": "@:_global.w.username",
+      "rule_length": "@:_global.w.username must have at 4 characters",
+      "rule_pattern": "Only lowercase characters are allowed"
+    },
+    "user_query": {
+      "label": "Username or email",
+      "rule": "Input doesnt seem to be a valid username nor email address"
+    },
+    "password": {
+      "label": "Password",
+      "rule_length": "Password must have at least 8 characters",
+      "rule_repeat_match": "Passwords do not match",
+      "alt_label": {
+        "repeat": "Repeat password",
+        "current": "Current password",
+        "new": "New password",
+        "repeat_new": "Repeat new password"
+      }
+    },
+    "email": {
+      "label": "Email",
+      "rule": "Email not valid"
+    },
+    "public_name": {
+      "label": "Public name",
+      "rule_length": "Your public name must have between 2 and 30 characters"
+    },
+    "user_description": {
+      "label": "@.capitalize:_global.w.description",
+      "descr": "Write something about yourself and about your background"
+    },
+    "privacy": {
+      "label": "Privacy",
+      "descr": "Should this entry be publicly visible?",
+      "alt_label": {
+        "default": "Default privacy"
+      },
+      "alt_descr": {
+        "default": "Choose a default privacy for all your entries"
+      },
+      "options": {
+        "public": {
+          "text": "Public",
+          "descr": "Everyone can see this entry.",
+          "alt_descr": {
+            "default": "Public entries are visible to everyone"
+          }
+        },
+        "private": {
+          "text": "Private",
+          "descr": "Only you or users you shared the entry with can see it.",
+          "alt_descr": {
+            "default": "Private entries are only visible to those you share it with"
+          }
+        }
+      }
+    },
+    "license": {
+      "label": "License",
+      "descr": "Choose a license for this entry",
+      "alt_label": {
+        "default": "Default license"
+      },
+      "alt_descr": {
+        "default": "Choose a default license for your entries"
+      }
+    }
+  },
   "_comp": {
     "menucontainer": {
       "tab_main": "Main",
@@ -99,30 +162,6 @@
   "_global.role.visitor": "Visitor",
   "_global.btn_cancel": "Cancel",
   "_global.snack.something_went_wrong": "Something went wrong",
-  "_global.asp_username.label": "@:_global.w.username",
-  "_global.asp_username.rule_length": "@:_global.w.username must have at 4 characters",
-  "_global.asp_username.rule_pattern": "Only lowercase characters are allowed",
-  "_global.asp_user_query.rule": "Input doesnt seem to be a valid username nor email address",
-  "_global.asp_email.label": "Email",
-  "_global.asp_email.rule.valid": "Email not valid",
-  "_global.asp_password.label": "Password",
-  "_global.asp_password.alt_label.current": "Current Password",
-  "_global.asp_password.alt_label.new": "New Password",
-  "_global.asp_password.alt_label.repeat_new": "Repeat new password",
-  "_global.asp_password.rule_length": "Password must have at least 8 characters",
-  "_global.asp_password.alt_label.repeat": "Repeat password",
-  "_global.asp_password_repeat.rule_match": "Passwords do not match",
-  "_global.asp_privacy.label": "Privacy",
-  "_global.asp_privacy.alt_label.default": "Default privacy",
-  "_global.asp_privacy.alt_descr.default": "Choose a default privacy for all your entries",
-  "_global.asp_privacy.item_public.text": "Public",
-  "_global.asp_privacy.item_public.descr": "Public entries are visible to everyone",
-  "_global.asp_privacy.item_private.text": "Private",
-  "_global.asp_privacy.item_private.descr": "Private entries are only visible to those you share it with",
-  "_global.asp_license.label": "License",
-  "_global.asp_license.alt_label.default": "Default license",
-  "_global.asp_license.alt_descr.default": "Choose a default license for your entries",
-  "_global.asp_license.descr": "Choose a license for this entry",
   "_global.language.label": "Language",
   "_global.asp_location_privacy.labal": "Location privacy",
   "_global.asp_location_privacy.descr": "Specify the settings for the protection of the exact locations of your entries",

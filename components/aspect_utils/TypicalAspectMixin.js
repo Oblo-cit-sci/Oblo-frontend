@@ -23,14 +23,14 @@ export default {
         type: "str",
         // todo make small
         name: "Username",
-        t_label: "_global.asp_username.label",
+        t_label: "asp.username.label",
         attr: {
           max: 30,
           unpacked: true,
           extra: {
             rules: [
-              v => v && v.length >= 4 || this.$t("_global.asp_username.rule_length"),
-              v => username_regex.test(v) || this.$t("_global.asp_username.rule_pattern")
+              v => v && v.length >= 4 || this.$t("asp.username.rule_length"),
+              v => username_regex.test(v) || this.$t("asp.username.rule_pattern")
             ]
           }
         },
@@ -41,14 +41,14 @@ export default {
     asp_user_query() {
       return {
         type: STR,
-        t_label: "login.asp_user_query",
+        t_label: "asp.user_query.label",
         name: "user_query",
         attr: {
           max: 90,
           unpacked: true,
           extra: {
             rules: [
-              v => v && ((v.length >= 4 && username_regex.test(v)) || (/.+@.+\..+/.test(v))) || this.$t("_global.asp_user_query.rule")
+              v => v && ((v.length >= 4 && username_regex.test(v)) || (/.+@.+\..+/.test(v))) || this.$t("asp.user_query.rule")
             ]
           }
         }
@@ -57,14 +57,14 @@ export default {
     asp_public_name() {
       return {
         name: "public_name",
-        t_label: ".asp_public_name.label",
+        t_label: "asp.public_name.label",
         type: "str",
         attr: {
           max: 30,
           unpacked: true,
           extra: {
             rules: [
-              v => v && v.length >= 2 && v.length <= 30 || this.$t(".asp_public_name.rule_length"),
+              v => v && v.length >= 2 && v.length <= 30 || this.$t("asp.public_name.rule_length"),
             ]
           }
         },
@@ -75,8 +75,8 @@ export default {
     asp_actor_description() {
       return {
         name: "description",
-        t_label: ".asp_user_description.label",
-        t_description: ".asp_user_description.descr",
+        t_label: "asp.user_description.label",
+        t_description: "asp.user_description.descr",
         type: "str",
         attr: {
           max: 980,
@@ -90,13 +90,13 @@ export default {
       return {
         type: "str",
         name: "email",
-        t_label: "_global.asp_email.label",
+        t_label: "asp.email.label",
         attr: {
           max: 40,
           unpacked: true,
           extra: {
             rules: [
-              v => /.+@.+\..+/.test(v) || this.$t("_global.asp_email.rule.valid")
+              v => /.+@.+\..+/.test(v) || this.$t("asp.email.rule")
             ]
           }
         },
@@ -108,14 +108,14 @@ export default {
       return {
         type: "str",
         name: name ? name : "password",
-        t_label: this.t_label("_global.asp_password.", alt_label),
+        t_label: this.t_label("asp.password.", alt_label),
         attr: {
           max: 40,
           unpacked: true,
           component_type: "password",
           extra: {
             rules: [
-              v => v && (v.length >= 8) || this.$t("_global.asp_password.rule_length")
+              v => v && (v.length >= 8) || this.$t(".asp_password.rule_length")
             ]
           }
         },
@@ -127,14 +127,14 @@ export default {
       return {
         type: "str",
         name: "repeat password",
-        t_label: this.t_label("_global.asp_password.", alt_label),
+        t_label: this.t_label("asp.password.", alt_label),
         attr: {
           max: 40,
           unpacked: true,
           component_type: "password",
           extra: {
             rules: [
-              v => v === password_aspect.value || this.$t("_global.asp_password_repeat.rule_match")
+              v => v === password_aspect.value || this.$t("asp.password.rule_repeat_match")
             ]
           }
         },
@@ -142,23 +142,23 @@ export default {
         error: true
       }
     },
-    asp_privacy_aspect(name = null, alt_label_descr = undefined) {
+    asp_privacy(name = null, alt_label_descr = undefined) {
       return {
         name: name ? name : "privacy",
-        t_label: this.t_label("_global.asp_privacy.", alt_label_descr),
-        t_description: this.t_description("_global.asp_privacy.", alt_label_descr),
+        t_label: this.t_label("asp.privacy.", alt_label_descr),
+        t_description: this.t_description("asp.privacy.", alt_label_descr),
         type: "select",
         attr: {
           unpacked: true
         },
         items: [{
-          text: this.$t("_global.asp_privacy.item_public.text"),
-          description: this.$t("_global.asp_privacy.item_public.descr"),
+          text: this.$t("asp.privacy.options.public.text"),
+          description: this.description("asp.privacy.options.public.", alt_label_descr),
           value: "public",
           icon: "privacy/earth.png"
         }, {
-          text: this.$t("_global.asp_privacy.item_private.text"),
-          description: this.$t("_global.asp_privacy.item_private.descr"),
+          text: this.$t("asp.privacy.options.private.text"),
+          description: this.description("asp.privacy.options.private.", alt_label_descr),
           value: "private",
           icon: "privacy/lock-outline.png"
         }]
@@ -169,11 +169,11 @@ export default {
             return privacy_set ? VIEW : EDIT
        */
     },
-    asp_license_aspect(name = null, include = [], exclude, alt_label_descr = undefined) {
+    asp_license(name = null, include = [], exclude, alt_label_descr = undefined) {
       const aspect = {
         name: name ? name : "license",
-        t_label: this.t_label("_global.asp_license.", alt_label_descr),
-        t_description: this.t_description("_global.asp_license.", alt_label_descr),
+        t_label: this.t_label("asp.license.", alt_label_descr),
+        t_description: this.t_description("asp.license.", alt_label_descr),
         type: "select",
         attr: {
           unpacked: true,
