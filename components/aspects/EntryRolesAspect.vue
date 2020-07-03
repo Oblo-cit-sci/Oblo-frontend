@@ -47,9 +47,20 @@
         return this.value.map(ra => ra.actor.registered_name)
       },
       available_roles() {
-        const roles = [{name:COLLABORATOR, label:"Collaborators", description: "Collaborators can edit this entry as you can"}]
+        const base_path = "asp.entry_roles.roles."
+        const roles = [
+          {
+            name: COLLABORATOR,
+            label: this.$t(base_path + "collaborator.label"),
+            description: this.$t(base_path + "collaborator.descr"),
+          }
+        ]
         if (this.entry_is_private) {
-          roles.push({name:SHARED, label:"Visible to", description: "The following users can still read your entry"})
+          roles.push({
+            name: SHARED,
+            label: this.$t(base_path + "shared.label"),
+            description: this.$t(base_path + "shared.descr")
+          })
         }
         return roles
       },

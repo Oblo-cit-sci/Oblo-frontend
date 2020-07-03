@@ -223,7 +223,7 @@ export default {
     asp_entry_roles() {
       return {
         name: "actors",
-        t_label: "asp.entry_role.label",
+        t_label: "asp.entry_roles.label",
         type: "entry_roles",
         attr: {
           unpacked: true

@@ -139,8 +139,18 @@
         "default": "Choose a default license for your entries"
       }
     },
-    "entry_role": {
-      "label": "Collaborators and entry access"
+    "entry_roles": {
+      "label": "Collaborators and entry access",
+      "roles": {
+        "collaborator": {
+          "label": "Collaborator",
+          "descr": "Collaborators can edit this entry as you can (except for changing the privacy, license and roles)."
+        },
+        "shared": {
+          "label": "Visible to",
+          "descr": "The following users can still read your entry"
+        }
+      }
     }
   },
   "_comp": {
