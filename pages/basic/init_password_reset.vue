@@ -33,7 +33,7 @@
           this.ok_snackbar(data.data.msg)
           this.$router.push("/basic/reset_mail_sent")
         }).catch(err => {
-          this.errorMsg = this.$_.get(err.response, "data.error.msg", "Something went wrong")
+          this.errorMsg = this.$_.get(err, "response.data.error.msg", this.$t("comp.snackbar.something_went_wrong"))
           setTimeout(() => this.errorMsg = null, 2000)
         }).finally(() => {
           this.send_button_loading = false

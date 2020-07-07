@@ -42,7 +42,7 @@
         }
       },
       label() {
-        return this.$t("_global.language.label")
+        return this.$t("comp.language_select.label")
       }
     },
     watch: {

@@ -235,7 +235,7 @@
           } catch (e) {
             console.log(e)
             this.sending = false
-            const message = this.$_.get(e, "response.data.error.msg", "Something went wrong")
+            const message = this.$_.get(e, "response.data.error.msg", this.$t("comp.snackbar.something_went_wrong"))
             // todo for entry exists already, there could be a change in the button label, but maybe the data of that entry should be fetched
             this.error_snackbar(message)
           }
@@ -256,7 +256,7 @@
           this.$store.commit(ENTRIES_RESET_EDIT)
           this.back()
         } catch (e) {
-          const message = this.$_.get(e, "response.data.error.msg", "Something went wrong")
+          const message = this.$_.get(e, "response.data.error.msg", this.$t("comp.snackbar.something_went_wrong"))
           // todo for entry exists already, there could be a change in the button label, but maybe the data of that entry should be fetched
           this.error_snackbar(message)
         }
@@ -273,7 +273,7 @@
           this.$store.commit(ENTRIES_RESET_EDIT)
           this.back()
         } catch (e) {
-          const message = this.$_.get(e, "response.data.error.msg", "Something went wrong")
+          const message = this.$_.get(e, "response.data.error.msg", this.$t("comp.snackbar.something_went_wrong"))
           // todo for entry exists already, there could be a change in the button label, but maybe the data of that entry should be fetched
           this.error_snackbar(message)
         }

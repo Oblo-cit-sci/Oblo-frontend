@@ -145,7 +145,7 @@
           this.persist_entries()
           this.ok_snackbar("Entries imported")
         } else {
-          this.error_snackbar("Something went wrong")
+          this.error_snackbar(this.$t("comp.snackbar.something_went_wrong"))
         }
       },
       dialog_action(event) {

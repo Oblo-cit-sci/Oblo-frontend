@@ -24,7 +24,7 @@
         }
       }).catch(err => {
         console.log(err)
-        const msg = this.$_.get(err, "response.data.error.msg", "Something went wrong")
+        const msg = this.$_.get(err, "response.data.error.msg", this.$t("comp.snackbar.something_went_wrong"))
         this.error_snackbar(msg)
       })
     },

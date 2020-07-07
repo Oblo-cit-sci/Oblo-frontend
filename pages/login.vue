@@ -74,7 +74,7 @@
         }).catch((err) => {
           // console.log("err", err.response)
           const response = err.response
-          const errorMsg = this.$_.get(err.response, "data.error.msg", "Something went wrong")
+          const errorMsg = this.$_.get(err, "response.data.error.msg", this.$t("comp.snackbar.something_went_wrong"))
           if (this.$_.get(response, "data.error.data.error_type", 0) === 1) {
             this.add_verification_resend_link = true
             this.registered_name = response.data.error.data.registered_name
@@ -90,7 +90,7 @@
           this.add_verification_resend_link = false
           this.errorMsg = null
         }).catch(err => {
-          const msg = this.$_.get(err.response, "data.error.msg", "Something went wrong")
+          const msg = this.$_.get(err, "response.data.error.msg", this.$t("comp.snackbar.something_went_wrong"))
           this.error_snackbar(msg)
         })
       }

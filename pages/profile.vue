@@ -36,7 +36,7 @@
               @update:error="a.error = $event"
               :extra="{clearable:false}"
               mode="edit")
-      v-btn(v-if="password_edit" @click="password_edit=false") {{$t('_global.btn_cancel')}}
+      v-btn(v-if="password_edit" @click="password_edit=false") {{$t('w.cancel')}}
       v-btn(v-if="password_edit" color="success" @click="change_password" :disabled="any_password_invalid") {{$t('profile.btn_save_password')}}
       v-divider.wide_divider
     div(v-if="edit_mode && !$_.isEmpty(domain_specific_aspects)")
@@ -202,7 +202,7 @@
           this.ok_snackbar("Profile updated")
         }).catch((err) => {
           console.log("err", err)
-          this.error_snackbar("Something went wrong")
+          this.error_snackbar(this.$t("comp.snackbar.something_went_wrong"))
         }).finally(() => {
           this.goto_top()
         })
@@ -215,7 +215,7 @@
           this.goto_top()
         }).catch((err) => {
           console.log("err", err)
-          const msg = this.$_.get(err.response, "data.error.msg", "Something went wrong")
+          const msg = this.$_.get(err, "response.data.error.msg", this.$t("comp.snackbar.something_went_wrong"))
           this.error_snackbar(msg)
         })
       },
@@ -239,7 +239,7 @@
               })
             })
             .catch(() => {
-              this.error_snackbar("Something went wrong")
+              this.error_snackbar(this.$t("comp.snackbar.something_went_wrong"))
             }).finally(() => {
             this.profile_pic_upload_loading = false
           })

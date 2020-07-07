@@ -69,7 +69,7 @@
           this.home()
         }).catch(err => {
           console.log(err)
-          this.error_snackbar("Something went wrong")
+          this.error_snackbar(this.$t("comp.snackbar.something_went_wrong"))
         })
       }
     }

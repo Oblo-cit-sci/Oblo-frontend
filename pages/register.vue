@@ -72,7 +72,7 @@
             this.errorMsg = data.error.msg
           }
         }).catch((err) => {
-          this.errorMsg = this.$_.get(err.response, "data.error.msg", this.$t("_global.snack.something_went_wrong"))
+          this.errorMsg = this.$_.get(err, "response.data.error.msg", this.$t("comp.snackbar.something_went_wrong"))
           setTimeout(() => this.errorMsg = null, 12000)
         }).finally(() => {
           this.submit_loading = false
