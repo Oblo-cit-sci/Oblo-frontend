@@ -51,7 +51,7 @@
       v-btn(v-if="!edit_mode" to="/settings" nuxt) {{$t("profile.btn_settings")}}
       v-btn(v-if="!edit_mode" color="info" @click="setEdit()") {{$t("profile.btn_edit_profile")}}
       div(v-else)
-        v-btn(@click="cancelEdit") Cancel
+        v-btn(@click="cancelEdit") {{$t('w.cancel')}}
         v-btn(color="success" @click="doneEdit" :disabled="any_invalid") {{$t("profile.btn_save")}}
       v-btn(v-if="!edit_mode" color="error" to="/basic/delete_account") {{$t("profile.btn_delete")}}
     div(v-if="!edit_mode")

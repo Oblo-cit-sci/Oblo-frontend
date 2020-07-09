@@ -115,7 +115,7 @@ export default {
           component_type: "password",
           extra: {
             rules: [
-              v => v && (v.length >= 8) || this.$t(".asp_password.rule_length")
+              v => v && (v.length >= 8) || this.$t("asp.password.rule_length")
             ]
           }
         },

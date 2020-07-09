@@ -46,7 +46,7 @@
   },
   "login": {
     "h1": "@.capitalize:w.login",
-    "btn_login": "@:.w.login",
+    "btn_login": "@:w.login",
     "btn_forgot": "Forgot password?"
   },
   "profile": {
@@ -206,8 +206,8 @@
       "review": "review"
     },
     "menucontainer": {
-      "tab_main": "Main menu",
-      "tab_domain": "List of entries"
+      "tab_main": "Main",
+      "tab_domain": "Entries"
     },
     "image_asp": {
       "no_images": "No images"
@@ -223,6 +223,10 @@
     },
     "search": {
       "txt_field_label": "@.capitalize:w.search"
+    },
+    "filterlist": {
+      "appliead_filters":"Applied filters",
+      "btn_add_filter": "add filter"
     },
     "actor": {
       "deactivated": "deactivated"
@@ -259,6 +263,8 @@
     "edit": "edit",
     "save": "save",
     "cancel": "cancel",
+    "entrytype": "entrytype",
+    "tag": "tag | tags",
     "_global.asp_location_privacy.labal": "Location privacy",
     "_global.asp_location_privacy.descr": "Specify the settings for the protection of the exact locations of your entries"
   }

@@ -1,30 +1,33 @@
 <template lang="pug">
-    .treeselect
-        div
-            v-btn(icon small @click="$emit('selected', null)")
-                v-icon mdi-close
-        v-list(v-if="has_selection")
-            div.ml-3 Current selection
-            v-list-item(v-for="(node, index) of selection", :key="index")
-                v-list-item-content
-                    v-list-item-title {{levelname(index)}}: {{node.name}}
-                v-list-item-action
-                    v-btn(icon @click="remove(index)")
-                        v-icon mdi-close-circle-outline
-        v-divider.mb-1(v-if="has_both()")
-        Title_Description.ml-3(v-if="has_levels" :title="act_levelname" :description="act_level_description" mode="edit")
-        div(v-if="has_options")
-            SingleSelect.pb-1(v-if="edit_mode_list" :options="act_options" v-on:selection="select($event)" :select_sync="false" :highlight="false")
-            LargeSelectList(v-if="edit_mode_large_list" :options="act_options" v-on:selection="select($event)" :select_sync="false" :highlight="false" :data_source="data_source")
-            SelectGrid(v-if="edit_mode_matrix" :options="act_options" v-on:selection="select($event)" :data_source="data_source")
-            Paginated_Select(v-if="edit_mode_paginated" :options="act_options" :edit_mode="level_edit_mode(act_level + 1)" v-on:selection="select($event)")
-        .ml-3(v-if="last_description")
-            div Description:
-            div {{last_description}}
-        v-btn(v-if="done_available" @click="done" color="success") Done
-        div(v-if="allows_extra")
-            TextShort(v-bind:aspect="extra_value_aspect" :edit="true" v-bind:value.sync="extra_value")
-            v-btn(:disabled="extra_value === ''" @click="done_extra" color="warning") Use {{extra_value_name}}
+  .treeselect
+    div
+      v-btn(icon small @click="$emit('selected', null)")
+        v-icon mdi-close
+    v-list(v-if="has_selection")
+      div.ml-3 Current selection
+      v-list-item(v-for="(node, index) of selection", :key="index")
+        v-list-item-content
+          v-list-item-title {{levelname(index)}}: {{node.name}}
+        v-list-item-action
+          v-btn(icon @click="remove(index)")
+            v-icon mdi-close-circle-outline
+    v-divider.mb-1(v-if="has_both()")
+    Title_Description.ml-3(v-if="has_levels" :title="act_levelname" :description="act_level_description" mode="edit")
+    TextShort(:aspect="{'name':'nooo', 'type':'str', 'attr': {}}" mvalue="{value:'cool'}")
+    div(v-if="has_options")
+      SingleSelect.pb-1(v-if="edit_mode_list" :options="act_options" v-on:selection="select($event)" :select_sync="false" :highlight="false")
+      LargeSelectList(v-if="edit_mode_large_list" :options="act_options" v-on:selection="select($event)" :select_sync="false" :highlight="false" :data_source="data_source")
+      SelectGrid(v-if="edit_mode_matrix" :options="act_options" v-on:selection="select($event)" :data_source="data_source")
+      Paginated_Select(v-if="edit_mode_paginated" :options="act_options" :edit_mode="level_edit_mode(act_level + 1)" v-on:selection="select($event)")
+    div(v-if="last_selection_has_extra")
+      Aspect(v-if="extra_aspect" :aspect="extra_aspect" @update:ext_value="add_extra_value($event)" mode="edit")
+    .ml-3(v-if="last_description")
+      div Description:
+      div {{last_description}}
+    v-btn(v-if="done_available" @click="done" color="success") Done
+    div(v-if="allows_extra")
+      TextShort(v-bind:aspect="extra_value_aspect" :edit="true" v-bind:value.sync="extra_value")
+      v-btn(:disabled="extra_value === ''" @click="done_extra" color="warning") Use {{extra_value_name}}
 </template>
 
 <script>
@@ -41,11 +44,12 @@
   import Title_Description from "../util/Title_Description"
   import LargeSelectList from "~/components/aspect_utils/LargeSelectList"
   import {pack_value} from "~/lib/aspect"
+  import Aspect from "~/components/Aspect"
 
 
   export default {
     name: "TreeleafPicker",
-    components: {LargeSelectList, Title_Description, Paginated_Select, SelectGrid, TextShort, SingleSelect},
+    components: {Aspect, LargeSelectList, Title_Description, Paginated_Select, SelectGrid, TextShort, SingleSelect},
     props: {
       tree: {
         type: Object
@@ -119,11 +123,30 @@
       has_options() {
         return this.act_options.length > 0
       },
+      last_selection_has_extra() {
+        return this.has_selection && this.selection[this.selection.length - 1].extra || false
+      },
+      extra_aspect() {
+        if (this.last_selection_has_extra) {
+          const last_extra = this.selection[this.selection.length - 1].extra
+          if (last_extra.type === "text") {
+            return {
+              name: last_extra.name,
+              description:"cool",
+              type: "str",
+              attr: {
+              }
+            }
+          } else {
+            return null
+          }
+        }
+      },
       act_levelname() {
         return this.levelname(this.selection.length)
       },
       act_level_description() {
-        console.log("act_level_description")
+        // console.log("act_level_description")
         if (typeof this.levels[this.selection.length] === "string") {
           return null
         } else {
@@ -202,6 +225,9 @@
       },
       level_edit_mode(level) {
         return this.$_.get(this.attr, `edit[${level}]`, "list")
+      },
+      add_extra_value(value) {
+        console.log(value)
       }
     }
   }
@@ -209,12 +235,12 @@
 
 <style scoped>
 
-    .treeselect {
-        text-transform: none;
-        background: white;
-    }
+  .treeselect {
+    text-transform: none;
+    background: white;
+  }
 
-    #subheader {
-        background: white;
-    }
+  #subheader {
+    background: white;
+  }
 </style>

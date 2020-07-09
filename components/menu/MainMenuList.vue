@@ -11,12 +11,11 @@
         v-list-item-icon
           v-icon {{item.icon}}
         v-list-item-content
-          v-list-item-title(v-text="item.title")
+          v-list-item-title(v-text="$t(item.t_title)")
     v-divider
     LanguageSelector
     v-list-item
       p(class="package-version") v{{version}}
-
 </template>
 
 <script>
@@ -52,9 +51,6 @@
         }
       ),
       groups() {
-        for (let page of all_pages_n_actions) {
-          page.title = this.$t(page.t_title)
-        }
         const home = all_pages_n_actions[0]
         let other_pages = this.$_.tail(all_pages_n_actions)
         if (!this.connected) {
@@ -74,8 +70,13 @@
         } else {
           //console.log("in DEV")
         }
-        return [{name: "home", items: [home]},
-          {name: "other", items: other_pages}]
+        if (this.$store.getters["app/fixed_domain"]) {
+          return [
+            {name: "other", items: other_pages}]
+        } else {
+          return [{name: "home", items: [home]},
+            {name: "other", items: other_pages}]
+        }
       },
       version() {
         return pkg.version
