@@ -273,6 +273,7 @@
     "update": "update",
     "delete": "delete",
     "username": "Username",
+    "back": "back",
     "view": "view",
     "edit": "edit",
     "save": "save",
