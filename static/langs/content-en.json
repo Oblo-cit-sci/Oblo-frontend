@@ -174,6 +174,10 @@
     "notification_banner": {
       "complete_profile": "Complete your Profile"
     },
+    "multiselect_asp": {
+      "min_rule": "not enough items selected",
+      "max_rule":  "too many items selected"
+    },
     "entry_validation": {
       "h1": "Validation",
       "has_missing": "Missing or incomplete aspects:",
@@ -235,7 +239,8 @@
       "fix_label": "Stay within {domain_title}"
     },
     "search": {
-      "txt_field_label": "@.capitalize:w.search"
+      "txt_field_label": "@.capitalize:w.search",
+      "min_chars_rule": "type 4 characters to trigger search"
     },
     "filterlist": {
       "appliead_filters":"Applied filters",

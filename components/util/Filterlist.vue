@@ -7,7 +7,7 @@
           v-list-item-title {{$t(filter.t_label)}}:&nbsp;{{filter.text}}
           v-btn(icon @click="edit_filter(index)")
             v-icon mdi-filter
-          v-btn(icon @click="remove_filter(index)")
+          v-btn(icon @click="remove_filter(index)" :disabled="not_removable(filter)")
             v-icon mdi-window-close
     v-menu
       template(v-slot:activator="{ on: menu }")
@@ -84,7 +84,11 @@
         // console.log("active filter", this.active_filter)
         this.dialog_open = true
       },
+      not_removable(filter) {
+        return filter.name === "template"
+      },
       set_filter_value(name, value) {
+        console.log(value)
         const new_value = recursive_unpack2(this.$_.cloneDeep(value))
         if (!new_value) {
           return

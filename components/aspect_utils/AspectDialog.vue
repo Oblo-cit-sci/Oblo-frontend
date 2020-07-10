@@ -8,10 +8,11 @@
           :aspect="aspect"
           :mode="mode"
           :ext_value="ext_value"
-          @update:ext_value="update_value($event)")
+          @update:ext_value="update_value($event)"
+          @update:error="error = $event")
       div
         v-btn(v-if="done_button" @click="cancel()") Cancel
-        v-btn(v-if="done_button" @click="done()" color="success") Done
+        v-btn(v-if="done_button" :disabled="error" @click="done()" color="success") Done
 </template>
 
 <script>
@@ -41,7 +42,8 @@
     },
     data() {
       return {
-        int_value: this.ext_value
+        int_value: this.ext_value,
+        error: false
       }
     },
     computed: {

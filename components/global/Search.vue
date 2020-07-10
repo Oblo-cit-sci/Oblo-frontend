@@ -170,15 +170,15 @@
         set: function (val) {
           this.filter_changed = true
           this.$store.commit("search/set_act_config", val)
+          this.filter2maplegend(val)
         }
       },
       searching() {
         return this.get_searching()
-        return is_searching
       },
       search_hint() {
         if (this.keyword && this.keyword.length < this.kw_char_thresh) {
-          return "type 4 characters to trigger search"
+          return this.$t("comp.search.min_chars_rule")
         }
       },
       filtered_entries() {
@@ -215,6 +215,18 @@
         // const prepend = this.entries().length > 0
         debounced_search(this.$api, this.$store, config)
         // TODO would be nice to have the debounced search work with a promise so we do not need the
+      },
+      filter2maplegend(filter_config) {
+        console.log(filter_config)
+        const template_filter_conf = filter_config.filter(fc => fc.name === "template")[0]
+        console.log(template_filter_conf)
+        const maplegend_config = template_filter_conf.value.map(v => ({
+          value: v,
+          name: "template"
+        }))
+        this.$store.commit("map/set_filter_config",maplegend_config)
+        // const map_legend_config = this.$store.getters["map/get_filter_config"]
+        // filter_config.map(fc)
       },
       request_more() {
         // console.log("request more", )

@@ -27,7 +27,7 @@
     computed: {
       available_languages() {
         // todo should come from the server
-        const available_languages = ["en", "de", "es", "fr"]
+        const available_languages = ["en", "es"] //["en", "de", "es", "fr"]
         return available_languages.map(l => ({
           "value": l,
           "text": (this.$t("lang." + l))

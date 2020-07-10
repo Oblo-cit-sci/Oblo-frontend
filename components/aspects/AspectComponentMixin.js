@@ -51,9 +51,6 @@ export default {
     // todo not used atm. also clarify where extra should be, aspect. or aspect.extra
     rules() {
       if (this.$_.get(this.aspect.attr, "extra.rules")) {
-        if (this.hasOwnProperty("hideDetails")) {
-          this.hideDetails = false
-        }
         return this.aspect.attr.extra.rules
       }
     },
