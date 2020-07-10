@@ -59,9 +59,10 @@
         return this.$route.name === "domain"
       },
       list_style() {
+        // console.log(window.innerHeight, this.start_y)
         return {
           'overflow-y': this.on_overflow_page ? 'auto' : 'visible',
-          'max-height': window.innerHeight - this.start_y
+          // 'max-height': window.innerHeight - this.start_y
         }
       },
       results_received() {
@@ -137,7 +138,7 @@
 
   #pwlist-container {
     width: 100%;
-    max-height: 600px;
+    /*max-height: 600px;*/
   }
 
 </style>

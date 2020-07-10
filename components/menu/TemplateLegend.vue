@@ -48,6 +48,7 @@
             new_conf.push(t)
           }
           this.$store.commit("map/set_filter_config", new_conf)
+          this.template2filterlist_config(new_conf)
         }
       }
     },
@@ -77,9 +78,13 @@
           new_conf.push(t)
         }
         this.$store.commit("map/set_filter_config", new_conf)
+        this.template2filterlist_config(new_conf)
       },
       force_close() {
         this.panel_state = false
+      },
+      template2filterlist_config(config) {
+        console.log(config)
       }
     }
   }

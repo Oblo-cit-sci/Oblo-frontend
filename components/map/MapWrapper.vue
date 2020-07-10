@@ -316,9 +316,16 @@
                   coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
                 }
                 // this.act_hoover_uuid = feature.properties.uuid
+                // todo temp solution
+                let popup_html = ""
+                if(features.length <= 5) {
+                  popup_html = features.map(f => "<div>" + f.properties.title + "</div>").join("")
+                } else {
+                  popup_html = `${features.length} entries`
+                }
                 this.act_popup = new this.mapboxgl.Popup()
                   .setLngLat(coordinates)
-                  .setText(features.map(f => f.properties.title).join(","))
+                  .setHTML(popup_html)
                 this.act_popup.addTo(this.map)
                 this.last_zoom = this.map.getZoom()
               }).catch(err => {
@@ -461,8 +468,10 @@
             )
             this.act_hoover_id = null
             this.act_hoover_uuid = null
-            this.act_popup.remove()
-            this.act_popup = null
+            if(this.act_popup) {
+              this.act_popup.remove()
+              this.act_popup = null
+            }
           }
         })
         this.map.on("click", entries_layer_name, (e) => {

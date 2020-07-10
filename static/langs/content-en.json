@@ -271,6 +271,7 @@
     "n_entries": "No entries | {n} entry | {n} entries",
     "description": "description",
     "update": "update",
+    "delete": "delete",
     "username": "Username",
     "view": "view",
     "edit": "edit",
