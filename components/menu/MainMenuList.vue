@@ -6,6 +6,7 @@
         :to="item.to"
         router
         nuxt
+        :disabled="disabled(item)"
         @click="item.action ? action(item.action) : ''"
         exact)
         v-list-item-icon
@@ -26,6 +27,8 @@
   import {mapGetters} from "vuex"
   import LanguageSelector from "~/components/LanguageSelector"
   import NotificationBanner from "~/components/global/NotificationBanner"
+  import DomainMixin from "~/components/DomainMixin"
+  import URLQueryMixin from "~/components/util/URLQueryMixin"
 
   const pkg = require('~/package.json')
 
@@ -38,7 +41,7 @@
 
   export default {
     name: "MainMenuList",
-    mixins: [],
+    mixins: [URLQueryMixin],
     components: {NotificationBanner, LanguageSelector},
     props: {},
     data() {
@@ -70,19 +73,22 @@
         } else {
           //console.log("in DEV")
         }
-        if (this.$store.getters["app/fixed_domain"]) {
-          return [
-            {name: "other", items: other_pages}]
-        } else {
-          return [{name: "home", items: [home]},
-            {name: "other", items: other_pages}]
-        }
+        return [{name: "home", items: [home]},
+          {name: "other", items: other_pages}]
       },
+
       version() {
         return pkg.version
       }
     },
-    methods: {}
+    methods: {
+      disabled(menu_item) {
+        // for now just home eventually disabled
+        return (menu_item.t_title === 'menu.home'
+          && this.$route.name === "domain"
+          && this.$store.getters["app/fixed_domain"] === this.query_param_domain_name)
+      }
+    }
   }
 </script>
 

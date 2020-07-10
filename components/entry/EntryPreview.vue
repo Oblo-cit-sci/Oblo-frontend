@@ -41,7 +41,7 @@
       v-divider(light v-bind:class="{draft_clr: is_draft}")
       v-card-actions
         div
-          v-btn(small text outlined @click="goto(entry.uuid)") {{goto_text}}
+          v-btn(small text outlined @click="goto(entry.uuid)") {{proper_mode_text}}
           v-btn(v-if="show_view" small text outlined @click="goto(entry.uuid, 'view')") {{$t("comp.entrypreview.view")}}
           v-btn(small text outlined :color="act.color || 'green'"
             v-for="act in additional_actions"

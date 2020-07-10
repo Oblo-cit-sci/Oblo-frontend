@@ -202,6 +202,7 @@ export const actions = {
     dispatch(CLEAR_ENTRIES)
     dispatch(USER_LOGOUT)
     commit(SEARCH_CLEAR)
+    commit("app/fixed_domain", null)
   }
 }
 
