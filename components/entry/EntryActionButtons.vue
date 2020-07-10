@@ -2,18 +2,18 @@
   div
     span(v-if="can_edit")
       span(v-if="is_view_mode")
-        v-btn(@click="back()") back
-        v-btn(color="info" @click="to_proper_mode") {{proper_mode}}
+        v-btn(@click="back()") {{$t("w.back")}}
+        v-btn(color="info" @click="to_proper_mode") {{proper_mode_text}}
       span(v-else-if="can_edit")
-        v-btn(v-if="!is_view_mode" @click="cancel") {{cancel_word}}
-        v-btn(v-if="is_draft" color="success" @click="save") {{save_word}}
-        v-btn(v-if="!is_draft" color="error" @click="show_delete") Delete
+        v-btn(v-if="!is_view_mode" @click="cancel") {{$t("w.cancel")}}
+        v-btn(v-if="is_draft" color="success" @click="save") {{save_text}}
+        v-btn(v-if="!is_draft" color="error" @click="show_delete") {{$t("w.delete")}}
         v-btn(
           v-if="show_submit"
           color="success"
           @click="submit"
           :disabled="disable_submit"
-          :loading="sending") {{submit_word}}
+          :loading="sending") {{submit_text}}
         v-btn(
           v-if="is_review_mode"
           color="success"
@@ -115,24 +115,21 @@
       can_download() {
         return this.template.rules.download
       },
-      cancel_word() {
-        return "cancel"
-      },
-      save_word() {
+      save_text() {
         if (this.in_context) {
-          return "save and back"
+          return this.$t("comp.entry_action_buttons.btn_save.save_n_back")
         } else if (this.private_local) {
-          return "save"
+          return this.$t("comp.entry_action_buttons.btn_save.save")
         } else if (this.is_draft) {
-          return "save draft"
+          return this.$t("comp.entry_action_buttons.btn_save.save_draft")
         } else {
-          console.log("wanring EntryAction.save_word should not be called")
-          return "save"
+          console.log("warning EntryAction.save_text should not be called")
+          return  this.$t("comp.entry_action_buttons.btn_save.save")
         }
       },
-      submit_word() {
+      submit_text() {
         if (this.is_published) {
-          return 'update'
+          return this.$t("w.update")
         } else if (this.is_draft) {
           return "submit"
         } else if (this.entry.status === REQUIRES_REVIEW) {

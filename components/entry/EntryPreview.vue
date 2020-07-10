@@ -135,12 +135,6 @@
       action_loading() {
         return this.additional_action_loading
       },
-      goto_text() {
-        if (this.outdated)
-          return this.$t("comp.entrypreview.update")
-        else
-          return this.$t("comp.entrypreview." + this.proper_mode)
-      },
       show_image() {
         return this.entry.image // ![undefined, null, ""].includes(this.entry.image)
       },

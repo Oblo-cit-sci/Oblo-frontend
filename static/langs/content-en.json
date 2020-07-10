@@ -171,6 +171,9 @@
     }
   },
   "comp": {
+    "notification_banner": {
+      "complete_profile": "Complete your Profile"
+    },
     "entry_validation": {
       "h1": "Validation",
       "has_missing": "Missing or incomplete aspects:",
@@ -181,6 +184,16 @@
         "list_not_enough": "{aspect_label} requires more {item_name}",
         "composite_incomplete": "  is not complete: missing components: {invalid_components_msgs}",
         "listitem_incomplete": "{aspect_label} has at least one incomplete item: {invalid_item_msgs}"
+      }
+    },
+    "entry_action_buttons": {
+      "btn_save" : {
+        "save": "@:w.save",
+        "save_n_back": "@:w.save and back",
+        "save_draft": "save draft"
+      },
+      "btn_submit": {
+
       }
     },
     "location_asp": {

@@ -73,9 +73,7 @@
             setTimeout(() => this.errorMsg = null, 5000)
           }
         }).catch((err) => {
-          console.log("err", err)
-          const errorMsg = this.$_.get(err, "response.data.error.msg", this.$t("comp.snackbar.something_went_wrong"))
-          console.log(errorMsg)
+          this.errorMsg = this.$_.get(err, "response.data.error.msg", this.$t("comp.snackbar.something_went_wrong"))
           if (this.$_.get(err, "response.data.error.data.error_type", 0) === 1) {
             this.add_verification_resend_link = true
             this.registered_name = this.$_.get(err, "response.data.error.data.registered_name")
