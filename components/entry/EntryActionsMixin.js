@@ -16,6 +16,12 @@ export default {
         return VIEW
       }
     },
+    proper_mode_text() {
+      if (this.outdated)
+        return this.$t("comp.entrypreview.update")
+      else
+        return this.$t("comp.entrypreview." + this.proper_mode)
+    },
     can_edit() {
       const actor = this.$store.getters.user
       if (actor.global_role === ADMIN) {

@@ -16,7 +16,7 @@ export default {
   },
   computed: {
     t_global_role() {
-      return this.$t("_global.role."+this.global_role)
+      return this.$t("comp.global_role."+this.global_role)
     }
   },
   methods: {}

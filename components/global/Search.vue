@@ -4,7 +4,7 @@
       v-col(cols="12")
         v-text-field(
           v-model="keyword"
-          :label="$t('comp_search.txt_field_search.label')"
+          :label="$t('comp.search.txt_field_label')"
           single-line
           :hint="search_hint"
           append-outer-icon="mdi-magnify"
@@ -17,7 +17,7 @@
         Filterlist(
           :filter_options="filterlist_options"
           v-model="act_config"
-          :search_button="filter_search_button"
+          :filter_changed="filter_changed"
           @search="getEntries")
     v-row(v-if="prepend_search")
       v-col(offset="5" cols=2)
@@ -181,11 +181,6 @@
           return "type 4 characters to trigger search"
         }
       },
-      filter_search_button() {
-        return {
-          color: this.filter_changed ? "success" : null
-        }
-      },
       filtered_entries() {
         let result_entries = this.entries() // must be a call
         // todo this should just check if QP_D is set and make the filter manual
@@ -203,8 +198,7 @@
         return result_entries
       },
       filterlist_options() {
-        const filter = this.include_filters
-        return this.$_.concat(filter)
+        return this.include_filters
       }
     },
     methods: {

@@ -1,8 +1,8 @@
 <template lang="pug">
   v-banner(v-if="show_profile_complete_banner" sticky single-line :style="{'z-index':5}" color="info" height="60")
-    div Complete your profile
-      v-btn(icon nuxt to="/profile?edit=true")
-        v-icon mdi-arrow-right
+    nuxt-link(:style="{'color':'white'}" to="/profile?edit=true") {{$t("comp.notification_banner.complete_profile")}}
+    v-btn(icon nuxt to="/profile?edit=true" color="white" )
+      v-icon mdi-arrow-right
 </template>
 
 <script>

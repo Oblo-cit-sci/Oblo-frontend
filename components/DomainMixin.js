@@ -21,6 +21,9 @@ export default {
       // todo maybe first a prop...
       return this.$_.get(this.set_domain_data, "name") || this.query_param_domain_name
     },
+    domain_title() {
+      return this.domain_data.title
+    },
     domain_data() {
       return this.set_domain_data || this.all_domains(this.domain_name)
     },

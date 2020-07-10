@@ -11,18 +11,25 @@
           v-text-field(placeholder="cool cool cool")
 
     v-menu(:close-on-content-click="false"
-      :nudge-width="200"
-      offset-y)
+        :nudge-width="200"
+        offset-y)
       template(v-slot:activator="{ on, attrs }")
         v-btn(v-on="on" elevation="2" ) types
           v-icon mdi-chevron-down
       v-card
         v-card-title hi
 
-    SelectList(:aspect="select_asp_1" :mvalue="val")
-    SelectList(:aspect="select_asp_2" :mvalue="val2")
-    SelectSelect(:aspect="select_asp_1" :mvalue="val")
-    SelectSelect(:aspect="select_asp_2" :mvalue="val2")
+    v-text-field(
+      prepend-icon="mdi-file-tree"
+      @click:prepend="test"
+      hide-details
+      readonly
+      solo
+      clearable
+      flat
+      value="cool > na > nono" )
+    div
+      v-skeleton-loader(type="image" width="300" height="300")
 </template>
 
 <script>
@@ -42,27 +49,24 @@
 
   import pkg from "~/package"
   import GeocodingMixin from "~/components/map/GeocodingMixin"
-  import SelectList from "~/components/aspects/selects/SelectList"
-  import SelectSelect from "~/components/aspects/selects/SelectSelect"
 
   export default {
     name: "Tests",
     mixins: [TriggerSnackbarMixin, GeocodingMixin],
-    components: {SelectSelect, SelectList, Aspect, OptionsAspect, AspectDialog},
+    components: {Aspect, OptionsAspect, AspectDialog},
     async created() {
-      const location_ = {"lon": 24.550781249998096, "lat": 47.405785290060095}
-      const data = await this.rev_geocode(location_)
-      console.log(data)
-      const loc_search = await this.geocode("Parva")
-      console.log(loc_search)
+      const location_ = {"lon":24.550781249998096,"lat":47.405785290060095}
+      // const data = await this.rev_geocode(location_)
+      // console.log(data)
+      // const loc_search = await this.geocode("Parva")
+      // console.log(loc_search)
     },
     data() {
       return {
         chip_data: {
-          color: "info"
+          color:"info"
         },
         val: {value: null},
-        val2: {value: null},
         o_a: {
           name: "OA",
           type: "options",
@@ -91,20 +95,7 @@
             {value: "licci", text: "LICCI", icon: "images/domains/licci/icon.png"},
             {value: "conecte", text: "Conecte", icon: "images/domains/conecte/icon.png"},
           ]
-        },
-        select_asp_1: {
-          name: "t",
-          type: "select",
-          attr: {},
-          items: ["a", "b"]
-        },
-        select_asp_2: {
-          name: "t",
-          type: "multiselect",
-          attr: {
-          },
-          items: ["a", "b"]
-        },
+        }
       }
     },
     computed: {
@@ -136,18 +127,18 @@
 
 <style scoped>
 
-  .bg {
-    background: #ff0000;
-  }
+    .bg {
+      background: #ff0000;
+    }
 
-  .bg2 {
-    background: #ffff00;
-  }
+    .bg2 {
+      background: #ffff00;
+    }
 
-  .col_btn {
-    max-width: 100%;
-    margin: 6px auto;
-  }
+    .col_btn {
+      max-width: 100%;
+      margin: 6px auto;
+    }
 
   .v-expansion-panel--active > .v-expansion-panel-header {
     min-height: 36px;

@@ -6,7 +6,7 @@
           .header_image_wrapper(v-if="cover_image_index===index")
             div.ml-9.font-weight-light cover image
       v-col(v-if="readOnly && !has_images")
-        div {{$t('comp_image_aspect.no_images')}}
+        div {{$t('comp.image_asp.no_images')}}
     LoadFileButton(v-if="is_edit_mode"
       label="Add image"
       filetype="image"

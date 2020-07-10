@@ -2,6 +2,7 @@
   v-select.mt-8.my-2.px-3(
     dense flat
     :items="available_languages"
+    prepend-icon="mdi-translate"
     v-model="language"
     hide-details
     :label="label")
@@ -42,7 +43,7 @@
         }
       },
       label() {
-        return this.$t("_global.language.label")
+        return this.$t("comp.language_select.label")
       }
     },
     watch: {

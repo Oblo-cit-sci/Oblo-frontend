@@ -2,7 +2,7 @@
   v-flex#top(xs12 sm10 md10)
     v-row
       v-col
-        div {{$t("_global.asp_username.label")}}: {{user_data.registered_name}}
+        div {{$t("asp.username.label")}}: {{user_data.registered_name}}
         v-chip(outlined disabled small) {{user_data.global_role}}
       v-col
         v-row
@@ -25,7 +25,7 @@
           @update:error="$set(aspect, 'error', $event)"
           :mode="aspect_mode")
     div(v-if="edit_mode")
-      h3 {{$t('_global.asp_password.label')}}
+      h3 {{$t('asp.password.label')}}
       v-btn(color="warning" v-if="!password_edit" @click="password_edit=true") {{$t('profile.btn_change_password')}}
       div(v-if="password_edit")
         v-row(v-for="a of password_aspects" :key="a.name")
@@ -36,7 +36,7 @@
               @update:error="a.error = $event"
               :extra="{clearable:false}"
               mode="edit")
-      v-btn(v-if="password_edit" @click="password_edit=false") {{$t('_global.btn_cancel')}}
+      v-btn(v-if="password_edit" @click="password_edit=false") {{$t('w.cancel')}}
       v-btn(v-if="password_edit" color="success" @click="change_password" :disabled="any_password_invalid") {{$t('profile.btn_save_password')}}
       v-divider.wide_divider
     div(v-if="edit_mode && !$_.isEmpty(domain_specific_aspects)")
@@ -51,7 +51,7 @@
       v-btn(v-if="!edit_mode" to="/settings" nuxt) {{$t("profile.btn_settings")}}
       v-btn(v-if="!edit_mode" color="info" @click="setEdit()") {{$t("profile.btn_edit_profile")}}
       div(v-else)
-        v-btn(@click="cancelEdit") Cancel
+        v-btn(@click="cancelEdit") {{$t('w.cancel')}}
         v-btn(color="success" @click="doneEdit" :disabled="any_invalid") {{$t("profile.btn_save")}}
       v-btn(v-if="!edit_mode" color="error" to="/basic/delete_account") {{$t("profile.btn_delete")}}
     div(v-if="!edit_mode")
@@ -123,8 +123,8 @@
           //   value: null
           // },
           this.asp_email(),
-          this.asp_privacy_aspect("default_privacy", "default"),
-          this.asp_license_aspect("default_license", ["cc_licenses"], null, "default")
+          this.asp_privacy("default_privacy", "default"),
+          this.asp_license("default_license", ["cc_licenses"], null, "default")
         ],
         password_aspects: {
           actual_password: this.asp_password("actual_password", "current"),
@@ -202,7 +202,7 @@
           this.ok_snackbar("Profile updated")
         }).catch((err) => {
           console.log("err", err)
-          this.error_snackbar("Something went wrong")
+          this.error_snackbar(this.$t("comp.snackbar.something_went_wrong"))
         }).finally(() => {
           this.goto_top()
         })
@@ -215,7 +215,7 @@
           this.goto_top()
         }).catch((err) => {
           console.log("err", err)
-          const msg = this.$_.get(err.response, "data.error.msg", "Something went wrong")
+          const msg = this.$_.get(err, "response.data.error.msg", this.$t("comp.snackbar.something_went_wrong"))
           this.error_snackbar(msg)
         })
       },
@@ -239,7 +239,7 @@
               })
             })
             .catch(() => {
-              this.error_snackbar("Something went wrong")
+              this.error_snackbar(this.$t("comp.snackbar.something_went_wrong"))
             }).finally(() => {
             this.profile_pic_upload_loading = false
           })

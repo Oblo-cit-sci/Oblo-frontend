@@ -1,10 +1,10 @@
 <template lang="pug">
   div
-    h3 Validation
+    h3 {{$t("comp.entry_validation.h1")}}
     div(v-if="has_missing")
-      b Missing or incomplete aspects:
-      div Incomplete entries cannot be submitted. Please, add the missing information or safe your entry as a draft.
-    div(v-else) All values in this entry are ok
+      b {{$t("comp.entry_validation.has_missing")}}
+      div {{$t("comp.entry_validation.has_missing_t")}}
+    div(v-else) {{$t("comp.entry_validation.ok")}}
     .required_aspect.red--text(v-for="(aspect, i) in missing" :key="i") {{aspect}}
 </template>
 
@@ -29,7 +29,7 @@
   const LISTITEM_INCOMPLETE = 4
 
   export default {
-    name: "MissingAspectsNotice",
+    name: "EntryValidation",
     props: {
       value: Boolean, // we use that in the parent to have as v-model
       entry: Object,
@@ -76,13 +76,22 @@
             let add_text = ""
             const aspect_label = label(aspect)
             if (valid === MISSING) {
-              add_text = aspect_label + " missing"
+              add_text = this.$t("comp.entry_validation.msgs.missing", {aspect_label})
             } else if (valid === LIST_NOT_ENOUGH) {
-              add_text = aspect_label + " requires more " + item_count_name(aspect, a_value.length) + " (" + a_value.length + "/" + aspect.attr.min + ")"
+              add_text = this.$t("comp.entry_validation.msgs.list_not_enough", {
+                aspect_label,
+                item_name: item_count_name(aspect, a_value.length)
+              }) + " (" + a_value.length + "/" + aspect.attr.min + ")"
             } else if (valid === COMPOSITE_INCOMPLETE) {
-              add_text = aspect_label + " is not complete: missing components: " + invalid_message.join(", ")
+              add_text = this.$t("comp.entry_validation.msgs.composite_incomplete", {
+                aspect_label,
+                invalid_components_msgs: invalid_message.join(", ")
+              })
             } else if (valid === LISTITEM_INCOMPLETE) {
-              add_text = aspect_label + " has at least one incomplete item: " + invalid_message.join(", ")
+              add_text = this.$t("comp.entry_validation.msgs.listitem_incomplete", {
+                aspect_label,
+                invalid_item_msgs: invalid_message.join(", ")
+              })
             }
             if (add_text) {
               if (this.has_pages) {

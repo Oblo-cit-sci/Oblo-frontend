@@ -11,7 +11,7 @@
         @update:error="a.error = $event")
     v-btn(@click='login' color='success' autofocus :disabled="any_invalid" :loading="login_loading") {{$t('login.btn_login')}}
     div.mt-3
-      nuxt-link(to="init_password_reset") {{$t('login.btn_forgot')}}
+      nuxt-link(to="basic/init_password_reset") {{$t('login.btn_forgot')}}
     div.mt-2(v-if="add_verification_resend_link")
       v-btn(@click="request_verification_mail" color="success") Resend verification email
     v-alert(:value='errorMsg != null' type='error' prominent transition="scroll-y-reverse-transition") {{errorMsg}}
@@ -68,16 +68,15 @@
             this.home()
           } else {
             // todo this shouldnt happen...
-            const errorMsg = this.$_.get(err.response, "data.error.msg", "Not a user")
+            console.log(err)
+            const errorMsg = this.$_.get(err, "response.data.error.msg", "Not a user")
             setTimeout(() => this.errorMsg = null, 5000)
           }
         }).catch((err) => {
-          // console.log("err", err.response)
-          const response = err.response
-          const errorMsg = this.$_.get(err.response, "data.error.msg", "Something went wrong")
-          if (this.$_.get(response, "data.error.data.error_type", 0) === 1) {
+          this.errorMsg = this.$_.get(err, "response.data.error.msg", this.$t("comp.snackbar.something_went_wrong"))
+          if (this.$_.get(err, "response.data.error.data.error_type", 0) === 1) {
             this.add_verification_resend_link = true
-            this.registered_name = response.data.error.data.registered_name
+            this.registered_name = this.$_.get(err, "response.data.error.data.registered_name")
           }
           setTimeout(() => this.errorMsg = null, 5000)
         }).finally(() => {
@@ -90,7 +89,7 @@
           this.add_verification_resend_link = false
           this.errorMsg = null
         }).catch(err => {
-          const msg = this.$_.get(err.response, "data.error.msg", "Something went wrong")
+          const msg = this.$_.get(err, "response.data.error.msg", this.$t("comp.snackbar.something_went_wrong"))
           this.error_snackbar(msg)
         })
       }

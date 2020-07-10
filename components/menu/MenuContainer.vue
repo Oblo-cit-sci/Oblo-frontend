@@ -12,8 +12,8 @@
       div(v-if="over" :style="{'height':'60px'}")
       div(v-if="!menu_mode_fixed")
         v-tabs(v-model="menu_state" grow active-class="active_tab")
-          v-tab {{$t("_comp.menucontainer.tab_main")}}
-          v-tab {{$t("_comp.menucontainer.tab_domain")}}
+          v-tab {{$t("comp.menucontainer.tab_main")}}
+          v-tab {{$t("comp.menucontainer.tab_domain")}}
         NotificationBanner
         v-tabs-items(v-model="menu_state")
           v-tab-item

@@ -20,7 +20,7 @@
               auto-select-first
               v-model="place_select__"
               clearable)
-            div(v-if="value") {{$t("comp_location.public_loc.base")}}:&nbsp;
+            div(v-if="value") {{$t("comp.location_asp.public_loc.base")}}:&nbsp;
               span {{public_location_text}}
               v-chip-group(v-if="public_location_selector_on" active-class="primary--text" mandatory)
                 v-chip(v-for="(place_part, index) in precision_options" :key="index"
@@ -115,12 +115,12 @@
         if (this.value) {
           if (this.value.location_precision === LOCATION_PRECISION_POINT) {
             if (this.privacy_setting === settings_loc_privacy_random)
-              return this.$t("comp_location.public_loc.option_rnd")
+              return this.$t("comp.location_asp.public_loc.options.rnd")
             else if (this.privacy_setting === settings_loc_privacy_exact) {
-              return this.$t("comp_location.public_loc.option_exact")
+              return this.$t("comp.location_asp.public_loc.options.exact")
             }
           } else {
-            return this.$t("comp_location.public_loc.option_region")
+            return this.$t("comp.location_asp.public_loc.options.region")
           }
         } else {
           return ""

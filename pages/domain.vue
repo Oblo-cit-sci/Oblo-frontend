@@ -60,6 +60,7 @@
     },
     computed: {
       filters() {
+        // todo I think depracated since it comes in the domainmenu
         const template_filter_options = Object.assign({}, entrytype_filter_options)
         template_filter_options.aspect.items = object_list2options(
           this.$store.getters[TEMPLATES_OF_DOMAIN](this.domain_name), "title", "slug", true)

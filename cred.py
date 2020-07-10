@@ -1,5 +1,0 @@
-host = "ftp.licci.eu"
-user = "acer@licci.eu"
-pwd = "j(7nd_aa85jUa"
-ftp_dir = "/files/upload/files/"
-local_temp_dir = "helpers/ps/temp/"

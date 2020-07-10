@@ -3,148 +3,282 @@
     "home": "Home",
     "profile": "Profile",
     "map": "Map",
-    "login": "Login",
+    "login": "@.capitalize:w.login",
     "logout": "Logout",
-    "register": "Register",
+    "register": "@.capitalize:w.register",
     "admin": "Admin",
     "tests": "Test"
   },
   "index": {
     "p1": "With an account on {server_name} you'll be able to create entries and join groups.",
-    "p2": "You can browse through public entries in these domains.",
     "about_a": "About The Project",
     "privacy_a": "Privacy Policy",
-    "btn_login": "Login",
-    "btn_register": "Register"
+    "btn_login": "@:w.login",
+    "btn_register": "@:w.register"
   },
   "about": {
     "h1": "About OpenTEK",
-    "1p1": "This is the first public release of the OPENTEK app.  OPENTEK is a free and open source platform to document and share Traditional Ecological Knowledge (TEK) related to biodiversity and climate change impacts. OPENTEK is designed as a progressive web-app (PWA) allowing users both to visualize existing geolocalized data and to collect new data. OPENTEK will be linked to two innovative citizen science projects documenting Indigenous and local knowledge around the world: CONECT-e (www.conecte.es) and LICCI (www.licci.eu). CONECT-e gathers and shares TEK related to plants and landraces, including traditional uses, management and local names. To address the local nature of TEK, the information entered in CONECT-e is geo-localized and can be visualized through maps. The information is also reviewed by a group of editors (i.e., scientists and TEK experts) and protected from misappropriation through a Creative Commons copyleft license[1]. LICCI gathers and shares information on local indicators of climate change impacts (e.g., changes in rainfall patterns or impacts of weather changes on wild animal abundance) under a structured format that will allow cross-site comparisons.",
-    "1p2": "This application has received funding from the European Union’s Horizon 2020 research and innovation programme. The JRC, or as the case may be the European Commission, shall not be held liable for any direct or indirect, incidental, consequential or other damages, including but not limited to the loss of data, loss of profits, or any other financial loss arising from the use of this application, or inability to use it, even if the JRC is notified of the possibility of such damages.",
-    "h2": "Privacy Policy",
-    "h3": "Mapbox API",
-    "3p1": "We are making use of the mapbox API for map display",
-    "3p2": "APIs and Mobile SDKs: We automatically collect certain technical information whenever requests are made to our APIs, including (a) IP address, (b) device and browser information, (c) operating system, (d) the content of the request, (e) the date and time of the request, and (f) limited location and usage data. We delete IP addresses after 30 days. In addition, when a mobile application uses our SDKs to access our APIs, it may send us certain limited location and usage data along with an ephemeral ID. We delete this ephemeral ID within 24 hours and do not associate it or the unprocessed mobile location data with any personally identifying information, including names, permanent IDs, email addresses, IP addresses, or phone numbers. We also collect randomly-generated IDs for the limited purpose of analyzing the use of our APIs, including the number of active users. We will delete the randomly generated IDs and the content of requests made to our APIs after 36 months.",
-    "3p3": "see more details here:",
+    "h2": "Goals and background",
+    "2p1": "OpenTEK is a free and open source platform to document and share Traditional Ecological Knowledge (TEK). Specifically, OpenTEK focuses on local indicators of climate change impacts and TEK related to (agro)biodiversity (e.g., cultivated and wild plant use and management).",
+    "2p2": "The platform is designed as a progressive web-app (PWA) allowing users both to visualize existing geolocalized data and to collect new data from any device and while in the field.",
+    "2p3": "OPENTEK is linked to two citizen science projects documenting Indigenous and local knowledge around the world: LICCI (www.licci.eu) and CONECT-e (www.conecte.es).",
+    "2p4": "LICCI wants to bring insights from local knowledge to climate research and policy. To do that, it documents and classifies observations of local indicators of climate change impacts (e.g., changes in rainfall patterns or impacts of weather changes on wild animal abundance).",
+    "2p5": "CONECT-e aims to revitalize and protect TEK related to plants and landraces in Spain. To do that it documents (and protects with Creative Commons licenses) plant's traditional uses, management and local names (e.g., medicinal plant uses or landrace names and cultivation practices).",
+    "h3": "Funding",
+    "3p1": "This application is funded primarily by the LICCI and ICCION projects of the European Research Council (Grant Agreement Nr. xxx).",
+    "3p2": "This application has also received funding from the European Union’s Horizon 2020 research and innovation programme. The JRC, or as the case may be the European Commission, shall not be held liable for any direct or indirect, incidental, consequential or other damages, including but not limited to the loss of data, loss of profits, or any other financial loss arising from the use of this application, or inability to use it, even if the JRC is notified of the possibility of such damages.",
+    "h4": "Terms of use",
+    "4p1": "Registeration in OpenTEK implies the express free informed consent of the user to participate and transfer their knowledge to the platform under the following conditions:",
+    "4p2": "- All information in the platfrom can be used for reserach purposes after anonymization.",
+    "4p3": "- Any user has the right to withdraw from the research and delete their profile and entries from the platform at any time they wish, without this entailing any negative consequences",
+    "4p4": "- The personal profile data provided will be treated confidentially and only used for reserch purposes, whithout it being public.",
+    "4p5": "- The TEK related data provided will be shared under the privacy and license options the user selects",
+    "h5": "Privacy Policy",
+    "h6": "OpenTEK platform",
+    "6p1": "OpenTEK only collects data the user is freely and willingly providing. We do not use cookies nor do we include any 3rd party cookies. We only store the data that you directly provide in your public user profile or in the entries you create or contribute to.",
+    "h7": "Mapbox API",
+    "7p1": "We are making use of the mapbox API for map display. APIs and Mobile SDKs: We automatically collect certain technical information whenever requests are made to our APIs, including (a) IP address, (b) device and browser information, (c) operating system, (d) the content of the request, (e) the date and time of the request, and (f) limited location and usage data. We delete IP addresses after 30 days. In addition, when a mobile application uses our SDKs to access our APIs, it may send us certain limited location and usage data along with an ephemeral ID. We delete this ephemeral ID within 24 hours and do not associate it or the unprocessed mobile location data with any personally identifying information, including names, permanent IDs, email addresses, IP addresses, or phone numbers. We also collect randomly-generated IDs for the limited purpose of analyzing the use of our APIs, including the number of active users. We will delete the randomly generated IDs and the content of requests made to our APIs after 36 months. See more details here:",
     "mb_a": "Mapbox Privacy policy"
   },
   "register": {
     "h1": "Registration",
-    "asp_repeat_password": "Repeat password",
-    "btn_register": "Register"
+    "btn_register": "@:w.register"
   },
   "login": {
-    "h1": "Login",
-    "asp_user_query": "Username or email",
-    "asp_password": "Password",
-    "btn_login": "Login",
+    "h1": "@.capitalize:w.login",
+    "btn_login": "@:w.login",
     "btn_forgot": "Forgot password?"
   },
   "profile": {
     "h1": "General information",
     "btn_change_password": "Change password",
-    "username": "@:_global.w.username",
     "btn_settings": "Settings",
     "btn_edit_profile": "Edit profile",
-    "btn_cancel": "Cancel",
-    "btn_save": "Save",
+    "btn_cancel": "@:w.cancel",
+    "btn_save": "@:w.save",
     "btn_save_password": "Save password",
     "btn_delete": "Delete account",
-    "h2": "Your @:_global.w.entries",
+    "h2": "Your @:w.entries",
     "h3": "Domain specific questions"
   },
   "actor": {
     "h1": "@:profile.h1",
-    "h2": "@.capitalize:_global.w.entries",
-    "deactivated": "This is user is no longer active",
+    "h2": "@.capitalize:w.entries",
+    "deactivated": "This user is no longer active",
     "admin.asp_global_role": "Global role",
     "admin.asp_editor_for_domain": "Editor for domain",
-    "admin.btn_update": "@:_global.w.update"
+    "admin.btn_update": "@:w.update"
   },
   "init_password_reset": {
     "h1": "Password reset",
-    "asp_query_descr": "Enter your email or username",
     "btn_send": "Send email"
   },
   "settings": {
     "h1": "Settings",
-    "asp_location_privacy": "Location privacy",
-    "asp_location_privacy_descr": "Specify the settings for the protection of the exact locations of your entries",
-    "btn_update": "@:_global.w.update"
+    "asp": {
+      "location_privacy": {
+        "label": "Location privacy",
+        "descr": "Specify the settings for the protection of the exact locations of your entries",
+        "options": {
+          "exact": "Exact location",
+          "random": "Randomly moved"
+        }
+      }
+    },
+    "btn_update": "@:w.update"
   },
-  ".asp_public_name.label": "Public name",
-  ".asp_public_name.rule_length": "Your public name must have between 2 and 30 characters",
-  ".asp_user_description.label": "@.capitalize:_global.w.description",
-  ".asp_user_description.descr": "Write something about yourself and about your background",
-  ".asp_username.label": "@:_global.w.username",
-  "_comp": {
-    "menucontainer": {
-      "tab_main": "Main",
-      "tab_domain": "Domain"
+  "asp": {
+    "username": {
+      "label": "@:w.username",
+      "rule_length": "@:w.username must have at 4 characters",
+      "rule_pattern": "Only lowercase characters are allowed"
+    },
+    "user_query": {
+      "label": "Username or email",
+      "rule": "Input doesn't seem to be a valid username nor email address"
+    },
+    "password": {
+      "label": "Password",
+      "rule_length": "Password must have at least 8 characters",
+      "rule_repeat_match": "Passwords do not match",
+      "alt_label": {
+        "repeat": "Repeat password",
+        "current": "Current password",
+        "new": "New password",
+        "repeat_new": "Repeat new password"
+      }
+    },
+    "email": {
+      "label": "Email",
+      "rule": "Email not valid"
+    },
+    "public_name": {
+      "label": "Public name",
+      "rule_length": "Your public name must have between 2 and 30 characters"
+    },
+    "user_description": {
+      "label": "@.capitalize:w.description",
+      "descr": "Write something about yourself and about your background"
+    },
+    "privacy": {
+      "label": "Privacy",
+      "descr": "Should this entry be publicly visible?",
+      "alt_label": {
+        "default": "Default privacy"
+      },
+      "alt_descr": {
+        "default": "Choose a default privacy for all your entries"
+      },
+      "options": {
+        "public": {
+          "text": "Public",
+          "descr": "Everyone can see this entry.",
+          "alt_descr": {
+            "default": "Public entries are visible to everyone"
+          }
+        },
+        "private": {
+          "text": "Private",
+          "descr": "Only you or users you shared the entry with can see it.",
+          "alt_descr": {
+            "default": "Private entries are only visible to those you share them with"
+          }
+        }
+      }
+    },
+    "license": {
+      "label": "License",
+      "descr": "Choose a license for this entry",
+      "alt_label": {
+        "default": "Default license"
+      },
+      "alt_descr": {
+        "default": "Choose a default license for your entries"
+      }
+    },
+    "entry_roles": {
+      "label": "Collaborators and entry access",
+      "roles": {
+        "collaborator": {
+          "label": "Collaborator",
+          "descr": "Collaborators can edit this entry as you can (except for changing the privacy, license and roles)."
+        },
+        "shared": {
+          "label": "Visible to",
+          "descr": "The following users can read your entry even if it's private"
+        }
+      }
     }
   },
-  "comp_entries_pw_list.num_entries": "@:_global.wn.entries",
-  "comp_entrypreview.draft": "Draft",
-  "_global.w.entries": "entries",
-  "_global.wn.entries": "No entries | {n} entry | {n} entries",
-  "_global.w.description": "description",
-  "_global.w.update": "update",
-  "_global.w.search": "Search",
-  "_global.w.username": "Username",
-  "_global.w.view": "view",
-  "_global.w.edit": "edit",
-  "_global.role.admin": "Admin",
-  "_global.role.editor": "Editor",
-  "_global.role.user": "User",
-  "_global.role.visitor": "Visitor",
-  "_global.btn_cancel": "Cancel",
-  "_global.snack.something_went_wrong": "Something went wrong",
-  "_global.asp_username.label": "@:_global.w.username",
-  "_global.asp_username.rule_length": "@:_global.w.username must have at 4 characters",
-  "_global.asp_username.rule_pattern": "Only lowercase characters are allowed",
-  "_global.asp_user_query.rule": "Input doesnt seem to be a valid username nor email address",
-  "_global.asp_email.label": "Email",
-  "_global.asp_email.rule.valid": "Email not valid",
-  "_global.asp_password.label": "Password",
-  "_global.asp_password.alt_label.current": "Current Password",
-  "_global.asp_password.alt_label.new": "New Password",
-  "_global.asp_password.alt_label.repeat_new": "Repeat new password",
-  "_global.asp_password.rule_length": "Password must have at least 8 characters",
-  "_global.asp_password.alt_label.repeat": "Repeat password",
-  "_global.asp_password_repeat.rule_match": "Passwords do not match",
-  "_global.asp_privacy.label": "Privacy",
-  "_global.asp_privacy.alt_label.default": "Default privacy",
-  "_global.asp_privacy.alt_descr.default": "Choose a default privacy for all your entries",
-  "_global.asp_privacy.item_public.text": "Public",
-  "_global.asp_privacy.item_public.descr": "Public entries are visible to everyone",
-  "_global.asp_privacy.item_private.text": "Private",
-  "_global.asp_privacy.item_private.descr": "Private entries are only visible to those you share it with",
-  "_global.asp_license.label": "License",
-  "_global.asp_license.alt_label.default": "Default license",
-  "_global.asp_license.alt_descr.default": "Choose a default license for your entries",
-  "_global.asp_license.descr": "Choose a license for this entry",
-  "_global.language.label": "Language",
-  "_global.asp_location_privacy.labal": "Location privacy",
-  "_global.asp_location_privacy.descr": "Specify the settings for the protection of the exact locations of your entries",
-  "._aspect_select.descr": "@.capitalize:_global.w.description",
-  "comp_e_pw.created": "created",
-  "comp_e_pw.outdated": "Created from an outdated version. Some values might change. Download the entry before updating is recommended",
-  "comp_e_pw.view": "@:_global.w.view",
-  "comp_e_pw.edit": "@:_global.w.edit",
-  "comp_e_pw.review": "review",
-  "comp_lgd.legend": "Legend",
-  "comp_domain_menu.fix_label": "Stay within {domain_name}",
-  "comp_search.txt_field_search.label": "@:_global.w.search",
-  "comp_actor_litem.deactivated": "deactivated",
+  "comp": {
+    "notification_banner": {
+      "complete_profile": "Complete your Profile"
+    },
+    "entry_validation": {
+      "h1": "Validation",
+      "has_missing": "Missing or incomplete aspects:",
+      "has_missing_t": "Incomplete entries cannot be submitted. Please, add the missing information or save your entry as a draft.",
+      "ok": "All values in this entry are ok.",
+      "msgs": {
+        "missing": "{aspect_label} missing",
+        "list_not_enough": "{aspect_label} requires more {item_name}",
+        "composite_incomplete": "  is not complete: missing components: {invalid_components_msgs}",
+        "listitem_incomplete": "{aspect_label} has at least one incomplete item: {invalid_item_msgs}"
+      }
+    },
+    "entry_action_buttons": {
+      "btn_save" : {
+        "save": "@:w.save",
+        "save_n_back": "@:w.save and back",
+        "save_draft": "save draft"
+      },
+      "btn_submit": {
+
+      }
+    },
+    "location_asp": {
+      "public_loc": {
+        "base": "Public location",
+        "options": {
+          "rnd": "The exact location is not visible, instead a randomly moved location (yellow marker) will be displayed",
+          "exact": "The exact location will be visible.",
+          "region": "The location's administrative unit (region) will be visible."
+        }
+      }
+    },
+    "previewlist": {
+      "num_entries": "@:w.n_entries"
+    },
+    "entrypreview": {
+      "draft": "Draft",
+      "created": "created",
+      "outdated": "Created from an outdated version. Some values might change. Download the entry before updating is recommended",
+      "view": "@:w.view",
+      "edit": "@:w.edit",
+      "update": "update",
+      "review": "review"
+    },
+    "menucontainer": {
+      "tab_main": "Main",
+      "tab_domain": "Entries"
+    },
+    "image_asp": {
+      "no_images": "No images"
+    },
+    "legend": {
+      "legend": "Legend"
+    },
+    "select_asp": {
+      "descr": "@.capitalize:w.description"
+    },
+    "domain_menu": {
+      "fix_label": "Stay within {domain_title}"
+    },
+    "search": {
+      "txt_field_label": "@.capitalize:w.search"
+    },
+    "filterlist": {
+      "appliead_filters":"Applied filters",
+      "btn_add_filter": "add filter"
+    },
+    "actor": {
+      "deactivated": "deactivated"
+    },
+    "global_role": {
+      "admin": "Admin",
+      "editor": "Editor",
+      "user": "User",
+      "visitor": "Visitor"
+    },
+    "snackbar": {
+      "something_went_wrong": "Something went wrong"
+    },
+    "language_select": {
+      "label": "Language"
+    }
+  },
   "lang": {
     "en": "english",
     "es": "spanish",
     "de": "german",
     "fr": "french"
   },
-  "comp_image_aspect.no_images": "No images",
-  "comp_location.public_loc.base": "Public location",
-  "comp_location.public_loc.option_rnd": "For viewers the exact location is not visible but randomly moved (yellow marker)",
-  "comp_location.public_loc.option_exact": "Viewers see the exact location.",
-  "comp_location.public_loc.option_region": "Viewers see the location of the region."
+  "w": {
+    "login": "login",
+    "register": "register",
+    "search": "search",
+    "entries": "entries",
+    "n_entries": "No entries | {n} entry | {n} entries",
+    "description": "description",
+    "update": "update",
+    "username": "Username",
+    "view": "view",
+    "edit": "edit",
+    "save": "save",
+    "cancel": "cancel",
+    "entrytype": "entrytype",
+    "tag": "tag | tags",
+    "_global.asp_location_privacy.labal": "Location privacy",
+    "_global.asp_location_privacy.descr": "Specify the settings for the protection of the exact locations of your entries"
+  }
 }

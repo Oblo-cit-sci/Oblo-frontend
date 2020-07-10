@@ -64,11 +64,6 @@
     margin: 1%
   }
 
-  .wide_divider {
-    margin-top: 1.6%;
-    margin-bottom: 1.6%;
-  }
-
   .disabled * {
     opacity: 0.8;
   }

@@ -1,24 +1,24 @@
 <template lang="pug">
   div
     div(v-if="has_applied_filters")
-      h4.mb-2 Applied filters
+      h4.mb-2 {{$t("comp.filterlist.appliead_filters")}}
       v-list(dense)
         v-list-item(v-for="(filter, index) in applied_filters" :key="index")
-          v-list-item-title {{filter.label}}:&nbsp;{{filter.text}}
+          v-list-item-title {{filter.label}}:&nbsp;{{available_filter_label(filter)}}
           v-btn(icon @click="edit_filter(index)")
             v-icon mdi-filter
           v-btn(icon @click="remove_filter(index)")
             v-icon mdi-window-close
     v-menu
       template(v-slot:activator="{ on: menu }")
-        v-btn.mt-4(v-on="{...menu}" :disabled="no_available_filters" ) add filter
+        v-btn.mt-4(v-on="{...menu}" :disabled="no_available_filters" ) {{$t("comp.filterlist.btn_add_filter")}}
           v-icon mdi-plus
       v-list
         v-list-item(v-for="filter in available_filter"
           :key="filter.name"
           @click="create_filter(filter.name)")
-          v-list-item-title {{filter.label}}
-    v-btn.mt-4(v-if="search_button" :color="search_button.color" @click="$emit('search')") {{search_button.text || 'Search'}}
+          v-list-item-title {{available_filter_label(filter)}}
+    v-btn.mt-4(v-if="filter_changed" :color="filter_changed ? 'success' : ''" @click="$emit('search')") {{$t('w.search')}}
     AspectDialog(
       :dialog_open.sync="dialog_open"
       :show_aspect="active_filter !== null"
@@ -43,7 +43,7 @@
     props: {
       filter_options: Array,
       value: Array,
-      search_button: Object
+      filter_changed: Boolean
     },
     data() {
       return {
@@ -68,6 +68,14 @@
     methods: {
       filter_option_by_name(name) {
         return this.$_.find(this.filter_options, f => f.name === name)
+      },
+      available_filter_label(filter){
+          if (filter.t_label) {
+            return this.$tc(filter.t_label)
+          } else {
+            console.log("warning. filter should have t_label")
+            return filter.name
+          }
       },
       create_filter(name) {
         this.active_filter = Object.assign({}, this.filter_option_by_name(name))
