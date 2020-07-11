@@ -87,6 +87,7 @@
   import EntryListWrapper from "../components/EntryListWrapper"
   import LayoutMixin from "~/components/global/LayoutMixin"
   import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
+  import FixDomainMixin from "~/components/global/FixDomainMixin"
 
   export default {
     name: "profile",
@@ -97,7 +98,7 @@
       Aspect,
       Taglist
     },
-    mixins: [PersistentStorageMixin, TriggerSnackbarMixin, LayoutMixin, TypicalAspectMixin],
+    mixins: [PersistentStorageMixin, TriggerSnackbarMixin, LayoutMixin, TypicalAspectMixin, FixDomainMixin],
     data() {
       const new_pwd = this.asp_password(null, "new")
       return {
@@ -136,9 +137,8 @@
       }
     },
     created() {
-      const domain = this.$store.getters["app/fixed_domain"]
-      if (domain) {
-        const domain_data = this.$store.getters["domain_by_name"](domain)
+      if (this.is_fixed_domain) {
+        const domain_data = this.$store.getters["domain_by_name"](this.is_fixed_domain)
         this.domain_specific_aspects = this.$_.cloneDeep(this.$_.get(domain_data, "users.profile.additional_aspects", []))
         // todo here call a function that assigns external conditions
       }
@@ -168,10 +168,11 @@
           aspect.value = user_data[aspect.name]
         }
 
-        const domain = this.$store.getters["app/fixed_domain"]
-
-        if (this.$_.get(user_data.config_share, `domain${domain}`)) {
-          const domain_values = user_data.config_share.domain[domain]
+        console.log(this.is_fixed_domain)
+        console.log(user_data.config_share)
+        if (this.$_.get(user_data.config_share, `domain.${this.is_fixed_domain}`)) {
+          console.log("fixed d data")
+          const domain_values = user_data.config_share.domain[this.is_fixed_domain]
           for (let aspect of this.domain_specific_aspects) {
             aspect.value = domain_values[aspect.name]
           }
@@ -189,10 +190,9 @@
       doneEdit: function () {
         const new_profile = extract_unpacked_values(this.profile_aspects)
 
-        const domain = this.$store.getters["app/fixed_domain"]
-        if (domain) {
+        if (this.is_fixed_domain) {
           new_profile.domain = {}
-          new_profile.domain[domain] = extract_unpacked_values(this.domain_specific_aspects)
+          new_profile.domain[this.is_fixed_domain] = extract_unpacked_values(this.domain_specific_aspects)
         }
         this.$api.post_actor__me(new_profile).then(({data}) => {
           this.$store.commit(USER_SET_USER_DATA, data)

@@ -1,15 +1,16 @@
 import {VIEW} from "~/lib/consts";
 import {DOMAIN, INIT_PAGE_PATH} from "~/store"
-import {APP_FIXED_DOMAIN} from "~/store/app"
+import FixDomainMixin from "~/components/global/FixDomainMixin"
 
 export default {
   name: "NavBaseMixin",
+  mixins: [FixDomainMixin],
   methods: {
     home() {
       // actually the redirect takes care of this...
-      if (this.$store.getters[APP_FIXED_DOMAIN]) {
+      if (this.is_fixed_domain) {
         return this.$router.push("/domain", {
-          f: this.$store.getters[DOMAIN].name
+          f: this.is_fixed_domain
         })
       }
       this.$router.push("/")

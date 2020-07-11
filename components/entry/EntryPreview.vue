@@ -1,7 +1,7 @@
 <template lang="pug">
   div(v-if="!uuid")
     div
-  v-card.mx-auto.custom-card(v-else outlined v-bind:class="{draft: is_draft}")
+  v-card.mx-auto.custom-card(v-else outlined :style="border_style")
     v-container.pt-0.pb-0
       v-row
         v-col(v-bind:class="[show_image ? 'col-md-8' : 'col-md-12']")
@@ -38,10 +38,10 @@
         mode="view"
         :aspect_loc="aspect_locs[aspect.name]")
     div(v-if="show_botton_actions")
-      v-divider(light v-bind:class="{draft_clr: is_draft}")
+      v-divider(light :style="divider_style")
       v-card-actions
         div
-          v-btn(small text outlined @click="goto(entry.uuid)") {{proper_mode_text}}
+          v-btn(small text outlined @click="goto(entry.uuid)" :color="proper_mode_color" ) {{proper_mode_text}}
           v-btn(v-if="show_view" small text outlined @click="goto(entry.uuid, 'view')") {{$t("comp.entrypreview.view")}}
           v-btn(small text outlined :color="act.color || 'green'"
             v-for="act in additional_actions"
@@ -84,6 +84,10 @@
    * ISSUE is not working atm, to responsive
    */
 
+  const DRAFT_COLOR = "cornflowerblue"
+  const REVIEW_COLOR = "orange"
+
+
   export default {
     name: "Entrypreview",
     components: {ActorChip, EntryActorList, Aspect, MetaChips, Taglist},
@@ -123,8 +127,19 @@
       deleted_entry() {
         return !this.$store.getters[ENTRIES_HAS_ENTRY](this.uuid)
       },
-      is_draft() {
-        return this.entry.status === "draft"
+      border_style() {
+        if (this.is_draft) {
+          return {"border": `solid 1px ${DRAFT_COLOR} !important`}
+        } else if(this.is_requires_review) {
+          return {"border": `solid 1px ${REVIEW_COLOR} !important`}
+        }
+      },
+      divider_style() {
+        if (this.is_draft) {
+          return {"border-color": DRAFT_COLOR}
+        } else if(this.is_requires_review) {
+          return {"border-color": REVIEW_COLOR}
+        }
       },
       show_view() {
         return [EDIT, REVIEW].includes(this.proper_mode)
@@ -298,14 +313,6 @@
     max-height: 200px;
   }
 
-  .draft {
-    border: solid 1px cornflowerblue !important;
-  }
-
-  .draft_clr {
-    border-color: cornflowerblue
-  }
-
   @media (max-width: 959px) {
     /* adjust to your needs */
     .entry-meta {
@@ -316,8 +323,6 @@
       order: -1;
       max-width: 200px;
     }
-
-
   }
 
 </style>

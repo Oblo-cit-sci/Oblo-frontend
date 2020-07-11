@@ -29,6 +29,7 @@
   import NotificationBanner from "~/components/global/NotificationBanner"
   import DomainMixin from "~/components/DomainMixin"
   import URLQueryMixin from "~/components/util/URLQueryMixin"
+  import FixDomainMixin from "~/components/global/FixDomainMixin"
 
   const pkg = require('~/package.json')
 
@@ -41,7 +42,7 @@
 
   export default {
     name: "MainMenuList",
-    mixins: [URLQueryMixin],
+    mixins: [URLQueryMixin, FixDomainMixin],
     components: {NotificationBanner, LanguageSelector},
     props: {},
     data() {
@@ -86,7 +87,7 @@
         // for now just home eventually disabled
         return (menu_item.t_title === 'menu.home'
           && this.$route.name === "domain"
-          && this.$store.getters["app/fixed_domain"] === this.query_param_domain_name)
+          && this.is_fixed_domain === this.query_param_domain_name)
       }
     }
   }

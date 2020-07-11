@@ -59,7 +59,6 @@
         return this.applied_filters.length > 0
       },
       applied_filters() {
-        console.log(this.value)
         return this.value
       },
       no_available_filters() {
@@ -88,7 +87,6 @@
         return filter.name === "template"
       },
       set_filter_value(name, value) {
-        console.log(value)
         const new_value = recursive_unpack2(this.$_.cloneDeep(value))
         if (!new_value) {
           return

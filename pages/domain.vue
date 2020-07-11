@@ -26,14 +26,15 @@
   import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
   import MenuContainer from "~/components/menu/MenuContainer"
   import DomainMixin from "~/components/DomainMixin"
-  import {MENU_MODE_DOMAIN_OVERVIEW, QP_D, QP_F} from "~/lib/consts"
+  import {QP_D, QP_F} from "~/lib/consts"
   import TemplateLegend from "~/components/menu/TemplateLegend"
+  import FixDomainMixin from "~/components/global/FixDomainMixin"
 
   export default {
     name: "domain",
     layout: "new_map_layout",
     mixins: [DomainMixin, HasMainNavComponentMixin, EntryNavMixin,
-      PersistentStorageMixin, LayoutMixin, MapIncludeMixin],
+      PersistentStorageMixin, LayoutMixin, MapIncludeMixin, FixDomainMixin],
     components: {TemplateLegend, MenuContainer, MapWrapper, EntryCreateList, Search, Mapbox},
     beforeRouteEnter(to, from, next) {
       if (!(to.query[QP_D] || to.query[QP_F])) {
@@ -50,6 +51,10 @@
       }
       if (this.domain_data.name !== this.$store.getters[DOMAIN]) {
         this.$store.commit(SET_DOMAIN, this.domain_data)
+      }
+
+      if (this.$route.query.f && !this.is_fixed_domain) {
+        this.fix_domain(this.$route.query.f)
       }
     },
     beforeRouteLeave(from, to, next) {

@@ -2,14 +2,12 @@ export const APP_DB_LOADED = "app/db_loaded"
 export const APP_INITIALIZED = "app/initialized"
 export const APP_CONNECTING = "app/connecting"
 export const APP_CONNECTED = "app/connected"
-export const APP_FIXED_DOMAIN = "app/fixed_domain"
 
 export const state = () => ({
     db_loaded: false,
     initialized: false,
     connecting: false,
     connected: false,
-    fixed_domain: null,
     ui_language: null
   }
 )
@@ -26,9 +24,6 @@ export const mutations = {
   },
   connected(state, connected) {
     state.connected = connected
-  },
-  fixed_domain(state, domain) {
-    state.fixed_domain = domain
   },
   ui_language(state, ui_language) {
     state.ui_language = ui_language
@@ -47,9 +42,6 @@ export const getters = {
   },
   connected(state) {
     return state.connected
-  },
-  fixed_domain(state) {
-    return state.fixed_domain
   },
   ui_language(state) {
     return state.ui_language

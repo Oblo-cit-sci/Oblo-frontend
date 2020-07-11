@@ -19,6 +19,8 @@
         hide-details
         readonly
         solo
+        auto-grow
+        :rows="1"
         clearable
         @click:clear="clear"
         flat
@@ -100,7 +102,6 @@
         this.flat_options = flatten_tree_to_options(this.tree, options)
       },
       clear() {
-        console.log("clearinmap")
         this.update_value(null)
         this.$emit("aspectAction", {action:"clear"})
       }

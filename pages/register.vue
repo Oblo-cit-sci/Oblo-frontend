@@ -21,15 +21,15 @@
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
   import LoginMixin from "../components/actor/LoginMixin";
   import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
-  import {APP_FIXED_DOMAIN} from "~/store/app"
   import {PAGE_LOGIN} from "~/lib/pages"
+  import FixDomainMixin from "~/components/global/FixDomainMixin"
 
   let username_regex = new RegExp('^[a-z][a-z0-9_]*$');
 
   export default {
     name: "register",
     components: {Aspect},
-    mixins: [validationMixin, TriggerSnackbarMixin, LoginMixin, TypicalAspectMixin],
+    mixins: [validationMixin, TriggerSnackbarMixin, LoginMixin, TypicalAspectMixin, FixDomainMixin],
     data() {
       const password =  this.asp_password()
       return {
@@ -54,16 +54,14 @@
       // use this as a function to select/highlight a privacy from the list
       submit() {
         this.submit_loading = true
-        const settings = {}
-        if(this.$store.getters[APP_FIXED_DOMAIN]) {
-          settings.fixed_domain = this.$store.getters[APP_FIXED_DOMAIN]
-        }
+        const settings = this.$store.getters["user/settings"]
+
         this.$api.post_actor({
           registered_name: this.aspects.registered_name.value,
           email: this.aspects.email.value,
           password: this.aspects.password.value,
           password_confirm: this.aspects.password_confirm.value,
-          settings: settings
+          settings
         }).then(({data}) => {
           if (data.data) {
             this.$router.push({name:PAGE_LOGIN})

@@ -84,7 +84,6 @@
         this.panel_state = false
       },
       template2filterlist_config(config) {
-        console.log(config)
         const act_config = this.$store.getters["search/get_act_config"].filter(cf => cf.name !== "template")
         // console.log(act_config)
           act_config.push({
@@ -94,7 +93,6 @@
             text: config.map(cf => cf.text).join(", ")
           })
         this.$store.commit("search/set_act_config", act_config)
-        // [{"name":"template","t_label":"w.entrytype","value":["local_observation"],"text":"Local Observation"}]
       }
     }
   }

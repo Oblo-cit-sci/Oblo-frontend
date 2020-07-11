@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    v-row(v-if="!fixed_domain" :style="{'background-color':'#00A0A080'}")
+    v-row(v-if="!is_fixed_domain" :style="{'background-color':'#00A0A080'}")
       v-list-item
         v-list-item-content {{$t('comp.domain_menu.fix_label', {domain_title})}}
         v-list-item-action
@@ -32,13 +32,13 @@
   import {get_tags_filter_options} from "~/lib/codes"
   import {mapGetters, mapMutations} from "vuex"
   import DomainMixin from "~/components/DomainMixin"
+  import FixDomainMixin from "~/components/global/FixDomainMixin"
 
   export default {
     name: "DomainMenu",
-    mixins: [MapNavigationMixin, HasMainNavComponentMixin, DomainMixin],
+    mixins: [MapNavigationMixin, HasMainNavComponentMixin, DomainMixin, FixDomainMixin],
     components: {Entry, Search},
     computed: {
-      ...mapGetters({fixed_domain:"app/fixed_domain"}),
       filters() {
         const template_filter_options = Object.assign({}, entrytype_filter_options)
         template_filter_options.aspect.items = object_list2options(
@@ -47,9 +47,6 @@
         const tags_filter_options = get_tags_filter_options(this.$store, this.domain_name)
         return [template_filter_options, tags_filter_options]
       }
-    },
-    methods: {
-      ...mapMutations({fix_domain:"app/fixed_domain"})
     }
   }
 </script>

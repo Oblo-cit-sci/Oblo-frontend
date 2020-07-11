@@ -6,13 +6,13 @@
       :aspect="aspect_map.location_privacy"
       :ext_value.sync="aspect_map.location_privacy.value"
       mode="edit")
-    div(v-if="has_fixed_domain")
+    div(v-if="is_fixed_domain")
       h3 Fixed domain
       div
         span You are only seeing the domain &nbsp;
-        b {{fixed_domain_name}}
+        b {{is_fixed_domain}}
         span . However there are more domains to explore. Resetting your fixed domain, will show you a domain overview on the home page. Click the button to reset the fixed domain.
-      v-btn(@click="reset_fixed_domain") Reset fixed domain
+      v-btn(@click="reset_fixed_domain()") Reset fixed domain
     br
     v-btn(@click="update_settings" :loading="update_button_loading" color="success") {{$t('settings.btn_update')}}
     br
@@ -49,13 +49,13 @@
   import {settings_aspects} from "~/lib/settings"
   import {extract_unpacked_values} from "~/lib/aspect"
   import {USER_SET_SETTINGS, USER_SETTINGS} from "~/store/user"
-  import {APP_FIXED_DOMAIN} from "~/store/app"
+  import FixDomainMixin from "~/components/global/FixDomainMixin"
 
 
   export default {
     name: "settings",
     components: {EntryPreviewList, TextShort, DecisionDialog, LoadFileButton, Aspect},
-    mixins: [TriggerSnackbarMixin, PersistentStorageMixin],
+    mixins: [TriggerSnackbarMixin, PersistentStorageMixin, FixDomainMixin],
     created() {
       const settings = this.$store.getters[USER_SETTINGS]
       for(let name in this.aspect_map) {
@@ -89,10 +89,7 @@
       }
     },
     methods: {
-      reset_fixed_domain() {
-        this.$store.commit(APP_FIXED_DOMAIN, null)
-        this.ok_snackbar("Fixed domain reset")
-      },
+
       update_settings() {
         this.update_button_loading = true
         this.$api.post_actor__me({settings: extract_unpacked_values(this.settings_aspects)}).then(({data}) => {
@@ -162,9 +159,6 @@
     computed: {
       aspect_map() {
         return this.$_.keyBy(this.settings_aspects, "name")
-      },
-      has_fixed_domain() {
-        return this.$store.getters[APP_FIXED_DOMAIN]
       },
       fixed_domain_name() {
         return this.$store.getters[DOMAIN_TITLE]
