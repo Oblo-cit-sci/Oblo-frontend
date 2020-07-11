@@ -1,6 +1,7 @@
 <template lang="pug">
   div(v-if="!readOnly")
-    component(:is="header_type") {{label}}
+    v-icon.mr-1.mb-1(v-if="icon_part") {{icon_part}}
+    component(:is="header_type" :style="{display:'inline'}") {{label}}
       span(v-if="disabled") &nbsp;({{disabled_text}})
     div(v-if="multiple_descriptions && !readOnly")
       div(v-for="(description_part, index) in description" :key="index")
@@ -13,7 +14,8 @@
     div(v-if="note && !readOnly")
       div(:class="note.note_class") {{note.text}}
   div(v-else)
-    component(:is="header_type") {{label}}
+    v-icon.mr-1.mb-1(v-if="icon_part") {{icon_part}}
+    component(:is="header_type" :style="{display:'inline'}") {{label}}
 </template>
 
 <script>
@@ -33,6 +35,9 @@
       title: {
         type: String,
         default: ""
+      },
+      icon: {
+        type: String
       },
       no_title: Boolean, // used in order to hide list indices
       header_type: {
@@ -83,6 +88,9 @@
         }
         console.log("no title nor aspect given for title_descr of an aspect")
         return ""
+      },
+      icon_part() {
+        return this.icon ? this.icon : this.$_.get(this.aspect,"icon")
       },
       description_() {
         if (this.description) {

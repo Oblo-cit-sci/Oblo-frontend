@@ -235,6 +235,9 @@
     "select_asp": {
       "descr": "@.capitalize:w.description"
     },
+    "treeselect_asp": {
+      "click_to_select": "Click to select"
+    },
     "domain_menu": {
       "fix_label": "Stay within {domain_title}"
     },

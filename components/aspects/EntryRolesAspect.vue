@@ -1,8 +1,7 @@
 <template lang="pug">
   div
-    div(v-for="role in available_roles" :key="role.name")
-      h4 {{role.label}}
-      div {{role.description}}
+    div.mt-2(v-for="role in available_roles" :key="role.name")
+      Title_Description(:aspect="role" mode="edit" header_type="h4")
       ActorSearch(
         multiple
         v-model="grouped_roles[role.name]"
@@ -14,6 +13,7 @@
   import AspectComponentMixin from "./AspectComponentMixin";
   import ActorSearch from "../actor/ActorSearch";
   import {COLLABORATOR, SHARED} from "~/lib/actors"
+  import Title_Description from "~/components/util/Title_Description"
 
   /**
    * In the entry and in the DB they are stored as array per each item is
@@ -30,7 +30,7 @@
   export default {
     name: "EntryRolesAspect",
     mixins: [AspectComponentMixin],
-    components: {ActorSearch},
+    components: {Title_Description, ActorSearch},
     props: {
       entry_is_private: {
         type: Boolean,
@@ -53,13 +53,15 @@
             name: COLLABORATOR,
             label: this.$t(base_path + "collaborator.label"),
             description: this.$t(base_path + "collaborator.descr"),
+            icon: "mdi-pencil"
           }
         ]
         if (this.entry_is_private) {
           roles.push({
             name: SHARED,
             label: this.$t(base_path + "shared.label"),
-            description: this.$t(base_path + "shared.descr")
+            description: this.$t(base_path + "shared.descr"),
+            icon: "mdi-eye-outline"
           })
         }
         return roles

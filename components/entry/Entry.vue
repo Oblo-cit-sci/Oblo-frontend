@@ -13,7 +13,7 @@
         a(@click="to_parent(true, mode)") {{parent_title}}
     div(v-if="is_view_mode")
       v-row(:style="{'text-align': 'right', 'font-size':'80%'}")
-       span.my-auto {{$t("comp_e_pw.created")}} {{entry_date}} {{is_draft ? $t('comp_entrypreview.draft') : ""}}
+       span.my-auto {{$t("comp.entrypreview.created")}} {{entry_date}} {{is_draft ? $t('comp_entrypreview.draft') : ""}}
       v-row
         MetaChips(:meta_aspects="meta_aspects")
       v-row

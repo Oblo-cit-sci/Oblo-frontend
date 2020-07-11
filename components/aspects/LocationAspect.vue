@@ -58,7 +58,7 @@
   import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
   import AspectComponentMixin from "./AspectComponentMixin";
   import MapIncludeMixin from "~/components/map/MapIncludeMixin"
-  import {context_get_place_type, convert_to_2d_arr, mapboxgl_lngLat2coords} from "~/lib/map_utils"
+  import {arr2coords, context_get_place_type, convert_to_2d_arr, mapboxgl_lngLat2coords} from "~/lib/map_utils"
   import GeocodingMixin from "~/components/map/GeocodingMixin"
   import {MAP_GOTO_LOCATION} from "~/store/map"
   import {USER_SETTINGS} from "~/store/user"
@@ -331,7 +331,7 @@
         value contains just the coordinates
         features should have the results of rev-geoquery of the coordinates
          */
-        // console.log("value", value)
+        console.log("complete with", value)
         // console.log("features", features)
         if (!value.hasOwnProperty("place")) {
           value.place = {}
@@ -364,6 +364,7 @@
         }
         value = this.set_public_location_from_option(value, option)
         this.update_value(value)
+        console.log("-->", value.coordinates)
         // this.public_location_precision = PREC_OPTION_RANDOM
       },
       update_marker(flyTo = false) {
@@ -396,7 +397,7 @@
         console.log("public_location_precision_selected", selection)
       },
       set_public_location_from_option(value, option) {
-        console.log("set_public_location_from_option", value, option)
+        // console.log("set_public_location_from_option", value, option)
         const public_loc = {}
         // todo we need this?
         let public_precision = option
@@ -451,14 +452,13 @@
               lat: feature.geometry.coordinates[1]
             })
             this.complete_value({
-              coordinates: feature.geometry.coordinates,
+              coordinates: arr2coords(feature.geometry.coordinates),
               location_precision: feature.place_type[0],
             }, result.features)
             // console.log(feature.place_type[0])
-            console.log(this.value)
           } else {
             this.complete_value({
-              coordinates: feature.geometry.coordinates,
+              coordinates: arr2coords(feature.geometry.coordinates),
               location_precision: feature.place_type[0],
             }, feature)
           }

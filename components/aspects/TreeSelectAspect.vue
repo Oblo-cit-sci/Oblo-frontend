@@ -13,17 +13,18 @@
       :prependIcon="prependIcon"
       @click:prepend="openDialog()")
     div(v-if="!direct_select")
-      v-container(flow)
-        v-row
-          v-col(cols=2)
-            v-btn(:color="button_color" @click="openDialog")
-              v-icon {{prependIcon}}
-              span {{button_text}}
-          v-col(cols=9)
-            div.pl-3 {{value_text}}
-          v-col(cols=1)
-            v-btn(icon @click="clear" v-show="value")
-              v-icon mdi-window-close
+      v-textarea(
+        :prepend-icon="prependIcon"
+        @click:prepend="openDialog"
+        hide-details
+        readonly
+        solo
+        clearable
+        @click:clear="clear"
+        flat
+        @click="open_if_empty"
+        :placeholder="$t('comp.treeselect_asp.click_to_select')"
+        :value="value_text")
     v-dialog(width="800" v-model="dialogOpen" height="100%")
       TreeleafPicker(
         :tree="tree"
@@ -70,6 +71,11 @@
           this.dialogOpen = true
         }
       },
+      open_if_empty() {
+        if(!this.disabled && !this.value) {
+          this.dialogOpen = true
+        }
+      },
       selected(val) {
         this.dialogOpen = false;
         if (val) {
@@ -94,6 +100,7 @@
         this.flat_options = flatten_tree_to_options(this.tree, options)
       },
       clear() {
+        console.log("clearinmap")
         this.update_value(null)
         this.$emit("aspectAction", {action:"clear"})
       }
@@ -109,19 +116,6 @@
         else {
           return this.aspect.attr.direct_select
         }
-      },
-      button_color() {
-        if(this.value) {
-          return null
-        } else {
-          return "success"
-        }
-      },
-      button_text() {
-        if (this.value)
-          return ""
-        else
-          return "click to select"
       },
       value_text() {
         if (this.value) {
