@@ -89,8 +89,7 @@
           this.add_verification_resend_link = false
           this.errorMsg = null
         }).catch(err => {
-          const msg = this.$_.get(err, "response.data.error.msg", this.$t("comp.snackbar.something_went_wrong"))
-          this.error_snackbar(msg)
+          this.err_error_snackbar(err)
         })
       }
     }

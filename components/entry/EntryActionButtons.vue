@@ -232,9 +232,8 @@
           } catch (e) {
             console.log(e)
             this.sending = false
-            const message = this.$_.get(e, "response.data.error.msg", this.$t("comp.snackbar.something_went_wrong"))
             // todo for entry exists already, there could be a change in the button label, but maybe the data of that entry should be fetched
-            this.error_snackbar(message)
+            this.err_error_snackbar(err)
           }
         } else {
           this.error_snackbar("not yet implemented for this status:", this.entry.status)
@@ -252,10 +251,9 @@
           this.$store.dispatch(ENTRIES_UPDATE_ENTRY, this.uuid)
           this.$store.commit(ENTRIES_RESET_EDIT)
           this.back()
-        } catch (e) {
-          const message = this.$_.get(e, "response.data.error.msg", this.$t("comp.snackbar.something_went_wrong"))
+        } catch (err) {
+          this.err_error_snackbar(err)
           // todo for entry exists already, there could be a change in the button label, but maybe the data of that entry should be fetched
-          this.error_snackbar(message)
         }
       },
       async reject() {
@@ -269,10 +267,9 @@
           this.$store.commit(SEARCH_DELETE_ENTRY, res.data.data.uuid)
           this.$store.commit(ENTRIES_RESET_EDIT)
           this.back()
-        } catch (e) {
-          const message = this.$_.get(e, "response.data.error.msg", this.$t("comp.snackbar.something_went_wrong"))
+        } catch (err) {
           // todo for entry exists already, there could be a change in the button label, but maybe the data of that entry should be fetched
-          this.error_snackbar(message)
+          this.err_error_snackbar(err)
         }
       },
       back(remove_params = []) {

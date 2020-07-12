@@ -201,8 +201,7 @@
           this.reset_edit_values()
           this.ok_snackbar("Profile updated")
         }).catch((err) => {
-          console.log("err", err)
-          this.error_snackbar(this.$t("comp.snackbar.something_went_wrong"))
+          this.err_error_snackbar(err)
         }).finally(() => {
           this.goto_top()
         })
@@ -214,9 +213,7 @@
           this.ok_snackbar("Password updated")
           this.goto_top()
         }).catch((err) => {
-          console.log("err", err)
-          const msg = this.$_.get(err, "response.data.error.msg", this.$t("comp.snackbar.something_went_wrong"))
-          this.error_snackbar(msg)
+          this.err_error_snackbar(err)
         })
       },
       profile_pic_added(image) {
@@ -238,8 +235,8 @@
                 console.log("CORS error probably ok")
               })
             })
-            .catch(() => {
-              this.error_snackbar(this.$t("comp.snackbar.something_went_wrong"))
+            .catch((err) => {
+              this.err_error_snackbar(err)
             }).finally(() => {
             this.profile_pic_upload_loading = false
           })
