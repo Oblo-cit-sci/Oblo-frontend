@@ -56,7 +56,7 @@
   import {route_change_query} from "~/lib/util";
   import Filterlist from "~/components/util/Filterlist"
   import {privacy_filter_options} from "~/lib/filter_option_consts"
-  import {QP_D, QP_SEARCH} from "~/lib/consts"
+  import {DOMAIN, QP_D, QP_SEARCH, TEMPLATE} from "~/lib/consts"
 
   const LOG = false
 
@@ -77,6 +77,7 @@
         type: Object
       },
       // filter all entries before
+      // still used?
       search_config: {
         type: Array,
         default: () => []
@@ -108,11 +109,11 @@
       }
       const this_route_data = this.act_relevant_route_data()
       if (!this.$_.isEqual(last_route, this_route_data)) {
-        this.prepend_search = true
+        // this.prepend_search = true
         this.clear()
         this.$store.commit(SEARCH_SET_ROUTE, this_route_data)
         start_search = true
-        this.getEntries()
+        // this.getEntries()
       } else {
         this.prepend_search = true
         this.getEntries(true)
@@ -121,9 +122,46 @@
         this.clear()
         start_search = true
       }
-      if (start_search) {
-        this.getEntries()
-      }
+      console.log("Search, start_search", start_search)
+      console.log(this.act_config)
+
+      // if (this.act_config.filter(cf => cf.name === TEMPLATE).length === 0) {
+      //   console.log("no template filter...")
+      //   // check if domain is preset in config:
+      //   const domain_name = this.$_.get(this.search_config.filter(sc => sc.column === DOMAIN)[0], "conditional_value")
+      //   if(domain_name) {
+      //     // get out of the domaindata if there is an overlay default
+      //     // since this was in the legend infos, its there, could be higher up..?
+      //     const domain_data = this.$store.getters["domain_by_name"](domain_name)
+      //     const overlay_menu = this.$_.get(domain_data, "map.overlay_menu")
+      //     if (overlay_menu) {
+      //       // get out of the domaindata if there is a template selection default
+      //       const legend = this.$_.find(overlay_menu, m => m.name === "legend")
+      //       const default_templates_slugs = this.$_.get(legend, "attr.default")
+      //       if (default_templates_slugs) {
+      //         console.log("default_templates_slugs", default_templates_slugs)
+      //         // get from the filterlist_options the template filter
+      //         // and set the config from its options and the previously found default
+      //         const template_filter = this.filterlist_options.filter(fo => fo.name === TEMPLATE)[0]
+      //         // maybe also an if?
+      //         const options = template_filter.aspect.items
+      //         console.log("options", options)
+      //         // not sure if this should be just one (in case there are more templates)
+      //         const selected = this.$_.find(options, t => default_templates_slugs.includes(t.value))
+      //         console.log("selected",selected)
+      //
+      //         // this.act_config = this.$_.concat(this.act_config, selected)
+      //       }
+      //     }
+      //   }
+      //   console.log(this.filterlist_options)
+      // }
+
+
+      // wait for filterlist to be initialised which triggers a change...
+      // if (start_search) {
+      //   this.getEntries()
+      // }
     },
     watch: {
       keyword: function (kw) {
@@ -148,6 +186,9 @@
           this.prepend_search = false
           this.$emit("all_received_uuids", this.all_uuids())
         }
+      },
+      act_config(val) {
+        this.getEntries()
       }
     },
     computed: {
@@ -165,12 +206,14 @@
       },
       act_config: {
         get: function () {
+          console.log("getting act_config")
           return this.$store.getters["search/get_act_config"]
         },
         set: function (val) {
           this.filter_changed = true
           this.$store.commit("search/set_act_config", val)
           this.filter2maplegend(val)
+
         }
       },
       searching() {
@@ -209,7 +252,9 @@
         }
       },
       getEntries(before_last = false) {
+        debugger
         let config = this.searchConfiguration(before_last)
+        console.log("Search.config", config)
         this.$store.commit(SEARCH_SET_ROUTE, this.act_relevant_route_data())
         this.$store.commit(SEARCH_SET_SEARCHING, true)
         // const prepend = this.entries().length > 0
@@ -224,7 +269,7 @@
           value: v,
           name: "template"
         }))
-        this.$store.commit("map/set_filter_config",maplegend_config)
+        this.$store.commit("map/set_filter_config", maplegend_config)
         // const map_legend_config = this.$store.getters["map/get_filter_config"]
         // filter_config.map(fc)
       },

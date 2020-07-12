@@ -53,6 +53,7 @@
       }
     },
     created() {
+      // this should go somewhere else before.
       if (this.$_.isEmpty(this.selected.length === 0)) {
         const domain_data = this.$store.getters["domain_by_name"](this.domain_name)
         const overlay_menu = this.$_.get(domain_data, "map.overlay_menu")
@@ -92,6 +93,7 @@
             value: config.map(cf => cf.value),
             text: config.map(cf => cf.text).join(", ")
           })
+        console.log("template2filterlist_config", config)
         this.$store.commit("search/set_act_config", act_config)
       }
     }

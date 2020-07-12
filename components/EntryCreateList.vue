@@ -3,7 +3,7 @@
     SingleSelect(
       :options="options"
       force_view="list"
-      @selection="selection($event)"
+      @selection="create_entry($event)"
       :select_sync="false"
       :highlight="false"
       only_value
@@ -45,11 +45,6 @@
         })
       }
     },
-    methods: {
-      selection(slug) {
-        this.to_entry(this.create_entry(slug).uuid, EDIT)
-      }
-    }
   }
 </script>
 

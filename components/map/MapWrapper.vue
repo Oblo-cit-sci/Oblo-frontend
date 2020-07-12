@@ -11,13 +11,11 @@
     .central_button
       v-btn.shift_anim(large rounded color="success" :style="center_button_shift" @click="create_from_main_template") {{main_template.create_text}}
         v-icon mdi-plus
-      v-btn(dark x-small absolute bottom right fab :style="{'right':'-15px', 'z-index':'30'}" @click="entrycreate_dialog_open = true" )
+      v-btn(dark x-small absolute bottom right fab :style="{'right':'-15px', 'z-index':'30'}" @click="$emit('create_entry')")
         v-icon mdi-dots-horizontal
     .overlay_menu
       TemplateLegend(:domain_name="domain" ref="legendComponent")
     AspectDialog(v-bind="aspectdialog_data" @update:dialog_open="aspectdialog_data.dialog_open = $event" :ext_value="layer_status" @update:ext_value="aspect_dialog_update($event)")
-    v-dialog(v-model="entrycreate_dialog_open")
-      EntryCreateList(:template_entries="$store.getters['templates/templates_of_domain'](domain)")
     client-only
       mapbox.fullSize(
         :style="map_height"
@@ -76,7 +74,6 @@
     },
     data() {
       return {
-        entrycreate_dialog_open: false,
         act_popup: null,
         act_hoover_uuid: null,
         set_dl: false,

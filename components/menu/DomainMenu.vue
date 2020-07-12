@@ -8,7 +8,7 @@
             v-icon mdi-book-lock
     Search(v-show="nav_mode_search"
       :preview_options="preview_options"
-      :fixed_filters="location_pre_filter"
+      :search_config="domain_pre_filter"
       :include_filters="filters"
       :mixin_domain_drafts="domain_name",
       @all_received_uuids="$emit('all_received_uuids', $event)"
@@ -30,7 +30,6 @@
   import {entrytype_filter_options} from "~/lib/filter_option_consts"
   import {object_list2options} from "~/lib/options"
   import {get_tags_filter_options} from "~/lib/codes"
-  import {mapGetters, mapMutations} from "vuex"
   import DomainMixin from "~/components/DomainMixin"
   import FixDomainMixin from "~/components/global/FixDomainMixin"
 

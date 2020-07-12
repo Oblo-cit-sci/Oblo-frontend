@@ -14,7 +14,6 @@ export const SEARCH_SET_ALL_UUIDS = "search/set_all_uuids"
 
 
 export const SEARCH_PREPEND_ENTRIES = "search/prepend_entries"
-export const SEARCH_GET_ENTRY = "search/get_entry"
 
 export const SEARCH_GET_SEARCH_COUNT = "search/get_search_count"
 export const SEARCH_RECEIVED_ENTRIES = "search/get_received_entries"

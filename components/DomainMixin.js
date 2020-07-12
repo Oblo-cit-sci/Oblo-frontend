@@ -16,10 +16,13 @@ export default {
   },
   computed: {
     // why user_logged_in
-    ...mapGetters({logged_in: USER_LOGGED_IN, domain_templates: TEMPLATES_OF_DOMAIN, all_domains: DOMAIN_BY_NAME}),
+    ...mapGetters({logged_in: USER_LOGGED_IN, all_domains_templates: TEMPLATES_OF_DOMAIN, all_domains: DOMAIN_BY_NAME}),
     domain_name() {
       // todo maybe first a prop...
       return this.$_.get(this.set_domain_data, "name") || this.query_param_domain_name
+    },
+    domain_templates() {
+      return this.all_domains_templates(this.domain_name)
     },
     domain_title() {
       return this.domain_data.title
@@ -27,8 +30,9 @@ export default {
     domain_data() {
       return this.set_domain_data || this.all_domains(this.domain_name)
     },
+    // todo, not sure if used
     template_entries() {
-      let templates = global_context_filter(this.domain_templates(this.domain_name))
+      let templates = global_context_filter(this.domain_templates)
       if (this.main_template) {
         templates = templates.filter(t => t.slug !== this.main_template.slug)
       }
