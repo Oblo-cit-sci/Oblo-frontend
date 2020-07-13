@@ -32,9 +32,10 @@
         :tree="tree"
         :attr="aspect.attr"
         :data_source="data_source"
+        v-model="int_value"
         @selected="selected($event)"
         :disabled="disabled"
-        :keep_selection="true")
+        :keep_selection="false")
   div(v-else)
     div {{value_text}}
 </template>
@@ -46,6 +47,7 @@
   import {EDIT} from "~/lib/consts";
   import AspectComponentMixin from "./AspectComponentMixin";
   import GeneralSelectMixin from "~/components/aspect_utils/GeneralSelectMixin"
+  import {unpack} from "~/lib/aspect"
 
   export default {
     name: "TreeSelectAspect",
@@ -102,11 +104,20 @@
         this.flat_options = flatten_tree_to_options(this.tree, options)
       },
       clear() {
-        this.update_value(null)
+        this.update_value([])
+        // this.va = []
         this.$emit("aspectAction", {action:"clear"})
       }
     },
     computed: {
+      int_value: {
+        get: function () {
+          return this.value
+        },
+        set: function (val) {
+          this.update_value(val)
+        }
+      },
       prependIcon() {
         return this.readOnly ? '' : 'mdi-file-tree'
       },
@@ -121,7 +132,11 @@
       value_text() {
         if (this.value) {
           if(this.value.constructor === Array) {
-            return this.value.map(v => v.text).join(" \u21D2 ")
+            return this.value.map(v => {
+              let base = v.text
+              base += v.extra_value ? base + " / " + unpack(v.extra_value) : ""
+              return base
+            }).join(" \u21D2 ")
           } else {
             return this.value
           }

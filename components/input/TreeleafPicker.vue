@@ -5,9 +5,9 @@
         v-icon mdi-close
     v-list(v-if="has_selection")
       div.ml-3 Current selection
-      v-list-item(v-for="(node, index) of selection", :key="index")
+      v-list-item(v-for="(node, index) of value", :key="index")
         v-list-item-content
-          v-list-item-title {{levelname(index)}}: {{node.name}}
+          v-list-item-title {{levelname(index)}}: {{node.text}} {{extra_text(node)}}
         v-list-item-action
           v-btn(icon @click="remove(index)")
             v-icon mdi-close-circle-outline
@@ -19,8 +19,8 @@
       LargeSelectList(v-if="edit_mode_large_list" :options="act_options" v-on:selection="select($event)" :select_sync="false" :highlight="false" :data_source="data_source")
       SelectGrid(v-if="edit_mode_matrix" :options="act_options" v-on:selection="select($event)" :data_source="data_source")
       Paginated_Select(v-if="edit_mode_paginated" :options="act_options" :edit_mode="level_edit_mode(act_level + 1)" v-on:selection="select($event)")
-    div(v-if="last_selection_has_extra")
-      Aspect(v-if="extra_aspect" :aspect="extra_aspect" @update:ext_value="add_extra_value($event)" mode="edit")
+    div.mx-4(v-if="last_selection_has_extra")
+      Aspect(v-if="extra_aspect" :aspect="extra_aspect" :ext_value.sync="extra_value" mode="edit")
     .ml-3(v-if="last_description")
       div Description:
       div {{last_description}}
@@ -43,7 +43,7 @@
   import Paginated_Select from "../aspect_utils/Paginated_Select";
   import Title_Description from "../util/Title_Description"
   import LargeSelectList from "~/components/aspect_utils/LargeSelectList"
-  import {pack_value} from "~/lib/aspect"
+  import {pack_value, unpack} from "~/lib/aspect"
   import Aspect from "~/components/Aspect"
 
 
@@ -54,6 +54,7 @@
       tree: {
         type: Object
       },
+      value: Array,
       // refactor, its basically another aspect
       allows_extra: {
         type: [Boolean, Number],
@@ -76,19 +77,32 @@
     },
     data: function () {
       return {
-        selection: [], // indices of children
+        // selection: [], // indices of children
         levels: false,
-        extra_value: []
       }
     },
     computed: {
-      act_options() {
-        let options = []
-        if (this.selection.length === 0) {
-          options = this.tree.root.children
-        } else {
-          options = this.$_.last(this.selection).children || []
+      select_length() {
+        return this.value ? this.value.length : 0
+      },
+      extra_value: {
+        get: function () {
+          return this.value[this.value.length - 1].extra_value || ""
+        },
+        set: function (val) {
+          console.log("extra", val)
+          this.value[this.value.length - 1].extra_value = val
         }
+      },
+      act_options() {
+        let options = this.tree.root.children
+        // console.log("opt", options)
+        for (let val of this.value) {
+          // console.log("a val", val)
+          options = options.find(o => o.name === val.value).children || []
+        }
+        options = this.$_.cloneDeep(options)
+        // console.log("opt", options)
         for (let index in options) {
           let node = options[index]
           node["title"] = node["name"]
@@ -105,36 +119,37 @@
         }
       },
       last_description() {
-        if (this.selection.length === 0) {
+        if (this.select_length === 0) {
           return ""
         } else {
-          return this.selection[this.act_level - 1].description || ""
+          return this.value[this.act_level - 1].description || ""
         }
       },
       has_levels() {
         return this.levels && this.$_.size(this.act_options) > 0;
       },
       has_selection() {
-        return this.selection.length > 0
+        // debugger
+        return this.select_length > 0
       },
       act_level() {
-        return this.selection.length
+        return this.select_length
       },
       has_options() {
         return this.act_options.length > 0
       },
       last_selection_has_extra() {
-        return this.has_selection && this.selection[this.selection.length - 1].extra || false
+        return this.has_selection && this.value[this.select_length - 1].extra || false
       },
       extra_aspect() {
         if (this.last_selection_has_extra) {
-          const last_extra = this.selection[this.selection.length - 1].extra
+          const last_extra = this.value[this.select_length - 1].extra
           if (last_extra.type === "text") {
             return {
               name: last_extra.name,
-              description:"cool",
               type: "str",
               attr: {
+                max: 90
               }
             }
           } else {
@@ -143,14 +158,14 @@
         }
       },
       act_levelname() {
-        return this.levelname(this.selection.length)
+        return this.levelname(this.select_length)
       },
       act_level_description() {
         // console.log("act_level_description")
-        if (typeof this.levels[this.selection.length] === "string") {
+        if (typeof this.levels[this.select_length] === "string") {
           return null
         } else {
-          return this.levels[this.selection.length].description
+          return this.levels[this.select_length].description
         }
       },
       extra_value_aspect() {
@@ -188,7 +203,10 @@
     },
     methods: {
       select(value) {
-        this.selection.push(value)
+        this.$emit("input", this.$_.concat(this.value || [], [value]))
+      },
+      extra_text(node) {
+        return node.extra_value ? ' / '+ unpack(node.extra_value.value) : ''
       },
       levelname(index) {
         if (typeof this.levels[index] === "string") {
@@ -198,37 +216,36 @@
         return this.levels[index].name
       },
       remove(index) {
-        this.selection = this.selection.slice(0, index)
+        this.$emit("input", this.value.slice(0, index))
       },
       has_both() {
-        return this.selection.length > 0 && this.act_options.length > 0
+        return this.has_selection && this.act_options.length > 0
       },
       done() {
         if (this.$_.get(this.attr, "store_all_levels", false)) {
-          this.$emit("selected", pack_value(this.selection.map(e => {
-            return {text: e.text, value: e.value}
+          // todo do better js :/
+          this.$emit("selected", pack_value(this.value.map(e => {
+            return {text: e.text, value: e.value, extra_value: e.extra_value}
           })))
         } else {
-          this.$emit("selected", this.$_.last(this.selection))
+          this.$emit("selected", this.$_.last(this.value))
         }
-        if (!this.keep_selection)
-          this.selection = [];
+        // if (!this.keep_selection) {
+        //   this.value = []
+        // }
       },
-      done_extra() {
-        this.$emit("selected", {
-              name: this.extra_value,
-              id: 0 // TODO, is that ok?
-            }
-        )
-        this.extra_value = ""
-        this.selection = []
-      },
+      // done_extra() {
+      //   this.$emit("selected", {
+      //       name: this.extra_value,
+      //       id: 0 // TODO, is that ok?
+      //     }
+      //   )
+      //   this.extra_value = ""
+      //   // this.value = []
+      // },
       level_edit_mode(level) {
         return this.$_.get(this.attr, `edit[${level}]`, "list")
       },
-      add_extra_value(value) {
-        console.log(value)
-      }
     }
   }
 </script>
