@@ -44,7 +44,7 @@
       domain_navigation_mode: String
     },
     created() {
-      if(this.menu_mode_fixed) {
+      if (this.menu_mode_fixed) {
         this.menu_state = MENU_MODE_MAIN
       } else {
         this.menu_state = MENU_MODE_DOMAIN_OVERVIEW
@@ -75,7 +75,17 @@
           case MENU_MODE_MAIN:
             return 256;
           case MENU_MODE_DOMAIN_OVERVIEW:
-            return this.$vuetify.breakpoint.xl ? 700 : 600
+            switch (this.$vuetify.breakpoint.name) {
+              case "xl":
+                return 600
+              case "lg":
+                return 500
+              case "md":
+                return 400
+              case "sm":
+              case "xs":
+                return "100%"
+            }
         }
       }
     },

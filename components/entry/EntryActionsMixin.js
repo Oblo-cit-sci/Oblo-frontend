@@ -1,4 +1,4 @@
-import {can_edit, editing_roles} from "~/lib/actors"
+import {can_edit, can_edit_entry, editing_roles} from "~/lib/actors"
 import {ADMIN, EDIT, REQUIRES_REVIEW, REVIEW, VIEW} from "~/lib/consts"
 import {USER_GLOBAL_ROLE} from "~/store/user"
 
@@ -30,15 +30,7 @@ export default {
       }
     },
     can_edit() {
-      const actor = this.$store.getters.user
-      if (actor.global_role === ADMIN) {
-        return true
-      }
-      const actors = this.entry.actors
-      for (let actor_roles of actors) {
-        if (actor_roles.actor.registered_name === actor.registered_name)
-          return editing_roles.includes(actor_roles.role)
-      }
+      return can_edit_entry(this.$store.getters.user, this.entry)
     }
   }
 }

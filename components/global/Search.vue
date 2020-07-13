@@ -122,41 +122,8 @@
         this.clear()
         start_search = true
       }
-      console.log("Search, start_search", start_search)
-      console.log(this.act_config)
-
-      // if (this.act_config.filter(cf => cf.name === TEMPLATE).length === 0) {
-      //   console.log("no template filter...")
-      //   // check if domain is preset in config:
-      //   const domain_name = this.$_.get(this.search_config.filter(sc => sc.column === DOMAIN)[0], "conditional_value")
-      //   if(domain_name) {
-      //     // get out of the domaindata if there is an overlay default
-      //     // since this was in the legend infos, its there, could be higher up..?
-      //     const domain_data = this.$store.getters["domain_by_name"](domain_name)
-      //     const overlay_menu = this.$_.get(domain_data, "map.overlay_menu")
-      //     if (overlay_menu) {
-      //       // get out of the domaindata if there is a template selection default
-      //       const legend = this.$_.find(overlay_menu, m => m.name === "legend")
-      //       const default_templates_slugs = this.$_.get(legend, "attr.default")
-      //       if (default_templates_slugs) {
-      //         console.log("default_templates_slugs", default_templates_slugs)
-      //         // get from the filterlist_options the template filter
-      //         // and set the config from its options and the previously found default
-      //         const template_filter = this.filterlist_options.filter(fo => fo.name === TEMPLATE)[0]
-      //         // maybe also an if?
-      //         const options = template_filter.aspect.items
-      //         console.log("options", options)
-      //         // not sure if this should be just one (in case there are more templates)
-      //         const selected = this.$_.find(options, t => default_templates_slugs.includes(t.value))
-      //         console.log("selected",selected)
-      //
-      //         // this.act_config = this.$_.concat(this.act_config, selected)
-      //       }
-      //     }
-      //   }
-      //   console.log(this.filterlist_options)
-      // }
-
+      // console.log("Search, start_search", start_search)
+      // console.log(this.act_config)
 
       // wait for filterlist to be initialised which triggers a change...
       // if (start_search) {
@@ -206,14 +173,13 @@
       },
       act_config: {
         get: function () {
-          console.log("getting act_config")
+          // console.log("getting act_config")
           return this.$store.getters["search/get_act_config"]
         },
         set: function (val) {
           this.filter_changed = true
           this.$store.commit("search/set_act_config", val)
           this.filter2maplegend(val)
-
         }
       },
       searching() {
@@ -252,9 +218,9 @@
         }
       },
       getEntries(before_last = false) {
-        debugger
+        // debugger
         let config = this.searchConfiguration(before_last)
-        console.log("Search.config", config)
+        // console.log("Search.config", config)
         this.$store.commit(SEARCH_SET_ROUTE, this.act_relevant_route_data())
         this.$store.commit(SEARCH_SET_SEARCHING, true)
         // const prepend = this.entries().length > 0
@@ -262,16 +228,12 @@
         // TODO would be nice to have the debounced search work with a promise so we do not need the
       },
       filter2maplegend(filter_config) {
-        console.log(filter_config)
+        // console.log(filter_config)
         const template_filter_conf = filter_config.filter(fc => fc.name === "template")[0]
-        console.log(template_filter_conf)
-        const maplegend_config = template_filter_conf.value.map(v => ({
+        this.$store.commit("map/set_filter_config", template_filter_conf.value.map(v => ({
           value: v,
           name: "template"
-        }))
-        this.$store.commit("map/set_filter_config", maplegend_config)
-        // const map_legend_config = this.$store.getters["map/get_filter_config"]
-        // filter_config.map(fc)
+        })))
       },
       request_more() {
         // console.log("request more", )

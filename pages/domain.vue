@@ -4,12 +4,12 @@
       :over="true"
       :domain_navigation_mode="navigation_mode")
     v-dialog(v-model="entrycreate_dialog_open")
-      EntryCreateList(:template_entries="domain_templates")
+      EntryCreateList(:template_entries="create_templates_options")
     MapWrapper(
       height="100%"
       :domain="domain_name"
       @force_menu_mode_domain="set_menu_state(1)"
-      @create_entry="create_entry($event)"
+      @create_entry="create_entry_or_open_dialog($event)"
       @map="map=$event")
 </template>
 
@@ -86,7 +86,7 @@
       }
     },
     methods: {
-      create_entry(template_slug = null) {
+      create_entry_or_open_dialog(template_slug = null) {
         if (template_slug) {
           this.create_entry(template_slug)
         } else {

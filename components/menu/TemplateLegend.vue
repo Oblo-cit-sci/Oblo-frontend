@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-expansion-panels(:style="{width:'300px', opacity:'0.8'}" v-model="panel_state")
+  v-expansion-panels(:style="{'width':'200px', opacity:'0.8'}" v-model="panel_state")
     v-expansion-panel
       v-expansion-panel-header.px-3.py-1 {{$t("comp.legend.legend")}}
       v-expansion-panel-content.px-2.py-1.no-wrap
