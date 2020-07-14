@@ -83,13 +83,13 @@
           return this.value[this.value.length - 1].extra_value || ""
         },
         set: function (val) {
-          console.log("extra", val)
           this.value[this.value.length - 1].extra_value = val
         }
       },
       act_options() {
         let options = this.tree.root.children
-        // console.log("opt", options)
+        console.log("opt", options)
+        console.log(this.value)
         for (let val of this.value) {
           // console.log("a val", val)
           options = options.find(o => o.name === val.value).children || []
@@ -151,6 +151,7 @@
         }
       },
       act_levelname() {
+        // console.log("act_levelname", this.select_length)
         return this.levelname(this.select_length)
       },
       act_level_description() {
@@ -190,13 +191,18 @@
         this.$emit("input", this.$_.concat(this.value || [], [value]))
       },
       extra_text(node) {
-        return node.extra_value ? ' / '+ unpack(node.extra_value.value) : ''
+        return node.extra_value ? ' / ' + unpack(node.extra_value.value) : ''
       },
       levelname(index) {
+        if (index >= this.levels.length) {
+          console.log("bug/error index access larger than levels", index)
+          return ""
+        }
         if (typeof this.levels[index] === "string") {
           console.log("levels structure depracated. use an object, with name key")
           return this.levels[index]
         }
+        console.log("levelname", index, this.levels)
         return this.levels[index].name
       },
       remove(index) {
@@ -206,17 +212,10 @@
         return this.has_selection && this.act_options.length > 0
       },
       done() {
-        if (this.$_.get(this.attr, "store_all_levels", false)) {
-          // todo do better js :/
-          this.$emit("selected", pack_value(this.value.map(e => {
-            return {text: e.text, value: e.value, extra_value: e.extra_value}
-          })))
-        } else {
-          this.$emit("selected", this.$_.last(this.value))
-        }
-        // if (!this.keep_selection) {
-        //   this.value = []
-        // }
+        // todo do better js :/
+        this.$emit("selected", pack_value(this.value.map(e => {
+          return {text: e.text, value: e.value, extra_value: e.extra_value}
+        })))
       },
       level_edit_mode(level) {
         return this.$_.get(this.attr, `edit[${level}]`, "list")

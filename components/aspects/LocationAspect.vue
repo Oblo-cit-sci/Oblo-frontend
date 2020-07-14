@@ -1,5 +1,5 @@
 <template lang="pug">
-  div
+  div.mb-3
     div(v-if="!readOnly")
       div.mb-1
         div

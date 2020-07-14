@@ -65,8 +65,6 @@ export default {
       }
       switch (control_name) {
         case "navigation": {
-//
-          console.log(this.map._controls.map(ctrl => ctrl.constructor.name))
           if (visible) {
             this.map.addControl(new this.mapboxgl.NavigationControl())
           } else {

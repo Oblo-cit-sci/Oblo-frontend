@@ -118,6 +118,9 @@ export default {
     template() {
       return this.$store.getters[TEMPLATES_TYPE](this.template_slug)
     },
+    template_color() {
+      return this.$_.get(this.template,"rules.map.marker_color")
+    },
     // title() {
     //   return this.$store.getters[ENTRIES_GET_ENTRY_TITLE](this.uuid)
     // },

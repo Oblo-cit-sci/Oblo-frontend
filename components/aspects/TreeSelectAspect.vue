@@ -1,31 +1,32 @@
 <template lang="pug">
   div(v-if="!readOnly")
-    v-autocomplete(v-if="direct_select"
+    v-autocomplete(v-if="direct_select && is_empty"
       outlined
       single-line
       :disabled="disabled"
       clearable
       :items="flat_options"
+      return-object
       :value="value"
       :hide-details="hide_details"
-      @change="update_value($event)"
+      @change="auto_select($event)"
       :aspect_loc="aspect_loc"
       :prependIcon="prependIcon"
       @click:prepend="openDialog()")
-    div(v-if="!direct_select")
+    div(v-if="!direct_select || !is_empty")
       v-textarea(
-        :prepend-icon="prependIcon"
-        @click:prepend="openDialog"
+        :flat="!is_empty"
+        :solo="!is_empty"
         hide-details
         readonly
-        solo
+        :placeholder="$t('comp.treeselect_asp.click_to_select')"
         auto-grow
         :rows="1"
         clearable
+        :prepend-icon="prependIcon"
+        @click:prepend="openDialog"
         @click:clear="clear"
-        flat
         @click="open_if_empty"
-        :placeholder="$t('comp.treeselect_asp.click_to_select')"
         :value="value_text")
     v-dialog(width="800" v-model="dialogOpen" height="100%")
       TreeleafPicker(
@@ -75,12 +76,18 @@
           this.dialogOpen = true
         }
       },
+      auto_select(value) {
+        console.log("autoselect", value)
+        const result = this.$_.concat((value.parents || []).map(v => ({value:v, text:v})), {value:value.value, text:value.value})
+        this.update_value(result)
+      },
       open_if_empty() {
-        if(!this.disabled && !this.value) {
+        if(!this.disabled && this.is_empty) {
           this.dialogOpen = true
         }
       },
       selected(val) {
+        console.log("TSA selected", val)
         this.dialogOpen = false;
         if (val) {
           this.update_value(val.value)
@@ -102,6 +109,7 @@
         }
         // console.log(this.tree, options.include_levels)
         this.flat_options = flatten_tree_to_options(this.tree, options)
+        console.log(this.flat_options[0].parents)
       },
       clear() {
         this.update_value([])
@@ -110,6 +118,9 @@
       }
     },
     computed: {
+      is_empty() {
+        return this.$_.isEmpty(this.value)
+      },
       int_value: {
         get: function () {
           return this.value

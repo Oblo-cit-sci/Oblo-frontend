@@ -368,6 +368,7 @@ export const getters = {
       return entries
     }
   },
+  // todo, maybe not here...
   get_entry_type(state, getters, root_state, rootGetter) {
     return slug => {
       const entry_type = rootGetter[TEMPLATES_TYPE](slug)

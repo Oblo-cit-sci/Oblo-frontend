@@ -195,7 +195,9 @@
         // todo this should just check if QP_D is set and make the filter manual
         // so that drafts are also shown on the profile
         if (this.mixin_domain_drafts && this.is_pure) {
-          const drafts = this.$store.getters[ENTRIES_DOMAIN_DRAFTS_UUIDS](this.mixin_domain_drafts).reverse()
+          const include_types = this.get_filtered_template_slugs()
+          const drafts = this.$store.getters[ENTRIES_DOMAIN_DRAFTS_UUIDS](this.mixin_domain_drafts)
+            .reverse().filter(d => include_types.includes(this.$store.getters["entries/get_entry"](d).template.slug))
           result_entries = drafts.concat(result_entries)
         }
         // console.log("new filtered entries", result_entries)
@@ -278,6 +280,14 @@
         return {
           path: this.$route.path,
           params: this.$_.pick(this.$route.query, relevant_query_keys)
+        }
+      },
+      get_filtered_template_slugs() {
+        const template_filter_conf = this.act_config.filter(fc => fc.name === "template")[0]
+        if (template_filter_conf) {
+          return template_filter_conf.value
+        } else {
+          return []
         }
       }
     },

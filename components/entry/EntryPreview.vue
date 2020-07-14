@@ -7,9 +7,12 @@
         v-col(v-bind:class="[show_image ? 'col-md-8' : 'col-md-12']")
           v-row
             v-col.py-1(class="entry-meta" cols=12)
-              p.subtitle-1.mb-1 {{full_title}}
-                v-btn(v-if="show_title_action" @click="goto()" depressed small)
-                  v-icon(:class="default_action_icon")
+              p.subtitle-1.mb-1
+                v-icon.mr-1.pb-1(v-if="!show_entrytype_title" :color="template_color" x-small) mdi-checkbox-blank-circle
+                span {{full_title}}
+                span(v-if="is_draft" :style="{color:'cornflowerblue'}") &nbsp; [DRAFT]
+                  v-btn(v-if="show_title_action" @click="goto()" depressed small)
+                    v-icon(:class="default_action_icon")
           v-row.pl-3(:style="{'text-align': 'right', 'font-size':'80%'}")
             span.my-auto(v-if="show_date") {{$t("comp.entrypreview.created")}} {{entry_date}} {{is_draft ? $t('comp.entrypreview.draft') : ""}}
           v-row.pl-3.py-1
@@ -111,6 +114,9 @@
         type: Boolean,
         default: true
       },
+      show_entrytype_title: {
+        type: Boolean
+      },
       include_domain_tag: Boolean,
       show_title_action: Boolean,
       prevent_view_page_change: Boolean,
@@ -145,7 +151,11 @@
         return [EDIT, REVIEW].includes(this.proper_mode)
       },
       full_title() {
-        return full_title(this.$store, this.entry)
+        if(!this.show_entrytype_title) {
+          return this.entry.title
+        } else {
+          return full_title(this.$store, this.entry)
+        }
       },
       action_loading() {
         return this.additional_action_loading

@@ -24,9 +24,7 @@ let default_user_data = {
   interested_topics: [],
   // https://stackoverflow.com/questions/1253499/simple-calculations-for-working-with-lat-lon-km-distance
   // of 1 degree will result in error of around 50km per coordinate -0.5, +0.5 degree change around the real location
-  default_license: "CC0", // should come from the server
-  default_privacy: "public",
-  location: "",
+  // location: "",
   config_share: {}
 }
 
