@@ -25,9 +25,6 @@
       div Description:
       div {{last_description}}
     v-btn(v-if="done_available" @click="done" color="success") Done
-    div(v-if="allows_extra")
-      TextShort(v-bind:aspect="extra_value_aspect" :edit="true" v-bind:value.sync="extra_value")
-      v-btn(:disabled="extra_value === ''" @click="done_extra" color="warning") Use {{extra_value_name}}
 </template>
 
 <script>
@@ -55,10 +52,6 @@
         type: Object
       },
       value: Array,
-      // refactor, its basically another aspect
-      allows_extra: {
-        type: [Boolean, Number],
-      },
       extra_value_name: {
         type: String
       },
@@ -168,15 +161,6 @@
           return this.levels[this.select_length].description
         }
       },
-      extra_value_aspect() {
-        return {
-          attr: {max: 40},
-          description: "",
-          name: this.extra_value_name,
-          required: true,
-          type: "str"
-        }
-      },
       act_edit_mode() {
         return this.level_edit_mode(this.act_level)
       },
@@ -234,15 +218,6 @@
         //   this.value = []
         // }
       },
-      // done_extra() {
-      //   this.$emit("selected", {
-      //       name: this.extra_value,
-      //       id: 0 // TODO, is that ok?
-      //     }
-      //   )
-      //   this.extra_value = ""
-      //   // this.value = []
-      // },
       level_edit_mode(level) {
         return this.$_.get(this.attr, `edit[${level}]`, "list")
       },

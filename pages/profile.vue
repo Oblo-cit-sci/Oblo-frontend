@@ -40,7 +40,7 @@
       v-btn(v-if="password_edit" color="success" @click="change_password" :disabled="any_password_invalid") {{$t('profile.btn_save_password')}}
       v-divider.wide_divider
     div(v-if="edit_mode && !$_.isEmpty(domain_specific_aspects)")
-      h2 {{$t("profile.h3")}}
+      h2#domains {{$t("profile.h3")}}
       v-row(v-for="aspect in domain_specific_aspects" :key="aspect.name")
         v-col(cols=10)
           Aspect(:aspect="aspect"
@@ -111,21 +111,7 @@
         profile_aspects: [
           this.asp_public_name(),
           this.asp_actor_description(),
-          // {
-          //   name: "location",
-          //   label: "Location",
-          //   description: "Where are you based?",
-          //   type: "location",
-          //   attr: {
-          //     max: 80,
-          //     unpacked: true,
-          //     input: ["search"]
-          //   },
-          //   value: null
-          // },
-          this.asp_email(),
-          this.asp_privacy("default_privacy", "default"),
-          this.asp_license("default_license", ["cc_licenses"], null, "default")
+          this.asp_email()
         ],
         password_aspects: {
           actual_password: this.asp_password("actual_password", "current"),
@@ -143,6 +129,11 @@
         // todo here call a function that assigns external conditions
       }
       this.reset_edit_values()
+    },
+    mounted() {
+      if (this.$route.hash === "#domains") {
+        this.$vuetify.goTo("#domains")
+      }
     },
     // todo this could help us to get the map location, but not sure where to get it in the lifecycle
     beforeRouteEnter(to, from, next) {
@@ -168,8 +159,6 @@
           aspect.value = user_data[aspect.name]
         }
 
-        console.log(this.is_fixed_domain)
-        console.log(user_data.config_share)
         if (this.$_.get(user_data.config_share, `domain.${this.is_fixed_domain}`)) {
           console.log("fixed d data")
           const domain_values = user_data.config_share.domain[this.is_fixed_domain]
@@ -250,7 +239,7 @@
       }),
       edit_mode() {
         const e = this.$route.query.edit
-        return e || (typeof(e) === "string" && e === "true")
+        return e || (typeof (e) === "string" && e === "true")
       },
       aspect_mode() {
         return this.edit_mode ? EDIT : VIEW

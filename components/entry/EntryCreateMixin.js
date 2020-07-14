@@ -28,8 +28,8 @@ export default {
       const title = init.title || template.title + " " + draft_no
 
       const license = template.rules.license ? template.rules.license :
-        (template.rules.privacy === PRIVATE_LOCAL ? "None" : user_data.default_license)
-      const privacy = template.rules.privacy ? template.rules.privacy : user_data.default_privacy
+        (template.rules.privacy === PRIVATE_LOCAL ? "None" : this.$store.getters["user/settings_value"]("default_license"))
+      const privacy = template.rules.privacy ? template.rules.privacy : this.$store.getters["user/settings_value"]("default_privacy")
 
       const location = init.location || null
 

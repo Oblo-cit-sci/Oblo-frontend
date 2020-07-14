@@ -91,10 +91,10 @@
     "asp": {
       "location_privacy": {
         "label": "Location privacy",
-        "descr": "Specify the settings for the protection of the exact locations of your entries",
+        "description": "Specify the settings for the protection of the exact locations of your entries",
         "options": {
-          "exact": "Exact location",
-          "random": "Randomly moved"
+          "exact_location": "Exact location",
+          "randomly_moved": "Randomly moved"
         }
       }
     },
@@ -185,7 +185,8 @@
   },
   "comp": {
     "notification_banner": {
-      "complete_profile": "Complete your Profile"
+      "complete_profile": "Complete your Profile",
+      "complete_domain_aspects": "Answer some {domain_name} related questions"
     },
     "multiselect_asp": {
       "min_rule": "not enough items selected",
@@ -298,8 +299,8 @@
     "edit": "edit",
     "save": "save",
     "cancel": "cancel",
-    "entrytype": "entrytype",
-    "tag": "tag | tags",
+    "entrytype": "Entrytype",
+    "tag": "Tag",
     "_global.asp_location_privacy.labal": "Location privacy",
     "_global.asp_location_privacy.descr": "Specify the settings for the protection of the exact locations of your entries"
   }

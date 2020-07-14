@@ -129,7 +129,7 @@
           return this.aspect.attr.alternative.attr.mode || this.mode
       },
       disable() {
-        return this.condition_fail || (this.aspect.attr && this.aspect.attr.disable)
+        return this.condition_fail || this.$_.get(this.aspect.attr, "disable", false)
       },
       has_action() {
         return this.aspect.attr.hasOwnProperty("action")

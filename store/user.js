@@ -57,6 +57,11 @@ export const getters = {
   },
   settings(state) {
     return state.settings
+  },
+  settings_value(state) {
+    return (settings_key) => {
+      return state.settings[settings_key]
+    }
   }
 }
 

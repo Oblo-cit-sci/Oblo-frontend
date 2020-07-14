@@ -29,10 +29,11 @@ import {check_str_is_uuid, printDate} from "~/lib/util";
 import {TEMPLATES_TYPE} from "~/store/templates";
 import {USER_GET_REGISTERED_NAME} from "~/store/user"
 import EntryPagesMixin from "~/components/entry/EntryPagesMixin"
+import AspectListMixin from "~/components/global/AspectListMixin"
 
 export default {
   name: "EntryMixin",
-  mixins: [EntryPagesMixin],
+  mixins: [EntryPagesMixin, AspectListMixin],
   props: {
     passed_uuid: {
       type: String
@@ -113,19 +114,6 @@ export default {
     },
     template_slug() {
       return this.entry.template.slug
-    },
-    base_cols() {
-      if (this.$route.name === "entry") {
-        if (this.$vuetify.breakpoint.smAndDown) {
-          return 12
-        }
-        if (this.$vuetify.breakpoint.mdAndDown) {
-          return 10
-        } else {
-          return 8
-        }
-      } else
-        return 12
     },
     template() {
       return this.$store.getters[TEMPLATES_TYPE](this.template_slug)
