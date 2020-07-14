@@ -10,19 +10,13 @@
       :disabled="disable"
       :disabled_text="disabled_text"
       :mode="real_mode")
-    v-switch(v-if="has_alternative && mode === 'edit'"
-      v-model="use_regular"
-      hideDetails
-      :label="use_regular ? regular_value_text: alternative_value_text"
-      color="primary")
-    div(v-if="mode === 'view' && !use_regular") {{alternative_value_text}}
     component(
-      v-if="use_regular && !disable"
+      v-if="!disable"
       :is="aspectComponent(aspect, mode)"
       :mvalue="mvalue"
       :aspect="aspect"
       :aspect_loc="aspect_loc"
-      :disabled="regular_disable"
+      :disabled="disable"
       :mode="real_mode"
       :extra="extra"
       v-bind="extra"
@@ -31,17 +25,6 @@
       v-on:aspectAction="$emit('aspectAction',$event)")
     div(v-if="has_action && edit")
       AspectAction(:aspect="aspect" :mvalue="mvalue" :extra="extra")
-    div(v-if="!use_regular && aspect.attr.alternative !== undefined")
-      Title_Description(:aspect="aspect.attr.alternative")
-      component(
-        :is="aspectComponent(alternative, mode)"
-        :value="value"
-        :aspect="alternative"
-        :aspect_loc="aspect_loc"
-        v-bind="extra"
-        v-bind:aspect="aspect.attr.alternative"
-        v-on:update_value="update_value($event)"
-        :mode="alt_mode")
 </template>
 
 <script>
@@ -73,7 +56,6 @@
     },
     created() {
       // todo no idea, why the shortcut below does not work
-      // console.log("c", this.aspect)
       // console.log("aspect create", this.aspect.name, this.value)
       if (!this.has_value) {
         console.log("has no value", this.aspect.name)
@@ -112,30 +94,11 @@
         } else
           return this.mode
       },
-      regular_value_text() {
-        // TODO 1. should be deprecated
-        return this.aspect.attr["alternative-true"] ||
-          this.aspect.attr.alternative["regular_text"] || "regular value"
-      },
-      alternative_value_text() {
-        // TODO 1. should be deprecated
-        return this.aspect.attr["alternative-false"] ||
-          this.aspect.attr.alternative["alternative_text"] || "alternative value"
-      },
-      alt_mode() {
-        if (this.fixed_value)
-          return VIEW
-        else
-          return this.aspect.attr.alternative.attr.mode || this.mode
-      },
       disable() {
         return this.condition_fail || this.$_.get(this.aspect.attr, "disable", false)
       },
       has_action() {
         return this.aspect.attr.hasOwnProperty("action")
-      },
-      regular_disable() {
-        return this.disable || !this.use_regular
       },
       disabled_text() {
         if (this.condition_fail) {
@@ -148,11 +111,7 @@
         return aspect_loc_str(this.$_.tail(this.aspect_loc))
       },
       fixed_value() {
-        if (this.use_regular) {
-          return this.aspect.attr.hasOwnProperty("value")
-        } else {
-          return this.aspect.attr.alternative.attr.hasOwnProperty("value")
-        }
+        return this.aspect.attr.hasOwnProperty("value")
       },
       invisible_class() {
         //console.log(this.aspect.name "inv", this.aspect.attr.hasOwnProperty("visible") )

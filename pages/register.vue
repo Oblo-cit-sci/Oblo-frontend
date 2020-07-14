@@ -9,7 +9,11 @@
         @update:error="a.error = $event"
         :extra="{clearable:false}"
         mode="edit")
-    v-btn.m-4(@click='submit' x-large :disabled="any_invalid || submitStatus === 'PENDING'" :loading="submit_loading" color='success') {{$t('register.btn_register')}}
+    v-checkbox(v-model="agree")
+      template(v-slot:label)
+        div I agree with the &nbsp;
+          a(target="_blank" href="/about#terms_of_use" @click.stop) terms of use
+    v-btn.m-4(@click='submit' rounded large :disabled="any_invalid || submitStatus === 'PENDING'" :loading="submit_loading" color='success') {{$t('register.btn_register')}}
     v-alert(:value='errorMsg !== null' type='error' prominent) {{errorMsg}}
 </template>
 
@@ -31,23 +35,24 @@
     components: {Aspect},
     mixins: [validationMixin, TriggerSnackbarMixin, LoginMixin, TypicalAspectMixin, FixDomainMixin],
     data() {
-      const password =  this.asp_password()
+      const password = this.asp_password()
       return {
         aspects: {
           registered_name: this.asp_registered_name(),
           email: this.asp_email(),
           password: password,
-          password_confirm: this.asp_password_confirm(password, "repeat")
+          password_confirm: this.asp_password_confirm(password, "repeat"),
         },
         submitStatus: null,
         errorMsg: null,
-        submit_loading: false
+        submit_loading: false,
+        agree: false
       }
     },
     computed: {
       any_invalid() {
         // todo could also have  '|| !a.value'  but we should then be able to pass down the rules to the selectes
-        return this.$_.some(this.aspects, (a) => a.hasOwnProperty("error") && a.error)
+        return this.$_.some(this.aspects, (a) => a.hasOwnProperty("error") && a.error) || !this.agree
       }
     },
     methods: {
@@ -64,7 +69,7 @@
           settings
         }).then(({data}) => {
           if (data.data) {
-            this.$router.push({name:PAGE_LOGIN})
+            this.$router.push({name: PAGE_LOGIN})
             this.ok_snackbar(data.data)
           } else {
             this.errorMsg = data.error.msg

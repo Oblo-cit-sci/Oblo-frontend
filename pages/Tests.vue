@@ -11,25 +11,22 @@
           v-text-field(placeholder="cool cool cool")
 
     v-menu(:close-on-content-click="false"
-        :nudge-width="200"
-        offset-y)
+      :nudge-width="200"
+      offset-y)
       template(v-slot:activator="{ on, attrs }")
         v-btn(v-on="on" elevation="2" ) types
           v-icon mdi-chevron-down
       v-card
         v-card-title hi
+        v-card-text this is nice, or no?
+      v-card
+        v-card-title hi2
+        v-card-text this is nice, or no?
 
-    v-text-field(
-      prepend-icon="mdi-file-tree"
-      @click:prepend="test"
-      hide-details
-      readonly
-      solo
-      clearable
-      flat
-      value="cool > na > nono" )
     div
       v-skeleton-loader(type="image" width="300" height="300")
+    div
+      AspectSet(:aspects="aspects")
 </template>
 
 <script>
@@ -49,13 +46,14 @@
 
   import pkg from "~/package"
   import GeocodingMixin from "~/components/map/GeocodingMixin"
+  import AspectSet from "~/components/AspectSet"
 
   export default {
     name: "Tests",
     mixins: [TriggerSnackbarMixin, GeocodingMixin],
-    components: {Aspect, OptionsAspect, AspectDialog},
+    components: {AspectSet, Aspect, OptionsAspect, AspectDialog},
     async created() {
-      const location_ = {"lon":24.550781249998096,"lat":47.405785290060095}
+      const location_ = {"lon": 24.550781249998096, "lat": 47.405785290060095}
       // const data = await this.rev_geocode(location_)
       // console.log(data)
       // const loc_search = await this.geocode("Parva")
@@ -64,7 +62,7 @@
     data() {
       return {
         chip_data: {
-          color:"info"
+          color: "info"
         },
         val: {value: null},
         o_a: {
@@ -95,7 +93,24 @@
             {value: "licci", text: "LICCI", icon: "images/domains/licci/icon.png"},
             {value: "conecte", text: "Conecte", icon: "images/domains/conecte/icon.png"},
           ]
-        }
+        },
+        aspects: [
+          {
+            name: "A",
+            type: "str",
+            attr: {
+              max: 90
+            }
+          },
+          {
+            name: "B",
+            type: "int",
+            attr: {
+              min:1,
+              max:100
+            }
+          }
+        ]
       }
     },
     computed: {
@@ -127,18 +142,18 @@
 
 <style scoped>
 
-    .bg {
-      background: #ff0000;
-    }
+  .bg {
+    background: #ff0000;
+  }
 
-    .bg2 {
-      background: #ffff00;
-    }
+  .bg2 {
+    background: #ffff00;
+  }
 
-    .col_btn {
-      max-width: 100%;
-      margin: 6px auto;
-    }
+  .col_btn {
+    max-width: 100%;
+    margin: 6px auto;
+  }
 
   .v-expansion-panel--active > .v-expansion-panel-header {
     min-height: 36px;

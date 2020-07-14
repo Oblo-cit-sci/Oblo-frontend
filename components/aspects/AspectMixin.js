@@ -1,4 +1,4 @@
-import {EDIT, ENTRY, LIST_INDEX, REGULAR, VIEW} from "~/lib/consts";
+import {EDIT, ENTRY, LIST_INDEX, VIEW} from "~/lib/consts";
 import {
   aspect_default_value,
   aspect_loc_str2arr,
@@ -18,7 +18,7 @@ export default {
       required: true
     },
     ext_value: {
-      type: [Object, String, Number, Array]
+      type: [Object, String, Number, Array, Boolean]
     },
     mode: { // todo well, this is gonna be messy
       type: String,
@@ -40,20 +40,11 @@ export default {
   },
   methods: {
     // debounce to not to store contantly while typing
-    update_value(raw_value, regular = true, comes_unpacked = true) {
+    update_value(raw_value,  comes_unpacked = true) {
       // console.log("received update value", this.aspect.name)
       if (raw_value === undefined)
         raw_value = null
-      //console.log("saving", eveventent, this.aspect.name)
-      // switch to unregular value
-      if (this.has_alternative && regular) {
-        if (this.aspect.attr.hasOwnProperty("alternative-activate-on-value")) {
-          if (raw_value === this.aspect.attr["alternative-activate-on-value"]) {
-            regular = false
-            raw_value = aspect_raw_default_value(this.aspect.attr.alternative)
-          }
-        }
-      }
+
       let up_value = null
       if (this.aspect.attr.unpacked) {
         up_value = raw_value
@@ -63,9 +54,6 @@ export default {
           up_value = pack_value(raw_value)
         } else {
           up_value = raw_value
-        }
-        if (!regular) {
-          up_value.regular = false
         }
       }
       if (this.aspect_loc) {
@@ -114,34 +102,12 @@ export default {
     has_value() {
       return this.mvalue !== undefined || false
     },
-    has_alternative() {
-      return this.aspect.attr.hasOwnProperty("alternative")
-    },
     readOnly() {
       return this.mode === VIEW
-    },
-    alternative() {
-      return this.aspect.attr.alternative
     },
     is_unpacked() {
       // console.log("unpacked?", this.aspect.name, ld.get(this.aspect, "attr.unpacked", false))
       return this.$_.get(this.aspect, "attr.unpacked", false)
-    },
-    use_regular: {
-      get() {
-        if (this.is_unpacked)
-          return true
-        else
-          return this.mvalue.hasOwnProperty("regular") ? this.mvalue.regular : true
-      },
-      set(value, old_value) {
-        // console.log("set regular")
-        if (value) {
-          this.update_value(aspect_raw_default_value(this.aspect))
-        } else {
-          this.update_value(aspect_raw_default_value(this.alternative), false)
-        }
-      }
     },
     mvalue: function () {
       if (!this.aspect_loc) {
@@ -186,9 +152,7 @@ export default {
           ref_value = pack_value(aspect_raw_default_value(this.aspect))
         }
 
-        if (ref_value.hasOwnProperty(REGULAR)) {
-          delete ref_value[REGULAR]
-        }
+
         let stored_value = this.$store.getters[ENTRIES_VALUE](this.aspect_loc)
         if (this.aspect.attr.ref_update === "create") {
           if (this.$_.isEqual(stored_value, aspect_default_value(this.aspect)) &&

@@ -88,6 +88,7 @@
   import LayoutMixin from "~/components/global/LayoutMixin"
   import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
   import FixDomainMixin from "~/components/global/FixDomainMixin"
+  import goToMiddleware from "~/components/global/goToMiddleware"
 
   export default {
     name: "profile",
@@ -98,7 +99,7 @@
       Aspect,
       Taglist
     },
-    mixins: [PersistentStorageMixin, TriggerSnackbarMixin, LayoutMixin, TypicalAspectMixin, FixDomainMixin],
+    mixins: [PersistentStorageMixin, TriggerSnackbarMixin, LayoutMixin, TypicalAspectMixin, FixDomainMixin, goToMiddleware],
     data() {
       const new_pwd = this.asp_password(null, "new")
       return {
@@ -129,11 +130,6 @@
         // todo here call a function that assigns external conditions
       }
       this.reset_edit_values()
-    },
-    mounted() {
-      if (this.$route.hash === "#domains") {
-        this.$vuetify.goTo("#domains")
-      }
     },
     // todo this could help us to get the map location, but not sure where to get it in the lifecycle
     beforeRouteEnter(to, from, next) {

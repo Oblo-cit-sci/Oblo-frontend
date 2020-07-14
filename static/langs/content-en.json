@@ -48,6 +48,7 @@
   "login": {
     "h1": "@.capitalize:w.login",
     "btn_login": "@:w.login",
+    "btn_resend_mail": "Resend verification email",
     "btn_forgot": "Forgot password?"
   },
   "profile": {
