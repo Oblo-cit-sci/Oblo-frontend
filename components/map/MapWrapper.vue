@@ -99,8 +99,12 @@
         entries_loaded: "map/entries_loaded",
         all_map_entries: "map/entries",
         legend_selection: "map/get_filter_config",
-        layer_status: "map/layer_status"
+        layer_status: "map/layer_status",
+        all_uuids: "search/get_all_uuids",
       }),
+      get_all_uuids() {
+        return this.all_uuids()
+      },
       layer_aspectdialog_data() {
         return {
           aspect: {
@@ -171,7 +175,6 @@
       },
       templates_color_list() {
         const templates = this.$store.getters[TEMPLATES_OF_DOMAIN](this.domain)
-        // console.log(templates)
         let template_color_arr = []
         for (let temp of templates) {
           if (temp.rules.map) {
@@ -603,16 +606,18 @@
         })
       },
       update_filtered_source() {
-        // console.log("update_filtered_source")
-        if (!this.entries_loaded) {
+        if (!this.entries_loaded || !this.map_loaded) {
           return
         }
+        // console.log("update_filtered_source")
         // console.log(this.map.getSource("all_entries_source"))
         const included_templates = this.legend_selection.map(s => s.value)
         const filtered_entries = {
           type: "FeatureCollection",
-          features: this.entries.features.filter(e => included_templates.includes(e.properties.template) ||
+          features: this.entries.features.filter(e => this.get_all_uuids.includes(e.properties.uuid) ||
             (e.properties.uuid === this.selected_entry))
+          // features: this.entries.features.filter(e => included_templates.includes(e.properties.template) ||
+          //   (e.properties.uuid === this.selected_entry))
         }
         if (!this.map.getSource("all_entries_source")) {
           this.map.addSource("all_entries_source", {
@@ -721,6 +726,9 @@
             this.set_map_control("navigation", true)
           }
         }
+      },
+      get_all_uuids(uuids) {
+        this.update_filtered_source()
       }
     }
   }
