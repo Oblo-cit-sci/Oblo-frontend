@@ -280,3 +280,16 @@ html {
   margin-top: 1.6%;
   margin-bottom: 1.6%;
 }
+
+.custom-card .v-card__actions {
+  padding: 0;
+}
+
+.custom-card .main_col {
+  padding: 4px 12px 8px 12px;
+}
+
+.custom-card .custom-chip-group {
+  margin-top: 10px !important;
+  margin-bottom: 0 !important;
+}

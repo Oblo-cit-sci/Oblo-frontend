@@ -105,7 +105,8 @@
         }
       },
       show_map() {
-        return this.$route.name !== "domain" && (this.is_edit_mode && this.map_location_input_option || this.is_view_mode)
+        console.log("show_map", this.mode)
+        return this.$route.name !== "domain" && ((this.is_editable_mode) && this.map_location_input_option || this.is_view_mode)
       },
       ...mapGetters({settings: USER_SETTINGS}),
       privacy_setting() {
@@ -364,7 +365,7 @@
         }
         value = this.set_public_location_from_option(value, option)
         this.update_value(value)
-        console.log("-->", value.coordinates)
+        console.log("-->", value)
         // this.public_location_precision = PREC_OPTION_RANDOM
       },
       update_marker(flyTo = false) {
@@ -464,11 +465,8 @@
           }
         }
       },
-      complete_value_from_features(value, features) {
-        return value
-      },
       value(value) {
-        // console.log("location aspect value watch", value)
+        console.log("location aspect value watch", value)
         if (!value) {
           this.reset()
           return

@@ -4,7 +4,7 @@
   v-card.mx-auto.custom-card(v-else outlined :style="border_style")
     v-container.pt-0.pb-0
       v-row
-        v-col(v-bind:class="[show_image ? 'col-md-8' : 'col-md-12']")
+        v-col.main_col(v-bind:class="[show_image ? 'col-md-8' : 'col-md-12']")
           v-row
             v-col.py-1(class="entry-meta" cols=12)
               p.subtitle-1.mb-1
@@ -15,10 +15,10 @@
                     v-icon(:class="default_action_icon")
           v-row.pl-3(:style="{'text-align': 'right', 'font-size':'80%'}")
             span.my-auto(v-if="show_date") {{$t("comp.entrypreview.created")}} {{entry_date}} {{is_draft ? $t('comp.entrypreview.draft') : ""}}
-          v-row.pl-3.py-1
-            MetaChips(v-if="show_meta_aspects" :meta_aspects="meta_aspects")
+          v-row.pl-3.py-1(v-if="show_meta_aspects")
+            MetaChips(:meta_aspects="meta_aspects")
           v-row.pl-3(justify="space-between")
-            v-col.py-0
+            v-col.py-0.pl-0
               ActorChip(:actor="creator")
           v-row.pl-3(v-if="show_tags")
             Taglist(:tags="tags" :slide="true")
