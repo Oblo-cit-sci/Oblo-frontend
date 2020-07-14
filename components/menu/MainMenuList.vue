@@ -38,7 +38,7 @@
   let require_admin = ["menu.admin"]
   let hide_no_be = ["menu.register", "menu.login"] // if not connected out and if logged in out
   let show_inDev = ["menu.tests"] //, "Types", "Entrytypes", "Aspectbuild"]
-
+  let show_in_fixed_domain = ["menu.about"]
 
   export default {
     name: "MainMenuList",
@@ -71,9 +71,14 @@
         }
         if (process.env.NODE_ENV !== "development") {
           other_pages = other_pages.filter(p => !show_inDev.includes(p.t_title))
-        } else {
-          //console.log("in DEV")
         }
+
+        if(this.is_fixed_domain) {
+          // other_pages = other_pages.filter(p => !show_in_fixed_domain.includes(p.t_title))
+        } else {
+          other_pages = other_pages.filter(p => !show_in_fixed_domain.includes(p.t_title))
+        }
+
         return [{name: "home", items: [home]},
           {name: "other", items: other_pages}]
       },
