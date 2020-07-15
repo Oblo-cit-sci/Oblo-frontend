@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-expansion-panels(:style="{width:'300px', opacity:'0.8'}" v-model="panel_state")
+  v-expansion-panels(:style="{'width':'200px', opacity:'0.8'}" v-model="panel_state")
     v-expansion-panel
       v-expansion-panel-header.px-3.py-1 {{$t("comp.legend.legend")}}
       v-expansion-panel-content.px-2.py-1.no-wrap
@@ -48,10 +48,12 @@
             new_conf.push(t)
           }
           this.$store.commit("map/set_filter_config", new_conf)
+          this.template2filterlist_config(new_conf)
         }
       }
     },
     created() {
+      // this should go somewhere else before.
       if (this.$_.isEmpty(this.selected.length === 0)) {
         const domain_data = this.$store.getters["domain_by_name"](this.domain_name)
         const overlay_menu = this.$_.get(domain_data, "map.overlay_menu")
@@ -77,9 +79,22 @@
           new_conf.push(t)
         }
         this.$store.commit("map/set_filter_config", new_conf)
+        this.template2filterlist_config(new_conf)
       },
       force_close() {
         this.panel_state = false
+      },
+      template2filterlist_config(config) {
+        const act_config = this.$store.getters["search/get_act_config"].filter(cf => cf.name !== "template")
+        // console.log(act_config)
+          act_config.push({
+            name:"template",
+            t_label:"w.entrytype",
+            value: config.map(cf => cf.value),
+            text: config.map(cf => cf.text).join(", ")
+          })
+        console.log("template2filterlist_config", config)
+        this.$store.commit("search/set_act_config", act_config)
       }
     }
   }

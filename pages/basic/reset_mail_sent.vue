@@ -1,11 +1,11 @@
 <template lang="pug">
   v-flex(xs12 sm10 md6)
-    h3 Check your email
+    h3 {{$t("reset_mail_sent.h1")}}
     p
-      div We've sent an email to {{obsure_email}}. Click the link in the email to reset your password.
-      div If you don't see the email, check other places it might be, like your junk, spam, social, or other folders.
+      div {{$t("reset_mail_sent.p1")}}
+      div {{$t("reset_mail_sent.p2")}}
     div.mt-3
-      nuxt-link(href="/basic/init_password_reset") I didn't receive the email
+      nuxt-link(href="/basic/init_password_reset") {{$t("reset_mail_sent.a")}}
 </template>
 
 <script>

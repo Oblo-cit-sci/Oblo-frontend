@@ -1,37 +1,42 @@
 <template lang="pug">
   div(v-if="!readOnly")
-    v-autocomplete(v-if="direct_select"
+    v-autocomplete(v-if="direct_select && is_empty"
       outlined
       single-line
       :disabled="disabled"
       clearable
       :items="flat_options"
+      return-object
       :value="value"
       :hide-details="hide_details"
-      @change="update_value($event)"
+      @change="auto_select($event)"
       :aspect_loc="aspect_loc"
       :prependIcon="prependIcon"
       @click:prepend="openDialog()")
-    div(v-if="!direct_select")
-      v-container(flow)
-        v-row
-          v-col(cols=2)
-            v-btn(:color="button_color" @click="openDialog")
-              v-icon {{prependIcon}}
-              span {{button_text}}
-          v-col(cols=9)
-            div.pl-3 {{value_text}}
-          v-col(cols=1)
-            v-btn(icon @click="clear" v-show="value")
-              v-icon mdi-window-close
+    div(v-if="!direct_select || !is_empty")
+      v-textarea(
+        :flat="!is_empty"
+        :solo="!is_empty"
+        hide-details
+        readonly
+        :placeholder="$t('comp.treeselect_asp.click_to_select')"
+        auto-grow
+        :rows="1"
+        clearable
+        :prepend-icon="prependIcon"
+        @click:prepend="openDialog"
+        @click:clear="clear"
+        @click="open_if_empty"
+        :value="value_text")
     v-dialog(width="800" v-model="dialogOpen" height="100%")
       TreeleafPicker(
         :tree="tree"
         :attr="aspect.attr"
         :data_source="data_source"
+        v-model="int_value"
         @selected="selected($event)"
         :disabled="disabled"
-        :keep_selection="true")
+        :keep_selection="false")
   div(v-else)
     div {{value_text}}
 </template>
@@ -43,6 +48,7 @@
   import {EDIT} from "~/lib/consts";
   import AspectComponentMixin from "./AspectComponentMixin";
   import GeneralSelectMixin from "~/components/aspect_utils/GeneralSelectMixin"
+  import {unpack} from "~/lib/aspect"
 
   export default {
     name: "TreeSelectAspect",
@@ -70,7 +76,18 @@
           this.dialogOpen = true
         }
       },
+      auto_select(value) {
+        console.log("autoselect", value)
+        const result = this.$_.concat((value.parents || []).map(v => ({value:v, text:v})), {value:value.value, text:value.value})
+        this.update_value(result)
+      },
+      open_if_empty() {
+        if(!this.disabled && this.is_empty) {
+          this.dialogOpen = true
+        }
+      },
       selected(val) {
+        console.log("TSA selected", val)
         this.dialogOpen = false;
         if (val) {
           this.update_value(val.value)
@@ -92,13 +109,26 @@
         }
         // console.log(this.tree, options.include_levels)
         this.flat_options = flatten_tree_to_options(this.tree, options)
+        console.log(this.flat_options[0].parents)
       },
       clear() {
-        this.update_value(null)
+        this.update_value([])
+        // this.va = []
         this.$emit("aspectAction", {action:"clear"})
       }
     },
     computed: {
+      is_empty() {
+        return this.$_.isEmpty(this.value)
+      },
+      int_value: {
+        get: function () {
+          return this.value
+        },
+        set: function (val) {
+          this.update_value(val)
+        }
+      },
       prependIcon() {
         return this.readOnly ? '' : 'mdi-file-tree'
       },
@@ -110,23 +140,14 @@
           return this.aspect.attr.direct_select
         }
       },
-      button_color() {
-        if(this.value) {
-          return null
-        } else {
-          return "success"
-        }
-      },
-      button_text() {
-        if (this.value)
-          return ""
-        else
-          return "click to select"
-      },
       value_text() {
         if (this.value) {
           if(this.value.constructor === Array) {
-            return this.value.map(v => v.text).join(" \u21D2 ")
+            return this.value.map(v => {
+              let base = v.text
+              base += v.extra_value ? base + " / " + unpack(v.extra_value) : ""
+              return base
+            }).join(" \u21D2 ")
           } else {
             return this.value
           }

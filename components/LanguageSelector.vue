@@ -10,10 +10,11 @@
 
 <script>
   import {USER_LOGGED_IN} from "~/store/user"
+  import SettingsChangeMixin from "~/components/global/SettingsChangeMixin"
 
   export default {
     name: "LanguageSelector",
-    mixins: [],
+    mixins: [SettingsChangeMixin],
     components: {},
     props: {},
     data() {
@@ -27,7 +28,7 @@
     computed: {
       available_languages() {
         // todo should come from the server
-        const available_languages = ["en", "de", "es", "fr"]
+        const available_languages = ["en", "es"] //["en", "de", "es", "fr"]
         return available_languages.map(l => ({
           "value": l,
           "text": (this.$t("lang." + l))
@@ -35,11 +36,10 @@
       },
       language: {
         get: function () {
-          // console.log("lang get", this.$store.getters["app/ui_language"] || "en")
-          return this.$store.getters["app/ui_language"] || "en"
+          return this.setting("ui_language")
         },
         set: function (lang) {
-          this.$store.commit("app/ui_language", lang)
+          this.set_settings_value("ui_language", lang)
         }
       },
       label() {
@@ -49,12 +49,7 @@
     watch: {
       language(lang) {
         this._i18n.locale = lang
-        if (this.$store.getters[USER_LOGGED_IN]) {
-          // console.log(this.$store.getters["user/settings"]["ui_language"], lang)
-          if (this.$store.getters["user/settings"]["ui_language"] !== lang) {
-            this.$api.post_actor__me({settings: {ui_language: lang}})
-          }
-        } else {
+        if (!this.$store.getters[USER_LOGGED_IN]) {
           this.$api.axios.defaults.headers.common["Content-Language"] = lang + "-" + lang.toUpperCase()
         }
       }

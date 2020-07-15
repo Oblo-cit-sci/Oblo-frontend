@@ -1,19 +1,31 @@
 <template lang="pug">
   .fullsize
-    <!--    .buttons-->
-    <!--      v-btn(fab @click="set_dl=true" x-small dark)-->
-    <!--        v-icon mdi-camera-->
-    .buttongroup.shift_anim(:style="button_group_shift")
+    <!--      .buttons-->
+    <!--        v-btn(fab @click="set_dl=true" x-small dark)-->
+    <!--          v-icon mdi-camera-->
+    div(v-if="show_overlay")
+      .buttongroup.shift_anim(:style="button_group_shift")
+        v-btn(dark fab large color="blue" @click="switch_menu_open")
+          v-icon mdi-menu
+        v-btn(dark color="green" fab @click="open_layer_dialog")
+          v-icon mdi-layers-outline
+      .central_button
+        v-container.shift_anim(:style="center_button_shift")
+          v-btn(
+            :style="{transform: 'translateX(-50%)'}"
+            v-bind="bp_based_main_create_btn_props"
+            color="success"  @click="create_from_main_template")
+            span(v-if="show_main_template_create_text") {{main_template.create_text}}
+            v-icon mdi-plus
+          v-btn.additional_templates_button(dark x-small absolute bottom fab v-if="can_create_multiple_etypes"
+            :style="additional_template_button_shift"
+            @click="$emit('create_entry')")
+            v-icon mdi-dots-horizontal
+      .overlay_menu
+        TemplateLegend(:domain_name="domain" ref="legendComponent")
+    .buttongroup.shift_anim(v-else-if="menu_state === 0" :style="button_group_shift")
       v-btn(dark fab large color="blue" @click="switch_menu_open")
         v-icon mdi-menu
-      v-btn(dark color="green" fab @click="open_layer_dialog")
-        v-icon mdi-layers-outline
-    .central_button
-      v-btn.shift_anim(large rounded color="success" :style="center_button_shift" @click="create_from_main_template")
-        b {{main_template.create_text}}
-        v-icon mdi-plus
-    .overlay_menu
-      TemplateLegend(:domain_name="domain" ref="legendComponent")
     AspectDialog(v-bind="aspectdialog_data" @update:dialog_open="aspectdialog_data.dialog_open = $event" :ext_value="layer_status" @update:ext_value="aspect_dialog_update($event)")
     client-only
       mapbox.fullSize(
@@ -40,6 +52,7 @@
   import AspectDialog from "~/components/aspect_utils/AspectDialog"
   import {transform_options_list} from "~/lib/options"
   import {LAYER_BASE_ID} from "~/lib/map_utils"
+  import EntryCreateList from "~/components/EntryCreateList"
 
   const cluster_layer_name = LAYER_BASE_ID + '_clusters'
 
@@ -60,7 +73,7 @@
   export default {
     name: "MapWrapper",
     mixins: [MapIncludeMixin, DomainMapMixin, HasMainNavComponentMixin],
-    components: {AspectDialog, TemplateLegend, Mapbox},
+    components: {EntryCreateList, AspectDialog, TemplateLegend, Mapbox},
     props: {
       height: {
         type: [String, Number],
@@ -86,15 +99,20 @@
         entries_loaded: "map/entries_loaded",
         all_map_entries: "map/entries",
         legend_selection: "map/get_filter_config",
-        layer_status: "map/layer_status"
+        layer_status: "map/layer_status",
+        all_uuids: "search/get_all_uuids",
       }),
+      get_all_uuids() {
+        return this.all_uuids()
+      },
       layer_aspectdialog_data() {
         return {
           aspect: {
             name: "Visible layers",
             type: "multiselect",
             attr: {
-              unpacked: true
+              unpacked: true,
+              force_view: "list"
             },
             items: this.available_layers
           },
@@ -103,9 +121,22 @@
           dialog_open: true
         }
       },
+      show_overlay() {
+        return !this.menu_open || this.$vuetify.breakpoint.mdAndUp
+      },
+      show_main_template_create_text() {
+        return !this.menu_open || this.$vuetify.breakpoint.lgAndUp
+      },
+      bp_based_main_create_btn_props() {
+        if (this.show_main_template_create_text) {
+          return {"rounded": true, "large": true}
+        } else {
+          return {"fab": true}
+        }
+      },
       button_group_shift() {
         let shift = "0.5%"
-        if (!this.display_mdDown && this.menu_open) {
+        if (this.menu_open) {
           shift = this.menu_width + "px"
         }
         return {
@@ -113,12 +144,26 @@
         }
       },
       center_button_shift() {
+        // console.log(this.$vuetify.breakpoint.name)
         let shift = "0"
-        if (!this.display_mdDown && this.menu_open) {
+        if (this.menu_open) {
           shift = this.menu_width / 2 + "px"
         }
         return {
-          "left": shift
+          position: "absolute",
+          left: shift
+        }
+      },
+      additional_template_button_shift() {
+        // todo 110 is very magic, depends on the length of the main create button text
+        let shift = "110px"
+        if (this.menu_open && !this.show_main_template_create_text) {
+          shift = "40px"
+        }
+        // console.log("shift", shift)
+        return {
+          position: "absolute",
+          left: shift
         }
       },
       entries() {
@@ -131,7 +176,6 @@
       },
       templates_color_list() {
         const templates = this.$store.getters[TEMPLATES_OF_DOMAIN](this.domain)
-        // console.log(templates)
         let template_color_arr = []
         for (let temp of templates) {
           if (temp.rules.map) {
@@ -191,7 +235,9 @@
     },
     methods: {
       click(e, m) {
-        this.$refs.legendComponent.force_close();
+        // check since on small screens legend might not be there
+        if (this.$refs.legendComponent)
+          this.$refs.legendComponent.force_close()
       },
       open_layer_dialog() {
         // to much computation?
@@ -316,9 +362,16 @@
                   coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
                 }
                 // this.act_hoover_uuid = feature.properties.uuid
+                // todo temp solution
+                let popup_html = ""
+                if (features.length <= 5) {
+                  popup_html = features.map(f => "<div>" + f.properties.title + "</div>").join("")
+                } else {
+                  popup_html = `${features.length} entries`
+                }
                 this.act_popup = new this.mapboxgl.Popup()
                   .setLngLat(coordinates)
-                  .setText(features.map(f => f.properties.title).join(","))
+                  .setHTML(popup_html)
                 this.act_popup.addTo(this.map)
                 this.last_zoom = this.map.getZoom()
               }).catch(err => {
@@ -461,8 +514,10 @@
             )
             this.act_hoover_id = null
             this.act_hoover_uuid = null
-            this.act_popup.remove()
-            this.act_popup = null
+            if (this.act_popup) {
+              this.act_popup.remove()
+              this.act_popup = null
+            }
           }
         })
         this.map.on("click", entries_layer_name, (e) => {
@@ -552,16 +607,18 @@
         })
       },
       update_filtered_source() {
-        // console.log("update_filtered_source")
-        if (!this.entries_loaded) {
+        if (!this.entries_loaded || !this.map_loaded) {
           return
         }
+        // console.log("update_filtered_source")
         // console.log(this.map.getSource("all_entries_source"))
         const included_templates = this.legend_selection.map(s => s.value)
         const filtered_entries = {
           type: "FeatureCollection",
-          features: this.entries.features.filter(e => included_templates.includes(e.properties.template) ||
+          features: this.entries.features.filter(e => this.get_all_uuids.includes(e.properties.uuid) ||
             (e.properties.uuid === this.selected_entry))
+          // features: this.entries.features.filter(e => included_templates.includes(e.properties.template) ||
+          //   (e.properties.uuid === this.selected_entry))
         }
         if (!this.map.getSource("all_entries_source")) {
           this.map.addSource("all_entries_source", {
@@ -661,6 +718,18 @@
       },
       legend_selection(selection) {
         this.update_filtered_source()
+      },
+      menu_open(open) {
+        if (this.$vuetify.breakpoint.smAndDown) {
+          if (open)
+            this.set_map_control("navigation", false)
+          else {
+            this.set_map_control("navigation", true)
+          }
+        }
+      },
+      get_all_uuids(uuids) {
+        this.update_filtered_source()
       }
     }
   }
@@ -705,5 +774,11 @@
   .shift_anim {
     transition: left 0.2s;
     transition-timing-function: ease-out;
+  }
+
+  .additional_templates_button {
+    top: 40px;
+    z-index: 30;
+    transform: translateX(-50%)
   }
 </style>

@@ -207,8 +207,8 @@
       "review": "revisar"
     },
     "menucontainer": {
-      "tab_main": "Menú principal",
-      "tab_domain": "Lista de contribuciones"
+      "tab_main": "Menú",
+      "tab_domain": "Lista"
     },
     "image_asp": {
       "no_images": "No hay imágenes"

@@ -4,10 +4,10 @@
       h4.mb-2 {{$t("comp.filterlist.appliead_filters")}}
       v-list(dense)
         v-list-item(v-for="(filter, index) in applied_filters" :key="index")
-          v-list-item-title {{filter.label}}:&nbsp;{{available_filter_label(filter)}}
+          v-list-item-title {{$t(filter.t_label)}}:&nbsp;{{filter.text}}
           v-btn(icon @click="edit_filter(index)")
             v-icon mdi-filter
-          v-btn(icon @click="remove_filter(index)")
+          v-btn(icon @click="remove_filter(index)" :disabled="not_removable(filter)")
             v-icon mdi-window-close
     v-menu
       template(v-slot:activator="{ on: menu }")
@@ -73,6 +73,7 @@
           if (filter.t_label) {
             return this.$tc(filter.t_label)
           } else {
+            console.log(filter)
             console.log("warning. filter should have t_label")
             return filter.name
           }
@@ -81,6 +82,9 @@
         this.active_filter = Object.assign({}, this.filter_option_by_name(name))
         // console.log("active filter", this.active_filter)
         this.dialog_open = true
+      },
+      not_removable(filter) {
+        return filter.name === "template"
       },
       set_filter_value(name, value) {
         const new_value = recursive_unpack2(this.$_.cloneDeep(value))
@@ -96,7 +100,7 @@
         } else {
           new_filters.push({
             "name": this.active_filter.name,
-            "label": this.active_filter.label,
+            "t_label": this.active_filter.t_label,
             "value": new_value,
             "text": text
           })

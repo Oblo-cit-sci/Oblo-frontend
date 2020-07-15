@@ -56,7 +56,7 @@
   import {route_change_query} from "~/lib/util";
   import Filterlist from "~/components/util/Filterlist"
   import {privacy_filter_options} from "~/lib/filter_option_consts"
-  import {QP_D, QP_SEARCH} from "~/lib/consts"
+  import {DOMAIN, QP_D, QP_SEARCH, TEMPLATE} from "~/lib/consts"
 
   const LOG = false
 
@@ -77,6 +77,7 @@
         type: Object
       },
       // filter all entries before
+      // still used?
       search_config: {
         type: Array,
         default: () => []
@@ -108,11 +109,11 @@
       }
       const this_route_data = this.act_relevant_route_data()
       if (!this.$_.isEqual(last_route, this_route_data)) {
-        this.prepend_search = true
+        // this.prepend_search = true
         this.clear()
         this.$store.commit(SEARCH_SET_ROUTE, this_route_data)
         start_search = true
-        this.getEntries()
+        // this.getEntries()
       } else {
         this.prepend_search = true
         this.getEntries(true)
@@ -121,9 +122,13 @@
         this.clear()
         start_search = true
       }
-      if (start_search) {
-        this.getEntries()
-      }
+      // console.log("Search, start_search", start_search)
+      // console.log(this.act_config)
+
+      // wait for filterlist to be initialised which triggers a change...
+      // if (start_search) {
+      //   this.getEntries()
+      // }
     },
     watch: {
       keyword: function (kw) {
@@ -148,6 +153,9 @@
           this.prepend_search = false
           this.$emit("all_received_uuids", this.all_uuids())
         }
+      },
+      act_config(val) {
+        this.getEntries()
       }
     },
     computed: {
@@ -165,20 +173,21 @@
       },
       act_config: {
         get: function () {
+          // console.log("getting act_config")
           return this.$store.getters["search/get_act_config"]
         },
         set: function (val) {
           this.filter_changed = true
           this.$store.commit("search/set_act_config", val)
+          this.filter2maplegend(val)
         }
       },
       searching() {
         return this.get_searching()
-        return is_searching
       },
       search_hint() {
         if (this.keyword && this.keyword.length < this.kw_char_thresh) {
-          return "type 4 characters to trigger search"
+          return this.$t("comp.search.min_chars_rule")
         }
       },
       filtered_entries() {
@@ -186,7 +195,9 @@
         // todo this should just check if QP_D is set and make the filter manual
         // so that drafts are also shown on the profile
         if (this.mixin_domain_drafts && this.is_pure) {
-          const drafts = this.$store.getters[ENTRIES_DOMAIN_DRAFTS_UUIDS](this.mixin_domain_drafts).reverse()
+          const include_types = this.get_filtered_template_slugs()
+          const drafts = this.$store.getters[ENTRIES_DOMAIN_DRAFTS_UUIDS](this.mixin_domain_drafts)
+            .reverse().filter(d => include_types.includes(this.$store.getters["entries/get_entry"](d).template.slug))
           result_entries = drafts.concat(result_entries)
         }
         // console.log("new filtered entries", result_entries)
@@ -209,12 +220,22 @@
         }
       },
       getEntries(before_last = false) {
+        // debugger
         let config = this.searchConfiguration(before_last)
+        // console.log("Search.config", config)
         this.$store.commit(SEARCH_SET_ROUTE, this.act_relevant_route_data())
         this.$store.commit(SEARCH_SET_SEARCHING, true)
         // const prepend = this.entries().length > 0
         debounced_search(this.$api, this.$store, config)
         // TODO would be nice to have the debounced search work with a promise so we do not need the
+      },
+      filter2maplegend(filter_config) {
+        // console.log(filter_config)
+        const template_filter_conf = filter_config.filter(fc => fc.name === "template")[0]
+        this.$store.commit("map/set_filter_config", template_filter_conf.value.map(v => ({
+          value: v,
+          name: "template"
+        })))
       },
       request_more() {
         // console.log("request more", )
@@ -259,6 +280,14 @@
         return {
           path: this.$route.path,
           params: this.$_.pick(this.$route.query, relevant_query_keys)
+        }
+      },
+      get_filtered_template_slugs() {
+        const template_filter_conf = this.act_config.filter(fc => fc.name === "template")[0]
+        if (template_filter_conf) {
+          return template_filter_conf.value
+        } else {
+          return []
         }
       }
     },

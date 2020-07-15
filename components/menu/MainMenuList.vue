@@ -6,6 +6,7 @@
         :to="item.to"
         router
         nuxt
+        :disabled="disabled(item)"
         @click="item.action ? action(item.action) : ''"
         exact)
         v-list-item-icon
@@ -26,6 +27,9 @@
   import {mapGetters} from "vuex"
   import LanguageSelector from "~/components/LanguageSelector"
   import NotificationBanner from "~/components/global/NotificationBanner"
+  import DomainMixin from "~/components/DomainMixin"
+  import URLQueryMixin from "~/components/util/URLQueryMixin"
+  import FixDomainMixin from "~/components/global/FixDomainMixin"
 
   const pkg = require('~/package.json')
 
@@ -34,11 +38,11 @@
   let require_admin = ["menu.admin"]
   let hide_no_be = ["menu.register", "menu.login"] // if not connected out and if logged in out
   let show_inDev = ["menu.tests"] //, "Types", "Entrytypes", "Aspectbuild"]
-
+  let show_in_fixed_domain = ["menu.about"]
 
   export default {
     name: "MainMenuList",
-    mixins: [],
+    mixins: [URLQueryMixin, FixDomainMixin],
     components: {NotificationBanner, LanguageSelector},
     props: {},
     data() {
@@ -67,22 +71,30 @@
         }
         if (process.env.NODE_ENV !== "development") {
           other_pages = other_pages.filter(p => !show_inDev.includes(p.t_title))
-        } else {
-          //console.log("in DEV")
         }
-        if (this.$store.getters["app/fixed_domain"]) {
-          return [
-            {name: "other", items: other_pages}]
+
+        if(this.is_fixed_domain) {
+          // other_pages = other_pages.filter(p => !show_in_fixed_domain.includes(p.t_title))
         } else {
-          return [{name: "home", items: [home]},
-            {name: "other", items: other_pages}]
+          other_pages = other_pages.filter(p => !show_in_fixed_domain.includes(p.t_title))
         }
+
+        return [{name: "home", items: [home]},
+          {name: "other", items: other_pages}]
       },
+
       version() {
         return pkg.version
       }
     },
-    methods: {}
+    methods: {
+      disabled(menu_item) {
+        // for now just home eventually disabled
+        return (menu_item.t_title === 'menu.home'
+          && this.$route.name === "domain"
+          && this.is_fixed_domain === this.query_param_domain_name)
+      }
+    }
   }
 </script>
 

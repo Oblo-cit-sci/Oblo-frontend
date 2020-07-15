@@ -1,21 +1,24 @@
 <template lang="pug">
   div(v-if="!uuid")
     div
-  v-card.mx-auto.custom-card(v-else outlined v-bind:class="{draft: is_draft}")
+  v-card.mx-auto.custom-card(v-else outlined :style="border_style")
     v-container.pt-0.pb-0
       v-row
-        v-col(v-bind:class="[show_image ? 'col-md-8' : 'col-md-12']")
+        v-col.main_col(v-bind:class="[show_image ? 'col-md-8' : 'col-md-12']")
           v-row
             v-col.py-1(class="entry-meta" cols=12)
-              p.subtitle-1.mb-1 {{full_title}}
-                v-btn(v-if="show_title_action" @click="goto()" depressed small)
-                  v-icon(:class="default_action_icon")
+              p.subtitle-1.mb-1
+                v-icon.mr-1.pb-1(v-if="!show_entrytype_title" :color="template_color" x-small) mdi-checkbox-blank-circle
+                span {{full_title}}
+                span(v-if="is_draft" :style="{color:'cornflowerblue'}") &nbsp; [DRAFT]
+                  v-btn(v-if="show_title_action" @click="goto()" depressed small)
+                    v-icon(:class="default_action_icon")
           v-row.pl-3(:style="{'text-align': 'right', 'font-size':'80%'}")
             span.my-auto(v-if="show_date") {{$t("comp.entrypreview.created")}} {{entry_date}} {{is_draft ? $t('comp.entrypreview.draft') : ""}}
-          v-row.pl-3.py-1
-            MetaChips(v-if="show_meta_aspects" :meta_aspects="meta_aspects")
+          v-row.pl-3.py-1(v-if="show_meta_aspects")
+            MetaChips(:meta_aspects="meta_aspects")
           v-row.pl-3(justify="space-between")
-            v-col.py-0
+            v-col.py-0.pl-0
               ActorChip(:actor="creator")
           v-row.pl-3(v-if="show_tags")
             Taglist(:tags="tags" :slide="true")
@@ -38,10 +41,10 @@
         mode="view"
         :aspect_loc="aspect_locs[aspect.name]")
     div(v-if="show_botton_actions")
-      v-divider(light v-bind:class="{draft_clr: is_draft}")
+      v-divider(light :style="divider_style")
       v-card-actions
         div
-          v-btn(small text outlined @click="goto(entry.uuid)") {{goto_text}}
+          v-btn(small text outlined @click="goto(entry.uuid)" :color="proper_mode_color" ) {{proper_mode_text}}
           v-btn(v-if="show_view" small text outlined @click="goto(entry.uuid, 'view')") {{$t("comp.entrypreview.view")}}
           v-btn(small text outlined :color="act.color || 'green'"
             v-for="act in additional_actions"
@@ -84,6 +87,10 @@
    * ISSUE is not working atm, to responsive
    */
 
+  const DRAFT_COLOR = "cornflowerblue"
+  const REVIEW_COLOR = "orange"
+
+
   export default {
     name: "Entrypreview",
     components: {ActorChip, EntryActorList, Aspect, MetaChips, Taglist},
@@ -107,6 +114,9 @@
         type: Boolean,
         default: true
       },
+      show_entrytype_title: {
+        type: Boolean
+      },
       include_domain_tag: Boolean,
       show_title_action: Boolean,
       prevent_view_page_change: Boolean,
@@ -123,14 +133,29 @@
       deleted_entry() {
         return !this.$store.getters[ENTRIES_HAS_ENTRY](this.uuid)
       },
-      is_draft() {
-        return this.entry.status === "draft"
+      border_style() {
+        if (this.is_draft) {
+          return {"border": `solid 1px ${DRAFT_COLOR} !important`}
+        } else if(this.is_requires_review) {
+          return {"border": `solid 1px ${REVIEW_COLOR} !important`}
+        }
+      },
+      divider_style() {
+        if (this.is_draft) {
+          return {"border-color": DRAFT_COLOR}
+        } else if(this.is_requires_review) {
+          return {"border-color": REVIEW_COLOR}
+        }
       },
       show_view() {
         return [EDIT, REVIEW].includes(this.proper_mode)
       },
       full_title() {
-        return full_title(this.$store, this.entry)
+        if(!this.show_entrytype_title) {
+          return this.entry.title
+        } else {
+          return full_title(this.$store, this.entry)
+        }
       },
       action_loading() {
         return this.additional_action_loading
@@ -298,14 +323,6 @@
     max-height: 200px;
   }
 
-  .draft {
-    border: solid 1px cornflowerblue !important;
-  }
-
-  .draft_clr {
-    border-color: cornflowerblue
-  }
-
   @media (max-width: 959px) {
     /* adjust to your needs */
     .entry-meta {
@@ -316,8 +333,6 @@
       order: -1;
       max-width: 200px;
     }
-
-
   }
 
 </style>

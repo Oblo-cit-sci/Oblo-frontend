@@ -1,5 +1,4 @@
 <template>
-
 </template>
 
 <script>
@@ -24,8 +23,7 @@
         }
       }).catch(err => {
         console.log(err)
-        const msg = this.$_.get(err, "response.data.error.msg", this.$t("comp.snackbar.something_went_wrong"))
-        this.error_snackbar(msg)
+          this.err_error_snackbar()
       })
     },
   }

@@ -1,4 +1,4 @@
-import {EDIT, VIEW} from "~/lib/consts";
+import {EDIT, REVIEW, VIEW} from "~/lib/consts";
 import {aspect_loc_uuid, aspect_raw_default_value, disabled_by_condition} from "~/lib/aspect";
 import {ENTRIES_GET_ENTRY} from "~/store/entries";
 
@@ -51,9 +51,6 @@ export default {
     // todo not used atm. also clarify where extra should be, aspect. or aspect.extra
     rules() {
       if (this.$_.get(this.aspect.attr, "extra.rules")) {
-        if (this.hasOwnProperty("hideDetails")) {
-          this.hideDetails = false
-        }
         return this.aspect.attr.extra.rules
       }
     },
@@ -71,6 +68,12 @@ export default {
     },
     is_edit_mode() {
       return this.mode === EDIT
+    },
+    is_review_mode() {
+      return this.mode === REVIEW
+    },
+    is_editable_mode() {
+      return [EDIT, REVIEW].includes(this.mode)
     },
     is_view_mode() {
       return this.mode === VIEW

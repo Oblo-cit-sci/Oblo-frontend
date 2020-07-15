@@ -40,7 +40,7 @@
       v-btn(v-if="password_edit" color="success" @click="change_password" :disabled="any_password_invalid") {{$t('profile.btn_save_password')}}
       v-divider.wide_divider
     div(v-if="edit_mode && !$_.isEmpty(domain_specific_aspects)")
-      h2 {{$t("profile.h3")}}
+      h2#domains {{$t("profile.h3")}}
       v-row(v-for="aspect in domain_specific_aspects" :key="aspect.name")
         v-col(cols=10)
           Aspect(:aspect="aspect"
@@ -87,6 +87,8 @@
   import EntryListWrapper from "../components/EntryListWrapper"
   import LayoutMixin from "~/components/global/LayoutMixin"
   import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
+  import FixDomainMixin from "~/components/global/FixDomainMixin"
+  import goToMiddleware from "~/components/global/goToMiddleware"
 
   export default {
     name: "profile",
@@ -97,7 +99,7 @@
       Aspect,
       Taglist
     },
-    mixins: [PersistentStorageMixin, TriggerSnackbarMixin, LayoutMixin, TypicalAspectMixin],
+    mixins: [PersistentStorageMixin, TriggerSnackbarMixin, LayoutMixin, TypicalAspectMixin, FixDomainMixin, goToMiddleware],
     data() {
       const new_pwd = this.asp_password(null, "new")
       return {
@@ -110,21 +112,7 @@
         profile_aspects: [
           this.asp_public_name(),
           this.asp_actor_description(),
-          // {
-          //   name: "location",
-          //   label: "Location",
-          //   description: "Where are you based?",
-          //   type: "location",
-          //   attr: {
-          //     max: 80,
-          //     unpacked: true,
-          //     input: ["search"]
-          //   },
-          //   value: null
-          // },
-          this.asp_email(),
-          this.asp_privacy("default_privacy", "default"),
-          this.asp_license("default_license", ["cc_licenses"], null, "default")
+          this.asp_email()
         ],
         password_aspects: {
           actual_password: this.asp_password("actual_password", "current"),
@@ -136,9 +124,8 @@
       }
     },
     created() {
-      const domain = this.$store.getters["app/fixed_domain"]
-      if (domain) {
-        const domain_data = this.$store.getters["domain_by_name"](domain)
+      if (this.is_fixed_domain) {
+        const domain_data = this.$store.getters["domain_by_name"](this.is_fixed_domain)
         this.domain_specific_aspects = this.$_.cloneDeep(this.$_.get(domain_data, "users.profile.additional_aspects", []))
         // todo here call a function that assigns external conditions
       }
@@ -168,10 +155,9 @@
           aspect.value = user_data[aspect.name]
         }
 
-        const domain = this.$store.getters["app/fixed_domain"]
-
-        if (this.$_.get(user_data.config_share, `domain${domain}`)) {
-          const domain_values = user_data.config_share.domain[domain]
+        if (this.$_.get(user_data.config_share, `domain.${this.is_fixed_domain}`)) {
+          console.log("fixed d data")
+          const domain_values = user_data.config_share.domain[this.is_fixed_domain]
           for (let aspect of this.domain_specific_aspects) {
             aspect.value = domain_values[aspect.name]
           }
@@ -189,10 +175,9 @@
       doneEdit: function () {
         const new_profile = extract_unpacked_values(this.profile_aspects)
 
-        const domain = this.$store.getters["app/fixed_domain"]
-        if (domain) {
+        if (this.is_fixed_domain) {
           new_profile.domain = {}
-          new_profile.domain[domain] = extract_unpacked_values(this.domain_specific_aspects)
+          new_profile.domain[this.is_fixed_domain] = extract_unpacked_values(this.domain_specific_aspects)
         }
         this.$api.post_actor__me(new_profile).then(({data}) => {
           this.$store.commit(USER_SET_USER_DATA, data)
@@ -201,8 +186,7 @@
           this.reset_edit_values()
           this.ok_snackbar("Profile updated")
         }).catch((err) => {
-          console.log("err", err)
-          this.error_snackbar(this.$t("comp.snackbar.something_went_wrong"))
+          this.err_error_snackbar(err)
         }).finally(() => {
           this.goto_top()
         })
@@ -214,9 +198,7 @@
           this.ok_snackbar("Password updated")
           this.goto_top()
         }).catch((err) => {
-          console.log("err", err)
-          const msg = this.$_.get(err, "response.data.error.msg", this.$t("comp.snackbar.something_went_wrong"))
-          this.error_snackbar(msg)
+          this.err_error_snackbar(err)
         })
       },
       profile_pic_added(image) {
@@ -238,8 +220,8 @@
                 console.log("CORS error probably ok")
               })
             })
-            .catch(() => {
-              this.error_snackbar(this.$t("comp.snackbar.something_went_wrong"))
+            .catch((err) => {
+              this.err_error_snackbar(err)
             }).finally(() => {
             this.profile_pic_upload_loading = false
           })
@@ -253,7 +235,7 @@
       }),
       edit_mode() {
         const e = this.$route.query.edit
-        return e || (typeof(e) === "string" && e === "true")
+        return e || (typeof (e) === "string" && e === "true")
       },
       aspect_mode() {
         return this.edit_mode ? EDIT : VIEW

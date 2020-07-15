@@ -23,7 +23,8 @@ export default {
         zoom: 1,
         logoPosition: "bottom-right",
         maxPitch: 0,
-        dragRotate: false
+        dragRotate: false,
+        // scaleControl: null
       },
     }
   },
@@ -42,7 +43,6 @@ export default {
       if (this.map_show_geolocate_ctrl) {
         this.add_geolocate_ctrl()
       }
-      // console.log("map loaded")
       this.map.resize()
     },
     add_geolocate_ctrl() {
@@ -57,6 +57,23 @@ export default {
         geolocate.on('error', this.geolocate_error)
       } else {
         console.log("Method geolocate_error missing")
+      }
+    },
+    set_map_control(control_name, visible) {
+      if (!this.map) {
+        return
+      }
+      switch (control_name) {
+        case "navigation": {
+          if (visible) {
+            this.map.addControl(new this.mapboxgl.NavigationControl())
+          } else {
+            const navCtrl = this.$_.find(this.map._controls, ctrl => ctrl.constructor.name === "Cr")
+            if (navCtrl) {
+              this.map.removeControl(navCtrl)
+            }
+          }
+        }
       }
     },
     map_goto_location(location) {

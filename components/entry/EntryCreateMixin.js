@@ -1,8 +1,8 @@
 import uuidv4 from "uuid/v4"
 
 import pkg from "~/package"
-import {DRAFT, PRIVATE_LOCAL, REGULAR} from "~/lib/consts"
-import {PUSH_PAGE_PATH, UPDATE_DRAFT_NUMBER} from "~/store"
+import {DRAFT, EDIT, PRIVATE_LOCAL, REGULAR} from "~/lib/consts"
+import {UPDATE_DRAFT_NUMBER} from "~/store"
 import {TEMPLATES_TYPE} from "~/store/templates"
 import {default_values, set_titleAspect} from "~/lib/entry"
 import {CREATOR, user_ref} from "~/lib/actors"
@@ -16,9 +16,9 @@ export default {
   methods: {
     // todo different owner in case of visitor
     // console.log("entry of template_slug", type_slug)
-    create_entry(template_slug, persist = true, init = {}) {
+    create_entry(template_slug, persist = true, init = {}, goto = true) {
       const template = this.$store.getters[TEMPLATES_TYPE](template_slug)
-      if(!template) {
+      if (!template) {
         return null
       }
       // console.log("type of template_slug",template)
@@ -28,8 +28,8 @@ export default {
       const title = init.title || template.title + " " + draft_no
 
       const license = template.rules.license ? template.rules.license :
-        (template.rules.privacy === PRIVATE_LOCAL ? "None" : user_data.default_license)
-      const privacy = template.rules.privacy ? template.rules.privacy : user_data.default_privacy
+        (template.rules.privacy === PRIVATE_LOCAL ? "None" : this.$store.getters["user/settings_value"]("default_license"))
+      const privacy = template.rules.privacy ? template.rules.privacy : this.$store.getters["user/settings_value"]("default_privacy")
 
       const location = init.location || null
 
@@ -79,6 +79,9 @@ export default {
       }
       if (persist) {
         this.persist_after_entry_create(entry)
+      }
+      if (goto) {
+        this.to_entry(entry.uuid, EDIT)
       }
       return entry
     },

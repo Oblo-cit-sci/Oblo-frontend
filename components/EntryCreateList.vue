@@ -3,7 +3,7 @@
     SingleSelect(
       :options="options"
       force_view="list"
-      @selection="selection($event)"
+      @selection="create_entry($event)"
       :select_sync="false"
       :highlight="false"
       only_value
@@ -13,12 +13,7 @@
 <script>
 
   import SingleSelect from "./input/SingleSelect";
-  import {create_entry} from "~/lib/entry";
-  import {EDIT} from "~/lib/consts";
   import EntryNavMixin from "./EntryNavMixin";
-  import PersistentStorageMixin from "./util/PersistentStorageMixin";
-  import {ENTRIES_SAVE_ENTRY} from "~/store/entries";
-  import {INIT_PAGE_PATH} from "~/store";
   import EntryCreateMixin from "~/components/entry/EntryCreateMixin"
 
   const ENTRY_TYPE = "etype";
@@ -45,11 +40,6 @@
         })
       }
     },
-    methods: {
-      selection(slug) {
-        this.to_entry(this.create_entry(slug).uuid, EDIT)
-      }
-    }
   }
 </script>
 
