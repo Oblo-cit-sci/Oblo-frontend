@@ -60,7 +60,7 @@
       submit() {
         this.submit_loading = true
         const settings = this.$store.getters["user/settings"]
-
+        // todo better js!
         this.$api.post_actor({
           registered_name: this.aspects.registered_name.value,
           email: this.aspects.email.value,

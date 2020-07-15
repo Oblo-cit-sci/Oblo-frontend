@@ -111,7 +111,8 @@
             name: "Visible layers",
             type: "multiselect",
             attr: {
-              unpacked: true
+              unpacked: true,
+              force_view: "list"
             },
             items: this.available_layers
           },

@@ -301,7 +301,7 @@
     "edit": "edit",
     "save": "save",
     "cancel": "cancel",
-    "entrytype": "Entrytype",
+    "entrytype": "Entry type",
     "tag": "Tag",
     "_global.asp_location_privacy.labal": "Location privacy",
     "_global.asp_location_privacy.descr": "Specify the settings for the protection of the exact locations of your entries"
