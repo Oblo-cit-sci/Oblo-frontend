@@ -63,12 +63,15 @@ export default {
       if (!this.map) {
         return
       }
+      console.log("set_map_control:has map")
       switch (control_name) {
         case "navigation": {
+          console.log("set_map_control:navigation", visible)
           if (visible) {
             this.map.addControl(new this.mapboxgl.NavigationControl())
           } else {
             const navCtrl = this.$_.find(this.map._controls, ctrl => ctrl.constructor.name === "Cr")
+            console.log("set_map_control:navigation found it")
             if (navCtrl) {
               this.map.removeControl(navCtrl)
             }
