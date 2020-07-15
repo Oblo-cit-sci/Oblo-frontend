@@ -29,6 +29,7 @@
     AspectDialog(v-bind="aspectdialog_data" @update:dialog_open="aspectdialog_data.dialog_open = $event" :ext_value="layer_status" @update:ext_value="aspect_dialog_update($event)")
     client-only
       mapbox.fullSize(
+        v-show="!map_hidden"
         :style="map_height"
         :access-token="access_token"
         :map-options="map_options"
@@ -41,7 +42,7 @@
 
   import Mapbox from 'mapbox-gl-vue'
   import MapIncludeMixin from "~/components/map/MapIncludeMixin"
-  import {default_place_type, VIEW} from "~/lib/consts"
+  import {default_place_type, MENU_MODE_DOMAIN_OVERVIEW, VIEW} from "~/lib/consts"
   import {mapGetters} from "vuex"
   import DomainMapMixin from "~/components/map/DomainMapMixin"
   import {TEMPLATES_OF_DOMAIN} from "~/store/templates"
@@ -91,7 +92,8 @@
         aspectdialog_data: null,
         act_cluster: null,
         act_cluster_expansion_zoom: null,
-        last_zoom: null
+        last_zoom: null,
+        map_hidden: false
       }
     },
     computed: {
@@ -607,7 +609,7 @@
         })
       },
       update_filtered_source() {
-        if (!this.entries_loaded || !this.map_loaded) {
+        if (!this.entries_loaded || !this.map_loaded || !this.get_all_uuids) {
           return
         }
         // console.log("update_filtered_source")
@@ -689,6 +691,15 @@
           this.map.setLayoutProperty(layer, 'visibility', layer_statuses[layer] ? "visible" : "none")
         }
         this.$store.commit("map/set_layer_status", selected_layers)
+      },
+      check_hide_map() {
+        if (this.$vuetify.breakpoint.smAndDown) {
+          if (open && this.menu_state === MENU_MODE_DOMAIN_OVERVIEW) {
+            this.map_hidden = true
+          } else {
+            this.map_hidden = false
+          }
+        }
       }
     },
     watch: {
@@ -719,14 +730,11 @@
       legend_selection(selection) {
         this.update_filtered_source()
       },
+      menu_state(menu_state) {
+        this.check_hide_map()
+      },
       menu_open(open) {
-        if (this.$vuetify.breakpoint.smAndDown) {
-          if (open)
-            this.set_map_control("navigation", false)
-          else {
-            this.set_map_control("navigation", true)
-          }
-        }
+        this.check_hide_map()
       },
       get_all_uuids(uuids) {
         this.update_filtered_source()
