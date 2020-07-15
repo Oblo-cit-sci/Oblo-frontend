@@ -37,7 +37,7 @@
         default: EDIT
       },
       ext_value: {
-        type: [Object, String, Number, Array]
+        type: [Object, String, Number, Array, Boolean]
       }
     },
     data() {

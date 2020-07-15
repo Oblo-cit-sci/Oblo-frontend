@@ -182,13 +182,12 @@
         this.$api.post_actor__me(new_profile).then(({data}) => {
           this.$store.commit(USER_SET_USER_DATA, data)
           this.persist_user_data()
-          this.setEdit(false)
+          // this.setEdit(false)
           this.reset_edit_values()
           this.ok_snackbar("Profile updated")
+          this.$router.back()
         }).catch((err) => {
           this.err_error_snackbar(err)
-        }).finally(() => {
-          this.goto_top()
         })
       },
       change_password() {

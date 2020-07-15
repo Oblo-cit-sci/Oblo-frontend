@@ -40,7 +40,9 @@
       selection_index: {
         get() {
           console.log("index?", this.value)
-          return this.value
+          if(this.value) {
+            return this.value.map(v => this.options.findIndex(o => o.value === v))
+          }
         },
         set(val) {
           console.log(val)
@@ -62,7 +64,8 @@
     },
     methods: {
       set_selection() {
-        if (this.value !== null) {
+        console.log("this.value", this.value)
+        if (this.value) {
           this.selection = this.$_.filter(this.options, (o) => {
             return this.value.indexOf(o.value) > -1
           })
