@@ -27,6 +27,7 @@
   import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
   import {PAGE_LOGIN} from "~/lib/pages"
   import FixDomainMixin from "~/components/global/FixDomainMixin"
+  import {overwrite_default_register_settings} from "~/lib/settings"
 
   let username_regex = new RegExp('^[a-z][a-z0-9_]*$');
 
@@ -59,7 +60,7 @@
       // use this as a function to select/highlight a privacy from the list
       submit() {
         this.submit_loading = true
-        const settings = this.$store.getters["user/settings"]
+        const settings = Object.assign(this.$_.cloneDeep(this.$store.getters["user/settings"]), overwrite_default_register_settings)
         // todo better js!
         this.$api.post_actor({
           registered_name: this.aspects.registered_name.value,
