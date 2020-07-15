@@ -5,7 +5,6 @@
       :temporary="over"
       :hide-overlay="over"
       :stateless="over"
-      bottom
       :style="behind_style"
       :width="menu_width"
       app)

@@ -72,6 +72,7 @@
       if (!dev_env()) {
         window.history.replaceState(null, document.title, this.$route.fullPath)
       }
+      this.set_menu_open(false)
       next()
     },
     computed: {

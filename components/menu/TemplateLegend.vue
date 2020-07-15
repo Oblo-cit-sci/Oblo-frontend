@@ -93,7 +93,7 @@
             value: config.map(cf => cf.value),
             text: config.map(cf => cf.text).join(", ")
           })
-        console.log("template2filterlist_config", config)
+        // console.log("template2filterlist_config", config)
         this.$store.commit("search/set_act_config", act_config)
       }
     }

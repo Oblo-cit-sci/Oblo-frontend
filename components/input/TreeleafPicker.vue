@@ -88,8 +88,8 @@
       },
       act_options() {
         let options = this.tree.root.children
-        console.log("opt", options)
-        console.log(this.value)
+        // console.log("opt", options)
+        // console.log(this.value)
         for (let val of this.value) {
           // console.log("a val", val)
           options = options.find(o => o.name === val.value).children || []
