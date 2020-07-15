@@ -15,10 +15,11 @@
   import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
   import {APP_CONNECTED, APP_DB_LOADED, APP_INITIALIZED} from "~/store/app"
   import {USER_LOGGED_IN} from "~/store/user"
+  import NavBaseMixin from "~/components/NavBaseMixin"
 
   export default {
     name: "map_layout",
-    mixins: [PersistentStorageMixin],
+    mixins: [PersistentStorageMixin,NavBaseMixin],
     components: {GlobalSnackbar},
     created() {
       console.log("layout create", this.db_loaded)

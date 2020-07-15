@@ -6,7 +6,6 @@
         :to="item.to"
         router
         nuxt
-        :disabled="disabled(item)"
         @click="item.action ? action(item.action) : ''"
         exact)
         v-list-item-icon
@@ -27,7 +26,6 @@
   import {mapGetters} from "vuex"
   import LanguageSelector from "~/components/LanguageSelector"
   import NotificationBanner from "~/components/global/NotificationBanner"
-  import DomainMixin from "~/components/DomainMixin"
   import URLQueryMixin from "~/components/util/URLQueryMixin"
   import FixDomainMixin from "~/components/global/FixDomainMixin"
 
@@ -85,14 +83,6 @@
 
       version() {
         return pkg.version
-      }
-    },
-    methods: {
-      disabled(menu_item) {
-        // for now just home eventually disabled
-        return (menu_item.t_title === 'menu.home'
-          && this.$route.name === "domain"
-          && this.is_fixed_domain === this.query_param_domain_name)
       }
     }
   }

@@ -11,6 +11,7 @@
 <script>
   import {USER_LOGGED_IN} from "~/store/user"
   import SettingsChangeMixin from "~/components/global/SettingsChangeMixin"
+  import {UI_LANGUAGE} from "~/lib/consts"
 
   export default {
     name: "LanguageSelector",
@@ -36,10 +37,10 @@
       },
       language: {
         get: function () {
-          return this.setting("ui_language")
+          return this.setting(UI_LANGUAGE)
         },
         set: function (lang) {
-          this.set_settings_value("ui_language", lang)
+          this.set_settings_value(UI_LANGUAGE, lang)
         }
       },
       label() {

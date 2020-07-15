@@ -14,12 +14,9 @@
   import GlobalSnackbar from "~/components/global/GlobalSnackbar"
   import Footer from "~/components/global/Footer"
 
-  import {initialize, reload_storage} from "~/lib/client"
   import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin";
 
-  import {mapGetters} from "vuex"
   import PersistentStorageMixin from "~/components/util/PersistentStorageMixin";
-  import {APP_CONNECTED, APP_CONNECTING, APP_DB_LOADED, APP_INITIALIZED,} from "~/store/app"
   import NavBaseMixin from "~/components/NavBaseMixin"
   import PrivacySheet from "~/components/global/PrivacySheet"
   import Appbar from "~/components/global/Appbar"
@@ -33,12 +30,6 @@
     components: {NotificationBanner, MenuContainer, Appbar, PrivacySheet, GlobalSnackbar, Footer},
     mixins: [InitializationMixin, TriggerSnackbarMixin, PersistentStorageMixin, NavBaseMixin],
     computed: {
-      ...mapGetters([APP_CONNECTING]),
-      ...mapGetters({
-        db_loaded: APP_DB_LOADED,
-        connected: APP_CONNECTED,
-        initialized: APP_INITIALIZED
-      }),
       connected_icon() {
         if (this.connected) {
           return "wifi"

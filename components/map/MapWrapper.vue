@@ -335,7 +335,6 @@
               ]
             }
           })
-
           this.map.on('mouseenter', cluster_layer_name, (e) => {
             const cluster = e.features[0]
             // console.log(cluster)
