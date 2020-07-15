@@ -18,7 +18,7 @@
           :key="filter.name"
           @click="create_filter(filter.name)")
           v-list-item-title {{available_filter_label(filter)}}
-    v-btn.mt-4(v-if="filter_changed" :color="filter_changed ? 'success' : ''" @click="$emit('search')") {{$t('w.search')}}
+    <!--    v-btn.mt-4(v-if="filter_changed" :color="filter_changed ? 'success' : ''" @click="$emit('search')") {{$t('w.search')}}-->
     AspectDialog(
       :dialog_open.sync="dialog_open"
       :show_aspect="active_filter !== null"
