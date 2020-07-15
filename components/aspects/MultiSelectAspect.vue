@@ -1,7 +1,11 @@
 <template lang="pug">
   div(v-if="!readOnly")
-    v-select(
-      :items="options"
+    v-list(v-if="list_view")
+      v-list-item-group(v-model="selection_index" multiple active-class="in_selection")
+        v-list-item(v-for="option in options" :key="option.value")
+          v-list-item-content {{option.text}}
+    v-select(v-else
+    :items="options"
       v-model="selection"
       :readonly="readOnly"
       :hide-details="!count_rules"
@@ -30,6 +34,19 @@
       this.set_selection()
     },
     computed: {
+      list_view() {
+        return this.aspect.attr.force_view === "list"
+      },
+      selection_index: {
+        get() {
+          console.log("index?", this.value)
+          return this.value
+        },
+        set(val) {
+          console.log(val)
+          this.update_value(this.$_.filter(this.options, (o, i) => val.includes(i)).map(v => v.value))
+        }
+      },
       count_rules() {
         const rules = []
         if (this.aspect.attr.min) {
