@@ -18,13 +18,14 @@ export default {
     },
     to_set_domain() {
       let domain = this.$store.getters[DOMAIN]
+      // todo should also be "name" not "path"
       this.$router.push({
         path: PAGE_DOMAIN, query: {[QP_D]: domain.name}
       })
     },
     to_domain(domain_name, fixed = false) {
       this.$router.push({
-        path: PAGE_DOMAIN, query: {[fixed ? QP_F : QP_D]: domain_name}
+        name: PAGE_DOMAIN, query: {[fixed ? QP_F : QP_D]: domain_name}
       })
     },
     to_entry(uuid, mode = VIEW, query = {}, log_page = true) {

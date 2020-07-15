@@ -28,7 +28,7 @@
                 v-icon(color="orange") mdi-alert-outline
               v-list-item-content {{$t("comp.entrypreview.outdated")}}
         v-col(v-if="show_image" cols=4 class="col-md-4 col-sm-12 entry-image")
-          div.float-md-right.float-sm-left.entry-display-size.mr-3
+          .float-md-right.float-sm-left.entry-display-size.mr-3
             v-avatar(tile class="entry-image-size")
               v-img(
                 contain
@@ -320,7 +320,7 @@
   .entry-image-size {
     width: 100% !important;
     height: auto !important;
-    max-height: 200px;
+    max-height: 140px;
   }
 
   @media (max-width: 959px) {
