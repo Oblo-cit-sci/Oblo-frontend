@@ -127,7 +127,7 @@
         return !this.menu_open || this.$vuetify.breakpoint.mdAndUp
       },
       show_main_template_create_text() {
-        return !this.menu_open || this.$vuetify.breakpoint.lgAndUp
+        return (!this.menu_open || this.$vuetify.breakpoint.lgAndUp) && !this.$vuetify.breakpoint.smAndDown
       },
       bp_based_main_create_btn_props() {
         if (this.show_main_template_create_text) {
@@ -293,7 +293,7 @@
       },
       check_entries_map_done() {
         // console.log("check_entries_map_done", this.entries)
-        if (this.entries_loaded && this.entries.features.length > 0 && this.map_loaded) {
+        if (this.entries_loaded && this.entries.features.length > 0 && this.map_loaded && this.get_all_uuids) {
           this.init_map_source_and_layers()
           this.initialized = true
           if (this.$route.query.uuid) {
@@ -737,6 +737,9 @@
       },
       get_all_uuids(uuids) {
         this.update_filtered_source()
+        if (!this.initialized) {
+          this.check_entries_map_done()
+        }
       }
     }
   }
