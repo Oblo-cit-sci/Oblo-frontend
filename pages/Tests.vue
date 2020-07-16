@@ -27,6 +27,9 @@
       v-skeleton-loader(type="image" width="300" height="300")
     div
       AspectSet(:aspects="aspects")
+
+    Aspect(:aspect="select_asp" :ext_value.sync="select_asp.value" mode="edit")
+
 </template>
 
 <script>
@@ -83,6 +86,19 @@
         },
         selected_domain: {value: null},
         dialog_open: false,
+        select_asp: {
+          name:"select",
+          description:"",
+          type: "select",
+          attr: {},
+          items: [
+            {
+              text:"A",
+              description:"so a",
+              icon: "privacy/earth.png"
+            }
+          ]
+        },
         domains: {
           name: "Domains",
           type: "select",

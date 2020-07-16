@@ -25,7 +25,7 @@
       this.$store.dispatch(ENTRIES_SET_EDIT, this.uuid)
     },
     beforeRouteEnter(to, from, next) {
-      console.log("entry enter.. to", to)
+      // console.log("entry enter.. to", to)
       if (!to.query.uuid) {
         next(false)
       } else {

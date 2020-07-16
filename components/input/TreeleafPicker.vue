@@ -1,7 +1,7 @@
 <template lang="pug">
   .treeselect
-    div
-      v-btn(icon small @click="$emit('selected', null)")
+    div(comment="only in dialog")
+      v-btn(icon small @click="clear")
         v-icon mdi-close
     v-list(v-if="has_selection")
       div.ml-3 Current selection
@@ -189,6 +189,9 @@
     methods: {
       select(value) {
         this.$emit("input", this.$_.concat(this.value || [], [value]))
+      },
+      clear() {
+        this.$emit('clear')
       },
       extra_text(node) {
         return node.extra_value ? ' / ' + unpack(node.extra_value.value) : ''

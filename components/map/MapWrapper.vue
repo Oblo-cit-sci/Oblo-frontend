@@ -21,7 +21,7 @@
             :style="additional_template_button_shift"
             @click="$emit('create_entry')")
             v-icon mdi-dots-horizontal
-      .overlay_menu
+      .overlay_menu(v-if="show_legend")
         TemplateLegend(:domain_name="domain" ref="legendComponent")
     .buttongroup.shift_anim(v-else-if="menu_state === 0" :style="button_group_shift")
       v-btn(dark fab large color="blue" @click="switch_menu_open")
@@ -125,6 +125,9 @@
       },
       show_overlay() {
         return !this.menu_open || this.$vuetify.breakpoint.mdAndUp
+      },
+      show_legend() {
+        return this.$vuetify.breakpoint.smAndUp
       },
       show_main_template_create_text() {
         return (!this.menu_open || this.$vuetify.breakpoint.lgAndUp) && !this.$vuetify.breakpoint.smAndDown

@@ -79,7 +79,7 @@ export default {
       return this.aspect.attr.itemname || "item"
     },
     more_allowed() {
-      return (!this.max || this.value.length < this.max) && !this.disabled && !this.aspect.attr.ref_size
+      return (!this.max || this.value.length < this.max) && !this.disabled && !this.aspect.attr.ref_size && !this.has_one_empty
     },
     requieres_more_color() {
       return this.min && this.value.length < this.min ? "success" : undefined

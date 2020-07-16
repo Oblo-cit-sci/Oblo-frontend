@@ -93,6 +93,7 @@
         select: false, // select... instead of button
         options: [],
         new_edit: [],
+        has_one_empty: false, // make sure that there is only 1 "empty" value, no others can be added until that is set
         // when switching between entries on one page (map), the list should collapse
         uuid_cache: null
       }
@@ -145,7 +146,7 @@
         return get_aspect_vue_component(aspect, this.mode)
       },
       add_value(n = 1) {
-        console.log("add")
+        // console.log("add")
         let additional = []
         //console.log("list has length", this.value)
         for (let i = 0; i < n; i++) {
@@ -153,6 +154,7 @@
         }
         this.update_value(this.$_.concat(this.value, additional))
         if (n === 1) {
+          this.has_one_empty = true
           this.goto_delayed_last_page(this.goto_panel_id())
           setTimeout(() => {
             if (!this.is_simple) {
@@ -160,7 +162,7 @@
             }
           }, 20)
         }
-        console.log(this.value)
+        // console.log(this.value)
         this.new_edit.push(this.value.length)
       },
       list_aspect_props(index) {
@@ -217,8 +219,11 @@
         return aspect
       },
       handleAspectAction(event, index) {
+        console.log("aspect-action", event)
         if (event.action === "clear") {
           this.remove_value(index)
+        } else if(event.action === "value_set") {
+          this.has_one_empty = false
         }
       },
       list_extra(index) {

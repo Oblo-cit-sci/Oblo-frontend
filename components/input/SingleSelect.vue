@@ -1,7 +1,7 @@
 <template lang="pug">
   div.pa-0(v-if="view_clearlist")
     v-list.pa-0(
-      :three-line="has_some_description"
+      :two-line="has_some_description"
       dense
       class="singleselect_list"
     )
@@ -13,8 +13,8 @@
           class="single_select")
           <!--          v-list-item-avatar(v-if="" tile)  TODO HAS SOME IMAGE...?-->
           <!--            v-img(:src="icon_path(item)" contain)-->
-          v-list-item-icon.pr-2(v-if="has_some_icons")
-            v-img(:src="icon_path(item)"  contain max-height="40")
+          v-list-item-avatar(v-if="has_some_icons")
+            v-img(:src="icon_path(item)"  contain max-height="25")
           v-list-item-content
             v-list-item-title {{item.text}}
             v-list-item-subtitle {{item.description}}

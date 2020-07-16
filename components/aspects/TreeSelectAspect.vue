@@ -34,6 +34,7 @@
         :attr="aspect.attr"
         :data_source="data_source"
         v-model="int_value"
+        @clear="clear"
         @selected="selected($event)"
         :disabled="disabled"
         :keep_selection="false")
@@ -66,7 +67,7 @@
         this.calc_options()
       }
       // console.log("created", this.extra, this.value)
-      if(this.extra.listitem && !this.value) {
+      if(this.extra.listitem && this.is_empty) {
         this.dialogOpen = true
       }
     },
@@ -77,7 +78,7 @@
         }
       },
       auto_select(value) {
-        console.log("autoselect", value)
+        // console.log("autoselect", value)
         const result = this.$_.concat((value.parents || []).map(v => ({value:v, text:v})), {value:value.value, text:value.value})
         this.update_value(result)
       },
@@ -91,6 +92,9 @@
         this.dialogOpen = false;
         if (val) {
           this.update_value(val.value)
+        }
+        if(this.extra.listitem) {
+          this.$emit("aspectAction", {action:"value_set"})
         }
       },
       calc_options() {
@@ -113,6 +117,7 @@
       },
       clear() {
         this.update_value([])
+        this.dialogOpen = false;
         // this.va = []
         this.$emit("aspectAction", {action:"clear"})
       }
