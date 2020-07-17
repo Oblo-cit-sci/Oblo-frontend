@@ -136,6 +136,9 @@ export const getters = {
   name(state) {
     return state.user.user_data.registered_name
   },
+  username(state) {
+    return state.user.user_data.registered_name
+  },
   get_code(state) {
     return (code_name) => {
       return (state.codes[code_name])

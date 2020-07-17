@@ -52,10 +52,11 @@
   import GeocodingMixin from "~/components/map/GeocodingMixin"
   import AspectSet from "~/components/AspectSet"
   import {ENTRYLINK} from "~/lib/consts"
+  import EntrySearchMixin from "~/components/EntrySearchMixin"
 
   export default {
     name: "Tests",
-    mixins: [TriggerSnackbarMixin, GeocodingMixin],
+    mixins: [TriggerSnackbarMixin, GeocodingMixin, EntrySearchMixin],
     components: {AspectSet, Aspect, OptionsAspect, AspectDialog},
     async created() {
       const location_ = {"lon": 24.550781249998096, "lat": 47.405785290060095}
@@ -63,6 +64,9 @@
       // console.log(data)
       // const loc_search = await this.geocode("Parva")
       // console.log(loc_search)
+      const sq = {required:[{name:"actor", registered_name:this.$store.getters.username}]}
+      // this.$api.entries.get_uuids(sq)
+      const a = await this.async_complete_meta(sq)
     },
     data() {
       return {
