@@ -42,7 +42,7 @@
         domain_data: DOMAIN_BY_NAME
       }),
       reduce_when_small() {
-        if(this.$vuetify.breakpoint.smAndDown) {
+        if (this.$vuetify.breakpoint.smAndDown) {
           return {"font-size": "80%"}
         } else {
           return {"font-size": "90%"}
@@ -56,7 +56,7 @@
         return this.$api.static_url_$domain_name_icon(this.domain.name || this.domain.value)
       },
       domain_headline() {
-        if(this.domain.name)
+        if (this.domain.name)
           return this.domain_data(this.domain.name).page_index.title
       }
     },
@@ -67,5 +67,9 @@
 </script>
 
 <style scoped>
+
+  .header-avatar {
+    cursor: pointer;
+  }
 
 </style>

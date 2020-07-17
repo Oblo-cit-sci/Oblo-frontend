@@ -266,8 +266,7 @@
       render(map) {
         if (this.set_dl)
           download(map)
-
-        if (this.entries_loaded && map.getZoom() > CLUSTER_PLACENAME_ZOOM_THRESH) {
+        if (this.entries_loaded && map.getZoom() > CLUSTER_PLACENAME_ZOOM_THRESH && map.getLayer(cluster_layer_name)) {
           this.cluster_label_layer_visible = true
           const clusters = map.queryRenderedFeatures(undefined, {layers: [cluster_layer_name]})
           // not defined right from the begining
@@ -338,6 +337,7 @@
               ]
             }
           })
+
           this.map.on('mouseenter', cluster_layer_name, (e) => {
             const cluster = e.features[0]
             // console.log(cluster)
@@ -449,33 +449,25 @@
 
         // entries layer
         const entries_layer_name = layer_base_id + '_entries'
-        this.map.addLayer({
-          'id': entries_layer_name,
-          'type': 'circle',
-          'source': source_name,
-          filter: ['!', ['has', 'point_count']],
-          'layout': {},
-          // todo the colors should come from the templates
-          'paint': {
-            'circle-color': [
-              'match',
-              ['get', "template"],
-              ...this.templates_color_list,
-              '#ccc'],
-            "circle-radius": [
-              'case',
-              ["any", ["boolean", ['feature-state', 'hover'], false], ["boolean", ['feature-state', 'selected'], false]],
-              12,
-              8
-            ],
-            "circle-stroke-color": "#f6ff7a",
-            "circle-stroke-width": [
-              "case",
-              ["boolean", ["feature-state", "selected"], false],
-              2,
-              0
-            ]
-          }
+        this.add_entry_layer(source_name, entries_layer_name, {
+          'circle-color': [
+            'match',
+            ['get', "template"],
+            ...this.templates_color_list,
+            '#ccc'],
+          "circle-radius": [
+            'case',
+            ["any", ["boolean", ['feature-state', 'hover'], false], ["boolean", ['feature-state', 'selected'], false]],
+            12,
+            8
+          ],
+          "circle-stroke-color": "#f6ff7a",
+          "circle-stroke-width": [
+            "case",
+            ["boolean", ["feature-state", "selected"], false],
+            2,
+            0
+          ]
         })
 
         // Interactions

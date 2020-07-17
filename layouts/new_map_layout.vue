@@ -1,7 +1,7 @@
 <template lang="pug">
   v-app
     Appbar(:show_nav_icon="false")
-    v-content
+    v-main
       v-container(v-if="initialized" id="fullContainer")
         nuxt
     PrivacySheet(:privacy_sheet_open.sync="privacy_sheet_open")

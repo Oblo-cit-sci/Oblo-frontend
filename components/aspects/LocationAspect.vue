@@ -4,7 +4,7 @@
       div.mb-1
         div
           .ml-2.mt-2(v-if="search_location_input_option")
-            div From place search
+            div {{$t("comp.location_asp.descr")}}
             v-autocomplete(
               :search-input.sync="search_query"
               hint="press enter or click the search button"
@@ -32,13 +32,17 @@
       v-btn(v-if="show_goto_button" icon @click="goto_location")
         v-icon mdi-map-marker
     client-only
-      mapbox.crosshair.mt-3(v-if="show_map && (!readOnly || value)"
-        style="height:400px"
-        :access-token="access_token"
-        :map-options="map_options"
-        @map-load="onMapLoaded"
-        @click="map_location_selected"
-        navControl="is_edit_mode")
+      div(v-if="show_map && (!readOnly || value)")
+        .map_overlay
+          v-btn(dark small :color="show_existing ? 'blue' : 'grey'" @click="toggle_show_existing") show entries
+            v-icon mdi-map-marker-circle
+        mapbox.crosshair.mt-3(
+          style="height:400px"
+          :access-token="access_token"
+          :map-options="map_options"
+          @map-load="onMapLoaded"
+          @click="map_location_selected"
+          navControl="is_edit_mode")
 </template>
 
 <script>
@@ -90,7 +94,8 @@
         search_results: null,
         selected_search_result: undefined, // this because, clear sets it to that too,
         place_select__: null, // this in v-model is only used because of https://github.com/vuetifyjs/vuetify/issues/11383
-        public_location_marker: null
+        public_location_marker: null,
+        show_existing: false
       }
     },
     computed: {
@@ -218,6 +223,41 @@
       }
     },
     methods: {
+      toggle_show_existing() {
+        this.show_existing = !this.show_existing
+        // console.log(this.$store.getters["map/entries"](this.get_entry().domain).features)
+        if (this.show_existing) {
+          if (!this.map.getSource("all_entries_source")) {
+            console.log("adding")
+            this.map.addSource("all_entries_source", {
+              type: "geojson",
+              data: {
+                type: "FeatureCollection",
+                features: this.$store.getters["map/entries"](this.get_entry().domain).features
+              },
+              cluster: true,
+              tolerance: 0,
+              clusterMaxZoom: 14,
+              clusterRadius: 25
+            })
+            this.add_entry_layer("all_entries_source", "entries_layer", {
+              "circle-radius": 12
+            })
+
+            this.map.on("click", "entries_layer", (e) => {
+              this.snap_to_feature(e.features[0])
+            })
+          }
+        }
+      },
+      snap_to_feature(feature) {
+        console.log(feature)
+        this.$api.entry__$uuid(feature.properties.uuid).then(({data}) => {
+          console.log(data)
+        }).catch(err => {
+
+        })
+      },
       geolocate_success(location) {
         console.log("geolocate_success", location)
         this.reset()
@@ -342,7 +382,10 @@
           for (let place_type of default_place_type) {
             const place = features.filter(c => c.place_type[0] === place_type)
             if (place.length > 0) {
-              value.place[place_type] = {name: place[0].text, coordinates: array2coords(place[0].geometry.coordinates)}
+              value.place[place_type] = {
+                name: place[0].text,
+                coordinates: array2coords(place[0].geometry.coordinates)
+              }
             }
           }
         } else {
@@ -410,7 +453,7 @@
           public_loc.place_name = place2str(public_loc.place)
         } else if (option === PREC_OPTION_RANDOM) {
           //   //const location_error = this.$store.getters["user/get_settings"].location_error
-          public_loc.coordinates = create_location_error(value.coordinates, 2)
+          public_loc.coordinates = create_location_error(value.coordinates, )
           public_loc.location_precision = LOCATION_PRECISION_POINT
           public_loc.place = this.$_.cloneDeep(value.place)
           delete public_loc.place["place"] // remove lowest resolution for privacy
@@ -499,4 +542,8 @@
     margin: 6px 8px;
   }
 
+  .map_overlay {
+    position: absolute;
+    z-index: 2;
+  }
 </style>

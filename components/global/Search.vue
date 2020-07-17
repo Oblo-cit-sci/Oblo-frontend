@@ -12,7 +12,7 @@
           @click:append-outer="getEntries"
           clearable
           :loading="searching ? 'success' : false")
-    v-row
+    v-row(v-if="show_filter")
       v-col(cols="12")
         Filterlist(
           :filter_options="filterlist_options"
@@ -69,6 +69,10 @@
     props: {
       init_clear: Boolean,
       init_full: Boolean,
+      show_filter: {
+        type: Boolean,
+        default: true
+      },
       show_results: {
         type: Boolean,
         default: true

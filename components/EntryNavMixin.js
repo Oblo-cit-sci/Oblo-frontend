@@ -13,7 +13,6 @@ import {DOMAIN, INIT_PAGE_PATH, POP_LAST_PAGE_PATH} from "~/store";
 import {TEMPLATES_GET_ASPECT_DEF} from "~/store/templates";
 import EntryActionsMixin from "~/components/entry/EntryActionsMixin"
 import URLQueryMixin from "~/components/util/URLQueryMixin"
-import {route_change_query} from "~/lib/util"
 
 
 export default {
@@ -63,22 +62,17 @@ export default {
       }
     },
     async fetch(uuid) {
-      // todo, not working... ?!
-      // console.log("FETCH", uuid)
-      this.$api.entry__$uuid(uuid).then(({data}) => {
-        console.log(data)
-        if (data.data) {
-          // console.log("downloading entry", res)
-          const entry = data.data
-          entry.local = {}
-          this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
-          resolve()
-        }
-      }).catch(() => {
-        // todo ENH: could also be an error msg from the server
-        this.error_snackbar("Couldn't fetch entry")
-        reject()
-      })
+      const data = await this.$api.entry__$uuid(uuid)
+      if(data.status === 200) {
+        // beautiful
+        const entry = data.data.data
+        entry.local = {}
+        this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
+        return Promise.resolve(entry)
+      } else {
+        console.log("err")
+        return Promise.reject(data)
+      }
     },
     fetch_and_nav(uuid) {
       this.$api.entry__$uuid(uuid).then(({data}) => {
@@ -141,8 +135,8 @@ export default {
     in_context() {
       return this.template.rules.context !== GLOBAL || this.entry.entry_refs.parent
     },
-    domain() {
-      return this.$store.getters[DOMAIN]
-    }
+    // domain() {
+    //   return this.$store.getters[DOMAIN]
+    // }
   }
 }

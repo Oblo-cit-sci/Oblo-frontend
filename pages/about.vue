@@ -27,14 +27,16 @@
       p {{$t("about.7p1")}}
         span
           a(href="https://www.mapbox.com/legal/privacy") {{$t("about.mb_a")}}
-
+    Footer
 </template>
 
 <script>
   import goToMiddleware from "~/components/global/goToMiddleware"
+  import Footer from "~/components/global/Footer"
 
   export default {
     name: "about",
+    components: {Footer},
     mixins: [goToMiddleware]
   }
 </script>

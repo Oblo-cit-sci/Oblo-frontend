@@ -15,7 +15,7 @@
     v-divider
     LanguageSelector
     v-list-item
-      p(class="package-version") v{{version}}
+      p(class="package-version") version {{version}}
 </template>
 
 <script>
@@ -71,7 +71,7 @@
           other_pages = other_pages.filter(p => !show_inDev.includes(p.t_title))
         }
 
-        if(this.is_fixed_domain) {
+        if (this.is_fixed_domain) {
           // other_pages = other_pages.filter(p => !show_in_fixed_domain.includes(p.t_title))
         } else {
           other_pages = other_pages.filter(p => !show_in_fixed_domain.includes(p.t_title))
@@ -90,4 +90,8 @@
 
 <style scoped>
 
+  .package-version {
+    color: rgb(109, 109, 109);
+    font-size: 14px;
+  }
 </style>

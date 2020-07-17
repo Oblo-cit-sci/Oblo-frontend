@@ -186,6 +186,10 @@ class APIWrapper {
     return this.axios.delete(`${this.entry_baseURL}/${uuid}`)
   }
 
+  entry__$uuid_meta(uuid) {
+    return this.axios.get(`${this.entry_baseURL}/${uuid}/meta`)
+  }
+
   post_entry__$uuid__attachment__$file_uuid(uuid, file_uuid, formData) {
     return this.axios.post(`${this.entry_baseURL}/${uuid}/attachment/${file_uuid}`,
       formData, {

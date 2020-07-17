@@ -2,7 +2,7 @@
   v-app
     MenuContainer(:show="initialized" :menu_mode_fixed="true")
     Appbar
-    v-content
+    v-main
       NotificationBanner
       v-container(v-if="initialized")
         nuxt
@@ -12,10 +12,6 @@
 
 <script>
   import GlobalSnackbar from "~/components/global/GlobalSnackbar"
-  import Footer from "~/components/global/Footer"
-
-  import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin";
-
   import PersistentStorageMixin from "~/components/util/PersistentStorageMixin";
   import NavBaseMixin from "~/components/NavBaseMixin"
   import PrivacySheet from "~/components/global/PrivacySheet"
@@ -24,51 +20,11 @@
   import MenuContainer from "~/components/menu/MenuContainer"
   import NotificationBanner from "~/components/global/NotificationBanner"
 
-  let lastDomain = ''
-
   export default {
-    components: {NotificationBanner, MenuContainer, Appbar, PrivacySheet, GlobalSnackbar, Footer},
-    mixins: [InitializationMixin, TriggerSnackbarMixin, PersistentStorageMixin, NavBaseMixin],
-    computed: {
-      connected_icon() {
-        if (this.connected) {
-          return "wifi"
-        } else {
-          return "wifi_off"
-        }
-      }
-    },
+    components: {NotificationBanner, MenuContainer, Appbar, PrivacySheet, GlobalSnackbar},
+    mixins: [InitializationMixin, NavBaseMixin],
   }
 </script>
 
 <style>
-
-  input {
-    border-style: none !important
-  }
-
-  .v-text-field.v-text-field--enclosed {
-    margin: 1%
-  }
-
-  .v-text-field--outline {
-    margin: 1%
-  }
-
-  .disabled * {
-    opacity: 0.8;
-  }
-
-  .header-subtitle {
-    font-size: 0.6em
-  }
-
-  .header-avatar {
-    cursor: pointer;
-  }
-
-  .package-version {
-    color: rgb(109, 109, 109);
-    font-size: 14px;
-  }
 </style>

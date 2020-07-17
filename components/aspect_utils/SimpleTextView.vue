@@ -11,9 +11,14 @@
 
   export default {
     name: "SimpleTextView",
-    mixins: [AspectComponentMixin],
+    mixins: [],
     components: {},
-    props: {},
+    props: {
+      value: [null, String, Number, Array, Object],
+      text: {
+        String
+      }
+    },
     data() {
       return {}
     },

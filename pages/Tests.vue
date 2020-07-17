@@ -28,7 +28,8 @@
     div
       AspectSet(:aspects="aspects")
 
-    Aspect(:aspect="select_asp" :ext_value.sync="select_asp.value" mode="edit")
+
+    Aspect(:aspect="entry_link_asp" :ext_value.sync="entry_link_asp.value" mode="edit")
 
 </template>
 
@@ -50,6 +51,7 @@
   import pkg from "~/package"
   import GeocodingMixin from "~/components/map/GeocodingMixin"
   import AspectSet from "~/components/AspectSet"
+  import {ENTRYLINK} from "~/lib/consts"
 
   export default {
     name: "Tests",
@@ -126,7 +128,15 @@
               max:100
             }
           }
-        ]
+        ],
+        entry_link_asp: {
+          name: "EL",
+          type: ENTRYLINK,
+          attr: {
+            unpacked:true
+          },
+          value: "7ad5e7dc-d064-449c-a582-6a7cbf8f969a"
+        }
       }
     },
     computed: {

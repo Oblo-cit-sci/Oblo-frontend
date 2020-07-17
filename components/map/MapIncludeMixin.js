@@ -59,26 +59,17 @@ export default {
         console.log("Method geolocate_error missing")
       }
     },
-    // set_map_control(control_name, visible) {
-    //   if (!this.map) {
-    //     return
-    //   }
-    //   console.log("set_map_control:has map")
-    //   switch (control_name) {
-    //     case "navigation": {
-    //       console.log("set_map_control:navigation", visible)
-    //       if (visible) {
-    //         this.map.addControl(new this.mapboxgl.NavigationControl())
-    //       } else {
-    //         const navCtrl = this.$_.find(this.map._controls, ctrl => ctrl.constructor.name === "Cr")
-    //         console.log("set_map_control:navigation found it")
-    //         if (navCtrl) {
-    //           this.map.removeControl(navCtrl)
-    //         }
-    //       }
-    //     }
-    //   }
-    // },
+    add_entry_layer(source_name, layer_name, paint_props) {
+        this.map.addLayer({
+          'id': layer_name,
+          'type': 'circle',
+          'source': source_name,
+          filter: ['!', ['has', 'point_count']],
+          'layout': {},
+          // todo the colors should come from the templates
+          'paint': Object.assign({}, paint_props)
+        })
+    },
     map_goto_location(location) {
       // console.log("MapIncldeMixin.map_goto_location", location)
       // debugger

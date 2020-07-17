@@ -216,6 +216,7 @@
       }
     },
     "location_asp": {
+      "descr": "Search for a place or click on the map to set the location",
       "public_loc": {
         "base": "Public location",
         "options": {

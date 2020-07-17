@@ -156,7 +156,6 @@
         }
 
         if (this.$_.get(user_data.config_share, `domain.${this.is_fixed_domain}`)) {
-          console.log("fixed d data")
           const domain_values = user_data.config_share.domain[this.is_fixed_domain]
           for (let aspect of this.domain_specific_aspects) {
             aspect.value = domain_values[aspect.name]
