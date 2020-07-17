@@ -266,7 +266,17 @@
               clusterRadius: 25
             })
             this.add_entry_layer("my_entries_source", "entries_layer", {
-              "circle-radius": 12
+              'circle-color': [
+                'match',
+                ['get', "template"],
+                ...this.templates_color_list(this.$store.getters["templates/entry_types_array"]),
+                '#ccc'],
+              "circle-radius": [
+                'case',
+                ["any", ["boolean", ['feature-state', 'hover'], false]],
+                12,
+                8
+              ],
             })
             //
             this.map.on("click", "entries_layer", (e) => {

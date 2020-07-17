@@ -26,6 +26,7 @@ export default {
         dragRotate: false,
         // scaleControl: null
       },
+      popups: []
     }
   },
   computed: {
@@ -60,15 +61,21 @@ export default {
       }
     },
     add_entry_layer(source_name, layer_name, paint_props) {
-        this.map.addLayer({
-          'id': layer_name,
-          'type': 'circle',
-          'source': source_name,
-          filter: ['!', ['has', 'point_count']],
-          'layout': {},
-          // todo the colors should come from the templates
-          'paint': Object.assign({}, paint_props)
-        })
+      this.map.addLayer({
+        'id': layer_name,
+        'type': 'circle',
+        'source': source_name,
+        filter: ['!', ['has', 'point_count']],
+        'layout': {},
+        // todo the colors should come from the templates
+        'paint': Object.assign({}, paint_props)
+      })
+    },
+    templates_color_list(templates) {
+      return this.$_.reduce(templates, (t_color_arr, t) => {
+        t_color_arr.push(t.slug, this.$_.get(t, "rules.map.marker_color", "#AAAAAA"))
+        return t_color_arr
+      }, [])
     },
     map_goto_location(location) {
       // console.log("MapIncldeMixin.map_goto_location", location)
@@ -110,6 +117,26 @@ export default {
       a.href = image
       a.download = "neat.png"
       a.click()
+    },
+    add_popup(popup) {
+      popup.addTo(this.map)
+      this.popups.push(popup)
+      return this.popups.length
+    },
+    remove_popup(index) {
+      const popup = this.$_.get(this.popup, index)
+      if (popup) {
+        popup.remove()
+        this.poups.splice(index, 1)
+      } else {
+        console.log("warning. wrong popup index. out of bounds", index, this.popups.length)
+      }
+    },
+    remove_all_popups() {
+      for (let popup of this.popups) {
+        popup.remove()
+      }
+      this.popups = []
     }
   },
   watch: {

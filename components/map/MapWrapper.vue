@@ -178,16 +178,8 @@
           height: (this.height ? this.height : window.innerHeight) + (typeof (this.height) === "number" ? "px" : "")
         }
       },
-      templates_color_list() {
-        const templates = this.$store.getters[TEMPLATES_OF_DOMAIN](this.domain)
-        let template_color_arr = []
-        for (let temp of templates) {
-          if (temp.rules.map) {
-            template_color_arr.push(temp.slug)
-            template_color_arr.push(temp.rules.map.marker_color)
-          }
-        }
-        return template_color_arr
+      domain_templates_color_list() {
+        return this.templates_color_list(this.$store.getters["templates/templates_of_domain"](this.domain))
       },
       map_options() {
         const default_camera = this.$_.get(this.$store.getters["domain_by_name"](this.domain), "map.default_camera")
@@ -443,7 +435,7 @@
           'circle-color': [
             'match',
             ['get', "template"],
-            ...this.templates_color_list,
+            ...this.domain_templates_color_list,
             '#ccc'],
           "circle-radius": [
             'case',
