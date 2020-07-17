@@ -86,7 +86,6 @@
     },
     data() {
       return {
-        act_popup: null,
         act_hoover_uuid: null,
         set_dl: false,
         aspectdialog_data: null,
@@ -284,10 +283,7 @@
             this.act_hoover_id = null
             this.act_cluster = null
             // ?!?!?
-            if (this.act_popup) {
-              this.act_popup.remove()
-              this.act_popup = null
-            }
+            this.remove_all_popups()
           } else {
             this.last_zoom = zoom
           }
@@ -345,9 +341,7 @@
               return
             }
             if (cluster.state.selectable) {
-              if (this.act_popup) {
-                this.act_popup.remove()
-              }
+              this.remove_all_popups()
               this.act_hoover_id = cluster.id
               this.act_cluster = cluster
 
@@ -373,10 +367,9 @@
                 } else {
                   popup_html = `${features.length} entries`
                 }
-                this.act_popup = new this.mapboxgl.Popup()
+                this.add_popup(new this.mapboxgl.Popup()
                   .setLngLat(coordinates)
-                  .setHTML(popup_html)
-                this.act_popup.addTo(this.map)
+                  .setHTML(popup_html))
                 this.last_zoom = this.map.getZoom()
               }).catch(err => {
                 console.log(err)
@@ -387,10 +380,7 @@
           this.map.on('mouseleave', cluster_layer_name, (e) => {
             if (this.act_hoover_id) {
               this.act_hoover_id = null
-              if (this.act_popup) {
-                this.act_popup.remove()
-                this.act_popup = null
-              }
+              this.remove_all_popups()
               this.act_cluster = null
               this.last_zoom = null
             }
@@ -477,9 +467,7 @@
           if (feature.properties.uuid === this.act_hoover_uuid) {
             return
           }
-          if (this.act_popup) {
-            this.act_popup.remove()
-          }
+          this.remove_all_popups()
           let coordinates = null
           coordinates = feature.geometry.coordinates.slice()
           // ensure correct popup position, when zoomed out and there are multiple copies
@@ -494,10 +482,9 @@
             {hover: true}
           )
           this.act_hoover_uuid = feature.properties.uuid
-          this.act_popup = new this.mapboxgl.Popup()
+          this.add_popup(new this.mapboxgl.Popup()
             .setLngLat(coordinates)
-            .setText(feature.properties.title)
-          this.act_popup.addTo(this.map)
+            .setText(feature.properties.title))
         })
 
         // Interactions
@@ -510,10 +497,7 @@
             )
             this.act_hoover_id = null
             this.act_hoover_uuid = null
-            if (this.act_popup) {
-              this.act_popup.remove()
-              this.act_popup = null
-            }
+            this.remove_all_popups()
           }
         })
         this.map.on("click", entries_layer_name, (e) => {
@@ -608,7 +592,9 @@
         }
         // console.log("update_filtered_source")
         // console.log(this.map.getSource("all_entries_source"))
-        const included_templates = this.legend_selection.map(s => s.value)
+        // const included_templates = this.legend_selection.map(s => s.value)
+        console.log(this.entries.features)
+
         const filtered_entries = {
           type: "FeatureCollection",
           features: this.entries.features.filter(e => this.get_all_uuids.includes(e.properties.uuid) ||

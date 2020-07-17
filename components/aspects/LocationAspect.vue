@@ -34,7 +34,7 @@
     client-only
       div(v-if="show_map && (!readOnly || value)")
         .map_overlay
-          v-btn(dark small :color="show_existing ? 'blue' : 'grey'" @click="toggle_show_existing") show entries
+          v-btn(dark small :color="show_existing ? 'blue' : 'grey'" @click="toggle_show_existing" :loading="getting_my_entries_loading") show entries
             v-icon mdi-map-marker-circle
         mapbox.crosshair.mt-3(
           style="height:400px"
@@ -50,7 +50,7 @@
   import Mapbox from 'mapbox-gl-vue'
   import {
     array2coords,
-    create_location_error,
+    create_location_error, entry_location2geojson_arr,
     LOCATION_PRECISION_POINT,
     place2str,
     PREC_OPTION_EXACT,
@@ -58,7 +58,7 @@
     PREC_OPTION_REGION,
   } from "~/lib/location";
   import SingleSelect from "../input/SingleSelect";
-  import {default_place_type} from "~/lib/consts";
+  import {default_place_type, EDIT} from "~/lib/consts";
   import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
   import AspectComponentMixin from "./AspectComponentMixin";
   import MapIncludeMixin from "~/components/map/MapIncludeMixin"
@@ -68,6 +68,7 @@
   import {USER_SETTINGS} from "~/store/user"
   import {mapGetters} from "vuex"
   import {settings_loc_privacy_ask, settings_loc_privacy_exact, settings_loc_privacy_random} from "~/lib/settings"
+  import EntrySearchMixin from "~/components/EntrySearchMixin"
 
   // "attr.input" options
   const DEVICE = "device"
@@ -83,7 +84,7 @@
   export default {
     name: "LocationAspect",
     components: {SingleSelect, Mapbox},
-    mixins: [AspectComponentMixin, TriggerSnackbarMixin, MapIncludeMixin, GeocodingMixin],
+    mixins: [AspectComponentMixin, TriggerSnackbarMixin, MapIncludeMixin, GeocodingMixin, EntrySearchMixin],
     data() {
       return {
         search_query: null,
@@ -95,7 +96,9 @@
         selected_search_result: undefined, // this because, clear sets it to that too,
         place_select__: null, // this in v-model is only used because of https://github.com/vuetifyjs/vuetify/issues/11383
         public_location_marker: null,
-        show_existing: false
+        show_existing: false,
+        getting_my_entries_loading: true,
+        my_entries: []
       }
     },
     computed: {
@@ -221,29 +224,51 @@
             context: this.value.place
           }]
       }
+
+      // todo also when changing mode
+      if (this.is_edit_mode) {
+        this.init_my_entries()
+      }
     },
     methods: {
+      init_my_entries() {
+        this.async_complete_meta({
+          required: [{
+            name: "actor",
+            registered_name: this.$store.getters.username
+          }]
+        }).then(res => {
+          this.getting_my_entries_loading = false
+          this.my_entries = res
+        }).catch(err => {
+          console.log(err)
+        })
+      },
       toggle_show_existing() {
         this.show_existing = !this.show_existing
         // console.log(this.$store.getters["map/entries"](this.get_entry().domain).features)
         if (this.show_existing) {
-          if (!this.map.getSource("all_entries_source")) {
+          if (!this.map.getSource("my_entries_source")) {
             console.log("adding")
-            this.map.addSource("all_entries_source", {
+            const all_my_entries = this.$store.getters["entries/get_entries"](this.my_entries)
+            const geojson_features = this.$_.flatten(all_my_entries.map(e => entry_location2geojson_arr(e)))
+            console.log(geojson_features)
+            this.map.addSource("my_entries_source", {
               type: "geojson",
               data: {
                 type: "FeatureCollection",
-                features: this.$store.getters["map/entries"](this.get_entry().domain).features
+                features: geojson_features
               },
+              generateId: true,
               cluster: true,
               tolerance: 0,
               clusterMaxZoom: 14,
               clusterRadius: 25
             })
-            this.add_entry_layer("all_entries_source", "entries_layer", {
+            this.add_entry_layer("my_entries_source", "entries_layer", {
               "circle-radius": 12
             })
-
+            //
             this.map.on("click", "entries_layer", (e) => {
               this.snap_to_feature(e.features[0])
             })
@@ -251,7 +276,7 @@
         }
       },
       snap_to_feature(feature) {
-        console.log(feature)
+        // console.log(feature)
         this.$api.entry__$uuid(feature.properties.uuid).then(({data}) => {
           console.log(data)
         }).catch(err => {
@@ -277,7 +302,7 @@
             {place_types}).then((data) => {
             value.place = {}
             this.$_.forEach(data.features, feature => {
-              console.log("FF", feature)
+              // console.log("FF", feature)
               value.place[feature.place_type[0]] = feature.text
             })
             this.update_value(value)
@@ -302,11 +327,11 @@
         }
       },
       clear() {
-        console.log("clear")
+        // console.log("clear")
         this.update_value(null)
       },
       reset() {
-        console.log("reset")
+        // console.log("reset")
         this.selected_search_result = undefined
         this.search_query = ""
         if (this.location_marker) {
@@ -453,7 +478,7 @@
           public_loc.place_name = place2str(public_loc.place)
         } else if (option === PREC_OPTION_RANDOM) {
           //   //const location_error = this.$store.getters["user/get_settings"].location_error
-          public_loc.coordinates = create_location_error(value.coordinates, )
+          public_loc.coordinates = create_location_error(value.coordinates,)
           public_loc.location_precision = LOCATION_PRECISION_POINT
           public_loc.place = this.$_.cloneDeep(value.place)
           delete public_loc.place["place"] // remove lowest resolution for privacy
@@ -532,6 +557,11 @@
       //   console.log(selection, option)
       //   this.set_public_location_from_option(option)
       // }
+      mode(new_mode) {
+        if (new_mode === EDIT) {
+          this.init_my_entries()
+        }
+      }
     }
   }
 </script>
