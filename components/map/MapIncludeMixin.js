@@ -26,8 +26,11 @@ export default {
         dragRotate: false,
         // scaleControl: null
       },
-      popups: []
     }
+  },
+  created() {
+    //dont make mapstuff reactive (putting it in data). it doesnt like it
+    this.popups = []
   },
   computed: {
     language() {
@@ -109,7 +112,6 @@ export default {
     },
     download_image() {
       // doesnt contain the marker yet
-      console.log(this.map)
       debugger
       let image = this.map.getCanvas().toDataURL("image/png")
         .replace("image/png", "image/octet-stream")

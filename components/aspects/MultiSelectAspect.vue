@@ -5,11 +5,15 @@
         v-list-item(v-for="option in options" :key="option.value")
           v-list-item-content {{option.text}}
     v-select(v-else
-    :items="options"
+      :items="options"
       v-model="selection"
       :readonly="readOnly"
       :hide-details="!count_rules"
       :rules="count_rules"
+      @blur="menu_open = !menu_open"
+      background-color="khaki"
+      :menu-props="{openOnClick:menu_open, offsetY: true}"
+      @click="menu_open = !menu_open"
       @update:error="$emit('update:error', $event)"
       single-line outlined chips multiple clearable)
   div(v-else)
@@ -24,11 +28,16 @@
   import SelectMixin from "./SelectMixin";
   import AspectComponentMixin from "./AspectComponentMixin";
 
+  // maybe also for v-select:
+  // :prepend-inner-icon="!menu_open ? 'mdi-check' : ''"
   export default {
     name: "MultiselectAspect",
     mixins: [AspectComponentMixin, SelectMixin],
     data() {
-      return {init: true}
+      return {
+        init: true,
+        menu_open: false
+      }
     },
     created() {
       this.set_selection()

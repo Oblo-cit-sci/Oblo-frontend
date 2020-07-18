@@ -86,7 +86,6 @@
     },
     data() {
       return {
-        act_hoover_uuid: null,
         set_dl: false,
         aspectdialog_data: null,
         act_cluster: null,
@@ -197,10 +196,9 @@
         return this.$vuetify.breakpoint.mdAndDown
       },
       center_padding() {
+        // todo when there will be stuff coming from the bottom
         if (!this.menu_open) {
           return {}
-        } else if (this.display_mdDown) {
-          return {bottom: 400}
         } else {
           return {
             left: this.$store.getters["menu/menu_width"]
@@ -268,7 +266,6 @@
           this.cluster_label_layer_visible = false
         }
 
-        // console.log(this.act_hoover_id, this.act_hoover_uuid)
         if (this.act_cluster) {
           const zoom = this.map.getZoom()
           if (zoom > this.act_cluster_expansion_zoom || zoom < this.last_zoom) {
@@ -351,7 +348,6 @@
                 while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
                   coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
                 }
-                // this.act_hoover_uuid = feature.properties.uuid
                 // todo temp solution
                 let popup_html = ""
                 if (features.length <= 5) {
@@ -456,9 +452,7 @@
         // 1. ENTRIES Hoover
         this.map.on('mouseenter', entries_layer_name, (e) => {
           const feature = e.features[0]
-          if (feature.properties.uuid === this.act_hoover_uuid) {
-            return
-          }
+
           this.remove_all_popups()
           let coordinates = null
           coordinates = feature.geometry.coordinates.slice()
@@ -473,7 +467,6 @@
             {source: source_name, id: this.act_hoover_id},
             {hover: true}
           )
-          this.act_hoover_uuid = feature.properties.uuid
           this.add_popup(new this.mapboxgl.Popup()
             .setLngLat(coordinates)
             .setText(feature.properties.title))
@@ -482,15 +475,12 @@
         // Interactions
         // 1. ENTRIES Hoover leave
         this.map.on('mouseleave', entries_layer_name, () => {
-          if (this.act_hoover_uuid) {
-            this.map.setFeatureState(
-              {source: source_name, id: this.act_hoover_id},
-              {hover: false}
-            )
-            this.act_hoover_id = null
-            this.act_hoover_uuid = null
-            this.remove_all_popups()
-          }
+          this.map.setFeatureState(
+            {source: source_name, id: this.act_hoover_id},
+            {hover: false}
+          )
+          this.act_hoover_id = null
+          this.remove_all_popups()
         })
         this.map.on("click", entries_layer_name, (e) => {
           // console.log(e.features)

@@ -10,7 +10,7 @@
           v-list-item-title {{levelname(index)}}: {{node.text}} {{extra_text(node)}}
         v-list-item-action
           v-btn(icon @click="remove(index)")
-            v-icon mdi-close-circle-outline
+            v-icon mdi-step-backward
     v-divider.mb-1(v-if="has_both()")
     Title_Description.ml-3(v-if="has_levels" :title="act_levelname" :description="act_level_description" mode="edit")
     TextShort(:aspect="{'name':'nooo', 'type':'str', 'attr': {}}" mvalue="{value:'cool'}")

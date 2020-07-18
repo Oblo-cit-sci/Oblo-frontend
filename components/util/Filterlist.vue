@@ -3,12 +3,13 @@
     div(v-if="has_applied_filters")
       h4.mb-2 {{$t("comp.filterlist.appliead_filters")}}
       v-list(dense)
-        v-list-item(v-for="(filter, index) in applied_filters" :key="index")
-          v-list-item-title {{$t(filter.t_label)}}:&nbsp;{{filter.text}}
-          v-btn(icon @click="edit_filter(index)")
-            v-icon mdi-filter
-          v-btn(icon @click="remove_filter(index)" :disabled="not_removable(filter)")
-            v-icon mdi-window-close
+        v-scroll-x-transition(group)
+          v-list-item(v-for="(filter, index) in applied_filters" :key="index")
+              v-list-item-title {{$t(filter.t_label)}}:&nbsp;{{filter.text}}
+              v-btn(icon @click="edit_filter(index)")
+                v-icon mdi-filter
+              v-btn(icon @click="remove_filter(index)" :disabled="not_removable(filter)")
+                v-icon mdi-window-close
     v-menu
       template(v-slot:activator="{ on: menu }")
         v-btn.mt-4(v-on="{...menu}" :disabled="no_available_filters" ) {{$t("comp.filterlist.btn_add_filter")}}
