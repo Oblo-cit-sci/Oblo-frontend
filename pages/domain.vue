@@ -60,7 +60,7 @@
       if (!dev_env()) {
         window.history.replaceState(null, document.title, "/licci")
       }
-      if (this.domain_data.name !== this.$store.getters[DOMAIN]) {
+      if (this.domain_data.name !== this.$store.getters.domain) {
         this.$store.commit(SET_DOMAIN, this.domain_data)
       }
 

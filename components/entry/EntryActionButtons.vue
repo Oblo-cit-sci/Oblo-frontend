@@ -229,8 +229,8 @@
             this.$store.dispatch(ENTRIES_UPDATE_ENTRY, this.uuid)
             this.$store.commit(ENTRIES_RESET_EDIT)
             this.back(["search"])
-          } catch (e) {
-            console.log(e)
+          } catch (err) {
+            console.log(err)
             this.sending = false
             // todo for entry exists already, there could be a change in the button label, but maybe the data of that entry should be fetched
             this.err_error_snackbar(err)

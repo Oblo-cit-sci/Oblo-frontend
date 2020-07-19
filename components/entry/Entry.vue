@@ -43,11 +43,12 @@
     br
     v-row(v-for="(aspect) in shown_aspects" :key="aspect.name")
       v-col(alignSelf="stretch" :cols="base_cols")
-        Aspect(
-          :aspect="aspect"
-          :aspect_loc="aspect_locs[aspect.name]"
-          :extra="aspect_extras"
-          :mode="mode")
+        v-scroll-y-transition
+          Aspect(
+            :aspect="aspect"
+            :aspect_loc="aspect_locs[aspect.name]"
+            :extra="aspect_extras"
+            :mode="mode")
     div(v-if="is_first_page && is_edit_mode")
       v-row
         v-col(:cols="base_cols")

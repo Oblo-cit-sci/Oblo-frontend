@@ -114,9 +114,7 @@
         type: Boolean,
         default: true
       },
-      show_entrytype_title: {
-        type: Boolean
-      },
+      show_entrytype_title: Boolean,
       include_domain_tag: Boolean,
       show_title_action: Boolean,
       prevent_view_page_change: Boolean,

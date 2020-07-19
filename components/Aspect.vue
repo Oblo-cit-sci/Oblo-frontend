@@ -1,30 +1,30 @@
 <template lang="pug">
-  div(
-    :class="[{composite: (aspect.type === 'composite' && mode === 'edit'),  disabled: disable, invisible_class: invisible_class}]"
-    :id="aspect_id" v-if="visible && has_value")
-    Title_Description(
-      v-if="show_title_description"
-      :aspect="aspect"
-      :no_title="extra.no_title"
-      :note=note
-      :disabled="disable"
-      :disabled_text="disabled_text"
-      :mode="real_mode")
-    component(
-      v-if="!disable"
-      :is="aspectComponent(aspect, mode)"
-      :mvalue="mvalue"
-      :aspect="aspect"
-      :aspect_loc="aspect_loc"
-      :disabled="disable"
-      :mode="real_mode"
-      :extra="extra"
-      v-bind="extra"
-      v-on:update_value="update_value($event)"
-      @update:error="$emit('update:error', ($event))"
-      v-on:aspectAction="$emit('aspectAction',$event)")
-    div(v-if="has_action && edit")
-      AspectAction(:aspect="aspect" :mvalue="mvalue" :extra="extra")
+    div(
+      :class="[{composite: (aspect.type === 'composite' && mode === 'edit'),  disabled: disable, invisible_class: invisible_class}]"
+      :id="aspect_id" v-if="visible && has_value")
+      Title_Description(
+        v-if="show_title_description"
+        :aspect="aspect"
+        :no_title="extra.no_title"
+        :note=note
+        :disabled="disable"
+        :disabled_text="disabled_text"
+        :mode="real_mode")
+      component(
+        v-if="!disable"
+        :is="aspectComponent(aspect, mode)"
+        :mvalue="mvalue"
+        :aspect="aspect"
+        :aspect_loc="aspect_loc"
+        :disabled="disable"
+        :mode="real_mode"
+        :extra="extra"
+        v-bind="extra"
+        v-on:update_value="update_value($event)"
+        @update:error="$emit('update:error', ($event))"
+        v-on:aspectAction="$emit('aspectAction',$event)")
+      div(v-if="has_action && edit")
+        AspectAction(:aspect="aspect" :mvalue="mvalue" :extra="extra")
 </template>
 
 <script>

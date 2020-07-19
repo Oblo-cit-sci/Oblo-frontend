@@ -4,7 +4,7 @@
     v-toolbar-title.pa-0(v-if="initialized")
       v-list-item.pl-0
         v-list-item-avatar.header-avatar(@click="to_set_domain" width="50" height="auto" tile)
-          v-img(contain :src="domain_icon" )
+          v-img(contain :src="domain_icon")
         v-list-item-content
           v-list-item-title.headline
             span {{domain_title}}

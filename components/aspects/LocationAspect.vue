@@ -31,6 +31,7 @@
       span.body-1.readonly-aspect {{place_name_display}}
       v-btn(v-if="show_goto_button" icon @click="goto_location")
         v-icon mdi-map-marker
+      div(v-else) {{$t('comp.location_asp.no_loc')}}
     client-only
       div(v-if="show_map && (!readOnly || value)")
         .map_overlay
@@ -139,7 +140,7 @@
         return this.value && this.privacy_setting === settings_loc_privacy_ask
       },
       show_goto_button() {
-        return this.is_view_mode && this.$route.name === "domain"
+        return this.is_view_mode && this.$route.name === "domain" && this.value
       },
       map_location_input_option() {
         return this.has_input_option(MAP)
