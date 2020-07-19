@@ -60,7 +60,7 @@
           Aspect(:aspect="asp_privacy()" :aspect_loc="aspect_locs[asp_privacy().name]" :mode="license_privacy_mode")
       v-row(v-if="is_creator")
         v-col.pb-0(alignSelf="stretch" :cols="base_cols")
-          Aspect(:aspect="asp_entry_roles()" :aspect_loc="aspect_locs[asp_entry_roles().name]" :extra="{entry_is_private: entry.privacy==='private'}")
+          Aspect(:aspect="asp_entry_roles()" :mode="entry_roles_mode" :aspect_loc="aspect_locs[asp_entry_roles().name]" :extra="{entry_is_private: entry.privacy==='private'}")
       v-row
         v-col(alignSelf="stretch" :cols="base_cols")
           v-divider
@@ -163,6 +163,13 @@
           return EDIT
         }
       },
+      entry_roles_mode() {
+        if(this.is_creator) {
+          return EDIT
+        } else {
+          return VIEW
+        }
+      },
       // maybe also consider:
       // https://github.com/edisdev/download-json-data/blob/develop/src/components/Download.vue
       page_info() {
@@ -183,6 +190,9 @@
         return this.entry.image
       },
       is_dirty() {
+        if(this.is_draft) {
+          return false
+        }
         const edit_entry = this.$_.omit(this.$store.getters[ENTRIES_GET_EDIT](), ["local"])
         const original_entry = this.$_.omit(this.$store.getters[ENTRIES_GET_ENTRY](this.uuid), ["local"])
         // for (let k in edit_entry) {

@@ -229,6 +229,7 @@ export default {
       return {
         name: "actors",
         t_label: "asp.entry_roles.label",
+        t_description: "asp.entry_roles.descr",
         type: "entry_roles",
         attr: {
           unpacked: true

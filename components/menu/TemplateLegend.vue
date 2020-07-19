@@ -85,15 +85,21 @@
         this.panel_state = false
       },
       template2filterlist_config(config) {
-        const act_config = this.$store.getters["search/get_act_config"].filter(cf => cf.name !== "template")
-        // console.log(act_config)
-          act_config.push({
-            name:"template",
-            t_label:"w.entrytype",
+        const act_config = this.$_.cloneDeep(this.$store.getters["search/get_act_config"])
+        let template_config = act_config.find(cf => cf.name === "template")
+        if (!template_config) {
+          act_config.unshift({
+            name: "template",
+            t_label: "w.entrytype",
             value: config.map(cf => cf.value),
             text: config.map(cf => cf.text).join(", ")
           })
-        // console.log("template2filterlist_config", config)
+        } else {
+          Object.assign(template_config, {
+            value: config.map(cf => cf.value),
+            text: config.map(cf => cf.text).join(", ")
+          })
+        }
         this.$store.commit("search/set_act_config", act_config)
       }
     }

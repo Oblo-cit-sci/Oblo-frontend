@@ -173,6 +173,7 @@
     },
     "entry_roles": {
       "label": "Collaborators and entry access",
+      "descr": "Grant access to other users",
       "roles": {
         "collaborator": {
           "label": "Collaborator",
