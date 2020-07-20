@@ -20,6 +20,7 @@
         :mode="real_mode"
         :extra="extra"
         v-bind="extra"
+        :conditionals="conditionals"
         v-on:update_value="update_value($event)"
         @update:error="$emit('update:error', ($event))"
         v-on:aspectAction="$emit('aspectAction',$event)")

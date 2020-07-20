@@ -9,6 +9,7 @@
         v-subheader(v-if="is_category(item)") {{item.text}}
         v-list-item(v-else
           @click="select(item)"
+          :disabled="disabled_item(item.value)"
           :class="{ marked: marked(item.value) }"
           class="single_select")
           <!--          v-list-item-avatar(v-if="" tile)  TODO HAS SOME IMAGE...?-->
@@ -68,6 +69,10 @@
     props: {
       options: Array,
       selection: [Object, String],
+      disabled_options: {
+        type:Array,
+        default: () => []
+      },
       highlight: {
         type: Boolean,
         default: true
@@ -192,6 +197,13 @@
             this.selected_item = this.selection;
           }
         }
+      },
+      disabled_item(item_value) {
+        console.log(this.disabled_options)
+        if(!this.disabled_options) {
+          return false
+        }
+        return this.disabled_options.includes(item_value)
       }
     },
     computed: {

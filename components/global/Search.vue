@@ -158,7 +158,26 @@
           this.$emit("all_received_uuids", this.all_uuids())
         }
       },
-      act_config(val) {
+      act_config(val, prev_val) {
+        // console.log(val, prev_val)
+        // todo special treatment here:
+        // if the template changed kickout the tags
+        const old_template_filter = val.find(f => f.name === "template")
+        const new_template_filter = prev_val.find(f => f.name === "template")
+        if(old_template_filter && new_template_filter) { // old will be null initially, but there is nothing to kickout
+          const template_filter_change = !this.$_.isEqual(old_template_filter.value, new_template_filter.value)
+          console.log(template_filter_change)
+          if(template_filter_change) {
+            // kickout tag filter
+            console.log(val)
+            const tag_filter = val.find(f => f.name === "tags")
+            if(tag_filter) {
+              console.log("tag_filter", tag_filter)
+              this.$store.commit("search/set_act_config", val.filter(f => f.name !== "tags"))
+              return
+            }
+          }
+        }
         this.getEntries()
       }
     },

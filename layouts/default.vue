@@ -7,7 +7,7 @@
       v-container(v-if="initialized")
         nuxt
     GlobalSnackbar
-    PrivacySheet(:privacy_sheet_open.sync="privacy_sheet_open")
+    PrivacySheet
 </template>
 
 <script>

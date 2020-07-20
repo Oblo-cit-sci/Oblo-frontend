@@ -8,7 +8,7 @@ export const state = () => ({
     initialized: false,
     connecting: false,
     connected: false,
-    // ui_language: null
+    privacy_sheet_open: true
   }
 )
 
@@ -25,9 +25,9 @@ export const mutations = {
   connected(state, connected) {
     state.connected = connected
   },
-  // ui_language(state, ui_language) {
-  //   state.ui_language = ui_language
-  // }
+  close_privacy_sheet(state) {
+    state.privacy_sheet_open = false
+  }
 }
 
 export const getters = {
@@ -43,9 +43,9 @@ export const getters = {
   connected(state) {
     return state.connected
   },
-  // ui_language(state) {
-  //   return state.ui_language
-  // }
+  privacy_sheet_open(state) {
+    return state.privacy_sheet_open
+  }
 }
 
 export const actions = {

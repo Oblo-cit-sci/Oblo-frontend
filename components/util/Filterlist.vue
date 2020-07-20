@@ -24,6 +24,7 @@
       :dialog_open.sync="dialog_open"
       :show_aspect="active_filter !== null"
       :aspect="$_.get(active_filter, 'aspect')"
+      :conditionals="value"
       mode="edit"
       :ext_value="$_.get(active_filter, 'name') ? filter_value($_.get(active_filter, 'name')) : null"
       @update:ext_value="set_filter_value(active_filter.name, $event)")
@@ -107,6 +108,7 @@
           })
         }
         this.$emit("input", new_filters)
+        console.log("new filtervalue")
         this.dialog_open = false
       },
       edit_filter(index) {

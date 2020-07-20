@@ -8,6 +8,7 @@
           :aspect="aspect"
           :mode="mode"
           :ext_value="ext_value"
+          :conditionals="conditionals"
           @update:ext_value="update_value($event)"
           @update:error="error = $event")
       div
@@ -38,6 +39,9 @@
       },
       ext_value: {
         type: [Object, String, Number, Array, Boolean]
+      },
+      conditionals: {
+        type: [Array, Object]
       }
     },
     data() {

@@ -1,5 +1,6 @@
 <template lang="pug">
   v-select.mt-8.my-2.px-3(
+    v-if="has_multiple_languages"
     dense flat
     :items="available_languages"
     prepend-icon="mdi-translate"
@@ -27,9 +28,12 @@
       }
     },
     computed: {
+      has_multiple_languages() {
+        return this.available_languages.length > 1
+      },
       available_languages() {
         // todo should come from the server
-        const available_languages = ["en", "es"] //["en", "de", "es", "fr"]
+        const available_languages = ["en"] //["en", "de", "es", "fr"]
         return available_languages.map(l => ({
           "value": l,
           "text": (this.$t("lang." + l))

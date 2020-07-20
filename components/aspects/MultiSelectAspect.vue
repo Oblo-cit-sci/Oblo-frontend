@@ -3,9 +3,14 @@
     v-list(v-if="list_view")
       v-list-item-group(v-model="selection_index" multiple active-class="in_selection")
         v-list-item(v-for="option in options" :key="option.value")
-          v-list-item-content {{option.text}}
+          template(v-slot:default="{ active, toggle }")
+            v-list-item-content {{option.text}}
+            v-list-item-action
+              v-checkbox(:input-value="active"
+                color="khaki"
+                @click="toggle")
     v-select(v-else
-      :items="options"
+    :items="options"
       v-model="selection"
       :readonly="readOnly"
       :hide-details="!count_rules"
@@ -36,25 +41,40 @@
     data() {
       return {
         init: true,
-        menu_open: false
+        menu_open: false,
       }
     },
     created() {
       this.set_selection()
     },
     computed: {
+      edit_view() {
+        if (this.aspect.attr.force_view) {
+          const view = this.aspect.attr.force_view
+          if (["list", "select"].includes(view)) {
+            return view
+          }
+        }
+        const list_thresh = this.aspect.attr.list_tresh || 5
+        if (this.options.length <= list_thresh) {
+          return "list"
+        } else {
+          return "select"
+        }
+      },
       list_view() {
-        return this.aspect.attr.force_view === "list"
+        return this.edit_view === "list"
+      },
+      select_view() {
+        return this.edit_view === "select"
       },
       selection_index: {
         get() {
-          console.log("index?", this.value)
-          if(this.value) {
+          if (this.value) {
             return this.value.map(v => this.options.findIndex(o => o.value === v))
           }
         },
         set(val) {
-          console.log(val)
           this.update_value(this.$_.filter(this.options, (o, i) => val.includes(i)).map(v => v.value))
         }
       },
@@ -73,7 +93,7 @@
     },
     methods: {
       set_selection() {
-        console.log("this.value", this.value)
+        // console.log("this.value", this.value)
         if (this.value) {
           this.selection = this.$_.filter(this.options, (o) => {
             return this.value.indexOf(o.value) > -1

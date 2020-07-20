@@ -20,7 +20,7 @@ export default {
   },
   data() {
     return {
-      privacy_sheet_open: false
+      // privacy_sheet_open: false
     }
   },
   computed: {

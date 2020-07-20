@@ -575,7 +575,6 @@
         // console.log("update_filtered_source")
         // console.log(this.map.getSource("all_entries_source"))
         // const included_templates = this.legend_selection.map(s => s.value)
-        console.log(this.entries.features)
 
         const filtered_entries = {
           type: "FeatureCollection",
