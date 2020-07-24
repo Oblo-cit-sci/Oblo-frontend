@@ -2,13 +2,14 @@
   #pwlist-container(:style="list_style")
     v-row.col-sm-12#pwlist-top(v-if="results_received")
       div {{$tc("comp.previewlist.num_entries", num_entries)}}
-    v-row.mx-1(v-for="uuid in visible_entries"
-      :key="uuid")
-      v-col(cols=12)
-        Entrypreview(
-          :passed_uuid="uuid"
-          v-bind="preview_options"
-          @delete_e="delete_e($event)")
+    #pwlist-wrapper
+      v-row.mx-1(v-for="uuid in visible_entries"
+        :key="uuid")
+        v-col(cols=12)
+          Entrypreview(
+            :passed_uuid="uuid"
+            v-bind="preview_options"
+            @delete_e="delete_e($event)")
     v-row(v-if="requesting_entries && !next_loading")
       v-col(offset="5" cols=2)
         v-progress-circular(indeterminate center size="35" color="success")
@@ -52,17 +53,17 @@
       this.deleted = this.$_.filter(this.deleted, uuid => !this.$store.getters[ENTRIES_HAS_ENTRY](uuid))
     },
     mounted() {
-      this.start_y = document.getElementById('pwlist-container').offsetTop
+      this.start_y = document.getElementById('pwlist-wrapper').offsetTop + 90
     },
     computed: {
       on_overflow_page() {
         return this.$route.name === "domain"
       },
       list_style() {
-        // console.log(window.innerHeight, this.start_y)
+        console.log(window.innerHeight, this.start_y)
         return {
           'overflow-y': this.on_overflow_page ? 'auto' : 'visible',
-          // 'max-height': window.innerHeight - this.start_y
+          'max-height': window.innerHeight - this.start_y + "px"
         }
       },
       results_received() {
@@ -114,7 +115,7 @@
     },
     watch: {
       page(page) {
-        console.log(this.on_overflow_page)
+        // console.log(this.on_overflow_page)
         const options = {
           duration: 1200,
           easing: "easeOutCubic",
