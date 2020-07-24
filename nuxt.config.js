@@ -72,7 +72,7 @@ module.exports = {
   ],
 
   router: {
-    middleware: ['init'],
+    middleware: ['fixed_domain', 'goatcounter'],
     base: "/"
   },
 
