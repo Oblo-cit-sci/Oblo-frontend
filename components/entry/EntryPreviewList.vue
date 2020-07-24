@@ -46,21 +46,21 @@
       return {
         page: 1,
         deleted: [],
-        start_y: 0
+        start_y : 0
       }
     },
     beforeUpdate() {
       this.deleted = this.$_.filter(this.deleted, uuid => !this.$store.getters[ENTRIES_HAS_ENTRY](uuid))
     },
     mounted() {
-      this.start_y = document.getElementById('pwlist-wrapper').offsetTop + 90
+      this.update_start_y()
     },
     computed: {
       on_overflow_page() {
         return this.$route.name === "domain"
       },
       list_style() {
-        console.log(window.innerHeight, this.start_y)
+        // console.log(window.innerHeight, this.start_y)
         return {
           'overflow-y': this.on_overflow_page ? 'auto' : 'visible',
           'max-height': window.innerHeight - this.start_y + "px"
@@ -111,11 +111,21 @@
       },
       request_more() {
         this.$emit("request_more")
+      },
+      update_start_y() {
+        const elem = document.getElementById('pwlist-wrapper')
+        if (elem && this.results_received) {
+          this.start_y = elem.offsetTop + 90
+        } else {
+          this.start_y = 0
+        }
       }
     },
     watch: {
+      visible_entries() {
+        this.update_start_y()
+      },
       page(page) {
-        // console.log(this.on_overflow_page)
         const options = {
           duration: 1200,
           easing: "easeOutCubic",
@@ -139,7 +149,6 @@
 
   #pwlist-container {
     width: 100%;
-    /*max-height: 600px;*/
   }
 
 </style>

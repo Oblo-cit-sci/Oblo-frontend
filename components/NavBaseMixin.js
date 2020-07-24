@@ -7,6 +7,9 @@ export default {
   name: "NavBaseMixin",
   mixins: [FixDomainMixin],
   computed: {
+    is_domain_page() {
+      return this.$route.name === PAGE_DOMAIN
+    },
     domain_param_key() {
       return this.is_fixed_domain ? QP_F : QP_D
     }

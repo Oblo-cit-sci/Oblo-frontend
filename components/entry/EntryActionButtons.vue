@@ -2,7 +2,7 @@
   div
     span(v-if="can_edit")
       span(v-if="is_view_mode")
-        v-btn(@click="back()") {{$t("w.back")}}
+        v-btn(v-if="!is_domain_page" @click="back()") {{$t("w.back")}}
         v-btn(color="info" @click="to_proper_mode") {{proper_mode_text}}
       span(v-else-if="can_edit")
         v-btn(v-if="!is_view_mode" @click="cancel") {{$t("w.cancel")}}
@@ -30,7 +30,7 @@
       v-btn(v-if="can_download" @click="download") download
         v-icon.ml-2 mdi-download
     span(v-else)
-      v-btn(@click="back()") back
+      v-btn(v-if="!is_domain_page" @click="back()") back
     DecisionDialog(v-bind="dialog_data" :open.sync="dialog_visible" v-on:action="dialog_action($event)")
 </template>
 
