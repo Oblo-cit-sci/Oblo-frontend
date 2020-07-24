@@ -281,6 +281,9 @@
     },
     "language_select": {
       "label": "Language"
+    },
+    "map_wrapper": {
+      "locations": "{n} locations | {n} location | {n} locations"
     }
   },
   "lang": {

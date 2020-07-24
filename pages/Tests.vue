@@ -28,20 +28,12 @@
     div
       AspectSet(:aspects="aspects")
 
-
+    v-btn(@click="ok_snackbar('tello login cool')") SB
     Aspect(:aspect="entry_link_asp" :ext_value.sync="entry_link_asp.value" mode="edit")
 
 </template>
 
 <script>
-
-  //   primary: '#1976D2',
-  // secondary: '#424242',
-  // accent: '#82B1FF',
-  // error: '#FF5252',
-  // info: '#2196F3',
-  // success: '#4CAF50',
-  // warning: '#FFC107',
 
   import AspectDialog from "~/components/aspect_utils/AspectDialog"
   import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
@@ -53,11 +45,12 @@
   import AspectSet from "~/components/AspectSet"
   import {ENTRYLINK} from "~/lib/consts"
   import EntrySearchMixin from "~/components/EntrySearchMixin"
+  import ActorChip from "~/components/actor/ActorChip"
 
   export default {
     name: "Tests",
     mixins: [TriggerSnackbarMixin, GeocodingMixin, EntrySearchMixin],
-    components: {AspectSet, Aspect, OptionsAspect, AspectDialog},
+    components: {ActorChip, AspectSet, Aspect, OptionsAspect, AspectDialog},
     async created() {
       const location_ = {"lon": 24.550781249998096, "lat": 47.405785290060095}
       // const data = await this.rev_geocode(location_)

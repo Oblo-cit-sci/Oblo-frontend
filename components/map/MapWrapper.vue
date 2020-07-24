@@ -350,10 +350,19 @@
                 }
                 // todo temp solution
                 let popup_html = ""
-                if (features.length <= 5) {
-                  popup_html = features.map(f => "<div>" + f.properties.title + "</div>").join("")
+                // features.map
+                const entry_counts = this.$_.reduce(features, (ec, f) => {
+                  if(ec[f.properties.title]) {
+                    ec[f.properties.title][1] += 1
+                  } else {
+                    ec[f.properties.title] = [f.properties.title,1]
+                  }
+                  return ec
+                }, {})
+                if (this.$_.size(entry_counts) <= 5) {
+                  popup_html = this.$_.map(entry_counts, f => "<div> &#183; " + f[0] +", " + this.$tc("comp.map_wrapper.locations", f[1]) + "</div>").join("")
                 } else {
-                  popup_html = `${features.length} entries`
+                  popup_html = `${this.$_.size(entry_counts)} entries`
                 }
                 this.add_popup(new this.mapboxgl.Popup()
                   .setLngLat(coordinates)
