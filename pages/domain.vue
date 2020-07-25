@@ -1,8 +1,8 @@
 <template lang="pug">
-  .fullSize()
-    MenuContainer(
-      :over="true"
-      :domain_navigation_mode="navigation_mode")
+  .fullSize
+    <!--    MenuContainer(-->
+    <!--      :over="true"-->
+    <!--      :domain_navigation_mode="navigation_mode")-->
     v-dialog(v-model="entrycreate_dialog_open")
       EntryCreateList(:template_entries="create_templates_options")
     MapWrapper(
@@ -38,7 +38,7 @@
 
   export default {
     name: "domain",
-    layout: "new_map_layout",
+    // layout: "new_map_layout",
     mixins: [DomainMixin, HasMainNavComponentMixin, EntryNavMixin, EntryCreateMixin,
       PersistentStorageMixin, LayoutMixin, MapIncludeMixin, FixDomainMixin],
     components: {MenuContainer, MapWrapper, EntryCreateList, Mapbox},
@@ -114,6 +114,7 @@
   }
 
   .fullSize {
+    position: absolute;
     width: 100%;
     height: 100%;
   }

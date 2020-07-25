@@ -199,7 +199,6 @@
         }
       },
       disabled_item(item_value) {
-        console.log(this.disabled_options)
         if(!this.disabled_options) {
           return false
         }

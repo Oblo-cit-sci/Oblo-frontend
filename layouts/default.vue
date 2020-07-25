@@ -1,10 +1,11 @@
 <template lang="pug">
   v-app
-    MenuContainer(:show="initialized" :menu_mode_fixed="true")
-    Appbar
+    MenuContainer(v-if="initialized" :menu_mode_fixed="!is_domain_page"
+      :over="menu_over")
+    Appbar(:show_nav_icon="!is_domain_page")
     v-main
       NotificationBanner
-      v-container(v-if="initialized")
+      v-container(v-if="initialized" :style="container_style")
         nuxt
     GlobalSnackbar
     PrivacySheet
@@ -23,8 +24,22 @@
   export default {
     components: {NotificationBanner, MenuContainer, Appbar, PrivacySheet, GlobalSnackbar},
     mixins: [InitializationMixin, NavBaseMixin],
+    computed: {
+      menu_over() {
+        return this.is_domain_page
+      },
+      container_style() {
+        if (this.is_domain_page) {
+          return {
+            padding: 0,
+            margin: 0
+          }
+        }
+      }
+    },
   }
 </script>
 
 <style>
+
 </style>

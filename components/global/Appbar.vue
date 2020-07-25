@@ -1,6 +1,6 @@
 <template lang="pug">
   v-app-bar(true app elevation="2" )
-    v-app-bar-nav-icon(v-if="show_nav_icon" v-show="initialized" @click="switch_menu_open")
+    v-app-bar-nav-icon(:disabled="!show_nav_icon" v-show="initialized" @click="switch_menu_open" :style="nav_icon_style")
     v-toolbar-title.pa-0(v-if="initialized")
       v-list-item.pl-0
         v-list-item-avatar.header-avatar(@click="to_set_domain" width="50" height="auto" tile)
@@ -39,8 +39,15 @@
       ...mapGetters({
         connected: APP_CONNECTED,
         initialized: APP_INITIALIZED,
-        domain_data: DOMAIN_BY_NAME
+        domain_data: DOMAIN_BY_NAME,
       }),
+      nav_icon_style() {
+        if (!this.show_nav_icon) {
+          return {
+            'visibility': "hidden"
+          }
+        }
+      },
       reduce_when_small() {
         if (this.$vuetify.breakpoint.smAndDown) {
           return {"font-size": "80%"}
