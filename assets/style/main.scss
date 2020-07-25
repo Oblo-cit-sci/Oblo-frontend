@@ -51,6 +51,9 @@ input {
   border-style: none !important
 }
 
+.notification_banner .banner__wrapper {
+  border-bottom: none;
+}
 
 /* cyrillic-ext */
 @font-face {
