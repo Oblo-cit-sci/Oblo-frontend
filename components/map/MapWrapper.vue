@@ -53,7 +53,7 @@
   import {transform_options_list} from "~/lib/options"
   import {LAYER_BASE_ID} from "~/lib/map_utils"
   import EntryCreateList from "~/components/EntryCreateList"
-  import {common_place_name} from "~/lib/location"
+  import {common_place_name, get_all_countries} from "~/lib/location"
   import {create_cluster_select_search_config} from "~/lib/codes"
 
   const cluster_layer_name = LAYER_BASE_ID + '_clusters'
@@ -69,8 +69,6 @@
       })
     })
   }
-
-  const CLUSTER_PLACENAME_ZOOM_THRESH = 3
 
   export default {
     name: "MapWrapper",
@@ -129,7 +127,7 @@
         return !this.menu_open || this.$vuetify.breakpoint.mdAndUp
       },
       legend_style() {
-        if(this.$vuetify.breakpoint.smAndDown) {
+        if (this.$vuetify.breakpoint.smAndDown) {
           return {
             visibility: "hidden"
           }
@@ -263,7 +261,7 @@
       render(map) {
         if (this.set_dl)
           download(map)
-        if (this.entries_loaded && map.getZoom() > CLUSTER_PLACENAME_ZOOM_THRESH && map.getLayer(cluster_layer_name)) {
+        if (this.entries_loaded && map.getLayer(cluster_layer_name)) {
           this.cluster_label_layer_visible = true
           const clusters = map.queryRenderedFeatures(undefined, {layers: [cluster_layer_name]})
           // not defined right from the begining
@@ -314,11 +312,7 @@
             source: source_name,
             filter: ['has', 'point_count'],
             paint: {
-              'circle-color': [
-                "case",
-                ["boolean", ["feature-state", "selectable"], false],
-                '#f1e035',
-                '#f1f075'],
+              'circle-color': '#f1f075',
               'circle-radius': [
                 'step',
                 ['get', 'point_count'],
@@ -337,49 +331,49 @@
             if (cluster.id === this.act_hoover_id) {
               return
             }
-            if (cluster.state.selectable) {
-              this.remove_all_popups()
-              this.act_hoover_id = cluster.id
-              this.act_cluster = cluster
+            // if (cluster.state.selectable) {
+            this.remove_all_popups()
+            this.act_hoover_id = cluster.id
+            this.act_cluster = cluster
 
-              const source = this.map.getSource("all_entries_source")
-              source.getClusterExpansionZoom(cluster.id, (err, zoom) => {
-                // console.log("zoom", zoom)
-                this.act_cluster_expansion_zoom = zoom
-              })
+            const source = this.map.getSource("all_entries_source")
+            source.getClusterExpansionZoom(cluster.id, (err, zoom) => {
+              // console.log("zoom", zoom)
+              this.act_cluster_expansion_zoom = zoom
+            })
 
-              clusterLeaves(source, cluster.id, cluster.properties.point_count).then(features => {
-                // console.log(features)
-                let coordinates = null
-                coordinates = cluster.geometry.coordinates.slice()
-                // ensure correct popup position, when zoomed out and there are multiple copies
-                while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                  coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-                }
-                // todo temp solution
-                let popup_html = ""
-                // features.map
-                const entry_counts = this.$_.reduce(features, (ec, f) => {
-                  if (ec[f.properties.title]) {
-                    ec[f.properties.title][1] += 1
-                  } else {
-                    ec[f.properties.title] = [f.properties.title, 1]
-                  }
-                  return ec
-                }, {})
-                if (this.$_.size(entry_counts) <= 5) {
-                  popup_html = this.$_.map(entry_counts, f => "<div> &#183; " + f[0] + ", " + this.$tc("comp.map_wrapper.locations", f[1]) + "</div>").join("")
+            clusterLeaves(source, cluster.id, cluster.properties.point_count).then(features => {
+              // console.log(features)
+              let coordinates = null
+              coordinates = cluster.geometry.coordinates.slice()
+              // ensure correct popup position, when zoomed out and there are multiple copies
+              while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+              }
+              // todo temp solution
+              let popup_html = ""
+              // features.map
+              const entry_counts = this.$_.reduce(features, (ec, f) => {
+                if (ec[f.properties.title]) {
+                  ec[f.properties.title][1] += 1
                 } else {
-                  popup_html = `${this.$_.size(entry_counts)} entries`
+                  ec[f.properties.title] = [f.properties.title, 1]
                 }
-                this.add_popup(new this.mapboxgl.Popup()
-                  .setLngLat(coordinates)
-                  .setHTML(popup_html))
-                this.last_zoom = this.map.getZoom()
-              }).catch(err => {
-                console.log(err)
-              })
-            }
+                return ec
+              }, {})
+              if (this.$_.size(entry_counts) <= 5) {
+                popup_html = this.$_.map(entry_counts, f => "<div> &#183; " + f[0] + ", " + this.$tc("comp.map_wrapper.locations", f[1]) + "</div>").join("")
+              } else {
+                popup_html = `${this.$_.size(entry_counts)} entries`
+              }
+              this.add_popup(new this.mapboxgl.Popup()
+                .setLngLat(coordinates)
+                .setHTML(popup_html))
+              this.last_zoom = this.map.getZoom()
+            }).catch(err => {
+              console.log(err)
+            })
+            // }
           })
 
           this.map.on('mouseleave', cluster_layer_name, (e) => {
@@ -395,15 +389,23 @@
             // console.log(cluster)
             const cluster = e.features[0]
 
-            if (cluster.state.selectable) {
-              // todo, maybe there is a easier way to get the common_place_name
-              const source = this.map.getSource("all_entries_source")
-              clusterLeaves(source, cluster.id, cluster.properties.point_count).then(features => {
-                const place_name = common_place_name(features)
-                const uuids = Array.from(new Set(features.map(f => f.properties.uuid).values()))
-                this.$store.commit("search/replace_in_act_config", create_cluster_select_search_config(place_name, uuids))
-              })
-            }
+            // todo, maybe there is a easier way to get the common_place_name
+            const source = this.map.getSource("all_entries_source")
+            clusterLeaves(source, cluster.id, cluster.properties.point_count).then(features => {
+              let location_text = cluster.state.common_place
+              if (!location_text) {
+                const countries = get_all_countries(features)
+                if (countries.size > 3) {
+                  location_text = this.$t("comp.map_wrapper.several_countries")
+                } else {
+                  location_text = Array.from(get_all_countries(features).values()).join(", ")
+                }
+              }
+              const place_name = location_text
+              const uuids = Array.from(new Set(features.map(f => f.properties.uuid).values()))
+              this.$store.commit("search/replace_in_act_config", create_cluster_select_search_config(place_name, uuids))
+            })
+            // }
           })
           // 2nd cluster count layer
           this.map.addLayer({
@@ -438,10 +440,12 @@
             source: cluster_region_names_source,
             layout: {
               "text-allow-overlap": true,
-              "text-ignore-placement": true,
+              // "text-ignore-placement": true,
+              "text-justify":"auto",
+              'text-variable-anchor': ['top', 'bottom'],
               "text-field": ["get", "region_name"],
               'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-              "text-offset": [0, 1],
+              "text-offset": [0, 0.7],
               'text-size': 14,
             },
             paint: {
@@ -450,7 +454,7 @@
             }
           })
 
-          this.debounced_cluster_status = this.$_.debounce(this.check_cluster_states, 50)
+          this.debounced_cluster_status = this.$_.debounce(this.check_cluster_states, 30)
 
         } else {
           console.log("cluster layer exists already")
@@ -502,7 +506,16 @@
           // console.log(cluster)
           const leaves = await clusterLeaves(source, cluster_id, cluster.properties.point_count)
 
-          const common_place = common_place_name(leaves)
+          let common_place = null
+          if (cluster.state.hasOwnProperty("common_place"))
+            common_place = cluster.state.common_place
+          else
+            common_place = common_place_name(leaves)
+
+          this.map.setFeatureState(
+            {source: 'all_entries_source', id: cluster_id},
+            {common_place: common_place}
+          )
 
           if (common_place) {
             region_source_features.push({
@@ -510,13 +523,8 @@
               geometry: cluster.geometry,
               properties: {region_name: common_place, orig_cluster_id: cluster_id}
             })
-            this.map.setFeatureState(
-              {source: 'all_entries_source', id: cluster_id},
-              {"selectable": true}
-            )
           }
         }
-
         this.map.getSource("cluster_region_names_source").setData({
           "type": "FeatureCollection",
           "features": region_source_features

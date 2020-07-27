@@ -283,7 +283,8 @@
       "label": "Language"
     },
     "map_wrapper": {
-      "locations": "@:w.n_locations"
+      "locations": "@:w.n_locations",
+      "several_countries": "Several countries"
     }
   },
   "lang": {
