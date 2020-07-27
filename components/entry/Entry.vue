@@ -42,7 +42,7 @@
           :mode="mode")
     br
     v-row(v-for="(aspect) in shown_aspects" :key="aspect.name")
-      v-col(alignSelf="stretch" :cols="base_cols")
+      v-col(alignSelf="stretch" :cols="base_cols" :style="{padding:0}")
         v-scroll-y-transition
           Aspect(
             :aspect="aspect"
