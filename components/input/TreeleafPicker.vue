@@ -188,7 +188,10 @@
     },
     methods: {
       select(value) {
-        this.$emit("input", this.$_.concat(this.value || [], [value]))
+        if(value)
+          this.$emit("input", this.$_.concat(this.value || [], [value]))
+        else // clicked clear on select
+          this.$emit("input", this.value)
       },
       clear() {
         this.$emit('clear')

@@ -66,7 +66,6 @@ export const mutations = {
   },
   snackbar(state, snackbar) {
     state.snackbar = Object.assign(snackbar, {trigger: true})
-    // console.log("final snackbar", state.snackbar.trigger)
   },
   snackbar_reset(state) {
     $nuxt.$set(state.snackbar, "trigger", false)
