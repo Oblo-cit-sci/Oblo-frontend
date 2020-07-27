@@ -293,7 +293,7 @@ class Entries extends QueryBase {
     return this.post("get_uuids", search_query)
   }
 
-  async by_uuids(uuids, fields, limit, offset) {
+  async by_uuids(uuids, fields, limit=40, offset = 0) {
     const body = {
       uuid_list: {
         uuids: uuids

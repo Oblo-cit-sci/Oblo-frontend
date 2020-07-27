@@ -2,7 +2,7 @@
   v-app
     MenuContainer(v-if="initialized" :menu_mode_fixed="!is_domain_page"
       :over="menu_over")
-    Appbar(:show_nav_icon="!is_domain_page")
+    Appbar(:show_nav_icon="show_nav_icon")
     v-main
       NotificationBanner
       v-container(v-if="initialized" :style="container_style")
@@ -27,6 +27,9 @@
     computed: {
       menu_over() {
         return this.is_domain_page
+      },
+      show_nav_icon() {
+        return !this.is_domain_page || this.$vuetify.breakpoint.smallAndDown
       },
       container_style() {
         if (this.is_domain_page) {

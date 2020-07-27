@@ -54,7 +54,7 @@
     },
     created() {
       // this should go somewhere else before.
-      if (this.$_.isEmpty(this.selected.length === 0)) {
+      if (this.$_.isEmpty(this.selected)) {
         const domain_data = this.$store.getters["domain_by_name"](this.domain_name)
         const overlay_menu = this.$_.get(domain_data, "map.overlay_menu")
         if (overlay_menu) {

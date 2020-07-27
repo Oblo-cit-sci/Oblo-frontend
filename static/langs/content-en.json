@@ -283,7 +283,7 @@
       "label": "Language"
     },
     "map_wrapper": {
-      "locations": "{n} locations | {n} location | {n} locations"
+      "locations": "@:w.n_locations"
     }
   },
   "lang": {
@@ -298,6 +298,8 @@
     "search": "search",
     "entries": "entries",
     "n_entries": "No entries | {n} entry | {n} entries",
+    "location": "Location",
+    "n_locations": "No locations | {n} location | {n} locations",
     "description": "description",
     "update": "update",
     "delete": "delete",

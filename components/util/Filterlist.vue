@@ -6,7 +6,7 @@
         v-scroll-x-transition(group)
           v-list-item(v-for="(filter, index) in applied_filters" :key="index")
               v-list-item-title {{$t(filter.t_label)}}:&nbsp;{{filter.text}}
-              v-btn(icon @click="edit_filter(index)")
+              v-btn(icon @click="edit_filter(index)" :disabled="not_editable(filter)")
                 v-icon mdi-filter
               v-btn(icon @click="remove_filter(index)" :disabled="not_removable(filter)")
                 v-icon mdi-window-close
@@ -86,7 +86,13 @@
         this.dialog_open = true
       },
       not_removable(filter) {
-        return filter.name === "template"
+        if(filter.name === "template") {
+            return true
+        }
+         return !this.$_.get(filter, "edit.removable", true)
+      },
+      not_editable(filter) {
+        return !this.$_.get(filter, "edit.editable", true)
       },
       set_filter_value(name, value) {
         const new_value = recursive_unpack2(this.$_.cloneDeep(value))

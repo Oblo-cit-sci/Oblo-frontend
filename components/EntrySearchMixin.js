@@ -36,6 +36,20 @@ export default {
     },
     async async_entry_search(api, config, offset = 0, limit = 40) {
       return api.entries_search(limit, offset, config)
+    },
+    async get_complete_missing_meta(uuids) {
+      /**
+       * check which entries exists already and fetch the rest
+       */
+      const to_fetch = this.check_missing_meta(uuids)
+      if(to_fetch.length === 0) {
+        // todo, just resolve
+        return Promise.resolve(true)
+      }
+      return this.get_entries_meta(uuids)
+    },
+    async get_entries_meta(uuids) {
+      return this.$api.entries.by_uuids(uuids)
     }
   }
 }

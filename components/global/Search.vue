@@ -47,8 +47,8 @@
     SEARCH_GET_SEARCH_COUNT,
     SEARCH_GET_SEARCHING,
     SEARCH_GET_SEARCHTIME,
-    SEARCH_RECEIVED_ENTRIES,
-    SEARCH_SET_ROUTE,
+    SEARCH_RECEIVED_ENTRIES, SEARCH_SET_ENTRIES,
+    SEARCH_SET_ROUTE, SEARCH_SET_SEARCH_COUNT,
     SEARCH_SET_SEARCHING
   } from "~/store/search";
   import PersistentStorageMixin from "../util/PersistentStorageMixin";
@@ -57,6 +57,7 @@
   import Filterlist from "~/components/util/Filterlist"
   import {privacy_filter_options} from "~/lib/filter_option_consts"
   import {DOMAIN, QP_D, QP_SEARCH, TEMPLATE} from "~/lib/consts"
+  import EntrySearchMixin from "~/components/EntrySearchMixin"
 
   const LOG = false
 
@@ -65,7 +66,7 @@
   export default {
     name: "Search",
     components: {Filterlist, FilterSelect, EntryPreviewList},
-    mixins: [FilterMixin, NavBaseMixin, PersistentStorageMixin],
+    mixins: [FilterMixin, NavBaseMixin, PersistentStorageMixin, EntrySearchMixin],
     props: {
       init_clear: Boolean,
       init_full: Boolean,
@@ -159,26 +160,44 @@
         }
       },
       act_config(val, prev_val) {
-        // console.log(val, prev_val)
+        // console.log("act_config", val, prev_val, this.$_.isEqual(val, prev_val))
         // todo special treatment here:
         // if the template changed kickout the tags
         const old_template_filter = val.find(f => f.name === "template")
         const new_template_filter = prev_val.find(f => f.name === "template")
-        if(old_template_filter && new_template_filter) { // old will be null initially, but there is nothing to kickout
+
+        let update_config = false
+        let new_config = this.$_.cloneDeep(val)
+
+        if (old_template_filter && new_template_filter) { // old will be null initially, but there is nothing to kickout
           const template_filter_change = !this.$_.isEqual(old_template_filter.value, new_template_filter.value)
-          console.log(template_filter_change)
-          if(template_filter_change) {
+          if (template_filter_change) {
             // kickout tag filter
-            console.log(val)
+            // console.log(val)
             const tag_filter = val.find(f => f.name === "tags")
-            if(tag_filter) {
+            if (tag_filter) {
               console.log("tag_filter", tag_filter)
-              this.$store.commit("search/set_act_config", val.filter(f => f.name !== "tags"))
-              return
+              new_config = new_config.filter(f => f.name !== "tags")
+              update_config = true
             }
           }
         }
-        this.getEntries()
+
+        const included_select_uuids = val.find(f => f.name === "select_uuids")
+        const prev_included_select_uuids = prev_val.find(f => f.name === "select_uuids")
+        // keep the last condition, otherwise, if you have 2 clusters, which are actually the same (article review: tanzania) it will to en endless loop
+        // console.log(included_select_uuids && this.$_.isEqual(included_select_uuids,  prev_included_select_uuids))
+        // console.log(!this.$_.isEqual(val, prev_val))
+        if(included_select_uuids && this.$_.isEqual(included_select_uuids,  prev_included_select_uuids) && !this.$_.isEqual(val, prev_val)) {
+          // select_uuids didnt change that means we changed something else, and this selector has to go
+          new_config = new_config.filter(f => f.name !== "select_uuids")
+          update_config = true
+        }
+        if(update_config) {
+          this.$store.commit("search/set_act_config", new_config)
+        } else {
+          this.getEntries()
+        }
       }
     },
     computed: {
@@ -196,7 +215,6 @@
       },
       act_config: {
         get: function () {
-          // console.log("getting act_config")
           return this.$store.getters["search/get_act_config"]
         },
         set: function (val) {
@@ -244,13 +262,48 @@
       },
       getEntries(before_last = false) {
         // debugger
-        let config = this.searchConfiguration(before_last)
-        // console.log("Search.config", config)
-        this.$store.commit(SEARCH_SET_ROUTE, this.act_relevant_route_data())
-        this.$store.commit(SEARCH_SET_SEARCHING, true)
-        // const prepend = this.entries().length > 0
-        debounced_search(this.$api, this.$store, config)
-        // TODO would be nice to have the debounced search work with a promise so we do not need the
+        const select_uuids = this.select_uuids_config()
+        if (select_uuids) {
+          this.fetch_select_uuids(select_uuids)
+        } else {
+          let config = this.searchConfiguration(before_last)
+          // console.log("Search.config", config)
+          this.$store.commit(SEARCH_SET_ROUTE, this.act_relevant_route_data())
+          this.$store.commit(SEARCH_SET_SEARCHING, true)
+          // const prepend = this.entries().length > 0
+          debounced_search(this.$api, this.$store, config)
+        }
+        // TODO would be nice to have the debounced search work with a promise so we do not need the have done-flags in the store...
+      },
+      fetch_select_uuids(select_uuids) {
+        // todo this whole part does not consider pagination... more than 40 entries.
+        this.get_complete_missing_meta(select_uuids).then(result => {
+          if (typeof result === "boolean") {
+            this.$store.commit(SEARCH_SET_ENTRIES, select_uuids)
+            this.$store.commit(SEARCH_SET_SEARCH_COUNT, select_uuids.length)
+          } else if (result.status === 200) {
+            const entries = this.$_.get(result, "data.data.entries", [])
+            this.store_received_entries(entries)
+            const uuids = entries.map(e => e.uuid)
+            this.$store.commit(SEARCH_SET_ENTRIES, uuids)
+            this.$store.commit(SEARCH_SET_SEARCH_COUNT, uuids.length)
+          } else {
+            console.log(result)
+            this.error_snackbar("Couldn't fetch entries")
+          }
+          // console.log("toll", uuids)
+          // // store_received_entries
+
+        })
+      },
+      select_uuids_config() {
+        // console.log(this.act_config)
+        for (let filter of this.act_config) {
+          if (filter.name === "select_uuids") {
+            return filter.value
+          }
+        }
+        return null
       },
       filter2maplegend(filter_config) {
         // console.log(filter_config)
@@ -278,14 +331,20 @@
         }
         const filterlist_options = this.filterlist_options
         for (let filter of this.act_config) {
-          const config = filterlist_options.find(fo => fo.name === filter.name).search_config
-          if (config.hasOwnProperty("name")) {
-            config.conditional_value = filter.value
-            configuration.required.push(config)
-          } else if (config.hasOwnProperty("include_as")) {
-            configuration.include[config.include_as] = filter.value
+          const filter_option = filterlist_options.find(fo => fo.name === filter.name)
+          // all configs must be contained in the options, maybe not the best method... uuids_select doesnt need to be there
+          if (filter_option) {
+            const config = filter_option.search_config
+            if (config.hasOwnProperty("name")) {
+              config.conditional_value = filter.value
+              configuration.required.push(config)
+            } else if (config.hasOwnProperty("include_as")) {
+              configuration.include[config.include_as] = filter.value
+            } else {
+              console.log("error cannot proccess filter-option", filter.name)
+            }
           } else {
-            console.log("error cannot proccess filter-option", filter.name)
+            console.log(filter, "not in options")
           }
         }
         if (before_last) {

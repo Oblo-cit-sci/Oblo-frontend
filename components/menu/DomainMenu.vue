@@ -29,7 +29,7 @@
   import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
   import {entrytype_filter_options} from "~/lib/filter_option_consts"
   import {object_list2options} from "~/lib/options"
-  import {get_tags_filter_options} from "~/lib/codes"
+  import {get_tags_filter_options, get_uuids_select_option} from "~/lib/codes"
   import DomainMixin from "~/components/DomainMixin"
   import FixDomainMixin from "~/components/global/FixDomainMixin"
 
@@ -44,6 +44,7 @@
           this.$store.getters["templates/templates_of_domain"](this.domain_name), "title", "slug", true)
 
         const tags_filter_options = get_tags_filter_options(this.$store, this.domain_name)
+        // const uuids_select_option = get_uuids_select_option()
         return [template_filter_options, tags_filter_options]
       }
     }

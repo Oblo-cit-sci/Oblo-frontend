@@ -5,7 +5,7 @@
     <!--          v-icon mdi-camera-->
     div(v-if="show_overlay")
       .buttongroup.shift_anim(:style="button_group_shift")
-        v-btn(dark fab large color="blue" @click="switch_menu_open")
+        v-btn(v-if="show_menu_button" dark fab large color="blue" @click="switch_menu_open")
           v-icon mdi-menu
         v-btn(dark color="green" fab @click="open_layer_dialog")
           v-icon mdi-layers-outline
@@ -21,10 +21,10 @@
             :style="additional_template_button_shift"
             @click="$emit('create_entry')")
             v-icon mdi-dots-horizontal
-      .overlay_menu(v-if="show_legend")
+      .overlay_menu(:style="legend_style")
         TemplateLegend(:domain_name="domain" ref="legendComponent")
     .buttongroup.shift_anim(v-else-if="menu_state === 0" :style="button_group_shift")
-      v-btn(dark fab large color="blue" @click="switch_menu_open")
+      v-btn(v-if="show_menu_button" dark fab large color="blue" @click="switch_menu_open")
         v-icon mdi-menu
     AspectDialog(v-bind="aspectdialog_data" @update:dialog_open="aspectdialog_data.dialog_open = $event" :ext_value="layer_status" @update:ext_value="aspect_dialog_update($event)")
     client-only
@@ -42,10 +42,9 @@
 
   import Mapbox from 'mapbox-gl-vue'
   import MapIncludeMixin from "~/components/map/MapIncludeMixin"
-  import {default_place_type, MENU_MODE_DOMAIN_OVERVIEW, VIEW} from "~/lib/consts"
+  import {MENU_MODE_DOMAIN_OVERVIEW, VIEW} from "~/lib/consts"
   import {mapGetters} from "vuex"
   import DomainMapMixin from "~/components/map/DomainMapMixin"
-  import {TEMPLATES_OF_DOMAIN} from "~/store/templates"
   import {ENTRIES_HAS_FULL_ENTRY, ENTRIES_SAVE_ENTRY} from "~/store/entries"
   import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
   import {MAP_GOTO_LOCATION} from "~/store/map"
@@ -54,6 +53,8 @@
   import {transform_options_list} from "~/lib/options"
   import {LAYER_BASE_ID} from "~/lib/map_utils"
   import EntryCreateList from "~/components/EntryCreateList"
+  import {common_place_name} from "~/lib/location"
+  import {create_cluster_select_search_config} from "~/lib/codes"
 
   const cluster_layer_name = LAYER_BASE_ID + '_clusters'
 
@@ -121,11 +122,18 @@
           dialog_open: true
         }
       },
+      show_menu_button() {
+        return this.$vuetify.breakpoint.mdAndUp
+      },
       show_overlay() {
         return !this.menu_open || this.$vuetify.breakpoint.mdAndUp
       },
-      show_legend() {
-        return this.$vuetify.breakpoint.smAndUp
+      legend_style() {
+        if(this.$vuetify.breakpoint.smAndDown) {
+          return {
+            visibility: "hidden"
+          }
+        }
       },
       show_main_template_create_text() {
         return (!this.menu_open || this.$vuetify.breakpoint.lgAndUp) && !this.$vuetify.breakpoint.smAndDown
@@ -352,15 +360,15 @@
                 let popup_html = ""
                 // features.map
                 const entry_counts = this.$_.reduce(features, (ec, f) => {
-                  if(ec[f.properties.title]) {
+                  if (ec[f.properties.title]) {
                     ec[f.properties.title][1] += 1
                   } else {
-                    ec[f.properties.title] = [f.properties.title,1]
+                    ec[f.properties.title] = [f.properties.title, 1]
                   }
                   return ec
                 }, {})
                 if (this.$_.size(entry_counts) <= 5) {
-                  popup_html = this.$_.map(entry_counts, f => "<div> &#183; " + f[0] +", " + this.$tc("comp.map_wrapper.locations", f[1]) + "</div>").join("")
+                  popup_html = this.$_.map(entry_counts, f => "<div> &#183; " + f[0] + ", " + this.$tc("comp.map_wrapper.locations", f[1]) + "</div>").join("")
                 } else {
                   popup_html = `${this.$_.size(entry_counts)} entries`
                 }
@@ -383,6 +391,20 @@
             }
           })
 
+          this.map.on('click', cluster_layer_name, e => {
+            // console.log(cluster)
+            const cluster = e.features[0]
+
+            if (cluster.state.selectable) {
+              // todo, maybe there is a easier way to get the common_place_name
+              const source = this.map.getSource("all_entries_source")
+              clusterLeaves(source, cluster.id, cluster.properties.point_count).then(features => {
+                const place_name = common_place_name(features)
+                const uuids = Array.from(new Set(features.map(f => f.properties.uuid).values()))
+                this.$store.commit("search/replace_in_act_config", create_cluster_select_search_config(place_name, uuids))
+              })
+            }
+          })
           // 2nd cluster count layer
           this.map.addLayer({
             id: layer_base_id + '_cluster-count',
@@ -514,56 +536,13 @@
           // console.log(cluster)
           const leaves = await clusterLeaves(source, cluster_id, cluster.properties.point_count)
 
-          const num_leaves = leaves.length
+          const common_place = common_place_name(leaves)
 
-          // console.log("res", leaves, num_leaves)
-
-          let region_name = null
-          const places = {}
-
-          const consider_place_types = this.$_.cloneDeep(default_place_type)
-          for (let leave of leaves) {
-            const loc = leave.properties.location[0]
-
-            if (this.$_.isEmpty(places)) {
-              for (let pt of consider_place_types) {
-                if (loc.place[pt]) {
-                  places[pt] = loc.place[pt].name
-                } else {
-                  consider_place_types.splice(consider_place_types.indexOf(pt), 1)
-                }
-              }
-              // console.log(loc, "place?", places)
-            } else {
-              // console.log("after1,", consider_place_types, places)
-              // console.log(loc)
-              for (let pt of consider_place_types) {
-                if (loc.place[pt]) {
-                  if (loc.place[pt].name !== places[pt]) {
-                    consider_place_types.splice(consider_place_types.indexOf(pt), 1)
-                  }
-                } else {
-                  // console.log("kickout", pt, "for",loc.place)
-                  consider_place_types.splice(consider_place_types.indexOf(pt), 1)
-                }
-              }
-            }
-            // console.log("le", consider_place_types.length)
-            if (consider_place_types.length === 0) {
-              break
-            }
-          }
-
-          if (consider_place_types.length > 0) {
-            // console.log("--->")
-            // console.log(consider_place_types[0])
-            // console.log(places)
-            region_name = places[consider_place_types[0]]
-            // console.log(region_name)
+          if (common_place) {
             region_source_features.push({
               type: "Feature",
               geometry: cluster.geometry,
-              properties: {region_name: region_name, orig_cluster_id: cluster_id}
+              properties: {region_name: common_place, orig_cluster_id: cluster_id}
             })
             this.map.setFeatureState(
               {source: 'all_entries_source', id: cluster_id},
@@ -664,7 +643,7 @@
       },
       check_hide_map() {
         if (this.$vuetify.breakpoint.smAndDown) {
-          if (open && this.menu_state === MENU_MODE_DOMAIN_OVERVIEW) {
+          if (this.menu_open && this.menu_state === MENU_MODE_DOMAIN_OVERVIEW) {
             this.map_hidden = true
           } else {
             this.map_hidden = false
