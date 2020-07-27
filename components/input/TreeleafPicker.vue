@@ -14,7 +14,7 @@
     v-divider.mb-1(v-if="has_both()")
     Title_Description.ml-3(v-if="has_levels" :title="act_levelname" :description="act_level_description" mode="edit")
     TextShort(:aspect="{'name':'nooo', 'type':'str', 'attr': {}}" mvalue="{value:'cool'}")
-    div(v-if="has_options")
+    .px-3(v-if="has_options")
       SingleSelect.pb-1(v-if="edit_mode_list" :options="act_options" v-on:selection="select($event)" :select_sync="false" :highlight="false")
       LargeSelectList(v-if="edit_mode_large_list" :options="act_options" v-on:selection="select($event)" :select_sync="false" :highlight="false" :data_source="data_source")
       SelectGrid(v-if="edit_mode_matrix" :options="act_options" v-on:selection="select($event)" :data_source="data_source")

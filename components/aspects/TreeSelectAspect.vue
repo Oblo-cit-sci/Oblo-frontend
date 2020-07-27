@@ -150,7 +150,7 @@
           if(this.value.constructor === Array) {
             return this.value.map(v => {
               let base = v.text
-              base += v.extra_value ? base + " / " + unpack(v.extra_value) : ""
+              base += v.extra_value ? " / " + unpack(v.extra_value) : ""
               return base
             }).join(" \u21D2 ")
           } else {
