@@ -29,7 +29,7 @@
         return this.is_domain_page
       },
       show_nav_icon() {
-        return !this.is_domain_page || this.$vuetify.breakpoint.smallAndDown
+        return !this.is_domain_page || this.$vuetify.breakpoint.smAndDown
       },
       container_style() {
         if (this.is_domain_page) {
