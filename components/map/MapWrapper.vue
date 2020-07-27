@@ -168,7 +168,7 @@
       additional_template_button_shift() {
         // todo 110 is very magic, depends on the length of the main create button text
         let shift = "110px"
-        if (this.menu_open && !this.show_main_template_create_text) {
+        if (!this.show_main_template_create_text) {
           shift = "40px"
         }
         // console.log("shift", shift)

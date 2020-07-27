@@ -104,7 +104,7 @@
     },
     computed: {
       logged_in() {
-        return this.$store.getters.logged_in
+        return this.$store.getters["user/logged_in"]
       },
       device_location_input_option() {
         return this.has_input_option(DEVICE)
