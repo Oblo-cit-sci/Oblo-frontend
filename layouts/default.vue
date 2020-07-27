@@ -4,7 +4,7 @@
       :over="menu_over")
     Appbar(:show_nav_icon="show_nav_icon")
     v-main
-      NotificationBanner
+      NotificationBanner(v-if="!is_domain_page")
       v-container(v-if="initialized" :style="container_style")
         nuxt
     GlobalSnackbar

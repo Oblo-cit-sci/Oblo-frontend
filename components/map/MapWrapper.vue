@@ -480,42 +480,8 @@
         })
 
         // Interactions
-        // 1. ENTRIES Hoover
-        this.map.on('mouseenter', entries_layer_name, (e) => {
-          const feature = e.features[0]
-
-          this.remove_all_popups()
-          let coordinates = null
-          coordinates = feature.geometry.coordinates.slice()
-          // ensure correct popup position, when zoomed out and there are multiple copies
-          while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-          }
-
-          this.act_hoover_id = feature.id
-          // console.log(feature.id)
-          this.map.setFeatureState(
-            {source: source_name, id: this.act_hoover_id},
-            {hover: true}
-          )
-          this.add_popup(new this.mapboxgl.Popup()
-            .setLngLat(coordinates)
-            .setText(feature.properties.title))
-        })
-
-        // Interactions
-        // 1. ENTRIES Hoover leave
-        this.map.on('mouseleave', entries_layer_name, () => {
-          this.map.setFeatureState(
-            {source: source_name, id: this.act_hoover_id},
-            {hover: false}
-          )
-          this.act_hoover_id = null
-          this.remove_all_popups()
-        })
-        this.map.on("click", entries_layer_name, (e) => {
-          // console.log(e.features)
-          this.select_entry_marker(e.features[0])
+        this.add_default_entries_layer_interactions(source_name, entries_layer_name, (features) => {
+          this.select_entry_marker(features[0])
         })
       },
       async check_cluster_states(clusters) {

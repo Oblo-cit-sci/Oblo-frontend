@@ -24,6 +24,7 @@ export default {
         logoPosition: "bottom-right",
         maxPitch: 0,
         dragRotate: false,
+        act_hoover_id: null
         // scaleControl: null
       },
     }
@@ -73,6 +74,47 @@ export default {
         // todo the colors should come from the templates
         'paint': Object.assign({}, paint_props)
       })
+    },
+    add_default_entries_layer_interactions(source_name, entries_layer_name, click_method) {
+      // 1. ENTRIES Hoover
+      this.map.on('mouseenter', entries_layer_name, (e) => {
+        const feature = e.features[0]
+
+        this.remove_all_popups()
+        let coordinates = null
+        coordinates = feature.geometry.coordinates.slice()
+        // ensure correct popup position, when zoomed out and there are multiple copies
+        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+          coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        }
+
+        this.act_hoover_id = feature.id
+        // console.log(feature.id)
+        this.map.setFeatureState(
+          {source: source_name, id: this.act_hoover_id},
+          {hover: true}
+        )
+        this.add_popup(new this.mapboxgl.Popup()
+          .setLngLat(coordinates)
+          .setText(feature.properties.title))
+      })
+      // 2. ENTRIES Hoover leave
+      this.map.on('mouseleave', entries_layer_name, () => {
+        this.map.setFeatureState(
+          {source: source_name, id: this.act_hoover_id},
+          {hover: false}
+        )
+        this.act_hoover_id = null
+        this.remove_all_popups()
+      })
+      // 3. ENTRIES click
+      if(click_method) {
+        this.map.on("click", entries_layer_name, (e) => {
+          // console.log(e.features)
+          click_method(e.features)
+          //
+        })
+      }
     },
     templates_color_list(templates) {
       return this.$_.reduce(templates, (t_color_arr, t) => {

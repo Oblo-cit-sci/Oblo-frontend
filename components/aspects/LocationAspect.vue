@@ -51,7 +51,7 @@
   import Mapbox from 'mapbox-gl-vue'
   import {
     array2coords,
-    create_location_error, entry_location2geojson_arr,
+    create_location_error, entry_location2geojson_arr, get_closest_coordinates,
     LOCATION_PRECISION_POINT,
     place2str,
     PREC_OPTION_EXACT,
@@ -282,19 +282,30 @@
                 8
               ],
             })
+            this.add_default_entries_layer_interactions("my_entries_source", "entries_layer", this.snap_to_feature)
             //
-            this.map.on("click", "entries_layer", (e) => {
-              this.snap_to_feature(e.features[0])
-            })
           }
         }
       },
-      snap_to_feature(feature) {
-        // console.log(feature)
+      snap_to_feature(features) {
+        const feature = features[0]
+        console.log("snapping to ", feature)
         this.$api.entry__$uuid(feature.properties.uuid).then(({data}) => {
-          console.log(data)
+          console.log(data.data.location)
+          const entry_locations = data.data.location
+          let selected_location = null
+          if(entry_locations.length === 1) {
+            selected_location = entry_locations[0]
+          } else {
+            const selected_coordinates = array2coords(feature.geometry.coordinates)
+            // console.log(selected_coordinates)
+            // console.log(this.$_.map(entry_locations, el => el.coordinates))
+            const selected_loc_index = get_closest_coordinates(selected_coordinates, this.$_.map(entry_locations, "coordinates"))
+            selected_location = entry_locations[selected_loc_index]
+          }
+          console.log(selected_location)
+          this.update_value(selected_location)
         }).catch(err => {
-
         })
       },
       geolocate_success(location) {
@@ -376,6 +387,11 @@
         return (this.aspect.attr.output || default_output).includes(type)
       },
       map_location_selected(map, mapboxEvent) {
+        // we are gonna call snap_to_feature, so lets get out here
+        if(this.act_hoover_id) {
+          return
+        }
+        console.log("map click", this.act_hoover_id)
         if (this.is_view_mode)
           return
         let value = {
