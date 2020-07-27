@@ -45,7 +45,7 @@
   import {MENU_MODE_DOMAIN_OVERVIEW, VIEW} from "~/lib/consts"
   import {mapGetters} from "vuex"
   import DomainMapMixin from "~/components/map/DomainMapMixin"
-  import {ENTRIES_HAS_FULL_ENTRY, ENTRIES_SAVE_ENTRY} from "~/store/entries"
+  import {ENTRIES_DOMAIN_DRAFTS_UUIDS, ENTRIES_HAS_FULL_ENTRY, ENTRIES_SAVE_ENTRY} from "~/store/entries"
   import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
   import {MAP_GOTO_LOCATION} from "~/store/map"
   import TemplateLegend from "~/components/menu/TemplateLegend"
@@ -53,8 +53,9 @@
   import {transform_options_list} from "~/lib/options"
   import {LAYER_BASE_ID} from "~/lib/map_utils"
   import EntryCreateList from "~/components/EntryCreateList"
-  import {common_place_name, get_all_countries} from "~/lib/location"
+  import {common_place_name, entry_location2geojson_arr, get_all_countries} from "~/lib/location"
   import {create_cluster_select_search_config} from "~/lib/codes"
+  import FilterMixin from "~/components/FilterMixin"
 
   const cluster_layer_name = LAYER_BASE_ID + '_clusters'
 
@@ -72,7 +73,7 @@
 
   export default {
     name: "MapWrapper",
-    mixins: [MapIncludeMixin, DomainMapMixin, HasMainNavComponentMixin],
+    mixins: [MapIncludeMixin, DomainMapMixin, HasMainNavComponentMixin, FilterMixin],
     components: {EntryCreateList, AspectDialog, TemplateLegend, Mapbox},
     props: {
       height: {
@@ -437,9 +438,7 @@
               "text-halo-width": 1
             }
           })
-
           this.debounced_cluster_status = this.$_.debounce(this.check_cluster_states, 30)
-
         } else {
           console.log("cluster layer exists already")
         }
@@ -458,10 +457,16 @@
             12,
             8
           ],
-          "circle-stroke-color": "#f6ff7a",
+          "circle-stroke-color": [
+            "match",
+            ["get", "status"],
+            "draft",
+            "#0000FF",
+            "#f6ff7a"
+          ],
           "circle-stroke-width": [
             "case",
-            ["boolean", ["feature-state", "selected"], false],
+            ["any", ["boolean", ["feature-state", "selected"], false], ["==", ["get", "status"],"draft"]],
             2,
             0
           ]
@@ -515,10 +520,10 @@
         })
       },
       update_filtered_source() {
+        console.log("update_filtered_source")
         if (!this.entries_loaded || !this.map_loaded || !this.get_all_uuids) {
           return
         }
-        // console.log("update_filtered_source")
         // console.log(this.map.getSource("all_entries_source"))
         // const included_templates = this.legend_selection.map(s => s.value)
 
@@ -529,12 +534,22 @@
           // features: this.entries.features.filter(e => included_templates.includes(e.properties.template) ||
           //   (e.properties.uuid === this.selected_entry))
         }
+
+        const include_types = this.get_filtered_template_slugs()
+        const drafts = this.$_.flatten(this.$store.getters["entries/domain_drafts"](this.domain_name)
+          .filter(e => include_types.includes(e.template.slug)).map(e => entry_location2geojson_arr(e, ["status"])))
+        for(let i in drafts) {
+          drafts[i].id = filtered_entries.features.length + parseInt(i)
+        }
+        filtered_entries.features = filtered_entries.features.concat(drafts)
+
         if (!this.map.getSource("all_entries_source")) {
           this.map.addSource("all_entries_source", {
             type: "geojson",
             data: filtered_entries,
             cluster: true,
             tolerance: 0,
+            generateId: true,
             clusterMaxZoom: 14,
             clusterRadius: 25
           })
@@ -568,6 +583,7 @@
         // console.log("MapWrapper.change_entry_markers_mode", selected)
         const features = this.map.getSource("all_entries_source")._data.features
         // console.log("all features", features)
+        console.log(features)
         const relevant_features = this.$_.filter(features, (f) => f.properties.uuid === entry_uuid)
         // console.log(relevant_features, selected)
         // this.map.setLayoutProperty(

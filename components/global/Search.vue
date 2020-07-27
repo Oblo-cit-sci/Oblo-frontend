@@ -213,16 +213,6 @@
         const no_filter = this.filter_data.length === 0
         return no_params && no_filter
       },
-      act_config: {
-        get: function () {
-          return this.$store.getters["search/get_act_config"]
-        },
-        set: function (val) {
-          this.filter_changed = true
-          this.$store.commit("search/set_act_config", val)
-          this.filter2maplegend(val)
-        }
-      },
       searching() {
         return this.get_searching()
       },
@@ -237,8 +227,8 @@
         // so that drafts are also shown on the profile
         if (this.mixin_domain_drafts && this.is_pure) {
           const include_types = this.get_filtered_template_slugs()
-          const drafts = this.$store.getters[ENTRIES_DOMAIN_DRAFTS_UUIDS](this.mixin_domain_drafts)
-            .reverse().filter(d => include_types.includes(this.$store.getters["entries/get_entry"](d).template.slug))
+          const drafts = this.$store.getters["entries/domain_drafts"](this.mixin_domain_drafts)
+            .reverse().filter(e => include_types.includes(e.template.slug)).map(e => e.uuid)
           result_entries = drafts.concat(result_entries)
         }
         // console.log("new filtered entries", result_entries)
@@ -305,14 +295,6 @@
         }
         return null
       },
-      filter2maplegend(filter_config) {
-        // console.log(filter_config)
-        const template_filter_conf = filter_config.filter(fc => fc.name === "template")[0]
-        this.$store.commit("map/set_filter_config", template_filter_conf.value.map(v => ({
-          value: v,
-          name: "template"
-        })))
-      },
       request_more() {
         // console.log("request more", )
         let config = this.searchConfiguration()
@@ -363,14 +345,6 @@
         return {
           path: this.$route.path,
           params: this.$_.pick(this.$route.query, relevant_query_keys)
-        }
-      },
-      get_filtered_template_slugs() {
-        const template_filter_conf = this.act_config.filter(fc => fc.name === "template")[0]
-        if (template_filter_conf) {
-          return template_filter_conf.value
-        } else {
-          return []
         }
       }
     },

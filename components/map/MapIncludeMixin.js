@@ -80,7 +80,6 @@ export default {
       this.map.on('mouseenter', entries_layer_name, (e) => {
         const feature = e.features[0]
         this.act_hoover_id = feature.id
-        // console.log(feature.id)
         this.map.setFeatureState(
           {source: source_name, id: this.act_hoover_id},
           {hover: true}
@@ -89,12 +88,14 @@ export default {
       })
       // 2. ENTRIES Hoover leave
       this.map.on('mouseleave', entries_layer_name, () => {
-        this.map.setFeatureState(
-          {source: source_name, id: this.act_hoover_id},
-          {hover: false}
-        )
-        this.act_hoover_id = null
-        this.remove_all_popups()
+        if(this.act_hoover_id) {
+          this.map.setFeatureState(
+            {source: source_name, id: this.act_hoover_id},
+            {hover: false}
+          )
+          this.act_hoover_id = null
+          this.remove_all_popups()
+        }
       })
       // 3. ENTRIES click
       if (click_method) {
@@ -170,7 +171,6 @@ export default {
       while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
         coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
       }
-
       const popup = new this.mapboxgl.Popup()
         .setLngLat(coordinates)
         .setHTML(popup_html)
