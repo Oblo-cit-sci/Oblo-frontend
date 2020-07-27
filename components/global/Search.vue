@@ -349,7 +349,8 @@
         }
         if (before_last) {
           const ts = this.$store.getters[SEARCH_GET_SEARCHTIME]
-          configuration.required.push({name: "before_ts", ts: ts})
+          if(ts)
+            configuration.required.push({name: "before_ts", ts: ts})
         }
         if (this.keyword) {
           for (let default_search_part of ["title", "tags", "aspect_search"]) {

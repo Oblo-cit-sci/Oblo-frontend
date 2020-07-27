@@ -43,7 +43,7 @@
           :map-options="map_options"
           @map-load="onMapLoaded"
           @click="map_location_selected"
-          navControl="is_edit_mode")
+          navControl="is_editable_mode")
 </template>
 
 <script>
@@ -156,7 +156,7 @@
       },
       // this is for the MapIncludeMixin to show the control
       map_show_geolocate_ctrl() {
-        return this.is_edit_mode && this.device_location_input_option
+        return this.is_editable_mode && this.device_location_input_option
       },
       location_set() {
         return this.value !== null
@@ -230,8 +230,10 @@
       }
 
       // todo also when changing mode
-      if (this.is_edit_mode) {
+      if (this.is_editable_mode) {
         this.init_my_entries()
+      } else {
+        this.getting_my_entries_loading = false
       }
     },
     methods: {
@@ -289,9 +291,9 @@
       },
       snap_to_feature(features) {
         const feature = features[0]
-        console.log("snapping to ", feature)
+        // console.log("snapping to ", feature)
         this.$api.entry__$uuid(feature.properties.uuid).then(({data}) => {
-          console.log(data.data.location)
+          // console.log(data.data.location)
           const entry_locations = data.data.location
           let selected_location = null
           if(entry_locations.length === 1) {
@@ -303,7 +305,7 @@
             const selected_loc_index = get_closest_coordinates(selected_coordinates, this.$_.map(entry_locations, "coordinates"))
             selected_location = entry_locations[selected_loc_index]
           }
-          console.log(selected_location)
+          // console.log(selected_location)
           this.update_value(selected_location)
         }).catch(err => {
         })
@@ -588,7 +590,7 @@
       //   this.set_public_location_from_option(option)
       // }
       mode(new_mode) {
-        if (new_mode === EDIT) {
+        if (this.is_editable_mode) {
           this.init_my_entries()
         }
       }
