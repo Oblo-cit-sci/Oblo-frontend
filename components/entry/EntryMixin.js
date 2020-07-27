@@ -109,7 +109,7 @@ export default {
       return this.$_.get(this.entry.actors.filter(er => er.role === "creator"), "0.actor", "")
     },
     is_creator() {
-      console.log(this.creator, this.$store.getters.registered_name)
+      // console.log(this.creator, this.$store.getters.registered_name)
       return this.creator.registered_name === this.$store.getters[USER_GET_REGISTERED_NAME]
     },
     template_slug() {

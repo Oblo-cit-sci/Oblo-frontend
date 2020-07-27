@@ -175,7 +175,7 @@ export const mutations = {
     state.entries.get(uuid).location = location
   },
   update_tags(state, {uuid, tags}) {
-    console.log("update tags", tags)
+    // console.log("update tags", tags)
     state.entries.get(uuid).tags = tags
   },
   update_image(state, image_url) {
@@ -504,7 +504,6 @@ export const actions = {
     // console.log("tags")
     // debugger
     const tags = context.getters.entry_tags(uuid)
-    console.log("tags", tags)
     if (tags) {
       context.commit(UPDATE_TAGS, {uuid, tags: tags})
     }

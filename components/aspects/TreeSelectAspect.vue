@@ -113,7 +113,7 @@
         }
         // console.log(this.tree, options.include_levels)
         this.flat_options = flatten_tree_to_options(this.tree, options)
-        console.log(this.flat_options[0].parents)
+        // console.log(this.flat_options[0].parents)
       },
       clear() {
         this.update_value([])

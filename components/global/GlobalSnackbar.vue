@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-snackbar(bottom=true v-model="show" text :multi-line="false" centered :timeout="timeout" :color="color" multi-line)
+  v-snackbar(bottom=true v-model="show" centered :timeout="timeout" :color="color" multi-line)
     b.snack_text {{message}}
 </template>
 
@@ -15,10 +15,11 @@
         show: false,
         color: null,
         message: "",
-        timeout:1800
+        timeout:2000
       }
     },
     created: function () {
+      console.log("snackbar create")
       this.$store.watch(state => state.snackbar.trigger, () => {
           let snackbar = this.$store.state.snackbar
           if (snackbar.trigger) {
@@ -32,6 +33,7 @@
     },
     computed: {
       trigger() {
+        console.log("triggered")
         return this.$store.getters[SNACKBAR_TRIGGER]()
       }
     }

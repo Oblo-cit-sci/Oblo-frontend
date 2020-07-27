@@ -47,7 +47,7 @@
       // }
     },
     beforeRouteLeave(to, from, next) {
-      console.log("entry leave")
+      // console.log("entry leave")
       // BEWARE, this is not called when navigating from one entry to another
       this.persist_entries()
       next()

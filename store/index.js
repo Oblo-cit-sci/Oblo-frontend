@@ -183,7 +183,7 @@ export const getters = {
   get_aspect_cache(state) {
     return (template_slug, aspect_name) => {
       const template_cache = state.aspect_value_cache[template_slug]
-      console.log("store template_cache", template_cache)
+      // console.log("store template_cache", template_cache)
       if (template_cache) {
         return template_cache[aspect_name]
       }

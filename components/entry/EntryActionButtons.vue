@@ -275,7 +275,7 @@
       back(remove_params = []) {
         // todo maybe use util.route_change_query
         const last_path = Object.assign({}, this.$store.getters[LAST_BASE_PAGE_PATH])
-        console.log(remove_params, "lp", last_path)
+        // console.log(remove_params, "lp", last_path)
         this.$store.commit(POP_LAST_PAGE_PATH)
         if (!this.$_.isEmpty(last_path)) {
           for (let p of remove_params) {

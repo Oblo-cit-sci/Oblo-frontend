@@ -35,7 +35,7 @@
     client-only
       div(v-if="show_map && (!readOnly || value)")
         .map_overlay
-          v-btn(dark small :color="show_existing ? 'blue' : 'grey'" @click="toggle_show_existing" :loading="getting_my_entries_loading") show entries
+          v-btn(v-if="logged_in" dark small :color="show_existing ? 'blue' : 'grey'" @click="toggle_show_existing" :loading="getting_my_entries_loading") show entries
             v-icon mdi-map-marker-circle
         mapbox.crosshair.mt-3(
           style="height:400px"
@@ -103,6 +103,9 @@
       }
     },
     computed: {
+      logged_in() {
+        return this.$store.getters.logged_in
+      },
       device_location_input_option() {
         return this.has_input_option(DEVICE)
       },
@@ -114,7 +117,7 @@
         }
       },
       show_map() {
-        console.log("show_map", this.mode)
+        // console.log("show_map", this.mode)
         return this.$route.name !== "domain" && ((this.is_editable_mode) && this.map_location_input_option || this.is_view_mode)
       },
       ...mapGetters({settings: USER_SETTINGS}),
