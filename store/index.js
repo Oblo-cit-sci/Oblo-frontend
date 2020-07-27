@@ -69,7 +69,7 @@ export const mutations = {
     // console.log("final snackbar", state.snackbar.trigger)
   },
   snackbar_reset(state) {
-    state.snackbar.trigger = false
+    $nuxt.$set(state.snackbar, "trigger", false)
   },
   update_draft_number(state, type_slug) {
     state.draft_numbers[type_slug] = (state.draft_numbers[type_slug] || 0) + 1
