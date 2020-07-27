@@ -306,33 +306,26 @@
         // console.log("cluster_layer?", Object.keys(this.map.style._layers).includes(cluster_layer))
         if (!cluster_layer) {
           // console.log("adding cluster layer")
-          this.map.addLayer({
-            id: cluster_layer_name,
-            type: 'circle',
-            source: source_name,
-            filter: ['has', 'point_count'],
-            paint: {
-              'circle-color': '#f1f075',
-              'circle-radius': [
-                'step',
-                ['get', 'point_count'],
-                10,
-                3,
-                15,
-                10,
-                20
-              ]
-            }
+          this.add_cluster_layer(source_name, cluster_layer_name, {
+            'circle-color': '#f1f075',
+            'circle-radius': [
+              'interpolate',
+              ["linear"],
+              ['get', 'point_count'],
+              2,
+              10,
+              20,
+              15
+            ]
           })
 
-          this.map.on('mouseenter', cluster_layer_name, (e) => {
+          this.map.on('mouseenter', cluster_layer_name, e => {
             const cluster = e.features[0]
             // console.log(cluster)
             if (cluster.id === this.act_hoover_id) {
               return
             }
             // if (cluster.state.selectable) {
-            this.remove_all_popups()
             this.act_hoover_id = cluster.id
             this.act_cluster = cluster
 
@@ -344,12 +337,6 @@
 
             clusterLeaves(source, cluster.id, cluster.properties.point_count).then(features => {
               // console.log(features)
-              let coordinates = null
-              coordinates = cluster.geometry.coordinates.slice()
-              // ensure correct popup position, when zoomed out and there are multiple copies
-              while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-              }
               // todo temp solution
               let popup_html = ""
               // features.map
@@ -366,14 +353,11 @@
               } else {
                 popup_html = `${this.$_.size(entry_counts)} entries`
               }
-              this.add_popup(new this.mapboxgl.Popup()
-                .setLngLat(coordinates)
-                .setHTML(popup_html))
+              this.add_popup(cluster, e, popup_html)
               this.last_zoom = this.map.getZoom()
             }).catch(err => {
               console.log(err)
             })
-            // }
           })
 
           this.map.on('mouseleave', cluster_layer_name, (e) => {
@@ -441,7 +425,7 @@
             layout: {
               "text-allow-overlap": true,
               // "text-ignore-placement": true,
-              "text-justify":"auto",
+              "text-justify": "auto",
               'text-variable-anchor': ['top', 'bottom'],
               "text-field": ["get", "region_name"],
               'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],

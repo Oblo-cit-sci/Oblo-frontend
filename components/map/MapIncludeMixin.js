@@ -79,24 +79,13 @@ export default {
       // 1. ENTRIES Hoover
       this.map.on('mouseenter', entries_layer_name, (e) => {
         const feature = e.features[0]
-
-        this.remove_all_popups()
-        let coordinates = null
-        coordinates = feature.geometry.coordinates.slice()
-        // ensure correct popup position, when zoomed out and there are multiple copies
-        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-          coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-        }
-
         this.act_hoover_id = feature.id
         // console.log(feature.id)
         this.map.setFeatureState(
           {source: source_name, id: this.act_hoover_id},
           {hover: true}
         )
-        this.add_popup(new this.mapboxgl.Popup()
-          .setLngLat(coordinates)
-          .setText(feature.properties.title))
+        this.add_popup(feature, e, feature.properties.title)
       })
       // 2. ENTRIES Hoover leave
       this.map.on('mouseleave', entries_layer_name, () => {
@@ -108,13 +97,22 @@ export default {
         this.remove_all_popups()
       })
       // 3. ENTRIES click
-      if(click_method) {
-        this.map.on("click", entries_layer_name, (e) => {
+      if (click_method) {
+        this.map.on("click", entries_layer_name, e => {
           // console.log(e.features)
           click_method(e.features)
           //
         })
       }
+    },
+    add_cluster_layer(source_name, layer_name, paint_props) {
+      this.map.addLayer({
+        id: layer_name,
+        type: 'circle',
+        source: source_name,
+        filter: ['has', 'point_count'],
+        paint: paint_props
+      })
     },
     templates_color_list(templates) {
       return this.$_.reduce(templates, (t_color_arr, t) => {
@@ -162,7 +160,21 @@ export default {
       a.download = "neat.png"
       a.click()
     },
-    add_popup(popup) {
+    add_popup(feature, e, popup_html, remove_existing = true) {
+      if(remove_existing) {
+        this.remove_all_popups()
+      }
+      let coordinates = null
+      coordinates = feature.geometry.coordinates.slice()
+      // ensure correct popup position, when zoomed out and there are multiple copies
+      while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+      }
+
+      const popup = new this.mapboxgl.Popup()
+        .setLngLat(coordinates)
+        .setHTML(popup_html)
+
       popup.addTo(this.map)
       this.popups.push(popup)
       return this.popups.length
