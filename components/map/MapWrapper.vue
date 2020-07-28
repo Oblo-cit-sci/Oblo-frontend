@@ -612,15 +612,7 @@
       },
       aspect_dialog_update(selected_layers) {
         // todo could be fixed by making multiselects default: []
-        if (!selected_layers) {
-          selected_layers = []
-        }
-        const layer_option_values = transform_options_list(this.available_layers).map(o => o.value)
-        const layer_statuses = this.$_.mapValues(this.$_.keyBy(layer_option_values), l => selected_layers.includes(l))
-        for (let layer in layer_statuses) {
-          this.map.setLayoutProperty(layer, 'visibility', layer_statuses[layer] ? "visible" : "none")
-        }
-        this.$store.commit("map/set_layer_status", selected_layers)
+        this.set_layer_visibility(selected_layers)
       },
       check_hide_map() {
         if (this.$vuetify.breakpoint.smAndDown) {
