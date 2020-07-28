@@ -7,7 +7,7 @@
       .buttongroup.shift_anim(:style="button_group_shift")
         v-btn(v-if="show_menu_button" dark fab large color="blue" @click="switch_menu_open")
           v-icon mdi-menu
-        v-btn(dark color="green" fab @click="open_layer_dialog")
+        v-btn(v-if="show_layer_menu_button" dark color="green" fab @click="open_layer_dialog")
           v-icon mdi-layers-outline
       .central_button
         v-container.shift_anim(:style="center_button_shift")
@@ -45,12 +45,11 @@
   import {MENU_MODE_DOMAIN_OVERVIEW, VIEW} from "~/lib/consts"
   import {mapGetters} from "vuex"
   import DomainMapMixin from "~/components/map/DomainMapMixin"
-  import {ENTRIES_DOMAIN_DRAFTS_UUIDS, ENTRIES_HAS_FULL_ENTRY, ENTRIES_SAVE_ENTRY} from "~/store/entries"
+  import { ENTRIES_HAS_FULL_ENTRY, ENTRIES_SAVE_ENTRY} from "~/store/entries"
   import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
   import {MAP_GOTO_LOCATION} from "~/store/map"
   import TemplateLegend from "~/components/menu/TemplateLegend"
   import AspectDialog from "~/components/aspect_utils/AspectDialog"
-  import {transform_options_list} from "~/lib/options"
   import {LAYER_BASE_ID} from "~/lib/map_utils"
   import EntryCreateList from "~/components/EntryCreateList"
   import {common_place_name, entry_location2geojson_arr, get_all_countries} from "~/lib/location"
@@ -96,15 +95,9 @@
     },
     computed: {
       ...mapGetters({
-        entries_loaded: "map/entries_loaded",
-        all_map_entries: "map/entries",
         legend_selection: "map/get_filter_config",
         layer_status: "map/layer_status",
-        all_uuids: "search/get_all_uuids",
       }),
-      get_all_uuids() {
-        return this.all_uuids()
-      },
       layer_aspectdialog_data() {
         return {
           aspect: {
@@ -123,6 +116,9 @@
       },
       show_menu_button() {
         return this.$vuetify.breakpoint.mdAndUp
+      },
+      show_layer_menu_button() {
+        return this.map_loaded
       },
       show_overlay() {
         return !this.menu_open || this.$vuetify.breakpoint.mdAndUp
@@ -176,16 +172,14 @@
           left: shift
         }
       },
-      entries() {
-        return this.all_map_entries(this.domain)
-      },
       map_height() {
         return {
           height: (this.height ? this.height : window.innerHeight) + (typeof (this.height) === "number" ? "px" : "")
         }
       },
-      domain_templates_color_list() {
-        return this.templates_color_list(this.$store.getters["templates/templates_of_domain"](this.domain))
+      // todo maybe move to domainMapMixin
+      entries() {
+        return this.all_map_entries(this.domain)
       },
       map_options() {
         const default_camera = this.$_.get(this.$store.getters["domain_by_name"](this.domain), "map.default_camera")
@@ -198,9 +192,6 @@
           Object.assign(options, cached_options)
         }
         return options
-      },
-      display_mdDown() {
-        return this.$vuetify.breakpoint.mdAndDown
       },
       center_padding() {
         // todo when there will be stuff coming from the bottom
@@ -575,7 +566,6 @@
         } else {
           // console.log("fetching entry")
           this.$api.entry__$uuid(entry_uuid).then(({data}) => {
-            // this.$store.commit("map/goto_location",)
             if (data.data) {
               const entry = data.data
               this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
