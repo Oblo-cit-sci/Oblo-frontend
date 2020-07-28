@@ -38,13 +38,17 @@ export default {
         // console.log("layout. initializing")
         initialize(this.$api, this.$store, this.$route, this.$router, this.$localForage).then(() => {
           this.$store.dispatch(APP_CONNECTED)
-          if (!this.has_multiple_domains && this.$route.name === PAGE_INDEX) {
-            this.to_domain(this.$store.getters.domains[0].name, true)
-            setTimeout(()=> {
+          console.log(this.has_multiple_domains, this.get_one_domain_name)
+          if (!this.has_multiple_domains) {
+            this.fix_domain(this.get_one_domain_name)
+            if (this.$route.name === PAGE_INDEX) {
+              this.to_domain(this.$store.getters.domains[0].name, true)
+              setTimeout(() => {
+                this.$store.commit(APP_INITIALIZED)
+              }, 80)
+            } else {
               this.$store.commit(APP_INITIALIZED)
-            },80)
-          } else {
-            this.$store.commit(APP_INITIALIZED)
+            }
           }
         })
       }

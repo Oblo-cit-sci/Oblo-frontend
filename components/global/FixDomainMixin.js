@@ -12,11 +12,18 @@ export default {
     },
     has_multiple_domains() {
       return this.$store.getters.domains.length > 1
+    },
+    get_one_domain_name() {
+      return this.$store.getters.domains[0].name
     }
   },
   methods: {
     fix_domain(domain_name = null, update_server = true) {
       this.set_settings_value(FIXED_DOMAIN, domain_name)
+      if (domain_name)
+        all_pages_n_actions[0].to = `/domain?f=${domain_name}`
+      else
+        all_pages_n_actions[0].to = "/"
     },
     reset_fixed_domain(snackbar) {
       this.reset_settings_value(FIXED_DOMAIN, "Fixed domain reset")

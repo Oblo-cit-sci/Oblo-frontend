@@ -75,6 +75,10 @@
     "h1": "Password reset",
     "btn_send": "Send email"
   },
+  "password_reset": {
+    "h1": "Password reset",
+    "btn_send": "Set new password"
+  },
   "delete_account": {
     "h1": "Delete your account",
     "p1": "If you have not posted content publicly, all the private entries that you created without any collaborator and user information will be permanently deleted. If you have posted entries publicly, these entries will continue to be stored and publicly available and we will continue to retain basic user data (you username and public name) so your connection with them is preserved. All private entries without other collaborators will be deleted. Those with collaborators will remain.",

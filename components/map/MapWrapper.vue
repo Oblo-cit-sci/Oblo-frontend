@@ -235,10 +235,17 @@
       }
     },
     methods: {
-      click(e, m) {
+      click(map, event) {
         // check since on small screens legend might not be there
         if (this.$refs.legendComponent)
           this.$refs.legendComponent.force_close()
+
+        // this grabs the GRIDCODE from the climate type tile layer
+        // for a feature: when the climate type layer is active, a click should show a small snackbar that tells the climate type
+        // needs quite a bunch of new description stuff in domain.json and the GRIDCODE value -> text code entry
+        // this.$axios.get(`https://api.mapbox.com/v4/ramin36.b8rxe0dj/tilequery/${event.lngLat.lng},${event.lngLat.lat}.json?radius=25&limit=5&dedupe&access_token=${this.access_token}`).then(res => {
+        //   console.log(res.data.features[0].properties.GRIDCODE)
+        // })
       },
       open_layer_dialog() {
         // to much computation?
@@ -389,6 +396,7 @@
               const place_name = location_text
               const uuids = Array.from(new Set(features.map(f => f.properties.uuid).values()))
               this.$store.commit("search/replace_in_act_config", create_cluster_select_search_config(place_name, uuids))
+              this.update_navigation_mode(null, false)
             })
             // }
           })
@@ -466,7 +474,7 @@
           ],
           "circle-stroke-width": [
             "case",
-            ["any", ["boolean", ["feature-state", "selected"], false], ["==", ["get", "status"],"draft"]],
+            ["any", ["boolean", ["feature-state", "selected"], false], ["==", ["get", "status"], "draft"]],
             2,
             0
           ]
@@ -538,7 +546,7 @@
         const include_types = this.get_filtered_template_slugs()
         const drafts = this.$_.flatten(this.$store.getters["entries/domain_drafts"](this.domain_name)
           .filter(e => include_types.includes(e.template.slug)).map(e => entry_location2geojson_arr(e, ["status"])))
-        for(let i in drafts) {
+        for (let i in drafts) {
           drafts[i].id = filtered_entries.features.length + parseInt(i)
         }
         filtered_entries.features = filtered_entries.features.concat(drafts)
@@ -583,7 +591,6 @@
         // console.log("MapWrapper.change_entry_markers_mode", selected)
         const features = this.map.getSource("all_entries_source")._data.features
         // console.log("all features", features)
-        console.log(features)
         const relevant_features = this.$_.filter(features, (f) => f.properties.uuid === entry_uuid)
         // console.log(relevant_features, selected)
         // this.map.setLayoutProperty(
