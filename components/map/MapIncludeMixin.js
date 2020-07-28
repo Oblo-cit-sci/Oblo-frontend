@@ -1,11 +1,12 @@
 import {MAP_GOTO_DONE} from "~/store/map"
 import MapboxBaseMixin from "~/components/map/MapboxBaseMixin"
+import MapEntriesMixin from "~/components/map/MapEntriesMixin"
 
 const default_mapstyle = "mapbox://styles/ramin36/cjx2xkz2w030s1cmumgp6y1j8"
 
 export default {
   name: "MapIncludeMixin",
-  mixins: [MapboxBaseMixin],
+  mixins: [MapboxBaseMixin, MapEntriesMixin],
   head() {
     return {
       link: [{
