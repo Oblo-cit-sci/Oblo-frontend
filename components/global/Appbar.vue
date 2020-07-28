@@ -42,10 +42,8 @@
         domain_data: DOMAIN_BY_NAME,
       }),
       nav_icon_style() {
-        if (!this.show_nav_icon) {
-          return {
-            'visibility': "hidden"
-          }
+        return {
+          'visibility': this.show_nav_icon ? "inherit" : "hidden"
         }
       },
       reduce_when_small() {
