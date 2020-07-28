@@ -3,6 +3,7 @@ import {MAP_SET_ENTRIES} from "~/store/map"
 import {mapGetters} from "vuex"
 import FilterMixin from "~/components/FilterMixin"
 import DomainMixin from "~/components/DomainMixin"
+import {transform_options_list} from "~/lib/options"
 
 export default {
   name: "DomainMapMixin",
@@ -18,13 +19,13 @@ export default {
       layer_status: "map/layer_status"
     }),
     available_layers() {
-      return this.$_.get(this.domain_data,"map.layers")
+      return this.$_.get(this.domain_data, "map.layers")
     },
   },
   methods: {
     load_map_entries() {
       // console.log("loading entries", this.$store.getters["map/loading_entries"])
-      if(this.$store.getters["map/loading_entries"]) {
+      if (this.$store.getters["map/loading_entries"]) {
         console.warn("catching double page create")
         return
       }
@@ -42,6 +43,19 @@ export default {
         console.log("map entries error")
         console.log(err)
       })
+    }
+  },
+  watch: {
+    map_loaded() {
+      if (!this.layer_status) {
+        console.log("init layers")
+        // sometimes {value, text} sometimes just a string
+        const available_layer_names = this.available_layers.map(l => this.$_.get(l, "value", l))
+        // we just need this cuz mapbox doesnt give me the initial state of a layer. see method call below
+        const default_active_layers = this.$_.get(this.domain_data, "map.default_active_layers", []).filter(l => available_layer_names.includes(l))
+        // console.log(this.map.getLayoutProperty(layer_name, "visibility"))
+        this.$store.commit("map/set_layer_status", default_active_layers)
+      }
     }
   }
 }
