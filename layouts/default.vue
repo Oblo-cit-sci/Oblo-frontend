@@ -9,6 +9,9 @@
         nuxt
     GlobalSnackbar
     PrivacySheet
+    <!--    v-fab-transition-->
+    <!--      v-btn.help_button(float large fab color="info")-->
+    <!--        v-icon mdi-help-->
 </template>
 
 <script>
@@ -38,11 +41,16 @@
             margin: 0
           }
         }
-      }
+      },
     },
   }
 </script>
 
 <style>
-
+  .help_button {
+    position: fixed;
+    bottom:40px;
+    left: 3%;
+    z-index:1000;
+  }
 </style>

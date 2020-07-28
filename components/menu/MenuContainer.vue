@@ -12,13 +12,13 @@
       div(v-if="!menu_mode_fixed")
         v-tabs(v-model="menu_state" grow active-class="active_tab")
           v-tab {{$t("comp.menucontainer.tab_main")}}
-          v-tab {{$t("comp.menucontainer.tab_domain")}}
+          v-tab(@click="click") {{$t("comp.menucontainer.tab_domain")}}
         NotificationBanner
         v-tabs-items(v-model="menu_state")
           v-tab-item
             MainMenuList
           v-tab-item
-            DomainMenu(:navigation_mode="domain_navigation_mode" @force_menu_mode="this.menu_state=1")
+            DomainMenu( @force_menu_mode="this.menu_state=1")
       MainMenuList(v-else)
 </template>
 
@@ -30,17 +30,17 @@
   import MapNavigationDrawer from "~/components/map/MapNavigationDrawer"
   import DomainMenu from "~/components/menu/DomainMenu"
   import NotificationBanner from "~/components/global/NotificationBanner"
+  import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
 
   const mode_indices = [MENU_MODE_MAIN, MENU_MODE_DOMAIN_OVERVIEW]
 
   export default {
     name: "MenuContainer",
-    mixins: [],
+    mixins: [HasMainNavComponentMixin],
     components: {NotificationBanner, DomainMenu, MapNavigationDrawer, MainMenuList},
     props: {
       menu_mode_fixed: Boolean,
       over: Boolean,
-      domain_navigation_mode: String
     },
     created() {
       if (this.menu_mode_fixed) {
@@ -86,6 +86,12 @@
                 return "100%"
             }
         }
+      }
+    },
+    methods: {
+      click() {
+        console.log("menu container change", this.domain_navigation_mode)
+        this.unselect_entry()
       }
     },
     watch: {

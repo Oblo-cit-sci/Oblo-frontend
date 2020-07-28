@@ -15,10 +15,11 @@
       @preview_action="preview_action($event)")
     div(v-if="nav_mode_entry")
       v-row
-        v-btn(@click="unselect_entry" Search)
-          v-icon mdi-arrow-left-thick
+        v-col.py-0
+          v-btn(@click="unselect_entry" text small)
+            v-icon mdi-arrow-left-thick
       v-row
-        v-col
+        v-col.py-0
           Entry(:navigation_props="entry_navigation_props")
 </template>
 

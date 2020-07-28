@@ -3,8 +3,8 @@
     v-row
       v-col(v-for="(img_data, index) in images" :key="index" :cols="num_cols")
         v-img.a_image(:src="get_image_data(index)" @click="open_image(index)" max-height="300" contain @error="image_error($event, index)")
-          .header_image_wrapper(v-if="cover_image_index===index")
-            div.ml-9.font-weight-light cover image
+          .header_image_wrapper(v-if="cover_image_index===index && is_editable_mode")
+            div.ml-9.font-weight-light {{$t('comp.image_asp.cover_image')}}
       v-col(v-if="readOnly && !has_images")
         div {{$t('comp.image_asp.no_images')}}
     LoadFileButton(v-if="is_edit_mode"

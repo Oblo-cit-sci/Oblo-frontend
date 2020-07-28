@@ -27,13 +27,12 @@
               v-list-item-icon
                 v-icon(color="orange") mdi-alert-outline
               v-list-item-content {{$t("comp.entrypreview.outdated")}}
-        v-col(v-if="show_image" cols=4 class="col-md-4 col-sm-12 entry-image")
+        v-col(v-if="show_image" cols=4 class="col-md-4 col-sm-12 entry-image" align="start")
           .float-md-right.float-sm-left.entry-display-size.mr-3
-            v-avatar(tile class="entry-image-size")
-              v-img(
-                contain
-                :src="entry_image"
-                height="200")
+            v-img(class="entry-image-size"
+              contain
+              :src="entry_image"
+              height="200")
     div.ml-4.mr-2
       Aspect(v-for="aspect in shown_aspects"
         :key="aspect.name"
@@ -318,7 +317,7 @@
   .entry-image-size {
     width: 100% !important;
     height: auto !important;
-    max-height: 140px;
+    max-height: 200px;
   }
 
   @media (max-width: 959px) {

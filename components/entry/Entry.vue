@@ -11,7 +11,7 @@
       v-col(v-if="has_parent")
         span This entry is part of:&nbsp
         a(@click="to_parent(true, mode)") {{parent_title}}
-    div(v-if="is_view_mode")
+    .ml-3(v-if="is_view_mode")
       v-row(:style="{'text-align': 'right', 'font-size':'80%'}")
        span.my-auto {{$t("comp.entrypreview.created")}} {{entry_date}} {{is_draft ? $t('comp_entrypreview.draft') : ""}}
       v-row
@@ -40,7 +40,6 @@
           header_type="h2"
           :description="page_info.description"
           :mode="mode")
-    br
     v-row(v-for="(aspect) in shown_aspects" :key="aspect.name")
       v-col(alignSelf="stretch" :cols="base_cols" :style="{padding:0}")
         v-scroll-y-transition

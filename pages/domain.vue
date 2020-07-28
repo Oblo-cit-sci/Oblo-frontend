@@ -32,7 +32,7 @@
   import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
   import MenuContainer from "~/components/menu/MenuContainer"
   import DomainMixin from "~/components/DomainMixin"
-  import {QP_D, QP_F} from "~/lib/consts"
+  import {MENU_MODE_DOMAIN_OVERVIEW, QP_D, QP_F} from "~/lib/consts"
   import FixDomainMixin from "~/components/global/FixDomainMixin"
   import EntryCreateMixin from "~/components/entry/EntryCreateMixin"
 
@@ -67,6 +67,8 @@
       if (this.$route.query.f && !this.is_fixed_domain) {
         this.fix_domain(this.$route.query.f)
       }
+
+      this.set_menu_state(MENU_MODE_DOMAIN_OVERVIEW)
     },
     beforeRouteLeave(from, to, next) {
       if (!dev_env()) {

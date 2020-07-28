@@ -199,6 +199,10 @@
       "min_rule": "not enough items selected",
       "max_rule": "too many items selected"
     },
+    "image_asp": {
+      "no_images": "No images",
+      "cover_image": "cover image"
+    },
     "entry_validation": {
       "h1": "Validation",
       "has_missing": "Missing or incomplete aspects:",
@@ -247,9 +251,6 @@
     "menucontainer": {
       "tab_main": "Main",
       "tab_domain": "Entries"
-    },
-    "image_asp": {
-      "no_images": "No images"
     },
     "legend": {
       "legend": "Legend"
