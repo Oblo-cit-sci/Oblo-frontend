@@ -45,7 +45,6 @@
   import {MENU_MODE_DOMAIN_OVERVIEW, VIEW} from "~/lib/consts"
   import {mapGetters} from "vuex"
   import DomainMapMixin from "~/components/map/DomainMapMixin"
-  import { ENTRIES_HAS_FULL_ENTRY, ENTRIES_SAVE_ENTRY} from "~/store/entries"
   import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
   import {MAP_GOTO_LOCATION} from "~/store/map"
   import TemplateLegend from "~/components/menu/TemplateLegend"
@@ -55,6 +54,7 @@
   import {common_place_name, entry_location2geojson_arr, get_all_countries} from "~/lib/location"
   import {create_cluster_select_search_config} from "~/lib/codes"
   import FilterMixin from "~/components/FilterMixin"
+  import EntryFetchMixin from "~/components/entry/EntryFetchMixin"
 
   const cluster_layer_name = LAYER_BASE_ID + '_clusters'
 
@@ -72,7 +72,7 @@
 
   export default {
     name: "MapWrapper",
-    mixins: [MapIncludeMixin, DomainMapMixin, HasMainNavComponentMixin, FilterMixin],
+    mixins: [MapIncludeMixin, DomainMapMixin, HasMainNavComponentMixin, FilterMixin, EntryFetchMixin],
     components: {EntryCreateList, AspectDialog, TemplateLegend, Mapbox},
     props: {
       height: {
@@ -559,23 +559,13 @@
       select_entry_marker(feature) {
         // console.log("select_entry_marker")
         const entry_uuid = feature.properties.uuid
-        // console.log("select_entry_marker", entry_uuid)
-        if (this.$store.getters[ENTRIES_HAS_FULL_ENTRY](entry_uuid)) {
+        this.guarantee_entry(entry_uuid).then(entry => {
+          console.log(this.$store.getters["entries/has_full_entry"](entry_uuid))
           this.update_navigation_mode(entry_uuid, VIEW, false)
           this.map_goto_location(feature.geometry)
-        } else {
-          // console.log("fetching entry")
-          this.$api.entry__$uuid(entry_uuid).then(({data}) => {
-            if (data.data) {
-              const entry = data.data
-              this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
-              this.update_navigation_mode(entry_uuid, VIEW, false)
-              this.map_goto_location(feature.geometry)
-            }
-          }).catch(err => {
-            console.log("error fetching entry")
-          })
-        }
+        }).catch(err => {
+          this.error_snackbar("Couldn't fetch entry")
+        })
       },
       change_entry_markers_mode(entry_uuid, selected) {
         // console.log("MapWrapper.change_entry_markers_mode", selected)
