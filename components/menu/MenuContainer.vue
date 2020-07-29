@@ -70,7 +70,7 @@
       behind_style() {
         if (this.over) {
           return {
-            "z-index": 1
+            "z-index": 6
           }
         }
       },
