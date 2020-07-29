@@ -14,7 +14,6 @@ export const MAP_GOTO_DONE = "map/goto_done"
 
 export const state = () => ({
   entries_loaded: false,
-  loading_entries: false, // this is for a bug. when creating an entry and going back to domain, the PAGE is created twice?!
   entries: {},
   goto_location: null,
   last_goto_location: null,
@@ -56,9 +55,6 @@ export const mutations = {
   set_entries_loaded(state, loaded) {
     state.entries_loaded = loaded
   },
-  set_loading_entries(state, loading) {
-    state.loading_entries = loading
-  },
   set_filter_config(state, filter_config) {
     state.filter_config = filter_config
   }
@@ -67,9 +63,6 @@ export const mutations = {
 export const getters = {
   entries_loaded(state) {
     return state.entries_loaded
-  },
-  loading_entries(state) {
-    return state.loading_entries
   },
   entries(state) {
     return (domain) => {
@@ -109,7 +102,6 @@ export const actions = {
   // filters entries that have a location set
   add_entries({commit}, {domain, entries, ts}) {
     commit("set_entries_loaded", true)
-    commit("set_loading_entries", false)
     commit("add_entries", {domain, entries})
     commit("set_searchtime", ts)
   },

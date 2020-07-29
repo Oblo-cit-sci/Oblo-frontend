@@ -36,6 +36,8 @@
         @click="click"
         @render="render"
         @map-load="onMapLoaded")
+    v-overlay(opacity="0.2" v-if="show_load_overlay")
+      v-progress-circular(indeterminate size="64")
 </template>
 
 <script>
@@ -45,9 +47,7 @@
   import {MENU_MODE_DOMAIN_OVERVIEW, VIEW} from "~/lib/consts"
   import {mapGetters} from "vuex"
   import DomainMapMixin from "~/components/map/DomainMapMixin"
-  import { ENTRIES_HAS_FULL_ENTRY, ENTRIES_SAVE_ENTRY} from "~/store/entries"
   import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
-  import {MAP_GOTO_LOCATION} from "~/store/map"
   import TemplateLegend from "~/components/menu/TemplateLegend"
   import AspectDialog from "~/components/aspect_utils/AspectDialog"
   import {LAYER_BASE_ID} from "~/lib/map_utils"
@@ -55,6 +55,9 @@
   import {common_place_name, entry_location2geojson_arr, get_all_countries} from "~/lib/location"
   import {create_cluster_select_search_config} from "~/lib/codes"
   import FilterMixin from "~/components/FilterMixin"
+  import EntryFetchMixin from "~/components/entry/EntryFetchMixin"
+  import MapEntriesMixin from "~/components/map/MapEntriesMixin"
+  import {MAP_GOTO_DONE} from "~/store/map"
 
   const cluster_layer_name = LAYER_BASE_ID + '_clusters'
 
@@ -72,7 +75,7 @@
 
   export default {
     name: "MapWrapper",
-    mixins: [MapIncludeMixin, DomainMapMixin, HasMainNavComponentMixin, FilterMixin],
+    mixins: [MapIncludeMixin, DomainMapMixin, HasMainNavComponentMixin, FilterMixin, EntryFetchMixin, MapEntriesMixin],
     components: {EntryCreateList, AspectDialog, TemplateLegend, Mapbox},
     props: {
       height: {
@@ -90,7 +93,8 @@
         act_cluster: null,
         act_cluster_expansion_zoom: null,
         last_zoom: null,
-        map_hidden: false
+        map_hidden: false,
+        initialized: false
       }
     },
     computed: {
@@ -122,6 +126,10 @@
       },
       show_overlay() {
         return !this.menu_open || this.$vuetify.breakpoint.mdAndUp
+      },
+      show_load_overlay() {
+        // the upadting flag doesnt work properly since mapbox does it async
+        return !this.entries_loaded || !this.map_loaded || !this.initialized || this.updating
       },
       legend_style() {
         if (this.$vuetify.breakpoint.smAndDown) {
@@ -203,10 +211,6 @@
           }
         }
       },
-      goto_location() {
-        // console.log("map, goto_location, map-store", this.$store.getters[MAP_GOTO_LOCATION]())
-        return this.$store.getters[MAP_GOTO_LOCATION]()
-      }
     },
     created() {
       // console.log("wrapper created")
@@ -243,6 +247,17 @@
         this.aspectdialog_data = this.layer_aspectdialog_data
         this.aspectdialog_data.dialog_open = true
       },
+      map_goto_location(location) {
+        // console.log("MapIncldeMixin.map_goto_location", location)
+        // debugger
+        const center = this.transform_loc(location.coordinates)
+        this.map.easeTo({
+          center: center,
+          duration: 2000, // make the flying slow
+          padding: this.center_padding || 0// comes from the implementing class
+        })
+        this.$store.dispatch(MAP_GOTO_DONE)
+      },
       trigger_dl() {
         this.set_dl = true
         this.map.triggerRepaint()
@@ -270,7 +285,6 @@
         } else {
           this.cluster_label_layer_visible = false
         }
-
         if (this.act_cluster) {
           const zoom = this.map.getZoom()
           if (zoom > this.act_cluster_expansion_zoom || zoom < this.last_zoom) {
@@ -520,6 +534,7 @@
       },
       update_filtered_source() {
         console.log("update_filtered_source")
+        this.updating = true
         if (!this.entries_loaded || !this.map_loaded || !this.get_all_uuids) {
           return
         }
@@ -555,27 +570,20 @@
         } else {
           this.map.getSource("all_entries_source").setData(filtered_entries)
         }
+
+        this.updating = false
       },
       select_entry_marker(feature) {
         // console.log("select_entry_marker")
         const entry_uuid = feature.properties.uuid
         // console.log("select_entry_marker", entry_uuid)
-        if (this.$store.getters[ENTRIES_HAS_FULL_ENTRY](entry_uuid)) {
+
+        this.guarantee_entry(entry_uuid).then(entry => {
           this.update_navigation_mode(entry_uuid, VIEW, false)
           this.map_goto_location(feature.geometry)
-        } else {
-          // console.log("fetching entry")
-          this.$api.entry__$uuid(entry_uuid).then(({data}) => {
-            if (data.data) {
-              const entry = data.data
-              this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
-              this.update_navigation_mode(entry_uuid, VIEW, false)
-              this.map_goto_location(feature.geometry)
-            }
-          }).catch(err => {
-            console.log("error fetching entry")
-          })
-        }
+        }).catch(err => {
+          this.error_snackbar("Couldn't fetch entry")
+        })
       },
       change_entry_markers_mode(entry_uuid, selected) {
         // console.log("MapWrapper.change_entry_markers_mode", selected)
@@ -634,11 +642,6 @@
           this.$emit("force_menu_mode_domain")
         }
       },
-      goto_location(location) {
-        if (location) {
-          this.map_goto_location(location)
-        }
-      },
       legend_selection(selection) {
         this.update_filtered_source()
       },
@@ -653,7 +656,12 @@
         if (!this.initialized) {
           this.check_entries_map_done()
         }
-      }
+      },
+      goto_location(location) {
+        if (location) {
+          this.map_goto_location(location)
+        }
+      },
     }
   }
 </script>
