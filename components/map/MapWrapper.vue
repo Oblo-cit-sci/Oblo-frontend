@@ -28,7 +28,7 @@
         v-icon mdi-menu
     AspectDialog(v-bind="aspectdialog_data" @update:dialog_open="aspectdialog_data.dialog_open = $event" :ext_value="layer_status" @update:ext_value="aspect_dialog_update($event)")
     client-only
-      mapbox.fullSize(
+      mapbox(
         v-show="!map_hidden"
         :style="map_height"
         :access-token="access_token"
@@ -36,8 +36,8 @@
         @click="click"
         @render="render"
         @map-load="onMapLoaded")
-    v-overlay(opacity="0.2" v-if="show_load_overlay")
-      v-progress-circular(indeterminate size="64")
+      v-overlay(opacity="0.4" v-if="show_load_overlay")
+        v-progress-circular(indeterminate size="64")
 </template>
 
 <script>
