@@ -8,12 +8,16 @@ export default {
       if (this.$store.getters[ENTRIES_HAS_FULL_ENTRY](entry_uuid)) {
         return Promise.resolve(this.$store.getters["entries/get_entry"](entry_uuid))
       } else {
-        this.$api.entry__$uuid(entry_uuid).then(({data}) => {
-          return Promise.resolve(data.data)
-        }).catch(err => {
-          console.log("error fetching entry")
-          return Promise.reject(err)
-        })
+        const entry_response = await this.$api.entry__$uuid(entry_uuid)
+        console.log(entry_response)
+        if(entry_response.status === 200) {
+          const entry = entry_response.data.data
+          // todo: maybe do more stuff. preparing?
+          this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
+          return Promise.resolve(entry)
+        } else {
+          return Promise.reject(entry_response)
+        }
       }
     }
   }

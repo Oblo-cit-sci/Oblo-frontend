@@ -37,11 +37,11 @@ export default {
   computed: {
     language() {
       return this.$store.getters["app/ui_language"]
+    },
+    goto_location() {
+      // console.log("map, goto_location, map-store", this.$store.getters[MAP_GOTO_LOCATION]())
+      return this.$store.getters[MAP_GOTO_LOCATION]()
     }
-    // goto_location() {
-    //   // console.log("map, goto_location, map-store", this.$store.getters[MAP_GOTO_LOCATION]())
-    //   return this.$store.getters[MAP_GOTO_LOCATION]()
-    // }
   },
   methods: {
     onMapLoaded(map) {
