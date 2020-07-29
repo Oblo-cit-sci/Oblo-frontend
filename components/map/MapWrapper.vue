@@ -75,8 +75,8 @@
 
   export default {
     name: "MapWrapper",
-    mixins: [MapIncludeMixin, DomainMapMixin, HasMainNavComponentMixin, FilterMixin, EntryFetchMixin, MapEntriesMixin],
     components: {EntryCreateList, AspectDialog, TemplateLegend, Mapbox},
+    mixins: [MapIncludeMixin, DomainMapMixin, HasMainNavComponentMixin, FilterMixin, EntryFetchMixin, MapEntriesMixin],
     props: {
       height: {
         type: [String, Number],
@@ -98,48 +98,17 @@
       }
     },
     computed: {
-      ...mapGetters({
-        legend_selection: "map/get_filter_config",
-        layer_status: "map/layer_status",
-      }),
-      layer_aspectdialog_data() {
+      additional_template_button_shift() {
+        // todo 110 is very magic, depends on the length of the main create button text
+        let shift = "110px"
+        if (!this.show_main_template_create_text) {
+          shift = "40px"
+        }
+        // console.log("shift", shift)
         return {
-          aspect: {
-            name: "Visible layers",
-            type: "multiselect",
-            attr: {
-              unpacked: true,
-              force_view: "list"
-            },
-            items: this.available_layers
-          },
-          fix_width: 400,
-          ext_value: {value: null},
-          dialog_open: true
+          position: "absolute",
+          left: shift
         }
-      },
-      show_menu_button() {
-        return this.$vuetify.breakpoint.mdAndUp
-      },
-      show_layer_menu_button() {
-        return this.map_loaded
-      },
-      show_overlay() {
-        return !this.menu_open || this.$vuetify.breakpoint.mdAndUp
-      },
-      show_load_overlay() {
-        // the upadting flag doesnt work properly since mapbox does it async
-        return !this.entries_loaded || !this.map_loaded || !this.initialized || this.updating
-      },
-      legend_style() {
-        if (this.$vuetify.breakpoint.smAndDown) {
-          return {
-            visibility: "hidden"
-          }
-        }
-      },
-      show_main_template_create_text() {
-        return (!this.menu_open || this.$vuetify.breakpoint.lgAndUp) && !this.$vuetify.breakpoint.smAndDown
       },
       bp_based_main_create_btn_props() {
         if (this.show_main_template_create_text) {
@@ -168,26 +137,51 @@
           left: shift
         }
       },
-      additional_template_button_shift() {
-        // todo 110 is very magic, depends on the length of the main create button text
-        let shift = "110px"
-        if (!this.show_main_template_create_text) {
-          shift = "40px"
+      center_padding() {
+        // todo when there will be stuff coming from the bottom
+        if (!this.menu_open) {
+          return {}
+        } else {
+          return {
+            left: this.$store.getters["menu/menu_width"]
+          }
         }
-        // console.log("shift", shift)
+      },
+      // todo maybe move to domainMapMixin
+      entries() {
+        return this.all_map_entries(this.domain)
+      },
+      ...mapGetters({
+        legend_selection: "map/get_filter_config",
+        layer_status: "map/layer_status",
+      }),
+      layer_aspectdialog_data() {
         return {
-          position: "absolute",
-          left: shift
+          aspect: {
+            name: "Visible layers",
+            type: "multiselect",
+            attr: {
+              unpacked: true,
+              force_view: "list"
+            },
+            items: this.available_layers
+          },
+          fix_width: 400,
+          ext_value: {value: null},
+          dialog_open: true
+        }
+      },
+      legend_style() {
+        if (this.$vuetify.breakpoint.smAndDown) {
+          return {
+            visibility: "hidden"
+          }
         }
       },
       map_height() {
         return {
           height: (this.height ? this.height : window.innerHeight) + (typeof (this.height) === "number" ? "px" : "")
         }
-      },
-      // todo maybe move to domainMapMixin
-      entries() {
-        return this.all_map_entries(this.domain)
       },
       map_options() {
         const default_camera = this.$_.get(this.$store.getters["domain_by_name"](this.domain), "map.default_camera")
@@ -201,14 +195,58 @@
         }
         return options
       },
-      center_padding() {
-        // todo when there will be stuff coming from the bottom
-        if (!this.menu_open) {
-          return {}
-        } else {
-          return {
-            left: this.$store.getters["menu/menu_width"]
-          }
+      show_layer_menu_button() {
+        return this.map_loaded
+      },
+      show_load_overlay() {
+        // the upadting flag doesnt work properly since mapbox does it async
+        return !this.entries_loaded || !this.map_loaded || !this.initialized || this.updating
+      },
+      show_main_template_create_text() {
+        return (!this.menu_open || this.$vuetify.breakpoint.lgAndUp) && !this.$vuetify.breakpoint.smAndDown
+      },
+      show_menu_button() {
+        return this.$vuetify.breakpoint.mdAndUp
+      },
+      show_overlay() {
+        return !this.menu_open || this.$vuetify.breakpoint.mdAndUp
+      },
+    },
+    watch: {
+      entries_loaded(loaded) {
+        // console.log("entries loaded", loaded)
+        if (loaded)
+          this.check_entries_map_done()
+      },
+      get_all_uuids(uuids) {
+        this.update_filtered_source()
+        if (!this.initialized) {
+          this.check_entries_map_done()
+        }
+      },
+      goto_location(location) {
+        if (location) {
+          this.map_goto_location(location)
+        }
+      },
+      map_loaded() {
+        this.check_entries_map_done()
+        this.$emit("map", this.map)
+      },
+      menu_open(open) {
+        this.check_hide_map()
+      },
+      menu_state(menu_state) {
+        this.check_hide_map()
+      },
+      selected_entry(uuid, old_uuid) {
+        // console.log("MapWrapper.watch.selected_entry", uuid, old_uuid)
+        if (old_uuid) {
+          this.change_entry_markers_mode(old_uuid, false)
+        }
+        if (uuid) {
+          this.change_entry_markers_mode(uuid, true)
+          this.$emit("force_menu_mode_domain")
         }
       },
     },
@@ -230,6 +268,95 @@
       }
     },
     methods: {
+      aspect_dialog_update(selected_layers) {
+        // todo could be fixed by making multiselects default: []
+        this.set_layer_visibility(selected_layers)
+      },
+      change_entry_markers_mode(entry_uuid, selected) {
+        // console.log("MapWrapper.change_entry_markers_mode", selected)
+        const features = this.map.getSource("all_entries_source")._data.features
+        // console.log("all features", features)
+        const relevant_features = this.$_.filter(features, (f) => f.properties.uuid === entry_uuid)
+        // console.log(relevant_features, selected)
+        // this.map.setLayoutProperty(
+        //   "all_entries_cluster-count",
+        //   'visibility',
+        //   selected ? 'none' : 'visible'
+        // )
+        for (let f of relevant_features) {
+          if (selected) {
+            this.map.setFeatureState(
+              {source: 'all_entries_source', id: f.id},
+              {"selected": true}
+            )
+          } else {
+            this.map.removeFeatureState(
+              {source: 'all_entries_source', id: f.id}, "selected")
+          }
+        }
+      },
+      async check_cluster_states(clusters) {
+        const cluster_ids = clusters.map(c => c.id)
+
+        // console.log(cluster_ids)
+        if (this.$_.isEqual(this.last_features_updated, cluster_ids)) {
+          return
+        }
+        this.last_features_updated = cluster_ids
+        // console.log("debounced m", cluster_ids)
+        const source_layer_name = "all_entries_source"
+        const source = this.map.getSource(source_layer_name)
+        const region_source_features = []
+
+        for (let cluster of clusters) {
+          const cluster_id = cluster.id
+          // console.log(cluster)
+          const leaves = await clusterLeaves(source, cluster_id, cluster.properties.point_count)
+
+          let common_place = null
+          if (cluster.state.hasOwnProperty("common_place"))
+            common_place = cluster.state.common_place
+          else
+            common_place = common_place_name(leaves)
+
+          this.map.setFeatureState(
+            {source: 'all_entries_source', id: cluster_id},
+            {common_place: common_place}
+          )
+
+          if (common_place) {
+            region_source_features.push({
+              type: "Feature",
+              geometry: cluster.geometry,
+              properties: {region_name: common_place, orig_cluster_id: cluster_id}
+            })
+          }
+        }
+        this.map.getSource("cluster_region_names_source").setData({
+          "type": "FeatureCollection",
+          "features": region_source_features
+        })
+      },
+      check_entries_map_done() {
+        // console.log("check_entries_map_done", this.entries)
+        if (this.entries_loaded && this.entries.features.length > 0 && this.map_loaded && this.get_all_uuids) {
+          this.init_map_source_and_layers()
+          this.initialized = true
+          if (this.$route.query.uuid) {
+            this.update_navigation_mode(this.$route.query.uuid, VIEW)
+            this.change_entry_markers_mode(this.$route.query.uuid, true)
+          }
+        }
+      },
+      check_hide_map() {
+        if (this.$vuetify.breakpoint.smAndDown) {
+          if (this.menu_open && this.menu_state === MENU_MODE_DOMAIN_OVERVIEW) {
+            this.map_hidden = true
+          } else {
+            this.map_hidden = false
+          }
+        }
+      },
       click(map, event) {
         // check since on small screens legend might not be there
         if (this.$refs.legendComponent)
@@ -242,26 +369,6 @@
         //   console.log(res.data.features[0].properties.GRIDCODE)
         // })
       },
-      open_layer_dialog() {
-        // to much computation?
-        this.aspectdialog_data = this.layer_aspectdialog_data
-        this.aspectdialog_data.dialog_open = true
-      },
-      map_goto_location(location) {
-        // console.log("MapIncldeMixin.map_goto_location", location)
-        // debugger
-        const center = this.transform_loc(location.coordinates)
-        this.map.easeTo({
-          center: center,
-          duration: 2000, // make the flying slow
-          padding: this.center_padding || 0// comes from the implementing class
-        })
-        this.$store.dispatch(MAP_GOTO_DONE)
-      },
-      trigger_dl() {
-        this.set_dl = true
-        this.map.triggerRepaint()
-      },
       download(map) {
         this.set_dl = false
         // console.log(re)
@@ -271,42 +378,6 @@
         a.href = image
         a.download = "neat.png"
         a.click()
-      },
-      render(map) {
-        if (this.set_dl)
-          download(map)
-        if (this.entries_loaded && map.getLayer(cluster_layer_name)) {
-          this.cluster_label_layer_visible = true
-          const clusters = map.queryRenderedFeatures(undefined, {layers: [cluster_layer_name]})
-          // not defined right from the begining
-          if (this.debounced_cluster_status) {
-            this.debounced_cluster_status(clusters)
-          }
-        } else {
-          this.cluster_label_layer_visible = false
-        }
-        if (this.act_cluster) {
-          const zoom = this.map.getZoom()
-          if (zoom > this.act_cluster_expansion_zoom || zoom < this.last_zoom) {
-            this.act_hoover_id = null
-            this.act_cluster = null
-            // ?!?!?
-            this.remove_all_popups()
-          } else {
-            this.last_zoom = zoom
-          }
-        }
-      },
-      check_entries_map_done() {
-        // console.log("check_entries_map_done", this.entries)
-        if (this.entries_loaded && this.entries.features.length > 0 && this.map_loaded && this.get_all_uuids) {
-          this.init_map_source_and_layers()
-          this.initialized = true
-          if (this.$route.query.uuid) {
-            this.update_navigation_mode(this.$route.query.uuid, VIEW)
-            this.change_entry_markers_mode(this.$route.query.uuid, true)
-          }
-        }
       },
       init_map_source_and_layers(layer_base_id = "all_entries") {
         // console.log(this.entries.features.length)
@@ -490,50 +561,64 @@
           this.select_entry_marker(features[0])
         })
       },
-      async check_cluster_states(clusters) {
-        const cluster_ids = clusters.map(c => c.id)
-
-        // console.log(cluster_ids)
-        if (this.$_.isEqual(this.last_features_updated, cluster_ids)) {
-          return
+      map_goto_location(location) {
+        // console.log("MapIncldeMixin.map_goto_location", location)
+        // debugger
+        const center = this.transform_loc(location.coordinates)
+        this.map.easeTo({
+          center: center,
+          duration: 2000, // make the flying slow
+          padding: this.center_padding || 0// comes from the implementing class
+        })
+        this.$store.dispatch(MAP_GOTO_DONE)
+      },
+      open_layer_dialog() {
+        // to much computation?
+        this.aspectdialog_data = this.layer_aspectdialog_data
+        this.aspectdialog_data.dialog_open = true
+      },
+      render(map) {
+        if (this.set_dl)
+          download(map)
+        if (this.entries_loaded && map.getLayer(cluster_layer_name)) {
+          this.cluster_label_layer_visible = true
+          const clusters = map.queryRenderedFeatures(undefined, {layers: [cluster_layer_name]})
+          // not defined right from the begining
+          if (this.debounced_cluster_status) {
+            this.debounced_cluster_status(clusters)
+          }
+        } else {
+          this.cluster_label_layer_visible = false
         }
-        this.last_features_updated = cluster_ids
-        // console.log("debounced m", cluster_ids)
-        const source_layer_name = "all_entries_source"
-        const source = this.map.getSource(source_layer_name)
-        const region_source_features = []
-
-        for (let cluster of clusters) {
-          const cluster_id = cluster.id
-          // console.log(cluster)
-          const leaves = await clusterLeaves(source, cluster_id, cluster.properties.point_count)
-
-          let common_place = null
-          if (cluster.state.hasOwnProperty("common_place"))
-            common_place = cluster.state.common_place
-          else
-            common_place = common_place_name(leaves)
-
-          this.map.setFeatureState(
-            {source: 'all_entries_source', id: cluster_id},
-            {common_place: common_place}
-          )
-
-          if (common_place) {
-            region_source_features.push({
-              type: "Feature",
-              geometry: cluster.geometry,
-              properties: {region_name: common_place, orig_cluster_id: cluster_id}
-            })
+        if (this.act_cluster) {
+          const zoom = this.map.getZoom()
+          if (zoom > this.act_cluster_expansion_zoom || zoom < this.last_zoom) {
+            this.act_hoover_id = null
+            this.act_cluster = null
+            // ?!?!?
+            this.remove_all_popups()
+          } else {
+            this.last_zoom = zoom
           }
         }
-        this.map.getSource("cluster_region_names_source").setData({
-          "type": "FeatureCollection",
-          "features": region_source_features
+      },
+      select_entry_marker(feature) {
+        // console.log("select_entry_marker")
+        const entry_uuid = feature.properties.uuid
+        // console.log("select_entry_marker", entry_uuid)
+
+        this.guarantee_entry(entry_uuid).then(entry => {
+          this.update_navigation_mode(entry_uuid, VIEW, false)
+          this.map_goto_location(feature.geometry)
+        }).catch(err => {
+          this.error_snackbar("Couldn't fetch entry")
         })
       },
+      trigger_dl() {
+        this.set_dl = true
+        this.map.triggerRepaint()
+      },
       update_filtered_source() {
-        console.log("update_filtered_source")
         this.updating = true
         if (!this.entries_loaded || !this.map_loaded || !this.get_all_uuids) {
           return
@@ -572,96 +657,7 @@
         }
 
         this.updating = false
-      },
-      select_entry_marker(feature) {
-        // console.log("select_entry_marker")
-        const entry_uuid = feature.properties.uuid
-        // console.log("select_entry_marker", entry_uuid)
-
-        this.guarantee_entry(entry_uuid).then(entry => {
-          this.update_navigation_mode(entry_uuid, VIEW, false)
-          this.map_goto_location(feature.geometry)
-        }).catch(err => {
-          this.error_snackbar("Couldn't fetch entry")
-        })
-      },
-      change_entry_markers_mode(entry_uuid, selected) {
-        // console.log("MapWrapper.change_entry_markers_mode", selected)
-        const features = this.map.getSource("all_entries_source")._data.features
-        // console.log("all features", features)
-        const relevant_features = this.$_.filter(features, (f) => f.properties.uuid === entry_uuid)
-        // console.log(relevant_features, selected)
-        // this.map.setLayoutProperty(
-        //   "all_entries_cluster-count",
-        //   'visibility',
-        //   selected ? 'none' : 'visible'
-        // )
-        for (let f of relevant_features) {
-          if (selected) {
-            this.map.setFeatureState(
-              {source: 'all_entries_source', id: f.id},
-              {"selected": true}
-            )
-          } else {
-            this.map.removeFeatureState(
-              {source: 'all_entries_source', id: f.id}, "selected")
-          }
-        }
-      },
-      aspect_dialog_update(selected_layers) {
-        // todo could be fixed by making multiselects default: []
-        this.set_layer_visibility(selected_layers)
-      },
-      check_hide_map() {
-        if (this.$vuetify.breakpoint.smAndDown) {
-          if (this.menu_open && this.menu_state === MENU_MODE_DOMAIN_OVERVIEW) {
-            this.map_hidden = true
-          } else {
-            this.map_hidden = false
-          }
-        }
       }
-    },
-    watch: {
-      map_loaded() {
-        this.check_entries_map_done()
-        this.$emit("map", this.map)
-      },
-      entries_loaded(loaded) {
-        // console.log("entries loaded", loaded)
-        if (loaded)
-          this.check_entries_map_done()
-      },
-      selected_entry(uuid, old_uuid) {
-        // console.log("MapWrapper.watch.selected_entry", uuid, old_uuid)
-        if (old_uuid) {
-          this.change_entry_markers_mode(old_uuid, false)
-        }
-        if (uuid) {
-          this.change_entry_markers_mode(uuid, true)
-          this.$emit("force_menu_mode_domain")
-        }
-      },
-      legend_selection(selection) {
-        this.update_filtered_source()
-      },
-      menu_state(menu_state) {
-        this.check_hide_map()
-      },
-      menu_open(open) {
-        this.check_hide_map()
-      },
-      get_all_uuids(uuids) {
-        this.update_filtered_source()
-        if (!this.initialized) {
-          this.check_entries_map_done()
-        }
-      },
-      goto_location(location) {
-        if (location) {
-          this.map_goto_location(location)
-        }
-      },
     }
   }
 </script>
