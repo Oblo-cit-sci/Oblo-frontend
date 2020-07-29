@@ -1,4 +1,4 @@
-import {MAP_GOTO_LOCATION} from "~/store/map"
+import {MAP_GOTO_DONE, MAP_GOTO_LOCATION} from "~/store/map"
 import MapboxBaseMixin from "~/components/map/MapboxBaseMixin"
 import MapEntriesMixin from "~/components/map/MapEntriesMixin"
 
@@ -154,6 +154,17 @@ export default {
       a.href = image
       a.download = "neat.png"
       a.click()
+    },
+    map_goto_location(location) {
+      // console.log("MapIncldeMixin.map_goto_location", location)
+      // debugger
+      const center = this.transform_loc(location.coordinates)
+      this.map.easeTo({
+        center: center,
+        duration: 2000, // make the flying slow
+        padding: this.center_padding || 0// comes from the implementing class
+      })
+      this.$store.dispatch(MAP_GOTO_DONE)
     },
     add_popup(feature, e, popup_html, remove_existing = true) {
       if (remove_existing) {

@@ -57,7 +57,6 @@
   import FilterMixin from "~/components/FilterMixin"
   import EntryFetchMixin from "~/components/entry/EntryFetchMixin"
   import MapEntriesMixin from "~/components/map/MapEntriesMixin"
-  import {MAP_GOTO_DONE} from "~/store/map"
 
   const cluster_layer_name = LAYER_BASE_ID + '_clusters'
 
@@ -98,6 +97,10 @@
       }
     },
     computed: {
+      ...mapGetters({
+        legend_selection: "map/get_filter_config",
+        layer_status: "map/layer_status",
+      }),
       additional_template_button_shift() {
         // todo 110 is very magic, depends on the length of the main create button text
         let shift = "110px"
@@ -151,10 +154,6 @@
       entries() {
         return this.all_map_entries(this.domain)
       },
-      ...mapGetters({
-        legend_selection: "map/get_filter_config",
-        layer_status: "map/layer_status",
-      }),
       layer_aspectdialog_data() {
         return {
           aspect: {
@@ -380,7 +379,8 @@
         a.click()
       },
       init_map_source_and_layers(layer_base_id = "all_entries") {
-        // console.log(this.entries.features.length)
+        console.log("init_map_source_and_layers", this.entries.features.length)
+
         const source_name = layer_base_id + "_source"
         this.update_filtered_source()
 
@@ -561,17 +561,6 @@
           this.select_entry_marker(features[0])
         })
       },
-      map_goto_location(location) {
-        // console.log("MapIncldeMixin.map_goto_location", location)
-        // debugger
-        const center = this.transform_loc(location.coordinates)
-        this.map.easeTo({
-          center: center,
-          duration: 2000, // make the flying slow
-          padding: this.center_padding || 0// comes from the implementing class
-        })
-        this.$store.dispatch(MAP_GOTO_DONE)
-      },
       open_layer_dialog() {
         // to much computation?
         this.aspectdialog_data = this.layer_aspectdialog_data
@@ -625,7 +614,6 @@
         }
         // console.log(this.map.getSource("all_entries_source"))
         // const included_templates = this.legend_selection.map(s => s.value)
-
         const filtered_entries = {
           type: "FeatureCollection",
           features: this.entries.features.filter(e => this.get_all_uuids.includes(e.properties.uuid) ||
@@ -634,6 +622,15 @@
           //   (e.properties.uuid === this.selected_entry))
         }
 
+        if (process.env.NODE_ENV !== "development") {
+          for(let uuid in this.get_all_uuids) {
+            if(!this.$_.find(this.entries.features, f => f.properties.uuid)) {
+              console.log("uuid without map-entry")
+            }
+          }
+        }
+
+
         const include_types = this.get_filtered_template_slugs()
         const drafts = this.$_.flatten(this.$store.getters["entries/domain_drafts"](this.domain_name)
           .filter(e => include_types.includes(e.template.slug)).map(e => entry_location2geojson_arr(e, ["status"])))
@@ -641,7 +638,7 @@
           drafts[i].id = filtered_entries.features.length + parseInt(i)
         }
         filtered_entries.features = filtered_entries.features.concat(drafts)
-
+        console.log(filtered_entries.features)
         if (!this.map.getSource("all_entries_source")) {
           this.map.addSource("all_entries_source", {
             type: "geojson",
