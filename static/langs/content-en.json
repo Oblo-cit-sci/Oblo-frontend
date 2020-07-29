@@ -41,6 +41,53 @@
     "7p1": "We are making use of the mapbox API for map display. APIs and Mobile SDKs: We automatically collect certain technical information whenever requests are made to our APIs, including (a) IP address, (b) device and browser information, (c) operating system, (d) the content of the request, (e) the date and time of the request, and (f) limited location and usage data. We delete IP addresses after 30 days. In addition, when a mobile application uses our SDKs to access our APIs, it may send us certain limited location and usage data along with an ephemeral ID. We delete this ephemeral ID within 24 hours and do not associate it or the unprocessed mobile location data with any personally identifying information, including names, permanent IDs, email addresses, IP addresses, or phone numbers. We also collect randomly-generated IDs for the limited purpose of analyzing the use of our APIs, including the number of active users. We will delete the randomly generated IDs and the content of requests made to our APIs after 36 months. See more details here:",
     "mb_a": "Mapbox Privacy policy"
   },
+  "about2": [
+    {
+      "h1": "About OpenTEK"
+    },
+    {
+      "h2": "Goals and Background",
+      "p": [
+        "OpenTEK is a free and open source platform to document and share traditional ecological knowledge (TEK). Specifically, OpenTEK's focuses on knowledge related to the use and management of (agro)biodiversity and the impacts of climate change.",
+        "The platform is designed as a progressive web-app (PWA) allowing users both to visualize existing geolocalized data and to collect new data from any device and while in the field.",
+        "OpenTEK is linked to two citizen science projects documenting traditional ecological knowledge around the world: LICCI (www.licci.eu) and CONECT-e (www.conecte.es).",
+        "LICCI wants to bring insights from local knowledge to climate research and policy. To do that, LICCI documents and classifies local observations of climate change impacts (e.g., changes in rainfall patterns or impacts of weather changes on wild animal abundance).",
+        "CONECT-e aims to revitalize and protect traditional ecological knoweldge related to plants and landraces in Spain. To do so, CONECT-e documents (and protects with Creative Commons licenses) plant's traditional uses, management and local names (e.g., medicinal plant uses or landrace names and cultivation practices)."
+      ]
+    },
+    {
+      "h2": "Funding",
+      "p": [
+        "This application is funded primarily by the LICCI and ICCION projects of the European Research Council (Grant Agreement Nr. FP7-771056-LICCI and ERC-2019-PoC-899209).",
+        "This application has also received funding from the European Union’s Horizon 2020 research and innovation programme. The JRC, or as the case may be the European Commission, shall not be held liable for any direct or indirect, incidental, consequential or other damages, including but not limited to the loss of data, loss of profits, or any other financial loss arising from the use of this application, or inability to use it, even if the JRC is notified of the possibility of such damages."
+      ]
+    },
+    {
+      "h3": "Terms of use",
+      "p": [
+        "Registration in OpenTEK implies the express free informed consent of the user or its carer/guardian to participate and transfer their personal data and traditional knowledge to the platform under the following conditions:",
+        "- All information in the platform will be anonymized and only used for research and advocacy purposes, without it being transferred to third parties.",
+        "- All users have the right to withdraw from the project and delete their profile data and entries from the platform at any time they wish.",
+        "- The personal profile data voluntarily provided by the user will be treated confidentially and only used for research purposes, without it being public.",
+        "- The traditional ecological knowledge voluntarily provided by the user will be shared under the privacy and license options the user selects",
+        "- All users have the right to present claims to the Catalan Data Protection Authority and to reach out to the UAB data protection service (proteccio.dades@uab.cat). For more information about your rights as a research subject, you can also contact the Ethics Commission of the Autonomous University of Barcelona at ceeah@uab.cat"
+      ]
+    },
+    {
+      "h2": "Privacy Policy"
+    },
+    {
+      "h3": "OpenTEK platform",
+      "p": [
+        "OpenTEK only collects data the user is freely and willingly providing. We do not use cookies nor do we include any 3rd party cookies. We only store the data that you directly provide in your public user profile or in the entries you create or contribute to."
+      ]
+    },
+    {
+      "h3": "Mapbox API",
+      "html":
+        "<p>We are making use of the mapbox API for map display. APIs and Mobile SDKs: We automatically collect certain technical information whenever requests are made to our APIs, including (a) IP address, (b) device and browser information, (c) operating system, (d) the content of the request, (e) the date and time of the request, and (f) limited location and usage data. We delete IP addresses after 30 days. In addition, when a mobile application uses our SDKs to access our APIs, it may send us certain limited location and usage data along with an ephemeral ID. We delete this ephemeral ID within 24 hours and do not associate it or the unprocessed mobile location data with any personally identifying information, including names, permanent IDs, email addresses, IP addresses, or phone numbers. We also collect randomly-generated IDs for the limited purpose of analyzing the use of our APIs, including the number of active users. We will delete the randomly generated IDs and the content of requests made to our APIs after 36 months. See more details here: <a href='https://www.mapbox.com/legal/privacy' target='_blank'>Mapbox Privacy policy</a><p>"
+    }
+  ],
   "register": {
     "h1": "Registration",
     "btn_register": "@:w.register"

@@ -19,6 +19,8 @@
   import {HOME} from "~/lib/consts"
   import NavBaseMixin from "~/components/NavBaseMixin"
 
+  // z-index to be above the loading overlay
+
   export default {
     name: "Appbar",
     mixins: [NavBaseMixin],
