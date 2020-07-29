@@ -95,6 +95,15 @@ export const getters = {
   },
   get_filter_config(state) {
     return state.filter_config
+  },
+  get_by_uuids(state) {
+    return (uuids) => {
+      let map_entries = []
+      for (let domain_entries_features of Object.values(state.entries)) {
+        map_entries = map_entries.concat(ld.filter(domain_entries_features.features, e => uuids.includes(e.properties.uuid)))
+      }
+      return map_entries
+    }
   }
 }
 

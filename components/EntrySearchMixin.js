@@ -42,7 +42,7 @@ export default {
        * check which entries exists already and fetch the rest
        */
       const to_fetch = this.check_missing_meta(uuids)
-      if(to_fetch.length === 0) {
+      if (to_fetch.length === 0) {
         // todo, just resolve
         return Promise.resolve(true)
       }
@@ -50,6 +50,21 @@ export default {
     },
     async get_entries_meta(uuids) {
       return this.$api.entries.by_uuids(uuids)
+    },
+    async get_my_entries_uuids() {
+      // todo, maybe just a refresh...
+      const my_entries_uuids_response = await this.$api.entries.get_uuids({
+        required: [{
+          name: "actor",
+          registered_name: this.$store.getters.username
+        }]
+      })
+      if(my_entries_uuids_response.status === 200) {
+        return Promise.resolve(my_entries_uuids_response.data.data)
+      } else {
+        console.log("couldnt get my uuids")
+        return Promise.reject(my_entries_uuids_response)
+      }
     }
   }
 }

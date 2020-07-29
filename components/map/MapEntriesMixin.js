@@ -1,7 +1,9 @@
 import {mapGetters} from "vuex"
+import EntrySearchMixin from "~/components/EntrySearchMixin"
 
 export default {
   name: "MapEntriesMixin",
+  mixins: [EntrySearchMixin],
   computed: {
     ...mapGetters({
       entries_loaded: "map/entries_loaded",
@@ -28,6 +30,20 @@ export default {
         console.log("map entries error")
         console.log(err)
       })
+    },
+    guarantee_entries_loaded() {
+      if(!this.entries_loaded) {
+
+      }
+    },
+    get_my_locations() {
+      this.guarantee_entries_loaded()
+      const my_uuids = this.get_my_entries_uuids()
+
+    },
+    get_map_entries_by_uuids(uuids) {
+      this.guarantee_entries_loaded()
+      return this.$store.getters["map/get_by_uuids"](uuids)
     }
   }
 }

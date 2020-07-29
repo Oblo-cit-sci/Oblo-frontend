@@ -234,7 +234,8 @@
           "exact": "The exact location will be visible.",
           "region": "The location's administrative unit (region) will be visible."
         }
-      }
+      },
+      "show entries": "Show my entries"
     },
     "previewlist": {
       "num_entries": "@:w.n_entries"

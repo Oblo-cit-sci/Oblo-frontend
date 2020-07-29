@@ -35,7 +35,7 @@
     client-only
       div(v-if="show_map && (!readOnly || value)")
         .map_overlay
-          v-btn(v-if="logged_in" dark small :color="show_existing ? 'blue' : 'grey'" @click="toggle_show_existing" :loading="getting_my_entries_loading") show entries
+          v-btn(v-if="logged_in" dark small :color="show_existing ? 'blue' : 'grey'" @click="toggle_show_existing" :loading="getting_my_entries_loading") {{$t('comp.location_asp.show entries')}}
             v-icon mdi-map-marker-circle
         mapbox.crosshair.mt-3(
           style="height:400px"
@@ -51,7 +51,7 @@
   import Mapbox from 'mapbox-gl-vue'
   import {
     array2coords,
-    create_location_error, entry_location2geojson_arr, get_closest_coordinates,
+    create_location_error,
     LOCATION_PRECISION_POINT,
     place2str,
     PREC_OPTION_EXACT,
@@ -70,6 +70,9 @@
   import {mapGetters} from "vuex"
   import {settings_loc_privacy_ask, settings_loc_privacy_exact, settings_loc_privacy_random} from "~/lib/settings"
   import EntrySearchMixin from "~/components/EntrySearchMixin"
+  import MapEntriesMixin from "~/components/map/MapEntriesMixin"
+  import EntryFetchMixin from "~/components/entry/EntryFetchMixin"
+  import {unpack} from "~/lib/aspect"
 
   // "attr.input" options
   const DEVICE = "device"
@@ -85,7 +88,8 @@
   export default {
     name: "LocationAspect",
     components: {SingleSelect, Mapbox},
-    mixins: [AspectComponentMixin, TriggerSnackbarMixin, MapIncludeMixin, GeocodingMixin, EntrySearchMixin],
+    mixins: [AspectComponentMixin, TriggerSnackbarMixin, MapIncludeMixin, GeocodingMixin,
+      MapEntriesMixin, EntrySearchMixin, EntryFetchMixin],
     data() {
       return {
         search_query: null,
@@ -98,8 +102,8 @@
         place_select__: null, // this in v-model is only used because of https://github.com/vuetifyjs/vuetify/issues/11383
         public_location_marker: null,
         show_existing: false,
-        getting_my_entries_loading: true,
-        my_entries: []
+        getting_my_entries_loading: false,
+        my_entries_features: null
       }
     },
     computed: {
@@ -225,11 +229,6 @@
       //   console.log(selection, option)
       //   this.set_public_location_from_option(option)
       // }
-      mode(new_mode) {
-        if (this.is_editable_mode) {
-          this.init_my_entries()
-        }
-      },
       async selected_search_result(sel) {
         console.log("selected_search_result-watch", sel, this.search_results)
         if (!sel) {
@@ -285,12 +284,6 @@
           }]
       }
 
-      // todo also when changing mode
-      if (this.is_editable_mode) {
-        this.init_my_entries()
-      } else {
-        this.getting_my_entries_loading = false
-      }
     },
     methods: {
       clear() {
@@ -384,22 +377,9 @@
       has_output(type) {
         return (this.aspect.attr.output || default_output).includes(type)
       },
-      init_my_entries() {
-        this.async_complete_meta({
-          required: [{
-            name: "actor",
-            registered_name: this.$store.getters.username
-          }]
-        }).then(res => {
-          this.getting_my_entries_loading = false
-          this.my_entries = res
-        }).catch(err => {
-          console.log(err)
-        })
-      },
       map_location_selected(map, mapboxEvent) {
         // we are gonna call snap_to_feature, so lets get out here
-        if(this.act_hoover_id) {
+        if (this.act_hoover_id) {
           return
         }
         console.log("map click", this.act_hoover_id)
@@ -513,39 +493,38 @@
       },
       snap_to_feature(features) {
         const feature = features[0]
-        // console.log("snapping to ", feature)
-        this.$api.entry__$uuid(feature.properties.uuid).then(({data}) => {
-          // console.log(data.data.location)
-          const entry_locations = data.data.location
-          let selected_location = null
-          if(entry_locations.length === 1) {
-            selected_location = entry_locations[0]
-          } else {
-            const selected_coordinates = array2coords(feature.geometry.coordinates)
-            // console.log(selected_coordinates)
-            // console.log(this.$_.map(entry_locations, el => el.coordinates))
-            const selected_loc_index = get_closest_coordinates(selected_coordinates, this.$_.map(entry_locations, "coordinates"))
-            selected_location = entry_locations[selected_loc_index]
-          }
-          // console.log(selected_location)
-          this.update_value(selected_location)
-        }).catch(err => {
+        console.log("snapping to ", feature)
+        const entry_uuid = feature.properties.uuid
+        this.guarantee_entry(entry_uuid).then(() => {
+          const location = this.$store.getters["entries/entry_location"](entry_uuid)
+          this.update_value(unpack(location[this.$_.get(feature, "properties.l_id", 0)]))
         })
       },
-      toggle_show_existing() {
+      async guarantee_my_entries_features_loaded() {
+        if (!this.my_entries_features) {
+          this.getting_my_entries_loading = true
+          const my_uuids = await this.get_my_entries_uuids()
+          this.getting_my_entries_loading = false
+          if (Array.isArray(my_uuids)) {
+            this.my_entries_features = this.get_map_entries_by_uuids(my_uuids)
+            return Promise.resolve()
+          } else {
+            console.log("couldnt fetch entries")
+            return Promise.reject()
+          }
+        }
+      },
+      async toggle_show_existing() {
         this.show_existing = !this.show_existing
         // console.log(this.$store.getters["map/entries"](this.get_entry().domain).features)
         if (this.show_existing) {
-          if (!this.map.getSource("my_entries_source")) {
-            console.log("adding")
-            const all_my_entries = this.$store.getters["entries/get_entries"](this.my_entries)
-            const geojson_features = this.$_.flatten(all_my_entries.map(e => entry_location2geojson_arr(e)))
-            console.log(geojson_features)
+          if (!this.my_entries_features) {
+            await this.guarantee_my_entries_features_loaded()
             this.map.addSource("my_entries_source", {
               type: "geojson",
               data: {
                 type: "FeatureCollection",
-                features: geojson_features
+                features: this.my_entries_features
               },
               generateId: true,
               cluster: true,
@@ -567,8 +546,11 @@
               ],
             })
             this.add_default_entries_layer_interactions("my_entries_source", "entries_layer", this.snap_to_feature)
-            //
+          } else {
+            this.map.setLayoutProperty("entries_layer", "visibility", "visible")
           }
+        } else {
+          this.map.setLayoutProperty("entries_layer", "visibility", "none")
         }
       },
       update_marker(flyTo = false) {
