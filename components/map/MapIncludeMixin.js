@@ -1,4 +1,4 @@
-import {MAP_GOTO_DONE} from "~/store/map"
+import {MAP_GOTO_DONE, MAP_GOTO_LOCATION} from "~/store/map"
 import MapboxBaseMixin from "~/components/map/MapboxBaseMixin"
 import MapEntriesMixin from "~/components/map/MapEntriesMixin"
 
@@ -25,7 +25,7 @@ export default {
         logoPosition: "bottom-right",
         maxPitch: 0,
         dragRotate: false,
-        act_hoover_id: null
+        act_hoover_id: null,
         // scaleControl: null
       },
     }
@@ -37,6 +37,10 @@ export default {
   computed: {
     language() {
       return this.$store.getters["app/ui_language"]
+    },
+    goto_location() {
+      // console.log("map, goto_location, map-store", this.$store.getters[MAP_GOTO_LOCATION]())
+      return this.$store.getters[MAP_GOTO_LOCATION]()
     }
   },
   methods: {
@@ -89,7 +93,7 @@ export default {
       })
       // 2. ENTRIES Hoover leave
       this.map.on('mouseleave', entries_layer_name, () => {
-        if(this.act_hoover_id !== null) {
+        if (this.act_hoover_id !== null) {
           this.map.setFeatureState(
             {source: source_name, id: this.act_hoover_id},
             {hover: false}
@@ -122,17 +126,6 @@ export default {
         return t_color_arr
       }, [])
     },
-    map_goto_location(location) {
-      // console.log("MapIncldeMixin.map_goto_location", location)
-      // debugger
-      const center = this.transform_loc(location.coordinates)
-      this.map.easeTo({
-        center: center,
-        duration: 2000, // make the flying slow
-        padding: this.center_padding // comes from the implementing class
-      })
-      this.$store.dispatch(MAP_GOTO_DONE)
-    },
     transform_loc(loc) {
       // todo take the NaN check out and filter earlier...
       if (loc.hasOwnProperty("lon") && loc.lat && !isNaN(loc.lon) && !isNaN(loc.lat)) {
@@ -162,8 +155,19 @@ export default {
       a.download = "neat.png"
       a.click()
     },
+    map_goto_location(location) {
+      // console.log("MapIncldeMixin.map_goto_location", location)
+      // debugger
+      const center = this.transform_loc(location.coordinates)
+      this.map.easeTo({
+        center: center,
+        duration: 2000, // make the flying slow
+        padding: this.center_padding || 0// comes from the implementing class
+      })
+      this.$store.dispatch(MAP_GOTO_DONE)
+    },
     add_popup(feature, e, popup_html, remove_existing = true) {
-      if(remove_existing) {
+      if (remove_existing) {
         this.remove_all_popups()
       }
       let coordinates = null
@@ -194,6 +198,9 @@ export default {
         popup.remove()
       }
       this.popups = []
+    },
+    set_goto_location(location) {
+
     }
   },
   watch: {

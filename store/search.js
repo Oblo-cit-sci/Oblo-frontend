@@ -10,7 +10,6 @@ export const SEARCH_SET_SEARCHTIME = "search/set_searchtime"
 export const SEARCH_SET_SEARCH_COUNT = "search/set_search_count"
 export const SEARCH_INCREASE_COUNT = "search/increase_search_count"
 export const SEARCH_DELETE_ENTRY = "search/delete_entry"
-export const SEARCH_SET_ALL_UUIDS = "search/set_all_uuids"
 
 
 export const SEARCH_PREPEND_ENTRIES = "search/prepend_entries"
@@ -80,6 +79,10 @@ export const mutations = {
   },
   set_all_uuids(state, uuids) {
     state.all_uuids = uuids
+  },
+  // todo not tested
+  add_all_uuids(state, uuids) {
+    state.all_uuids= state.all_uuids.concat(uuids)
   },
   set_act_config(state, config) {
     state.act_config = config
