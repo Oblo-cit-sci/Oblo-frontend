@@ -106,7 +106,7 @@
       }
     },
     created() {
-      console.log("search created")
+      // console.log("search created")
       let start_search = false
       // debugger
       const last_route = this.$store.getters[SEARCH_GET_ROUTE]
@@ -114,7 +114,7 @@
         this.keyword = this.$route.query.search
       }
       const this_route_data = this.act_relevant_route_data()
-      console.log(!this.$_.isEqual(last_route, this_route_data), last_route, this_route_data)
+      // console.log(!this.$_.isEqual(last_route, this_route_data), last_route, this_route_data)
       if (!this.$_.isEqual(last_route, this_route_data)) {
         // this.prepend_search = true
         this.clear()

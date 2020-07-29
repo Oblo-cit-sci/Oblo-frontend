@@ -27,7 +27,6 @@ export default {
   },
   methods: {
     set_layer_visibility(active_layers = []) {
-      console.log(active_layers)
       // instead of transform_options_list, map_loaded uses 'get'
       const options_layer_map = this.$_.keyBy(transform_options_list(this.available_layers), "value")
       for (let layer_name in options_layer_map) {

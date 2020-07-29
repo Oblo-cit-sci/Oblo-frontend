@@ -9,7 +9,6 @@ export default {
         return Promise.resolve(this.$store.getters["entries/get_entry"](entry_uuid))
       } else {
         const entry_response = await this.$api.entry__$uuid(entry_uuid)
-        console.log(entry_response)
         if(entry_response.status === 200) {
           const entry = entry_response.data.data
           // todo: maybe do more stuff. preparing?

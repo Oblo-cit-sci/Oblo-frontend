@@ -1,7 +1,7 @@
 <template lang="pug">
   div
     v-navigation-drawer(
-      :value="menu_open"
+      v-model="menu_open"
       :temporary="over"
       :hide-overlay="over"
       :stateless="over"
@@ -51,9 +51,14 @@
       this.$store.commit("menu/menu_width", this.menu_width)
     },
     computed: {
-      ...mapGetters({
-        menu_open: "menu/open",
-      }),
+      menu_open: {
+        get() {
+          return this.$store.getters["menu/open"]
+        },
+        set(open) {
+          this.$store.commit("menu/open", open)
+        }
+      },
       menu_state: {
         get() {
           return this.$store.getters["menu/menu_state"]

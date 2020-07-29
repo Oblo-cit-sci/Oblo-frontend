@@ -230,7 +230,7 @@
       //   this.set_public_location_from_option(option)
       // }
       async selected_search_result(sel) {
-        console.log("selected_search_result-watch", sel, this.search_results)
+        // console.log("selected_search_result-watch", sel, this.search_results)
         if (!sel) {
           this.update_value(null)
         } else {
@@ -255,7 +255,7 @@
         }
       },
       value(value) {
-        console.log("location aspect value watch", value)
+        // console.log("location aspect value watch", value)
         if (!value) {
           this.reset()
           return
@@ -295,8 +295,7 @@
         value contains just the coordinates
         features should have the results of rev-geoquery of the coordinates
          */
-        console.log("complete with", value)
-        // console.log("features", features)
+        // console.log("complete with", value)
         if (!value.hasOwnProperty("place")) {
           value.place = {}
         }
@@ -331,7 +330,7 @@
         }
         value = this.set_public_location_from_option(value, option)
         this.update_value(value)
-        console.log("-->", value)
+        // console.log("-->", value)
         // this.public_location_precision = PREC_OPTION_RANDOM
       },
       geolocate_error() {
@@ -382,7 +381,6 @@
         if (this.act_hoover_id) {
           return
         }
-        console.log("map click", this.act_hoover_id)
         if (this.is_view_mode)
           return
         let value = {
@@ -493,7 +491,6 @@
       },
       snap_to_feature(features) {
         const feature = features[0]
-        console.log("snapping to ", feature)
         const entry_uuid = feature.properties.uuid
         this.guarantee_entry(entry_uuid).then(() => {
           const location = this.$store.getters["entries/entry_location"](entry_uuid)

@@ -379,7 +379,7 @@
         a.click()
       },
       init_map_source_and_layers(layer_base_id = "all_entries") {
-        console.log("init_map_source_and_layers", this.entries.features.length)
+        // console.log("init_map_source_and_layers", this.entries.features.length)
 
         const source_name = layer_base_id + "_source"
         this.update_filtered_source()
@@ -638,7 +638,6 @@
           drafts[i].id = filtered_entries.features.length + parseInt(i)
         }
         filtered_entries.features = filtered_entries.features.concat(drafts)
-        console.log(filtered_entries.features)
         if (!this.map.getSource("all_entries_source")) {
           this.map.addSource("all_entries_source", {
             type: "geojson",
