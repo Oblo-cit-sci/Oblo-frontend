@@ -57,7 +57,7 @@
 <script>
 
   import EntryNavMixin from "../EntryNavMixin";
-  import {printDate, privacy_color, privacy_icon, review_color} from "~/lib/util"
+  import {privacy_color, privacy_icon, review_color} from "~/lib/util"
   import {EDIT, ENTRY, REVIEW, VIEW} from "~/lib/consts"
   import MetaChips from "./MetaChips"
   import Taglist from "../global/Taglist"

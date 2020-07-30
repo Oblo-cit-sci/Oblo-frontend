@@ -104,6 +104,18 @@ export const getters = {
       }
       return map_entries
     }
+  },
+  get_by_uuid(state) { // not used atm
+    return (uuid) => {
+      for (let domain_entries_features of Object.values(state.entries)) {
+          console.log(domain_entries_features.features)
+          const feature = ld.find(domain_entries_features.features, e => e.properties.uuid === uuid)
+          if(feature)
+            return feature
+      }
+      console.log("warning entry_feature for uuid not found")
+      return null
+    }
   }
 }
 
@@ -123,4 +135,10 @@ export const actions = {
     context.commit("_last_goto_location", null)
     context.commit("goto_location", null)
   }
+  // update_entry_feature(context, entry) {
+  //   console.log(context)
+  //   const entries_features = ld.get(context.state.entries, entry.domain).features
+  //   const feature = context.getters.get_by_uuid(entry.uuid)
+  //   console.log(feature)
+  // }
 }

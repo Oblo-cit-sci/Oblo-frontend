@@ -164,6 +164,7 @@
       },
       save() {
         // todo not if it is an aspect page
+        console.log(this.entry.local)
         this.$store.commit(ENTRIES_SAVE_ENTRY, this.entry)
         this.$store.dispatch(ENTRIES_UPDATE_ENTRY, this.uuid)
         this.persist_entries()

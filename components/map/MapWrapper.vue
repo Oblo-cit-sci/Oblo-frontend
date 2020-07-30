@@ -57,6 +57,7 @@
   import FilterMixin from "~/components/FilterMixin"
   import EntryFetchMixin from "~/components/entry/EntryFetchMixin"
   import MapEntriesMixin from "~/components/map/MapEntriesMixin"
+  import {review_color} from "~/lib/util"
 
   const cluster_layer_name = LAYER_BASE_ID + '_clusters'
 
@@ -546,11 +547,13 @@
             ["get", "status"],
             "draft",
             "#0000FF",
+            "requires_review",
+            review_color(),
             "#f6ff7a"
           ],
           "circle-stroke-width": [
             "case",
-            ["any", ["boolean", ["feature-state", "selected"], false], ["==", ["get", "status"], "draft"]],
+            ["any", ["boolean", ["feature-state", "selected"], false], ["==", ["get", "status"], "draft"], ["==", ["get", "status"], "requires_review"]],
             2,
             0
           ]
@@ -629,7 +632,6 @@
             }
           }
         }
-
 
         const include_types = this.get_filtered_template_slugs()
         const drafts = this.$_.flatten(this.$store.getters["entries/domain_drafts"](this.domain_name)
