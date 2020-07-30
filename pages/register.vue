@@ -11,8 +11,8 @@
         mode="edit")
     v-checkbox(v-model="agree")
       template(v-slot:label)
-        div I agree with the &nbsp;
-          a(@click="terms_dialog_open = true") terms of use
+        div {{$t('register.i_agree_with')}} &nbsp;
+          a(@click="terms_dialog_open = true") {{$t('register.terms_of_use')}}
     v-btn.m-4(@click='submit' rounded large :disabled="any_invalid || submitStatus === 'PENDING'" :loading="submit_loading" color='success') {{$t('register.btn_register')}}
     v-alert(:value='errorMsg !== null' type='error' prominent) {{errorMsg}}
     v-dialog(v-model="terms_dialog_open" :width="main_container_with")
