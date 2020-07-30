@@ -1,7 +1,7 @@
 <template lang="pug">
   .treeselect
     div(comment="only in dialog")
-      v-btn(icon small @click="clear")
+      v-btn(icon small @click="close")
         v-icon mdi-close
     v-list(v-if="has_selection")
       div.ml-3 Current selection
@@ -226,6 +226,13 @@
       level_edit_mode(level) {
         return this.$_.get(this.attr, `edit[${level}]`, "list")
       },
+      close() {
+        if(this.done_available) {
+          this.done()
+        } else {
+          this.clear()
+        }
+      }
     }
   }
 </script>

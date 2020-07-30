@@ -43,130 +43,147 @@
 </template>
 
 <script>
-  import TreeleafPicker from "../input/TreeleafPicker";
-  import TextShort from "./TextShortAspect";
-  import {flatten_tree_to_options, get_codes_as_tree} from "~/lib/options";
-  import {EDIT} from "~/lib/consts";
-  import AspectComponentMixin from "./AspectComponentMixin";
-  import GeneralSelectMixin from "~/components/aspect_utils/GeneralSelectMixin"
-  import {unpack} from "~/lib/aspect"
+import TreeleafPicker from "../input/TreeleafPicker";
+import TextShort from "./TextShortAspect";
+import {flatten_tree_to_options, get_codes_as_tree} from "~/lib/options";
+import {EDIT} from "~/lib/consts";
+import AspectComponentMixin from "./AspectComponentMixin";
+import GeneralSelectMixin from "~/components/aspect_utils/GeneralSelectMixin"
+import {unpack} from "~/lib/aspect"
 
-  export default {
-    name: "TreeSelectAspect",
-    components: {TextShort, TreeleafPicker},
-    mixins: [AspectComponentMixin, GeneralSelectMixin],
-    data() {
-      return {
-        tree: {},
-        flat_options: [],
-        dialogOpen: false,
-      }
-    },
-    created() {
-      if (this.mode === EDIT) {
-        this.calc_options()
-      }
-      // console.log("created", this.extra, this.value)
-      if(this.extra.listitem && this.is_empty) {
+/*
+the start of a custom value field. but wtf...
+      v-row
+      v-col.pr-0.pointer(cols=1)
+        v-icon {{prependIcon}}
+      v-col.pl-0(:cols='is_empty ? "10" : "10"' :style="{'border-bottom': '1px grey solid'}")
+        div {{value_text}}
+      v-col.pr-0.pointer(col=1 v-if="!is_empty")
+        v-icon mdi-close
+
+ */
+
+export default {
+  name: "TreeSelectAspect",
+  components: {TextShort, TreeleafPicker},
+  mixins: [AspectComponentMixin, GeneralSelectMixin],
+  data() {
+    return {
+      tree: {},
+      flat_options: [],
+      dialogOpen: false,
+    }
+  },
+  created() {
+    if (this.mode === EDIT) {
+      this.calc_options()
+    }
+    // console.log("created", this.extra, this.value)
+    if (this.extra.listitem && this.is_empty) {
+      this.dialogOpen = true
+    }
+  },
+  methods: {
+    openDialog(short_persistence) {
+      if (!this.disabled) {
         this.dialogOpen = true
       }
     },
-    methods: {
-      openDialog(short_persistence) {
-        if (!this.disabled) {
-          this.dialogOpen = true
-        }
-      },
-      auto_select(value) {
-        // console.log("autoselect", value)
-        const result = this.$_.concat((value.parents || []).map(v => ({value:v, text:v})), {value:value.value, text:value.value})
-        this.update_value(result)
-      },
-      open_if_empty() {
-        if(!this.disabled && this.is_empty) {
-          this.dialogOpen = true
-        }
-      },
-      selected(val) {
-        // console.log("TSA selected", val)
-        this.dialogOpen = false;
-        if (val) {
-          this.update_value(val.value)
-        }
-        if(this.extra.listitem) {
-          this.$emit("aspectAction", {action:"value_set"})
-        }
-      },
-      calc_options() {
-        // build the given_options (all tree available) from what is passed
-        // let passed_tree = this.aspect.items;
-        if (typeof this.aspect.items === "string") {
-          this.tree = get_codes_as_tree(this.$store, this.aspect.items)
-        } else {
-          this.tree = this.aspect.items
-        }
+    auto_select(value) {
+      // console.log("autoselect", value)
+      const result = this.$_.concat((value.parents || []).map(v => ({value: v, text: v})), {
+        value: value.value,
+        text: value.value
+      })
+      this.update_value(result)
+    },
+    open_if_empty() {
+      if (!this.disabled && this.is_empty) {
+        this.dialogOpen = true
+      }
+    },
+    selected(val) {
+      // console.log("TSA selected", val)
+      this.dialogOpen = false;
+      if (val) {
+        this.update_value(val.value)
+      }
+      if (this.extra.listitem) {
+        this.$emit("aspectAction", {action: "value_set"})
+      }
+    },
+    calc_options() {
+      // build the given_options (all tree available) from what is passed
+      // let passed_tree = this.aspect.items;
+      if (typeof this.aspect.items === "string") {
+        this.tree = get_codes_as_tree(this.$store, this.aspect.items)
+      } else {
+        this.tree = this.aspect.items
+      }
+
+      // console.log(this.tree, options.include_levels)
+      if (this.direct_select) {
         let options = {}
         if (this.aspect.attr.allow_select_levels) {
           options.include_levels = this.aspect.attr.allow_select_levels
         } else {
-          options.include_levels = [this.tree.level_names.length - 1]
+          options.include_levels = [this.tree.levels.length - 1]
         }
-        // console.log(this.tree, options.include_levels)
         this.flat_options = flatten_tree_to_options(this.tree, options)
-        // console.log(this.flat_options[0].parents)
+      }
+      // console.log(this.flat_options[0].parents)
+    },
+    clear() {
+      this.update_value([])
+      this.dialogOpen = false;
+      // this.va = []
+      this.$emit("aspectAction", {action: "clear"})
+    }
+  },
+  computed: {
+    is_empty() {
+      return this.$_.isEmpty(this.value)
+    },
+    int_value: {
+      get: function () {
+        return this.value
       },
-      clear() {
-        this.update_value([])
-        this.dialogOpen = false;
-        // this.va = []
-        this.$emit("aspectAction", {action:"clear"})
+      set: function (val) {
+        this.update_value(val)
       }
     },
-    computed: {
-      is_empty() {
-        return this.$_.isEmpty(this.value)
-      },
-      int_value: {
-        get: function () {
+    prependIcon() {
+      return this.readOnly ? '' : 'mdi-file-tree'
+    },
+    direct_select() {
+      if (!this.aspect.attr.hasOwnProperty("direct_select"))
+        return true
+      else {
+        return this.aspect.attr.direct_select
+      }
+    },
+    value_text() {
+      if (this.value) {
+        if (this.value.constructor === Array) {
+          return this.value.map(v => {
+            let base = v.text
+            base += v.extra_value ? " / " + unpack(v.extra_value) : ""
+            return base
+          }).join(" \u21D2 ")
+        } else {
           return this.value
-        },
-        set: function (val) {
-          this.update_value(val)
-        }
-      },
-      prependIcon() {
-        return this.readOnly ? '' : 'mdi-file-tree'
-      },
-      direct_select() {
-        // console.log(this.aspect.attr.direct_select)
-        if (!this.aspect.attr.hasOwnProperty("direct_select"))
-          return true
-        else {
-          return this.aspect.attr.direct_select
-        }
-      },
-      value_text() {
-        if (this.value) {
-          if(this.value.constructor === Array) {
-            return this.value.map(v => {
-              let base = v.text
-              base += v.extra_value ? " / " + unpack(v.extra_value) : ""
-              return base
-            }).join(" \u21D2 ")
-          } else {
-            return this.value
-          }
-        }
-      }
-    },
-    watch: {
-      mode(new_mode) {
-        if (new_mode === EDIT && this.$_.isEmpty(this.tree)) {
-          this.calc_options()
         }
       }
     }
+  },
+  watch: {
+    mode(new_mode) {
+      if (new_mode === EDIT && this.$_.isEmpty(this.tree)) {
+        this.calc_options()
+      }
+    }
   }
+}
 </script>
 
 <style scoped>
