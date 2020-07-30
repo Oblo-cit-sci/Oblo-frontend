@@ -183,9 +183,14 @@ export default {
     }
   },
   watch: {
-    mvalue() {
-      if (this.auto_trigger) {
-        this.trigger_action()
+    mvalue: {
+      immediate: true,
+      handler() {
+        console.log("asp-act", this.mvalue)
+        console.log("action triggered")
+        if (this.auto_trigger) {
+          this.trigger_action()
+        }
       }
     }
   }

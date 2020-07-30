@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-app-bar(true app elevation="2" :style="{'z-index':6}")
+  v-app-bar(true app elevation="2" :style="{'z-index':7}")
     v-app-bar-nav-icon.rounded-circle(color="blue" :disabled="!show_nav_icon" v-show="initialized" @click="switch_menu_open" :style="nav_icon_style")
     v-toolbar-title.pa-0(v-if="initialized")
       v-list-item.pl-0

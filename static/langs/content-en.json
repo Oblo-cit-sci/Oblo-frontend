@@ -68,7 +68,7 @@
   "register": {
     "h1": "Registration",
     "btn_register": "@:w.register",
-    "I_agree_with": "I agree with the",
+    "i_agree_with": "I agree with the",
     "terms_of_use": "terms of use"
   },
   "login": {
