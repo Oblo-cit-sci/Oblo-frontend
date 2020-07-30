@@ -446,7 +446,6 @@ export const getters = {
       const tagsAspect = entry_type.rules.tagsAspect
       const all_tags = {}
       for (let tags_type in tagsAspect) {
-        console.log(tags_type)
         const aspect_tag_location = tagsAspect[tags_type]
         let tags = select_aspect_loc(state, loc_prepend(ENTRY, uuid, aspect_loc_str2arr(aspect_tag_location)))
         tags = recursive_unpack(tags)

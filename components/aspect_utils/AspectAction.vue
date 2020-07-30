@@ -185,9 +185,11 @@ export default {
   watch: {
     mvalue: {
       immediate: true,
-      handler() {
-        console.log("asp-act", this.mvalue)
-        console.log("action triggered")
+      handler(new_val, prev_val) {
+        // catch create call with nothing
+        if(prev_val === undefined && unpack(new_val) === null) {
+          return
+        }
         if (this.auto_trigger) {
           this.trigger_action()
         }
