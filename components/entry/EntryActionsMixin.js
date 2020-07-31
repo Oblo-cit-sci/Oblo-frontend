@@ -6,6 +6,7 @@ export default {
   name: "EntryActionsMixin",
   computed: {
     proper_mode() {
+      // todo in the future if entries need review (not just public) it should differentiate creator and reviewer
       if (this.can_edit) {
         if (this.entry.status === REQUIRES_REVIEW) {
           return REVIEW

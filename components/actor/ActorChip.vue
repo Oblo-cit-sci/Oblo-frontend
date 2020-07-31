@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-chip.ml-1(@click="goto_actor(actor)" pill)
+  v-chip.ml-1(@click="goto_actor(actor)" pill :color="visitor_color" :ripple="!is_visitor")
     v-avatar(left)
       v-img(:src="avatar(actor)")
     span(style="user-select:none") {{actor.public_name}}
@@ -13,7 +13,10 @@
     name: "ActorChip",
     mixins: [ActorMixin],
     props: {
-      actor: Object,
+      actor: {
+        type: Object,
+        required: true
+      },
       role: String,
       selectable: {
         type: Boolean,
@@ -22,6 +25,7 @@
     },
     computed: {
       role_icon() {
+        // todo, these icons should be defined somewhere else
         switch (this.role) {
           case "creator":
             return "mdi-file-edit-outline"
@@ -35,6 +39,16 @@
             console.log("unknown role", this.role)
             return ""
           }
+        }
+      },
+      is_visitor() {
+        return this.actor.registered_name === "visitor"
+      },
+      visitor_color() {
+        if(this.is_visitor) {
+          return "white"
+        } else {
+          return null
         }
       }
     }

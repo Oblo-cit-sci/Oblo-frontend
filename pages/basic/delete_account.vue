@@ -59,7 +59,7 @@
         }).then(({data}) => {
           this.ok_snackbar(data.data)
           this.clear_storage()
-          this.$store.dispatch(LOGOUT)
+          this.$store.dispatch("logout")
           this.home()
         }).catch(err => {
           this.err_error_snackbar(err)

@@ -24,7 +24,6 @@ export const USER = "user"
 export const DOMAIN = "domain"
 export const DOMAIN_BY_NAME = "domain_by_name"
 export const LAST_BASE_PAGE_PATH = "last_page_path"
-export const LOGOUT = "logout"
 export const ALL_CODES = "all_codes"
 // internal mutations
 export const ADD_CODES = "add_codes"
@@ -39,7 +38,7 @@ export const SNACKBAR_TRIGGER = "snackbar_trigger"
 export const state = () => ({
   // comes by init
   codes: {},
-  snackbar: {message: "", status: "ok", trigger: false},
+  snackbar: {message: "", status: true, trigger: false},
   draft_numbers: {},
   domains: [],
   domain: {
@@ -66,10 +65,9 @@ export const mutations = {
   },
   snackbar(state, snackbar) {
     state.snackbar = Object.assign(snackbar, {trigger: true})
-    // console.log("final snackbar", state.snackbar.trigger)
   },
   snackbar_reset(state) {
-    state.snackbar.trigger = false
+    $nuxt.$set(state.snackbar, "trigger", false)
   },
   update_draft_number(state, type_slug) {
     state.draft_numbers[type_slug] = (state.draft_numbers[type_slug] || 0) + 1
@@ -136,6 +134,9 @@ export const getters = {
   name(state) {
     return state.user.user_data.registered_name
   },
+  username(state) {
+    return state.user.user_data.registered_name
+  },
   get_code(state) {
     return (code_name) => {
       return (state.codes[code_name])
@@ -180,7 +181,7 @@ export const getters = {
   get_aspect_cache(state) {
     return (template_slug, aspect_name) => {
       const template_cache = state.aspect_value_cache[template_slug]
-      console.log("store template_cache", template_cache)
+      // console.log("store template_cache", template_cache)
       if (template_cache) {
         return template_cache[aspect_name]
       }

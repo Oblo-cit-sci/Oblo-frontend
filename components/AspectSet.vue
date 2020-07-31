@@ -17,8 +17,8 @@
 
   export default {
     name: "AspectSet",
-    mixins: [],
     components: {Aspect},
+    mixins: [],
     props: {
       aspects: {
         type: Array

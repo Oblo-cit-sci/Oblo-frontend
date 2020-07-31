@@ -7,6 +7,7 @@
     EntryPreviewList(v-if="!prepend_query && normal_mode"
       :entries="entries_uuids"
       :total_count="total_count"
+      :preview_options="preview_options"
       @preview_action="$emit('preview_action',$event)")
     CompactEntryList(v-if="!prepend_query && !normal_mode"
       :entries="entries_uuids"
@@ -33,7 +34,8 @@
       }, // "normal" default, "compact"
       configuration: Object,
       init_request: Boolean,
-      wait: Boolean, // created but parent still waits for other data, so show loading
+      wait: Boolean, // created but parent still waits for other data, so show loading,
+      preview_options: Object
     },
     data() {
       return {

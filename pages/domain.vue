@@ -1,8 +1,8 @@
 <template lang="pug">
-  .fullSize()
-    MenuContainer(
-      :over="true"
-      :domain_navigation_mode="navigation_mode")
+  .fullSize
+    <!--    MenuContainer(-->
+    <!--      :over="true"-->
+    <!--      :domain_navigation_mode="navigation_mode")-->
     v-dialog(v-model="entrycreate_dialog_open")
       EntryCreateList(:template_entries="create_templates_options")
     MapWrapper(
@@ -25,20 +25,19 @@
   import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
   import {object_list2options} from "~/lib/options"
   import LayoutMixin from "~/components/global/LayoutMixin"
-  import {get_tags_filter_options} from "~/lib/codes"
   import MapIncludeMixin from "~/components/map/MapIncludeMixin"
   import MapWrapper from "~/components/map/MapWrapper"
   import {dev_env} from "~/lib/util"
   import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
   import MenuContainer from "~/components/menu/MenuContainer"
   import DomainMixin from "~/components/DomainMixin"
-  import {QP_D, QP_F} from "~/lib/consts"
+  import {MENU_MODE_DOMAIN_OVERVIEW, QP_D, QP_F} from "~/lib/consts"
   import FixDomainMixin from "~/components/global/FixDomainMixin"
   import EntryCreateMixin from "~/components/entry/EntryCreateMixin"
 
   export default {
     name: "domain",
-    layout: "new_map_layout",
+    // layout: "new_map_layout",
     mixins: [DomainMixin, HasMainNavComponentMixin, EntryNavMixin, EntryCreateMixin,
       PersistentStorageMixin, LayoutMixin, MapIncludeMixin, FixDomainMixin],
     components: {MenuContainer, MapWrapper, EntryCreateList, Mapbox},
@@ -60,30 +59,24 @@
       if (!dev_env()) {
         window.history.replaceState(null, document.title, "/licci")
       }
-      if (this.domain_data.name !== this.$store.getters[DOMAIN]) {
+      if (this.domain_data.name !== this.$store.getters.domain) {
         this.$store.commit(SET_DOMAIN, this.domain_data)
       }
 
       if (this.$route.query.f && !this.is_fixed_domain) {
         this.fix_domain(this.$route.query.f)
       }
+
+      this.set_menu_state(MENU_MODE_DOMAIN_OVERVIEW)
     },
     beforeRouteLeave(from, to, next) {
       if (!dev_env()) {
         window.history.replaceState(null, document.title, this.$route.fullPath)
       }
+      this.set_menu_open(false)
       next()
     },
     computed: {
-      filters() {
-        // todo I think depracated since it comes in the domainmenu
-        const template_filter_options = Object.assign({}, entrytype_filter_options)
-        template_filter_options.aspect.items = object_list2options(
-          this.$store.getters[TEMPLATES_OF_DOMAIN](this.domain_name), "title", "slug", true)
-
-        const tags_filter_options = get_tags_filter_options(this.$store, this.domain_name)
-        return [template_filter_options, tags_filter_options]
-      }
     },
     methods: {
       create_entry_or_open_dialog(template_slug = null) {
@@ -113,6 +106,7 @@
   }
 
   .fullSize {
+    position: absolute;
     width: 100%;
     height: 100%;
   }

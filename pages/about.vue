@@ -1,41 +1,25 @@
 <template lang="pug">
-  v-row(align="center" justify="center")
-    v-col(class="col-lg-6 col-xs-12")
-      h1 {{$t("about.h1")}}
-      h2 {{$t("about.h2")}}
-      p {{$t("about.2p1")}}
-      p {{$t("about.2p2")}}
-      p {{$t("about.2p3")}}
-      p {{$t("about.2p4")}}
-      p {{$t("about.2p5")}}
-      v-divider.wide_divider
-      h2 {{$t("about.h3")}}
-      p {{$t("about.3p1")}}
-      p {{$t("about.3p2")}}
-      v-divider.wide_divider
-      h2#terms_of_use {{$t("about.h4")}}
-      p {{$t("about.4p1")}}
-      p {{$t("about.4p2")}}
-      p {{$t("about.4p3")}}
-      p {{$t("about.4p4")}}
-      p {{$t("about.4p5")}}
-      v-divider.wide_divider
-      h2(id="privacy") {{$t("about.h5")}}
-      h4 {{$t("about.h6")}}
-      p {{$t("about.6p1")}}
-      h4 {{$t("about.h7")}}
-      p {{$t("about.7p1")}}
-        span
-          a(href="https://www.mapbox.com/legal/privacy") {{$t("about.mb_a")}}
-
+  div
+    v-row(align="center" justify="center" v-for="section in text_sections" :key="section.h")
+      v-col.col-lg-6.col-xs-12
+        FlexibleTextSection(:section="section")
+    Footer
 </template>
 
 <script>
   import goToMiddleware from "~/components/global/goToMiddleware"
+  import Footer from "~/components/global/Footer"
+  import FlexibleTextSection from "~/components/global/FlexibleTextSection"
 
   export default {
     name: "about",
-    mixins: [goToMiddleware]
+    components: {FlexibleTextSection, Footer},
+    mixins: [goToMiddleware],
+    computed: {
+      text_sections() {
+        return this.$t("about")
+      }
+    }
   }
 </script>
 

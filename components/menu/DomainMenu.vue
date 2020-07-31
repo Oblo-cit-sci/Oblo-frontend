@@ -15,10 +15,11 @@
       @preview_action="preview_action($event)")
     div(v-if="nav_mode_entry")
       v-row
-        v-btn(@click="unselect_entry" Search)
-          v-icon mdi-arrow-left-thick
+        v-col.py-0
+          v-btn(@click="unselect_entry" text small)
+            v-icon mdi-arrow-left-thick
       v-row
-        v-col
+        v-col.py-0
           Entry(:navigation_props="entry_navigation_props")
 </template>
 
@@ -29,13 +30,13 @@
   import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
   import {entrytype_filter_options} from "~/lib/filter_option_consts"
   import {object_list2options} from "~/lib/options"
-  import {get_tags_filter_options} from "~/lib/codes"
   import DomainMixin from "~/components/DomainMixin"
   import FixDomainMixin from "~/components/global/FixDomainMixin"
+  import FilterMixin from "~/components/FilterMixin"
 
   export default {
     name: "DomainMenu",
-    mixins: [MapNavigationMixin, HasMainNavComponentMixin, DomainMixin, FixDomainMixin],
+    mixins: [MapNavigationMixin, HasMainNavComponentMixin, DomainMixin, FixDomainMixin, FilterMixin],
     components: {Entry, Search},
     computed: {
       filters() {
@@ -43,7 +44,8 @@
         template_filter_options.aspect.items = object_list2options(
           this.$store.getters["templates/templates_of_domain"](this.domain_name), "title", "slug", true)
 
-        const tags_filter_options = get_tags_filter_options(this.$store, this.domain_name)
+        const tags_filter_options = this.get_tags_filter_options( this.domain_name)
+        // const uuids_select_option = get_uuids_select_option()
         return [template_filter_options, tags_filter_options]
       }
     }

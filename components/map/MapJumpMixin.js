@@ -1,4 +1,4 @@
-import {MODE_NORMAL, QP_D} from "~/lib/consts";
+import {QP_D} from "~/lib/consts";
 import {MAP_GOTO_LOCATION, MAP_LAST_GOTO_LOCATION} from "~/store/map";
 import {PAGE_DOMAIN} from "~/lib/pages"
 
@@ -17,6 +17,7 @@ export default {
   },
   computed: {
     // works only for entries, not aspects
+    // todo maybe somewhere else...
     has_action_goto_location() {
       return this.entry.location && this.actions.includes('goto_location')
     },

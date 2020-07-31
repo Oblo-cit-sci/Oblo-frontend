@@ -59,7 +59,8 @@
               attr: {
                 force_view: "select",
                 disable: true,
-                hide_on_disabled: true
+                hide_on_disabled: true,
+                unpacked: true
               },
               items: this.domains()
             }

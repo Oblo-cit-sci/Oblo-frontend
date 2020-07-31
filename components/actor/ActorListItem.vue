@@ -10,7 +10,6 @@
         v-chip.ml-2(v-if="actor.account_deactivated" small color="indianred") {{$t("comp.actor.deactivated")}}
         GlobalRoleChip.ml-2(:global_role="actor.global_role")
       v-list-item-subtitle {{actor.description}}
-      v-list-item-subtitle {{place(actor.location)}}
 </template>
 
 <script>

@@ -6,7 +6,6 @@
         :to="item.to"
         router
         nuxt
-        :disabled="disabled(item)"
         @click="item.action ? action(item.action) : ''"
         exact)
         v-list-item-icon
@@ -16,7 +15,7 @@
     v-divider
     LanguageSelector
     v-list-item
-      p(class="package-version") v{{version}}
+      p(class="package-version") version {{version}}
 </template>
 
 <script>
@@ -27,7 +26,6 @@
   import {mapGetters} from "vuex"
   import LanguageSelector from "~/components/LanguageSelector"
   import NotificationBanner from "~/components/global/NotificationBanner"
-  import DomainMixin from "~/components/DomainMixin"
   import URLQueryMixin from "~/components/util/URLQueryMixin"
   import FixDomainMixin from "~/components/global/FixDomainMixin"
 
@@ -73,7 +71,7 @@
           other_pages = other_pages.filter(p => !show_inDev.includes(p.t_title))
         }
 
-        if(this.is_fixed_domain) {
+        if (this.is_fixed_domain) {
           // other_pages = other_pages.filter(p => !show_in_fixed_domain.includes(p.t_title))
         } else {
           other_pages = other_pages.filter(p => !show_in_fixed_domain.includes(p.t_title))
@@ -86,18 +84,14 @@
       version() {
         return pkg.version
       }
-    },
-    methods: {
-      disabled(menu_item) {
-        // for now just home eventually disabled
-        return (menu_item.t_title === 'menu.home'
-          && this.$route.name === "domain"
-          && this.is_fixed_domain === this.query_param_domain_name)
-      }
     }
   }
 </script>
 
 <style scoped>
 
+  .package-version {
+    color: rgb(109, 109, 109);
+    font-size: 14px;
+  }
 </style>

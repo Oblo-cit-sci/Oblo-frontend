@@ -2,13 +2,14 @@
   div
     div(v-if="has_applied_filters")
       h4.mb-2 {{$t("comp.filterlist.appliead_filters")}}
-      v-list(dense)
-        v-list-item(v-for="(filter, index) in applied_filters" :key="index")
-          v-list-item-title {{$t(filter.t_label)}}:&nbsp;{{filter.text}}
-          v-btn(icon @click="edit_filter(index)")
-            v-icon mdi-filter
-          v-btn(icon @click="remove_filter(index)" :disabled="not_removable(filter)")
-            v-icon mdi-window-close
+      v-list.py-0(dense)
+        v-scroll-x-transition(group)
+          v-list-item(v-for="(filter, index) in applied_filters" :key="index")
+              v-list-item-title {{$t(filter.t_label)}}:&nbsp;{{filter.text}}
+              v-btn(icon @click="edit_filter(index)" :disabled="not_editable(filter)")
+                v-icon mdi-filter
+              v-btn(icon @click="remove_filter(index)" :disabled="not_removable(filter)")
+                v-icon mdi-window-close
     v-menu
       template(v-slot:activator="{ on: menu }")
         v-btn.mt-4(v-on="{...menu}" :disabled="no_available_filters" ) {{$t("comp.filterlist.btn_add_filter")}}
@@ -18,11 +19,12 @@
           :key="filter.name"
           @click="create_filter(filter.name)")
           v-list-item-title {{available_filter_label(filter)}}
-    v-btn.mt-4(v-if="filter_changed" :color="filter_changed ? 'success' : ''" @click="$emit('search')") {{$t('w.search')}}
+    <!--    v-btn.mt-4(v-if="filter_changed" :color="filter_changed ? 'success' : ''" @click="$emit('search')") {{$t('w.search')}}-->
     AspectDialog(
       :dialog_open.sync="dialog_open"
       :show_aspect="active_filter !== null"
       :aspect="$_.get(active_filter, 'aspect')"
+      :conditionals="value"
       mode="edit"
       :ext_value="$_.get(active_filter, 'name') ? filter_value($_.get(active_filter, 'name')) : null"
       @update:ext_value="set_filter_value(active_filter.name, $event)")
@@ -84,7 +86,13 @@
         this.dialog_open = true
       },
       not_removable(filter) {
-        return filter.name === "template"
+        if(filter.name === "template") {
+            return true
+        }
+         return !this.$_.get(filter, "edit.removable", true)
+      },
+      not_editable(filter) {
+        return !this.$_.get(filter, "edit.editable", true)
       },
       set_filter_value(name, value) {
         const new_value = recursive_unpack2(this.$_.cloneDeep(value))
@@ -106,6 +114,7 @@
           })
         }
         this.$emit("input", new_filters)
+        console.log("new filtervalue")
         this.dialog_open = false
       },
       edit_filter(index) {

@@ -1,10 +1,14 @@
 import {initialize, reload_storage} from "~/lib/client"
 import {mapGetters} from "vuex"
-import {APP_DB_LOADED} from "~/store/app"
+import {APP_CONNECTED, APP_CONNECTING, APP_DB_LOADED, APP_INITIALIZED} from "~/store/app"
 import {dev_env} from "~/lib/util"
+import FixDomainMixin from "~/components/global/FixDomainMixin"
+import {PAGE_INDEX} from "~/lib/pages"
+import {default_settings} from "~/lib/settings"
 
 export default {
   name: "InitializationMixin",
+  mixins: [FixDomainMixin],
   created() {
     if (!this.db_loaded)
       reload_storage(this.$store, this.$localForage)
@@ -17,20 +21,40 @@ export default {
   },
   data() {
     return {
-      privacy_sheet_open: false
+      // privacy_sheet_open: false
     }
   },
   computed: {
+    ...mapGetters([APP_CONNECTING]),
     ...mapGetters({
-      db_loaded: APP_DB_LOADED
-    })
+      db_loaded: APP_DB_LOADED,
+      connected: APP_CONNECTED,
+      initialized: APP_INITIALIZED
+    }),
   },
   watch: {
     db_loaded(val) {
       // console.log("db loaded", this.initialized)
       if (val) {
         // console.log("layout. initializing")
-        initialize(this.$api, this.$store, this.$route, this.$router, this.$localForage)
+        initialize(this.$api, this.$store, this.$route, this.$router, this.$localForage).then(() => {
+          this.$store.dispatch(APP_CONNECTED)
+          // console.log(this.has_multiple_domains, this.get_one_domain_name)
+          if (!this.has_multiple_domains) {
+            this.fix_domain(this.get_one_domain_name)
+            // todo, maybe this should be replaces by something in the store
+            // similar the change of the home route...
+            default_settings.fixed_domain = this.get_one_domain_name
+            if (this.$route.name === PAGE_INDEX) {
+              this.to_domain(this.$store.getters.domains[0].name, true)
+              setTimeout(() => {
+                this.$store.commit(APP_INITIALIZED)
+              }, 80)
+            } else {
+              this.$store.commit(APP_INITIALIZED)
+            }
+          }
+        })
       }
     }
   }

@@ -2,13 +2,14 @@
   #pwlist-container(:style="list_style")
     v-row.col-sm-12#pwlist-top(v-if="results_received")
       div {{$tc("comp.previewlist.num_entries", num_entries)}}
-    v-row.mx-1(v-for="uuid in visible_entries"
-      :key="uuid")
-      v-col(cols=12)
-        Entrypreview(
-          :passed_uuid="uuid"
-          v-bind="preview_options"
-          @delete_e="delete_e($event)")
+    #pwlist-wrapper
+      v-row.mx-1(v-for="uuid in visible_entries"
+        :key="uuid")
+        v-col(cols=12)
+          Entrypreview(
+            :passed_uuid="uuid"
+            v-bind="preview_options"
+            @delete_e="delete_e($event)")
     v-row(v-if="requesting_entries && !next_loading")
       v-col(offset="5" cols=2)
         v-progress-circular(indeterminate center size="35" color="success")
@@ -45,14 +46,14 @@
       return {
         page: 1,
         deleted: [],
-        start_y: 0
+        start_y : 0
       }
     },
     beforeUpdate() {
       this.deleted = this.$_.filter(this.deleted, uuid => !this.$store.getters[ENTRIES_HAS_ENTRY](uuid))
     },
     mounted() {
-      this.start_y = document.getElementById('pwlist-container').offsetTop
+      this.update_start_y()
     },
     computed: {
       on_overflow_page() {
@@ -62,7 +63,7 @@
         // console.log(window.innerHeight, this.start_y)
         return {
           'overflow-y': this.on_overflow_page ? 'auto' : 'visible',
-          // 'max-height': window.innerHeight - this.start_y
+          'max-height': window.innerHeight - this.start_y + "px"
         }
       },
       results_received() {
@@ -110,11 +111,21 @@
       },
       request_more() {
         this.$emit("request_more")
+      },
+      update_start_y() {
+        const elem = document.getElementById('pwlist-wrapper')
+        if (elem && this.results_received) {
+          this.start_y = elem.offsetTop + 90
+        } else {
+          this.start_y = 0
+        }
       }
     },
     watch: {
+      visible_entries() {
+        this.update_start_y()
+      },
       page(page) {
-        console.log(this.on_overflow_page)
         const options = {
           duration: 1200,
           easing: "easeOutCubic",
@@ -138,7 +149,6 @@
 
   #pwlist-container {
     width: 100%;
-    /*max-height: 600px;*/
   }
 
 </style>

@@ -8,7 +8,7 @@
           :aspect="aspect"
           :ext_value.sync="aspect.value"
           mode="edit")
-    div(v-if="is_fixed_domain")
+    div(v-if="is_fixed_domain && has_multiple_domains")
       h3 Fixed domain
       div
         span You are only seeing the domain &nbsp;

@@ -23,6 +23,9 @@ export default {
     aspect_loc: { // when not passed on, it is some kind of anonymous aspect, probably defined on that page (e.g. register)
       type: Array, // for composites and lists pass it down...
     },
+    conditionals: {
+      type: [Array,Object]
+    },
     extra: {
       type: Object,
       default: () => {

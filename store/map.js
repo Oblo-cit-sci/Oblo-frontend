@@ -14,7 +14,6 @@ export const MAP_GOTO_DONE = "map/goto_done"
 
 export const state = () => ({
   entries_loaded: false,
-  loading_entries: false, // this is for a bug. when creating an entry and going back to domain, the PAGE is created twice?!
   entries: {},
   goto_location: null,
   last_goto_location: null,
@@ -56,9 +55,6 @@ export const mutations = {
   set_entries_loaded(state, loaded) {
     state.entries_loaded = loaded
   },
-  set_loading_entries(state, loading) {
-    state.loading_entries = loading
-  },
   set_filter_config(state, filter_config) {
     state.filter_config = filter_config
   }
@@ -67,9 +63,6 @@ export const mutations = {
 export const getters = {
   entries_loaded(state) {
     return state.entries_loaded
-  },
-  loading_entries(state) {
-    return state.loading_entries
   },
   entries(state) {
     return (domain) => {
@@ -102,6 +95,27 @@ export const getters = {
   },
   get_filter_config(state) {
     return state.filter_config
+  },
+  get_by_uuids(state) {
+    return (uuids) => {
+      let map_entries = []
+      for (let domain_entries_features of Object.values(state.entries)) {
+        map_entries = map_entries.concat(ld.filter(domain_entries_features.features, e => uuids.includes(e.properties.uuid)))
+      }
+      return map_entries
+    }
+  },
+  get_by_uuid(state) { // not used atm
+    return (uuid) => {
+      for (let domain_entries_features of Object.values(state.entries)) {
+          console.log(domain_entries_features.features)
+          const feature = ld.find(domain_entries_features.features, e => e.properties.uuid === uuid)
+          if(feature)
+            return feature
+      }
+      console.log("warning entry_feature for uuid not found")
+      return null
+    }
   }
 }
 
@@ -109,7 +123,6 @@ export const actions = {
   // filters entries that have a location set
   add_entries({commit}, {domain, entries, ts}) {
     commit("set_entries_loaded", true)
-    commit("set_loading_entries", false)
     commit("add_entries", {domain, entries})
     commit("set_searchtime", ts)
   },
@@ -122,4 +135,10 @@ export const actions = {
     context.commit("_last_goto_location", null)
     context.commit("goto_location", null)
   }
+  // update_entry_feature(context, entry) {
+  //   console.log(context)
+  //   const entries_features = ld.get(context.state.entries, entry.domain).features
+  //   const feature = context.getters.get_by_uuid(entry.uuid)
+  //   console.log(feature)
+  // }
 }

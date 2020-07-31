@@ -57,7 +57,7 @@ export default {
         uuid: uuidv4(),
         version: 0,
         local: { // local stuff that wont go to the server
-          dirty: false, // todo can go?
+          dirty: false // todo can go?
         },
         location: location,
         actors: actors,

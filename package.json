@@ -1,6 +1,6 @@
 {
   "name": "opentek",
-  "version": "0.7.11",
+  "version": "0.7.12",
   "description": "Sharing Traditional Ecological Knowledge related to biodiversity and local indicators of climate change impacts.",
   "author": "Ramin S",
   "private": true,
@@ -26,7 +26,7 @@
     ]
   },
   "dependencies": {
-    "@nuxtjs/axios": "^5.10.3",
+    "@nuxtjs/axios": "^5.12.0",
     "@nuxtjs/font-awesome": "^1.0.4",
     "@nuxtjs/localforage": "^1.1.0",
     "@nuxtjs/pwa": "^2.6.0",
@@ -35,16 +35,18 @@
     "fast-levenshtein": "^2.0.6",
     "file-saver": "^2.0.2",
     "fs": "0.0.1-security",
-    "localforage": "^1.7.3",
-    "mapbox-gl": "^1.10.1",
+    "localforage": "^1.7.4",
+    "mapbox-gl": "^1.11.1",
     "mapbox-gl-vue": "^2.0.4",
     "mustache": "^4.0.1",
-    "nuxt": "^2.12.2",
+    "nuxt": "^2.13.3",
     "qs": "^6.9.4",
     "update": "^0.7.4",
     "uuid": "^3.4.0",
     "vue-i18n": "^8.18.2",
-    "vuelidate": "^0.7.5"
+    "vuelidate": "^0.7.5",
+    "vuetify": "^2.3.4",
+    "vuetify-loader": "^1.6.0"
   },
   "devDependencies": {
     "@mdi/font": "^4.9.95",

@@ -1,7 +1,7 @@
 <template lang="pug">
   div.pa-0(v-if="view_clearlist")
     v-list.pa-0(
-      :three-line="has_some_description"
+      :two-line="has_some_description"
       dense
       class="singleselect_list"
     )
@@ -9,12 +9,13 @@
         v-subheader(v-if="is_category(item)") {{item.text}}
         v-list-item(v-else
           @click="select(item)"
+          :disabled="disabled_item(item.value)"
           :class="{ marked: marked(item.value) }"
           class="single_select")
           <!--          v-list-item-avatar(v-if="" tile)  TODO HAS SOME IMAGE...?-->
           <!--            v-img(:src="icon_path(item)" contain)-->
-          v-list-item-icon.pr-2(v-if="has_some_icons")
-            v-img(:src="icon_path(item)"  contain max-height="40")
+          v-list-item-avatar(v-if="has_some_icons")
+            v-img(:src="icon_path(item)"  contain max-height="25")
           v-list-item-content
             v-list-item-title {{item.text}}
             v-list-item-subtitle {{item.description}}
@@ -68,6 +69,10 @@
     props: {
       options: Array,
       selection: [Object, String],
+      disabled_options: {
+        type:Array,
+        default: () => []
+      },
       highlight: {
         type: Boolean,
         default: true
@@ -192,6 +197,12 @@
             this.selected_item = this.selection;
           }
         }
+      },
+      disabled_item(item_value) {
+        if(!this.disabled_options) {
+          return false
+        }
+        return this.disabled_options.includes(item_value)
       }
     },
     computed: {

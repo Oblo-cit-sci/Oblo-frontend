@@ -22,6 +22,9 @@ class APIWrapper {
     this.entry_baseURL = this.api_baseURL + "/entry"
     this.entries_baseURL = this.api_baseURL + "/entries"
     this.static_baseURL = this.axios_baseURL + "/static"
+
+    // todo THE NEW WAY, refactor all methods like this... :)
+    this.entries = new Entries(this)
   }
 
   is_initialized() {
@@ -186,6 +189,10 @@ class APIWrapper {
     return this.axios.delete(`${this.entry_baseURL}/${uuid}`)
   }
 
+  entry__$uuid_meta(uuid) {
+    return this.axios.get(`${this.entry_baseURL}/${uuid}/meta`)
+  }
+
   post_entry__$uuid__attachment__$file_uuid(uuid, file_uuid, formData) {
     return this.axios.post(`${this.entry_baseURL}/${uuid}/attachment/${file_uuid}`,
       formData, {
@@ -264,6 +271,45 @@ class APIWrapper {
   }
 }
 
+class QueryBase {
+
+  constructor(api_wrapper, base_sub_path) {
+    this.axios = api_wrapper.axios
+    this.base = api_wrapper.api_baseURL + base_sub_path
+  }
+
+  post(sub_path, body, params) {
+    return this.axios.post(`${this.base}/${sub_path}`, body, params)
+  }
+}
+
+class Entries extends QueryBase {
+
+  constructor(api_wrapper) {
+    super(api_wrapper, "/entries")
+  }
+
+  async get_uuids(search_query) {
+    return this.post("get_uuids", search_query)
+  }
+
+  async by_uuids(uuids, fields, limit=40, offset = 0) {
+    const body = {
+      uuid_list: {
+        uuids: uuids
+      }
+    }
+    if (fields) {
+      body.fields = fields
+    }
+    return this.post("by_uuids", body, {
+      params: {
+        limit,
+        offset
+      }
+    })
+  }
+}
 
 // console.log(Nuxt)
 Vue.prototype.$api = new APIWrapper()

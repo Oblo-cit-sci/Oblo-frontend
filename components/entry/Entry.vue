@@ -11,9 +11,10 @@
       v-col(v-if="has_parent")
         span This entry is part of:&nbsp
         a(@click="to_parent(true, mode)") {{parent_title}}
-    div(v-if="is_view_mode")
+    .ml-3(v-if="is_view_mode")
       v-row(:style="{'text-align': 'right', 'font-size':'80%'}")
-       span.my-auto {{$t("comp.entrypreview.created")}} {{entry_date}} {{is_draft ? $t('comp_entrypreview.draft') : ""}}
+       span.my-auto {{$t("comp.entrypreview.created")}} {{entry_date}}
+       span.ml-1.blue--text {{is_draft ? $t('comp.entrypreview.draft') : ""}}
       v-row
         MetaChips(:meta_aspects="meta_aspects")
       v-row
@@ -40,14 +41,14 @@
           header_type="h2"
           :description="page_info.description"
           :mode="mode")
-    br
     v-row(v-for="(aspect) in shown_aspects" :key="aspect.name")
-      v-col(alignSelf="stretch" :cols="base_cols")
-        Aspect(
-          :aspect="aspect"
-          :aspect_loc="aspect_locs[aspect.name]"
-          :extra="aspect_extras"
-          :mode="mode")
+      v-col(alignSelf="stretch" :cols="base_cols" :style="{padding:0}")
+        v-scroll-y-transition
+          Aspect(
+            :aspect="aspect"
+            :aspect_loc="aspect_locs[aspect.name]"
+            :extra="aspect_extras"
+            :mode="mode")
     div(v-if="is_first_page && is_edit_mode")
       v-row
         v-col(:cols="base_cols")
@@ -59,7 +60,7 @@
           Aspect(:aspect="asp_privacy()" :aspect_loc="aspect_locs[asp_privacy().name]" :mode="license_privacy_mode")
       v-row(v-if="is_creator")
         v-col.pb-0(alignSelf="stretch" :cols="base_cols")
-          Aspect(:aspect="asp_entry_roles()" :aspect_loc="aspect_locs[asp_entry_roles().name]" :extra="{entry_is_private: entry.privacy==='private'}")
+          Aspect(:aspect="asp_entry_roles()" :mode="entry_roles_mode" :aspect_loc="aspect_locs[asp_entry_roles().name]" :extra="{entry_is_private: entry.privacy==='private'}")
       v-row
         v-col(alignSelf="stretch" :cols="base_cols")
           v-divider
@@ -162,6 +163,13 @@
           return EDIT
         }
       },
+      entry_roles_mode() {
+        if(this.is_creator) {
+          return EDIT
+        } else {
+          return VIEW
+        }
+      },
       // maybe also consider:
       // https://github.com/edisdev/download-json-data/blob/develop/src/components/Download.vue
       page_info() {
@@ -182,6 +190,9 @@
         return this.entry.image
       },
       is_dirty() {
+        if(this.is_draft) {
+          return false
+        }
         const edit_entry = this.$_.omit(this.$store.getters[ENTRIES_GET_EDIT](), ["local"])
         const original_entry = this.$_.omit(this.$store.getters[ENTRIES_GET_ENTRY](this.uuid), ["local"])
         // for (let k in edit_entry) {

@@ -136,8 +136,8 @@
         if (!raw_value) {
           return [MISSING, ""]
         }
-        if (raw_value === a_default) {
-          return MISSING
+        if (this.$_.isEqual(raw_value,a_default)) {
+          return [MISSING, ""]
         } else if ([LIST, ENTRYLIST].includes(aspect.type)) {
           if (aspect.attr.min !== null && raw_value.length < aspect.attr.min) {
             return [LIST_NOT_ENOUGH, ""]

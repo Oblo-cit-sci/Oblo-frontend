@@ -29,6 +29,7 @@ if (process.env.NODE_ENV === "development" || process.env.SERVER === "local") {
 
 module.exports = {
   mode: 'universal',
+   telemetry: false,
 
   env: {
     NODE_ENV: process.env.NODE_ENV || true,
@@ -71,7 +72,7 @@ module.exports = {
   ],
 
   router: {
-    middleware: ['init'],
+    middleware: ['fixed_domain', 'goatcounter'],
     base: "/"
   },
 
@@ -91,7 +92,6 @@ module.exports = {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
-    '@nuxtjs/font-awesome',
     '@nuxtjs/localforage'
   ],
 

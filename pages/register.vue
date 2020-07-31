@@ -11,10 +11,16 @@
         mode="edit")
     v-checkbox(v-model="agree")
       template(v-slot:label)
-        div I agree with the &nbsp;
-          a(target="_blank" href="/about#terms_of_use" @click.stop) terms of use
+        div {{$t('register.i_agree_with')}} &nbsp;
+          a(@click="terms_dialog_open = true") {{$t('register.terms_of_use')}}
     v-btn.m-4(@click='submit' rounded large :disabled="any_invalid || submitStatus === 'PENDING'" :loading="submit_loading" color='success') {{$t('register.btn_register')}}
     v-alert(:value='errorMsg !== null' type='error' prominent) {{errorMsg}}
+    v-dialog(v-model="terms_dialog_open" :width="main_container_with")
+      v-card
+        FlexibleTextSection.pa-4.pb-1(:section="terms_of_use_section" disable_divider)
+        v-card-actions
+          v-btn(icon text @click="terms_dialog_open=false")
+            v-icon mdi-close
 </template>
 
 <script>
@@ -27,13 +33,14 @@
   import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
   import {PAGE_LOGIN} from "~/lib/pages"
   import FixDomainMixin from "~/components/global/FixDomainMixin"
-
-  let username_regex = new RegExp('^[a-z][a-z0-9_]*$');
+  import {overwrite_default_register_settings} from "~/lib/settings"
+  import FlexibleTextSection from "~/components/global/FlexibleTextSection"
+  import LayoutMixin from "~/components/global/LayoutMixin"
 
   export default {
     name: "register",
-    components: {Aspect},
-    mixins: [validationMixin, TriggerSnackbarMixin, LoginMixin, TypicalAspectMixin, FixDomainMixin],
+    components: {FlexibleTextSection, Aspect},
+    mixins: [validationMixin, TriggerSnackbarMixin, LoginMixin, TypicalAspectMixin, FixDomainMixin, LayoutMixin],
     data() {
       const password = this.asp_password()
       return {
@@ -46,20 +53,27 @@
         submitStatus: null,
         errorMsg: null,
         submit_loading: false,
-        agree: false
+        agree: false,
+        terms_dialog_open: false
       }
     },
     computed: {
       any_invalid() {
         // todo could also have  '|| !a.value'  but we should then be able to pass down the rules to the selectes
         return this.$_.some(this.aspects, (a) => a.hasOwnProperty("error") && a.error) || !this.agree
+      },
+      terms_of_use_section() {
+        const tou_section = this.$_.find(this._i18n.messages[this._i18n.locale].about, s => s.flag === 'TERMS_OF_USE')
+        // if(tou_section) {
+        return tou_section
+        // }
       }
     },
     methods: {
       // use this as a function to select/highlight a privacy from the list
       submit() {
         this.submit_loading = true
-        const settings = this.$store.getters["user/settings"]
+        const settings = Object.assign(this.$_.cloneDeep(this.$store.getters["user/settings"]), overwrite_default_register_settings)
         // todo better js!
         this.$api.post_actor({
           registered_name: this.aspects.registered_name.value,

@@ -1,10 +1,11 @@
 <template lang="pug">
   v-app
     Appbar(:show_nav_icon="false")
-    v-content
+    v-main
       v-container(v-if="initialized" id="fullContainer")
         nuxt
-    PrivacySheet(:privacy_sheet_open.sync="privacy_sheet_open")
+    GlobalSnackbar
+    PrivacySheet
 </template>
 
 <script>
@@ -13,14 +14,14 @@
   import {mapGetters} from "vuex"
   import Appbar from "~/components/global/Appbar"
   import InitializationMixin from "~/layouts/InitializationMixin"
-  import {dev_env} from "~/lib/util"
   import NotificationBanner from "~/components/global/NotificationBanner"
   import GlobalSnackbar from "~/components/global/GlobalSnackbar"
   import PrivacySheet from "~/components/global/PrivacySheet"
+  import NavBaseMixin from "~/components/NavBaseMixin"
 
   export default {
     name: "new_map_layout",
-    mixins: [InitializationMixin],
+    mixins: [InitializationMixin, NavBaseMixin],
     components: {PrivacySheet, GlobalSnackbar, NotificationBanner, Appbar},
     props: {},
     computed: {
@@ -30,8 +31,7 @@
         connected: APP_CONNECTED,
         initialized: APP_INITIALIZED,
       })
-    },
-    methods: {}
+    }
   }
 </script>
 

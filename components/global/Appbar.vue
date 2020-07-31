@@ -1,10 +1,10 @@
 <template lang="pug">
-  v-app-bar(true app elevation="2" )
-    v-app-bar-nav-icon(v-if="show_nav_icon" v-show="initialized" @click="switch_menu_open")
+  v-app-bar(true app elevation="2" :style="{'z-index':7}")
+    v-app-bar-nav-icon.rounded-circle(color="blue" :disabled="!show_nav_icon" v-show="initialized" @click="switch_menu_open" :style="nav_icon_style")
     v-toolbar-title.pa-0(v-if="initialized")
       v-list-item.pl-0
         v-list-item-avatar.header-avatar(@click="to_set_domain" width="50" height="auto" tile)
-          v-img(contain :src="domain_icon" )
+          v-img(contain :src="domain_icon")
         v-list-item-content
           v-list-item-title.headline
             span {{domain_title}}
@@ -18,6 +18,8 @@
   import {DOMAIN, DOMAIN_BY_NAME} from "~/store"
   import {HOME} from "~/lib/consts"
   import NavBaseMixin from "~/components/NavBaseMixin"
+
+  // z-index to be above the loading overlay
 
   export default {
     name: "Appbar",
@@ -39,10 +41,15 @@
       ...mapGetters({
         connected: APP_CONNECTED,
         initialized: APP_INITIALIZED,
-        domain_data: DOMAIN_BY_NAME
+        domain_data: DOMAIN_BY_NAME,
       }),
+      nav_icon_style() {
+        return {
+          'visibility': this.show_nav_icon ? "inherit" : "hidden"
+        }
+      },
       reduce_when_small() {
-        if(this.$vuetify.breakpoint.smAndDown) {
+        if (this.$vuetify.breakpoint.smAndDown) {
           return {"font-size": "80%"}
         } else {
           return {"font-size": "90%"}
@@ -56,7 +63,7 @@
         return this.$api.static_url_$domain_name_icon(this.domain.name || this.domain.value)
       },
       domain_headline() {
-        if(this.domain.name)
+        if (this.domain.name)
           return this.domain_data(this.domain.name).page_index.title
       }
     },
@@ -67,5 +74,9 @@
 </script>
 
 <style scoped>
+
+  .header-avatar {
+    cursor: pointer;
+  }
 
 </style>

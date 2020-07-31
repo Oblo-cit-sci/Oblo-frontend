@@ -1,7 +1,7 @@
 <template lang="pug">
   .treeselect
-    div
-      v-btn(icon small @click="$emit('selected', null)")
+    div(comment="only in dialog")
+      v-btn(icon small @click="close")
         v-icon mdi-close
     v-list(v-if="has_selection")
       div.ml-3 Current selection
@@ -10,11 +10,11 @@
           v-list-item-title {{levelname(index)}}: {{node.text}} {{extra_text(node)}}
         v-list-item-action
           v-btn(icon @click="remove(index)")
-            v-icon mdi-close-circle-outline
+            v-icon mdi-step-backward
     v-divider.mb-1(v-if="has_both()")
     Title_Description.ml-3(v-if="has_levels" :title="act_levelname" :description="act_level_description" mode="edit")
     TextShort(:aspect="{'name':'nooo', 'type':'str', 'attr': {}}" mvalue="{value:'cool'}")
-    div(v-if="has_options")
+    .px-3(v-if="has_options")
       SingleSelect.pb-1(v-if="edit_mode_list" :options="act_options" v-on:selection="select($event)" :select_sync="false" :highlight="false")
       LargeSelectList(v-if="edit_mode_large_list" :options="act_options" v-on:selection="select($event)" :select_sync="false" :highlight="false" :data_source="data_source")
       SelectGrid(v-if="edit_mode_matrix" :options="act_options" v-on:selection="select($event)" :data_source="data_source")
@@ -88,8 +88,8 @@
       },
       act_options() {
         let options = this.tree.root.children
-        console.log("opt", options)
-        console.log(this.value)
+        // console.log("opt", options)
+        // console.log(this.value)
         for (let val of this.value) {
           // console.log("a val", val)
           options = options.find(o => o.name === val.value).children || []
@@ -188,7 +188,13 @@
     },
     methods: {
       select(value) {
-        this.$emit("input", this.$_.concat(this.value || [], [value]))
+        if(value)
+          this.$emit("input", this.$_.concat(this.value || [], [value]))
+        else // clicked clear on select
+          this.$emit("input", this.value)
+      },
+      clear() {
+        this.$emit('clear')
       },
       extra_text(node) {
         return node.extra_value ? ' / ' + unpack(node.extra_value.value) : ''
@@ -220,6 +226,13 @@
       level_edit_mode(level) {
         return this.$_.get(this.attr, `edit[${level}]`, "list")
       },
+      close() {
+        if(this.done_available) {
+          this.done()
+        } else {
+          this.clear()
+        }
+      }
     }
   }
 </script>

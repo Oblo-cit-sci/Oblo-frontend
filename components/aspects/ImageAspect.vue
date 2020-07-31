@@ -3,8 +3,8 @@
     v-row
       v-col(v-for="(img_data, index) in images" :key="index" :cols="num_cols")
         v-img.a_image(:src="get_image_data(index)" @click="open_image(index)" max-height="300" contain @error="image_error($event, index)")
-          .header_image_wrapper(v-if="cover_image_index===index")
-            div.ml-9.font-weight-light cover image
+          .header_image_wrapper(v-if="cover_image_index===index && is_editable_mode")
+            div.ml-9.font-weight-light {{$t('comp.image_asp.cover_image')}}
       v-col(v-if="readOnly && !has_images")
         div {{$t('comp.image_asp.no_images')}}
     LoadFileButton(v-if="is_edit_mode"
@@ -117,20 +117,23 @@
         const file_uuid = uuidv4()
         this.$store.commit(FILES_ADD_FILE, {uuid: file_uuid, meta: image_result.meta, data: image_result.data})
         this.update_value(this.$_.concat(this.value, [{
-          title: "",
-          description: "",
+          // title: "",
+          // description: "",
           file_uuid: file_uuid,
           url: null,
           date: new Date(),
-          license: "No license",
+          // license: "No license",
           meta: image_result.meta
         }]))
       },
       image_error(error, index) {
-        console.log("err", error)
-        // console.log("error", index)
         this.delete_image(index)
-        this.error_snackbar("Image could not be loaded")
+        if(this.get_entry().status === DRAFT) {
+          this.ok_snackbar(this.$t("comp.image_asp.not_found_draft"))
+        } else {
+          console.log("err", error)
+          this.error_snackbar(this.$t("comp.image_asp.not_found"))
+        }
       },
       open_image(index) {
         this.selected_image_index = index

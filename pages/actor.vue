@@ -33,10 +33,12 @@
   import {USER_GLOBAL_ROLE} from "~/store/user"
   import {ADMIN} from "~/lib/consts"
   import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
+  import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
+  import NavBaseMixin from "~/components/NavBaseMixin"
 
   export default {
     name: "actor",
-    mixins: [LayoutMixin, TypicalAspectMixin],
+    mixins: [LayoutMixin, TypicalAspectMixin, TriggerSnackbarMixin, NavBaseMixin],
     components: {
       GlobalRoleChip,
       ActorAdminEdit,
@@ -63,7 +65,8 @@
         this.user_loaded = true
         this.waiting = false
       }).catch(err => {
-        console.log(err)
+        this.err_error_snackbar(err)
+        this.$router.back()
       })
     },
     computed: {

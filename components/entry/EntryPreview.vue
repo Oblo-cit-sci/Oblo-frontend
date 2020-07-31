@@ -27,13 +27,12 @@
               v-list-item-icon
                 v-icon(color="orange") mdi-alert-outline
               v-list-item-content {{$t("comp.entrypreview.outdated")}}
-        v-col(v-if="show_image" cols=4 class="col-md-4 col-sm-12 entry-image")
-          div.float-md-right.float-sm-left.entry-display-size.mr-3
-            v-avatar(tile class="entry-image-size")
-              v-img(
-                contain
-                :src="entry_image"
-                height="200")
+        v-col(v-if="show_image" cols=4 class="col-md-4 col-sm-12 entry-image" align="start")
+          .float-md-right.float-sm-left.entry-display-size.mr-3
+            v-img(class="entry-image-size"
+              contain
+              :src="entry_image"
+              height="200")
     div.ml-4.mr-2
       Aspect(v-for="aspect in shown_aspects"
         :key="aspect.name"
@@ -58,7 +57,7 @@
 <script>
 
   import EntryNavMixin from "../EntryNavMixin";
-  import {printDate, privacy_color, privacy_icon, review_color} from "~/lib/util"
+  import {privacy_color, privacy_icon, review_color} from "~/lib/util"
   import {EDIT, ENTRY, REVIEW, VIEW} from "~/lib/consts"
   import MetaChips from "./MetaChips"
   import Taglist from "../global/Taglist"
@@ -114,9 +113,7 @@
         type: Boolean,
         default: true
       },
-      show_entrytype_title: {
-        type: Boolean
-      },
+      show_entrytype_title: Boolean,
       include_domain_tag: Boolean,
       show_title_action: Boolean,
       prevent_view_page_change: Boolean,

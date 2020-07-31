@@ -175,7 +175,7 @@ export const mutations = {
     state.entries.get(uuid).location = location
   },
   update_tags(state, {uuid, tags}) {
-    console.log("update tags", tags)
+    // console.log("update tags", tags)
     state.entries.get(uuid).tags = tags
   },
   update_image(state, image_url) {
@@ -439,6 +439,11 @@ export const getters = {
       return Array.from(state.entries.values()).filter(e => e.status === "draft" && e.domain === domain).map(e => e.uuid)
     }
   },
+  domain_drafts(state, getters) {
+    return (domain) => {
+      return Array.from(state.entries.values()).filter(e => e.status === "draft" && e.domain === domain)
+    }
+  },
   entry_tags(state, getters) {
     return (uuid) => {
       const entry = getters.get_entry(uuid)
@@ -504,7 +509,6 @@ export const actions = {
     // console.log("tags")
     // debugger
     const tags = context.getters.entry_tags(uuid)
-    console.log("tags", tags)
     if (tags) {
       context.commit(UPDATE_TAGS, {uuid, tags: tags})
     }

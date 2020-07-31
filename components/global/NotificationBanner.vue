@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-banner(v-if="show_profile_complete_banner" sticky single-line :style="{'z-index':5}" color="info" height="60")
+  v-banner.notification_banner(v-if="show_profile_complete_banner" sticky single-line color="info" height="60")
     nuxt-link(:style="{'color':'white'}" :to="link") {{missing_text}}
     v-btn(icon nuxt :to="link" color="white" )
       v-icon mdi-arrow-right

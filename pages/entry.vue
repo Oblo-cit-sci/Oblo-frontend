@@ -25,7 +25,7 @@
       this.$store.dispatch(ENTRIES_SET_EDIT, this.uuid)
     },
     beforeRouteEnter(to, from, next) {
-      console.log("entry enter.. to", to)
+      // console.log("entry enter.. to", to)
       if (!to.query.uuid) {
         next(false)
       } else {
@@ -47,7 +47,7 @@
       // }
     },
     beforeRouteLeave(to, from, next) {
-      console.log("entry leave")
+      // console.log("entry leave")
       // BEWARE, this is not called when navigating from one entry to another
       this.persist_entries()
       next()

@@ -8,6 +8,7 @@
           :aspect="aspect"
           :mode="mode"
           :ext_value="ext_value"
+          :conditionals="conditionals"
           @update:ext_value="update_value($event)"
           @update:error="error = $event")
       div
@@ -37,12 +38,15 @@
         default: EDIT
       },
       ext_value: {
-        type: [Object, String, Number, Array]
+        type: [Object, String, Number, Array, Boolean]
+      },
+      conditionals: {
+        type: [Array, Object]
       }
     },
     data() {
       return {
-        int_value: this.ext_value,
+        int_value: null,
         error: false
       }
     },
@@ -57,6 +61,9 @@
           return this.main_container_with
       }
     },
+    created() {
+      this.int_value = this.ext_value
+    },
     methods: {
       update_value(value) {
         if (!this.done_button) {
@@ -69,6 +76,7 @@
         this.$emit('update:dialog_open', false)
       },
       done() {
+        console.log("ASpDia-done",this.int_value)
         this.$emit("update:ext_value", this.int_value)
         this.$emit('update:dialog_open', false)
       }
