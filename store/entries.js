@@ -439,6 +439,11 @@ export const getters = {
       return Array.from(state.entries.values()).filter(e => e.status === "draft" && e.domain === domain).map(e => e.uuid)
     }
   },
+  domain_drafts(state, getters) {
+    return (domain) => {
+      return Array.from(state.entries.values()).filter(e => e.status === "draft" && e.domain === domain)
+    }
+  },
   entry_tags(state, getters) {
     return (uuid) => {
       const entry = getters.get_entry(uuid)

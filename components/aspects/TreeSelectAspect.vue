@@ -188,5 +188,7 @@ export default {
 
 <style scoped>
 
-
+.pointer:hover {
+  cursor: pointer;
+}
 </style>
