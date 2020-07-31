@@ -1,7 +1,7 @@
 <template lang="pug">
   v-container(fluid)
     v-row(wrap justify-start)
-      v-col(cols="12")
+      v-col.py-0(cols="12")
         v-text-field(
           v-model="keyword"
           :label="$t('comp.search.txt_field_label')"
@@ -13,14 +13,14 @@
           clearable
           :loading="searching ? 'success' : false")
     v-row(v-if="show_filter")
-      v-col(cols="12")
+      v-col.pt-0(cols="12")
         Filterlist(
           :filter_options="filterlist_options"
           v-model="act_config"
           :filter_changed="filter_changed"
           @search="getEntries")
     v-row(v-if="prepend_search")
-      v-col(offset="5" cols=2)
+      v-col.py-0(offset="5" cols=2)
         v-progress-circular(indeterminate center size="35" color="success")
     EntryPreviewList(v-if="show_results && !prepend_search"
       :entries="filtered_entries"

@@ -2,7 +2,7 @@
   div
     div(v-if="has_applied_filters")
       h4.mb-2 {{$t("comp.filterlist.appliead_filters")}}
-      v-list(dense)
+      v-list.py-0(dense)
         v-scroll-x-transition(group)
           v-list-item(v-for="(filter, index) in applied_filters" :key="index")
               v-list-item-title {{$t(filter.t_label)}}:&nbsp;{{filter.text}}

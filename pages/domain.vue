@@ -25,7 +25,6 @@
   import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
   import {object_list2options} from "~/lib/options"
   import LayoutMixin from "~/components/global/LayoutMixin"
-  import {get_tags_filter_options} from "~/lib/codes"
   import MapIncludeMixin from "~/components/map/MapIncludeMixin"
   import MapWrapper from "~/components/map/MapWrapper"
   import {dev_env} from "~/lib/util"
@@ -78,15 +77,6 @@
       next()
     },
     computed: {
-      filters() {
-        // todo I think depracated since it comes in the domainmenu
-        const template_filter_options = Object.assign({}, entrytype_filter_options)
-        template_filter_options.aspect.items = object_list2options(
-          this.$store.getters[TEMPLATES_OF_DOMAIN](this.domain_name), "title", "slug", true)
-
-        const tags_filter_options = get_tags_filter_options(this.$store, this.domain_name)
-        return [template_filter_options, tags_filter_options]
-      }
     },
     methods: {
       create_entry_or_open_dialog(template_slug = null) {
