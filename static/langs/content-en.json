@@ -227,7 +227,9 @@
     },
     "image_asp": {
       "no_images": "No images",
-      "cover_image": "cover image"
+      "cover_image": "cover image",
+      "not_found": "Image could not be loaded",
+      "not_found_draft": "Image has been removed"
     },
     "entry_validation": {
       "h1": "Validation",

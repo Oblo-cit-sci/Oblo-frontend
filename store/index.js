@@ -38,7 +38,7 @@ export const SNACKBAR_TRIGGER = "snackbar_trigger"
 export const state = () => ({
   // comes by init
   codes: {},
-  snackbar: {message: "", status: "ok", trigger: false},
+  snackbar: {message: "", status: true, trigger: false},
   draft_numbers: {},
   domains: [],
   domain: {
