@@ -10,7 +10,7 @@
             :passed_uuid="uuid"
             v-bind="preview_options"
             @delete_e="delete_e($event)")
-    v-row(v-if="requesting_entries && !next_loading")
+    v-row.mx-0(v-if="requesting_entries && !next_loading")
       v-col(offset="5" cols=2)
         v-progress-circular(indeterminate center size="35" color="success")
     v-row.mx-0.px-4(v-if="has_entries")
