@@ -39,7 +39,7 @@
 
 import {mapGetters, mapMutations} from "vuex"
 import EntryPreviewList from "../entry/EntryPreviewList"
-import {debounced_search} from "~/lib/client"
+import {debounced_search, search_entries} from "~/lib/client"
 import FilterSelect from "../FilterSelect";
 import FilterMixin from "../FilterMixin";
 import NavBaseMixin from "../NavBaseMixin";
@@ -126,10 +126,10 @@ export default {
       // this.prepend_search = true
       this.clear()
       this.$store.commit(SEARCH_SET_ROUTE, this_route_data)
-      this.getEntries()
+      this.getEntries(false, false)
     } else {
       this.prepend_search = true
-      this.getEntries(true)
+      this.getEntries(true, false)
     }
     // if (this.init_clear) {
     //   this.clear()
@@ -185,8 +185,21 @@ export default {
         }
       }
 
-      // console.log("new config")
-      // console.log(new_config)
+      console.log("new config")
+      console.log(new_config)
+
+      // check if a prominent filter changed: // inidicated by source_name (domain).
+      // if yes we debounce, because there could be more clicked
+      let prominent_filter_changed = false
+      for(let changed_prominent_filter of new_config.filter(cf => this.$_.get(cf, "source_name", "regular") !== "regular")) {
+        console.log(changed_prominent_filter)
+        const prev_filter = prev_val.find(cf => cf.name === changed_prominent_filter.name && cf.source_name === changed_prominent_filter.source_name)
+        if (!this.$_.isEqual(changed_prominent_filter.value, this.$_.get(prev_filter,"value"))) {
+          prominent_filter_changed = true
+          break
+        }
+      }
+      // const prominent_changed = this.new_config
       // this.$_.mapValues(prominent_filtersMap, a => aspect_default_value(a))
 
       const included_select_uuids = val.find(f => f.name === "select_uuids")
@@ -202,7 +215,8 @@ export default {
       if (update_config) {
         this.$store.commit("search/set_act_config", new_config)
       } else {
-        this.getEntries()
+        // if a prominent filter changed debounce
+        this.getEntries(false, prominent_filter_changed)
       }
     },
     promoninent_filter_values: {
@@ -275,10 +289,10 @@ export default {
     search_keypress(keyEvent) {
       if (keyEvent.keyCode === 13) {
         this.$router.push(route_change_query(this.$route))
-        this.getEntries()
+        this.getEntries(false,true)
       }
     },
-    getEntries(before_last = false) {
+    getEntries(before_last = false, debounce = true) {
       // debugger
       const select_uuids = this.select_uuids_config()
       if (select_uuids) {
@@ -289,7 +303,11 @@ export default {
         this.$store.commit(SEARCH_SET_ROUTE, this.act_relevant_route_data())
         this.$store.commit(SEARCH_SET_SEARCHING, true)
         // const prepend = this.entries().length > 0
-        debounced_search(this.$api, this.$store, config)
+        if(debounce) {
+          debounced_search(this.$api, this.$store, config)
+        } else {
+          search_entries(this.$api, this.$store, config)
+        }
       }
       // TODO would be nice to have the debounced search work with a promise so we do not need the have done-flags in the store...
     },

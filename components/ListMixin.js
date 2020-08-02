@@ -1,4 +1,4 @@
-import {aspect_loc_str, remove_entry_loc} from "../lib/aspect";
+import {aspect_default_value, aspect_loc_str, remove_entry_loc} from "../lib/aspect";
 
 const PAGINATION_TRESH = 5
 
@@ -75,10 +75,17 @@ export default {
     }
   },
   computed: {
+    item_default_value() {
+      return aspect_default_value(this.item_aspect)
+    },
+    has_one_empty() {
+      return this.$_.some(this.value, iv => this.$_.isEqual(iv, this.item_default_value))
+    },
     item_name() {
       return this.aspect.attr.itemname || "item"
     },
     more_allowed() {
+      console.log("more? 1empty", this.has_one_empty)
       return (!this.max || this.value.length < this.max) && !this.disabled && !this.aspect.attr.ref_size && !this.has_one_empty
     },
     requieres_more_color() {

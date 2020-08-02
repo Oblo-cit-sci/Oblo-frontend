@@ -93,7 +93,6 @@
         select: false, // select... instead of button
         options: [],
         new_edit: [],
-        has_one_empty: false, // make sure that there is only 1 "empty" value, no others can be added until that is set
         // when switching between entries on one page (map), the list should collapse
         uuid_cache: null
       }
@@ -104,13 +103,12 @@
       // todo. list, are extended lists by user, not select lists
       // todo the item should not be just a string, DEPRECATED
       //console.log("object type", this.aspect.items)
+      this.item_aspect = this.aspect.items
       if (this.aspect.items.type === "composite" || this.aspect.attr.force_panels) {
-        this.item_aspect = this.aspect.items;
         this.structure = PANELS
         // get the titles // should cause having the panel titles when entry is entered
         // fill in the values of the titleAspect
       } else {
-        this.item_aspect = this.aspect.items;
         this.structure = SIMPLE;
       }
       // not sure if this would still be an extra or attr...
@@ -154,7 +152,7 @@
         }
         this.update_value(this.$_.concat(this.value, additional))
         if (n === 1) {
-          this.has_one_empty = true
+          // this.has_one_empty = true
           this.goto_delayed_last_page(this.goto_panel_id())
           setTimeout(() => {
             if (!this.is_simple) {
@@ -222,9 +220,9 @@
         console.log("aspect-action", event)
         if (event.action === "clear") {
           this.remove_value(index)
-        } else if(event.action === "value_set") {
+        }/* else if(event.action === "value_set") {
           this.has_one_empty = false
-        }
+        }*/
       },
       list_extra(index) {
         const extra = Object.assign({

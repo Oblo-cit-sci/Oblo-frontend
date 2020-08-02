@@ -108,9 +108,6 @@ export default {
       if (val) {
         this.update_value(val.value)
       }
-      if (this.extra.listitem) {
-        this.$emit("aspectAction", {action: "value_set"})
-      }
     },
     calc_options() {
       // build the given_options (all tree available) from what is passed
