@@ -34,7 +34,7 @@ export default {
       selected_option: null,
       selected_aspect: null,
       opt_values: [],
-      options: object_list2options(this.aspect.options, "name", "name", true, ["description"])
+      options: object_list2options(this.aspect.options, "label", "name", true, ["description"])
     }
   },
   created() {

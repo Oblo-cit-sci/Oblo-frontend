@@ -1,0 +1,57 @@
+{
+  "simple_string_list": [
+    {
+      "text": "a",
+      "value": "a"
+    },
+    {
+      "text": "b",
+      "value": "b"
+    }
+  ],
+  "simple_obj_list": [
+    {
+      "text": "A",
+      "value": "a"
+    },
+    {
+      "text": "B",
+      "value": "b"
+    }
+  ],
+  "simple_code_e_list": [
+    {
+      "text": "Afghanistan",
+      "value": "Afghanistan"
+    },
+    {
+      "text": "Zimbabwe",
+      "value": "Zimbabwe"
+    }
+  ],
+  "simple_code_e_tree": [
+    {
+      "text": "A",
+      "value": "A"
+    },
+    {
+      "text": "B",
+      "value": "B"
+    }
+  ],
+  "merge_lists": [
+    {
+      "text": "merged items",
+      "value": [
+        "Afghanistan",
+        "Zimbabwe",
+        "A",
+        "B"
+      ]
+    },
+    {
+      "text": "tolll",
+      "value": "tolll"
+    }
+  ]
+}

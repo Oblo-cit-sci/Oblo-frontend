@@ -97,13 +97,16 @@ export default {
       const options_aspects = []
       for (let code of filter_codes) {
         const used_in_templates = find_templates_using_code(this.$store, code.slug).map(template => template.title)
+        // maybe the options-aspect should not take the label as text
         const base_aspect = {
           name: code.slug,
           text: code.title,
+          label: code.title,
           description: "Used in: " + used_in_templates.join(", "),
           attr: {}
         }
         if (code.template.slug === "value_tree") {
+          console.log(code)
           const tag_tree = build_tag_select_tree(this.$_.cloneDeep(code))
           options_aspects.push(Object.assign(base_aspect, {
               type: TREEMULTISELECT,
@@ -122,6 +125,7 @@ export default {
         }
       }
 
+      console.log(options_aspects)
       return {
         name: "tags",
         "t_label": "w.tag",

@@ -1,0 +1,54 @@
+{
+  "simple_string_list": [
+    "a",
+    "b"
+  ],
+  "simple_obj_list": [
+    {
+      "text": "A",
+      "value": "a"
+    },
+    {
+      "text": "B",
+      "value": "b"
+    }
+  ],
+  "simple_code_e_list": "simple_list",
+  "simple_code_e_tree": "simple_tree",
+  "merge_lists": [
+    {
+      "text": "merged items",
+      "merge": [
+        "simple_list",
+        "simple_tree"
+      ]
+    },
+    "tolll"
+  ],
+  "merge_trees": [
+    {
+      "text": "Climatic",
+      "merge": [
+        {
+          "from_tree": {
+            "tree": "licci_tree",
+            "select": "children[0]",
+            "layers": [
+              0
+            ]
+          }
+        },
+        {
+          "from_tree": {
+            "tree": "general_licci_tree",
+            "select": "children[0]",
+            "layers": [
+              0
+            ]
+          }
+        }
+      ],
+      "icon": "cool"
+    }
+  ]
+}

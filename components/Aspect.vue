@@ -115,8 +115,7 @@
         return this.aspect.attr.hasOwnProperty("value")
       },
       invisible_class() {
-        //console.log(this.aspect.name "inv", this.aspect.attr.hasOwnProperty("visible") )
-        return (this.aspect.attr && this.aspect.attr.hasOwnProperty("visible")) ? (!this.aspect.attr.visible) : false
+        return !this.$_.get(this.aspect, "attr.visible", true)
       }
     },
     methods: {
