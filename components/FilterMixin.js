@@ -67,6 +67,25 @@ export default {
         conditional_value: domain_name
       }
     },
+    get_template_filter_options(domain_name) {
+      return {
+        name: "template",
+        t_label: "w.entrytype",
+        aspect: {
+          name: "template_slug",
+          t_label: "w.entrytype",
+          type: "multiselect",
+          attr: {
+            min: 1,
+            unpacked: true
+          },
+          options: []
+        },
+        search_config: {
+          name: "template",
+        }
+      }
+    },
     get_tags_filter_options(domain_name) {
       const all_codes = this.$store.getters[ALL_CODES]
       let filter_codes = Object.values(all_codes).filter(code_entry => code_entry.rules.tags || null)
@@ -118,7 +137,8 @@ export default {
           options: options_aspects
         },
         search_config: {
-          include_as: "tags"
+          include_as: "tags",
+          source_name: "regular"
         }
       }
     },

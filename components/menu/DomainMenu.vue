@@ -12,6 +12,7 @@
       :include_filters="filters"
       :mixin_domain_drafts="domain_name",
       @all_received_uuids="$emit('all_received_uuids', $event)"
+      :prominent_filters="prominent_filters"
       @preview_action="preview_action($event)")
     div(v-if="nav_mode_entry")
       v-row
@@ -28,7 +29,6 @@
   import MapNavigationMixin from "~/components/map/MapNavigationMixin"
   import Entry from "~/components/entry/Entry"
   import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
-  import {entrytype_filter_options} from "~/lib/filter_option_consts"
   import {object_list2options} from "~/lib/options"
   import DomainMixin from "~/components/DomainMixin"
   import FixDomainMixin from "~/components/global/FixDomainMixin"
@@ -40,13 +40,16 @@
     components: {Entry, Search},
     computed: {
       filters() {
-        const template_filter_options = Object.assign({}, entrytype_filter_options)
+        const template_filter_options = this.get_template_filter_options()
         template_filter_options.aspect.items = object_list2options(
           this.$store.getters["templates/templates_of_domain"](this.domain_name), "title", "slug", true)
 
         const tags_filter_options = this.get_tags_filter_options( this.domain_name)
         // const uuids_select_option = get_uuids_select_option()
         return [template_filter_options, tags_filter_options]
+      },
+      prominent_filters() {
+        return this.$_.get(this.domain_data, "filters.prominent_filters")
       }
     }
   }

@@ -1,30 +1,68 @@
 <template lang="pug">
   div
-    SelectGrid(:options="options" :max_cell_width="70" no_border)
+    div(v-for="name in probe_examples" :key="name")
+      h2 {{name}}
+      div {{build_list(options_examples[name])}}
+      SingleSelect(:options="build_list(options_examples[name])")
+
 </template>
 
 <script>
 
 
-import SelectGrid from "~/components/aspect_utils/SelectGrid"
+import OptionsMixin from "~/components/aspect_utils/OptionsMixin"
+import TagsMixin from "~/lib/TagsMixin"
+import SingleSelect from "~/components/input/SingleSelect"
 
 export default {
   name: "Tests",
-  mixins: [],
-  components: {SelectGrid},
-  async created() {
+  mixins: [OptionsMixin, TagsMixin],
+  components: {SingleSelect},
+  created() {
+    this.options_examples = require("~/lib/test_data/options")
+    const results = require("~/lib/test_data/options_results")
+
+    // for (let name in this.options_examples) {
+    //   console.assert(this.$_.isEqual(this.build_list(this.options_examples[name]), results[name]),name + ":: \n"+ JSON.stringify(this.build_list(this.options_examples[name])))
+    // }
+
+    // const x = this.build_list([{
+    //   "text": "tree",
+    //   "from_tree": {
+    //     "tree": "licci_tree",
+    //     "select": "children[0]",
+    //     "layers": [2]
+    //   }
+    // }])
+    // const a = this.build_list([{
+    //   "text": "tree",
+    //   "merge": [
+    //     [{
+    //       "from_tree": {
+    //         "tree": "licci_tree",
+    //         "select": "children[0]",
+    //         "layers": [2]
+    //       }
+    //     }], [{
+    //       "from_tree": {
+    //         "tree": "general_licci_tree",
+    //         "select": "children[0]",
+    //         "layers": [0]
+    //       }
+    //     }]]
+    // }])
+    // console.log(a)
   },
   data() {
-    return {}
+    return {
+      selected: null,
+      options_examples: null
+    }
   },
   computed: {
-    options() {
-      return [
-        {value: "A", text: "", icon:"images/domains/licci/assets/systems/system_climatic2.png"},
-        {value: "A", text: "", icon:"images/domains/licci/assets/systems/system_physical.png"},
-        {value: "A", text: "", icon:"images/domains/licci/assets/systems/system_biological.png"},
-        {value: "A", text: "", icon:"images/domains/licci/assets/systems/system_human.png"},
-      ]
+    probe_examples() {
+      return ["merge_trees"]
+      //return Object.keys(this.options_examples)
     }
   },
   methods: {},

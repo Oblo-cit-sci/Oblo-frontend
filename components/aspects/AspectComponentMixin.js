@@ -24,7 +24,7 @@ export default {
       type: Array, // for composites and lists pass it down...
     },
     conditionals: {
-      type: [Array,Object]
+      type: [Array, Object]
     },
     extra: {
       type: Object,
@@ -34,11 +34,16 @@ export default {
     }
   },
   computed: {
-    value() {
-      if (this.is_unpacked) {
-        return this.mvalue
-      } else {
-        return this.mvalue.value
+    value: {
+      get: function () {
+        if (this.is_unpacked) {
+          return this.mvalue
+        } else {
+          return this.mvalue.value
+        }
+      },
+      set: function (val) {
+        this.update_value(val)
       }
     },
     is_unpacked() {

@@ -5,7 +5,7 @@
       dense
       class="singleselect_list"
     )
-      div(v-for="item of options" :key="item.value")
+      div(v-for="(item,index) of options" :key="index")
         v-subheader(v-if="is_category(item)") {{item.text}}
         v-list-item(v-else
           @click="select(item)"
@@ -24,7 +24,7 @@
             v-icon(color="grey lighten-1") mdi-login-variant
         v-divider
   div(v-else-if="view_select")
-    v-select(outlined single-line :hide-details="hide_details" :multiple=false v-model="selected_item" :items="options" return-object :clearable="clearable" :placeholder="placeholder" :disabled="disabled" )
+    v-select(outlined single-line :hide-details="hide_details" :multiple=false v-model="selected_item" :items="select_options" return-object :clearable="clearable" :placeholder="placeholder" :disabled="disabled" )
     div(v-if="selected_item")
       div(v-if="selected_item.description") Description: {{selected_item.description}}
       div(v-if="has_some_icons")
@@ -206,6 +206,9 @@
       }
     },
     computed: {
+      select_options() {
+        return this.options.map(o => Object.assign(o, {disabled: this.disabled_item(o.value)}))
+      },
       has_some_description() {
         return this.$_.find(this.options, (o) => o.description && o.description !== "") !== undefined
       },

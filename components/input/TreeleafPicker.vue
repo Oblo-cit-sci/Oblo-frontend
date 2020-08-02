@@ -208,7 +208,7 @@
           console.log("levels structure depracated. use an object, with name key")
           return this.levels[index]
         }
-        console.log("levelname", index, this.levels)
+        // console.log("levelname", index, this.levels)
         return this.levels[index].name
       },
       remove(index) {

@@ -27,6 +27,9 @@
     computed: {
       privacy_sheet_open: {
         get: function () {
+          if(process.env.NODE_ENV === "development") {
+            return false
+          }
           return this.$store.getters["app/privacy_sheet_open"]
         },
         set: function (val) {

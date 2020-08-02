@@ -38,7 +38,7 @@ export const getters = {
   },
   entry_type(state) { // TEMPLATES_TYPE
     return (type_slug) => {
-      // console.log("getting entry_type for slug", type_slug)
+      // console.log("getting entry_type for slug", type_slug, state.entry_types)
       if (!state.entry_types.has(type_slug)) {
         console.log("WARNING, store,entrytype.getters.entry_type: type for slug missing", type_slug, "returning null, should be catched earlier")
       }

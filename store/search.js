@@ -102,6 +102,9 @@ export const mutations = {
       $nuxt.$set(new_config, new_config.length, config_item)
     }
     state.act_config = new_config
+  },
+  remove_in_act_config(state, config_name) {
+    state.act_config = state.act_config.filter(cf => cf.name !== config_name)
   }
 }
 

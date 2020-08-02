@@ -17,13 +17,10 @@
 
   import Mapbox from 'mapbox-gl-vue'
   import EntryCreateList from "~/components/EntryCreateList";
-  import {entrytype_filter_options} from "~/lib/filter_option_consts";
 
-  import {DOMAIN, SET_DOMAIN} from "~/store";
-  import {TEMPLATES_OF_DOMAIN} from "~/store/templates";
+  import {SET_DOMAIN} from "~/store";
   import EntryNavMixin from "~/components/EntryNavMixin"
   import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
-  import {object_list2options} from "~/lib/options"
   import LayoutMixin from "~/components/global/LayoutMixin"
   import MapIncludeMixin from "~/components/map/MapIncludeMixin"
   import MapWrapper from "~/components/map/MapWrapper"
