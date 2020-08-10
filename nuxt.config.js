@@ -136,6 +136,7 @@ module.exports = {
   ** Build configuration
   */
   build: {
+    // analyze: true,
     transpile: ['vuetify/lib'],
     loaders: {
       stylus: {

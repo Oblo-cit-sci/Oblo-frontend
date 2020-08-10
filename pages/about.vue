@@ -7,14 +7,14 @@
 </template>
 
 <script>
-  import goToMiddleware from "~/components/global/goToMiddleware"
+  import GoToMixin from "~/components/global/GoToMixin"
   import Footer from "~/components/global/Footer"
   import FlexibleTextSection from "~/components/global/FlexibleTextSection"
 
   export default {
     name: "about",
     components: {FlexibleTextSection, Footer},
-    mixins: [goToMiddleware],
+    mixins: [GoToMixin],
     computed: {
       text_sections() {
         return this.$t("about")

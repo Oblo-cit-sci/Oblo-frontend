@@ -28,7 +28,7 @@
         v-icon mdi-menu
     AspectDialog(v-bind="aspectdialog_data" @update:dialog_open="aspectdialog_data.dialog_open = $event" :ext_value="layer_status" @update:ext_value="aspect_dialog_update($event)")
     client-only
-      mapbox(
+      Mapbox(
         v-show="!map_hidden"
         :style="map_height"
         :access-token="access_token"
@@ -51,7 +51,6 @@
   import TemplateLegend from "~/components/menu/TemplateLegend"
   import AspectDialog from "~/components/aspect_utils/AspectDialog"
   import {LAYER_BASE_ID} from "~/lib/map_utils"
-  import EntryCreateList from "~/components/EntryCreateList"
   import {common_place_name, entry_location2geojson_arr, get_all_countries} from "~/lib/location"
   import {create_cluster_select_search_config} from "~/lib/codes"
   import FilterMixin from "~/components/FilterMixin"
@@ -75,7 +74,7 @@
 
   export default {
     name: "MapWrapper",
-    components: {EntryCreateList, AspectDialog, TemplateLegend, Mapbox},
+    components: {AspectDialog, TemplateLegend, Mapbox},
     mixins: [MapIncludeMixin, DomainMapMixin, HasMainNavComponentMixin, FilterMixin, EntryFetchMixin, MapEntriesMixin],
     props: {
       height: {

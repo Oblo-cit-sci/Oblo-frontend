@@ -106,14 +106,12 @@
   import {TEMPLATES_TYPE} from "~/store/templates";
   import {USER_LOGGED_IN} from "~/store/user"
   import Taglist from "~/components/global/Taglist"
-  import ActorChip from "~/components/actor/ActorChip"
   import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
 
   export default {
     name: "Entry",
     mixins: [EntryNavMixin, EntryMixin, TriggerSnackbarMixin, TypicalAspectMixin, PersistentStorageMixin, FullEntryMixin],
     components: {
-      ActorChip,
       Taglist,
       EntryActorList,
       MetaChips,

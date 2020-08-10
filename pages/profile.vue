@@ -70,14 +70,12 @@
 
   import goTo from 'vuetify/lib/services/goto'
 
-  import Taglist from "../components/global/Taglist.vue"
   import Aspect from "../components/Aspect";
   import {EDIT, USER, VIEW} from "~/lib/consts";
 
   import {mapGetters} from "vuex"
   import {extract_unpacked_values} from "~/lib/aspect";
   import PersistentStorageMixin from "../components/util/PersistentStorageMixin";
-  import EntryPreviewList from "../components/entry/EntryPreviewList";
 
   import {ENTRIES_GET_OWN_ENTRIES_UUIDS} from "~/store/entries";
   import LoadFileButton from "../components/util/LoadFileButton";
@@ -88,18 +86,16 @@
   import LayoutMixin from "~/components/global/LayoutMixin"
   import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
   import FixDomainMixin from "~/components/global/FixDomainMixin"
-  import goToMiddleware from "~/components/global/goToMiddleware"
+  import GoToMixin from "~/components/global/GoToMixin"
 
   export default {
     name: "profile",
     components: {
       EntryListWrapper,
-      EntryPreviewList,
       LoadFileButton,
-      Aspect,
-      Taglist
+      Aspect
     },
-    mixins: [PersistentStorageMixin, TriggerSnackbarMixin, LayoutMixin, TypicalAspectMixin, FixDomainMixin, goToMiddleware],
+    mixins: [PersistentStorageMixin, TriggerSnackbarMixin, LayoutMixin, TypicalAspectMixin, FixDomainMixin, GoToMixin],
     data() {
       const new_pwd = this.asp_password(null, "new")
       return {

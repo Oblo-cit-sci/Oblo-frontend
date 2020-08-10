@@ -40,7 +40,6 @@
 import {mapGetters, mapMutations} from "vuex"
 import EntryPreviewList from "../entry/EntryPreviewList"
 import {debounced_search, search_entries} from "~/lib/client"
-import FilterSelect from "../FilterSelect";
 import FilterMixin from "../FilterMixin";
 import NavBaseMixin from "../NavBaseMixin";
 import {
@@ -69,7 +68,7 @@ const relevant_query_keys = [QP_D, QP_SEARCH]
 
 export default {
   name: "Search",
-  components: {Aspect, Filterlist, FilterSelect, EntryPreviewList},
+  components: {Aspect, Filterlist, EntryPreviewList},
   mixins: [FilterMixin, NavBaseMixin, PersistentStorageMixin, EntrySearchMixin],
   props: {
     init_clear: Boolean,

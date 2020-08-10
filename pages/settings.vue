@@ -42,7 +42,6 @@
   import Aspect from "../components/Aspect";
   import LoadFileButton from "../components/util/LoadFileButton";
   import DecisionDialog from "../components/util/DecisionDialog";
-  import TextShort from "../components/aspects/TextShortAspect";
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
   import {export_data, merge_imported_entries} from "~/lib/import_export";
   import PersistentStorageMixin from "../components/util/PersistentStorageMixin";
@@ -59,7 +58,7 @@
 
   export default {
     name: "settings",
-    components: {EntryPreviewList, TextShort, DecisionDialog, LoadFileButton, Aspect},
+    components: {EntryPreviewList, DecisionDialog, LoadFileButton, Aspect},
     mixins: [TriggerSnackbarMixin, PersistentStorageMixin, AspectListMixin, FixDomainMixin, TypicalAspectMixin],
     created() {
       const settings = this.$store.getters[USER_SETTINGS]

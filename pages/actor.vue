@@ -23,9 +23,7 @@
 </template>
 
 <script>
-  import EntryPreviewList from "~/components/entry/EntryPreviewList";
   import Aspect from "~/components/Aspect";
-  import Taglist from "~/components/global/Taglist";
   import EntryListWrapper from "~/components/EntryListWrapper"
   import ActorAdminEdit from "~/components/actor/ActorAdminEdit"
   import GlobalRoleChip from "~/components/actor/GlobalRoleChip"
@@ -43,9 +41,7 @@
       GlobalRoleChip,
       ActorAdminEdit,
       EntryListWrapper,
-      EntryPreviewList,
-      Aspect,
-      Taglist
+      Aspect
     },
     props: {},
     data() {

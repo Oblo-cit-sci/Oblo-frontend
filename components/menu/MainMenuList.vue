@@ -25,7 +25,6 @@
   import {APP_CONNECTED} from "~/store/app"
   import {mapGetters} from "vuex"
   import LanguageSelector from "~/components/LanguageSelector"
-  import NotificationBanner from "~/components/global/NotificationBanner"
   import URLQueryMixin from "~/components/util/URLQueryMixin"
   import FixDomainMixin from "~/components/global/FixDomainMixin"
 
@@ -41,7 +40,7 @@
   export default {
     name: "MainMenuList",
     mixins: [URLQueryMixin, FixDomainMixin],
-    components: {NotificationBanner, LanguageSelector},
+    components: {LanguageSelector},
     props: {},
     data() {
       return {}

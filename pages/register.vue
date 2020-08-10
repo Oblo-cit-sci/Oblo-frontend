@@ -40,7 +40,7 @@
   export default {
     name: "register",
     components: {FlexibleTextSection, Aspect},
-    mixins: [validationMixin, TriggerSnackbarMixin, LoginMixin, TypicalAspectMixin, FixDomainMixin, LayoutMixin],
+    mixins: [TriggerSnackbarMixin, LoginMixin, TypicalAspectMixin, FixDomainMixin, LayoutMixin],
     data() {
       const password = this.asp_password()
       return {

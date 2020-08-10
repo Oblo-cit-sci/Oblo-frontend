@@ -12,7 +12,6 @@ export const ENTRY = "entry"
 
 export default {
   name: "MapNavigationMixin",
-  components: {Search},
   mixins: [NavBaseMixin],
   props: {
     // drawer: Boolean,

@@ -2,30 +2,29 @@
   v-app
     MenuContainer(v-if="initialized" :menu_mode_fixed="!is_domain_page"
       :over="menu_over")
-    Appbar(:show_nav_icon="show_nav_icon")
+    TheAppBar(:show_nav_icon="show_nav_icon")
     v-main
       NotificationBanner(v-if="!is_domain_page")
       v-container(v-if="initialized" :style="container_style")
         nuxt
-    GlobalSnackbar
-    PrivacySheet
+    TheSnackbar
+    ThePrivacySheet
     <!--    v-fab-transition-->
     <!--      v-btn.help_button(float large fab color="info")-->
     <!--        v-icon mdi-help-->
 </template>
 
 <script>
-  import GlobalSnackbar from "~/components/global/GlobalSnackbar"
-  import PersistentStorageMixin from "~/components/util/PersistentStorageMixin";
+  import TheSnackbar from "~/components/global/TheSnackbar"
   import NavBaseMixin from "~/components/NavBaseMixin"
-  import PrivacySheet from "~/components/global/PrivacySheet"
-  import Appbar from "~/components/global/Appbar"
+  import ThePrivacySheet from "~/components/global/ThePrivacySheet"
+  import TheAppBar from "~/components/global/TheAppBar"
   import InitializationMixin from "~/layouts/InitializationMixin"
   import MenuContainer from "~/components/menu/MenuContainer"
   import NotificationBanner from "~/components/global/NotificationBanner"
 
   export default {
-    components: {NotificationBanner, MenuContainer, Appbar, PrivacySheet, GlobalSnackbar},
+    components: {NotificationBanner, MenuContainer, TheAppBar, ThePrivacySheet, TheSnackbar},
     mixins: [InitializationMixin, NavBaseMixin],
     computed: {
       menu_over() {

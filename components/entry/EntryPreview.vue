@@ -68,7 +68,6 @@
   import ChildCreateMixin from "../util/ChildCreateMixin";
   import {aspect_loc_str2arr, loc_prepend} from "~/lib/aspect";
   import Aspect from "../Aspect";
-  import EntryActorList from "./EntryActorList";
   import {SEARCH_ENTRY_ASPECT} from "~/store/search";
   import {
     EDIT_UUID,
@@ -91,8 +90,8 @@
 
 
   export default {
-    name: "Entrypreview",
-    components: {ActorChip, EntryActorList, Aspect, MetaChips, Taglist},
+    name: "EntryPreview",
+    components: {ActorChip, Aspect, MetaChips, Taglist},
     mixins: [EntryNavMixin, MapJumpMixin, EntryMixin, MapJumpMixin,
       PersistentStorageMixin, ChildCreateMixin, EntryActionsMixin],
     data() {

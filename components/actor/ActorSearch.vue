@@ -37,7 +37,6 @@
 
 <script>
 
-
   export default {
     name: "ActorSearch",
     mixins: [],

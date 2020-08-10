@@ -41,13 +41,14 @@
 <script>
   import MapNavigationMixin from "./MapNavigationMixin";
   import Entry from "../entry/Entry";
+  import Search from "~/components/global/Search"
 
   // search:
   //   <!--          :fixed_filters="location_pre_filter"-->
 
   export default {
     name: "MapNavigationDrawer",
-    components: {Entry},
+    components: {Entry, Search},
     mixins: [MapNavigationMixin],
     computed: {
       drawer_width() {

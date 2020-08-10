@@ -37,7 +37,7 @@
         .map_overlay
           v-btn(v-if="logged_in" dark small :color="show_existing ? 'blue' : 'grey'" @click="toggle_show_existing" :loading="getting_my_entries_loading") {{$t('comp.location_asp.show entries')}}
             v-icon mdi-map-marker-circle
-        mapbox.crosshair.mt-3(
+        Mapbox.crosshair.mt-3(
           style="height:400px"
           :access-token="access_token"
           :map-options="map_options"
@@ -58,7 +58,6 @@
     PREC_OPTION_RANDOM,
     PREC_OPTION_REGION,
   } from "~/lib/location";
-  import SingleSelect from "../input/SingleSelect";
   import {default_place_type, EDIT} from "~/lib/consts";
   import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
   import AspectComponentMixin from "./AspectComponentMixin";
@@ -87,7 +86,7 @@
 
   export default {
     name: "LocationAspect",
-    components: {SingleSelect, Mapbox},
+    components: {Mapbox},
     mixins: [AspectComponentMixin, TriggerSnackbarMixin, MapIncludeMixin, GeocodingMixin,
       MapEntriesMixin, EntrySearchMixin, EntryFetchMixin],
     data() {

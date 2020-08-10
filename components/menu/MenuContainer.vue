@@ -26,8 +26,6 @@
 
 import {MENU_MODE_DOMAIN_OVERVIEW, MENU_MODE_MAIN} from "~/lib/consts"
 import MainMenuList from "~/components/menu/MainMenuList"
-import {mapGetters} from "vuex"
-import MapNavigationDrawer from "~/components/map/MapNavigationDrawer"
 import DomainMenu from "~/components/menu/DomainMenu"
 import NotificationBanner from "~/components/global/NotificationBanner"
 import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
@@ -37,7 +35,7 @@ const mode_indices = [MENU_MODE_MAIN, MENU_MODE_DOMAIN_OVERVIEW]
 export default {
   name: "MenuContainer",
   mixins: [HasMainNavComponentMixin],
-  components: {NotificationBanner, DomainMenu, MapNavigationDrawer, MainMenuList},
+  components: {NotificationBanner, DomainMenu, MainMenuList},
   props: {
     menu_mode_fixed: Boolean,
     over: Boolean,

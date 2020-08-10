@@ -15,7 +15,6 @@
 
 <script>
 
-  import Mapbox from 'mapbox-gl-vue'
   import EntryCreateList from "~/components/EntryCreateList";
 
   import {SET_DOMAIN} from "~/store";
@@ -26,7 +25,6 @@
   import MapWrapper from "~/components/map/MapWrapper"
   import {dev_env} from "~/lib/util"
   import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
-  import MenuContainer from "~/components/menu/MenuContainer"
   import DomainMixin from "~/components/DomainMixin"
   import {MENU_MODE_DOMAIN_OVERVIEW, QP_D, QP_F} from "~/lib/consts"
   import FixDomainMixin from "~/components/global/FixDomainMixin"
@@ -37,7 +35,7 @@
     // layout: "new_map_layout",
     mixins: [DomainMixin, HasMainNavComponentMixin, EntryNavMixin, EntryCreateMixin,
       PersistentStorageMixin, LayoutMixin, MapIncludeMixin, FixDomainMixin],
-    components: {MenuContainer, MapWrapper, EntryCreateList, Mapbox},
+    components: {MapWrapper, EntryCreateList},
     data() {
       return {
         entrycreate_dialog_open: false

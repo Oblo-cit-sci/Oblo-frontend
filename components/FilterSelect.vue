@@ -1,7 +1,7 @@
 <template lang="pug">
   div {{name}}
     div(v-if="select_multiple")
-      MultiselectAspect(:options="options")
+      MultiSelectAspect(:options="options")
     div(v-else)
       SingleSelect(:options="options" force_view="select" :selection.sync="selection" :placeholder="placeholder")
 </template>
@@ -9,11 +9,11 @@
 <script>
 
     import SingleSelect from "./input/SingleSelect";
-    import MultiselectAspect from "~/components/aspects/MultiSelectAspect"
+    import MultiSelectAspect from "~/components/aspects/MultiSelectAspect"
 
     export default {
         name: "FilterSelect",
-        components: {MultiselectAspect, SingleSelect},
+        components: {MultiSelectAspect, SingleSelect},
         props: {
             name: {
                 type: String,

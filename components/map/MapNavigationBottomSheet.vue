@@ -31,10 +31,11 @@
 <script>
   import MapNavigationMixin from "./MapNavigationMixin";
   import Entry from "../entry/Entry";
+  import Search from "~/components/global/Search"
 
   export default {
     name: "MapNavigationBottomSheet",
-    components: {Entry},
+    components: {Entry, Search},
     mixins: [MapNavigationMixin]
   }
 </script>

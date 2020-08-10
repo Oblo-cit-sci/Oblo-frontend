@@ -13,7 +13,6 @@
             v-icon mdi-step-backward
     v-divider.mb-1(v-if="has_both()")
     Title_Description.ml-3(v-if="has_levels" :title="act_levelname" :description="act_level_description" mode="edit")
-    TextShort(:aspect="{'name':'nooo', 'type':'str', 'attr': {}}" mvalue="{value:'cool'}")
     .px-3(v-if="has_options")
       SingleSelect.pb-1(v-if="edit_mode_list" :options="act_options" v-on:selection="select($event)" :select_sync="false" :highlight="false")
       LargeSelectList(v-if="edit_mode_large_list" :options="act_options" v-on:selection="select($event)" :select_sync="false" :highlight="false" :data_source="data_source")
@@ -34,7 +33,6 @@
    */
 
   import SingleSelect from "./SingleSelect";
-  import TextShort from "../aspects/TextShortAspect";
   import {object_list2options} from "~/lib/options";
   import SelectGrid from "../aspect_utils/SelectGrid";
   import Paginated_Select from "../aspect_utils/Paginated_Select";
@@ -46,7 +44,7 @@
 
   export default {
     name: "TreeleafPicker",
-    components: {Aspect, LargeSelectList, Title_Description, Paginated_Select, SelectGrid, TextShort, SingleSelect},
+    components: {Aspect, LargeSelectList, Title_Description, Paginated_Select, SelectGrid, SingleSelect},
     props: {
       tree: {
         type: Object

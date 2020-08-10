@@ -30,7 +30,6 @@
   import Paginate from "../global/Paginate";
   import {current_user_is_owner} from "~/lib/entry";
 
-  import DecisionDialog from "../util/DecisionDialog";
   import EntryNavMixin from "../EntryNavMixin";
 
   import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
@@ -44,7 +43,7 @@
 
   export default {
     name: "EntryActions",
-    components: {EntryActionButtons, DecisionDialog, Paginate},
+    components: {EntryActionButtons, Paginate},
     mixins: [EntryNavMixin, TriggerSnackbarMixin, PersistentStorageMixin, EntryMixin],
     props: {
       show_back_button: {

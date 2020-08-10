@@ -36,7 +36,7 @@
   // maybe also for v-select:
   // :prepend-inner-icon="!menu_open ? 'mdi-check' : ''"
   export default {
-    name: "MultiselectAspect",
+    name: "MultiSelectAspect",
     mixins: [AspectComponentMixin, SelectMixin],
     data() {
       return {

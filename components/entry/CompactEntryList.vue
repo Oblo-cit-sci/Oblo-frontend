@@ -6,13 +6,12 @@
 </template>
 
 <script>
-  import ActorChip from "~/components/actor/ActorChip"
   import CompactEntry from "~/components/entry/CompactEntry"
 
   export default {
     name: "CompactEntryList",
     mixins: [],
-    components: {CompactEntry, ActorChip},
+    components: {CompactEntry},
     props: {
       entries: Array,
       total_count: Number,

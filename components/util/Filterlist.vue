@@ -31,8 +31,6 @@
 </template>
 
 <script>
-import FilterSelect from "~/components/FilterSelect"
-import Aspect from "~/components/Aspect"
 import {aspect_default_value, value_text} from "~/lib/aspect"
 import LayoutMixin from "~/components/global/LayoutMixin"
 import AspectDialog from "~/components/aspect_utils/AspectDialog"
@@ -41,7 +39,7 @@ import {recursive_unpack2} from "~/lib/util"
 export default {
   name: "Filterlist",
   mixins: [LayoutMixin],
-  components: {AspectDialog, Aspect, FilterSelect},
+  components: {AspectDialog},
   props: {
     filter_options: Array,
     value: Array,

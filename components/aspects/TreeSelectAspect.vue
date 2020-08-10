@@ -44,7 +44,6 @@
 
 <script>
 import TreeleafPicker from "../input/TreeleafPicker";
-import TextShort from "./TextShortAspect";
 import {flatten_tree_to_options, get_codes_as_tree} from "~/lib/options";
 import {EDIT} from "~/lib/consts";
 import AspectComponentMixin from "./AspectComponentMixin";
@@ -65,7 +64,7 @@ the start of a custom value field. but wtf...
 
 export default {
   name: "TreeSelectAspect",
-  components: {TextShort, TreeleafPicker},
+  components: {TreeleafPicker},
   mixins: [AspectComponentMixin, GeneralSelectMixin],
   data() {
     return {
@@ -160,9 +159,13 @@ export default {
       }
     },
     value_text() {
+      // console.log("val text", this.value)
       if (this.value) {
         if (this.value.constructor === Array) {
+          // console.log("TV", this.value)
           return this.value.map(v => {
+            if(typeof v === "string")
+              return v
             let base = v.text
             base += v.extra_value ? " / " + unpack(v.extra_value) : ""
             return base

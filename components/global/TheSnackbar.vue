@@ -8,7 +8,7 @@
   import {SNACKBAR_TRIGGER} from "~/store";
 
   export default {
-    name: "GlobalSnackbar",
+    name: "TheSnackbar",
     mixins: [TriggerSnackbarMixin],
     data() {
       return {

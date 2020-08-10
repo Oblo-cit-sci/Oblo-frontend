@@ -22,7 +22,7 @@
   // z-index to be above the loading overlay
 
   export default {
-    name: "Appbar",
+    name: "TheAppBar",
     mixins: [NavBaseMixin],
     components: {},
     props: {

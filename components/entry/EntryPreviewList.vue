@@ -6,7 +6,7 @@
       v-row.mx-1(v-for="uuid in visible_entries"
         :key="uuid")
         v-col(cols=12)
-          Entrypreview(
+          EntryPreview(
             :passed_uuid="uuid"
             v-bind="preview_options"
             @delete_e="delete_e($event)")
@@ -18,7 +18,7 @@
 </template>
 
 <script>
-  import Entrypreview from "~/components/entry/EntryPreview";
+  import EntryPreview from "~/components/entry/EntryPreview";
   import goTo from 'vuetify/lib/services/goto'
   import SimplePaginate from "../SimplePaginate";
   import {ENTRIES_HAS_ENTRY} from "~/store/entries";
@@ -26,7 +26,7 @@
 
   export default {
     name: "EntryPreviewList",
-    components: {SimplePaginate, Entrypreview},
+    components: {SimplePaginate, EntryPreview},
     props: {
       entries: Array,
       // this can be more then in entries, but will allow to navigate further with next, so another fetch is triggered

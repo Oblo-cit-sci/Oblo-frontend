@@ -14,7 +14,7 @@
 
 <script>
   export default {
-    name: "PrivacySheet",
+    name: "ThePrivacySheet",
     mixins: [],
     components: {},
     props: {
