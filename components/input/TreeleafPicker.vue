@@ -20,9 +20,9 @@
       Paginated_Select(v-if="edit_mode_paginated" :options="act_options" :edit_mode="level_edit_mode(act_level + 1)" v-on:selection="select($event)")
     div.mx-4(v-if="last_selection_has_extra")
       Aspect(v-if="extra_aspect" :aspect="extra_aspect" :ext_value.sync="extra_value" mode="edit")
-    .ml-3(v-if="last_description")
-      div Description:
-      div {{last_description}}
+      <!--    .ml-3(v-if="last_description")-->
+        <!--      div Description:-->
+        <!--      div {{last_description}}-->
     v-btn(v-if="done_available" @click="done" color="success") Done
 </template>
 
