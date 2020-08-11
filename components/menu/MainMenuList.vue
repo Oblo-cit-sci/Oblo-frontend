@@ -14,8 +14,6 @@
           v-list-item-title(v-text="$t(item.t_title)")
     v-divider
     LanguageSelector
-    v-list-item
-      p(class="package-version") version {{version}}
 </template>
 
 <script>
@@ -28,7 +26,6 @@
   import URLQueryMixin from "~/components/util/URLQueryMixin"
   import FixDomainMixin from "~/components/global/FixDomainMixin"
 
-  const pkg = require('~/package.json')
 
   let require_login = ["menu.profile", "menu.logout"]
   let hide_logged_in = ["menu.login", "menu.register"]
@@ -78,10 +75,6 @@
 
         return [{name: "home", items: [home]},
           {name: "other", items: other_pages}]
-      },
-
-      version() {
-        return pkg.version
       }
     }
   }
@@ -89,8 +82,4 @@
 
 <style scoped>
 
-  .package-version {
-    color: rgb(109, 109, 109);
-    font-size: 14px;
-  }
 </style>
