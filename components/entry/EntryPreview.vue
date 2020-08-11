@@ -80,6 +80,7 @@
   import {TEMPLATES_TYPENAME} from "~/store/templates";
   import ActorChip from "../actor/ActorChip"
   import EntryActionsMixin from "~/components/entry/EntryActionsMixin"
+  import EntryTags from "~/components/entry/EntryTags"
 
   /**
    * ISSUE is not working atm, to responsive
@@ -91,7 +92,7 @@
 
   export default {
     name: "EntryPreview",
-    components: {ActorChip, Aspect, MetaChips, Taglist},
+    components: {EntryTags, ActorChip, Aspect, MetaChips, Taglist},
     mixins: [EntryNavMixin, MapJumpMixin, EntryMixin, MapJumpMixin,
       PersistentStorageMixin, ChildCreateMixin, EntryActionsMixin],
     data() {

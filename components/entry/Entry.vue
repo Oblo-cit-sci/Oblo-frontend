@@ -20,7 +20,7 @@
       v-row
         EntryActorList.mt-2(:actors="actors")
       v-row
-        Taglist(v-if="show_tags" :tags="tags" :slide="false")
+        Taglist(:tags="tags")
       v-row(justify="center" v-if="entry_image")
         v-col(cols=12 alignSelf="center")
           v-img.entry-display-size(
@@ -107,11 +107,13 @@
   import {USER_LOGGED_IN} from "~/store/user"
   import Taglist from "~/components/global/Taglist"
   import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
+  import EntryTags from "~/components/entry/EntryTags"
 
   export default {
     name: "Entry",
     mixins: [EntryNavMixin, EntryMixin, TriggerSnackbarMixin, TypicalAspectMixin, PersistentStorageMixin, FullEntryMixin],
     components: {
+      EntryTags,
       Taglist,
       EntryActorList,
       MetaChips,

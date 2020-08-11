@@ -72,6 +72,9 @@ export default {
     in_context() {
       return this.template.rules.context !== GLOBAL || this.entry.entry_refs.parent
     },
+    tags_config() {
+      return this.$_.get(this.template.rules,"tags_config", [])
+    },
     entry() {
       let entry = null
       if (this.is_edit_mode) {

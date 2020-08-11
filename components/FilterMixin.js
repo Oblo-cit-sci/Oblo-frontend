@@ -106,7 +106,6 @@ export default {
           attr: {}
         }
         if (code.template.slug === "value_tree") {
-          console.log(code)
           const tag_tree = build_tag_select_tree(this.$_.cloneDeep(code))
           options_aspects.push(Object.assign(base_aspect, {
               type: TREEMULTISELECT,
@@ -125,7 +124,6 @@ export default {
         }
       }
 
-      console.log(options_aspects)
       return {
         name: "tags",
         "t_label": "w.tag",

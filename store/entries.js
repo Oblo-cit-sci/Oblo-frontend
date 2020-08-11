@@ -446,6 +446,7 @@ export const getters = {
   },
   entry_tags(state, getters) {
     return (uuid) => {
+      console.log("entry_tags")
       const entry = getters.get_entry(uuid)
       const entry_type = getters.get_entry_type(entry.template.slug)
       const tagsAspect = entry_type.rules.tagsAspect

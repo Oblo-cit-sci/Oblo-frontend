@@ -25,7 +25,6 @@
     },
     computed: {
       tree() {
-        console.log("T")
         if (typeof this.aspect.items === "string") {
           return get_codes_as_tree(this.$store, this.aspect.items)
         } else {

@@ -116,7 +116,6 @@ export default {
       } else {
         this.tree = this.aspect.items
       }
-
       // console.log(this.tree, options.include_levels)
       if (this.direct_select) {
         let options = {}
