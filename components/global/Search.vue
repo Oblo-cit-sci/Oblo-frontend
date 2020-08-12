@@ -114,7 +114,6 @@ export default {
   created() {
     // console.log("search created")
     let start_search = false
-    // debugger
     const last_route = this.$store.getters[SEARCH_GET_ROUTE]
     if (this.$route.query.search) {
       this.keyword = this.$route.query.search
@@ -122,17 +121,16 @@ export default {
     const this_route_data = this.act_relevant_route_data()
     // console.log(!this.$_.isEqual(last_route, this_route_data), last_route, this_route_data)
     if (!this.$_.isEqual(last_route, this_route_data)) {
-      // this.prepend_search = true
       this.clear()
       this.$store.commit(SEARCH_SET_ROUTE, this_route_data)
       this.getEntries(false, false)
     } else {
-      this.prepend_search = true
-      this.getEntries(true, false)
+      // if uuids are selected, no search/update required.
+      if(!this.select_uuids_config()) {
+        this.prepend_search = true
+        this.getEntries(true, false)
+      }
     }
-    // if (this.init_clear) {
-    //   this.clear()
-    // }
   },
   watch: {
     keyword: function (kw) {
@@ -183,9 +181,6 @@ export default {
           }
         }
       }
-
-      console.log("new config")
-      console.log(new_config)
 
       // check if a prominent filter changed: // inidicated by source_name (domain).
       // if yes we debounce, because there could be more clicked
@@ -292,7 +287,6 @@ export default {
       }
     },
     getEntries(before_last = false, debounce = true) {
-      // debugger
       const select_uuids = this.select_uuids_config()
       if (select_uuids) {
         this.fetch_select_uuids(select_uuids)
