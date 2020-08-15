@@ -19,11 +19,11 @@ import {
   unpack
 } from "~/lib/aspect"
 import {transform_options_list} from "~/lib/options"
-import {aspect_from_location} from "~/lib/entrytype"
+import TemplateAccessMixin from "~/components/templates/TemplateAccessMixin"
 
 export default {
   name: "AspectAction",
-  mixins: [TriggerSnackbarMixin],
+  mixins: [TriggerSnackbarMixin, TemplateAccessMixin],
   components: {},
   props: {
     aspect: Object,
@@ -96,11 +96,11 @@ export default {
       }
 
       axios(request).then(({data}) => {
-        console.log("received", data)
+        // console.log("received", data)
         const processed_data = this.process_result(data)
-        console.log("processed to", processed_data)
+        // console.log("processed to", processed_data)
         const transformed_data = this.transform_data(processed_data)
-        console.log("transformed to", transformed_data)
+        // console.log("transformed to", transformed_data)
         this.handle_result(transformed_data)
       }).catch(err => {
         console.log(err)
@@ -171,7 +171,7 @@ export default {
       if (handle) {
         if (handle.type === "assign_to_aspect") {
           const aspect_loc = this.$_.concat([[EDIT, null]], aspect_loc_str2arr(handle.aspect, this.extra.list_index))
-          const aspect = aspect_from_location(this.$store, aspect_loc)
+          const aspect = this.aspect_from_location(aspect_loc)
           this.$store.dispatch(ENTRIES_SET_ENTRY_VALUE, {
             aspect_loc,
             value: aspect_default_value(aspect)
