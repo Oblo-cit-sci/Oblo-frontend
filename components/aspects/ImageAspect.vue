@@ -7,7 +7,7 @@
             div.ml-9.font-weight-light {{$t('comp.image_asp.cover_image')}}
       v-col(v-if="readOnly && !has_images")
         div {{$t('comp.image_asp.no_images')}}
-    LoadFileButton(v-if="is_edit_mode"
+    LoadFileButton(v-if="is_editable_mode"
       label="Add image"
       filetype="image"
       :size_limit="max_image_size"
@@ -203,7 +203,7 @@
     },
     watch: {
       images(new_val, prev_val) {
-        if(this.is_edit_mode) {
+        if(this.is_editable_mode) {
           // image added
           if (new_val.length > prev_val.length) {
             const new_img_index = this.images.length - 1

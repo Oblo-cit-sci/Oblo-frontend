@@ -205,6 +205,10 @@
       "label": "Collaborators and entry access",
       "descr": "Grant access to other users",
       "roles": {
+        "creator": {
+          "label": "Creator",
+          "descr": "Creator/owner of this entry"
+        },
         "collaborator": {
           "label": "Collaborator",
           "descr": "Collaborators can edit this entry as you can (except for changing the privacy, license and roles)."
@@ -213,6 +217,9 @@
           "label": "Visible to",
           "descr": "The following users can read your entry even if it's private"
         }
+      },
+      "search": {
+        "min-msg": "select at least {min} user"
       }
     }
   },

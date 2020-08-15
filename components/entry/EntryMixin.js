@@ -1,6 +1,8 @@
 import {full_title, get_entry_titleAspect, has_parent} from "~/lib/entry";
 import {export_data} from "~/lib/import_export";
 import {aspect_loc_str2arr, loc_append, loc_prepend} from "~/lib/aspect";
+import {mapGetters} from "vuex"
+
 import {
   ASPECT,
   DRAFT,
@@ -47,6 +49,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({"is_admin": "user/is_admin"}),
     uuid() {
       // console.log("UUID", this.passed_uuid, this.$route)
       if (this.passed_uuid) {
@@ -77,7 +80,7 @@ export default {
     },
     entry() {
       let entry = null
-      if (this.is_edit_mode) {
+      if (this.is_editable_mode) {
         entry = this.$store.getters[ENTRIES_GET_EDIT]()
       } else {
         entry = this.$store.getters[ENTRIES_GET_ENTRY](this.uuid)
@@ -196,6 +199,9 @@ export default {
     },
     is_review_mode() {
       return this.mode === REVIEW
+    },
+    is_editable_mode() {
+      return [EDIT, REVIEW].includes(this.mode)
     },
     tags() {
       return this.entry.tags || []

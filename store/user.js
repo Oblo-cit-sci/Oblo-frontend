@@ -1,4 +1,4 @@
-import {VISITOR} from "~/lib/consts";
+import {ADMIN, VISITOR} from "~/lib/consts";
 import {default_settings} from "~/lib/settings"
 
 export const USER_LOGIN = "user/login"
@@ -52,6 +52,9 @@ export const getters = {
   },
   global_role(state) {
     return state.user_data.global_role
+  },
+  is_admin(state) {
+    return state.user_data.global_role === ADMIN
   },
   settings(state) {
     return state.settings

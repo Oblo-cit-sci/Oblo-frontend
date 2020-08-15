@@ -42,7 +42,15 @@
     mixins: [],
     components: {},
     props: {
-      multiple: Boolean,
+      multiple: {
+        type:Boolean,
+        default: true
+      },
+      min: {
+        type: Number,
+        default: 0,
+        required: false,
+      },
       value: {
         type: [Object, Array],
         default: () => []
@@ -66,7 +74,11 @@
     computed: {
       selection: {
         get() {
-          return this.value
+          if(this.multiple) {
+            return this.value
+          } else {
+            return this.$_.get(this.value, 0, null)
+          }
         },
         set: function(val) {
           this.search = ""
@@ -78,7 +90,19 @@
             }
           }
           this.$emit("input", val)
+          if(this.min !== 0) {
+            // if no actor, its an error state
+            this.$emit("update:error", !val)
+            if(!val) {
+              this.errorMsg = this.$t("asp.entry_roles.search.min-msg", {min:this.min})
+            }
+          }
         }
+      },
+      rules() {
+        return [v => {
+          return v || "min 1"
+        }]
       }
     },
     methods: {
@@ -95,7 +119,6 @@
     },
     watch: {
       search(val) {
-        this.errorMsg = null
         if (!val) {
           return
         }
@@ -104,6 +127,7 @@
             // todo remove first one
           }
         }
+        this.errorMsg = null
         if (this.isLoading || val.length < 4) return
         this.isLoading = true
 

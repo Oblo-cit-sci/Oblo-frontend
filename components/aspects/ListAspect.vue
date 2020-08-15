@@ -334,7 +334,7 @@
         return titles
       },
       adding_allowed() {
-        if (this.mode === EDIT) {
+        if (this.is_editable_mode) {
           return true
         } else {
           return this.is_public

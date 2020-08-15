@@ -22,6 +22,7 @@
       in_entry
       :entry_complete="entry_complete"
       :is_dirty="is_dirty"
+      :has_errors="has_errors"
       @mode="$emit('mode', $event)")
 </template>
 
@@ -50,7 +51,8 @@
         type: Boolean
       },
       entry_complete: Boolean,
-      is_dirty: Boolean
+      is_dirty: Boolean,
+      has_errors: Boolean
     },
     data() {
       return {

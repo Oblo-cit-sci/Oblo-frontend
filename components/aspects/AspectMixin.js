@@ -1,4 +1,4 @@
-import {EDIT, ENTRY, LIST_INDEX, VIEW} from "~/lib/consts";
+import {EDIT, ENTRY, LIST_INDEX, REVIEW, VIEW} from "~/lib/consts";
 import {
   aspect_default_value,
   aspect_loc_str2arr,
@@ -22,7 +22,10 @@ export default {
     },
     mode: { // todo well, this is gonna be messy
       type: String,
-      default: VIEW
+      default: VIEW,
+      validator: (value) => {
+        return [VIEW, EDIT, REVIEW].includes(value)
+      }
     },
     disabled: {
       type: Boolean,
@@ -43,7 +46,7 @@ export default {
   },
   methods: {
     // debounce to not to store contantly while typing
-    update_value(raw_value,  comes_unpacked = true) {
+    update_value(raw_value, comes_unpacked = true) {
       // console.log("received update value", this.aspect.name)
       if (raw_value === undefined)
         raw_value = null

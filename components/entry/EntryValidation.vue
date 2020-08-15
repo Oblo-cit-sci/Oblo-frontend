@@ -51,7 +51,7 @@
       },
       missing() {
         const aspects = this.template.aspects
-
+        console.log("validation update")
         let missing = []
         for (let aspect of aspects) {
           //console.log("val", aspect.name)

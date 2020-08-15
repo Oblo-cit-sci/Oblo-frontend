@@ -35,12 +35,15 @@
         return this.entry.image
       },
       entry_actions_props() {
+        // console.log("update actions props")
         return {
           entry: this.entry,
           template_slug: this.entry.template.slug,
           mode: this.mode,
           passed_uuid: this.uuid,
           entry_complete: this.entry_complete,
+          // not great cuz the mixin is in Entry
+          has_errors: this.has_errors,
           is_dirty: this.is_dirty
         }
       },

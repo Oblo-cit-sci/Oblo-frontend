@@ -1,6 +1,7 @@
 import {EDIT, REVIEW, VIEW} from "~/lib/consts";
-import {aspect_loc_uuid, aspect_raw_default_value, disabled_by_condition} from "~/lib/aspect";
+import {aspect_loc_uuid, aspect_raw_default_value} from "~/lib/aspect";
 import {ENTRIES_GET_ENTRY} from "~/store/entries";
+import {mapGetters} from "vuex"
 
 export default {
   name: "AspectComponentMixin",
@@ -14,7 +15,10 @@ export default {
     },
     mode: { // todo well, this is gonna be messy
       type: String,
-      default: VIEW
+      default: VIEW,
+      validator: (value) => {
+        return [VIEW, EDIT, REVIEW].includes(value)
+      }
     },
     disabled: {
       type: Boolean,
@@ -34,6 +38,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({"is_admin": "user/is_admin"}),
     value: {
       get: function () {
         if (this.is_unpacked) {

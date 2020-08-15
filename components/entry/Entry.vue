@@ -49,7 +49,7 @@
             :aspect_loc="aspect_locs[aspect.name]"
             :extra="aspect_extras"
             :mode="mode")
-    div(v-if="is_first_page && is_edit_mode")
+    div(v-if="is_first_page && is_editable_mode")
       v-row
         v-col(:cols="base_cols")
           v-divider.wide_divider
@@ -58,9 +58,9 @@
           Aspect(:aspect="license_aspect" :aspect_loc="aspect_locs[license_aspect.name]" :mode="license_privacy_mode")
         v-col(alignSelf="stretch" :cols="base_cols" :lg="base_cols/2")
           Aspect(:aspect="asp_privacy()" :aspect_loc="aspect_locs[asp_privacy().name]" :mode="license_privacy_mode")
-      v-row(v-if="is_creator")
+      v-row(v-if="is_creator || is_admin")
         v-col.pb-0(alignSelf="stretch" :cols="base_cols")
-          Aspect(:aspect="asp_entry_roles()" :mode="entry_roles_mode" :aspect_loc="aspect_locs[asp_entry_roles().name]" :extra="{entry_is_private: entry.privacy==='private'}")
+          Aspect(:aspect="asp_entry_roles()" :mode="entry_roles_mode" :aspect_loc="aspect_locs[asp_entry_roles().name]" :extra="{entry_is_private: entry.privacy==='private'}" @update:error="update_error('actors', $event)")
       v-row
         v-col(alignSelf="stretch" :cols="base_cols")
           v-divider
@@ -108,10 +108,11 @@
   import Taglist from "~/components/global/Taglist"
   import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
   import EntryTags from "~/components/entry/EntryTags"
+  import AspectSetMixin from "~/components/aspects/AspectSetMixin"
 
   export default {
     name: "Entry",
-    mixins: [EntryNavMixin, EntryMixin, TriggerSnackbarMixin, TypicalAspectMixin, PersistentStorageMixin, FullEntryMixin],
+    mixins: [EntryNavMixin, EntryMixin, TriggerSnackbarMixin, TypicalAspectMixin, PersistentStorageMixin, FullEntryMixin, AspectSetMixin],
     components: {
       EntryTags,
       Taglist,
@@ -123,6 +124,9 @@
       Aspect,
       EntryActions,
       Title_Description,
+    },
+    created() {
+      this.set_aspects([this.asp_entry_roles()])
     },
     data() {
       return {
@@ -141,7 +145,7 @@
     computed: {
       ...mapGetters({logged_in: USER_LOGGED_IN}),
       aspect_loc() {
-        if (this.is_edit_mode) {
+        if (this.is_editable_mode) {
           return [EDIT, this.uuid]
         } else {
           return [ENTRY, this.uuid]
@@ -157,10 +161,10 @@
         return this.$store.getters[TEMPLATES_TYPE](this.template_slug).aspects
       },
       license_privacy_mode() {
-        if (!this.logged_in ||  !this.is_creator) {
-          return VIEW
-        } else {
+        if (this.logged_in && this.is_creator || this.$store.getters["user/is_admin"]) {
           return EDIT
+        } else {
+          return VIEW
         }
       },
       entry_roles_mode() {
