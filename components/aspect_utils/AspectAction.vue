@@ -6,12 +6,20 @@
 <script>
 
 import {ENTRIES_SET_ENTRY_VALUE} from "~/store/entries"
-import {ASPECT, EDIT} from "~/lib/consts"
+import {EDIT} from "~/lib/consts"
 
 import axios from "axios"
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
-import {aspect_loc_str2arr, is_packed, pack_value, unpack} from "~/lib/aspect"
+import {
+  aspect_default_value,
+  aspect_loc_str2arr,
+  aspect_raw_default_value,
+  is_packed,
+  pack_value,
+  unpack
+} from "~/lib/aspect"
 import {transform_options_list} from "~/lib/options"
+import {aspect_from_location} from "~/lib/entrytype"
 
 export default {
   name: "AspectAction",
@@ -63,6 +71,9 @@ export default {
         default :
           console.log("unknown action type")
       }
+    },
+    reset_action() {
+      this.handle_reset()
     },
     perform_api_query() {
       let url = this.properties.query_url
@@ -141,7 +152,7 @@ export default {
       }
       const val_is_packed = is_packed(data)
       data = unpack(data)
-      for(let transformer_name of transformer) {
+      for (let transformer_name of transformer) {
         switch (transformer_name) {
           case "transform_options_list":
             data = transform_options_list(data)
@@ -150,10 +161,24 @@ export default {
             console.log("unknown transformer name:", transformer_name)
         }
       }
-      if(val_is_packed) {
+      if (val_is_packed) {
         data = pack_value(data)
       }
       return data
+    },
+    handle_reset() {
+      const handle = this.action.properties.handle_result
+      if (handle) {
+        if (handle.type === "assign_to_aspect") {
+          const aspect_loc = this.$_.concat([[EDIT, null]], aspect_loc_str2arr(handle.aspect, this.extra.list_index))
+          const aspect = aspect_from_location(this.$store, aspect_loc)
+          this.$store.dispatch(ENTRIES_SET_ENTRY_VALUE, {
+            aspect_loc,
+            value: aspect_default_value(aspect)
+          })
+          // console.log("reset", aspect_loc, aspect)
+        }
+      }
     },
     handle_result(result) {
       const handle = this.action.properties.handle_result
@@ -186,12 +211,18 @@ export default {
     mvalue: {
       immediate: true,
       handler(new_val, prev_val) {
+        // console.log(new_val, prev_val)
         // catch create call with nothing
-        if(prev_val === undefined && unpack(new_val) === null) {
+        if (prev_val === undefined) {
           return
         }
+        // todo could also be another default
         if (this.auto_trigger) {
-          this.trigger_action()
+          if (this.$_.isEqual(unpack(new_val), aspect_raw_default_value(this.aspect))) {
+            this.reset_action()
+          } else {
+            this.trigger_action()
+          }
         }
       }
     }

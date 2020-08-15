@@ -30,9 +30,8 @@
 <script>
     import Title_Description from "../components/util/Title_Description";
     import SingleSelect from "../components/input/SingleSelect";
-    import {create_entry} from "../lib/entry";
-    import {object_list2options, string_list2options} from "../lib/options";
-    import {TEMPLATES_TYPE} from "../store/templates";
+    import {object_list2options, string_list2options} from "~/lib/options";
+    import {TEMPLATES_TYPE} from "~/store/templates";
     import EntryCreateMixin from "~/components/entry/EntryCreateMixin"
 
 
