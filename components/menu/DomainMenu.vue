@@ -21,7 +21,7 @@
             v-icon mdi-arrow-left-thick
       v-row
         v-col.py-0
-          Entry(:navigation_props="entry_navigation_props")
+          Entry(:entry="selected_entry" :navigation_props="entry_navigation_props")
 </template>
 
 <script>
@@ -50,6 +50,10 @@
       },
       prominent_filters() {
         return this.$_.get(this.domain_data, "filters.prominent_filters")
+      },
+      selected_entry() {
+        if(this.$route.query.uuid)
+          return this.$store.getters["entries/get_entry"](this.$route.query.uuid)
       }
     }
   }

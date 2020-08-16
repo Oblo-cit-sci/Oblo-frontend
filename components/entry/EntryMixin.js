@@ -36,10 +36,12 @@ import AspectListMixin from "~/components/global/AspectListMixin"
 export default {
   name: "EntryMixin",
   mixins: [EntryPagesMixin, AspectListMixin],
-  props: {
-    passed_uuid: {
-      type: String
-    }, // todo: should also be just an entry obj,
+  props:
+    {
+    entry: {
+      type: Object,
+      required: true
+    }
     // no fuzz and crashes?
   },
   data() {
@@ -51,23 +53,21 @@ export default {
   computed: {
     ...mapGetters({"is_admin": "user/is_admin"}),
     uuid() {
+      return this.entry.uuid
       // console.log("UUID", this.passed_uuid, this.$route)
-      if (this.passed_uuid) {
-        return this.passed_uuid
-      } else if (this.$route.params.uuid) {
-        return this.$route.params.uuid
-      } else if (this.$route.query.uuid) {
-        return this.$route.query.uuid
-      } else if (this.delete_entry) {
-        console.log("del")
-        return null
-      } else {
-        console.log("no UUID for entry/route:", this.$route)
-        return null
-      }
-    },
-    mode() {
-      return this.$route.query.entry_mode || VIEW
+      // if (this.passed_uuid) {
+      //   return this.passed_uuid
+      // } else if (this.$route.params.uuid) {
+      //   return this.$route.params.uuid
+      // } else if (this.$route.query.uuid) {
+      //   return this.$route.query.uuid
+      // } else if (this.delete_entry) {
+      //   console.log("del")
+      //   return null
+      // } else {
+      //   console.log("no UUID for entry/route:", this.$route)
+      //   return null
+      // }
     },
     entry_date() {
       return printDate(new Date(this.entry.creation_ts))
@@ -77,18 +77,6 @@ export default {
     },
     tags_config() {
       return this.$_.get(this.template.rules,"tags_config", [])
-    },
-    entry() {
-      let entry = null
-      if (this.is_editable_mode) {
-        entry = this.$store.getters[ENTRIES_GET_EDIT]()
-      } else {
-        entry = this.$store.getters[ENTRIES_GET_ENTRY](this.uuid)
-      }
-      if (!entry) {
-        console.log("WARNING, ENTRY MISSING IN CACHE")
-      }
-      return entry
     },
     has_parent() {
       return has_parent(this.entry)

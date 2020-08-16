@@ -3,11 +3,11 @@
     v-row.col-sm-12#pwlist-top(v-if="results_received")
       div {{$tc("comp.previewlist.num_entries", num_entries)}}
     #pwlist-wrapper
-      v-row.mx-1(v-for="uuid in visible_entries"
-        :key="uuid")
+      v-row.mx-1(v-for="entry in visible_entries"
+        :key="entry.uuid")
         v-col(cols=12)
           EntryPreview(
-            :passed_uuid="uuid"
+            :entry="entry"
             v-bind="preview_options"
             @delete_e="delete_e($event)")
     v-row.mx-0(v-if="requesting_entries && !next_loading")
@@ -21,7 +21,7 @@
   import EntryPreview from "~/components/entry/EntryPreview";
   import goTo from 'vuetify/lib/services/goto'
   import SimplePaginate from "../SimplePaginate";
-  import {ENTRIES_HAS_ENTRY} from "~/store/entries";
+  import {ENTRIES_GET_ENTRY, ENTRIES_HAS_ENTRY} from "~/store/entries";
   import {TEMPLATES_TYPE} from "~/store/templates";
 
   export default {
@@ -77,7 +77,8 @@
         let from_index = (this.page - 1) * this.entries_per_page
         let to_index = from_index + this.entries_per_page
         const entries = this.entries.slice(from_index, to_index)
-        return this.$_.filter(entries, e => !this.deleted.includes(e.uuid))
+        const uuids =  this.$_.filter(entries, e => !this.deleted.includes(e.uuid))
+        return this.$_.map(uuids, uuid => this.$store.getters[ENTRIES_GET_ENTRY](uuid))
       },
       has_entries() {
         return this.num_entries > 0

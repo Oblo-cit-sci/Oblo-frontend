@@ -17,7 +17,7 @@ export default {
     // drawer: Boolean,
     // layers: Array,
     // navigation_mode: String, // synced
-    selected_entry_uuid: String // synced
+    // selected_entry_uuid: String // synced
   },
   data() {
     return {
@@ -40,9 +40,6 @@ export default {
     },
     nav_mode_entry() {
       return this.navigation_mode === ENTRY
-    },
-    selected_entry() {
-      return this.$store.getters[ENTRIES_GET_ENTRY](this.selected_entry_uuid)
     },
     preview_options() {
       return {

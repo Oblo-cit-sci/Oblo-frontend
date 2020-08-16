@@ -13,8 +13,8 @@
         a(@click="to_parent(true, mode)") {{parent_title}}
     .ml-3(v-if="is_view_mode")
       v-row(:style="{'text-align': 'right', 'font-size':'80%'}")
-       span.my-auto {{$t("comp.entrypreview.created")}} {{entry_date}}
-       span.ml-1.blue--text {{is_draft ? $t('comp.entrypreview.draft') : ""}}
+        span.my-auto {{$t("comp.entrypreview.created")}} {{entry_date}}
+        span.ml-1.blue--text {{is_draft ? $t('comp.entrypreview.draft') : ""}}
       v-row
         MetaChips(:meta_aspects="meta_aspects")
       v-row
@@ -73,149 +73,151 @@
       EntryActions(
         v-bind="entry_actions_props"
         :page.sync="page"
-        v-on:entryAction="entryAction($event)"
+        @entry-action="entryAction($event)"
         @mode="mode=$event")
-    v-row
-      DecisionDialog(
-        :open.sync="openSaveDialog"
-        @action="edit_or_save_dialog($event)"
-        v-bind="unsaved_changes_dialog")
   v-container(v-else)
-    div no uuid
+    div
 </template>
 
 <script>
 
-  import {mapGetters} from "vuex"
-  import DecisionDialog from "../util/DecisionDialog";
-  import Aspect from "../Aspect";
-  import EntryActions from "./EntryActions";
-  import Title_Description from "../util/Title_Description";
-  import EntryNavMixin from "../EntryNavMixin";
-  import EntryMixin from "./EntryMixin";
-  import FullEntryMixin from "./FullEntryMixin";
-  import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
-  import PersistentStorageMixin from "../util/PersistentStorageMixin";
-  import EntryValidation from "./EntryValidation";
-  import {ENTRIES_GET_EDIT, ENTRIES_GET_ENTRY} from "~/store/entries";
-  import {EDIT, ENTRY, VIEW} from "~/lib/consts";
-  import {privacy_color, privacy_icon} from "~/lib/util";
-  import ChangedAspectNotice from "./ChangedAspectNotice";
-  import MetaChips from "./MetaChips";
-  import EntryActorList from "./EntryActorList";
-  import {TEMPLATES_TYPE} from "~/store/templates";
-  import {USER_LOGGED_IN} from "~/store/user"
-  import Taglist from "~/components/global/Taglist"
-  import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
-  import EntryTags from "~/components/entry/EntryTags"
-  import AspectSetMixin from "~/components/aspects/AspectSetMixin"
+import {mapGetters} from "vuex"
+import Aspect from "../Aspect";
+import EntryActions from "./EntryActions";
+import Title_Description from "../util/Title_Description";
+import EntryNavMixin from "../EntryNavMixin";
+import EntryMixin from "./EntryMixin";
+import FullEntryMixin from "./FullEntryMixin";
+import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
+import PersistentStorageMixin from "../util/PersistentStorageMixin";
+import EntryValidation from "./EntryValidation";
+import {ENTRIES_GET_EDIT, ENTRIES_GET_ENTRY} from "~/store/entries";
+import {EDIT, ENTRY, VIEW} from "~/lib/consts";
+import {privacy_color, privacy_icon} from "~/lib/util";
+import ChangedAspectNotice from "./ChangedAspectNotice";
+import MetaChips from "./MetaChips";
+import EntryActorList from "./EntryActorList";
+import {TEMPLATES_TYPE} from "~/store/templates";
+import {USER_LOGGED_IN} from "~/store/user"
+import Taglist from "~/components/global/Taglist"
+import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
+import EntryTags from "~/components/entry/EntryTags"
+import AspectSetMixin from "~/components/aspects/AspectSetMixin"
 
-  export default {
-    name: "Entry",
-    mixins: [EntryNavMixin, EntryMixin, TriggerSnackbarMixin, TypicalAspectMixin, PersistentStorageMixin, FullEntryMixin, AspectSetMixin],
-    components: {
-      EntryTags,
-      Taglist,
-      EntryActorList,
-      MetaChips,
-      ChangedAspectNotice,
-      EntryValidation,
-      DecisionDialog,
-      Aspect,
-      EntryActions,
-      Title_Description,
-    },
-    created() {
-      this.set_aspects([this.asp_entry_roles()])
-    },
-    data() {
-      return {
-        entry_complete: false,
-        router_next: null,
-        delete_entry: false
-      }
-    },
-    methods: {
-      entryAction(action) {
-        if (action === "delete") {
-          this.delete_entry = true
-        }
-      }
-    },
-    computed: {
-      ...mapGetters({logged_in: USER_LOGGED_IN}),
-      aspect_loc() {
-        if (this.is_editable_mode) {
-          return [EDIT, this.uuid]
-        } else {
-          return [ENTRY, this.uuid]
-        }
-      },
-      show_validation_comp() {
-        return this.is_edit_mode || this.is_review_mode
-      },
-      license_aspect() {
-        return this.asp_license("license", ["cc_licenses"], null)
-      },
-      aspects() {
-        return this.$store.getters[TEMPLATES_TYPE](this.template_slug).aspects
-      },
-      license_privacy_mode() {
-        if (this.logged_in && this.is_creator || this.$store.getters["user/is_admin"]) {
-          return EDIT
-        } else {
-          return VIEW
-        }
-      },
-      entry_roles_mode() {
-        if(this.is_creator) {
-          return EDIT
-        } else {
-          return VIEW
-        }
-      },
-      // maybe also consider:
-      // https://github.com/edisdev/download-json-data/blob/develop/src/components/Download.vue
-      page_info() {
-        //console.log(this.template, this.page, this.template.rules.pages[this.page])
-        if (this.has_pages)
-          return this.template.rules.pages[this.page]
-        else
-          return null
-      },
-      // wrong, create should be for all that are not local/saved or published
-      meta_aspects() {
-        let result = []
-        result.push({icon: privacy_icon(this.entry.privacy), name: this.entry.privacy, color: privacy_color(this.entry.privacy)})
-        result.push({name: "License: " + this.entry.license})
-        return result
-      },
-      show_image() {
-        return this.entry.image
-      },
-      is_dirty() {
-        if(this.is_draft) {
-          return false
-        }
-        const edit_entry = this.$_.omit(this.$store.getters[ENTRIES_GET_EDIT](), ["local"])
-        const original_entry = this.$_.omit(this.$store.getters[ENTRIES_GET_ENTRY](this.uuid), ["local"])
-        // for (let k in edit_entry) {
-        //   if (!this.$_.isEqual(edit_entry[k], original_entry[k]))
-        //     console.log(k, this.$_.isEqual(edit_entry[k], original_entry[k]))
-        //   if (!original_entry.hasOwnProperty(k))
-        //     console.log("new", k)
-        // }
-        // for (let k in original_entry) {
-        //   if (!edit_entry.hasOwnProperty(k))
-        //     console.log("del", k)
-        // }
-        return !this.$_.isEqual(edit_entry, original_entry)
-      },
-      show_tags() {
-        return this.entry.tags && Object.keys(this.entry.tags).length > 0
-      },
+export default {
+  name: "Entry",
+  mixins: [EntryNavMixin, EntryMixin, TriggerSnackbarMixin, TypicalAspectMixin, PersistentStorageMixin,
+    FullEntryMixin, AspectSetMixin],
+  components: {
+    EntryTags,
+    Taglist,
+    EntryActorList,
+    MetaChips,
+    ChangedAspectNotice,
+    EntryValidation,
+    Aspect,
+    EntryActions,
+    Title_Description,
+  },
+  props: {
+
+  },
+  created() {
+    this.set_aspects([this.asp_entry_roles()])
+  },
+  data() {
+    return {
+      entry_complete: false,
+      router_next: null,
+      delete_entry: false
     }
+  },
+  methods: {
+    entryAction(action) {
+      // console.log("received entry-A", action)
+      if (action === "delete") {
+        this.delete_entry = true
+      }
+    }
+  },
+  computed: {
+    ...mapGetters({logged_in: USER_LOGGED_IN}),
+    aspect_loc() {
+      if (this.is_editable_mode) {
+        return [EDIT, this.uuid]
+      } else {
+        return [ENTRY, this.uuid]
+      }
+    },
+    show_validation_comp() {
+      return this.is_edit_mode || this.is_review_mode
+    },
+    license_aspect() {
+      return this.asp_license("license", ["cc_licenses"], null)
+    },
+    aspects() {
+      return this.$store.getters[TEMPLATES_TYPE](this.template_slug).aspects
+    },
+    license_privacy_mode() {
+      if (this.logged_in && this.is_creator || this.$store.getters["user/is_admin"]) {
+        return EDIT
+      } else {
+        return VIEW
+      }
+    },
+    entry_roles_mode() {
+      if (this.is_creator) {
+        return EDIT
+      } else {
+        return VIEW
+      }
+    },
+    // maybe also consider:
+    // https://github.com/edisdev/download-json-data/blob/develop/src/components/Download.vue
+    page_info() {
+      //console.log(this.template, this.page, this.template.rules.pages[this.page])
+      if (this.has_pages)
+        return this.template.rules.pages[this.page]
+      else
+        return null
+    },
+    // wrong, create should be for all that are not local/saved or published
+    meta_aspects() {
+      let result = []
+      result.push({
+        icon: privacy_icon(this.entry.privacy),
+        name: this.entry.privacy,
+        color: privacy_color(this.entry.privacy)
+      })
+      result.push({name: "License: " + this.entry.license})
+      return result
+    },
+    show_image() {
+      return this.entry.image
+    },
+    is_dirty() {
+      if (this.is_draft) {
+        return false
+      }
+      const edit_entry = this.$_.omit(this.$store.getters[ENTRIES_GET_EDIT](), ["local"])
+      const original_entry = this.$_.omit(this.$store.getters[ENTRIES_GET_ENTRY](this.uuid), ["local"])
+      // for (let k in edit_entry) {
+      //   if (!this.$_.isEqual(edit_entry[k], original_entry[k]))
+      //     console.log(k, this.$_.isEqual(edit_entry[k], original_entry[k]))
+      //   if (!original_entry.hasOwnProperty(k))
+      //     console.log("new", k)
+      // }
+      // for (let k in original_entry) {
+      //   if (!edit_entry.hasOwnProperty(k))
+      //     console.log("del", k)
+      // }
+      return !this.$_.isEqual(edit_entry, original_entry)
+    },
+    show_tags() {
+      return this.entry.tags && Object.keys(this.entry.tags).length > 0
+    },
   }
+}
 </script>
 
 <style scoped>
