@@ -10,7 +10,6 @@
       :entry="entry"
       :pages="template.rules.pages"
       @lastpage="more_follow_page = ($event)")
-      // todo this can come back
     div
       v-alert(v-if="is_edit_mode && can_edit && !logged_in" color="orange" type="warning")
         b You are not logged in
@@ -23,6 +22,7 @@
       :entry_complete="entry_complete"
       :is_dirty="is_dirty"
       :has_errors="has_errors"
+      @entry-action="$emit('entry-action', $event)"
       @mode="$emit('mode', $event)")
 </template>
 
@@ -75,9 +75,6 @@
       },
       private_local() {
         return (this.template.rules.privacy || PUBLIC) === PRIVATE_LOCAL
-      },
-      owner() {
-        return current_user_is_owner(this.$store, this.entry)
       }
     }
   }

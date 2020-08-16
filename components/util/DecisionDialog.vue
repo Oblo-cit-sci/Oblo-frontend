@@ -1,41 +1,58 @@
 <template lang="pug">
-  v-dialog(v-bind:value="open" max-width="500"  v-on:update:value="$emit('update:open', false)")
+  v-dialog(v-model="dialog_open" max-width="500")
     v-card
-      v-card-title {{title}}
-      v-card-text {{text}}
+      v-card-title {{config.title}}
+      v-card-text {{config.text}}
       v-card-actions
-        v-btn(v-if="show_cancel" text :color="cancel_color" @click="cancel") {{cancel_text}}
-        v-btn(text :color="confirm_color" @click="confirm") {{confirm_text}}
+        v-btn(v-if="config.show_cancel" text :color="config.cancel_color" @click="submit(false)") {{config.cancel_text}}
+        v-btn(text :color="config.confirm_color" @click="submit(true)") {{config.confirm_text}}
 </template>
 
 <script>
 
-    const colors = ["error", "success"]
+const colors = ["error", "success"]
 
-    export default {
-        name: "DecisionDialog",
-        props: {
-            id: {required: true},
-            open: {type: Boolean, default: false},
-            title: {type: String, default: ""},
-            text: {type: String, default: ""},
-            cancel_text: {type: String, default: "Cancel"},
-            cancel_color: {type: String, default: "error"},
-            confirm_text: {type: String, default: "Confirm"},
-            confirm_color: {type: String, default: "success"},
-            show_cancel: {type: Boolean, default: true}
-        },
-        methods: {
-            cancel() {
-                this.$emit("update:open", false)
-                this.$emit("action", {confirm: false, id: this.id})
-            },
-            confirm() {
-                this.$emit("update:open", false)
-                this.$emit("action", {confirm: true, id: this.id})
-            }
-        },
+export default {
+  name: "DecisionDialog",
+  created() {
+    console.log("dd-created")
+    this.$bus.$on("dialog-open", ({data, confirm_method, cancel_method}) => {
+      console.log("dialog-open", data, confirm_method)
+      this.config = Object.assign(this.$_.cloneDeep(this.default_config), data)
+      this.callback_methods = {
+        confirm: confirm_method,
+        cancel: cancel_method
+      }
+      this.dialog_open = true
+    })
+  },
+  data() {
+    const default_config = {
+      title: "",
+      text: "",
+      cancel_text: "Cancel",
+      cancel_color: "error",
+      confirm_text: "Confirm",
+      confirm_color: "success",
+      show_cancel: true
     }
+    return {
+      dialog_open: false,
+      default_config,
+      config: default_config,
+      callback_methods: {}
+    }
+  },
+  methods: {
+    submit(confirm) {
+      this.dialog_open = false
+      const method = this.callback_methods[confirm ? "confirm" : "cancel"]
+      if(method) {
+        method()
+      }
+    }
+  },
+}
 </script>
 
 <style scoped>

@@ -5,7 +5,6 @@
   export default {
     data() {
       return {
-        openSaveDialog: false,
         unsaved_changes_dialog: unsaved_changes_default_dialog,
       }
     },

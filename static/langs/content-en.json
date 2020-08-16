@@ -61,8 +61,7 @@
     },
     {
       "h3": "Mapbox API",
-      "html":
-        "<p>We are making use of the mapbox API for map display. APIs and Mobile SDKs: We automatically collect certain technical information whenever requests are made to our APIs, including (a) IP address, (b) device and browser information, (c) operating system, (d) the content of the request, (e) the date and time of the request, and (f) limited location and usage data. We delete IP addresses after 30 days. In addition, when a mobile application uses our SDKs to access our APIs, it may send us certain limited location and usage data along with an ephemeral ID. We delete this ephemeral ID within 24 hours and do not associate it or the unprocessed mobile location data with any personally identifying information, including names, permanent IDs, email addresses, IP addresses, or phone numbers. We also collect randomly-generated IDs for the limited purpose of analyzing the use of our APIs, including the number of active users. We will delete the randomly generated IDs and the content of requests made to our APIs after 36 months. See more details here: <a href='https://www.mapbox.com/legal/privacy' target='_blank'>Mapbox Privacy policy</a><p>"
+      "html": "<p>We are making use of the mapbox API for map display. APIs and Mobile SDKs: We automatically collect certain technical information whenever requests are made to our APIs, including (a) IP address, (b) device and browser information, (c) operating system, (d) the content of the request, (e) the date and time of the request, and (f) limited location and usage data. We delete IP addresses after 30 days. In addition, when a mobile application uses our SDKs to access our APIs, it may send us certain limited location and usage data along with an ephemeral ID. We delete this ephemeral ID within 24 hours and do not associate it or the unprocessed mobile location data with any personally identifying information, including names, permanent IDs, email addresses, IP addresses, or phone numbers. We also collect randomly-generated IDs for the limited purpose of analyzing the use of our APIs, including the number of active users. We will delete the randomly generated IDs and the content of requests made to our APIs after 36 months. See more details here: <a href='https://www.mapbox.com/legal/privacy' target='_blank'>Mapbox Privacy policy</a><p>"
     }
   ],
   "register": {
@@ -326,6 +325,17 @@
     "map_wrapper": {
       "locations": "@:w.n_locations",
       "several_countries": "Several countries"
+    },
+    "entry": {
+      "cancel_draft": "Creation canceled",
+      "dialogs": {
+        "cancel": {
+          "title": "Dismiss draft",
+          "text": "Are you sure you want to dismiss this draft?",
+          "cancel_text": "keep on editing",
+          "confirm_text": "dismiss this draft"
+        }
+      }
     }
   },
   "lang": {

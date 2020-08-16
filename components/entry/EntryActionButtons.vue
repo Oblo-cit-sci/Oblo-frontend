@@ -30,15 +30,14 @@
       v-btn(v-if="can_download" @click="download") download
         v-icon.ml-2 mdi-download
     span(v-else)
-      v-btn(v-if="!is_domain_page" @click="back()") back
-    DecisionDialog(v-bind="dialog_data" :open.sync="dialog_visible" v-on:action="dialog_action($event)")
+      v-btn(v-if="!is_domain_page" @click="back()") {{$t.w.back}}
 </template>
 
 <script>
 
 import {mapGetters} from "vuex"
 
-import {DRAFT, EDIT, PUBLISHED, REQUIRES_REVIEW} from "~/lib/consts"
+import {DRAFT, PUBLISHED, REQUIRES_REVIEW} from "~/lib/consts"
 import EntryMixin from "~/components/entry/EntryMixin"
 import {
   ENTRIES_DELETE_ENTRY,
@@ -53,17 +52,14 @@ import EntryNavMixin from "~/components/EntryNavMixin"
 import {prepare_for_submission} from "~/lib/entry"
 import {FILES_GET_FILE, FILES_REMOVE_FILE} from "~/store/files"
 import {base64file_to_blob} from "~/lib/util"
-import {LAST_BASE_PAGE_PATH, POP_LAST_PAGE_PATH} from "~/store"
 import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
 import {APP_CONNECTED} from "~/store/app"
 import {USER_LOGGED_IN} from "~/store/user"
-import DecisionDialog from "~/components/util/DecisionDialog"
 import EntryActionsMixin from "~/components/entry/EntryActionsMixin"
 
 export default {
   name: "EntryActionButtons",
   mixins: [EntryMixin, EntryActionsMixin, TriggerSnackbarMixin, EntryNavMixin, PersistentStorageMixin],
-  components: {DecisionDialog},
   props: {
     additional_actions: {
       type: Object
@@ -84,15 +80,6 @@ export default {
         cancel_color: "",
         confirm_color: "error",
         confirm_text: "delete"
-      },
-      cancel_dialog_data: {
-        id: "cancel",
-        title: "Dismiss changes",
-        text: "Are you sure you want to dismiss your changes?",
-        cancel_color: "",
-        confirm_color: "error",
-        cancel_text: "keep on editing",
-        confirm_text: "dismiss"
       },
       dialog_data: {id: "none"},
     }
@@ -143,10 +130,24 @@ export default {
     },
     cancel() {
       if (this.is_draft) {
-        this.$store.dispatch(ENTRIES_DELETE_ENTRY, this.uuid)
-        this.ok_snackbar("Creation canceled")
-        this.$emit("entryAction", "delete")
-        this.back()
+        // this.$emit("entry-action", "cancel")
+        console.log("cancel draft")
+        const base_t_cancel_loc = "comp.entry.dialogs.cancel"
+        this.$bus.$emit("dialog-open", {
+          data: {
+            title: this.$t(`${base_t_cancel_loc}.title`),
+            text: this.$t(`${base_t_cancel_loc}.text`),
+            cancel_color: "",
+            confirm_color: "error",
+            cancel_text: this.$t(`${base_t_cancel_loc}.cancel_text`),
+            confirm_text: this.$t(`${base_t_cancel_loc}.confirm_text`)
+          }, confirm_method: () => {
+            this.$emit("entry-action", "delete")
+            this.$store.dispatch(ENTRIES_DELETE_ENTRY, this.uuid)
+            this.back()
+            this.ok_snackbar(this.$t("comp.entry.cancel_draft"))
+          }
+        })
       } else {
         this.$store.commit(ENTRIES_RESET_EDIT)
         this.back()
@@ -159,7 +160,7 @@ export default {
       this.$store.dispatch(ENTRIES_DELETE_ENTRY, this.uuid)
       this.$store.commit(SEARCH_DELETE_ENTRY, this.uuid)
       this.ok_snackbar("Entry deleted")
-      this.$emit("entryAction", "delete")
+      this.$emit("entry-action", "delete")
       this.back()
     },
     save() {
@@ -271,20 +272,6 @@ export default {
       } catch (err) {
         // todo for entry exists already, there could be a change in the button label, but maybe the data of that entry should be fetched
         this.err_error_snackbar(err)
-      }
-    },
-    back(remove_params = []) {
-      // todo maybe use util.route_change_query
-      const last_path = Object.assign({}, this.$store.getters[LAST_BASE_PAGE_PATH])
-      // console.log(remove_params, "lp", last_path)
-      this.$store.commit(POP_LAST_PAGE_PATH)
-      if (!this.$_.isEmpty(last_path)) {
-        for (let p of remove_params) {
-          delete last_path.query[p]
-        }
-        this.$router.push(last_path)
-      } else {
-        this.home()
       }
     }
   }

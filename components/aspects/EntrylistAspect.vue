@@ -37,7 +37,7 @@
         v-bind="pagination_props"
         @update:page="set_page($event)"
         @lastpage="more_follow_page = ($event)")
-    DecisionDialog(v-bind="remove_data_dialog" :open.sync="show_remove" v-on:action="remove($event)")
+    <!--    DecisionDialog(v-bind="remove_data_dialog" :open.sync="show_remove" v-on:action="remove($event)")-->
 </template>
 
 <script>
@@ -45,7 +45,6 @@
     EDIT,
     ENTRY_INDEX
   } from "../../lib/consts";
-  import DecisionDialog from "../util/DecisionDialog";
   import {create_entry} from "../../lib/entry";
   import EntryNavMixin from "../EntryNavMixin";
   import ListMixin from "../ListMixin";
@@ -66,7 +65,7 @@
 
   export default {
     name: "EntrylistAspect",
-    components: {DecisionDialog, ListPagination},
+    components: {ListPagination},
     mixins: [AspectComponentMixin, EntryNavMixin, ListMixin, PersistentStorageMixin],
     data() {
       return {

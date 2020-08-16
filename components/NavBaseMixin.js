@@ -1,5 +1,5 @@
 import {QP_D, QP_F, VIEW} from "~/lib/consts";
-import {INIT_PAGE_PATH} from "~/store"
+import {INIT_PAGE_PATH, LAST_BASE_PAGE_PATH, POP_LAST_PAGE_PATH} from "~/store"
 import FixDomainMixin from "~/components/global/FixDomainMixin"
 import {PAGE_DOMAIN} from "~/lib/pages"
 
@@ -53,6 +53,20 @@ export default {
         this.$store.commit(INIT_PAGE_PATH, this.$route)
       }
       this.$router.push(route)
+    },
+    back(remove_params = []) {
+      // todo maybe use util.route_change_query
+      const last_path = Object.assign({}, this.$store.getters[LAST_BASE_PAGE_PATH])
+      // console.log(remove_params, "lp", last_path)
+      this.$store.commit(POP_LAST_PAGE_PATH)
+      if (!this.$_.isEmpty(last_path)) {
+        for (let p of remove_params) {
+          delete last_path.query[p]
+        }
+        this.$router.push(last_path)
+      } else {
+        this.home()
+      }
     }
   }
 }

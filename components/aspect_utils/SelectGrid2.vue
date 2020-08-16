@@ -60,7 +60,6 @@ export default {
       }
     },
     options() {
-      console.log(this.aspect)
       return this.get_items(this.aspect.items)
     },
     row_style() {

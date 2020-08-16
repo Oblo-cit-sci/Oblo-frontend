@@ -30,10 +30,10 @@
     <!--    h3 Clear entries-->
     <!--    div delete all entries. Make sure that you made backups of the entries you made-->
     <!--    v-btn(@click="show_clear_entries" color="error") Clear-->
-    DecisionDialog(
-      v-bind="dialog_data"
-      :open.sync="show_dialog"
-      @action="dialog_action($event)")
+    <!--    DecisionDialog(-->
+    <!--      v-bind="dialog_data"-->
+    <!--      :open.sync="show_dialog"-->
+    <!--      @action="dialog_action($event)")-->
 </template>
 
 <script>
@@ -41,7 +41,6 @@
 
   import Aspect from "../components/Aspect";
   import LoadFileButton from "../components/util/LoadFileButton";
-  import DecisionDialog from "../components/util/DecisionDialog";
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
   import {export_data, merge_imported_entries} from "~/lib/import_export";
   import PersistentStorageMixin from "../components/util/PersistentStorageMixin";
@@ -58,7 +57,7 @@
 
   export default {
     name: "settings",
-    components: {EntryPreviewList, DecisionDialog, LoadFileButton, Aspect},
+    components: {EntryPreviewList, LoadFileButton, Aspect},
     mixins: [TriggerSnackbarMixin, PersistentStorageMixin, AspectListMixin, FixDomainMixin, TypicalAspectMixin],
     created() {
       const settings = this.$store.getters[USER_SETTINGS]

@@ -85,7 +85,6 @@ export default {
       return this.aspect.attr.itemname || "item"
     },
     more_allowed() {
-      console.log("more? 1empty", this.has_one_empty)
       return (!this.max || this.value.length < this.max) && !this.disabled && !this.aspect.attr.ref_size && !this.has_one_empty
     },
     requieres_more_color() {
