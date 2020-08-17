@@ -18,7 +18,8 @@ export default {
       required: true
     },
     ext_value: {
-      type: [Object, String, Number, Array, Boolean]
+      type: [Object, String, Number, Array, Boolean],
+      default: undefined
     },
     mode: { // todo well, this is gonna be messy
       type: String,
@@ -121,7 +122,7 @@ export default {
           return this.ext_value
         } else {
           const raw = aspect_raw_default_value(this.aspect)
-          // console.log("raw", raw, this.is_unpacked)
+          console.log("raw", raw, this.is_unpacked)
           if (this.is_unpacked)
             return raw
           else

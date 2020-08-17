@@ -7,6 +7,7 @@ export default {
   name: "AspectComponentMixin",
   props: {
     mvalue: {
+      type: Object,
       required: true
     },
     aspect: {
