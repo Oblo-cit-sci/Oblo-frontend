@@ -29,13 +29,11 @@ export const ENTRIES_ADD_FILE_ATTACHMENT = "entries/add_file_attachment"
 export const ENTRIES_REMOVE_FILE_ATTACHMENT = "entries/remove_file_attachment"
 export const ENTRIES_SET_FROM_ARRAY = "entries/set_from_array"
 export const ENTRIES_RESET_EDIT = "entries/reset_edit"
-export const ENTRIES_CLEAR = "entries/clear"
 
 // internal
 export const _SET_ENTRY_VALUE = "_set_entry_value"
 export const UPDATE_TAGS = "update_tags"
 // Getter
-export const ENTRIES_HAS_ENTRY = "entries/has_entry"
 export const ENTRIES_GET_ENTRY = "entries/get_entry"
 export const ENTRIES_HAS_FULL_ENTRY = "entries/has_full_entry"
 export const ENTRIES_GET_OWN_ENTRIES_UUIDS = "entries/get_own_entries_uuids"

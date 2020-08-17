@@ -2,7 +2,7 @@
   v-flex#top(xs12 sm10 md10)
     v-row
       v-col
-        div {{$t("asp.username.label")}}: {{user_data.registered_name}}
+        div {{$t("asp.username.label")}}: {{registered_name}}
         v-chip(outlined disabled small) {{user_data.global_role}}
       v-col
         v-row
@@ -61,7 +61,7 @@
         :wait="waiting"
         :style="main_container_width_style"
         :init_request="true"
-        :configuration="{required:[{name:'actor', registered_name:user_data.registered_name}]}")
+        :configuration="{required:[{name:'actor', registered_name:registered_name}]}")
 </template>
 
 <script>
@@ -205,7 +205,7 @@
             .then(() => {
               // request the avatar to refill the browser cache
               this.profile_version_ts = Math.floor(new Date().getTime() / 1000)
-              this.$axios.get(this.$api.url_actor__$registered_name__avatar(this.user_data.registered_name), {
+              this.$axios.get(this.$api.url_actor__$registered_name__avatar(this.registered_name), {
                 withCredentials: false,
                 headers: {
                   "accept": "image/jpeg"
@@ -227,6 +227,9 @@
         user_data: USER,
         own_entries_uuids: ENTRIES_GET_OWN_ENTRIES_UUIDS
       }),
+      registered_name() {
+        return this.user_data.registered_name
+      },
       edit_mode() {
         const e = this.$route.query.edit
         return e || (typeof (e) === "string" && e === "true")
@@ -238,7 +241,7 @@
         return this.$store.getters.is_visitor
       },
       profile_pic() {
-        return this.$api.url_actor__$registered_name__profile_pic(this.user_data.registered_name) + "?q=" + this.profile_version_ts
+        return this.$api.url_actor__$registered_name__profile_pic(this.registered_name) + "?q=" + this.profile_version_ts
       },
       any_password_invalid() {
         return this.$_.some(this.password_aspects, (a) => a.hasOwnProperty("error") && a.error)

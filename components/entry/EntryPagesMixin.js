@@ -25,7 +25,7 @@ export default {
     },
     shown_aspects() {
       if (this.has_pages) {
-        return this.$_.filter(this.template.aspects, (a) => {
+        return this.$_.filter(this.aspects, (a) => {
           return (this.page === 0 && (a.attr.page === 0 || a.attr.page === undefined) ||
             (this.page > 0 && a.attr.page === this.page))
         })

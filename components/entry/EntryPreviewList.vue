@@ -21,8 +21,9 @@
   import EntryPreview from "~/components/entry/EntryPreview";
   import goTo from 'vuetify/lib/services/goto'
   import SimplePaginate from "../SimplePaginate";
-  import {ENTRIES_GET_ENTRY, ENTRIES_HAS_ENTRY} from "~/store/entries";
+  import {ENTRIES_GET_ENTRY} from "~/store/entries";
   import {TEMPLATES_TYPE} from "~/store/templates";
+  import {mapGetters} from "vuex"
 
   export default {
     name: "EntryPreviewList",
@@ -50,12 +51,13 @@
       }
     },
     beforeUpdate() {
-      this.deleted = this.$_.filter(this.deleted, uuid => !this.$store.getters[ENTRIES_HAS_ENTRY](uuid))
+      this.deleted = this.$_.filter(this.deleted, uuid => !this.has_entry(uuid))
     },
     mounted() {
       this.update_start_y()
     },
     computed: {
+      ...mapGetters({"has_entry": "entries/has_entry"}),
       on_overflow_page() {
         return this.$route.name === "domain"
       },

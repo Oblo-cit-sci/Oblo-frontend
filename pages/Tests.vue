@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    EntryPreview(passed_uuid="b76ecefb-88dd-4d52-a4f3-ec5118737bcf" :show_tags="true")
+    v-btn(@click="snack") snack
 </template>
 
 <script>
@@ -12,15 +12,14 @@ import TagsMixin from "~/lib/TagsMixin"
 import SingleSelect from "~/components/input/SingleSelect"
 import EntryFetchMixin from "~/components/entry/EntryFetchMixin"
 import EntryPreview from "~/components/entry/EntryPreview"
+import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
 
 export default {
   name: "Tests",
-  mixins: [EntryFetchMixin],
+  mixins: [EntryFetchMixin, TriggerSnackbarMixin],
   components: {
-    EntryPreview
   },
   created() {
-
     this.guarantee_entry("b76ecefb-88dd-4d52-a4f3-ec5118737bcf")
   },
   data() {
@@ -29,7 +28,11 @@ export default {
   },
   computed: {
   },
-  methods: {},
+  methods: {
+    snack() {
+      this.ok_snackbar("cool"+ new Date())
+    }
+  },
   watch: {}
 }
 </script>

@@ -29,16 +29,11 @@ export const ALL_CODES = "all_codes"
 export const ADD_CODES = "add_codes"
 export const DOMAIN_TITLE = "domain_title"
 
-// ******** SNACKBAR
-export const SNACKBAR = "snackbar"
-export const SNACKBAR_RESET = "snackbar_reset"
-export const SNACKBAR_TRIGGER = "snackbar_trigger"
 
 
 export const state = () => ({
   // comes by init
   codes: {},
-  snackbar: {message: "", status: true, trigger: false},
   draft_numbers: {},
   domains: [],
   domain: {
@@ -62,12 +57,6 @@ export const mutations = {
     for (let code_entry of code_arr) {
       state.codes[code_entry.slug] = code_entry
     }
-  },
-  snackbar(state, snackbar) {
-    state.snackbar = Object.assign(snackbar, {trigger: true})
-  },
-  snackbar_reset(state) {
-    $nuxt.$set(state.snackbar, "trigger", false)
   },
   update_draft_number(state, type_slug) {
     state.draft_numbers[type_slug] = (state.draft_numbers[type_slug] || 0) + 1
@@ -119,11 +108,6 @@ export const mutations = {
 };
 
 export const getters = {
-  snackbar_trigger(state) {
-    return () => {
-      return state.snackbar.trigger
-    }
-  },
   is_visitor(state) {
     //console.log("visitor check");
     return state.user.user_data.global_role === VISITOR

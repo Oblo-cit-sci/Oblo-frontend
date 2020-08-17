@@ -18,8 +18,6 @@ import {
 } from "~/lib/consts";
 
 import {
-  ENTRIES_GET_EDIT,
-  ENTRIES_GET_ENTRY,
   ENTRIES_GET_ENTRY_TITLE,
   ENTRIES_GET_PARENT,
   ENTRIES_GET_RECURSIVE_ENTRIES,
@@ -29,7 +27,6 @@ import {
 import {FILES_GET_FILE} from "~/store/files";
 import {check_str_is_uuid, printDate} from "~/lib/util";
 import {TEMPLATES_TYPE} from "~/store/templates";
-import {USER_GET_REGISTERED_NAME} from "~/store/user"
 import EntryPagesMixin from "~/components/entry/EntryPagesMixin"
 import AspectListMixin from "~/components/global/AspectListMixin"
 
@@ -38,12 +35,11 @@ export default {
   mixins: [EntryPagesMixin, AspectListMixin],
   props:
     {
-    entry: {
-      type: Object,
-      required: true
-    }
-    // no fuzz and crashes?
-  },
+      entry: {
+        type: Object,
+        required: true
+      }
+    },
   data() {
     return {
       // aspect_locs: {},
@@ -51,23 +47,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({"is_admin": "user/is_admin"}),
+    ...mapGetters({"is_admin": "user/is_admin", "username": "user/registered_name"}),
     uuid() {
       return this.entry.uuid
-      // console.log("UUID", this.passed_uuid, this.$route)
-      // if (this.passed_uuid) {
-      //   return this.passed_uuid
-      // } else if (this.$route.params.uuid) {
-      //   return this.$route.params.uuid
-      // } else if (this.$route.query.uuid) {
-      //   return this.$route.query.uuid
-      // } else if (this.delete_entry) {
-      //   console.log("del")
-      //   return null
-      // } else {
-      //   console.log("no UUID for entry/route:", this.$route)
-      //   return null
-      // }
     },
     entry_date() {
       return printDate(new Date(this.entry.creation_ts))
@@ -76,7 +58,7 @@ export default {
       return this.template.rules.context !== GLOBAL || this.entry.entry_refs.parent
     },
     tags_config() {
-      return this.$_.get(this.template.rules,"tags_config", [])
+      return this.$_.get(this.template.rules, "tags_config", [])
     },
     has_parent() {
       return has_parent(this.entry)
@@ -97,14 +79,14 @@ export default {
       return this.entry.actors
     },
     creator() {
-      // todo this is just a workaround...
+      // todo this is just a workaround, for strange be behaviour
       // should be
       // console.log(this.entry.actors.filter(er => er.role === "creator")[0].actor)
       return this.$_.get(this.entry.actors.filter(er => er.role === "creator"), "0.actor", "")
     },
     is_creator() {
       // console.log(this.creator, this.$store.getters.registered_name)
-      return this.creator.registered_name === this.$store.getters[USER_GET_REGISTERED_NAME]
+      return this.creator.registered_name === this.username
     },
     template_slug() {
       return this.entry.template.slug
@@ -113,7 +95,7 @@ export default {
       return this.$store.getters[TEMPLATES_TYPE](this.template_slug)
     },
     template_color() {
-      return this.$_.get(this.template,"rules.map.marker_color")
+      return this.$_.get(this.template, "rules.map.marker_color")
     },
     // title() {
     //   return this.$store.getters[ENTRIES_GET_ENTRY_TITLE](this.uuid)
@@ -159,7 +141,7 @@ export default {
       return this.template.title
     },
     aspect_loc() {
-      return [ENTRY, this.uuid, this.template.slug]
+      return [ENTRY, this.uuid, this.template_slug]
     },
     outdated() {
       return false
@@ -167,7 +149,7 @@ export default {
     },
     download_title() {
       // todo title, wont update in real time
-      const entry_title = this.$store.getters[ENTRIES_GET_ENTRY_TITLE](this.entry.uuid)
+      const entry_title = this.$store.getters[ENTRIES_GET_ENTRY_TITLE](this.uuid)
       return (this.type_name + "_" + entry_title).replace(" ", "_") + ".json"
     },
     is_draft() {
@@ -197,9 +179,12 @@ export default {
     version() {
       return this.entry.version
     },
+    aspects() {
+      return this.template.aspects
+    },
     aspect_locs() {
       const aspect_locs = {}
-      for (let aspect of this.template.aspects) {
+      for (let aspect of this.aspects) {
         aspect_locs[aspect.name] = loc_append([this.aspect_loc], ASPECT, aspect.name)
       }
       for (let aspect of META_ASPECT_LIST) {
@@ -217,14 +202,14 @@ export default {
   // },
   methods: {
     download() {
-      let entries = this.$store.getters[ENTRIES_GET_RECURSIVE_ENTRIES](this.entry.uuid)
+      let entries = this.$store.getters[ENTRIES_GET_RECURSIVE_ENTRIES](this.uuid)
       entries = this.$_.map(entries, e => {
         const clone = this.$_.cloneDeep(e)
         delete clone.local
         return clone
       })
       export_data({entries: entries}, this.download_title)
-      this.$store.commit(ENTRIES_SET_DOWNLOADED, this.entry.uuid)
+      this.$store.commit(ENTRIES_SET_DOWNLOADED, this.uuid)
     },
     // update_aspect_locs() {
     //   // console.log("update_aspect_locs", this.entry !== null)

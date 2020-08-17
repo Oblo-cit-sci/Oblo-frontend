@@ -73,7 +73,6 @@
     EDIT_UUID,
     ENTRIES_DELETE_ENTRY,
     ENTRIES_DOMAIN,
-    ENTRIES_HAS_ENTRY,
     ENTRIES_SAVE_CHILD_N_REF,
     ENTRIES_VALUE
   } from "~/store/entries";
@@ -127,9 +126,6 @@
       }
     },
     computed: {
-      deleted_entry() {
-        return !this.$store.getters[ENTRIES_HAS_ENTRY](this.uuid)
-      },
       border_style() {
         if (this.is_draft) {
           return {"border": `solid 1px ${DRAFT_COLOR} !important`}

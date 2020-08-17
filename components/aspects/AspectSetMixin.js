@@ -24,6 +24,7 @@ export default {
   methods: {
     set_aspects(aspects) {
       const aspectMap = this.$_.keyBy(aspects, "name")
+      // todo values, should also be setable. for now just used for the err in entry-roles
       this.values = this.$_.mapValues(aspectMap, a => aspect_default_value(a))
       this.errors = this.$_.mapValues(aspectMap, a => null)
       this.aspects_set = true

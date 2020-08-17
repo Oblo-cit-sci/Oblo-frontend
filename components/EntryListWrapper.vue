@@ -19,13 +19,14 @@
 
   // like Search, but with fixed params (no text field)
   import EntryPreviewList from "./entry/EntryPreviewList"
-  import {async_entry_search, store_received_entries} from "~/lib/client"
+  import {store_received_entries} from "~/lib/client"
   import TriggerSnackbarMixin from "./TriggerSnackbarMixin"
   import CompactEntryList from "~/components/entry/CompactEntryList"
+  import EntrySearchMixin from "~/components/EntrySearchMixin"
 
   export default {
     name: "EntryListWrapper",
-    mixins: [TriggerSnackbarMixin],
+    mixins: [TriggerSnackbarMixin, EntrySearchMixin],
     components: {CompactEntryList, EntryPreviewList},
     props: {
       view_mode: {
@@ -55,7 +56,7 @@
       request_more() {
         this.searching = true
         // console.log("conf", conf)
-        async_entry_search(this.$api, this.configuration, this.entries_uuids.length).then(({data}) => {
+        this.async_entry_search(this.configuration, this.entries_uuids.length).then(({data}) => {
           const result = data.data
           const entry_uuids = store_received_entries(this.$store, result.entries)
           this.entries_uuids = this.$_.concat(this.entries_uuids, entry_uuids)

@@ -5,7 +5,6 @@
 
 <script>
   import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
-  import {SNACKBAR_TRIGGER} from "~/store";
 
   export default {
     name: "TheSnackbar",
@@ -19,22 +18,15 @@
       }
     },
     created: function () {
-      this.$store.watch(state => state.snackbar.trigger, () => {
-          let snackbar = this.$store.state.snackbar
-          if (snackbar.trigger) {
-            this.show = true
-            this.message = snackbar.message
-            this.color = snackbar.ok === true ? "success" : "error"
-            this.reset_trigger()
-          }
+      this.$bus.$on("snackbar",(data) => {
+        // this will cause the timer to reset, when the snackbar is already open...
+        if(this.show) {
+          this.timeout = this.timeout === 2000 ? 2001 : 2000
         }
-      )
-    },
-    computed: {
-      trigger() {
-        console.log("triggered")
-        return this.$store.getters[SNACKBAR_TRIGGER]()
-      }
+        this.show = true
+        this.message = data.message
+        this.color = data.ok === true ? "success" : "error"
+      })
     }
   }
 </script>

@@ -1,34 +1,29 @@
-import {get_proper_mode} from "~/lib/entry";
 import {EDIT, GLOBAL, NO_DOMAIN, QP_D, VIEW} from "~/lib/consts";
 import {aspect_loc_str} from "~/lib/aspect";
 import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
 import NavBaseMixin from "./NavBaseMixin";
 import {
   ENTRIES_GET_ENTRY,
-  ENTRIES_HAS_ENTRY,
   ENTRIES_HAS_FULL_ENTRY,
   ENTRIES_SAVE_ENTRY
 } from "~/store/entries";
-import {DOMAIN, INIT_PAGE_PATH, POP_LAST_PAGE_PATH} from "~/store";
+import {INIT_PAGE_PATH, POP_LAST_PAGE_PATH} from "~/store";
 import {TEMPLATES_GET_ASPECT_DEF} from "~/store/templates";
 import EntryActionsMixin from "~/components/entry/EntryActionsMixin"
 import URLQueryMixin from "~/components/util/URLQueryMixin"
-
+import {mapGetters} from "vuex"
 
 export default {
   mixins: [TriggerSnackbarMixin, NavBaseMixin, EntryActionsMixin, EntryActionsMixin, URLQueryMixin],
+
   methods: {
     // why does has_entry call get entry
-    has_entry(uuid) {
-      return this.$store.getters[ENTRIES_HAS_ENTRY](uuid)
-    },
     goto(uuid, force_mode) {
       // console.log("gotoooo")
       // todo should push not init?!
       this.$store.commit(INIT_PAGE_PATH, this.$route)
       const has_full_entry = this.$store.getters[ENTRIES_HAS_FULL_ENTRY](uuid)
       // console.log("has full", has_full_entry)
-      const entry = this.$store.getters[ENTRIES_GET_ENTRY](uuid)
       const mode = force_mode ? force_mode : this.proper_mode
       // console.log("full?", has_full_entry)
       if (!has_full_entry) { // todo replace values by entry.local.is_full: Boolean
@@ -132,11 +127,10 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({has_entry:"entries/has_entry", has_full_entry:"entries/has_full_entry"}),
     in_context() {
+      // todo rules check should go...
       return this.template.rules.context !== GLOBAL || this.entry.entry_refs.parent
-    },
-    // domain() {
-    //   return this.$store.getters[DOMAIN]
-    // }
+    }
   }
 }

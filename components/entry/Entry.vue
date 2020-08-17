@@ -91,7 +91,6 @@ import FullEntryMixin from "./FullEntryMixin";
 import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
 import PersistentStorageMixin from "../util/PersistentStorageMixin";
 import EntryValidation from "./EntryValidation";
-import {ENTRIES_GET_EDIT, ENTRIES_GET_ENTRY} from "~/store/entries";
 import {EDIT, ENTRY, VIEW} from "~/lib/consts";
 import {privacy_color, privacy_icon} from "~/lib/util";
 import ChangedAspectNotice from "./ChangedAspectNotice";
@@ -120,7 +119,7 @@ export default {
     Title_Description,
   },
   props: {
-
+    is_dirty: Boolean
   },
   created() {
     this.set_aspects([this.asp_entry_roles()])
@@ -154,9 +153,6 @@ export default {
     },
     license_aspect() {
       return this.asp_license("license", ["cc_licenses"], null)
-    },
-    aspects() {
-      return this.$store.getters[TEMPLATES_TYPE](this.template_slug).aspects
     },
     license_privacy_mode() {
       if (this.logged_in && this.is_creator || this.$store.getters["user/is_admin"]) {
@@ -195,27 +191,20 @@ export default {
     show_image() {
       return this.entry.image
     },
-    is_dirty() {
-      if (this.is_draft) {
-        return false
-      }
-      const edit_entry = this.$_.omit(this.$store.getters[ENTRIES_GET_EDIT](), ["local"])
-      const original_entry = this.$_.omit(this.$store.getters[ENTRIES_GET_ENTRY](this.uuid), ["local"])
-      // for (let k in edit_entry) {
-      //   if (!this.$_.isEqual(edit_entry[k], original_entry[k]))
-      //     console.log(k, this.$_.isEqual(edit_entry[k], original_entry[k]))
-      //   if (!original_entry.hasOwnProperty(k))
-      //     console.log("new", k)
-      // }
-      // for (let k in original_entry) {
-      //   if (!edit_entry.hasOwnProperty(k))
-      //     console.log("del", k)
-      // }
-      return !this.$_.isEqual(edit_entry, original_entry)
-    },
     show_tags() {
       return this.entry.tags && Object.keys(this.entry.tags).length > 0
     },
+    entry_actions_props() {
+      // console.log("update actions props")
+      return {
+        entry: this.entry,
+        mode: this.mode,
+        entry_complete: this.entry_complete,
+        // todo not great cuz the mixin for that is AspectSetMixin is in Entry
+        has_errors: this.has_errors,
+        is_dirty: this.is_dirty
+      }
+    }
   }
 }
 </script>

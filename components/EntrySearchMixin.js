@@ -34,8 +34,8 @@ export default {
         return Promise.reject("cannot get uuids")
       }
     },
-    async async_entry_search(api, config, offset = 0, limit = 40) {
-      return api.entries_search(limit, offset, config)
+    async async_entry_search(config, offset = 0, limit = 40) {
+      return this.$api.entries_search(limit, offset, config)
     },
     async get_complete_missing_meta(uuids) {
       /**
