@@ -91,12 +91,11 @@ import FullEntryMixin from "./FullEntryMixin";
 import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
 import PersistentStorageMixin from "../util/PersistentStorageMixin";
 import EntryValidation from "./EntryValidation";
-import {EDIT, ENTRY, VIEW} from "~/lib/consts";
+import {EDIT, ENTRY, REVIEW, VIEW} from "~/lib/consts";
 import {privacy_color, privacy_icon} from "~/lib/util";
 import ChangedAspectNotice from "./ChangedAspectNotice";
 import MetaChips from "./MetaChips";
 import EntryActorList from "./EntryActorList";
-import {TEMPLATES_TYPE} from "~/store/templates";
 import {USER_LOGGED_IN} from "~/store/user"
 import Taglist from "~/components/global/Taglist"
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"

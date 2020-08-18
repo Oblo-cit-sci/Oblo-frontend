@@ -1,5 +1,5 @@
 <template lang="pug">
-  Entry(:entry="entry")
+  Entry(:entry="entry" :mode="mode")
 </template>
 
 <script>

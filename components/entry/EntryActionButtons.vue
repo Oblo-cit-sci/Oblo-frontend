@@ -7,7 +7,7 @@
       span(v-else-if="can_edit")
         v-btn(v-if="!is_view_mode" @click="cancel") {{$t("w.cancel")}}
         v-btn(v-if="is_draft" color="success" @click="save") {{save_text}}
-        v-btn(v-if="!is_draft" color="error" @click="show_delete") {{$t("w.delete")}}
+        v-btn(v-if="!is_draft" color="error" @click="delete_entry") {{$t("w.delete")}}
         v-btn(
           v-if="show_submit"
           color="success"
@@ -37,7 +37,7 @@
 
 import {mapGetters} from "vuex"
 
-import {DRAFT, PUBLISHED, REQUIRES_REVIEW} from "~/lib/consts"
+import {DRAFT, EDIT, PUBLISHED, REQUIRES_REVIEW, REVIEW, VIEW} from "~/lib/consts"
 import EntryMixin from "~/components/entry/EntryMixin"
 import {
   ENTRIES_DELETE_ENTRY,
@@ -61,6 +61,12 @@ export default {
   name: "EntryActionButtons",
   mixins: [EntryMixin, EntryActionsMixin, TriggerSnackbarMixin, EntryNavMixin, PersistentStorageMixin],
   props: {
+    mode: {
+      type: String,
+      validation: (val) => {
+        [VIEW, EDIT, REVIEW].includes(val)
+      }
+    },
     additional_actions: {
       type: Object
     },
@@ -72,16 +78,6 @@ export default {
   data() {
     return {
       sending: false,
-      dialog_visible: false,
-      delete_dialog_data: {
-        id: "delete",
-        title: "Delete entry",
-        text: "Are you sure you want to delete this entry?",
-        cancel_color: "",
-        confirm_color: "error",
-        confirm_text: "delete"
-      },
-      dialog_data: {id: "none"},
     }
   },
   computed: {
@@ -131,8 +127,8 @@ export default {
     cancel() {
       if (this.is_draft) {
         // this.$emit("entry-action", "cancel")
-        console.log("cancel draft")
-        const base_t_cancel_loc = "comp.entry.dialogs.cancel"
+        // console.log("cancel draft")
+        const base_t_cancel_loc = "comp.entry_actions.dialogs.cancel"
         this.$bus.$emit("dialog-open", {
           data: {
             title: this.$t(`${base_t_cancel_loc}.title`),
@@ -145,7 +141,7 @@ export default {
             this.$emit("entry-action", "delete")
             this.$store.dispatch(ENTRIES_DELETE_ENTRY, this.uuid)
             this.back()
-            this.ok_snackbar(this.$t("comp.entry.cancel_draft"))
+            this.ok_snackbar(this.$t("comp.entry_actions.cancel_draft"))
           }
         })
       } else {
@@ -153,15 +149,27 @@ export default {
         this.back()
       }
     },
-    show_delete() {
-      this.show_dialog(this.delete_dialog_data)
-    },
     delete_entry() {
-      this.$store.dispatch(ENTRIES_DELETE_ENTRY, this.uuid)
-      this.$store.commit(SEARCH_DELETE_ENTRY, this.uuid)
-      this.ok_snackbar("Entry deleted")
-      this.$emit("entry-action", "delete")
-      this.back()
+      const base_t_delete_loc = "comp.entry_actions.dialogs.delete"
+      this.$bus.$emit("dialog-open", {
+        data: {
+          title: this.$t(`${base_t_delete_loc}.title`),
+          text: this.$t(`${base_t_delete_loc}.text`),
+          cancel_color: "",
+          confirm_color: "error",
+          confirm_text: this.$t(`${base_t_delete_loc}.confirm_text`)
+        }, confirm_method: () => {
+          this.$api.delete_entry__$uuid(this.uuid).then(() => {
+            this.$store.dispatch(ENTRIES_DELETE_ENTRY, this.uuid)
+            this.$store.commit(SEARCH_DELETE_ENTRY, this.uuid)
+            this.ok_snackbar(this.$t("comp.entry_actions.delete_entry"))
+            this.$emit("entry-action", "delete")
+            this.back()
+          }).catch(err => {
+            this.err_error_snackbar(err)
+          })
+        }
+      })
     },
     save() {
       // todo not if it is an aspect page
@@ -171,24 +179,6 @@ export default {
       this.persist_entries()
       this.ok_snackbar("Entry saved")
       this.back()
-    },
-    show_dialog(dialog_data) {
-      this.dialog_data = dialog_data
-      this.dialog_visible = true
-    },
-    dialog_action(event) {
-      if (event.confirm) {
-        if (event.id === this.cancel_dialog_data.id) {
-          if (this.entry.version === 0) {
-            this.delete_entry()
-          }
-          this.back()
-        } else if (event.id === this.delete_dialog_data.id) {
-          if (this.entry.status !== DRAFT)
-            this.$api.delete_entry__$uuid(this.uuid)
-          this.delete_entry()
-        }
-      }
     },
     async submit() {
       this.sending = true

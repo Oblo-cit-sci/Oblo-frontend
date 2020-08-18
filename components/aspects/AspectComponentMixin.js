@@ -6,8 +6,8 @@ import {mapGetters} from "vuex"
 export default {
   name: "AspectComponentMixin",
   props: {
-    mvalue: {
-      type: Object,
+    mvalue: { // packed as Object, but when unpacked any other...
+      type: [Object, String, Number, Array, Boolean, null],
       required: true
     },
     aspect: {
