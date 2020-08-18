@@ -176,7 +176,6 @@
       clear_entries() {
         this.$store.dispatch(CLEAR_ENTRIES)
         this.persist_entries()
-        this.persist_draft_numbers()
       },
     },
     computed: {

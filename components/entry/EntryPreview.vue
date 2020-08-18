@@ -260,7 +260,6 @@
         // TODO this was there before, is it required???
         // this.value_change(this.$_.concat(this.value, [child.uuid]))
         // todo should be just one call
-        this.persist_draft_numbers()
         this.persist_entries()
         this.to_entry(child.uuid, EDIT)
         this.goto_delayed_last_page()

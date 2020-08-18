@@ -143,7 +143,6 @@
         this.$store.dispatch(ENTRIES_SAVE_CHILD_N_REF, {child: child, aspect_loc: index_aspect_loc})
         // todo maybe not required, since the dispatch takes care of it
         this.update_value(this.$_.concat(this.value, [child.uuid]))
-        this.persist_draft_numbers()
         this.persist_entries()
         // goto
         // console.log("EL asp", this.$route)

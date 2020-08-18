@@ -2,7 +2,6 @@ import uuidv4 from "uuid/v4"
 
 import pkg from "~/package"
 import {DRAFT, EDIT, PRIVATE_LOCAL, REGULAR} from "~/lib/consts"
-import {UPDATE_DRAFT_NUMBER} from "~/store"
 import {TEMPLATES_TYPE} from "~/store/templates"
 import {default_values, set_titleAspect} from "~/lib/entry"
 import {CREATOR, user_ref} from "~/lib/actors"
@@ -22,10 +21,9 @@ export default {
         return null
       }
       // console.log("type of template_slug",template)
-      const draft_no = this.get_update_draft_no(template_slug)
 
       const user_data = this.$store.getters.user
-      const title = init.title || template.title + " " + draft_no
+      const title = init.title || template.title
 
       const license = template.rules.license ? template.rules.license :
         (template.rules.privacy === PRIVATE_LOCAL ? "None" : this.$store.getters["user/settings_value"]("default_license"))
@@ -45,7 +43,6 @@ export default {
           slug: template_slug
         },
         template_version: template.version,
-        draft_no: draft_no, // todo. local
         values: init.values || default_values(template),
         type: REGULAR,
         license: license,
@@ -87,13 +84,7 @@ export default {
     },
     persist_after_entry_create(entry) {
       this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
-      this.persist_draft_numbers()
       this.persist_entries()
-    },
-    get_update_draft_no(template_slug) {
-      const draft_no = this.$store.getters.draft_no(template_slug) + 1
-      this.$store.commit(UPDATE_DRAFT_NUMBER, template_slug)
-      return draft_no
     }
   }
 }

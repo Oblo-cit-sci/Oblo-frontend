@@ -6,10 +6,8 @@ import {SEARCH_CLEAR} from "~/store/search"
 
 // *********** Index
 export const CLEAR_DOMAIN = "clear_domain"
-export const UPDATE_DRAFT_NUMBER = "update_draft_number"
 // export const DELETE_DOMAIN = "delete_domain"
 export const SET_STORED_ENTRIES = "set_stored_entries"
-export const SET_DRAFT_NUMBERS = "set_draft_numbers"
 export const SET_DOMAINS = "set_domains"
 export const GET_CODE = "get_code"
 export const SET_TEMPLATES_CODES = "set_templates_codes"
@@ -19,7 +17,6 @@ export const SET_DOMAIN = "set_domain"
 export const INIT_PAGE_PATH = "init_page_path"
 export const PUSH_PAGE_PATH = "push_page_path"
 export const POP_LAST_PAGE_PATH = "pop_last_page_path"
-export const UPDATE_DRAFT_NUMBERS = "update_draft_numbers"
 export const USER = "user"
 export const DOMAIN = "domain"
 export const DOMAIN_BY_NAME = "domain_by_name"
@@ -34,7 +31,6 @@ export const DOMAIN_TITLE = "domain_title"
 export const state = () => ({
   // comes by init
   codes: {},
-  draft_numbers: {},
   domains: [],
   domain: {
     value: NO_DOMAIN,
@@ -58,12 +54,6 @@ export const mutations = {
       state.codes[code_entry.slug] = code_entry
     }
   },
-  update_draft_number(state, type_slug) {
-    state.draft_numbers[type_slug] = (state.draft_numbers[type_slug] || 0) + 1
-  },
-  clear_draft_numbers(state) {
-    state.draft_numbers = {}
-  },
   set_domain(state, domain) {
     state.domain = domain
   },
@@ -74,16 +64,8 @@ export const mutations = {
       icon: "images/openTEK_icon.png"
     }
   },
-  set_draft_numbers(state, draft_numbers) {
-    state.draft_numbers = draft_numbers
-  },
   delete_domain(state, domain_name) {
     state.domains = ld.filter(state.domains, domain => domain.value !== domain_name)
-  },
-  update_draft_numbers(state, entries) { // UPDATE_DRAFT_NUMBERS
-    for (let entry of entries) {
-      state.draft_numbers[entry.type_slug] = (state.draft_numbers[entry.type_slug] || 0) + 1
-    }
   },
   init_page_path(state, route) {
     // todo, maybe it required more!?! check getter
@@ -124,14 +106,6 @@ export const getters = {
   get_code(state) {
     return (code_name) => {
       return (state.codes[code_name])
-    }
-  },
-  draft_numbers(state) {
-    return state.draft_numbers
-  },
-  draft_no(state) {
-    return (type_slug) => {
-      return state.draft_numbers[type_slug] || 0
     }
   },
   domain(state) {
@@ -177,7 +151,6 @@ export const actions = {
   clear_entries({commit}) {
     commit("entries/clear")
     commit("search/clear")
-    commit("clear_draft_numbers")
   },
   set_templates_codes(context, entries) {
     context.commit(TEMPLATES_ADD_TEMPLATES, entries.filter(e => e.type === "template"))

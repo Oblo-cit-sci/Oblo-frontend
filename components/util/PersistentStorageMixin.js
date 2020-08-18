@@ -1,4 +1,4 @@
-import {ENTRIES_ALL_DRAFTS,} from "~/store/entries";
+import {ENTRIES_ALL_DRAFTS} from "~/store/entries";
 import {TEMPLATES_ALL_NOTES} from "~/store/templates";
 import {USER_GET_AUTH_TOKEN, USER_SETTINGS} from "~/store/user";
 
@@ -24,9 +24,6 @@ export default {
     },
     persist_user_key() {
       this.store_value("user_key", this.$store.getters.user_key)
-    },
-    persist_draft_numbers() {
-      this.store_value("draft_numbers", this.$store.getters.draft_numbers)
     },
     persist_notes() {
       this.store_value("notes", this.$store.getters[TEMPLATES_ALL_NOTES])
