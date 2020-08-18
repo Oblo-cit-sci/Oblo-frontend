@@ -8,6 +8,7 @@
       :entries="entries_uuids"
       :total_count="total_count"
       :preview_options="preview_options"
+      @request_more="request_more()"
       @preview_action="$emit('preview_action',$event)")
     CompactEntryList(v-if="!prepend_query && !normal_mode"
       :entries="entries_uuids"
@@ -54,6 +55,7 @@
     },
     methods: {
       request_more() {
+        console.log("request more")
         this.searching = true
         // console.log("conf", conf)
         this.async_entry_search(this.configuration, this.entries_uuids.length).then(({data}) => {

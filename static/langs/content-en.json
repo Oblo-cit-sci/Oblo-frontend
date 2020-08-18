@@ -1,6 +1,5 @@
 {
   "page": {
-
     "index": {
       "p1": "With an account on {server_name} you'll be able to create entries and join groups.",
       "about_a": "About The Project",
@@ -332,6 +331,11 @@
     },
     "snackbar": {
       "something_went_wrong": "Something went wrong"
+    },
+    "simple_paginate": {
+      "page": "page",
+      "prev": "previous",
+      "next": "next"
     },
     "language_select": {
       "label": "Language"

@@ -1,9 +1,9 @@
 <template lang="pug">
   div
-    v-btn(:disabled="!_has_prev" @click="change_page(-1)" outlined color="blue") Back
-    v-btn(:disabled="!_has_next" @click="change_page(1)" outlined color="blue" :loading="next_loading") Next
-    div.ml-2(v-if="show_page_index")
-      span page: {{page}} &nbsp;
+    v-btn(:disabled="!_has_prev" @click="change_page(-1)" outlined color="blue") {{$t("comp.simple_paginate.prev")}}
+    v-btn(:disabled="!_has_next" @click="change_page(1)" outlined color="blue" :loading="next_loading") {{$t("comp.simple_paginate.next")}}
+    span.ml-2(v-if="show_page_index")
+      span {{$t("comp.simple_paginate.page")}}: {{page}} &nbsp;
       span(v-if="total_pages") / {{total_pages}}
 </template>
 

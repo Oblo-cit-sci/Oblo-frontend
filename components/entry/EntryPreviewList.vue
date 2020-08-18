@@ -14,7 +14,7 @@
       v-col(offset="5" cols=2)
         v-progress-circular(indeterminate center size="35" color="success")
     v-row.mx-0.px-4(v-if="has_entries")
-      SimplePaginate(v-if="entries.length>entries_per_page" v-model="page" :has_next="has_more_pages" :next_loading="next_loading")
+      SimplePaginate(v-if="entries.length>entries_per_page" v-model="page" :total_pages="total_pages" :has_next="has_more_pages" :next_loading="next_loading")
 </template>
 
 <script>
@@ -100,6 +100,9 @@
             this.$_.map(
               this.entries,
               e => this.$store.getters[TEMPLATES_TYPE](e.template.slug))).values())
+      },
+      total_pages() {
+        return Math.ceil(this.total_count / this.entries_per_page)
       },
       has_more_pages() {
         return this.page * this.entries_per_page < this.total_count
