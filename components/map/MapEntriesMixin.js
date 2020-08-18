@@ -39,7 +39,6 @@ export default {
     get_my_locations() {
       this.guarantee_entries_loaded()
       const my_uuids = this.get_my_entries_uuids()
-
     },
     get_map_entries_by_uuids(uuids) {
       this.guarantee_entries_loaded()

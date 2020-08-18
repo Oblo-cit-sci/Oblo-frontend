@@ -94,10 +94,9 @@ export default {
       // 2. ENTRIES Hoover leave
       this.map.on('mouseleave', entries_layer_name, () => {
         if (this.act_hoover_id !== null) {
-          this.map.setFeatureState(
-            {source: source_name, id: this.act_hoover_id},
-            {hover: false}
-          )
+          this.map.removeFeatureState(
+            {source: source_name, id: this.act_hoover_id}, "hover")
+
           this.act_hoover_id = null
           this.remove_all_popups()
         }
@@ -198,9 +197,6 @@ export default {
         popup.remove()
       }
       this.popups = []
-    },
-    set_goto_location(location) {
-
     }
   },
   watch: {
