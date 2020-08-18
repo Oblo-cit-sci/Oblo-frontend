@@ -1,6 +1,6 @@
 <template lang="pug">
   v-flex(xs12='' sm8='' md6='')
-    h2.mb-2 {{$t('register.h1')}}
+    h2.mb-2 {{$t('page.register.h1')}}
     v-form
       Aspect(v-for="a of aspects"
         :aspect="a"
@@ -11,9 +11,9 @@
         mode="edit")
     v-checkbox(v-model="agree")
       template(v-slot:label)
-        div {{$t('register.i_agree_with')}} &nbsp;
-          a(@click="terms_dialog_open = true") {{$t('register.terms_of_use')}}
-    v-btn.m-4(@click='submit' rounded large :disabled="any_invalid || submitStatus === 'PENDING'" :loading="submit_loading" color='success') {{$t('register.btn_register')}}
+        div {{$t('page.register.i_agree_with')}} &nbsp;
+          a(@click="terms_dialog_open = true") {{$t('page.register.terms_of_use')}}
+    v-btn.m-4(@click='submit' rounded large :disabled="any_invalid || submitStatus === 'PENDING'" :loading="submit_loading" color='success') {{$t('page.register.btn_register')}}
     v-alert(:value='errorMsg !== null' type='error' prominent) {{errorMsg}}
     v-dialog(v-model="terms_dialog_open" :width="main_container_with")
       v-card
@@ -64,9 +64,7 @@
       },
       terms_of_use_section() {
         const tou_section = this.$_.find(this._i18n.messages[this._i18n.locale].about, s => s.flag === 'TERMS_OF_USE')
-        // if(tou_section) {
         return tou_section
-        // }
       }
     },
     methods: {

@@ -1,10 +1,10 @@
 <template lang="pug">
   v-flex(xs12 sm10 md8)
-    h2 {{$t("delete_account.h1")}}
-    p {{$t("delete_account.p1")}}
-    h3 {{$t("delete_account.h2")}}
+    h2 {{$t("page.delete_account.h1")}}
+    p {{$t("page.delete_account.p1")}}
+    h3 {{$t("page.delete_account.h2")}}
     CompactEntryList(:entries="entries_to_delete")
-    h3.my-2 {{$t("delete_account.h3")}}
+    h3.my-2 {{$t("page.delete_account.h3")}}
     Aspect(v-for="a of aspects"
       :key="a.name"
       :aspect="a"
@@ -12,7 +12,7 @@
       mode="edit"
       @update:error="a.error = $event")
     v-btn(@click="$router.back()") {{$t("w.cancel")}}
-    v-btn(color="error" :disabled="any_invalid" @click="delete_account") {{$t("delete_account.btn_delete")}}
+    v-btn(color="error" :disabled="any_invalid" @click="delete_account") {{$t("page.delete_account.btn_delete")}}
 </template>
 
 <script>
@@ -21,7 +21,6 @@
   import EntryListWrapper from "~/components/EntryListWrapper"
   import CompactEntryList from "~/components/entry/CompactEntryList"
   import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
-  import {LOGOUT} from "~/store"
   import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
   import NavBaseMixin from "~/components/NavBaseMixin"
   import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"

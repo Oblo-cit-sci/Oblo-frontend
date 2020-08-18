@@ -4,18 +4,18 @@
       v-col
         div {{$t("asp.username.label")}}: {{registered_name}}
         GlobalRoleChip.mt-2(:global_role="user_data.global_role")
-        div.mt-2(v-if="user_data.account_deactivated" style="color:red") {{$t("actor.deactivated")}}
+        div.mt-2(v-if="user_data.account_deactivated" style="color:red") {{$t("page.actor.deactivated")}}
       v-col
         v-row
           v-img(:src="profile_pic" max-height=200 contain)
-    h2 {{$t("actor.h1")}}
+    h2 {{$t("page.actor.h1")}}
     v-row(v-for="aspect in profile_aspects" :key="aspect.name")
       v-col(cols=10)
         Aspect(:aspect="aspect" :ext_value.sync="user_data[aspect.name]")
     ActorAdminEdit(v-if="user_loaded && is_admin" :actor="user_data")
     div
       v-divider.wide_divider
-      h2 {{$t("actor.h2")}}
+      h2 {{$t("page.actor.h2")}}
       EntryListWrapper(
         :style="main_container_width_style"
         :wait="waiting"

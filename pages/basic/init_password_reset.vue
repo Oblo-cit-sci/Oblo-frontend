@@ -1,11 +1,11 @@
 <template lang="pug">
   v-flex(xs12 sm10 md6)
-    h2 {{$t('init_password_reset.h1')}}
+    h2 {{$t('page.init_password_reset.h1')}}
     Aspect(:aspect="query"
       :ext_value.sync="query.value"
       mode="edit"
       @update:error="query.error = $event")
-    v-btn(@click='send' color='success' rounded large autofocus :disabled="query.error" :loading="send_button_loading") {{$t('init_password_reset.btn_send')}}
+    v-btn(@click='send' color='success' rounded large autofocus :disabled="query.error" :loading="send_button_loading") {{$t('page.init_password_reset.btn_send')}}
     v-alert(:value='errorMsg != null' type='error' prominent transition="scroll-y-reverse-transition") {{errorMsg}}
 </template>
 

@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    h1 {{$t("settings.h1")}}
+    h1 {{$t("page.settings.h1")}}
     br
     v-row(v-for="(aspect) in settings_aspects" :key="aspect.name")
       v-col(alignSelf="stretch" :cols="base_cols")
@@ -9,14 +9,14 @@
           :ext_value.sync="aspect.value"
           mode="edit")
     div(v-if="is_fixed_domain && has_multiple_domains")
-      h3 Fixed domain
+      h3 {{$t("page.settings.fixed_domain.h")}}
       div
-        span You are only seeing the domain &nbsp;
+        span {{$t("page.settings.fixed_domain.p")}} &nbsp;
         b {{is_fixed_domain}}
-        span . However there are more domains to explore. Resetting your fixed domain, will show you a domain overview on the home page. Click the button to reset the fixed domain.
-      v-btn(@click="reset_fixed_domain()") Reset fixed domain
+        span . {{$t("page.settings.fixed_domain.p2")}}
+      v-btn(@click="reset_fixed_domain()") {{$t("page.settings.fixed_domain.btn_reset")}}
     br
-    v-btn(@click="update_settings" :loading="update_button_loading" color="success") {{$t('settings.btn_update')}}
+    v-btn(@click="update_settings" :loading="update_button_loading" color="success") {{$t('w.btn_update')}}
     br
     <!--    h3 Export data-->
     <!--    div Export all your entries-->
@@ -69,15 +69,15 @@
       const settings_aspects = [
         {
           name: "location_privacy",
-          t_label: "settings.asp.location_privacy.label",
-          t_description: "settings.asp.location_privacy.description",
+          t_label: "page.settings.asp.location_privacy.label",
+          t_description: "page.settings.asp.location_privacy.description",
           type: "select",
           attr: {
             unpacked: true
           },
           items: [
-            {value: "exact location", text: this.$t("settings.asp.location_privacy.options.exact_location")},
-            {value: settings_loc_privacy_random, text: this.$t("settings.asp.location_privacy.options.randomly_moved")},
+            {value: "exact location", text: this.$t("page.settings.asp.location_privacy.options.exact_location")},
+            {value: settings_loc_privacy_random, text: this.$t("page.settings.asp.location_privacy.options.randomly_moved")},
             // settings_loc_privacy_ask
           ],
           value: null,
@@ -119,7 +119,7 @@
           this.ok_snackbar("Settings updated")
           this.$store.commit(USER_SET_SETTINGS, data.settings)
           this.persist_user_settings()
-          this.$router.push(PAGE_PROFILE)
+          this.$router.push({name: PAGE_PROFILE})
         }).catch(err => {
           console.log(err)
         }).finally(() => {

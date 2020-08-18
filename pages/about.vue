@@ -20,7 +20,7 @@ export default {
   mixins: [GoToMixin],
   computed: {
     text_sections() {
-      return this.$t("about")
+      return this.$t("page.about")
     },
     version() {
       return pkg.version

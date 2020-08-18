@@ -1,6 +1,6 @@
 <template lang="pug">
   v-flex(xs12 sm10 md6)
-    h2.mb-2 {{$t('login.h1')}}
+    h2.mb-2 {{$t('page.login.h1')}}
     v-form
       Aspect(v-for="a of aspects"
         :key="a.name"
@@ -9,11 +9,11 @@
         mode="edit"
         @aspectAction="aspect_action($event)"
         @update:error="a.error = $event")
-    v-btn(@click='login' color='success' rounded autofocus large :disabled="any_invalid" :loading="login_loading") {{$t('login.btn_login')}}
+    v-btn(@click='login' color='success' rounded autofocus large :disabled="any_invalid" :loading="login_loading") {{$t('page.login.btn_login')}}
     div.mt-3
-      nuxt-link(to="basic/init_password_reset") {{$t('login.btn_forgot')}}
+      nuxt-link(to="basic/init_password_reset") {{$t('page.login.btn_forgot')}}
     div.mt-2(v-if="add_verification_resend_link")
-      v-btn(@click="request_verification_mail" color="success" rounded) {{$t('login.btn_resend_mail')}}
+      v-btn(@click="request_verification_mail" color="success" rounded) {{$t('page.login.btn_resend_mail')}}
     v-alert(:value='errorMsg != null' type='error' prominent transition="scroll-y-reverse-transition") {{errorMsg}}
 </template>
 
@@ -61,7 +61,7 @@
           this.aspects[1].value
         ).then(({data}) => {
           if (data.user) {
-            this.ok_snackbar("Login successful")
+            this.ok_snackbar(this.$t("page.login.login_successful"))
             this.process_login(data)
             this.$store.dispatch(CLEAR_ENTRIES)
             this.$store.commit(SEARCH_CLEAR)
@@ -69,7 +69,7 @@
           } else {
             // todo this shouldnt happen...
             console.log(err)
-            const errorMsg = this.$_.get(err, "response.data.error.msg", "Not a user")
+            const errorMsg = this.$_.get(err, "response.data.error.msg", this.$t("page.login.not_a_user"))
             setTimeout(() => this.errorMsg = null, 5000)
           }
         }).catch((err) => {

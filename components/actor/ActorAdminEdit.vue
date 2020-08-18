@@ -9,7 +9,7 @@
         @update:ext_value="update_value(a, $event)"
         mode="edit"
         @update:error="a.error = $event")
-      v-btn(@click="update()") Update
+      v-btn(@click="update()") {{$t("w.update")}}
 </template>
 
 <script>
@@ -33,7 +33,7 @@
           {
             global_role: {
               type: SELECT,
-              label: "Global role",
+              t_label: "page.actor.admin.asp_global_role",
               name: "global_role",
               attr: {
                 unpacked: true,
@@ -46,15 +46,15 @@
               },
               value: "",
               items: [
-                {text: "User", value: "user"},
-                {text: "Editor", value: "editor"},
-                {text: "Admin", value: "admin"}
+                {text: this.$t("comp.global_role.user"), value: "user"},
+                {text: this.$t("comp.global_role.editor"), value: "editor"},
+                {text: this.$t("comp.global_role.admin"), value: "admin"}
               ],
               error: true
             },
             editor_for: {
               name: "editor_for",
-              label: "Editor for domain",
+              tlabel: "page.actor.admin.asp_editor_for_domain",
               type: SELECT,
               attr: {
                 force_view: "select",

@@ -1,6 +1,6 @@
 <template lang="pug">
   v-flex(xs12 sm10 md6)
-    h2 {{$t('password_reset.h1')}}
+    h2 {{$t('page.password_reset.h1')}}
     Aspect(v-for="a of aspects"
       :key="a.name"
       :aspect="a"
@@ -8,8 +8,7 @@
       mode="edit"
       @aspectAction="aspect_action($event)"
       @update:error="a.error = $event")
-    v-btn.m-4(@click='submit' rounded large :disabled="any_invalid" :loading="submit_loading" color='success') {{$t('password_reset.btn_send')}}
-
+    v-btn.m-4(@click='submit' rounded large :disabled="any_invalid" :loading="submit_loading" color='success') {{$t('page.password_reset.btn_send')}}
 </template>
 
 <script>
@@ -48,8 +47,8 @@
         })
         console.log(values)
           this.$api.post_actor__reset_password(values).then(res => {
-            console.log(res)
-            this.$router.push(PAGE_LOGIN)
+            // console.log(res)
+            this.$router.push({name: PAGE_LOGIN})
           })
       }
     }

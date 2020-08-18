@@ -2,8 +2,8 @@
   v-flex#top(xs12 sm10 md10)
     v-row
       v-col
-        div {{$t("asp.username.label")}}: {{registered_name}}
-        v-chip(outlined disabled small) {{user_data.global_role}}
+        div {{$t("w.username")}}: {{registered_name}}
+        GlobalRoleChip(:global_role="user_data.global_role")
       v-col
         v-row
           v-img(:src="profile_pic" max-height=200 contain)
@@ -17,7 +17,7 @@
               :force_load="profile_pic_upload_loading"
               :size_limit="profile_pic_max_size"
               @fileload="profile_pic_added($event)")
-    h2 {{$t('profile.h1')}}
+    h2 {{$t('page.profile.h1')}}
     v-row(v-for="aspect in profile_aspects" :key="aspect.name")
       v-col(cols=10)
         Aspect(:aspect="aspect"
@@ -26,7 +26,7 @@
           :mode="aspect_mode")
     div(v-if="edit_mode")
       h3 {{$t('asp.password.label')}}
-      v-btn(color="warning" v-if="!password_edit" @click="password_edit=true") {{$t('profile.btn_change_password')}}
+      v-btn(color="warning" v-if="!password_edit" @click="password_edit=true") {{$t('page.profile.btn_change_password')}}
       div(v-if="password_edit")
         v-row(v-for="a of password_aspects" :key="a.name")
           v-col(cols=10)
@@ -37,10 +37,10 @@
               :extra="{clearable:false}"
               mode="edit")
       v-btn(v-if="password_edit" @click="password_edit=false") {{$t('w.cancel')}}
-      v-btn(v-if="password_edit" color="success" @click="change_password" :disabled="any_password_invalid") {{$t('profile.btn_save_password')}}
+      v-btn(v-if="password_edit" color="success" @click="change_password" :disabled="any_password_invalid") {{$t('page.profile.btn_save_password')}}
       v-divider.wide_divider
     div(v-if="edit_mode && !$_.isEmpty(domain_specific_aspects)")
-      h2#domains {{$t("profile.h3")}}
+      h2#domains {{$t("page.profile.h3")}}
       v-row(v-for="aspect in domain_specific_aspects" :key="aspect.name")
         v-col(cols=10)
           Aspect(:aspect="aspect"
@@ -48,15 +48,15 @@
             @update:error="$set(aspect, 'error', $event)"
             mode="edit")
     div(v-if="!is_visitor")
-      v-btn(v-if="!edit_mode" to="/settings" nuxt) {{$t("profile.btn_settings")}}
-      v-btn(v-if="!edit_mode" color="info" @click="setEdit()") {{$t("profile.btn_edit_profile")}}
+      v-btn(v-if="!edit_mode" to="/settings" nuxt) {{$t("page.profile.btn_settings")}}
+      v-btn(v-if="!edit_mode" color="info" @click="setEdit()") {{$t("page.profile.btn_edit_profile")}}
       div(v-else)
         v-btn(@click="cancelEdit") {{$t('w.cancel')}}
-        v-btn(color="success" @click="doneEdit" :disabled="any_invalid") {{$t("profile.btn_save")}}
-      v-btn(v-if="!edit_mode" color="error" to="/basic/delete_account") {{$t("profile.btn_delete")}}
+        v-btn(color="success" @click="doneEdit" :disabled="any_invalid") {{$t("page.profile.btn_save")}}
+      v-btn(v-if="!edit_mode" color="error" to="/basic/delete_account") {{$t("page.profile.btn_delete")}}
     div(v-if="!edit_mode")
       v-divider.wide_divider
-      h2 {{$t("profile.h2")}}
+      h2 {{$t("page.profile.h2")}}
       EntryListWrapper(
         :wait="waiting"
         :style="main_container_width_style"
@@ -87,10 +87,12 @@
   import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
   import FixDomainMixin from "~/components/global/FixDomainMixin"
   import GoToMixin from "~/components/global/GoToMixin"
+  import GlobalRoleChip from "~/components/actor/GlobalRoleChip"
 
   export default {
     name: "profile",
     components: {
+      GlobalRoleChip,
       EntryListWrapper,
       LoadFileButton,
       Aspect
