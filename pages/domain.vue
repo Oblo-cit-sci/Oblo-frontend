@@ -4,7 +4,9 @@
     <!--      :over="true"-->
     <!--      :domain_navigation_mode="navigation_mode")-->
     v-dialog(v-model="entrycreate_dialog_open")
-      EntryCreateList(:template_entries="create_templates_options")
+      v-card
+        v-card-title {{$t("page.domain.create_new_entry")}}
+        EntryCreateList(:template_entries="create_templates_options")
     MapWrapper(
       height="100%"
       :domain="domain_name"

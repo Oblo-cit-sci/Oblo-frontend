@@ -27,12 +27,12 @@
   import FixDomainMixin from "~/components/global/FixDomainMixin"
 
 
-  let require_login = ["menu.profile", "menu.logout"]
-  let hide_logged_in = ["menu.login", "menu.register"]
-  let require_admin = ["menu.admin"]
-  let hide_no_be = ["menu.register", "menu.login"] // if not connected out and if logged in out
-  let show_inDev = ["menu.tests"] //, "Types", "Entrytypes", "Aspectbuild"]
-  let show_in_fixed_domain = ["menu.about"]
+  let require_login = ["/profile", "/logout"]
+  let hide_logged_in = ["/login", "/register"]
+  let require_admin = ["/admin"]
+  let hide_no_be = ["/register", "/login"] // if not connected out and if logged in out
+  let show_inDev = ["/tests"] //, "Types", "Entrytypes", "Aspectbuild"]
+  let show_in_fixed_domain = ["/about"]
 
   export default {
     name: "MainMenuList",
@@ -52,25 +52,25 @@
         const home = all_pages_n_actions[0]
         let other_pages = this.$_.tail(all_pages_n_actions)
         if (!this.connected) {
-          other_pages = other_pages.filter(p => !hide_no_be.includes(p.t_title))
+          other_pages = other_pages.filter(p => !hide_no_be.includes(p.to))
         }
         if (this.logged_in) {
-          other_pages = other_pages.filter(p => !hide_logged_in.includes(p.t_title))
+          other_pages = other_pages.filter(p => !hide_logged_in.includes(p.to))
         } else {
-          other_pages = other_pages.filter(p => !require_login.includes(p.t_title))
+          other_pages = other_pages.filter(p => !require_login.includes(p.to))
         }
         // console.log(this.$store.getters[USER_GLOBAL_ROLE])
         if (this.$store.getters[USER_GLOBAL_ROLE] !== ADMIN) {
-          other_pages = other_pages.filter(p => !require_admin.includes(p.t_title))
+          other_pages = other_pages.filter(p => !require_admin.includes(p.to))
         }
         if (process.env.NODE_ENV !== "development") {
-          other_pages = other_pages.filter(p => !show_inDev.includes(p.t_title))
+          other_pages = other_pages.filter(p => !show_inDev.includes(p.to))
         }
 
         if (this.is_fixed_domain) {
           // other_pages = other_pages.filter(p => !show_in_fixed_domain.includes(p.t_title))
         } else {
-          other_pages = other_pages.filter(p => !show_in_fixed_domain.includes(p.t_title))
+          other_pages = other_pages.filter(p => !show_in_fixed_domain.includes(p.to))
         }
 
         return [{name: "home", items: [home]},

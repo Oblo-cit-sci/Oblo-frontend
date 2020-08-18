@@ -1,11 +1,15 @@
 {
   "page": {
+
     "index": {
       "p1": "With an account on {server_name} you'll be able to create entries and join groups.",
       "about_a": "About The Project",
       "privacy_a": "Privacy Policy",
       "btn_login": "@:w.login",
       "btn_register": "@:w.register"
+    },
+    "domain": {
+      "create_new_entry": "Create an new entry"
     },
     "about": [
       {
