@@ -42,7 +42,6 @@ import EntryMixin from "~/components/entry/EntryMixin"
 import {
   ENTRIES_DELETE_ENTRY,
   ENTRIES_GET_ENTRY,
-  ENTRIES_RESET_EDIT,
   ENTRIES_SAVE_ENTRY,
   ENTRIES_UPDATE_ENTRY
 } from "~/store/entries"
@@ -145,7 +144,6 @@ export default {
           }
         })
       } else {
-        this.$store.commit(ENTRIES_RESET_EDIT)
         this.back()
       }
     },
@@ -241,7 +239,6 @@ export default {
         this.ok_snackbar("Entry reviewed")
         this.$store.commit(ENTRIES_SAVE_ENTRY, res.data.data)
         this.$store.dispatch(ENTRIES_UPDATE_ENTRY, this.uuid)
-        this.$store.commit(ENTRIES_RESET_EDIT)
         this.back()
       } catch (err) {
         this.err_error_snackbar(err)
@@ -257,7 +254,6 @@ export default {
         this.ok_snackbar("Entry reviewed")
         this.$store.commit(ENTRIES_DELETE_ENTRY, res.data.data.uuid)
         this.$store.commit(SEARCH_DELETE_ENTRY, res.data.data.uuid)
-        this.$store.commit(ENTRIES_RESET_EDIT)
         this.back()
       } catch (err) {
         // todo for entry exists already, there could be a change in the button label, but maybe the data of that entry should be fetched
