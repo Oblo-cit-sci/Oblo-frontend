@@ -82,7 +82,7 @@ export const mutations = {
   },
   // todo not tested
   add_all_uuids(state, uuids) {
-    state.all_uuids= state.all_uuids.concat(uuids)
+    state.all_uuids= (state.all_uuids || []).concat(uuids)
   },
   set_act_config(state, config) {
     state.act_config = config

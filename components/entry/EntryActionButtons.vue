@@ -173,7 +173,7 @@ export default {
     },
     save() {
       // todo not if it is an aspect page
-      console.log(this.entry.local)
+      // console.log(this.entry.local)
       this.$store.commit(ENTRIES_SAVE_ENTRY, this.entry)
       this.$store.dispatch(ENTRIES_UPDATE_ENTRY, this.uuid)
       this.persist_entries()
@@ -219,8 +219,8 @@ export default {
           this.ok_snackbar("Entry submitted")
           this.$store.commit(ENTRIES_SAVE_ENTRY, res.data.data)
           this.$store.dispatch(ENTRIES_UPDATE_ENTRY, this.uuid)
-          this.$store.commit(ENTRIES_RESET_EDIT)
           this.back(["search"])
+          // this.$store.commit(ENTRIES_RESET_EDIT)
         } catch (err) {
           console.log(err)
           this.sending = false
