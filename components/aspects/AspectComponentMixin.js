@@ -116,6 +116,9 @@ export default {
       } else {
         return null
       }
+    },
+    reset_value() {
+      this.update_value(aspect_raw_default_value(this.aspect))
     }
   },
 }
