@@ -29,7 +29,7 @@
     methods: {
       send() {
         this.send_button_loading = true
-        this.$api.actor__init_password_reset(this.query.value.toLowerCase()).then(({data}) => {
+        this.$api.actor.init_password_reset(this.query.value.toLowerCase()).then(({data}) => {
           this.ok_snackbar(data.data.msg)
           this.$router.push("/basic/reset_mail_sent")
         }).catch(err => {

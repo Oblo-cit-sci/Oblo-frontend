@@ -40,7 +40,7 @@
       }
     },
     created() {
-      this.$api.actor__init_delete().then(({data}) => {
+      this.$api.actor.init_delete().then(({data}) => {
         this.entries_to_delete = store_received_entries(this.$store, data.data)
       })
     },
@@ -52,7 +52,7 @@
     },
     methods: {
       delete_account() {
-        this.$api.delete_account({
+        this.$api.actor.delete_account({
           registered_name: this.aspects.registered_name,
           password: this.aspects.password
         }).then(({data}) => {

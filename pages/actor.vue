@@ -56,7 +56,7 @@
       }
     },
     created() {
-      this.$api.actor__$registered_name__basic(this.registered_name).then(({data}) => {
+      this.$api.actor.basic(this.registered_name).then(({data}) => {
         this.user_data = data.data
         this.user_loaded = true
         this.waiting = false
@@ -67,7 +67,7 @@
     },
     computed: {
       profile_pic() {
-        return this.$api.url_actor__$registered_name__profile_pic(this.registered_name)
+        return this.$api.actor.url_profile_pic(this.registered_name)
       },
       registered_name() {
         return this.$route.query.name

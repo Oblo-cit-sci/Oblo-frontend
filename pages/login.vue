@@ -56,7 +56,7 @@
       },
       login() {
         this.login_loading = true
-        this.$api.post_actor__login(
+        this.$api.actor.login(
           this.aspects[0].value,
           this.aspects[1].value
         ).then(({data}) => {
@@ -84,7 +84,7 @@
         })
       },
       request_verification_mail() {
-        this.$api.actor__resend_email_verification_mail(this.registered_name).then(({data}) => {
+        this.$api.actor.resend_email_verification_mail(this.registered_name).then(({data}) => {
           this.ok_snackbar(data.data)
           this.add_verification_resend_link = false
           this.errorMsg = null

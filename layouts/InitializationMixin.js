@@ -70,7 +70,7 @@ export default {
 
       const auth_token = this.$store.getters[USER_GET_AUTH_TOKEN]
       if (auth_token.access_token) {
-        const login = await this.$api.actor__validate_token(auth_token)
+        const login = await this.$api.actor.validate_token(auth_token)
         if (login.data.token_valid) {
           this.$store.commit(USER_LOGIN)
           this.$api.axios.setToken(auth_token.access_token, "Bearer")
@@ -79,7 +79,7 @@ export default {
           // todo, bring this method to the mixin, so we can trigger a snackbar
           this.$store.dispatch("user/logout")
           this.$localForage.removeItem("auth_token")
-          this.error_snackbar("You are logged out")
+          this.error_snackbar(this.$t("mixin.init.logged_out"))
         }
       }
 

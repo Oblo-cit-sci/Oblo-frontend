@@ -46,7 +46,7 @@
           registered_name: this.$route.query.user
         })
         console.log(values)
-          this.$api.post_actor__reset_password(values).then(res => {
+          this.$api.actor.reset_password(values).then(res => {
             // console.log(res)
             this.$router.push({name: PAGE_LOGIN})
           })

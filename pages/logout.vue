@@ -20,7 +20,7 @@
     computed: {},
     methods: {},
     created() {
-      this.$api.actor__logout().then(() => {
+      this.$api.actor.logout().then(() => {
         this.ok_snackbar("You are logged out")
         this.clear_storage()
         // todo, remove draft entries and update storage, to leave no traces...

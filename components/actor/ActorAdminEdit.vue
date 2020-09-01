@@ -84,7 +84,7 @@
         }
       },
       update() {
-        this.$api.post_actor__$registered_name__global_role(this.actor.registered_name, this.aspects.global_role.value, this.aspects.editor_for.value)
+        this.$api.actor.post_global_role(this.actor.registered_name, this.aspects.global_role.value, this.aspects.editor_for.value)
       }
     }
   }

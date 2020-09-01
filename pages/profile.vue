@@ -176,7 +176,7 @@
           new_profile.domain = {}
           new_profile.domain[this.is_fixed_domain] = extract_unpacked_values(this.domain_specific_aspects)
         }
-        this.$api.post_actor__me(new_profile).then(({data}) => {
+        this.$api.actor.post_me(new_profile).then(({data}) => {
           this.$store.commit(USER_SET_USER_DATA, data)
           this.persist_user_data()
           // this.setEdit(false)
@@ -189,7 +189,7 @@
       },
       change_password() {
         const new_password = extract_unpacked_values(this.password_aspects)
-        this.$api.post_actor__change_password(new_password).then(({data}) => {
+        this.$api.actor.change_password(new_password).then(({data}) => {
           this.password_edit = false;
           this.ok_snackbar("Password updated")
           this.goto_top()
@@ -203,7 +203,7 @@
           formData.append('file', base64file_to_blob(image.meta.type, image.data))
           // formData.append("actor_in", JSON.stringify(extract_unpacked_values({no: 3})))
           this.profile_pic_upload_loading = true
-          this.$api.post_profile_pic(formData)
+          this.$api.actor.post_profile_pic(formData)
             .then(() => {
               // request the avatar to refill the browser cache
               this.profile_version_ts = Math.floor(new Date().getTime() / 1000)
@@ -243,7 +243,7 @@
         return this.$store.getters.is_visitor
       },
       profile_pic() {
-        return this.$api.url_actor__$registered_name__profile_pic(this.registered_name) + "?q=" + this.profile_version_ts
+        return this.$api.actor.url_profile_pic(this.registered_name) + "?q=" + this.profile_version_ts
       },
       any_password_invalid() {
         return this.$_.some(this.password_aspects, (a) => a.hasOwnProperty("error") && a.error)

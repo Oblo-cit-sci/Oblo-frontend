@@ -123,7 +123,8 @@
         "p": "You are only seeing the domain",
         "p2": "However there are more domains to explore. Resetting your fixed domain, will show you a domain overview on the home page. Click the button to reset the fixed domain.",
         "btn_reset": "Reset fixed domain"
-      }
+      },
+      "settings_updated": "Settings updated"
     },
     "delete_account": {
       "h1": "Delete your account",
@@ -367,6 +368,11 @@
     "es": "spanish",
     "de": "german",
     "fr": "french"
+  },
+  "mixin": {
+    "init": {
+      "logged_out": "You are logged out"
+    }
   },
   "w": {
     "login": "login",

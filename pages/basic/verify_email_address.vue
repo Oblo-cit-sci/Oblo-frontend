@@ -12,7 +12,7 @@
     mixins: [TriggerSnackbarMixin, LoginMixin, NavBaseMixin],
     created() {
       const logged_in = this.$store.getters[USER_LOGGED_IN]
-      this.$api.verify_email_address(this.$route.query.user, this.$route.query.code).then(({data}) => {
+      this.$api.actor.verify_email_address(this.$route.query.user, this.$route.query.code).then(({data}) => {
         if (!logged_in && data.user) {
           this.ok_snackbar("Email address verified")
           this.process_login(data)

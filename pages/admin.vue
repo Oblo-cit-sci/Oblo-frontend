@@ -18,7 +18,7 @@
     },
     computed: {},
     created() {
-      this.$api.actor__get_all(true).then(({data}) => {
+      this.$api.actor.get_all(true).then(({data}) => {
         this.actors = data.data
       })
     },

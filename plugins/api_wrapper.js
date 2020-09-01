@@ -25,66 +25,15 @@ class APIWrapper {
 
     // todo THE NEW WAY, refactor all methods like this... :)
     this.entries = new Entries(this)
+    this.actor = new Actor(this)
   }
 
   is_initialized() {
     return this.axios !== null
   }
 
-  /*
-  API ROUTES
-   */
-
-  /**
-   * registration
-   */
-  post_actor(data) {
-    return this.axios.post(`${this.actor_baseURL}/`, data)
-  }
-
-  delete_account(data) {
-    return this.axios.post(`${this.actor_baseURL}/delete`, data)
-  }
-
-  /**
-   * login
-   */
-  post_actor__login(username, password) {
-    return this.axios.post(`${this.actor_baseURL}/login`, qs.stringify({
-      username, // actually both username or email, but the given class on the backend calls it username
-      password,
-      grant_type: "password",
-      swagger_compatible_fields: false
-    }), {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
-    })
-  }
-
-  actor__resend_email_verification_mail(registered_name) {
-    return this.axios.get(`${this.actor_baseURL}/resend_email_verification_mail`, {
-      params: {
-        registered_name
-      }
-    })
-  }
-
-  actor__init_delete() {
-    return this.axios.get(`${this.actor_baseURL}/init_delete`)
-  }
-
   init_data() {
     return this.axios.get(`${this.basic_baseURL}/init_data`)
-  }
-
-  verify_email_address(registered_name, verification_code) {
-    return this.axios.get(`${this.actor_baseURL}/verify_email_address`, {
-      params: {
-        registered_name,
-        verification_code
-      }
-    })
   }
 
   /**
@@ -102,23 +51,6 @@ class APIWrapper {
     return this.axios.get(`${this.domain_baseURL}/${domain_name}/basic_entries`)
   }
 
-
-  actor__validate_token(auth_token) {
-    return this.axios.get(`${this.actor_baseURL}/validate_token`, {
-      headers: {
-        "Authorization": auth_token.token_type + " " + auth_token.access_token
-      }
-    })
-  }
-
-  url_actor__$registered_name__avatar(registered_name) {
-    return `${this.actor_baseURL}/${registered_name}/avatar`
-  }
-
-  url_actor__$registered_name__profile_pic(registered_name) {
-    return `${this.actor_baseURL}/${registered_name}/profile_pic`
-  }
-
   get_static_url(sub) {
     return `${this.static_baseURL}/${sub}`
   }
@@ -129,40 +61,6 @@ class APIWrapper {
 
   static_url_$domain_name_icon(domain_name) {
     return `${this.static_baseURL}/images/domains/${domain_name}/icon.png`
-  }
-
-  post_actor__me(profile_data) {
-    return this.axios.post(`${this.actor_baseURL}/me`, profile_data)
-  }
-
-  post_actor__change_password(passwords) {
-    return this.axios.post(`${this.actor_baseURL}/change_password`, passwords)
-  }
-
-  post_actor__avatar(formData) {
-    return this.axios.post(`${this.actor_baseURL}/avatar`,
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }
-    )
-  }
-
-  post_profile_pic(formData) {
-    return this.axios.post(`${this.actor_baseURL}/profile_pic`,
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }
-    )
-  }
-
-  actor__logout() {
-    return this.axios.get(`${this.actor_baseURL}/logout`)
   }
 
   async entry__$uuid(uuid) {
@@ -215,7 +113,6 @@ class APIWrapper {
     return this.axios.delete(`${this.entry_baseURL}/${uuid}/attachment/${file_uuid}`)
   }
 
-
   entries_search(limit, offset, search_query) {
     return this.axios.post(`${this.entries_baseURL}/search`, search_query, {
       params: {
@@ -223,10 +120,6 @@ class APIWrapper {
         offset
       }
     })
-  }
-
-  actor_search(search_query) {
-    return this.axios.post(`${this.actor_baseURL}/search`, search_query)
   }
 
   entries_map_entries(config = {}, as_geojson = false) {
@@ -237,38 +130,6 @@ class APIWrapper {
     })
   }
 
-  actor__$registered_name__basic(registerd_name) {
-    return this.axios.get(`${this.actor_baseURL}/${registerd_name}/basic`)
-  }
-
-  actor__init_password_reset(email_or_username) {
-    return this.axios.get(`${this.actor_baseURL}/init_password_reset`, {
-      params: {
-        email_or_username
-      }
-    })
-  }
-
-  post_actor__reset_password(data) {
-    return this.axios.post(`${this.actor_baseURL}/reset_password`, data)
-  }
-
-  post_actor__$registered_name__global_role(registered_name, role, domain) {
-    return this.axios.post(`${this.actor_baseURL}/${registered_name}/global_role`, {}, {
-      params: {
-        role,
-        domain
-      }
-    })
-  }
-
-  actor__get_all(details = false) {
-    return this.axios.get(`${this.actor_baseURL}/get_all`, {
-      params: {
-        details
-      }
-    })
-  }
 }
 
 class QueryBase {
@@ -278,8 +139,12 @@ class QueryBase {
     this.base = api_wrapper.api_baseURL + base_sub_path
   }
 
-  post(sub_path, body, params) {
-    return this.axios.post(`${this.base}/${sub_path}`, body, params)
+  get(sub_path, config) {
+    return this.axios.get(`${this.base}/${sub_path}`, config)
+  }
+
+  post(sub_path, data, config) {
+    return this.axios.post(`${this.base}/${sub_path}`, data, config)
   }
 }
 
@@ -293,8 +158,8 @@ class Entries extends QueryBase {
     return this.post("get_uuids", search_query)
   }
 
-  async by_uuids(uuids, fields, limit=40, offset = 0) {
-    const body = {
+  async by_uuids(uuids, fields, limit = 40, offset = 0) {
+    const data = {
       uuid_list: {
         uuids: uuids
       }
@@ -302,13 +167,152 @@ class Entries extends QueryBase {
     if (fields) {
       body.fields = fields
     }
-    return this.post("by_uuids", body, {
+    return this.post("by_uuids", data, {
       params: {
         limit,
         offset
       }
     })
   }
+}
+
+class Actor extends QueryBase {
+
+  constructor(api_wrapper) {
+    super(api_wrapper, "/actor")
+  }
+
+  /**
+   * login
+   */
+  login(username, password) {
+    return this.post("login", qs.stringify({
+      username, // actually both username or email, but the given class on the backend calls it username
+      password,
+      grant_type: "password",
+      swagger_compatible_fields: false
+    }), {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    })
+  }
+
+  validate_token(auth_token) {
+    return this.get("validate_token", {
+      headers: {
+        "Authorization": auth_token.token_type + " " + auth_token.access_token
+      }
+    })
+  }
+
+  /**
+   * update the user profile or settings
+   * @param profile_data
+   */
+  post_me(profile_data) {
+    return this.post("me", profile_data)
+  }
+
+  change_password(passwords) {
+    return this.post("change_password", passwords)
+  }
+
+  post_profile_pic(formData) {
+    return this.post("profile_pic",
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+    )
+  }
+
+  logout() {
+    return this.get("logout")
+  }
+
+  /**
+   *
+   * @param data user_data
+   * registered_name, email, password, password_confirm, settings
+   * @returns {*} 200 or ...
+   */
+  post_actor(data) {
+    return this.post("", data)
+  }
+
+  resend_email_verification_mail(registered_name) {
+    return this.get("resend_email_verification_mail", {
+      params: {
+        registered_name
+      }
+    })
+  }
+
+  init_delete() {
+    return this.get("init_delete")
+  }
+
+  verify_email_address(registered_name, verification_code) {
+    return this.get("verify_email_address", {
+      params: {
+        registered_name,
+        verification_code
+      }
+    })
+  }
+
+  delete_account(data) {
+    return this.post("delete", data)
+  }
+
+  search(search_query) {
+    return this.post("search", search_query)
+  }
+
+  basic(registerd_name) {
+    return this.get(`${registerd_name}/basic`)
+  }
+
+  init_password_reset(email_or_username) {
+    return this.get("init_password_reset", {
+      params: {
+        email_or_username
+      }
+    })
+  }
+
+  reset_password(data) {
+    return this.post("reset_password", data)
+  }
+
+  post_global_role(registered_name, role, domain) {
+    return this.post(`${registered_name}/global_role`, {}, {
+      params: {
+        role,
+        domain
+      }
+    })
+  }
+
+  get_all(details = false) {
+    return this.get("get_all", {
+      params: {
+        details
+      }
+    })
+  }
+
+  url_avatar(registered_name) {
+    return `${this.base}/${registered_name}/avatar`
+  }
+
+  url_profile_pic(registered_name) {
+    return `${this.base}/${registered_name}/profile_pic`
+  }
+
 }
 
 // console.log(Nuxt)

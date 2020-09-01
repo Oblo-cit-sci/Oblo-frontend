@@ -13,7 +13,7 @@ export default {
   },
   methods: {
     avatar(actor) {
-      return this.$api.url_actor__$registered_name__avatar(actor.registered_name)
+      return this.$api.actor.url_avatar(actor.registered_name)
     },
     goto_actor(actor) {
       // console.log(actor)

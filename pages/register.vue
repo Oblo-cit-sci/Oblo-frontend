@@ -73,7 +73,7 @@
         this.submit_loading = true
         const settings = Object.assign(this.$_.cloneDeep(this.$store.getters["user/settings"]), overwrite_default_register_settings)
         // todo better js!
-        this.$api.post_actor({
+        this.$api.actor.post_actor({
           registered_name: this.aspects.registered_name.value,
           email: this.aspects.email.value,
           password: this.aspects.password.value,

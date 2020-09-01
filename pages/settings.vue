@@ -16,7 +16,7 @@
         span . {{$t("page.settings.fixed_domain.p2")}}
       v-btn(@click="reset_fixed_domain()") {{$t("page.settings.fixed_domain.btn_reset")}}
     br
-    v-btn(@click="update_settings" :loading="update_button_loading" color="success") {{$t('w.btn_update')}}
+    v-btn(@click="update_settings" :loading="update_button_loading" color="success") {{$t('w.update')}}
     br
     <!--    h3 Export data-->
     <!--    div Export all your entries-->
@@ -114,9 +114,9 @@
     methods: {
       update_settings() {
         this.update_button_loading = true
-        this.$api.post_actor__me({settings: extract_unpacked_values(this.settings_aspects)}).then(({data}) => {
-          console.log(data.settings)
-          this.ok_snackbar("Settings updated")
+        this.$api.actor.post_me({settings: extract_unpacked_values(this.settings_aspects)}).then(({data}) => {
+          // console.log(data.settings)
+          this.ok_snackbar(this.$t("page.settings.settings_updated"))
           this.$store.commit(USER_SET_SETTINGS, data.settings)
           this.persist_user_settings()
           this.$router.push({name: PAGE_PROFILE})

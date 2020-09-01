@@ -132,7 +132,7 @@
         this.isLoading = true
 
         // Lazily load input items
-        this.$api.actor_search({name: val}).then(({data}) => {
+        this.$api.actor.search({name: val}).then(({data}) => {
           const result = data.data.filter(actor => !this.exclude_reg_names.includes(actor.registered_name))
           this.actors = this.$_.concat(this.value, result)
           if(result.length === 0) {
