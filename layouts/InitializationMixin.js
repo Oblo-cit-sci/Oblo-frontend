@@ -1,4 +1,4 @@
-import {initialize, reload_storage} from "~/lib/client"
+import {reload_storage} from "~/lib/client"
 import {mapGetters} from "vuex"
 import {APP_CONNECTED, APP_CONNECTING, APP_DB_LOADED, APP_INITIALIZED} from "~/store/app"
 import {dev_env} from "~/lib/util"
@@ -8,13 +8,14 @@ import {default_settings} from "~/lib/settings"
 import {SET_DOMAINS, SET_TEMPLATES_CODES} from "~/store"
 import {USER_GET_AUTH_TOKEN, USER_LOGIN} from "~/store/user"
 import {ENTRIES_HAS_FULL_ENTRY, ENTRIES_SAVE_ENTRY} from "~/store/entries"
+import {db_vars} from "~/lib/db_vars"
 
 export default {
   name: "InitializationMixin",
   mixins: [FixDomainMixin],
   created() {
     if (!this.db_loaded)
-      reload_storage(this.$store, this.$localForage)
+      this.reload_storage()
     if (!this.$api.is_initialized()) {
       this.$api.init(this.$axios) // , "https://opentek.eu"
       if (!dev_env()) {
@@ -36,6 +37,28 @@ export default {
     }),
   },
   methods: {
+    reload_storage() {
+      if (this.$localForage) {
+        console.log("RELOAD STORAGE")
+        const remaining = db_vars.map(v => v.name)
+        for (let store_var_descr of db_vars) {
+          // console.log("loading", store_var_descr.name)
+          this.$localForage.getItem(store_var_descr.name).then(store_var => {
+            // console.log("db items: ", store_var_descr.name, store_var)
+            if (store_var) {
+              // console.log(store_var.constructor)
+              this.$store.commit(store_var_descr.store_mutation, store_var)
+            }
+            remaining.splice(remaining.indexOf(store_var_descr.name), 1);
+            if (remaining.length === 0) {
+              this.$store.commit(APP_DB_LOADED)
+            }
+          }).catch(err => {
+            console.log("localForage error", err)
+          })
+        }
+      }
+    },
     async initialize() {
       this.$store.commit(APP_CONNECTING, true)
       console.log("initialize")
@@ -62,7 +85,7 @@ export default {
 
       // todo maybe this part should be handled by the individual page, so it can do its default behaviour
       // but a wrapper would be good.
-      if (this.$route.query.uuid && !store.getters[ENTRIES_HAS_FULL_ENTRY](this.$route.query.uuid)) {
+      if (this.$route.query.uuid && !this.$store.getters[ENTRIES_HAS_FULL_ENTRY](this.$route.query.uuid)) {
         console.log("need to get that entry")
         try {
           const response = await this.$api.entry__$uuid(this.$route.query.uuid)
