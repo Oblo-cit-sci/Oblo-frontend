@@ -20,7 +20,6 @@ export const state = () => ({
   layer_status: null,
   cached_camera_options: {},
   searchtime: null,
-  filter_config: []
 })
 
 export const mutations = {

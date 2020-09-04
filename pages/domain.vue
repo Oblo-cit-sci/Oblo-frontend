@@ -24,18 +24,19 @@ import MapIncludeMixin from "~/components/map/MapIncludeMixin"
 import MapWrapper from "~/components/map/MapWrapper"
 import {dev_env} from "~/lib/util"
 import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
-import {MENU_MODE_DOMAIN_OVERVIEW, QP_D, QP_F} from "~/lib/consts"
+import {MENU_MODE_DOMAIN_OVERVIEW, QP_D, QP_F, TEMPLATE} from "~/lib/consts"
 import FixDomainMixin from "~/components/global/FixDomainMixin"
 import EntryCreateMixin from "~/components/entry/EntryCreateMixin"
 import URLParseMixin from "~/components/util/URLParseMixin"
 import URLQueryMixin from "~/components/util/URLQueryMixin"
 import DomainData_UtilMixin from "~/components/domain/DomainData_UtilMixin"
+import FilterMixin from "~/components/FilterMixin"
 
 export default {
   name: "domain",
   // layout: "new_map_layout",
   mixins: [DomainData_UtilMixin, HasMainNavComponentMixin, EntryNavMixin, EntryCreateMixin, URLQueryMixin,
-    PersistentStorageMixin, LayoutMixin, MapIncludeMixin, FixDomainMixin, URLParseMixin],
+    PersistentStorageMixin, LayoutMixin, MapIncludeMixin, FixDomainMixin, URLParseMixin, FilterMixin],
   components: {MapWrapper, EntryCreateList},
   data() {
     return {
@@ -66,9 +67,19 @@ export default {
     }
 
     this.set_menu_state(MENU_MODE_DOMAIN_OVERVIEW)
+
+    // read template config from query
+    // for now just query param template, e.g. : ...&s=template:article_review
     const config = this.search_config(this.$route.query.s)
-    if (config) {
-      console.log(config)
+    if(config && config[0].name === TEMPLATE) {
+      // console.log("setting from query")
+      this.$store.commit("search/replace_in_act_config", this.config_generate(config[0].name, config[0].value))
+    }
+    // get the default templates of the domain
+    if (this.$store.getters["search/get_act_config"].length === 0) {
+      // console.log("setting default")
+      const generated = this.config_generate(TEMPLATE, this.$_.get(this.domain_data, "search.default_templates", []))
+      this.$store.commit("search/replace_in_act_config", generated)
     }
   },
   beforeRouteLeave(from, to, next) {

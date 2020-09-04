@@ -156,13 +156,13 @@ export default {
       }
     },
     config_generate(filtername, filtervalue) {
-      this.$store.getters["templates/entry_types_array"].filter(template => template)
       if (filtername === "template") {
-        const filter = {
+        const used_templates = this.$store.getters["templates/entry_types_array"].filter(template => filtervalue.includes(template.slug))
+        return {
           "name": "template",
           "t_label": "w.entrytype",
           "value": filtervalue,
-          "text": ""
+          "text": used_templates.map(t => t.title).join(", ")
         }
       }
     }

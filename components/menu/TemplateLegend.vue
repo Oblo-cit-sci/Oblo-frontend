@@ -13,6 +13,7 @@
 
 <script>
   import {object_list2options} from "~/lib/options"
+  import {TEMPLATE} from "~/lib/consts"
 
   export default {
     name: "TemplateLegend",
@@ -25,7 +26,9 @@
       // this would add name: "template" to the selected
       // const template_filter_options = Object.assign({}, entrytype_filter_options)
       const templates = object_list2options(
-        this.$store.getters["templates/templates_of_domain"](this.domain_name), "title", "slug", true, [{"color": "rules.map.marker_color"}])
+        this.$store.getters["templates/templates_of_domain"](this.domain_name),
+        "title", "slug", true,
+        [{"color": "rules.map.marker_color"}])
       return {
         templates,
         panel_state: false
@@ -34,37 +37,30 @@
     computed: {
       selected: {
         get: function () {
-          return this.$store.getters["map/get_filter_config"]
-            .map(f => this.$_.findIndex(this.templates, t => t.value === f.value))
+          const search_conf = this.$store.getters["search/get_act_config"].find(cf => cf.name === TEMPLATE)
+          if(search_conf) {
+            return search_conf.value.map(f => this.$_.findIndex(this.templates, t => t.value === f))
+          }
         },
         set(selected_templates) {
+          console.log("setting", selected_templates)
+          // todo t_label?
           selected_templates = selected_templates.map(i =>
             Object.assign(
-              this.templates[i], {name: "template", "label": "Entrytype"})
+              this.templates[i], {name: TEMPLATE, "t_label": "w.entrytype"})
           )
           const act_config = this.$store.getters["map/get_filter_config"]
-          const new_conf = act_config.filter(conf => conf.name !== "template")
+          const new_conf = act_config.filter(conf => conf.name !== TEMPLATE)
           for (let t of selected_templates) {
             new_conf.push(t)
           }
-          this.$store.commit("map/set_filter_config", new_conf)
+          // this.$store.commit("map/set_filter_config", new_conf)
           this.template2filterlist_config(new_conf)
         }
       }
     },
     created() {
       // this should go somewhere else before.
-      if (this.$_.isEmpty(this.selected)) {
-        const domain_data = this.$store.getters["domain_by_name"](this.domain_name)
-        const overlay_menu = this.$_.get(domain_data, "map.overlay_menu")
-        if (overlay_menu) {
-          const legend = this.$_.find(overlay_menu, m => m.name === "legend")
-          if (legend) {
-            const default_value = this.$_.get(legend, "attr.default")
-            this.selected = default_value.map(v => (this.$_.findIndex(this.templates, t => t.value === v)))
-          }
-        }
-      }
     },
     methods: {
       change(selected_templates) {

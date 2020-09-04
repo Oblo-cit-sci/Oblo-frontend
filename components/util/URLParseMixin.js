@@ -1,5 +1,8 @@
+import FilterMixin from "~/components/FilterMixin"
+
 export default {
   name: "URLParseMixin",
+  mixins: [FilterMixin],
   methods: {
     search_config(search_param) {
       if (!search_param)
