@@ -46,7 +46,7 @@ export default {
         return this.setting(UI_LANGUAGE)
       },
       set: function (language) {
-        let domain = this.$route.name === PAGE_DOMAIN ? this.$store.getters["domain"].name : null
+        let domain = this.$store.getters["domain"].name // undefined for non-domain
 
         // todo maybe can go into a mixin, if there are other settings for the language
         if (domain) {
