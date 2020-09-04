@@ -10,59 +10,78 @@
 </template>
 
 <script>
-  import {USER_LOGGED_IN} from "~/store/user"
-  import SettingsChangeMixin from "~/components/global/SettingsChangeMixin"
-  import {UI_LANGUAGE} from "~/lib/consts"
-  import InitializationMixin from "~/layouts/InitializationMixin"
+import {USER_LOGGED_IN} from "~/store/user"
+import SettingsChangeMixin from "~/components/global/SettingsChangeMixin"
+import {UI_LANGUAGE} from "~/lib/consts"
+import InitializationMixin from "~/layouts/InitializationMixin"
+import {PAGE_DOMAIN} from "~/lib/pages"
 
-  export default {
-    name: "LanguageSelector",
-    mixins: [SettingsChangeMixin, InitializationMixin],
-    components: {},
-    props: {},
-    data() {
-      return {}
+export default {
+  name: "LanguageSelector",
+  mixins: [SettingsChangeMixin, InitializationMixin],
+  components: {},
+  props: {},
+  data() {
+    return {}
+  },
+  mounted() {
+    if (!this.language) {
+      this.language = navigator.language.split("-")[0]
+    }
+  },
+  computed: {
+    has_multiple_languages() {
+      return this.available_languages.length > 1
     },
-    mounted() {
-      if (!this.language) {
-        this.language = navigator.language.split("-")[0]
+    available_languages() {
+      // todo when on domain page only take
+      const available_languages = this.$store.getters["available_languages"]
+      return available_languages.map(l => ({
+        "value": l,
+        "text": (this.$t("lang." + l))
+      }))
+    },
+    language: {
+      get: function () {
+        return this.setting(UI_LANGUAGE)
+      },
+      set: function (language) {
+        let domain = this.$route.name === PAGE_DOMAIN ? this.$store.getters["domain"].name : null
+
+        // todo maybe can go into a mixin, if there are other settings for the language
+        if (domain) {
+          const domain_basics = this.$store.getters["domain_by_name"](domain)
+          if (domain_basics.hasOwnProperty(language)) {
+            // console.log("got it already")
+            return
+          }
+        } else {
+          // check all domains
+          const all_domains = this.$store.getters["domains"]
+          // if no domain has the language return (is none = !some, misses the language prop = ! hasOwnProp)
+          if(!this.$_.some(all_domains, d => !d.hasOwnProperty(language))) {
+            // console.log("all languages have it")
+            return
+          }
+        }
+        this.init_specifics(domain, language).then(() => {
+          this.set_settings_value(UI_LANGUAGE, language)
+        })
       }
     },
-    computed: {
-      has_multiple_languages() {
-        return this.available_languages.length > 1
-      },
-      available_languages() {
-        // todo should come from the server
-        const available_languages = this.$store.getters["available_languages"] //["en", "de", "es", "fr"]
-        return available_languages.map(l => ({
-          "value": l,
-          "text": (this.$t("lang." + l))
-        }))
-      },
-      language: {
-        get: function () {
-          return this.setting(UI_LANGUAGE)
-        },
-        set: function (lang) {
-          this.init_specifics(null, lang).then(() => {
-            this.set_settings_value(UI_LANGUAGE, lang)
-          })
-        }
-      },
-      label() {
-        return this.$t("comp.language_select.label")
-      }
-    },
-    watch: {
-      language(lang) {
-        this._i18n.locale = lang
-        if (!this.$store.getters[USER_LOGGED_IN]) {
-          this.$api.axios.defaults.headers.common["Content-Language"] = lang + "-" + lang.toUpperCase()
-        }
+    label() {
+      return this.$t("comp.language_select.label")
+    }
+  },
+  watch: {
+    language(lang) {
+      this._i18n.locale = lang
+      if (!this.$store.getters[USER_LOGGED_IN]) {
+        this.$api.axios.defaults.headers.common["Content-Language"] = lang + "-" + lang.toUpperCase()
       }
     }
   }
+}
 </script>
 
 <style scoped>

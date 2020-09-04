@@ -109,8 +109,8 @@ export default {
       // console.log("done")
       return Promise.resolve()
     },
-    async init_specifics(domains, language) {
-      const {data} = await this.$api.init_data(undefined, language)
+    async init_specifics(domain, language) {
+      const {data} = await this.$api.init_data(domain, language)
       const domains_data = data.data.domains
       this.$store.commit("set_domains", {domains_data, language})
       return Promise.resolve()
