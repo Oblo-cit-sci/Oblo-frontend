@@ -22,7 +22,7 @@
             @click="$emit('create_entry')")
             v-icon mdi-dots-horizontal
       .overlay_menu(:style="legend_style")
-        TemplateLegend(:domain_name="domain" ref="legendComponent")
+        TemplateLegend(:domain_name="domain_name" ref="legendComponent")
     .buttongroup.shift_anim(v-else-if="menu_state === 0" :style="button_group_shift")
       v-btn(v-if="show_menu_button" dark fab large color="blue" @click="switch_menu_open")
         v-icon mdi-menu
@@ -158,7 +158,7 @@ export default {
     },
     // todo maybe move to domainMapMixin
     entries() {
-      return this.all_map_entries(this.domain)
+      return this.all_map_entries(this.domain_name)
     },
     layer_aspectdialog_data() {
       return {
@@ -189,12 +189,12 @@ export default {
       }
     },
     map_options() {
-      const default_camera = this.$_.get(this.$store.getters["domain_by_name"](this.domain), "map.default_camera")
+      const default_camera = this.$_.get(this.$store.getters["domain_by_name"](this.domain_name), "map.default_camera")
       let options = this.$_.cloneDeep(this.default_map_options)
       if (default_camera) {
         Object.assign(options, default_camera)
       }
-      const cached_options = this.$store.getters["map/cached_camera_options"](this.domain)
+      const cached_options = this.$store.getters["map/cached_camera_options"](this.domain_name)
       if (cached_options) {
         Object.assign(options, cached_options)
       }
@@ -257,15 +257,15 @@ export default {
   },
   created() {
     // console.log("wrapper created")
-    if (this.domain) {
-      this.load_map_entries()
+    if (this.domain_name) {
+      this.load_map_entries(this.domain_name)
     }
   },
   beforeDestroy() {
     // todo consider padding from menu
     if (this.map) {
       this.$store.commit("map/set_camera_options_cache", {
-        domain: this.domain, options: {
+        domain: this.domain_name, options: {
           zoom: this.map.getZoom(),
           center: this.map.getCenter()
         }
@@ -275,6 +275,7 @@ export default {
   methods: {
     check_entries_map_done() {
       // console.log("check_entries_map_done", this.entries)
+      // console.log("check", this.entries, this.entries_loaded)
       if (this.entries_loaded && this.entries.features.length > 0 && this.map_loaded && this.get_all_uuids) {
         this.init_map_source_and_layers()
         this.initialized = true
@@ -435,7 +436,7 @@ export default {
 
       // entries layer
       const entries_layer_name = layer_base_id + '_entries' // all_entries_entries
-      console.log(entries_layer_name)
+      // console.log(entries_layer_name)
       this.add_entry_layer(source_name, entries_layer_name, {
         'circle-color': [
           'match',
@@ -523,14 +524,14 @@ export default {
       this.set_layer_visibility(selected_layers)
     },
     change_entry_markers_mode(entry_uuid, selected) {
-      console.log("MapWrapper.change_entry_markers_mode", entry_uuid, selected)
+      // console.log("MapWrapper.change_entry_markers_mode", entry_uuid, selected)
       const features = this.map.getSource(MAIN_SOURCE_LAYER)._data.features
       // console.log("all features", features)
       const relevant_features = this.$_.filter(features, (f) => f.properties.uuid === entry_uuid)
       // console.log(relevant_features, selected)
       for (let f of relevant_features) {
         if (selected) {
-          console.log("found entry", f.id)
+          // console.log("found entry", f.id)
           this.map.setFeatureState(
             {source: MAIN_SOURCE_LAYER, id: f.id},
             {"selected": true}

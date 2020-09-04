@@ -15,7 +15,6 @@ const colors = ["error", "success"]
 export default {
   name: "DecisionDialog",
   created() {
-    console.log("dd-created")
     this.$bus.$on("dialog-open", ({data, confirm_method, cancel_method}) => {
       console.log("dialog-open", data, confirm_method)
       this.config = Object.assign(this.$_.cloneDeep(this.default_config), data)

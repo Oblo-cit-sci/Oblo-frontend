@@ -34,7 +34,7 @@ export default {
           if (data.data) {
             const entry = data.data
             this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
-            console.log("prevent change", this.prevent_view_page_change)
+            // console.log("prevent change", this.prevent_view_page_change)
             if (this.prevent_view_page_change && mode === VIEW) {
               this.show_in_route(uuid, mode)
             } else {

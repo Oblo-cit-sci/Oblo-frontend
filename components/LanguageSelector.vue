@@ -13,10 +13,11 @@
   import {USER_LOGGED_IN} from "~/store/user"
   import SettingsChangeMixin from "~/components/global/SettingsChangeMixin"
   import {UI_LANGUAGE} from "~/lib/consts"
+  import InitializationMixin from "~/layouts/InitializationMixin"
 
   export default {
     name: "LanguageSelector",
-    mixins: [SettingsChangeMixin],
+    mixins: [SettingsChangeMixin, InitializationMixin],
     components: {},
     props: {},
     data() {
@@ -33,7 +34,7 @@
       },
       available_languages() {
         // todo should come from the server
-        const available_languages = ["en"] //["en", "de", "es", "fr"]
+        const available_languages = this.$store.getters["available_languages"] //["en", "de", "es", "fr"]
         return available_languages.map(l => ({
           "value": l,
           "text": (this.$t("lang." + l))
@@ -44,7 +45,9 @@
           return this.setting(UI_LANGUAGE)
         },
         set: function (lang) {
-          this.set_settings_value(UI_LANGUAGE, lang)
+          this.init_specifics(null, lang).then(() => {
+            this.set_settings_value(UI_LANGUAGE, lang)
+          })
         }
       },
       label() {

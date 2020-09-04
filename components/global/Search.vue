@@ -263,6 +263,7 @@ export default {
       // so that drafts are also shown on the profile
       if (this.mixin_domain_drafts && !hide_drafts && this.is_pure) { // todo, not sure anymore what is_pure does...
         const include_types = this.get_filtered_template_slugs()
+        // console.log(this.$store.getters["entries/domain_drafts"](this.mixin_domain_drafts))
         const drafts = this.$store.getters["entries/domain_drafts"](this.mixin_domain_drafts)
           .reverse().filter(e => include_types.includes(e.template.slug)).map(e => e.uuid)
         result_entries = drafts.concat(result_entries)

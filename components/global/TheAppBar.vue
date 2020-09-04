@@ -63,8 +63,8 @@
         return this.$api.static_url_$domain_name_icon(this.domain.name || this.domain.value)
       },
       domain_headline() {
-        if (this.domain.name)
-          return this.domain_data(this.domain.name).page_index.title
+        if (this.domain.page_index)
+          return this.domain.page_index.title
       }
     },
     methods: {

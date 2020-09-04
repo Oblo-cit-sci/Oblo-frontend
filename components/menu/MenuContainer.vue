@@ -18,7 +18,7 @@
           v-tab-item
             MainMenuList
           v-tab-item
-            DomainMenu( @force_menu_mode="this.menu_state=1")
+            DomainMenu(@force_menu_mode="this.menu_state=1" domain_name="licci")
       MainMenuList(v-else)
 </template>
 

@@ -108,16 +108,16 @@ export default {
         if (code.template.slug === "value_tree") {
           const tag_tree = build_tag_select_tree(this.$_.cloneDeep(code))
           options_aspects.push(Object.assign(base_aspect, {
-              type: TREEMULTISELECT,
-              items: tag_tree
-            })
+                type: TREEMULTISELECT,
+                items: tag_tree
+              })
           )
         } else if (code.template.slug === "value_list") {
           const tag_list = build_tag_select_list(this.$_.cloneDeep(code))
           options_aspects.push(Object.assign(base_aspect, {
-              type: MULTISELECT,
-              items: tag_list
-            })
+                type: MULTISELECT,
+                items: tag_list
+              })
           )
         } else {
           console.log(`unknown code template for ${code.title}, template slug: ${code.template.slug}`)
@@ -153,6 +153,17 @@ export default {
       }
       if (filter.name === "status") {
         return entries.filter(e => e.status === filter.value)
+      }
+    },
+    config_generate(filtername, filtervalue) {
+      this.$store.getters["templates/entry_types_array"].filter(template => template)
+      if (filtername === "template") {
+        const filter = {
+          "name": "template",
+          "t_label": "w.entrytype",
+          "value": filtervalue,
+          "text": ""
+        }
       }
     }
   }

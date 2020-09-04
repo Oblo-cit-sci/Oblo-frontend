@@ -38,13 +38,19 @@
     name: "DomainMenu",
     mixins: [MapNavigationMixin, HasMainNavComponentMixin, DomainMixin, FixDomainMixin, FilterMixin],
     components: {Entry, Search},
+    props: {
+      domain_name: {
+        type: String,
+        required: true
+      }
+    },
     computed: {
       filters() {
         const template_filter_options = this.get_template_filter_options()
         template_filter_options.aspect.items = object_list2options(
           this.$store.getters["templates/templates_of_domain"](this.domain_name), "title", "slug", true)
 
-        const tags_filter_options = this.get_tags_filter_options( this.domain_name)
+        const tags_filter_options = this.get_tags_filter_options(this.domain_name)
         // const uuids_select_option = get_uuids_select_option()
         return [template_filter_options, tags_filter_options]
       },

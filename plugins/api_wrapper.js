@@ -32,8 +32,13 @@ class APIWrapper {
     return this.axios !== null
   }
 
-  init_data() {
-    return this.axios.get(`${this.basic_baseURL}/init_data`)
+  init_data(include_domains, language) {
+    // console.log("requesting language", language)
+    return this.axios.get(`${this.basic_baseURL}/init_data`, {
+      params: {
+        include_domains, language
+      }
+    })
   }
 
   /**

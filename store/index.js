@@ -8,7 +8,6 @@ import {SEARCH_CLEAR} from "~/store/search"
 export const CLEAR_DOMAIN = "clear_domain"
 // export const DELETE_DOMAIN = "delete_domain"
 export const SET_STORED_ENTRIES = "set_stored_entries"
-export const SET_DOMAINS = "set_domains"
 export const GET_CODE = "get_code"
 export const SET_TEMPLATES_CODES = "set_templates_codes"
 export const CLEAR_ENTRIES = "clear_entries"
@@ -40,14 +39,21 @@ export const state = () => ({
   // prevent that the save and back is messing up, should not go back to a child. e.g.
   // stores either domain or my entries page or a parent entry
   page_path: [],
-  aspect_value_cache: {}
+  aspect_value_cache: {},
+  available_languages: []
 })
 
 const ld = require('lodash')
 
 export const mutations = {
-  set_domains(state, domain_arr) {
-    state.domains = domain_arr
+  set_domains(state, {domains_data, language}) {
+    if(state.domains.length === 0) {
+      state.domains = domains_data
+    } else {
+      for (let domain_index in domains_data) {
+        state.domains[domain_index][language] = domains_data[domain_index][language]
+      }
+    }
   },
   add_codes(state, code_arr) {
     for (let code_entry of code_arr) {
@@ -86,6 +92,9 @@ export const mutations = {
     const template_cache = state.aspect_value_cache[template] || {}
     template_cache[aspect] = mvalue
     state.aspect_value_cache[template] = template_cache
+  },
+  set_available_languages(state, language_codes) {
+    state.available_languages = language_codes
   }
 };
 
@@ -115,6 +124,14 @@ export const getters = {
     return domain_name => {
       return state.domains.find(domain => domain.name === domain_name)
     }
+  },
+  domain_data(state) {
+    return (domain_name, language) => {
+      return state.domains.find(domain => domain.name === domain_name)[language]
+    }
+  },
+  available_languages(state) {
+    return state.available_languages
   },
   domain_title(state) {
     return state.domain.title

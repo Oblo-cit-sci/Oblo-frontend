@@ -77,8 +77,8 @@ export const getters = {
     return Object.fromEntries(state.entry_types)
   },
   templates_of_domain(state) { // TEMPLATES_OF_DOMAIN
-    return domain => {
-      return entries_domain_filter(Array.from(state.entry_types.values()), domain)
+    return domain_name => {
+      return entries_domain_filter(Array.from(state.entry_types.values()), domain_name)
     }
   },
   get_aspect_def(state, getters) { // TEMPLATES_GET_ASPECT_DEF

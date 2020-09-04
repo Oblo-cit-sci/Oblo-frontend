@@ -1,18 +1,13 @@
-import {MAP_SET_ENTRIES} from "~/store/map"
 
 import {mapGetters} from "vuex"
 import FilterMixin from "~/components/FilterMixin"
 import DomainMixin from "~/components/DomainMixin"
 import {transform_options_list} from "~/lib/options"
+import DomainDataMixin from "~/components/domain/DomainDataMixin"
 
 export default {
   name: "DomainMapMixin",
-  mixins: [FilterMixin, DomainMixin],
-  props: {
-    domain: {
-      type: String
-    }
-  },
+  mixins: [FilterMixin, DomainDataMixin],
   computed: {
     ...mapGetters({
       entries: "map/entries",
@@ -22,7 +17,7 @@ export default {
       return this.$_.get(this.domain_data, "map.layers")
     },
     domain_templates_color_list() {
-      return this.templates_color_list(this.$store.getters["templates/templates_of_domain"](this.domain))
+      return this.templates_color_list(this.$store.getters["templates/templates_of_domain"](this.domain_name))
     }
   },
   methods: {

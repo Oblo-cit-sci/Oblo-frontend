@@ -9,10 +9,11 @@ import {SET_DOMAINS, SET_TEMPLATES_CODES} from "~/store"
 import {USER_GET_AUTH_TOKEN, USER_LOGIN} from "~/store/user"
 import {ENTRIES_HAS_FULL_ENTRY, ENTRIES_SAVE_ENTRY} from "~/store/entries"
 import {db_vars} from "~/lib/db_vars"
+import SettingsChangeMixin from "~/components/global/SettingsChangeMixin"
 
 export default {
   name: "InitializationMixin",
-  mixins: [FixDomainMixin],
+  mixins: [FixDomainMixin, SettingsChangeMixin],
   created() {
     if (!this.db_loaded)
       this.reload_storage()
@@ -63,11 +64,17 @@ export default {
       this.$store.commit(APP_CONNECTING, true)
       console.log("initialize")
 
+      // todo maybe the language should come not from the settings, since setting the language triggers
+      // reload...
       const {data} = await this.$api.init_data()
-      const domains_basic_data = data.data.domains
-      this.$store.commit(SET_DOMAINS, domains_basic_data)
+      const domains_data = data.data.domains
+      const language = data.data.language
+      this.$store.commit("set_domains", {domains_data, language})
       this.$store.dispatch(SET_TEMPLATES_CODES, data.data.templates_and_codes)
 
+      this.$store.commit("set_available_languages", data.data.languages)
+
+      // todo maybe this should be before init_data, to request the set language
       const auth_token = this.$store.getters[USER_GET_AUTH_TOKEN]
       if (auth_token.access_token) {
         const login = await this.$api.actor.validate_token(auth_token)
@@ -99,6 +106,13 @@ export default {
           this.$router.push("/")
         }
       }
+      // console.log("done")
+      return Promise.resolve()
+    },
+    async init_specifics(domains, language) {
+      const {data} = await this.$api.init_data(undefined, language)
+      const domains_data = data.data.domains
+      this.$store.commit("set_domains", {domains_data, language})
       return Promise.resolve()
     }
   },
@@ -108,6 +122,7 @@ export default {
       if (val) {
         // console.log("layout. initializing")
         this.initialize().then(() => {
+          console.log("connected")
           this.$store.dispatch(APP_CONNECTED)
           // console.log(this.has_multiple_domains, this.get_one_domain_name)
           if (!this.has_multiple_domains) {
@@ -123,7 +138,11 @@ export default {
             } else {
               this.$store.commit(APP_INITIALIZED)
             }
+          } else {
+            this.$store.commit(APP_INITIALIZED)
           }
+        }, err => {
+          console.log("initialization failed")
         })
       }
     }

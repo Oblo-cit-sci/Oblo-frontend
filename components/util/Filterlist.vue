@@ -73,6 +73,7 @@ export default {
       return this.$_.find(this.filter_options, f => f.name === name)
     },
     available_filter_label(filter) {
+      // console.log(filter)
       if (filter.t_label) {
         return this.$tc(filter.t_label)
       } else {
@@ -120,7 +121,7 @@ export default {
         new_filters.push(new_filter)
       }
       this.$emit("input", new_filters)
-      console.log("new filtervalue")
+      // console.log("new filtervalue")
       this.dialog_open = false
     },
     edit_filter(index) {
