@@ -28,7 +28,6 @@ if (process.env.NODE_ENV === "development" || process.env.SERVER === "local") {
 }
 
 module.exports = {
-  mode: 'universal',
    telemetry: false,
 
   env: {
