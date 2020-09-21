@@ -12,71 +12,70 @@
 </template>
 
 <script>
-  import {APP_CONNECTED, APP_CONNECTING, APP_INITIALIZED} from "~/store/app"
+import {APP_CONNECTED, APP_CONNECTING, APP_INITIALIZED} from "~/store/app"
 
-  import {mapGetters, mapMutations} from "vuex"
-  import {DOMAIN, DOMAIN_BY_NAME} from "~/store"
-  import {HOME} from "~/lib/consts"
-  import NavBaseMixin from "~/components/NavBaseMixin"
+import {mapGetters, mapMutations} from "vuex"
+import {DOMAIN, DOMAIN_BY_NAME} from "~/store"
+import {HOME} from "~/lib/consts"
+import NavBaseMixin from "~/components/NavBaseMixin"
 
-  // z-index to be above the loading overlay
+// z-index to be above the loading overlay
 
-  export default {
-    name: "TheAppBar",
-    mixins: [NavBaseMixin],
-    components: {},
-    props: {
-      show_nav_icon: {
-        type: Boolean,
-        default: true
-      }
-    },
-    data() {
-      return {
-        title: this.$store.getters[DOMAIN] ? this.$store.state.domain.title : HOME,
-      }
-    },
-    computed: {
-      ...mapGetters([DOMAIN]),
-      ...mapGetters({
-        connected: APP_CONNECTED,
-        initialized: APP_INITIALIZED,
-        domain_data: DOMAIN_BY_NAME,
-      }),
-      nav_icon_style() {
-        return {
-          'visibility': this.show_nav_icon ? "inherit" : "hidden"
-        }
-      },
-      reduce_when_small() {
-        if (this.$vuetify.breakpoint.smAndDown) {
-          return {"font-size": "80%"}
-        } else {
-          return {"font-size": "90%"}
-        }
-      },
-      domain_title() {
-        return this.domain ? this.domain.title : HOME
-      },
-      domain_icon() {
-        // todo only use name, but set change it in no_domain
-        return this.$api.static_url_$domain_name_icon(this.domain.name || this.domain.value)
-      },
-      domain_headline() {
-        if (this.domain.page_index)
-          return this.domain.page_index.title
-      }
-    },
-    methods: {
-      ...mapMutations({switch_menu_open: 'menu/switch_open'}),
+export default {
+  name: "TheAppBar",
+  mixins: [NavBaseMixin],
+  components: {},
+  props: {
+    show_nav_icon: {
+      type: Boolean,
+      default: true
     }
+  },
+  data() {
+    return {
+      title: this.$store.getters[DOMAIN] ? this.$store.state.domain.title : HOME,
+    }
+  },
+  computed: {
+    ...mapGetters([DOMAIN]),
+    ...mapGetters({
+      connected: APP_CONNECTED,
+      initialized: APP_INITIALIZED,
+      domain_data: DOMAIN_BY_NAME,
+    }),
+    nav_icon_style() {
+      return {
+        'visibility': this.show_nav_icon ? "inherit" : "hidden"
+      }
+    },
+    reduce_when_small() {
+      if (this.$vuetify.breakpoint.smAndDown) {
+        return {"font-size": "80%"}
+      } else {
+        return {"font-size": "90%"}
+      }
+    },
+    domain_title() {
+      return this.domain ? this.domain.title : HOME
+    },
+    domain_icon() {
+      // todo only use name, but set change it in no_domain
+      return this.$api.static_url_$domain_name_icon(this.domain.name || this.domain.value)
+    },
+    domain_headline() {
+      return this.domain.long_title
+    }
+  },
+  methods: {
+    ...mapMutations({switch_menu_open: 'menu/switch_open'}),
   }
+}
 </script>
 
 <style scoped>
 
-  .header-avatar {
-    cursor: pointer;
-  }
+.header-avatar {
+  cursor: pointer;
+}
 
 </style>
