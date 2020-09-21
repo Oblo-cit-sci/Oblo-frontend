@@ -2,9 +2,11 @@ import {mapGetters} from "vuex"
 import {TEMPLATES_OF_DOMAIN} from "~/store/templates"
 import {EDIT, PUBLIC} from "~/lib/consts"
 import {can_edit_entry} from "~/lib/actors"
+import EntryCreateMixin from "~/components/entry/EntryCreateMixin";
 
 export default {
   name: "DomainData_UtilMixin",
+  mixins: [EntryCreateMixin],
   computed: {
     ...mapGetters({all_domains_templates: TEMPLATES_OF_DOMAIN}),
     domain_name() {
