@@ -26,10 +26,11 @@
   import {CLEAR_ENTRIES} from "~/store"
   import NavBaseMixin from "~/components/NavBaseMixin"
   import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
+  import InitializationMixin from "../layouts/InitializationMixin";
 
   export default {
     name: "Login",
-    mixins: [TypicalAspectMixin, TriggerSnackbarMixin, PersistentStorageMixin, LoginMixin, NavBaseMixin],
+    mixins: [TypicalAspectMixin, TriggerSnackbarMixin, PersistentStorageMixin, LoginMixin, NavBaseMixin, InitializationMixin],
     components: {Aspect},
     data() {
       const asp_password = this.asp_password()
@@ -65,7 +66,13 @@
             this.process_login(data)
             this.$store.dispatch(CLEAR_ENTRIES)
             this.$store.commit(SEARCH_CLEAR)
-            this.home()
+
+            const settings = this.$store.getters["user/settings"]
+            this.complete_language_domains(settings.fixed_domain, settings.ui_language).then(() => {
+              this.home()
+            }, (err) => {
+             console.log(err)
+            })
           } else {
             // todo this shouldnt happen...
             console.log(err)

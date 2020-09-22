@@ -115,6 +115,31 @@ export default {
       const domains_data = data.data.domains
       this.$store.commit("set_domains", {domains_data, language})
       return Promise.resolve()
+    },
+    /**
+     *
+     * @param domain one domain or null, which considers all domain
+     * @param language the language required
+     */
+    async complete_language_domains(domain, language) {
+      // console.log("completing", domain, language)
+      if (domain) {
+        const domain_basics = this.$store.getters["domain_by_name"](domain)
+        if (domain_basics.hasOwnProperty(language)) {
+          // console.log("got it already")
+          return Promise.resolve()
+        }
+      } else {
+        // check all domains
+        const all_domains = this.$store.getters["domains"]
+        // if no domain has the language return (is none = !some, misses the language prop = ! hasOwnProp)
+        if (!this.$_.some(all_domains, d => !d.hasOwnProperty(language))) {
+          // console.log("all languages have it")
+          return Promise.resolve()
+        }
+      }
+
+      return this.init_specifics(domain, language)
     }
   },
   watch: {
