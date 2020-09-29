@@ -1,6 +1,6 @@
 <template lang="pug">
   .fullSize
-    v-dialog(v-model="entrycreate_dialog_open")
+    v-dialog(v-model="entrycreate_dialog_open" :width="dialog_width")
       v-card
         v-card-title {{$t("page.domain.create_new_entry")}}
         EntryCreateList(:template_entries="create_templates_options")
@@ -36,7 +36,7 @@ export default {
   name: "domain",
   // layout: "new_map_layout",
   mixins: [DomainData_UtilMixin, HasMainNavComponentMixin, EntryNavMixin, EntryCreateMixin, URLQueryMixin,
-    PersistentStorageMixin, LayoutMixin, MapIncludeMixin, FixDomainMixin, URLParseMixin, FilterMixin],
+    PersistentStorageMixin, LayoutMixin, MapIncludeMixin, FixDomainMixin, URLParseMixin, FilterMixin, LayoutMixin],
   components: {MapWrapper, EntryCreateList},
   data() {
     return {
@@ -71,7 +71,7 @@ export default {
     // read template config from query
     // for now just query param template, e.g. : ...&s=template:article_review
     const config = this.search_config(this.$route.query.s)
-    if(config && config[0].name === TEMPLATE) {
+    if (config && config[0].name === TEMPLATE) {
       // console.log("setting from query")
       this.$store.commit("search/replace_in_act_config", this.config_generate(config[0].name, config[0].value))
     }
@@ -96,6 +96,9 @@ export default {
     domain_data() {
       const language = this.$store.getters["user/settings"].ui_language
       return this.$store.getters["domain_data"](this.domain_name, language)
+    },
+    dialog_width() {
+      return this.main_container_with
     }
   },
   methods: {

@@ -70,6 +70,7 @@ export default {
       }
     },
     add_entry_layer(source_name, layer_name, paint_props) {
+      // console.log("SS", this.map.getSource(source_name))
       this.map.addLayer({
         'id': layer_name,
         'type': 'circle',
@@ -83,6 +84,8 @@ export default {
     add_default_entries_layer_interactions(source_name, entries_layer_name, click_method) {
       // 1. ENTRIES Hoover
       this.map.on('mouseenter', entries_layer_name, (e) => {
+        console.log("SS", this.map.getSource(source_name))
+        console.log(e)
         const feature = e.features[0]
         this.act_hoover_id = feature.id
         this.map.setFeatureState(

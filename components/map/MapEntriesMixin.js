@@ -25,14 +25,15 @@ export default {
         config.required.push({name: "before_ts", ts: this.$store.getters["map/get_searchtime"]})
       }
       this.$api.entries_map_entries(config, true).then(({data}) => {
+        // console.log(data.data)
         this.$store.dispatch("map/add_entries", {domain: domain_name, entries: data.data.entries, ts: data.data.ts})
-      }).catch(err => {
+      }, err => {
         console.log("map entries error")
         console.log(err)
       })
     },
     guarantee_entries_loaded() {
-      if(!this.entries_loaded) {
+      if (!this.entries_loaded) {
 
       }
     },

@@ -49,19 +49,15 @@ export default {
     show_main_template_create_text() {
       // todo, size can go into responsiveness Mixin
       return (!this.menu_open || this.is_large) && !this.is_small
-    },
-    can_create_multiple_etypes() {
-      // TODO!!!
-      return false
     }
   },
 }
 </script>
 
 <style scoped>
-  .additional_templates_button {
-    top: 40px;
-    z-index: 30;
-    transform: translateX(-50%)
-  }
+.additional_templates_button {
+  top: 40px;
+  z-index: 30;
+  transform: translateX(-50%)
+}
 </style>
