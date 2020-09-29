@@ -1,7 +1,6 @@
 <template lang="pug">
   div
     v-btn(
-      :style="{transform: 'translateX(-50%)'}"
       v-bind="bp_based_main_create_btn_props"
       color="success"  @click="create_from_main_template")
       span(v-if="show_main_template_create_text") {{main_template.create_text}}
@@ -15,23 +14,15 @@
 <script>
 import EntryCreateMixin from "~/components/entry/EntryCreateMixin"
 import {mapGetters} from "vuex"
+import {EDIT} from "~/lib/consts";
+import NavBaseMixin from "~/components/NavBaseMixin";
+import ResponsivenessMixin from "~/components/ResponsivenessMixin";
+import DomainDataMixin from "~/components/domain/DomainDataMixin";
 
 export default {
   name: "CreateEntryButton",
-  mixins: [EntryCreateMixin],
+  mixins: [DomainDataMixin, EntryCreateMixin, NavBaseMixin, ResponsivenessMixin],
   components: {},
-  props: {
-    main_template: {
-      type: Object,
-      required: true
-    },
-    show_main_template_create_text: {
-      type: Boolean
-    },
-  },
-  data() {
-    return {}
-  },
   computed: {
     ...mapGetters({
       menu_open: "menu/open"
@@ -55,11 +46,22 @@ export default {
         left: shift
       }
     },
+    show_main_template_create_text() {
+      // todo, size can go into responsiveness Mixin
+      return (!this.menu_open || this.is_large) && !this.is_small
+    },
+    can_create_multiple_etypes() {
+      // TODO!!!
+      return false
+    }
   },
-  methods: {}
 }
 </script>
 
 <style scoped>
-
+  .additional_templates_button {
+    top: 40px;
+    z-index: 30;
+    transform: translateX(-50%)
+  }
 </style>

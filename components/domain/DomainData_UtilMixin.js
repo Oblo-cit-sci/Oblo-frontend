@@ -4,6 +4,9 @@ import {EDIT, PUBLIC} from "~/lib/consts"
 import {can_edit_entry} from "~/lib/actors"
 
 export default {
+  /**
+   * THIS MIXIN ASSUMES YOU HAVE THE `domain_data` somehow!
+   */
   name: "DomainData_UtilMixin",
   computed: {
     ...mapGetters({all_domains_templates: TEMPLATES_OF_DOMAIN}),

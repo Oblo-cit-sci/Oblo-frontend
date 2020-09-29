@@ -8,7 +8,9 @@
         v-list-item-content
           v-list-item-title.headline
             span {{domain_title}}
-            span.ml-5(v-if="this.$vuetify.breakpoint.smAndUp" :style="reduce_when_small") {{domain_headline}}
+            span.ml-5(v-if="is_mdAndUp" :style="reduce_when_small") {{domain_headline}}
+      div(:style="display_debug") {{display_debug_text}}
+      CreateEntryButton(v-if="show_create_entry_button" :style="create_button_style" :domain_data="domain_data" @create_entry="$emit('create_entry')")
 </template>
 
 <script>
@@ -18,13 +20,16 @@ import {mapGetters, mapMutations} from "vuex"
 import {DOMAIN, DOMAIN_BY_NAME} from "~/store"
 import {HOME} from "~/lib/consts"
 import NavBaseMixin from "~/components/NavBaseMixin"
+import CreateEntryButton from "~/components/CreateEntryButton";
+import ResponsivenessMixin from "~/components/ResponsivenessMixin";
+import URLQueryMixin from "~/components/util/URLQueryMixin";
 
 // z-index to be above the loading overlay
 
 export default {
   name: "TheAppBar",
-  mixins: [NavBaseMixin],
-  components: {},
+  mixins: [NavBaseMixin, ResponsivenessMixin, URLQueryMixin],
+  components: {CreateEntryButton},
   props: {
     show_nav_icon: {
       type: Boolean,
@@ -64,7 +69,36 @@ export default {
     },
     domain_headline() {
       return this.domain.long_title
+    },
+    display_debug() {
+      return {
+        "width": "40px",
+        "height": "30px",
+        "position": "fixed",
+        "right": "20px",
+        "top": "10px",
+        "background-color": "grey",
+        "text-align": "center",
+      }
+    },
+    display_debug_text() {
+      return this.$vuetify.breakpoint.name
+    },
+    // for the entry-create button
+    create_button_style() {
+      return {
+        "position": "fixed",
+        "right": "10%",
+        "top": "5%"
+      }
+    },
+    show_create_entry_button() {
+      return this.is_domain_page && this.is_small
+    },
+    domain_data() {
+      return this.$store.getters["domain_data"](this.query_param_domain_name, this.$store.getters["user/settings"].ui_language)
     }
+    //
   },
   methods: {
     ...mapMutations({switch_menu_open: 'menu/switch_open'}),

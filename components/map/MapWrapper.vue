@@ -9,18 +9,9 @@
           v-icon mdi-menu
         v-btn(v-if="show_layer_menu_button" dark color="green" fab @click="open_layer_dialog")
           v-icon mdi-layers-outline
-      .central_button
+      .central_button(v-if="show_center_create_button")
         v-container.shift_anim(:style="center_button_shift")
-          v-btn(
-            :style="{transform: 'translateX(-50%)'}"
-            v-bind="bp_based_main_create_btn_props"
-            color="success"  @click="create_from_main_template")
-            span(v-if="show_main_template_create_text") {{main_template.create_text}}
-            v-icon mdi-plus
-          v-btn.additional_templates_button(dark x-small absolute bottom fab v-if="can_create_multiple_etypes"
-            :style="additional_template_button_shift"
-            @click="$emit('create_entry')")
-            v-icon mdi-dots-horizontal
+          CreateEntryButton(:domain_data="domain_data" @create_entry="$emit('create_entry')")
       .overlay_menu(:style="legend_style")
         TemplateLegend(:domain_name="domain_name" ref="legendComponent")
     .buttongroup.shift_anim(v-else-if="menu_state === 0" :style="button_group_shift")
@@ -57,6 +48,8 @@ import FilterMixin from "~/components/FilterMixin"
 import EntryFetchMixin from "~/components/entry/EntryFetchMixin"
 import MapEntriesMixin from "~/components/map/MapEntriesMixin"
 import {review_color} from "~/lib/util"
+import CreateEntryButton from "~/components/CreateEntryButton";
+import ResponsivenessMixin from "~/components/ResponsivenessMixin";
 
 const cluster_layer_name = LAYER_BASE_ID + '_clusters'
 
@@ -76,8 +69,8 @@ const MAIN_SOURCE_LAYER = "all_entries_source"
 
 export default {
   name: "MapWrapper",
-  components: {AspectDialog, TemplateLegend, Mapbox},
-  mixins: [MapIncludeMixin, DomainMapMixin, HasMainNavComponentMixin, FilterMixin, EntryFetchMixin, MapEntriesMixin],
+  components: {CreateEntryButton, AspectDialog, TemplateLegend, Mapbox},
+  mixins: [MapIncludeMixin, DomainMapMixin, HasMainNavComponentMixin, FilterMixin, EntryFetchMixin, MapEntriesMixin, ResponsivenessMixin],
   props: {
     height: {
       type: [String, Number],
@@ -107,25 +100,6 @@ export default {
       // console.log("comp.selected_entry")
       return this.$route.query.uuid
     },
-    additional_template_button_shift() {
-      // todo 110 is very magic, depends on the length of the main create button text
-      let shift = "110px"
-      if (!this.show_main_template_create_text) {
-        shift = "40px"
-      }
-      // console.log("shift", shift)
-      return {
-        position: "absolute",
-        left: shift
-      }
-    },
-    bp_based_main_create_btn_props() {
-      if (this.show_main_template_create_text) {
-        return {"rounded": true, "large": true}
-      } else {
-        return {"fab": true}
-      }
-    },
     button_group_shift() {
       let shift = "0.5%"
       if (this.menu_open) {
@@ -136,7 +110,6 @@ export default {
       }
     },
     center_button_shift() {
-      // console.log(this.$vuetify.breakpoint.name)
       let shift = "0"
       if (this.menu_open) {
         shift = this.menu_width / 2 + "px"
@@ -207,15 +180,15 @@ export default {
       // the upadting flag doesnt work properly since mapbox does it async
       return !this.entries_loaded || !this.map_loaded || !this.initialized || this.updating
     },
-    show_main_template_create_text() {
-      return (!this.menu_open || this.$vuetify.breakpoint.lgAndUp) && !this.$vuetify.breakpoint.smAndDown
-    },
     show_menu_button() {
       return this.$vuetify.breakpoint.mdAndUp
     },
     show_overlay() {
-      return !this.menu_open || this.$vuetify.breakpoint.mdAndUp
+      return !this.menu_open || this.is_mdAndUp
     },
+    show_center_create_button() {
+      return this.is_mdAndUp
+    }
   },
   watch: {
     entries_loaded(loaded) {
@@ -699,8 +672,7 @@ export default {
   position: absolute;
   top: 2%;
   z-index: 1;
-  left: 50%;
-  transform: translate(-50%, 0)
+  left: 45%;
 }
 
 .overlay_menu {
@@ -715,9 +687,4 @@ export default {
   transition-timing-function: ease-out;
 }
 
-.additional_templates_button {
-  top: 40px;
-  z-index: 30;
-  transform: translateX(-50%)
-}
 </style>
