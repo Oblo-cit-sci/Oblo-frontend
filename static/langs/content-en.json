@@ -319,7 +319,8 @@
       "search_filter": "Search & Filter"
     },
     "actor_index": {
-      "search": "Search a user"
+      "search": "Search a user",
+      "no_user_found": "No user found"
     },
     "filterlist": {
       "appliead_filters": "Applied filters",

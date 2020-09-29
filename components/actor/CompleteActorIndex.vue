@@ -9,6 +9,7 @@
       clearable
       @click:clear="clear_search")
     ActorList(:actors="filtered_actors")
+    div(v-if="no_user_found") {{$t("comp.actor_index.no_user_found")}}
 </template>
 
 <script>
@@ -57,6 +58,9 @@ export default {
       } else {
         return this.actors
       }
+    },
+    no_user_found() {
+      return this.searched_actors && this.searched_actors.length === 0
     }
   }
 }
