@@ -12,7 +12,7 @@
               v-icon mdi-window-close
     v-menu
       template(v-slot:activator="{ on: menu }")
-        v-btn.mt-4(v-on="{...menu}" :disabled="no_available_filters" ) {{$t("comp.filterlist.btn_add_filter")}}
+        v-btn.mt-0(v-on="{...menu}" :disabled="no_available_filters" small) {{$t("comp.filterlist.btn_add_filter")}}
           v-icon mdi-plus
       v-list
         v-list-item(v-for="filter in available_filter"

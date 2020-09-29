@@ -33,10 +33,11 @@
   import DomainMixin from "~/components/DomainMixin"
   import FixDomainMixin from "~/components/global/FixDomainMixin"
   import FilterMixin from "~/components/FilterMixin"
+  import DomainLanguageMixin from "~/components/domain/DomainLanguageMixin";
 
   export default {
     name: "DomainMenu",
-    mixins: [MapNavigationMixin, HasMainNavComponentMixin, DomainMixin, FixDomainMixin, FilterMixin],
+    mixins: [MapNavigationMixin, HasMainNavComponentMixin, DomainMixin, FixDomainMixin, FilterMixin, DomainLanguageMixin],
     components: {Entry, Search},
     props: {
       domain_name: {
@@ -55,7 +56,8 @@
         return [template_filter_options, tags_filter_options]
       },
       prominent_filters() {
-        return this.$_.get(this.domain_data, "filters.prominent_filters")
+        // console.log(this.$_.get(this.domain_data, "filters.prominent_filters"))
+        return this.$_.get(this.ui_lang_domain_data(this.domain_name), "filters.prominent_filters")
       },
       selected_entry() {
         if(this.$route.query.uuid)
