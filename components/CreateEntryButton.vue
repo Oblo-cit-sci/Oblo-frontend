@@ -13,20 +13,29 @@
 </template>
 
 <script>
+import EntryCreateMixin from "~/components/entry/EntryCreateMixin"
+import {mapGetters} from "vuex"
+
 export default {
   name: "CreateEntryButton",
-  mixins: [],
+  mixins: [EntryCreateMixin],
   components: {},
   props: {
+    main_template: {
+      type: Object,
+      required: true
+    },
     show_main_template_create_text: {
       type: Boolean
     },
-    create_text: {},
   },
   data() {
     return {}
   },
   computed: {
+    ...mapGetters({
+      menu_open: "menu/open"
+    }),
     bp_based_main_create_btn_props() {
       if (this.show_main_template_create_text) {
         return {"rounded": true, "large": true}
