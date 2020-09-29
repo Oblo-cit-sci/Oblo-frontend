@@ -29,12 +29,13 @@ import MainMenuList from "~/components/menu/MainMenuList"
 import DomainMenu from "~/components/menu/DomainMenu"
 import NotificationBanner from "~/components/global/NotificationBanner"
 import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
+import ResponsivenessMixin from "~/components/ResponsivenessMixin";
 
 const mode_indices = [MENU_MODE_MAIN, MENU_MODE_DOMAIN_OVERVIEW]
 
 export default {
   name: "MenuContainer",
-  mixins: [HasMainNavComponentMixin],
+  mixins: [HasMainNavComponentMixin, ResponsivenessMixin],
   components: {NotificationBanner, DomainMenu, MainMenuList},
   props: {
     menu_mode_fixed: Boolean,
@@ -71,9 +72,12 @@ export default {
       }
     },
     menu_width() {
+      if (this.is_small) {
+        return "100%"
+      }
       switch (this.menu_state) {
         case MENU_MODE_MAIN:
-          return 256;
+          return 200;
         case MENU_MODE_DOMAIN_OVERVIEW:
           switch (this.$vuetify.breakpoint.name) {
             case "xl":
@@ -82,9 +86,6 @@ export default {
               return 500
             case "md":
               return 400
-            case "sm":
-            case "xs":
-              return "100%"
           }
       }
     }

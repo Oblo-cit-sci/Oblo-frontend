@@ -2,8 +2,8 @@
   v-container(fluid)
     v-expansion-panels(v-model="search_panel_state")
       v-expansion-panel
-        v-expansion-panel-header.px-3.py-1(color="#99ccff") Search & Filter
-        v-expansion-panel-content.px-3.py-1.no-wrap(color="#99ccff")
+        v-expansion-panel-header.px-3.py-1(color="#e6f7ff") Search & Filter
+        v-expansion-panel-content.px-3.py-1.no-wrap(color="#e6f7ff")
           v-row(wrap justify-start)
             v-col.py-0(cols="12")
               v-text-field.pt-0(

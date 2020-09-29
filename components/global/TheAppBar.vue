@@ -1,6 +1,7 @@
 <template lang="pug">
   v-app-bar(true app elevation="2" :style="{'z-index':7}")
     v-app-bar-nav-icon.rounded-circle(color="blue" :disabled="!show_nav_icon" v-show="initialized" @click="switch_menu_open" :style="nav_icon_style")
+      v-icon {{main_icon}}
     v-toolbar-title.pa-0(v-if="initialized")
       v-list-item.pl-0
         v-list-item-avatar.header-avatar(@click="to_set_domain" width="50" height="auto" tile)
@@ -83,6 +84,18 @@ export default {
     },
     display_debug_text() {
       return this.$vuetify.breakpoint.name
+    },
+    main_icon() {
+      if (this.is_domain_page && this.is_small) {
+        if (this.$store.getters["menu/open"]) {
+          return "mdi-map-outline"
+        } else {
+          return "mdi-menu"
+        }
+
+      } else {
+        return "mdi-menu"
+      }
     },
     // for the entry-create button
     create_button_style() {
