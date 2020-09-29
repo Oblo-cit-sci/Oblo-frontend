@@ -14,7 +14,6 @@ import {USER_LOGGED_IN} from "~/store/user"
 import SettingsChangeMixin from "~/components/global/SettingsChangeMixin"
 import {UI_LANGUAGE} from "~/lib/consts"
 import InitializationMixin from "~/layouts/InitializationMixin"
-import {PAGE_DOMAIN} from "~/lib/pages"
 
 export default {
   name: "LanguageSelector",
@@ -49,24 +48,10 @@ export default {
         let domain = this.$store.getters["domain"].name // undefined for non-domain
 
         // todo maybe can go into a mixin, if there are other settings for the language
-        if (domain) {
-          const domain_basics = this.$store.getters["domain_by_name"](domain)
-          if (domain_basics.hasOwnProperty(language)) {
-            // console.log("got it already")
-            return
-          }
-        } else {
-          // check all domains
-          const all_domains = this.$store.getters["domains"]
-          // if no domain has the language return (is none = !some, misses the language prop = ! hasOwnProp)
-          if(!this.$_.some(all_domains, d => !d.hasOwnProperty(language))) {
-            // console.log("all languages have it")
-            return
-          }
-        }
-        this.init_specifics(domain, language).then(() => {
+        this.complete_language_domains(domain, language).then(() => {
           this.set_settings_value(UI_LANGUAGE, language)
         })
+
       }
     },
     label() {

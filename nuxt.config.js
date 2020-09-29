@@ -28,7 +28,6 @@ if (process.env.NODE_ENV === "development" || process.env.SERVER === "local") {
 }
 
 module.exports = {
-  mode: 'universal',
    telemetry: false,
 
   env: {
@@ -83,7 +82,7 @@ module.exports = {
     "~/plugins/i18n.js",
     '~/plugins/lodash.js',
     {src: '~/plugins/api_wrapper'},
-    "~/plugins/bus"
+    "~/plugins/bus.js"
   ],
 
   /*

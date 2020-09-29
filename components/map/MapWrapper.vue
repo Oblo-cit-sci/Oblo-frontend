@@ -178,7 +178,8 @@ export default {
     },
     show_load_overlay() {
       // the upadting flag doesnt work properly since mapbox does it async
-      return !this.entries_loaded || !this.map_loaded || !this.initialized || this.updating
+      // console.log("e loaded", this.entries_loaded, this.map_loaded, this.initialized)
+      return !this.entries_loaded || !this.map_loaded || !this.initialized
     },
     show_menu_button() {
       return this.$vuetify.breakpoint.mdAndUp
@@ -249,7 +250,8 @@ export default {
     check_entries_map_done() {
       // console.log("check_entries_map_done", this.entries)
       // console.log("check", this.entries, this.entries_loaded)
-      if (this.entries_loaded && this.entries.features.length > 0 && this.map_loaded && this.get_all_uuids) {
+      // console.log("check map e done", this.entries)
+      if (this.entries_loaded && this.entries.features && this.map_loaded && this.get_all_uuids) {
         this.init_map_source_and_layers()
         this.initialized = true
         if (this.$route.query.uuid) {
@@ -446,7 +448,7 @@ export default {
     },
     update_filtered_source() {
       // console.log("update_filtered_source", this.selected_entry)
-      this.updating = true
+      // this.updating = true
       if (!this.entries_loaded || !this.map_loaded || !this.get_all_uuids) {
         return
       }
@@ -487,7 +489,7 @@ export default {
       } else {
         this.map.getSource(MAIN_SOURCE_LAYER).setData(filtered_entries)
       }
-      this.updating = false
+      // this.updating = false
       if(this.selected_entry){
         this.change_entry_markers_mode(this.selected_entry, true)
       }

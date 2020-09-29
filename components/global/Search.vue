@@ -1,28 +1,31 @@
 <template lang="pug">
   v-container(fluid)
-    v-row(wrap justify-start)
-      v-col.py-0(cols="12")
-        v-text-field(
-          v-model="keyword"
-          :label="$t('comp.search.txt_field_label')"
-          single-line
-          :hint="search_hint"
-          append-outer-icon="mdi-magnify"
-          @keydown="search_keypress($event)"
-          @click:append-outer="getEntries"
-          clearable
-          :loading="searching ? 'success' : false")
-    v-row(v-if="show_filter")
-      v-col.py-0(cols="12")
-        Filterlist(
-          :filter_options="filterlist_options"
-          v-model="act_config"
-          :filter_changed="filter_changed"
-          @search="getEntries")
-    v-row(v-if="has_prominent_filters")
-      v-col.py-0(cols="12" v-for="filter in prominent_filters" :key="filter.name")
-        Aspect(:aspect="filter" mode="edit" :ext_value.sync="promoninent_filter_values[filter.name]")
-    v-row
+    v-expansion-panels(v-model="search_panel_state")
+      v-expansion-panel
+        v-expansion-panel-header.px-3.py-1(color="#99ccff") Search & Filter
+        v-expansion-panel-content.px-3.py-1.no-wrap(color="#99ccff")
+          v-row(wrap justify-start)
+            v-col.py-0(cols="12")
+              v-text-field.pt-0(
+                v-model="keyword"
+                :label="$t('comp.search.txt_field_label')"
+                single-line
+                :hint="search_hint"
+                append-outer-icon="mdi-magnify"
+                @keydown="search_keypress($event)"
+                @click:append-outer="getEntries"
+                clearable
+                :loading="searching ? 'success' : false")
+          v-row(v-if="show_filter")
+            v-col.py-0(cols="12")
+              Filterlist(
+                :filter_options="filterlist_options"
+                v-model="act_config"
+                :filter_changed="filter_changed"
+                @search="getEntries")
+          v-row(v-if="has_prominent_filters")
+            v-col.py-0(cols="12" v-for="filter in prominent_filters" :key="filter.name")
+              Aspect(:aspect="filter" mode="edit" :ext_value.sync="promoninent_filter_values[filter.name]")
     v-row(v-if="prepend_search")
       v-col.py-0(offset="5" cols=2)
         v-progress-circular(indeterminate center size="35" color="success")
@@ -102,6 +105,7 @@ export default {
   data() {
     const prominent_filtersMap = this.$_.keyBy(this.prominent_filters, "name")
     return {
+      search_panel_state: null,
       filter_values: {},
       keyword: '',
       kw_char_thresh: 4,
@@ -246,6 +250,7 @@ export default {
       return no_params && no_filter
     },
     has_prominent_filters() {
+      console.log(this.prominent_filters)
       return !this.$_.isEmpty(this.prominent_filters)
     },
     searching() {

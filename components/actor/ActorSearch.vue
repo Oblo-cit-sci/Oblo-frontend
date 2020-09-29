@@ -107,7 +107,7 @@
     },
     methods: {
       avatar_url(registered_name) {
-        return this.$api.url_actor__$registered_name__avatar(registered_name)
+        return this.$api.actor.url_avatar(registered_name)
       },
       remove(registered_name) {
         if (this.multiple) {

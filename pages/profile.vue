@@ -1,5 +1,6 @@
 <template lang="pug">
   v-flex#top(xs12 sm10 md10)
+
     v-row
       v-col
         div {{$t("w.username")}}: {{registered_name}}
@@ -27,6 +28,7 @@
     div(v-if="edit_mode")
       h3 {{$t('asp.password.label')}}
       v-btn(color="warning" v-if="!password_edit" @click="password_edit=true") {{$t('page.profile.btn_change_password')}}
+      <!-- Password edit -->
       div(v-if="password_edit")
         v-row(v-for="a of password_aspects" :key="a.name")
           v-col(cols=10)
@@ -36,8 +38,8 @@
               @update:error="a.error = $event"
               :extra="{clearable:false}"
               mode="edit")
-      v-btn(v-if="password_edit" @click="password_edit=false") {{$t('w.cancel')}}
-      v-btn(v-if="password_edit" color="success" @click="change_password" :disabled="any_password_invalid") {{$t('page.profile.btn_save_password')}}
+        v-btn(v-if="password_edit" @click="password_edit=false") {{$t('w.cancel')}}
+        v-btn(v-if="password_edit" color="success" @click="change_password" :disabled="any_password_invalid") {{$t('page.profile.btn_save_password')}}
       v-divider.wide_divider
     div(v-if="edit_mode && !$_.isEmpty(domain_specific_aspects)")
       h2#domains {{$t("page.profile.h3")}}
@@ -88,6 +90,7 @@
   import FixDomainMixin from "~/components/global/FixDomainMixin"
   import GoToMixin from "~/components/global/GoToMixin"
   import GlobalRoleChip from "~/components/actor/GlobalRoleChip"
+  import DomainLanguageMixin from "~/components/domain/DomainLanguageMixin";
 
   export default {
     name: "profile",
@@ -97,7 +100,7 @@
       LoadFileButton,
       Aspect
     },
-    mixins: [PersistentStorageMixin, TriggerSnackbarMixin, LayoutMixin, TypicalAspectMixin, FixDomainMixin, GoToMixin],
+    mixins: [PersistentStorageMixin, TriggerSnackbarMixin, LayoutMixin, TypicalAspectMixin, FixDomainMixin, GoToMixin, DomainLanguageMixin],
     data() {
       const new_pwd = this.asp_password(null, "new")
       return {
@@ -123,8 +126,9 @@
     },
     created() {
       if (this.is_fixed_domain) {
-        const domain_data = this.$store.getters["domain_by_name"](this.is_fixed_domain)
-        this.domain_specific_aspects = this.$_.cloneDeep(this.$_.get(domain_data, "users.profile.additional_aspects", []))
+        const ui_lang_domain_data = this.ui_lang_domain_data(this.is_fixed_domain)
+        console.log(ui_lang_domain_data)
+        this.domain_specific_aspects = this.$_.cloneDeep(this.$_.get(ui_lang_domain_data, "users.profile.additional_aspects", []))
         // todo here call a function that assigns external conditions
       }
       this.reset_edit_values()
@@ -160,11 +164,11 @@
           }
         }
       },
-      setEdit: function (mode = true) {
+      setEdit(mode = true) {
         this.$router.push(route_change_query(this.$route, {"edit": mode}))
         this.goto_top()
       },
-      cancelEdit: function () {
+      cancelEdit() {
         this.setEdit(false)
         this.reset_edit_values()
         this.goto_top()
@@ -234,7 +238,15 @@
       },
       edit_mode() {
         const e = this.$route.query.edit
-        return e || (typeof (e) === "string" && e === "true")
+        if(e === undefined) {
+          return false
+        } else {
+          if (typeof(e) === "string") {
+            return e === "true"
+          } else {
+            return e
+          }
+        }
       },
       aspect_mode() {
         return this.edit_mode ? EDIT : VIEW

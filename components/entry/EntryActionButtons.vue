@@ -1,13 +1,13 @@
 <template lang="pug">
   div
-    span(v-if="can_edit")
+    span
       span(v-if="is_view_mode")
         v-btn(v-if="!is_domain_page" @click="back()") {{$t("w.back")}}
-        v-btn(color="info" @click="to_proper_mode") {{proper_mode_text}}
-      span(v-else-if="can_edit")
+        v-btn(v-if="can_edit" color="info" @click="to_proper_mode") {{proper_mode_text}}
+      span
         v-btn(v-if="!is_view_mode" @click="cancel") {{$t("w.cancel")}}
-        v-btn(v-if="is_draft" color="success" @click="save") {{save_text}}
-        v-btn(v-if="!is_draft" color="error" @click="delete_entry") {{$t("w.delete")}}
+        v-btn(v-if="is_edit_mode && is_draft" color="success" @click="save") {{save_text}}
+        v-btn(v-if="is_edit_mode && !is_draft" color="error" @click="delete_entry") {{$t("w.delete")}}
         v-btn(
           v-if="show_submit"
           color="success"
@@ -29,8 +29,6 @@
       // v-if="private_local" todo for now, download for everyone
       v-btn(v-if="can_download" @click="download") download
         v-icon.ml-2 mdi-download
-    span(v-else)
-      v-btn(v-if="!is_domain_page" @click="back()") {{$t.w.back}}
 </template>
 
 <script>
