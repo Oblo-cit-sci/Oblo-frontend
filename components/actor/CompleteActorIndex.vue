@@ -1,6 +1,7 @@
 <template lang="pug">
   div
     v-text-field(
+      :label="$t('comp.actor_index.search')"
       v-model="search_field"
       append-outer-icon="mdi-account-search"
       @click:append-outer="search_user(search_field)"

@@ -315,7 +315,11 @@
     },
     "search": {
       "txt_field_label": "@.capitalize:w.search",
-      "min_chars_rule": "type 4 characters to trigger search"
+      "min_chars_rule": "type 4 characters to trigger search",
+      "search_filter": "Search & Filter"
+    },
+    "actor_index": {
+      "search": "Search a user"
     },
     "filterlist": {
       "appliead_filters": "Applied filters",
