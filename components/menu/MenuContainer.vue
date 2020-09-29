@@ -1,6 +1,7 @@
 <template lang="pug">
   div
     v-navigation-drawer(
+      bottom
       v-model="menu_open"
       :temporary="over"
       :hide-overlay="over"

@@ -1,5 +1,5 @@
 <template lang="pug">
-  div(v-if="!readOnly")
+  div(v-if="!is_view_mode")
     v-autocomplete(v-if="direct_select && is_empty"
       outlined
       single-line
@@ -148,7 +148,7 @@ export default {
       }
     },
     prependIcon() {
-      return this.readOnly ? '' : 'mdi-file-tree'
+      return this.is_view_mode ? '' : 'mdi-file-tree'
     },
     direct_select() {
       if (!this.aspect.attr.hasOwnProperty("direct_select"))

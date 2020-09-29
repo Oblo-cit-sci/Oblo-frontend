@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    div(v-if="!readOnly")
+    div(v-if="!is_view_mode")
       v-list(v-if="has_items")
         v-list-item(v-for="(item, index) in items", :key="item.uuid" :id="aspect_loc_str(index)" v-if="aspect_is_on_page(index)")
           v-list-item-content(@click="open_item(item)")

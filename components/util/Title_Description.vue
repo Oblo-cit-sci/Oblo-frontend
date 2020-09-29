@@ -1,9 +1,9 @@
 <template lang="pug">
-  div(v-if="!readOnly")
+  div(v-if="!is_view_mode")
     v-icon.mr-1.mb-1(v-if="icon_part") {{icon_part}}
     component(:is="header_type" :style="{display:'inline'}") {{label}}
       span(v-if="disabled") &nbsp;({{disabled_text}})
-    div(v-if="multiple_descriptions && !readOnly")
+    div(v-if="multiple_descriptions && !is_view_mode")
       div(v-for="(description_part, index) in description" :key="index")
         div(v-if="index===0") {{description_part}}
         div(v-else class="secondary_descr") {{description_part}}
@@ -11,7 +11,7 @@
       div(v-if="description_as_html")
         div(v-html="first_description")
       div(v-else class="pb-1") {{first_description}}
-    div(v-if="note && !readOnly")
+    div(v-if="note && !is_view_mode")
       div(:class="note.note_class") {{note.text}}
   div(v-else)
     v-icon.mr-1.mb-1(v-if="icon_part") {{icon_part}}
@@ -107,7 +107,7 @@
       multiple_descriptions() {
         return (this.description || "").constructor === Array
       },
-      readOnly() {
+      is_view_mode() {
         return this.mode === VIEW
       },
       first_description() {

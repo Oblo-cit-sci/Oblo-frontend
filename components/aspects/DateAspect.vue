@@ -1,5 +1,5 @@
 <template>
-  <div v-if="readOnly" class="mb-2 mt-2">
+  <div v-if="is_view_mode" class="mb-2 mt-2">
     <v-icon readonly solo flat> mdi-calendar</v-icon>
     <span class="ml-2">{{value}}</span>
   </div>

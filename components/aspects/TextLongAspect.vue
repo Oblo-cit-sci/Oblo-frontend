@@ -1,9 +1,9 @@
 <template lang="pug">
-  div(v-if="!readOnly")
+  div(v-if="!is_view_mode")
     v-textarea(
       outlined
       single-line
-      :readonly="readOnly"
+      :readonly="is_view_mode"
       :disabled="disabled"
       auto-grow
       :counter="counter"

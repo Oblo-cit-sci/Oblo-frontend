@@ -55,9 +55,6 @@ export default {
     is_unpacked() {
       return this.$_.get(this.aspect, "attr.unpacked", false)
     },
-    readOnly() {
-      return this.mode === VIEW
-    },
     clearIcon() {
       //console.log("AspMix - ", this.aspect.name, this.aspect.type, this.extra)
       return ((this.extra.listitem && this.mode === EDIT) || false) ? "mdi-close" : undefined //this.extra

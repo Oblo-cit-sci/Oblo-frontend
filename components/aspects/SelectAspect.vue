@@ -1,5 +1,5 @@
 <template lang="pug">
-  div(v-if="!readOnly")
+  div(v-if="!is_view_mode")
     v-checkbox(
       v-if="select_check"
       v-model="check_box_value"

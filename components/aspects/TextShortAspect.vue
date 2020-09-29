@@ -1,9 +1,9 @@
 <template lang="pug">
   div
-    v-text-field(v-if="!readOnly"
+    v-text-field(v-if="!is_view_mode"
       outlined
       single-line
-      :readonly="readOnly"
+      :readonly="is_view_mode"
       :disabled="disabled"
       :placeholder="aspect.attr.placeholder"
       :hide-details="hide_details"

@@ -82,9 +82,8 @@ export default {
       }
       if (url.startsWith("/api")) {
         url = this.$axios.defaults.baseURL + url
-        console.log("api server")
+        // console.log("api server")
       }
-
       const method = this.properties.method || "get"
       const request = {
         method: method,

@@ -10,11 +10,11 @@
             @update:ext_value="update_index_value(index, $event)"
             v-on:append-outer="remove_value(index)")
           ListitemActions(
-            v-if="!readOnly"
+            v-if="!is_view_mode"
             v-bind="listitem_actions_prop(index)"
             @remove_value="remove_value($event)"
             v-on:move="move($event)")
-      div(v-if="readOnly && is_empty")
+      div(v-if="is_view_mode && is_empty")
         .ml-2 {{aspect.attr.default_view}}
     div(v-else class="mb-1 mt-1")
       v-expansion-panels(
@@ -29,14 +29,14 @@
           v-expansion-panel-content
             Aspect(
               v-bind="list_aspect_props(index)")
-            ListitemActions(v-if="!readOnly"
+            ListitemActions(v-if="!is_view_mode"
               v-bind="listitem_actions_prop(index)"
               v-on:remove_value="remove_value($event)"
               v-on:move="move($event)")
-      div(v-if="readOnly && is_empty")
+      div(v-if="is_view_mode && is_empty")
         .ml-2 {{aspect.attr.default_view}}
     MinMaxIndicators(
-      v-if="!readOnly && !disabled"
+      v-if="!is_view_mode && !disabled"
       v-bind="min_max_props")
     .inline(v-if="adding_allowed && !fixed_length")
       v-btn(:disabled="!more_allowed" @click="add_value()" :color="requieres_more_color") Add {{item_name}}

@@ -1,5 +1,5 @@
 <template lang="pug">
-  div(v-if="!readOnly")
+  div(v-if="!is_view_mode")
     v-list(v-if="list_view")
       v-list-item-group(v-model="selection_index" multiple active-class="in_selection")
         v-list-item(v-for="option in options" :key="option.value")
@@ -12,7 +12,7 @@
     v-select(v-else
     :items="options"
       v-model="selection"
-      :readonly="readOnly"
+      :readonly="is_view_mode"
       :hide-details="!count_rules"
       :rules="count_rules"
       @blur="menu_open = !menu_open"

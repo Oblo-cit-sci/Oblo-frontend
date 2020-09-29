@@ -1,5 +1,5 @@
 <template lang="pug">
-  div(v-if="!readOnly")
+  div(v-if="!is_view_mode")
     div(v-if="is_edit_mode && !selected_aspect")
       SingleSelect(
         :options="options"
