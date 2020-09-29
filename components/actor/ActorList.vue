@@ -7,23 +7,20 @@
 </template>
 
 <script>
-  import ActorListItem from "~/components/actor/ActorListItem"
+import ActorListItem from "~/components/actor/ActorListItem"
 
-  export default {
-    name: "ActorList",
-    mixins: [],
-    components: {ActorListItem},
-    props: {
-      actors: Array
-    },
-    data() {
-      return {}
-    },
-    computed: {},
-    methods: {
-
+export default {
+  name: "ActorList",
+  mixins: [],
+  props: {
+    actors: {
+      type: Array,
+      required: true
     }
-  }
+  },
+  components: {ActorListItem},
+  computed: {}
+}
 </script>
 
 <style scoped>

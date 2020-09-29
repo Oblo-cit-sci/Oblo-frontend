@@ -84,8 +84,6 @@ export default {
     add_default_entries_layer_interactions(source_name, entries_layer_name, click_method) {
       // 1. ENTRIES Hoover
       this.map.on('mouseenter', entries_layer_name, (e) => {
-        console.log("SS", this.map.getSource(source_name))
-        console.log(e)
         const feature = e.features[0]
         this.act_hoover_id = feature.id
         this.map.setFeatureState(

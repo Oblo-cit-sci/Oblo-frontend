@@ -1,29 +1,25 @@
 <template lang="pug">
   div
-    ActorList(:actors="actors")
+    CompleteActorIndex
+
 </template>
 
 <script>
-  import ActorList from "~/components/actor/ActorList"
+import ActorList from "~/components/actor/ActorList"
+import CompleteActorIndex from "~/components/actor/CompleteActorIndex";
 
-  export default {
-    name: "admin",
-    mixins: [],
-    components: {ActorList},
-    props: {},
-    data() {
-      return {
-        actors: []
-      }
-    },
-    computed: {},
-    created() {
-      this.$api.actor.get_all(true).then(({data}) => {
-        this.actors = data.data
-      })
-    },
-    methods: {}
-  }
+export default {
+  name: "admin",
+  mixins: [],
+  components: {CompleteActorIndex, ActorList},
+  props: {},
+  data() {
+    return {
+    }
+  },
+  computed: {},
+  methods: {}
+}
 </script>
 
 <style scoped>

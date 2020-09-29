@@ -484,7 +484,8 @@ export default {
           tolerance: 0,
           // generateId: true, // this fucks up selection state of features, since the ids change or something...
           clusterMaxZoom: 14,
-          clusterRadius: 25
+          clusterRadius: 25,
+          generateId: true
         })
       } else {
         this.map.getSource(MAIN_SOURCE_LAYER).setData(filtered_entries)
