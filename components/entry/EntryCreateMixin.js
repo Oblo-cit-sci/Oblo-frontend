@@ -15,7 +15,7 @@ export default {
   methods: {
     // todo different owner in case of visitor
     // console.log("entry of template_slug", type_slug)
-    create_entry(template_slug, persist = true, init = {}, goto = true) {
+    create_entry(template_slug, language = null, persist = true, init = {}, goto = true) {
       const template = this.$store.getters[TEMPLATES_TYPE](template_slug)
       if (!template) {
         return null
@@ -29,6 +29,7 @@ export default {
         (template.rules.privacy === PRIVATE_LOCAL ? "None" : this.$store.getters["user/settings_value"]("default_license"))
       const privacy = template.rules.privacy ? template.rules.privacy : this.$store.getters["user/settings_value"]("default_privacy")
 
+      language = language || this.$store.getters["user/settings"].ui_language
       const location = init.location || null
 
       const actors = [{
@@ -53,6 +54,7 @@ export default {
         status: DRAFT, // todo should go to local
         uuid: uuidv4(),
         version: 0,
+        language: language,
         local: { // local stuff that wont go to the server
           dirty: false // todo can go?
         },

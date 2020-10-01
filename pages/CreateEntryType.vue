@@ -34,7 +34,9 @@
     import {TEMPLATES_TYPE} from "~/store/templates";
     import EntryCreateMixin from "~/components/entry/EntryCreateMixin"
 
-
+    /**
+     * DEPRECATED
+     */
     export default {
         name: "CreateEntryType",
         components: {SingleSelect, Title_Description},
@@ -53,7 +55,7 @@
         },
         methods: {
             select_exisisting(slug) {
-                this.entry = this.create_entry(slug, false)
+                this.entry = this.create_entry(slug, null,false)
                 this.aspects = this.$_.map(this.entry_type.aspects, a => {
                     return {
                         aspect: a,
