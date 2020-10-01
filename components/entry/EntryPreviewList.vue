@@ -18,7 +18,7 @@
         SimplePaginate(v-if="entries.length > entries_per_page" v-model="page" :total_pages="total_pages" :has_next="has_more_pages" :next_loading="next_loading")
       v-spacer.pa-0
       v-col.pa-0
-        v-btn(icon @click="scroll_to_top")
+        v-btn(@click="scroll_to_top" fab x-small outlined)
           v-icon mdi-format-vertical-align-top
 </template>
 
@@ -65,7 +65,7 @@ export default {
       return this.entries !== undefined
     },
     next_loading() {
-      return this.requesting_entries && this.entries.length % this.entries_per_page === 0
+      return this.requesting_entries && this.entries.length > 0
       //if()
     },
     visible_entries() {
@@ -119,7 +119,7 @@ export default {
       if (this.$route.name === PAGE_DOMAIN) {
         options.container = ".v-navigation-drawer__content"
       }
-      setTimeout(() => this.$vuetify.goTo("#pwlist-top", options), 80)
+      setTimeout(() => this.$vuetify.goTo(0, options), 20)
     }
   },
   watch: {
@@ -127,7 +127,8 @@ export default {
       /**
        * val: boolean
        */
-      if(!val) {
+      console.log("q-r", !val, this.next_loading, this.has_entries)
+      if(!val && !this.has_entries) {
        this.page = 1
       }
     },

@@ -2,7 +2,7 @@
   v-container(fluid)
     v-expansion-panels(v-model="search_panel_state")
       v-expansion-panel
-        v-expansion-panel-header.px-3.py-1(color="#e6f7ff") {{$t('comp.search.search_filter')}}
+        v-expansion-panel-header.px-3.py-1(color="#d6e5f0") {{$t('comp.search.search_filter')}}
         v-expansion-panel-content.px-3.py-1.no-wrap(color="#e6f7ff")
           v-row(wrap justify-start)
             v-col.py-0(cols="12")
@@ -10,10 +10,11 @@
                 v-model="keyword"
                 :label="$t('comp.search.txt_field_label')"
                 single-line
+                solo
                 :hint="search_hint"
-                append-outer-icon="mdi-magnify"
+                append-icon="mdi-magnify"
                 @keydown="search_keypress($event)"
-                @click:append-outer="getEntries"
+                @click:append="get_entries"
                 clearable
                 :loading="searching ? 'success' : false")
           v-row(v-if="show_filter")
@@ -22,7 +23,7 @@
                 :filter_options="filterlist_options"
                 v-model="act_config"
                 :filter_changed="filter_changed"
-                @search="getEntries")
+                @search="get_entries")
           v-row(v-if="has_prominent_filters")
             v-col.py-0(cols="12" v-for="filter in prominent_filters" :key="filter.name")
               Aspect(:aspect="filter" mode="edit" :ext_value.sync="promoninent_filter_values[filter.name]")
@@ -127,12 +128,12 @@ export default {
     if (!this.$_.isEqual(last_route, this_route_data)) {
       this.clear()
       this.$store.commit(SEARCH_SET_ROUTE, this_route_data)
-      this.getEntries(false, false)
+      this.get_entries(false, false)
     } else {
       // if uuids are selected, no search/update required.
       if(!this.select_uuids_config()) {
         this.prepend_search = true
-        this.getEntries(true, false)
+        this.get_entries(true, false)
       }
     }
   },
@@ -144,10 +145,10 @@ export default {
         // this uses now, the domain only filter.
         // could later be replaced by, last search or all local in that domain (like it is now)
         this.$router.push(route_change_query(this.$route, {}, false, ["search"]))
-        this.getEntries()
+        this.get_entries()
       } else if (kw.length >= this.kw_char_thresh) {
         this.$router.push(route_change_query(this.$route, {"search": kw}))
-        this.getEntries()
+        this.get_entries()
       }
     },
     view_mode(val) {
@@ -214,7 +215,7 @@ export default {
         this.$store.commit("search/set_act_config", new_config)
       } else {
         // if a prominent filter changed debounce
-        this.getEntries(false, prominent_filter_changed)
+        this.get_entries(false, prominent_filter_changed)
       }
     },
     promoninent_filter_values: {
@@ -289,16 +290,17 @@ export default {
     search_keypress(keyEvent) {
       if (keyEvent.keyCode === 13) {
         this.$router.push(route_change_query(this.$route))
-        this.getEntries(false,true)
+        this.get_entries(false,true)
       }
     },
-    getEntries(before_last = false, debounce = true) {
+    get_entries(before_last = false, debounce = true) {
       const select_uuids = this.select_uuids_config()
       if (select_uuids) {
         this.fetch_select_uuids(select_uuids)
       } else {
         let config = this.searchConfiguration(before_last)
         // console.log("Search.config", config)
+        this.$store.commit("search/clear_entries")
         this.$store.commit(SEARCH_SET_ROUTE, this.act_relevant_route_data())
         this.$store.commit(SEARCH_SET_SEARCHING, true)
         // const prepend = this.entries().length > 0

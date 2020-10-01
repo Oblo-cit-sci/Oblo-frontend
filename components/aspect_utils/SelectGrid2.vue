@@ -4,7 +4,7 @@
       v-row(:style="row_style")
         v-col.pa-1(v-for="(c, i) in options" :key="i" :style="cell_style")
           v-item(v-slot:default="{ active, toggle }")
-            div.rounded(:style="cell_select_style(active)")
+            v-sheet.rounded(:style="cell_select_style(active)" elevation="2")
               v-img.grid-img.sel_cursor(v-if="c.icon" :src="get_icon_url(c.icon)"
                 max-width="80%" contain @click="toggle" position="center")
               .text-block.pt-2(v-if="!no_text")
@@ -89,8 +89,8 @@ export default {
   methods: {
     cell_select_style(active) {
       return {
-        "background": active ? "khaki" : "",
-        "padding": "2px"
+        "background": active ? "khaki" : "#f5f5f5",
+        "padding": "3px"
       }
     },
     get_icon_url(icon) {
@@ -113,4 +113,5 @@ export default {
 .text-block {
   text-align: center;
 }
+
 </style>
