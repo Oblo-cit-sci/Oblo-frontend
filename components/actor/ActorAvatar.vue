@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-avatar.mr-1(size="40")
+  v-avatar.mr-1(size="40" @click="goto_actor(actor)")
     v-img(:src="avatar(actor)")
 </template>
 
