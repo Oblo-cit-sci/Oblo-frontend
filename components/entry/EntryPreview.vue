@@ -8,16 +8,18 @@
           v-row
             v-col.py-1(class="entry-meta" cols=12)
               p.subtitle-1.mb-1
+                ActorAvatar(:actor="creator" v-if="!actor_row")
                 v-icon.mr-1.pb-1(v-if="!show_entrytype_title" :color="template_color" x-small) mdi-checkbox-blank-circle
-                span {{full_title}}
-                span(v-if="is_draft" :style="{color:'cornflowerblue'}") &nbsp; [DRAFT]
-                  v-btn(v-if="show_title_action" @click="goto()" depressed small)
-                    v-icon(:class="default_action_icon")
+                span(@click="goto(entry.uuid, 'view')" :style="title_style")
+                  span {{full_title}}
+                  span(v-if="is_draft" :style="{color:'cornflowerblue'}") &nbsp; [DRAFT]
+                    v-btn(v-if="show_title_action" @click="goto()" depressed small)
+                      v-icon(:class="default_action_icon")
           v-row.pl-3(:style="{'text-align': 'right', 'font-size':'80%'}")
             span.my-auto(v-if="show_date") {{$t("comp.entrypreview.created")}} {{entry_date}} {{is_draft ? $t('comp.entrypreview.draft') : ""}}
           v-row.pl-3.py-1(v-if="show_meta_aspects")
             MetaChips(:meta_aspects="meta_aspects")
-          v-row.pl-3(justify="space-between")
+          v-row.pl-3(justify="space-between" v-if="actor_row")
             v-col.py-0.pl-0
               ActorChip(:actor="creator")
           v-row.pl-3(v-if="show_tags")
@@ -80,6 +82,7 @@
   import ActorChip from "../actor/ActorChip"
   import EntryActionsMixin from "~/components/entry/EntryActionsMixin"
   import EntryTags from "~/components/entry/EntryTags"
+  import ActorAvatar from "~/components/actor/ActorAvatar"
 
   /**
    * ISSUE is not working atm, to responsive
@@ -91,7 +94,7 @@
 
   export default {
     name: "EntryPreview",
-    components: {EntryTags, ActorChip, Aspect, MetaChips, Taglist},
+    components: {ActorAvatar, EntryTags, ActorChip, Aspect, MetaChips, Taglist},
     mixins: [EntryNavMixin, MapJumpMixin, EntryMixin, MapJumpMixin,
       PersistentStorageMixin, ChildCreateMixin, EntryActionsMixin],
     data() {
@@ -108,9 +111,17 @@
         type: Boolean,
         default: false
       },
-      show_botton_actions: {
+      click_title_for_view: {
         type: Boolean,
         default: true
+      },
+      actor_row: {
+        type: Boolean,
+        default: false
+      },
+      show_botton_actions: {
+        type: Boolean,
+        default: false
       },
       show_entrytype_title: Boolean,
       include_domain_tag: Boolean,
@@ -131,6 +142,11 @@
           return {"border": `solid 1px ${DRAFT_COLOR} !important`}
         } else if(this.is_requires_review) {
           return {"border": `solid 1px ${REVIEW_COLOR} !important`}
+        }
+      },
+      title_style() {
+        return {
+          cursor: "pointer"
         }
       },
       divider_style() {
@@ -201,7 +217,6 @@
         for (let pw_action of this.$_.concat(pw_actions, this.actions)) {
           if (pw_action.title === undefined)
             pw_action.title = pw_action.name
-          const action_name = pw_action.name
           if (pw_action.type === "create_child") {
             const action_aspect_loc = aspect_loc_str2arr(pw_action.aspect)
             const aspect_loc = loc_prepend(ENTRY, this.entry.uuid, action_aspect_loc)

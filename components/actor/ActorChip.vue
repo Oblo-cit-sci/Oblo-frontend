@@ -13,15 +13,7 @@
     name: "ActorChip",
     mixins: [ActorMixin],
     props: {
-      actor: {
-        type: Object,
-        required: true
-      },
-      role: String,
-      selectable: {
-        type: Boolean,
-        default: true
-      }
+      role: String
     },
     computed: {
       role_icon() {

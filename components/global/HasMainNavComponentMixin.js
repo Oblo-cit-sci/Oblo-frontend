@@ -2,7 +2,6 @@ import {ENTRIES_GET_ENTRY} from "~/store/entries"
 import {route_change_query} from "~/lib/util"
 import {mapMutations, mapGetters} from "vuex"
 import URLQueryMixin from "~/components/util/URLQueryMixin"
-import {} from "vuex"
 
 export const SEARCH = "search"
 export const ENTRY = "entry"
