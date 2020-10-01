@@ -93,7 +93,6 @@ export default {
   },
   computed: {
     ...mapGetters({
-      legend_selection: "map/get_filter_config",
       layer_status: "map/layer_status",
     }),
     selected_entry() {
@@ -452,7 +451,6 @@ export default {
       if (!this.entries_loaded || !this.map_loaded || !this.get_all_uuids) {
         return
       }
-      // const included_templates = this.legend_selection.map(s => s.value)
       const filtered_entries = {
         type: "FeatureCollection",
         features: this.entries.features.filter(e => this.get_all_uuids.includes(e.properties.uuid) ||

@@ -49,7 +49,7 @@
             Object.assign(
               this.templates[i], {name: TEMPLATE, "t_label": "w.entrytype"})
           )
-          const act_config = this.$store.getters["map/get_filter_config"]
+          const act_config = this.$store.getters["search/get_act_config"]
           const new_conf = act_config.filter(conf => conf.name !== TEMPLATE)
           for (let t of selected_templates) {
             new_conf.push(t)
@@ -59,24 +59,7 @@
         }
       }
     },
-    created() {
-      // this should go somewhere else before.
-    },
     methods: {
-      change(selected_templates) {
-        // console.log(selected_templates)
-        selected_templates = selected_templates.map(i =>
-          Object.assign(
-            this.templates[i], {name: "template", "label": "Entrytype"})
-        )
-        const act_config = this.$store.getters["map/get_filter_config"]
-        const new_conf = act_config.filter(conf => conf.name !== "template")
-        for (let t of selected_templates) {
-          new_conf.push(t)
-        }
-        this.$store.commit("map/set_filter_config", new_conf)
-        this.template2filterlist_config(new_conf)
-      },
       force_close() {
         this.panel_state = false
       },
