@@ -22,11 +22,10 @@
               clearable)
             div(v-if="value") {{$t("comp.location_asp.public_loc.base")}}:&nbsp;
               span {{public_location_text}}
-              v-chip-group(v-if="public_location_selector_on" active-class="primary--text" mandatory)
+              v-chip-group(v-if="public_location_selector_on" active-class="primary--text" mandatory v-model="selected_prec_option")
                 v-chip(v-for="(place_part, index) in precision_options" :key="index"
                   text-color="black"
-                  @click="public_location_precision_selected($event)"
-                  color="yellow lighten-3") {{place_part}}
+                  @click="public_location_precision_selected(index)" active-class="selected_prec_chip") {{place_part}}
     div(v-else)
       span.body-1.readonly-aspect {{place_name_display}}
       v-btn(v-if="show_goto_button" icon @click="set_goto_location")
@@ -50,7 +49,7 @@
 
 import Mapbox from 'mapbox-gl-vue'
 import {
-  array2coords,
+  array2coords, coords2array,
   create_location_error,
   LOCATION_PRECISION_POINT,
   place2str,
@@ -65,7 +64,6 @@ import MapIncludeMixin from "~/components/map/MapIncludeMixin"
 import {arr2coords, context_get_place_type, convert_to_2d_arr, mapboxgl_lngLat2coords} from "~/lib/map_utils"
 import GeocodingMixin from "~/components/map/GeocodingMixin"
 import {MAP_GOTO_LOCATION} from "~/store/map"
-import {USER_SETTINGS} from "~/store/user"
 import {mapGetters} from "vuex"
 import {settings_loc_privacy_ask, settings_loc_privacy_exact, settings_loc_privacy_random} from "~/lib/settings"
 import EntrySearchMixin from "~/components/EntrySearchMixin"
@@ -82,7 +80,7 @@ const SEARCH = "search"
 // "attr.output" attribute defines what is readable, also what is stored
 // default both
 const LOCATION = "location" // gps location, just a icon, that shows it on the map
-const PLACE = "place" // name by the details"
+const PLACE = "place" // name of the place
 const default_output = [LOCATION, PLACE]
 
 export default {
@@ -103,10 +101,12 @@ export default {
       public_location_marker: null,
       show_existing: false,
       getting_my_entries_loading: false,
-      my_entries_features: null
+      my_entries_features: null,
+      selected_prec_option: null
     }
   },
   computed: {
+    ...mapGetters({logged_in: "user/logged_in", user_settings: "user/settings"}),
     device_location_input_option() {
       return this.has_input_option(DEVICE)
     },
@@ -121,26 +121,31 @@ export default {
       return this.location_set && this.value.place && !this.$_.isEmpty(this.value.place)
     },
     location_privacy_setting() {
-      return this.$store.getters[USER_SETTINGS].location_privacy
+      return this.user_settings.location_privacy
     },
     location_set() {
       return this.value !== null
     },
-    logged_in() {
-      return this.$store.getters["user/logged_in"]
-    },
     map_location_input_option() {
       return this.has_input_option(MAP)
     },
+    get_selected_prec_option() {
+      if (this.selected_prec_option === 0) {
+        return PREC_OPTION_EXACT
+      } else if (this.selected_prec_option === 1) {
+        return PREC_OPTION_RANDOM
+      } else {
+        return PREC_OPTION_REGION
+      }
+    },
     map_options() {
-      console.log("map options", this.value, this.value.coordinates)
+      // console.log("map options", this.value, this.value.coordinates)
       if (this.value && this.value.coordinates) {
-        console.log("from val")
-        console.log(Object.assign(this.default_map_options, {
-          center: this.value.coordinates,
-          zoom: 3,
-          interactive: !this.is_view_mode
-        }))
+        // console.log(Object.assign(this.default_map_options, {
+        //   center: this.value.coordinates,
+        //   zoom: 3,
+        //   interactive: !this.is_view_mode
+        // }))
         return Object.assign(this.default_map_options, {
           center: this.value.coordinates,
           zoom: 3,
@@ -170,32 +175,31 @@ export default {
       if (!this.has_place)
         return []
       else {
-        const options = []
-        for (let place_type of default_place_type) {
-          if (this.value.place.hasOwnProperty(place_type)) {
-            options.push(this.value.place[place_type].name)
-          }
-        }
-        return options
+        return this.get_place_parts(this.value.place)
       }
     },
     precision_options() {
+      // console.log(this.place_parts)
       return [PREC_OPTION_EXACT, PREC_OPTION_RANDOM].concat(this.place_parts)
     },
-    ...mapGetters({settings: USER_SETTINGS}),
     privacy_setting() {
-      return this.settings.location_privacy
+      return this.user_settings.location_privacy
     },
     public_location_selector_on() {
-      return this.value && this.privacy_setting === settings_loc_privacy_ask
+      // console.log("public_location_selector_on", this.has_value)
+      return this.location_set &&
+        this.value.location_precision === LOCATION_PRECISION_POINT &&
+        this.privacy_setting === settings_loc_privacy_ask
     },
     public_location_text() {
       if (this.value) {
         if (this.value.location_precision === LOCATION_PRECISION_POINT) {
-          if (this.privacy_setting === settings_loc_privacy_random)
-            return this.$t("comp.location_asp.public_loc.options.rnd")
-          else if (this.privacy_setting === settings_loc_privacy_exact) {
+          if (this.get_selected_prec_option === PREC_OPTION_EXACT)
             return this.$t("comp.location_asp.public_loc.options.exact")
+          else if (this.get_selected_prec_option === PREC_OPTION_RANDOM) {
+            return this.$t("comp.location_asp.public_loc.options.rnd")
+          } else { // PREC_OPTION_REGION
+            return this.$t("comp.location_asp.public_loc.options.region")
           }
         } else {
           return this.$t("comp.location_asp.public_loc.options.region")
@@ -216,7 +220,7 @@ export default {
       return this.is_view_mode && this.$route.name === "domain" && this.value
     },
     show_map() {
-      if(this.is_editable_mode) {
+      if (this.is_editable_mode) {
         return true
       } else {
         return (this.$route.name !== "domain" || this.is_small) && this.value
@@ -246,7 +250,7 @@ export default {
         this.update_value(null)
       } else {
         const feature = this.$_.find(this.search_results, feature => feature.id === sel)
-        if (this.settings.location_privacy === settings_loc_privacy_ask) {
+        if (this.user_settings.location_privacy === settings_loc_privacy_ask) {
           console.log()
           const result = await this.rev_geocode({
             lon: feature.geometry.coordinates[0],
@@ -293,8 +297,21 @@ export default {
           place_type: [this.value.place_type],
           context: this.value.place
         }]
+      // for a draft, set the
+      if (this.public_location_selector_on) {
+        if (this.value.location_precision === LOCATION_PRECISION_POINT &&
+          this.value.public_loc.location_precision === LOCATION_PRECISION_POINT &&
+          this.value.coordinates === this.value.public_loc.coordinates) {
+          this.selected_prec_option = 0
+        } else {
+          if(this.value.public_loc.location_precision === LOCATION_PRECISION_POINT) {
+            this.selected_prec_option = 1
+          } else {
+            this.selected_prec_option = this.place_parts.indexOf(this.value.public_loc.place_name) + 2
+          }
+        }
+      }
     }
-
   },
   methods: {
     clear() {
@@ -332,17 +349,19 @@ export default {
       }
       // from selecting one
       value.place_name = place2str(value.place)
-      let option = PREC_OPTION_EXACT
-      if (this.privacy_setting === settings_loc_privacy_random) {
-        option = PREC_OPTION_RANDOM
+      let option = PREC_OPTION_RANDOM
+      if (this.privacy_setting === settings_loc_privacy_exact) {
+        option = PREC_OPTION_EXACT
       }
       if (value.location_precision !== LOCATION_PRECISION_POINT) {
         option = value.place[value.location_precision].name
+      } else {
+        if (this.privacy_setting === settings_loc_privacy_ask) {
+          this.selected_prec_option = 1
+        }
       }
-      value = this.set_public_location_from_option(value, option)
-      this.update_value(value)
-      // console.log("-->", value)
-      // this.public_location_precision = PREC_OPTION_RANDOM
+      const public_loc_vars = this.get_public_location_from_option(value, option)
+      this.update_value(Object.assign(value, public_loc_vars))
     },
     geolocate_error() {
       this.error_snackbar("Could not obtain location")
@@ -422,8 +441,17 @@ export default {
         })
       }
     },
-    public_location_precision_selected(selection) {
-      console.log("public_location_precision_selected", selection)
+    public_location_precision_selected(selection_index) {
+      // exact or random (dont rely on words, cuz LANGUAGE)
+      let public_loc_vars = null
+      if (selection_index === 0) {
+        public_loc_vars = this.get_public_location_from_option(this.value, PREC_OPTION_EXACT)
+      } else if (selection_index === 1) {
+        public_loc_vars = this.get_public_location_from_option(this.value, PREC_OPTION_RANDOM)
+      } else {
+        public_loc_vars = this.get_public_location_from_option(this.value, this.place_parts[selection_index - 2])
+      }
+      this.update_value(Object.assign({}, this.value, public_loc_vars))
     },
     reset() {
       // console.log("reset")
@@ -459,8 +487,12 @@ export default {
     set_goto_location() {
       this.$store.commit(MAP_GOTO_LOCATION, this.value)
     },
-    set_public_location_from_option(value, option) {
-      // console.log("set_public_location_from_option", value, option)
+    get_public_location_from_option(value, option) {
+      /**
+       * value: :Object: existing location value
+       * option :string: 'exact', 'random', or <region name>
+       * @type {{}}
+       */
       const public_loc = {}
       // todo we need this?
       let public_precision = option
@@ -471,7 +503,6 @@ export default {
         public_loc.place = this.$_.cloneDeep(value.place)
         public_loc.place_name = place2str(public_loc.place)
       } else if (option === PREC_OPTION_RANDOM) {
-        //   //const location_error = this.$store.getters["user/get_settings"].location_error
         public_loc.coordinates = create_location_error(value.coordinates,)
         public_loc.location_precision = LOCATION_PRECISION_POINT
         public_loc.place = this.$_.cloneDeep(value.place)
@@ -497,8 +528,7 @@ export default {
         }
         public_loc.place_name = place2str(public_loc.place)
       }
-      value = Object.assign(value, {public_precision, public_loc})
-      return value
+      return {public_precision, public_loc}
     },
     snap_to_feature(features) {
       const feature = features[0]
@@ -524,7 +554,6 @@ export default {
     },
     async toggle_show_existing() {
       this.show_existing = !this.show_existing
-      // console.log(this.$store.getters["map/entries"](this.get_entry().domain).features)
       if (this.show_existing) {
         if (!this.my_entries_features) {
           await this.guarantee_my_entries_features_loaded()
@@ -583,6 +612,18 @@ export default {
           essential: true // this animation is considered essential with respect to prefers-reduced-motion
         })
       }
+    },
+    get_place_parts(place) {
+      /**
+       * pass a place, or take the one from value
+       **/
+      const options = []
+      for (let place_type of default_place_type) {
+        if (place.hasOwnProperty(place_type)) {
+          options.push(place[place_type].name)
+        }
+      }
+      return options
     }
   }
 }
@@ -597,5 +638,9 @@ export default {
 .map_overlay {
   position: absolute;
   z-index: 2;
+}
+
+.selected_prec_chip {
+  background-color: khaki;
 }
 </style>
