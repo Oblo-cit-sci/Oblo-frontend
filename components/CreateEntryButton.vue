@@ -1,6 +1,7 @@
 <template lang="pug">
   div
     v-btn(
+      ref="create_button"
       v-bind="bp_based_main_create_btn_props"
       color="success"  @click="create_from_main_template")
       span(v-if="show_main_template_create_text") {{main_template.create_text}}
@@ -23,6 +24,15 @@ export default {
   name: "CreateEntryButton",
   mixins: [DomainDataMixin, EntryCreateMixin, NavBaseMixin, ResponsivenessMixin],
   components: {},
+  data() {
+    return {
+      button_width: 0
+    }
+  },
+  mounted() {
+    console.log()
+    this.button_width = this.$refs.create_button.$el.offsetWidth
+  },
   computed: {
     ...mapGetters({
       menu_open: "menu/open"
@@ -36,9 +46,11 @@ export default {
     },
     additional_template_button_shift() {
       // todo 110 is very magic, depends on the length of the main create button text
-      let shift = "110px"
+      let shift = 0
       if (!this.show_main_template_create_text) {
-        shift = "40px"
+        shift = "55px"
+      } else {
+        shift = this.button_width + "px"
       }
       // console.log("shift", shift)
       return {
