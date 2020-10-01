@@ -2,27 +2,26 @@
   div
     div.d-flex.flex-wrap
       .cell(v-for="(c, i) in options" :key="i" :style="cell_style")
-        v-container
-          v-row.mt-2.justify-center
-            v-img.sel_cursor(v-if="c.icon" :src="get_icon_url(c.icon)" width="80%"
-              max-width="80%" max-height="80%" contain @click="select(c)" class="")
-          v-row.mt-3.mb-2.justify-center
+        v-container.pt-1
+          v-row.mt-1.mb-1.justify-center
+            v-img.sel_cursor(v-if="c.icon" :src="get_icon_url(c.icon)" :style="img_style" contain @click="select(c)" class="")
+          v-row.mt-2.mb-2.justify-center
             div.sel_cursor.px-1(@click="select(c)" :style="text_size(c)") {{c.text}}
 </template>
 
 <script>
 import SelectComponentMixin from "~/components/aspect_utils/SelectComponentMixin"
+import ResponsivenessMixin from "~/components/ResponsivenessMixin"
 
 export default {
   name: "SelectGrid",
-  mixins: [SelectComponentMixin],
+  mixins: [SelectComponentMixin, ResponsivenessMixin],
   components: {},
   props: {
     options: Array, // of objects: text, value, icon (url)
     default_image_url: String,
     max_cell_width: {
-      type: Number,
-      default: 160
+      type: Number
     },
     no_border: Boolean
   },
@@ -39,8 +38,16 @@ export default {
   computed: {
     cell_style() {
       return {
-        "max-width": this.max_cell_width + "px",
+        "max-width": (this.is_xsmall ? 90 : this.is_small ? 120 : 160) + "px",
         "border": this.no_border ? "none" : "1px grey solid"
+      }
+    },
+    img_style() {
+      const sz = (this.is_xsmall ? 60 : this.is_small ? 70 : 80) + "%"
+      return {
+        "width": sz,
+        "max-width": sz,
+        "max-height": sz
       }
     }
   },
@@ -49,9 +56,11 @@ export default {
       this.$emit("selection", value)
     },
     text_size(item) {
+      let resp_size = (this.is_xsmall ? 80 : this.is_small ? 90 : 100)
       if (item.text.length > 60) {
-        return {'font-size': '90%'}
+        resp_size *= 0.9
       }
+      return {'font-size': resp_size + "%"}
     }
   },
   watch: {}
