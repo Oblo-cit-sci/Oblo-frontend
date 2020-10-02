@@ -11,7 +11,6 @@ export const SEARCH_SET_SEARCH_COUNT = "search/set_search_count"
 export const SEARCH_INCREASE_COUNT = "search/increase_search_count"
 export const SEARCH_DELETE_ENTRY = "search/delete_entry"
 
-
 export const SEARCH_PREPEND_ENTRIES = "search/prepend_entries"
 
 export const SEARCH_GET_SEARCH_COUNT = "search/get_search_count"
@@ -39,6 +38,9 @@ export const state = () => ({
 export const mutations = {
   set_entries(state, entries) {
     state.entries = entries
+  },
+  clear_entries(state) {
+    state.entries = []
   },
   set_route(state, {path, params}) {
     state.path = path

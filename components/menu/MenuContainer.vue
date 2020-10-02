@@ -1,7 +1,7 @@
 <template lang="pug">
   div
     v-navigation-drawer(
-      bottom
+      :bottom="is_small"
       v-model="menu_open"
       :temporary="over"
       :hide-overlay="over"
@@ -84,9 +84,9 @@ export default {
             case "xl":
               return 600
             case "lg":
-              return 500
+              return 520
             case "md":
-              return 400
+              return 450
           }
       }
     }

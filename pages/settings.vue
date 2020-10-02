@@ -46,7 +46,7 @@
   import PersistentStorageMixin from "../components/util/PersistentStorageMixin";
   import EntryPreviewList from "../components/entry/EntryPreviewList";
   import {CLEAR_ENTRIES, DOMAIN_TITLE} from "~/store";
-  import {settings_loc_privacy_random} from "~/lib/settings"
+  import {settings_loc_privacy_ask, settings_loc_privacy_exact, settings_loc_privacy_random} from "~/lib/settings"
   import {extract_unpacked_values} from "~/lib/aspect"
   import {USER_SET_SETTINGS, USER_SETTINGS} from "~/store/user"
   import FixDomainMixin from "~/components/global/FixDomainMixin"
@@ -76,8 +76,9 @@
             unpacked: true
           },
           items: [
-            {value: "exact location", text: this.$t("page.settings.asp.location_privacy.options.exact_location")},
+            {value: settings_loc_privacy_exact, text: this.$t("page.settings.asp.location_privacy.options.exact_location")},
             {value: settings_loc_privacy_random, text: this.$t("page.settings.asp.location_privacy.options.randomly_moved")},
+            {value: settings_loc_privacy_ask, text: this.$t("page.settings.asp.location_privacy.options.always_ask")}
             // settings_loc_privacy_ask
           ],
           value: null,

@@ -114,7 +114,8 @@
           "description": "Specify the settings for the protection of the exact locations of your entries",
           "options": {
             "exact_location": "Exact location",
-            "randomly_moved": "Randomly moved"
+            "randomly_moved": "Randomly moved",
+            "always_ask": "Always ask"
           }
         }
       },
@@ -278,7 +279,7 @@
       "public_loc": {
         "base": "Public location",
         "options": {
-          "rnd": "The exact location is not visible, instead a randomly moved location (yellow marker) will be displayed",
+          "rnd": "The exact location is not visible, but a randomly moved location (yellow marker).",
           "exact": "The exact location will be visible.",
           "region": "The location's administrative unit (region) will be visible."
         }

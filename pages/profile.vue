@@ -70,7 +70,6 @@
 
   // needs a server reroute plugin or module, that reroutes visitors back to index
 
-  import goTo from 'vuetify/lib/services/goto'
 
   import Aspect from "../components/Aspect";
   import {EDIT, USER, VIEW} from "~/lib/consts";
@@ -127,7 +126,6 @@
     created() {
       if (this.is_fixed_domain) {
         const ui_lang_domain_data = this.ui_lang_domain_data(this.is_fixed_domain)
-        console.log(ui_lang_domain_data)
         this.domain_specific_aspects = this.$_.cloneDeep(this.$_.get(ui_lang_domain_data, "users.profile.additional_aspects", []))
         // todo here call a function that assigns external conditions
       }
@@ -143,7 +141,7 @@
     },
     methods: {
       goto_top() {
-        setTimeout(() => goTo("body", {
+        setTimeout(() => this.$vuetify.goTo("body", {
           duration: 300,
           easing: "easeOutCubic"
         }), 50)
