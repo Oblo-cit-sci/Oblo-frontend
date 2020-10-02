@@ -6,9 +6,10 @@ import {
   aspect_raw_default_value,
   check_condition_value,
   complete_aspect_loc, loc_prepend,
-  pack_value
+  pack_value, unpack
 } from "~/lib/aspect";
 import {ENTRIES_GET_ENTRY, ENTRIES_SET_ENTRY_VALUE, ENTRIES_VALUE} from "~/store/entries";
+import {select_aspect_loc} from "~/lib/entry"
 
 
 export default {
@@ -89,18 +90,21 @@ export default {
     },
     condition_fail() {
       // todo pass if edit
-      // todo this getting of the value, could mayeb also go into the helper...
-
+      // todo this getting of the value, could maybe also go into the helper...
+      let condition_value = null
       if (this.aspect.hasOwnProperty("attr") && this.aspect.attr.hasOwnProperty("condition")) {
-
-
-        let aspect_location = loc_prepend(this.edit ? EDIT : ENTRY, this.entry_uuid,
-          aspect_loc_str2arr(this.aspect.attr.condition.aspect))
-
-        // console.log("checking condition for", this.aspect.name)
-        // console.log("condition aspect-loc", aspect_location)
-        let condition_value = this.$store.getters[ENTRIES_VALUE](aspect_location)
-        // console.log("condition value", aspect_location, condition_value)
+        if (this.aspect_loc) {
+          let aspect_location = loc_prepend(this.edit ? EDIT : ENTRY, this.entry_uuid,
+            aspect_loc_str2arr(this.aspect.attr.condition.aspect))
+          // console.log("checking condition for", this.aspect.name)
+          // console.log("condition aspect-loc", aspect_location)
+          condition_value = this.$store.getters[ENTRIES_VALUE](aspect_location)
+        } else if (this.conditionals) {
+          condition_value = select_aspect_loc(null, aspect_loc_str2arr(this.aspect.attr.condition.aspect), false, this.conditionals)
+        } else {
+          console.log(`condition for aspect ${this.aspect.name} cannot be checked. no aspect_loc and no conditionals`)
+          return false
+        }
         return !check_condition_value(condition_value, this.aspect.attr.condition)
       } else {
         return false
@@ -116,7 +120,7 @@ export default {
       // console.log("unpacked?", this.aspect.name, ld.get(this.aspect, "attr.unpacked", false))
       return this.$_.get(this.aspect, "attr.unpacked", false)
     },
-    mvalue: function () {
+    mvalue() {
       if (!this.aspect_loc) {
         if (this.ext_value !== undefined) {
           return this.ext_value
@@ -158,7 +162,6 @@ export default {
           console.log("broken ref!")
           ref_value = pack_value(aspect_raw_default_value(this.aspect))
         }
-
 
         let stored_value = this.$store.getters[ENTRIES_VALUE](this.aspect_loc)
         if (this.aspect.attr.ref_update === "create") {
@@ -203,10 +206,23 @@ export default {
         return value
       }
     },
+    value() {
+      if (this.is_unpacked) {
+        return this.mvalue
+      } else return unpack(this.mvalue)
+    },
     entry_uuid() {
       return aspect_loc_uuid(this.aspect_loc)
     }
   },
-  watch: {}
+  watch: {
+    condition_fail(fail) {
+      if (fail) {
+        if (this.value !== aspect_raw_default_value(this.aspect)) {
+          this.update_value(aspect_raw_default_value(this.aspect))
+        }
+      }
+    }
+  }
 }
 

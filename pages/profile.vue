@@ -1,6 +1,5 @@
 <template lang="pug">
   v-flex#top(xs12 sm10 md10)
-
     v-row
       v-col
         div {{$t("w.username")}}: {{registered_name}}
@@ -43,12 +42,7 @@
       v-divider.wide_divider
     div(v-if="edit_mode && !$_.isEmpty(domain_specific_aspects)")
       h2#domains {{$t("page.profile.h3")}}
-      v-row(v-for="aspect in domain_specific_aspects" :key="aspect.name")
-        v-col(cols=10)
-          Aspect(:aspect="aspect"
-            :ext_value.sync="aspect.value"
-            @update:error="$set(aspect, 'error', $event)"
-            mode="edit")
+      AspectSet(:aspects="domain_specific_aspects" :values.sync="domain_specific_aspects_values" mode="edit")
     div(v-if="!is_visitor")
       v-btn(v-if="!edit_mode" to="/settings" nuxt) {{$t("page.profile.btn_settings")}}
       v-btn(v-if="!edit_mode" color="info" @click="setEdit()") {{$t("page.profile.btn_edit_profile")}}
@@ -80,7 +74,7 @@
 
   import {ENTRIES_GET_OWN_ENTRIES_UUIDS} from "~/store/entries";
   import LoadFileButton from "../components/util/LoadFileButton";
-  import {base64file_to_blob, common_filesize, route_change_query} from "~/lib/util";
+  import {base64file_to_blob, common_filesize, recursive_unpack, route_change_query} from "~/lib/util";
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
   import {USER_SET_USER_DATA} from "~/store/user";
   import EntryListWrapper from "../components/EntryListWrapper"
@@ -90,10 +84,12 @@
   import GoToMixin from "~/components/global/GoToMixin"
   import GlobalRoleChip from "~/components/actor/GlobalRoleChip"
   import DomainLanguageMixin from "~/components/domain/DomainLanguageMixin";
+  import AspectSet from "~/components/AspectSet"
 
   export default {
     name: "profile",
     components: {
+      AspectSet,
       GlobalRoleChip,
       EntryListWrapper,
       LoadFileButton,
@@ -120,6 +116,7 @@
           password_confirm: this.asp_password_confirm(new_pwd, "repeat_new")
         },
         domain_specific_aspects: [],
+        domain_specific_aspects_values: {},
         waiting: false,
       }
     },
@@ -158,7 +155,8 @@
         if (this.$_.get(user_data.config_share, `domain.${this.is_fixed_domain}`)) {
           const domain_values = user_data.config_share.domain[this.is_fixed_domain]
           for (let aspect of this.domain_specific_aspects) {
-            aspect.value = domain_values[aspect.name]
+            // aspect.value = domain_values[aspect.name]
+            this.domain_specific_aspects_values[aspect.name] = domain_values[aspect.name]
           }
         }
       },
@@ -176,7 +174,7 @@
 
         if (this.is_fixed_domain) {
           new_profile.domain = {}
-          new_profile.domain[this.is_fixed_domain] = extract_unpacked_values(this.domain_specific_aspects)
+          new_profile.domain[this.is_fixed_domain] = this.domain_specific_aspects_values
         }
         this.$api.actor.post_me(new_profile).then(({data}) => {
           this.$store.commit(USER_SET_USER_DATA, data)

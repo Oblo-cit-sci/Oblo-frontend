@@ -1,38 +1,65 @@
 <template lang="pug">
   div
-    v-btn(@click="snack") snack
+    AspectSet(:aspects="aspects" mode="edit" :values.sync="values")
+    div {{values}}
 </template>
 
 <script>
 
 
 
-import OptionsMixin from "~/components/aspect_utils/OptionsMixin"
-import TagsMixin from "~/lib/TagsMixin"
-import SingleSelect from "~/components/input/SingleSelect"
-import EntryFetchMixin from "~/components/entry/EntryFetchMixin"
-import EntryPreview from "~/components/entry/EntryPreview"
-import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
+import AspectSet from "~/components/AspectSet"
 
 export default {
   name: "Tests",
-  mixins: [EntryFetchMixin, TriggerSnackbarMixin],
+  mixins: [],
   components: {
+    AspectSet
   },
   created() {
-    this.guarantee_entry("b76ecefb-88dd-4d52-a4f3-ec5118737bcf")
   },
   data() {
     return {
+      aspects: [
+        {
+          name: "A",
+          type: "str",
+          attr: {
+            max: 90
+          }
+        },
+        {
+          name: "B",
+          type: "int",
+          attr: {
+            min: 1,
+            max: 100
+          }
+        },
+        {
+          name: "S",
+          type: "select",
+          attr: {},
+          "items": ["a", "b"]
+        },
+        {
+          name: "D",
+          type: "str",
+          attr: {
+            max: 80,
+            condition: {
+              aspect: "# S",
+              value: "a"
+            },
+            hide_on_disabled: true
+          }
+        }
+      ],
+      values: {A: {value:"d"}}
     }
   },
-  computed: {
-  },
-  methods: {
-    snack() {
-      this.ok_snackbar("cool"+ new Date())
-    }
-  },
+  computed: {},
+  methods: {},
   watch: {}
 }
 </script>

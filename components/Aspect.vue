@@ -51,10 +51,6 @@
       Title_Description
     },
     mixins: [AspectMixin],
-    props: {},
-    data() {
-      return {}
-    },
     created() {
       // todo no idea, why the shortcut below does not work
       // console.log("aspect create", this.aspect.name, this.value)
@@ -130,8 +126,7 @@
       aspectComponent(aspect, mode) {
         return get_aspect_vue_component(aspect, mode, this.extra)
       }
-    },
-    watch: {}
+    }
   }
 </script>
 
