@@ -2,10 +2,10 @@
   div
     AspectSet(:aspects="aspects" mode="edit" :values.sync="values")
     div {{values}}
+    v-btn.appear(fab color="red" :style="{'transform': 'scale(0)'}")
 </template>
 
 <script>
-
 
 
 import AspectSet from "~/components/AspectSet"
@@ -65,5 +65,9 @@ export default {
 </script>
 
 <style scoped>
-
+  .appear {
+    transition: 1s;
+    transition-timing-function: cubic-bezier(.59,1.49,.84,2.01);
+    transform: scale(2);
+  }
 </style>
