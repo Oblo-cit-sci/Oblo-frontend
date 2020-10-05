@@ -51,7 +51,7 @@ export default {
   data: function () {
     return {
       page: 1,
-      deleted: [],
+      deleted: []
     }
   },
   beforeUpdate() {
@@ -126,8 +126,8 @@ export default {
        * val: boolean
        */
       // TODO, why does it not work with !this.has_entries
-      if(val && !(this.entries.length > 0)) {
-       this.page = 1
+      if (val && !(this.entries.length > 0)) {
+        this.page = 1
       }
     },
     page(page) {

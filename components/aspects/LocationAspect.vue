@@ -30,7 +30,7 @@
       span.body-1.readonly-aspect {{place_name_display}}
       v-btn(v-if="show_goto_button" icon @click="set_goto_location")
         v-icon mdi-map-marker
-      div(v-else) {{$t('comp.location_asp.no_loc')}}
+      div(v-if="!value") {{$t('comp.location_asp.no_loc')}}
     client-only
       div(v-if="show_map")
         .map_overlay
