@@ -57,8 +57,6 @@ export default {
   beforeUpdate() {
     this.deleted = this.$_.filter(this.deleted, uuid => !this.has_entry(uuid))
   },
-  mounted() {
-  },
   computed: {
     ...mapGetters({"has_entry": "entries/has_entry"}),
     results_received() {
@@ -127,8 +125,8 @@ export default {
       /**
        * val: boolean
        */
-      console.log("q-r", !val, this.next_loading, this.has_entries)
-      if(!val && !this.has_entries) {
+      // TODO, why does it not work with !this.has_entries
+      if(val && !(this.entries.length > 0)) {
        this.page = 1
       }
     },
