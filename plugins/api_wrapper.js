@@ -18,7 +18,6 @@ class APIWrapper {
     //
     this.basic_baseURL = this.api_baseURL + "/basic"
     this.domain_baseURL = this.api_baseURL + "/domain"
-    this.actor_baseURL = this.api_baseURL + "/actor"
     this.entry_baseURL = this.api_baseURL + "/entry"
     this.entries_baseURL = this.api_baseURL + "/entries"
     this.static_baseURL = this.axios_baseURL + "/static"
