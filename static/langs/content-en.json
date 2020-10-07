@@ -72,7 +72,10 @@
       "not_a_user": "Not a user"
     },
     "profile": {
-      "h1": "General information",
+      "h_public": "Public information",
+      "h_research": "Research related information",
+      "research_info": "Answering these questions is optional. The information is only used for research purposes of the creator of OpenTEK",
+      "h_domain": "Domain specific questions",
       "btn_change_password": "Change password",
       "btn_settings": "Settings",
       "btn_edit_profile": "Edit profile",
@@ -80,8 +83,7 @@
       "btn_save": "@:w.save",
       "btn_save_password": "Save password",
       "btn_delete": "Delete account",
-      "h2": "Your @:w.entries",
-      "h3": "Domain specific questions"
+      "h_entries": "Your @:w.entries"
     },
     "actor": {
       "h1": "@:page.profile.h1",

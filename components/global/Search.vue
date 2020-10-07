@@ -4,7 +4,6 @@
       v-expansion-panel
         v-expansion-panel-header.px-3.py-1(color="#d6e5f0") {{$t('comp.search.search_filter')}}
         v-expansion-panel-content.px-3.py-1.no-wrap(:style="{'background-image':'linear-gradient(rgb(214, 229, 240), yellow)'}")
-
           v-row(wrap justify-start)
             v-col.py-0(cols="12")
               v-text-field.pt-0(

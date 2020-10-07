@@ -11,7 +11,7 @@
       v-col(class="col-lg-6 col-xs-12")
         div(v-for="domain in domains" :key="domain.name")
           DomainCard(
-            v-if="domain_available_in_language(domain)"
+            v-if="domain_available_in_language(domain) && domain.name !== 'no_domain'"
             :domain_data="languaged_domain_data(domain)"
             :languages="languages(domain)")
           div(v-else)

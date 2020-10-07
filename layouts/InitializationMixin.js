@@ -72,7 +72,7 @@ export default {
       this.$store.commit("set_domains", {domains_data, language})
       this.$store.dispatch(SET_TEMPLATES_CODES, data.data.templates_and_codes)
 
-      console.log(data.data)
+      // console.log(data.data)
       this.$store.commit("set_available_languages", data.data.languages)
 
       // todo maybe this should be before init_data, to request the set language
