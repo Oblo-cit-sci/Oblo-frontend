@@ -13,7 +13,7 @@ export default {
       const domain_data = this.$store.getters["domain_by_name"](domain_name)
       if (domain_data) {
         // also this can result undefined
-        return this.$_.get(domain_data, "language_code", null)
+        return domain_data[language_code]
       }
     }
   }
