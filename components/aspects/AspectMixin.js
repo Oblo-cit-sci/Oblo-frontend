@@ -1,4 +1,4 @@
-import {EDIT, ENTRY, LIST_INDEX, REVIEW, VIEW} from "~/lib/consts";
+import {EDIT, ENTRY, FLEX, LIST_INDEX, REVIEW, VIEW} from "~/lib/consts";
 import {
   aspect_default_value,
   aspect_loc_str2arr,
@@ -26,7 +26,7 @@ export default {
       type: String,
       default: VIEW,
       validator: (value) => {
-        return [VIEW, EDIT, REVIEW].includes(value)
+        return [VIEW, EDIT, REVIEW, FLEX].includes(value)
       }
     },
     disabled: {
