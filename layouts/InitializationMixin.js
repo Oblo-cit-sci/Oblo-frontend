@@ -11,10 +11,11 @@ import {ENTRIES_HAS_FULL_ENTRY, ENTRIES_SAVE_ENTRY} from "~/store/entries"
 import {db_vars} from "~/lib/db_vars"
 import SettingsChangeMixin from "~/components/global/SettingsChangeMixin"
 import {NO_DOMAIN} from "~/lib/consts"
+import HomePathMixin from "~/components/menu/HomePathMixin"
 
 export default {
   name: "InitializationMixin",
-  mixins: [FixDomainMixin, SettingsChangeMixin],
+  mixins: [FixDomainMixin, SettingsChangeMixin, HomePathMixin],
   created() {
     if (!this.db_loaded)
       this.reload_storage()
@@ -145,6 +146,15 @@ export default {
       // console.log("db loaded", this.initialized)
       if (val) {
         // console.log("layout. initializing")
+        if (this.$nuxt.isOffline) {
+          console.log("offline")
+          this.$router.push("/offline")
+          this.set_home_path("/offline")
+          setTimeout(() => {
+            this.$store.commit(APP_INITIALIZED)
+          }, 80)
+          return
+        }
         this.initialize().then(() => {
           console.log("connected")
           this.$store.commit("set_domain", this.$store.getters["domain_by_name"](NO_DOMAIN))

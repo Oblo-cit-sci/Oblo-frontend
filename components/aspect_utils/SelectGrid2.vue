@@ -5,8 +5,11 @@
         v-col.pa-1(v-for="(c, i) in options" :key="i" :style="cell_style")
           v-item(v-slot:default="{ active, toggle }")
             v-sheet.rounded(:style="cell_select_style(active)" elevation="2")
-              v-img.grid-img.sel_cursor(v-if="c.icon" :src="get_icon_url(c.icon)"
-                max-width="80%" contain @click="toggle" position="center")
+              div
+                v-skeleton-loader.grid-img(max-width=100 max-height="53px" type="image" boilerplate v-if="!loaded_imgs[i]")
+                v-img.grid-img.sel_cursor(v-if="c.icon" :src="get_icon_url(c.icon)"
+                  max-width="80%" contain @click="toggle" position="center"
+                  @load="img_loaded(i)")
               .text-block.pt-2(v-if="!no_text")
                 span {{c.text ? c.text : "&nbsp;"}}
 </template>
@@ -38,7 +41,9 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+      loaded_imgs: []
+    }
   },
   computed: {
     i_value: {
@@ -86,6 +91,9 @@ export default {
       return this._multiple || this.aspect.type === "multiselect"
     }
   },
+  created() {
+    this.loaded_imgs = new Array(this.options.length)
+  },
   methods: {
     cell_select_style(active) {
       return {
@@ -99,6 +107,10 @@ export default {
       } else {
         return this.$api.get_static_url(icon)
       }
+    },
+    img_loaded(index) {
+      console.log("load img", index, this.loaded_imgs)
+      this.$set(this.loaded_imgs, index, true)
     }
   }
 }
