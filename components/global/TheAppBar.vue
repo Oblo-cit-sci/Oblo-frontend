@@ -24,12 +24,13 @@ import NavBaseMixin from "~/components/NavBaseMixin"
 import CreateEntryButton from "~/components/CreateEntryButton";
 import ResponsivenessMixin from "~/components/ResponsivenessMixin";
 import URLQueryMixin from "~/components/util/URLQueryMixin";
+import DomainLanguageMixin from "~/components/domain/DomainLanguageMixin"
 
 // z-index to be above the loading overlay
 
 export default {
   name: "TheAppBar",
-  mixins: [NavBaseMixin, ResponsivenessMixin, URLQueryMixin],
+  mixins: [NavBaseMixin, ResponsivenessMixin, URLQueryMixin, DomainLanguageMixin],
   components: {CreateEntryButton},
   props: {
     show_nav_icon: {
@@ -62,14 +63,14 @@ export default {
       }
     },
     domain_title() {
-      return this.domain ? this.domain.title : HOME
+      return this.ui_lang_domain_data(this.domain.name).title
     },
     domain_icon() {
       // todo only use name, but set change it in no_domain
-      return this.$api.static_url_$domain_name_icon(this.domain.name || this.domain.value)
+      return this.$api.static_url_$domain_name_icon(this.domain.name)
     },
     domain_headline() {
-      return this.domain.long_title
+      return this.ui_lang_domain_data(this.domain.name).long_title
     },
     display_debug() {
       return {

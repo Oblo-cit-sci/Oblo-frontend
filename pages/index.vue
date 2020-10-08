@@ -1,25 +1,26 @@
 <template lang="pug">
   v-container(fluid)
-    div(v-if="!logged_in")
-      v-row {{$t('page.index.p1', {server_name: server_name})}}
-      v-row(align="center")
-        v-col(sm="4" offset="1")
-          v-btn.mt-4.mb-8(large to="/register" rounded outlined) {{$t('page.index.btn_register')}}
-        v-col(sm="4")
-          v-btn.mt-4.mb-8(large to="/login" rounded outlined) {{$t('page.index.btn_login')}}
-    v-row(align="center" justify="center")
-      v-col(class="col-lg-6 col-xs-12")
-        div(v-for="domain in domains" :key="domain.name")
-          DomainCard(
-            v-if="domain_available_in_language(domain)"
-            :domain_data="languaged_domain_data(domain)"
-            :languages="languages(domain)")
-          div(v-else)
-            v-img.float-left.mr-3.mb-1(:src="domain_icon(domain.name)" left width="40" height="40")
-            span {{domain.name}} is only available in {{languages(domain).join(", ")}}.
-    v-row(justify="center")
-      v-btn(text nuxt to="about") {{$t('page.index.about_a')}}
-      v-btn(text nuxt to="about#privacy") {{$t('page.index.privacy_a')}}
+    div(v-if="initialied")
+      div(v-if="!logged_in")
+        v-row {{$t('page.index.p1', {server_name: server_name})}}
+        v-row(align="center")
+          v-col(sm="4" offset="1")
+            v-btn.mt-4.mb-8(large to="/register" rounded outlined) {{$t('page.index.btn_register')}}
+          v-col(sm="4")
+            v-btn.mt-4.mb-8(large to="/login" rounded outlined) {{$t('page.index.btn_login')}}
+      v-row(align="center" justify="center")
+        v-col(class="col-lg-6 col-xs-12")
+          div(v-for="domain in domains" :key="domain.name")
+            DomainCard(
+              v-if="domain_available_in_language(domain) && domain.name !== 'no_domain'"
+              :domain_data="languaged_domain_data(domain)"
+              :languages="languages(domain)")
+            div(v-else)
+              v-img.float-left.mr-3.mb-1(:src="domain_icon(domain.name)" left width="40" height="40")
+              span {{domain.name}} is only available in {{languages(domain).join(", ")}}.
+      v-row(justify="center")
+        v-btn(text nuxt to="about") {{$t('page.index.about_a')}}
+        v-btn(text nuxt to="about#privacy") {{$t('page.index.privacy_a')}}
     Footer
 </template>
 

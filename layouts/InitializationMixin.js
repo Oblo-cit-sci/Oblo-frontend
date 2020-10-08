@@ -5,11 +5,12 @@ import {dev_env} from "~/lib/util"
 import FixDomainMixin from "~/components/global/FixDomainMixin"
 import {PAGE_INDEX} from "~/lib/pages"
 import {default_settings} from "~/lib/settings"
-import {SET_DOMAINS, SET_TEMPLATES_CODES} from "~/store"
+import {SET_TEMPLATES_CODES} from "~/store"
 import {USER_GET_AUTH_TOKEN, USER_LOGIN} from "~/store/user"
 import {ENTRIES_HAS_FULL_ENTRY, ENTRIES_SAVE_ENTRY} from "~/store/entries"
 import {db_vars} from "~/lib/db_vars"
 import SettingsChangeMixin from "~/components/global/SettingsChangeMixin"
+import {NO_DOMAIN} from "~/lib/consts"
 
 export default {
   name: "InitializationMixin",
@@ -24,11 +25,6 @@ export default {
       }
     }
   },
-  data() {
-    return {
-      // privacy_sheet_open: false
-    }
-  },
   computed: {
     ...mapGetters([APP_CONNECTING]),
     ...mapGetters({
@@ -40,7 +36,6 @@ export default {
   methods: {
     reload_storage() {
       if (this.$localForage) {
-        console.log("RELOAD STORAGE")
         const remaining = db_vars.map(v => v.name)
         for (let store_var_descr of db_vars) {
           // console.log("loading", store_var_descr.name)
@@ -64,22 +59,12 @@ export default {
       this.$store.commit(APP_CONNECTING, true)
       console.log("initialize")
 
-      // todo maybe the language should come not from the settings, since setting the language triggers
-      // reload...
-      const {data} = await this.$api.init_data()
-      const domains_data = data.data.domains
-      const language = data.data.language
-      this.$store.commit("set_domains", {domains_data, language})
-      this.$store.dispatch(SET_TEMPLATES_CODES, data.data.templates_and_codes)
-
-      console.log(data.data)
-      this.$store.commit("set_available_languages", data.data.languages)
-
       // todo maybe this should be before init_data, to request the set language
       const auth_token = this.$store.getters[USER_GET_AUTH_TOKEN]
       if (auth_token.access_token) {
         const login = await this.$api.actor.validate_token(auth_token)
         if (login.data.token_valid) {
+          console.log("stored token is valid")
           this.$store.commit(USER_LOGIN)
           this.$api.axios.setToken(auth_token.access_token, "Bearer")
         } else {
@@ -89,7 +74,20 @@ export default {
           this.$localForage.removeItem("auth_token")
           this.error_snackbar(this.$t("mixin.init.logged_out"))
         }
+      } else {
+        this.$store.dispatch("user/logout")
+        this.$localForage.removeItem("auth_token")
       }
+      // todo maybe the language should come not from the settings, since setting the language triggers
+      // reload...
+      const {data} = await this.$api.init_data()
+      const domains_data = data.data.domains
+      const language = data.data.language
+      this.$store.commit("set_domains", {domains_data, language})
+      this.$store.dispatch(SET_TEMPLATES_CODES, data.data.templates_and_codes)
+
+      // console.log(data.data)
+      this.$store.commit("set_available_languages", data.data.languages)
 
       // todo maybe this part should be handled by the individual page, so it can do its default behaviour
       // but a wrapper would be good.
@@ -149,6 +147,7 @@ export default {
         // console.log("layout. initializing")
         this.initialize().then(() => {
           console.log("connected")
+          this.$store.commit("set_domain", this.$store.getters["domain_by_name"](NO_DOMAIN))
           this.$store.dispatch(APP_CONNECTED)
           // console.log(this.has_multiple_domains, this.get_one_domain_name)
           if (!this.has_multiple_domains) {

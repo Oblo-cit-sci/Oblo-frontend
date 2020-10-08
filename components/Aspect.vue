@@ -1,5 +1,5 @@
 <template lang="pug">
-    div.pa-3(
+    div.pa-2(
       :class="[{composite: (aspect.type === 'composite' && mode === 'edit'),  disabled: disable, invisible_class: invisible_class}]"
       :id="aspect_id" v-if="visible && has_value")
       Title_Description(

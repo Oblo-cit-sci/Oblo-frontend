@@ -39,7 +39,7 @@ export default {
     unselect_entry() {
       this.update_navigation_mode(null)
     },
-    update_navigation_mode(entry_uuid, entry_mode, easeToFirst = true) {
+    update_navigation_mode(entry_uuid, entry_mode, easeToFirst = true, open_menu = true) {
       // console.log("update_navigation_mode", easeToFirst)
       const query = {}
       if (entry_uuid) {
@@ -55,7 +55,9 @@ export default {
           }
         }
       }
-      this.set_menu_open(true)
+      if(open_menu) {
+        this.set_menu_open(true)
+      }
       Object.assign(query, this.query_param_domain)
       this.$router.push(route_change_query(this.$route, query, true))
     },

@@ -6,7 +6,6 @@ import {SEARCH_CLEAR} from "~/store/search"
 
 // *********** Index
 export const CLEAR_DOMAIN = "clear_domain"
-// export const DELETE_DOMAIN = "delete_domain"
 export const SET_STORED_ENTRIES = "set_stored_entries"
 export const GET_CODE = "get_code"
 export const SET_TEMPLATES_CODES = "set_templates_codes"
@@ -32,9 +31,7 @@ export const state = () => ({
   codes: {},
   domains: [],
   domain: {
-    value: NO_DOMAIN,
-    title: "OpenTEK"
-    // icon: "images/openTEK_icon.png"
+
   },
   // prevent that the save and back is messing up, should not go back to a child. e.g.
   // stores either domain or my entries page or a parent entry
@@ -64,11 +61,7 @@ export const mutations = {
     state.domain = domain
   },
   clear_domain(state) {
-    state.domain = {
-      value: NO_DOMAIN,
-      title: "OpenTEK",
-      icon: "images/openTEK_icon.png"
-    }
+    state.domain = state.domains.find(d => d.name === NO_DOMAIN)
   },
   delete_domain(state, domain_name) {
     state.domains = ld.filter(state.domains, domain => domain.value !== domain_name)
