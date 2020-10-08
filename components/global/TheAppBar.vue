@@ -63,14 +63,14 @@ export default {
       }
     },
     domain_title() {
-      return this.ui_lang_domain_data(this.domain.name).title
+      return this.$_.get(this.ui_lang_domain_data(this.domain.name), "title", "Offline")
     },
     domain_icon() {
       // todo only use name, but set change it in no_domain
       return this.$api.static_url_$domain_name_icon(this.domain.name)
     },
     domain_headline() {
-      return this.ui_lang_domain_data(this.domain.name).long_title
+      return this.$_.get(this.ui_lang_domain_data(this.domain.name), "long_title", "")
     },
     display_debug() {
       return {

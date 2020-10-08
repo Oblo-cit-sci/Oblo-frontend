@@ -196,6 +196,13 @@ export default {
       if (loaded)
         this.check_entries_map_done()
     },
+    map_loaded() {
+      this.check_entries_map_done()
+      this.$emit("map", this.map)
+    },
+    menu_open(open) {
+      this.check_hide_map()
+    },
     get_all_uuids(uuids) {
       this.update_filtered_source()
       if (!this.initialized) {
@@ -206,13 +213,6 @@ export default {
       if (location) {
         this.map_goto_location(location)
       }
-    },
-    map_loaded() {
-      this.check_entries_map_done()
-      this.$emit("map", this.map)
-    },
-    menu_open(open) {
-      this.check_hide_map()
     },
     menu_state(menu_state) {
       this.check_hide_map()
@@ -261,7 +261,6 @@ export default {
     },
     init_map_source_and_layers(layer_base_id = "all_entries") {
       // console.log("init_map_source_and_layers", this.entries.features.length)
-
       const source_name = layer_base_id + "_source"
       this.update_filtered_source()
 
@@ -269,7 +268,45 @@ export default {
       const cluster_layer_name = layer_base_id + '_clusters'
       const cluster_layer = this.map.getLayer(cluster_layer_name)
       // console.log("cluster_layer?", Object.keys(this.map.style._layers).includes(cluster_layer))
-      if (!cluster_layer) {
+
+      // entries layer
+      const entries_layer_name = layer_base_id + '_entries' // all_entries_entries
+      // console.log(entries_layer_name)
+      this.add_entry_layer(source_name, entries_layer_name, {
+        'circle-color': [
+          'match',
+          ['get', "template"],
+          ...this.domain_templates_color_list,
+          '#ccc'],
+        "circle-radius": [
+          'case',
+          ["any", ["boolean", ['feature-state', 'hover'], false], ["boolean", ['feature-state', 'selected'], false]],
+          8,//12,
+          6//8
+        ],
+        "circle-stroke-color": [
+          "match",
+          ["get", "status"],
+          "draft",
+          "#0000FF",
+          "requires_review",
+          review_color(),
+          "#f6ff7a"
+        ],
+        "circle-stroke-width": [
+          "case",
+          ["any", ["boolean", ["feature-state", "selected"], false], ["==", ["get", "status"], "draft"], ["==", ["get", "status"], "requires_review"]],
+          2,
+          0
+        ]
+      })
+
+      // Interactions
+      this.add_default_entries_layer_interactions(source_name, entries_layer_name, (features) => {
+        this.select_entry_marker(features[0])
+      })
+
+            if (!cluster_layer) {
         // console.log("adding cluster layer")
         this.add_cluster_layer(source_name, cluster_layer_name, {
           'circle-color': '#f1f075',
@@ -338,6 +375,13 @@ export default {
           // console.log(cluster)
           const cluster = e.features[0]
 
+          this.map.getSource(MAIN_SOURCE_LAYER).getClusterExpansionZoom(cluster.id, (err, zoom) => {
+            this.map.easeTo({
+              center: cluster.geometry.coordinates,
+              zoom: Math.min(zoom,10)
+            })
+          })
+
           // todo, maybe there is a easier way to get the common_place_name
           const source = this.map.getSource(MAIN_SOURCE_LAYER)
           clusterLeaves(source, cluster.id, cluster.properties.point_count).then(features => {
@@ -353,7 +397,7 @@ export default {
             const place_name = location_text
             const uuids = Array.from(new Set(features.map(f => f.properties.uuid).values()))
             this.$store.commit("search/replace_in_act_config", create_cluster_select_search_config(place_name, uuids))
-            this.update_navigation_mode(null, false)
+            this.update_navigation_mode(null, false, false, this.is_mdAndUp)
           })
           // }
         })
@@ -408,42 +452,6 @@ export default {
         console.log("cluster layer exists already")
       }
 
-      // entries layer
-      const entries_layer_name = layer_base_id + '_entries' // all_entries_entries
-      // console.log(entries_layer_name)
-      this.add_entry_layer(source_name, entries_layer_name, {
-        'circle-color': [
-          'match',
-          ['get', "template"],
-          ...this.domain_templates_color_list,
-          '#ccc'],
-        "circle-radius": [
-          'case',
-          ["any", ["boolean", ['feature-state', 'hover'], false], ["boolean", ['feature-state', 'selected'], false]],
-          12,
-          8
-        ],
-        "circle-stroke-color": [
-          "match",
-          ["get", "status"],
-          "draft",
-          "#0000FF",
-          "requires_review",
-          review_color(),
-          "#f6ff7a"
-        ],
-        "circle-stroke-width": [
-          "case",
-          ["any", ["boolean", ["feature-state", "selected"], false], ["==", ["get", "status"], "draft"], ["==", ["get", "status"], "requires_review"]],
-          2,
-          0
-        ]
-      })
-
-      // Interactions
-      this.add_default_entries_layer_interactions(source_name, entries_layer_name, (features) => {
-        this.select_entry_marker(features[0])
-      })
     },
     update_filtered_source() {
       // console.log("update_filtered_source", this.selected_entry)
@@ -478,7 +486,7 @@ export default {
         this.map.addSource(MAIN_SOURCE_LAYER, {
           type: "geojson",
           data: filtered_entries,
-          cluster: true,
+          cluster: false,
           tolerance: 0,
           // generateId: true, // this fucks up selection state of features, since the ids change or something...
           clusterMaxZoom: 14,
@@ -489,7 +497,7 @@ export default {
         this.map.getSource(MAIN_SOURCE_LAYER).setData(filtered_entries)
       }
       // this.updating = false
-      if(this.selected_entry){
+      if (this.selected_entry) {
         this.change_entry_markers_mode(this.selected_entry, true)
       }
     },

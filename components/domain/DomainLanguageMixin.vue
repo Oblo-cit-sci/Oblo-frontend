@@ -11,7 +11,10 @@ export default {
     },
     lang_domain_data(domain_name, language_code) {
       const domain_data = this.$store.getters["domain_by_name"](domain_name)
-      return domain_data[language_code]
+      if (domain_data) {
+        // also this can result undefined
+        return this.$_.get(domain_data, "language_code", null)
+      }
     }
   }
 }
