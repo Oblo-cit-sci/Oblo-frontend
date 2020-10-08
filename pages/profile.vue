@@ -4,7 +4,7 @@
       v-col
         div {{$t("w.username")}}: {{registered_name}}
         GlobalRoleChip(:global_role="user_data.global_role")
-      <-- Profile image -->
+      <!-- Profile image -->
       v-col
         v-row
           v-img(:src="profile_pic" max-height=200 contain)
@@ -26,10 +26,16 @@
           :ext_value.sync="aspect.value"
           @update:error="$set(aspect, 'error', $event)"
           :mode="aspect_mode")
+    Dialog(:dialog_open="true")
+      v-sheet
+        Aspect(:aspect="this.asp_email()" mode="view" ext_value="cool@no.de")
+    <!-- Password edit -->
     div(v-if="edit_mode")
+      h3 {{$t('page.profile.h_email_password')}}
+      v-btn(color="warning" v-if="!password_edit" @click="password_edit=true") {{$t('page.profile.bt_change_email_pwd')}}
+      AspectSetDialog(:dialog_open="false" :aspects="security_aspects" mode="view")
       h3 {{$t('asp.password.label')}}
       v-btn(color="warning" v-if="!password_edit" @click="password_edit=true") {{$t('page.profile.btn_change_password')}}
-      <!-- Password edit -->
       div(v-if="password_edit")
         v-row(v-for="a of password_aspects" :key="a.name")
           v-col(cols=10)
@@ -42,10 +48,13 @@
         v-btn(v-if="password_edit" @click="password_edit=false") {{$t('w.cancel')}}
         v-btn(v-if="password_edit" color="success" @click="change_password" :disabled="any_password_invalid") {{$t('page.profile.btn_save_password')}}
       v-divider.wide_divider
+    <!-- Other aspects -->
+    <!-- Research aspects, no_domain aspects -->
     div
       h2#research_aspects {{$t('page.profile.h_research')}}
       div {{$t('page.profile.research_info')}}
       AspectSet(:aspects="no_domain_aspects" :values.sync="no_domain_values" :mode="edit_mode ? 'edit' : 'view'")
+    <!-- domain specific aspects -->
     div(v-if="edit_mode && !$_.isEmpty(domain_specific_aspects)")
       h2#domains {{$t("page.profile.h_domain")}}
       AspectSet(:aspects="domain_specific_aspects" :values.sync="domain_specific_aspects_values" mode="edit")
@@ -75,12 +84,12 @@ import Aspect from "../components/Aspect";
 import {EDIT, NO_DOMAIN, USER, VIEW} from "~/lib/consts";
 
 import {mapGetters} from "vuex"
-import {extract_unpacked_values} from "~/lib/aspect";
+import {extract_unpacked_values, get_aspect_by_name} from "~/lib/aspect";
 import PersistentStorageMixin from "../components/util/PersistentStorageMixin";
 
 import {ENTRIES_GET_OWN_ENTRIES_UUIDS} from "~/store/entries";
 import LoadFileButton from "../components/util/LoadFileButton";
-import {base64file_to_blob, common_filesize, recursive_unpack, route_change_query} from "~/lib/util";
+import {base64file_to_blob, common_filesize, route_change_query} from "~/lib/util";
 import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
 import {USER_SET_USER_DATA} from "~/store/user";
 import EntryListWrapper from "../components/EntryListWrapper"
@@ -91,10 +100,16 @@ import GoToMixin from "~/components/global/GoToMixin"
 import GlobalRoleChip from "~/components/actor/GlobalRoleChip"
 import DomainLanguageMixin from "~/components/domain/DomainLanguageMixin";
 import AspectSet from "~/components/AspectSet"
+import AspectDialog from "~/components/aspect_utils/AspectDialog";
+import AspectSetDialog from "~/components/aspect_utils/AspectSetDialog";
+import Dialog from "~/components/global/Dialog";
 
 export default {
   name: "profile",
   components: {
+    Dialog,
+    AspectSetDialog,
+    AspectDialog,
     AspectSet,
     GlobalRoleChip,
     EntryListWrapper,
@@ -114,8 +129,15 @@ export default {
       profile_aspects: [
         this.asp_public_name(),
         this.asp_actor_description(),
-        this.asp_email()
+        // this.asp_email()
       ],
+      security_aspects: [
+        this.asp_email(),
+        this.asp_password("actual_password", "current"),
+        new_pwd,
+        this.asp_password_confirm(new_pwd, "repeat_new")
+      ],
+
       password_aspects: {
         actual_password: this.asp_password("actual_password", "current"),
         password: new_pwd,
@@ -163,6 +185,8 @@ export default {
       for (let aspect of this.profile_aspects) {
         aspect.value = user_data[aspect.name]
       }
+      console.log(get_aspect_by_name(this.security_aspects,"email"))
+      get_aspect_by_name(this.security_aspects,"email").value = user_data["email"]
 
       const no_domain_data = this.$_.get(user_data.config_share, "domain.no_domain")
       if (no_domain_data) {
@@ -226,13 +250,13 @@ export default {
           .then(() => {
             // request the avatar to refill the browser cache
             this.profile_version_ts = Math.floor(new Date().getTime() / 1000)
-            this.$axios.get(this.$api.url_actor__$registered_name__avatar(this.registered_name), {
+            this.$axios.get(this.$api.actor.url_avatar(this.registered_name), {
               withCredentials: false,
               headers: {
                 "accept": "image/jpeg"
               }
             }).catch(err => {
-              console.log("CORS error probably ok")
+              console.log("CORS error probably ok", err)
             })
           })
           .catch((err) => {

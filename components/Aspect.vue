@@ -24,6 +24,7 @@
         v-on:update_value="update_value($event)"
         @update:error="$emit('update:error', $event)"
         v-on:aspectAction="$emit('aspectAction',$event)")
+      v-icon(syle="") mdi-pencil-outline
       div(v-if="has_action && edit")
         AspectAction(:aspect="aspect" :mvalue="mvalue" :extra="extra")
 </template>

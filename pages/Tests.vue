@@ -3,17 +3,22 @@
     AspectSet(:aspects="aspects" mode="edit" :values.sync="values")
     div {{values}}
     v-btn.appear(fab color="red" :style="{'transform': 'scale(0)'}")
+    Dialog(:dialog_open="true")
+      v-sheet
+        div cool
 </template>
 
 <script>
 
 
 import AspectSet from "~/components/AspectSet"
+import Dialog from "~/components/global/Dialog";
 
 export default {
   name: "Tests",
   mixins: [],
   components: {
+    Dialog,
     AspectSet
   },
   created() {

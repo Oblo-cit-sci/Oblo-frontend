@@ -21,7 +21,8 @@ export default {
   mixins: [],
   props: {
     aspects: {
-      type: Array
+      type: Array,
+      required: true
     },
     mode: {
       type: String,
@@ -37,8 +38,14 @@ export default {
   },
   data() {
     const aspectMap = this.$_.keyBy(this.aspects, "name")
+    let i_values = {}
+    if(this.values) {
+      i_values =  this.$_.mapValues(aspectMap, a => this.values[a.name] || aspect_default_value(a))
+    } else {
+      i_values =  this.$_.mapValues(aspectMap, a => aspect_default_value(a))
+    }
     return {
-      i_values: this.$_.mapValues(aspectMap, a => this.values[a.name] || aspect_default_value(a)),
+      i_values: i_values,
       errors: this.$_.mapValues(aspectMap, a => null),
       initial_values: null,
       has_changes: false
@@ -51,8 +58,10 @@ export default {
   },
   created() {
     // initialize update values, if some are not set
-    if (this.$_.some(this.i_values, a_name => !this.values.hasOwnProperty(a_name))) {
-      this.$emit("update:values", this.i_values)
+    if(this.values) {
+      if (this.$_.some(this.i_values, a_name => !this.values.hasOwnProperty(a_name))) {
+        this.$emit("update:values", this.i_values)
+      }
     }
     if (this.store_init) {
       this.initial_values = this.$_.cloneDeep(this.i_values)

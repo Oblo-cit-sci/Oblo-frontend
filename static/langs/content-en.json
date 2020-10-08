@@ -76,6 +76,8 @@
       "h_research": "Research related information",
       "research_info": "Answering these questions is optional. The information is only used for research purposes of the creator of OpenTEK",
       "h_domain": "Domain specific questions",
+      "h_email_password": "Email address and password",
+      "bt_change_email_pwd": "Change email and password",
       "btn_change_password": "Change password",
       "btn_settings": "Settings",
       "btn_edit_profile": "Edit profile",
