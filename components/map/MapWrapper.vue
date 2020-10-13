@@ -83,7 +83,20 @@ export default {
   data() {
     return {
       set_dl: false,
-      aspectdialog_data: null,
+      aspectdialog_data: {
+        aspect: {
+          name: "Visible layers",
+          type: "multiselect",
+          attr: {
+            unpacked: true,
+            force_view: "list"
+          },
+          items: null, // gets filled with 1. click
+        },
+        fix_width: 400,
+        ext_value: {value: null},
+        dialog_open: false
+      },
       act_cluster: null,
       act_cluster_expansion_zoom: null,
       last_zoom: null,
@@ -131,22 +144,6 @@ export default {
     // todo maybe move to domainMapMixin
     entries() {
       return this.all_map_entries(this.domain_name)
-    },
-    layer_aspectdialog_data() {
-      return {
-        aspect: {
-          name: "Visible layers",
-          type: "multiselect",
-          attr: {
-            unpacked: true,
-            force_view: "list"
-          },
-          items: this.available_layers
-        },
-        fix_width: 400,
-        ext_value: {value: null},
-        dialog_open: true
-      }
     },
     legend_style() {
       if (this.$vuetify.breakpoint.smAndDown) {
@@ -306,7 +303,7 @@ export default {
         this.select_entry_marker(features[0])
       })
 
-            if (!cluster_layer) {
+      if (!cluster_layer) {
         // console.log("adding cluster layer")
         this.add_cluster_layer(source_name, cluster_layer_name, {
           'circle-color': '#f1f075',
@@ -378,7 +375,7 @@ export default {
           this.map.getSource(MAIN_SOURCE_LAYER).getClusterExpansionZoom(cluster.id, (err, zoom) => {
             this.map.easeTo({
               center: cluster.geometry.coordinates,
-              zoom: Math.min(zoom,10)
+              zoom: Math.min(zoom, 10)
             })
           })
 
@@ -608,8 +605,9 @@ export default {
       a.click()
     },
     open_layer_dialog() {
-      // to much computation?
-      this.aspectdialog_data = this.layer_aspectdialog_data
+      if(!this.aspectdialog_data.aspect.items) {
+        this.aspectdialog_data.aspect.items = this.available_layers
+      }
       this.aspectdialog_data.dialog_open = true
     },
     render(map) {
