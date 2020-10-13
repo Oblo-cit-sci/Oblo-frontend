@@ -26,6 +26,15 @@
                 v-chip(v-for="(place_part, index) in precision_options" :key="index"
                   text-color="black"
                   @click="public_location_precision_selected(index)" active-class="selected_prec_chip") {{place_part}}
+              div(v-if="!public_location_selector_on")
+                v-btn(text small v-if="point_location_precision" @click="activate_custom_privacy_setting") change public location
+                span Change your default settings for your public location:
+                v-btn(text small @click="setting_dialog_open=true") settings
+                AspectDialog(
+                  :aspect="location_privacy_setting_aspect"
+                  :ext_value="privacy_setting"
+                  @update:ext_value="change_default_private_setting($event)"
+                  :dialog_open.sync="setting_dialog_open")
     div(v-else)
       span.body-1.readonly-aspect {{place_name_display}}
       v-btn(v-if="show_goto_button" icon @click="set_goto_location")
@@ -69,8 +78,13 @@ import {settings_loc_privacy_ask, settings_loc_privacy_exact, settings_loc_priva
 import EntrySearchMixin from "~/components/EntrySearchMixin"
 import MapEntriesMixin from "~/components/map/MapEntriesMixin"
 import EntryFetchMixin from "~/components/entry/EntryFetchMixin"
-import {unpack} from "~/lib/aspect"
+import {extract_unpacked_values, unpack} from "~/lib/aspect"
 import ResponsivenessMixin from "~/components/ResponsivenessMixin";
+import AspectDialog from "~/components/aspect_utils/AspectDialog"
+import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
+import {USER_SET_SETTINGS} from "~/store/user"
+import {PAGE_PROFILE} from "~/lib/pages"
+import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
 
 // "attr.input" options
 const DEVICE = "device"
@@ -85,9 +99,9 @@ const default_output = [LOCATION, PLACE]
 
 export default {
   name: "LocationAspect",
-  components: {Mapbox},
+  components: {AspectDialog, Mapbox},
   mixins: [AspectComponentMixin, TriggerSnackbarMixin, MapIncludeMixin, GeocodingMixin,
-    MapEntriesMixin, EntrySearchMixin, EntryFetchMixin, ResponsivenessMixin],
+    MapEntriesMixin, EntrySearchMixin, EntryFetchMixin, ResponsivenessMixin, TypicalAspectMixin, PersistentStorageMixin],
   data() {
     return {
       search_query: null,
@@ -102,7 +116,9 @@ export default {
       show_existing: false,
       getting_my_entries_loading: false,
       my_entries_features: null,
-      selected_prec_option: null
+      selected_prec_option: null, // from the chip-menu, index?!
+      custom_privacy_setting: null,
+      setting_dialog_open: false
     }
   },
   computed: {
@@ -129,14 +145,8 @@ export default {
     map_location_input_option() {
       return this.has_input_option(MAP)
     },
-    get_selected_prec_option() {
-      if (this.selected_prec_option === 0) {
-        return PREC_OPTION_EXACT
-      } else if (this.selected_prec_option === 1) {
-        return PREC_OPTION_RANDOM
-      } else {
-        return PREC_OPTION_REGION
-      }
+    public_precision() {
+      return this.value.public_precision
     },
     map_options() {
       // console.log("map options", this.value, this.value.coordinates)
@@ -185,18 +195,22 @@ export default {
     privacy_setting() {
       return this.user_settings.location_privacy
     },
+    point_location_precision() {
+      return this.$_.get(this.value, "location_precision") === LOCATION_PRECISION_POINT
+    },
     public_location_selector_on() {
-      // console.log("public_location_selector_on", this.has_value)
+      // console.log("public_location_selector_on", this.location_set, this.point_location_precision, this.privacy_setting, this.custom_privacy_setting)
       return this.location_set &&
-        this.value.location_precision === LOCATION_PRECISION_POINT &&
-        this.privacy_setting === settings_loc_privacy_ask
+        this.point_location_precision &&
+        (this.privacy_setting === settings_loc_privacy_ask ||
+          this.custom_privacy_setting === settings_loc_privacy_ask)
     },
     public_location_text() {
       if (this.value) {
-        if (this.value.location_precision === LOCATION_PRECISION_POINT) {
-          if (this.get_selected_prec_option === PREC_OPTION_EXACT)
+        if (this.point_location_precision) {
+          if (this.public_precision === PREC_OPTION_EXACT)
             return this.$t("comp.location_asp.public_loc.options.exact")
-          else if (this.get_selected_prec_option === PREC_OPTION_RANDOM) {
+          else if (this.public_precision === PREC_OPTION_RANDOM) {
             return this.$t("comp.location_asp.public_loc.options.rnd")
           } else { // PREC_OPTION_REGION
             return this.$t("comp.location_asp.public_loc.options.region")
@@ -231,6 +245,9 @@ export default {
       if (!this.value)
         return false
       return this.value.public_precision !== PREC_OPTION_EXACT
+    },
+    location_privacy_setting_aspect() {
+      return this.asp_location_privacy()
     }
   },
   watch: {
@@ -299,12 +316,12 @@ export default {
         }]
       // for a draft, set the
       if (this.public_location_selector_on) {
-        if (this.value.location_precision === LOCATION_PRECISION_POINT &&
+        if (this.point_location_precision &&
           this.value.public_loc.location_precision === LOCATION_PRECISION_POINT &&
           this.value.coordinates === this.value.public_loc.coordinates) {
           this.selected_prec_option = 0
         } else {
-          if(this.value.public_loc.location_precision === LOCATION_PRECISION_POINT) {
+          if (this.value.public_loc.location_precision === LOCATION_PRECISION_POINT) {
             this.selected_prec_option = 1
           } else {
             this.selected_prec_option = this.place_parts.indexOf(this.value.public_loc.place_name) + 2
@@ -316,8 +333,149 @@ export default {
   methods: {
     clear() {
       // console.log("clear")
+      this.custom_privacy_setting = null
       this.update_value(null)
     },
+    /* query */
+    search_keypress(keyEvent) {
+      // Enter,  this is the most robust among all platforms (desktop, mobile, chrome, ff)
+      if (keyEvent.keyCode === 13) {
+        this.search_location()
+      }
+    },
+    async search_result_selected(selection) {
+      // console.log("selected_search_result-watch", sel, this.search_results)
+      if (!selection) {
+        this.update_value(null)
+      } else {
+        const feature = this.$_.find(this.search_results, feature => feature.id === selection)
+        console.log("srs", feature, feature.place_type[0])
+        if (this.user_settings.location_privacy === settings_loc_privacy_ask) {
+          // console.log("srs -> always ask", feature, feature.place_type[0])
+          // const result = await this.rev_geocode({
+          //   lon: feature.geometry.coordinates[0],
+          //   lat: feature.geometry.coordinates[1]
+          // })
+          this.complete_value({
+            coordinates: arr2coords(feature.geometry.coordinates),
+            location_precision: feature.place_type[0],
+          }, feature)
+          // console.log(feature.place_type[0])
+        } else {
+          this.complete_value({
+            coordinates: arr2coords(feature.geometry.coordinates),
+            location_precision: feature.place_type[0],
+          }, feature)
+        }
+      }
+    },
+    /* map */
+    map_location_selected(map, mapboxEvent) {
+      // we are gonna call snap_to_feature, so lets get out here
+      if (this.act_hoover_id) {
+        return
+      }
+      if (this.is_view_mode)
+        return
+      let value = {
+        coordinates: mapboxgl_lngLat2coords(mapboxEvent.lngLat),
+        place: {}
+      }
+      this.custom_privacy_setting = null
+      this.search_results = null
+      if (this.has_output_place) {
+        const coords = {lon: mapboxEvent.lngLat.lng, lat: mapboxEvent.lngLat.lat}
+        this.rev_geocode(coords).then(data => {
+            // console.log("q", data)
+            this.querying_location = false
+            if (data.features.length === 0) { // oceans
+              // todo add filler
+            } else {
+              this.complete_value({
+                coordinates: coords,
+                location_precision: LOCATION_PRECISION_POINT,
+              }, data.features)
+            }
+          }
+        ).catch((err) => {
+          console.log(err)
+          console.log("no location found")
+          this.querying_location = false
+        }).finally(() => {
+          // this.update_value(value)
+        })
+      }
+    },
+    update_marker(flyTo = false) {
+      if (this.location_marker) {
+        this.location_marker.remove()
+      }
+      if (this.public_location_marker) {
+        this.public_location_marker.remove()
+      }
+      if (this.show_public_location && this.$_.get(this.value, "public_loc.coordinates")) {
+        this.public_location_marker = new this.mapboxgl.Marker({
+          color: "#FFF59D"
+        })
+        this.public_location_marker.setLngLat(this.value.public_loc.coordinates).addTo(this.map)
+      }
+      const coordinates = this.value.coordinates
+      this.location_marker = new this.mapboxgl.Marker()
+      this.location_marker.setLngLat(coordinates).addTo(this.map)
+      if (flyTo) {
+        this.map.flyTo({
+          center: coordinates,
+          essential: true // this animation is considered essential with respect to prefers-reduced-motion
+        })
+      }
+    },
+    snap_to_feature(features) {
+      const feature = features[0]
+      const entry_uuid = feature.properties.uuid
+      this.guarantee_entry(entry_uuid).then(() => {
+        const location = this.$store.getters["entries/entry_location"](entry_uuid)
+        this.update_value(unpack(location[this.$_.get(feature, "properties.l_id", 0)]))
+      })
+    },
+    /* device geoloacte */
+    geolocate_success(location) {
+      console.log("geolocate_success", location)
+      this.reset()
+      let value = {}
+      if (this.has_output_location) {
+        // todo this should also be called at other situations
+        value.coordinates = {
+          lon: location.coords.longitude,
+          lat: location.coords.latitude,
+        }
+      }
+      if ((this.has_output_place)) {
+        const place_types = this.aspect.attr.place_types || default_place_type
+        this.btn_loading_search_location = true
+        this.rev_geocode(
+          {lon: location.coords.longitude, lat: location.coords.latitude},
+          {place_types}).then((data) => {
+          value.place = {}
+          this.$_.forEach(data.features, feature => {
+            // console.log("FF", feature)
+            value.place[feature.place_type[0]] = feature.text
+          })
+          this.update_value(value)
+        }).catch((err) => {
+          console.log("error: mapbox api error", err)
+        }).finally(() => {
+          setTimeout(() => {
+            this.btn_loading_search_location = false
+          }, 5000)
+        })
+      } else {
+        this.update_value(value)
+      }
+    },
+    geolocate_error() {
+      this.error_snackbar("Could not obtain location")
+    },
+    /* util */
     complete_value(value, features) {
       /*
       value contains just the coordinates
@@ -353,52 +511,17 @@ export default {
       if (this.privacy_setting === settings_loc_privacy_exact) {
         option = PREC_OPTION_EXACT
       }
-      if (value.location_precision !== LOCATION_PRECISION_POINT) {
-        option = value.place[value.location_precision].name
-      } else {
-        if (this.privacy_setting === settings_loc_privacy_ask) {
-          this.selected_prec_option = 1
-        }
+      // if (!this.point_location_precision) {
+      //   // console.log("CC", value.place, value.location_precision, features[0].text)
+      //   option = features[0].text// value.place[value.location_precision].name
+      // } else {
+      if (this.privacy_setting === settings_loc_privacy_ask) {
+        this.selected_prec_option = 1
       }
+      // }
+      console.log("call get_public_location_from_option", option)
       const public_loc_vars = this.get_public_location_from_option(value, option)
       this.update_value(Object.assign(value, public_loc_vars))
-    },
-    geolocate_error() {
-      this.error_snackbar("Could not obtain location")
-    },
-    geolocate_success(location) {
-      console.log("geolocate_success", location)
-      this.reset()
-      let value = {}
-      if (this.has_output_location) {
-        // todo this should also be called at other situations
-        value.coordinates = {
-          lon: location.coords.longitude,
-          lat: location.coords.latitude,
-        }
-      }
-      if ((this.has_output_place)) {
-        const place_types = this.aspect.attr.place_types || default_place_type
-        this.btn_loading_search_location = true
-        this.rev_geocode(
-          {lon: location.coords.longitude, lat: location.coords.latitude},
-          {place_types}).then((data) => {
-          value.place = {}
-          this.$_.forEach(data.features, feature => {
-            // console.log("FF", feature)
-            value.place[feature.place_type[0]] = feature.text
-          })
-          this.update_value(value)
-        }).catch((err) => {
-          console.log("error: mapbox api error", err)
-        }).finally(() => {
-          setTimeout(() => {
-            this.btn_loading_search_location = false
-          }, 5000)
-        })
-      } else {
-        this.update_value(value)
-      }
     },
     has_input_option(type) {
       return (this.aspect.attr.input || []).includes(type)
@@ -406,40 +529,39 @@ export default {
     has_output(type) {
       return (this.aspect.attr.output || default_output).includes(type)
     },
-    map_location_selected(map, mapboxEvent) {
-      // we are gonna call snap_to_feature, so lets get out here
-      if (this.act_hoover_id) {
-        return
+    reset() {
+      // console.log("reset")
+      this.selected_search_result = undefined
+      this.search_query = ""
+      if (this.location_marker) {
+        this.location_marker.remove()
       }
-      if (this.is_view_mode)
-        return
-      let value = {
-        coordinates: mapboxgl_lngLat2coords(mapboxEvent.lngLat),
-        place: {}
+      if (this.public_location_marker) {
+        this.public_location_marker.remove()
       }
-      this.search_results = null
-      if (this.has_output_place) {
-        const coords = {lon: mapboxEvent.lngLat.lng, lat: mapboxEvent.lngLat.lat}
-        this.rev_geocode(coords).then(data => {
-            // console.log("q", data)
-            this.querying_location = false
-            if (data.features.length === 0) { // oceans
-              // todo add filler
-            } else {
-              this.complete_value({
-                coordinates: coords,
-                location_precision: LOCATION_PRECISION_POINT,
-              }, data.features)
-            }
-          }
-        ).catch((err) => {
-          console.log(err)
-          console.log("no location found")
-          this.querying_location = false
-        }).finally(() => {
-          // this.update_value(value)
-        })
-      }
+    },
+    change_default_private_setting(setting_value) {
+      // console.log(setting_value)
+      // this.update_button_loading = true
+      const existing_settings = Object.assign({}, this.user_settings)
+      this.$api.actor.post_me({settings: Object.assign(existing_settings, {[this.location_privacy_setting_aspect.name]: setting_value})}).then(({data}) => {
+        // console.log(data.settings)
+        this.ok_snackbar(this.$t("page.settings.settings_updated"))
+        this.$store.commit(USER_SET_SETTINGS, data.settings)
+        this.persist_user_settings()
+
+        if (this.public_precision === PREC_OPTION_EXACT && this.location_privacy_setting === settings_loc_privacy_random ||
+          this.public_precision === PREC_OPTION_RANDOM && this.location_privacy_setting === settings_loc_privacy_exact) {
+          console.log("fixxx")
+          const option = this.location_privacy_setting === settings_loc_privacy_random ? PREC_OPTION_RANDOM : PREC_OPTION_EXACT
+          const public_loc_vars = this.get_public_location_from_option(this.value, option)
+          this.update_value(Object.assign({}, this.value, public_loc_vars))
+        }
+      }).catch(err => {
+        console.log(err)
+      }).finally(() => {
+        //this.update_button_loading = false
+      })
     },
     public_location_precision_selected(selection_index) {
       // exact or random (dont rely on words, cuz LANGUAGE)
@@ -453,22 +575,15 @@ export default {
       }
       this.update_value(Object.assign({}, this.value, public_loc_vars))
     },
-    reset() {
-      // console.log("reset")
-      this.selected_search_result = undefined
-      this.search_query = ""
-      if (this.location_marker) {
-        this.location_marker.remove()
+    activate_custom_privacy_setting() {
+      if (this.public_precision === PREC_OPTION_EXACT) {
+        this.selected_prec_option = 0
+      } else if (this.public_precision === PREC_OPTION_RANDOM) {
+        this.selected_prec_option = 1
+      } else {
+        console.log("activate_custom_privacy_setting problem, public precision should either be 'exact' or 'random' but it is ", this.public_precision)
       }
-      if (this.public_location_marker) {
-        this.public_location_marker.remove()
-      }
-    },
-    search_keypress(keyEvent) {
-      // Enter,  this is the most robust among all platforms (desktop, mobile, chrome, ff)
-      if (keyEvent.keyCode === 13) {
-        this.search_location()
-      }
+      this.custom_privacy_setting = settings_loc_privacy_ask
     },
     search_location() {
       this.btn_loading_search_location = true
@@ -530,14 +645,6 @@ export default {
       }
       return {public_precision, public_loc}
     },
-    snap_to_feature(features) {
-      const feature = features[0]
-      const entry_uuid = feature.properties.uuid
-      this.guarantee_entry(entry_uuid).then(() => {
-        const location = this.$store.getters["entries/entry_location"](entry_uuid)
-        this.update_value(unpack(location[this.$_.get(feature, "properties.l_id", 0)]))
-      })
-    },
     async guarantee_my_entries_features_loaded() {
       if (!this.my_entries_features) {
         this.getting_my_entries_loading = true
@@ -590,29 +697,6 @@ export default {
         this.map.setLayoutProperty("entries_layer", "visibility", "none")
       }
     },
-    update_marker(flyTo = false) {
-      if (this.location_marker) {
-        this.location_marker.remove()
-      }
-      if (this.public_location_marker) {
-        this.public_location_marker.remove()
-      }
-      if (this.show_public_location && this.$_.get(this.value, "public_loc.coordinates")) {
-        this.public_location_marker = new this.mapboxgl.Marker({
-          color: "#FFF59D"
-        })
-        this.public_location_marker.setLngLat(this.value.public_loc.coordinates).addTo(this.map)
-      }
-      const coordinates = this.value.coordinates
-      this.location_marker = new this.mapboxgl.Marker()
-      this.location_marker.setLngLat(coordinates).addTo(this.map)
-      if (flyTo) {
-        this.map.flyTo({
-          center: coordinates,
-          essential: true // this animation is considered essential with respect to prefers-reduced-motion
-        })
-      }
-    },
     get_place_parts(place) {
       /**
        * pass a place, or take the one from value
@@ -624,6 +708,36 @@ export default {
         }
       }
       return options
+    }
+  },
+  watch: {
+    map_loaded() {
+      if (this.value && this.value.coordinates) {
+        this.update_marker()
+      }
+    },
+    // public_location_precision(selection) {
+    //   const option = this.precision_options[selection]
+    //   console.log(selection, option)
+    //   this.set_public_location_from_option(option)
+    // }
+    async selected_search_result(sel) {
+      this.search_result_selected(sel)
+    },
+    value(value) {
+      // console.log("location aspect value watch", value)
+      if (!value) {
+        this.reset()
+        return
+      }
+      if (this.map_loaded) {
+        this.update_marker(true)
+      }
+      // this when the value comes down as cache /or in whatever way
+      // console.log("value.pn", value.place_name)
+      if (value.place_name) {
+        this.search_query = value.place_name
+      }
     }
   }
 }

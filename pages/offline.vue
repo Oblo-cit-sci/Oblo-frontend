@@ -1,19 +1,24 @@
 <template lang="pug">
   v-container(fluid)
     div You are offline {{is_online}}
+    Aspect(:aspect="asp" :ext_value="'cool'" mode="flex")
 </template>
 
 <script>
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
 import HomePathMixin from "~/components/menu/HomePathMixin"
+import Aspect from "~/components/Aspect"
+import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
 
 export default {
   name: "offline",
-  mixins: [TriggerSnackbarMixin, HomePathMixin],
-  components: {},
+  mixins: [TriggerSnackbarMixin, HomePathMixin, TypicalAspectMixin],
+  components: {Aspect},
   props: {},
   data() {
-    return {}
+    return {
+      asp: this.asp_public_name()
+    }
   },
   computed: {
     is_online() {

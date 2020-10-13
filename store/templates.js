@@ -37,6 +37,7 @@ export const getters = {
     }
   },
   entry_type(state) { // TEMPLATES_TYPE
+    // todo should have a 2nd parameter for language
     return (type_slug) => {
       // console.log("getting entry_type for slug", type_slug, state.entry_types)
       if (!state.entry_types.has(type_slug)) {

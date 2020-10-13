@@ -1,4 +1,4 @@
-import {settings_loc_privacy_random} from "~/lib/settings"
+import {settings_loc_privacy_ask, settings_loc_privacy_exact, settings_loc_privacy_random} from "~/lib/settings"
 import {STR} from "~/lib/consts"
 
 let username_regex = new RegExp('^[a-z][a-z0-9_]*$');
@@ -206,8 +206,8 @@ export default {
     asp_location_privacy() {
       return {
         name: "location_privacy",
-        t_label: "settings.asp.location_privacy.label",
-        t_description: "settings.asp.location_privacy.descr",
+        t_label: "page.settings.asp.location_privacy.label",
+        t_description: "page.settings.asp.location_privacy.description",
         type: "select",
         attr: {
           unpacked: true
@@ -215,11 +215,13 @@ export default {
         items: [
           {
             value: settings_loc_privacy_exact,
-            text: this.$t("settings.asp.location_privacy.options.exact")
-          }, {
+            text: this.$t("page.settings.asp.location_privacy.options.exact_location")
+          },
+          {
             value: settings_loc_privacy_random,
-            text: this.$t("settings.asp.location_privacy.options.random")
-          }
+            text: this.$t("page.settings.asp.location_privacy.options.randomly_moved")
+          },
+          {value: settings_loc_privacy_ask, text: this.$t("page.settings.asp.location_privacy.options.always_ask")}
           // settings_loc_privacy_ask
         ],
         value: null,

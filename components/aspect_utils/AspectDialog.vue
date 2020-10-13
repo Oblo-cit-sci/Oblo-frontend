@@ -1,7 +1,8 @@
 <template lang="pug">
   v-dialog(v-model="dialog_open"
     :width="width"
-    persistent)
+    @click:outside="click_outside"
+    :persistent="done_button")
     div.pl-2.pt-3(v-if="dialog_open && aspect" style="background:white")
       div.scroll
         Aspect(v-if="show_aspect"
@@ -20,17 +21,13 @@
 import LayoutMixin from "~/components/global/LayoutMixin"
 import {DATE, EDIT, LOCATION, SELECT} from "~/lib/consts"
 import Aspect from "~/components/Aspect"
+import DialogMixin from "~/components/global/DialogMixin"
 
 export default {
   name: "AspectDialog",
-  mixins: [LayoutMixin],
+  mixins: [LayoutMixin, DialogMixin],
   components: {Aspect},
   props: {
-    dialog_open: {
-      type: Boolean,
-      required: true
-    },
-    fix_width: Number,
     show_aspect: {
       type: Boolean,
       default: true
@@ -71,20 +68,29 @@ export default {
     this.int_value = this.ext_value
   },
   methods: {
+    click_outside() {
+      if (!this.done_button) {
+        this.close()
+      }
+    },
     update_value(value) {
       if (!this.done_button) {
         this.$emit("update:ext_value", value)
+        this.close()
       } else {
         this.int_value = value
       }
     },
     cancel() {
+      this.close()
+    },
+    close() {
       this.$emit('update:dialog_open', false)
     },
     done() {
-      console.log("ASpDia-done", this.int_value)
+      // console.log("ASpDia-done", this.int_value)
       this.$emit("update:ext_value", this.int_value)
-      this.$emit('update:dialog_open', false)
+      this.close()
     }
   }
 }

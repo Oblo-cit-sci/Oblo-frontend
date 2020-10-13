@@ -26,9 +26,9 @@
           :ext_value.sync="aspect.value"
           @update:error="$set(aspect, 'error', $event)"
           :mode="aspect_mode")
-    Dialog(:dialog_open="true")
-      v-sheet
-        Aspect(:aspect="this.asp_email()" mode="view" ext_value="cool@no.de")
+        <!--    Dialog(:dialog_open.sync="")-->
+        <!--      v-sheet-->
+        <!--        Aspect(:aspect="this.asp_email()" mode="view" ext_value="cool@no.de")-->
     <!-- Password edit -->
     div(v-if="edit_mode")
       h3 {{$t('page.profile.h_email_password')}}

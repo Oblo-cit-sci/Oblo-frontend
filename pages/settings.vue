@@ -67,22 +67,7 @@
     },
     data() {
       const settings_aspects = [
-        {
-          name: "location_privacy",
-          t_label: "page.settings.asp.location_privacy.label",
-          t_description: "page.settings.asp.location_privacy.description",
-          type: "select",
-          attr: {
-            unpacked: true
-          },
-          items: [
-            {value: settings_loc_privacy_exact, text: this.$t("page.settings.asp.location_privacy.options.exact_location")},
-            {value: settings_loc_privacy_random, text: this.$t("page.settings.asp.location_privacy.options.randomly_moved")},
-            {value: settings_loc_privacy_ask, text: this.$t("page.settings.asp.location_privacy.options.always_ask")}
-            // settings_loc_privacy_ask
-          ],
-          value: null,
-        },
+        this.asp_location_privacy(),
         this.asp_privacy("default_privacy", "default"),
         this.asp_license("default_license", ["cc_licenses"], null, "default"),
       ]

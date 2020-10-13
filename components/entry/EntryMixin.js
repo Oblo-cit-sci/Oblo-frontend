@@ -29,10 +29,11 @@ import {check_str_is_uuid, printDate} from "~/lib/util";
 import {TEMPLATES_TYPE} from "~/store/templates";
 import EntryPagesMixin from "~/components/entry/EntryPagesMixin"
 import AspectListMixin from "~/components/global/AspectListMixin"
+import ExportMixin from "~/components/global/ExportMixin"
 
 export default {
   name: "EntryMixin",
-  mixins: [EntryPagesMixin, AspectListMixin],
+  mixins: [EntryPagesMixin, AspectListMixin, ExportMixin],
   props:
     {
       entry: {
@@ -150,7 +151,7 @@ export default {
     download_title() {
       // todo title, wont update in real time
       const entry_title = this.$store.getters[ENTRIES_GET_ENTRY_TITLE](this.uuid)
-      return (this.type_name + "_" + entry_title).replace(" ", "_") + ".json"
+      return (this.type_name + "_" + entry_title).replace(" ", "_")
     },
     is_draft() {
       return this.entry.status === DRAFT
@@ -202,14 +203,15 @@ export default {
   // },
   methods: {
     download() {
-      let entries = this.$store.getters[ENTRIES_GET_RECURSIVE_ENTRIES](this.uuid)
-      entries = this.$_.map(entries, e => {
-        const clone = this.$_.cloneDeep(e)
-        delete clone.local
-        return clone
-      })
-      export_data({entries: entries}, this.download_title)
-      this.$store.commit(ENTRIES_SET_DOWNLOADED, this.uuid)
+      //let entries = this.$store.getters[ENTRIES_GET_RECURSIVE_ENTRIES](this.uuid)
+      // entries = this.$_.map(entries, e => {
+      //   const clone = this.$_.cloneDeep(e)
+      //   delete clone.local
+      //   return clone
+      // })
+      //export_data(this.entry, this.download_title)
+      this.export_data(this.entry, this.download_title, "csv")
+      // this.$store.commit(ENTRIES_SET_DOWNLOADED, this.uuid)
     },
     // update_aspect_locs() {
     //   // console.log("update_aspect_locs", this.entry !== null)

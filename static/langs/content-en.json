@@ -285,7 +285,7 @@
         "options": {
           "rnd": "The exact location is not visible, but a randomly moved location (yellow marker).",
           "exact": "The exact location will be visible.",
-          "region": "The location's administrative unit (region) will be visible."
+          "region": "The location's administrative unit (region) will be visible (yellow marker)."
         }
       },
       "show entries": "Show my entries"

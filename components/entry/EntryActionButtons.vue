@@ -53,6 +53,7 @@ import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
 import {APP_CONNECTED} from "~/store/app"
 import {USER_LOGGED_IN} from "~/store/user"
 import EntryActionsMixin from "~/components/entry/EntryActionsMixin"
+import ExportMixin from "~/components/global/ExportMixin"
 
 export default {
   name: "EntryActionButtons",
@@ -93,7 +94,7 @@ export default {
       return !this.connected
     },
     can_download() {
-      return this.template.rules.download
+      return true//this.template.rules.download
     },
     save_text() {
       if (this.in_context) {
