@@ -157,7 +157,9 @@ export default {
         }
         this.initialize().then(() => {
           console.log("connected")
-          this.$store.commit("set_domain", this.$store.getters["domain_by_name"](NO_DOMAIN))
+
+          const set_domain = this.$store.getters["user/settings"].fixed_domain || NO_DOMAIN
+          this.$store.commit("set_domain", this.$store.getters["domain_by_name"](set_domain))
           this.$store.dispatch(APP_CONNECTED)
           // console.log(this.has_multiple_domains, this.get_one_domain_name)
           if (!this.has_multiple_domains) {

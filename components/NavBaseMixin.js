@@ -1,7 +1,7 @@
-import {QP_D, QP_F, VIEW} from "~/lib/consts";
+import {NO_DOMAIN, QP_D, QP_F, VIEW} from "~/lib/consts";
 import {INIT_PAGE_PATH, LAST_BASE_PAGE_PATH, POP_LAST_PAGE_PATH} from "~/store"
 import FixDomainMixin from "~/components/global/FixDomainMixin"
-import {PAGE_DOMAIN} from "~/lib/pages"
+import {PAGE_DOMAIN, PAGE_INDEX} from "~/lib/pages"
 
 export default {
   name: "NavBaseMixin",
@@ -29,10 +29,13 @@ export default {
     },
     to_set_domain() {
       let domain = this.$store.getters.domain
-      // todo should also be "name" not "path"
-      this.$router.push({
-        name: PAGE_DOMAIN, query: {[this.domain_param_key]: domain.name}
-      })
+      if (domain.name === NO_DOMAIN) {
+        this.$router.push({name: PAGE_INDEX})
+      } else {
+        this.$router.push({
+          name: PAGE_DOMAIN, query: {[this.domain_param_key]: domain.name}
+        })
+      }
     },
     to_domain(domain_name, fixed = false) {
       this.$router.push({
