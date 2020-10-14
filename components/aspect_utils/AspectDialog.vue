@@ -13,8 +13,8 @@
           @update:ext_value="update_value($event)"
           @update:error="error = $event")
       div
-        v-btn(v-if="done_button" @click="cancel()") Cancel
-        v-btn(v-if="done_button" :disabled="error" @click="done()" color="success") Done
+        v-btn(v-if="done_button" @click="cancel()") {{$t("w.cancel")}}
+        v-btn(v-if="done_button" :disabled="error" @click="done()" color="success") {{$t("w.done")}}
 </template>
 
 <script>
@@ -83,9 +83,6 @@ export default {
     },
     cancel() {
       this.close()
-    },
-    close() {
-      this.$emit('update:dialog_open', false)
     },
     done() {
       // console.log("ASpDia-done", this.int_value)

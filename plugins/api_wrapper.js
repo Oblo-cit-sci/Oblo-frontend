@@ -218,6 +218,10 @@ class Actor extends QueryBase {
     return this.post("me", profile_data)
   }
 
+  change_email(data) {
+    return this.post("change_email", data)
+  }
+
   change_password(passwords) {
     return this.post("change_password", passwords)
   }

@@ -104,12 +104,8 @@ export default {
         value: ""
       }
     },
-    asp_password(name = undefined, alt_label = undefined) {
-      return {
-        type: "str",
-        name: name ? name : "password",
-        t_label: this.t_label("asp.password.", alt_label),
-        attr: {
+    asp_password(name = undefined, alt_label = undefined, attributes = {}) {
+      const attr = Object.assign({
           max: 40,
           unpacked: true,
           component_type: "password",
@@ -118,7 +114,12 @@ export default {
               v => v && (v.length >= 8) || this.$t("asp.password.rule_length")
             ]
           }
-        },
+        }, attributes)
+      return {
+        type: "str",
+        name: name ? name : "password",
+        t_label: this.t_label("asp.password.", alt_label),
+        attr,
         value: "",
         error: true
       }

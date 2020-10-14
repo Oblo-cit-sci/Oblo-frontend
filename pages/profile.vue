@@ -29,24 +29,53 @@
         <!--    Dialog(:dialog_open.sync="")-->
         <!--      v-sheet-->
         <!--        Aspect(:aspect="this.asp_email()" mode="view" ext_value="cool@no.de")-->
-    <!-- Password edit -->
+    <!-- Email and Password edit -->
     div(v-if="edit_mode")
       h3 {{$t('page.profile.h_email_password')}}
-      v-btn(color="warning" v-if="!password_edit" @click="password_edit=true") {{$t('page.profile.bt_change_email_pwd')}}
-      AspectSetDialog(:dialog_open="false" :aspects="security_aspects" mode="view")
-      h3 {{$t('asp.password.label')}}
-      v-btn(color="warning" v-if="!password_edit" @click="password_edit=true") {{$t('page.profile.btn_change_password')}}
-      div(v-if="password_edit")
-        v-row(v-for="a of password_aspects" :key="a.name")
-          v-col(cols=10)
-            Aspect(
-              :aspect="a"
-              :ext_value.sync="a.value"
-              @update:error="a.error = $event"
-              :extra="{clearable:false}"
-              mode="edit")
-        v-btn(v-if="password_edit" @click="password_edit=false") {{$t('w.cancel')}}
-        v-btn(v-if="password_edit" color="success" @click="change_password" :disabled="any_password_invalid") {{$t('page.profile.btn_save_password')}}
+      v-btn(color="info" v-if="!password_edit" @click="security_dialog_open=true") {{$t('page.profile.bt_change_email_pwd')}}
+      Dialog(:dialog_open.sync="security_dialog_open" persistent)
+        v-sheet.pa-1(color="white")
+          v-toolbar(flat v-if="!email_edit && !password_edit")
+            v-btn(icon @click="security_dialog_open=false")
+              v-icon mdi-arrow-left
+            v-toolbar-title
+              span.font-weight-bold {{$t('page.profile.h_email_password')}}
+          div.pt-1(v-if="!password_edit")
+            v-toolbar(flat)
+              v-btn(icon v-if="email_edit" @click="email_edit=false")
+                v-icon mdi-arrow-left
+              v-toolbar-title
+                span.font-weight-bold {{$t('asp.email.label')}}
+                div(v-if="!email_edit") {{email_aspects.email.value}}
+              v-btn(icon v-if="!email_edit" color='green' size="32" @click="email_edit=true")
+                v-icon  mdi-pencil-outline
+          div(v-if="email_edit")
+            v-row.pl-2(v-for="a of email_aspects" :key="a.name")
+              v-col.pa-0(cols=10)
+                Aspect(
+                  :aspect="a"
+                  :ext_value.sync="a.value"
+                  mode="edit"
+                  @update:error="a.error = $event")
+            v-btn(v-if="email_edit" @click="change_email()" color="success" :disabled="any_email_aspect_invalid" :loading="email_update_loading") {{$t('w.save')}}
+          div(v-if="!email_edit")
+            v-toolbar(flat)
+              v-btn(icon v-if="password_edit" @click="password_edit=false")
+                v-icon mdi-arrow-left
+              v-toolbar-title
+                span.font-weight-bold {{$t('asp.password.label')}}
+              v-btn(icon v-if="!password_edit" color='green' size="32" @click="password_edit=true")
+                v-icon  mdi-pencil-outline
+            div(v-if="password_edit")
+              v-row(v-for="a of password_aspects" :key="a.name")
+                v-col(cols=10)
+                  Aspect(
+                    :aspect="a"
+                    :ext_value.sync="a.value"
+                    @update:error="a.error = $event"
+                    :extra="{clearable:false}"
+                    mode="edit")
+              v-btn(v-if="password_edit" color="success" @click="change_password" :disabled="any_password_invalid") {{$t('page.profile.btn_save')}}
       v-divider.wide_divider
     <!-- Other aspects -->
     <!-- Research aspects, no_domain aspects -->
@@ -84,7 +113,7 @@ import Aspect from "../components/Aspect";
 import {EDIT, NO_DOMAIN, USER, VIEW} from "~/lib/consts";
 
 import {mapGetters} from "vuex"
-import {extract_unpacked_values, get_aspect_by_name} from "~/lib/aspect";
+import {extract_unpacked_values} from "~/lib/aspect";
 import PersistentStorageMixin from "../components/util/PersistentStorageMixin";
 
 import {ENTRIES_GET_OWN_ENTRIES_UUIDS} from "~/store/entries";
@@ -124,6 +153,8 @@ export default {
       profile_version_ts: Math.floor(new Date().getTime() / 1000),
       grab_map_selection: false, // when coming back from the map
 
+      security_dialog_open: false,
+      email_edit: false,
       password_edit: false,
       selected_tab: 0,
       profile_aspects: [
@@ -131,12 +162,12 @@ export default {
         this.asp_actor_description(),
         // this.asp_email()
       ],
-      security_aspects: [
-        this.asp_email(),
-        this.asp_password("actual_password", "current"),
-        new_pwd,
-        this.asp_password_confirm(new_pwd, "repeat_new")
-      ],
+
+      email_aspects: {
+        email: this.asp_email(),
+        password: this.asp_password()
+      },
+      email_update_loading: false,
 
       password_aspects: {
         actual_password: this.asp_password("actual_password", "current"),
@@ -185,8 +216,8 @@ export default {
       for (let aspect of this.profile_aspects) {
         aspect.value = user_data[aspect.name]
       }
-      console.log(get_aspect_by_name(this.security_aspects,"email"))
-      get_aspect_by_name(this.security_aspects,"email").value = user_data["email"]
+
+      this.email_aspects.email.value = this.user_data.email
 
       const no_domain_data = this.$_.get(user_data.config_share, "domain.no_domain")
       if (no_domain_data) {
@@ -230,12 +261,30 @@ export default {
         this.err_error_snackbar(err)
       })
     },
+    change_email() {
+      const new_email = extract_unpacked_values(this.email_aspects)
+      this.email_update_loading = true
+      this.$api.actor.change_email(new_email).then(({data}) => {
+        this.email_edit = false;
+        this.ok_snackbar(data.data)
+        this.email_aspects.email.value = new_email.email
+        // todo update user_data
+        const user_data = this.$_.cloneDeep(this.user_data)
+        user_data.email = new_email.email
+        this.$store.commit(USER_SET_USER_DATA, user_data)
+        this.persist_user_data()
+        this.email_aspects.password.value = ""
+      },err => {
+        this.err_error_snackbar(err)
+      }).finally(() => {
+        this.email_update_loading = false
+      })
+    },
     change_password() {
       const new_password = extract_unpacked_values(this.password_aspects)
       this.$api.actor.change_password(new_password).then(({data}) => {
         this.password_edit = false;
-        this.ok_snackbar("Password updated")
-        this.goto_top()
+        this.ok_snackbar(this.$t("page.profile.msgs.password_changed"))
       }).catch((err) => {
         this.err_error_snackbar(err)
       })
@@ -265,7 +314,9 @@ export default {
           this.profile_pic_upload_loading = false
         })
       }
-    }
+    },
+    // email && password
+
   },
   computed: {
     ...mapGetters({
@@ -298,6 +349,9 @@ export default {
     },
     any_password_invalid() {
       return this.$_.some(this.password_aspects, (a) => a.hasOwnProperty("error") && a.error)
+    },
+    any_email_aspect_invalid() {
+      return this.$_.some(this.email_aspects, (a) => a.hasOwnProperty("error") && a.error)
     },
     profile_pic_max_size() {
       return common_filesize(5, "MB")

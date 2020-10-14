@@ -1,10 +1,16 @@
 <template lang="pug">
   v-dialog(v-model="dialog_open"
     :width="width"
+
+    @click:outside="click_outside"
     persistent)
-    div.pl-2.pt-3(v-if="dialog_open && aspects" style="background:white")
-      div.scroll
-        AspectSet(:aspects="aspects" :mode="mode")
+    v-sheet(color="white")
+      div.pl-2.pt-3(v-if="dialog_open && aspects" style="background:white")
+        div.scroll
+          AspectSet(:aspects="aspects" :mode="mode")
+      div
+        v-btn(@click="cancel()") Cancel
+        v-btn(:disabled="error" @click="done()" color="success") Done
 </template>
 
 <script>
@@ -28,14 +34,21 @@ export default {
     ext_value: {
       type: [Object, String, Number, Array, Boolean]
     },
+  },
+  methods: {
+    // click_outside() {
+    //   if (!this.done_button) {
+    //     this.close()
+    //   }
+    // },
   }
 }
 </script>
 
 <style scoped>
-  .scroll {
-    overflow-y: auto;
-    overflow-x: hidden;
-    max-height: 800px
-  }
+.scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 800px
+}
 </style>

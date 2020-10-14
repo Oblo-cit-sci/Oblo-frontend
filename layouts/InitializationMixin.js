@@ -1,4 +1,3 @@
-import {reload_storage} from "~/lib/client"
 import {mapGetters} from "vuex"
 import {APP_CONNECTED, APP_CONNECTING, APP_DB_LOADED, APP_INITIALIZED} from "~/store/app"
 import {dev_env} from "~/lib/util"
@@ -20,7 +19,7 @@ export default {
     if (!this.db_loaded)
       this.reload_storage()
     if (!this.$api.is_initialized()) {
-      this.$api.init(this.$axios) // , "https://opentek.eu"
+      this.$api.init(this.$axios)
       if (!dev_env()) {
         this.privacy_sheet_open = true
       }
@@ -76,7 +75,7 @@ export default {
           this.error_snackbar(this.$t("mixin.init.logged_out"))
         }
       } else {
-        this.$store.dispatch("user/logout")
+        await this.$store.dispatch("user/logout")
         this.$localForage.removeItem("auth_token")
       }
       // todo maybe the language should come not from the settings, since setting the language triggers
@@ -85,7 +84,7 @@ export default {
       const domains_data = data.data.domains
       const language = data.data.language
       this.$store.commit("set_domains", {domains_data, language})
-      this.$store.dispatch(SET_TEMPLATES_CODES, data.data.templates_and_codes)
+      await this.$store.dispatch(SET_TEMPLATES_CODES, data.data.templates_and_codes)
 
       // console.log(data.data)
       this.$store.commit("set_available_languages", data.data.languages)

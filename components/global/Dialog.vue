@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-dialog(v-model="dialog_open" :width="width")
+  v-dialog(v-model="dialog_open" :width="width" :persistent="persistent")
     slot
       v-sheet
         div loading
@@ -11,13 +11,19 @@ import DialogMixin from "~/components/global/DialogMixin";
 export default {
   name: "Dialog",
   mixins: [DialogMixin],
+  props: {
+    persistent: Boolean
+  },
   data() {
-    return {
-      m: true
-    }
+    return {}
   },
   created() {
     console.log("dialog create")
+  },
+  methods: {
+    close() {
+      this.$emit('update:dialog_open', false)
+    },
   }
 }
 </script>

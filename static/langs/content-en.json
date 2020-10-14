@@ -83,9 +83,12 @@
       "btn_edit_profile": "Edit profile",
       "btn_cancel": "@:w.cancel",
       "btn_save": "@:w.save",
-      "btn_save_password": "Save password",
       "btn_delete": "Delete account",
-      "h_entries": "Your @:w.entries"
+      "h_entries": "Your @:w.entries",
+      "msgs": {
+        "email_changed": "Email updated",
+        "password_changed": "Password updated"
+      }
     },
     "actor": {
       "h1": "@:page.profile.h1",
@@ -399,6 +402,7 @@
     "back": "back",
     "view": "view",
     "edit": "edit",
+    "done": "done",
     "save": "save",
     "cancel": "cancel",
     "entrytype": "Entry type",

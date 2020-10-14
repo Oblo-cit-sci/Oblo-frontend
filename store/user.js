@@ -69,7 +69,6 @@ export const mutations = {
     state.logged_in = false
   },
   set_user_data(state, user_data) {
-    // delete user_data.settings
     state.user_data = user_data;
   },
   login(state) {

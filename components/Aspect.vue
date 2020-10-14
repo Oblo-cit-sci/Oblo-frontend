@@ -3,7 +3,7 @@
     :class="[{composite: (aspect.type === 'composite' && mode === 'edit'),  disabled: disable, invisible_class: invisible_class}]"
     :id="aspect_id" v-if="visible && has_value")
     Title_Description(
-      :style={'display': 'inline-block'}
+      :style="{'display': 'inline-block'}"
       v-if="show_title_description"
       :aspect="aspect"
       :no_title="extra.no_title"
@@ -138,6 +138,11 @@ export default {
   methods: {
     flip_flex_mode() {
       this.flex_mode = this.flex_mode === VIEW ? EDIT : VIEW
+      this.$emit("flex_mode_change", this.flex_mode)
+    },
+    // to be called from parent (with ref)
+    set_flex_mode(mode) {
+      this.flex_mode = mode
     },
     note() {
       let note_text = ""
