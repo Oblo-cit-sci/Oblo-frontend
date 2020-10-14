@@ -58,7 +58,7 @@
 
 import Mapbox from 'mapbox-gl-vue'
 import {
-  array2coords, coords2array,
+  array2coords,
   create_location_error,
   LOCATION_PRECISION_POINT,
   place2str,
@@ -66,7 +66,7 @@ import {
   PREC_OPTION_RANDOM,
   PREC_OPTION_REGION,
 } from "~/lib/location";
-import {default_place_type, EDIT} from "~/lib/consts";
+import {default_place_type} from "~/lib/consts";
 import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
 import AspectComponentMixin from "./AspectComponentMixin";
 import MapIncludeMixin from "~/components/map/MapIncludeMixin"
@@ -78,12 +78,11 @@ import {settings_loc_privacy_ask, settings_loc_privacy_exact, settings_loc_priva
 import EntrySearchMixin from "~/components/EntrySearchMixin"
 import MapEntriesMixin from "~/components/map/MapEntriesMixin"
 import EntryFetchMixin from "~/components/entry/EntryFetchMixin"
-import {extract_unpacked_values, unpack} from "~/lib/aspect"
+import {unpack} from "~/lib/aspect"
 import ResponsivenessMixin from "~/components/ResponsivenessMixin";
 import AspectDialog from "~/components/aspect_utils/AspectDialog"
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
 import {USER_SET_SETTINGS} from "~/store/user"
-import {PAGE_PROFILE} from "~/lib/pages"
 import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
 
 // "attr.input" options
@@ -326,20 +325,15 @@ export default {
       }
       if (this.is_view_mode)
         return
-      let value = {
-        coordinates: mapboxgl_lngLat2coords(mapboxEvent.lngLat),
-        place: {}
-      }
       this.custom_privacy_setting = null
       this.search_results = null
       if (this.has_output_place) {
         const coords = {lon: mapboxEvent.lngLat.lng, lat: mapboxEvent.lngLat.lat}
         this.rev_geocode(coords).then(data => {
-            // console.log("q", data)
-            this.querying_location = false
             if (data.features.length === 0) { // oceans
               // todo add filler
             } else {
+              console.log(coords, data.features)
               this.complete_value({
                 coordinates: coords,
                 location_precision: LOCATION_PRECISION_POINT,
@@ -349,7 +343,6 @@ export default {
         ).catch((err) => {
           console.log(err)
           console.log("no location found")
-          this.querying_location = false
         }).finally(() => {
           // this.update_value(value)
         })
@@ -389,36 +382,37 @@ export default {
     /* device geoloacte */
     geolocate_success(location) {
       console.log("geolocate_success", location)
-      this.reset()
-      let value = {}
-      if (this.has_output_location) {
-        // todo this should also be called at other situations
-        value.coordinates = {
-          lon: location.coords.longitude,
-          lat: location.coords.latitude,
-        }
+      if (this.act_hoover_id) {
+        return
       }
-      if ((this.has_output_place)) {
-        const place_types = this.aspect.attr.place_types || default_place_type
+      this.custom_privacy_setting = null
+      this.search_results = null
+      this.reset()
+      const coordinates = {
+        lon: location.coords.longitude,
+        lat: location.coords.latitude,
+      }
+      if (this.has_output_place) {
         this.btn_loading_search_location = true
-        this.rev_geocode(
-          {lon: location.coords.longitude, lat: location.coords.latitude},
-          {place_types}).then((data) => {
-          value.place = {}
-          this.$_.forEach(data.features, feature => {
-            // console.log("FF", feature)
-            value.place[feature.place_type[0]] = feature.text
-          })
-          this.update_value(value)
-        }).catch((err) => {
+        this.rev_geocode(coordinates).then(data => {
+          // console.log("q", data)
+          if (data.features.length === 0) { // oceans
+            // todo add filler
+          } else {
+            console.log(coordinates, data.features)
+            this.complete_value({
+              coordinates: coordinates,
+              location_precision: LOCATION_PRECISION_POINT,
+            }, data.features)
+          }
+        }, err => {
           console.log("error: mapbox api error", err)
         }).finally(() => {
           setTimeout(() => {
             this.btn_loading_search_location = false
           }, 5000)
         })
-      } else {
-        this.update_value(value)
+
       }
     },
     geolocate_error() {
@@ -435,7 +429,7 @@ export default {
         value.place = {}
       }
       // result from rev-geocoding
-      console.log("complete farray?", features, Array.isArray(features))
+      // console.log("complete farray?", features, Array.isArray(features))
       if (Array.isArray(features)) {
         for (let place_type of default_place_type) {
           const place = features.filter(c => c.place_type[0] === place_type)
@@ -457,7 +451,7 @@ export default {
       }
       // from selecting one
       value.place_name = place2str(value.place)
-      console.log("complete", value.place_name)
+      // console.log("complete", value.place_name)
       let option = PREC_OPTION_RANDOM
       if (this.privacy_setting === settings_loc_privacy_exact) {
         option = PREC_OPTION_EXACT
@@ -470,7 +464,7 @@ export default {
         this.selected_prec_option = 1
       }
       // }
-      console.log("call get_public_location_from_option", option)
+      // console.log("call get_public_location_from_option", option)
       const public_loc_vars = this.get_public_location_from_option(value, option)
       this.update_value(Object.assign(value, public_loc_vars))
     },

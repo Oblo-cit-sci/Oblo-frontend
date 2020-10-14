@@ -56,7 +56,13 @@ export default {
       this.map.resize()
     },
     add_geolocate_ctrl() {
-      const geolocate = new this.mapboxgl.GeolocateControl()
+      const geolocate = new this.mapboxgl.GeolocateControl({
+        trackUserLocation: false,
+        showUserLocation: false,
+        positionOptions: {
+          enableHighAccuracy: true
+        },
+      })
       this.map.addControl(geolocate)
       if (this.geolocate_success) {
         geolocate.on('geolocate', this.geolocate_success)

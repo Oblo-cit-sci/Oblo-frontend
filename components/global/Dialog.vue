@@ -1,7 +1,7 @@
 <template lang="pug">
   v-dialog(v-model="dialog_open" :width="width")
     slot
-      v-sheet(:width="width")
+      v-sheet
         div loading
 </template>
 
