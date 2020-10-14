@@ -35,20 +35,9 @@
       v-btn(color="info" v-if="!password_edit" @click="security_dialog_open=true") {{$t('page.profile.bt_change_email_pwd')}}
       Dialog(:dialog_open.sync="security_dialog_open" persistent)
         v-sheet.pa-1(color="white")
-          v-toolbar(flat v-if="!email_edit && !password_edit")
-            v-btn(icon @click="security_dialog_open=false")
-              v-icon mdi-arrow-left
-            v-toolbar-title
-              span.font-weight-bold {{$t('page.profile.h_email_password')}}
-          div.pt-1(v-if="!password_edit")
-            v-toolbar(flat)
-              v-btn(icon v-if="email_edit" @click="email_edit=false")
-                v-icon mdi-arrow-left
-              v-toolbar-title
-                span.font-weight-bold {{$t('asp.email.label')}}
-                div(v-if="!email_edit") {{email_aspects.email.value}}
-              v-btn(icon v-if="!email_edit" color='green' size="32" @click="email_edit=true")
-                v-icon  mdi-pencil-outline
+          EditContextTitle(v-if="!email_edit && !password_edit" :edit.sync="security_dialog_open" :label="$t('page.profile.h_email_password')")
+          EditContextTitle.pt-1(v-if="!password_edit" :edit.sync="email_edit"
+            :label="$t('asp.email.label')" :value="email_aspects.email.value")
           div(v-if="email_edit")
             v-row.pl-2(v-for="a of email_aspects" :key="a.name")
               v-col.pa-0(cols=10)
@@ -59,13 +48,8 @@
                   @update:error="a.error = $event")
             v-btn(v-if="email_edit" @click="change_email()" color="success" :disabled="any_email_aspect_invalid" :loading="email_update_loading") {{$t('w.save')}}
           div(v-if="!email_edit")
-            v-toolbar(flat)
-              v-btn(icon v-if="password_edit" @click="password_edit=false")
-                v-icon mdi-arrow-left
-              v-toolbar-title
-                span.font-weight-bold {{$t('asp.password.label')}}
-              v-btn(icon v-if="!password_edit" color='green' size="32" @click="password_edit=true")
-                v-icon  mdi-pencil-outline
+            EditContextTitle.pt-1(v-if="!email_edit" :edit.sync="password_edit"
+              :label="$t('asp.password.label')")
             div(v-if="password_edit")
               v-row(v-for="a of password_aspects" :key="a.name")
                 v-col(cols=10)
@@ -132,10 +116,12 @@ import AspectSet from "~/components/AspectSet"
 import AspectDialog from "~/components/aspect_utils/AspectDialog";
 import AspectSetDialog from "~/components/aspect_utils/AspectSetDialog";
 import Dialog from "~/components/global/Dialog";
+import EditContextTitle from "~/components/util/EditContextTitle";
 
 export default {
   name: "profile",
   components: {
+    EditContextTitle,
     Dialog,
     AspectSetDialog,
     AspectDialog,
