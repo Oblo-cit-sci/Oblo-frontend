@@ -250,57 +250,6 @@ export default {
       return this.asp_location_privacy()
     }
   },
-  watch: {
-    map_loaded() {
-      if (this.value && this.value.coordinates) {
-        this.update_marker()
-      }
-    },
-    // public_location_precision(selection) {
-    //   const option = this.precision_options[selection]
-    //   console.log(selection, option)
-    //   this.set_public_location_from_option(option)
-    // }
-    async selected_search_result(sel) {
-      // console.log("selected_search_result-watch", sel, this.search_results)
-      if (!sel) {
-        this.update_value(null)
-      } else {
-        const feature = this.$_.find(this.search_results, feature => feature.id === sel)
-        if (this.user_settings.location_privacy === settings_loc_privacy_ask) {
-          console.log()
-          const result = await this.rev_geocode({
-            lon: feature.geometry.coordinates[0],
-            lat: feature.geometry.coordinates[1]
-          })
-          this.complete_value({
-            coordinates: arr2coords(feature.geometry.coordinates),
-            location_precision: feature.place_type[0],
-          }, result.features)
-          // console.log(feature.place_type[0])
-        } else {
-          this.complete_value({
-            coordinates: arr2coords(feature.geometry.coordinates),
-            location_precision: feature.place_type[0],
-          }, feature)
-        }
-      }
-    },
-    value(value) {
-      // console.log("location aspect value watch", value)
-      if (!value) {
-        this.reset()
-        return
-      }
-      if (this.map_loaded) {
-        this.update_marker(true)
-      }
-      // this when the value comes down as cache /or in whatever way
-      if (value.place_name) {
-        this.search_query = value.place_name
-      }
-    }
-  },
   created() {
     // console.log("loc-asp create", this.value)
     if (this.value) {
@@ -486,6 +435,7 @@ export default {
         value.place = {}
       }
       // result from rev-geocoding
+      console.log("complete farray?", features, Array.isArray(features))
       if (Array.isArray(features)) {
         for (let place_type of default_place_type) {
           const place = features.filter(c => c.place_type[0] === place_type)
@@ -507,6 +457,7 @@ export default {
       }
       // from selecting one
       value.place_name = place2str(value.place)
+      console.log("complete", value.place_name)
       let option = PREC_OPTION_RANDOM
       if (this.privacy_setting === settings_loc_privacy_exact) {
         option = PREC_OPTION_EXACT
