@@ -81,7 +81,6 @@ export default {
       const generated = this.config_generate(TEMPLATE, this.$_.get(this.domain_data, "search.default_templates", []))
       this.$store.commit("search/replace_in_act_config", generated)
     }
-    console.log("domain_data", this.domain_data)
   },
   beforeRouteLeave(from, to, next) {
     if (!dev_env()) {
