@@ -109,7 +109,6 @@ export default {
       }
     },
     img_loaded(index) {
-      console.log("load img", index, this.loaded_imgs)
       this.$set(this.loaded_imgs, index, true)
     }
   }

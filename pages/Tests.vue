@@ -2,10 +2,7 @@
   div
     AspectSet(:aspects="aspects" mode="edit" :values.sync="values")
     div {{values}}
-    v-btn.appear(fab color="red" :style="{'transform': 'scale(0)'}")
-    Dialog(:dialog_open="true")
-      v-sheet
-        div cool
+    Aspect(:aspect="multitest" mode="edit" :ext_value.sync="multitest.value")
 </template>
 
 <script>
@@ -13,11 +10,13 @@
 
 import AspectSet from "~/components/AspectSet"
 import Dialog from "~/components/global/Dialog";
+import Aspect from "~/components/Aspect"
 
 export default {
   name: "Tests",
   mixins: [],
   components: {
+    Aspect,
     Dialog,
     AspectSet
   },
@@ -60,7 +59,14 @@ export default {
           }
         }
       ],
-      values: {A: {value:"d"}}
+      values: {A: {value: "d"}},
+      multitest: {
+        name: "m",
+        type: "multiselect",
+        attr: {},
+        items: ["a", "b", { value: "xxx", condition: {exclude: ["a"]}}]
+      },
+      value: []
     }
   },
   computed: {},
@@ -70,9 +76,5 @@ export default {
 </script>
 
 <style scoped>
-  .appear {
-    transition: 1s;
-    transition-timing-function: cubic-bezier(.59,1.49,.84,2.01);
-    transform: scale(2);
-  }
+
 </style>

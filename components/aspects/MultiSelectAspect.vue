@@ -2,7 +2,7 @@
   div(v-if="!is_view_mode")
     v-list(v-if="list_view")
       v-list-item-group(v-model="selection_index" multiple active-class="in_selection")
-        v-list-item(v-for="option in options" :key="option.value")
+        v-list-item(v-for="option in options" :key="option.value" :disabled="option_disabled(option)")
           template(v-slot:default="{ active, toggle }")
             v-list-item-content {{option.text}}
             v-list-item-action
@@ -104,7 +104,27 @@
       },
       toString(value) {
         return value.join(", ") || ""
+      },
+      option_disabled(option) {
+        if(option.condition) {
+          if(option.condition.exclude) {
+            const cond_failed = this.$_.some(this.value, v => option.condition.exclude.includes(v))
+            if(cond_failed) {
+              if(this.value.includes(option.value)) {
+                this.update_value(this.$_.filter(this.value, v => v !== option.value))
+              }
+            }
+            return cond_failed
+          }
+        }
+        return false
       }
+      // item_style(option) {
+      //   console.log(option.value, this.option_disabled(option))
+      //   	return {
+      //   	  "background": this.option_disabled(option) ? "#C0C0C0" : ""
+      //     }
+      // }
     },
     watch: {
       selection() {

@@ -60,7 +60,7 @@ export default {
     },
     show_main_template_create_text() {
       // todo, size can go into responsiveness Mixin
-      return (!this.menu_open || this.is_large) && !this.is_small
+      return (!this.menu_open || this.is_xlarge) && !this.is_small
     }
   },
 }

@@ -15,6 +15,9 @@ export default {
     },
     is_large() {
       return this.bp.lgAndUp
+    },
+    is_xlarge() {
+      return this.bp.xlOnly
     }
   }
 }
