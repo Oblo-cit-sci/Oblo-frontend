@@ -47,7 +47,6 @@ import {debounced_search, search_entries} from "~/lib/client"
 import FilterMixin from "../FilterMixin";
 import NavBaseMixin from "../NavBaseMixin";
 import {
-  SEARCH_CLEAR,
   SEARCH_GET_ALL_UUIDS,
   SEARCH_GET_ENTRIES,
   SEARCH_GET_ROUTE,
@@ -350,7 +349,7 @@ export default {
       const offset = this.$store.getters[SEARCH_RECEIVED_ENTRIES]
       debounced_search(this.$api, this.$store, config, offset)
     },
-    ...mapMutations({"clear": SEARCH_CLEAR}),
+    ...mapMutations({"clear": "search/clear"}),
     searchConfiguration(before_last = false) {
       let configuration = {
         required: [],

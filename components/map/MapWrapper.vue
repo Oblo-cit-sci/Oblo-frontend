@@ -1,5 +1,5 @@
 <template lang="pug">
-  .fullsize
+  .fullSize
     <!--      .buttons-->
     <!--        v-btn(fab @click="set_dl=true" x-small dark)-->
     <!--          v-icon mdi-camera-->
@@ -605,7 +605,7 @@ export default {
       a.click()
     },
     open_layer_dialog() {
-      if(!this.aspectdialog_data.aspect.items) {
+      if (!this.aspectdialog_data.aspect.items) {
         this.aspectdialog_data.aspect.items = this.available_layers
       }
       this.aspectdialog_data.dialog_open = true
@@ -663,7 +663,8 @@ export default {
   transform: translate(-50%, 0)
 }
 
-.fullsize {
+.fullSize {
+  position: absolute;
   width: 100%;
   height: 100%;
 }

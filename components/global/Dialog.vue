@@ -1,8 +1,6 @@
 <template lang="pug">
-  v-dialog(v-model="dialog_open" :width="width" :persistent="persistent")
+  v-dialog(v-model="dialog_open" :width="width" :persistent="persistent" :style="{'overflow-x':'hidden'}")
     slot
-      v-sheet
-        div loading
 </template>
 
 <script>

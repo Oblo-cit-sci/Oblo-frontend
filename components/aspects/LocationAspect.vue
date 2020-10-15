@@ -399,7 +399,6 @@ export default {
           if (data.features.length === 0) { // oceans
             // todo add filler
           } else {
-            console.log(coordinates, data.features)
             this.complete_value({
               coordinates: coordinates,
               location_precision: LOCATION_PRECISION_POINT,
@@ -497,7 +496,6 @@ export default {
 
         if (this.public_precision === PREC_OPTION_EXACT && this.location_privacy_setting === settings_loc_privacy_random ||
           this.public_precision === PREC_OPTION_RANDOM && this.location_privacy_setting === settings_loc_privacy_exact) {
-          console.log("fixxx")
           const option = this.location_privacy_setting === settings_loc_privacy_random ? PREC_OPTION_RANDOM : PREC_OPTION_EXACT
           const public_loc_vars = this.get_public_location_from_option(this.value, option)
           this.update_value(Object.assign({}, this.value, public_loc_vars))

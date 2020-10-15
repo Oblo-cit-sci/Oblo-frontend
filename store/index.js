@@ -2,7 +2,6 @@ import {NO_DOMAIN, TITLE, VISITOR} from "~/lib/consts";
 import {object_list2options} from "~/lib/options";
 import {TEMPLATES_ADD_TEMPLATES} from "~/store/templates";
 import {USER_LOGOUT} from "~/store/user"
-import {SEARCH_CLEAR} from "~/store/search"
 
 // *********** Index
 export const CLEAR_DOMAIN = "clear_domain"
@@ -169,7 +168,7 @@ export const actions = {
   logout({commit, dispatch}) {
     dispatch(CLEAR_ENTRIES)
     dispatch(USER_LOGOUT)
-    commit(SEARCH_CLEAR)
+    commit("search/clear")
   }
 }
 

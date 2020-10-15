@@ -1,12 +1,12 @@
 <template lang="pug">
   v-toolbar(flat)
     v-btn(icon v-if="edit" @click="set_edit(false)")
-      v-icon mdi-arrow-left
+      v-icon {{back_icon}}
     v-toolbar-title
       span.font-weight-bold {{label}}
       div(v-if="!edit") {{value}}
     v-btn(icon v-if="!edit" color='green' size="32" @click="set_edit(true)")
-      v-icon  mdi-pencil-outline
+      v-icon {{edit_icon}}
 </template>
 
 <script>
@@ -21,6 +21,14 @@ export default {
       required: true
     },
     value: {
+    },
+    back_icon: {
+      type: String,
+      default: "mdi-arrow-left"
+    },
+    edit_icon: {
+       type: String,
+      default: "mdi-pencil-outline"
     }
   },
   methods: {

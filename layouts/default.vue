@@ -3,9 +3,11 @@
     MenuContainer(v-if="initialized" :menu_mode_fixed="!is_domain_page"
       :over="menu_over")
     TheAppBar(:show_nav_icon="show_nav_icon")
-    v-main
+    v-main(v-if="initialized")
       NotificationBanner(v-if="!is_domain_page")
-      v-container(v-if="initialized" :style="container_style")
+      div(v-if="is_domain_page")
+        nuxt
+      v-container(v-else :style="container_style")
         nuxt
     TheSnackbar
     ThePrivacySheet

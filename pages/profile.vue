@@ -35,10 +35,10 @@
       v-btn(color="info" v-if="!password_edit" @click="security_dialog_open=true") {{$t('page.profile.bt_change_email_pwd')}}
       Dialog(:dialog_open.sync="security_dialog_open" persistent)
         v-sheet.pa-1(color="white")
-          EditContextTitle(v-if="!email_edit && !password_edit" :edit.sync="security_dialog_open" :label="$t('page.profile.h_email_password')")
+          EditContextTitle(v-if="!email_edit && !password_edit" :edit.sync="security_dialog_open" :label="$t('page.profile.h_email_password')" back_icon="mdi-close")
           EditContextTitle.pt-1(v-if="!password_edit" :edit.sync="email_edit"
             :label="$t('asp.email.label')" :value="email_aspects.email.value")
-          div(v-if="email_edit")
+          v-container(v-if="email_edit")
             v-row.pl-2(v-for="a of email_aspects" :key="a.name")
               v-col.pa-0(cols=10)
                 Aspect(
@@ -50,7 +50,7 @@
           div(v-if="!email_edit")
             EditContextTitle.pt-1(v-if="!email_edit" :edit.sync="password_edit"
               :label="$t('asp.password.label')")
-            div(v-if="password_edit")
+            v-container(v-if="password_edit")
               v-row(v-for="a of password_aspects" :key="a.name")
                 v-col(cols=10)
                   Aspect(

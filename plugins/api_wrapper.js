@@ -189,9 +189,9 @@ class Actor extends QueryBase {
   /**
    * login
    */
-  login(username, password) {
+  login({user_query, password}) {
     return this.post("login", qs.stringify({
-      username, // actually both username or email, but the given class on the backend calls it username
+      username: user_query, // actually both username or email, but the given class on the backend calls it username
       password,
       grant_type: "password",
       swagger_compatible_fields: false

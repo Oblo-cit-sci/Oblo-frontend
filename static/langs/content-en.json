@@ -69,7 +69,9 @@
       "btn_resend_mail": "Resend verification email",
       "btn_forgot": "Forgot password?",
       "login_successful": "Login successful",
-      "not_a_user": "Not a user"
+      "not_a_user": "Not a user",
+      "no_account": "No Account yet?",
+      "go_here_to_register": "Click here to register!"
     },
     "profile": {
       "h_public": "Public information",

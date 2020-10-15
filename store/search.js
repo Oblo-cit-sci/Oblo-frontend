@@ -1,7 +1,6 @@
 // ******** VIEW_SEARCH
 export const SEARCH_GET_ENTRIES = "search/get_entries"
 export const SEARCH_ENTRY_ASPECT = "search/get_entry_aspects"
-export const SEARCH_CLEAR = "search/clear"
 export const SEARCH_SET_ENTRIES = "search/set_entries"
 export const SEARCH_APPEND_ENTRIES = "search/append_entries"
 export const SEARCH_SET_ROUTE = "search/set_route"
