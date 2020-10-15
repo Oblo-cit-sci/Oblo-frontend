@@ -36,7 +36,7 @@ import FixDomainMixin from "~/components/global/FixDomainMixin"
 import {overwrite_default_register_settings} from "~/lib/settings"
 import FlexibleTextSection from "~/components/global/FlexibleTextSection"
 import LayoutMixin from "~/components/global/LayoutMixin"
-import {RESPONSE_ERROR_MSG} from "~/lib/consts"
+import {MSG_PATH_SOMETHING_WENT_WRONG, RESPONSE_ERROR_MSG} from "~/lib/consts"
 
 export default {
   name: "register",
@@ -88,7 +88,7 @@ export default {
           this.errorMsg = data.error.msg
         }
       }, err => {
-        this.errorMsg = this.$_.get(err, RESPONSE_ERROR_MSG, this.$t("comp.snackbar.something_went_wrong"))
+        this.errorMsg = this.$_.get(err, RESPONSE_ERROR_MSG, this.$t(MSG_PATH_SOMETHING_WENT_WRONG))
         setTimeout(() => this.errorMsg = null, 12000)
       }).finally(() => {
         this.submit_loading = false

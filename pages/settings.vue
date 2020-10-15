@@ -53,6 +53,7 @@
   import {PAGE_PROFILE} from "~/lib/pages"
   import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
   import AspectListMixin from "~/components/global/AspectListMixin"
+  import {MSG_PATH_SOMETHING_WENT_WRONG} from "~/lib/consts"
 
 
   export default {
@@ -151,7 +152,7 @@
           this.persist_entries()
           this.ok_snackbar("Entries imported")
         } else {
-          this.error_snackbar(this.$t("comp.snackbar.something_went_wrong"))
+          this.error_snackbar(this.$t(MSG_PATH_SOMETHING_WENT_WRONG))
         }
       },
       dialog_action(event) {

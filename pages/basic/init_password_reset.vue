@@ -10,10 +10,10 @@
 </template>
 
 <script>
-  import {STR} from "~/lib/consts"
   import Aspect from "~/components/Aspect"
   import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
   import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
+  import {MSG_PATH_SOMETHING_WENT_WRONG, RESPONSE_ERROR_MSG} from "~/lib/consts"
 
   export default {
     name: "init_password_reset",
@@ -33,7 +33,7 @@
           this.ok_snackbar(data.data.msg)
           this.$router.push("/basic/reset_mail_sent")
         }).catch(err => {
-          this.errorMsg = this.$_.get(err, "response.data.error.msg", this.$t("comp.snackbar.something_went_wrong"))
+          this.errorMsg = this.$_.get(err, RESPONSE_ERROR_MSG, this.$t(MSG_PATH_SOMETHING_WENT_WRONG))
           setTimeout(() => this.errorMsg = null, 2000)
         }).finally(() => {
           this.send_button_loading = false
