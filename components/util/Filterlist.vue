@@ -23,7 +23,7 @@
     AspectDialog(
       :dialog_open.sync="dialog_open"
       :show_aspect="active_filter !== null"
-      :aspect="$_.get(active_filter, 'aspect')"
+      :aspect="$_.get(active_filter, 'aspect', dummy_aspect)"
       :conditionals="value"
       mode="edit"
       :ext_value="$_.get(active_filter, 'name') ? filter_value($_.get(active_filter, 'name')) : null"
@@ -48,7 +48,12 @@ export default {
   data() {
     return {
       dialog_open: false,
-      active_filter: null
+      active_filter: null,
+      dummy_aspect: {
+        name: "dummy-aspect",
+        type: "str",
+        attr: {}
+      }
     }
   },
   computed: {

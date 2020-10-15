@@ -302,6 +302,7 @@ export default {
         this.$store.commit("search/clear_entries")
         this.$store.commit(SEARCH_SET_ROUTE, this.act_relevant_route_data())
         this.$store.commit(SEARCH_SET_SEARCHING, true)
+        this.$store.commit("search/set_search_count", 0)
         this.$store.commit("search/clear_entries")
         // const prepend = this.entries().length > 0
         if(debounce) {

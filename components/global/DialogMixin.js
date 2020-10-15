@@ -17,5 +17,10 @@ export default {
       else
         return this.main_container_with
     }
+  },
+  methods: {
+    close() {
+      this.$emit('update:dialog_open', false)
+    },
   }
 }

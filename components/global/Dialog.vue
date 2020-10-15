@@ -19,9 +19,6 @@ export default {
     console.log("dialog create")
   },
   methods: {
-    close() {
-      this.$emit('update:dialog_open', false)
-    },
   }
 }
 </script>

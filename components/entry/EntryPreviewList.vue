@@ -1,6 +1,6 @@
 <template lang="pug">
   #pwlist-container
-    v-row.col-sm-12#pwlist-top(v-if="results_received")
+    v-row.col-sm-12#pwlist-top(v-if="results_received && !requesting_entries")
       div {{$tc("comp.previewlist.num_entries", num_entries)}}
     #pwlist-wrapper
       v-row.mx-1(v-for="entry in visible_entries"
@@ -10,15 +10,15 @@
             :entry="entry"
             v-bind="preview_options"
             @delete_e="delete_e($event)")
-    v-row.mx-0(v-if="requesting_entries && !next_loading")
+    v-row.mx-0.mt-3(v-if="requesting_entries && !next_loading")
       v-col(offset="5" cols=2)
-        v-progress-circular(indeterminate center size="35" color="success")
+        v-progress-circular(indeterminate center size="55" color="info")
     v-row.mx-0.px-4(v-if="has_entries")
       v-col.pa-0(cols=8)
         SimplePaginate(v-if="entries.length > entries_per_page" v-model="page" :total_pages="total_pages" :has_next="has_more_pages" :next_loading="next_loading")
       v-spacer.pa-0
-      v-col.pa-0
-        v-btn(@click="scroll_to_top" fab x-small outlined)
+      v-col.pa-0(ref="to_top_button")
+        v-btn(v-if="show_to_top_button" @click="scroll_to_top" fab x-small outlined)
           v-icon mdi-format-vertical-align-top
 </template>
 
@@ -51,11 +51,22 @@ export default {
   data: function () {
     return {
       page: 1,
-      deleted: []
+      deleted: [],
+      show_to_top_button: null
     }
   },
   beforeUpdate() {
     this.deleted = this.$_.filter(this.deleted, uuid => !this.has_entry(uuid))
+    if(this.$refs.to_top_button) {
+      // console.log(this.$refs.to_top_button.offsetTop)
+      // console.log(window.innerHeight)
+      this.show_to_top_button = this.$refs.to_top_button.offsetTop > window.innerHeight
+    }
+    // if (this.$refs.to_top_button) {
+    //   return true
+    // } else {
+    //   return false
+    // }
   },
   computed: {
     ...mapGetters({"has_entry": "entries/has_entry"}),
