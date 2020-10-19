@@ -3,6 +3,13 @@
     AspectSet(:aspects="aspects" mode="edit" :values.sync="values")
     div {{values}}
     Aspect(:aspect="multitest" mode="edit" :ext_value.sync="multitest.value")
+    MultipageDialog(:dialog_open="dialog_open"
+      :page_data="page_data"
+      :act_page.sync="page"
+      :finnish_action="action"
+      :globals="globals"
+      :generated_data_template="generated_data_template"
+      @cancel="cancel")
 </template>
 
 <script>
@@ -11,11 +18,13 @@
 import AspectSet from "~/components/AspectSet"
 import Dialog from "~/components/global/Dialog";
 import Aspect from "~/components/Aspect"
+import MultipageDialog from "~/components/dialogs/MultipageDialog"
 
 export default {
   name: "Tests",
   mixins: [],
   components: {
+    MultipageDialog,
     Aspect,
     Dialog,
     AspectSet
@@ -24,6 +33,31 @@ export default {
   },
   data() {
     return {
+      dialog_open: true,
+      cancel: () => {
+        console.log("bye")
+        this.dialog_open = false
+      },
+      action: (data) => {
+        console.log(data)
+      },
+      page: 0,
+      generated_data_template: {
+        visited_pages: []
+      },
+      globals: {
+        next_action: (_, data, self) => {
+          data.visited_pages.push(self.title)
+        }
+      },
+      page_data: [
+        {
+          title: "a"
+        },
+        {
+          title: "b"
+        }
+      ],
       aspects: [
         {
           name: "A",
@@ -64,9 +98,10 @@ export default {
         name: "m",
         type: "multiselect",
         attr: {},
-        items: ["a", "b", { value: "xxx", condition: {exclude: ["a"]}}]
+        items: ["a", "b", {value: "xxx", condition: {exclude: ["a"]}}]
       },
-      value: []
+      value: [],
+
     }
   },
   computed: {},

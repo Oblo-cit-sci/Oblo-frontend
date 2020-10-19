@@ -303,7 +303,6 @@ export default {
       } else {
         let config = this.searchConfiguration(before_last)
         // console.log("Search.config", config)
-        console.log(before_last)
         if(!before_last) {
           this.$store.commit("search/clear_entries")
           this.$store.commit("search/set_search_count", 0)

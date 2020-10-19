@@ -49,7 +49,7 @@
       {
         "h3": "OpenTEK platform",
         "p": [
-          "OpenTEK only collects data the user is freely and willingly providing. We do not use cookies nor do we include any 3rd party cookies. We only store the data that you directly provide in your public user profile or in the entries you create or contribute to."
+          "OpenTEK only collects data the user is freely and willingly providing. We do not use cookies nor do we include any 3rd party cookies. We only store the data that you directly provide in your public user profile or in the entries you create or contribute to. Users agree that the data which they provide will be transferred to and stored within the borders of the EU."
         ]
       },
       {
@@ -279,7 +279,10 @@
         "save_n_back": "@:w.save and back",
         "save_draft": "save draft"
       },
-      "btn_submit": {
+      "not_logged_in": {
+        "title": "You are not logged in",
+        "text": "You can submit observations but they need to be reviewed before they get published. In addition to that their privacy is automatically set to public and their license is set to (CC0) - No Rights reserved/public domain.&nbsp;",
+        "cc_ref_text": "Read more about CC0."
       }
     },
     "location_asp": {

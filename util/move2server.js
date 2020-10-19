@@ -15,12 +15,9 @@ server = process.env.SERVER || "production"
 console.log("env.server", server)
 
 if(process.env.SERVER === "local") {
-  destination_folder = "fe_local"
+  destination_folder = "fe"
 }
 
-if(process.env.SERVER === "staging") {
-  destination_folder = "fe.s"
-}
 
 console.log("destination", destination_folder)
 

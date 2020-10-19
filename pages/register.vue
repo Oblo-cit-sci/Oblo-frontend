@@ -82,7 +82,8 @@ export default {
         settings
       }).then(({data}) => {
         if (data.data) {
-          this.$router.push({name: PAGE_LOGIN})
+          // this.$router.push({name: PAGE_LOGIN})
+          this.$router.push("/basic/registration_done")
           this.ok_snackbar(data.data)
         } else {
           this.errorMsg = data.error.msg

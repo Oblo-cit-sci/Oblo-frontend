@@ -1,6 +1,6 @@
 {
   "name": "opentek",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Sharing Traditional Ecological Knowledge related to biodiversity and local indicators of climate change impacts.",
   "author": "Ramin S",
   "private": true,
@@ -14,10 +14,10 @@
     "localtest": "nuxt build --spa --pwa; rm -r dist;  rm -r dist/images/entry_images/; mv dist dist",
     "move2server": "node util/move2server.js",
     "move2server.staging": "SERVER=staging node util/move2server.js",
-    "build.local and move": "SERVER=local nuxt build --spa --pwa; SERVER=local node util/move2server.js",
+    "build.local and move": "SERVER=local nuxt build --spa --pwa; node util/move2server.js",
     "build spa": "nuxt build --spa --pwa",
     "build and move": "nuxt build --spa --pwa; node util/move2server.js",
-    "build and move_staging": "SERVER=staging nuxt build --spa --pwa",
+    "build and move_staging": "SERVER=staging nuxt build --spa --pwa; node util/move2server.js",
     "upload": "sudo python3 /media/ra/hd/projects/2019/liccibackend/helpers/app_upload.py",
     "test": "jest"
   },

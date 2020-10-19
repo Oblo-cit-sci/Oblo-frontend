@@ -2,8 +2,9 @@
   div
     v-btn(
       ref="create_button"
+      x-large
       v-bind="bp_based_main_create_btn_props"
-      color="success"  @click="create_from_main_template")
+      color="#ff0000"  @click="create_from_main_template")
       span(v-if="show_main_template_create_text") {{main_template.create_text}}
       v-icon mdi-plus
     v-btn.additional_templates_button(dark x-small absolute bottom fab v-if="can_create_multiple_etypes"
@@ -48,7 +49,7 @@ export default {
       // todo 110 is very magic, depends on the length of the main create button text
       let shift = 0
       if (!this.show_main_template_create_text) {
-        shift = "55px"
+        shift = "85px"
       } else {
         shift = this.button_width + "px"
       }
@@ -68,8 +69,8 @@ export default {
 
 <style scoped>
 .additional_templates_button {
-  top: 40px;
+  top: 50px;
   z-index: 30;
-  transform: translateX(-50%)
+  /*transform: translateX(-50%)*/
 }
 </style>

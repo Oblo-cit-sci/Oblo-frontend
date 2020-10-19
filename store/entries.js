@@ -41,7 +41,6 @@ export const ENTRIES_ALL_ENTRIES_ARRAY = "entries/all_entries_array"
 export const ENTRIES_GET_ENTRY_TITLE = "entries/get_entry_title"
 export const ENTRIES_GET_PARENT = "entries/get_parent"
 export const ENTRIES_GET_EDIT = "entries/get_edit"
-export const ENTRIES_DOMAIN_DRAFTS_UUIDS = "entries/domain_drafts_uuids"
 
 // Actions
 
@@ -61,17 +60,16 @@ export const ENTRIES_DELETE_ENTRY = "entries/delete_entry"
 export const ENTRIES_GET_RECURSIVE_ENTRIES = "entries/get_recursive_entries"
 
 
-export const ENTRIES_UPDATE_PARENT_VERSION = "entries/update_parent_version"
-
 const ld = require("lodash")
 
 const DELETE_ENTRY = "delete_entry"
 const DELETE_REF_CHILD = "delete_ref_child"
 
 export const state = () => ({
+  drafts: new Map(),
   entries: new Map(),
   edit: null
-});
+})
 
 // commmit
 export const mutations = {
@@ -430,11 +428,6 @@ export const getters = {
       const entry = getters.get_entry(uuid)
       const etype = getters.get_entry_type(entry.template.slug)
       return rootGetters.domain_of_type(etype.slug).title
-    }
-  },
-  domain_drafts_uuids(state, getters) {
-    return (domain) => {
-      return Array.from(state.entries.values()).filter(e => e.status === "draft" && e.domain === domain).map(e => e.uuid)
     }
   },
   domain_drafts(state, getters) {

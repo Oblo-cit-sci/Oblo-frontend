@@ -5,8 +5,6 @@
     <!--          v-icon mdi-camera-->
     div(v-if="show_overlay")
       .buttongroup.shift_anim(:style="button_group_shift")
-        v-btn(v-if="show_menu_button" dark fab large color="blue" @click="switch_menu_open")
-          v-icon mdi-menu
         v-btn(v-if="show_layer_menu_button" dark color="green" fab @click="open_layer_dialog")
           v-icon mdi-layers-outline
       .central_button(v-if="show_center_create_button")
@@ -176,9 +174,6 @@ export default {
       // the upadting flag doesnt work properly since mapbox does it async
       // console.log("e loaded", this.entries_loaded, this.map_loaded, this.initialized)
       return !this.entries_loaded || !this.map_loaded || !this.initialized
-    },
-    show_menu_button() {
-      return this.$vuetify.breakpoint.mdAndUp
     },
     show_overlay() {
       return !this.menu_open || this.is_mdAndUp

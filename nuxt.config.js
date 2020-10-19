@@ -11,7 +11,6 @@ partner
 eovalue
 */
 
-const release_modes = ["opentek", "eovalue", "licci_partners"]
 
 console.log("NUXT:CONFIG. env:server", process.env.SERVER)
 

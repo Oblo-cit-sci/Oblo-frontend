@@ -1,6 +1,6 @@
 <template lang="pug">
   v-app-bar(true app elevation="2" :style="{'z-index':7}")
-    v-app-bar-nav-icon.rounded-circle(color="blue" :disabled="!show_nav_icon" v-show="initialized" @click="switch_menu_open" :style="nav_icon_style")
+    v-app-bar-nav-icon.rounded-circle(color="blue"  v-show="initialized" @click="switch_menu_open")
       v-icon {{main_icon}}
     v-toolbar-title.pa-0(v-if="initialized")
       v-list-item.pl-0
@@ -33,10 +33,6 @@ export default {
   mixins: [NavBaseMixin, ResponsivenessMixin, URLQueryMixin, DomainLanguageMixin],
   components: {CreateEntryButton},
   props: {
-    show_nav_icon: {
-      type: Boolean,
-      default: true
-    }
   },
   data() {
     return {
@@ -50,11 +46,6 @@ export default {
       initialized: APP_INITIALIZED,
       domain_data: DOMAIN_BY_NAME,
     }),
-    nav_icon_style() {
-      return {
-        'visibility': this.show_nav_icon ? "inherit" : "hidden"
-      }
-    },
     reduce_when_small() {
       if (this.$vuetify.breakpoint.smAndDown) {
         return {"font-size": "80%"}

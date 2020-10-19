@@ -1,5 +1,6 @@
 <template lang="pug">
   .fullSize
+    <!--    Dialog(:dialog_open="entrycreate_dialog_open")-->
     v-dialog(v-model="entrycreate_dialog_open" :width="dialog_width")
       v-card
         v-card-title {{$t("page.domain.create_new_entry")}}
@@ -31,13 +32,14 @@ import URLParseMixin from "~/components/util/URLParseMixin"
 import URLQueryMixin from "~/components/util/URLQueryMixin"
 import DomainData_UtilMixin from "~/components/domain/DomainData_UtilMixin"
 import FilterMixin from "~/components/FilterMixin"
+import Dialog from "~/components/global/Dialog"
 
 export default {
   name: "domain",
   // layout: "new_map_layout",
   mixins: [DomainData_UtilMixin, HasMainNavComponentMixin, EntryNavMixin, EntryCreateMixin, URLQueryMixin,
     PersistentStorageMixin, LayoutMixin, MapIncludeMixin, FixDomainMixin, URLParseMixin, FilterMixin, LayoutMixin],
-  components: {MapWrapper, EntryCreateList},
+  components: {Dialog, MapWrapper, EntryCreateList},
   data() {
     return {
       entrycreate_dialog_open: false

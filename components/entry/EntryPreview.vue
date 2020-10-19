@@ -4,7 +4,7 @@
   v-card.mx-auto.custom-card(v-else outlined :style="border_style")
     v-container.pt-0.pb-0
       v-row
-        v-col.main_col(v-bind:class="[show_image ? 'col-md-8' : 'col-md-12']")
+        v-col.main_col(cols="8" v-bind:class="[show_image ? 'col-md-8' : 'col-md-12']")
           v-row
             v-col.py-1(class="entry-meta" cols=12)
               p.subtitle-1.mb-1
@@ -23,7 +23,7 @@
             v-col.py-0.pl-0
               ActorChip(:actor="creator")
           v-row.pl-3(v-if="show_tags")
-            Taglist(:tags="tags" :slide="true")
+            Taglist(:tags="tags" :slide="true" summarize)
           v-row.pl-3(v-if="show_info")
             v-list-item(v-if="outdated")
               v-list-item-icon
@@ -34,7 +34,7 @@
             v-img(class="entry-image-size"
               contain
               :src="entry_image"
-              height="200")
+              height="90")
     div.ml-4.mr-2
       Aspect(v-for="aspect in shown_aspects"
         :key="aspect.name"
@@ -327,7 +327,7 @@
   .entry-image-size {
     width: 100% !important;
     height: auto !important;
-    max-height: 200px;
+    max-height: 90px;
   }
 
   @media (max-width: 959px) {
@@ -338,7 +338,7 @@
 
     .entry-image {
       order: -1;
-      max-width: 200px;
+      max-width: 100px;
     }
   }
 

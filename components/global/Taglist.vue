@@ -15,6 +15,9 @@
         type: Object,
         default: () => {
         }
+      },
+      summarize: {
+        type: Boolean
       }
     },
     data: function () {
@@ -24,8 +27,12 @@
       tag_list() {
         let result = []
         for (let tag_type in this.tags) {
-          for (let tag of this.tags[tag_type]) {
-            result.push(tag)
+          if(this.summarize && this.tags[tag_type].length > 3) {
+            result.push(`${tag_type}: ${this.tags[tag_type].length} tags`)
+          } else {
+            for (let tag of this.tags[tag_type]) {
+              result.push(tag)
+            }
           }
         }
         return result
