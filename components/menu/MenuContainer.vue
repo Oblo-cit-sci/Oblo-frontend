@@ -1,5 +1,5 @@
 <template lang="pug">
-  div
+  div#menu_container
     v-navigation-drawer(
       :bottom="is_small"
       v-model="menu_open"
@@ -9,8 +9,8 @@
       :style="behind_style"
       :width="menu_width"
       app)
-      div(v-if="over" :style="{'height':'60px'}")
-      div(v-if="!menu_mode_fixed")
+      #block(v-if="over" :style="{'height':'60px'}")
+      #scrollable(v-if="!menu_mode_fixed")
         v-tabs(v-model="menu_state" grow active-class="active_tab")
           v-tab {{$t("comp.menucontainer.tab_main")}}
           v-tab(@click="click") {{$t("comp.menucontainer.tab_domain")}}
@@ -112,5 +112,14 @@ export default {
 
 .active_tab {
   background: aliceblue;
+}
+
+#block {
+  height: 6%;
+}
+
+#scrollable {
+  max-height: 94%;
+  overflow-y: auto;
 }
 </style>

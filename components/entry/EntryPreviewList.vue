@@ -126,7 +126,7 @@ export default {
         easing: "easeOutCubic",
       }
       if (this.$route.name === PAGE_DOMAIN) {
-        options.container = ".v-navigation-drawer__content"
+        options.container = "#scrollable" //".v-navigation-drawer__content"
       }
       setTimeout(() => this.$vuetify.goTo(0, options), 20)
     }

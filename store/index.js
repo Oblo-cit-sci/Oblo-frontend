@@ -24,14 +24,11 @@ export const ADD_CODES = "add_codes"
 export const DOMAIN_TITLE = "domain_title"
 
 
-
 export const state = () => ({
   // comes by init
   codes: {},
   domains: [],
-  domain: {
-
-  },
+  domain: {},
   // prevent that the save and back is messing up, should not go back to a child. e.g.
   // stores either domain or my entries page or a parent entry
   page_path: [],
@@ -43,7 +40,7 @@ const ld = require('lodash')
 
 export const mutations = {
   set_domains(state, {domains_data, language}) {
-    if(state.domains.length === 0) {
+    if (state.domains.length === 0) {
       state.domains = domains_data
     } else {
       for (let domain_index in domains_data) {
@@ -130,6 +127,13 @@ export const getters = {
   },
   domains(state) {
     return state.domains
+  },
+  domains_for_lange(state) {
+    return (lang_code, keep_no_domain = false) => {
+      return ld.map(ld.filter(state.domains,
+        d => d.hasOwnProperty(lang_code) && d.name !== NO_DOMAIN),
+        d => (d[lang_code]))
+    }
   },
   domain_options(state) {
     return () => {

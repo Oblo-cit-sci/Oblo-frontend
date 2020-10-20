@@ -1,4 +1,9 @@
 
+
+#menu_container .v-navigation-drawer__content {
+  overflow-y: hidden;
+}
+
 html {
   overscroll-behavior: contain;
 }
