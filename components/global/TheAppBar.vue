@@ -98,7 +98,7 @@ export default {
       }
     },
     show_create_entry_button() {
-      return this.is_domain_page && this.is_small
+      return this.is_domain_page && this.is_small && this.initialized
     },
     domain_data() {
       return this.$store.getters["domain_data"](this.query_param_domain_name, this.$store.getters["user/settings"].ui_language)

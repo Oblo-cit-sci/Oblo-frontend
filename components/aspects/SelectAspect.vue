@@ -79,10 +79,17 @@
         // o._icon is basically just for privacy, check if
         return this.$_.find(this.options, (o) => o.icon && o.icon !== "") !== undefined
       },
+      has_error() {
+        // console.log("select error?", this.is_required)
+        return this.is_required && !this.value
+      }
     },
     watch: {
       value() {
         this.set_selection()
+      },
+      has_error() {
+        this.update_error(this.has_error)
       },
       selection() {
         //console.log("watch sel", this.selection, this.init)

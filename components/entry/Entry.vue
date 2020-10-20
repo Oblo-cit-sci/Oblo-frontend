@@ -141,7 +141,6 @@ export default {
     },
     check_creator_switch() {
       if (this.entry.status === DRAFT && this.mode === EDIT) {
-        console.log(this.entry.actors)
         const roles = this.$_.cloneDeep(this.entry.actors)
         const creator = roles.find(ea => ea.role === CREATOR)
         if(creator.actor.registered_name !== this.username) {

@@ -119,22 +119,21 @@ export default {
     // console.log("search created")
     let start_search = false
     const last_route = this.$store.getters[SEARCH_GET_ROUTE]
-    console.log(last_route)
+    // console.log(last_route)
     if (this.$route.query.search) {
       this.keyword = this.$route.query.search
     }
     const this_route_data = this.act_relevant_route_data()
-    console.log(this_route_data, this.$_.isEqual(last_route, this_route_data))
-    // console.log(!this.$_.isEqual(last_route, this_route_data), last_route, this_route_data)
+    // console.log(this_route_data, this.$_.isEqual(last_route, this_route_data))
     if (!this.$_.isEqual(last_route, this_route_data)) {
-      console.log("no clearing")
+      // console.log("no clearing")
       this.clear()
       this.$store.commit(SEARCH_SET_ROUTE, this_route_data)
       this.get_entries(false, false)
     } else {
       // if uuids are selected, no search/update required.
       if(!this.select_uuids_config()) {
-        console.log("prepend")
+        // console.log("prepend")
         this.prepend_search = true
         this.get_entries(true, false)
       }
@@ -254,7 +253,7 @@ export default {
       return no_params && no_filter
     },
     has_prominent_filters() {
-      console.log(this.prominent_filters)
+      // console.log(this.prominent_filters)
       return !this.$_.isEmpty(this.prominent_filters)
     },
     searching() {

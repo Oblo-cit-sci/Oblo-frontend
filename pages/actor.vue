@@ -12,7 +12,7 @@
     v-row(v-for="aspect in profile_aspects" :key="aspect.name")
       v-col(cols=10)
         Aspect(:aspect="aspect" :ext_value.sync="user_data[aspect.name]")
-    ActorAdminEdit(v-if="user_loaded && is_admin" :actor="user_data")
+    ActorAdminEdit(v-if="user_loaded && is_admin" :actor="user_data" @role_changed="new_global_role($event)")
     div
       v-divider.wide_divider
       h2 {{$t("page.actor.h2")}}
@@ -58,6 +58,7 @@
     created() {
       this.$api.actor.basic(this.registered_name).then(({data}) => {
         this.user_data = data.data
+        console.log(this.user_data)
         this.user_loaded = true
         this.waiting = false
       }).catch(err => {
@@ -76,7 +77,11 @@
         return this.$store.getters[USER_GLOBAL_ROLE] === ADMIN
       }
     },
-    methods: {},
+    methods: {
+      new_global_role(role) {
+        this.user_data.global_role = role
+      }
+    },
     watch: {}
   }
 </script>

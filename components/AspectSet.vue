@@ -39,10 +39,10 @@ export default {
   data() {
     const aspectMap = this.$_.keyBy(this.aspects, "name")
     let i_values = {}
-    if(this.values) {
-      i_values =  this.$_.mapValues(aspectMap, a => this.values[a.name] || aspect_default_value(a))
+    if (this.values) {
+      i_values = this.$_.mapValues(aspectMap, a => this.values[a.name] || aspect_default_value(a))
     } else {
-      i_values =  this.$_.mapValues(aspectMap, a => aspect_default_value(a))
+      i_values = this.$_.mapValues(aspectMap, a => aspect_default_value(a))
     }
     return {
       i_values: i_values,
@@ -53,12 +53,13 @@ export default {
   },
   computed: {
     has_error() {
+      console.log("check errs")
       return this.$_.filter(this.errors, e => e).length > 0
     }
   },
   created() {
     // initialize update values, if some are not set
-    if(this.values) {
+    if (this.values) {
       if (this.$_.some(this.i_values, a_name => !this.values.hasOwnProperty(a_name))) {
         this.$emit("update:values", this.i_values)
       }
@@ -74,6 +75,13 @@ export default {
       handler(vals) {
         this.$emit("update:values", this.i_values)
         this.has_changes = !this.$_.isEqual(this.initial_values, this.i_values)
+      }
+    },
+    has_errors: {
+      deep: true,
+      handler(has_errs) {
+        console.log("er up")
+        this.$emit("has_errors", has_errs)
       }
     }
   }

@@ -14,6 +14,7 @@ export default {
       layer_status: "map/layer_status"
     }),
     available_layers() {
+      console.log("DD check", this.domain_data)
       return this.$_.get(this.domain_data, "map.layers")
     },
     domain_templates_color_list() {

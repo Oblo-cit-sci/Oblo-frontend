@@ -55,7 +55,7 @@
     },
     methods: {
       request_more() {
-        console.log("request more")
+        // console.log("request more")
         this.searching = true
         // console.log("conf", conf)
         this.async_entry_search(this.configuration, this.entries_uuids.length).then(({data}) => {

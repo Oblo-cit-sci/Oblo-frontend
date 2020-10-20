@@ -66,10 +66,7 @@ export default {
       }
     },
     is_required() {
-      if (this.aspect.attr.hasOwnProperty("required")) {
-        return aspect.attr.required
-      } else
-        return true
+      return this.$_.get(this.aspect,"attr.required", true)
     },
     hint() {
       return this.$_.get(this.aspect.attr, "extra.hint", null)
@@ -99,6 +96,9 @@ export default {
   methods: {
     update_value(value) {
       this.$emit("update_value", value)
+    },
+    update_error(has_error) {
+      this.$emit("has_error", has_error)
     },
     entry_uuid() {
       if (this.aspect_loc) {
