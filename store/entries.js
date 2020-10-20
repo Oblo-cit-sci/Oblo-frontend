@@ -106,8 +106,13 @@ export const mutations = {
   set_ref_parent(state, {uuid, ref}) {
     state.entries.get(uuid).refs.parent = ref
   },
-  clear(state) {
-    state.entries.clear()
+  clear(state, keep_drafts= true) {
+    if(keep_drafts) {
+      const drafts = ld.filter(Array.from(state.entries.values()), e => e.status === DRAFT)
+      state.entries = new Map(ld.map(drafts, e => [e.uuid, e]))
+    } else {
+      state.entries.clear()
+    }
     state.edit = null
   },
   _set_entry_value(state, {aspect_loc, value}) { // ENTRIES_SET_ENTRY_VALUE
@@ -278,6 +283,7 @@ export const getters = {
     return () => {
       let result = []
       // fuckn mapIterator
+      // todo this should work tho...
       // return ld.filter(Array.from(state.entries.values()), e => e.status === DRAFT)
       for (let e of state.entries.values()) {
         if (e.status === DRAFT)
