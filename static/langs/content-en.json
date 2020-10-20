@@ -93,7 +93,7 @@
       }
     },
     "actor": {
-      "h1": "@:page.profile.h1",
+      "h1": "@:page.profile.h_public",
       "h2": "@.capitalize:w.entries",
       "deactivated": "This user is no longer active",
       "admin": {

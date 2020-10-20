@@ -10,8 +10,8 @@
               p.subtitle-1.mb-1
                 ActorAvatar(:actor="creator" v-if="!actor_row")
                 v-icon.mr-1.pb-1(v-if="!show_entrytype_title" :color="template_color" x-small) mdi-checkbox-blank-circle
-                span(@click="goto(entry.uuid, 'view')" :style="title_style")
-                  span {{full_title}}
+                span(@click="goto(entry.uuid, 'view')"  :style="title_style")
+                  span(@mouseover="title_mouseover" @mouseleave="title_mouseleave") {{full_title}}
                   span(v-if="is_draft" :style="{color:'cornflowerblue'}") &nbsp; [DRAFT]
                     v-btn(v-if="show_title_action" @click="goto()" depressed small)
                       v-icon(:class="default_action_icon")
@@ -58,289 +58,296 @@
 
 <script>
 
-  import EntryNavMixin from "../EntryNavMixin";
-  import {privacy_color, privacy_icon, review_color} from "~/lib/util"
-  import {EDIT, ENTRY, REVIEW, VIEW} from "~/lib/consts"
-  import MetaChips from "./MetaChips"
-  import Taglist from "../global/Taglist"
-  import {create_entry, full_title} from "~/lib/entry"
-  import MapJumpMixin from "../map/MapJumpMixin";
-  import EntryMixin from "./EntryMixin";
-  import PersistentStorageMixin from "../util/PersistentStorageMixin";
-  import ChildCreateMixin from "../util/ChildCreateMixin";
-  import {aspect_loc_str2arr, loc_prepend} from "~/lib/aspect";
-  import Aspect from "../Aspect";
-  import {SEARCH_ENTRY_ASPECT} from "~/store/search";
-  import {
-    EDIT_UUID,
-    ENTRIES_DELETE_ENTRY,
-    ENTRIES_DOMAIN,
-    ENTRIES_SAVE_CHILD_N_REF,
-    ENTRIES_VALUE
-  } from "~/store/entries";
-  import {TEMPLATES_TYPENAME} from "~/store/templates";
-  import ActorChip from "../actor/ActorChip"
-  import EntryActionsMixin from "~/components/entry/EntryActionsMixin"
-  import EntryTags from "~/components/entry/EntryTags"
-  import ActorAvatar from "~/components/actor/ActorAvatar"
+import EntryNavMixin from "../EntryNavMixin";
+import {privacy_color, privacy_icon, review_color} from "~/lib/util"
+import {EDIT, ENTRY, REVIEW, VIEW} from "~/lib/consts"
+import MetaChips from "./MetaChips"
+import Taglist from "../global/Taglist"
+import {create_entry, full_title} from "~/lib/entry"
+import MapJumpMixin from "../map/MapJumpMixin";
+import EntryMixin from "./EntryMixin";
+import PersistentStorageMixin from "../util/PersistentStorageMixin";
+import ChildCreateMixin from "../util/ChildCreateMixin";
+import {aspect_loc_str2arr, loc_prepend} from "~/lib/aspect";
+import Aspect from "../Aspect";
+import {SEARCH_ENTRY_ASPECT} from "~/store/search";
+import {
+  EDIT_UUID,
+  ENTRIES_DELETE_ENTRY,
+  ENTRIES_DOMAIN,
+  ENTRIES_SAVE_CHILD_N_REF,
+  ENTRIES_VALUE
+} from "~/store/entries";
+import {TEMPLATES_TYPENAME} from "~/store/templates";
+import ActorChip from "../actor/ActorChip"
+import EntryActionsMixin from "~/components/entry/EntryActionsMixin"
+import EntryTags from "~/components/entry/EntryTags"
+import ActorAvatar from "~/components/actor/ActorAvatar"
 
-  /**
-   * ISSUE is not working atm, to responsive
-   */
+/**
+ * ISSUE is not working atm, to responsive
+ */
 
-  const DRAFT_COLOR = "cornflowerblue"
-  const REVIEW_COLOR = "orange"
+const DRAFT_COLOR = "cornflowerblue"
+const REVIEW_COLOR = "orange"
 
 
-  export default {
-    name: "EntryPreview",
-    components: {ActorAvatar, EntryTags, ActorChip, Aspect, MetaChips, Taglist},
-    mixins: [EntryNavMixin, MapJumpMixin, EntryMixin, MapJumpMixin,
-      PersistentStorageMixin, ChildCreateMixin, EntryActionsMixin],
-    data() {
+export default {
+  name: "EntryPreview",
+  components: {ActorAvatar, EntryTags, ActorChip, Aspect, MetaChips, Taglist},
+  mixins: [EntryNavMixin, MapJumpMixin, EntryMixin, MapJumpMixin,
+    PersistentStorageMixin, ChildCreateMixin, EntryActionsMixin],
+  data() {
+    return {
+      additional_action_loading: {},
+      hover: false
+    }
+  },
+  props: {
+    show_date: {
+      type: Boolean,
+      default: false
+    },
+    show_meta_aspects: {
+      type: Boolean,
+      default: false
+    },
+    click_title_for_view: {
+      type: Boolean,
+      default: true
+    },
+    actor_row: {
+      type: Boolean,
+      default: false
+    },
+    show_botton_actions: {
+      type: Boolean,
+      default: false
+    },
+    show_entrytype_title: Boolean,
+    include_domain_tag: Boolean,
+    show_title_action: Boolean,
+    prevent_view_page_change: Boolean,
+    actions: {
+      type: Array,
+      default: () => []
+    },
+    show_info: {
+      type: Boolean,
+      default: true
+    }
+  },
+  computed: {
+    border_style() {
+      if (this.is_draft) {
+        return {"border": `solid 1px ${DRAFT_COLOR} !important`}
+      } else if (this.is_requires_review) {
+        return {"border": `solid 1px ${REVIEW_COLOR} !important`}
+      }
+    },
+    title_style() {
       return {
-        additional_action_loading: {}
+        cursor: "pointer"
       }
     },
-    props: {
-      show_date: {
-        type: Boolean,
-        default: false
-      },
-      show_meta_aspects: {
-        type: Boolean,
-        default: false
-      },
-      click_title_for_view: {
-        type: Boolean,
-        default: true
-      },
-      actor_row: {
-        type: Boolean,
-        default: false
-      },
-      show_botton_actions: {
-        type: Boolean,
-        default: false
-      },
-      show_entrytype_title: Boolean,
-      include_domain_tag: Boolean,
-      show_title_action: Boolean,
-      prevent_view_page_change: Boolean,
-      actions: {
-        type: Array,
-        default: () => []
-      },
-      show_info: {
-        type: Boolean,
-        default: true
+    divider_style() {
+      if (this.is_draft) {
+        return {"border-color": DRAFT_COLOR}
+      } else if (this.is_requires_review) {
+        return {"border-color": REVIEW_COLOR}
       }
     },
-    computed: {
-      border_style() {
-        if (this.is_draft) {
-          return {"border": `solid 1px ${DRAFT_COLOR} !important`}
-        } else if(this.is_requires_review) {
-          return {"border": `solid 1px ${REVIEW_COLOR} !important`}
-        }
-      },
-      title_style() {
-        return {
-          cursor: "pointer"
-        }
-      },
-      divider_style() {
-        if (this.is_draft) {
-          return {"border-color": DRAFT_COLOR}
-        } else if(this.is_requires_review) {
-          return {"border-color": REVIEW_COLOR}
-        }
-      },
-      show_view() {
-        return [EDIT, REVIEW].includes(this.proper_mode)
-      },
-      full_title() {
-        if(!this.show_entrytype_title) {
-          return this.entry.title
-        } else {
-          return full_title(this.$store, this.entry)
-        }
-      },
-      action_loading() {
-        return this.additional_action_loading
-      },
-      show_image() {
-        return this.entry.image // ![undefined, null, ""].includes(this.entry.image)
-      },
-      show_tags() {
-        return this.entry.tags && Object.keys(this.entry.tags).length > 0
-      },
-      meta_aspects() {
-        let result = []
-        result.push({
-          icon: privacy_icon(this.entry.privacy),
-          name: this.entry.privacy,
-          color: privacy_color(this.entry.privacy)
-        })
-        result.push({name: "License: " + this.entry.license})
-        if (this.include_domain_tag) {
-          result.push({name: this.$store.getters[ENTRIES_DOMAIN](this.entry.uuid)})
-        }
-        if (this.entry.status === "requires_review") {
-          result.unshift({icon: "mdi-file-find-outline", name: "Requires review", color: review_color()})
-        }
-        if (this.entry.status === "orphan") {
-          result.push({name: "Orphan"})
-        }
-        return result
-      },
-      template_title() {
-        return this.$store.getters[TEMPLATES_TYPENAME](this.entry.template.slug)
-      },
-      default_action_icon() {
-        if (this.proper_mode === VIEW)
-          return "fa fa-angle-right"
+    show_view() {
+      return [EDIT, REVIEW].includes(this.proper_mode)
+    },
+    full_title() {
+      if (!this.show_entrytype_title) {
+        return this.entry.title
+      } else {
+        return full_title(this.$store, this.entry)
+      }
+    },
+    action_loading() {
+      return this.additional_action_loading
+    },
+    show_image() {
+      return this.entry.image // ![undefined, null, ""].includes(this.entry.image)
+    },
+    show_tags() {
+      return this.entry.tags && Object.keys(this.entry.tags).length > 0
+    },
+    meta_aspects() {
+      let result = []
+      result.push({
+        icon: privacy_icon(this.entry.privacy),
+        name: this.entry.privacy,
+        color: privacy_color(this.entry.privacy)
+      })
+      result.push({name: "License: " + this.entry.license})
+      if (this.include_domain_tag) {
+        result.push({name: this.$store.getters[ENTRIES_DOMAIN](this.entry.uuid)})
+      }
+      if (this.entry.status === "requires_review") {
+        result.unshift({icon: "mdi-file-find-outline", name: "Requires review", color: review_color()})
+      }
+      if (this.entry.status === "orphan") {
+        result.push({name: "Orphan"})
+      }
+      return result
+    },
+    template_title() {
+      return this.$store.getters[TEMPLATES_TYPENAME](this.entry.template.slug)
+    },
+    default_action_icon() {
+      if (this.proper_mode === VIEW)
+        return "fa fa-angle-right"
+      else
+        return "fa fa-edit"
+    },
+    additional_actions() {
+      const pw_actions = this.$_.cloneDeep(this.template.rules.preview_actions) || []
+      // console.log(this.template.slug, pw_actions)
+      const show_actions = []
+      if (this.outdated) {
+        const download_action = this.$_.find(this.template.rules.preview_actions, a => a.type === "download")
+        if (download_action)
+          download_action.color = "orange"
         else
-          return "fa fa-edit"
-      },
-      additional_actions() {
-        const pw_actions = this.$_.cloneDeep(this.template.rules.preview_actions) || []
-        // console.log(this.template.slug, pw_actions)
-        const show_actions = []
-        if (this.outdated) {
-          const download_action = this.$_.find(this.template.rules.preview_actions, a => a.type === "download")
-          if (download_action)
-            download_action.color = "orange"
-          else
-            pw_actions.unshift({name: "Download", type: "download", color: "orange"})
-        }
-        for (let pw_action of this.$_.concat(pw_actions, this.actions)) {
-          if (pw_action.title === undefined)
-            pw_action.title = pw_action.name
-          if (pw_action.type === "create_child") {
-            const action_aspect_loc = aspect_loc_str2arr(pw_action.aspect)
-            const aspect_loc = loc_prepend(ENTRY, this.entry.uuid, action_aspect_loc)
-            const value = this.$store.getters[ENTRIES_VALUE](aspect_loc)
-            if (!value) {
-              console.log("child action cannot be added, aspect location doesnt exist for action:", pw_action.name)
-              continue
-            }
-            if (value.length === 0)
-              continue
-          } else if (pw_action.type === "download") {
-            // show_actions.push(pw_action)
-          } else if (pw_action.type === "upload") {
-            // show_actions.push(pw_action)
-          } else if (pw_action.type === "goto_loc") {
-            if (this.num_locations === 0)
-              continue
-            pw_action.badge_content = this.num_locations
+          pw_actions.unshift({name: "Download", type: "download", color: "orange"})
+      }
+      for (let pw_action of this.$_.concat(pw_actions, this.actions)) {
+        if (pw_action.title === undefined)
+          pw_action.title = pw_action.name
+        if (pw_action.type === "create_child") {
+          const action_aspect_loc = aspect_loc_str2arr(pw_action.aspect)
+          const aspect_loc = loc_prepend(ENTRY, this.entry.uuid, action_aspect_loc)
+          const value = this.$store.getters[ENTRIES_VALUE](aspect_loc)
+          if (!value) {
+            console.log("child action cannot be added, aspect location doesnt exist for action:", pw_action.name)
+            continue
           }
-          show_actions.push(pw_action)
+          if (value.length === 0)
+            continue
+        } else if (pw_action.type === "download") {
+          // show_actions.push(pw_action)
+        } else if (pw_action.type === "upload") {
+          // show_actions.push(pw_action)
+        } else if (pw_action.type === "goto_loc") {
+          if (this.num_locations === 0)
+            continue
+          pw_action.badge_content = this.num_locations
         }
-        return show_actions
-      },
-      shown_aspects() {
-        // console.log(this.template)
-        if (this.template) {
-          const search_res = this.$store.getters[SEARCH_ENTRY_ASPECT](this.entry.uuid)
-          return this.$_.filter(this.template.aspects, a => search_res.includes(a.name))
-        } else {
-          return []
-        }
+        show_actions.push(pw_action)
+      }
+      return show_actions
+    },
+    shown_aspects() {
+      // console.log(this.template)
+      if (this.template) {
+        const search_res = this.$store.getters[SEARCH_ENTRY_ASPECT](this.entry.uuid)
+        return this.$_.filter(this.template.aspects, a => search_res.includes(a.name))
+      } else {
+        return []
+      }
+    }
+  },
+  methods: {
+    title_mouseover() {
+      this.$bus.$emit("map-marker-show", {uuid:this.uuid})
+    },
+    title_mouseleave() {
+      this.$bus.$emit("map-marker-hide", {uuid:this.uuid})
+    },
+    privacy_icon(privacy) {
+      return privacy_icon(privacy)
+    },
+    goto_next_entry_location() {
+      if (this.entry.location) {
+        this.goto_next_location(this.entry.location, this.uuid)
       }
     },
-    methods: {
-      privacy_icon(privacy) {
-        return privacy_icon(privacy)
-      },
-      goto_next_entry_location() {
-        if (this.entry.location) {
-          this.goto_next_location(this.entry.location, this.uuid)
-        }
-      },
-      create_child_action() {
-        // not sure how/if this still works
-        if (this.disabled)
-          return
-        const index_aspect_loc = this.aspect_loc_for_index(this.value.length)
-        //console.log("index_aspect_loc", index_aspect_loc)
-        const child = create_entry(this.$store, this.item_type_slug, {}, {
-          uuid: this.$store.getters[EDIT_UUID],
-          aspect_loc: index_aspect_loc,
-        })
+    create_child_action() {
+      // not sure how/if this still works
+      if (this.disabled)
+        return
+      const index_aspect_loc = this.aspect_loc_for_index(this.value.length)
+      //console.log("index_aspect_loc", index_aspect_loc)
+      const child = create_entry(this.$store, this.item_type_slug, {}, {
+        uuid: this.$store.getters[EDIT_UUID],
+        aspect_loc: index_aspect_loc,
+      })
 
-        // saving the child, setting refrences, saving this entry(title),
-        this.$store.dispatch(ENTRIES_SAVE_CHILD_N_REF, {child: child, aspect_loc: index_aspect_loc})
-        // TODO this was there before, is it required???
-        // this.value_change(this.$_.concat(this.value, [child.uuid]))
-        // todo should be just one call
-        this.persist_entries()
-        this.to_entry(child.uuid, EDIT)
-        this.goto_delayed_last_page()
-      },
-      additional_action(action_name) {
-        console.log("additional_action", action_name)
-        const preview_action = this.$_.find(this.additional_actions, a => a.name === action_name)
-        // why?
-        // if (this.template) {
-        // const preview_action = this.$_.find(this.template.rules.preview_actions, a => a.name === action_key)
-        console.log("res action", preview_action)
-        // DUPLICATE BELOW
+      // saving the child, setting refrences, saving this entry(title),
+      this.$store.dispatch(ENTRIES_SAVE_CHILD_N_REF, {child: child, aspect_loc: index_aspect_loc})
+      // TODO this was there before, is it required???
+      // this.value_change(this.$_.concat(this.value, [child.uuid]))
+      // todo should be just one call
+      this.persist_entries()
+      this.to_entry(child.uuid, EDIT)
+      this.goto_delayed_last_page()
+    },
+    additional_action(action_name) {
+      console.log("additional_action", action_name)
+      const preview_action = this.$_.find(this.additional_actions, a => a.name === action_name)
+      // why?
+      // if (this.template) {
+      // const preview_action = this.$_.find(this.template.rules.preview_actions, a => a.name === action_key)
+      console.log("res action", preview_action)
+      // DUPLICATE BELOW
 
-        const a_type = preview_action.type
-        switch (a_type) {
-          case "create_child":
-            const action_aspect_loc = aspect_loc_str2arr(preview_action.aspect)
-            const aspect_loc = loc_prepend(ENTRY, this.entry.uuid, action_aspect_loc)
-            this.create_child(aspect_loc, preview_action.child_type_slug)
-            break
-          case "download":
-            this.download()
-            break
-          case "delete":
-            this.$store.dispatch(ENTRIES_DELETE_ENTRY, this.uuid)
-            this.$emit("delete_e", this.uuid)
-            this.persist_entries()
-            break
-          case "goto_loc":
-            this.goto_next_entry_location()
-            break
-          default:
-            console.log("unknown action", preview_action)
-        }
+      const a_type = preview_action.type
+      switch (a_type) {
+        case "create_child":
+          const action_aspect_loc = aspect_loc_str2arr(preview_action.aspect)
+          const aspect_loc = loc_prepend(ENTRY, this.entry.uuid, action_aspect_loc)
+          this.create_child(aspect_loc, preview_action.child_type_slug)
+          break
+        case "download":
+          this.download()
+          break
+        case "delete":
+          this.$store.dispatch(ENTRIES_DELETE_ENTRY, this.uuid)
+          this.$emit("delete_e", this.uuid)
+          this.persist_entries()
+          break
+        case "goto_loc":
+          this.goto_next_entry_location()
+          break
+        default:
+          console.log("unknown action", preview_action)
       }
     }
   }
+}
 </script>
 
 <style scoped>
 
-  .custom-card {
-    height: 100%
+.custom-card {
+  height: 100%
+}
+
+.entry-display-size {
+  width: 100%;
+}
+
+.entry-image-size {
+  width: 100% !important;
+  height: auto !important;
+  max-height: 90px;
+}
+
+@media (max-width: 959px) {
+  /* adjust to your needs */
+  .entry-meta {
+    order: 1
   }
 
-  .entry-display-size {
-    width: 100%;
+  .entry-image {
+    order: -1;
+    max-width: 100px;
   }
-
-  .entry-image-size {
-    width: 100% !important;
-    height: auto !important;
-    max-height: 90px;
-  }
-
-  @media (max-width: 959px) {
-    /* adjust to your needs */
-    .entry-meta {
-      order: 1
-    }
-
-    .entry-image {
-      order: -1;
-      max-width: 100px;
-    }
-  }
+}
 
 </style>
 

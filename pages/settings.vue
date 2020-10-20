@@ -68,7 +68,7 @@
     },
     data() {
       const settings_aspects = [
-        this.asp_location_privacy(),
+        // this.asp_location_privacy(), // taken out for now. always ask is the default.
         this.asp_privacy("default_privacy", "default"),
         this.asp_license("default_license", ["cc_licenses"], null, "default"),
       ]

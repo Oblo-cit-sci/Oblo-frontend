@@ -17,7 +17,7 @@
         div.mt-2(v-if="add_verification_resend_link")
           v-btn(@click="request_verification_mail" color="success" rounded) {{$t('page.login.btn_resend_mail')}}
         v-alert(:value='errorMsg != null' type='error' prominent transition="scroll-y-reverse-transition") {{errorMsg}}
-      v-col(cols="3" md="6" offset-md="1")
+      v-col(cols="6" md="3" offset-md="1")
         slot
           h3 {{$t("page.login.no_account")}}
           nuxt-link(to="/register") {{$t("page.login.go_here_to_register")}}

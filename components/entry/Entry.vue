@@ -91,7 +91,7 @@ import FullEntryMixin from "./FullEntryMixin";
 import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
 import PersistentStorageMixin from "../util/PersistentStorageMixin";
 import EntryValidation from "./EntryValidation";
-import {EDIT, ENTRY, REVIEW, VIEW} from "~/lib/consts";
+import {DRAFT, EDIT, ENTRY, REVIEW, VIEW} from "~/lib/consts";
 import {privacy_color, privacy_icon} from "~/lib/util";
 import ChangedAspectNotice from "./ChangedAspectNotice";
 import MetaChips from "./MetaChips";
@@ -101,6 +101,7 @@ import Taglist from "~/components/global/Taglist"
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
 import EntryTags from "~/components/entry/EntryTags"
 import AspectSetMixin from "~/components/aspects/AspectSetMixin"
+import {CREATOR} from "~/lib/actors"
 
 export default {
   name: "Entry",
@@ -122,6 +123,7 @@ export default {
   },
   created() {
     this.set_aspects([this.asp_entry_roles()])
+    this.check_creator_switch()
   },
   data() {
     return {
@@ -135,6 +137,23 @@ export default {
       // console.log("received entry-A", action)
       if (action === "delete") {
         this.delete_entry = true
+      }
+    },
+    check_creator_switch() {
+      if (this.entry.status === DRAFT && this.mode === EDIT) {
+        console.log(this.entry.actors)
+        const roles = this.$_.cloneDeep(this.entry.actors)
+        const creator = roles.find(ea => ea.role === CREATOR)
+        if(creator.actor.registered_name !== this.username) {
+          const {public_name, registered_name} = this.$store.getters["user"]
+          const orig_user = creator.actor.public_name
+           creator.actor = {public_name, registered_name}
+          this.$store.commit("entries/_set_entry_value", {
+            aspect_loc: [[EDIT, this.uuid],["meta", "actors"]],
+            value: roles
+          })
+          this.ok_snackbar(`Creator changed to ${creator.actor.public_name}`)
+        }
       }
     }
   },

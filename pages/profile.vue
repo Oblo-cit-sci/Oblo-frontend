@@ -72,7 +72,8 @@
       h2#domains {{$t("page.profile.h_domain")}}
       AspectSet(:aspects="domain_specific_aspects" :values.sync="domain_specific_aspects_values" mode="edit")
     div(v-if="!is_visitor")
-      v-btn(v-if="!edit_mode" to="/settings" nuxt) {{$t("page.profile.btn_settings")}}
+      v-btn(v-if="!edit_mode" to="/settings" nuxt color="info") {{$t("page.profile.btn_settings")}}
+        v-icon(right) mdi-settings
       v-btn(v-if="!edit_mode" color="info" @click="setEdit()") {{$t("page.profile.btn_edit_profile")}}
       div(v-else)
         v-btn(@click="cancelEdit") {{$t('w.cancel')}}

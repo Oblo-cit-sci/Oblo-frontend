@@ -16,6 +16,8 @@ import AspectComponentMixin from "./AspectComponentMixin";
 import ActorSearch from "../actor/ActorSearch";
 import {COLLABORATOR, CREATOR, SHARED} from "~/lib/actors"
 import Title_Description from "~/components/util/Title_Description"
+import {REQUIRES_REVIEW, VISITOR} from "~/lib/consts"
+import {get_creator} from "~/lib/entry"
 
 /**
  * In the entry and in the DB they are stored as array per each item is
@@ -49,6 +51,7 @@ export default {
       return this.value.map(ra => ra.actor.registered_name)
     },
     available_roles() {
+      console.log()
       const base_path = "asp.entry_roles.roles."
       const roles = [
         {
@@ -58,7 +61,8 @@ export default {
           icon: "mdi-pencil"
         }
       ]
-      if (this.is_admin) {
+      const entry = this.get_entry()
+      if (this.is_admin && entry.status === REQUIRES_REVIEW && get_creator(entry).registered_name === VISITOR) {
         roles.unshift(
           {
             name: CREATOR,

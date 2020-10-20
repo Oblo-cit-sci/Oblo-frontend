@@ -12,9 +12,6 @@
           CreateEntryButton(:domain_data="domain_data" @create_entry="$emit('create_entry')")
       .overlay_menu(:style="legend_style")
         TemplateLegend(:domain_name="domain_name" ref="legendComponent")
-    .buttongroup.shift_anim(v-else-if="menu_state === 0" :style="button_group_shift")
-      v-btn(v-if="show_menu_button" dark fab large color="blue" @click="switch_menu_open")
-        v-icon mdi-menu
     AspectDialog(v-bind="aspectdialog_data" @update:dialog_open="aspectdialog_data.dialog_open = $event" :ext_value="layer_status" @update:ext_value="aspect_dialog_update($event)")
     client-only
       Mapbox(
@@ -99,7 +96,8 @@ export default {
       act_cluster_expansion_zoom: null,
       last_zoom: null,
       map_hidden: false,
-      initialized: false
+      initialized: false,
+      actual_markers: []
     }
   },
   computed: {
@@ -225,6 +223,13 @@ export default {
     if (this.domain_name) {
       this.load_map_entries(this.domain_name)
     }
+
+    this.$bus.$on("map-marker-show", ({uuid}) => {
+      this.change_entry_markers_mode(uuid, true)
+    })
+    this.$bus.$on("map-marker-hide", ({uuid}) => {
+      this.change_entry_markers_mode(uuid, false)
+    })
   },
   beforeDestroy() {
     // todo consider padding from menu
@@ -270,11 +275,12 @@ export default {
           ['get', "template"],
           ...this.domain_templates_color_list,
           '#ccc'],
+        "circle-opacity": 0.8,
         "circle-radius": [
           'case',
-          ["any", ["boolean", ['feature-state', 'hover'], false], ["boolean", ['feature-state', 'selected'], false]],
-          8,//12,
-          6//8
+          ["boolean", ['feature-state', 'hover'], false], //["any", ["boolean", ['feature-state', 'hover'], false], ["boolean", ['feature-state', 'selected'], false]],
+          9,//12,
+          7//8
         ],
         "circle-stroke-color": [
           "match",
@@ -498,23 +504,47 @@ export default {
       this.set_layer_visibility(selected_layers)
     },
     change_entry_markers_mode(entry_uuid, selected) {
-      // console.log("MapWrapper.change_entry_markers_mode", entry_uuid, selected)
-      const features = this.map.getSource(MAIN_SOURCE_LAYER)._data.features
-      // console.log("all features", features)
-      const relevant_features = this.$_.filter(features, (f) => f.properties.uuid === entry_uuid)
-      // console.log(relevant_features, selected)
-      for (let f of relevant_features) {
-        if (selected) {
-          // console.log("found entry", f.id)
-          this.map.setFeatureState(
-            {source: MAIN_SOURCE_LAYER, id: f.id},
-            {"selected": true}
-          )
-        } else {
-          this.map.removeFeatureState(
-            {source: MAIN_SOURCE_LAYER, id: f.id}, "selected")
-        }
+      if (!this.initialized) {
+        return
       }
+      // console.log("MapWrapper.change_entry_markers_mode", entry_uuid, selected)
+      try {
+        const features = this.map.getSource(MAIN_SOURCE_LAYER)._data.features
+        // console.log("all features", features)
+        const relevant_features = this.$_.filter(features, (f) => f.properties.uuid === entry_uuid)
+        // console.log(relevant_features, selected)
+        // console.log(relevant_features)
+        // console.log(this.actual_marker)
+        for (let marker of this.actual_markers) {
+          marker.remove()
+        }
+        this.actual_markers = []
+
+        if (selected) {
+          for (let feature of relevant_features) {
+            const marker = new this.mapboxgl.Marker()
+            this.actual_markers.push(marker)
+            marker.setLngLat(feature.geometry.coordinates).addTo(this.map)
+          }
+        }
+      } catch (err) {
+        // mapbox cries on... but it works anyway...
+        // const features = this.map.getSource(MAIN_SOURCE_LAYER)._data.features
+      }
+
+      // we use marker now, deprecated
+      // for (let f of relevant_features) {
+      //   if (selected) {
+      //     // console.log("found entry", f.id)
+      //     this.map.setFeatureState(
+      //       {source: MAIN_SOURCE_LAYER, id: f.id},
+      //       {"selected": true}
+      //     )
+      //   } else {
+      //     this.map.removeFeatureState(
+      //       {source: MAIN_SOURCE_LAYER, id: f.id}, "selected")
+      //   }
+      // }
     },
     async check_cluster_states(clusters) {
       const cluster_ids = clusters.map(c => c.id)

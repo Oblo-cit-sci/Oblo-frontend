@@ -1,4 +1,4 @@
-import {full_title, get_entry_titleAspect, has_parent} from "~/lib/entry";
+import {full_title, get_creator, get_entry_titleAspect, has_parent} from "~/lib/entry";
 import {export_data} from "~/lib/import_export";
 import {aspect_loc_str2arr, loc_append, loc_prepend} from "~/lib/aspect";
 import {mapGetters} from "vuex"
@@ -30,6 +30,7 @@ import {TEMPLATES_TYPE} from "~/store/templates";
 import EntryPagesMixin from "~/components/entry/EntryPagesMixin"
 import AspectListMixin from "~/components/global/AspectListMixin"
 import ExportMixin from "~/components/global/ExportMixin"
+import {CREATOR} from "~/lib/actors"
 
 export default {
   name: "EntryMixin",
@@ -83,7 +84,7 @@ export default {
       // todo this is just a workaround, for strange be behaviour
       // should be
       // console.log(this.entry.actors.filter(er => er.role === "creator")[0].actor)
-      return this.$_.get(this.entry.actors.filter(er => er.role === "creator"), "0.actor", "")
+      return get_creator(this.entry)
     },
     is_creator() {
       // console.log(this.creator, this.$store.getters.registered_name)

@@ -12,10 +12,10 @@
       @lastpage="more_follow_page = ($event)")
     div
       v-alert(v-if="is_edit_mode && can_edit && !logged_in" color="info" type="warning")
-        b {{$t("comp.entry_action_buttons.title")}}
+        b {{$t("comp.entry_action_buttons.not_logged_in.title")}}
         div
-          span {{$t("comp.entry_action_buttons.text")}}
-          a(href="https://creativecommons.org/share-your-work/public-domain/cc0/" target="_blank" style="color:white")  {{$t("comp.entry_action_buttons.cc_ref_text")}}
+          span {{$t("comp.entry_action_buttons.not_logged_in.text")}}
+          a(href="https://creativecommons.org/share-your-work/public-domain/cc0/" target="_blank" style="color:white")  {{$t("comp.entry_action_buttons.not_logged_in.cc_ref_text")}}
     EntryActionButtons(
       v-bind="entry_action_buttons_props"
       @entry-action="$emit('entry-action', $event)"

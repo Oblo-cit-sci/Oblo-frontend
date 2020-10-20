@@ -365,10 +365,17 @@ export default {
       this.location_marker = new this.mapboxgl.Marker()
       this.location_marker.setLngLat(coordinates).addTo(this.map)
       if (flyTo) {
-        this.map.flyTo({
-          center: coordinates,
-          essential: true // this animation is considered essential with respect to prefers-reduced-motion
-        })
+        if (this.value.public_precision === PREC_OPTION_EXACT) {
+          this.map.flyTo({
+            center: coordinates,
+            essential: true // this animation is considered essential with respect to prefers-reduced-motion
+          })
+        } else {
+          const bb = new mapboxgl.LngLatBounds(this.value.coordinates, this.value.public_loc.coordinates)
+          this.map.fitBounds(bb, {
+            padding: 80
+          })
+        }
       }
     },
     snap_to_feature(features) {
@@ -465,7 +472,9 @@ export default {
       // }
       // console.log("call get_public_location_from_option", option)
       const public_loc_vars = this.get_public_location_from_option(value, option)
-      this.update_value(Object.assign(value, public_loc_vars))
+      Object.assign(value, public_loc_vars)
+      this.update_value(value)
+      console.log("complete", value)
     },
     has_input_option(type) {
       return (this.aspect.attr.input || []).includes(type)

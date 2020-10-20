@@ -43,8 +43,6 @@ export const ENTRIES_GET_PARENT = "entries/get_parent"
 export const ENTRIES_GET_EDIT = "entries/get_edit"
 
 // Actions
-
-
 export const ENTRIES_UPDATE_ENTRY = "entries/update_entry"
 export const ENTRIES_SET_EDIT = "entries/set_edit"
 export const ENTRIES_SAVE_CHILD_N_REF = "entries/save_child_n_ref"
@@ -66,7 +64,6 @@ const DELETE_ENTRY = "delete_entry"
 const DELETE_REF_CHILD = "delete_ref_child"
 
 export const state = () => ({
-  drafts: new Map(),
   entries: new Map(),
   edit: null
 })

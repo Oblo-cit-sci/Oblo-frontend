@@ -101,6 +101,7 @@ export default {
           condition_value = this.$store.getters[ENTRIES_VALUE](aspect_location)
         } else if (this.conditionals) {
           condition_value = select_aspect_loc(null, aspect_loc_str2arr(this.aspect.attr.condition.aspect), false, this.conditionals)
+          // console.log("condition_value", condition_value)
         } else {
           console.log(`condition for aspect ${this.aspect.name} cannot be checked. no aspect_loc and no conditionals`)
           return false
