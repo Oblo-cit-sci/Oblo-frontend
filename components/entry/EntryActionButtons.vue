@@ -94,7 +94,7 @@ export default {
       return !this.connected
     },
     can_download() {
-      return true//this.template.rules.download
+      return false //true//this.template.rules.download
     },
     save_text() {
       if (this.in_context) {
