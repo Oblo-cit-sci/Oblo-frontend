@@ -35,7 +35,7 @@
 
 <script>
 
-  import AspectDialog from "~/components/aspect_utils/AspectDialog"
+  import AspectDialog from "~/components/dialogs/AspectDialog"
   import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
   import OptionsAspect from "~/components/aspects/OptionsAspect"
   import Aspect from "~/components/Aspect"

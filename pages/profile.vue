@@ -26,9 +26,6 @@
           :ext_value.sync="aspect.value"
           @update:error="$set(aspect, 'error', $event)"
           :mode="aspect_mode")
-        <!--    Dialog(:dialog_open.sync="")-->
-        <!--      v-sheet-->
-        <!--        Aspect(:aspect="this.asp_email()" mode="view" ext_value="cool@no.de")-->
     <!-- Email and Password edit -->
     div(v-if="edit_mode")
       h3 {{$t('page.profile.h_email_password')}}
@@ -114,9 +111,7 @@ import GoToMixin from "~/components/global/GoToMixin"
 import GlobalRoleChip from "~/components/actor/GlobalRoleChip"
 import DomainLanguageMixin from "~/components/domain/DomainLanguageMixin";
 import AspectSet from "~/components/AspectSet"
-import AspectDialog from "~/components/aspect_utils/AspectDialog";
-import AspectSetDialog from "~/components/aspect_utils/AspectSetDialog";
-import Dialog from "~/components/global/Dialog";
+import Dialog from "~/components/dialogs/Dialog";
 import EditContextTitle from "~/components/util/EditContextTitle";
 
 export default {
@@ -124,8 +119,6 @@ export default {
   components: {
     EditContextTitle,
     Dialog,
-    AspectSetDialog,
-    AspectDialog,
     AspectSet,
     GlobalRoleChip,
     EntryListWrapper,

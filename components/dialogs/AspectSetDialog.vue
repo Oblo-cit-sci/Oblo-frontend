@@ -15,9 +15,12 @@
 
 <script>
 import {EDIT} from "~/lib/consts";
-import DialogMixin from "~/components/global/DialogMixin";
+import DialogMixin from "~/components/dialogs/DialogMixin";
 import AspectSet from "~/components/AspectSet";
 
+/**
+ * todo not used atm
+ */
 export default {
   name: "AspectSetDialog",
   mixins: [DialogMixin],

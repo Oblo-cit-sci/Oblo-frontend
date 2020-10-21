@@ -33,7 +33,7 @@
 <script>
 import {aspect_default_value, value_text} from "~/lib/aspect"
 import LayoutMixin from "~/components/global/LayoutMixin"
-import AspectDialog from "~/components/aspect_utils/AspectDialog"
+import AspectDialog from "~/components/dialogs/AspectDialog"
 import {recursive_unpack2} from "~/lib/util"
 
 export default {

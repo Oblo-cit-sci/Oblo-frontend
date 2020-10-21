@@ -16,7 +16,7 @@
 
 
 import AspectSet from "~/components/AspectSet"
-import Dialog from "~/components/global/Dialog";
+import Dialog from "~/components/dialogs/Dialog";
 import Aspect from "~/components/Aspect"
 import MultipageDialog from "~/components/dialogs/MultipageDialog"
 

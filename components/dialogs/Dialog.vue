@@ -4,7 +4,7 @@
 </template>
 
 <script>
-import DialogMixin from "~/components/global/DialogMixin";
+import DialogMixin from "~/components/dialogs/DialogMixin";
 
 export default {
   name: "Dialog",

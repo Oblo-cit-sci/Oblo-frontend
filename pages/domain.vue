@@ -1,10 +1,7 @@
 <template lang="pug">
   .fullSize
-    <!--    Dialog(:dialog_open="entrycreate_dialog_open")-->
-    v-dialog(v-model="entrycreate_dialog_open" :width="dialog_width")
-      v-card
-        v-card-title {{$t("page.domain.create_new_entry")}}
-        EntryCreateList(:template_entries="create_templates_options")
+    TitledDialog(title="xool" :dialog_open.sync="entrycreate_dialog_open" show_close_btn)
+      EntryCreateList(:template_entries="create_templates_options")
     MapWrapper(
       height="100%"
       :domain_data="domain_data"
@@ -32,14 +29,14 @@ import URLParseMixin from "~/components/util/URLParseMixin"
 import URLQueryMixin from "~/components/util/URLQueryMixin"
 import DomainData_UtilMixin from "~/components/domain/DomainData_UtilMixin"
 import FilterMixin from "~/components/FilterMixin"
-import Dialog from "~/components/global/Dialog"
+import TitledDialog from "~/components/dialogs/TitledDialog"
 
 export default {
   name: "domain",
   // layout: "new_map_layout",
   mixins: [DomainData_UtilMixin, HasMainNavComponentMixin, EntryNavMixin, EntryCreateMixin, URLQueryMixin,
     PersistentStorageMixin, LayoutMixin, MapIncludeMixin, FixDomainMixin, URLParseMixin, FilterMixin, LayoutMixin],
-  components: {Dialog, MapWrapper, EntryCreateList},
+  components: {TitledDialog, MapWrapper, EntryCreateList},
   data() {
     return {
       entrycreate_dialog_open: false
@@ -121,5 +118,9 @@ export default {
   position: absolute;
   width: 100%;
   height: 100%;
+}
+
+.create_dialog {
+  overflow-x: hidden;
 }
 </style>

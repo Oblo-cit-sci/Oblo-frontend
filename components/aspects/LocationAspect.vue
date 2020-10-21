@@ -43,7 +43,7 @@
     client-only
       div(v-if="show_map")
         .map_overlay
-          v-btn(v-if="logged_in" dark small :color="show_existing ? 'blue' : 'grey'" @click="toggle_show_existing" :loading="getting_my_entries_loading") {{$t('comp.location_asp.show entries')}}
+          v-btn(v-if="show_show_my_entries_btn" dark small :color="show_existing ? 'blue' : 'grey'" @click="toggle_show_existing" :loading="getting_my_entries_loading") {{$t('comp.location_asp.show entries')}}
             v-icon mdi-map-marker-circle
         Mapbox.crosshair.mt-3(
           style="height:400px"
@@ -80,7 +80,7 @@ import MapEntriesMixin from "~/components/map/MapEntriesMixin"
 import EntryFetchMixin from "~/components/entry/EntryFetchMixin"
 import {unpack} from "~/lib/aspect"
 import ResponsivenessMixin from "~/components/ResponsivenessMixin";
-import AspectDialog from "~/components/aspect_utils/AspectDialog"
+import AspectDialog from "~/components/dialogs/AspectDialog"
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
 import {USER_SET_SETTINGS} from "~/store/user"
 import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
@@ -177,6 +177,9 @@ export default {
     },
     privacy_setting() {
       return this.user_settings.location_privacy
+    },
+    show_show_my_entries_btn() {
+      return this.logged_in && this.is_editable_mode
     },
     point_location_precision() {
       return this.$_.get(this.value, "location_precision") === LOCATION_PRECISION_POINT

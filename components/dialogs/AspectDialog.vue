@@ -21,7 +21,7 @@
 import LayoutMixin from "~/components/global/LayoutMixin"
 import {DATE, EDIT, LOCATION, SELECT} from "~/lib/consts"
 import Aspect from "~/components/Aspect"
-import DialogMixin from "~/components/global/DialogMixin"
+import DialogMixin from "~/components/dialogs/DialogMixin"
 
 export default {
   name: "AspectDialog",

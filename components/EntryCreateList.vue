@@ -1,13 +1,12 @@
 <template lang="pug">
-  div
-    SingleSelect(
-      :options="options"
-      force_view="list"
-      @selection="create_entry($event)"
-      :select_sync="false"
-      :highlight="false"
-      only_value
-      :create="true")
+  SingleSelect(
+    :options="options"
+    force_view="list"
+    @selection="create_entry($event)"
+    :select_sync="false"
+    :highlight="false"
+    only_value
+    :create="true")
 </template>
 
 <script>
@@ -15,18 +14,23 @@
   import SingleSelect from "./input/SingleSelect";
   import EntryNavMixin from "./EntryNavMixin";
   import EntryCreateMixin from "~/components/entry/EntryCreateMixin"
+  import LargeSelectList from "~/components/aspect_utils/LargeSelectList"
 
   const ENTRY_TYPE = "etype";
   const DRAFT = "draft";
 
   export default {
     name: "EntryCreateList",
-    components: {SingleSelect},
+    components: {LargeSelectList, SingleSelect},
     mixins: [EntryNavMixin, EntryCreateMixin],
     props: {
       template_entries: {
         type: Array,
         required: true
+      },
+      prominent_template_names: {
+        type: Array,
+        default: () => []
       }
     },
     computed: {

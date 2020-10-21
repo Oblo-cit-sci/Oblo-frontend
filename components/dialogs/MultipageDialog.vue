@@ -10,8 +10,8 @@
 </template>
 
 <script>
-import DialogMixin from "~/components/global/DialogMixin"
-import Dialog from "~/components/global/Dialog"
+import DialogMixin from "~/components/dialogs/DialogMixin"
+import Dialog from "~/components/dialogs/Dialog"
 
 export default {
   name: "MultipageDialog",
