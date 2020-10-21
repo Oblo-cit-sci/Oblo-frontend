@@ -13,7 +13,7 @@
     v-row.mx-0.mt-3(v-if="requesting_entries && !next_loading")
       v-col(offset="5" cols=2)
         v-progress-circular(indeterminate center size="55" color="info")
-    v-row.mx-0.px-4(v-if="has_entries")
+    v-row.mx-0.px-4(v-show="has_entries")
       v-col.pa-0(cols=8)
         SimplePaginate(v-if="entries.length > entries_per_page" v-model="page" :total_pages="total_pages" :has_next="has_more_pages" :next_loading="next_loading")
       v-spacer.pa-0
@@ -57,16 +57,15 @@ export default {
   },
   beforeUpdate() {
     this.deleted = this.$_.filter(this.deleted, uuid => !this.has_entry(uuid))
-    if(this.$refs.to_top_button) {
-      // console.log(this.$refs.to_top_button.offsetTop)
-      // console.log(window.innerHeight)
-      this.show_to_top_button = this.$refs.to_top_button.offsetTop > window.innerHeight
+    // console.log("update", this.$refs, this.entries.length)
+    if (this.$refs.to_top_button) {
+      // entries are not immediately there, so the offsetTop is 0
+      setTimeout(() => {
+        this.show_to_top_button = this.$refs.to_top_button.offsetTop > window.innerHeight
+      }, 100)
+    } else {
+      console.log("ref not found")
     }
-    // if (this.$refs.to_top_button) {
-    //   return true
-    // } else {
-    //   return false
-    // }
   },
   computed: {
     ...mapGetters({"has_entry": "entries/has_entry"}),

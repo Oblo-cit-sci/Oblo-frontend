@@ -193,7 +193,7 @@ export default {
       // if yes we debounce, because there could be more clicked
       let prominent_filter_changed = false
       for(let changed_prominent_filter of new_config.filter(cf => this.$_.get(cf, "source_name", "regular") !== "regular")) {
-        console.log(changed_prominent_filter)
+        // console.log(changed_prominent_filter)
         const prev_filter = prev_val.find(cf => cf.name === changed_prominent_filter.name && cf.source_name === changed_prominent_filter.source_name)
         if (!this.$_.isEqual(changed_prominent_filter.value, this.$_.get(prev_filter,"value"))) {
           prominent_filter_changed = true
