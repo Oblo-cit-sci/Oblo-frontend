@@ -225,10 +225,15 @@ export default {
     }
 
     this.$bus.$on("map-marker-show", ({uuid}) => {
+      // console.log("bus-show")
       this.change_entry_markers_mode(uuid, true)
     })
     this.$bus.$on("map-marker-hide", ({uuid}) => {
-      this.change_entry_markers_mode(uuid, false)
+      // console.log("bus-hide", this.selected_entry)
+      // when entry is selected dont trigger this
+      if(!this.selected_entry) {
+        this.change_entry_markers_mode(uuid, false)
+      }
     })
   },
   beforeDestroy() {
