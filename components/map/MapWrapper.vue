@@ -235,6 +235,7 @@ export default {
         this.change_entry_markers_mode(uuid, false)
       }
     })
+
   },
   beforeDestroy() {
     // todo consider padding from menu

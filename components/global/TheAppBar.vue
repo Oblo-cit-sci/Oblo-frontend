@@ -10,7 +10,7 @@
           v-list-item-title.headline
             span {{domain_title}}
             span.ml-5(v-if="is_mdAndUp" :style="reduce_when_small") {{domain_headline}}
-      div(:style="display_debug") {{display_debug_text}}
+      div(:style="display_debug") {{display_debug_text}} v{{version}}
       CreateEntryButton(v-if="show_create_entry_button" :style="create_button_style" :domain_data="domain_data" @create_entry="$emit('create_entry')")
 </template>
 
@@ -26,7 +26,7 @@ import ResponsivenessMixin from "~/components/ResponsivenessMixin";
 import URLQueryMixin from "~/components/util/URLQueryMixin";
 import DomainLanguageMixin from "~/components/domain/DomainLanguageMixin"
 
-// z-index to be above the loading overlay
+const pkg = require('~/package.json')
 
 export default {
   name: "TheAppBar",
@@ -65,10 +65,10 @@ export default {
     },
     display_debug() {
       return {
-        "width": "40px",
+        padding: "0 10px",
         "height": "30px",
         "position": "fixed",
-        "right": "20px",
+        "right": "30px",
         "top": "10px",
         "background-color": "grey",
         "text-align": "center",
@@ -102,8 +102,12 @@ export default {
     },
     domain_data() {
       return this.$store.getters["domain_data"](this.query_param_domain_name, this.$store.getters["user/settings"].ui_language)
-    }
+    },
     //
+    version() {
+      console.log(process.env.NODE_ENV)
+      return pkg.version
+    }
   },
   methods: {
     ...mapMutations({switch_menu_open: 'menu/switch_open'}),
