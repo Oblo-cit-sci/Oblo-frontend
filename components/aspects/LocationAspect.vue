@@ -101,25 +101,6 @@ export default {
   components: {AspectDialog, Mapbox},
   mixins: [AspectComponentMixin, TriggerSnackbarMixin, MapIncludeMixin, GeocodingMixin,
     MapEntriesMixin, EntrySearchMixin, EntryFetchMixin, ResponsivenessMixin, TypicalAspectMixin, PersistentStorageMixin],
-  data() {
-    return {
-      search_query: null,
-      initial_autocomplete_reset: 2, // catch first 2 emit of null: ARGH
-      place_part_coordinates: {},
-      location_marker: null,
-      btn_loading_search_location: false, // not sure if this is really effective
-      search_results: null,
-      selected_search_result: undefined, // this because, clear sets it to that too,
-      place_select__: null, // this in v-model is only used because of https://github.com/vuetifyjs/vuetify/issues/11383
-      public_location_marker: null,
-      show_existing: false,
-      getting_my_entries_loading: false,
-      my_entries_features: null,
-      selected_prec_option: null, // from the chip-menu, index?!
-      custom_privacy_setting: null,
-      setting_dialog_open: false
-    }
-  },
   computed: {
     ...mapGetters({logged_in: "user/logged_in", user_settings: "user/settings"}),
     device_location_input_option() {
@@ -146,6 +127,9 @@ export default {
     },
     public_precision() {
       return this.value.public_precision
+    },
+    has_public_loc() {
+      return this.location_set && this.value.public_loc
     },
     map_options() {
       // console.log("map options", this.value, this.value.coordinates)
@@ -249,6 +233,25 @@ export default {
       return this.asp_location_privacy()
     }
   },
+  data() {
+    return {
+      search_query: null,
+      initial_autocomplete_reset: 2, // catch first 2 emit of null: ARGH
+      place_part_coordinates: {},
+      location_marker: null,
+      btn_loading_search_location: false, // not sure if this is really effective
+      search_results: null,
+      selected_search_result: undefined, // this because, clear sets it to that too,
+      place_select__: null, // this in v-model is only used because of https://github.com/vuetifyjs/vuetify/issues/11383
+      public_location_marker: null,
+      show_existing: false,
+      getting_my_entries_loading: false,
+      my_entries_features: null,
+      selected_prec_option: null, // from the chip-menu, index?!
+      custom_privacy_setting: null,
+      setting_dialog_open: false
+    }
+  },
   created() {
     // console.log("loc-asp create", this.value)
     if (this.value) {
@@ -263,7 +266,7 @@ export default {
           context: this.value.place
         }]
       // for a draft, set the
-      if (this.public_location_selector_on) {
+      if (this.public_location_selector_on && this.has_public_loc) {
         if (this.point_location_precision &&
           this.value.public_loc.location_precision === LOCATION_PRECISION_POINT &&
           this.value.coordinates === this.value.public_loc.coordinates) {
