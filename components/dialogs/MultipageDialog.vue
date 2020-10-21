@@ -1,22 +1,19 @@
 <template lang="pug">
   Dialog(:dialog_open.sync="dialog_open" persistent)
     v-sheet.pa-1(color="white")
-      v-toolbar(flat)
-        v-btn(icon @click="back()")
-          v-icon {{back_icon}}
-        v-toolbar-title
-          span.font-weight-bold {{page_title}}
+      ButtonTitleToolbar(:title="page_title" btn_icon="back_icon" @btn_pressed="back()")
       v-btn(@click="next()" small outlined color="blue" :loading="next_loading") {{next_btn_text}}
 </template>
 
 <script>
 import DialogMixin from "~/components/dialogs/DialogMixin"
 import Dialog from "~/components/dialogs/Dialog"
+import ButtonTitleToolbar from "~/components/util/ButtonTitleToolbar"
 
 export default {
   name: "MultipageDialog",
   mixins: [DialogMixin],
-  components: {Dialog},
+  components: {ButtonTitleToolbar, Dialog},
   props: {
     globals: {
       type: Object
