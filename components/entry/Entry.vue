@@ -143,12 +143,12 @@ export default {
       if (this.entry.status === DRAFT && this.mode === EDIT) {
         const roles = this.$_.cloneDeep(this.entry.actors)
         const creator = roles.find(ea => ea.role === CREATOR)
-        if(creator.actor.registered_name !== this.username) {
+        if (creator.actor.registered_name !== this.username) {
           const {public_name, registered_name} = this.$store.getters["user"]
           const orig_user = creator.actor.public_name
-           creator.actor = {public_name, registered_name}
+          creator.actor = {public_name, registered_name}
           this.$store.commit("entries/_set_entry_value", {
-            aspect_loc: [[EDIT, this.uuid],["meta", "actors"]],
+            aspect_loc: [[EDIT, this.uuid], ["meta", "actors"]],
             value: roles
           })
           this.ok_snackbar(`Creator changed to ${creator.actor.public_name}`)

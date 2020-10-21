@@ -2,7 +2,7 @@
   v-flex(xs12 sm10 md10)
     h2.mb-2 {{$t('page.login.h1')}}
     v-row
-      v-col(cols="12" md="8")
+      v-col(cols="12" md="8" lg="6")
         v-form
           Aspect(v-for="a of aspects"
             :key="a.name"

@@ -53,7 +53,6 @@ import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
 import {APP_CONNECTED} from "~/store/app"
 import {USER_LOGGED_IN} from "~/store/user"
 import EntryActionsMixin from "~/components/entry/EntryActionsMixin"
-import ExportMixin from "~/components/global/ExportMixin"
 
 export default {
   name: "EntryActionButtons",
@@ -236,8 +235,12 @@ export default {
         const res = await this.$api.patch_entry__$uuid_accept(sending_entry)
         this.sending = false
         this.ok_snackbar("Entry reviewed")
-        this.$store.commit(ENTRIES_SAVE_ENTRY, res.data.data)
-        this.$store.dispatch(ENTRIES_UPDATE_ENTRY, this.uuid)
+        const entry = res.data.data
+        // entry_location2geojson_arr(entry)
+        this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
+        await this.$store.dispatch(ENTRIES_UPDATE_ENTRY, this.uuid)
+        // new status doesnt really matter but it shouldnt be "required_review" anymore
+        await this.$store.dispatch("map/set_entry_property", {uuid: entry.uuid, property_name: "status", value: "published"})
         this.back()
       } catch (err) {
         this.err_error_snackbar(err)

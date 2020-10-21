@@ -56,6 +56,10 @@ export const mutations = {
   },
   set_filter_config(state, filter_config) {
     state.filter_config = filter_config
+  },
+  set_entry_feature(state, {domain_name, uuid, feature}) {
+    const f_index = state.entries[domain_name].features.findIndex(f => f.properties.uuid === uuid)
+    state.entries[domain_name].features[f_index] = feature
   }
 }
 
@@ -107,10 +111,23 @@ export const getters = {
   get_by_uuid(state) { // not used atm
     return (uuid) => {
       for (let domain_entries_features of Object.values(state.entries)) {
-          console.log(domain_entries_features.features)
-          const feature = ld.find(domain_entries_features.features, e => e.properties.uuid === uuid)
-          if(feature)
-            return feature
+        // console.log(domain_entries_features.features)
+        const feature = ld.find(domain_entries_features.features, e => e.properties.uuid === uuid)
+        if (feature)
+          return feature
+      }
+      console.log("warning entry_feature for uuid not found")
+      return null
+    }
+  },
+  get_entry_and_domain_by_uuid(state) {
+    return (uuid) => {
+      for (let domain_name of Object.keys(state.entries)) {
+        // console.log(domain_entries_features.features)
+        const domain_entries_features = state.entries[domain_name]
+        const feature = ld.find(domain_entries_features.features, e => e.properties.uuid === uuid)
+        if (feature)
+          return {feature, domain_name}
       }
       console.log("warning entry_feature for uuid not found")
       return null
@@ -133,11 +150,15 @@ export const actions = {
   reset_goto_locations(context) {
     context.commit("_last_goto_location", null)
     context.commit("goto_location", null)
+  },
+  set_entry_property(context, {uuid, property_name, value}) {
+    const res = context.getters.get_entry_and_domain_by_uuid(uuid)
+    if (!res) {
+      console.log("error in map/set_entry_property, no entry for given uuid", uuid)
+      return
+    }
+    const {feature, domain_name} = ld.cloneDeep(res)
+    feature.properties[property_name] = value
+    context.commit("set_entry_feature", {domain_name, uuid, feature})
   }
-  // update_entry_feature(context, entry) {
-  //   console.log(context)
-  //   const entries_features = ld.get(context.state.entries, entry.domain).features
-  //   const feature = context.getters.get_by_uuid(entry.uuid)
-  //   console.log(feature)
-  // }
 }

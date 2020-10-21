@@ -6,56 +6,63 @@
 </template>
 
 <script>
-  import FixDomainMixin from "~/components/global/FixDomainMixin"
+import FixDomainMixin from "~/components/global/FixDomainMixin"
+import DomainLanguageMixin from "~/components/domain/DomainLanguageMixin"
 
-  export default {
-    name: "NotificationBanner",
-    mixins: [FixDomainMixin],
-    components: {},
-    props: {},
-    data() {
-      return {}
+export default {
+  name: "NotificationBanner",
+  mixins: [FixDomainMixin, DomainLanguageMixin],
+  components: {},
+  props: {},
+  data() {
+    return {}
+  },
+  computed: {
+    profile_edited() {
+      return this.$_.get(this.$store.getters.user.config_share, "profile_edited", false)
     },
-    computed: {
-      profile_edited() {
-        return this.$_.get(this.$store.getters.user.config_share, "profile_edited", false)
-      },
-      fixed_domain_edited() {
-        return !this.is_fixed_domain || this.$_.get(this.$store.getters.user.config_share, `domain.${this.is_fixed_domain}`)
-      },
-      show_profile_complete_banner: function () {
-        // dont show banner on profile edit page, or when visititor
-        if (this.$route.name === "profile" && this.$route.query.edit || this.$store.getters.user.registered_name === "visitor") {
-          return false
-        }
-        if (!this.profile_edited) {
-          return true
-        }
-        // fixed domain aspects missing
-        return !this.fixed_domain_edited
-      },
-      missing_text() {
-        const cs = this.$store.getters.user.config_share
-        if (!this.profile_edited) {
-          return this.$t("comp.notification_banner.complete_profile")
-        }
-        if (!this.fixed_domain_edited) {
-          return this.$t("comp.notification_banner.complete_domain_aspects", {domain_name: this.$store.getters.domain_title})
-        }
-        return ""
-      },
-      link() {
-        const cs = this.$store.getters.user.config_share
-        if (!this.profile_edited) {
-          return "/profile?edit=true"
-        }
-        if (!this.fixed_domain_edited) {
-          return "/profile?edit=true#domains"
-        }
+    fixed_domain_edited() {
+      const ui_lang_domain_data = this.ui_lang_domain_data(this.is_fixed_domain)
+      const domain_specific_aspects = this.$_.cloneDeep(this.$_.get(ui_lang_domain_data, "users.profile.additional_aspects", []))
+      // todo here call a function that assigns external conditions
+
+      return !this.is_fixed_domain || // no fixed domain
+        this.$_.isEmpty(domain_specific_aspects) ||
+        this.$_.get(this.$store.getters.user.config_share, `domain.${this.is_fixed_domain}`)
+    },
+    show_profile_complete_banner: function () {
+      // dont show banner on profile edit page, or when visititor
+      if (this.$route.name === "profile" && this.$route.query.edit || this.$store.getters.user.registered_name === "visitor") {
+        return false
       }
+      if (!this.profile_edited) {
+        return true
+      }
+      // fixed domain aspects missing
+      return !this.fixed_domain_edited
     },
-    methods: {}
-  }
+    missing_text() {
+      const cs = this.$store.getters.user.config_share
+      if (!this.profile_edited) {
+        return this.$t("comp.notification_banner.complete_profile")
+      }
+      if (!this.fixed_domain_edited) {
+        return this.$t("comp.notification_banner.complete_domain_aspects", {domain_name: this.$store.getters.domain_title})
+      }
+      return ""
+    },
+    link() {
+      const cs = this.$store.getters.user.config_share
+      if (!this.profile_edited) {
+        return "/profile?edit=true"
+      }
+      if (!this.fixed_domain_edited) {
+        return "/profile?edit=true#domains"
+      }
+    }
+  },
+  methods: {}
+}
 </script>
 
 <style scoped>
