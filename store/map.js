@@ -60,6 +60,10 @@ export const mutations = {
   set_entry_feature(state, {domain_name, uuid, feature}) {
     const f_index = state.entries[domain_name].features.findIndex(f => f.properties.uuid === uuid)
     state.entries[domain_name].features[f_index] = feature
+  },
+  delete_feature(state, {domain_name, uuid}) {
+    const f_index = state.entries[domain_name].features.findIndex(f => f.properties.uuid === uuid)
+    state.entries[domain_name].features.splice(f_index, 1)
   }
 }
 

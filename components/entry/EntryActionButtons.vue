@@ -254,8 +254,9 @@ export default {
         const res = await this.$api.patch_entry__$uuid_reject(sending_entry)
         this.sending = false
         this.ok_snackbar("Entry reviewed")
-        this.$store.commit(ENTRIES_DELETE_ENTRY, res.data.data.uuid)
-        this.$store.commit(SEARCH_DELETE_ENTRY, res.data.data.uuid)
+        this.$store.commit(ENTRIES_DELETE_ENTRY, this.uuid)
+        this.$store.commit(SEARCH_DELETE_ENTRY, this.uuid)
+        this.$store.commit("map/delete_feature", {domain_name: this.entry.domain, uuid: this.uuid})
         this.back()
       } catch (err) {
         // todo for entry exists already, there could be a change in the button label, but maybe the data of that entry should be fetched
