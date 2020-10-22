@@ -62,19 +62,14 @@ export default {
       const search_config = this.build_search_config(this.search_config)
       this.async_entry_search(search_config, this.entries_uuids.length).then(({data}) => {
         const result = data.data
-        console.log(this.entries_uuids.length)
         const entry_uuids = store_received_entries(this.$store, result.entries)
 
         if (this.$_.isEmpty(this.entries_uuids)) {
           // const local_search_config = this.search_config
           // console.log(local_search_config)
-          const has_local_filter = this.search_config.filter(f => f.source_name === "local").length > 0
+          const has_local_filter = this.has_local_filter(this.search_config)
           if (has_local_filter) {
-            let local_entries = this.$store.getters["entries/all_entries_array"]()
-            for (let filter of this.search_config) {
-              local_entries = this.apply_filter(filter, local_entries)
-            }
-            const local_entries_uuids = local_entries.map(e => e.uuid)
+            const local_entries_uuids = this.local_search(this.search_config)
             this.entries_uuids = this.$_.concat(this.entries_uuids, local_entries_uuids)
           }
         }

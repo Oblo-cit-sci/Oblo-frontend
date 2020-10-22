@@ -258,14 +258,10 @@ export default {
     filtered_entries() {
       let result_entries = this.entries() // must be a call
 
-      const has_local_filter = this.search_config.filter(f => f.source_name === "local").length > 0
+      const all_filters = this.$_.concat(this.act_config, this.search_config)
+      const has_local_filter = this.has_local_filter(all_filters)
       if (has_local_filter) {
-        let local_entries = this.$store.getters["entries/all_entries_array"]()
-        const all_filters = this.$_.concat(this.act_config, this.search_config)
-        for (let filter of all_filters) {
-          local_entries = this.apply_filter(filter, local_entries)
-        }
-        const local_entries_uuids = local_entries.map(e => e.uuid)
+        const local_entries_uuids = this.local_search(all_filters)
         result_entries = local_entries_uuids.concat(result_entries)
       }
 

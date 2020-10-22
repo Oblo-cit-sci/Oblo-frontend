@@ -59,26 +59,37 @@ export default {
           registered_name: this.$store.getters.username
         }]
       })
-      if(my_entries_uuids_response.status === 200) {
+      if (my_entries_uuids_response.status === 200) {
         return Promise.resolve(my_entries_uuids_response.data.data)
       } else {
         console.log("couldnt get my uuids")
         return Promise.reject(my_entries_uuids_response)
       }
     },
-    build_search_config(filters, keep_local=false) {
+    build_search_config(filters, keep_local = false) {
       const search_query = {required: [], include: {}}
-      for(let filter of filters) {
-        if(!keep_local && filter.source_name === "local") {
+      for (let filter of filters) {
+        if (!keep_local && filter.source_name === "local") {
           continue
         }
-        if(filter.include_as) {
+        if (filter.include_as) {
           search_query.include[filter.include_as] = filter.value
         } else {
           search_query.required.push(filter)
         }
       }
       return search_query
+    },
+    /**
+     * returns uuids
+     * @param filters search-filter array
+     */
+    local_search(filters) {
+      let local_entries = this.$store.getters["entries/all_entries_array"]()
+      for (let filter of filters) {
+        local_entries = this.apply_filter(filter, local_entries)
+      }
+      return local_entries.map(e => e.uuid)
     }
   }
 }

@@ -165,7 +165,7 @@ export default {
         return this.apply_tags_filter(filter, entries)
       } else if (filter.name === "meta") {
         return entries.filter(e => e[filter.column] === filter.value)
-      } else if(filter.name === "actor") {
+      } else if (filter.name === "actor") {
         // later replace filter.registered_name with filter.value
         return entries.filter(e => this.$_.some(e.actors, entry_actor => entry_actor.actor.registered_name === filter.registered_name))
       } else {
@@ -188,12 +188,15 @@ export default {
       const tag_filter = (e) => {
         for (let tags of Object.values(e.tags)) {
           const included = this.$_.some(tags, t => tags_filter.value.includes(t))
-          if(included)
+          if (included)
             return true
         }
         return false
       }
       return entries.filter(tag_filter)
+    },
+    has_local_filter(filters) {
+      return filters.filter(f => f.source_name === "local").length > 0
     }
   }
 }
