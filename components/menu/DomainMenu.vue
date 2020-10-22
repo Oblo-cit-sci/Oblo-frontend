@@ -8,9 +8,8 @@
             v-icon mdi-book-lock
     Search(v-show="nav_mode_search"
       :preview_options="preview_options"
-      :search_config="domain_pre_filter"
+      :search_config="search_config"
       :include_filters="filters"
-      :mixin_domain_drafts="domain_name",
       @all_received_uuids="$emit('all_received_uuids', $event)"
       :prominent_filters="prominent_filters"
       @preview_action="preview_action($event)")
@@ -25,46 +24,49 @@
 </template>
 
 <script>
-  import Search from "~/components/global/Search"
-  import MapNavigationMixin from "~/components/map/MapNavigationMixin"
-  import Entry from "~/components/entry/Entry"
-  import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
-  import {object_list2options} from "~/lib/options"
-  import DomainMixin from "~/components/DomainMixin"
-  import FixDomainMixin from "~/components/global/FixDomainMixin"
-  import FilterMixin from "~/components/FilterMixin"
-  import DomainLanguageMixin from "~/components/domain/DomainLanguageMixin";
+import Search from "~/components/global/Search"
+import MapNavigationMixin from "~/components/map/MapNavigationMixin"
+import Entry from "~/components/entry/Entry"
+import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
+import {object_list2options} from "~/lib/options"
+import DomainMixin from "~/components/DomainMixin"
+import FixDomainMixin from "~/components/global/FixDomainMixin"
+import FilterMixin from "~/components/FilterMixin"
+import DomainLanguageMixin from "~/components/domain/DomainLanguageMixin";
 
-  export default {
-    name: "DomainMenu",
-    mixins: [MapNavigationMixin, HasMainNavComponentMixin, DomainMixin, FixDomainMixin, FilterMixin, DomainLanguageMixin],
-    components: {Entry, Search},
-    props: {
-      domain_name: {
-        type: String,
-        required: true
-      }
+export default {
+  name: "DomainMenu",
+  mixins: [MapNavigationMixin, HasMainNavComponentMixin, DomainMixin, FixDomainMixin, FilterMixin, DomainLanguageMixin],
+  components: {Entry, Search},
+  props: {
+    domain_name: {
+      type: String,
+      required: true
+    }
+  },
+  computed: {
+    filters() {
+      const template_filter_options = this.get_template_filter_options()
+      template_filter_options.aspect.items = object_list2options(
+        this.$store.getters["templates/templates_of_domain"](this.domain_name), "title", "slug", true)
+
+      const tags_filter_options = this.get_tags_filter_options(this.domain_name)
+      // const uuids_select_option = get_uuids_select_option()
+      return [template_filter_options, tags_filter_options]
     },
-    computed: {
-      filters() {
-        const template_filter_options = this.get_template_filter_options()
-        template_filter_options.aspect.items = object_list2options(
-          this.$store.getters["templates/templates_of_domain"](this.domain_name), "title", "slug", true)
-
-        const tags_filter_options = this.get_tags_filter_options(this.domain_name)
-        // const uuids_select_option = get_uuids_select_option()
-        return [template_filter_options, tags_filter_options]
-      },
-      prominent_filters() {
-        // console.log(this.$_.get(this.domain_data, "filters.prominent_filters"))
-        return this.$_.get(this.ui_lang_domain_data(this.domain_name), "filters.prominent_filters")
-      },
-      selected_entry() {
-        if(this.$route.query.uuid)
-          return this.$store.getters["entries/get_entry"](this.$route.query.uuid)
-      }
+    prominent_filters() {
+      // console.log(this.$_.get(this.domain_data, "filters.prominent_filters"))
+      return this.$_.get(this.ui_lang_domain_data(this.domain_name), "filters.prominent_filters")
+    },
+    selected_entry() {
+      if (this.$route.query.uuid)
+        return this.$store.getters["entries/get_entry"](this.$route.query.uuid)
+    },
+    search_config() {
+      return this.$_.concat(this.domain_pre_filter,this.get_drafts_filter())
     }
   }
+}
 </script>
 
 <style scoped>

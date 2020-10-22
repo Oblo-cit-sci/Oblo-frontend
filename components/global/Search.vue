@@ -97,9 +97,6 @@ export default {
       type: Array,
       default: () => []
     },
-    mixin_domain_drafts: {
-      type: String
-    },
     prominent_filters: Array
   },
   data() {
@@ -132,7 +129,7 @@ export default {
       this.get_entries(false, false)
     } else {
       // if uuids are selected, no search/update required.
-      if(!this.select_uuids_config()) {
+      if (!this.select_uuids_config()) {
         // console.log("prepend")
         this.prepend_search = true
         this.get_entries(true, false)
@@ -180,7 +177,7 @@ export default {
         if (template_filter_change) {
           // kickout tag filter
           // console.log(val)
-          const tag_filter = val.find(f => f.name === "tags" && this.$_.get(f, "source_name","regular") === "regular")
+          const tag_filter = val.find(f => f.name === "tags" && this.$_.get(f, "source_name", "regular") === "regular")
           if (tag_filter) {
             // console.log("tag_filter", tag_filter)
             new_config = new_config.filter(f => f.name !== "tags")
@@ -192,10 +189,10 @@ export default {
       // check if a prominent filter changed: // inidicated by source_name (domain).
       // if yes we debounce, because there could be more clicked
       let prominent_filter_changed = false
-      for(let changed_prominent_filter of new_config.filter(cf => this.$_.get(cf, "source_name", "regular") !== "regular")) {
+      for (let changed_prominent_filter of new_config.filter(cf => this.$_.get(cf, "source_name", "regular") !== "regular")) {
         // console.log(changed_prominent_filter)
         const prev_filter = prev_val.find(cf => cf.name === changed_prominent_filter.name && cf.source_name === changed_prominent_filter.source_name)
-        if (!this.$_.isEqual(changed_prominent_filter.value, this.$_.get(prev_filter,"value"))) {
+        if (!this.$_.isEqual(changed_prominent_filter.value, this.$_.get(prev_filter, "value"))) {
           prominent_filter_changed = true
           break
         }
@@ -229,7 +226,7 @@ export default {
           // console.log(val)
           // console.log(filter)
           const value = unpack(this.promoninent_filter_values[filter.name])
-          if(!value || this.$_.isEmpty(value)) {
+          if (!value || this.$_.isEmpty(value)) {
             this.$store.commit("search/remove_in_act_config", filter.search_config.name)
           } else {
             this.$store.commit("search/replace_in_act_config", Object.assign({value}, filter.search_config))
@@ -246,12 +243,6 @@ export default {
       total_count: SEARCH_GET_SEARCH_COUNT,
       all_uuids: SEARCH_GET_ALL_UUIDS,
     }),
-    is_pure() {
-      // no search query nor filter
-      const no_params = this.$_.isEmpty(this.$_.pick(this.$route.query, [QP_SEARCH]))
-      const no_filter = this.filter_data.length === 0
-      return no_params && no_filter
-    },
     has_prominent_filters() {
       // console.log(this.prominent_filters)
       return !this.$_.isEmpty(this.prominent_filters)
@@ -266,16 +257,18 @@ export default {
     },
     filtered_entries() {
       let result_entries = this.entries() // must be a call
-      const hide_drafts = this.$_.some(this.act_config, cf => cf.hide_drafts || false)
-      // todo this should just check if QP_D is set and make the filter manual
-      // so that drafts are also shown on the profile
-      if (this.mixin_domain_drafts && !hide_drafts && this.is_pure) { // todo, not sure anymore what is_pure does...
-        const include_types = this.get_filtered_template_slugs()
-        // console.log(this.$store.getters["entries/domain_drafts"](this.mixin_domain_drafts))
-        const drafts = this.$store.getters["entries/domain_drafts"](this.mixin_domain_drafts)
-          .reverse().filter(e => include_types.includes(e.template.slug)).map(e => e.uuid)
-        result_entries = drafts.concat(result_entries)
+
+      const has_local_filter = this.search_config.filter(f => f.source === "local").length > 0
+      if (has_local_filter) {
+        let local_entries = this.$store.getters["entries/all_entries_array"]()
+        const all_filters = this.$_.concat(this.act_config, this.search_config)
+        for (let filter of all_filters) {
+          local_entries = this.apply_filter(filter, local_entries)
+        }
+        const local_entries_uuids = local_entries.map(e => e.uuid)
+        result_entries = local_entries_uuids.concat(result_entries)
       }
+
       // console.log("new filtered entries", result_entries)
       if (LOG) {
         console.log("Search.filtered_entries. entries:", result_entries.length)
@@ -286,13 +279,14 @@ export default {
     },
     filterlist_options() {
       return this.include_filters
-    }
+    },
   },
   methods: {
+    ...mapMutations({"clear": "search/clear"}),
     search_keypress(keyEvent) {
       if (keyEvent.keyCode === 13) {
         this.$router.push(route_change_query(this.$route))
-        this.get_entries(false,true)
+        this.get_entries(false, true)
       }
     },
     get_entries(before_last = false, debounce = true) {
@@ -302,7 +296,7 @@ export default {
       } else {
         let config = this.searchConfiguration(before_last)
         // console.log("Search.config", config)
-        if(!before_last) {
+        if (!before_last) {
           this.$store.commit("search/clear_entries")
           this.$store.commit("search/set_search_count", 0)
         }
@@ -310,7 +304,7 @@ export default {
         this.$store.commit(SEARCH_SET_SEARCHING, true)
 
         // const prepend = this.entries().length > 0
-        if(debounce) {
+        if (debounce) {
           debounced_search(this.$api, this.$store, config)
         } else {
           search_entries(this.$api, this.$store, config)
@@ -355,14 +349,15 @@ export default {
       const offset = this.$store.getters[SEARCH_RECEIVED_ENTRIES]
       debounced_search(this.$api, this.$store, config, offset)
     },
-    ...mapMutations({"clear": "search/clear"}),
     searchConfiguration(before_last = false) {
       let configuration = {
         required: [],
         include: {}
       }
       for (let filter of this.search_config) {
-        configuration.required.push(filter)
+        if (filter.source !== "local") { // dont add drafts filter
+          configuration.required.push(filter)
+        }
       }
       const filterlist_options = this.filterlist_options
       for (let filter of this.act_config) {

@@ -66,13 +66,7 @@ export default {
         attached_files: []
       }
       if (template.rules.titleAspect) {
-        // is this the best way to check something and have a default of
-        // set title aspect.default true
-        if (template.rules.hasOwnProperty("setTitleAspect")) {
-          if (template.rules.setTitleAspect) {
-            set_titleAspect(this.$store, entry)
-          }
-        } else {
+        if (this.$_.get(template.rules, "setTitleAspect", false)) {
           set_titleAspect(this.$store, entry)
         }
       }

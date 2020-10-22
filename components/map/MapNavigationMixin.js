@@ -42,6 +42,7 @@ export default {
       return this.navigation_mode === ENTRY
     },
     preview_options() {
+      // not used anymore...
       return {
         actions: [{
           name: "goto_loc",

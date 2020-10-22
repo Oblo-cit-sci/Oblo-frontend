@@ -1,6 +1,6 @@
 import {ALL_CODES, DOMAIN} from "~/store"
 import {entries_domain_filter} from "~/lib/search"
-import {MULTISELECT, TREEMULTISELECT} from "~/lib/consts"
+import {DRAFT, MULTISELECT, TREEMULTISELECT} from "~/lib/consts"
 import {build_tag_select_list, build_tag_select_tree, find_templates_using_code} from "~/lib/codes"
 
 export default {
@@ -67,6 +67,13 @@ export default {
         conditional_value: domain_name
       }
     },
+    get_drafts_filter() {
+      return {
+        name: "status",
+        source: "local",
+        value: DRAFT
+      }
+    },
     get_template_filter_options(domain_name) {
       return {
         name: "template",
@@ -108,16 +115,16 @@ export default {
         if (code.template.slug === "value_tree") {
           const tag_tree = build_tag_select_tree(this.$_.cloneDeep(code))
           options_aspects.push(Object.assign(base_aspect, {
-                type: TREEMULTISELECT,
-                items: tag_tree
-              })
+              type: TREEMULTISELECT,
+              items: tag_tree
+            })
           )
         } else if (code.template.slug === "value_list") {
           const tag_list = build_tag_select_list(this.$_.cloneDeep(code))
           options_aspects.push(Object.assign(base_aspect, {
-                type: MULTISELECT,
-                items: tag_list
-              })
+              type: MULTISELECT,
+              items: tag_list
+            })
           )
         } else {
           console.log(`unknown code template for ${code.title}, template slug: ${code.template.slug}`)
@@ -145,14 +152,22 @@ export default {
       }
     },
     apply_filter(filter, entries) {
+      if (filter.name === "select_uuids") {
+        return entries.filter(e => filter.value.includes(e.uuid))
+      }
       if (filter.name === "domain") {
         return entries.filter(e => e.domain === filter.value)
-      }
-      if (filter.name === "template") {
-        return entries.filter(e => filter.values.includes(e.template.slug))
-      }
-      if (filter.name === "status") {
+      } else if (filter.name === "template") {
+        return entries.filter(e => filter.value.includes(e.template.slug))
+      } else if (filter.name === "status") {
         return entries.filter(e => e.status === filter.value)
+      } else if (filter.name === "tags") {
+        return this.apply_tags_filter(filter, entries)
+      } else if (filter.name === "meta") {
+        return entries.filter(e => e[filter.column] === filter.conditional_value)
+      } else {
+        console.log("filter not applicable", filter.name)
+        return entries
       }
     },
     config_generate(filtername, filtervalue) {
@@ -165,6 +180,17 @@ export default {
           "text": used_templates.map(t => t.title).join(", ")
         }
       }
+    },
+    apply_tags_filter(tags_filter, entries) {
+      const tag_filter = (e) => {
+        for (let tags of Object.values(e.tags)) {
+          const included = this.$_.some(tags, t => tags_filter.value.includes(t))
+          if(included)
+            return true
+        }
+        return false
+      }
+      return entries.filter(tag_filter)
     }
   }
 }
