@@ -36,7 +36,7 @@ export default {
       return [{
         name: "meta",
         column: DOMAIN,
-        conditional_value: this.domain_data.name
+        value: this.domain_data.name
       }]
     },
     domain_language_tags() {

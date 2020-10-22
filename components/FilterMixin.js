@@ -64,13 +64,13 @@ export default {
       return {
         name: "meta",
         column: DOMAIN,
-        conditional_value: domain_name
+        value: domain_name
       }
     },
     get_drafts_filter() {
       return {
         name: "status",
-        source: "local",
+        source_name: "local",
         value: DRAFT
       }
     },
@@ -164,7 +164,10 @@ export default {
       } else if (filter.name === "tags") {
         return this.apply_tags_filter(filter, entries)
       } else if (filter.name === "meta") {
-        return entries.filter(e => e[filter.column] === filter.conditional_value)
+        return entries.filter(e => e[filter.column] === filter.value)
+      } else if(filter.name === "actor") {
+        // later replace filter.registered_name with filter.value
+        return entries.filter(e => this.$_.some(e.actors, entry_actor => entry_actor.actor.registered_name === filter.registered_name))
       } else {
         console.log("filter not applicable", filter.name)
         return entries

@@ -65,6 +65,20 @@ export default {
         console.log("couldnt get my uuids")
         return Promise.reject(my_entries_uuids_response)
       }
+    },
+    build_search_config(filters, keep_local=false) {
+      const search_query = {required: [], include: {}}
+      for(let filter of filters) {
+        if(!keep_local && filter.source_name === "local") {
+          continue
+        }
+        if(filter.include_as) {
+          search_query.include[filter.include_as] = filter.value
+        } else {
+          search_query.required.push(filter)
+        }
+      }
+      return search_query
     }
   }
 }

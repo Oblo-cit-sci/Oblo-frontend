@@ -18,73 +18,94 @@
 
 <script>
 
-  // like Search, but with fixed params (no text field)
-  import EntryPreviewList from "./entry/EntryPreviewList"
-  import {store_received_entries} from "~/lib/client"
-  import TriggerSnackbarMixin from "./TriggerSnackbarMixin"
-  import CompactEntryList from "~/components/entry/CompactEntryList"
-  import EntrySearchMixin from "~/components/EntrySearchMixin"
+// like Search, but with fixed params (no text field)
+import EntryPreviewList from "./entry/EntryPreviewList"
+import {store_received_entries} from "~/lib/client"
+import TriggerSnackbarMixin from "./TriggerSnackbarMixin"
+import CompactEntryList from "~/components/entry/CompactEntryList"
+import EntrySearchMixin from "~/components/EntrySearchMixin"
+import FilterMixin from "~/components/FilterMixin"
 
-  export default {
-    name: "EntryListWrapper",
-    mixins: [TriggerSnackbarMixin, EntrySearchMixin],
-    components: {CompactEntryList, EntryPreviewList},
-    props: {
-      view_mode: {
-        type: String,
-        default: "normal"
-      }, // "normal" default, "compact"
-      configuration: Object,
-      init_request: Boolean,
-      wait: Boolean, // created but parent still waits for other data, so show loading,
-      preview_options: Object
-    },
-    data() {
-      return {
-        entries_uuids: [],
-        prepend_query: false,
-        quering: false,
-        total_count: null
-      }
-    },
-    created() {
-      this.prepend_query = true
-      if (this.init_request) {
-        this.request_more()
-      }
-    },
-    methods: {
-      request_more() {
-        // console.log("request more")
-        this.searching = true
-        // console.log("conf", conf)
-        this.async_entry_search(this.configuration, this.entries_uuids.length).then(({data}) => {
-          const result = data.data
-          const entry_uuids = store_received_entries(this.$store, result.entries)
-          this.entries_uuids = this.$_.concat(this.entries_uuids, entry_uuids)
-          if (this.total_count === null) {
-            this.total_count = result.count
+export default {
+  name: "EntryListWrapper",
+  mixins: [TriggerSnackbarMixin, EntrySearchMixin, FilterMixin],
+  components: {CompactEntryList, EntryPreviewList},
+  props: {
+    view_mode: {
+      type: String,
+      default: "normal"
+    }, // "normal" default, "compact"
+    search_config: Array,
+    init_request: Boolean,
+    wait: Boolean, // created but parent still waits for other data, so show loading,
+    preview_options: Object
+  },
+  data() {
+    return {
+      entries_uuids: [],
+      prepend_query: false,
+      quering: false,
+      total_count: null
+    }
+  },
+  created() {
+    this.prepend_query = true
+    if (this.init_request) {
+      this.request_more()
+    }
+  },
+  methods: {
+    request_more() {
+      // console.log("request more")
+      this.searching = true
+      // console.log("conf", conf)
+      const search_config = this.build_search_config(this.search_config)
+      this.async_entry_search(search_config, this.entries_uuids.length).then(({data}) => {
+        const result = data.data
+        console.log(this.entries_uuids.length)
+        const entry_uuids = store_received_entries(this.$store, result.entries)
+
+        if (this.$_.isEmpty(this.entries_uuids)) {
+          // const local_search_config = this.search_config
+          // console.log(local_search_config)
+          const has_local_filter = this.search_config.filter(f => f.source_name === "local").length > 0
+          if (has_local_filter) {
+            let local_entries = this.$store.getters["entries/all_entries_array"]()
+            for (let filter of this.search_config) {
+              local_entries = this.apply_filter(filter, local_entries)
+            }
+            const local_entries_uuids = local_entries.map(e => e.uuid)
+            this.entries_uuids = this.$_.concat(this.entries_uuids, local_entries_uuids)
           }
-        }).catch(err => {
-          console.log(err)
-          this.error_snackbar("Could not fetch entries")
-        }).finally(() => {
-          this.searching = false
-          this.prepend_query = false
-        })
-      }
+        }
+        this.entries_uuids = this.$_.concat(this.entries_uuids, entry_uuids)
+
+        if (this.total_count === null) {
+          this.total_count = result.count
+        }
+      }).catch(err => {
+        console.log(err)
+        this.error_snackbar("Could not fetch entries")
+      }).finally(() => {
+        this.searching = false
+        this.prepend_query = false
+      })
+    }
+  },
+  computed: {
+    normal_mode() {
+      return this.view_mode === "normal"
     },
-    computed: {
-      normal_mode() {
-        return this.view_mode === "normal"
-      }
-    },
-    watch: {
-      wait() {
-        this.request_more()
-      }
+    query_config() {
+      return this.configuration.filter(f, f.source !== "local")
+    }
+  },
+  watch: {
+    wait() {
+      this.request_more()
     }
   }
+}
 </script>
 
 <style scoped>

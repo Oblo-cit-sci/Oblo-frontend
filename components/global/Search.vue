@@ -258,7 +258,7 @@ export default {
     filtered_entries() {
       let result_entries = this.entries() // must be a call
 
-      const has_local_filter = this.search_config.filter(f => f.source === "local").length > 0
+      const has_local_filter = this.search_config.filter(f => f.source_name === "local").length > 0
       if (has_local_filter) {
         let local_entries = this.$store.getters["entries/all_entries_array"]()
         const all_filters = this.$_.concat(this.act_config, this.search_config)
@@ -355,10 +355,13 @@ export default {
         include: {}
       }
       for (let filter of this.search_config) {
-        if (filter.source !== "local") { // dont add drafts filter
+        if (filter.source_name !== "local") { // dont add drafts filter
           configuration.required.push(filter)
         }
       }
+      // todo because of this stuff, grabbing and merging filters (user-set values) and info from the config
+      // e.g. "include_as" we cant plug in the. the filters dont have a uniform structure (FilterMxin, get_...FILTER)
+
       const filterlist_options = this.filterlist_options
       for (let filter of this.act_config) {
         const filter_option = filterlist_options.find(fo => fo.name === filter.name)
@@ -366,7 +369,7 @@ export default {
         if (filter_option) {
           const config = filter_option.search_config
           if (config.hasOwnProperty("name")) {
-            config.conditional_value = filter.value
+            config.value = filter.value
             configuration.required.push(config)
           } else if (config.hasOwnProperty("include_as")) {
             configuration.include[config.include_as] = filter.value

@@ -83,7 +83,7 @@
         :wait="waiting"
         :style="main_container_width_style"
         :init_request="true"
-        :configuration="{required:[{name:'actor', registered_name:registered_name}]}")
+        :search_config="entry_search_config")
 </template>
 
 <script>
@@ -254,7 +254,7 @@ export default {
         this.$store.commit(USER_SET_USER_DATA, user_data)
         this.persist_user_data()
         this.email_aspects.password.value = ""
-      },err => {
+      }, err => {
         this.err_error_snackbar(err)
       }).finally(() => {
         this.email_update_loading = false
@@ -303,6 +303,11 @@ export default {
       user_data: USER,
       own_entries_uuids: ENTRIES_GET_OWN_ENTRIES_UUIDS
     }),
+    entry_search_config() {
+      return [{name: 'actor', registered_name: this.registered_name},
+        {name: "status", value: "draft", "source_name": "local"}
+      ]
+    },
     registered_name() {
       return this.user_data.registered_name
     },

@@ -19,7 +19,7 @@
       EntryListWrapper(
         :style="main_container_width_style"
         :wait="waiting"
-        :configuration="{required:[{name:'actor', 'registered_name':registered_name}]}")
+        :search_config="[{name:'actor', 'registered_name':registered_name}]")
 </template>
 
 <script>
