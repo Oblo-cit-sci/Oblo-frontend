@@ -151,6 +151,12 @@ export default {
         }
       }
     },
+    get_actor_filter(registered_name) {
+      return {
+        name: "actor",
+        value: registered_name
+      }
+    },
     apply_filter(filter, entries) {
       if (filter.name === "select_uuids") {
         return entries.filter(e => filter.value.includes(e.uuid))

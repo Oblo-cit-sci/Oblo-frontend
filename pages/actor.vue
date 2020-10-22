@@ -19,7 +19,7 @@
       EntryListWrapper(
         :style="main_container_width_style"
         :wait="waiting"
-        :search_config="[{name:'actor', 'registered_name':registered_name}]")
+        :search_config="search_config")
 </template>
 
 <script>
@@ -33,10 +33,11 @@
   import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
   import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
   import NavBaseMixin from "~/components/NavBaseMixin"
+  import FilterMixin from "~/components/FilterMixin"
 
   export default {
     name: "actor",
-    mixins: [LayoutMixin, TypicalAspectMixin, TriggerSnackbarMixin, NavBaseMixin],
+    mixins: [LayoutMixin, TypicalAspectMixin, TriggerSnackbarMixin, NavBaseMixin, FilterMixin],
     components: {
       GlobalRoleChip,
       ActorAdminEdit,
@@ -75,6 +76,9 @@
       },
       is_admin() {
         return this.$store.getters[USER_GLOBAL_ROLE] === ADMIN
+      },
+      search_config() {
+        return [this.get_actor_filter(this.registered_name)]
       }
     },
     methods: {

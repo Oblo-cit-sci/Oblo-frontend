@@ -113,6 +113,7 @@ import DomainLanguageMixin from "~/components/domain/DomainLanguageMixin";
 import AspectSet from "~/components/AspectSet"
 import Dialog from "~/components/dialogs/Dialog";
 import EditContextTitle from "~/components/util/EditContextTitle";
+import FilterMixin from "~/components/FilterMixin"
 
 export default {
   name: "profile",
@@ -125,7 +126,7 @@ export default {
     LoadFileButton,
     Aspect
   },
-  mixins: [PersistentStorageMixin, TriggerSnackbarMixin, LayoutMixin, TypicalAspectMixin, FixDomainMixin, GoToMixin, DomainLanguageMixin],
+  mixins: [PersistentStorageMixin, TriggerSnackbarMixin, LayoutMixin, TypicalAspectMixin, FixDomainMixin, GoToMixin, DomainLanguageMixin, FilterMixin],
   data() {
     const new_pwd = this.asp_password(null, "new")
     return {
@@ -304,8 +305,8 @@ export default {
       own_entries_uuids: ENTRIES_GET_OWN_ENTRIES_UUIDS
     }),
     entry_search_config() {
-      return [{name: 'actor', registered_name: this.registered_name},
-        {name: "status", value: "draft", "source_name": "local"}
+      return [this.get_actor_filter(this.registered_name),
+        this.get_drafts_filter()
       ]
     },
     registered_name() {
