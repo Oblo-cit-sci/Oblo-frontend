@@ -7,7 +7,8 @@
         div.mt-2(v-if="user_data.account_deactivated" style="color:red") {{$t("page.actor.deactivated")}}
       v-col
         v-row
-          v-img(:src="profile_pic" max-height=200 contain)
+          v-skeleton-loader.m-auto(width="80%" max-height="200px" type="image" loading v-if="!img_loaded")
+          v-img(:src="profile_pic" max-height=200 contain @load="img_loaded=true")
     h2 {{$t("page.actor.h1")}}
     v-row(v-for="aspect in profile_aspects" :key="aspect.name")
       v-col(cols=10)
@@ -54,6 +55,7 @@
             this.asp_public_name(),
             this.asp_actor_description()
         ],
+        img_loaded: false
       }
     },
     created() {
