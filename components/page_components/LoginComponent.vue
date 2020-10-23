@@ -12,7 +12,7 @@
             @aspectAction="aspect_action($event)"
             @update:error="a.error = $event")
         v-btn(@click='login' color='success' rounded autofocus large :disabled="any_invalid" :loading="login_loading") {{$t('page.login.btn_login')}}
-        div.mt-3
+        div.mt-3(@mousedown="page_change")
           nuxt-link(to="/basic/init_password_reset") {{$t('page.login.btn_forgot')}}
         div.mt-2(v-if="add_verification_resend_link")
           v-btn(@click="request_verification_mail" color="success" rounded) {{$t('page.login.btn_resend_mail')}}
@@ -20,7 +20,8 @@
       v-col(cols="6" md="3" offset-md="1")
         slot
           h3 {{$t("page.login.no_account")}}
-          nuxt-link(to="/register") {{$t("page.login.go_here_to_register")}}
+          div(@mousedown="page_change")
+            nuxt-link(to="/register" @mousedown="$emit('page_change')") {{$t("page.login.go_here_to_register")}}
 </template>
 
 <script>
@@ -38,6 +39,12 @@ export default {
   name: "LoginComponent",
   mixins: [TypicalAspectMixin, TriggerSnackbarMixin, PersistentStorageMixin, LoginMixin, NavBaseMixin, InitializationMixin],
   components: {Aspect},
+  props: {
+    go_home: {
+      type: Boolean,
+      default: true
+    }
+  },
   data() {
     const asp_password = this.asp_password()
     asp_password.attr.extra.enter_pressed = true
@@ -75,7 +82,10 @@ export default {
         this.clear_entries()
         const settings = this.user_settings
         this.complete_language_domains(settings.fixed_domain, settings.ui_language).then(() => {
-          this.home()
+          if(this.go_home) {
+            this.home()
+          }
+          this.$emit("logged_in")
         }, (err) => {
           console.log(err)
         })
@@ -98,6 +108,11 @@ export default {
       }).catch(err => {
         this.err_error_snackbar(err)
       })
+    },
+    page_change() {
+      setTimeout(() => {
+        this.$emit('page_change')
+      },200)
     }
   }
 }

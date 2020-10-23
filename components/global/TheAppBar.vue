@@ -10,12 +10,18 @@
           v-list-item-title.headline
             span {{domain_title}}
             span.ml-5(v-if="is_mdAndUp" :style="reduce_when_small") {{domain_headline}}
+        v-list-item-action.ml-8(v-if="show_login_btn")
+          v-btn(text large outlined rounded :style="{background:'white'}" @click="open_login")
+            v-icon(left) mdi-login
+            span {{$t('w.login')}}
       div(:style="display_debug") {{display_debug_text}} v{{version}}
       CreateEntryButton(v-if="show_create_entry_button" :style="create_button_style" :domain_data="domain_data" @create_entry="$emit('create_entry')")
+      Dialog(:dialog_open.sync="login_dialog_open")
+        LoginComponent(:go_home="false" @logged_in="login_dialog_open=false" @page_change="login_dialog_open=false")
 </template>
 
 <script>
-import {APP_CONNECTED, APP_CONNECTING, APP_INITIALIZED} from "~/store/app"
+import {APP_CONNECTED, APP_INITIALIZED} from "~/store/app"
 
 import {mapGetters, mapMutations} from "vuex"
 import {DOMAIN, DOMAIN_BY_NAME} from "~/store"
@@ -25,23 +31,25 @@ import CreateEntryButton from "~/components/CreateEntryButton";
 import ResponsivenessMixin from "~/components/ResponsivenessMixin";
 import URLQueryMixin from "~/components/util/URLQueryMixin";
 import DomainLanguageMixin from "~/components/domain/DomainLanguageMixin"
+import Dialog from "~/components/dialogs/Dialog"
+import LoginComponent from "~/components/page_components/LoginComponent"
 
 const pkg = require('~/package.json')
 
 export default {
   name: "TheAppBar",
   mixins: [NavBaseMixin, ResponsivenessMixin, URLQueryMixin, DomainLanguageMixin],
-  components: {CreateEntryButton},
-  props: {
-  },
+  components: {LoginComponent, Dialog, CreateEntryButton},
   data() {
     return {
       title: this.$store.getters[DOMAIN] ? this.$store.state.domain.title : HOME,
+      login_dialog_open: false
     }
   },
   computed: {
     ...mapGetters([DOMAIN]),
     ...mapGetters({
+      logged_in: "user/logged_in",
       connected: APP_CONNECTED,
       initialized: APP_INITIALIZED,
       domain_data: DOMAIN_BY_NAME,
@@ -103,6 +111,9 @@ export default {
     domain_data() {
       return this.$store.getters["domain_data"](this.query_param_domain_name, this.$store.getters["user/settings"].ui_language)
     },
+    show_login_btn() {
+      return this.smAndUp && !this.logged_in
+    },
     //
     version() {
       console.log(process.env.NODE_ENV)
@@ -111,7 +122,12 @@ export default {
   },
   methods: {
     ...mapMutations({switch_menu_open: 'menu/switch_open'}),
-  }
+    open_login() {
+      this.login_dialog_open=true
+      // console.log(this.$refs.login_dialog)
+      // this.$bus.$emit("global_dialog", this.$refs.login_dialog)
+    }
+  },
 }
 </script>
 

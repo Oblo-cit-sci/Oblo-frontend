@@ -1,6 +1,7 @@
 <template lang="pug">
-  v-dialog(v-model="dialog_open" :width="width" :persistent="persistent" :style="{'overflow-x':'hidden'}")
-    slot
+  v-dialog(:value="dialog_open" @click:outside="close" :width="width" :persistent="persistent" :style="{'overflow-x':'hidden'}")
+    v-sheet.pa-2(:color="color")
+      slot
 </template>
 
 <script>
@@ -10,15 +11,11 @@ export default {
   name: "Dialog",
   mixins: [DialogMixin],
   props: {
-    persistent: Boolean
-  },
-  data() {
-    return {}
-  },
-  created() {
-    console.log("dialog create")
-  },
-  methods: {
+    persistent: Boolean,
+    color: {
+      type: String,
+      default: "white"
+    }
   }
 }
 </script>

@@ -204,14 +204,10 @@ export default {
   // },
   methods: {
     download() {
-      //let entries = this.$store.getters[ENTRIES_GET_RECURSIVE_ENTRIES](this.uuid)
-      // entries = this.$_.map(entries, e => {
-      //   const clone = this.$_.cloneDeep(e)
-      //   delete clone.local
       //   return clone
       // })
-      //export_data(this.entry, this.download_title)
-      this.export_data(this.entry, this.download_title, "csv")
+      this.export_data(this.entry, this.download_title)
+      // this.export_data(this.entry, this.download_title, "csv")
       // this.$store.commit(ENTRIES_SET_DOWNLOADED, this.uuid)
     },
     // update_aspect_locs() {

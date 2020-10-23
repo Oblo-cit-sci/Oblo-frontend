@@ -7,7 +7,8 @@
       <!-- Profile image -->
       v-col
         v-row
-          v-img(:src="profile_pic" max-height=200 contain)
+          v-skeleton-loader.m-auto(width="80%" height="200px" type="image" loading v-if="!img_loaded")
+          v-img(:src="profile_pic" height=200 contain @load="img_loaded=true")
         v-row(style="margin-top:-10%" v-if="edit_mode")
           v-col(offset=7)
             LoadFileButton(
@@ -31,7 +32,7 @@
       h3 {{$t('page.profile.h_email_password')}}
       v-btn(color="info" v-if="!password_edit" @click="security_dialog_open=true") {{$t('page.profile.bt_change_email_pwd')}}
       Dialog(:dialog_open.sync="security_dialog_open" persistent)
-        v-sheet.pa-1(color="white")
+        div
           EditContextTitle(v-if="!email_edit && !password_edit" :edit.sync="security_dialog_open" :label="$t('page.profile.h_email_password')" back_icon="mdi-close")
           EditContextTitle.pt-1(v-if="!password_edit" :edit.sync="email_edit"
             :label="$t('asp.email.label')" :value="email_aspects.email.value")
@@ -134,6 +135,7 @@ export default {
       profile_version_ts: Math.floor(new Date().getTime() / 1000),
       grab_map_selection: false, // when coming back from the map
 
+      img_loaded: false,
       security_dialog_open: false,
       email_edit: false,
       password_edit: false,

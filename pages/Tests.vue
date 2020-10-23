@@ -3,13 +3,15 @@
     AspectSet(:aspects="aspects" mode="edit" :values.sync="values")
     div {{values}}
     Aspect(:aspect="multitest" mode="edit" :ext_value.sync="multitest.value")
-    MultipageDialog(:dialog_open="dialog_open"
-      :page_data="page_data"
-      :act_page.sync="page"
-      :finnish_action="action"
-      :globals="globals"
-      :generated_data_template="generated_data_template"
-      @cancel="cancel")
+    <!--    MultipageDialog(:dialog_open="dialog_open"-->
+    <!--      :page_data="page_data"-->
+    <!--      :act_page.sync="page"-->
+    <!--      :finnish_action="action"-->
+    <!--      :globals="globals"-->
+    <!--      :generated_data_template="generated_data_template"-->
+    <!--      @cancel="cancel")-->
+    div(@mousedown="click()")
+      nuxt-link(to="/tests?cool") clicky
 </template>
 
 <script>
@@ -105,7 +107,11 @@ export default {
     }
   },
   computed: {},
-  methods: {},
+  methods: {
+    click() {
+      console.log("click")
+    }
+  },
   watch: {}
 }
 </script>

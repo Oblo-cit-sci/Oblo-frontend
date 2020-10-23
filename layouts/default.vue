@@ -12,6 +12,7 @@
     TheSnackbar
     ThePrivacySheet
     DecisionDialog
+
     <!--    v-fab-transition-->
     <!--      v-btn.help_button(float large fab color="info")-->
     <!--        v-icon mdi-help-->
@@ -30,6 +31,11 @@ import DecisionDialog from "~/components/util/DecisionDialog"
 export default {
   components: {DecisionDialog, NotificationBanner, MenuContainer, TheAppBar, ThePrivacySheet, TheSnackbar},
   mixins: [InitializationMixin, NavBaseMixin],
+  data() {
+    return {
+      global_dialog_comp: null
+    }
+  },
   computed: {
     menu_over() {
       return this.is_domain_page
@@ -42,7 +48,7 @@ export default {
         }
       }
     },
-  },
+  }
 }
 </script>
 

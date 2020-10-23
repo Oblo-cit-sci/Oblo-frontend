@@ -1,6 +1,6 @@
 <template lang="pug">
   Dialog(:dialog_open.sync="dialog_open" persistent)
-    v-sheet.pa-1(color="white")
+    div
       ButtonTitleToolbar(:title="page_title" btn_icon="back_icon" @btn_pressed="back()")
       v-btn(@click="next()" small outlined color="blue" :loading="next_loading") {{next_btn_text}}
 </template>
