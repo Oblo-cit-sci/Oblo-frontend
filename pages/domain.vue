@@ -51,6 +51,7 @@ export default {
     }
   },
   created() {
+    // console.log("domain created")
     // console.log("domain page created", this.$route.fullPath)
     if (!dev_env()) {
       window.history.replaceState(null, document.title, "/licci")
@@ -75,11 +76,6 @@ export default {
       this.$store.commit("search/replace_in_act_config", this.config_generate(config[0].name, config[0].value))
     }
     // get the default templates of the domain
-    if (this.$store.getters["search/get_act_config"].length === 0) {
-      // console.log("setting default")
-      const generated = this.config_generate(TEMPLATE, this.$_.get(this.domain_data, "search.default_templates", []))
-      this.$store.commit("search/replace_in_act_config", generated)
-    }
   },
   beforeRouteLeave(from, to, next) {
     if (!dev_env()) {

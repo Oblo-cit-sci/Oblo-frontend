@@ -10,6 +10,7 @@
       :preview_options="preview_options"
       :search_config="search_config"
       :include_filters="filters"
+      :domain_data="actual_lang_domain_data"
       @all_received_uuids="$emit('all_received_uuids', $event)"
       :prominent_filters="prominent_filters"
       @preview_action="preview_action($event)")
@@ -53,6 +54,9 @@ export default {
       const tags_filter_options = this.get_tags_filter_options(this.domain_name)
       // const uuids_select_option = get_uuids_select_option()
       return [template_filter_options, tags_filter_options]
+    },
+    actual_lang_domain_data() {
+      return this.ui_lang_domain_data(this.domain_name)
     },
     prominent_filters() {
       // console.log(this.$_.get(this.domain_data, "filters.prominent_filters"))

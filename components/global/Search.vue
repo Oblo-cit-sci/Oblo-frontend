@@ -60,7 +60,7 @@ import {
 import PersistentStorageMixin from "../util/PersistentStorageMixin";
 import {route_change_query} from "~/lib/util";
 import Filterlist from "~/components/util/Filterlist"
-import {QP_D, QP_SEARCH} from "~/lib/consts"
+import {QP_D, QP_SEARCH, TEMPLATE} from "~/lib/consts"
 import EntrySearchMixin from "~/components/EntrySearchMixin"
 import Aspect from "~/components/Aspect"
 import {aspect_default_value, unpack} from "~/lib/aspect"
@@ -85,6 +85,9 @@ export default {
       default: true
     },
     preview_options: {
+      type: Object
+    },
+    domain_data: { // to set default search templates
       type: Object
     },
     // filter all entries before
@@ -114,7 +117,7 @@ export default {
   },
   created() {
     // console.log("search created")
-    let start_search = false
+
     const last_route = this.$store.getters[SEARCH_GET_ROUTE]
     // console.log(last_route)
     if (this.$route.query.search) {
@@ -123,14 +126,20 @@ export default {
     const this_route_data = this.act_relevant_route_data()
     // console.log(this_route_data, this.$_.isEqual(last_route, this_route_data))
     if (!this.$_.isEqual(last_route, this_route_data)) {
-      // console.log("no clearing")
+      // console.log("new to page. getting entries")
       this.clear()
       this.$store.commit(SEARCH_SET_ROUTE, this_route_data)
-      this.get_entries(false, false)
+      // the default changes triggering config change will trigger a search
+      if (this.$store.getters["search/get_act_config"].length === 0 && this.domain_data) {
+        const generated = this.config_generate(TEMPLATE, this.$_.get(this.domain_data, "search.default_templates", []))
+        this.$store.commit("search/replace_in_act_config", generated)
+      } else {
+        this.get_entries(false, false)
+      }
     } else {
       // if uuids are selected, no search/update required.
       if (!this.select_uuids_config()) {
-        // console.log("prepend")
+        // console.log("prepend. getting entries")
         this.prepend_search = true
         this.get_entries(true, false)
       }
@@ -144,9 +153,11 @@ export default {
         // this uses now, the domain only filter.
         // could later be replaced by, last search or all local in that domain (like it is now)
         this.$router.push(route_change_query(this.$route, {}, false, ["search"]))
+        // console.log("kw gone. get entries")
         this.get_entries()
       } else if (kw.length >= this.kw_char_thresh) {
         this.$router.push(route_change_query(this.$route, {"search": kw}))
+        // console.log("kw get entries")
         this.get_entries()
       }
     },
@@ -161,6 +172,7 @@ export default {
       }
     },
     act_config(val, prev_val) {
+      // console.log("config change", val, prev_val)
       // console.log("act_config", val) //, prev_val, this.$_.isEqual(val, prev_val))
       // todo special treatment here:
       // if the template changed kickout the tags
@@ -213,6 +225,7 @@ export default {
       if (update_config) {
         this.$store.commit("search/set_act_config", new_config)
       } else {
+        // console.log("config change get entries")
         // if a prominent filter changed debounce
         this.get_entries(false, prominent_filter_changed)
       }
@@ -286,6 +299,7 @@ export default {
       }
     },
     get_entries(before_last = false, debounce = true) {
+      // console.log("get_entries", before_last, before_last)
       const select_uuids = this.select_uuids_config()
       if (select_uuids) {
         this.fetch_select_uuids(select_uuids)

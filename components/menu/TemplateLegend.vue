@@ -79,6 +79,7 @@
             text: config.map(cf => cf.text).join(", ")
           })
         }
+        console.log("legend update search config")
         this.$store.commit("search/set_act_config", act_config)
       }
     }

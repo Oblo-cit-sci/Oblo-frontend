@@ -22,6 +22,7 @@ export default {
       return this.domain_data.title
     },
     domain_data() {
+      // todo this doesnt give the language domain_data
       return this.set_domain_data || this.all_domains(this.domain_name)
     },
     // todo, not sure if used
