@@ -1,6 +1,6 @@
 <template lang="pug">
   v-slide-group(v-if="slide" :show-arrows="true" class="custom-chip-group")
-    v-chip(class="custom-chip" v-for="tag in tag_list" :key="tag" outlined @click="search(tag)") {{tag}}
+    v-chip(class="custom-chip" v-for="tag in tag_list" :key="tag" outlined) {{tag}}
   div(v-else)
     div(v-for="tag in tag_list" :key="tag")
       v-chip.mt-2(class="custom-chip" outlined) {{tag}}
