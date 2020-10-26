@@ -144,6 +144,14 @@ export default {
         this.get_entries(true, false)
       }
     }
+
+    this.$bus.$on("trigger_search", () => {
+      this.get_entries(true, false)
+    })
+  },
+  beforeDestroy() {
+    // TODO WHY IS THIS REQUIRED. or why is bus listener added anytime we have this comp. created. so it would trigger many times...
+    this.$bus.$off("trigger_search")
   },
   watch: {
     keyword: function (kw) {

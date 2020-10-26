@@ -236,6 +236,9 @@ export default {
       }
     })
 
+    this.$bus.$on("trigger_search", () => {
+      this.load_map_entries(this.domain_name)
+    })
   },
   beforeDestroy() {
     // todo consider padding from menu
@@ -247,6 +250,9 @@ export default {
         }
       })
     }
+    this.$bus.$off("map-marker-show")
+    this.$bus.$off("map-marker-hide")
+    this.$bus.$off("trigger_search")
   },
   methods: {
     check_entries_map_done() {
@@ -267,6 +273,9 @@ export default {
       const source_name = layer_base_id + "_source"
       this.update_filtered_source()
 
+      if(this.layers_created) {
+        return
+      }
       // cluster layer
       const cluster_layer_name = layer_base_id + '_clusters'
       const cluster_layer = this.map.getLayer(cluster_layer_name)
@@ -275,6 +284,7 @@ export default {
       // entries layer
       const entries_layer_name = layer_base_id + '_entries' // all_entries_entries
       // console.log(entries_layer_name)
+      // console.log("l",this.map.getLayer(entries_layer_name))
       this.add_entry_layer(source_name, entries_layer_name, {
         'circle-color': [
           'match',
@@ -456,6 +466,7 @@ export default {
         console.log("cluster layer exists already")
       }
 
+      this.layers_created = true
     },
     update_filtered_source() {
       // console.log("update_filtered_source", this.selected_entry)

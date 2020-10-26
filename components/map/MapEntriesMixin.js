@@ -32,11 +32,6 @@ export default {
         console.log(err)
       })
     },
-    guarantee_entries_loaded() {
-      if (!this.entries_loaded) {
-
-      }
-    },
     get_my_locations() {
       // this.guarantee_entries_loaded()
       const my_uuids = this.get_my_entries_uuids()

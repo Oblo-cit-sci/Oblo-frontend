@@ -84,6 +84,9 @@ export default {
         this.complete_language_domains(settings.fixed_domain, settings.ui_language).then(() => {
           if(this.go_home) {
             this.home()
+          } else {
+            // watched by Search.vue and MapWrapper
+            this.$bus.$emit("trigger_search")
           }
           this.$emit("logged_in")
         }, (err) => {
