@@ -285,8 +285,8 @@ export default {
         "circle-radius": [
           'case',
           ["boolean", ['feature-state', 'hover'], false], //["any", ["boolean", ['feature-state', 'hover'], false], ["boolean", ['feature-state', 'selected'], false]],
-          9,//12,
-          7//8
+          7,
+          5//12,6//8
         ],
         "circle-stroke-color": [
           "match",

@@ -4,7 +4,7 @@
       ref="create_button"
       x-large
       v-bind="bp_based_main_create_btn_props"
-      color="#ff0000"  @click="create_from_main_template")
+      color="#b88cf1"  @click="create_from_main_template")
       span(v-if="show_main_template_create_text") {{main_template.create_text}}
       v-icon mdi-plus
     v-btn.additional_templates_button(dark x-small absolute bottom fab v-if="can_create_multiple_etypes"
@@ -31,7 +31,6 @@ export default {
     }
   },
   mounted() {
-    console.log()
     this.button_width = this.$refs.create_button.$el.offsetWidth
   },
   computed: {

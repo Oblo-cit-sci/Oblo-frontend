@@ -159,14 +159,14 @@ export default {
           const set_domain = this.$store.getters["user/settings"].fixed_domain || NO_DOMAIN
           this.$store.commit("set_domain", this.$store.getters["domain_by_name"](set_domain))
           this.$store.dispatch(APP_CONNECTED)
-          // console.log("initialize multiple domains?", this.has_multiple_domains)
+          //console.log("initialize multiple domains?", this.has_multiple_domains)
           if (!this.has_multiple_domains) {
             this.fix_domain(this.get_one_domain_name)
             // todo, maybe this should be replaces by something in the store
             // similar the change of the home route...
             default_settings.fixed_domain = this.get_one_domain_name
             if (this.$route.name === PAGE_INDEX) {
-              this.to_domain(this.$store.getters.domains[0].name, true)
+              this.to_domain(this.get_one_domain_name.name, true)
               setTimeout(() => {
                 this.$store.commit(APP_INITIALIZED)
               }, 80)

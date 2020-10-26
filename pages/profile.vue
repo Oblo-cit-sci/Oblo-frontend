@@ -288,7 +288,7 @@ export default {
                 "accept": "image/jpeg"
               }
             }).catch(err => {
-              console.log("CORS error probably ok", err)
+              console.log("CORS error probably ok ON DEV")
             })
           })
           .catch((err) => {
