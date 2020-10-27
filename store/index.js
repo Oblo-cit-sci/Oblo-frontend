@@ -28,7 +28,7 @@ export const state = () => ({
   // comes by init
   codes: {},
   domains: [],
-  domain: {},
+  domain: NO_DOMAIN,
   // prevent that the save and back is messing up, should not go back to a child. e.g.
   // stores either domain or my entries page or a parent entry
   page_path: [],
@@ -53,11 +53,11 @@ export const mutations = {
       state.codes[code_entry.slug] = code_entry
     }
   },
-  set_domain(state, domain) {
-    state.domain = domain
+  set_domain(state, domain_name) {
+    state.domain = domain_name
   },
   clear_domain(state) {
-    state.domain = state.domains.find(d => d.name === NO_DOMAIN)
+    state.domain = NO_DOMAIN
   },
   delete_domain(state, domain_name) {
     state.domains = ld.filter(state.domains, domain => domain.value !== domain_name)
@@ -106,8 +106,11 @@ export const getters = {
       return (state.codes[code_name])
     }
   },
-  domain(state) {
+  domain_name(state) {
     return state.domain
+  },
+  domain(state, getters) {
+    return getters.domains[state.domain]
   },
   domain_by_name(state) {
     return domain_name => {
@@ -122,8 +125,8 @@ export const getters = {
   available_languages(state) {
     return state.available_languages
   },
-  domain_title(state) {
-    return state.domain.title
+  domain_title(state, getters) {
+    return getters.domain.title
   },
   domains(state) {
     return state.domains

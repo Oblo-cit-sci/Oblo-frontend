@@ -1,266 +1,420 @@
 {
-  "menu": {
-    "home": "Inicio",
-    "profile": "Perfil",
-    "map": "Mapa",
-    "login": "@.capitalize:w.login",
-    "logout": "Desconectar",
-    "register": "@.capitalize:w.register",
-    "admin": "Admin",
-    "tests": "Test"
-  },
-  "index": {
-    "p1": "Con una cuenta en {server_name} podrás crear contribuciones y unirte a grupos.",
-    "about_a": "Sobre el projecto",
-    "privacy_a": "Política de privacidad",
-    "btn_login": "@:w.login",
-    "btn_register": "@:w.register"
-  },
-  "about": {
-    "h1": "Sobre OpenTEK",
-    "h2": "Objetivos y motivación",
-    "2p1": "OpenTEK es una plataforma de software libre para documentar y compartir el conocimiento ecológico tradicional (CET). Concretamente, OpenTEK se centra en conocimientos relativos al uso y manejo de la (agro)biodiversidad y los impactos del cambio climático.",
-    "2p2": "La plataforma está diseñada como una web-app progresiva (PWA) permitiendo al usuario tanto la visualización de contenido geolocalizado como la contribución de datos nuevos desde cualquier dispositivo y mientras se está en el campo.",
-    "2p3": "OpenTEK está vinculada a dos projectos de ciencia ciudadana que documentan conocimiento ecológico tradicional en el mundo: LICCI (www.licci.eu) y CONECT-e (www.conecte.es).",
-    "2p4": "LICCI pretende incorporar el conocimiento local a la ciéncia y políticas climáticas. Para ello, LICCI documenta y clasifica observaciones locales de los impactos del cambio climático (e.j., cambios en los patrones de lluvia o impactos de cambios meteorológicos en la abundance de especies animales).",
-    "2p5": "CONECT-e pretende revitalizar y proteger el conocimiento ecológico tradicional relativo a plantas y variedades en España. Para ello, CONECT-e documenta (y protege con licencias Creative Commons) el nombre, uso y manejo tradicional de las plantas (e.j., usos medicinales de las plantas o nombres y prácticas de manejo de variedades tradicionales).",
-    "h3": "Condiciones de uso",
-    "3p1": "Registerarse en OpenTEK implica que el usuario o su tutor acepta de manera libre e informada la transferencia de sus datos a la plataforma bajo las siguientes condiciones:",
-    "3p2": "- Toda la información en la plataforma puede ser usada con fines científicos tras ser anonimizada.",
-    "3p3": "- Todos los usuarios tienen derecho a retirarse del proyecto y eliminar su perfil y contribuciones en la plataforma en cualquier momento y sin que esto conlleve consecuencias negativas",
-    "3p4": "- Los datos personales que introduzca el usuario en su perfil de manera voluntaria serán tratados con confidencialidad y sólo serán utilizados para fines científicos, sin que estos sean públicos.",
-    "3p5": "- El conocimiento ecológico tradicional que el usuario contribuya de manera voluntaria será compartido bajo las opciones de licencia y privacidad que el usuario elija",
-    "3p6": "- Para más información sobre sus derechos como sujeto de estudio puede contactar con el Comité de Ética en Experimentación Animal y Humana de la Universidad Autónoma de Barcelona mediante email (ceeah@uab.cat)",
-    "h4": "Financiación",
-    "4p1": "Esta aplicación está financiada fundamentalmente por los proyectos LICCI e ICCION del European Research Council (Nr. FP7-771056-LICCI y ERC-2019-PoC-899209).",
-    "4p2": "Esta aplicación también recibió fondos del programa de investigación e innovación Horizon 2020 de la Unión Europea. El JRC, o según sea el caso, la Comisión Europea, no será responsable de ningún daño directo o indirecto, incidental, consecuente u otro daño, que incluye, entre otros, la pérdida de datos, la pérdida de beneficios o cualquier otra pérdida financiera derivada del uso de esta aplicación, o la imposibilidad de usarla, incluso si se notifica al JRC sobre la posibilidad de tales daños.",
-    "h5": "Política de privacidad",
-    "h6": "Plataforma OpenTEK",
-    "6p1": "OpenTEK sólo guarda datos que el usuario cede libre y voluntariamente. No usamos cookies ni incluimos ninguna cookie de terceros. Sólo guardamos datos que el usuario introduce directamente en su perfil público o en las contribuciones que crea y a las que contribuye.",
-    "h7": "Mapbox API",
-    "7p1": "Estamos usando la API de mapbox para vidualizar mapas. APIs y Mobile SDKs: Guardamos automáticamente algunas informaciones técnicas cuando nuestra API lo solicita, incluyendo (a) dirección IP, (b) información de dispositivo y navegador, (c) sistema operativo, (d) el contenido de la solicitud, (e) la fecha y hora de la solicitud, y (f) datos de ubicación y uso limitados. Eliminamos la dirección IP después de 30 dias. Además, cuándo una aplicación usa nuestra SDK para acceder a nuestra API, puede enviarnos algunos datos de ubicación y uso junto acon un ID efímera. Eliminamos este ID en el plazo de 24 horas y no lo asociamos ni asociamos los datos de ubicación móvil con nunguna información que pueda identificar a la persona, incluyendo nombres, IDs permanentes, direcciones de email, direcciones IP, o números de teléfono. También guardamos ID's generadas aleatoriamente con el fin limitado de analizar el uso de nuestras APIs, incluyendo el número de usuarios activos. eliminaremos estos ID aleatorios y el contenido de las solicitudes hechas a nuestras APIs después de 36 meses. Ver más detalles aquí:",
-    "mb_a": "Mapbox Privacy policy"
-  },
-  "register": {
-    "h1": "Registrarse",
-    "btn_register": "@:w.register"
-  },
-  "login": {
-    "h1": "@.capitalize:w.login",
-    "btn_login": "@:w.login",
-    "btn_forgot": "Olvidó la contraseña?"
-  },
-  "profile": {
-    "h1": "Información general",
-    "btn_change_password": "Cambiar contraseña",
-    "btn_settings": "Ajustes",
-    "btn_edit_profile": "Editar perfil",
-    "btn_cancel": "@:w.cancel",
-    "btn_save": "@:w.save",
-    "btn_save_password": "Guardar contraseña",
-    "btn_delete": "Eliminar cuenta de usuario",
-    "h2": "Tus @:w.entries",
-    "h3": "Preguntas específicas de la sección"
-  },
-  "actor": {
-    "h1": "@:profile.h1",
-    "h2": "@.capitalize:w.entries",
-    "deactivated": "Esta usuario ya no está activo",
-    "admin.asp_global_role": "Rol global",
-    "admin.asp_editor_for_domain": "Editor de sección",
-    "admin.btn_update": "@:w.update"
-  },
-  "init_password_reset": {
-    "h1": "Reestablecer contraseña",
-    "btn_send": "Enviar email"
-  },
-  "settings": {
-    "h1": "Ajustes",
-    "asp": {
-      "location_privacy": {
-        "label": "Privacidad de ubicaciones",
-        "descr": "Especifica tus ajustes para proteger la ubiacación exacta de tus contribuciones",
-        "options": {
-          "exact": "Ubicación exacta",
-          "random": "Ubicación con error aleatorio"
-        }
+  "page": {
+    "index": {
+      "p1": "With an account on {server_name} you'll be able to create entries and join groups.",
+      "about_a": "About The Project",
+      "privacy_a": "Privacy Policy",
+      "btn_login": "@:w.login",
+      "btn_register": "@:w.register"
+    },
+    "domain": {
+      "create_entry_dialog_title": "Create an new entry"
+    },
+    "about": [
+      {
+        "h1": "About OpenTEK"
+      },
+      {
+        "h2": "Goals and Background",
+        "p": [
+          "OpenTEK is a free and open source platform to document and share traditional ecological knowledge (TEK). Specifically, OpenTEK's focuses on knowledge related to the use and management of (agro)biodiversity and the impacts of climate change.",
+          "The platform is designed as a progressive web-app (PWA) allowing users both to visualize existing geolocalized data and to collect new data from any device and while in the field.",
+          "OpenTEK is linked to two citizen science projects documenting traditional ecological knowledge around the world: LICCI (www.licci.eu) and CONECT-e (www.conecte.es).",
+          "LICCI wants to bring insights from local knowledge to climate research and policy. To do that, LICCI documents and classifies local observations of climate change impacts (e.g., changes in rainfall patterns or impacts of weather changes on wild animal abundance).",
+          "CONECT-e aims to revitalize and protect traditional ecological knoweldge related to plants and landraces in Spain. To do so, CONECT-e documents (and protects with Creative Commons licenses) plant's traditional uses, management and local names (e.g., medicinal plant uses or landrace names and cultivation practices)."
+        ]
+      },
+      {
+        "h2": "Funding",
+        "p": [
+          "This application is funded primarily by the LICCI and ICCION projects of the European Research Council (Grant Agreement Nr. FP7-771056-LICCI and ERC-2019-PoC-899209).",
+          "This application has also received funding from the European Union’s Horizon 2020 research and innovation programme. The JRC, or as the case may be the European Commission, shall not be held liable for any direct or indirect, incidental, consequential or other damages, including but not limited to the loss of data, loss of profits, or any other financial loss arising from the use of this application, or inability to use it, even if the JRC is notified of the possibility of such damages."
+        ]
+      },
+      {
+        "h2": "Terms of use",
+        "flag": "TERMS_OF_USE",
+        "p": [
+          "Registration in OpenTEK implies the express free informed consent of the user or its carer/guardian to participate and transfer their personal data and traditional knowledge to the platform under the following conditions:",
+          "- All information in the platform will be anonymized and only used for research and advocacy purposes, without it being transferred to third parties.",
+          "- All users have the right to withdraw from the project and delete their profile data and entries from the platform at any time they wish.",
+          "- The personal profile data voluntarily provided by the user will be treated confidentially and only used for research purposes, without it being public.",
+          "- The traditional ecological knowledge voluntarily provided by the user will be shared under the privacy and license options the user selects",
+          "- All users have the right to present claims to the Catalan Data Protection Authority and to reach out to the UAB data protection service (proteccio.dades@uab.cat). For more information about your rights as a research subject, you can also contact the Ethics Commission of the Autonomous University of Barcelona at ceeah@uab.cat"
+        ]
+      },
+      {
+        "h2": "Privacy Policy"
+      },
+      {
+        "h3": "OpenTEK platform",
+        "p": [
+          "OpenTEK only collects data the user is freely and willingly providing. We do not use cookies nor do we include any 3rd party cookies. We only store the data that you directly provide in your public user profile or in the entries you create or contribute to. Users agree that the data which they provide will be transferred to and stored within the borders of the EU."
+        ]
+      },
+      {
+        "h3": "Mapbox API",
+        "html": "<p>We are making use of the mapbox API for map display. APIs and Mobile SDKs: We automatically collect certain technical information whenever requests are made to our APIs, including (a) IP address, (b) device and browser information, (c) operating system, (d) the content of the request, (e) the date and time of the request, and (f) limited location and usage data. We delete IP addresses after 30 days. In addition, when a mobile application uses our SDKs to access our APIs, it may send us certain limited location and usage data along with an ephemeral ID. We delete this ephemeral ID within 24 hours and do not associate it or the unprocessed mobile location data with any personally identifying information, including names, permanent IDs, email addresses, IP addresses, or phone numbers. We also collect randomly-generated IDs for the limited purpose of analyzing the use of our APIs, including the number of active users. We will delete the randomly generated IDs and the content of requests made to our APIs after 36 months. See more details here: <a href='https://www.mapbox.com/legal/privacy' target='_blank'>Mapbox Privacy policy</a><p>"
+      }
+    ],
+    "register": {
+      "h1": "Registration",
+      "btn_register": "@:w.register",
+      "i_agree_with": "I agree with the",
+      "terms_of_use": "terms of use"
+    },
+    "login": {
+      "h1": "@.capitalize:w.login",
+      "btn_login": "@:w.login",
+      "btn_resend_mail": "Resend verification email",
+      "btn_forgot": "Forgot password?",
+      "login_successful": "Login successful",
+      "not_a_user": "Not a user",
+      "no_account": "No Account yet?",
+      "go_here_to_register": "Click here to register!"
+    },
+    "profile": {
+      "h_public": "Public information",
+      "h_research": "Research related information",
+      "research_info": "Answering these questions is optional. The information is only used for research purposes of the creator of OpenTEK",
+      "h_domain": "Domain specific questions",
+      "h_email_password": "Email address and password",
+      "bt_change_email_pwd": "Change email and password",
+      "btn_change_password": "Change password",
+      "btn_settings": "Settings",
+      "btn_edit_profile": "Edit profile",
+      "btn_cancel": "@:w.cancel",
+      "btn_save": "@:w.save",
+      "btn_delete": "Delete account",
+      "h_entries": "Your @:w.entries",
+      "msgs": {
+        "email_changed": "Email updated",
+        "password_changed": "Password updated"
       }
     },
-    "btn_update": "@:w.update"
+    "actor": {
+      "h1": "@:page.profile.h_public",
+      "h2": "@.capitalize:w.entries",
+      "deactivated": "This user is no longer active",
+      "admin": {
+        "asp_global_role": "Global role",
+        "asp_editor_for_domain": "Editor for domain"
+      }
+    },
+    "init_password_reset": {
+      "h1": "Password reset",
+      "btn_send": "Send email"
+    },
+    "password_reset": {
+      "h1": "Password reset",
+      "btn_send": "Set new password"
+    },
+    "reset_mail_sent": {
+      "h1": "Check your email",
+      "p1": "We've sent an email to your address. Click the link in the email to reset your password.",
+      "p2": "If you don't see the email, check other places it might be, like your junk, spam, social, or other folders.",
+      "a": "I didn't receive the email"
+    },
+    "settings": {
+      "h1": "Settings",
+      "asp": {
+        "location_privacy": {
+          "label": "Location privacy",
+          "description": "Specify the settings for the protection of the exact locations of your entries",
+          "options": {
+            "exact_location": "Exact location",
+            "randomly_moved": "Randomly moved",
+            "always_ask": "Always ask"
+          }
+        }
+      },
+      "fixed_domain": {
+        "h1": "Fixed domain",
+        "p": "You are only seeing the domain",
+        "p2": "However there are more domains to explore. Resetting your fixed domain, will show you a domain overview on the home page. Click the button to reset the fixed domain.",
+        "btn_reset": "Reset fixed domain"
+      },
+      "settings_updated": "Settings updated"
+    },
+    "delete_account": {
+      "h1": "Delete your account",
+      "p1": "If you have not posted content publicly, all the private entries that you created without any collaborator and user information will be permanently deleted. If you have posted entries publicly, these entries will continue to be stored and publicly available and we will continue to retain basic user data (you username and public name) so your connection with them is preserved. All private entries without other collaborators will be deleted. Those with collaborators will remain.",
+      "h2": "The following entries will be deleted",
+      "h3": "Please provide your credentials to verify your identity",
+      "btn_delete": "Delete account"
+    }
   },
   "asp": {
     "username": {
       "label": "@:w.username",
-      "rule_length": "@:w.username debe tener al menos 4 caracteres",
-      "rule_pattern": "Solo aceptamos minúsculas"
+      "rule_length": "@:w.username must have at 4 characters",
+      "rule_pattern": "Only lowercase characters are allowed"
     },
     "user_query": {
-      "label": "Usuario o email",
-      "rule": "El contenido no parece ser un usuario o email válido"
+      "label": "Username or email",
+      "rule": "Input doesn't seem to be a valid username nor email address"
     },
     "password": {
-      "label": "Contraseña",
-      "rule_length": "La contraseña debe tener al menos 8 caracteres",
-      "rule_repeat_match": "Las contraseñas no coinciden",
+      "label": "Password",
+      "rule_length": "Password must have at least 8 characters",
+      "rule_repeat_match": "Passwords do not match",
       "alt_label": {
-        "repeat": "Repite la contraseña",
-        "current": "Contraseña actual",
-        "new": "Nueva contraseña",
-        "repeat_new": "Repite la nueva contraseña"
+        "repeat": "Repeat password",
+        "current": "Current password",
+        "new": "New password",
+        "repeat_new": "Repeat new password"
       }
     },
     "email": {
       "label": "Email",
-      "rule": "Email no válido"
+      "rule": "Email not valid"
     },
     "public_name": {
-      "label": "Nombre público",
-      "rule_length": "Tu nombre público debe tener entre 2 y 30 caracteres"
+      "label": "Public name",
+      "rule_length": "Your public name must have between 2 and 30 characters"
     },
     "user_description": {
       "label": "@.capitalize:w.description",
-      "descr": "Escribe algo sobre tí mismo/a"
+      "descr": "Write something about yourself and about your background"
     },
     "privacy": {
-      "label": "Privacidad",
-      "descr": "Quieres que tu contribución sea visible?",
+      "label": "Privacy",
+      "descr": "Should this entry be publicly visible?",
       "alt_label": {
-        "default": "Privacidad por defecto"
+        "default": "Default privacy"
       },
       "alt_descr": {
-        "default": "Escoge una privacidad por defecto para todas tus contribuciones"
+        "default": "Choose a default privacy for all your entries"
       },
       "options": {
         "public": {
-          "text": "Pública",
-          "descr": "Cualquiera puede ver tu contribución.",
+          "text": "Public",
+          "descr": "Everyone can see this entry.",
           "alt_descr": {
-            "default": "Las contribuciones públicas son visibles para cualquiera"
+            "default": "Public entries are visible to everyone"
           }
         },
         "private": {
-          "text": "Privada",
-          "descr": "Sólo tú y aquellos usuarios con quienes compartas la contribución podrán verla.",
+          "text": "Private",
+          "descr": "Only you or users you shared the entry with can see it.",
           "alt_descr": {
-            "default": "Las contribuciones privadas son sólo visibles para aquellos usuarios que tu elijas"
+            "default": "Private entries are only visible to those you share them with"
           }
         }
       }
     },
     "license": {
-      "label": "Licencia",
-      "descr": "Escoge una licencia para esta contribución",
+      "label": "License",
+      "descr": "Choose a license for this entry",
       "alt_label": {
-        "default": "Licencia por defecto"
+        "default": "Default license"
       },
       "alt_descr": {
-        "default": "Escoge una licencia por defecto para todas tus contribuciones"
+        "default": "Choose a default license for your entries"
       }
     },
     "entry_roles": {
-      "label": "Colaboradores y acceso",
+      "label": "Collaborators and entry access",
+      "descr": "Grant access to other users",
       "roles": {
+        "creator": {
+          "label": "Creator",
+          "descr": "Creator/owner of this entry"
+        },
         "collaborator": {
-          "label": "Colaborador",
-          "descr": "Los colaboradores pueden editar esta contribución igual que tú (excepto los apartados de privacidad, licencia y acceso)."
+          "label": "Collaborator",
+          "descr": "Collaborators can edit this entry as you can (except for changing the privacy, license and roles)."
         },
         "shared": {
-          "label": "Visible para",
-          "descr": "Estos usuarios pueden leer tu contribución incluso si es privada"
+          "label": "Visible to",
+          "descr": "The following users can read your entry even if it's private"
         }
+      },
+      "search": {
+        "min-msg": "select at least {min} user"
       }
     }
   },
   "comp": {
+    "menu": {
+      "home": "Inicio",
+      "profile": "Perfil",
+      "map": "Mapa",
+      "login": "@.capitalize:w.login",
+      "logout": "Desconectar",
+      "register": "@.capitalize:w.register",
+      "admin": "Admin",
+      "tests": "Test"
+    },
+    "notification_banner": {
+      "complete_profile": "Complete your Profile",
+      "complete_domain_aspects": "Answer some {domain_name} related questions"
+    },
+    "multiselect_asp": {
+      "min_rule": "not enough items selected",
+      "max_rule": "too many items selected"
+    },
+    "image_asp": {
+      "no_images": "No images",
+      "cover_image": "cover image",
+      "not_found": "Image could not be loaded",
+      "not_found_draft": "Image has been removed"
+    },
     "entry_validation": {
-      "h1": "Validación",
-      "has_missing": "Aspectos pendientes o incompletos:",
-      "has_missing_t": "Las contribuciones incompletas no pueden enviarse. Por favor, añade la información que falta o guarda tu contribución como borrador.",
-      "ok": "Todos los valores de esta contribución están bien.",
+      "h1": "Validation",
+      "has_missing": "Missing or incomplete aspects:",
+      "has_missing_t": "Incomplete entries cannot be submitted. Please, add the missing information or save your entry as a draft.",
+      "ok": "All values in this entry are ok.",
       "msgs": {
-        "missing": "{aspect_label} pendiente",
-        "list_not_enough": "{aspect_label} requiere completar el {item_name}",
-        "composite_incomplete": "  no esta completa: falta algún componente: {invalid_components_msgs}",
-        "listitem_incomplete": "{aspect_label} tiene al menos un item incompleto: {invalid_item_msgs}"
+        "missing": "{aspect_label} missing",
+        "list_not_enough": "{aspect_label} requires more {item_name}",
+        "composite_incomplete": "  is not complete: missing components: {invalid_components_msgs}",
+        "listitem_incomplete": "{aspect_label} has at least one incomplete item: {invalid_item_msgs}"
       }
     },
-    "location_asp": {
-      "public_loc": {
-        "base": "Ubicación pública",
-        "options": {
-          "rnd": "La ubicación exacta no es visible, mostraremos la ubicación con un error aleatorio (marcador amarillo)",
-          "exact": "La ubicación exacta será visible.",
-          "region": "Se mostrará la unidad administrativa (región) a la que pertenece la ubicación."
-        }
+    "entry_action_buttons": {
+      "btn_save": {
+        "save": "@:w.save",
+        "save_n_back": "@:w.save and back",
+        "save_draft": "save draft"
+      },
+      "not_logged_in": {
+        "title": "You are not logged in",
+        "text": "You can submit observations but they need to be reviewed before they get published. In addition to that their privacy is automatically set to public and their license is set to (CC0) - No Rights reserved/public domain.&nbsp;",
+        "cc_ref_text": "Read more about CC0."
       }
+    },
+    "create_entry_button": {
+      "create_text": "Create entry"
+    },
+    "location_asp": {
+      "descr": "Search for a place or click on the map to set the location",
+      "no_loc": "No location",
+      "public_loc": {
+        "base": "Public location",
+        "options": {
+          "rnd": "The exact location is not visible, but a randomly moved location (max.50km) (yellow marker).",
+          "exact": "The exact location will be visible.",
+          "region": "The location's administrative unit (region) will be visible (yellow marker)."
+        }
+      },
+      "show entries": "Show my entries"
     },
     "previewlist": {
       "num_entries": "@:w.n_entries"
     },
     "entrypreview": {
-      "draft": "Borrador",
-      "created": "creado",
-      "outdated": "Creado en una versión anticuada. Algunos valores pueden cambiar. Es recomendable descargar la contribución antes de actualizar",
+      "draft": "Draft",
+      "created": "created",
+      "outdated": "Created from an outdated version. Some values might change. Download the entry before updating is recommended",
       "view": "@:w.view",
       "edit": "@:w.edit",
-      "update": "actualizar",
-      "review": "revisar"
+      "update": "update",
+      "review": "review"
     },
     "menucontainer": {
-      "tab_main": "Menú",
-      "tab_domain": "Lista"
-    },
-    "image_asp": {
-      "no_images": "No hay imágenes"
+      "tab_main": "Main",
+      "tab_domain": "Entries"
     },
     "legend": {
-      "legend": "Leyenda"
+      "legend": "Legend"
     },
     "select_asp": {
       "descr": "@.capitalize:w.description"
     },
+    "treeselect_asp": {
+      "click_to_select": "Click to select"
+    },
     "domain_menu": {
-      "fix_label": "Permanece en {domain_title}"
+      "fix_label": "Stay within {domain_title}"
     },
     "search": {
-      "txt_field_label": "@.capitalize:w.search"
+      "txt_field_label": "@.capitalize:w.search",
+      "min_chars_rule": "type 4 characters to trigger search",
+      "search_filter": "Search & Filter"
+    },
+    "actor_index": {
+      "search": "Search a user",
+      "no_user_found": "No user found"
+    },
+    "filterlist": {
+      "appliead_filters": "Applied filters",
+      "btn_add_filter": "add filter"
     },
     "actor": {
-      "deactivated": "desactivado"
+      "deactivated": "deactivated"
     },
     "global_role": {
       "admin": "Admin",
       "editor": "Editor",
-      "user": "Usuario",
-      "visitor": "Visitante"
+      "user": "User",
+      "visitor": "Visitor"
     },
     "snackbar": {
-      "something_went_wrong": "Algo no ha ido bien"
+      "something_went_wrong": "Something went wrong"
+    },
+    "simple_paginate": {
+      "page": "page",
+      "prev": "previous",
+      "next": "next"
     },
     "language_select": {
-      "label": "Idioma"
+      "label": "Language"
+    },
+    "map_wrapper": {
+      "locations": "@:w.n_locations",
+      "several_countries": "Several countries"
+    },
+    "entry_actions": {
+      "cancel_draft": "Creation canceled",
+      "dialogs": {
+        "cancel": {
+          "title": "Dismiss draft",
+          "text": "Are you sure you want to dismiss this draft?",
+          "cancel_text": "keep on editing",
+          "confirm_text": "dismiss this draft"
+        },
+        "delete": {
+          "title": "Delete entry",
+          "text": "Are you sure you want to delete this entry?",
+          "confirm_text": "delete"
+        }
+      },
+      "delete_entry": "Entry deleted"
     }
   },
   "lang": {
-    "en": "inglés",
-    "es": "español",
-    "de": "alemán",
-    "fr": "francés"
+    "en": "english",
+    "es": "spanish",
+    "de": "german",
+    "fr": "french"
+  },
+  "mixin": {
+    "init": {
+      "logged_out": "You are logged out"
+    }
   },
   "w": {
-    "login": "entrar",
-    "register": "registrarse",
-    "search": "buscar",
-    "entries": "contribuciones",
-    "n_entries": "No hay contribuciones | {n} contribución | {n} contribuciones",
-    "description": "descripción",
-    "update": "actualizar",
-    "username": "Usuario",
-    "view": "ver",
-    "edit": "editar",
-    "save": "guardar",
-    "cancel": "cancelar",
-    "_global.asp_location_privacy.labal": "Privacidad de la ubicación",
-    "_global.asp_location_privacy.descr": "Especifica tus ajustes para proteger la ubiacación exacta de tus contribuciones"
+    "login": "login",
+    "register": "register",
+    "search": "search",
+    "entries": "entries",
+    "n_entries": "No entries | {n} entry | {n} entries",
+    "location": "Location",
+    "n_locations": "No locations | {n} location | {n} locations",
+    "description": "description",
+    "update": "update",
+    "delete": "delete",
+    "username": "Username",
+    "back": "back",
+    "view": "view",
+    "edit": "edit",
+    "done": "done",
+    "save": "save",
+    "cancel": "cancel",
+    "entrytype": "Entry type",
+    "tag": "Tag",
+    "_global.asp_location_privacy.labal": "Location privacy",
+    "_global.asp_location_privacy.descr": "Specify the settings for the protection of the exact locations of your entries"
   }
 }

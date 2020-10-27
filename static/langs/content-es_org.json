@@ -1,0 +1,266 @@
+{
+  "menu": {
+    "home": "Inicio",
+    "profile": "Perfil",
+    "map": "Mapa",
+    "login": "@.capitalize:w.login",
+    "logout": "Desconectar",
+    "register": "@.capitalize:w.register",
+    "admin": "Admin",
+    "tests": "Test"
+  },
+  "index": {
+    "p1": "Con una cuenta en {server_name} podrás crear contribuciones y unirte a grupos.",
+    "about_a": "Sobre el projecto",
+    "privacy_a": "Política de privacidad",
+    "btn_login": "@:w.login",
+    "btn_register": "@:w.register"
+  },
+  "about": {
+    "h1": "Sobre OpenTEK",
+    "h2": "Objetivos y motivación",
+    "2p1": "OpenTEK es una plataforma de software libre para documentar y compartir el conocimiento ecológico tradicional (CET). Concretamente, OpenTEK se centra en conocimientos relativos al uso y manejo de la (agro)biodiversidad y los impactos del cambio climático.",
+    "2p2": "La plataforma está diseñada como una web-app progresiva (PWA) permitiendo al usuario tanto la visualización de contenido geolocalizado como la contribución de datos nuevos desde cualquier dispositivo y mientras se está en el campo.",
+    "2p3": "OpenTEK está vinculada a dos projectos de ciencia ciudadana que documentan conocimiento ecológico tradicional en el mundo: LICCI (www.licci.eu) y CONECT-e (www.conecte.es).",
+    "2p4": "LICCI pretende incorporar el conocimiento local a la ciéncia y políticas climáticas. Para ello, LICCI documenta y clasifica observaciones locales de los impactos del cambio climático (e.j., cambios en los patrones de lluvia o impactos de cambios meteorológicos en la abundance de especies animales).",
+    "2p5": "CONECT-e pretende revitalizar y proteger el conocimiento ecológico tradicional relativo a plantas y variedades en España. Para ello, CONECT-e documenta (y protege con licencias Creative Commons) el nombre, uso y manejo tradicional de las plantas (e.j., usos medicinales de las plantas o nombres y prácticas de manejo de variedades tradicionales).",
+    "h3": "Condiciones de uso",
+    "3p1": "Registerarse en OpenTEK implica que el usuario o su tutor acepta de manera libre e informada la transferencia de sus datos a la plataforma bajo las siguientes condiciones:",
+    "3p2": "- Toda la información en la plataforma puede ser usada con fines científicos tras ser anonimizada.",
+    "3p3": "- Todos los usuarios tienen derecho a retirarse del proyecto y eliminar su perfil y contribuciones en la plataforma en cualquier momento y sin que esto conlleve consecuencias negativas",
+    "3p4": "- Los datos personales que introduzca el usuario en su perfil de manera voluntaria serán tratados con confidencialidad y sólo serán utilizados para fines científicos, sin que estos sean públicos.",
+    "3p5": "- El conocimiento ecológico tradicional que el usuario contribuya de manera voluntaria será compartido bajo las opciones de licencia y privacidad que el usuario elija",
+    "3p6": "- Para más información sobre sus derechos como sujeto de estudio puede contactar con el Comité de Ética en Experimentación Animal y Humana de la Universidad Autónoma de Barcelona mediante email (ceeah@uab.cat)",
+    "h4": "Financiación",
+    "4p1": "Esta aplicación está financiada fundamentalmente por los proyectos LICCI e ICCION del European Research Council (Nr. FP7-771056-LICCI y ERC-2019-PoC-899209).",
+    "4p2": "Esta aplicación también recibió fondos del programa de investigación e innovación Horizon 2020 de la Unión Europea. El JRC, o según sea el caso, la Comisión Europea, no será responsable de ningún daño directo o indirecto, incidental, consecuente u otro daño, que incluye, entre otros, la pérdida de datos, la pérdida de beneficios o cualquier otra pérdida financiera derivada del uso de esta aplicación, o la imposibilidad de usarla, incluso si se notifica al JRC sobre la posibilidad de tales daños.",
+    "h5": "Política de privacidad",
+    "h6": "Plataforma OpenTEK",
+    "6p1": "OpenTEK sólo guarda datos que el usuario cede libre y voluntariamente. No usamos cookies ni incluimos ninguna cookie de terceros. Sólo guardamos datos que el usuario introduce directamente en su perfil público o en las contribuciones que crea y a las que contribuye.",
+    "h7": "Mapbox API",
+    "7p1": "Estamos usando la API de mapbox para vidualizar mapas. APIs y Mobile SDKs: Guardamos automáticamente algunas informaciones técnicas cuando nuestra API lo solicita, incluyendo (a) dirección IP, (b) información de dispositivo y navegador, (c) sistema operativo, (d) el contenido de la solicitud, (e) la fecha y hora de la solicitud, y (f) datos de ubicación y uso limitados. Eliminamos la dirección IP después de 30 dias. Además, cuándo una aplicación usa nuestra SDK para acceder a nuestra API, puede enviarnos algunos datos de ubicación y uso junto acon un ID efímera. Eliminamos este ID en el plazo de 24 horas y no lo asociamos ni asociamos los datos de ubicación móvil con nunguna información que pueda identificar a la persona, incluyendo nombres, IDs permanentes, direcciones de email, direcciones IP, o números de teléfono. También guardamos ID's generadas aleatoriamente con el fin limitado de analizar el uso de nuestras APIs, incluyendo el número de usuarios activos. eliminaremos estos ID aleatorios y el contenido de las solicitudes hechas a nuestras APIs después de 36 meses. Ver más detalles aquí:",
+    "mb_a": "Mapbox Privacy policy"
+  },
+  "register": {
+    "h1": "Registrarse",
+    "btn_register": "@:w.register"
+  },
+  "login": {
+    "h1": "@.capitalize:w.login",
+    "btn_login": "@:w.login",
+    "btn_forgot": "Olvidó la contraseña?"
+  },
+  "profile": {
+    "h1": "Información general",
+    "btn_change_password": "Cambiar contraseña",
+    "btn_settings": "Ajustes",
+    "btn_edit_profile": "Editar perfil",
+    "btn_cancel": "@:w.cancel",
+    "btn_save": "@:w.save",
+    "btn_save_password": "Guardar contraseña",
+    "btn_delete": "Eliminar cuenta de usuario",
+    "h2": "Tus @:w.entries",
+    "h3": "Preguntas específicas de la sección"
+  },
+  "actor": {
+    "h1": "@:profile.h1",
+    "h2": "@.capitalize:w.entries",
+    "deactivated": "Esta usuario ya no está activo",
+    "admin.asp_global_role": "Rol global",
+    "admin.asp_editor_for_domain": "Editor de sección",
+    "admin.btn_update": "@:w.update"
+  },
+  "init_password_reset": {
+    "h1": "Reestablecer contraseña",
+    "btn_send": "Enviar email"
+  },
+  "settings": {
+    "h1": "Ajustes",
+    "asp": {
+      "location_privacy": {
+        "label": "Privacidad de ubicaciones",
+        "descr": "Especifica tus ajustes para proteger la ubiacación exacta de tus contribuciones",
+        "options": {
+          "exact": "Ubicación exacta",
+          "random": "Ubicación con error aleatorio"
+        }
+      }
+    },
+    "btn_update": "@:w.update"
+  },
+  "asp": {
+    "username": {
+      "label": "@:w.username",
+      "rule_length": "@:w.username debe tener al menos 4 caracteres",
+      "rule_pattern": "Solo aceptamos minúsculas"
+    },
+    "user_query": {
+      "label": "Usuario o email",
+      "rule": "El contenido no parece ser un usuario o email válido"
+    },
+    "password": {
+      "label": "Contraseña",
+      "rule_length": "La contraseña debe tener al menos 8 caracteres",
+      "rule_repeat_match": "Las contraseñas no coinciden",
+      "alt_label": {
+        "repeat": "Repite la contraseña",
+        "current": "Contraseña actual",
+        "new": "Nueva contraseña",
+        "repeat_new": "Repite la nueva contraseña"
+      }
+    },
+    "email": {
+      "label": "Email",
+      "rule": "Email no válido"
+    },
+    "public_name": {
+      "label": "Nombre público",
+      "rule_length": "Tu nombre público debe tener entre 2 y 30 caracteres"
+    },
+    "user_description": {
+      "label": "@.capitalize:w.description",
+      "descr": "Escribe algo sobre tí mismo/a"
+    },
+    "privacy": {
+      "label": "Privacidad",
+      "descr": "Quieres que tu contribución sea visible?",
+      "alt_label": {
+        "default": "Privacidad por defecto"
+      },
+      "alt_descr": {
+        "default": "Escoge una privacidad por defecto para todas tus contribuciones"
+      },
+      "options": {
+        "public": {
+          "text": "Pública",
+          "descr": "Cualquiera puede ver tu contribución.",
+          "alt_descr": {
+            "default": "Las contribuciones públicas son visibles para cualquiera"
+          }
+        },
+        "private": {
+          "text": "Privada",
+          "descr": "Sólo tú y aquellos usuarios con quienes compartas la contribución podrán verla.",
+          "alt_descr": {
+            "default": "Las contribuciones privadas son sólo visibles para aquellos usuarios que tu elijas"
+          }
+        }
+      }
+    },
+    "license": {
+      "label": "Licencia",
+      "descr": "Escoge una licencia para esta contribución",
+      "alt_label": {
+        "default": "Licencia por defecto"
+      },
+      "alt_descr": {
+        "default": "Escoge una licencia por defecto para todas tus contribuciones"
+      }
+    },
+    "entry_roles": {
+      "label": "Colaboradores y acceso",
+      "roles": {
+        "collaborator": {
+          "label": "Colaborador",
+          "descr": "Los colaboradores pueden editar esta contribución igual que tú (excepto los apartados de privacidad, licencia y acceso)."
+        },
+        "shared": {
+          "label": "Visible para",
+          "descr": "Estos usuarios pueden leer tu contribución incluso si es privada"
+        }
+      }
+    }
+  },
+  "comp": {
+    "entry_validation": {
+      "h1": "Validación",
+      "has_missing": "Aspectos pendientes o incompletos:",
+      "has_missing_t": "Las contribuciones incompletas no pueden enviarse. Por favor, añade la información que falta o guarda tu contribución como borrador.",
+      "ok": "Todos los valores de esta contribución están bien.",
+      "msgs": {
+        "missing": "{aspect_label} pendiente",
+        "list_not_enough": "{aspect_label} requiere completar el {item_name}",
+        "composite_incomplete": "  no esta completa: falta algún componente: {invalid_components_msgs}",
+        "listitem_incomplete": "{aspect_label} tiene al menos un item incompleto: {invalid_item_msgs}"
+      }
+    },
+    "location_asp": {
+      "public_loc": {
+        "base": "Ubicación pública",
+        "options": {
+          "rnd": "La ubicación exacta no es visible, mostraremos la ubicación con un error aleatorio (marcador amarillo)",
+          "exact": "La ubicación exacta será visible.",
+          "region": "Se mostrará la unidad administrativa (región) a la que pertenece la ubicación."
+        }
+      }
+    },
+    "previewlist": {
+      "num_entries": "@:w.n_entries"
+    },
+    "entrypreview": {
+      "draft": "Borrador",
+      "created": "creado",
+      "outdated": "Creado en una versión anticuada. Algunos valores pueden cambiar. Es recomendable descargar la contribución antes de actualizar",
+      "view": "@:w.view",
+      "edit": "@:w.edit",
+      "update": "actualizar",
+      "review": "revisar"
+    },
+    "menucontainer": {
+      "tab_main": "Menú",
+      "tab_domain": "Lista"
+    },
+    "image_asp": {
+      "no_images": "No hay imágenes"
+    },
+    "legend": {
+      "legend": "Leyenda"
+    },
+    "select_asp": {
+      "descr": "@.capitalize:w.description"
+    },
+    "domain_menu": {
+      "fix_label": "Permanece en {domain_title}"
+    },
+    "search": {
+      "txt_field_label": "@.capitalize:w.search"
+    },
+    "actor": {
+      "deactivated": "desactivado"
+    },
+    "global_role": {
+      "admin": "Admin",
+      "editor": "Editor",
+      "user": "Usuario",
+      "visitor": "Visitante"
+    },
+    "snackbar": {
+      "something_went_wrong": "Algo no ha ido bien"
+    },
+    "language_select": {
+      "label": "Idioma"
+    }
+  },
+  "lang": {
+    "en": "inglés",
+    "es": "español",
+    "de": "alemán",
+    "fr": "francés"
+  },
+  "w": {
+    "login": "entrar",
+    "register": "registrarse",
+    "search": "buscar",
+    "entries": "contribuciones",
+    "n_entries": "No hay contribuciones | {n} contribución | {n} contribuciones",
+    "description": "descripción",
+    "update": "actualizar",
+    "username": "Usuario",
+    "view": "ver",
+    "edit": "editar",
+    "save": "guardar",
+    "cancel": "cancelar",
+    "_global.asp_location_privacy.labal": "Privacidad de la ubicación",
+    "_global.asp_location_privacy.descr": "Especifica tus ajustes para proteger la ubiacación exacta de tus contribuciones"
+  }
+}

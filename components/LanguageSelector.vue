@@ -46,12 +46,11 @@ export default {
       },
       set: function (language) {
         let domain = this.$store.getters["domain"].name // undefined for non-domain
-
         // todo maybe can go into a mixin, if there are other settings for the language
         this.complete_language_domains(domain, language).then(() => {
           this.set_settings_value(UI_LANGUAGE, language)
+          // this.$store.commit("set_domain")
         })
-
       }
     },
     label() {

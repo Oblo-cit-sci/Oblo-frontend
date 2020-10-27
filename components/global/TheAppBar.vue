@@ -24,8 +24,7 @@
 import {APP_CONNECTED, APP_INITIALIZED} from "~/store/app"
 
 import {mapGetters, mapMutations} from "vuex"
-import {DOMAIN, DOMAIN_BY_NAME} from "~/store"
-import {HOME} from "~/lib/consts"
+import {DOMAIN_BY_NAME} from "~/store"
 import NavBaseMixin from "~/components/NavBaseMixin"
 import CreateEntryButton from "~/components/CreateEntryButton";
 import ResponsivenessMixin from "~/components/ResponsivenessMixin";
@@ -42,12 +41,12 @@ export default {
   components: {LoginComponent, Dialog, CreateEntryButton},
   data() {
     return {
-      title: this.$store.getters[DOMAIN] ? this.$store.state.domain.title : HOME,
+      title: "",
       login_dialog_open: false
     }
   },
   computed: {
-    ...mapGetters([DOMAIN]),
+    ...mapGetters(["domain", "domain_name"]),
     ...mapGetters({
       logged_in: "user/logged_in",
       connected: APP_CONNECTED,
@@ -62,14 +61,14 @@ export default {
       }
     },
     domain_title() {
-      return this.$_.get(this.ui_lang_domain_data(this.domain.name), "title", "Offline")
+      return this.$_.get(this.ui_lang_domain_data(this.domain_name), "title", "Offline")
     },
     domain_icon() {
       // todo only use name, but set change it in no_domain
-      return this.$api.static_url_$domain_name_icon(this.domain.name)
+      return this.$api.static_url_$domain_name_icon(this.domain_name)
     },
     domain_headline() {
-      return this.$_.get(this.ui_lang_domain_data(this.domain.name), "long_title", "")
+      return this.$_.get(this.ui_lang_domain_data(this.domain_name), "long_title", "")
     },
     display_debug() {
       return {
@@ -119,6 +118,10 @@ export default {
       console.log(process.env.NODE_ENV)
       return pkg.version
     }
+  },
+  created() {
+    console.log(this.domain, this.initialized)
+    // this.$_.get(this.domain, "title", "home")
   },
   methods: {
     ...mapMutations({switch_menu_open: 'menu/switch_open'}),
