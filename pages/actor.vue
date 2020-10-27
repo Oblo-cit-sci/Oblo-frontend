@@ -13,7 +13,7 @@
     v-row(v-for="aspect in profile_aspects" :key="aspect.name")
       v-col(cols=10)
         Aspect(:aspect="aspect" :ext_value.sync="user_data[aspect.name]")
-    ActorAdminEdit(v-if="user_loaded && is_admin" :actor="user_data" @role_changed="new_global_role($event)")
+    ActorAdminEdit(v-if="user_loaded && i_am_admin" :actor="user_data" @role_changed="new_global_role($event)")
     div
       v-divider.wide_divider
       h2 {{$t("page.actor.h2")}}
@@ -35,6 +35,7 @@
   import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
   import NavBaseMixin from "~/components/NavBaseMixin"
   import FilterMixin from "~/components/FilterMixin"
+  import {mapGetters} from "vuex"
 
   export default {
     name: "actor",
@@ -61,7 +62,7 @@
     created() {
       this.$api.actor.basic(this.registered_name).then(({data}) => {
         this.user_data = data.data
-        console.log(this.user_data)
+        // console.log(this.user_data)
         this.user_loaded = true
         this.waiting = false
       }).catch(err => {
@@ -70,14 +71,14 @@
       })
     },
     computed: {
+      ...mapGetters({
+        "i_am_admin": "user/is_admin"
+      }),
       profile_pic() {
         return this.$api.actor.url_profile_pic(this.registered_name)
       },
       registered_name() {
         return this.$route.query.name
-      },
-      is_admin() {
-        return this.$store.getters[USER_GLOBAL_ROLE] === ADMIN
       },
       search_config() {
         return [this.get_actor_filter(this.registered_name)]

@@ -1,6 +1,6 @@
-import {ALL_CODES, DOMAIN} from "~/store"
+import {ALL_CODES} from "~/store"
 import {entries_domain_filter} from "~/lib/search"
-import {DRAFT, MULTISELECT, TREEMULTISELECT} from "~/lib/consts"
+import {DOMAIN, DRAFT, MULTISELECT, STATUS, TREEMULTISELECT} from "~/lib/consts"
 import {build_tag_select_list, build_tag_select_tree, find_templates_using_code} from "~/lib/codes"
 
 export default {
@@ -68,7 +68,7 @@ export default {
     },
     get_drafts_filter() {
       return {
-        name: "status",
+        name: STATUS,
         source_name: "local",
         value: DRAFT
       }

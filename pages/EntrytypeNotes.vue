@@ -85,10 +85,10 @@
         }
       },
       init_typenotes(type_slug) {
-        let notes = this.$store.getters[TEMPLATES_TYPE_NOTES](type_slug)
-        if (notes === undefined) {
-          this.$store.commit(TEMPLATES_INIT_NOTES, type_slug)
-        }
+        // let notes = this.$store.getters[TEMPLATES_TYPE_NOTES](type_slug)
+        // if (notes === undefined) {
+        //   this.$store.commit(TEMPLATES_INIT_NOTES, type_slug)
+        // }
       },
       aspect_descr_loc(aspect) {
         //console.log([this.selectec_type, aspect.name])

@@ -154,7 +154,7 @@ export default {
       }
     },
     map_options() {
-      const default_camera = this.$_.get(this.$store.getters["domain_by_name"](this.domain_name), "map.default_camera")
+      const default_camera = this.$_.get(this.$store.getters["domain/domain_by_name"](this.domain_name), "map.default_camera")
       let options = this.$_.cloneDeep(this.default_map_options)
       if (default_camera) {
         Object.assign(options, default_camera)

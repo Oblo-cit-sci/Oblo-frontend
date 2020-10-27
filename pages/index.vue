@@ -30,7 +30,6 @@ import {mapGetters} from "vuex"
 
 import DomainCard from "../components/global/DomainCard";
 import Footer from "../components/global/Footer";
-import {CLEAR_DOMAIN, DOMAINS} from "../store";
 import {USER_LOGGED_IN} from "~/store/user";
 import {UI_LANGUAGE} from "~/lib/consts"
 import SettingsChangeMixin from "~/components/global/SettingsChangeMixin"
@@ -41,14 +40,14 @@ export default {
     return {}
   },
   created() {
-    this.$store.commit(CLEAR_DOMAIN)
+    this.$store.commit("domain/clear_domain")
   },
   components: {
     Footer,
     DomainCard,
   },
   computed: {
-    ...mapGetters([DOMAINS]),
+    ...mapGetters(["domains"]),
     ...mapGetters({logged_in: USER_LOGGED_IN}),
     server_name() {
       // todo

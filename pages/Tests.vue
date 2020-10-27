@@ -10,8 +10,6 @@
     <!--      :globals="globals"-->
     <!--      :generated_data_template="generated_data_template"-->
     <!--      @cancel="cancel")-->
-    div(@mousedown="click()")
-      nuxt-link(to="/tests?cool") clicky
 </template>
 
 <script>
@@ -32,6 +30,7 @@ export default {
     AspectSet
   },
   created() {
+    console.log(this.$store.getters["domain/act_lang_domain_data"])
   },
   data() {
     return {
@@ -106,7 +105,8 @@ export default {
 
     }
   },
-  computed: {},
+  computed: {
+  },
   methods: {
     click() {
       console.log("click")

@@ -24,7 +24,6 @@
 import {APP_CONNECTED, APP_INITIALIZED} from "~/store/app"
 
 import {mapGetters, mapMutations} from "vuex"
-import {DOMAIN_BY_NAME} from "~/store"
 import NavBaseMixin from "~/components/NavBaseMixin"
 import CreateEntryButton from "~/components/CreateEntryButton";
 import ResponsivenessMixin from "~/components/ResponsivenessMixin";
@@ -41,17 +40,16 @@ export default {
   components: {LoginComponent, Dialog, CreateEntryButton},
   data() {
     return {
-      title: "",
       login_dialog_open: false
     }
   },
   computed: {
-    ...mapGetters(["domain", "domain_name"]),
+    // ...mapGetters({domain: "domain/domain", domain_name: "domain/domain_name"}),
     ...mapGetters({
       logged_in: "user/logged_in",
       connected: APP_CONNECTED,
       initialized: APP_INITIALIZED,
-      domain_data: DOMAIN_BY_NAME,
+      act_lang_domain_data: "domain/act_lang_domain_data"
     }),
     reduce_when_small() {
       if (this.$vuetify.breakpoint.smAndDown) {
@@ -61,14 +59,15 @@ export default {
       }
     },
     domain_title() {
-      return this.$_.get(this.ui_lang_domain_data(this.domain_name), "title", "Offline")
+      return this.$_.get(this.act_lang_domain_data, "title", "Offline")
+      // return this.$_.get(this.ui_lang_domain_data(this.domain_name), "title", "Offline")
     },
     domain_icon() {
       // todo only use name, but set change it in no_domain
-      return this.$api.static_url_$domain_name_icon(this.domain_name)
+      return this.$api.static_url_$domain_name_icon(this.act_lang_domain_data.name)
     },
     domain_headline() {
-      return this.$_.get(this.ui_lang_domain_data(this.domain_name), "long_title", "")
+      return this.$_.get(this.act_lang_domain_data, "long_title", "")
     },
     display_debug() {
       return {
@@ -91,7 +90,6 @@ export default {
         } else {
           return "mdi-menu"
         }
-
       } else {
         return "mdi-menu"
       }
@@ -107,9 +105,9 @@ export default {
     show_create_entry_button() {
       return this.is_domain_page && this.is_small && this.initialized
     },
-    domain_data() {
-      return this.$store.getters["domain_data"](this.query_param_domain_name, this.$store.getters["user/settings"].ui_language)
-    },
+    // domain_data() {
+    //   return this.$store.getters["domain_data"](this.query_param_domain_name, this.$store.getters["user/settings"].ui_language)
+    // },
     show_login_btn() {
       return this.smAndUp && !this.logged_in
     },
@@ -118,10 +116,6 @@ export default {
       console.log(process.env.NODE_ENV)
       return pkg.version
     }
-  },
-  created() {
-    console.log(this.domain, this.initialized)
-    // this.$_.get(this.domain, "title", "home")
   },
   methods: {
     ...mapMutations({switch_menu_open: 'menu/switch_open'}),

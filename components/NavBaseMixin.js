@@ -28,12 +28,12 @@ export default {
       }
     },
     to_set_domain() {
-      let domain = this.$store.getters.domain
+      let domain_name = this.$store.getters["domain/domain_name"]
       if (domain.name === NO_DOMAIN) {
         this.$router.push({name: PAGE_INDEX})
       } else {
         this.$router.push({
-          name: PAGE_DOMAIN, query: {[this.domain_param_key]: domain.name}
+          name: PAGE_DOMAIN, query: {[this.domain_param_key]: domain.domain_name}
         })
       }
     },

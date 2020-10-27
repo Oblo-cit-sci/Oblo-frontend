@@ -47,7 +47,7 @@ export default {
         return this.$t("comp.notification_banner.complete_profile")
       }
       if (!this.fixed_domain_edited) {
-        return this.$t("comp.notification_banner.complete_domain_aspects", {domain_name: this.$store.getters.domain_title})
+        return this.$t("comp.notification_banner.complete_domain_aspects", {domain_name: this.$store.getters["domain/domain_title"]})
       }
       return ""
     },

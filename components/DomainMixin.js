@@ -1,13 +1,9 @@
-import {global_context_filter} from "~/lib/search"
 import {USER_LOGGED_IN} from "~/store/user"
 import {TEMPLATES_OF_DOMAIN} from "~/store/templates"
-import {DOMAIN, DOMAIN_BY_NAME} from "~/store"
 
 import {mapGetters} from "vuex"
-import {EDIT, PUBLIC, QP_D, QP_F} from "~/lib/consts"
 import EntryCreateMixin from "~/components/entry/EntryCreateMixin"
 import URLQueryMixin from "~/components/util/URLQueryMixin"
-import {can_edit_entry} from "~/lib/actors"
 import FilterMixin from "~/components/FilterMixin"
 
 export default {
@@ -18,7 +14,7 @@ export default {
   },
   computed: {
     // why user_logged_in
-    ...mapGetters({logged_in: USER_LOGGED_IN, all_domains_templates: TEMPLATES_OF_DOMAIN, all_domains: DOMAIN_BY_NAME}),
+    ...mapGetters({logged_in: USER_LOGGED_IN, all_domains_templates: TEMPLATES_OF_DOMAIN, all_domains: "domain/domain_by_name"}),
     domain_title() {
       return this.domain_data.title
     },

@@ -10,6 +10,7 @@
         :ext_value.sync="a.value",
         @update:ext_value="update_value(a, $event)"
         mode="edit"
+        :conditionals="values"
         @update:error="a.error = $event")
       v-btn(@click="update()") {{$t("w.update")}}
 </template>
@@ -18,10 +19,8 @@
 
 import {EDITOR, GLOBAL_ROLE, SELECT} from "~/lib/consts"
 import Aspect from "~/components/Aspect"
-import {DOMAINS} from "~/store"
 import {object_list2options} from "~/lib/options"
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
-import {USER_GLOBAL_ROLE} from "~/store/user"
 import {extract_unpacked_values, pack_value} from "~/lib/aspect"
 import AspectSet from "~/components/AspectSet"
 
@@ -96,7 +95,7 @@ export default {
   },
   methods: {
     domains() {
-      return object_list2options(this.$store.getters["domains_for_lange"](this.$store.getters["user/settings_value"]("ui_language")), "title", "name", true)
+      return object_list2options(this.$store.getters["domain/domains_for_lang"](this.$store.getters["user/settings_value"]("ui_language")), "title", "name", true)
     },
     update_value(aspect, val) {
       if (aspect.name === GLOBAL_ROLE) {

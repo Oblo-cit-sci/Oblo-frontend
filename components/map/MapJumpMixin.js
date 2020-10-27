@@ -41,7 +41,7 @@ export default {
         domain = entry.domain
       } else {
         // todo this could be gloabl...
-        domain = this.$store.getters["domain"].name || this.$store.getters.domains[0].name
+        domain = this.$store.getters["domain/domain_name"] || this.$store.getters.domains[0].name
       }
       this.$store.commit(MAP_GOTO_LOCATION, location)
       if (this.$route.name !== PAGE_DOMAIN) {

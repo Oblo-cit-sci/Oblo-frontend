@@ -51,8 +51,8 @@ export const getters = {
   global_role(state) {
     return state.user_data.global_role
   },
-  is_admin(state) {
-    return state.user_data.global_role === ADMIN
+  is_admin(state, getters) {
+    return getters.global_role === ADMIN
   },
   settings(state) {
     return state.settings

@@ -83,7 +83,7 @@ export default {
       const {data} = await this.$api.init_data()
       const domains_data = data.data.domains
       const language = data.data.language
-      this.$store.commit("set_domains", {domains_data, language})
+      this.$store.commit("domain/set_domains", {domains_data, language})
       await this.$store.dispatch(SET_TEMPLATES_CODES, data.data.templates_and_codes)
 
       // console.log(data.data)
@@ -111,7 +111,7 @@ export default {
     async init_specifics(domain, language) {
       const {data} = await this.$api.init_data(domain, language)
       const domains_data = data.data.domains
-      this.$store.commit("set_domains", {domains_data, language})
+      this.$store.commit("domain/set_domains", {domains_data, language})
       return Promise.resolve()
     },
     /**
@@ -122,7 +122,7 @@ export default {
     async complete_language_domains(domain, language) {
       // console.log("completing", domain, language)
       if (domain) {
-        const domain_basics = this.$store.getters["domain_by_name"](domain)
+        const domain_basics = this.$store.getters["domain/domain_by_name"](domain)
         if (domain_basics.hasOwnProperty(language)) {
           // console.log("got it already")
           return Promise.resolve()
@@ -162,7 +162,7 @@ export default {
           // console.log("initialize multiple domains?", this.has_multiple_domains)
           if (!this.has_multiple_domains) {
             // console.log("1 domain:", this.get_one_domain_name)
-            this.$store.commit("set_domain", this.$store.getters["domain_by_name"](this.get_one_domain_name).name)
+            this.$store.commit("domain/set_act_domain", this.$store.getters["domain/domain_by_name"](this.get_one_domain_name).name)
             this.fix_domain(this.get_one_domain_name)
             // todo, maybe this should be replaces by something in the store
             // similar the change of the home route...
@@ -176,7 +176,7 @@ export default {
               }, 80)
             } else {
               const domain_name = this.$store.getters["user/settings"].fixed_domain || NO_DOMAIN
-              this.$store.commit("set_domain", domain_name)
+              this.$store.commit("domain/set_act_domain", domain_name)
               this.$store.commit(APP_INITIALIZED)
             }
           } else {
