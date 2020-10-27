@@ -62,8 +62,7 @@ export default {
     },
     get_domain_filter(domain_name) {
       return {
-        name: "meta",
-        column: DOMAIN,
+        name: DOMAIN,
         value: domain_name
       }
     },

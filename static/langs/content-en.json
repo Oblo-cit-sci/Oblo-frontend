@@ -8,7 +8,7 @@
       "btn_register": "@:w.register"
     },
     "domain": {
-      "create_new_entry": "Create an new entry"
+      "create_entry_dialog_title": "Create an new entry"
     },
     "about": [
       {
@@ -284,6 +284,9 @@
         "text": "You can submit observations but they need to be reviewed before they get published. In addition to that their privacy is automatically set to public and their license is set to (CC0) - No Rights reserved/public domain.&nbsp;",
         "cc_ref_text": "Read more about CC0."
       }
+    },
+    "create_entry_button": {
+      "create_text": "Create entry"
     },
     "location_asp": {
       "descr": "Search for a place or click on the map to set the location",

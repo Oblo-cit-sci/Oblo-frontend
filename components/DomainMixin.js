@@ -8,10 +8,11 @@ import {EDIT, PUBLIC, QP_D, QP_F} from "~/lib/consts"
 import EntryCreateMixin from "~/components/entry/EntryCreateMixin"
 import URLQueryMixin from "~/components/util/URLQueryMixin"
 import {can_edit_entry} from "~/lib/actors"
+import FilterMixin from "~/components/FilterMixin"
 
 export default {
   name: "DomainMixin",
-  mixins: [EntryCreateMixin, URLQueryMixin],
+  mixins: [EntryCreateMixin, URLQueryMixin, FilterMixin],
   props: {
     // set_domain_data: Object
   },
@@ -25,20 +26,8 @@ export default {
       // todo this doesnt give the language domain_data
       return this.set_domain_data || this.all_domains(this.domain_name)
     },
-    // todo, not sure if used
-    template_entries() {
-      let templates = global_context_filter(this.domain_templates)
-      if (this.main_template) {
-        templates = templates.filter(t => t.slug !== this.main_template.slug)
-      }
-      return templates
-    },
     domain_pre_filter() {
-      return [{
-        name: "meta",
-        column: DOMAIN,
-        value: this.domain_data.name
-      }]
+      return [this.get_domain_filter(this.domain_name)]
     },
     domain_language_tags() {
       const domain_lang_codes = this.domain_data.languages

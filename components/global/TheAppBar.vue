@@ -15,7 +15,7 @@
             v-icon(left) mdi-login
             span {{$t('w.login')}}
       div(:style="display_debug") {{display_debug_text}} v{{version}}
-      CreateEntryButton(v-if="show_create_entry_button" :style="create_button_style" :domain_data="domain_data" @create_entry="$emit('create_entry')")
+      CreateEntryButton(v-if="show_create_entry_button" :style="create_button_style" :domain_data="domain_data")
       Dialog(:dialog_open.sync="login_dialog_open")
         LoginComponent(:go_home="false" @logged_in="login_dialog_open=false" @page_change="login_dialog_open=false")
 </template>

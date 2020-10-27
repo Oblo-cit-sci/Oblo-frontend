@@ -24,16 +24,14 @@ export default {
     domain_templates() {
       return this.all_domains_templates(this.domain_name)
     },
-    main_template() {
-      return this.$_.get(this.domain_data, "templates.main")
-    },
-    can_create_multiple_etypes() {
-      return this.create_templates_options.length > 1
-    },
     create_templates_options() {
+      // todo needs refinement, what if this can be changed per user...
       return this.domain_templates.filter(t => (
         this.$_.get(t, "rules.create", "public") === PUBLIC ||
         can_edit_entry(this.$store.getters.user, t)))
+    },
+    can_create_multiple_etypes() {
+      return this.create_templates_options.length > 1
     },
     // todo can go to DomainMixin
     image() {
@@ -43,10 +41,5 @@ export default {
       return this.$api.static_url_$domain_name_icon(this.domain_name)
     }
   },
-  methods: {
-    create_from_main_template() {
-      const entry = this.create_entry(this.main_template.template_slug)
-      this.to_entry(entry.uuid, EDIT)
-    }
-  }
+  methods: {}
 }

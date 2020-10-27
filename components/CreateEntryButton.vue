@@ -1,16 +1,11 @@
 <template lang="pug">
-  div
-    v-btn(
-      ref="create_button"
-      x-large
-      v-bind="bp_based_main_create_btn_props"
-      color="#b88cf1"  @click="create_from_main_template")
-      span(v-if="show_main_template_create_text") {{main_template.create_text}}
-      v-icon mdi-plus
-    v-btn.additional_templates_button(dark x-small absolute bottom fab v-if="can_create_multiple_etypes"
-      :style="additional_template_button_shift"
-      @click="$emit('create_entry')")
-      v-icon mdi-dots-horizontal
+  v-btn(
+    ref="create_button"
+    x-large
+    v-bind="bp_based_main_create_btn_props"
+    color="#b88cf1"  @click="create_entry")
+    span(v-if="show_main_template_create_text") {{create_text}}
+    v-icon mdi-plus
 </template>
 
 <script>
@@ -20,6 +15,20 @@ import {EDIT} from "~/lib/consts";
 import NavBaseMixin from "~/components/NavBaseMixin";
 import ResponsivenessMixin from "~/components/ResponsivenessMixin";
 import DomainDataMixin from "~/components/domain/DomainDataMixin";
+
+/**
+ * domain.json structure
+ * 1.   "templates": {
+    "main": {
+      "template_slug": "local_observation",
+      "create_text": "add observation"
+    }
+  }
+
+ * 2.   "templates": {
+      "create_text" : "add observation" [optional]
+  }
+ */
 
 export default {
   name: "CreateEntryButton",
@@ -44,32 +53,27 @@ export default {
         return {"fab": true}
       }
     },
-    additional_template_button_shift() {
-      // todo 110 is very magic, depends on the length of the main create button text
-      let shift = 0
-      if (!this.show_main_template_create_text) {
-        shift = "85px"
-      } else {
-        shift = this.button_width + "px"
-      }
-      // console.log("shift", shift)
-      return {
-        position: "absolute",
-        left: shift
-      }
+    create_text() {
+      return this.$_.get(this.domain_data, "templates.create_text", this.$t("comp.create_entry_button.create_text"))
     },
     show_main_template_create_text() {
       // todo, size can go into responsiveness Mixin
       return (!this.menu_open || this.is_xlarge) && !this.is_small
     }
   },
+  methods: {
+    create_entry() {
+      if (this.can_create_multiple_etypes) {
+        this.$bus.$emit("domain-create_entry")
+        // this.$bus.$emit("create_entry")
+      } else {
+        this.$bus.$emit("domain-create_entry", this.create_templates_options[0].slug)
+      }
+    }
+  }
 }
 </script>
 
 <style scoped>
-.additional_templates_button {
-  top: 50px;
-  z-index: 30;
-  /*transform: translateX(-50%)*/
-}
+
 </style>

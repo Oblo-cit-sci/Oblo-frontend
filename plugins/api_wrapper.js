@@ -125,7 +125,6 @@ class APIWrapper {
       }
     })
   }
-
   entries_map_entries(config = {}, as_geojson = false) {
     return this.axios.post(`${this.entries_baseURL}/map_entries`, config, {
       params: {

@@ -9,7 +9,7 @@
           v-icon mdi-layers-outline
       .central_button(v-if="show_center_create_button")
         v-container.shift_anim(:style="center_button_shift")
-          CreateEntryButton(:domain_data="domain_data" @create_entry="$emit('create_entry')")
+          CreateEntryButton(:domain_data="domain_data" @create_entry="$emit('create_entry', $event)")
       .overlay_menu(:style="legend_style")
         TemplateLegend(:domain_name="domain_name" ref="legendComponent")
     AspectDialog(v-bind="aspectdialog_data" @update:dialog_open="aspectdialog_data.dialog_open = $event" :ext_value="layer_status" @update:ext_value="aspect_dialog_update($event)")

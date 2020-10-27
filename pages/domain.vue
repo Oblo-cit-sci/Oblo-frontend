@@ -1,6 +1,6 @@
 <template lang="pug">
   .fullSize
-    TitledDialog(title="xool" :dialog_open.sync="entrycreate_dialog_open" show_close_btn)
+    TitledDialog(:title="$t('page.domain.create_entry_dialog_title')" :dialog_open.sync="entrycreate_dialog_open" show_close_btn)
       EntryCreateList(:template_entries="create_templates_options")
     MapWrapper(
       height="100%"
@@ -67,7 +67,6 @@ export default {
     }
 
     this.set_menu_state(MENU_MODE_DOMAIN_OVERVIEW)
-
     // read template config from query
     // for now just query param template, e.g. : ...&s=template:article_review
     const config = this.search_config(this.$route.query.s)
@@ -76,6 +75,7 @@ export default {
       this.$store.commit("search/replace_in_act_config", this.config_generate(config[0].name, config[0].value))
     }
     // get the default templates of the domain
+    this.$bus.$on("domain-create_entry", slug => this.create_entry_or_open_dialog(slug))
   },
   beforeRouteLeave(from, to, next) {
     if (!dev_env()) {
@@ -83,6 +83,9 @@ export default {
     }
     this.set_menu_open(false)
     next()
+  },
+  beforeDestroy() {
+    this.$bus.$off("domain-create_entry")
   },
   computed: {
     domain_name() {
