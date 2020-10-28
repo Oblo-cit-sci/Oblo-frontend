@@ -24,7 +24,7 @@
 
 <script>
     import {dateAspectBuilder, shortTextAspectBuilder} from "../../lib/aspect";
-    import {FILES_GET_FILE} from "../../store/files";
+
 
     export default {
         name: "ImageCard",
@@ -52,7 +52,7 @@
             // todo move this to a mixin or lib function. similar to ImageAspect
             get_image_data() {
                 if (this.image_data.url === null) {
-                    const img_data = this.$store.getters[FILES_GET_FILE](this.image_data.file_uuid)
+                    const img_data = this.$store.getters["files/get_file"](this.image_data.file_uuid)
                     if (img_data) {
                         return img_data.data
                     } else {

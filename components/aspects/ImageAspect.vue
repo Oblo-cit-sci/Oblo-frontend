@@ -51,7 +51,6 @@
   import AspectComponentMixin from "./AspectComponentMixin";
   import {DRAFT, INDEX} from "~/lib/consts";
   import {loc_append, remove_entry_loc} from "~/lib/aspect";
-  import {FILES_ADD_FILE, FILES_GET_FILE} from "~/store/files";
   import {ENTRIES_GET_ENTRY, ENTRIES_UPDATE_IMAGE} from "~/store/entries";
   import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
   import {common_filesize} from "~/lib/util"
@@ -115,7 +114,7 @@
       add_image(image_result) {
         // console.log("add", image_result)
         const file_uuid = uuidv4()
-        this.$store.commit(FILES_ADD_FILE, {uuid: file_uuid, meta: image_result.meta, data: image_result.data})
+        this.$store.commit("files/add_file", {uuid: file_uuid, meta: image_result.meta, data: image_result.data})
         this.update_value(this.$_.concat(this.value, [{
           // title: "",
           // description: "",
@@ -158,7 +157,7 @@
       },
       get_image_data(index) {
         if (this.images[index].url === null) {
-          const img_data = this.$store.getters[FILES_GET_FILE](this.images[index].file_uuid)
+          const img_data = this.$store.getters["files/get_file"](this.images[index].file_uuid)
           if (img_data) {
             return img_data.data
           } else {

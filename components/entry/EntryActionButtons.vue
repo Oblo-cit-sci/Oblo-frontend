@@ -47,7 +47,7 @@ import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
 import {SEARCH_DELETE_ENTRY} from "~/store/search"
 import EntryNavMixin from "~/components/EntryNavMixin"
 import {prepare_for_submission} from "~/lib/entry"
-import {FILES_GET_FILE, FILES_REMOVE_FILE} from "~/store/files"
+
 import {base64file_to_blob} from "~/lib/util"
 import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
 import {USER_LOGGED_IN} from "~/store/user"
@@ -198,13 +198,13 @@ export default {
           // console.log(attachments_data)
           for (let attachment_data of attachments_data) {
             const file_uuid = attachment_data.file_uuid
-            const stored_file = this.$store.getters[FILES_GET_FILE](file_uuid)
+            const stored_file = this.$store.getters["files/get_file"](file_uuid)
             if (stored_file) {
               const blob = base64file_to_blob(stored_file.meta.type, stored_file.data)
               const formData = new FormData()
               formData.append("file", blob, stored_file.meta.name)
               this.$api.post_entry__$uuid__attachment__$file_uuid(this.uuid, file_uuid, formData).then((res) => {
-                this.$store.commit(FILES_REMOVE_FILE, file_uuid)
+                this.$store.commit("files/remove_file", file_uuid)
               }).catch(err => {
                 this.error_snackbar("File could not be uploaded", stored_file.meta.name)
               })

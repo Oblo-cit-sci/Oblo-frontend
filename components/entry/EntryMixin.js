@@ -23,7 +23,7 @@ import {
   ENTRIES_SET_DOWNLOADED,
   ENTRIES_VALUE
 } from "~/store/entries";
-import {FILES_GET_FILE} from "~/store/files";
+
 import {check_str_is_uuid, printDate} from "~/lib/util";
 import {TEMPLATES_TYPE} from "~/store/templates";
 import EntryPagesMixin from "~/components/entry/EntryPagesMixin"
@@ -121,7 +121,7 @@ export default {
           return this.entry.image
         } else if (check_str_is_uuid(this.entry.image)) {
           if (this.entry.status === "draft") {
-            const img_data = this.$store.getters[FILES_GET_FILE](this.entry.image)
+            const img_data = this.$store.getters["files/get_file"](this.entry.image)
             if (img_data) {
               return img_data.data
             }
