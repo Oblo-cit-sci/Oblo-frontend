@@ -1,20 +1,10 @@
 const ld = require("lodash")
 
-// Mutations
-export const MAP_SET_ENTRIES = "map/set_entries"
-// not used anymore with the new map
-export const MAP_GOTO_LOCATION = "map/goto_location"  // also getter
-export const MAP_RESET_GOTO_LOCATIONS = "map/reset_goto_locations"
-
-// Getters
-export const MAP_LAST_GOTO_LOCATION = "map/last_goto_location"
-// Actions
-export const MAP_GOTO_DONE = "map/goto_done"
-
 
 export const state = () => ({
   entries_loaded: false,
   entries: {},
+  // todo, could be managed by the $bus
   goto_location: null,
   last_goto_location: null,
   layer_status: null,
@@ -151,10 +141,10 @@ export const actions = {
     context.commit("_last_goto_location", goto_loc)
     context.commit("goto_location", null)
   },
-  reset_goto_locations(context) {
-    context.commit("_last_goto_location", null)
-    context.commit("goto_location", null)
-  },
+  // reset_goto_locations(context) {
+  //   context.commit("_last_goto_location", null)
+  //   context.commit("goto_location", null)
+  // },
   set_entry_property(context, {uuid, property_name, value}) {
     const res = context.getters.get_entry_and_domain_by_uuid(uuid)
     if (!res) {

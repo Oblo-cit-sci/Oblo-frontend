@@ -1,4 +1,3 @@
-import {MAP_GOTO_DONE, MAP_GOTO_LOCATION} from "~/store/map"
 import MapboxBaseMixin from "~/components/map/MapboxBaseMixin"
 import MapEntriesMixin from "~/components/map/MapEntriesMixin"
 
@@ -44,8 +43,8 @@ export default {
       return this.$store.getters["app/ui_language"]
     },
     goto_location() {
-      // console.log("map, goto_location, map-store", this.$store.getters[MAP_GOTO_LOCATION]())
-      return this.$store.getters[MAP_GOTO_LOCATION]()
+      // console.log("map, goto_location, map-store", this.$store.getters["map/goto_location"]())
+      return this.$store.getters["map/goto_location"]()
     }
   },
   methods: {
@@ -176,7 +175,7 @@ export default {
         duration: 2000, // make the flying slow
         padding: this.center_padding || 0// comes from the implementing class
       })
-      this.$store.dispatch(MAP_GOTO_DONE)
+      this.$store.dispatch("map/goto_done")
     },
     add_popup(feature, e, popup_html, remove_existing = true) {
       if (remove_existing) {

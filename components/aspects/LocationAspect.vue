@@ -72,7 +72,6 @@ import AspectComponentMixin from "./AspectComponentMixin";
 import MapIncludeMixin from "~/components/map/MapIncludeMixin"
 import {arr2coords, context_get_place_type, convert_to_2d_arr, mapboxgl_lngLat2coords} from "~/lib/map_utils"
 import GeocodingMixin from "~/components/map/GeocodingMixin"
-import {MAP_GOTO_LOCATION} from "~/store/map"
 import {mapGetters} from "vuex"
 import {settings_loc_privacy_ask, settings_loc_privacy_exact, settings_loc_privacy_random} from "~/lib/settings"
 import EntrySearchMixin from "~/components/EntrySearchMixin"
@@ -558,7 +557,7 @@ export default {
       })
     },
     set_goto_location() {
-      this.$store.commit(MAP_GOTO_LOCATION, this.value)
+      this.$store.commit("map/goto_location", this.value)
     },
     get_public_location_from_option(value, option) {
       /**

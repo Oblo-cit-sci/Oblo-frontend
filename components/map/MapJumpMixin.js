@@ -1,5 +1,4 @@
 import {QP_D} from "~/lib/consts";
-import {MAP_GOTO_LOCATION, MAP_LAST_GOTO_LOCATION} from "~/store/map";
 import {PAGE_DOMAIN} from "~/lib/pages"
 
 /**
@@ -27,7 +26,7 @@ export default {
   },
   methods: {
     goto_next_location(entry_location, uuid) {
-      const act_loc = this.$store.getters[MAP_LAST_GOTO_LOCATION]()
+      const act_loc = this.$store.getters["map/last_goto_location"]()
       const index = this.$_.findIndex(entry_location, (l) => l === act_loc)
       const next_index = (index + 1) % entry_location.length
       this.goto_location(entry_location[next_index], uuid)
@@ -43,7 +42,7 @@ export default {
         // todo this could be gloabl...
         domain = this.$store.getters["domain/act_domain_name"] || this.$store.getters.domains[0].name
       }
-      this.$store.commit(MAP_GOTO_LOCATION, location)
+      this.$store.commit("map/goto_location", location)
       if (this.$route.name !== PAGE_DOMAIN) {
         let route = {
           path: "/domain",

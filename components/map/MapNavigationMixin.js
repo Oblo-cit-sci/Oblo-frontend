@@ -1,8 +1,6 @@
 import {string_list2options} from "~/lib/options";
 import {LOCATION} from "~/lib/consts";
-import Search from "~/components/global/Search";
-import {ENTRIES_GET_ENTRY} from "~/store/entries";
-import {MAP_SET_ENTRIES} from "~/store/map";
+
 import NavBaseMixin from "~/components/NavBaseMixin"
 
 // the navigation either shows the search or one specific entry
@@ -69,7 +67,7 @@ export default {
       if (entries.length > 0) {
         console.log(entries[0])
       }
-      this.$store.commit(MAP_SET_ENTRIES, entries)
+      this.$store.commit("map/set_entries", entries)
     },
     to_search_mode() {
       this.$emit("navigation_mode_search")
