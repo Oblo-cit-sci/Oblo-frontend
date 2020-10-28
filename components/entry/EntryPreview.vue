@@ -70,13 +70,6 @@ import ChildCreateMixin from "../util/ChildCreateMixin";
 import {aspect_loc_str2arr, loc_prepend} from "~/lib/aspect";
 import Aspect from "../Aspect";
 
-import {
-  EDIT_UUID,
-  ENTRIES_DELETE_ENTRY,
-  ENTRIES_DOMAIN,
-  ENTRIES_SAVE_CHILD_N_REF,
-  ENTRIES_VALUE
-} from "~/store/entries";
 import ActorChip from "../actor/ActorChip"
 import EntryActionsMixin from "~/components/entry/EntryActionsMixin"
 import EntryTags from "~/components/entry/EntryTags"
@@ -183,7 +176,7 @@ export default {
       })
       result.push({name: "License: " + this.entry.license})
       if (this.include_domain_tag) {
-        result.push({name: this.$store.getters[ENTRIES_DOMAIN](this.entry.uuid)})
+        result.push({name: this.$store.getters["entries/domain"](this.entry.uuid)})
       }
       if (this.entry.status === "requires_review") {
         result.unshift({icon: "mdi-file-find-outline", name: "Requires review", color: review_color()})
@@ -219,7 +212,7 @@ export default {
         if (pw_action.type === "create_child") {
           const action_aspect_loc = aspect_loc_str2arr(pw_action.aspect)
           const aspect_loc = loc_prepend(ENTRY, this.entry.uuid, action_aspect_loc)
-          const value = this.$store.getters[ENTRIES_VALUE](aspect_loc)
+          const value = this.$store.getters["entries/value"](aspect_loc)
           if (!value) {
             console.log("child action cannot be added, aspect location doesnt exist for action:", pw_action.name)
             continue
@@ -271,12 +264,12 @@ export default {
       const index_aspect_loc = this.aspect_loc_for_index(this.value.length)
       //console.log("index_aspect_loc", index_aspect_loc)
       const child = create_entry(this.$store, this.item_type_slug, {}, {
-        uuid: this.$store.getters[EDIT_UUID],
+        uuid: this.$store.getters["entries/edit_uuid"],
         aspect_loc: index_aspect_loc,
       })
 
       // saving the child, setting refrences, saving this entry(title),
-      this.$store.dispatch(ENTRIES_SAVE_CHILD_N_REF, {child: child, aspect_loc: index_aspect_loc})
+      this.$store.dispatch("entries/save_child_n_ref", {child: child, aspect_loc: index_aspect_loc})
       // TODO this was there before, is it required???
       // this.value_change(this.$_.concat(this.value, [child.uuid]))
       // todo should be just one call
@@ -304,7 +297,7 @@ export default {
           this.download()
           break
         case "delete":
-          this.$store.dispatch(ENTRIES_DELETE_ENTRY, this.uuid)
+          this.$store.dispatch("entries/delete_entry", this.uuid)
           this.$emit("delete_e", this.uuid)
           this.persist_entries()
           break

@@ -1,11 +1,9 @@
-import {ENTRIES_SAVE_ENTRIES} from "~/store/entries"
-import {DRAFT} from "~/lib/consts"
 
 export default {
   name: "EntrySearchMixin",
   methods: {
     store_received_entries(entries) {
-      this.$store.commit(ENTRIES_SAVE_ENTRIES, entries)
+      this.$store.commit("entries/save_entries", entries)
       return entries.map(e => e.uuid)
     },
     check_missing_meta(uuids) {

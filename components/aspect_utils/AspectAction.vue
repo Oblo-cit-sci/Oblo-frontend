@@ -5,7 +5,6 @@
 
 <script>
 
-import {ENTRIES_SET_ENTRY_VALUE} from "~/store/entries"
 import {EDIT} from "~/lib/consts"
 
 import axios from "axios"
@@ -171,7 +170,7 @@ export default {
         if (handle.type === "assign_to_aspect") {
           const aspect_loc = this.$_.concat([[EDIT, null]], aspect_loc_str2arr(handle.aspect, this.extra.list_index))
           const aspect = this.aspect_from_location(aspect_loc)
-          this.$store.dispatch(ENTRIES_SET_ENTRY_VALUE, {
+          this.$store.dispatch("entries/set_entry_value", {
             aspect_loc,
             value: aspect_default_value(aspect)
           })
@@ -183,7 +182,7 @@ export default {
       const handle = this.action.properties.handle_result
       if (handle) {
         if (handle.type === "assign_to_aspect") {
-          this.$store.dispatch(ENTRIES_SET_ENTRY_VALUE, {
+          this.$store.dispatch("entries/set_entry_value", {
             aspect_loc: this.$_.concat([[EDIT, null]], aspect_loc_str2arr(handle.aspect, this.extra.list_index)),
             value: result
           })

@@ -25,7 +25,7 @@
 <script>
 import EntryPreview from "~/components/entry/EntryPreview";
 import SimplePaginate from "../SimplePaginate";
-import {ENTRIES_GET_ENTRY} from "~/store/entries";
+
 
 import {mapGetters} from "vuex"
 import {PAGE_DOMAIN} from "~/lib/pages"
@@ -81,7 +81,7 @@ export default {
       let to_index = from_index + this.entries_per_page
       const entries = this.entries.slice(from_index, to_index)
       const uuids = this.$_.filter(entries, e => !this.deleted.includes(e.uuid))
-      return this.$_.map(uuids, uuid => this.$store.getters[ENTRIES_GET_ENTRY](uuid))
+      return this.$_.map(uuids, uuid => this.$store.getters["entries/get_entry"](uuid))
     },
     has_entries() {
       return this.num_entries > 0

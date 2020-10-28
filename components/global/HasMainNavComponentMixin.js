@@ -1,4 +1,3 @@
-import {ENTRIES_GET_ENTRY} from "~/store/entries"
 import {route_change_query} from "~/lib/util"
 import {mapMutations, mapGetters} from "vuex"
 import URLQueryMixin from "~/components/util/URLQueryMixin"
@@ -49,7 +48,7 @@ export default {
         query.entry_mode = entry_mode
         // TODO bring it back
         if (easeToFirst) {
-          const entry_loc = this.$store.getters[ENTRIES_GET_ENTRY](entry_uuid).location
+          const entry_loc = this.$store.getters["entries/get_entry"](entry_uuid).location
           if (entry_loc && entry_loc.length > 0) {
             this.map_goto_location(entry_loc[0])
           }

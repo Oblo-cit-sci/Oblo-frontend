@@ -1,6 +1,3 @@
-/*
-  this is for the own entries
- */
 import {ASPECT, COMPONENT, DRAFT, EDIT, ENTRY, INDEX, META, PRIVATE_LOCAL, VIEW} from "~/lib/consts";
 import {default_values, get_entry_titleAspect, select_aspect_loc} from "~/lib/entry";
 import {
@@ -18,50 +15,7 @@ import Vue from "vue"
 import {filter_empty, guarantee_array, recursive_unpack} from "~/lib/util";
 
 
-
-// Mutations
-export const ENTRIES_SET_DOWNLOADED = "entries/set_downloaded"
-export const ENTRIES_SAVE_ENTRY = "entries/save_entry"
-export const ENTRIES_SAVE_ENTRIES = "entries/save_entries"
-export const ENTRIES_ENTRIES_SET_LOCAL_LIST_PAGE = "entries/entries_set_local_list_page"
-export const ENTRIES_UPDATE_IMAGE = "entries/update_image"
-export const ENTRIES_ADD_FILE_ATTACHMENT = "entries/add_file_attachment"
-export const ENTRIES_REMOVE_FILE_ATTACHMENT = "entries/remove_file_attachment"
-export const ENTRIES_SET_FROM_ARRAY = "entries/set_from_array"
-export const ENTRIES_RESET_EDIT = "entries/reset_edit"
-
-// internal
-export const _SET_ENTRY_VALUE = "_set_entry_value"
-export const UPDATE_TAGS = "update_tags"
-// Getter
-export const ENTRIES_GET_ENTRY = "entries/get_entry"
-export const ENTRIES_HAS_FULL_ENTRY = "entries/has_full_entry"
-export const ENTRIES_GET_OWN_ENTRIES_UUIDS = "entries/get_own_entries_uuids"
-export const ENTRIES_ALL_ENTRIES_ARRAY = "entries/all_entries_array"
-export const ENTRIES_GET_ENTRY_TITLE = "entries/get_entry_title"
-export const ENTRIES_GET_PARENT = "entries/get_parent"
-export const ENTRIES_GET_EDIT = "entries/get_edit"
-
-// Actions
-export const ENTRIES_UPDATE_ENTRY = "entries/update_entry"
-export const ENTRIES_SET_EDIT = "entries/set_edit"
-export const ENTRIES_SAVE_CHILD_N_REF = "entries/save_child_n_ref"
-
-export const ENTRIES_DOMAIN = "entries/domain"
-export const ENTRIES_ALL_ENTRIES_OF_TYPE = "entries/all_entries_of_type"
-export const ENTRIES_VALUE = "entries/value"
-export const ENTRIES_ALL_DRAFTS = "entries/all_drafts"
-export const EDIT_UUID = "entries/edit_uuid"
-//
-export const ENTRIES_SET_ENTRY_VALUE = "entries/set_entry_value"
-export const ENTRIES_DELETE_ENTRY = "entries/delete_entry"
-export const ENTRIES_GET_RECURSIVE_ENTRIES = "entries/get_recursive_entries"
-
-
 const ld = require("lodash")
-
-const DELETE_ENTRY = "delete_entry"
-const DELETE_REF_CHILD = "delete_ref_child"
 
 export const state = () => ({
   entries: new Map(),
@@ -78,14 +32,7 @@ export const mutations = {
       state.entries.set(entry.uuid, entry)
     }
   },
-  reset_edit(state) {
-    state.edit = null
-  },
-  set_downladed(state, uuid) {
-    let entry = state.entries.get(uuid)
-    entry.downloads = entry.version
-  },
-  delete_entry(state, uuid) { // DELETE_ENTRY
+  delete_entry(state, uuid) {
     state.entries.delete(uuid)
   },
   set_downloaded(state, local_id) {
@@ -115,7 +62,7 @@ export const mutations = {
     }
     state.edit = null
   },
-  _set_entry_value(state, {aspect_loc, value}) { // ENTRIES_SET_ENTRY_VALUE
+  _set_entry_value(state, {aspect_loc, value}) {
     // console.log("set entry value", aspect_loc, value)
     let select = select_aspect_loc(state, aspect_loc, true)
     const final_loc = ld.last(aspect_loc)
@@ -243,7 +190,7 @@ export const getters = {
       return Array.from(state.entries.entries())
     }
   },
-  all_entries_array(state) { // ENTRIES_ALL_ENTRIES_ARRAY
+  all_entries_array(state) {
     //console.log(state.entries)
     return () => {
       return Array.from(state.entries.values())
@@ -302,7 +249,7 @@ export const getters = {
       return state.entries.has(uuid) && getters.get_entry(uuid).values !== undefined
     };
   },
-  get_entry(state) { // ENTRIES_GET_ENTRY
+  get_entry(state) {
     return (uuid) => {
       return state.entries.get(uuid)
     }
@@ -335,12 +282,12 @@ export const getters = {
       }
     }
   },
-  get_parent(state, getters) { // ENTRIES_GET_PARENT
+  get_parent(state, getters) {
     return (uuid) => {
       return getters.get_entry(getters.get_entry(uuid).refs.parent.uuid)
     }
   },
-  value(state, getters) { // ENTRIES_VALUE
+  value(state, getters) {
     return (aspect_loc) => {
       const first_atype = aspect_loc[0][0]
       if (![ENTRY, EDIT].includes(first_atype)) {
@@ -349,7 +296,7 @@ export const getters = {
       return select_aspect_loc(state, aspect_loc)
     }
   },
-  get_recursive_entries(state, getters) { //  ENTRIES_GET_RECURSIVE_ENTRIES
+  get_recursive_entries(state, getters) {
     return (uuid) => {
       let entries = []
       const entry = getters.get_entry(uuid)
@@ -380,7 +327,7 @@ export const getters = {
     }
   },
   // todo: get edit title, but will be simpler...?
-  get_entry_title: function (state, getters) { // ENTRIES_GET_ENTRY_TITLE
+  get_entry_title: function (state, getters) {
     return (uuid) => {
       // console.log("get entry title ", uuid)
       const entry = getters.get_entry(uuid)
@@ -473,10 +420,10 @@ export const getters = {
 // dispatch
 export const actions = {
   set_entry_value(context, data) {
-    context.commit(_SET_ENTRY_VALUE, data)
+    context.commit("_set_entry_value", data)
     // context.commit("update")
   },
-  save_child_n_ref(context, {uuid, child, aspect_loc}) { // ENTRIES_SAVE_CHILD_N_REF
+  save_child_n_ref(context, {uuid, child, aspect_loc}) {
     if (!uuid) {
       uuid = context.getters.edit_uuid
     }
@@ -491,7 +438,7 @@ export const actions = {
   // rename to save edit entry
   // todo: purpose/name: update meta or something like that?
   //
-  update_entry(context, uuid) { // ENTRIES_UPDATE_ENTRY
+  update_entry(context, uuid) {
     const entry_title = context.getters.get_entry_title(uuid)
     context.commit("update_title", {uuid, title: entry_title})
     const location = context.getters.entry_location(uuid)
@@ -505,7 +452,7 @@ export const actions = {
     // debugger
     const tags = context.getters.entry_tags(uuid)
     if (tags) {
-      context.commit(UPDATE_TAGS, {uuid, tags: tags})
+      context.commit("update_tags", {uuid, tags: tags})
     }
   },
   set_edit(context, uuid) {
@@ -514,24 +461,24 @@ export const actions = {
       context.commit("set_edit", ld.cloneDeep(entry))
     }
   },
-  delete_ref_child(context, {uuid, child_uuid}) { // DELETE_REF_CHILD
+  delete_ref_child(context, {uuid, child_uuid}) {
     let aspect_loc = context.state.entries.get(uuid).refs.children[child_uuid]
     context.commit("_remove_entry_value_index", ld.concat([[ENTRY, uuid]], aspect_loc))
     context.commit("_remove_entry_ref_index", {uuid, child_uuid, aspect_loc})
   },
-  delete_entry(context, uuid) { // ENTRIES_DELETE_ENTRY
+  delete_entry(context, uuid) {
     // console.log(uuid)
     const entry = context.state.entries.get(uuid)
     if (entry) {
       for (let child_uuid in entry.entry_refs.children) {
-        context.dispatch(DELETE_ENTRY, child_uuid)
+        context.dispatch("delete_entry", child_uuid)
       }
       if (entry.status !== "orphan" && entry.entry_refs.parent) {
         const parent = entry.entry_refs.parent
         if (parent)
-          context.dispatch(DELETE_REF_CHILD, {uuid: parent.uuid, child_uuid: uuid})
+          context.dispatch("delete_ref_child", {uuid: parent.uuid, child_uuid: uuid})
       }
-      context.commit(DELETE_ENTRY, uuid)
+      context.commit("delete_entry", uuid)
     } else {
       console.log("store: entries DELETE tries to delete some entry that doesnt exist!")
     }

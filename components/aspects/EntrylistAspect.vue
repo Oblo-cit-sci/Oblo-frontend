@@ -53,13 +53,6 @@
   import ListPagination from "../aspect_utils/ListPagination";
   import PersistentStorageMixin from "../util/PersistentStorageMixin";
   import AspectComponentMixin from "./AspectComponentMixin";
-  import {
-    EDIT_UUID,
-    ENTRIES_DELETE_ENTRY,
-    ENTRIES_GET_ENTRY,
-    ENTRIES_SAVE_CHILD_N_REF,
-     ENTRIES_UPDATE_ENTRY
-  } from "../../store/entries";
 
 
 
@@ -92,7 +85,7 @@
       },
       items() {
         let entries = this.$_.map(this.value, e => {
-          const entry = this.$store.getters[ENTRIES_GET_ENTRY](e)
+          const entry = this.$store.getters["entries/get_entry"](e)
           if (!entry) {
             return {title: "UNKNWON ENTRY", uuid: this.uuid}
           }
@@ -127,7 +120,7 @@
         if (action.confirm) {
           let index = parseInt(action.id)
           let child_uuid = this.value[index]
-          this.$store.dispatch(ENTRIES_DELETE_ENTRY, child_uuid)
+          this.$store.dispatch("entries/delete_entry", child_uuid)
           this.guarantee_page()
         }
       },
@@ -136,11 +129,11 @@
           return
         const index_aspect_loc = this.aspect_loc_for_index(this.value.length)
         const child = create_entry(this.$store, this.item_type_slug, {}, {
-          uuid: this.$store.getters[EDIT_UUID],
+          uuid: this.$store.getters["entries/edit_uuid"],
           aspect_loc: index_aspect_loc,
         })
         // saving the child, setting refrences, saving this entry(title),
-        this.$store.dispatch(ENTRIES_SAVE_CHILD_N_REF, {child: child, aspect_loc: index_aspect_loc})
+        this.$store.dispatch("entries/save_child_n_ref", {child: child, aspect_loc: index_aspect_loc})
         // todo maybe not required, since the dispatch takes care of it
         this.update_value(this.$_.concat(this.value, [child.uuid]))
         this.persist_entries()
@@ -160,7 +153,7 @@
         if (this.disabled)
           return
         this.persist_entries()
-        this.$store.dispatch(ENTRIES_UPDATE_ENTRY, this.entry_uuid())
+        this.$store.dispatch("entries/update_entry", this.entry_uuid())
         if (!this.has_entry(item.uuid))
           this.fetch_and_nav(item.uuid)
         else {

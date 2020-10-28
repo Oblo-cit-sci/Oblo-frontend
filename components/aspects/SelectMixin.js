@@ -6,7 +6,6 @@ import {
   string_list2options,
   transform_options_list
 } from "~/lib/options";
-import {ENTRIES_VALUE} from "~/store/entries";
 
 export default {
   props: {
@@ -34,14 +33,14 @@ export default {
         // getting the options from a value (type: list)
         let aspect_location = complete_aspect_loc(aspect_loc_uuid(this.aspect_loc), aspect_loc_str2arr(this.aspect.items))
         // console.log("referenced items...:", aspect_location)
-        let value = this.$store.getters[ENTRIES_VALUE](aspect_location).value
+        let value = this.$store.getters["entries/value"](aspect_location).value
         //console.log("building options from val", value)
         if (this.aspect.attr.entry_select && this.aspect.attr.filter_entries) {
           console.log("entry-select", value)
           value = this.$_.filter(value, item => {
             const aspect_location = complete_aspect_loc(item.value, aspect_loc_str2arr(this.aspect.attr.filter_entries.aspect))
-            console.log(this.$store.getters[ENTRIES_VALUE](aspect_location))
-            const a_value = this.$store.getters[ENTRIES_VALUE](aspect_location).value
+            console.log(this.$store.getters["entries/value"](aspect_location))
+            const a_value = this.$store.getters["entries/value"](aspect_location).value
             console.log(aspect_location, a_value)
             return check_condition_value(a_value, this.aspect.attr.filter_entries)
           })

@@ -37,12 +37,6 @@ import {mapGetters} from "vuex"
 
 import {DRAFT, EDIT, PUBLISHED, REQUIRES_REVIEW, REVIEW, VIEW} from "~/lib/consts"
 import EntryMixin from "~/components/entry/EntryMixin"
-import {
-  ENTRIES_DELETE_ENTRY,
-  ENTRIES_GET_ENTRY,
-  ENTRIES_SAVE_ENTRY,
-  ENTRIES_UPDATE_ENTRY
-} from "~/store/entries"
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
 import EntryNavMixin from "~/components/EntryNavMixin"
 import {prepare_for_submission} from "~/lib/entry"
@@ -133,7 +127,7 @@ export default {
             confirm_text: this.$t(`${base_t_cancel_loc}.confirm_text`)
           }, confirm_method: () => {
             this.$emit("entry-action", "delete")
-            this.$store.dispatch(ENTRIES_DELETE_ENTRY, this.uuid)
+            this.$store.dispatch("entries/delete_entry", this.uuid)
             this.back()
             this.ok_snackbar(this.$t("comp.entry_actions.cancel_draft"))
           }
@@ -153,7 +147,7 @@ export default {
           confirm_text: this.$t(`${base_t_delete_loc}.confirm_text`)
         }, confirm_method: () => {
           this.$api.delete_entry__$uuid(this.uuid).then(() => {
-            this.$store.dispatch(ENTRIES_DELETE_ENTRY, this.uuid)
+            this.$store.dispatch("entries/delete_entry", this.uuid)
             this.$store.commit("search/delete_entry", this.uuid)
             this.ok_snackbar(this.$t("comp.entry_actions.delete_entry"))
             this.$emit("entry-action", "delete")
@@ -167,8 +161,8 @@ export default {
     save() {
       // todo not if it is an aspect page
       // console.log(this.entry.local)
-      this.$store.commit(ENTRIES_SAVE_ENTRY, this.entry)
-      this.$store.dispatch(ENTRIES_UPDATE_ENTRY, this.uuid)
+      this.$store.commit("entries/save_entry", this.entry)
+      this.$store.dispatch("entries/update_entry", this.uuid)
       this.persist_entries()
       this.ok_snackbar("Entry saved")
       this.back()
@@ -176,10 +170,10 @@ export default {
     async submit() {
       this.sending = true
       // TODO not good. call update functions
-      this.$store.commit(ENTRIES_SAVE_ENTRY, this.entry)
+      this.$store.commit("entries/save_entry", this.entry)
       this.$store.dispatch("entries/update_entry", this.uuid)
       // todo just this.entry ???
-      const sending_entry = prepare_for_submission(this.$store.getters[ENTRIES_GET_ENTRY](this.uuid))
+      const sending_entry = prepare_for_submission(this.$store.getters["entries/get_entry"](this.uuid))
 
       // would be the same as checking is_published
       let method = null
@@ -210,10 +204,9 @@ export default {
           }
           this.sending = false
           this.ok_snackbar("Entry submitted")
-          this.$store.commit(ENTRIES_SAVE_ENTRY, res.data.data)
-          this.$store.dispatch(ENTRIES_UPDATE_ENTRY, this.uuid)
+          this.$store.commit("entries/save_entry", res.data.data)
+          this.$store.dispatch("entries/update_entry", this.uuid)
           this.back(["search"])
-          // this.$store.commit(ENTRIES_RESET_EDIT)
         } catch (err) {
           console.log(err)
           this.sending = false
@@ -234,8 +227,8 @@ export default {
         this.ok_snackbar("Entry reviewed")
         const entry = res.data.data
         // entry_location2geojson_arr(entry)
-        this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
-        await this.$store.dispatch(ENTRIES_UPDATE_ENTRY, this.uuid)
+        this.$store.commit("entries/save_entry", entry)
+        await this.$store.dispatch("entries/update_entry", this.uuid)
         // new status doesnt really matter but it shouldnt be "required_review" anymore
         await this.$store.dispatch("map/set_entry_property", {uuid: entry.uuid, property_name: "status", value: "published"})
         this.back()
@@ -251,7 +244,7 @@ export default {
         const res = await this.$api.patch_entry__$uuid_reject(sending_entry)
         this.sending = false
         this.ok_snackbar("Entry reviewed")
-        this.$store.commit(ENTRIES_DELETE_ENTRY, this.uuid)
+        this.$store.commit("entries/delete_entry", this.uuid)
         this.$store.commit("search/delete_entry", this.uuid)
         this.$store.commit("map/delete_feature", {domain_name: this.entry.domain, uuid: this.uuid})
         this.back()

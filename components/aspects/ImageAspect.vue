@@ -51,7 +51,6 @@
   import AspectComponentMixin from "./AspectComponentMixin";
   import {DRAFT, INDEX} from "~/lib/consts";
   import {loc_append, remove_entry_loc} from "~/lib/aspect";
-  import {ENTRIES_GET_ENTRY, ENTRIES_UPDATE_IMAGE} from "~/store/entries";
   import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
   import {common_filesize} from "~/lib/util"
 
@@ -73,7 +72,7 @@
       }
     },
     beforeUpdate() {
-      const entry_image = this.$store.getters[ENTRIES_GET_ENTRY](this.entry_uuid()).image
+      const entry_image = this.$store.getters["entries/get_entry"](this.entry_uuid()).image
       if (entry_image) {
         this.cover_image_index = this.images.findIndex(img => img.file_uuid === entry_image)
       }
@@ -144,12 +143,12 @@
         console.log(this.entry_uuid())
         this.cover_image_index = index
         console.log("set_cover_image", index, this.images.index)
-        this.$store.commit(ENTRIES_UPDATE_IMAGE, this.images[index].file_uuid)
+        this.$store.commit("entries/update_image", this.images[index].file_uuid)
       },
       unset_cover_image() {
         this.cover_image_index = -1
         console.log("unset_cover_image")
-        this.$store.commit(ENTRIES_UPDATE_IMAGE, null)
+        this.$store.commit("entries/update_image", null)
       },
       // todo needs to be called from the ImageCard component
       make_selected_cover(index = this.selected_image_index) {

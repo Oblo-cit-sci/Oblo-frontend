@@ -1,4 +1,4 @@
-import {NO_DOMAIN, TITLE} from "~/lib/consts"
+import {NO_DOMAIN} from "~/lib/consts"
 
 const ld = require("lodash")
 

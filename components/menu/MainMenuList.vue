@@ -56,8 +56,7 @@ export default {
       } else {
         other_pages = other_pages.filter(p => !require_login.includes(p.to))
       }
-      // console.log(this.$store.getters["user/global_role"])
-      if (this.$store.getters["user/is_admin"]) {
+      if (!this.$store.getters["user/is_admin"]) {
         other_pages = other_pages.filter(p => !require_admin.includes(p.to))
       }
       if (process.env.NODE_ENV !== "development") {

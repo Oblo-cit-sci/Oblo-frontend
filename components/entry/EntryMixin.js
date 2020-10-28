@@ -16,13 +16,6 @@ import {
   VIEW
 } from "~/lib/consts";
 
-import {
-  ENTRIES_GET_ENTRY_TITLE,
-  ENTRIES_GET_PARENT,
-  ENTRIES_GET_RECURSIVE_ENTRIES,
-  ENTRIES_SET_DOWNLOADED,
-  ENTRIES_VALUE
-} from "~/store/entries";
 
 import {check_str_is_uuid, printDate} from "~/lib/util";
 
@@ -68,7 +61,7 @@ export default {
       let act = this.entry
       let result = []
       while (act.refs.parent) {
-        act = this.$store.getters[ENTRIES_GET_PARENT](act.uuid)
+        act = this.$store.getters["entries/get_parent"](act.uuid)
         result.push({
           text: act.title,
           href: 'breadcrumbs_dashboard',
@@ -99,7 +92,7 @@ export default {
       return this.$_.get(this.template, "rules.map.marker_color")
     },
     // title() {
-    //   return this.$store.getters[ENTRIES_GET_ENTRY_TITLE](this.uuid)
+    //   return this.$store.getters["entries/get_entry_title"](this.uuid)
     // },
     entry_title() {
       if (this.is_edit_mode) {
@@ -108,7 +101,7 @@ export default {
           return this.entry.title
         }
         // todo maybe it would be cleaner to add "entry "+uuid , so that  aspect_loc_str2arr/is wrapped around
-        let title = this.$store.getters[ENTRIES_VALUE](loc_prepend(EDIT, this.uuid, aspect_loc_str2arr(titleAspect)))
+        let title = this.$store.getters["entries/value"](loc_prepend(EDIT, this.uuid, aspect_loc_str2arr(titleAspect)))
         title = this.$_.get(title, "value", "")
         return this.template.title + (title ? ": " + title : "")
       } else {
@@ -136,7 +129,7 @@ export default {
     parent_title() {
       // console.log("getting parent title", this)
       // todo not necessarily available for remote entries. should be included?
-      return this.$store.getters[ENTRIES_GET_PARENT](this.uuid).title
+      return this.$store.getters["entries/get_parent"](this.uuid).title
     },
     type_name() {
       return this.template.title
@@ -150,7 +143,7 @@ export default {
     },
     download_title() {
       // todo title, wont update in real time
-      const entry_title = this.$store.getters[ENTRIES_GET_ENTRY_TITLE](this.uuid)
+      const entry_title = this.$store.getters["entries/get_entry_title"](this.uuid)
       return (this.type_name + "_" + entry_title).replace(" ", "_")
     },
     is_draft() {
@@ -206,8 +199,6 @@ export default {
       //   return clone
       // })
       this.export_data(this.entry, this.download_title)
-      // this.export_data(this.entry, this.download_title, "csv")
-      // this.$store.commit(ENTRIES_SET_DOWNLOADED, this.uuid)
     },
     // update_aspect_locs() {
     //   // console.log("update_aspect_locs", this.entry !== null)

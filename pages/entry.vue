@@ -6,10 +6,6 @@
 
 
 import PersistentStorageMixin from "../components/util/PersistentStorageMixin";
-import {
-  ENTRIES_GET_EDIT, ENTRIES_GET_ENTRY,
-  ENTRIES_SET_EDIT,
-} from "~/store/entries";
 import Entry from "../components/entry/Entry";
 import {VIEW} from "~/lib/consts"
 
@@ -29,7 +25,7 @@ export default {
       // actually should be home or back. but we should always have it...
       this.$router.push("/")
     }
-    this.$store.dispatch(ENTRIES_SET_EDIT, this.uuid)
+    this.$store.dispatch("entries/set_edit", this.uuid)
   },
   beforeRouteEnter(to, from, next) {
     // console.log("entry enter.. to", to)
@@ -64,11 +60,11 @@ export default {
       return this.$route.query.uuid
     },
     entry() {
-      return this.$store.getters[ENTRIES_GET_EDIT]()
+      return this.$store.getters["entries/get_edit"]()
       // if ([EDIT, REVIEW].includes(this.mode)) {
-      //   return this.$store.getters[ENTRIES_GET_EDIT]()
+      //   return this.$store.getters["entries/get_edit"]()
       // } else {
-      //   return this.$store.getters[ENTRIES_GET_ENTRY](this.uuid)
+      //   return this.$store.getters["entries/get_entry"](this.uuid)
       // }
     },
     mode() {
@@ -78,8 +74,8 @@ export default {
       if (this.is_draft || this.mode === VIEW) {
         return false
       }
-      const edit_entry = this.$_.omit(this.$store.getters[ENTRIES_GET_EDIT](), ["local"])
-      const original_entry = this.$_.omit(this.$store.getters[ENTRIES_GET_ENTRY](this.uuid), ["local"])
+      const edit_entry = this.$_.omit(this.$store.getters["entries/get_edit"](), ["local"])
+      const original_entry = this.$_.omit(this.$store.getters["entries/get_entry"](this.uuid), ["local"])
       return !this.$_.isEqual(edit_entry, original_entry)
     },
   }

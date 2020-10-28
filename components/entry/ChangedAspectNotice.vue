@@ -5,7 +5,6 @@
 </template>
 
 <script>
-  import {ENTRIES_GET_EDIT, ENTRIES_GET_ENTRY} from "~/store/entries";
   import {compare_entries} from "~/lib/entry_collections";
 
   export default {
@@ -15,8 +14,8 @@
     },
     computed: {
       changes() {
-        const edit_entry = this.$store.getters[ENTRIES_GET_EDIT]()
-        const original_entry = this.$store.getters[ENTRIES_GET_ENTRY](edit_entry.uuid)
+        const edit_entry = this.$store.getters["entries/get_edit"]()
+        const original_entry = this.$store.getters["entries/get_entry"](edit_entry.uuid)
         return compare_entries(original_entry, edit_entry, this.is_draft ? ["values"] : [])
       },
     }

@@ -1,7 +1,6 @@
 import {privacy_icon} from "~/lib/util";
 import {VIEW} from "~/lib/consts";
 import {unsaved_changes_default_dialog} from "~/lib/dialogs";
-import {ENTRIES_GET_EDIT, ENTRIES_GET_ENTRY} from "~/store/entries"
 
 export default {
   data() {

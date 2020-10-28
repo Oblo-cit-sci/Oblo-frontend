@@ -99,7 +99,6 @@ import {mapGetters} from "vuex"
 import {extract_unpacked_values} from "~/lib/aspect";
 import PersistentStorageMixin from "../components/util/PersistentStorageMixin";
 
-import {ENTRIES_GET_OWN_ENTRIES_UUIDS} from "~/store/entries";
 import LoadFileButton from "../components/util/LoadFileButton";
 import {base64file_to_blob, common_filesize, route_change_query} from "~/lib/util";
 import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
@@ -303,7 +302,8 @@ export default {
   computed: {
     ...mapGetters({
       user_data: "user",
-      own_entries_uuids: ENTRIES_GET_OWN_ENTRIES_UUIDS
+      is_visitor: "is_visitor",
+      own_entries_uuids: "entries/get_own_entries_uuids"
     }),
     entry_search_config() {
       return [this.get_actor_filter(this.registered_name),
@@ -327,9 +327,6 @@ export default {
     },
     aspect_mode() {
       return this.edit_mode ? EDIT : VIEW
-    },
-    is_visitor() {
-      return this.$store.getters.is_visitor
     },
     profile_pic() {
       return this.$api.actor.url_profile_pic(this.registered_name) + "?q=" + this.profile_version_ts

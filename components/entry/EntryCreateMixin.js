@@ -6,7 +6,7 @@ import {DRAFT, EDIT, PRIVATE_LOCAL, REGULAR} from "~/lib/consts"
 import {default_values, set_titleAspect} from "~/lib/entry"
 import {CREATOR, user_ref} from "~/lib/actors"
 import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
-import {ENTRIES_SAVE_ENTRY} from "~/store/entries"
+
 import NavBaseMixin from "~/components/NavBaseMixin"
 
 export default {
@@ -79,7 +79,7 @@ export default {
       return entry
     },
     persist_after_entry_create(entry) {
-      this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
+      this.$store.commit("entries/save_entry", entry)
       this.persist_entries()
     }
   }

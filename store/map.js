@@ -1,6 +1,5 @@
 const ld = require("lodash")
 
-
 export const state = () => ({
   entries_loaded: false,
   entries: {},

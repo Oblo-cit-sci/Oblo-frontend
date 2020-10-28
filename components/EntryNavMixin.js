@@ -2,11 +2,6 @@ import {EDIT, GLOBAL, NO_DOMAIN, QP_D, VIEW} from "~/lib/consts";
 import {aspect_loc_str} from "~/lib/aspect";
 import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
 import NavBaseMixin from "./NavBaseMixin";
-import {
-  ENTRIES_GET_ENTRY,
-  ENTRIES_HAS_FULL_ENTRY,
-  ENTRIES_SAVE_ENTRY
-} from "~/store/entries";
 
 import EntryActionsMixin from "~/components/entry/EntryActionsMixin"
 import URLQueryMixin from "~/components/util/URLQueryMixin"
@@ -21,7 +16,7 @@ export default {
       // console.log("gotoooo")
       // todo should push not init?!
       this.$store.commit("init_page_path", this.$route)
-      const has_full_entry = this.$store.getters[ENTRIES_HAS_FULL_ENTRY](uuid)
+      const has_full_entry = this.$store.getters["entries/has_full_entry"](uuid)
       // console.log("has full", has_full_entry)
       const mode = force_mode ? force_mode : this.proper_mode
       // console.log("full?", has_full_entry)
@@ -32,7 +27,7 @@ export default {
         this.$api.entry__$uuid(this.entry.uuid).then(({data}) => {
           if (data.data) {
             const entry = data.data
-            this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
+            this.$store.commit("entries/save_entry", entry)
             // console.log("prevent change", this.prevent_view_page_change)
             if (this.prevent_view_page_change && mode === VIEW) {
               this.show_in_route(uuid, mode)
@@ -61,7 +56,7 @@ export default {
         // beautiful
         const entry = data.data.data
         entry.local = {}
-        this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
+        this.$store.commit("entries/save_entry", entry)
         return Promise.resolve(entry)
       } else {
         console.log("err")
@@ -73,7 +68,7 @@ export default {
         if (data.data) {
           // console.log("downloading entry", res)
           const entry = Object.assign(data.data, {local: {}})
-          this.$store.commit(ENTRIES_SAVE_ENTRY, entry)
+          this.$store.commit("entries/save_entry", entry)
           this.to_entry(uuid, this.proper_mode)
         }
       }).catch(() => {
@@ -89,7 +84,7 @@ export default {
       this.map_goto(uuid)
     },
     map_goto(entry_uuid) {
-      const entry_loc = this.$store.getters[ENTRIES_GET_ENTRY](entry_uuid).location
+      const entry_loc = this.$store.getters["entries/get_entry"](entry_uuid).location
       if (entry_loc && entry_loc.length > 0) {
         this.$store.commit("map/goto_location", entry_loc[0])
       }
@@ -97,7 +92,7 @@ export default {
     to_parent(to_last_element = true, mode = VIEW) {
       if (this.in_context) {
         const parent_ref = this.entry.entry_refs.parent
-        let parent_entry_type_slug = this.$store.getters[ENTRIES_GET_ENTRY](parent_ref.uuid).template.slug
+        let parent_entry_type_slug = this.$store.getters["entries/get_entry"](parent_ref.uuid).template.slug
 
         const uuid = parent_ref.uuid
 

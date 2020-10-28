@@ -4,7 +4,6 @@ import {dev_env} from "~/lib/util"
 import FixDomainMixin from "~/components/global/FixDomainMixin"
 import {PAGE_INDEX} from "~/lib/pages"
 import {default_settings} from "~/lib/settings"
-import {ENTRIES_HAS_FULL_ENTRY, ENTRIES_SAVE_ENTRY} from "~/store/entries"
 import {db_vars} from "~/lib/db_vars"
 import SettingsChangeMixin from "~/components/global/SettingsChangeMixin"
 import {NO_DOMAIN} from "~/lib/consts"
@@ -89,12 +88,12 @@ export default {
 
       // todo maybe this part should be handled by the individual page, so it can do its default behaviour
       // but a wrapper would be good.
-      if (this.$route.query.uuid && !this.$store.getters[ENTRIES_HAS_FULL_ENTRY](this.$route.query.uuid)) {
+      if (this.$route.query.uuid && !this.$store.getters["entries/has_full_entry"](this.$route.query.uuid)) {
         console.log("need to get that entry")
         try {
           const response = await this.$api.entry__$uuid(this.$route.query.uuid)
           if (response.status === 200) {
-            this.$store.commit(ENTRIES_SAVE_ENTRY, response.data.data)
+            this.$store.commit("entries/save_entry", response.data.data)
           } else {
             this.$router.push("/")
           }

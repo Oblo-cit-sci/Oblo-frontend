@@ -73,7 +73,6 @@ import ListPagination from "../aspect_utils/ListPagination";
 import goTo from 'vuetify/lib/services/goto'
 import {recursive_unpack} from "~/lib/util";
 import AspectComponentMixin from "./AspectComponentMixin";
-import {ENTRIES_VALUE} from "~/store/entries";
 import ListitemActions from "../aspect_utils/ListitemActions";
 
 const SIMPLE = "simple"
@@ -320,7 +319,7 @@ export default {
                     aspect_loc_str2arr(ref_value),
                     i)
                   // console.log("value ref,  ",this.aspect.name, aspect_location)
-                  titles[i] = (this.$store.getters[ENTRIES_VALUE](aspect_location) || pack_value()).value
+                  titles[i] = (this.$store.getters["entries/value"](aspect_location) || pack_value()).value
                   //console.log("ref value", ref_value)
                   if (titles[i] === undefined) {
                     console.log("broken ref!")
