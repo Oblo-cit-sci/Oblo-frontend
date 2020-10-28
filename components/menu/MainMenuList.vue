@@ -18,7 +18,6 @@
 
 <script>
 import {all_pages_n_actions} from "~/lib/pages"
-import {USER_GLOBAL_ROLE, USER_LOGGED_IN} from "~/store/user"
 import {ADMIN} from "~/lib/consts"
 import LanguageSelector from "~/components/LanguageSelector"
 import URLQueryMixin from "~/components/util/URLQueryMixin"
@@ -42,7 +41,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-        logged_in: USER_LOGGED_IN,
+        logged_in: "user/logged_in",
         connected: "app/connected"
       }
     ),
@@ -57,8 +56,8 @@ export default {
       } else {
         other_pages = other_pages.filter(p => !require_login.includes(p.to))
       }
-      // console.log(this.$store.getters[USER_GLOBAL_ROLE])
-      if (this.$store.getters[USER_GLOBAL_ROLE] !== ADMIN) {
+      // console.log(this.$store.getters["user/global_role"])
+      if (this.$store.getters["user/is_admin"]) {
         other_pages = other_pages.filter(p => !require_admin.includes(p.to))
       }
       if (process.env.NODE_ENV !== "development") {

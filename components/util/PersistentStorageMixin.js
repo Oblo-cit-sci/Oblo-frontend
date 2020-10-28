@@ -1,4 +1,3 @@
-import {USER_GET_AUTH_TOKEN, USER_SETTINGS} from "~/store/user";
 
 export default {
   name: "PersistentStorageMixin",
@@ -30,10 +29,10 @@ export default {
       this.store_value("user_data", this.$store.getters.user)
     },
     persist_user_settings() {
-      this.store_value("user_settings", this.$store.getters[USER_SETTINGS])
+      this.store_value("user_settings", this.$store.getters["user/settings"])
     },
     persist_auth_token() {
-      this.store_value("auth_token", this.$store.getters[USER_GET_AUTH_TOKEN])
+      this.store_value("auth_token", this.$store.getters["user/get_auth_token"])
     }
   }
 }

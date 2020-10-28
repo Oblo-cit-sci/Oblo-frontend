@@ -4,7 +4,6 @@ import {dev_env} from "~/lib/util"
 import FixDomainMixin from "~/components/global/FixDomainMixin"
 import {PAGE_INDEX} from "~/lib/pages"
 import {default_settings} from "~/lib/settings"
-import {USER_GET_AUTH_TOKEN, USER_LOGIN} from "~/store/user"
 import {ENTRIES_HAS_FULL_ENTRY, ENTRIES_SAVE_ENTRY} from "~/store/entries"
 import {db_vars} from "~/lib/db_vars"
 import SettingsChangeMixin from "~/components/global/SettingsChangeMixin"
@@ -59,12 +58,12 @@ export default {
       console.log("initialize")
 
       // todo maybe this should be before init_data, to request the set language
-      const auth_token = this.$store.getters[USER_GET_AUTH_TOKEN]
+      const auth_token = this.$store.getters["user/get_auth_token"]
       if (auth_token.access_token) {
         const login = await this.$api.actor.validate_token(auth_token)
         if (login.data.token_valid) {
           console.log("stored token is valid")
-          this.$store.commit(USER_LOGIN)
+          this.$store.commit("user/login")
           this.$api.axios.setToken(auth_token.access_token, "Bearer")
         } else {
           console.log("stored token is not valid anymore")
@@ -182,7 +181,7 @@ export default {
             this.$store.commit("app/initialized")
           }
         }, err => {
-          console.log("initialization failed")
+          console.log("initialization failed", err)
         })
       }
     }

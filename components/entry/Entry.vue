@@ -96,7 +96,6 @@ import {privacy_color, privacy_icon} from "~/lib/util";
 import ChangedAspectNotice from "./ChangedAspectNotice";
 import MetaChips from "./MetaChips";
 import EntryActorList from "./EntryActorList";
-import {USER_LOGGED_IN} from "~/store/user"
 import Taglist from "~/components/global/Taglist"
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
 import EntryTags from "~/components/entry/EntryTags"
@@ -157,7 +156,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({logged_in: USER_LOGGED_IN}),
+    ...mapGetters({logged_in: "user/logged_in"}),
     aspect_loc() {
       if (this.is_editable_mode) {
         return [EDIT, this.uuid]

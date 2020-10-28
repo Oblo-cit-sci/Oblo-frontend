@@ -103,7 +103,6 @@ import {ENTRIES_GET_OWN_ENTRIES_UUIDS} from "~/store/entries";
 import LoadFileButton from "../components/util/LoadFileButton";
 import {base64file_to_blob, common_filesize, route_change_query} from "~/lib/util";
 import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
-import {USER_SET_USER_DATA} from "~/store/user";
 import EntryListWrapper from "../components/EntryListWrapper"
 import LayoutMixin from "~/components/global/LayoutMixin"
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
@@ -234,7 +233,7 @@ export default {
         new_profile.domain[this.is_fixed_domain] = this.domain_specific_aspects_values
       }
       this.$api.actor.post_me(new_profile).then(({data}) => {
-        this.$store.commit(USER_SET_USER_DATA, data)
+        this.$store.commit("user/set_user_data", data)
         this.persist_user_data()
         // this.setEdit(false)
         this.reset_edit_values()
@@ -254,7 +253,7 @@ export default {
         // todo update user_data
         const user_data = this.$_.cloneDeep(this.user_data)
         user_data.email = new_email.email
-        this.$store.commit(USER_SET_USER_DATA, user_data)
+        this.$store.commit("user/set_user_data", user_data)
         this.persist_user_data()
         this.email_aspects.password.value = ""
       }, err => {

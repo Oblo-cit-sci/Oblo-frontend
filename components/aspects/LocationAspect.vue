@@ -81,7 +81,6 @@ import {unpack} from "~/lib/aspect"
 import ResponsivenessMixin from "~/components/ResponsivenessMixin";
 import AspectDialog from "~/components/dialogs/AspectDialog"
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
-import {USER_SET_SETTINGS} from "~/store/user"
 import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
 
 // "attr.input" options
@@ -505,7 +504,7 @@ export default {
       this.$api.actor.post_me({settings: Object.assign(existing_settings, {[this.location_privacy_setting_aspect.name]: setting_value})}).then(({data}) => {
         // console.log(data.settings)
         this.ok_snackbar(this.$t("page.settings.settings_updated"))
-        this.$store.commit(USER_SET_SETTINGS, data.settings)
+        this.$store.commit("user/set_settings", data.settings)
         this.persist_user_settings()
 
         if (this.public_precision === PREC_OPTION_EXACT && this.location_privacy_setting === settings_loc_privacy_random ||

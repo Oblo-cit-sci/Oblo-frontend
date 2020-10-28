@@ -30,7 +30,6 @@ import {mapGetters} from "vuex"
 
 import DomainCard from "../components/global/DomainCard";
 import Footer from "../components/global/Footer";
-import {USER_LOGGED_IN} from "~/store/user";
 import {UI_LANGUAGE} from "~/lib/consts"
 import SettingsChangeMixin from "~/components/global/SettingsChangeMixin"
 
@@ -48,7 +47,7 @@ export default {
   },
   computed: {
     ...mapGetters(["domains"]),
-    ...mapGetters({logged_in: USER_LOGGED_IN}),
+    ...mapGetters({logged_in: "user/logged_in"}),
     server_name() {
       // todo
       return "OpenTEK.eu"

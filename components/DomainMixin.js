@@ -1,4 +1,3 @@
-import {USER_LOGGED_IN} from "~/store/user"
 
 import {mapGetters} from "vuex"
 import EntryCreateMixin from "~/components/entry/EntryCreateMixin"
@@ -13,7 +12,7 @@ export default {
   },
   computed: {
     // why user_logged_in
-    ...mapGetters({logged_in: USER_LOGGED_IN, all_domains_templates: "templates/templates_of_domain", all_domains: "domain/domain_by_name"}),
+    ...mapGetters({logged_in: "user/logged_in", all_domains_templates: "templates/templates_of_domain", all_domains: "domain/domain_by_name"}),
     domain_title() {
       return this.domain_data.title
     },

@@ -10,7 +10,6 @@
 </template>
 
 <script>
-import {USER_LOGGED_IN} from "~/store/user"
 import SettingsChangeMixin from "~/components/global/SettingsChangeMixin"
 import {UI_LANGUAGE} from "~/lib/consts"
 import InitializationMixin from "~/layouts/InitializationMixin"
@@ -60,7 +59,7 @@ export default {
   watch: {
     language(lang) {
       this._i18n.locale = lang
-      if (!this.$store.getters[USER_LOGGED_IN]) {
+      if (!this.$store.getters["user/logged_in"]) {
         this.$api.axios.defaults.headers.common["Content-Language"] = lang + "-" + lang.toUpperCase()
       }
     }

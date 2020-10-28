@@ -1,5 +1,4 @@
 import {VISITOR} from "~/lib/consts";
-import {USER_LOGOUT} from "~/store/user"
 
 export const state = () => ({
   codes: {},
@@ -94,7 +93,7 @@ export const actions = {
   },
   logout({commit, dispatch}) {
     dispatch("clear_entries")
-    dispatch(USER_LOGOUT)
+    dispatch("user/logout")
     commit("search/clear")
   }
 }

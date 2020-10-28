@@ -47,7 +47,6 @@
   import EntryPreviewList from "../components/entry/EntryPreviewList";
 
   import {extract_unpacked_values} from "~/lib/aspect"
-  import {USER_SET_SETTINGS, USER_SETTINGS} from "~/store/user"
   import FixDomainMixin from "~/components/global/FixDomainMixin"
   import {PAGE_PROFILE} from "~/lib/pages"
   import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
@@ -60,7 +59,7 @@
     components: {EntryPreviewList, LoadFileButton, Aspect},
     mixins: [TriggerSnackbarMixin, PersistentStorageMixin, AspectListMixin, FixDomainMixin, TypicalAspectMixin],
     created() {
-      const settings = this.$store.getters[USER_SETTINGS]
+      const settings = this.$store.getters["user/settings"]
       for (let name in this.aspect_map) {
         this.aspect_map[name].value = settings[name]
       }
@@ -103,7 +102,7 @@
         this.$api.actor.post_me({settings: extract_unpacked_values(this.settings_aspects)}).then(({data}) => {
           // console.log(data.settings)
           this.ok_snackbar(this.$t("page.settings.settings_updated"))
-          this.$store.commit(USER_SET_SETTINGS, data.settings)
+          this.$store.commit("user/set_settings", data.settings)
           this.persist_user_settings()
           this.$router.push({name: PAGE_PROFILE})
         }).catch(err => {

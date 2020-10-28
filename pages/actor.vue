@@ -29,8 +29,6 @@
   import ActorAdminEdit from "~/components/actor/ActorAdminEdit"
   import GlobalRoleChip from "~/components/actor/GlobalRoleChip"
   import LayoutMixin from "~/components/global/LayoutMixin"
-  import {USER_GLOBAL_ROLE} from "~/store/user"
-  import {ADMIN} from "~/lib/consts"
   import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
   import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
   import NavBaseMixin from "~/components/NavBaseMixin"

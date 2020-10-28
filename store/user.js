@@ -1,17 +1,6 @@
 import {ADMIN, VISITOR} from "~/lib/consts";
 import {default_settings} from "~/lib/settings"
 
-export const USER_LOGIN = "user/login"
-export const USER_LOGOUT = "user/logout"
-export const USER_LOGGED_IN = "user/logged_in"
-export const USER_SET_USER_DATA = "user/set_user_data"
-export const USER_SET_AUTH_TOKEN = "user/set_auth_token"
-export const USER_GET_AUTH_TOKEN = "user/get_auth_token"
-export const USER_GLOBAL_ROLE = "user/global_role"
-export const USER_SETTINGS = "user/settings"
-export const USER_SET_SETTINGS = "user/set_settings"
-
-
 let default_user_data = {
   global_role: VISITOR,
   public_name: VISITOR,

@@ -1,6 +1,4 @@
 import PersistentStorageMixin from "~/components/util/PersistentStorageMixin";
-import {USER_LOGIN} from "~/store/user";
-import FixDomainMixin from "~/components/global/FixDomainMixin"
 import {UI_LANGUAGE} from "~/lib/consts"
 
 export default {

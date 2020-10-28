@@ -49,7 +49,6 @@ import {prepare_for_submission} from "~/lib/entry"
 
 import {base64file_to_blob} from "~/lib/util"
 import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
-import {USER_LOGGED_IN} from "~/store/user"
 import EntryActionsMixin from "~/components/entry/EntryActionsMixin"
 
 export default {
@@ -76,7 +75,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({connected: "app/connected", logged_in: USER_LOGGED_IN}),
+    ...mapGetters({connected: "app/connected", logged_in: "user/logged_in"}),
     show_submit() {
       return !this.private_local && !this.is_view_mode && !this.is_review_mode && !this.in_context
     },
