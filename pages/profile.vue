@@ -303,7 +303,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      user_data: USER,
+      user_data: "user",
       own_entries_uuids: ENTRIES_GET_OWN_ENTRIES_UUIDS
     }),
     entry_search_config() {

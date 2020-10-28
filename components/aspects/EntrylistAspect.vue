@@ -58,9 +58,9 @@
     ENTRIES_DELETE_ENTRY,
     ENTRIES_GET_ENTRY,
     ENTRIES_SAVE_CHILD_N_REF,
-    ENTRIES_SAVE_ENTRY, ENTRIES_UPDATE_ENTRY
+     ENTRIES_UPDATE_ENTRY
   } from "../../store/entries";
-  import {PUSH_PAGE_PATH} from "../../store";
+
   import {TEMPLATES_TYPE} from "../../store/templates";
 
   export default {
@@ -146,7 +146,7 @@
         this.persist_entries()
         // goto
         // console.log("EL asp", this.$route)
-        this.$store.commit(PUSH_PAGE_PATH, this.$route)
+        this.$store.commit("push_page_path", this.$route)
         this.to_entry(child.uuid, EDIT)
         this.goto_delayed_last_page()
       },
@@ -166,7 +166,7 @@
         else {
           // todo, not always edit: parent is owned, but child not, ...
           // console.log("EL asp", this.$route)
-          this.$store.commit(PUSH_PAGE_PATH, this.$route)
+          this.$store.commit("push_page_path", this.$route)
           this.to_entry(item.uuid, this.mode)
         }
       }

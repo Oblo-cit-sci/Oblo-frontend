@@ -4,7 +4,6 @@ import {dev_env} from "~/lib/util"
 import FixDomainMixin from "~/components/global/FixDomainMixin"
 import {PAGE_INDEX} from "~/lib/pages"
 import {default_settings} from "~/lib/settings"
-import {SET_TEMPLATES_CODES} from "~/store"
 import {USER_GET_AUTH_TOKEN, USER_LOGIN} from "~/store/user"
 import {ENTRIES_HAS_FULL_ENTRY, ENTRIES_SAVE_ENTRY} from "~/store/entries"
 import {db_vars} from "~/lib/db_vars"
@@ -84,7 +83,7 @@ export default {
       const domains_data = data.data.domains
       const language = data.data.language
       this.$store.commit("domain/set_domains", {domains_data, language})
-      await this.$store.dispatch(SET_TEMPLATES_CODES, data.data.templates_and_codes)
+      await this.$store.dispatch("set_templates_codes", data.data.templates_and_codes)
 
       // console.log(data.data)
       this.$store.commit("set_available_languages", data.data.languages)

@@ -7,7 +7,7 @@ import {
   ENTRIES_HAS_FULL_ENTRY,
   ENTRIES_SAVE_ENTRY
 } from "~/store/entries";
-import {INIT_PAGE_PATH, POP_LAST_PAGE_PATH} from "~/store";
+
 import {TEMPLATES_GET_ASPECT_DEF} from "~/store/templates";
 import EntryActionsMixin from "~/components/entry/EntryActionsMixin"
 import URLQueryMixin from "~/components/util/URLQueryMixin"
@@ -21,7 +21,7 @@ export default {
     goto(uuid, force_mode) {
       // console.log("gotoooo")
       // todo should push not init?!
-      this.$store.commit(INIT_PAGE_PATH, this.$route)
+      this.$store.commit("init_page_path", this.$route)
       const has_full_entry = this.$store.getters[ENTRIES_HAS_FULL_ENTRY](uuid)
       // console.log("has full", has_full_entry)
       const mode = force_mode ? force_mode : this.proper_mode
@@ -114,7 +114,7 @@ export default {
           const aspect_id = aspect_loc_str(parent_ref.aspect_loc)
           query.goTo = (aspect_id ? aspect_id : "")
         }
-        this.$store.commit(POP_LAST_PAGE_PATH)
+        this.$store.commit("pop_last_page_path")
         this.to_entry(uuid, mode, query)
       } else {
         if (this.domain.value === NO_DOMAIN) {

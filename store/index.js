@@ -1,22 +1,6 @@
-import {NO_DOMAIN, TITLE, VISITOR} from "~/lib/consts";
-import {object_list2options} from "~/lib/options";
+import {VISITOR} from "~/lib/consts";
 import {TEMPLATES_ADD_TEMPLATES} from "~/store/templates";
 import {USER_LOGOUT} from "~/store/user"
-
-// *********** Index
-export const SET_STORED_ENTRIES = "set_stored_entries"
-export const GET_CODE = "get_code"
-export const SET_TEMPLATES_CODES = "set_templates_codes"
-export const CLEAR_ENTRIES = "clear_entries"
-export const INIT_PAGE_PATH = "init_page_path"
-export const PUSH_PAGE_PATH = "push_page_path"
-export const POP_LAST_PAGE_PATH = "pop_last_page_path"
-export const USER = "user"
-export const LAST_BASE_PAGE_PATH = "last_page_path"
-export const ALL_CODES = "all_codes"
-// internal mutations
-export const ADD_CODES = "add_codes"
-
 
 export const state = () => ({
   codes: {},
@@ -107,10 +91,10 @@ export const actions = {
   },
   set_templates_codes(context, entries) {
     context.commit(TEMPLATES_ADD_TEMPLATES, entries.filter(e => e.type === "template"))
-    context.commit(ADD_CODES, entries.filter(e => e.type === "code"))
+    context.commit("add_codes", entries.filter(e => e.type === "code"))
   },
   logout({commit, dispatch}) {
-    dispatch(CLEAR_ENTRIES)
+    dispatch("clear_entries")
     dispatch(USER_LOGOUT)
     commit("search/clear")
   }

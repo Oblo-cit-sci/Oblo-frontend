@@ -45,8 +45,7 @@
   import {export_data, merge_imported_entries} from "~/lib/import_export";
   import PersistentStorageMixin from "../components/util/PersistentStorageMixin";
   import EntryPreviewList from "../components/entry/EntryPreviewList";
-  import {CLEAR_ENTRIES, DOMAIN_TITLE} from "~/store";
-  import {settings_loc_privacy_ask, settings_loc_privacy_exact, settings_loc_privacy_random} from "~/lib/settings"
+
   import {extract_unpacked_values} from "~/lib/aspect"
   import {USER_SET_SETTINGS, USER_SETTINGS} from "~/store/user"
   import FixDomainMixin from "~/components/global/FixDomainMixin"
@@ -161,7 +160,7 @@
         }
       },
       clear_entries() {
-        this.$store.dispatch(CLEAR_ENTRIES)
+        this.$store.dispatch("clear_entries")
         this.persist_entries()
       },
     },
