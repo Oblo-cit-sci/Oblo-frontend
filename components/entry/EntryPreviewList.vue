@@ -26,7 +26,7 @@
 import EntryPreview from "~/components/entry/EntryPreview";
 import SimplePaginate from "../SimplePaginate";
 import {ENTRIES_GET_ENTRY} from "~/store/entries";
-import {TEMPLATES_TYPE} from "~/store/templates";
+
 import {mapGetters} from "vuex"
 import {PAGE_DOMAIN} from "~/lib/pages"
 
@@ -100,7 +100,7 @@ export default {
         new Set(
           this.$_.map(
             this.entries,
-            e => this.$store.getters[TEMPLATES_TYPE](e.template.slug))).values())
+            e => this.$store.getters["templates/entry_type"](e.template.slug))).values())
     },
     total_pages() {
       return Math.ceil(this.total_count / this.entries_per_page)

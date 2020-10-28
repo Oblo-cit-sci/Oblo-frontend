@@ -14,7 +14,6 @@
 
 <script>
     import TextLongAspect from "./aspects/TextLongAspect";
-    import {TEMPLATES_ADD_NOTE, TEMPLATES_INIT_ASPECT_NOTE, TEMPLATES_NOTE} from "../store/templates";
 
     export default {
         name: "AsectDescr_NoteInput",
@@ -34,7 +33,7 @@
         computed: {
             note() {
                 //console.log("update")
-                const note = this.$store.getters[TEMPLATES_NOTE](this.aspect_descr_loc)
+                const note = this.$store.getters["templates/note"](this.aspect_descr_loc)
                 if(note === undefined) {
                     this.$store.commit(TEMPLATES_INIT_ASPECT_NOTE, this.aspect_descr_loc)
                     return null
@@ -52,7 +51,7 @@
                     note: note
                 })
                 // ugly fix, for chromi not calling this.note
-                // console.log(this.$store.getters[TEMPLATES_NOTE](this.aspect_descr_loc))
+                // console.log(this.$store.getters["templates/note"](this.aspect_descr_loc))
                 // console.log(this.note)
             }
         },

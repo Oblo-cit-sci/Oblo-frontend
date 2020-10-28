@@ -1,5 +1,3 @@
-import {ENTRIES_ALL_DRAFTS} from "~/store/entries";
-import {TEMPLATES_ALL_NOTES} from "~/store/templates";
 import {USER_GET_AUTH_TOKEN, USER_SETTINGS} from "~/store/user";
 
 export default {
@@ -26,7 +24,7 @@ export default {
       this.store_value("user_key", this.$store.getters.user_key)
     },
     persist_notes() {
-      this.store_value("notes", this.$store.getters[TEMPLATES_ALL_NOTES])
+      this.store_value("notes", this.$store.getters["templates/all_notes"])
     },
     persist_user_data() {
       this.store_value("user_data", this.$store.getters.user)

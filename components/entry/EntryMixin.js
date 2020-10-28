@@ -25,7 +25,7 @@ import {
 } from "~/store/entries";
 
 import {check_str_is_uuid, printDate} from "~/lib/util";
-import {TEMPLATES_TYPE} from "~/store/templates";
+
 import EntryPagesMixin from "~/components/entry/EntryPagesMixin"
 import AspectListMixin from "~/components/global/AspectListMixin"
 import ExportMixin from "~/components/global/ExportMixin"
@@ -93,7 +93,7 @@ export default {
       return this.entry.template.slug
     },
     template() {
-      return this.$store.getters[TEMPLATES_TYPE](this.template_slug)
+      return this.$store.getters["templates/entry_type"](this.template_slug)
     },
     template_color() {
       return this.$_.get(this.template, "rules.map.marker_color")

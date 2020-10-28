@@ -1,5 +1,4 @@
 import {VISITOR} from "~/lib/consts";
-import {TEMPLATES_ADD_TEMPLATES} from "~/store/templates";
 import {USER_LOGOUT} from "~/store/user"
 
 export const state = () => ({
@@ -90,7 +89,7 @@ export const actions = {
     commit("search/clear")
   },
   set_templates_codes(context, entries) {
-    context.commit(TEMPLATES_ADD_TEMPLATES, entries.filter(e => e.type === "template"))
+    context.commit("templates/add_templates", entries.filter(e => e.type === "template"))
     context.commit("add_codes", entries.filter(e => e.type === "code"))
   },
   logout({commit, dispatch}) {

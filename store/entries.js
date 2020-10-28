@@ -16,7 +16,7 @@ import {
 
 import Vue from "vue"
 import {filter_empty, guarantee_array, recursive_unpack} from "~/lib/util";
-import {TEMPLATES_TYPE} from "~/store/templates";
+
 
 
 // Mutations
@@ -370,7 +370,7 @@ export const getters = {
   // todo, maybe not here...
   get_entry_type(state, getters, root_state, rootGetter) {
     return slug => {
-      const entry_type = rootGetter[TEMPLATES_TYPE](slug)
+      const entry_type = rootGetter["templates/entry_type"](slug)
       if (!entry_type) {
         console.log("No entry type for slug", slug)
         return null

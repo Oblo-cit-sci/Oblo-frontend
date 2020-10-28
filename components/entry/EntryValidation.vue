@@ -19,7 +19,6 @@
   } from "~/lib/aspect";
   import {ASPECT, COMPONENT, COMPOSITE, EDIT, ENTRYLIST, INDEX, LIST} from "~/lib/consts";
   import {item_count_name} from "~/lib/listaspects";
-  import {TEMPLATES_TYPE} from "~/store/templates";
 
 
   const OK = 0
@@ -47,7 +46,7 @@
     },
     computed: {
       template() {
-        return this.$store.getters[TEMPLATES_TYPE](this.template_slug)
+        return this.$store.getters["templates/entry_type"](this.template_slug)
       },
       missing() {
         const aspects = this.template.aspects

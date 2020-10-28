@@ -50,17 +50,6 @@
   import EntrytypePageMixin from "../components/EntrytypePageMixin";
   import goTo from 'vuetify/lib/services/goto'
 
-  import mapGetters from 'vuex'
-  import {
-    TEMPLATES_INIT_NOTES,
-    TEMPLATES_SET_TYPE_NOTES,
-    TEMPLATES_TYPE,
-    TEMPLATES_TYPE_NOTES,
-    TEMPLATES_TYPES,
-    TEMPLATES_TYPES_ARRAY
-  } from "../store/templates";
-
-
   export default {
     name: "EntrytypeNotes",
     mixins: [PersistentStorageMixin, EntrytypePageMixin],
@@ -85,7 +74,7 @@
         }
       },
       init_typenotes(type_slug) {
-        // let notes = this.$store.getters[TEMPLATES_TYPE_NOTES](type_slug)
+        // let notes = this.$store.getters["templates/type_notes"](type_slug)
         // if (notes === undefined) {
         //   this.$store.commit(TEMPLATES_INIT_NOTES, type_slug)
         // }
@@ -96,7 +85,7 @@
       },
       download() {
         const data = {
-          notes: this.$store.getters[TEMPLATES_TYPE_NOTES](this.selectec_type)
+          notes: this.$store.getters["templates/type_notes"](this.selectec_type)
         }
         export_data(data, this.$store.getters[TEMPLATES_TYPE](this.selectec_type).title + "_notes.json")
       },
@@ -111,13 +100,13 @@
       }
     },
     computed: {
-      /*...mapGetters({"f_type_notes": TEMPLATES_TYPE_NOTES}),
+      /*...mapGetters({"f_type_notes": "templates/type_notes"}),
       type_notes() {
           return this.f_type_notes(this.slug)
       },*/
-      // ...mapGetters({types: TEMPLATES_TYPES}),
+      // ...mapGetters({types: "templates/entrytypes"}),
       options() {
-        return this.$_.map(this.$store.getters[TEMPLATES_TYPES_ARRAY], o => {
+        return this.$_.map(this.$store.getters["templates/entry_types_array"], o => {
           return {
             text: o.title,
             value: o.slug,

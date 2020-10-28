@@ -12,7 +12,7 @@
 
 <script>
 import {entries2vuetify_tree} from "../../lib/entry_collections";
-import {TEMPLATES_TYPES} from "../../store/templates";
+
 
 /**
  * not used atm
@@ -34,7 +34,7 @@ export default {
       },
       computed: {
         tree() {
-          return entries2vuetify_tree(entries, this.$store.getters[TEMPLATES_TYPES], true)
+          return entries2vuetify_tree(entries, this.$store.getters["templates/entrytypes"], true)
         },
       },
       methods: {

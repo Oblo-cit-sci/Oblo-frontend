@@ -42,7 +42,6 @@ import {
   get_aspect_vue_component
 } from "~/lib/aspect";
 import AspectMixin from "./aspects/AspectMixin";
-import {TEMPLATES_NOTE} from "~/store/templates";
 import AspectAction from "~/components/aspect_utils/AspectAction"
 import {ENTRIES_SET_ENTRY_VALUE} from "~/store/entries"
 
@@ -148,7 +147,7 @@ export default {
       let note_text = ""
       if (this.aspect_loc) {
         const aspect_descr_loc = aspect_loc2aspect_descr_loc(this.aspect_loc)
-        note_text = this.$store.getters[TEMPLATES_NOTE](aspect_descr_loc)
+        note_text = this.$store.getters["templates/note"](aspect_descr_loc)
       }
       return {text: note_text, note_class: "note"}
     },

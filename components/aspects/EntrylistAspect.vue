@@ -61,7 +61,7 @@
      ENTRIES_UPDATE_ENTRY
   } from "../../store/entries";
 
-  import {TEMPLATES_TYPE} from "../../store/templates";
+
 
   export default {
     name: "EntrylistAspect",
@@ -79,7 +79,7 @@
     },
     created() {
       this.set_min_max()
-      if (!this.$store.getters[TEMPLATES_TYPE](this.item_type_slug)) {
+      if (!this.$store.getters["templates/entry_type"](this.item_type_slug)) {
         console.log("Warning- aspect: ", this.aspect.name, "referrers to a typename that does not exist: ", this.item_type_slug)
         console.log("TODO disable this aspect")
       }

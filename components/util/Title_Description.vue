@@ -11,8 +11,6 @@
       div(v-if="description_as_html")
         div(v-html="first_description")
       div(v-else class="pb-1") {{first_description}}
-    div(v-if="note && !is_view_mode")
-      div(:class="note.note_class") {{note.text}}
   div(v-else)
     v-icon.mr-1.mb-1(v-if="icon_part") {{icon_part}}
     component(:is="header_type" :style="{display:'inline'}") {{label}}
@@ -50,9 +48,6 @@
       },
       description_as_html: {
         type: Boolean
-      },
-      note: {
-        type: Object
       },
       disabled: {
         type: Boolean,

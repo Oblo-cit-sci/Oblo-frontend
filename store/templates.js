@@ -3,26 +3,6 @@ import {object_list2options} from "~/lib/options";
 import {entries_domain_filter} from "~/lib/search";
 import {ASPECT, ENTRYLIST} from "~/lib/consts";
 
-// Mutations
-export const TEMPLATES_UPDATE_ENTRY_TYPES = "templates/update_entry_types"
-export const TEMPLATES_ADD_TEMPLATES = "templates/add_templates"
-export const TEMPLATES_INIT_NOTES = "templates/init_notes"
-export const TEMPLATES_ADD_NOTE = "templates/add_note"
-export const TEMPLATES_INIT_ASPECT_NOTE = "templates/init_aspect_note"
-export const TEMPLATES_SET_TYPE_NOTES = "templates/set_type_notes"
-export const TEMPLATES_SET_NOTES = "templates/set_notes"
-// Getter
-export const TEMPLATES_HAS_TYPE = "templates/has_type"
-export const TEMPLATES_TYPE = "templates/entry_type"
-export const TEMPLATES_TYPENAME = "templates/type_name"
-export const TEMPLATES_TYPES = "templates/entrytypes"
-export const TEMPLATES_OF_DOMAIN = "templates/templates_of_domain"
-export const TEMPLATES_GET_ASPECT_DEF = "templates/get_aspect_def"
-export const TEMPLATES_TYPES_ARRAY = "templates/entry_types_array"
-export const TEMPLATES_ALL_NOTES = "templates/all_notes"
-export const TEMPLATES_TYPE_NOTES = "templates/type_notes"
-export const TEMPLATES_NOTE = "templates/note"
-
 const ld = require("lodash")
 
 export const state = () => ({
@@ -31,12 +11,7 @@ export const state = () => ({
 })
 
 export const getters = {
-  has_type(state) {//TEMPLATES_HAS_TYPE
-    return (type_slug) => {
-      return state.entry_types.has(type_slug)
-    }
-  },
-  entry_type(state) { // TEMPLATES_TYPE
+  entry_type(state) {
     // todo should have a 2nd parameter for language
     return (type_slug) => {
       // console.log("getting entry_type for slug", type_slug, state.entry_types)
@@ -46,7 +21,7 @@ export const getters = {
       return state.entry_types.get(type_slug)
     }
   },
-  type_name(state, getters) { // TEMPLATES_TYPENAME
+  type_name(state, getters) {
     return slug => {
       // console.log("typename of ", slug)
       const etype = getters.entry_type(slug)
@@ -74,15 +49,15 @@ export const getters = {
     }
     return global_entry_types
   },
-  entrytypes(state) { // TEMPLATES_TYPES
+  entrytypes(state) {
     return Object.fromEntries(state.entry_types)
   },
-  templates_of_domain(state) { // TEMPLATES_OF_DOMAIN
+  templates_of_domain(state) {
     return domain_name => {
       return entries_domain_filter(Array.from(state.entry_types.values()), domain_name)
     }
   },
-  get_aspect_def(state, getters) { // TEMPLATES_GET_ASPECT_DEF
+  get_aspect_def(state, getters) {
     return ({type_slug, aspect_name}) => {
       let type = getters.entry_type(type_slug)
       return type.aspects.find(a => {
@@ -185,7 +160,7 @@ export const mutations = {
   add_aspect_descr_notes(state, {type_slug, aspect_name, notes}) {
     state.notes[type_slug][aspect_name] = notes
   },
-  add_note(state, {note_location, note}) { // TEMPLATES_ADD_NOTE
+  add_note(state, {note_location, note}) {
     // console.log("adding note", note_location, "<", note, ">")
     const type_slug = note_location[0]
     const type_notes = state.notes[type_slug]
@@ -216,6 +191,7 @@ export const mutations = {
 }
 
 export const actions = {
+  // todo not used atm
   init_notes(context, type_slug) {
     let entry_type = context.getters.entry_type(type_slug)
 

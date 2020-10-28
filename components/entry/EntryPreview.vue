@@ -77,7 +77,6 @@ import {
   ENTRIES_SAVE_CHILD_N_REF,
   ENTRIES_VALUE
 } from "~/store/entries";
-import {TEMPLATES_TYPENAME} from "~/store/templates";
 import ActorChip from "../actor/ActorChip"
 import EntryActionsMixin from "~/components/entry/EntryActionsMixin"
 import EntryTags from "~/components/entry/EntryTags"
@@ -195,7 +194,7 @@ export default {
       return result
     },
     template_title() {
-      return this.$store.getters[TEMPLATES_TYPENAME](this.entry.template.slug)
+      return this.$store.getters["templates/type_name"](this.entry.template.slug)
     },
     default_action_icon() {
       if (this.proper_mode === VIEW)

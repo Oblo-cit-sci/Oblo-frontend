@@ -8,7 +8,6 @@ import {
   ENTRIES_SAVE_ENTRY
 } from "~/store/entries";
 
-import {TEMPLATES_GET_ASPECT_DEF} from "~/store/templates";
 import EntryActionsMixin from "~/components/entry/EntryActionsMixin"
 import URLQueryMixin from "~/components/util/URLQueryMixin"
 import {mapGetters} from "vuex"
@@ -103,7 +102,7 @@ export default {
         const uuid = parent_ref.uuid
 
         // TODO this loc stuff will work different in the future
-        const aspect_def = this.$store.getters[TEMPLATES_GET_ASPECT_DEF]({
+        const aspect_def = this.$store.getters["templates/get_aspect_def"]({
           type_slug: parent_entry_type_slug,
           aspect_name: parent_ref.aspect_loc[0][1]
         })

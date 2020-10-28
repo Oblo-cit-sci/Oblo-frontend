@@ -2,7 +2,7 @@ import uuidv4 from "uuid/v4"
 
 import pkg from "~/package"
 import {DRAFT, EDIT, PRIVATE_LOCAL, REGULAR} from "~/lib/consts"
-import {TEMPLATES_TYPE} from "~/store/templates"
+
 import {default_values, set_titleAspect} from "~/lib/entry"
 import {CREATOR, user_ref} from "~/lib/actors"
 import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
@@ -16,7 +16,7 @@ export default {
     // todo different owner in case of visitor
     // console.log("entry of template_slug", type_slug)
     create_entry(template_slug, language = null, persist = true, init = {}, goto = true) {
-      const template = this.$store.getters[TEMPLATES_TYPE](template_slug)
+      const template = this.$store.getters["templates/entry_type"](template_slug)
       if (!template) {
         return null
       }
