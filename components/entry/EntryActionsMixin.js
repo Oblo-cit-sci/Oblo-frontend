@@ -1,6 +1,5 @@
-import {can_edit, can_edit_entry, editing_roles} from "~/lib/actors"
+import {can_edit, can_edit_entry} from "~/lib/actors"
 import {ADMIN, EDIT, REQUIRES_REVIEW, REVIEW, VIEW} from "~/lib/consts"
-import {USER_GLOBAL_ROLE} from "~/store/user"
 
 export default {
   name: "EntryActionsMixin",

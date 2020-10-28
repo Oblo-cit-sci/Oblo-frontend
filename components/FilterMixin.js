@@ -172,7 +172,7 @@ export default {
         return entries.filter(e => e[filter.column] === filter.value)
       } else if (filter.name === "actor") {
         // later replace filter.registered_name with filter.value
-        return entries.filter(e => this.$_.some(e.actors, entry_actor => entry_actor.actor.registered_name === filter.registered_name))
+        return entries.filter(e => this.$_.some(e.actors, entry_actor => entry_actor.actor.registered_name === filter.value))
       } else {
         console.log("filter not applicable", filter.name)
         return entries

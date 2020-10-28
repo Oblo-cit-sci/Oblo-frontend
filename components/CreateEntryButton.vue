@@ -1,7 +1,7 @@
 <template lang="pug">
   v-btn(
     ref="create_button"
-    x-large
+    large
     v-bind="bp_based_main_create_btn_props"
     color="#b88cf1"  @click="create_entry")
     span(v-if="show_main_template_create_text") {{create_text}}
@@ -34,6 +34,12 @@ export default {
   name: "CreateEntryButton",
   mixins: [DomainDataMixin, EntryCreateMixin, NavBaseMixin, ResponsivenessMixin],
   components: {},
+  props: {
+    size: {
+      type: String,
+      default: "large"
+    }
+  },
   data() {
     return {
       button_width: 0

@@ -39,7 +39,7 @@ export const getters = {
   },
   // todo act_domain_data
   domain(state, getters) {
-    return getters.domains[state.domain]
+    return getters.domains.find(d => d.name === state.domain)
   },
   // todo should be act_domain_data
   domain_data(state, getters) {
@@ -47,7 +47,7 @@ export const getters = {
   },
   // todo act_domain_title, REMOVE, language
   domain_title(state, getters) {
-    return getters.domain.title
+    return getters.act_lang_domain_data.title
   },
   domain_by_name(state) {
     return domain_name => {

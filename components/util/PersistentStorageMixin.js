@@ -20,7 +20,7 @@ export default {
     },
     persist_entries() {
       // console.log("persist entries")
-      this.store_value("entries", this.$store.getters[ENTRIES_ALL_DRAFTS]().map(e => [e.uuid, e]))
+      this.store_value("entries", this.$store.getters["entries/all_drafts"]().map(e => [e.uuid, e]))
     },
     persist_user_key() {
       this.store_value("user_key", this.$store.getters.user_key)

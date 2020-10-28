@@ -17,7 +17,6 @@ import EntryCreateList from "~/components/EntryCreateList";
 import EntryNavMixin from "~/components/EntryNavMixin"
 import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
 import LayoutMixin from "~/components/global/LayoutMixin"
-import MapIncludeMixin from "~/components/map/MapIncludeMixin"
 import MapWrapper from "~/components/map/MapWrapper"
 import {dev_env} from "~/lib/util"
 import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
@@ -34,7 +33,7 @@ export default {
   name: "domain",
   // layout: "new_map_layout",
   mixins: [DomainData_UtilMixin, HasMainNavComponentMixin, EntryNavMixin, EntryCreateMixin, URLQueryMixin,
-    PersistentStorageMixin, LayoutMixin, MapIncludeMixin, FixDomainMixin, URLParseMixin, FilterMixin, LayoutMixin],
+    PersistentStorageMixin, LayoutMixin, FixDomainMixin, URLParseMixin, FilterMixin, LayoutMixin],
   components: {TitledDialog, MapWrapper, EntryCreateList},
   data() {
     return {

@@ -1,4 +1,5 @@
 import {ENTRIES_SAVE_ENTRIES} from "~/store/entries"
+import {DRAFT} from "~/lib/consts"
 
 export default {
   name: "EntrySearchMixin",
@@ -86,8 +87,12 @@ export default {
      */
     local_search(filters) {
       let local_entries = this.$store.getters["entries/all_entries_array"]()
+      console.log("alll-es", local_entries)
+      console.log(local_entries.filter(e => e.status === DRAFT))
       for (let filter of filters) {
+        console.log("f", filter)
         local_entries = this.apply_filter(filter, local_entries)
+        console.log("->", local_entries)
       }
       return local_entries.map(e => e.uuid)
     }

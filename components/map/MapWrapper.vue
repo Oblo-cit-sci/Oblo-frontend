@@ -15,7 +15,7 @@
     AspectDialog(v-bind="aspectdialog_data" @update:dialog_open="aspectdialog_data.dialog_open = $event" :ext_value="layer_status" @update:ext_value="aspect_dialog_update($event)")
     client-only
       Mapbox(
-        v-show="!map_hidden"
+        v-if="!map_hidden"
         :style="map_height"
         :access-token="access_token"
         :map-options="map_options"
@@ -97,6 +97,7 @@ export default {
       last_zoom: null,
       map_hidden: false,
       initialized: false,
+      layers_created: false,
       actual_markers: []
     }
   },
@@ -180,44 +181,6 @@ export default {
       return this.is_mdAndUp
     }
   },
-  watch: {
-    entries_loaded(loaded) {
-      // console.log("entries loaded", loaded)
-      if (loaded)
-        this.check_entries_map_done()
-    },
-    map_loaded() {
-      this.check_entries_map_done()
-      this.$emit("map", this.map)
-    },
-    menu_open(open) {
-      this.check_hide_map()
-    },
-    get_all_uuids(uuids) {
-      this.update_filtered_source()
-      if (!this.initialized) {
-        this.check_entries_map_done()
-      }
-    },
-    goto_location(location) {
-      if (location) {
-        this.map_goto_location(location)
-      }
-    },
-    menu_state(menu_state) {
-      this.check_hide_map()
-    },
-    selected_entry(uuid, old_uuid) {
-      // console.log("MapWrapper.watch.selected_entry", uuid, old_uuid)
-      if (old_uuid) {
-        this.change_entry_markers_mode(old_uuid, false)
-      }
-      if (uuid) {
-        this.change_entry_markers_mode(uuid, true)
-        this.$emit("force_menu_mode_domain")
-      }
-    },
-  },
   created() {
     // console.log("wrapper created")
     if (this.domain_name) {
@@ -231,7 +194,7 @@ export default {
     this.$bus.$on("map-marker-hide", ({uuid}) => {
       // console.log("bus-hide", this.selected_entry)
       // when entry is selected dont trigger this
-      if(!this.selected_entry) {
+      if (!this.selected_entry) {
         this.change_entry_markers_mode(uuid, false)
       }
     })
@@ -240,26 +203,16 @@ export default {
       this.load_map_entries(this.domain_name)
     })
   },
-  beforeDestroy() {
-    // todo consider padding from menu
-    if (this.map) {
-      this.$store.commit("map/set_camera_options_cache", {
-        domain: this.domain_name, options: {
-          zoom: this.map.getZoom(),
-          center: this.map.getCenter()
-        }
-      })
-    }
-    this.$bus.$off("map-marker-show")
-    this.$bus.$off("map-marker-hide")
-    this.$bus.$off("trigger_search")
-  },
   methods: {
     check_entries_map_done() {
-      // console.log("check_entries_map_done", this.entries)
+      // console.log("check_entries_map_done: entries_loaded", this.entries_loaded)
+      // console.log("check_entries_map_done: entries.features", this.entries.features)
+      // console.log("check_entries_map_done: map_loaded", this.map_loaded)
+      // console.log("check_entries_map_done: get_all_uuids", this.get_all_uuids)
       // console.log("check", this.entries, this.entries_loaded)
       // console.log("check map e done", this.entries)
       if (this.entries_loaded && this.entries.features && this.map_loaded && this.get_all_uuids) {
+        // console.log("all good")
         this.init_map_source_and_layers()
         this.initialized = true
         if (this.$route.query.uuid) {
@@ -273,13 +226,12 @@ export default {
       const source_name = layer_base_id + "_source"
       this.update_filtered_source()
 
-      if(this.layers_created) {
+      if (this.layers_created) {
+        console.log("layers_created", this.layers_created)
+        const el = this.map.getLayer("all_entries_entries")
+        console.log("SL", this.map.getSource(MAIN_SOURCE_LAYER))
         return
       }
-      // cluster layer
-      const cluster_layer_name = layer_base_id + '_clusters'
-      const cluster_layer = this.map.getLayer(cluster_layer_name)
-      // console.log("cluster_layer?", Object.keys(this.map.style._layers).includes(cluster_layer))
 
       // entries layer
       const entries_layer_name = layer_base_id + '_entries' // all_entries_entries
@@ -319,6 +271,11 @@ export default {
       this.add_default_entries_layer_interactions(source_name, entries_layer_name, (features) => {
         this.select_entry_marker(features[0])
       })
+
+      // cluster layer
+      const cluster_layer_name = layer_base_id + '_clusters'
+      const cluster_layer = this.map.getLayer(cluster_layer_name)
+      // console.log("cluster_layer?", Object.keys(this.map.style._layers).includes(cluster_layer))
 
       if (!cluster_layer) {
         // console.log("adding cluster layer")
@@ -680,10 +637,11 @@ export default {
     select_entry_marker(feature) {
       // console.log("select_entry_marker", feature)
       const entry_uuid = feature.properties.uuid
-      // console.log("select_entry_marker", entry_uuid)
       this.guarantee_entry(entry_uuid).then(entry => {
+        if (!this.is_small) {
+          this.map_goto_location(feature.geometry)
+        }
         this.update_navigation_mode(entry_uuid, VIEW, false)
-        this.map_goto_location(feature.geometry)
       }).catch(err => {
         this.error_snackbar("Couldn't fetch entry")
       })
@@ -692,6 +650,70 @@ export default {
       this.set_dl = true
       this.map.triggerRepaint()
     }
+  },
+  beforeDestroy() {
+    // todo consider padding from menu
+    if (this.map) {
+      // console.log("destroy map")
+      // try {
+      //   this.map.remove()
+      // } catch (e) {
+      //   console.log(e)
+      // }
+
+      this.$store.commit("map/set_camera_options_cache", {
+        domain: this.domain_name, options: {
+          zoom: this.map.getZoom(),
+          center: this.map.getCenter()
+        }
+      })
+    }
+    this.$bus.$off("map-marker-show")
+    this.$bus.$off("map-marker-hide")
+    this.$bus.$off("trigger_search")
+  },
+  watch: {
+    map_hidden(hidden) {
+      if (hidden) {
+        this.map_loaded = false
+        this.layers_created = false
+      }
+    },
+    entries_loaded(loaded) {
+      // console.log("entries loaded", loaded)
+      if (loaded)
+        this.check_entries_map_done()
+    },
+    map_loaded() {
+      this.check_entries_map_done()
+    },
+    menu_open(open) {
+      this.check_hide_map()
+    },
+    get_all_uuids(uuids) {
+      this.update_filtered_source()
+      if (!this.initialized) {
+        this.check_entries_map_done()
+      }
+    },
+    goto_location(location) {
+      if (location) {
+        this.map_goto_location(location)
+      }
+    },
+    menu_state(menu_state) {
+      this.check_hide_map()
+    },
+    selected_entry(uuid, old_uuid) {
+      // console.log("MapWrapper.watch.selected_entry", uuid, old_uuid)
+      if (old_uuid) {
+        this.change_entry_markers_mode(old_uuid, false)
+      }
+      if (uuid) {
+        this.change_entry_markers_mode(uuid, true)
+        this.$emit("force_menu_mode_domain")
+      }
+    },
   }
 }
 </script>

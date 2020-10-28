@@ -15,7 +15,7 @@
             v-icon(left) mdi-login
             span {{$t('w.login')}}
       div(:style="display_debug") {{display_debug_text}} v{{version}}
-      CreateEntryButton(v-if="show_create_entry_button" :style="create_button_style" :domain_data="domain_data")
+      CreateEntryButton(v-if="show_create_entry_button" :style="create_button_style" :domain_data="act_lang_domain_data")
       Dialog(:dialog_open.sync="login_dialog_open")
         LoginComponent(:go_home="false" @logged_in="login_dialog_open=false" @page_change="login_dialog_open=false")
 </template>
@@ -71,13 +71,15 @@ export default {
     },
     display_debug() {
       return {
-        padding: "0 10px",
-        "height": "30px",
+        padding: "0 8px",
+        "height": "20px",
         "position": "fixed",
         "right": "30px",
         "top": "10px",
+        "font-size": "70%",
         "background-color": "grey",
         "text-align": "center",
+        "z-index": 10000
       }
     },
     display_debug_text() {
