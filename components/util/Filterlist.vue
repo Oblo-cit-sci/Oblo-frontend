@@ -108,7 +108,6 @@ export default {
       }
       let text = value_text(this.active_filter.aspect, new_value)
       const new_filters = this.$_.cloneDeep(this.applied_filters)
-      console.log("checking", new_filters)
       const existing_filter = new_filters.find(f => f.name === name)// && this.$_.get(f.source_name,"regular") === "regular")
       if (existing_filter) {
         existing_filter.value = new_value

@@ -46,17 +46,6 @@ import EntryPreviewList from "../entry/EntryPreviewList"
 import {debounced_search, search_entries} from "~/lib/client"
 import FilterMixin from "../FilterMixin";
 import NavBaseMixin from "../NavBaseMixin";
-import {
-  SEARCH_GET_ALL_UUIDS,
-  SEARCH_GET_ENTRIES,
-  SEARCH_GET_ROUTE,
-  SEARCH_GET_SEARCH_COUNT,
-  SEARCH_GET_SEARCHING,
-  SEARCH_GET_SEARCHTIME,
-  SEARCH_RECEIVED_ENTRIES, SEARCH_SET_ENTRIES,
-  SEARCH_SET_ROUTE, SEARCH_SET_SEARCH_COUNT,
-  SEARCH_SET_SEARCHING
-} from "~/store/search";
 import PersistentStorageMixin from "../util/PersistentStorageMixin";
 import {route_change_query} from "~/lib/util";
 import Filterlist from "~/components/util/Filterlist"
@@ -118,7 +107,7 @@ export default {
   created() {
     // console.log("search created")
 
-    const last_route = this.$store.getters[SEARCH_GET_ROUTE]
+    const last_route = this.$store.getters["search/get_route"]
     // console.log(last_route)
     if (this.$route.query.search) {
       this.keyword = this.$route.query.search
@@ -128,7 +117,7 @@ export default {
     if (!this.$_.isEqual(last_route, this_route_data)) {
       // console.log("new to page. getting entries")
       this.clear()
-      this.$store.commit(SEARCH_SET_ROUTE, this_route_data)
+      this.$store.commit("search/set_route", this_route_data)
       // the default changes triggering config change will trigger a search
       if (this.$store.getters["search/get_act_config"].length === 0 && this.domain_data) {
         const generated = this.config_generate(TEMPLATE, this.$_.get(this.domain_data, "search.default_templates", []))
@@ -259,10 +248,10 @@ export default {
   },
   computed: {
     ...mapGetters({
-      entries: SEARCH_GET_ENTRIES,
-      get_searching: SEARCH_GET_SEARCHING,
-      total_count: SEARCH_GET_SEARCH_COUNT,
-      all_uuids: SEARCH_GET_ALL_UUIDS,
+      entries: "search/get_entries",
+      get_searching: "search/get_searching",
+      total_count: "search/get_search_count",
+      all_uuids: "search/get_all_uuids",
     }),
     has_prominent_filters() {
       // console.log(this.prominent_filters)
@@ -318,8 +307,8 @@ export default {
           this.$store.commit("search/clear_entries")
           this.$store.commit("search/set_search_count", 0)
         }
-        this.$store.commit(SEARCH_SET_ROUTE, this.act_relevant_route_data())
-        this.$store.commit(SEARCH_SET_SEARCHING, true)
+        this.$store.commit("search/set_route", this.act_relevant_route_data())
+        this.$store.commit("search/set_searching", true)
 
         // const prepend = this.entries().length > 0
         if (debounce) {
@@ -334,14 +323,14 @@ export default {
       // todo this whole part does not consider pagination... more than 40 entries.
       this.get_complete_missing_meta(select_uuids).then(result => {
         if (typeof result === "boolean") {
-          this.$store.commit(SEARCH_SET_ENTRIES, select_uuids)
-          this.$store.commit(SEARCH_SET_SEARCH_COUNT, select_uuids.length)
+          this.$store.commit("search/set_entries", select_uuids)
+          this.$store.commit("search/set_search_count", select_uuids.length)
         } else if (result.status === 200) {
           const entries = this.$_.get(result, "data.data.entries", [])
           this.store_received_entries(entries)
           const uuids = entries.map(e => e.uuid)
-          this.$store.commit(SEARCH_SET_ENTRIES, uuids)
-          this.$store.commit(SEARCH_SET_SEARCH_COUNT, uuids.length)
+          this.$store.commit("search/set_entries", uuids)
+          this.$store.commit("search/set_search_count", uuids.length)
         } else {
           console.log(result)
           this.error_snackbar("Couldn't fetch entries")
@@ -363,8 +352,8 @@ export default {
     request_more() {
       // console.log("request more", )
       let config = this.searchConfiguration()
-      this.$store.commit(SEARCH_SET_SEARCHING, true)
-      const offset = this.$store.getters[SEARCH_RECEIVED_ENTRIES]
+      this.$store.commit("search/set_searching", true)
+      const offset = this.$store.getters["search/get_received_entries"]
       debounced_search(this.$api, this.$store, config, offset)
     },
     searchConfiguration(before_last = false) {
@@ -399,7 +388,7 @@ export default {
         }
       }
       if (before_last) {
-        const ts = this.$store.getters[SEARCH_GET_SEARCHTIME]
+        const ts = this.$store.getters["search/get_searchtime"]
         if (ts)
           configuration.required.push({name: "before_ts", ts: ts})
       }

@@ -1,24 +1,3 @@
-// ******** VIEW_SEARCH
-export const SEARCH_GET_ENTRIES = "search/get_entries"
-export const SEARCH_ENTRY_ASPECT = "search/get_entry_aspects"
-export const SEARCH_SET_ENTRIES = "search/set_entries"
-export const SEARCH_APPEND_ENTRIES = "search/append_entries"
-export const SEARCH_SET_ROUTE = "search/set_route"
-export const SEARCH_SET_SEARCHING = "search/set_searching"
-export const SEARCH_SET_SEARCHTIME = "search/set_searchtime"
-export const SEARCH_SET_SEARCH_COUNT = "search/set_search_count"
-export const SEARCH_INCREASE_COUNT = "search/increase_search_count"
-export const SEARCH_DELETE_ENTRY = "search/delete_entry"
-
-export const SEARCH_PREPEND_ENTRIES = "search/prepend_entries"
-
-export const SEARCH_GET_SEARCH_COUNT = "search/get_search_count"
-export const SEARCH_RECEIVED_ENTRIES = "search/get_received_entries"
-export const SEARCH_GET_ROUTE = "search/get_route"
-export const SEARCH_GET_SEARCHING = "search/get_searching"
-export const SEARCH_GET_SEARCHTIME = "search/get_searchtime"
-export const SEARCH_GET_ALL_UUIDS = "search/get_all_uuids"
-
 const ld = require("lodash")
 
 export const state = () => ({

@@ -69,7 +69,7 @@ import PersistentStorageMixin from "../util/PersistentStorageMixin";
 import ChildCreateMixin from "../util/ChildCreateMixin";
 import {aspect_loc_str2arr, loc_prepend} from "~/lib/aspect";
 import Aspect from "../Aspect";
-import {SEARCH_ENTRY_ASPECT} from "~/store/search";
+
 import {
   EDIT_UUID,
   ENTRIES_DELETE_ENTRY,
@@ -243,7 +243,7 @@ export default {
     shown_aspects() {
       // console.log(this.template)
       if (this.template) {
-        const search_res = this.$store.getters[SEARCH_ENTRY_ASPECT](this.entry.uuid)
+        const search_res = this.$store.getters["search/get_entry_aspects"](this.entry.uuid)
         return this.$_.filter(this.template.aspects, a => search_res.includes(a.name))
       } else {
         return []

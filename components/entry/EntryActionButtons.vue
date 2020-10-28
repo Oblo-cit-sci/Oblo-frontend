@@ -44,7 +44,6 @@ import {
   ENTRIES_UPDATE_ENTRY
 } from "~/store/entries"
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
-import {SEARCH_DELETE_ENTRY} from "~/store/search"
 import EntryNavMixin from "~/components/EntryNavMixin"
 import {prepare_for_submission} from "~/lib/entry"
 
@@ -156,7 +155,7 @@ export default {
         }, confirm_method: () => {
           this.$api.delete_entry__$uuid(this.uuid).then(() => {
             this.$store.dispatch(ENTRIES_DELETE_ENTRY, this.uuid)
-            this.$store.commit(SEARCH_DELETE_ENTRY, this.uuid)
+            this.$store.commit("search/delete_entry", this.uuid)
             this.ok_snackbar(this.$t("comp.entry_actions.delete_entry"))
             this.$emit("entry-action", "delete")
             this.back()
@@ -254,7 +253,7 @@ export default {
         this.sending = false
         this.ok_snackbar("Entry reviewed")
         this.$store.commit(ENTRIES_DELETE_ENTRY, this.uuid)
-        this.$store.commit(SEARCH_DELETE_ENTRY, this.uuid)
+        this.$store.commit("search/delete_entry", this.uuid)
         this.$store.commit("map/delete_feature", {domain_name: this.entry.domain, uuid: this.uuid})
         this.back()
       } catch (err) {
