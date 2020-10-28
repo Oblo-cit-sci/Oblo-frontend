@@ -4,7 +4,7 @@ const ld = require("lodash")
 
 export const state = () => ({
   domains: [],
-  domain: NO_DOMAIN
+  act_domain_name: NO_DOMAIN
 })
 
 export const mutations = {
@@ -19,10 +19,11 @@ export const mutations = {
     }
   },
   set_act_domain(state, domain_name) {
-    state.domain = domain_name
+    // todo could use a validator. check if the names exists in all domains
+    state.act_domain_name = domain_name
   },
   clear_domain(state) {
-    state.domain = NO_DOMAIN
+    state.act_domain_name = NO_DOMAIN
   },
   // delete_domain(state, domain_name) {
   //   state.domains = ld.filter(state.domains, domain => domain.value !== domain_name)
@@ -34,20 +35,19 @@ export const getters = {
     return state.domains
   },
   // todo act_domain_name
-  domain_name(state) {
-    return state.domain
+  act_domain_name(state) {
+    return state.act_domain_name
   },
   // todo act_domain_data
-  domain(state, getters) {
-    return getters.domains.find(d => d.name === state.domain)
-  },
-  // todo should be act_domain_data
-  domain_data(state, getters) {
-    return getters.domains[state.domain]
+  act_domain_data(state, getters) {
+    return getters.domains.find(d => d.name === state.act_domain_name)
   },
   // todo act_domain_title, REMOVE, language
-  domain_title(state, getters) {
+  act_domain_title(state, getters) {
     return getters.act_lang_domain_data.title
+  },
+  act_lang_domain_data(state, getters, rootGetters) {
+    return getters.lang_domain_data(state.act_domain_name, rootGetters.user.settings.ui_language)
   },
   domain_by_name(state) {
     return domain_name => {
@@ -59,6 +59,7 @@ export const getters = {
       return getters.domain_by_name(domain_name)[language]
     }
   },
+  // todo just used once atm. maybe not required as store getter
   domains_for_lang(state) {
     return (lang_code, keep_no_domain = false) => {
       return ld.map(ld.filter(state.domains,
@@ -71,8 +72,4 @@ export const getters = {
   //     return object_list2options(state.domains, TITLE)
   //   }
   // },
-  // NEW
-  act_lang_domain_data(state, getters, rootGetters) {
-    return getters.lang_domain_data(state.domain, rootGetters.user.settings.ui_language)
-  }
 };

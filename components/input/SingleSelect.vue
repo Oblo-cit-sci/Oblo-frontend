@@ -26,8 +26,8 @@
   div(v-else-if="view_select")
     v-select(outlined single-line :hide-details="hide_details" :multiple=false v-model="selected_item" :items="select_options" return-object :clearable="clearable" :placeholder="placeholder" :disabled="disabled" )
     div(v-if="selected_item")
-      div(v-if="selected_item.description") Description: {{selected_item.description}}
-      div(v-if="has_some_icons")
+      div.mt-1(v-if="selected_item.description") Description: {{selected_item.description}}
+      div.mt-1(v-if="has_some_icons")
         v-img(:src="icon_path(selected_item)" contain max-height="40")
   div(v-else-if="view_autocomplete")
     v-autocomplete(outlined single-line v-model="selected_item" :hide_details="hide_details" :items="options" return-object :clearable="clearable" :placeholder="placeholder" :disabled="disabled" )

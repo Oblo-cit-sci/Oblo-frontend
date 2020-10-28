@@ -21,7 +21,6 @@
 </template>
 
 <script>
-import {APP_CONNECTED, APP_INITIALIZED} from "~/store/app"
 
 import {mapGetters, mapMutations} from "vuex"
 import NavBaseMixin from "~/components/NavBaseMixin"
@@ -44,11 +43,11 @@ export default {
     }
   },
   computed: {
-    // ...mapGetters({domain: "domain/domain", domain_name: "domain/domain_name"}),
     ...mapGetters({
       logged_in: "user/logged_in",
-      connected: APP_CONNECTED,
-      initialized: APP_INITIALIZED,
+      connected: "app/connected",
+      initialized: "app/initialized",
+      act_domain_name: "domain/act_domain_name",
       act_lang_domain_data: "domain/act_lang_domain_data"
     }),
     reduce_when_small() {
@@ -60,11 +59,10 @@ export default {
     },
     domain_title() {
       return this.$_.get(this.act_lang_domain_data, "title", "Offline")
-      // return this.$_.get(this.ui_lang_domain_data(this.domain_name), "title", "Offline")
     },
     domain_icon() {
       // todo only use name, but set change it in no_domain
-      return this.$api.static_url_$domain_name_icon(this.act_lang_domain_data.name)
+      return this.$api.static_url_$domain_name_icon(this.act_domain_name)
     },
     domain_headline() {
       return this.$_.get(this.act_lang_domain_data, "long_title", "")

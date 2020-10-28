@@ -20,7 +20,6 @@
 import {all_pages_n_actions} from "~/lib/pages"
 import {USER_GLOBAL_ROLE, USER_LOGGED_IN} from "~/store/user"
 import {ADMIN} from "~/lib/consts"
-import {APP_CONNECTED} from "~/store/app"
 import LanguageSelector from "~/components/LanguageSelector"
 import URLQueryMixin from "~/components/util/URLQueryMixin"
 import FixDomainMixin from "~/components/global/FixDomainMixin"
@@ -44,7 +43,7 @@ export default {
   computed: {
     ...mapGetters({
         logged_in: USER_LOGGED_IN,
-        connected: APP_CONNECTED
+        connected: "app/connected"
       }
     ),
     groups() {

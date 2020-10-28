@@ -23,6 +23,8 @@
       this.$api.actor.logout().then(() => {
         this.ok_snackbar("You are logged out")
         this.clear_storage()
+        // store back drafts
+        this.persist_entries()
         // todo, remove draft entries and update storage, to leave no traces...
         this.$store.dispatch("logout")
         this.$store.commit("menu/open", false)

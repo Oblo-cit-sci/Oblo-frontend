@@ -19,12 +19,7 @@ export const ADD_CODES = "add_codes"
 
 
 export const state = () => ({
-  // comes by init
   codes: {},
-  domains: [],
-  domain: NO_DOMAIN,
-  // prevent that the save and back is messing up, should not go back to a child. e.g.
-  // stores either domain or my entries page or a parent entry
   page_path: [],
   aspect_value_cache: {},
   available_languages: []
@@ -33,29 +28,11 @@ export const state = () => ({
 const ld = require('lodash')
 
 export const mutations = {
-  // set_domains(state, {domains_data, language}) {
-  //   if (state.domains.length === 0) {
-  //     state.domains = domains_data
-  //   } else {
-  //     for (let domain_index in domains_data) {
-  //       state.domains[domain_index][language] = domains_data[domain_index][language]
-  //     }
-  //   }
-  // },
   add_codes(state, code_arr) {
     for (let code_entry of code_arr) {
       state.codes[code_entry.slug] = code_entry
     }
   },
-  // set_domain(state, domain_name) {
-  //   state.domain = domain_name
-  // },
-  // clear_domain(state) {
-  //   state.domain = NO_DOMAIN
-  // },
-  // delete_domain(state, domain_name) {
-  //   state.domains = ld.filter(state.domains, domain => domain.value !== domain_name)
-  // },
   init_page_path(state, route) {
     // todo, maybe it required more!?! check getter
     state.page_path = [route]
@@ -100,43 +77,9 @@ export const getters = {
       return (state.codes[code_name])
     }
   },
-  // domain_name(state) {
-  //   return state.domain
-  // },
-  // domain(state, getters) {
-  //   return getters.domains[state.domain]
-  // },
-  // domain_by_name(state) {
-  //   return domain_name => {
-  //     return state.domains.find(domain => domain.name === domain_name)
-  //   }
-  // },
-  // domain_data(state) {
-  //   return (domain_name, language) => {
-  //     return state.domains.find(domain => domain.name === domain_name)[language]
-  //   }
-  // },
   available_languages(state) {
     return state.available_languages
   },
-  // domain_title(state, getters) {
-  //   return getters.domain.title
-  // },
-  // domains(state) {
-  //   return state.domains
-  // },
-  // domains_for_lange(state) {
-  //   return (lang_code, keep_no_domain = false) => {
-  //     return ld.map(ld.filter(state.domains,
-  //       d => d.hasOwnProperty(lang_code) && d.name !== NO_DOMAIN),
-  //       d => (d[lang_code]))
-  //   }
-  // },
-  // domain_options(state) {
-  //   return () => {
-  //     return object_list2options(state.domains, TITLE)
-  //   }
-  // },
   last_page_path(state) {
     if (state.page_path.length > 0)
       return state.page_path[state.page_path.length - 1]

@@ -1,5 +1,5 @@
 import {mapGetters} from "vuex"
-import {APP_CONNECTED, APP_CONNECTING, APP_DB_LOADED, APP_INITIALIZED} from "~/store/app"
+import {APP_CONNECTED,} from "~/store/app"
 import {dev_env} from "~/lib/util"
 import FixDomainMixin from "~/components/global/FixDomainMixin"
 import {PAGE_INDEX} from "~/lib/pages"
@@ -26,11 +26,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([APP_CONNECTING]),
+
     ...mapGetters({
-      db_loaded: APP_DB_LOADED,
-      connected: APP_CONNECTED,
-      initialized: APP_INITIALIZED
+      db_loaded: "app/db_loaded",
+      connected: "app/connected",
+      initialized: "app/initialized"
     }),
   },
   methods: {
@@ -47,7 +47,7 @@ export default {
             }
             remaining.splice(remaining.indexOf(store_var_descr.name), 1);
             if (remaining.length === 0) {
-              this.$store.commit(APP_DB_LOADED)
+              this.$store.commit("app/db_loaded")
             }
           }).catch(err => {
             console.log("localForage error", err)
@@ -56,7 +56,7 @@ export default {
       }
     },
     async initialize() {
-      this.$store.commit(APP_CONNECTING, true)
+
       console.log("initialize")
 
       // todo maybe this should be before init_data, to request the set language
@@ -150,7 +150,7 @@ export default {
           this.$router.push("/offline")
           this.set_home_path("/offline")
           setTimeout(() => {
-            this.$store.commit(APP_INITIALIZED)
+            this.$store.commit("app/initialized")
           }, 80)
           return
         }
@@ -158,7 +158,7 @@ export default {
           console.log("connected")
 
 
-          this.$store.dispatch(APP_CONNECTED)
+          this.$store.dispatch("app/connected")
           // console.log("initialize multiple domains?", this.has_multiple_domains)
           if (!this.has_multiple_domains) {
             // console.log("1 domain:", this.get_one_domain_name)
@@ -172,15 +172,15 @@ export default {
               // console.log("to domain page",this.get_one_domain_name)
               this.to_domain(this.get_one_domain_name, true)
               setTimeout(() => {
-                this.$store.commit(APP_INITIALIZED)
+                this.$store.commit("app/initialized")
               }, 80)
             } else {
               const domain_name = this.$store.getters["user/settings"].fixed_domain || NO_DOMAIN
               this.$store.commit("domain/set_act_domain", domain_name)
-              this.$store.commit(APP_INITIALIZED)
+              this.$store.commit("app/initialized")
             }
           } else {
-            this.$store.commit(APP_INITIALIZED)
+            this.$store.commit("app/initialized")
           }
         }, err => {
           console.log("initialization failed")

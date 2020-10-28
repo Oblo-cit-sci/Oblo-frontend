@@ -28,7 +28,7 @@ export default {
       }
     },
     to_set_domain() {
-      let domain_name = this.$store.getters["domain/domain_name"]
+      let domain_name = this.$store.getters["domain/act_domain_name"]
       if (domain.name === NO_DOMAIN) {
         this.$router.push({name: PAGE_INDEX})
       } else {

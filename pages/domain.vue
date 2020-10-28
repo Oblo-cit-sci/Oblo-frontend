@@ -54,7 +54,7 @@ export default {
     if (!dev_env()) {
       window.history.replaceState(null, document.title, "/licci")
     }
-    if (this.domain_name !== this.$store.getters["domain/domain_name"]) {
+    if (this.domain_name !== this.$store.getters["domain/act_domain_name"]) {
       const language = this.$store.getters["user/settings"].ui_language
       const domain_data = this.$store.getters["domain/lang_domain_data"](this.domain_name, language)
       this.$store.commit("domain/set_act_domain", this.domain_name)

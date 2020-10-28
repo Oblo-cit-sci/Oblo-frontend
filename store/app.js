@@ -1,7 +1,4 @@
-export const APP_DB_LOADED = "app/db_loaded"
-export const APP_INITIALIZED = "app/initialized"
-export const APP_CONNECTING = "app/connecting"
-export const APP_CONNECTED = "app/connected"
+
 
 export const state = () => ({
     db_loaded: false,

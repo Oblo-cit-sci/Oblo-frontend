@@ -33,7 +33,6 @@ import PersistentStorageMixin from "../util/PersistentStorageMixin";
 import EntryMixin from "./EntryMixin";
 
 import {mapGetters} from "vuex"
-import {APP_CONNECTED} from "~/store/app"
 import {USER_LOGGED_IN} from "~/store/user"
 import EntryActionButtons from "~/components/entry/EntryActionButtons"
 
@@ -70,7 +69,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({connected: APP_CONNECTED, logged_in: USER_LOGGED_IN}),
+    ...mapGetters({connected: "app/connected", logged_in: USER_LOGGED_IN}),
     entry_action_buttons_props() {
       return {
         entry: this.entry,

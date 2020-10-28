@@ -170,7 +170,7 @@
         return this.$_.keyBy(this.settings_aspects, "name")
       },
       fixed_domain_name() {
-        return this.$store.getters["domain/domain_title"]
+        return this.$store.getters["domain/act_domain_title"]
       }
     }
   }
