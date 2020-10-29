@@ -282,7 +282,7 @@
       },
       "not_logged_in": {
         "title": "You are not logged in",
-        "text": "You can submit observations but they need to be reviewed before they get published. In addition to that their privacy is automatically set to public and their license is set to (CC0) - No Rights reserved/public domain.&nbsp;",
+        "text": "You can submit observations but they need to be reviewed before they get published. In addition to that their privacy is automatically set to public and their license is set to (CC0) - No Rights reserved/public domain. ",
         "cc_ref_text": "Read more about CC0."
       }
     },

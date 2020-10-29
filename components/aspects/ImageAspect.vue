@@ -1,7 +1,7 @@
 <template lang="pug">
   div
     v-row
-      v-col(v-for="(img_data, index) in images" :key="index" :cols="num_cols")
+      v-col(v-for="(img_data, index) in images" :key="index" cols=6 sm=4 md=6 lg=4 xl=3)
         v-img.a_image(:src="get_image_data(index)" @click="open_image(index)" max-height="300" contain @error="image_error($event, index)")
           .header_image_wrapper(v-if="cover_image_index===index && is_editable_mode")
             div.ml-9.font-weight-light {{$t('comp.image_asp.cover_image')}}
@@ -78,18 +78,7 @@
       }
     },
     computed: {
-      num_cols() {
-        const bp = this.$vuetify.breakpoint
-        if (bp.smAndDown)
-          return 6
-        else if (bp.mdOnly)
-          return 4
-        else if (bp.lgAndUp)
-          return 3
-        else {
-          return 4
-        }
-      },
+
       image_open() {
         return this.selected_image_index !== -1
       },
@@ -125,13 +114,18 @@
         }]))
       },
       image_error(error, index) {
-        this.delete_image(index)
+
+        console.log(this.images)
         if(this.get_entry().status === DRAFT) {
           this.ok_snackbar(this.$t("comp.image_asp.not_found_draft"))
+          if(this.images[index].file_uuid === this.get_entry().image) {
+            console.log("RRR")
+          }
         } else {
           console.log("err", error)
           this.error_snackbar(this.$t("comp.image_asp.not_found"))
         }
+        this.delete_image(index)
       },
       open_image(index) {
         this.selected_image_index = index
@@ -147,7 +141,6 @@
       },
       unset_cover_image() {
         this.cover_image_index = -1
-        console.log("unset_cover_image")
         this.$store.commit("entries/update_image", null)
       },
       // todo needs to be called from the ImageCard component

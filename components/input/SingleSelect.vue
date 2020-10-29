@@ -1,7 +1,7 @@
 <template lang="pug">
   div.pa-0(v-if="view_clearlist")
     v-list.pa-0(
-      :two-line="has_some_description"
+      :three-line="has_some_description"
       dense
       class="singleselect_list"
     )
@@ -19,9 +19,9 @@
           v-list-item-content
             v-list-item-title {{item.text}}
             v-list-item-subtitle {{item.description}}
-          v-list-item-action.align-self-center(v-if="create")
+          v-list-item-action.align-self-center(v-if="action_icon")
             v-spacer
-            v-icon(color="grey lighten-1") mdi-login-variant
+            v-icon {{action_icon}}
         v-divider
   div(v-else-if="view_select")
     v-select(outlined single-line :hide-details="hide_details" :multiple=false v-model="selected_item" :items="select_options" return-object :clearable="clearable" :placeholder="placeholder" :disabled="disabled" )
@@ -92,9 +92,9 @@
         type: Boolean,
       },
       placeholder: String, // only select
-      create: {
-        type: Boolean,
-        default: false
+      action_icon: {
+        type: String,
+        default: null
       },
       clearable: {
         type: Boolean,

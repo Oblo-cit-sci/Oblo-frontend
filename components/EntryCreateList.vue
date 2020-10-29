@@ -6,7 +6,7 @@
     :select_sync="false"
     :highlight="false"
     only_value
-    :create="true")
+    action_icon="mdi-arrow-right-bold")
 </template>
 
 <script>
