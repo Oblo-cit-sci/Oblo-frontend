@@ -602,15 +602,19 @@ export default {
       return {public_precision, public_loc}
     },
     async guarantee_my_entries_features_loaded() {
+      // todo this doesnt work if map_entries hasnt been called before (on domain page)
       if (!this.my_entries_features) {
         this.getting_my_entries_loading = true
-        const my_uuids = await this.get_my_entries_uuids()
-        this.getting_my_entries_loading = false
+        let my_uuids = null
+        try {
+          my_uuids = await this.get_my_entries_uuids()
+        } catch (e) { }
+          this.getting_my_entries_loading = false
         if (Array.isArray(my_uuids)) {
           this.my_entries_features = this.get_map_entries_by_uuids(my_uuids)
           return Promise.resolve()
         } else {
-          console.log("couldnt fetch entries")
+          this.error_snackbar("could not fetch entries")
           return Promise.reject()
         }
       }
@@ -650,7 +654,9 @@ export default {
           this.map.setLayoutProperty("entries_layer", "visibility", "visible")
         }
       } else {
-        this.map.setLayoutProperty("entries_layer", "visibility", "none")
+        if(this.map.getLayer("entries_layer")) {
+          this.map.setLayoutProperty("entries_layer", "visibility", "none")
+        }
       }
     },
     get_place_parts(place) {

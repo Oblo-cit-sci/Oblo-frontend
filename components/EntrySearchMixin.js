@@ -1,6 +1,8 @@
+import FilterMixin from "~/components/FilterMixin"
 
 export default {
   name: "EntrySearchMixin",
+  mixins: [FilterMixin],
   methods: {
     store_received_entries(entries) {
       this.$store.commit("entries/save_entries", entries)
@@ -53,10 +55,7 @@ export default {
     async get_my_entries_uuids() {
       // todo, maybe just a refresh...
       const my_entries_uuids_response = await this.$api.entries.get_uuids({
-        required: [{
-          name: "actor",
-          registered_name: this.$store.getters.username
-        }]
+        required: [this.get_actor_filter(this.$store.getters.username)]
       })
       if (my_entries_uuids_response.status === 200) {
         return Promise.resolve(my_entries_uuids_response.data.data)

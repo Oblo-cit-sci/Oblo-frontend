@@ -78,7 +78,6 @@
       }
     },
     computed: {
-
       image_open() {
         return this.selected_image_index !== -1
       },
@@ -114,12 +113,9 @@
         }]))
       },
       image_error(error, index) {
-
-        console.log(this.images)
         if(this.get_entry().status === DRAFT) {
           this.ok_snackbar(this.$t("comp.image_asp.not_found_draft"))
           if(this.images[index].file_uuid === this.get_entry().image) {
-            console.log("RRR")
           }
         } else {
           console.log("err", error)
@@ -178,7 +174,6 @@
           }
           this.remove_file_attachment(entry_uuid, file_uuid)
         }
-
         if (entry) {
           if (entry.status === DRAFT) {
             del_all()
