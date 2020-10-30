@@ -79,6 +79,7 @@ export default {
     if (!dev_env()) {
       window.history.replaceState(null, document.title, this.$route.fullPath)
     }
+    console.log("domain leave, close menu")
     this.set_menu_open(false)
     next()
   },

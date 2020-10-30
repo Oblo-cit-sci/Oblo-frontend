@@ -1,7 +1,7 @@
 <template lang="pug">
-  v-container(justify-center align-center v-if="entry")
+  v-container.pt-1(justify-center align-center v-if="entry")
     v-row
-      v-col(xs12 md12)
+      v-col.pt-2(xs12 md12)
         Title_Description(
           :title="entry_title"
           header_type="h1"

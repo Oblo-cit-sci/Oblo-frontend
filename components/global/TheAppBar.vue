@@ -1,6 +1,6 @@
 <template lang="pug">
   v-app-bar(true app elevation="2" :style="{'z-index':7}")
-    v-app-bar-nav-icon.rounded-circle(color="blue"  v-show="initialized" @click="switch_menu_open")
+    v-app-bar-nav-icon.rounded-circle(color="blue"  v-show="initialized" @click="switch_menu")
       v-icon {{main_icon}}
     v-toolbar-title.pa-0(v-if="initialized")
       v-list-item.pl-0
@@ -30,12 +30,13 @@ import URLQueryMixin from "~/components/util/URLQueryMixin";
 import DomainLanguageMixin from "~/components/domain/DomainLanguageMixin"
 import Dialog from "~/components/dialogs/Dialog"
 import LoginComponent from "~/components/page_components/LoginComponent"
+import HasMainNavComponentMixin, {ENTRY} from "~/components/global/HasMainNavComponentMixin"
 
 const pkg = require('~/package.json')
 
 export default {
   name: "TheAppBar",
-  mixins: [NavBaseMixin, ResponsivenessMixin, URLQueryMixin, DomainLanguageMixin],
+  mixins: [NavBaseMixin, ResponsivenessMixin, URLQueryMixin, DomainLanguageMixin, HasMainNavComponentMixin],
   components: {LoginComponent, Dialog, CreateEntryButton},
   data() {
     return {
@@ -119,6 +120,12 @@ export default {
   },
   methods: {
     ...mapMutations({switch_menu_open: 'menu/switch_open'}),
+    switch_menu() {
+      if(this.is_small && this.navigation_mode === ENTRY)  {
+        this.unselect_entry()
+      }
+      this.switch_menu_open()
+    },
     open_login() {
       this.login_dialog_open=true
       // console.log(this.$refs.login_dialog)
