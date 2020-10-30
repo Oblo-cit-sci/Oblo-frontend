@@ -2,14 +2,13 @@
   v-bottom-sheet(hide-overlay persistent :value="privacy_sheet_open")
     div(style="background: white;height: 100%; width: 100%")
       div.pt-5.pl-5.pb-2
-        h3.mb-3 Your Privacy
-          v-container(style="margin: 0")
-            v-row
-              v-col(cols="12" lg="8")
-                div(style="font-size: 1.2rem") We do not use cookies nor do we include any 3rd party cookies. We only store the data that you directly provide in your public user profile or in the entries you create or contribute to. <a href="/about#privacy">Read our privacy policy for more information.</a>
-              v-spacer
-              v-col
-                v-btn(@click="close") Thank you
+        h3.mb-1 {{$t("comp.privacy_notification.h")}}
+        v-container.py-2(style="margin: 0")
+          v-row
+            v-col.py-1.pl-0(cols="12" lg="8")
+              div(style="font-size: 1.1rem" v-html='$t("comp.privacy_notification.p")')
+            v-col.py-1.pl-0
+              v-btn(@click="close") {{$t("comp.privacy_notification.btn")}}
 </template>
 
 <script>
@@ -17,19 +16,14 @@
     name: "ThePrivacySheet",
     mixins: [],
     components: {},
-    props: {
-    },
-    data() {
-      return {
-        privacy_shown: false,
+    created() {
+      if( process.env.NODE_ENV === "development") {
+        this.$store.commit("app/close_privacy_sheet")
       }
     },
     computed: {
       privacy_sheet_open: {
         get: function () {
-          if(process.env.NODE_ENV === "development") {
-            return false
-          }
           return this.$store.getters["app/privacy_sheet_open"]
         },
         set: function (val) {

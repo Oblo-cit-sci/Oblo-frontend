@@ -12,7 +12,6 @@
     TheSnackbar
     ThePrivacySheet
     DecisionDialog
-
     <!--    v-fab-transition-->
     <!--      v-btn.help_button(float large fab color="info")-->
     <!--        v-icon mdi-help-->

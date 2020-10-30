@@ -305,6 +305,11 @@
     "previewlist": {
       "num_entries": "@:w.n_entries"
     },
+    "privacy_notification": {
+      "h": "Your Privacy",
+      "p": "We do not use cookies nor do we include any 3rd party cookies. We only store the data that you directly provide in your user profile or in the entries you create or contribute to. <a href=\"/about#privacy\">Read our privacy policy for more information.</a>",
+      "btn": "Thank you"
+    },
     "entrypreview": {
       "draft": "Draft",
       "created": "created",

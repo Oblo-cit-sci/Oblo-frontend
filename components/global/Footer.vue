@@ -85,6 +85,6 @@
   .privacy-policy {
     font-size: 12px;
     padding-top: 8px;
-    padding-bottom: 0px;
+    padding-bottom: 0;
   }
 </style>
