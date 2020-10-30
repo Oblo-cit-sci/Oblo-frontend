@@ -64,8 +64,7 @@ export default {
       return this.$_.some(this.aspects, (a) => a.hasOwnProperty("error") && a.error) || !this.agree
     },
     terms_of_use_section() {
-      const tou_section = this.$_.find(this._i18n.messages[this._i18n.locale].about, s => s.flag === 'TERMS_OF_USE')
-      return tou_section
+      return this.$_.find(this.$i18n.msg("page.about"), s => s.flag === 'TERMS_OF_USE')
     }
   },
   methods: {

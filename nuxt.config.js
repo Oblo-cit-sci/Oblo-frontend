@@ -80,7 +80,7 @@ module.exports = {
   plugins: [
     "~/plugins/i18n.js",
     '~/plugins/lodash.js',
-    {src: '~/plugins/api_wrapper'},
+    '~/plugins/api_wrapper',
     "~/plugins/bus.js"
   ],
 

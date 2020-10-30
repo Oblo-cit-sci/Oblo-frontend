@@ -1,4 +1,6 @@
 import MapboxBaseMixin from "~/components/map/MapboxBaseMixin"
+// const default_mapstyle = "mapbox://styles/ramin36/ckguv66lf2nfg19o0v3haftb0"
+// BASIC lAYER
 import MapEntriesMixin from "~/components/map/MapEntriesMixin"
 
 const default_mapstyle = "mapbox://styles/ramin36/cjx2xkz2w030s1cmumgp6y1j8"
@@ -32,11 +34,6 @@ export default {
   created() {
     //dont make mapstuff reactive (putting it in data). it doesnt like it
     this.popups = []
-    if(this.$map) {
-      console.log("remove existing...")
-      this.$map.remove()
-      this.$map = null
-    }
   },
   computed: {
     language() {
@@ -47,15 +44,17 @@ export default {
       return this.$store.getters["map/goto_location"]()
     }
   },
+  beforeDestroy() {
+  },
   methods: {
     onMapLoaded(map) {
-      this.$map = map
       this.map = map
       this.mapboxgl = require('mapbox-gl/dist/mapbox-gl')
       this.mapboxgl.prewarm()
+      // this.map.prewarm()
       this.map_loaded = true
       this.$emit("map", this.map)
-
+      // todo maybe just in the options?
       if (this.map_show_geolocate_ctrl) {
         this.add_geolocate_ctrl()
       }

@@ -1,10 +1,12 @@
 // plugins/i18n.js
 
-import Vue from "vue";
-import VueI18n from "vue-i18n";
+const ld = require("lodash")
+
+import Vue from "vue"
+import VueI18n from "vue-i18n"
 
 // Tell Vue to use our plugin
-Vue.use(VueI18n);
+Vue.use(VueI18n)
 
 const base_path = "~/static/langs/"
 
@@ -25,5 +27,7 @@ export default ({ app }) => {
       de: require("~/static/langs/content-de.json"),
       es: require("~/static/langs/content-es.json")
     }
-  });
-};
+  })
+
+  app.i18n.msg = (loc) => ld.get(app.i18n.messages[app.i18n.locale],loc)
+}

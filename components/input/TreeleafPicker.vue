@@ -28,221 +28,222 @@
 
 <script>
 
-  /**
-   * Tree object should at each level (each node) have a title (or name) and children key.
-   */
+/**
+ * Tree object should at each level (each node) have a title (or name) and children key.
+ */
 
-  import SingleSelect from "./SingleSelect";
-  import {object_list2options} from "~/lib/options";
-  import SelectGrid from "../aspect_utils/SelectGrid";
-  import Paginated_Select from "../aspect_utils/Paginated_Select";
-  import Title_Description from "../util/Title_Description"
-  import LargeSelectList from "~/components/aspect_utils/LargeSelectList"
-  import {pack_value, unpack} from "~/lib/aspect"
-  import Aspect from "~/components/Aspect"
+import SingleSelect from "./SingleSelect";
+import {object_list2options} from "~/lib/options";
+import SelectGrid from "../aspect_utils/SelectGrid";
+import Paginated_Select from "../aspect_utils/Paginated_Select";
+import Title_Description from "../util/Title_Description"
+import LargeSelectList from "~/components/aspect_utils/LargeSelectList"
+import {pack_value, unpack} from "~/lib/aspect"
+import Aspect from "~/components/Aspect"
 
 
-  export default {
-    name: "TreeleafPicker",
-    components: {Aspect, LargeSelectList, Title_Description, Paginated_Select, SelectGrid, SingleSelect},
-    props: {
-      tree: {
-        type: Object
-      },
-      value: Array,
-      extra_value_name: {
-        type: String
-      },
-      keep_selection: {
-        type: Boolean,
-        default: false
-      },
-      attr: {
-        type: Object,
-        default: () => {
-          return {}
-        }
-      }, // OuterRef is for the LICCI aspect, cuz JS messes up loops and events (always takes the
-      // this contains the slug of the code entry, in order to calculate the icon routes
-      data_source: String
+export default {
+  name: "TreeleafPicker",
+  components: {Aspect, LargeSelectList, Title_Description, Paginated_Select, SelectGrid, SingleSelect},
+  props: {
+    tree: {
+      type: Object
     },
-    data: function () {
-      return {
-        // selection: [], // indices of children
-        levels: false,
+    value: Array,
+    extra_value_name: {
+      type: String
+    },
+    keep_selection: {
+      type: Boolean,
+      default: false
+    },
+    attr: {
+      type: Object,
+      default: () => {
+        return {}
+      }
+    }, // OuterRef is for the LICCI aspect, cuz JS messes up loops and events (always takes the
+    // this contains the slug of the code entry, in order to calculate the icon routes
+    data_source: String
+  },
+  data: function () {
+    return {
+      // selection: [], // indices of children
+      levels: false,
+    }
+  },
+  computed: {
+    select_length() {
+      return this.value ? this.value.length : 0
+    },
+    extra_value: {
+      get: function () {
+        return this.value[this.value.length - 1].extra_value || ""
+      },
+      set: function (val) {
+        this.value[this.value.length - 1].extra_value = val
       }
     },
-    computed: {
-      select_length() {
-        return this.value ? this.value.length : 0
-      },
-      extra_value: {
-        get: function () {
-          return this.value[this.value.length - 1].extra_value || ""
-        },
-        set: function (val) {
-          this.value[this.value.length - 1].extra_value = val
-        }
-      },
-      act_options() {
-        let options = this.tree.root.children
-        // console.log("opt", options)
-        // console.log(this.value)
-        for (let val of this.value) {
-          // console.log("a val", val)
-          options = options.find(o => o.name === val.value).children || []
-        }
-        options = this.$_.cloneDeep(options)
-        // console.log("opt", options)
-        for (let index in options) {
-          let node = options[index]
-          node["title"] = node["name"]
-          node["id"] = parseInt(index)
-        }
-        return object_list2options(options, "title", "title")
-      },
-      done_available() {
-        // console.log("done?", this.attr.allow_select_levels, this.act_level)
-        if (this.attr.hasOwnProperty("allow_select_levels")) {
-          return (this.$_.includes(this.attr.allow_select_levels, this.act_level))
-        } else {
-          return this.$_.size(this.act_options) === 0
-        }
-      },
-      last_description() {
-        if (this.select_length === 0) {
-          return ""
-        } else {
-          return this.value[this.act_level - 1].description || ""
-        }
-      },
-      has_levels() {
-        return this.levels && this.$_.size(this.act_options) > 0;
-      },
-      has_selection() {
-        // debugger
-        return this.select_length > 0
-      },
-      act_level() {
-        return this.select_length
-      },
-      has_options() {
-        return this.act_options.length > 0
-      },
-      last_selection_has_extra() {
-        return this.has_selection && this.value[this.select_length - 1].extra || false
-      },
-      extra_aspect() {
-        if (this.last_selection_has_extra) {
-          const last_extra = this.value[this.select_length - 1].extra
-          if (last_extra.type === "text") {
-            return {
-              name: last_extra.name,
-              type: "str",
-              attr: {
-                max: 90
-              }
+    act_options() {
+      // console.log("ao", this.tree, this.value)
+      let options = this.tree.root.children
+      // console.log("opt", options)
+      // console.log(this.value)
+      for (let val of this.value) {
+        // console.log("a val", val)
+        options = this.$_.get(options.find(o => o.name === val.value), "children", [])
+      }
+      options = this.$_.cloneDeep(options)
+      // console.log("opt", options)
+      for (let index in options) {
+        let node = options[index]
+        node["title"] = node["name"]
+        node["id"] = parseInt(index)
+      }
+      return object_list2options(options, "title", "title")
+    },
+    done_available() {
+      // console.log("done?", this.attr.allow_select_levels, this.act_level)
+      if (this.attr.hasOwnProperty("allow_select_levels")) {
+        return (this.$_.includes(this.attr.allow_select_levels, this.act_level))
+      } else {
+        return this.$_.size(this.act_options) === 0
+      }
+    },
+    last_description() {
+      if (this.select_length === 0) {
+        return ""
+      } else {
+        return this.value[this.act_level - 1].description || ""
+      }
+    },
+    has_levels() {
+      return this.levels && this.$_.size(this.act_options) > 0;
+    },
+    has_selection() {
+      // debugger
+      return this.select_length > 0
+    },
+    act_level() {
+      return this.select_length
+    },
+    has_options() {
+      return this.act_options.length > 0
+    },
+    last_selection_has_extra() {
+      return this.has_selection && this.value[this.select_length - 1].extra || false
+    },
+    extra_aspect() {
+      if (this.last_selection_has_extra) {
+        const last_extra = this.value[this.select_length - 1].extra
+        if (last_extra.type === "text") {
+          return {
+            name: last_extra.name,
+            type: "str",
+            attr: {
+              max: 90
             }
-          } else {
-            return null
           }
-        }
-      },
-      act_levelname() {
-        // console.log("act_levelname", this.select_length)
-        return this.levelname(this.select_length)
-      },
-      act_level_description() {
-        // console.log("act_level_description")
-        if (typeof this.levels[this.select_length] === "string") {
+        } else {
           return null
-        } else {
-          return this.levels[this.select_length].description
         }
-      },
-      act_edit_mode() {
-        return this.level_edit_mode(this.act_level)
-      },
-      edit_mode_list() {
-        return this.act_edit_mode === "list"
-      },
-      edit_mode_large_list() {
-        return this.act_edit_mode === "large_list"
-      },
-      edit_mode_matrix() {
-        return this.act_edit_mode === "matrix"
-      },
-      edit_mode_paginated() {
-        return this.act_edit_mode === "paginated"
       }
     },
-    created() {
-      if (this.tree.hasOwnProperty("level_names")) {
-        console.log("attribute level_names is depracated, use levels")
-        this.levels = this.tree.level_names;
-      } else if (this.tree.hasOwnProperty("levels")) {
-        this.levels = this.tree.levels
+    act_levelname() {
+      // console.log("act_levelname", this.select_length)
+      return this.levelname(this.select_length)
+    },
+    act_level_description() {
+      // console.log("act_level_description")
+      if (typeof this.levels[this.select_length] === "string") {
+        return null
+      } else {
+        return this.levels[this.select_length].description
       }
     },
-    methods: {
-      select(value) {
-        if(value)
-          this.$emit("input", this.$_.concat(this.value || [], [value]))
-        else // clicked clear on select
-          this.$emit("input", this.value)
-      },
-      clear() {
-        this.$emit('clear')
-      },
-      extra_text(node) {
-        return node.extra_value ? ' / ' + unpack(node.extra_value.value) : ''
-      },
-      levelname(index) {
-        if (index >= this.levels.length) {
-          console.log("bug/error index access larger than levels", index)
-          return ""
-        }
-        if (typeof this.levels[index] === "string") {
-          console.log("levels structure depracated. use an object, with name key")
-          return this.levels[index]
-        }
-        // console.log("levelname", index, this.levels)
-        return this.levels[index].name
-      },
-      remove(index) {
-        this.$emit("input", this.value.slice(0, index))
-      },
-      has_both() {
-        return this.has_selection && this.act_options.length > 0
-      },
-      done() {
-        // todo do better js :/
-        this.$emit("selected", pack_value(this.value.map(e => {
-          return {text: e.text, value: e.value, extra_value: e.extra_value}
-        })))
-      },
-      level_edit_mode(level) {
-        return this.$_.get(this.attr, `edit[${level}]`, "list")
-      },
-      close() {
-        if(this.done_available) {
-          this.done()
-        } else {
-          this.clear()
-        }
+    act_edit_mode() {
+      return this.level_edit_mode(this.act_level)
+    },
+    edit_mode_list() {
+      return this.act_edit_mode === "list"
+    },
+    edit_mode_large_list() {
+      return this.act_edit_mode === "large_list"
+    },
+    edit_mode_matrix() {
+      return this.act_edit_mode === "matrix"
+    },
+    edit_mode_paginated() {
+      return this.act_edit_mode === "paginated"
+    }
+  },
+  created() {
+    if (this.tree.hasOwnProperty("level_names")) {
+      console.log("attribute level_names is depracated, use levels")
+      this.levels = this.tree.level_names;
+    } else if (this.tree.hasOwnProperty("levels")) {
+      this.levels = this.tree.levels
+    }
+  },
+  methods: {
+    select(value) {
+      if (value)
+        this.$emit("input", this.$_.concat(this.value || [], [value]))
+      else // clicked clear on select
+        this.$emit("input", this.value)
+    },
+    clear() {
+      this.$emit('clear')
+    },
+    extra_text(node) {
+      return node.extra_value ? ' / ' + unpack(node.extra_value.value) : ''
+    },
+    levelname(index) {
+      if (index >= this.levels.length) {
+        console.log("bug/error index access larger than levels", index)
+        return ""
+      }
+      if (typeof this.levels[index] === "string") {
+        console.log("levels structure depracated. use an object, with name key")
+        return this.levels[index]
+      }
+      // console.log("levelname", index, this.levels)
+      return this.levels[index].name
+    },
+    remove(index) {
+      this.$emit("input", this.value.slice(0, index))
+    },
+    has_both() {
+      return this.has_selection && this.act_options.length > 0
+    },
+    done() {
+      // todo do better js :/
+      this.$emit("selected", pack_value(this.value.map(e => {
+        return {text: e.text, value: e.value, extra_value: e.extra_value}
+      })))
+    },
+    level_edit_mode(level) {
+      return this.$_.get(this.attr, `edit[${level}]`, "list")
+    },
+    close() {
+      if (this.done_available) {
+        this.done()
+      } else {
+        this.clear()
       }
     }
   }
+}
 </script>
 
 <style scoped>
 
-  .treeselect {
-    text-transform: none;
-    background: white;
-  }
+.treeselect {
+  text-transform: none;
+  background: white;
+}
 
-  #subheader {
-    background: white;
-  }
+#subheader {
+  background: white;
+}
 </style>

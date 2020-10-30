@@ -205,12 +205,6 @@ export default {
   },
   methods: {
     check_entries_map_done() {
-      // console.log("check_entries_map_done: entries_loaded", this.entries_loaded)
-      // console.log("check_entries_map_done: entries.features", this.entries.features)
-      // console.log("check_entries_map_done: map_loaded", this.map_loaded)
-      // console.log("check_entries_map_done: get_all_uuids", this.get_all_uuids)
-      // console.log("check", this.entries, this.entries_loaded)
-      // console.log("check map e done", this.entries)
       if (this.entries_loaded && this.entries.features && this.map_loaded && this.get_all_uuids) {
         // console.log("all good")
         this.init_map_source_and_layers()
@@ -227,9 +221,7 @@ export default {
       this.update_filtered_source()
 
       if (this.layers_created) {
-        console.log("layers_created", this.layers_created)
-        const el = this.map.getLayer("all_entries_entries")
-        console.log("SL", this.map.getSource(MAIN_SOURCE_LAYER))
+        // console.log("layers_created", this.layers_created)
         return
       }
 
@@ -247,8 +239,8 @@ export default {
         "circle-radius": [
           'case',
           ["boolean", ['feature-state', 'hover'], false], //["any", ["boolean", ['feature-state', 'hover'], false], ["boolean", ['feature-state', 'selected'], false]],
-          7,
-          5//12,6//8
+          9,
+          this.is_small ? 9 : 7 // tried ["interpolate", ["linear"], ["zoom"], 1, 10, 13, 20]
         ],
         "circle-stroke-color": [
           "match",
@@ -311,7 +303,7 @@ export default {
           clusterLeaves(source, cluster.id, cluster.properties.point_count).then(features => {
             // console.log(features)
             // todo temp solution
-            let popup_html = ""
+            let popup_html
             // features.map
             const entry_counts = this.$_.reduce(features, (ec, f) => {
               if (ec[f.properties.title]) {
@@ -333,7 +325,7 @@ export default {
           })
         })
 
-        this.map.on('mouseleave', cluster_layer_name, (e) => {
+        this.map.on('mouseleave', cluster_layer_name, () => {
           if (this.act_hoover_id) {
             this.act_hoover_id = null
             this.remove_all_popups()
@@ -563,11 +555,7 @@ export default {
     },
     check_hide_map() {
       if (this.$vuetify.breakpoint.smAndDown) {
-        if (this.menu_open && this.menu_state === MENU_MODE_DOMAIN_OVERVIEW) {
-          this.map_hidden = true
-        } else {
-          this.map_hidden = false
-        }
+        this.map_hidden = this.menu_open && this.menu_state === MENU_MODE_DOMAIN_OVERVIEW;
       }
     },
     click(map, event) {
@@ -610,6 +598,7 @@ export default {
       this.aspectdialog_data.dialog_open = true
     },
     render(map) {
+      // console.log(map.getZoom())
       if (this.set_dl)
         download(map)
       if (this.entries_loaded && map.getLayer(cluster_layer_name)) {
@@ -637,12 +626,12 @@ export default {
     select_entry_marker(feature) {
       // console.log("select_entry_marker", feature)
       const entry_uuid = feature.properties.uuid
-      this.guarantee_entry(entry_uuid).then(entry => {
+      this.guarantee_entry(entry_uuid).then(() => {
         if (!this.is_small) {
           this.map_goto_location(feature.geometry)
         }
         this.update_navigation_mode(entry_uuid, VIEW, false)
-      }).catch(err => {
+      }).catch(() => {
         this.error_snackbar("Couldn't fetch entry")
       })
     },
@@ -687,10 +676,10 @@ export default {
     map_loaded() {
       this.check_entries_map_done()
     },
-    menu_open(open) {
+    menu_open() {
       this.check_hide_map()
     },
-    get_all_uuids(uuids) {
+    get_all_uuids() {
       this.update_filtered_source()
       if (!this.initialized) {
         this.check_entries_map_done()
@@ -701,7 +690,7 @@ export default {
         this.map_goto_location(location)
       }
     },
-    menu_state(menu_state) {
+    menu_state() {
       this.check_hide_map()
     },
     selected_entry(uuid, old_uuid) {
@@ -719,13 +708,6 @@ export default {
 </script>
 
 <style scoped>
-.buttons {
-  position: absolute;
-  top: 2%;
-  z-index: 1;
-  left: 13%;
-  transform: translate(-50%, 0)
-}
 
 .fullSize {
   position: absolute;

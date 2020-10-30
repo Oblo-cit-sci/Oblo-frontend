@@ -15,7 +15,7 @@ export default {
     },
   },
   methods: {
-    load_map_entries(domain_name) {
+    async load_map_entries(domain_name) {
       // console.log("loading entries", this.$store.getters["map/loading_entries"])
       this.$store.commit("map/set_entries_loaded", false)
       const config = {
@@ -24,13 +24,8 @@ export default {
       if (!this.$_.isEmpty(this.entries)) {
         config.required.push({name: "before_ts", ts: this.$store.getters["map/get_searchtime"]})
       }
-      this.$api.entries_map_entries(config, true).then(({data}) => {
-        // console.log(data.data)
-        this.$store.dispatch("map/add_entries", {domain: domain_name, entries: data.data.entries, ts: data.data.ts})
-      }, err => {
-        console.log("map entries error")
-        console.log(err)
-      })
+      const {data} = await this.$api.entries_map_entries(config, true)
+      await this.$store.dispatch("map/add_entries", {domain: domain_name, entries: data.data.entries, ts: data.data.ts})
     },
     get_my_locations() {
       // this.guarantee_entries_loaded()

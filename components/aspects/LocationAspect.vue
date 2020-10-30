@@ -46,12 +46,13 @@
           v-btn(v-if="show_show_my_entries_btn" dark small :color="show_existing ? 'blue' : 'grey'" @click="toggle_show_existing" :loading="getting_my_entries_loading") {{$t('comp.location_asp.show entries')}}
             v-icon mdi-map-marker-circle
         Mapbox.crosshair.mt-3(
+          :id="map_id"
           style="height:400px"
           :access-token="access_token"
           :map-options="map_options"
           @map-load="onMapLoaded"
           @click="map_location_selected"
-          navControl="is_editable_mode")
+          :navControl="nav_control_options")
 </template>
 
 <script>
@@ -104,6 +105,10 @@ export default {
     device_location_input_option() {
       return this.has_input_option(DEVICE)
     },
+    nav_control_options() {
+      if (this.map_loaded)
+        return new this.mapboxgl.NavigationControl({showZoom: this.is_editable_mode})
+    },
     //  check for attr.output.___
     has_output_location() {
       return this.has_output(LOCATION)
@@ -131,19 +136,16 @@ export default {
     },
     map_options() {
       // console.log("map options", this.value, this.value.coordinates)
+      const options = this.$_.cloneDeep(this.default_map_options)
       if (this.value && this.value.coordinates) {
-        // console.log(Object.assign(this.default_map_options, {
-        //   center: this.value.coordinates,
-        //   zoom: 3,
-        //   interactive: !this.is_view_mode
-        // }))
-        return Object.assign(this.default_map_options, {
+        return Object.assign(options, {
           center: this.value.coordinates,
           zoom: 3,
-          interactive: !this.is_view_mode
+          interactive: !this.is_view_mode,
+          container: this.map_id
         })
       } else {
-        return this.default_map_options
+        return Object.assign(options, {container: this.map_id})
       }
     },
     // this is for the MapIncludeMixin to show the control
@@ -235,7 +237,9 @@ export default {
     }
   },
   data() {
+    console.log(this)
     return {
+      map_id: "la_" + this._uid,
       search_query: null,
       initial_autocomplete_reset: 2, // catch first 2 emit of null: ARGH
       place_part_coordinates: {},
@@ -254,7 +258,7 @@ export default {
     }
   },
   created() {
-    // console.log("loc-asp create", this.value)
+    // console.log("loc-asp create", this)
     if (this.value) {
       this.search_query = this.value.place_name
       this.place_select__ = this.value.place_name
@@ -605,11 +609,23 @@ export default {
       // todo this doesnt work if map_entries hasnt been called before (on domain page)
       if (!this.my_entries_features) {
         this.getting_my_entries_loading = true
-        let my_uuids = null
+        let my_uuids
         try {
-          my_uuids = await this.get_my_entries_uuids()
-        } catch (e) { }
-          this.getting_my_entries_loading = false
+          if (!this.$store.getters["map/entries_loaded"]) {
+            console.log("need to load map entries")
+            let [_my_uuids, _] = await Promise.all([this.get_my_entries_uuids(), this.load_map_entries(this.get_entry().domain)]) //
+
+            my_uuids = _my_uuids
+            console.log("p is good",my_uuids)
+          } else {
+            my_uuids = await this.get_my_entries_uuids()
+          }
+          console.log("top")
+        } catch (e) {
+          console.log(e)
+        }
+        console.log(my_uuids)
+        this.getting_my_entries_loading = false
         if (Array.isArray(my_uuids)) {
           this.my_entries_features = this.get_map_entries_by_uuids(my_uuids)
           return Promise.resolve()
@@ -654,7 +670,7 @@ export default {
           this.map.setLayoutProperty("entries_layer", "visibility", "visible")
         }
       } else {
-        if(this.map.getLayer("entries_layer")) {
+        if (this.map.getLayer("entries_layer")) {
           this.map.setLayoutProperty("entries_layer", "visibility", "none")
         }
       }
