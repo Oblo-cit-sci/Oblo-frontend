@@ -44,12 +44,13 @@ export default {
         return this.setting(UI_LANGUAGE)
       },
       set: function (language) {
-        let domain = this.$store.getters["domain"].name // undefined for non-domain
+        let domain = this.$store.getters["domain/act_domain_name"] // undefined for non-domain
         // todo maybe can go into a mixin, if there are other settings for the language
         this.complete_language_domains(domain, language).then(() => {
           this.set_settings_value(UI_LANGUAGE, language)
           // this.$store.commit("set_domain")
         })
+        this.$api.axios.defaults.headers.common["Accept-Language"] = language
       }
     },
     label() {
