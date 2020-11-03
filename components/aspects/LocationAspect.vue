@@ -1,6 +1,6 @@
 <template lang="pug">
   div.mb-3
-    div(v-if="!is_view_mode")
+    div(v-if="is_editable_mode")
       div.mb-1
         div
           .ml-2.mt-2(v-if="search_location_input_option")
@@ -26,7 +26,7 @@
                 v-chip(v-for="(place_part, index) in precision_options" :key="index"
                   text-color="black"
                   @click="public_location_precision_selected(index)" active-class="selected_prec_chip") {{place_part}}
-              div(v-if="!public_location_selector_on")
+              div(v-if="!public_location_selector_on && !snap_to_existing")
                 v-btn(text small v-if="point_location_precision" @click="activate_custom_privacy_setting") change public location
                 span Change your default settings for your public location:
                 v-btn(text small @click="setting_dialog_open=true") settings
@@ -189,6 +189,7 @@ export default {
       // console.log("public_location_selector_on", this.location_set, this.point_location_precision, this.privacy_setting, this.custom_privacy_setting)
       return this.location_set &&
         this.point_location_precision &&
+        !this.snap_to_existing &&
         (this.privacy_setting === settings_loc_privacy_ask ||
           this.custom_privacy_setting === settings_loc_privacy_ask)
     },
@@ -222,16 +223,16 @@ export default {
     },
     show_map() {
       // assuming edit mode is only on the entry page
-      if(this.is_editable_mode) {
+      if (this.is_editable_mode) {
         return true
       } else {
-        if(this.value === null) {
+        if (this.value === null) {
           return false
         }
-        if(this.$route.name === ENTRY) {
+        if (this.$route.name === ENTRY) {
           return true
         } else { // DOMAIN
-          if(this.is_mdAndUp) {
+          if (this.is_mdAndUp) {
             return false
           } else {
             return this.menu_state === MENU_MODE_DOMAIN
@@ -250,7 +251,7 @@ export default {
   },
   data() {
     return {
-      map_id: "la_" + this._uid,
+      map_id: "la_" + this._uid, // every map wrapping element needs a unique id, to keep them separate
       search_query: null,
       initial_autocomplete_reset: 2, // catch first 2 emit of null: ARGH
       place_part_coordinates: {},
@@ -265,7 +266,8 @@ export default {
       my_entries_features: null,
       selected_prec_option: null, // from the chip-menu, index?!
       custom_privacy_setting: null,
-      setting_dialog_open: false
+      setting_dialog_open: false,
+      snap_to_existing: false // snapping to existing entry
     }
   },
   created() {
@@ -301,6 +303,7 @@ export default {
     clear() {
       // console.log("clear")
       this.custom_privacy_setting = null
+      this.snap_to_existing = false
       this.update_value(null)
     },
     /* query */
@@ -313,6 +316,7 @@ export default {
     async search_result_selected(selection) {
       // console.log("selected_search_result-watch", sel, this.search_results)
       if (!selection) {
+        this.snap_to_existing = false
         this.update_value(null)
       } else {
         const feature = this.$_.find(this.search_results, feature => feature.id === selection)
@@ -363,7 +367,6 @@ export default {
           console.log(err)
           console.log("no location found")
         }).finally(() => {
-          // this.update_value(value)
         })
       }
     },
@@ -402,7 +405,9 @@ export default {
       const entry_uuid = feature.properties.uuid
       this.guarantee_entry(entry_uuid).then(() => {
         const location = this.$store.getters["entries/entry_location"](entry_uuid)
+        console.log(location)
         this.update_value(unpack(location[this.$_.get(feature, "properties.l_id", 0)]))
+        this.snap_to_existing = true
       })
     },
     /* device geoloacte */
@@ -492,6 +497,7 @@ export default {
       // console.log("call get_public_location_from_option", option)
       const public_loc_vars = this.get_public_location_from_option(value, option)
       Object.assign(value, public_loc_vars)
+      this.snap_to_existing = false
       this.update_value(value)
       console.log("complete", value)
     },
@@ -623,19 +629,14 @@ export default {
         let my_uuids
         try {
           if (!this.$store.getters["map/entries_loaded"]) {
-            console.log("need to load map entries")
             let [_my_uuids, _] = await Promise.all([this.get_my_entries_uuids(), this.load_map_entries(this.get_entry().domain)]) //
-
             my_uuids = _my_uuids
-            console.log("p is good",my_uuids)
           } else {
             my_uuids = await this.get_my_entries_uuids()
           }
-          console.log("top")
         } catch (e) {
           console.log(e)
         }
-        console.log(my_uuids)
         this.getting_my_entries_loading = false
         if (Array.isArray(my_uuids)) {
           this.my_entries_features = this.get_map_entries_by_uuids(my_uuids)
