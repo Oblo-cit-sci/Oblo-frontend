@@ -69,7 +69,7 @@ export default {
           // console.log(local_search_config)
           const has_local_filter = this.has_local_filter(this.search_config)
           if (has_local_filter) {
-            const local_entries_uuids = this.local_search(this.search_config)
+            const local_entries_uuids = this.local_search(this.search_config).reverse()
             this.entries_uuids = this.$_.concat(this.entries_uuids, local_entries_uuids)
           }
         }
