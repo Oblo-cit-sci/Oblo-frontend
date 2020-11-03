@@ -12,11 +12,11 @@
                 v-icon.mr-1.pb-1(v-if="!show_entrytype_title" :color="template_color" x-small) mdi-checkbox-blank-circle
                 span(@click="goto(entry.uuid, 'view')"  :style="title_style")
                   span(@mouseover="title_mouseover" @mouseleave="title_mouseleave") {{full_title}}
-                  span(v-if="is_draft" :style="{color:'cornflowerblue'}") &nbsp; [DRAFT]
+                  span(v-if="is_draft" :style="{color:'cornflowerblue'}") &nbsp; [{{$t('comp.entrypreview.draft')}}]
                     v-btn(v-if="show_title_action" @click="goto()" depressed small)
                       v-icon(:class="default_action_icon")
           v-row.pl-3(:style="{'text-align': 'right', 'font-size':'80%'}")
-            span.my-auto(v-if="show_date") {{$t("comp.entrypreview.created")}} {{entry_date}} {{is_draft ? $t('comp.entrypreview.draft') : ""}}
+            span.my-auto(v-if="show_date") {{$t("comp.entrypreview.created")}} {{entry_date}}
           v-row.pl-3.py-1(v-if="show_meta_aspects")
             MetaChips(:meta_aspects="meta_aspects")
           v-row.pl-3(justify="space-between" v-if="actor_row")

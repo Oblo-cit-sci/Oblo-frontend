@@ -7,6 +7,7 @@
           header_type="h1"
           :description="template.description"
           :mode="mode")
+          span.ml-1.blue--text {{is_draft ? "[" + $t('comp.entrypreview.draft') +"]" : ""}}
     v-row
       v-col(v-if="has_parent")
         span This entry is part of:&nbsp
@@ -14,7 +15,6 @@
     .ml-3(v-if="is_view_mode")
       v-row(:style="{'text-align': 'right', 'font-size':'80%'}")
         span.my-auto {{$t("comp.entrypreview.created")}} {{entry_date}}
-        span.ml-1.blue--text {{is_draft ? $t('comp.entrypreview.draft') : ""}}
       v-row
         MetaChips(:meta_aspects="meta_aspects")
       v-row
