@@ -20,6 +20,7 @@ import LanguageSelector from "~/components/LanguageSelector"
 import URLQueryMixin from "~/components/util/URLQueryMixin"
 import FixDomainMixin from "~/components/global/FixDomainMixin"
 import {mapGetters, mapMutations} from "vuex"
+import ResponsivenessMixin from "~/components/ResponsivenessMixin"
 
 let require_login = ["/profile", "/logout"]
 let hide_logged_in = ["/login", "/register"]
@@ -30,7 +31,7 @@ let show_in_fixed_domain = ["/about"]
 
 export default {
   name: "MainMenuList",
-  mixins: [URLQueryMixin, FixDomainMixin],
+  mixins: [URLQueryMixin, FixDomainMixin, ResponsivenessMixin],
   components: {LanguageSelector},
   props: {},
   data() {
@@ -73,20 +74,23 @@ export default {
   methods: {
     ...mapMutations({switch_menu_open: 'menu/switch_open'}),
     show_close_btn(item) {
-      return item.id === 'home' && this.$route.name !== DOMAIN
+      return item.id === 'home' && this.$route.name !== DOMAIN && this.is_small
     },
     close_menu() {
       this.$store.commit("menu/open", false)
     },
     select(item) {
+      console.log("select", item)
       if (item.action) {
         action(item.action)
       }
       // doesnt apply for "home" for fixed_domain since that has a query param
+
       let route_name = item.to
+
       if (item.to.indexOf("?") !== -1)
         route_name = item.to.substring(0, item.to.indexOf("?"))
-      // console.log(item.to, this.$route.path)
+      console.log(item.to, route_name, this.$route.path)
       if (route_name === this.$route.path) {
         this.switch_menu_open()
       }
