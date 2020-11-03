@@ -26,9 +26,6 @@ export default {
       } else
         return SEARCH
     }
-    // selected_entry() {
-    //   return this.$route.query.uuid
-    // }
   },
   methods: {
     ...mapMutations({switch_menu_open: 'menu/switch_open', set_menu_open: "menu/open", set_menu_state:"menu/menu_state"}),

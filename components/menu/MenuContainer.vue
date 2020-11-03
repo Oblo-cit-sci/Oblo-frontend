@@ -12,9 +12,9 @@
       #scrollable(v-if="!menu_mode_fixed")
         v-tabs(v-model="menu_state" grow active-class="active_tab")
           v-tab {{$t("comp.menucontainer.tab_main")}}
-          v-tab(@click="click") {{$t("comp.menucontainer.tab_domain")}}
+          v-tab {{$t("comp.menucontainer.tab_domain")}}
         NotificationBanner
-        v-tabs-items(v-model="menu_state")
+        v-tabs-items(v-model="menu_state" touchless)
           v-tab-item
             MainMenuList
           v-tab-item
@@ -24,14 +24,14 @@
 
 <script>
 
-import {MENU_MODE_DOMAIN_OVERVIEW, MENU_MODE_MAIN} from "~/lib/consts"
+import {MENU_MODE_DOMAIN, MENU_MODE_MAIN} from "~/lib/consts"
 import MainMenuList from "~/components/menu/MainMenuList"
 import DomainMenu from "~/components/menu/DomainMenu"
 import NotificationBanner from "~/components/global/NotificationBanner"
 import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
 import ResponsivenessMixin from "~/components/ResponsivenessMixin";
 
-const mode_indices = [MENU_MODE_MAIN, MENU_MODE_DOMAIN_OVERVIEW]
+const mode_indices = [MENU_MODE_MAIN, MENU_MODE_DOMAIN]
 
 export default {
   name: "MenuContainer",
@@ -45,7 +45,7 @@ export default {
     if (this.menu_mode_fixed) {
       this.menu_state = MENU_MODE_MAIN
     } else {
-      this.menu_state = MENU_MODE_DOMAIN_OVERVIEW
+      this.menu_state = MENU_MODE_DOMAIN
     }
     this.$store.commit("menu/menu_width", this.menu_width)
   },
@@ -78,7 +78,7 @@ export default {
       switch (this.menu_state) {
         case MENU_MODE_MAIN:
           return 200;
-        case MENU_MODE_DOMAIN_OVERVIEW:
+        case MENU_MODE_DOMAIN:
           switch (this.$vuetify.breakpoint.name) {
             case "xl":
               return 600
@@ -91,10 +91,6 @@ export default {
     }
   },
   methods: {
-    click() {
-      console.log("menu container change", this.domain_navigation_mode)
-      this.unselect_entry()
-    }
   },
   watch: {
     state() {

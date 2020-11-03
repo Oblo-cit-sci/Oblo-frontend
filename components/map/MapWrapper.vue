@@ -30,7 +30,7 @@
 
 import Mapbox from 'mapbox-gl-vue'
 import MapIncludeMixin from "~/components/map/MapIncludeMixin"
-import {MENU_MODE_DOMAIN_OVERVIEW, VIEW} from "~/lib/consts"
+import {MENU_MODE_DOMAIN, VIEW} from "~/lib/consts"
 import {mapGetters} from "vuex"
 import DomainMapMixin from "~/components/map/DomainMapMixin"
 import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
@@ -95,7 +95,7 @@ export default {
       act_cluster: null,
       act_cluster_expansion_zoom: null,
       last_zoom: null,
-      map_hidden: false,
+      map_hidden: false, // todo maybe just a computed
       initialized: false,
       layers_created: false,
       actual_markers: []
@@ -555,7 +555,7 @@ export default {
     },
     check_hide_map() {
       if (this.$vuetify.breakpoint.smAndDown) {
-        this.map_hidden = this.menu_open && this.menu_state === MENU_MODE_DOMAIN_OVERVIEW;
+        this.map_hidden = this.menu_open
       }
     },
     click(map, event) {

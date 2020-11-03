@@ -148,7 +148,7 @@
   "asp": {
     "username": {
       "label": "@:w.username",
-      "rule_length": "@:w.username must have at 4 characters",
+      "rule_length": "@:w.username must have at least 4 characters",
       "rule_pattern": "Only lowercase characters are allowed"
     },
     "user_query": {

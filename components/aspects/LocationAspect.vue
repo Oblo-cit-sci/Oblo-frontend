@@ -41,12 +41,13 @@
         v-icon mdi-map-marker
       div(v-if="!value") {{$t('comp.location_asp.no_loc')}}
     client-only
-      div(v-if="show_map")
+      div
         .map_overlay
           v-btn(v-if="show_show_my_entries_btn" dark small :color="show_existing ? 'blue' : 'grey'" @click="toggle_show_existing" :loading="getting_my_entries_loading") {{$t('comp.location_asp.show entries')}}
             v-icon mdi-map-marker-circle
         Mapbox.crosshair.mt-3(
           :id="map_id"
+          v-if="show_map"
           style="height:400px"
           :access-token="access_token"
           :map-options="map_options"
@@ -67,7 +68,7 @@ import {
   PREC_OPTION_RANDOM,
   PREC_OPTION_REGION,
 } from "~/lib/location";
-import {default_place_type} from "~/lib/consts";
+import {default_place_type, DOMAIN, ENTRY, MENU_MODE_DOMAIN} from "~/lib/consts";
 import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
 import AspectComponentMixin from "./AspectComponentMixin";
 import MapIncludeMixin from "~/components/map/MapIncludeMixin"
@@ -101,7 +102,7 @@ export default {
   mixins: [AspectComponentMixin, TriggerSnackbarMixin, MapIncludeMixin, GeocodingMixin,
     MapEntriesMixin, EntrySearchMixin, EntryFetchMixin, ResponsivenessMixin, TypicalAspectMixin, PersistentStorageMixin],
   computed: {
-    ...mapGetters({logged_in: "user/logged_in", user_settings: "user/settings"}),
+    ...mapGetters({logged_in: "user/logged_in", user_settings: "user/settings", menu_state: "menu/menu_state"}),
     device_location_input_option() {
       return this.has_input_option(DEVICE)
     },
@@ -220,12 +221,23 @@ export default {
       return this.is_view_mode && this.$route.name === "domain" && this.value
     },
     show_map() {
-      if (this.is_editable_mode) {
+      // assuming edit mode is only on the entry page
+      if(this.is_editable_mode) {
         return true
       } else {
-        return (this.$route.name !== "domain" || this.is_small) && this.value
+        if(this.value === null) {
+          return false
+        }
+        if(this.$route.name === ENTRY) {
+          return true
+        } else { // DOMAIN
+          if(this.is_mdAndUp) {
+            return false
+          } else {
+            return this.menu_state === MENU_MODE_DOMAIN
+          }
+        }
       }
-      // return (this.$route.name !== "domain" && (this.is_editable_mode && this.map_location_input_option || this.is_view_mode)) && (!this.is_view_mode || this.value)
     },
     show_public_location() {
       if (!this.value)
@@ -237,7 +249,6 @@ export default {
     }
   },
   data() {
-    console.log(this)
     return {
       map_id: "la_" + this._uid,
       search_query: null,

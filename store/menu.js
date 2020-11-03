@@ -1,8 +1,8 @@
-import {MENU_MODE_DOMAIN_OVERVIEW} from "~/lib/consts"
+import {MENU_MODE_DOMAIN} from "~/lib/consts"
 
 export const state = () => ({
     open: false,
-    menu_state: MENU_MODE_DOMAIN_OVERVIEW,
+    menu_state: MENU_MODE_DOMAIN,
     menu_width: null
   }
 )

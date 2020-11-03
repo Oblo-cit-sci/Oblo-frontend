@@ -20,7 +20,7 @@ import LayoutMixin from "~/components/global/LayoutMixin"
 import MapWrapper from "~/components/map/MapWrapper"
 import {dev_env} from "~/lib/util"
 import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
-import {MENU_MODE_DOMAIN_OVERVIEW, QP_D, QP_F, TEMPLATE} from "~/lib/consts"
+import {MENU_MODE_DOMAIN, QP_D, QP_F, TEMPLATE} from "~/lib/consts"
 import FixDomainMixin from "~/components/global/FixDomainMixin"
 import EntryCreateMixin from "~/components/entry/EntryCreateMixin"
 import URLParseMixin from "~/components/util/URLParseMixin"
@@ -64,7 +64,7 @@ export default {
       this.fix_domain(this.$route.query.f)
     }
 
-    this.set_menu_state(MENU_MODE_DOMAIN_OVERVIEW)
+    this.set_menu_state(MENU_MODE_DOMAIN)
     // read template config from query
     // for now just query param template, e.g. : ...&s=template:article_review
     const config = this.search_config(this.$route.query.s)
