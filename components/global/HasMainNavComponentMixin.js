@@ -1,6 +1,7 @@
 import {route_change_query} from "~/lib/util"
 import {mapMutations, mapGetters} from "vuex"
 import URLQueryMixin from "~/components/util/URLQueryMixin"
+import {VIEW} from "~/lib/consts"
 
 export const SEARCH = "search"
 export const ENTRY = "entry"
@@ -25,6 +26,9 @@ export default {
         return ENTRY
       } else
         return SEARCH
+    },
+    entry_mode() {
+      return this.$route.query.entry_mode || VIEW
     }
   },
   methods: {

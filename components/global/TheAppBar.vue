@@ -31,6 +31,7 @@ import DomainLanguageMixin from "~/components/domain/DomainLanguageMixin"
 import Dialog from "~/components/dialogs/Dialog"
 import LoginComponent from "~/components/page_components/LoginComponent"
 import HasMainNavComponentMixin, {ENTRY} from "~/components/global/HasMainNavComponentMixin"
+import {VIEW} from "~/lib/consts"
 
 const pkg = require('~/package.json')
 
@@ -122,7 +123,9 @@ export default {
     ...mapMutations({switch_menu_open: 'menu/switch_open'}),
     switch_menu() {
       if(this.is_small && this.navigation_mode === ENTRY)  {
-        this.unselect_entry()
+        if(this.entry_mode === VIEW) {
+          this.unselect_entry()
+        }
       }
       this.switch_menu_open()
     },

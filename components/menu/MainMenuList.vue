@@ -1,24 +1,21 @@
 <template lang="pug">
   v-list
     v-list-item-group(v-for="group in groups" :key="group.name")
-      v-list-item(v-for="item in group.items"
-        :key="item.to"
-        :to="item.to"
-        router
-        nuxt
-        @click="select(item)"
-        exact)
-        v-list-item-icon
+      v-list-item(v-for="item in group.items" :key="item.to")
+        v-list-item-icon(@click="select(item)")
           v-icon {{item.icon}}
-        v-list-item-content
+        v-list-item-content(@click="select(item)")
           v-list-item-title(v-text="$t(item.t_title)")
+        v-list-item-action
+          v-btn(icon small v-if="show_close_btn(item)" @click="close_menu")
+            v-icon  mdi-close
     v-divider
     LanguageSelector
 </template>
 
 <script>
 import {all_pages_n_actions} from "~/lib/pages"
-import {ADMIN} from "~/lib/consts"
+import {ADMIN, DOMAIN} from "~/lib/consts"
 import LanguageSelector from "~/components/LanguageSelector"
 import URLQueryMixin from "~/components/util/URLQueryMixin"
 import FixDomainMixin from "~/components/global/FixDomainMixin"
@@ -75,14 +72,25 @@ export default {
   },
   methods: {
     ...mapMutations({switch_menu_open: 'menu/switch_open'}),
+    show_close_btn(item) {
+      return item.id === 'home' && this.$route.name !== DOMAIN
+    },
+    close_menu() {
+      this.$store.commit("menu/open", false)
+    },
     select(item) {
       if (item.action) {
         action(item.action)
       }
       // doesnt apply for "home" for fixed_domain since that has a query param
-      if (item.to === this.$route.path) {
+      let route_name = item.to
+      if (item.to.indexOf("?") !== -1)
+        route_name = item.to.substring(0, item.to.indexOf("?"))
+      // console.log(item.to, this.$route.path)
+      if (route_name === this.$route.path) {
         this.switch_menu_open()
       }
+      this.$router.push(item.to)
     }
   }
 }
