@@ -9,7 +9,8 @@
             v-col.py-1(class="entry-meta" cols=12)
               p.subtitle-1.mb-1
                 ActorAvatar(:actor="creator" v-if="!actor_row")
-                v-icon.mr-1.pb-1(v-if="!show_entrytype_title" :color="template_color" x-small) mdi-checkbox-blank-circle
+                svg.mr-1(height=15 width=15 v-if="!show_entrytype_title")
+                  circle(cx=8 cy=8 r=6 :stroke="marker_border_color" :fill="template_color" stroke-width=2)
                 span(@click="goto(entry.uuid, 'view')"  :style="title_style")
                   span(@mouseover="title_mouseover" @mouseleave="title_mouseleave") {{full_title}}
                   span(v-if="is_draft" :style="{color:'cornflowerblue'}") &nbsp; [{{$t('comp.entrypreview.draft')}}]
@@ -59,8 +60,8 @@
 <script>
 
 import EntryNavMixin from "../EntryNavMixin";
-import {privacy_color, privacy_icon, review_color} from "~/lib/util"
-import {EDIT, ENTRY, REVIEW, VIEW} from "~/lib/consts"
+import {privacy_color, privacy_icon} from "~/lib/util"
+import {review_color, draft_color,EDIT, ENTRY, REQUIRES_REVIEW, REVIEW, VIEW} from "~/lib/consts"
 import MetaChips from "./MetaChips"
 import Taglist from "../global/Taglist"
 import {create_entry, full_title} from "~/lib/entry"
@@ -79,9 +80,6 @@ import ActorAvatar from "~/components/actor/ActorAvatar"
 /**
  * ISSUE is not working atm, to responsive
  */
-
-const DRAFT_COLOR = "cornflowerblue"
-const REVIEW_COLOR = "orange"
 
 
 export default {
@@ -132,10 +130,18 @@ export default {
   computed: {
     border_style() {
       if (this.is_draft) {
-        return {"border": `solid 1px ${DRAFT_COLOR} !important`}
+        return {"border": `solid 1px ${draft_color} !important`}
       } else if (this.is_requires_review) {
-        return {"border": `solid 1px ${REVIEW_COLOR} !important`}
+        return {"border": `solid 1px ${review_color} !important`}
       }
+    },
+    marker_border_color() {
+      if(this.is_draft)
+        return draft_color
+      else if(this.is_requires_review)
+        return review_color
+      else
+        return ""
     },
     title_style() {
       return {
@@ -144,9 +150,9 @@ export default {
     },
     divider_style() {
       if (this.is_draft) {
-        return {"border-color": DRAFT_COLOR}
+        return {"border-color": draft_color}
       } else if (this.is_requires_review) {
-        return {"border-color": REVIEW_COLOR}
+        return {"border-color": review_color}
       }
     },
     show_view() {

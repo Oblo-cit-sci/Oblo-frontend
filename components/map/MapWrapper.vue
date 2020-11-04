@@ -30,7 +30,7 @@
 
 import Mapbox from 'mapbox-gl-vue'
 import MapIncludeMixin from "~/components/map/MapIncludeMixin"
-import {MENU_MODE_DOMAIN, VIEW} from "~/lib/consts"
+import {review_color, draft_color, cluster_color, VIEW} from "~/lib/consts"
 import {mapGetters} from "vuex"
 import DomainMapMixin from "~/components/map/DomainMapMixin"
 import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
@@ -42,7 +42,6 @@ import {create_cluster_select_search_config} from "~/lib/codes"
 import FilterMixin from "~/components/FilterMixin"
 import EntryFetchMixin from "~/components/entry/EntryFetchMixin"
 import MapEntriesMixin from "~/components/map/MapEntriesMixin"
-import {review_color} from "~/lib/util"
 import CreateEntryButton from "~/components/CreateEntryButton";
 import ResponsivenessMixin from "~/components/ResponsivenessMixin";
 
@@ -246,10 +245,10 @@ export default {
           "match",
           ["get", "status"],
           "draft",
-          "#0000FF",
+          draft_color,
           "requires_review",
-          review_color(),
-          "#f6ff7a"
+          review_color,
+          cluster_color
         ],
         "circle-stroke-width": [
           "case",
