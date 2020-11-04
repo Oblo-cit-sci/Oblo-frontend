@@ -30,7 +30,7 @@
     <!-- Email and Password edit -->
     div(v-if="edit_mode")
       h3 {{$t('page.profile.h_email_password')}}
-      v-btn(color="info" v-if="!password_edit" @click="security_dialog_open=true") {{$t('page.profile.bt_change_email_pwd')}}
+      v-btn(color="info" @click="security_dialog_open=true") {{$t('page.profile.bt_change_email_pwd')}}
       Dialog(:dialog_open.sync="security_dialog_open" persistent)
         div
           EditContextTitle(v-if="!email_edit && !password_edit" :edit.sync="security_dialog_open" :label="$t('page.profile.h_email_password')" back_icon="mdi-close")
@@ -96,7 +96,7 @@ import Aspect from "../components/Aspect";
 import {EDIT, NO_DOMAIN, USER, VIEW} from "~/lib/consts";
 
 import {mapGetters} from "vuex"
-import {extract_unpacked_values} from "~/lib/aspect";
+import {extract_unpacked_values, set_value_and_error} from "~/lib/aspect";
 import PersistentStorageMixin from "../components/util/PersistentStorageMixin";
 
 import LoadFileButton from "../components/util/LoadFileButton";
@@ -143,13 +143,11 @@ export default {
         this.asp_actor_description(),
         // this.asp_email()
       ],
-
       email_aspects: {
-        email: this.asp_email(),
+        email: this.asp_email([v => v !== this.user_data.email || this.$t("asp.email.new")]),
         password: this.asp_password()
       },
       email_update_loading: false,
-
       password_aspects: {
         actual_password: this.asp_password("actual_password", "current"),
         password: new_pwd,
@@ -198,7 +196,12 @@ export default {
         aspect.value = user_data[aspect.name]
       }
 
-      this.email_aspects.email.value = this.user_data.email
+      // this.email_aspects.email.value = this.user_data.email
+      set_value_and_error(this.email_aspects.email, this.user_data.email, true)
+      set_value_and_error(this.email_aspects.password, "", true)
+      for (let a of Object.values(this.password_aspects)) {
+        set_value_and_error(a, "")
+      }
 
       const no_domain_data = this.$_.get(user_data.config_share, "domain.no_domain")
       if (no_domain_data) {
@@ -255,6 +258,7 @@ export default {
         this.$store.commit("user/set_user_data", user_data)
         this.persist_user_data()
         this.email_aspects.password.value = ""
+        this.email_aspects.password.error = true
       }, err => {
         this.err_error_snackbar(err)
       }).finally(() => {
@@ -266,6 +270,9 @@ export default {
       this.$api.actor.change_password(new_password).then(({data}) => {
         this.password_edit = false;
         this.ok_snackbar(this.$t("page.profile.msgs.password_changed"))
+        for (let a of Object.values(this.password_aspects)) {
+          set_value_and_error(a, "")
+        }
       }).catch((err) => {
         this.err_error_snackbar(err)
       })
@@ -348,7 +355,14 @@ export default {
       return this.$_.some(this.profile_aspects, (a) => a.hasOwnProperty("error") && a.error)
     }
   },
-  watch: {}
+  watch: {
+    security_dialog_open(open) {
+      if (!open) {
+        this.email_edit = false
+        this.password_edit = false
+      }
+    }
+  }
 }
 </script>
 

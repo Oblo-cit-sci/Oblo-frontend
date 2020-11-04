@@ -86,7 +86,7 @@ export default {
         value: ""
       }
     },
-    asp_email() {
+    asp_email(extra_rules = []) {
       return {
         type: "str",
         name: "email",
@@ -95,9 +95,9 @@ export default {
           max: 40,
           unpacked: true,
           extra: {
-            rules: [
+            rules: this.$_.concat([
               v => /.+@.+\..+/.test(v) || this.$t("asp.email.rule")
-            ]
+            ], extra_rules)
           }
         },
         error: false,

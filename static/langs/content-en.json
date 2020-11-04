@@ -168,7 +168,8 @@
     },
     "email": {
       "label": "Email",
-      "rule": "Email not valid"
+      "rule": "Email not valid",
+      "new": "Email did not change"
     },
     "public_name": {
       "label": "Public name",
