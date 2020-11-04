@@ -19,15 +19,15 @@
           color="success"
           @click="accept"
           :disabled="disable_submit"
-          :loading="sending") accept
+          :loading="sending") {{$t('comp.entry_actions.review.accept')}}
         v-btn(
           v-if="is_review_mode"
           color="warning"
           @click="reject"
           :disabled="disable_reject"
-          :loading="sending") reject
+          :loading="sending") {{$t('comp.entry_actions.review.reject')}}
       // v-if="private_local" todo for now, download for everyone
-      v-btn(v-if="can_download" @click="download") download
+      v-btn(v-if="can_download" @click="download") {{$t('comp.entry_actions.download')}}
         v-icon.ml-2 mdi-download
 </template>
 

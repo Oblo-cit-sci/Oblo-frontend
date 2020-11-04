@@ -4,7 +4,7 @@
   v-card.mx-auto.custom-card(v-else outlined :style="border_style")
     v-container.pt-0.pb-0
       v-row
-        v-col.main_col(cols="9" v-bind:class="[show_image ? 'col-md-8' : 'col-md-12']")
+        v-col.main_col.px-2(v-bind:class="[show_image ? 'cols-md-8' : 'cols-12']")
           v-row
             v-col.py-1(class="entry-meta" cols=12)
               p.subtitle-1.mb-1
@@ -23,7 +23,8 @@
             v-col.py-0.pl-0
               ActorChip(:actor="creator")
           v-row.pl-3(v-if="show_tags")
-            Taglist(:tags="tags" :slide="true" summarize)
+            v-col.px-0.py-1(cols=12)
+              Taglist(:tags="tags" :slide="true" summarize)
           v-row.pl-3(v-if="show_info")
             v-list-item(v-if="outdated")
               v-list-item-icon

@@ -387,7 +387,12 @@
           "confirm_text": "delete"
         }
       },
-      "delete_entry": "Entry deleted"
+      "delete_entry": "Entry deleted",
+      "download": "Download JSON",
+      "review": {
+        "accept": "accept",
+        "reject": "reject"
+      }
     }
   },
   "lang": {
