@@ -7,6 +7,8 @@
       .buttongroup.shift_anim(:style="button_group_shift")
         v-btn(v-if="show_layer_menu_button" dark color="green" fab @click="open_layer_dialog")
           v-icon mdi-layers-outline
+        v-sheet.ml-3(color="grey")
+          span.pl-1 {{act_zoom}}
       .central_button(v-if="show_center_create_button")
         v-container.shift_anim(:style="center_button_shift")
           CreateEntryButton(:domain_data="domain_data" @create_entry="$emit('create_entry', $event)")
@@ -93,6 +95,7 @@ export default {
       },
       act_cluster: null,
       act_cluster_expansion_zoom: null,
+      act_zoom: null,
       last_zoom: null,
       map_hidden: false, // todo maybe just a computed
       initialized: false,
@@ -337,12 +340,15 @@ export default {
           // console.log(cluster)
           const cluster = e.features[0]
 
-          this.map.getSource(MAIN_SOURCE_LAYER).getClusterExpansionZoom(cluster.id, (err, zoom) => {
-            this.map.easeTo({
-              center: cluster.geometry.coordinates,
-              zoom: Math.min(zoom, 10)
-            })
-          })
+          this.map_goto_location(cluster.geometry)
+          // this is used for real clusters, which expand, cuz the locations are not "exactly the same"
+
+          // this.map.getSource(MAIN_SOURCE_LAYER).getClusterExpansionZoom(cluster.id, (err, zoom) => {
+          //   this.map.easeTo({
+          //     center: cluster.geometry.coordinates,
+          //     zoom: Math.min(zoom, 10)
+          //   })
+          // })
 
           // todo, maybe there is a easier way to get the common_place_name
           const source = this.map.getSource(MAIN_SOURCE_LAYER)
@@ -449,11 +455,11 @@ export default {
         this.map.addSource(MAIN_SOURCE_LAYER, {
           type: "geojson",
           data: filtered_entries,
-          cluster: false,
+          cluster: true,
           tolerance: 0,
           // generateId: true, // this fucks up selection state of features, since the ids change or something...
-          clusterMaxZoom: 14,
-          clusterRadius: 25,
+          clusterMaxZoom: 22,
+          clusterRadius: 0.1,
           generateId: true
         })
       } else {
@@ -597,7 +603,7 @@ export default {
       this.aspectdialog_data.dialog_open = true
     },
     render(map) {
-      // console.log(map.getZoom())
+      this.act_zoom = map.getZoom()
       if (this.set_dl)
         download(map)
       if (this.entries_loaded && map.getLayer(cluster_layer_name)) {

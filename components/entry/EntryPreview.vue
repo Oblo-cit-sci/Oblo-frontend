@@ -77,10 +77,6 @@ import EntryActionsMixin from "~/components/entry/EntryActionsMixin"
 import EntryTags from "~/components/entry/EntryTags"
 import ActorAvatar from "~/components/actor/ActorAvatar"
 
-/**
- * ISSUE is not working atm, to responsive
- */
-
 
 export default {
   name: "EntryPreview",
