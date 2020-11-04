@@ -244,6 +244,7 @@
       "login": "@.capitalize:w.login",
       "logout": "Logout",
       "register": "@.capitalize:w.register",
+      "users": "Users",
       "admin": "Admin",
       "about": "About",
       "tests": "Test"

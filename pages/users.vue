@@ -1,21 +1,18 @@
 <template lang="pug">
   div
     CompleteActorIndex
-
 </template>
 
 <script>
-import ActorList from "~/components/actor/ActorList"
-import CompleteActorIndex from "~/components/actor/CompleteActorIndex";
+import CompleteActorIndex from "~/components/actor/CompleteActorIndex"
 
 export default {
-  name: "admin",
+  name: "users",
   mixins: [],
   components: {CompleteActorIndex},
   props: {},
   data() {
-    return {
-    }
+    return {}
   },
   computed: {},
   methods: {}

@@ -459,7 +459,7 @@ export default {
           tolerance: 0,
           // generateId: true, // this fucks up selection state of features, since the ids change or something...
           clusterMaxZoom: 22,
-          clusterRadius: 0.1,
+          clusterRadius: 0.5,
           generateId: true
         })
       } else {

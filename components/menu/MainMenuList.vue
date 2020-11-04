@@ -80,17 +80,15 @@ export default {
       this.$store.commit("menu/open", false)
     },
     select(item) {
-      console.log("select", item)
+      // console.log("select", item)
       if (item.action) {
         action(item.action)
       }
       // doesnt apply for "home" for fixed_domain since that has a query param
-
       let route_name = item.to
-
       if (item.to.indexOf("?") !== -1)
         route_name = item.to.substring(0, item.to.indexOf("?"))
-      console.log(item.to, route_name, this.$route.path)
+      // console.log(item.to, route_name, this.$route.path)
       if (route_name === this.$route.path) {
         this.switch_menu_open()
       }
