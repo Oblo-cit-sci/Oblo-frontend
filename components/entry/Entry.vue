@@ -143,20 +143,34 @@ export default {
         const roles = this.$_.cloneDeep(this.entry.actors)
         const creator = roles.find(ea => ea.role === CREATOR)
         if (creator.actor.registered_name !== this.username) {
-          const {public_name, registered_name} = this.$store.getters["user"]
-          const orig_user = creator.actor.public_name
-          creator.actor = {public_name, registered_name}
-          this.$store.commit("entries/_set_entry_value", {
-            aspect_loc: [[EDIT, this.uuid], ["meta", "actors"]],
-            value: roles
+          // ${creator.actor.public_name}
+          this.$bus.$emit("dialog-open", {
+            data: {
+              cancel_text: this.$t("comp.entry.creator_switch_dialog.cancel_text"),
+              title: this.$t("comp.entry.creator_switch_dialog.title"),
+              text: this.$t("comp.entry.creator_switch_dialog.text",
+                {original: creator.actor.public_name, user: this.user.public_name})
+            },
+            cancel_method: () => {
+              this.$router.back()
+            },
+            confirm_method: () => {
+              const {public_name, registered_name} = this.user
+              const orig_user = creator.actor.public_name
+              creator.actor = {public_name, registered_name}
+              this.$store.commit("entries/_set_entry_value", {
+                aspect_loc: [[EDIT, this.uuid], ["meta", "actors"]],
+                value: roles
+              })
+            }
           })
-          this.ok_snackbar(`Creator changed to ${creator.actor.public_name}`)
+          // this.ok_snackbar(`Creator changed to ${creator.actor.public_name}`)
         }
       }
     }
   },
   computed: {
-    ...mapGetters({logged_in: "user/logged_in"}),
+    ...mapGetters({logged_in: "user/logged_in", user: "user"}),
     aspect_loc() {
       if (this.is_editable_mode) {
         return [EDIT, this.uuid]

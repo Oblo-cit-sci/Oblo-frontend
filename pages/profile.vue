@@ -93,7 +93,7 @@
 
 
 import Aspect from "../components/Aspect";
-import {EDIT, NO_DOMAIN, USER, VIEW} from "~/lib/consts";
+import {EDIT, NO_DOMAIN,  VIEW} from "~/lib/consts";
 
 import {mapGetters} from "vuex"
 import {extract_unpacked_values, set_value_and_error} from "~/lib/aspect";

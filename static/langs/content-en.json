@@ -238,79 +238,15 @@
     }
   },
   "comp": {
-    "menu": {
-      "home": "Home",
-      "profile": "Profile",
-      "map": "Map",
-      "login": "@.capitalize:w.login",
-      "logout": "Logout",
-      "register": "@.capitalize:w.register",
-      "users": "Users",
-      "admin": "Admin",
-      "about": "About",
-      "tests": "Test"
+    "actor": {
+      "deactivated": "deactivated"
     },
-    "notification_banner": {
-      "complete_profile": "Complete your Profile",
-      "complete_domain_aspects": "Answer some {domain_name} related questions"
-    },
-    "multiselect_asp": {
-      "min_rule": "not enough items selected",
-      "max_rule": "too many items selected"
-    },
-    "image_asp": {
-      "no_images": "No images",
-      "cover_image": "cover image",
-      "not_found": "Image could not be loaded",
-      "not_found_draft": "Image has been removed"
-    },
-    "entry_validation": {
-      "h1": "Validation",
-      "has_missing": "Missing or incomplete aspects:",
-      "has_missing_t": "Incomplete entries cannot be submitted. Please, add the missing information or save your entry as a draft.",
-      "ok": "All values in this entry are ok.",
-      "msgs": {
-        "missing": "{aspect_label} missing",
-        "list_not_enough": "{aspect_label} requires more {item_name}",
-        "composite_incomplete": "  is not complete: missing components: {invalid_components_msgs}",
-        "listitem_incomplete": "{aspect_label} has at least one incomplete item: {invalid_item_msgs}"
-      }
-    },
-    "entry_action_buttons": {
-      "btn_save": {
-        "save": "@:w.save",
-        "save_n_back": "@:w.save and back",
-        "save_draft": "save draft"
-      },
-      "not_logged_in": {
-        "title": "You are not logged in",
-        "text": "You can submit observations but they need to be reviewed before they get published. In addition to that their privacy is automatically set to public and their license is set to (CC0) - No Rights reserved/public domain. ",
-        "cc_ref_text": "Read more about CC0."
-      }
+    "actor_index": {
+      "search": "Search a user",
+      "no_user_found": "No user found"
     },
     "create_entry_button": {
       "create_text": "Create entry"
-    },
-    "location_asp": {
-      "descr": "Search for a place or click on the map to set the location",
-      "no_loc": "No location",
-      "public_loc": {
-        "base": "Public location",
-        "options": {
-          "rnd": "The exact location is not visible, but a randomly moved location (max.50km) (yellow marker).",
-          "exact": "The exact location will be visible.",
-          "region": "The location's administrative unit (region) will be visible (yellow marker)."
-        }
-      },
-      "show entries": "Show my entries"
-    },
-    "previewlist": {
-      "num_entries": "@:w.n_entries"
-    },
-    "privacy_notification": {
-      "h": "Your Privacy",
-      "p": "We do not use cookies nor do we include any 3rd party cookies. We only store the data that you directly provide in your user profile or in the entries you create or contribute to. <a href=\"/about#privacy\">Read our privacy policy for more information.</a>",
-      "btn": "Thank you"
     },
     "entrypreview": {
       "draft": "Draft",
@@ -321,58 +257,15 @@
       "update": "update",
       "review": "review"
     },
-    "menucontainer": {
-      "tab_main": "Main",
-      "tab_domain": "Entries"
-    },
-    "legend": {
-      "legend": "Legend"
-    },
-    "select_asp": {
-      "descr": "@.capitalize:w.description"
-    },
-    "treeselect_asp": {
-      "click_to_select": "Click to select"
-    },
     "domain_menu": {
       "fix_label": "Stay within {domain_title}"
     },
-    "search": {
-      "txt_field_label": "@.capitalize:w.search",
-      "min_chars_rule": "type 4 characters to trigger search",
-      "search_filter": "Search & Filter"
-    },
-    "actor_index": {
-      "search": "Search a user",
-      "no_user_found": "No user found"
-    },
-    "filterlist": {
-      "appliead_filters": "Applied filters",
-      "btn_add_filter": "add filter"
-    },
-    "actor": {
-      "deactivated": "deactivated"
-    },
-    "global_role": {
-      "admin": "Admin",
-      "editor": "Editor",
-      "user": "User",
-      "visitor": "Visitor"
-    },
-    "snackbar": {
-      "something_went_wrong": "Something went wrong"
-    },
-    "simple_paginate": {
-      "page": "page",
-      "prev": "previous",
-      "next": "next"
-    },
-    "language_select": {
-      "label": "Language"
-    },
-    "map_wrapper": {
-      "locations": "@:w.n_locations",
-      "several_countries": "Several countries"
+    "entry": {
+      "creator_switch_dialog": {
+        "cancel_text": "Back",
+        "title": "Creator changed",
+        "text": "This draft was created by {original}. Do you want to change the creator to {user}?"
+      }
     },
     "entry_actions": {
       "cancel_draft": "Creation canceled",
@@ -395,6 +288,120 @@
         "accept": "accept",
         "reject": "reject"
       }
+    },
+    "entry_action_buttons": {
+      "btn_save": {
+        "save": "@:w.save",
+        "save_n_back": "@:w.save and back",
+        "save_draft": "save draft"
+      },
+      "not_logged_in": {
+        "title": "You are not logged in",
+        "text": "You can submit observations but they need to be reviewed before they get published. In addition to that their privacy is automatically set to public and their license is set to (CC0) - No Rights reserved/public domain. ",
+        "cc_ref_text": "Read more about CC0."
+      }
+    },
+    "entry_validation": {
+      "h1": "Validation",
+      "has_missing": "Missing or incomplete aspects:",
+      "has_missing_t": "Incomplete entries cannot be submitted. Please, add the missing information or save your entry as a draft.",
+      "ok": "All values in this entry are ok.",
+      "msgs": {
+        "missing": "{aspect_label} missing",
+        "list_not_enough": "{aspect_label} requires more {item_name}",
+        "composite_incomplete": "  is not complete: missing components: {invalid_components_msgs}",
+        "listitem_incomplete": "{aspect_label} has at least one incomplete item: {invalid_item_msgs}"
+      }
+    },
+    "filterlist": {
+      "appliead_filters": "Applied filters",
+      "btn_add_filter": "add filter"
+    },
+    "global_role": {
+      "admin": "Admin",
+      "editor": "Editor",
+      "user": "User",
+      "visitor": "Visitor"
+    },
+    "image_asp": {
+      "no_images": "No images",
+      "cover_image": "cover image",
+      "not_found": "Image could not be loaded",
+      "not_found_draft": "Image has been removed"
+    },
+    "language_select": {
+      "label": "Language"
+    },
+    "legend": {
+      "legend": "Legend"
+    },
+    "location_asp": {
+      "descr": "Search for a place or click on the map to set the location",
+      "no_loc": "No location",
+      "public_loc": {
+        "base": "Public location",
+        "options": {
+          "rnd": "The exact location is not visible, but a randomly moved location (max.50km) (yellow marker).",
+          "exact": "The exact location will be visible.",
+          "region": "The location's administrative unit (region) will be visible (yellow marker)."
+        }
+      },
+      "show entries": "Show my entries"
+    },
+    "map_wrapper": {
+      "locations": "@:w.n_locations",
+      "several_countries": "Several countries"
+    },
+    "menu": {
+      "home": "Home",
+      "profile": "Profile",
+      "map": "Map",
+      "login": "@.capitalize:w.login",
+      "logout": "Logout",
+      "register": "@.capitalize:w.register",
+      "users": "Users",
+      "admin": "Admin",
+      "about": "About",
+      "tests": "Test"
+    },
+    "menucontainer": {
+      "tab_main": "Main",
+      "tab_domain": "Entries"
+    },
+    "multiselect_asp": {
+      "min_rule": "not enough items selected",
+      "max_rule": "too many items selected"
+    },
+    "notification_banner": {
+      "complete_profile": "Complete your Profile",
+      "complete_domain_aspects": "Answer some {domain_name} related questions"
+    },
+    "previewlist": {
+      "num_entries": "@:w.n_entries"
+    },
+    "privacy_notification": {
+      "h": "Your Privacy",
+      "p": "We do not use cookies nor do we include any 3rd party cookies. We only store the data that you directly provide in your user profile or in the entries you create or contribute to. <a href=\"/about#privacy\">Read our privacy policy for more information.</a>",
+      "btn": "Thank you"
+    },
+    "search": {
+      "txt_field_label": "@.capitalize:w.search",
+      "min_chars_rule": "type 4 characters to trigger search",
+      "search_filter": "Search & Filter"
+    },
+    "select_asp": {
+      "descr": "@.capitalize:w.description"
+    },
+    "simple_paginate": {
+      "page": "page",
+      "prev": "previous",
+      "next": "next"
+    },
+    "snackbar": {
+      "something_went_wrong": "Something went wrong"
+    },
+    "treeselect_asp": {
+      "click_to_select": "Click to select"
     }
   },
   "lang": {
