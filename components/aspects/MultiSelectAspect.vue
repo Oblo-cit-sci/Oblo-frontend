@@ -1,7 +1,8 @@
 <template lang="pug">
   div(v-if="!is_view_mode")
     v-list(v-if="list_view")
-      v-list-item-group(v-model="selection_index" multiple active-class="in_selection")
+      <!-- mandatory does only check if min > 1 -->
+      v-list-item-group(v-model="selection_index" multiple active-class="in_selection" :mandatory="mandatory" :max="max_vals")
         v-list-item(v-for="option in options" :key="option.value" :disabled="option_disabled(option)")
           template(v-slot:default="{ active, toggle }")
             v-list-item-content {{option.text}}
@@ -28,117 +29,123 @@
 </template>
 
 <script>
-  import SelectMixin from "./SelectMixin";
-  import AspectComponentMixin from "./AspectComponentMixin";
+import SelectMixin from "./SelectMixin";
+import AspectComponentMixin from "./AspectComponentMixin";
 
-  // maybe also for v-select:
-  // :prepend-inner-icon="!menu_open ? 'mdi-check' : ''"
-  export default {
-    name: "MultiSelectAspect",
-    mixins: [AspectComponentMixin, SelectMixin],
-    data() {
-      return {
-        init: true,
-        menu_open: false,
+// maybe also for v-select:
+// :prepend-inner-icon="!menu_open ? 'mdi-check' : ''"
+export default {
+  name: "MultiSelectAspect",
+  mixins: [AspectComponentMixin, SelectMixin],
+  data() {
+    return {
+      init: true,
+      menu_open: false,
+    }
+  },
+  created() {
+    this.set_selection()
+  },
+  computed: {
+    edit_view() {
+      if (this.aspect.attr.force_view) {
+        const view = this.aspect.attr.force_view
+        if (["list", "select"].includes(view)) {
+          return view
+        }
+      }
+      const list_thresh = this.aspect.attr.list_tresh || 5
+      if (this.options.length <= list_thresh) {
+        return "list"
+      } else {
+        return "select"
       }
     },
-    created() {
-      this.set_selection()
+    list_view() {
+      return this.edit_view === "list"
     },
-    computed: {
-      edit_view() {
-        if (this.aspect.attr.force_view) {
-          const view = this.aspect.attr.force_view
-          if (["list", "select"].includes(view)) {
-            return view
-          }
-        }
-        const list_thresh = this.aspect.attr.list_tresh || 5
-        if (this.options.length <= list_thresh) {
-          return "list"
-        } else {
-          return "select"
-        }
-      },
-      list_view() {
-        return this.edit_view === "list"
-      },
-      select_view() {
-        return this.edit_view === "select"
-      },
-      selection_index: {
-        get() {
-          if (this.value) {
-            return this.value.map(v => this.options.findIndex(o => o.value === v))
-          }
-        },
-        set(val) {
-          this.update_value(this.$_.filter(this.options, (o, i) => val.includes(i)).map(v => v.value))
-        }
-      },
-      count_rules() {
-        const rules = []
-        if (this.aspect.attr.min) {
-          const rule = (v) => v && v.length >= this.aspect.attr.min || this.$t("comp.multiselect_asp.min_rule")
-          rules.push(rule)
-        }
-        if (this.aspect.attr.max) {
-          const rule = (v) => v && v.length <= this.aspect.attr.max || this.$t("comp.multiselect_asp.max_rule")
-          rules.push(rule)
-        }
-        return rules
-      }
+    select_view() {
+      return this.edit_view === "select"
     },
-    methods: {
-      set_selection() {
-        // console.log("this.value", this.value)
+    selection_index: {
+      get() {
         if (this.value) {
-          this.selection = this.$_.filter(this.options, (o) => {
-            return this.value.indexOf(o.value) > -1
-          })
-        } else {
-          this.init = false
+          return this.value.map(v => this.options.findIndex(o => o.value === v))
         }
       },
-      toString(value) {
-        return value.join(", ") || ""
-      },
-      option_disabled(option) {
-        if(option.condition) {
-          if(option.condition.exclude) {
-            const cond_failed = this.$_.some(this.value, v => option.condition.exclude.includes(v))
-            if(cond_failed) {
-              if(this.value.includes(option.value)) {
-                this.update_value(this.$_.filter(this.value, v => v !== option.value))
-              }
-            }
-            return cond_failed
-          }
-        }
-        return false
+      set(val) {
+        this.update_value(this.$_.filter(this.options, (o, i) => val.includes(i)).map(v => v.value))
       }
-      // item_style(option) {
-      //   console.log(option.value, this.option_disabled(option))
-      //   	return {
-      //   	  "background": this.option_disabled(option) ? "#C0C0C0" : ""
-      //     }
-      // }
     },
-    watch: {
-      selection() {
-        //console.log("multi-select", this.selection, this.init)
-        if (this.init) {
-          this.init = false
-          return
+    mandatory() {
+      return this.$_.get(this.aspect, "attr.min",0) > 0
+    },
+    max_vals() {
+      return this.$_.get(this.aspect, "attr.max")
+    },
+    count_rules() {
+      const rules = []
+      if (this.aspect.attr.min) {
+        const rule = (v) => v && v.length >= this.aspect.attr.min || this.$t("comp.multiselect_asp.min_rule")
+        rules.push(rule)
+      }
+      if (this.aspect.attr.max) {
+        const rule = (v) => v && v.length <= this.aspect.attr.max || this.$t("comp.multiselect_asp.max_rule")
+        rules.push(rule)
+      }
+      return rules
+    }
+  },
+  methods: {
+    set_selection() {
+      // console.log("this.value", this.value)
+      if (this.value) {
+        this.selection = this.$_.filter(this.options, (o) => {
+          return this.value.indexOf(o.value) > -1
+        })
+      } else {
+        this.init = false
+      }
+    },
+    toString(value) {
+      return value.join(", ") || ""
+    },
+    option_disabled(option) {
+      if (option.condition) {
+        if (option.condition.exclude) {
+          const cond_failed = this.$_.some(this.value, v => option.condition.exclude.includes(v))
+          if (cond_failed) {
+            if (this.value.includes(option.value)) {
+              this.update_value(this.$_.filter(this.value, v => v !== option.value))
+            }
+          }
+          return cond_failed
         }
-        if (this.selection === null)
-          this.update_value(null)
-        else {
-          this.update_value(this.selection)
-        }
+      }
+      return false
+    }
+    // item_style(option) {
+    //   console.log(option.value, this.option_disabled(option))
+    //   	return {
+    //   	  "background": this.option_disabled(option) ? "#C0C0C0" : ""
+    //     }
+    // }
+  },
+  watch: {
+    selection() {
+      //console.log("multi-select", this.selection, this.init)
+      if (this.init) {
+        this.init = false
+        return
+      }
+      if (this.selection === null)
+        this.update_value(null)
+      else {
+        this.update_value(this.selection)
       }
     }
   }
+}
 </script>
 
 <style scoped>
