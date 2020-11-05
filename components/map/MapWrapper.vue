@@ -20,7 +20,7 @@
         v-if="!map_hidden"
         :style="map_height"
         :access-token="access_token"
-        :map-options="map_options"
+        :map-options="last_map_options"
         @click="click"
         @render="render"
         @map-load="onMapLoaded")
@@ -100,7 +100,8 @@ export default {
       map_hidden: false, // todo maybe just a computed
       initialized: false,
       layers_created: false,
-      actual_markers: []
+      actual_markers: [],
+      last_map_options: {} // this is for small screen, which dont seem to recall a computed prop when showing the map again
     }
   },
   computed: {
@@ -156,18 +157,6 @@ export default {
         height: (this.height ? this.height : window.innerHeight) + (typeof (this.height) === "number" ? "px" : "")
       }
     },
-    map_options() {
-      const default_camera = this.$_.get(this.$store.getters["domain/domain_by_name"](this.domain_name), "map.default_camera")
-      let options = this.$_.cloneDeep(this.default_map_options)
-      if (default_camera) {
-        Object.assign(options, default_camera)
-      }
-      const cached_options = this.$store.getters["map/cached_camera_options"](this.domain_name)
-      if (cached_options) {
-        Object.assign(options, cached_options)
-      }
-      return options
-    },
     show_layer_menu_button() {
       return this.map_loaded
     },
@@ -184,10 +173,10 @@ export default {
     }
   },
   created() {
-    // console.log("wrapper created")
     if (this.domain_name) {
       this.load_map_entries(this.domain_name)
     }
+    this.last_map_options = this.map_options()
 
     this.$bus.$on("map-marker-show", ({uuid}) => {
       // console.log("bus-show")
@@ -206,6 +195,18 @@ export default {
     })
   },
   methods: {
+    map_options() {
+      const default_camera = this.$_.get(this.$store.getters["domain/domain_by_name"](this.domain_name), "map.default_camera")
+      let options = this.$_.cloneDeep(this.default_map_options)
+      if (default_camera) {
+        Object.assign(options, default_camera)
+      }
+      const cached_options = this.$store.getters["map/cached_camera_options"](this.domain_name)
+      if (cached_options) {
+        Object.assign(options, cached_options)
+      }
+      return options
+    },
     check_entries_map_done() {
       if (this.entries_loaded && this.entries.features && this.map_loaded && this.get_all_uuids) {
         // console.log("all good")
@@ -602,6 +603,14 @@ export default {
       }
       this.aspectdialog_data.dialog_open = true
     },
+    store_cam_options() {
+      this.$store.commit("map/set_camera_options_cache", {
+        domain: this.domain_name, options: {
+          zoom: this.map.getZoom(),
+          center: this.map.getCenter()
+        }
+      })
+    },
     render(map) {
       this.act_zoom = map.getZoom()
       if (this.set_dl)
@@ -654,14 +663,9 @@ export default {
       // } catch (e) {
       //   console.log(e)
       // }
-
-      this.$store.commit("map/set_camera_options_cache", {
-        domain: this.domain_name, options: {
-          zoom: this.map.getZoom(),
-          center: this.map.getCenter()
-        }
-      })
     }
+
+    this.store_cam_options()
     this.$bus.$off("map-marker-show")
     this.$bus.$off("map-marker-hide")
     this.$bus.$off("trigger_search")
@@ -671,6 +675,9 @@ export default {
       if (hidden) {
         this.map_loaded = false
         this.layers_created = false
+        this.store_cam_options()
+      } else {
+        this.last_map_options = this.map_options()
       }
     },
     entries_loaded(loaded) {

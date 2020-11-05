@@ -466,7 +466,7 @@ export default {
           if (place.length > 0) {
             value.place[place_type] = {
               name: place[0].text,
-              coordinates: array2coords(place[0].geometry.coordinates)
+              //coordinates: array2coords(place[0].geometry.coordinates)
             }
           }
         }

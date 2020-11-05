@@ -6,9 +6,7 @@
           template(v-slot:default="{ active, toggle }")
             v-list-item-content {{option.text}}
             v-list-item-action
-              v-checkbox(:input-value="active"
-                color="khaki"
-                @click="toggle")
+              v-checkbox(:input-value="active" color="khaki")
     v-select(v-else
     :items="options"
       v-model="selection"
