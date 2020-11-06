@@ -25,7 +25,9 @@ export const mutations = {
     }
   },
   clear(state) {
-    state.entries.clear()
+    state.entries_loaded = false // probably not required
+    state.entries = {}
+    state.search_time = null
   },
   goto_location(state, location) {
     state.goto_location = location
@@ -65,9 +67,6 @@ export const mutations = {
       state.entries[domain].features = ld.concat(existing,  entry_features)
       console.log(ld.concat(existing,  entry_features).length)
     }
-  },
-  clear_searchtime(state) {
-    state.search_time =null
   }
 }
 
