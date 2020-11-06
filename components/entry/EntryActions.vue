@@ -18,12 +18,12 @@
           a(href="https://creativecommons.org/share-your-work/public-domain/cc0/" target="_blank" style="color:white")  {{$t("comp.entry_action_buttons.not_logged_in.cc_ref_text")}}
     EntryActionButtons(
       v-bind="entry_action_buttons_props"
-      @entry-action="$emit('entry-action', $event)"
+      @entry-action="entryAction($event)"
       @mode="$emit('mode', $event)")
 </template>
 
 <script>
-import {EDIT, REVIEW, VIEW} from "~/lib/consts";
+import {EDIT, PUBLISHED, REVIEW, VIEW} from "~/lib/consts";
 import Paginate from "../global/Paginate";
 
 import EntryNavMixin from "../EntryNavMixin";
@@ -34,6 +34,8 @@ import EntryMixin from "./EntryMixin";
 
 import {mapGetters} from "vuex"
 import EntryActionButtons from "~/components/entry/EntryActionButtons"
+import {prepare_for_submission} from "~/lib/entry"
+import {base64file_to_blob} from "~/lib/util"
 
 export default {
   name: "EntryActions",
@@ -55,10 +57,111 @@ export default {
   },
   data() {
     return {
-      upload_loading: false
+      sending: false
     }
   },
   methods: {
+    entryAction(action) {
+      if (action === "submit") {
+        this.submit()
+      } else if(action === "accept") {
+        this.review(true)
+      } else if(action === "reject") {
+        this.review(false)
+      }
+      this.$emit('entry-action', action)
+    },
+    async submit() {
+      // TODO not good. call update functions
+      // but important since edit is not synced
+      this.$store.commit("entries/save_entry", this.entry)
+      await this.$store.dispatch("entries/update_entry", this.uuid)
+      // todo just this.entry ???
+      const sending_entry = prepare_for_submission(this.$store.getters["entries/get_entry"](this.uuid))
+
+      // would be the same as checking is_published
+      let method = null
+      if (this.is_draft) {
+        method = "post_entry__$uuid"
+        const {data} = await this.$api.entry.exists(this.uuid)
+        if (data.data) {
+          method = "patch_entry__$uuid"
+        }
+      } else if (this.is_published) {
+        method = "patch_entry__$uuid"
+      }
+      if (method) {
+        try {
+          const res = await this.$api[method](sending_entry)
+          this.sending = false
+          const attachments_data = this.get_attachments_to_post(sending_entry)
+          // console.log(attachments_data)
+          for (let attachment_data of attachments_data) {
+            const file_uuid = attachment_data.file_uuid
+            const stored_file = this.$store.getters["files/get_file"](file_uuid)
+            if (stored_file) {
+              const blob = base64file_to_blob(stored_file.meta.type, stored_file.data)
+              const formData = new FormData()
+              formData.append("file", blob, stored_file.meta.name)
+              this.$api.post_entry__$uuid__attachment__$file_uuid(this.uuid, file_uuid, formData).then((res) => {
+                this.$store.commit("files/remove_file", file_uuid)
+              }).catch(err => {
+                this.error_snackbar("File could not be uploaded", stored_file.meta.name)
+              })
+            }
+          }
+          if (this.is_published) {
+            this.ok_snackbar(this.$t('comp.entry_actions.updated'))
+          } else {
+            this.ok_snackbar(this.$t('comp.entry_actions.submitted'))
+          }
+          this.$store.commit("entries/save_entry", res.data.data.entry)
+          this.$store.commit("entries/set_edit", res.data.data.entry)
+          this.$store.commit("map/update_entry_features", {
+            domain: this.entry.domain,
+            entry_features: res.data.data.map_features
+          })
+          this.back(["search"])
+        } catch (err) {
+          console.log(err)
+          this.sending = false
+          // todo for entry exists already, there could be a change in the button label, but maybe the data of that entry should be fetched
+          this.err_error_snackbar(err)
+        }
+      }
+    },
+    async review(accept) {
+      this.sending = true
+      const method = accept ? "patch_entry__$uuid_accept" : "patch_entry__$uuid_reject"
+      this.$store.commit("entries/save_entry", this.entry)
+      await this.$store.dispatch("entries/update_entry", this.uuid)
+      // todo just this.entry ???
+      const sending_entry = prepare_for_submission(this.$store.getters["entries/get_entry"](this.uuid))
+      try {
+        const {data} = await this.$api[method](sending_entry)
+        this.sending = false
+        this.ok_snackbar("Entry reviewed")
+        if (accept) {
+          this.$store.commit("entries/save_entry", data.data.entry)
+          console.log(this.entry.status, sending_entry.status, data.data.entry.status)
+          this.$store.commit("map/update_entry_features", {
+            domain: this.entry.domain,
+            entry_features: data.data.map_features
+          })
+          // we need this, otherwise when coming back to the same entry right away, it will not change edit, and the status will be wrong
+          this.$store.commit("entries/set_edit",data.data.entry)
+        } else {
+          this.$store.commit("entries/delete_entry", this.uuid)
+          this.$store.commit("search/delete_entry", this.uuid)
+          this.$store.commit("map/delete_feature", {domain_name: this.entry.domain, uuid: this.uuid})
+        }
+        this.back(["search"])
+      } catch (err) {
+        console.log(err)
+        this.err_error_snackbar(err)
+        this.sending = false
+      }
+    },
     update_page(page) {
       this.page = page
       this.$emit('update:page', page)
@@ -72,6 +175,7 @@ export default {
     entry_action_buttons_props() {
       return {
         entry: this.entry,
+        sending: this.sending,
         in_entry: this.in_entry,
         mode: this.mode,
         entry_complete: this.entry_complete,

@@ -395,7 +395,8 @@ export default {
         } else {
           const bb = new mapboxgl.LngLatBounds(this.value.coordinates, this.value.public_loc.coordinates)
           this.map.fitBounds(bb, {
-            padding: 80
+            padding: 80,
+            maxZoom: 8
           })
         }
       }

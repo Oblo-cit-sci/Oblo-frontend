@@ -35,13 +35,12 @@
 
 import {mapGetters} from "vuex"
 
-import {DRAFT, EDIT, PUBLISHED, REQUIRES_REVIEW, REVIEW, VIEW} from "~/lib/consts"
+import {EDIT, REQUIRES_REVIEW, REVIEW, VIEW} from "~/lib/consts"
 import EntryMixin from "~/components/entry/EntryMixin"
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
 import EntryNavMixin from "~/components/EntryNavMixin"
 import {prepare_for_submission} from "~/lib/entry"
 
-import {base64file_to_blob} from "~/lib/util"
 import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
 import EntryActionsMixin from "~/components/entry/EntryActionsMixin"
 
@@ -60,12 +59,12 @@ export default {
     },
     in_entry: Boolean,
     entry_complete: Boolean,
+    sending: Boolean,
     is_dirty: Boolean,
     has_errors: Boolean
   },
   data() {
     return {
-      sending: false,
     }
   },
   computed: {
@@ -114,8 +113,6 @@ export default {
     },
     cancel() {
       if (this.is_draft) {
-        // this.$emit("entry-action", "cancel")
-        // console.log("cancel draft")
         const base_t_cancel_loc = "comp.entry_actions.dialogs.cancel"
         this.$bus.$emit("dialog-open", {
           data: {
@@ -168,65 +165,7 @@ export default {
       this.back()
     },
     async submit() {
-      this.sending = true
-      // TODO not good. call update functions
-      // but important since edit is not synced
-      this.$store.commit("entries/save_entry", this.entry)
-      await this.$store.dispatch("entries/update_entry", this.uuid)
-      // todo just this.entry ???
-      const sending_entry = prepare_for_submission(this.$store.getters["entries/get_entry"](this.uuid))
-
-      // would be the same as checking is_published
-      let method = null
-      if (this.is_draft) {
-        method = "post_entry__$uuid"
-        const {data} = await this.$api.entry.exists(this.uuid)
-        if (data.data) {
-          method = "patch_entry__$uuid"
-        }
-      } else if (this.entry.status === PUBLISHED) {
-        method = "patch_entry__$uuid"
-      }
-      if (method) {
-        try {
-          const res = await this.$api[method](sending_entry)
-          this.sending = false
-          const attachments_data = this.get_attachments_to_post(sending_entry)
-          // console.log(attachments_data)
-          for (let attachment_data of attachments_data) {
-            const file_uuid = attachment_data.file_uuid
-            const stored_file = this.$store.getters["files/get_file"](file_uuid)
-            if (stored_file) {
-              const blob = base64file_to_blob(stored_file.meta.type, stored_file.data)
-              const formData = new FormData()
-              formData.append("file", blob, stored_file.meta.name)
-              this.$api.post_entry__$uuid__attachment__$file_uuid(this.uuid, file_uuid, formData).then((res) => {
-                this.$store.commit("files/remove_file", file_uuid)
-              }).catch(err => {
-                this.error_snackbar("File could not be uploaded", stored_file.meta.name)
-              })
-            }
-          }
-
-          if (this.entry.status === PUBLISHED) {
-            this.ok_snackbar(this.$t('comp.entry_actions.updated'))
-          } else {
-            this.ok_snackbar(this.$t('comp.entry_actions.submitted'))
-          }
-          this.$store.commit("entries/save_entry", res.data.data.entry)
-          this.$store.commit("entries/set_edit", res.data.data.entry)
-          this.$store.commit("map/update_entry_features", {
-            domain: this.entry.domain,
-            entry_features: res.data.data.map_features
-          })
-          this.back(["search"])
-        } catch (err) {
-          console.log(err)
-          this.sending = false
-          // todo for entry exists already, there could be a change in the button label, but maybe the data of that entry should be fetched
-          this.err_error_snackbar(err)
-        }
-      }
+      this.$emit("entry-action", "submit")
     },
     async review(accept) {
       this.sending = true
@@ -261,45 +200,10 @@ export default {
       }
     },
     async accept() {
-      await this.review(true)
-      // this.sending = true
-      // try {
-      //   const sending_entry = prepare_for_submission(this.entry)
-      //   const res = await this.$api.patch_entry__$uuid_accept(sending_entry)
-      //   this.sending = false
-      //   this.ok_snackbar("Entry reviewed")
-      //   const entry = res.data.data
-      //   // entry_location2geojson_arr(entry)
-      //   this.$store.commit("entries/save_entry", entry)
-      //   await this.$store.dispatch("entries/update_entry", this.uuid)
-      //   // new status doesnt really matter but it shouldnt be "required_review" anymore
-      //   await this.$store.dispatch("map/set_entry_feature", {
-      //     uuid: entry.uuid,
-      //     property_name: "status",
-      //     value: "published"
-      //   })
-      //   this.back()
-      // } catch (err) {
-      //   this.err_error_snackbar(err)
-      //   // todo for entry exists already, there could be a change in the button label, but maybe the data of that entry should be fetched
-      // }
+      this.$emit("entry-action", "accept")
     },
     async reject() {
-      await this.review(false)
-      // this.sending = true
-      // try {
-      //   const sending_entry = prepare_for_submission(this.entry)
-      //   const res = await this.$api.patch_entry__$uuid_reject(sending_entry)
-      //   this.sending = false
-      //   this.ok_snackbar("Entry reviewed")
-      //   this.$store.commit("entries/delete_entry", this.uuid)
-      //   this.$store.commit("search/delete_entry", this.uuid)
-      //   this.$store.commit("map/delete_feature", {domain_name: this.entry.domain, uuid: this.uuid})
-      //   this.back()
-      // } catch (err) {
-      //   // todo for entry exists already, there could be a change in the button label, but maybe the data of that entry should be fetched
-      //   this.err_error_snackbar(err)
-      // }
+      this.$emit("entry-action", "reject")
     }
   }
 }

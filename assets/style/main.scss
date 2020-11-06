@@ -56,13 +56,11 @@ input {
   border-bottom: none !important;
 }
 
-.taglist .v-slide-group__prev {
-  min-width: 32px;
+.taglist .v-slide-group__prev,
+.taglist .v-slide-group__next {
+  min-width: 28px;
 }
 
-.taglist .v-slide-group__next {
-  min-width: 32px;
-}
 
 /* cyrillic-ext */
 @font-face {
