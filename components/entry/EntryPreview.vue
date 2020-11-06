@@ -8,7 +8,7 @@
           v-row
             v-col.py-1(class="entry-meta" cols=12)
               p.subtitle-1.mb-1
-                ActorAvatar(:actor="creator" v-if="!actor_row")
+                ActorAvatar(:actor="creator")
                 svg.mr-1(height=15 width=15 v-if="!show_entrytype_title")
                   circle(cx=8 cy=8 r=6 :stroke="marker_border_color" :fill="template_color" stroke-width=2)
                 span(@click="goto(entry.uuid, 'view')"  :style="title_style")
@@ -61,7 +61,7 @@
 
 import EntryNavMixin from "../EntryNavMixin";
 import {privacy_color, privacy_icon} from "~/lib/util"
-import {review_color, draft_color,EDIT, ENTRY, REQUIRES_REVIEW, REVIEW, VIEW} from "~/lib/consts"
+import {review_color, draft_color,EDIT, ENTRY, REVIEW, VIEW} from "~/lib/consts"
 import MetaChips from "./MetaChips"
 import Taglist from "../global/Taglist"
 import {create_entry, full_title} from "~/lib/entry"

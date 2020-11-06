@@ -66,7 +66,10 @@ export default {
     }
   },
   methods: {
-    ...mapMutations({"clear_search": "search/clear", "clear_entries": "entries/clear"}),
+    ...mapMutations({
+      "clear_search": "search/clear",
+      clear_entries: "entries/clear",
+      map_clear_searchtime: "map/clear_searchtime"}),
     aspect_action(event) {
       if (event === "enter_pressed" && !this.any_invalid) {
         this.login()
@@ -80,6 +83,7 @@ export default {
         // todo could just be index/clear_entries (change name) but needs await
         this.clear_search()
         this.clear_entries()
+        this.map_clear_searchtime()
         const settings = this.user_settings
         this.complete_language_domains(settings.fixed_domain, settings.ui_language).then(() => {
           if(this.go_home) {

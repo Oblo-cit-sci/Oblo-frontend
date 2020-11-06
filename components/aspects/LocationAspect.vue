@@ -60,7 +60,6 @@
 
 import Mapbox from 'mapbox-gl-vue'
 import {
-  array2coords,
   create_location_error,
   LOCATION_PRECISION_POINT,
   place2str,
@@ -68,11 +67,11 @@ import {
   PREC_OPTION_RANDOM,
   PREC_OPTION_REGION,
 } from "~/lib/location";
-import {default_place_type, DOMAIN, ENTRY, MENU_MODE_DOMAIN} from "~/lib/consts";
+import {default_place_type, ENTRY, MENU_MODE_DOMAIN} from "~/lib/consts";
 import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
 import AspectComponentMixin from "./AspectComponentMixin";
 import MapIncludeMixin from "~/components/map/MapIncludeMixin"
-import {arr2coords, context_get_place_type, convert_to_2d_arr, mapboxgl_lngLat2coords} from "~/lib/map_utils"
+import {arr2coords, context_get_place_type, convert_to_2d_arr} from "~/lib/map_utils"
 import GeocodingMixin from "~/components/map/GeocodingMixin"
 import {mapGetters} from "vuex"
 import {settings_loc_privacy_ask, settings_loc_privacy_exact, settings_loc_privacy_random} from "~/lib/settings"
@@ -285,9 +284,10 @@ export default {
         }]
       // for a draft, set the
       if (this.public_location_selector_on && this.has_public_loc) {
+        // debugger
         if (this.point_location_precision &&
           this.value.public_loc.location_precision === LOCATION_PRECISION_POINT &&
-          this.value.coordinates === this.value.public_loc.coordinates) {
+          this.$_.isEqual(this.value.coordinates, this.value.public_loc.coordinates)) {
           this.selected_prec_option = 0
         } else {
           if (this.value.public_loc.location_precision === LOCATION_PRECISION_POINT) {

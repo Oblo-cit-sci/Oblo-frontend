@@ -9,6 +9,7 @@ export default {
       entries_loaded: "map/entries_loaded",
       all_map_entries: "map/entries",
       all_uuids: "search/get_all_uuids",
+      get_search_time: "map/get_search_time"
     }),
     get_all_uuids() {
       return this.all_uuids()
@@ -22,7 +23,10 @@ export default {
         required: [this.get_domain_filter(domain_name)]
       }
       if (!this.$_.isEmpty(this.entries)) {
-        config.required.push({name: "before_ts", ts: this.$store.getters["map/get_searchtime"]})
+        const search_time = this.get_search_time
+        if(search_time) {
+          config.required.push({name: "before_ts", ts: search_time})
+        }
       }
       const {data} = await this.$api.entries_map_entries(config, true)
       await this.$store.dispatch("map/add_entries", {domain: domain_name, entries: data.data.entries, ts: data.data.ts})

@@ -282,6 +282,9 @@
           "confirm_text": "delete"
         }
       },
+      "saved": "Entry saved",
+      "submitted": "Entry submitted",
+      "updated": "Entry updated",
       "delete_entry": "Entry deleted",
       "download": "Download JSON",
       "review": {

@@ -10,6 +10,8 @@
     <!--      :globals="globals"-->
     <!--      :generated_data_template="generated_data_template"-->
     <!--      @cancel="cancel")-->
+    v-sheet.pa-1(rounded color="white" max-width=40 outlined)
+      div cool this is very nice but
 </template>
 
 <script>

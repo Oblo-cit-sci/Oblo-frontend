@@ -14,7 +14,7 @@
       v-col(offset="5" cols=2)
         v-progress-circular(indeterminate center size="55" color="info")
     v-row.mx-0.px-4(v-show="has_entries")
-      v-col.pa-0(cols=8)
+      v-col.pa-0(cols=9)
         SimplePaginate(v-if="entries.length > entries_per_page" v-model="page" :total_pages="total_pages" :has_next="has_more_pages" :next_loading="next_loading")
       v-spacer.pa-0
       v-col.pa-0(ref="to_top_button")

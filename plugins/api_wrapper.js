@@ -23,6 +23,7 @@ class APIWrapper {
     this.static_baseURL = this.axios_baseURL + "/static"
 
     // todo THE NEW WAY, refactor all methods like this... :)
+    this.entry = new Entry(this)
     this.entries = new Entries(this)
     this.actor = new Actor(this)
   }
@@ -125,6 +126,7 @@ class APIWrapper {
       }
     })
   }
+
   entries_map_entries(config = {}, as_geojson = false) {
     return this.axios.post(`${this.entries_baseURL}/map_entries`, config, {
       params: {
@@ -148,6 +150,17 @@ class QueryBase {
 
   post(sub_path, data, config) {
     return this.axios.post(`${this.base}/${sub_path}`, data, config)
+  }
+}
+
+class Entry extends QueryBase {
+
+  constructor(api_wrapper) {
+    super(api_wrapper, "/entry")
+  }
+
+  async exists(uuid) {
+    return this.get(`${uuid}/exists`)
   }
 }
 

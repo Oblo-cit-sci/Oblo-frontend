@@ -52,7 +52,9 @@ export default {
   beforeRouteLeave(to, from, next) {
     // console.log("entry leave")
     // BEWARE, this is not called when navigating from one entry to another
-    this.persist_entries()
+    if(this.entry.is_draft) {
+      this.persist_entries()
+    }
     next()
   },
   computed: {
@@ -61,11 +63,6 @@ export default {
     },
     entry() {
       return this.$store.getters["entries/get_edit"]()
-      // if ([EDIT, REVIEW].includes(this.mode)) {
-      //   return this.$store.getters["entries/get_edit"]()
-      // } else {
-      //   return this.$store.getters["entries/get_entry"](this.uuid)
-      // }
     },
     mode() {
       return this.$route.query.entry_mode || VIEW

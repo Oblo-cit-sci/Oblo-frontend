@@ -1,3 +1,5 @@
+import {entry_location2geojson_arr} from "~/lib/location"
+
 const ld = require("lodash")
 
 export const state = () => ({
@@ -8,7 +10,7 @@ export const state = () => ({
   last_goto_location: null,
   layer_status: null,
   cached_camera_options: {},
-  searchtime: null,
+  search_time: null,
 })
 
 export const mutations = {
@@ -38,7 +40,7 @@ export const mutations = {
     state.cached_camera_options[domain] = options
   },
   set_searchtime(state, time) {
-    state.searchtime = time
+    state.search_time = time
   },
   set_entries_loaded(state, loaded) {
     state.entries_loaded = loaded
@@ -53,6 +55,16 @@ export const mutations = {
   delete_feature(state, {domain_name, uuid}) {
     const f_index = state.entries[domain_name].features.findIndex(f => f.properties.uuid === uuid)
     state.entries[domain_name].features.splice(f_index, 1)
+  },
+  update_entry_features(state, {domain, entry_features}) {
+    if (state.entries.hasOwnProperty(domain)) {
+      console.log("in", entry_features)
+      const existing = ld.filter(state.entries[domain].features, f => f.properties.uuid !== entry_features[0].properties.uuid)
+      state.entries[domain].features = ld.concat(existing,  entry_features)
+    }
+  },
+  clear_searchtime(state) {
+    state.search_time =null
   }
 }
 
@@ -65,8 +77,8 @@ export const getters = {
       return state.entries[domain] || {}
     }
   },
-  get_searchtime(state) {
-    return state.searchtime
+  get_search_time(state) {
+    return state.search_time
   },
   goto_location(state) {
     return () => {
@@ -144,7 +156,7 @@ export const actions = {
   //   context.commit("_last_goto_location", null)
   //   context.commit("goto_location", null)
   // },
-  set_entry_property(context, {uuid, property_name, value}) {
+  set_entry_feature(context, {uuid, property_name, value}) {
     const res = context.getters.get_entry_and_domain_by_uuid(uuid)
     if (!res) {
       console.log("error in map/set_entry_property, no entry for given uuid", uuid)

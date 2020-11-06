@@ -189,7 +189,6 @@ export default {
         this.change_entry_markers_mode(uuid, false)
       }
     })
-
     this.$bus.$on("trigger_search", () => {
       this.load_map_entries(this.domain_name)
     })
@@ -604,12 +603,15 @@ export default {
       this.aspectdialog_data.dialog_open = true
     },
     store_cam_options() {
-      this.$store.commit("map/set_camera_options_cache", {
-        domain: this.domain_name, options: {
-          zoom: this.map.getZoom(),
-          center: this.map.getCenter()
-        }
-      })
+      // console.log("storing cam map options")
+      if(this.map) {
+        this.$store.commit("map/set_camera_options_cache", {
+          domain: this.domain_name, options: {
+            zoom: this.map.getZoom(),
+            center: this.map.getCenter()
+          }
+        })
+      }
     },
     render(map) {
       this.act_zoom = map.getZoom()
