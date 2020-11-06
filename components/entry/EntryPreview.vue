@@ -4,7 +4,7 @@
   v-card.mx-auto.custom-card(v-else outlined :style="border_style")
     v-container.pt-0.pb-0
       v-row
-        v-col.main_col.px-2(v-bind:class="[show_image ? 'cols-md-8' : 'cols-12']")
+        v-col.main_col.px-2(v-bind:class="[show_image ? 'col-8' : 'col-12']")
           v-row
             v-col.py-1(class="entry-meta" cols=12)
               p.subtitle-1.mb-1
@@ -31,9 +31,9 @@
               v-list-item-icon
                 v-icon(color="orange") mdi-alert-outline
               v-list-item-content {{$t("comp.entrypreview.outdated")}}
-        v-col.pa-1(v-if="show_image" cols=4 class="col-md-4 col-sm-12 entry-image" align="start")
+        v-col.pa-1(v-if="show_image" cols=4 class="col-md-4 col-sm-12 entry-image" align-self="center")
           <!-- .float-md-right.float-sm-left.entry-display-size.mr-3 -->
-          v-img(class="entry-image-size"
+          v-img.my-auto(class="entry-image-size"
             contain
             :src="entry_image")
     div.ml-4.mr-2
@@ -326,8 +326,6 @@ export default {
 }
 
 .entry-image-size {
-  /*width: 100% !important;*/
-  /*height: auto !important;*/
   max-height: 90px;
 }
 

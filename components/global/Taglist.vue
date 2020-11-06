@@ -1,7 +1,7 @@
 <template lang="pug">
   .taglist
     v-slide-group(v-if="slide" :show-arrows="true" class="custom-chip-group")
-      v-chip(class="custom-chip" v-for="tag in tag_list" :key="tag" outlined) {{tag}}
+      v-chip.mr-1(class="custom-chip" v-for="tag in tag_list" :key="tag" outlined) {{tag}}
     div(v-else)
       v-chip.mt-1.mr-1(v-for="tag in tag_list" :key="tag" class="custom-chip" outlined) {{tag}}
 </template>
