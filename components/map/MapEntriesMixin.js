@@ -29,6 +29,7 @@ export default {
         }
       }
       const {data} = await this.$api.entries_map_entries(config, true)
+      // console.log(data.data.entries.features.length)
       await this.$store.dispatch("map/add_entries", {domain: domain_name, entries: data.data.entries, ts: data.data.ts})
     },
     get_my_locations() {

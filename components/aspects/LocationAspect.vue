@@ -356,7 +356,7 @@ export default {
             if (data.features.length === 0) { // oceans
               // todo add filler
             } else {
-              console.log(coords, data.features)
+              // console.log(coords, data.features)
               this.complete_value({
                 coordinates: coords,
                 location_precision: LOCATION_PRECISION_POINT,
@@ -396,7 +396,7 @@ export default {
           const bb = new mapboxgl.LngLatBounds(this.value.coordinates, this.value.public_loc.coordinates)
           this.map.fitBounds(bb, {
             padding: 80,
-            maxZoom: 8
+            maxZoom: 6
           })
         }
       }
@@ -500,7 +500,7 @@ export default {
       Object.assign(value, public_loc_vars)
       this.snap_to_existing = false
       this.update_value(value)
-      console.log("complete", value)
+      // console.log("complete", value)
     },
     has_input_option(type) {
       return (this.aspect.attr.input || []).includes(type)

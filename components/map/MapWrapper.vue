@@ -419,7 +419,6 @@ export default {
       } else {
         console.log("cluster layer exists already")
       }
-
       this.layers_created = true
     },
     update_filtered_source() {

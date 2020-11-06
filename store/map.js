@@ -58,9 +58,12 @@ export const mutations = {
   },
   update_entry_features(state, {domain, entry_features}) {
     if (state.entries.hasOwnProperty(domain)) {
-      console.log("in", entry_features)
+      // console.log("in", entry_features, entry_features[0].properties.uuid)
+      // console.log(state.entries[domain].features)
       const existing = ld.filter(state.entries[domain].features, f => f.properties.uuid !== entry_features[0].properties.uuid)
+      // console.log("f", ld.filter(state.entries[domain].features, f => f.properties.uuid === entry_features[0].properties.uuid))
       state.entries[domain].features = ld.concat(existing,  entry_features)
+      console.log(ld.concat(existing,  entry_features).length)
     }
   },
   clear_searchtime(state) {

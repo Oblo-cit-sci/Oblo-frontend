@@ -5,7 +5,7 @@
         v-row
           v-col(cols=2 :style="img_col_style")
             v-img.card_img.ml-1(:src="get_icon_url(a.icon)" :style="img_style")
-          v-col(:style="text_col_style")
+          v-col.ml-2(:style="text_col_style")
             h4 {{a.name}}
             div.card_text {{a.description}}
 </template>

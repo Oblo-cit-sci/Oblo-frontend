@@ -117,10 +117,10 @@ export default {
           }
           this.$store.commit("entries/save_entry", res.data.data.entry)
           this.$store.commit("entries/set_edit", res.data.data.entry)
-          this.$store.commit("map/update_entry_features", {
-            domain: this.entry.domain,
-            entry_features: res.data.data.map_features
-          })
+          // this.$store.commit("map/update_entry_features", {
+          //   domain: this.entry.domain,
+          //   entry_features: res.data.data.map_features
+          // })
           this.back(["search"])
         } catch (err) {
           console.log(err)
