@@ -4,10 +4,10 @@
       <!-- mandatory does only check if min > 1 -->
       v-list-item-group(v-model="selection_index" multiple active-class="in_selection" :mandatory="mandatory" :max="max_vals")
         v-list-item(v-for="option in options" :key="option.value" :disabled="option_disabled(option)")
-          template(v-slot:default="{ active, toggle }")
+          template(v-slot:default="{ active }")
             v-list-item-content {{option.text}}
             v-list-item-action
-              v-checkbox(:input-value="active" color="khaki")
+              v-checkbox( color="khaki" :input-value="active" readonly)
     v-select(v-else
     :items="options"
       v-model="selection"

@@ -4,7 +4,7 @@
   v-card.mx-auto.custom-card(v-else outlined :style="border_style")
     v-container.pt-0.pb-0
       v-row
-        v-col.main_col.px-2(v-bind:class="[show_image ? 'col-8' : 'col-12']")
+        v-col.main_col.px-2.pb-0(v-bind:class="[show_image ? 'col-8' : 'col-12']")
           v-row
             v-col.py-1(class="entry-meta" cols=12)
               p.subtitle-1.mb-1
@@ -23,19 +23,18 @@
           v-row.pl-3(justify="space-between" v-if="actor_row")
             v-col.py-0.pl-0
               ActorChip(:actor="creator")
-          v-row.pl-3(v-if="show_tags")
-            v-col.px-0.py-1(cols=12)
-              Taglist(:tags="tags" :slide="true" summarize)
           v-row.pl-3(v-if="show_info")
             v-list-item(v-if="outdated")
               v-list-item-icon
                 v-icon(color="orange") mdi-alert-outline
               v-list-item-content {{$t("comp.entrypreview.outdated")}}
-        v-col.pa-1(v-if="show_image" cols=4 class="col-md-4 col-sm-12 entry-image" align-self="center")
-          <!-- .float-md-right.float-sm-left.entry-display-size.mr-3 -->
+        v-col.pa-1(v-if="show_image" cols=4 class="entry-image" align-self="center")
           v-img.my-auto(class="entry-image-size"
             contain
             :src="entry_image")
+      v-row.px-1(v-if="show_tags")
+        v-col.px-0.pt-0.pb-1(cols=12)
+          Taglist(:tags="tags" :slide="true" summarize)
     div.ml-4.mr-2
       Aspect(v-for="aspect in shown_aspects"
         :key="aspect.name"
@@ -328,18 +327,19 @@ export default {
 .entry-image-size {
   max-height: 90px;
 }
-
+/*
 @media (max-width: 959px) {
-  /* adjust to your needs */
   .entry-meta {
     order: 1
   }
+
 
   .entry-image {
     order: -1;
     max-width: 100px;
   }
-}
 
+}
+ */
 </style>
 

@@ -7,12 +7,12 @@
       .buttongroup.shift_anim(:style="button_group_shift")
         v-btn(v-if="show_layer_menu_button" dark color="green" fab @click="open_layer_dialog")
           v-icon mdi-layers-outline
-        v-sheet.ml-3(color="grey")
+        v-sheet.ml-3(color="grey" v-if="is_dev")
           span.pl-1 {{act_zoom}}
       .central_button(v-if="show_center_create_button")
         v-container.shift_anim(:style="center_button_shift")
           CreateEntryButton(:domain_data="domain_data" @create_entry="$emit('create_entry', $event)")
-      .overlay_menu(:style="legend_style")
+      .overlay_menu(v-if="show_legend")
         TemplateLegend(:domain_name="domain_name" ref="legendComponent")
     AspectDialog(v-bind="aspectdialog_data" @update:dialog_open="aspectdialog_data.dialog_open = $event" :ext_value="layer_status" @update:ext_value="aspect_dialog_update($event)")
     client-only
@@ -46,6 +46,7 @@ import EntryFetchMixin from "~/components/entry/EntryFetchMixin"
 import MapEntriesMixin from "~/components/map/MapEntriesMixin"
 import CreateEntryButton from "~/components/CreateEntryButton";
 import ResponsivenessMixin from "~/components/ResponsivenessMixin";
+import EnvMixin from "~/components/global/EnvMixin"
 
 const cluster_layer_name = LAYER_BASE_ID + '_clusters'
 
@@ -66,7 +67,8 @@ const MAIN_SOURCE_LAYER = "all_entries_source"
 export default {
   name: "MapWrapper",
   components: {CreateEntryButton, AspectDialog, TemplateLegend, Mapbox},
-  mixins: [MapIncludeMixin, DomainMapMixin, HasMainNavComponentMixin, FilterMixin, EntryFetchMixin, MapEntriesMixin, ResponsivenessMixin],
+  mixins: [MapIncludeMixin, DomainMapMixin, HasMainNavComponentMixin, FilterMixin, EntryFetchMixin,
+    MapEntriesMixin, ResponsivenessMixin, EnvMixin],
   props: {
     height: {
       type: [String, Number],
@@ -145,12 +147,8 @@ export default {
     entries() {
       return this.all_map_entries(this.domain_name)
     },
-    legend_style() {
-      if (this.$vuetify.breakpoint.smAndDown) {
-        return {
-          visibility: "hidden"
-        }
-      }
+    show_legend() {
+      return (this.is_md && !this.menu_open) || this.is_large
     },
     map_height() {
       return {

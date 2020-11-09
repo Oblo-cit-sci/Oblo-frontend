@@ -10,6 +10,9 @@ export default {
     is_small() {
       return this.bp.smAndDown
     },
+    is_md() {
+      return this.bp.md
+    },
     smAndUp() {
       return this.bp.smAndUp
     },

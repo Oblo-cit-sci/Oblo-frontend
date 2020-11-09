@@ -8,8 +8,7 @@
       :style="behind_style"
       :width="menu_width"
       app)
-      #block(v-if="over" :style="{'height':'60px'}")
-      #scrollable(v-if="!menu_mode_fixed")
+      .scrollable(v-if="!menu_mode_fixed" :style="pad_if_over")
         v-tabs(v-model="menu_state" grow active-class="active_tab")
           v-tab {{$t("comp.menucontainer.tab_main")}}
           v-tab {{$t("comp.menucontainer.tab_domain")}}
@@ -19,7 +18,7 @@
             MainMenuList
           v-tab-item
             DomainMenu(@force_menu_mode="this.menu_state=1" domain_name="licci")
-      MainMenuList(v-else)
+      MainMenuList.scrollable(v-else)
 </template>
 
 <script>
@@ -50,6 +49,11 @@ export default {
     this.$store.commit("menu/menu_width", this.menu_width)
   },
   computed: {
+    pad_if_over() {
+      return {
+        "padding-top": this.over ? (this.is_small ? "56px" : "64px") : 0
+      }
+    },
     menu_open: {
       get() {
         return this.$store.getters["menu/open"]
@@ -109,12 +113,8 @@ export default {
   background: aliceblue;
 }
 
-#block {
-  height: 6%;
-}
-
-#scrollable {
-  max-height: 94%;
+.scrollable {
+  max-height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
 }
