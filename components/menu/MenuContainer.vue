@@ -117,5 +117,6 @@ export default {
   max-height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
+  margin-bottom: 70px;
 }
 </style>
