@@ -175,11 +175,14 @@ export const mutations = {
   },
   remove_file_attachment(state, {entry_uuid, file_uuid}) {
     let entry = null
-    if (entry_uuid) {
-      entry = state.entries.get(entry_uuid)
-    } else
+    if(ld.get(state.edit, "uuid") === entry_uuid) {
       entry = state.edit
-    entry.attached_files = entry.attached_files.filter(a => a.file_uuid !== file_uuid)
+    } else {
+      entry = state.entries.get(entry_uuid)
+    }
+    if(entry) {
+      entry.attached_files = entry.attached_files.filter(a => a.file_uuid !== file_uuid)
+    }
   }
 }
 
@@ -387,7 +390,7 @@ export const getters = {
   },
   entry_tags(state, getters) {
     return (uuid) => {
-      console.log("entry_tags")
+      // console.log("entry_tags")
       const entry = getters.get_entry(uuid)
       const entry_type = getters.get_entry_type(entry.template.slug)
       const tagsAspect = entry_type.rules.tagsAspect

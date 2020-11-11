@@ -13,8 +13,8 @@ export default {
     add_file_attachment(entry_uuid_or_edit, type, file_uuid, file_loc) {
       this.$store.commit("entries/add_file_attachment", {entry_uuid_or_edit, type, file_uuid, file_loc})
     },
-    remove_file_attachment(entry_uuid_or_edit, file_uuid) {
-      this.$store.commit("entries/remove_file_attachment", {entry_uuid_or_edit, file_uuid})
+    remove_file_attachment(entry_uuid, file_uuid) {
+      this.$store.commit("entries/remove_file_attachment", {entry_uuid, file_uuid})
     }
   }
 }
