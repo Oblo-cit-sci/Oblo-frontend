@@ -1,14 +1,22 @@
 <template lang="pug">
   .taglist
     v-slide-group(v-if="slide" :show-arrows="true" class="custom-chip-group")
-      v-chip.mr-1(class="custom-chip" v-for="tag in tag_list" :key="tag" outlined) {{tag}}
+      span(v-for="tag in tag_list" :key="tag.text")
+        TagChip(:tag="tag")
     div(v-else)
-      v-chip.mt-1.mr-1(v-for="tag in tag_list" :key="tag" class="custom-chip" outlined) {{tag}}
+      span(v-for="tag in tag_list" :key="tag.text")
+        TagChip(:tag="tag")
 </template>
 
 <script>
+  import TagChip from "~/components/tag/TagChip"
+
+  const summary_tag_thresh = 3
+  const tag_text_cut_tresh = 40
+
   export default {
     name: "Taglist",
+    components: {TagChip},
     props: {
       slide: Boolean,
       tags: {
@@ -20,18 +28,20 @@
         type: Boolean
       }
     },
-    data: function () {
-      return {}
-    },
     computed: {
       tag_list() {
         let result = []
         for (let tag_type in this.tags) {
-          if(this.summarize && this.tags[tag_type].length > 3) {
-            result.push(`${tag_type}: ${this.tags[tag_type].length} tags`)
+          if(this.summarize && this.tags[tag_type].length > summary_tag_thresh) {
+            result.push({summary:true, text:`${tag_type}: ${this.tags[tag_type].length} tags`
+          })
           } else {
             for (let tag of this.tags[tag_type]) {
-              result.push(tag)
+              const tag_text = this.tag_text(tag)
+              const res = {text: tag_text}
+              if(tag.length > tag_text_cut_tresh)
+                res.hover = tag
+              result.push(res)
             }
           }
         }
@@ -39,6 +49,12 @@
       }
     },
     methods: {
+      tag_text(tag_text) {
+        if(tag_text.length > tag_text_cut_tresh) {
+          return tag_text.substring(0,tag_text_cut_tresh - 2) + "..."
+        } else
+          return tag_text
+      }
     }
   }
 </script>
