@@ -28,17 +28,18 @@
     name: "NumberAspect",
     mixins: [AspectComponentMixin],
     data() {
+      const attr_ = this.$_.get(this.aspect, "attr", {})
       return {
         mask: "",
-        suffix: this.attr.suffix || "",
+        suffix: attr_.suffix || "",
         num_type: null,
-        min: this.attr.min,
-        max: this.attr.max,
+        min: attr_.min,
+        max: attr_.max,
         minmax: value => {
-          if (this.attr.min !== undefined && value < this.attr.min) {
-            return "value must be at least " + (this.aspect.attr.min)
-          } else if (this.aspect.attr.max !== undefined && value > this.aspect.attr.max) {
-            return "value cannot be higher then " + (this.aspect.attr.max)
+          if (this.attr.min !== undefined && value < attr_.min) {
+            return "value must be at least " + (attr_.min)
+          } else if (attr_.max !== undefined && value > attr_.max) {
+            return "value cannot be higher then " + (attr_.max)
           } else return true
         },
         valid_num_type: value => {

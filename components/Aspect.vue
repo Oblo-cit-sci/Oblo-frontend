@@ -7,6 +7,7 @@
       v-if="show_title_description"
       :aspect="aspect"
       :no_title="extra.no_title"
+      :description_as_html="descr_as_html"
       :note=note
       :disabled="disable"
       :disabled_text="disabled_text"
@@ -78,6 +79,9 @@ export default {
   },
   // boolean check is not required, since "false" is the default
   computed: {
+    descr_as_html() {
+      return this.attr.descr_as_html
+    },
     flex_switch_icon() {
       return this.flex_mode === VIEW ? "mdi-pencil-outline" : "mdi-check"
     },

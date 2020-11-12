@@ -214,12 +214,12 @@
       },
       "license": {
         "label": "License",
-        "descr": "Choose a license for this entry",
+        "descr": "Choose a creative commons license for this entry. <a href='https://creativecommons.org/about/cclicenses/' target='_blank'>Read about the licenses.</a>",
         "alt_label": {
           "default": "Default license"
         },
         "alt_descr": {
-          "default": "Choose a default license for your entries"
+          "default": "Choose a default creative commons license for your entries. <a href='https://creativecommons.org/about/cclicenses/' target='_blank'>Read about the licenses.</a>"
         }
       },
       "entry_roles": {

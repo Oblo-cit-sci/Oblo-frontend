@@ -177,6 +177,7 @@ export default {
         t_description: this.t_description("asp.license.", alt_label_descr),
         type: "select",
         attr: {
+          descr_as_html: true,
           unpacked: true,
         },
         items: []
