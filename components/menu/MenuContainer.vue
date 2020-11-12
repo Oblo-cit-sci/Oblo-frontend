@@ -18,7 +18,7 @@
             MainMenuList
           v-tab-item
             DomainMenu(@force_menu_mode="this.menu_state=1" domain_name="licci")
-        #bottom_fixer(v-if="mobile")
+        #bottom_fixer(v-if="mobile && has_touch")
       MainMenuList.scrollable(v-else)
 </template>
 

@@ -7,6 +7,11 @@ export default {
     mobile() {
       return this.bp.mobile
     },
+    has_touch() {
+      return (('ontouchstart' in window)
+        || (navigator.MaxTouchPoints > 0)
+        || (navigator.msMaxTouchPoints > 0))
+    },
     is_xsmall() {
       return this.bp.xs
     },
