@@ -80,7 +80,8 @@ export default {
       let from_index = (this.page - 1) * this.entries_per_page
       let to_index = from_index + this.entries_per_page
       const entries = this.entries.slice(from_index, to_index)
-      const uuids = this.$_.filter(entries, e => !this.deleted.includes(e.uuid))
+      // todo unique is just required cuz the server does often sent less (actor rows problem when querying entries)
+      const uuids = this.$_.uniq(this.$_.filter(entries, e => !this.deleted.includes(e.uuid)))
       return this.$_.map(uuids, uuid => this.$store.getters["entries/get_entry"](uuid))
     },
     has_entries() {
@@ -125,7 +126,7 @@ export default {
         easing: "easeOutCubic",
       }
       if (this.$route.name === PAGE_DOMAIN) {
-        options.container = "#scrollable" //".v-navigation-drawer__content"
+        options.container = "#menu_head" //".v-navigation-drawer__content"
       }
       setTimeout(() => this.$vuetify.goTo(0, options), 20)
     }

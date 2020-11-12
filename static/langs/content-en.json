@@ -351,6 +351,7 @@
         "legend": "Legend"
       },
       "location_asp": {
+        "descr": "Search for a place or click on the map to set the location",
         "no_loc": "No location",
         "offline": "You cannot set the location while beeing offline",
         "public_loc": {

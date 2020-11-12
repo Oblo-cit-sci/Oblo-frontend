@@ -8,7 +8,7 @@
       :style="behind_style"
       :width="menu_width"
       app)
-      .scrollable(v-if="!menu_mode_fixed" :style="pad_if_over")
+      .scrollable#menu_head(v-if="!menu_mode_fixed" :style="pad_if_over")
         v-tabs(v-model="menu_state" grow active-class="active_tab")
           v-tab {{$t("comp.menucontainer.tab_main")}}
           v-tab {{$t("comp.menucontainer.tab_domain")}}
@@ -18,6 +18,7 @@
             MainMenuList
           v-tab-item
             DomainMenu(@force_menu_mode="this.menu_state=1" domain_name="licci")
+        #bottom_fixer(v-if="mobile")
       MainMenuList.scrollable(v-else)
 </template>
 
@@ -72,7 +73,8 @@ export default {
     },
     behind_style() {
       return {
-        "z-index": this.over ? 6 : 8
+        "z-index": this.over ? 6 : 8,
+        "margin-bottom": "70px"
       }
     },
     menu_width() {
@@ -117,6 +119,9 @@ export default {
   max-height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
-  margin-bottom: 70px;
+}
+
+#bottom_fixer {
+  min-height: 50px;
 }
 </style>

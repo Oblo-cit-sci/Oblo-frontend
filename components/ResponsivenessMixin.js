@@ -4,6 +4,9 @@ export default {
     bp() {
       return this.$vuetify.breakpoint
     },
+    mobile() {
+      return this.bp.mobile
+    },
     is_xsmall() {
       return this.bp.xs
     },
