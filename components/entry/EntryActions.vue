@@ -10,12 +10,6 @@
       :entry="entry"
       :pages="template.rules.pages"
       @lastpage="more_follow_page = ($event)")
-    div
-      v-alert(v-if="is_edit_mode && can_edit && !logged_in" color="info" type="warning")
-        b {{$t("comp.entry_action_buttons.not_logged_in.title")}}
-        div
-          span {{$t("comp.entry_action_buttons.not_logged_in.text")}}
-          a(href="https://creativecommons.org/share-your-work/public-domain/cc0/" target="_blank" style="color:white")  {{$t("comp.entry_action_buttons.not_logged_in.cc_ref_text")}}
     EntryActionButtons(
       v-bind="entry_action_buttons_props"
       @entry-action="entryAction($event)"
@@ -62,11 +56,13 @@ export default {
   },
   methods: {
     entryAction(action) {
-      if (action === "submit") {
+      if (action === "save") {
+        this.save()
+      } else if (action === "submit") {
         this.submit()
-      } else if(action === "accept") {
+      } else if (action === "accept") {
         this.review(true)
-      } else if(action === "reject") {
+      } else if (action === "reject") {
         this.review(false)
       }
       this.$emit('entry-action', action)
@@ -149,7 +145,7 @@ export default {
             entry_features: data.data.map_features
           })
           // we need this, otherwise when coming back to the same entry right away, it will not change edit, and the status will be wrong
-          this.$store.commit("entries/set_edit",data.data.entry)
+          this.$store.commit("entries/set_edit", data.data.entry)
         } else {
           this.$store.commit("entries/delete_entry", this.uuid)
           this.$store.commit("search/delete_entry", this.uuid)
@@ -161,6 +157,22 @@ export default {
         this.err_error_snackbar(err)
         this.sending = false
       }
+    },
+    save() {
+      // todo not if it is an aspect page
+      // console.log(this.entry.local)
+      this.$store.commit("entries/save_entry", this.entry)
+      this.$store.dispatch("entries/update_entry", this.uuid)
+      this.persist_entries()
+      // this.ok_snackbar()
+      this.$bus.$emit("dialog-open", {
+        data: {
+          title: this.$t('comp.entry_actions.saved'),
+          text: this.$t('comp.entry_actions.saved_text'),
+          show_cancel: false
+        }
+      })
+      this.back()
     },
     update_page(page) {
       this.page = page

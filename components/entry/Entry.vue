@@ -69,6 +69,13 @@
         EntryValidation(:entry="entry" :template_slug="template_slug" v-model="entry_complete")
       v-row(v-if="is_dirty")
         ChangedAspectNotice(:is_draft="is_draft")
+    v-row(v-if="is_edit_mode && can_edit && !logged_in")
+      v-col.pl-0(:cols="base_cols")
+        v-alert(color="info" type="warning")
+          b {{$t("comp.entry_action_buttons.not_logged_in.title")}}
+          div
+            span {{$t("comp.entry_action_buttons.not_logged_in.text")}}
+            a(href="https://creativecommons.org/share-your-work/public-domain/cc0/" target="_blank" style="color:white")  {{$t("comp.entry_action_buttons.not_logged_in.cc_ref_text")}}
     v-row
       EntryActions(
         v-bind="entry_actions_props"

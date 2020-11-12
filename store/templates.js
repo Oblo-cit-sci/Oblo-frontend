@@ -49,6 +49,9 @@ export const getters = {
     }
     return global_entry_types
   },
+  template_map(state) {
+    return state.entry_types
+  },
   entrytypes(state) {
     return Object.fromEntries(state.entry_types)
   },
@@ -137,6 +140,9 @@ export const getters = {
 }
 
 export const mutations = {
+  set_templates(state, templates) {
+      state.entry_types = templates
+  },
   entrytype(state, newtype) {
     state.entry_types[newtype.type_slug] = newtype;
     //state.entry_type_slug_index_dict[newtype.slug] = state.available_entries.length - 1;

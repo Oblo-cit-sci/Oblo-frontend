@@ -156,48 +156,10 @@ export default {
       })
     },
     save() {
-      // todo not if it is an aspect page
-      // console.log(this.entry.local)
-      this.$store.commit("entries/save_entry", this.entry)
-      this.$store.dispatch("entries/update_entry", this.uuid)
-      this.persist_entries()
-      this.ok_snackbar(this.$t('comp.entry_actions.saved'))
-      this.back()
+      this.$emit("entry-action", "save")
     },
     async submit() {
       this.$emit("entry-action", "submit")
-    },
-    async review(accept) {
-      this.sending = true
-      const method = accept ? "patch_entry__$uuid_accept" : "patch_entry__$uuid_reject"
-      this.$store.commit("entries/save_entry", this.entry)
-      await this.$store.dispatch("entries/update_entry", this.uuid)
-      // todo just this.entry ???
-      const sending_entry = prepare_for_submission(this.$store.getters["entries/get_entry"](this.uuid))
-      try {
-        const {data} = await this.$api[method](sending_entry)
-        this.sending = false
-        this.ok_snackbar("Entry reviewed")
-        if (accept) {
-          this.$store.commit("entries/save_entry", data.data.entry)
-          console.log(this.entry.status, sending_entry.status, data.data.entry.status)
-          this.$store.commit("map/update_entry_features", {
-            domain: this.entry.domain,
-            entry_features: data.data.map_features
-          })
-          // we need this, otherwise when coming back to the same entry right away, it will not change edit, and the status will be wrong
-          this.$store.commit("entries/set_edit",data.data.entry)
-        } else {
-          this.$store.commit("entries/delete_entry", this.uuid)
-          this.$store.commit("search/delete_entry", this.uuid)
-          this.$store.commit("map/delete_feature", {domain_name: this.entry.domain, uuid: this.uuid})
-        }
-        this.back(["search"])
-      } catch (err) {
-        console.log(err)
-        this.err_error_snackbar(err)
-        this.sending = false
-      }
     },
     async accept() {
       this.$emit("entry-action", "accept")

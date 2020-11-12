@@ -53,7 +53,7 @@ export default {
         raw_value = null
 
       let up_value = null
-      if (this.aspect.attr.unpacked) {
+      if (this.attr.unpacked) {
         up_value = raw_value
       } else {
         // we need this for options aspects
@@ -65,7 +65,7 @@ export default {
       }
       if (this.aspect_loc) {
         this.$store.dispatch("entries/set_entry_value", {aspect_loc: this.aspect_loc, value: up_value})
-        if (this.aspect.attr.cache) {
+        if (this.attr.cache) {
           this.$store.commit("add_cache", {
             template: this.get_entry().template.slug,
             aspect: this.aspect.name,
@@ -84,6 +84,9 @@ export default {
     }
   },
   computed: {
+    attr() {
+      return this.$_.get(this.aspect, "attr", {})
+    },
     edit() {
       return this.mode === EDIT
     },
@@ -91,21 +94,21 @@ export default {
       // todo pass if edit
       // todo this getting of the value, could maybe also go into the helper...
       let condition_value = null
-      if (this.aspect.hasOwnProperty("attr") && this.aspect.attr.hasOwnProperty("condition")) {
+      if (this.aspect.hasOwnProperty("attr") && this.attr.hasOwnProperty("condition")) {
         if (this.aspect_loc) {
           let aspect_location = loc_prepend(this.edit ? EDIT : ENTRY, this.entry_uuid,
-            aspect_loc_str2arr(this.aspect.attr.condition.aspect))
+            aspect_loc_str2arr(this.attr.condition.aspect))
           // console.log("checking condition for", this.aspect.name)
           // console.log("condition aspect-loc", aspect_location)
           condition_value = this.$store.getters["entries/value"](aspect_location)
         } else if (this.conditionals) {
-          condition_value = select_aspect_loc(null, aspect_loc_str2arr(this.aspect.attr.condition.aspect), false, this.conditionals)
+          condition_value = select_aspect_loc(null, aspect_loc_str2arr(this.attr.condition.aspect), false, this.conditionals)
           // console.log("condition_value", condition_value)
         } else {
           console.log(`condition for aspect ${this.aspect.name} cannot be checked. no aspect_loc and no conditionals`)
           return false
         }
-        return !check_condition_value(condition_value, this.aspect.attr.condition)
+        return !check_condition_value(condition_value, this.attr.condition)
       } else {
         return false
       }
@@ -138,7 +141,7 @@ export default {
         return pack_value(aspect_raw_default_value(this.aspect))
       }
       //console.log("value . ",this.aspect.name)
-      if (this.aspect.attr.IDAspect) {
+      if (this.attr.IDAspect) {
         let this_uuid = aspect_loc_uuid(this.aspect_loc)
         let entry = this.$store.getters["entries/get_entry"](this_uuid)
         let id = this.$_.last(entry.entry_refs.parent.aspect_loc)[1] + 1
@@ -148,12 +151,12 @@ export default {
         }
         return {value: id}
       }
-      if (this.aspect.attr.ref_value) {
+      if (this.attr.ref_value) {
         //console.log("ref")
         // GRAB REF
         let aspect_location = complete_aspect_loc(
           aspect_loc_uuid(this.aspect_loc),
-          aspect_loc_str2arr(this.aspect.attr.ref_value),
+          aspect_loc_str2arr(this.attr.ref_value),
           this.extra[LIST_INDEX])
         // console.log("value ref,  ",this.aspect.name, aspect_location)
         let ref_value = this.$store.getters["entries/value"](aspect_location)
@@ -164,7 +167,7 @@ export default {
         }
 
         let stored_value = this.$store.getters["entries/value"](this.aspect_loc)
-        if (this.aspect.attr.ref_update === "create") {
+        if (this.attr.ref_update === "create") {
           if (this.$_.isEqual(stored_value, aspect_default_value(this.aspect)) &&
             !this.$_.isEqual(stored_value, ref_value)) { // this will catch a inf loop when ref_value === default
             this.update_value(ref_value.value)
@@ -178,8 +181,8 @@ export default {
           }
           return ref_value
         }
-      } else if (this.aspect.attr.ref_length) { // this is for lists
-        let location_array = complete_aspect_loc(aspect_loc_uuid(this.aspect_loc), aspect_loc_str2arr(this.aspect.attr.ref_length))
+      } else if (this.attr.ref_length) { // this is for lists
+        let location_array = complete_aspect_loc(aspect_loc_uuid(this.aspect_loc), aspect_loc_str2arr(this.attr.ref_length))
         // USES lists or ints
         const length_value = this.$store.getters["entries/value"](location_array).value
 

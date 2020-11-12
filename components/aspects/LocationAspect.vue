@@ -6,6 +6,7 @@
           .ml-2.mt-2(v-if="search_location_input_option")
             div {{$t("comp.location_asp.descr")}}
             v-autocomplete(
+              v-if="online"
               :search-input.sync="search_query"
               hint="press enter or click the search button"
               append-outer-icon="mdi-magnify"
@@ -20,6 +21,7 @@
               auto-select-first
               v-model="place_select__"
               clearable)
+            div(v-else :style="{color: 'red'}") {{$t("comp.location_asp.offline")}}
             div(v-if="value") {{$t("comp.location_asp.public_loc.base")}}:&nbsp;
               span {{public_location_text}}
               v-chip-group(v-if="public_location_selector_on" active-class="primary--text" mandatory v-model="selected_prec_option")
@@ -41,7 +43,7 @@
         v-icon mdi-map-marker
       div(v-if="!value") {{$t('comp.location_asp.no_loc')}}
     client-only
-      div
+      div(v-if="online")
         .map_overlay
           v-btn(v-if="show_show_my_entries_btn" dark small :color="show_existing ? 'blue' : 'grey'" @click="toggle_show_existing" :loading="getting_my_entries_loading") {{$t('comp.location_asp.show entries')}}
             v-icon mdi-map-marker-circle
@@ -84,6 +86,7 @@ import ResponsivenessMixin from "~/components/ResponsivenessMixin";
 import AspectDialog from "~/components/dialogs/AspectDialog"
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
 import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
+import EnvMixin from "~/components/global/EnvMixin"
 
 // "attr.input" options
 const DEVICE = "device"
@@ -99,7 +102,7 @@ const default_output = [LOCATION, PLACE]
 export default {
   name: "LocationAspect",
   components: {AspectDialog, Mapbox},
-  mixins: [AspectComponentMixin, TriggerSnackbarMixin, MapIncludeMixin, GeocodingMixin,
+  mixins: [AspectComponentMixin, TriggerSnackbarMixin, MapIncludeMixin, GeocodingMixin, EnvMixin,
     MapEntriesMixin, EntrySearchMixin, EntryFetchMixin, ResponsivenessMixin, TypicalAspectMixin, PersistentStorageMixin],
   computed: {
     ...mapGetters({logged_in: "user/logged_in", user_settings: "user/settings", menu_state: "menu/menu_state"}),

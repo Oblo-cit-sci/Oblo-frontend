@@ -3,7 +3,7 @@ import MapboxBaseMixin from "~/components/map/MapboxBaseMixin"
 // BASIC lAYER
 import MapEntriesMixin from "~/components/map/MapEntriesMixin"
 
-const default_mapstyle = "mapbox://styles/ramin36/cjx2xkz2w030s1cmumgp6y1j8"
+const default_mapstyle = "mapbox://styles/ramin36/cjx2xkz2w030s1cmumgp6y1j8?optimize=true"
 
 export default {
   name: "MapIncludeMixin",

@@ -39,6 +39,9 @@ export default {
   },
   computed: {
     ...mapGetters({"is_admin": "user/is_admin"}),
+    attr() {
+      return this.$_.get(this.aspect, "attr", {})
+    },
     value: {
       get: function () {
         if (this.is_unpacked) {
@@ -60,18 +63,18 @@ export default {
     },
     // todo not used atm. also clarify where extra should be, aspect. or aspect.extra
     rules() {
-      if (this.$_.get(this.aspect.attr, "extra.rules")) {
-        return this.aspect.attr.extra.rules
+      if (this.$_.get(this.attr, "extra.rules")) {
+        return this.attr.extra.rules
       }
     },
     is_required() {
-      return this.$_.get(this.aspect,"attr.required", true)
+      return this.$_.get(this.aspect, "attr.required", true)
     },
     hint() {
-      return this.$_.get(this.aspect.attr, "extra.hint", null)
+      return this.$_.get(this.attr, "extra.hint", null)
     },
     hide_details() {
-      return !this.hint && !this.$_.get(this.aspect.attr, "extra.rules", null)
+      return !this.hint && !this.$_.get(this.attr, "extra.rules", null)
     },
     is_edit_mode() {
       return this.mode === EDIT
@@ -86,7 +89,7 @@ export default {
       return this.mode === VIEW
     },
     extras() {
-      return Object.assign(Object.assign({}, this.extra), this.aspect.attr.extra)
+      return Object.assign(Object.assign({}, this.extra), this.attr.extra)
     },
     is_set() {
       return (this.value === aspect_raw_default_value(this.aspect))

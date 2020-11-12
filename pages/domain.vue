@@ -3,6 +3,7 @@
     TitledDialog(:title="$t('page.domain.create_entry_dialog_title')" :dialog_open.sync="entrycreate_dialog_open" show_close_btn)
       EntryCreateList(:template_entries="create_templates_options")
     MapWrapper(
+      v-if="online"
       height="100%"
       :domain_data="domain_data"
       @force_menu_mode_domain="set_menu_state(1)"
@@ -18,7 +19,6 @@ import EntryNavMixin from "~/components/EntryNavMixin"
 import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
 import LayoutMixin from "~/components/global/LayoutMixin"
 import MapWrapper from "~/components/map/MapWrapper"
-import {dev_env} from "~/lib/util"
 import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
 import {MENU_MODE_DOMAIN, QP_D, QP_F, TEMPLATE} from "~/lib/consts"
 import FixDomainMixin from "~/components/global/FixDomainMixin"
@@ -28,12 +28,13 @@ import URLQueryMixin from "~/components/util/URLQueryMixin"
 import DomainData_UtilMixin from "~/components/domain/DomainData_UtilMixin"
 import FilterMixin from "~/components/FilterMixin"
 import TitledDialog from "~/components/dialogs/TitledDialog"
+import EnvMixin from "~/components/global/EnvMixin"
 
 export default {
   name: "domain",
   // layout: "new_map_layout",
   mixins: [DomainData_UtilMixin, HasMainNavComponentMixin, EntryNavMixin, EntryCreateMixin, URLQueryMixin,
-    PersistentStorageMixin, LayoutMixin, FixDomainMixin, URLParseMixin, FilterMixin, LayoutMixin],
+    PersistentStorageMixin, LayoutMixin, FixDomainMixin, URLParseMixin, FilterMixin, LayoutMixin, EnvMixin],
   components: {TitledDialog, MapWrapper, EntryCreateList},
   data() {
     return {
@@ -51,7 +52,7 @@ export default {
   created() {
     // console.log("domain created")
     // console.log("domain page created", this.$route.fullPath)
-    if (!dev_env()) {
+    if (this.is_prod) {
       window.history.replaceState(null, document.title, "/licci")
     }
     if (this.domain_name !== this.$store.getters["domain/act_domain_name"]) {
@@ -76,7 +77,7 @@ export default {
     this.$bus.$on("domain-create_entry", slug => this.create_entry_or_open_dialog(slug))
   },
   beforeRouteLeave(from, to, next) {
-    if (!dev_env()) {
+    if (this.is_prod) {
       window.history.replaceState(null, document.title, this.$route.fullPath)
     }
     // console.log("domain leave, close menu")

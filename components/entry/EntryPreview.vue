@@ -1,7 +1,7 @@
 <template lang="pug">
   div(v-if="!uuid")
     div
-  v-card.mx-auto.custom-card(v-else outlined :style="border_style")
+  v-card.mx-auto.custom-card(v-else outlined :style="border_style" @mouseover="title_mouseover" @mouseleave="title_mouseleave")
     v-container.pt-0.pb-0
       v-row
         v-col.main_col.px-2.pb-0(v-bind:class="[show_image ? 'col-8' : 'col-12']")
@@ -12,7 +12,7 @@
                 svg.mr-1(height=15 width=15 v-if="!show_entrytype_title")
                   circle(cx=8 cy=8 r=6 :stroke="marker_border_color" :fill="template_color" stroke-width=2)
                 span(@click="goto(entry.uuid, 'view')"  :style="title_style")
-                  span(@mouseover="title_mouseover" @mouseleave="title_mouseleave") {{full_title}}
+                  span {{full_title}}
                   span(v-if="is_draft" :style="{color:'cornflowerblue'}") &nbsp; [{{$t('comp.entrypreview.draft')}}]
                     v-btn(v-if="show_title_action" @click="goto()" depressed small)
                       v-icon(:class="default_action_icon")

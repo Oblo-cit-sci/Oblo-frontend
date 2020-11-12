@@ -2,9 +2,9 @@
   .taglist
     v-slide-group(v-if="slide" :show-arrows="true" class="custom-chip-group")
       span(v-for="tag in tag_list" :key="tag.text")
-        TagChip(:tag="tag")
+        TagChip.mr-1(:tag="tag")
     div(v-else)
-      span(v-for="tag in tag_list" :key="tag.text")
+      div.mt-1.mr-1(v-for="tag in tag_list" :key="tag.text" :style="{display:'inline-block'}")
         TagChip(:tag="tag")
 </template>
 
@@ -12,7 +12,7 @@
   import TagChip from "~/components/tag/TagChip"
 
   const summary_tag_thresh = 3
-  const tag_text_cut_tresh = 40
+  const tag_text_cut_tresh = 45
 
   export default {
     name: "Taglist",
@@ -33,7 +33,10 @@
         let result = []
         for (let tag_type in this.tags) {
           if(this.summarize && this.tags[tag_type].length > summary_tag_thresh) {
-            result.push({summary:true, text:`${tag_type}: ${this.tags[tag_type].length} tags`
+            result.push({
+              summary:true,
+              text:`${tag_type}: ${this.tags[tag_type].length} tags`,
+              hover: this.tags[tag_type]
           })
           } else {
             for (let tag of this.tags[tag_type]) {

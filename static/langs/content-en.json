@@ -127,318 +127,330 @@
             "randomly_moved": "Randomly moved",
             "always_ask": "Always ask"
           }
-        }
+        },
+        "offline": {
+          "label": "Offline mode",
+          "description": "If you have the offline mode activated you can still create entries while being offline",
+          "items": {
+            "inactive": "inactive",
+            "active": "active"
+          }
+        }},
+        "fixed_domain": {
+          "h1": "Fixed domain",
+          "p": "You are only seeing the domain",
+          "p2": "However there are more domains to explore. Resetting your fixed domain, will show you a domain overview on the home page. Click the button to reset the fixed domain.",
+          "btn_reset": "Reset fixed domain"
+        },
+        "settings_updated": "Settings updated"
       },
-      "fixed_domain": {
-        "h1": "Fixed domain",
-        "p": "You are only seeing the domain",
-        "p2": "However there are more domains to explore. Resetting your fixed domain, will show you a domain overview on the home page. Click the button to reset the fixed domain.",
-        "btn_reset": "Reset fixed domain"
-      },
-      "settings_updated": "Settings updated"
-    },
-    "delete_account": {
-      "h1": "Delete your account",
-      "p1": "If you have not posted content publicly, all the private entries that you created without any collaborator and user information will be permanently deleted. If you have posted entries publicly, these entries will continue to be stored and publicly available and we will continue to retain basic user data (you username and public name) so your connection with them is preserved. All private entries without other collaborators will be deleted. Those with collaborators will remain.",
-      "h2": "The following entries will be deleted",
-      "h3": "Please provide your credentials to verify your identity",
-      "btn_delete": "Delete account"
-    }
-  },
-  "asp": {
-    "username": {
-      "label": "@:w.username",
-      "rule_length": "@:w.username must have at least 4 characters",
-      "rule_pattern": "Only lowercase characters are allowed"
-    },
-    "user_query": {
-      "label": "Username or email",
-      "rule": "Input doesn't seem to be a valid username nor email address"
-    },
-    "password": {
-      "label": "Password",
-      "rule_length": "Password must have at least 8 characters",
-      "rule_repeat_match": "Passwords do not match",
-      "alt_label": {
-        "repeat": "Repeat password",
-        "current": "Current password",
-        "new": "New password",
-        "repeat_new": "Repeat new password"
+      "delete_account": {
+        "h1": "Delete your account",
+        "p1": "If you have not posted content publicly, all the private entries that you created without any collaborator and user information will be permanently deleted. If you have posted entries publicly, these entries will continue to be stored and publicly available and we will continue to retain basic user data (you username and public name) so your connection with them is preserved. All private entries without other collaborators will be deleted. Those with collaborators will remain.",
+        "h2": "The following entries will be deleted",
+        "h3": "Please provide your credentials to verify your identity",
+        "btn_delete": "Delete account"
       }
     },
-    "email": {
-      "label": "Email",
-      "rule": "Email not valid",
-      "new": "Email did not change"
-    },
-    "public_name": {
-      "label": "Public name",
-      "rule_length": "Your public name must have between 2 and 30 characters"
-    },
-    "user_description": {
-      "label": "@.capitalize:w.description",
-      "descr": "Write something about yourself and about your background"
-    },
-    "privacy": {
-      "label": "Privacy",
-      "descr": "Should this entry be publicly visible?",
-      "alt_label": {
-        "default": "Default privacy"
+    "asp": {
+      "username": {
+        "label": "@:w.username",
+        "rule_length": "@:w.username must have at least 4 characters",
+        "rule_pattern": "Only lowercase characters are allowed"
       },
-      "alt_descr": {
-        "default": "Choose a default privacy for all your entries"
+      "user_query": {
+        "label": "Username or email",
+        "rule": "Input doesn't seem to be a valid username nor email address"
       },
-      "options": {
-        "public": {
-          "text": "Public",
-          "descr": "Everyone can see this entry.",
-          "alt_descr": {
-            "default": "Public entries are visible to everyone"
+      "password": {
+        "label": "Password",
+        "rule_length": "Password must have at least 8 characters",
+        "rule_repeat_match": "Passwords do not match",
+        "alt_label": {
+          "repeat": "Repeat password",
+          "current": "Current password",
+          "new": "New password",
+          "repeat_new": "Repeat new password"
+        }
+      },
+      "email": {
+        "label": "Email",
+        "rule": "Email not valid",
+        "new": "Email did not change"
+      },
+      "public_name": {
+        "label": "Public name",
+        "rule_length": "Your public name must have between 2 and 30 characters"
+      },
+      "user_description": {
+        "label": "@.capitalize:w.description",
+        "descr": "Write something about yourself and about your background"
+      },
+      "privacy": {
+        "label": "Privacy",
+        "descr": "Should this entry be publicly visible?",
+        "alt_label": {
+          "default": "Default privacy"
+        },
+        "alt_descr": {
+          "default": "Choose a default privacy for all your entries"
+        },
+        "options": {
+          "public": {
+            "text": "Public",
+            "descr": "Everyone can see this entry.",
+            "alt_descr": {
+              "default": "Public entries are visible to everyone"
+            }
+          },
+          "private": {
+            "text": "Private",
+            "descr": "Only you or users you shared the entry with can see it.",
+            "alt_descr": {
+              "default": "Private entries are only visible to those you share them with"
+            }
+          }
+        }
+      },
+      "license": {
+        "label": "License",
+        "descr": "Choose a license for this entry",
+        "alt_label": {
+          "default": "Default license"
+        },
+        "alt_descr": {
+          "default": "Choose a default license for your entries"
+        }
+      },
+      "entry_roles": {
+        "label": "Collaborators and entry access",
+        "descr": "Grant access to other users",
+        "roles": {
+          "creator": {
+            "label": "Creator",
+            "descr": "Creator/owner of this entry"
+          },
+          "collaborator": {
+            "label": "Collaborator",
+            "descr": "Collaborators can edit this entry as you can (except for changing the privacy, license and roles)."
+          },
+          "shared": {
+            "label": "Visible to",
+            "descr": "The following users can read your entry even if it's private"
           }
         },
-        "private": {
-          "text": "Private",
-          "descr": "Only you or users you shared the entry with can see it.",
-          "alt_descr": {
-            "default": "Private entries are only visible to those you share them with"
-          }
+        "search": {
+          "min-msg": "select at least {min} user"
         }
       }
     },
-    "license": {
-      "label": "License",
-      "descr": "Choose a license for this entry",
-      "alt_label": {
-        "default": "Default license"
+    "comp": {
+      "actor": {
+        "deactivated": "deactivated"
       },
-      "alt_descr": {
-        "default": "Choose a default license for your entries"
-      }
-    },
-    "entry_roles": {
-      "label": "Collaborators and entry access",
-      "descr": "Grant access to other users",
-      "roles": {
-        "creator": {
-          "label": "Creator",
-          "descr": "Creator/owner of this entry"
-        },
-        "collaborator": {
-          "label": "Collaborator",
-          "descr": "Collaborators can edit this entry as you can (except for changing the privacy, license and roles)."
-        },
-        "shared": {
-          "label": "Visible to",
-          "descr": "The following users can read your entry even if it's private"
+      "actor_index": {
+        "search": "Search a user",
+        "no_user_found": "No user found"
+      },
+      "create_entry_button": {
+        "create_text": "Create entry"
+      },
+      "entrypreview": {
+        "draft": "Draft",
+        "created": "created",
+        "outdated": "Created from an outdated version. Some values might change. Download the entry before updating is recommended",
+        "view": "@:w.view",
+        "edit": "@:w.edit",
+        "update": "update",
+        "review": "review"
+      },
+      "decision_dialog": {
+        "cancel": "@.capitalize:w.cancel",
+        "confirm": "Confirm"
+      },
+      "domain_menu": {
+        "fix_label": "Stay within {domain_title}"
+      },
+      "entry": {
+        "creator_switch_dialog": {
+          "cancel_text": "Back",
+          "title": "Creator changed",
+          "text": "This draft was created by {original}. Do you want to change the creator to {user}?"
         }
+      },
+      "entry_actions": {
+        "cancel_draft": "Creation canceled",
+        "dialogs": {
+          "cancel": {
+            "title": "Dismiss draft",
+            "text": "Are you sure you want to dismiss this draft?",
+            "cancel_text": "keep on editing",
+            "confirm_text": "dismiss this draft"
+          },
+          "delete": {
+            "title": "Delete entry",
+            "text": "Are you sure you want to delete this entry?",
+            "confirm_text": "delete"
+          }
+        },
+        "saved": "Entry saved",
+        "saved_text": "Your entry is saved in the browser until you submit or cancel the creation.",
+        "submitted": "Entry submitted",
+        "updated": "Entry updated",
+        "delete_entry": "Entry deleted",
+        "download": "Download JSON",
+        "review": {
+          "accept": "accept",
+          "reject": "reject"
+        }
+      },
+      "entry_action_buttons": {
+        "btn_save": {
+          "save": "@:w.save",
+          "save_n_back": "@:w.save and back",
+          "save_draft": "save draft"
+        },
+        "not_logged_in": {
+          "title": "You are not logged in",
+          "text": "You can submit observations but they need to be reviewed before they get published. In addition to that their privacy is automatically set to public and their license is set to (CC0) - No Rights reserved/public domain. ",
+          "cc_ref_text": "Read more about CC0."
+        }
+      },
+      "entry_validation": {
+        "h1": "Validation",
+        "has_missing": "Missing or incomplete aspects:",
+        "has_missing_t": "Incomplete entries cannot be submitted. Please, add the missing information or save your entry as a draft.",
+        "ok": "All values in this entry are ok.",
+        "msgs": {
+          "missing": "{aspect_label} missing",
+          "list_not_enough": "{aspect_label} requires more {item_name}",
+          "composite_incomplete": "  is not complete: missing components: {invalid_components_msgs}",
+          "listitem_incomplete": "{aspect_label} has at least one incomplete item: {invalid_item_msgs}"
+        }
+      },
+      "filterlist": {
+        "appliead_filters": "Applied filters",
+        "btn_add_filter": "add filter"
+      },
+      "global_role": {
+        "admin": "Admin",
+        "editor": "Editor",
+        "user": "User",
+        "visitor": "Visitor"
+      },
+      "image_asp": {
+        "no_images": "No images",
+        "cover_image": "cover image",
+        "not_found": "Image could not be loaded",
+        "not_found_draft": "Image has been removed"
+      },
+      "language_select": {
+        "label": "Language"
+      },
+      "legend": {
+        "legend": "Legend"
+      },
+      "location_asp": {
+        "no_loc": "No location",
+        "offline": "You cannot set the location while beeing offline",
+        "public_loc": {
+          "base": "Public location",
+          "options": {
+            "rnd": "The exact location is not visible, but a randomly moved location (max.50km) (yellow marker).",
+            "exact": "The exact location will be visible.",
+            "region": "The location's administrative unit (region) will be visible (yellow marker)."
+          }
+        },
+        "show entries": "Show my entries"
+      },
+      "map_wrapper": {
+        "locations": "@:w.n_locations",
+        "several_countries": "Several countries"
+      },
+      "menu": {
+        "home": "Home",
+        "profile": "Profile",
+        "map": "Map",
+        "login": "@.capitalize:w.login",
+        "logout": "Logout",
+        "register": "@.capitalize:w.register",
+        "users": "Users",
+        "admin": "Admin",
+        "about": "About",
+        "tests": "Test"
+      },
+      "menucontainer": {
+        "tab_main": "Main",
+        "tab_domain": "Entries"
+      },
+      "multiselect_asp": {
+        "min_rule": "not enough items selected",
+        "max_rule": "too many items selected"
+      },
+      "notification_banner": {
+        "complete_profile": "Complete your Profile",
+        "complete_domain_aspects": "Answer some {domain_name} related questions"
+      },
+      "previewlist": {
+        "num_entries": "@:w.n_entries"
+      },
+      "privacy_notification": {
+        "h": "Your Privacy",
+        "p": "We do not use cookies nor do we include any 3rd party cookies. We only store the data that you directly provide in your user profile or in the entries you create or contribute to. <a href=\"/about#privacy\">Read our privacy policy for more information.</a>",
+        "btn": "Thank you"
       },
       "search": {
-        "min-msg": "select at least {min} user"
+        "txt_field_label": "@.capitalize:w.search",
+        "min_chars_rule": "type 4 characters to trigger search",
+        "search_filter": "Search & Filter"
+      },
+      "select_asp": {
+        "descr": "@.capitalize:w.description"
+      },
+      "simple_paginate": {
+        "page": "page",
+        "prev": "previous",
+        "next": "next"
+      },
+      "snackbar": {
+        "something_went_wrong": "Something went wrong"
+      },
+      "treeselect_asp": {
+        "click_to_select": "Click to select"
       }
-    }
-  },
-  "comp": {
-    "actor": {
-      "deactivated": "deactivated"
     },
-    "actor_index": {
-      "search": "Search a user",
-      "no_user_found": "No user found"
+    "lang": {
+      "en": "english",
+      "es": "spanish",
+      "de": "german",
+      "fr": "french"
     },
-    "create_entry_button": {
-      "create_text": "Create entry"
+    "mixin": {
+      "init": {
+        "logged_out": "You are logged out"
+      }
     },
-    "entrypreview": {
-      "draft": "Draft",
-      "created": "created",
-      "outdated": "Created from an outdated version. Some values might change. Download the entry before updating is recommended",
-      "view": "@:w.view",
-      "edit": "@:w.edit",
+    "w": {
+      "login": "login",
+      "register": "register",
+      "search": "search",
+      "entries": "entries",
+      "n_entries": "No entries | {n} entry | {n} entries",
+      "location": "Location",
+      "n_locations": "No locations | {n} location | {n} locations",
+      "description": "description",
       "update": "update",
-      "review": "review"
-    },
-    "domain_menu": {
-      "fix_label": "Stay within {domain_title}"
-    },
-    "entry": {
-      "creator_switch_dialog": {
-        "cancel_text": "Back",
-        "title": "Creator changed",
-        "text": "This draft was created by {original}. Do you want to change the creator to {user}?"
-      }
-    },
-    "entry_actions": {
-      "cancel_draft": "Creation canceled",
-      "dialogs": {
-        "cancel": {
-          "title": "Dismiss draft",
-          "text": "Are you sure you want to dismiss this draft?",
-          "cancel_text": "keep on editing",
-          "confirm_text": "dismiss this draft"
-        },
-        "delete": {
-          "title": "Delete entry",
-          "text": "Are you sure you want to delete this entry?",
-          "confirm_text": "delete"
-        }
-      },
-      "saved": "Entry saved",
-      "submitted": "Entry submitted",
-      "updated": "Entry updated",
-      "delete_entry": "Entry deleted",
-      "download": "Download JSON",
-      "review": {
-        "accept": "accept",
-        "reject": "reject"
-      }
-    },
-    "entry_action_buttons": {
-      "btn_save": {
-        "save": "@:w.save",
-        "save_n_back": "@:w.save and back",
-        "save_draft": "save draft"
-      },
-      "not_logged_in": {
-        "title": "You are not logged in",
-        "text": "You can submit observations but they need to be reviewed before they get published. In addition to that their privacy is automatically set to public and their license is set to (CC0) - No Rights reserved/public domain. ",
-        "cc_ref_text": "Read more about CC0."
-      }
-    },
-    "entry_validation": {
-      "h1": "Validation",
-      "has_missing": "Missing or incomplete aspects:",
-      "has_missing_t": "Incomplete entries cannot be submitted. Please, add the missing information or save your entry as a draft.",
-      "ok": "All values in this entry are ok.",
-      "msgs": {
-        "missing": "{aspect_label} missing",
-        "list_not_enough": "{aspect_label} requires more {item_name}",
-        "composite_incomplete": "  is not complete: missing components: {invalid_components_msgs}",
-        "listitem_incomplete": "{aspect_label} has at least one incomplete item: {invalid_item_msgs}"
-      }
-    },
-    "filterlist": {
-      "appliead_filters": "Applied filters",
-      "btn_add_filter": "add filter"
-    },
-    "global_role": {
-      "admin": "Admin",
-      "editor": "Editor",
-      "user": "User",
-      "visitor": "Visitor"
-    },
-    "image_asp": {
-      "no_images": "No images",
-      "cover_image": "cover image",
-      "not_found": "Image could not be loaded",
-      "not_found_draft": "Image has been removed"
-    },
-    "language_select": {
-      "label": "Language"
-    },
-    "legend": {
-      "legend": "Legend"
-    },
-    "location_asp": {
-      "descr": "Search for a place or click on the map to set the location",
-      "no_loc": "No location",
-      "public_loc": {
-        "base": "Public location",
-        "options": {
-          "rnd": "The exact location is not visible, but a randomly moved location (max.50km) (yellow marker).",
-          "exact": "The exact location will be visible.",
-          "region": "The location's administrative unit (region) will be visible (yellow marker)."
-        }
-      },
-      "show entries": "Show my entries"
-    },
-    "map_wrapper": {
-      "locations": "@:w.n_locations",
-      "several_countries": "Several countries"
-    },
-    "menu": {
-      "home": "Home",
-      "profile": "Profile",
-      "map": "Map",
-      "login": "@.capitalize:w.login",
-      "logout": "Logout",
-      "register": "@.capitalize:w.register",
-      "users": "Users",
-      "admin": "Admin",
-      "about": "About",
-      "tests": "Test"
-    },
-    "menucontainer": {
-      "tab_main": "Main",
-      "tab_domain": "Entries"
-    },
-    "multiselect_asp": {
-      "min_rule": "not enough items selected",
-      "max_rule": "too many items selected"
-    },
-    "notification_banner": {
-      "complete_profile": "Complete your Profile",
-      "complete_domain_aspects": "Answer some {domain_name} related questions"
-    },
-    "previewlist": {
-      "num_entries": "@:w.n_entries"
-    },
-    "privacy_notification": {
-      "h": "Your Privacy",
-      "p": "We do not use cookies nor do we include any 3rd party cookies. We only store the data that you directly provide in your user profile or in the entries you create or contribute to. <a href=\"/about#privacy\">Read our privacy policy for more information.</a>",
-      "btn": "Thank you"
-    },
-    "search": {
-      "txt_field_label": "@.capitalize:w.search",
-      "min_chars_rule": "type 4 characters to trigger search",
-      "search_filter": "Search & Filter"
-    },
-    "select_asp": {
-      "descr": "@.capitalize:w.description"
-    },
-    "simple_paginate": {
-      "page": "page",
-      "prev": "previous",
-      "next": "next"
-    },
-    "snackbar": {
-      "something_went_wrong": "Something went wrong"
-    },
-    "treeselect_asp": {
-      "click_to_select": "Click to select"
+      "delete": "delete",
+      "username": "Username",
+      "back": "back",
+      "view": "view",
+      "edit": "edit",
+      "done": "done",
+      "save": "save",
+      "cancel": "cancel",
+      "entrytype": "Entry type",
+      "tag": "Tag",
+      "_global.asp_location_privacy.labal": "Location privacy",
+      "_global.asp_location_privacy.descr": "Specify the settings for the protection of the exact locations of your entries"
     }
-  },
-  "lang": {
-    "en": "english",
-    "es": "spanish",
-    "de": "german",
-    "fr": "french"
-  },
-  "mixin": {
-    "init": {
-      "logged_out": "You are logged out"
-    }
-  },
-  "w": {
-    "login": "login",
-    "register": "register",
-    "search": "search",
-    "entries": "entries",
-    "n_entries": "No entries | {n} entry | {n} entries",
-    "location": "Location",
-    "n_locations": "No locations | {n} location | {n} locations",
-    "description": "description",
-    "update": "update",
-    "delete": "delete",
-    "username": "Username",
-    "back": "back",
-    "view": "view",
-    "edit": "edit",
-    "done": "done",
-    "save": "save",
-    "cancel": "cancel",
-    "entrytype": "Entry type",
-    "tag": "Tag",
-    "_global.asp_location_privacy.labal": "Location privacy",
-    "_global.asp_location_privacy.descr": "Specify the settings for the protection of the exact locations of your entries"
   }
-}

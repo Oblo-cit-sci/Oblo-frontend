@@ -62,7 +62,7 @@ export default {
     if (!this.has_value) {
       console.log("has no value", this.aspect.name)
     }
-    if (this.aspect.attr.cache) {
+    if (this.attr.cache) {
       const entry = this.get_entry()
       if (entry.version === 0 && entry.status === DRAFT && this.$_.isEqual(this.mvalue, aspect_default_value(this.aspect))) {
         const cached_value = this.$store.getters["get_aspect_cache"](entry.template.slug, this.aspect.name)
@@ -83,7 +83,7 @@ export default {
     },
     // at the moment
     show_title_description() {
-      if (((this.aspect.attr && this.aspect.attr.placeholder) || this.aspect.type === "options") && this.mode === VIEW) {
+      if (((this.attr && this.attr.placeholder) || this.aspect.type === "options") && this.mode === VIEW) {
         return false
       }
       if (this.extra.hasOwnProperty("show_title_descr")) {
@@ -92,17 +92,17 @@ export default {
         return true
     },
     visible() {
-      return !this.disable || !this.aspect.attr.hide_on_disabled
+      return !this.disable || !this.attr.hide_on_disabled
     },
     is_flex() {
       return this.mode === FLEX
     },
     real_mode() {
-      if ((this.aspect.attr && this.aspect.attr.ref_value) || this.fixed_value) {
+      if ((this.attr && this.attr.ref_value) || this.fixed_value) {
         return VIEW
       }
-      if (this.aspect.attr && this.aspect.attr.mode !== undefined) {
-        return this.aspect.attr.mode
+      if (this.attr && this.attr.mode !== undefined) {
+        return this.attr.mode
       }
       // console.log("is flex", this.is_flex, this.flex_mode)
       if (this.is_flex) {
@@ -111,14 +111,14 @@ export default {
       return this.mode
     },
     disable() {
-      return this.condition_fail || this.$_.get(this.aspect.attr, "disable", false)
+      return this.condition_fail || this.$_.get(this.attr, "disable", false)
     },
     has_action() {
-      return this.aspect.attr.hasOwnProperty("action")
+      return this.attr.hasOwnProperty("action")
     },
     disabled_text() {
       if (this.condition_fail) {
-        return this.aspect.attr.condition.disabled_text
+        return this.attr.condition.disabled_text
       } else {
         return "disabled"
       }
@@ -127,10 +127,10 @@ export default {
       return aspect_loc_str(this.$_.tail(this.aspect_loc))
     },
     fixed_value() {
-      return this.aspect.attr.hasOwnProperty("value")
+      return this.attr.hasOwnProperty("value")
     },
     invisible_class() {
-      return !this.$_.get(this.aspect, "attr.visible", true)
+      return !this.$_.get(this.attr, "visible", true)
     }
   },
   methods: {

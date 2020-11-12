@@ -10,6 +10,9 @@ export const state = () => ({
 const ld = require('lodash')
 
 export const mutations = {
+  set_codes(state, codes) {
+    state.codes = codes
+  },
   add_codes(state, code_arr) {
     for (let code_entry of code_arr) {
       state.codes[code_entry.slug] = code_entry
@@ -68,7 +71,7 @@ export const getters = {
     else
       return null
   },
-  all_codes(state) {
+  codes(state) {
     return state.codes
   },
   get_aspect_cache(state) {

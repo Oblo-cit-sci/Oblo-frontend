@@ -73,7 +73,7 @@
     },
     computed: {
       force_view() {
-        return this.aspect.attr.force_view
+        return this.attr.force_view
       },
       has_some_icons() {
         // o._icon is basically just for privacy, check if
