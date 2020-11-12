@@ -48,13 +48,13 @@ export default {
   },
   computed: {
     edit_view() {
-      if (this.aspect.attr.force_view) {
-        const view = this.aspect.attr.force_view
+      if (this.attr.force_view) {
+        const view = this.attr.force_view
         if (["list", "select"].includes(view)) {
           return view
         }
       }
-      const list_thresh = this.aspect.attr.list_tresh || 5
+      const list_thresh = this.attr.list_tresh || 5
       if (this.options.length <= list_thresh) {
         return "list"
       } else {
@@ -85,12 +85,12 @@ export default {
     },
     count_rules() {
       const rules = []
-      if (this.aspect.attr.min) {
-        const rule = (v) => v && v.length >= this.aspect.attr.min || this.$t("comp.multiselect_asp.min_rule")
+      if (this.attr.min) {
+        const rule = (v) => v && v.length >= this.attr.min || this.$t("comp.multiselect_asp.min_rule")
         rules.push(rule)
       }
-      if (this.aspect.attr.max) {
-        const rule = (v) => v && v.length <= this.aspect.attr.max || this.$t("comp.multiselect_asp.max_rule")
+      if (this.attr.max) {
+        const rule = (v) => v && v.length <= this.attr.max || this.$t("comp.multiselect_asp.max_rule")
         rules.push(rule)
       }
       return rules

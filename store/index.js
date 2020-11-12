@@ -74,6 +74,10 @@ export const getters = {
   codes(state) {
     return state.codes
   },
+  // @deprecated
+  all_codes(state) {
+    return state.codes
+  },
   get_aspect_cache(state) {
     return (template_slug, aspect_name) => {
       const template_cache = state.aspect_value_cache[template_slug]

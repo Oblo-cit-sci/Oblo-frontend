@@ -30,12 +30,12 @@
     data() {
       return {
         mask: "",
-        suffix: this.aspect.attr.suffix || "",
+        suffix: this.attr.suffix || "",
         num_type: null,
-        min: this.aspect.attr.min,
-        max: this.aspect.attr.max,
+        min: this.attr.min,
+        max: this.attr.max,
         minmax: value => {
-          if (this.aspect.attr.min !== undefined && value < this.aspect.attr.min) {
+          if (this.attr.min !== undefined && value < this.attr.min) {
             return "value must be at least " + (this.aspect.attr.min)
           } else if (this.aspect.attr.max !== undefined && value > this.aspect.attr.max) {
             return "value cannot be higher then " + (this.aspect.attr.max)

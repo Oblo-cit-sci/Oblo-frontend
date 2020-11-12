@@ -1,6 +1,4 @@
 import {mapGetters} from "vuex"
-import {APP_CONNECTED,} from "~/store/app"
-import {dev_env} from "~/lib/util"
 import FixDomainMixin from "~/components/global/FixDomainMixin"
 import {PAGE_INDEX} from "~/lib/pages"
 import {default_settings} from "~/lib/settings"
@@ -8,22 +6,22 @@ import {db_vars} from "~/lib/db_vars"
 import SettingsChangeMixin from "~/components/global/SettingsChangeMixin"
 import {NO_DOMAIN} from "~/lib/consts"
 import HomePathMixin from "~/components/menu/HomePathMixin"
+import EnvMixin from "~/components/global/EnvMixin"
 
 export default {
   name: "InitializationMixin",
-  mixins: [FixDomainMixin, SettingsChangeMixin, HomePathMixin],
+  mixins: [FixDomainMixin, SettingsChangeMixin, HomePathMixin, EnvMixin],
   created() {
     if (!this.db_loaded)
       this.reload_storage()
     if (!this.$api.is_initialized()) {
       this.$api.init(this.$axios)
-      if (!dev_env()) {
+      if (this.is_prod) {
         this.privacy_sheet_open = true
       }
     }
   },
   computed: {
-
     ...mapGetters({
       db_loaded: "app/db_loaded",
       connected: "app/connected",

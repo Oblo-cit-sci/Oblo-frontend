@@ -31,7 +31,7 @@
     v-dialog(width="800" v-model="dialogOpen" height="100%")
       TreeleafPicker(
         :tree="tree"
-        :attr="aspect.attr"
+        :attr="attr"
         :data_source="data_source"
         v-model="int_value"
         @clear="clear"
@@ -119,8 +119,8 @@ export default {
       // console.log(this.tree, options.include_levels)
       if (this.direct_select) {
         let options = {}
-        if (this.aspect.attr.allow_select_levels) {
-          options.include_levels = this.aspect.attr.allow_select_levels
+        if (this.attr.allow_select_levels) {
+          options.include_levels = this.attr.allow_select_levels
         } else {
           options.include_levels = [this.tree.levels.length - 1]
         }
