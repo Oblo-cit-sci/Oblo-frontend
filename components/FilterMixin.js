@@ -163,6 +163,7 @@ export default {
       if (filter.name === "domain") {
         return entries.filter(e => e.domain === filter.value)
       } else if (filter.name === "template") {
+        console.log(filter, entries)
         return entries.filter(e => filter.value.includes(e.template.slug))
       } else if (filter.name === "status") {
         return entries.filter(e => e.status === filter.value)

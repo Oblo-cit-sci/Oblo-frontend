@@ -20,8 +20,8 @@
     computed: {},
     methods: {},
     created() {
-      this.$api.actor.logout().then(() => {
-        this.ok_snackbar("You are logged out")
+      this.$api.actor.logout().then(({data}) => {
+        this.ok_snackbar(data.msg)
         this.clear_storage()
         // store back drafts
         this.persist_entries()
@@ -32,7 +32,7 @@
       }).catch((err) => {
         console.log("logout error", err)
         if (this.$_.get(err, "response.status") === 401) {
-          this.ok_snackbar("You are logged out")
+          this.err_error_snackbar(err)
         }
         this.remove_from_storage("auth_token")
         this.$store.dispatch("logout")

@@ -34,10 +34,11 @@ import NavBaseMixin from "~/components/NavBaseMixin"
 import InitializationMixin from "~/layouts/InitializationMixin"
 import {mapGetters, mapMutations} from "vuex"
 import {extract_unpacked_values} from "~/lib/aspect"
+import LanguageMixin from "~/components/LanguageMixin";
 
 export default {
   name: "LoginComponent",
-  mixins: [TypicalAspectMixin, TriggerSnackbarMixin, PersistentStorageMixin, LoginMixin, NavBaseMixin, InitializationMixin],
+  mixins: [TypicalAspectMixin, TriggerSnackbarMixin, PersistentStorageMixin, LoginMixin, NavBaseMixin, LanguageMixin, InitializationMixin],
   components: {Aspect},
   props: {
     go_home: {
@@ -78,14 +79,15 @@ export default {
     async login() {
       this.login_loading = true
       this.$api.actor.login(extract_unpacked_values(this.aspects)).then(({data}) => {
-        this.ok_snackbar(this.$t("page.login.login_successful"))
-        this.process_login(data)
+        this.ok_snackbar(data.msg)
+        this.process_login(data.data)
         // todo could just be index/clear_entries (change name) but needs await
         this.clear_search()
         this.clear_entries()
         this.map_clear()
         const settings = this.user_settings
-        this.complete_language_domains(settings.fixed_domain, settings.ui_language).then(() => {
+
+        this.change_language(settings.ui_language, false, settings.domain_language).then(() => {
           if(this.go_home) {
             this.home()
           } else {

@@ -136,10 +136,10 @@ export default {
             return {value: raw}
         }
       }
-      if (!this.aspect.hasOwnProperty("attr")) {
-        console.log("AspectMixin.mvalue: broken Aspect, no ATTR:", this.aspect.name)
-        return pack_value(aspect_raw_default_value(this.aspect))
-      }
+      // if (!this.aspect.hasOwnProperty("attr")) {
+      //   console.log("AspectMixin.mvalue: broken Aspect, no ATTR:", this.aspect.name)
+      //   return pack_value(aspect_raw_default_value(this.aspect))
+      // }
       //console.log("value . ",this.aspect.name)
       if (this.attr.IDAspect) {
         let this_uuid = aspect_loc_uuid(this.aspect_loc)

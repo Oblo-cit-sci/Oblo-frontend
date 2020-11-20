@@ -26,7 +26,7 @@
         Aspect(:aspect="aspect"
           :ext_value.sync="aspect.value"
           @update:error="$set(aspect, 'error', $event)"
-          :mode="aspect_mode")
+          :mode="mode")
     <!-- Email and Password edit -->
     div(v-if="edit_mode")
       h3 {{$t('page.profile.h_email_password')}}
@@ -61,14 +61,15 @@
       v-divider.wide_divider
     <!-- Other aspects -->
     <!-- Research aspects, no_domain aspects -->
-    div
+    div(v-if="!$_.isEmpty(no_domain_aspects)")
+    div(v-if="!$_.isEmpty(no_domain_aspects)")
       h2#research_aspects {{$t('page.profile.h_research')}}
       div {{$t('page.profile.research_info')}}
-      AspectSet(:aspects="no_domain_aspects" :values.sync="no_domain_values" :mode="edit_mode ? 'edit' : 'view'")
+      AspectSet(:aspects="no_domain_aspects" :values.sync="no_domain_values" :mode="mode")
     <!-- domain specific aspects -->
-    div(v-if="edit_mode && !$_.isEmpty(domain_specific_aspects)")
+    div(v-if="!$_.isEmpty(domain_specific_aspects)")
       h2#domains {{$t("page.profile.h_domain")}}
-      AspectSet(:aspects="domain_specific_aspects" :values.sync="domain_specific_aspects_values" mode="edit")
+      AspectSet(:aspects="domain_specific_aspects" :values.sync="domain_specific_aspects_values" :mode="mode")
     div(v-if="!is_visitor")
       v-btn(v-if="!edit_mode" to="/settings" nuxt color="info") {{$t("page.profile.btn_settings")}}
         v-icon(right) mdi-settings
@@ -163,6 +164,7 @@ export default {
     }
   },
   created() {
+    console.log(this.ui_lang_domain_data(NO_DOMAIN))
     this.no_domain_aspects = this.$_.cloneDeep(this.$_.get(this.ui_lang_domain_data(NO_DOMAIN), "users.profile.additional_aspects", []))
 
     if (this.is_fixed_domain) {
@@ -331,6 +333,12 @@ export default {
           return e
         }
       }
+    },
+    mode() {
+      if(this.edit_mode)
+        return EDIT
+      else
+        return VIEW
     },
     aspect_mode() {
       return this.edit_mode ? EDIT : VIEW

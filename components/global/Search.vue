@@ -27,7 +27,7 @@
           v-row(v-if="has_prominent_filters")
             v-col.py-0(cols="12" v-for="filter in prominent_filters" :key="filter.name")
               Aspect(:aspect="filter.aspect" mode="edit" :ext_value.sync="promoninent_filter_values[filter.name]")
-    v-row(v-if="prepend_search")
+    v-row.mt-3(v-if="prepend_search")
       v-col.py-0(offset="5" cols=2)
         v-progress-circular(indeterminate center size="35" color="success")
     EntryPreviewList(v-if="show_results && !prepend_search"

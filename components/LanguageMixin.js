@@ -1,6 +1,39 @@
+import {DOMAIN_LANGUAGE, UI_LANGUAGE} from "~/lib/consts";
+
 export default {
   name: "LanguageMxin",
+  computed: {
+    loaded_ui_languages() {
+      return Object.keys(this.$i18n.messages)
+    }
+  },
   methods: {
+    async change_language(language, update_settings = true, domain_language = null) {
+      if (!domain_language) {
+        domain_language = language
+      }
+      let domain = this.$store.getters["domain/act_domain_name"] // undefined for non-domain
+      // todo maybe can go into a mixin, if there are other settings for the language
+      this.complete_language_domains(domain, domain_language).then(() => {
+        if (update_settings)
+          this.set_settings_value(DOMAIN_LANGUAGE, domain_language)
+      })
+      if (!this.loaded_ui_languages.includes(language)) {
+        try {
+          const {data} = await this.$api.language.get_component("fe", language)
+          this.$i18n.setLocaleMessage(language, data)
+        } catch (e) {
+          if (e.response.status === 404) {
+            console.log("frontend not available in the language:", language)
+            return
+          }
+        }
+      }
+      this.$api.axios.defaults.headers.common["Accept-Language"] = language
+      if (update_settings)
+        this.set_settings_value(UI_LANGUAGE, language)
+      this._i18n.locale = language
+    },
     /**
      *
      * @param domain one domain or null, which considers all domain
