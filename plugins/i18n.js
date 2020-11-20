@@ -25,7 +25,7 @@ export default ({ app }) => {
     messages: {
       en: require("~/static/langs/content-en.json"),
       de: require("~/static/langs/content-de.json"),
-      es: require("~/static/langs/content-es.json")
+      // es: require("~/static/langs/content-es.json")
     }
   })
 

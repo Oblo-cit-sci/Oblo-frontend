@@ -83,7 +83,7 @@ export default {
       }
       switch (this.menu_state) {
         case MENU_MODE_MAIN:
-          return 200;
+          return 300;
         case MENU_MODE_DOMAIN:
           switch (this.$vuetify.breakpoint.name) {
             case "xl":

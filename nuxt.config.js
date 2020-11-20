@@ -114,7 +114,7 @@ module.exports = {
           },
         },
       }
-    }]
+    }, '@nuxt/typescript-build']
   ],
   /*
   ** Axios module configuration

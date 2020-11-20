@@ -156,7 +156,7 @@ export default {
       }
     },
     show_layer_menu_button() {
-      return this.map_loaded
+      return this.map_loaded && this.available_layers.length > 0
     },
     show_load_overlay() {
       // the upadting flag doesnt work properly since mapbox does it async
@@ -173,6 +173,8 @@ export default {
   created() {
     if (this.domain_name) {
       this.load_map_entries(this.domain_name)
+    } else {
+      console.log("no domain for map-wrapper")
     }
     this.last_map_options = this.map_options()
 
@@ -466,6 +468,42 @@ export default {
       if (this.selected_entry) {
         this.change_entry_markers_mode(this.selected_entry, true)
       }
+
+      //
+      // this.map.addSource("territories", {
+      //   type: "geojson",
+      //   data: "https://native-land.ca/coordinates/indigenousTerritories.json",
+      //   // generateId: true, // this fucks up selection state of features, since the ids change or something...
+      // })
+      //
+      // this.map.addLayer({
+      //   'id': 'territories_fills',
+      //   'type': 'fill',
+      //   'source': 'territories',
+      //   'layout': {},
+      //   'paint': {
+      //     'fill-color': ["get", "color"],
+      //     'fill-opacity': 0.9
+      //   }
+      // });
+      // this.map.addLayer({
+      //   'id': 'territories_names',
+      //   'type': 'symbol',
+      //   'source': 'territories',
+      //   'layout': {
+      //     'text-field': ["get","Name"],
+      //     'text-font': [
+      //       'Open Sans Bold',
+      //       'Arial Unicode MS Bold'
+      //     ],
+      //     'text-size': 11,
+      //   },
+      //   'paint': {
+      //     'text-color': '#202',
+      //     'text-halo-color': '#fff',
+      //     'text-halo-width': 2
+      //   },
+      // });
     },
     aspect_dialog_update(selected_layers) {
       // todo could be fixed by making multiselects default: []
@@ -601,7 +639,7 @@ export default {
     },
     store_cam_options() {
       // console.log("storing cam map options")
-      if(this.map) {
+      if (this.map) {
         this.$store.commit("map/set_camera_options_cache", {
           domain: this.domain_name, options: {
             zoom: this.map.getZoom(),

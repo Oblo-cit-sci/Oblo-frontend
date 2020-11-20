@@ -3,14 +3,25 @@ import {NO_DOMAIN} from "~/lib/consts"
 const ld = require("lodash")
 
 export const state = () => ({
-  domains: [],
+  /**
+   * index sorted, names as key
+   * value: name, languages, index
+   * lang -> where language-contents go in
+   * lang.en = ...
+   */
+  domains: new Map(),
   act_domain_name: NO_DOMAIN
 })
 
 export const mutations = {
   set_domains(state, {domains_data, language}) {
-    if (state.domains.length === 0) {
-      state.domains = domains_data
+    if (state.domains.size === 0) {
+      state.domains = new Map(ld.toPairs(ld.keyBy(domains_data, d => d.name)))
+      for(let d of state.domains.values()) {
+        Object.assign(d.content, {title: d.title, name: d.name})
+        d.langs = {[d.language]: d.content}
+      }
+      console.log(state.domains)
     } else {
       // todo this only works, since all domains are always sent along
       for (let domain_index in domains_data) {
@@ -32,7 +43,7 @@ export const mutations = {
 
 export const getters = {
   domains(state) {
-    return state.domains
+    return Array.from(state.domains.values())
   },
   // todo act_domain_name
   act_domain_name(state) {
@@ -51,12 +62,12 @@ export const getters = {
   },
   domain_by_name(state) {
     return domain_name => {
-      return state.domains.find(domain => domain.name === domain_name)
+      return state.domains.get(domain_name)
     }
   },
   lang_domain_data(state, getters) {
     return (domain_name, language) => {
-      return getters.domain_by_name(domain_name)[language]
+      return getters.domain_by_name(domain_name).langs[language]
     }
   },
   // todo just used once atm. maybe not required as store getter

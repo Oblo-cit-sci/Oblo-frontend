@@ -51,13 +51,14 @@ export default {
       }
     },
     async initialize() {
-
       console.log("initialize")
-
       // todo maybe this should be before init_data, to request the set language
       const auth_token = this.$store.getters["user/get_auth_token"]
+      // debugger
+      console.log("i")
       if (auth_token.access_token) {
         const login = await this.$api.actor.validate_token(auth_token)
+        console.log("ii")
         if (login.data.token_valid) {
           console.log("stored token is valid")
           this.$store.commit("user/login")

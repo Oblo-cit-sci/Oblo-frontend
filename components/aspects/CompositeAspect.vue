@@ -15,7 +15,7 @@
 <script>
 
 import Aspect from "../Aspect";
-import {INT, FLOAT, COMPONENT, ASPECT} from "~/lib/consts";
+import {INT, FLOAT, COMPONENT} from "~/lib/consts";
 import {loc_append} from "~/lib/aspect";
 import AspectComponentMixin from "./AspectComponentMixin";
 

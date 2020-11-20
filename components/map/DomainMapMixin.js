@@ -14,7 +14,7 @@ export default {
       layer_status: "map/layer_status"
     }),
     available_layers() {
-      return this.$_.get(this.domain_data, "map.layers")
+      return this.$_.get(this.domain_data, "map.layers", [])
     },
     domain_templates_color_list() {
       return this.templates_color_list(this.$store.getters["templates/templates_of_domain"](this.domain_name))
@@ -26,7 +26,7 @@ export default {
       const options_layer_map = this.$_.keyBy(transform_options_list(this.available_layers), "value")
       for (let layer_name in options_layer_map) {
         const visibility = active_layers.includes(layer_name) ? "visible" : "none"
-        const layerIds = this.$_.get(options_layer_map[layer_name], "layers", [layer_name])
+        const layerIds = this.$_.get(options_layer_map[layer_name], "additional", [layer_name])
         for (let layerId of layerIds) {
           this.map.setLayoutProperty(layerId, 'visibility', visibility)
         }

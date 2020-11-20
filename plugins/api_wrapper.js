@@ -26,6 +26,7 @@ class APIWrapper {
     this.entry = new Entry(this)
     this.entries = new Entries(this)
     this.actor = new Actor(this)
+    this.language = new Language(this)
   }
 
   is_initialized() {
@@ -332,6 +333,22 @@ class Actor extends QueryBase {
   url_profile_pic(registered_name) {
     return `${this.base}/${registered_name}/profile_pic`
   }
+
+}
+
+class Language extends QueryBase {
+
+    constructor(api_wrapper) {
+    super(api_wrapper, "/language")
+  }
+
+    get_component(component, language) {
+      return this.get("get_component", {
+        params: {
+          component, language
+        }
+      })
+    }
 
 }
 

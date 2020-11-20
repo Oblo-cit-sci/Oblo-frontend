@@ -94,7 +94,7 @@ export default {
       // todo pass if edit
       // todo this getting of the value, could maybe also go into the helper...
       let condition_value = null
-      if (this.aspect.hasOwnProperty("attr") && this.attr.hasOwnProperty("condition")) {
+      if (this.attr.hasOwnProperty("condition")) {
         if (this.aspect_loc) {
           let aspect_location = loc_prepend(this.edit ? EDIT : ENTRY, this.entry_uuid,
             aspect_loc_str2arr(this.attr.condition.aspect))

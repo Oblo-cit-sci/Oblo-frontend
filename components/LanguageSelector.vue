@@ -31,6 +31,9 @@ export default {
     has_multiple_languages() {
       return this.available_languages.length > 1
     },
+    loaded_ui_languages() {
+      return Object.keys(this.$i18n.messages)
+    },
     available_languages() {
       // todo when on domain page only take
       const available_languages = this.$store.getters["available_languages"]
@@ -43,14 +46,28 @@ export default {
       get: function () {
         return this.setting(UI_LANGUAGE)
       },
-      set: function (language) {
+      set: async function (language) {
+        console.log("s", language)
         let domain = this.$store.getters["domain/act_domain_name"] // undefined for non-domain
         // todo maybe can go into a mixin, if there are other settings for the language
-        this.complete_language_domains(domain, language).then(() => {
+        // this.complete_language_domains(domain, language).then(() => {
+        //   // this.set_settings_value(UI_LANGUAGE, language)
+        //   // this.$store.commit("set_domain")
+        // })
+        try {
+          if(!this.loaded_ui_languages.includes(language)) {
+            const {data} = await this.$api.language.get_component("fe", language)
+            this.$i18n.setLocaleMessage(language, data)
+          }
+          this.$api.axios.defaults.headers.common["Accept-Language"] = language
           this.set_settings_value(UI_LANGUAGE, language)
-          // this.$store.commit("set_domain")
-        })
-        this.$api.axios.defaults.headers.common["Accept-Language"] = language
+          this._i18n.locale = language
+        } catch (e) {
+          if (e.response.status === 404) {
+            console.log("frontend not available in the language:", language)
+          }
+        }
+
       }
     },
     label() {
@@ -59,10 +76,12 @@ export default {
   },
   watch: {
     language(lang) {
-      this._i18n.locale = lang
-      if (!this.$store.getters["user/logged_in"]) {
-        this.$api.axios.defaults.headers.common["Content-Language"] = lang + "-" + lang.toUpperCase()
-      }
+      console.log("w", lang)
+      // this._i18n.locale = lang
+      //
+      // if (!this.$store.getters["user/logged_in"]) {
+      //   this.$api.axios.defaults.headers.common["Content-Language"] = lang + "-" + lang.toUpperCase()
+      // }
     }
   }
 }

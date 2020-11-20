@@ -44,8 +44,6 @@ export default {
       return this.$store.getters["map/goto_location"]()
     }
   },
-  beforeDestroy() {
-  },
   methods: {
     onMapLoaded(map) {
       this.map = map
@@ -107,8 +105,8 @@ export default {
         const feature = e.features[0]
         this.act_hoover_id = feature.id
         this.map.setFeatureState(
-            {source: source_name, id: this.act_hoover_id},
-            {hover: true}
+          {source: source_name, id: this.act_hoover_id},
+          {hover: true}
         )
         this.add_popup(feature, e, feature.properties.title)
       })
@@ -116,7 +114,7 @@ export default {
       this.map.on('mouseleave', entries_layer_name, () => {
         if (this.act_hoover_id !== null) {
           this.map.removeFeatureState(
-              {source: source_name, id: this.act_hoover_id}, "hover")
+            {source: source_name, id: this.act_hoover_id}, "hover")
 
           this.act_hoover_id = null
           this.remove_all_popups()
@@ -162,13 +160,13 @@ export default {
     },
     geolocate(control, position) {
       console.log(
-          `User position: ${position.coords.latitude}, ${position.coords.longitude}`
+        `User position: ${position.coords.latitude}, ${position.coords.longitude}`
       )
     },
     download_image() {
       // doesnt contain the marker yet
       let image = this.map.getCanvas().toDataURL("image/png")
-          .replace("image/png", "image/octet-stream")
+        .replace("image/png", "image/octet-stream")
       let a = document.createElement('a')
       a.href = image
       a.download = "neat.png"
@@ -196,8 +194,8 @@ export default {
         coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
       }
       const popup = new this.mapboxgl.Popup()
-          .setLngLat(coordinates)
-          .setHTML(popup_html)
+        .setLngLat(coordinates)
+        .setHTML(popup_html)
 
       popup.addTo(this.map)
       this.popups.push(popup)

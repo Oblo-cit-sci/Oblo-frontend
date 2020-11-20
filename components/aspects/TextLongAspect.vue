@@ -34,7 +34,7 @@
     },
     created() {
       //console.log(this.aspect.attr.hasOwnProperty("max"));
-      if(this.aspect.hasOwnProperty("attr") && this.aspect.attr.hasOwnProperty("max")) {
+      if(this.aspect.attr.hasOwnProperty("max")) {
         this.counter =  this.aspect.attr.max;
       }
     },

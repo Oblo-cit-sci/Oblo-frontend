@@ -104,7 +104,7 @@ export default {
     // todo the item should not be just a string, DEPRECATED
     //console.log("object type", this.aspect.items)
     this.item_aspect = this.aspect.items
-    if (this.aspect.items.type === "composite" || this.aspect.attr.force_panels) {
+    if (this.aspect.items.type === "composite" || this.attr.force_panels) {
       this.structure = PANELS
       // get the titles // should cause having the panel titles when entry is entered
       // fill in the values of the titleAspect
@@ -301,9 +301,9 @@ export default {
         } else {
           // todo does not need to be a method?
           const index_name = item_name + " " + (parseInt(i) + 1).toString()
-          if (simple_type && !this.aspect.attr.indexTitle) {
+          if (simple_type && !this.attr.indexTitle) {
             titles[i] = this.value[i].value
-          } else if (this.aspect.attr.indexTitle) {
+          } else if (this.attr.indexTitle) {
             titles[i] = index_name
           } else if (!this.value[i].value[titleAspectName]) {
             console.log(`list no component value! index:${i}, component:${titleAspectName}`)
@@ -352,10 +352,10 @@ export default {
       }
     },
     is_public() {
-      return this.aspect.attr.add_privacy || false
+      return this.attr.add_privacy || false
     },
     has_indexTitle() {
-      return this.aspect.attr.indexTitle || false
+      return this.attr.indexTitle || false
     },
     min_max_props() {
       return {

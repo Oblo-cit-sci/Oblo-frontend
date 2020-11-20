@@ -21,7 +21,7 @@
 </template>
 
 <script>
-  import {INT, FLOAT} from "../../lib/consts";
+  import {INT, FLOAT} from "~/lib/consts";
   import AspectComponentMixin from "./AspectComponentMixin";
 
   export default {

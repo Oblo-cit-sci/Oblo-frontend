@@ -56,8 +56,9 @@ export default {
       window.history.replaceState(null, document.title, "/licci")
     }
     if (this.domain_name !== this.$store.getters["domain/act_domain_name"]) {
-      const language = this.$store.getters["user/settings"].ui_language
-      const domain_data = this.$store.getters["domain/lang_domain_data"](this.domain_name, language)
+      // const language = this.$store.getters["user/settings"].domain_language
+      // console.log(language)
+      // const domain_data = this.$store.getters["domain/lang_domain_data"](this.domain_name, language)
       this.$store.commit("domain/set_act_domain", this.domain_name)
     }
 
@@ -92,7 +93,7 @@ export default {
       return this.query_param_domain_name
     },
     domain_data() {
-      const language = this.$store.getters["user/settings"].ui_language
+      const language = this.$store.getters["user/settings"].domain_language
       return this.$store.getters["domain/lang_domain_data"](this.domain_name, language)
     },
     dialog_width() {
