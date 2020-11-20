@@ -21,10 +21,12 @@ export default {
       return this.domain_data.description
     },
     domain_templates() {
-      return this.all_domains_templates(this.domain_name)
+      const language = this.$store.getters["user/settings"].domain_language
+      return this.all_domains_templates(this.domain_name, language)
     },
     create_templates_options() {
       // todo needs refinement, what if this can be changed per user...
+      console.log(this.domain_templates)
       return this.domain_templates.filter(t => (
         this.$_.get(t, "rules.create", "public") === PUBLIC ||
         can_edit_entry(this.$store.getters.user, t)))

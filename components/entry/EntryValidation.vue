@@ -46,7 +46,8 @@
     },
     computed: {
       template() {
-        return this.$store.getters["templates/entry_type"](this.template_slug)
+        const lang = this.$store.getters["user/settings"].domain_language
+        return this.$store.getters["templates/entry_type"](this.template_slug, lang)
       },
       missing() {
         const aspects = this.template.aspects

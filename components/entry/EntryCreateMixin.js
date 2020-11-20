@@ -16,7 +16,8 @@ export default {
     // todo different owner in case of visitor
     // console.log("entry of template_slug", type_slug)
     create_entry(template_slug, language = null, persist = true, init = {}, goto = true) {
-      const template = this.$store.getters["templates/entry_type"](template_slug)
+      const lang = this.$store.getters["user/settings"].domain_language
+      const template = this.$store.getters["templates/entry_type"](template_slug, lang)
       if (!template) {
         return null
       }
@@ -29,7 +30,7 @@ export default {
         (template.rules.privacy === PRIVATE_LOCAL ? "None" : this.$store.getters["user/settings_value"]("default_license"))
       const privacy = template.rules.privacy ? template.rules.privacy : this.$store.getters["user/settings_value"]("default_privacy")
 
-      language = language || this.$store.getters["user/settings"].ui_language
+      language = language || this.$store.getters["user/settings"].domain_language
       const location = init.location || null
 
       const actors = [{

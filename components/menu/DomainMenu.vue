@@ -48,8 +48,11 @@ export default {
   computed: {
     filters() {
       const template_filter_options = this.get_template_filter_options()
+      console.log(template_filter_options)
+      console.log(this.domain_data)
+      const lang = this.$store.getters["user/settings"].domain_language
       template_filter_options.aspect.items = object_list2options(
-        this.$store.getters["templates/templates_of_domain"](this.domain_name), "title", "slug", true)
+        this.$store.getters["templates/templates_of_domain"](this.domain_name, lang), "title", "slug", true)
       const tags_filter_options = this.get_tags_filter_options(this.domain_name)
       // const uuids_select_option = get_uuids_select_option()
       return [template_filter_options, tags_filter_options]

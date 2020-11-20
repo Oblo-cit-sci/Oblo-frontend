@@ -19,12 +19,9 @@ export default {
       const domains_data = data.data.domains
       console.log(domains_data)
       this.$store.commit("domain/set_domains", {domains_data, language})
-      console.log(data.data.entries)
-      // await this.$store.dispatch("set_templates_codes", data.data.templates_and_codes)
-
-      // const domains_data = data.data.domains
-      // this.$store.commit("domain/set_domains", {domains_data, language})
-      // return Promise.resolve()
+      console.log(data.data.templates_and_codes)
+      await this.$store.dispatch("set_templates_codes", data.data.templates_and_codes)
+      return Promise.resolve()
     },
   }
 }

@@ -35,6 +35,7 @@
     },
     computed: {
       options() {
+        console.log("E Create options", this.template_entries)
         return this.$_.map(this.template_entries, o => {
           return {
             text: o.title,

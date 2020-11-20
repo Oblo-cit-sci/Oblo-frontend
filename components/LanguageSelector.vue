@@ -11,7 +11,7 @@
 
 <script>
 import SettingsChangeMixin from "~/components/global/SettingsChangeMixin"
-import {UI_LANGUAGE} from "~/lib/consts"
+import {DOMAIN_LANGUAGE, UI_LANGUAGE} from "~/lib/consts"
 import LanguageMixin from "~/components/LanguageMixin";
 
 export default {
@@ -50,8 +50,7 @@ export default {
         let domain = this.$store.getters["domain/act_domain_name"] // undefined for non-domain
         // todo maybe can go into a mixin, if there are other settings for the language
         this.complete_language_domains(domain, language).then(() => {
-          // this.set_settings_value(UI_LANGUAGE, language)
-          // this.$store.commit("set_domain")
+          this.set_settings_value(DOMAIN_LANGUAGE, language)
         })
         try {
           if(!this.loaded_ui_languages.includes(language)) {

@@ -29,28 +29,28 @@ export default {
       const template_filter_conf = this.act_config.filter(fc => fc.name === "template")[0]
       return this.$_.get(template_filter_conf, "value", [])
     },
-    filter_entries_by_domains(entries, domains) {
-      // todo check if string instead
-      if (domains.constructor !== Array) {
-        domains = [domains]
-      }
-
-      /*
-      todo bring back later, for bringing the basic type, valuelist, ...
-      if (include_no_domain) {
-        domains = this.$_.concat(domains, NO_DOMAIN)
-      }
-      */
-
-      const etype_domain_map = {}
-      this.$store.getters.entry_types_array.forEach(et => {
-        etype_domain_map[et.slug] = et.domain
-      })
-
-      return this.$_.filter(entries, e => {
-        return this.$_.includes(domains, etype_domain_map[e.type_slug])
-      })
-    },
+    // filter_entries_by_domains(entries, domains) {
+    //   // todo check if string instead
+    //   if (domains.constructor !== Array) {
+    //     domains = [domains]
+    //   }
+    //
+    //   /*
+    //   todo bring back later, for bringing the basic type, valuelist, ...
+    //   if (include_no_domain) {
+    //     domains = this.$_.concat(domains, NO_DOMAIN)
+    //   }
+    //   */
+    //
+    //   const etype_domain_map = {}
+    //   this.$store.getters.entry_types_array.forEach(et => {
+    //     etype_domain_map[et.slug] = et.domain
+    //   })
+    //
+    //   return this.$_.filter(entries, e => {
+    //     return this.$_.includes(domains, etype_domain_map[e.type_slug])
+    //   })
+    // },
     entrytype(entries, entrytypes) {
       if (entrytypes.constructor !== Array) {
         entrytypes = [entrytypes]
@@ -178,9 +178,9 @@ export default {
         return entries
       }
     },
-    config_generate(filtername, filtervalue) {
+    config_generate(filtername, filtervalue, language) {
       if (filtername === "template") {
-        const used_templates = this.$store.getters["templates/entry_types_array"].filter(template => filtervalue.includes(template.slug))
+        const used_templates = this.$store.getters["templates/entry_types_array"](language).filter(template => filtervalue.includes(template.slug))
         return {
           "name": "template",
           "t_label": "w.entrytype",

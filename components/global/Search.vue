@@ -120,7 +120,8 @@ export default {
       this.$store.commit("search/set_route", this_route_data)
       // the default changes triggering config change will trigger a search
       if (this.$store.getters["search/get_act_config"].length === 0 && this.domain_data) {
-        const generated = this.config_generate(TEMPLATE, this.$_.get(this.domain_data, "search.default_templates", []))
+        const language = this.$store.getters["user/settings"].domain_language
+        const generated = this.config_generate(TEMPLATE, this.$_.get(this.domain_data, "search.default_templates", []), language)
         this.$store.commit("search/replace_in_act_config", generated)
       } else {
         this.get_entries(false, false)

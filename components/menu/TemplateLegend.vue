@@ -25,8 +25,9 @@
     data() {
       // this would add name: "template" to the selected
       // const template_filter_options = Object.assign({}, entrytype_filter_options)
+      const language = this.$store.getters["user/settings"].domain_language
       const templates = object_list2options(
-        this.$store.getters["templates/templates_of_domain"](this.domain_name),
+        this.$store.getters["templates/templates_of_domain"](this.domain_name, language),
         "title", "slug", true,
         [{"color": "rules.map.marker_color"}])
       return {

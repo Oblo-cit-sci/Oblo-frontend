@@ -86,7 +86,8 @@ export default {
       return this.entry.template.slug
     },
     template() {
-      return this.$store.getters["templates/entry_type"](this.template_slug)
+      const lang = this.$store.getters["user/settings"].domain_language
+      return this.$store.getters["templates/entry_type"](this.template_slug, lang)
     },
     template_color() {
       return this.$_.get(this.template, "rules.map.marker_color")
@@ -96,6 +97,7 @@ export default {
     // },
     entry_title() {
       if (this.is_edit_mode) {
+        console.log("template", this.template)
         let titleAspect = get_entry_titleAspect(this.template)
         if (!titleAspect) {
           return this.entry.title

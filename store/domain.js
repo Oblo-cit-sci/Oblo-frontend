@@ -5,7 +5,7 @@ const ld = require("lodash")
 export const state = () => ({
   /**
    * index sorted, names as key
-   * value: name, languages, index
+   * value: name, languages, langs
    * lang -> where language-contents go in
    * lang.en = ...
    */

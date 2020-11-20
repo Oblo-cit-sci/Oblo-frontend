@@ -1,30 +1,40 @@
 import {COMPOSITE, LIST} from "~/lib/consts";
-import {object_list2options} from "~/lib/options";
 import {entries_domain_filter} from "~/lib/search";
-import {ASPECT, ENTRYLIST} from "~/lib/consts";
 
 const ld = require("lodash")
 
 export const state = () => ({
+  /**
+   * slug as key
+   * value: slug, domain, langs
+   * lang -> where complete templates go in
+   * lang.en = ...
+   */
   entry_types: new Map(), // types for creation
   notes: {}
 })
 
+
 export const getters = {
   entry_type(state) {
     // todo should have a 2nd parameter for language
-    return (type_slug) => {
+    return (type_slug, language) => {
       // console.log("getting entry_type for slug", type_slug, state.entry_types)
       if (!state.entry_types.has(type_slug)) {
         console.log("WARNING, store,entrytype.getters.entry_type: type for slug missing", type_slug, "returning null, should be catched earlier")
       }
-      return state.entry_types.get(type_slug)
+      const base_template = state.entry_types.get(type_slug)
+      if (base_template.lang.hasOwnProperty(language)) {
+        return base_template.lang[language]
+      } else {
+        return base_template.lang[Object.keys(base_template.lang)[0]]
+      }
     }
   },
-  type_name(state, getters) {
-    return slug => {
+  template_title(state, getters) {
+    return (slug, language) => {
       // console.log("typename of ", slug)
-      const etype = getters.entry_type(slug)
+      const etype = getters.entry_type(slug, language)
       if (etype) {
         return etype.title
       } else {
@@ -33,31 +43,10 @@ export const getters = {
       }
     }
   },
-  // domain_of_type(state) {
-  //   return slug => {
-  //     return ld.filter(state.domains, domain => domain.value === state.entry_types.get(slug).domain)[0]
-  //   }
-  // },
-  // entry-types
-  global_entry_types_as_array(state) {
-    // todo generalize, e.g. array of 2val array ["context", "global"]
-    let global_entry_types = [];
-    for (let entry of state.entry_types.values()) {
-      if (entry.rules.context === "global") {
-        global_entry_types.push(entry)
-      }
-    }
-    return global_entry_types
-  },
-  template_map(state) {
-    return state.entry_types
-  },
-  entrytypes(state) {
-    return Object.fromEntries(state.entry_types)
-  },
-  templates_of_domain(state) {
-    return domain_name => {
-      return entries_domain_filter(Array.from(state.entry_types.values()), domain_name)
+  templates_of_domain(state, geters) {
+    return (domain_name, language) => {
+      const domain_templates = entries_domain_filter(Array.from(state.entry_types.values()), domain_name).map(t => t.slug)
+      return domain_templates.map(t => geters.entry_type(t, language))
     }
   },
   get_aspect_def(state, getters) {
@@ -68,21 +57,8 @@ export const getters = {
       })
     }
   },
-  get_aspect_index(state) {
-    return (type_slug, aspect_name) => {
-      return ld.findIndex(state.entry_types.get(type_slug).aspects, (a) => a.name === aspect_name)
-    }
-  },
-  get_aspect(state) {
-    return (type_slug, aspect_name) => {
-      return ld.find(state.entry_types.get(type_slug).aspects, (a) => a.name === aspect_name)
-    }
-  },
-  entrytype_options(state, getters) {
-    return object_list2options(getters.entry_types_array, "title", "slug")
-  },
   entry_types_array(state) {
-    return Array.from(state.entry_types.values())
+    return language => (Array.from(state.entry_types.values()).map(d => d.lang[language || "en"]))
   },
   all_notes(state) {
     return state.notes
@@ -124,32 +100,44 @@ export const getters = {
       }
     }
   },
-  get_entrylist_aspect_locs(state, getters) {
-    return (type_slug) => {
-      const locations = []
-      const e_type = getters.entry_type(type_slug)
-      for (let aspect of e_type.aspects) {
-        if(aspect.type === ENTRYLIST) {
-          // console.log([ASPECT, aspect.name])
-          locations.push([[ASPECT, aspect.name]])
-        }
-      }
-      return locations
-    }
-  }
+  // get_entrylist_aspect_locs(state, getters) {
+  //   return (type_slug) => {
+  //     const locations = []
+  //     const e_type = getters.entry_type(type_slug)
+  //     for (let aspect of e_type.aspects) {
+  //       if (aspect.type === ENTRYLIST) {
+  //         // console.log([ASPECT, aspect.name])
+  //         locations.push([[ASPECT, aspect.name]])
+  //       }
+  //     }
+  //     return locations
+  //   }
+  // }
 }
 
 export const mutations = {
-  set_templates(state, templates) {
-      state.entry_types = templates
-  },
-  entrytype(state, newtype) {
-    state.entry_types[newtype.type_slug] = newtype;
-    //state.entry_type_slug_index_dict[newtype.slug] = state.available_entries.length - 1;
-  },
+  // set_templates(state, templates) {
+  //   state.entry_types = templates
+  // },
+  // entrytype(state, newtype) {
+  //   state.entry_types[newtype.type_slug] = newtype;
+  //   //state.entry_type_slug_index_dict[newtype.slug] = state.available_entries.length - 1;
+  // },
   add_templates(state, template_arr) {
-    for(let template of template_arr) {
-      state.entry_types.set(template.slug, template);
+    for (let template of template_arr) {
+      console.log(template)
+      if (state.entry_types.has(template.slug)) {
+        state.entry_types.get(template.slug).lang[template.language] = template
+      } else {
+        state.entry_types.set(template.slug, {
+          slug: template.slug,
+          domain: template.domain,
+          lang: {
+            [template.language]: template
+          }
+        })
+      }
+      // state.entry_types.set(template.slug, template);
     }
   },
   set_notes(state, notes) {

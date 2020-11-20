@@ -189,7 +189,8 @@ export default {
       return result
     },
     template_title() {
-      return this.$store.getters["templates/type_name"](this.entry.template.slug)
+      const lang = this.$store.getters["user/settings"].domain_language
+      return this.$store.getters["templates/template_title"](this.entry.template.slug, lang)
     },
     default_action_icon() {
       if (this.proper_mode === VIEW)
