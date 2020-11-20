@@ -25,7 +25,6 @@
 
 <script>
 
-import {validationMixin} from 'vuelidate'
 
 import Aspect from "../components/Aspect";
 import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";

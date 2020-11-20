@@ -376,13 +376,13 @@ export const getters = {
   get_search_entries: function (state) {
     return (state.entries)
   },
-  domain: function (state, getters, rootState, rootGetters) {
-    return (uuid) => {
-      const entry = getters.get_entry(uuid)
-      const etype = getters.get_entry_type(entry.template.slug)
-      return rootGetters.domain_of_type(etype.slug).title
-    }
-  },
+  // domain(state, getters, rootState, rootGetters) {
+  //   return (uuid) => {
+  //     const entry = getters.get_entry(uuid)
+  //     const etype = getters.get_entry_type(entry.template.slug)
+  //     return rootGetters.domain_of_type(etype.slug).title
+  //   }
+  // },
   domain_drafts(state, getters) {
     return (domain) => {
       return Array.from(state.entries.values()).filter(e => e.status === "draft" && e.domain === domain)

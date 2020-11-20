@@ -33,11 +33,11 @@ export const getters = {
       }
     }
   },
-  domain_of_type(state) {
-    return slug => {
-      return ld.filter(state.domains, domain => domain.value === state.entry_types.get(slug).domain)[0]
-    }
-  },
+  // domain_of_type(state) {
+  //   return slug => {
+  //     return ld.filter(state.domains, domain => domain.value === state.entry_types.get(slug).domain)[0]
+  //   }
+  // },
   // entry-types
   global_entry_types_as_array(state) {
     // todo generalize, e.g. array of 2val array ["context", "global"]

@@ -16,16 +16,18 @@ export const state = () => ({
 export const mutations = {
   set_domains(state, {domains_data, language}) {
     if (state.domains.size === 0) {
+      domains_data = domains_data.map(d=> ({
+        name: d.name,
+        langs: {[d.language] : Object.assign(d.content, {title: d.title, name: d.name})},
+        languages: d.languages
+      }))
       state.domains = new Map(ld.toPairs(ld.keyBy(domains_data, d => d.name)))
-      for(let d of state.domains.values()) {
-        Object.assign(d.content, {title: d.title, name: d.name})
-        d.langs = {[d.language]: d.content}
-      }
-      console.log(state.domains)
+      // console.log(state.domains)
     } else {
-      // todo this only works, since all domains are always sent along
-      for (let domain_index in domains_data) {
-        state.domains[domain_index][language] = domains_data[domain_index][language]
+      console.log("inserting new language")
+      for (let d of domains_data) {
+        Object.assign(d.content, {title: d.title, name: d.name})
+        state.domains.get(d.name).langs[d.language] = d.content
       }
     }
   },
@@ -58,7 +60,7 @@ export const getters = {
     return getters.act_lang_domain_data.title
   },
   act_lang_domain_data(state, getters, rootGetters) {
-    return getters.lang_domain_data(state.act_domain_name, rootGetters.user.settings.ui_language)
+    return getters.lang_domain_data(state.act_domain_name, rootGetters.user.settings.domain_language)
   },
   domain_by_name(state) {
     return domain_name => {
@@ -68,6 +70,11 @@ export const getters = {
   lang_domain_data(state, getters) {
     return (domain_name, language) => {
       return getters.domain_by_name(domain_name).langs[language]
+    }
+  },
+  has_lang_domain_data(state, getters) {
+    return (domain_name, language) => {
+      return getters.lang_domain_data(domain_name, language) !== undefined
     }
   },
   // todo just used once atm. maybe not required as store getter
