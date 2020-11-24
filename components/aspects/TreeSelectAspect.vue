@@ -49,6 +49,7 @@ import {EDIT} from "~/lib/consts";
 import AspectComponentMixin from "./AspectComponentMixin";
 import GeneralSelectMixin from "~/components/aspect_utils/GeneralSelectMixin"
 import {unpack} from "~/lib/aspect"
+import OptionsMixin from "~/components/aspect_utils/OptionsMixin";
 
 /*
 the start of a custom value field. but wtf...
@@ -65,7 +66,7 @@ the start of a custom value field. but wtf...
 export default {
   name: "TreeSelectAspect",
   components: {TreeleafPicker},
-  mixins: [AspectComponentMixin, GeneralSelectMixin],
+  mixins: [AspectComponentMixin, GeneralSelectMixin, OptionsMixin],
   data() {
     return {
       tree: {},
@@ -112,7 +113,7 @@ export default {
       // build the given_options (all tree available) from what is passed
       // let passed_tree = this.aspect.items;
       if (typeof this.aspect.items === "string") {
-        this.tree = get_codes_as_tree(this.$store, this.aspect.items)
+        this.tree = this.get_codes_as_options(this.aspect.items)
       } else {
         this.tree = this.aspect.items
       }

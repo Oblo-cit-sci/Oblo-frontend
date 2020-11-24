@@ -80,7 +80,7 @@ export default {
       const domains_data = data.data.domains
       const language = data.data.language
       this.$store.commit("domain/set_domains", {domains_data, language})
-      await this.$store.dispatch("set_templates_codes", data.data.templates_and_codes)
+      this.$store.commit("templates/add_templates_codes", data.data.templates_and_codes)
 
       // console.log(data.data)
       this.$store.commit("set_available_languages", data.data.languages)

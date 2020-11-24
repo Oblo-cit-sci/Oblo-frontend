@@ -106,15 +106,15 @@ export default {
     },
     asp_password(name = undefined, alt_label = undefined, attributes = {}) {
       const attr = Object.assign({
-          max: 40,
-          unpacked: true,
-          component_type: "password",
-          extra: {
-            rules: [
-              v => v && (v.length >= 8) || this.$t("asp.password.rule_length")
-            ]
-          }
-        }, attributes)
+        max: 40,
+        unpacked: true,
+        component_type: "password",
+        extra: {
+          rules: [
+            v => v && (v.length >= 8) || this.$t("asp.password.rule_length")
+          ]
+        }
+      }, attributes)
       return {
         type: "str",
         name: name ? name : "password",
@@ -186,19 +186,19 @@ export default {
         if (this.$store.state.codes.hasOwnProperty(license_group)) {
           // `.values.licences` should be documentented somewhere or be more flexible
           const licence_entry = this.$store.state.codes[license_group]
-          const select_transform_keys = this.$_.get(licence_entry, "rules.edit.select_transform_keys", null)
-          if (select_transform_keys) {
-            aspect.items = this.$_.map(licence_entry.values.licenses, (l) => {
-                const transformed = {}
-                this.$_.forEach(select_transform_keys, (k, v) => {
-                  transformed[v] = l[k]
-                })
-                return Object.assign(transformed, l)
-              }
-            )
-          } else {
-            aspect.items = licence_entry.values.licenses
-          }
+          // const select_transform_keys = this.$_.get(licence_entry, "rules.edit.select_transform_keys", null)
+          // if (select_transform_keys) {
+          //   aspect.items = this.$_.map(licence_entry.values.licenses, (l) => {
+          //       const transformed = {}
+          //       this.$_.forEach(select_transform_keys, (k, v) => {
+          //         transformed[v] = l[k]
+          //       })
+          //       return Object.assign(transformed, l)
+          //     }
+          //   )
+          // } else {
+          aspect.items = licence_entry.values.licenses
+          // }
         } else {
           console.log("cannot include license group", license_group)
         }

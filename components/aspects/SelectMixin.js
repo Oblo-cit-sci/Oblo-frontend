@@ -1,12 +1,13 @@
 import {aspect_loc_str2arr, aspect_loc_uuid, check_condition_value, complete_aspect_loc, delim2str} from "~/lib/aspect";
 import {
-  get_codes_as_options,
   no_duplicate_texts,
   object_list2options,
   transform_options_list
 } from "~/lib/options";
+import OptionsMixin from "~/components/aspect_utils/OptionsMixin";
 
 export default {
+  mixins: [OptionsMixin],
   props: {
     clearable: {
       type: Boolean,
@@ -25,7 +26,8 @@ export default {
   created() {
     if (typeof this.aspect.items === "string") {
       if (typeof this.aspect.items === "string") {
-        this.options = get_codes_as_options(this.$store, this.aspect.items)
+        this.options = this.get_codes_as_options(this.aspect.items)
+        console.log(this.options)
         // TODO make this a function. str check is reference str begining. however here that should be either
         // clear or not checked like that...
       } else if (Array.from(Object.keys(delim2str)).includes(this.aspect.items[0])) {

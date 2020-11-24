@@ -14,31 +14,71 @@
 <script>
 
 import EntryCreateList from "~/components/EntryCreateList";
-
 import EntryNavMixin from "~/components/EntryNavMixin"
-import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
-import LayoutMixin from "~/components/global/LayoutMixin"
 import MapWrapper from "~/components/map/MapWrapper"
 import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
 import {MENU_MODE_DOMAIN, QP_D, QP_F, TEMPLATE} from "~/lib/consts"
-import FixDomainMixin from "~/components/global/FixDomainMixin"
-import EntryCreateMixin from "~/components/entry/EntryCreateMixin"
 import URLParseMixin from "~/components/util/URLParseMixin"
 import URLQueryMixin from "~/components/util/URLQueryMixin"
 import DomainData_UtilMixin from "~/components/domain/DomainData_UtilMixin"
 import FilterMixin from "~/components/FilterMixin"
 import TitledDialog from "~/components/dialogs/TitledDialog"
 import EnvMixin from "~/components/global/EnvMixin"
+import EntryCreateMixin from "~/components/entry/EntryCreateMixin";
 
 export default {
   name: "domain",
-  // layout: "new_map_layout",
-  mixins: [DomainData_UtilMixin, HasMainNavComponentMixin, EntryNavMixin, EntryCreateMixin, URLQueryMixin,
-    PersistentStorageMixin, LayoutMixin, FixDomainMixin, URLParseMixin, FilterMixin, LayoutMixin, EnvMixin],
   components: {TitledDialog, MapWrapper, EntryCreateList},
+  mixins: [DomainData_UtilMixin, HasMainNavComponentMixin, EntryNavMixin,  URLQueryMixin, EntryCreateMixin,
+    URLParseMixin, FilterMixin, EnvMixin],
   data() {
     return {
       entrycreate_dialog_open: false
+    }
+  },
+  computed: {
+    dialog_width() {
+      return this.main_container_with
+    },
+    domain_data() {
+      const language = this.$store.getters["user/settings"].domain_language
+      return this.$store.getters["domain/lang_domain_data"](this.domain_name, language)
+    },
+    domain_name() {
+      return this.query_param_domain_name
+    }
+  },
+  created() {
+    if (this.is_prod) {
+      window.history.replaceState(null, document.title, "/licci")
+    }
+    if (this.domain_name !== this.$store.getters["domain/act_domain_name"]) {
+      this.$store.commit("domain/set_act_domain", this.domain_name)
+    }
+
+    if (this.$route.query.f && !this.is_fixed_domain) {
+      this.fix_domain(this.$route.query.f)
+    }
+
+    this.set_menu_state(MENU_MODE_DOMAIN)
+    const config = this.search_config(this.$route.query.s)
+    if (config && config[0].name === TEMPLATE) {
+      const language = this.$store.getters["user/settings"].domain_language
+      this.$store.commit("search/replace_in_act_config", this.config_generate(config[0].name, config[0].value, language))
+    }
+    // get the default templates of the domain
+    this.$bus.$on("domain-create_entry", slug => this.create_entry_or_open_dialog(slug))
+  },
+  beforeDestroy() {
+    this.$bus.$off("domain-create_entry")
+  },
+  methods: {
+    create_entry_or_open_dialog(template_slug = null) {
+      if (template_slug) {
+        this.create_entry(template_slug)
+      } else {
+        this.entrycreate_dialog_open = true
+      }
     }
   },
   beforeRouteEnter(to, from, next) {
@@ -49,67 +89,13 @@ export default {
       next()
     }
   },
-  created() {
-    // console.log("domain created")
-    // console.log("domain page created", this.$route.fullPath)
-    if (this.is_prod) {
-      window.history.replaceState(null, document.title, "/licci")
-    }
-    if (this.domain_name !== this.$store.getters["domain/act_domain_name"]) {
-      // const language = this.$store.getters["user/settings"].domain_language
-      // console.log(language)
-      // const domain_data = this.$store.getters["domain/lang_domain_data"](this.domain_name, language)
-      this.$store.commit("domain/set_act_domain", this.domain_name)
-    }
-
-    if (this.$route.query.f && !this.is_fixed_domain) {
-      this.fix_domain(this.$route.query.f)
-    }
-
-    this.set_menu_state(MENU_MODE_DOMAIN)
-    // read template config from query
-    // for now just query param template, e.g. : ...&s=template:article_review
-    const config = this.search_config(this.$route.query.s)
-    if (config && config[0].name === TEMPLATE) {
-      // console.log("setting from query")
-      const language = this.$store.getters["user/settings"].domain_language
-      this.$store.commit("search/replace_in_act_config", this.config_generate(config[0].name, config[0].value, language))
-    }
-    // get the default templates of the domain
-    this.$bus.$on("domain-create_entry", slug => this.create_entry_or_open_dialog(slug))
-  },
   beforeRouteLeave(from, to, next) {
     if (this.is_prod) {
       window.history.replaceState(null, document.title, this.$route.fullPath)
     }
-    // console.log("domain leave, close menu")
     this.set_menu_open(false)
     next()
   },
-  beforeDestroy() {
-    this.$bus.$off("domain-create_entry")
-  },
-  computed: {
-    domain_name() {
-      return this.query_param_domain_name
-    },
-    domain_data() {
-      const language = this.$store.getters["user/settings"].domain_language
-      return this.$store.getters["domain/lang_domain_data"](this.domain_name, language)
-    },
-    dialog_width() {
-      return this.main_container_with
-    }
-  },
-  methods: {
-    create_entry_or_open_dialog(template_slug = null) {
-      if (template_slug) {
-        this.create_entry(template_slug)
-      } else {
-        this.entrycreate_dialog_open = true
-      }
-    }
-  }
 }
 </script>
 
@@ -121,7 +107,4 @@ export default {
   height: 100%;
 }
 
-.create_dialog {
-  overflow-x: hidden;
-}
 </style>

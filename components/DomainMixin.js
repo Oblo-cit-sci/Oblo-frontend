@@ -7,9 +7,6 @@ import FilterMixin from "~/components/FilterMixin"
 export default {
   name: "DomainMixin",
   mixins: [EntryCreateMixin, URLQueryMixin, FilterMixin],
-  props: {
-    // set_domain_data: Object
-  },
   computed: {
     // why user_logged_in
     ...mapGetters({logged_in: "user/logged_in", all_domains_templates: "templates/templates_of_domain", all_domains: "domain/domain_by_name"}),
@@ -23,20 +20,5 @@ export default {
     domain_pre_filter() {
       return [this.get_domain_filter(this.domain_name)]
     },
-    domain_language_tags() {
-      const domain_lang_codes = this.domain_data.languages
-      return domain_lang_codes.map(lang => this.$t("lang."+lang))
-
-      // const language_names = this.$_.keyBy(this.$store.getters["get_code"]("languages")
-      //   .values.values.filter(lang => domain_lang_codes.includes(lang.code)), "code")
-      // const languages = domain_lang_codes.map(lang_code => language_names[lang_code].name)
-      // console.log(languages)
-      // return languages //domain_lang_codes.map()
-    },
-
-  },
-  methods: {
-    // todo maybe obsolete
-
   }
 }

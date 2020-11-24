@@ -51,6 +51,7 @@
         }
       }
       this.set_selection()
+      console.log("nna", this.options)
     },
     methods: {
       set_selection() {

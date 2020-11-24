@@ -85,22 +85,22 @@ export default {
       }
     },
     act_options() {
-      // console.log("ao", this.tree, this.value)
+      console.log("ao", this.tree, this.value)
       let options = this.tree.root.children
       // console.log("opt", options)
       // console.log(this.value)
       for (let val of this.value) {
         // console.log("a val", val)
-        options = this.$_.get(options.find(o => o.name === val.value), "children", [])
+        options = this.$_.get(options.find(o => o.value === val.value), "children", [])
       }
       options = this.$_.cloneDeep(options)
       // console.log("opt", options)
       for (let index in options) {
         let node = options[index]
-        node["title"] = node["name"]
         node["id"] = parseInt(index)
       }
-      return object_list2options(options, "title", "title")
+      return options
+      // return object_list2options(options, "title", "title")
     },
     done_available() {
       // console.log("done?", this.attr.allow_select_levels, this.act_level)
@@ -203,12 +203,7 @@ export default {
         console.log("bug/error index access larger than levels", index)
         return ""
       }
-      if (typeof this.levels[index] === "string") {
-        console.log("levels structure depracated. use an object, with name key")
-        return this.levels[index]
-      }
-      // console.log("levelname", index, this.levels)
-      return this.levels[index].name
+      return this.levels[index].text
     },
     remove(index) {
       this.$emit("input", this.value.slice(0, index))

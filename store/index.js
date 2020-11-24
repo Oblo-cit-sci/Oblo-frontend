@@ -94,10 +94,6 @@ export const actions = {
     commit("entries/clear")
     commit("search/clear")
   },
-  set_templates_codes(context, entries) {
-    context.commit("templates/add_templates", entries.filter(e => e.type === "template"))
-    context.commit("add_codes", entries.filter(e => e.type === "code"))
-  },
   logout({commit, dispatch}) {
     dispatch("clear_entries")
     dispatch("user/logout")

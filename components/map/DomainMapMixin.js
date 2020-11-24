@@ -1,7 +1,6 @@
 
 import {mapGetters} from "vuex"
 import FilterMixin from "~/components/FilterMixin"
-import DomainMixin from "~/components/DomainMixin"
 import {transform_options_list} from "~/lib/options"
 import DomainDataMixin from "~/components/domain/DomainDataMixin"
 

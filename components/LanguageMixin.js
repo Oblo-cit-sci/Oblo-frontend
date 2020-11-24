@@ -53,7 +53,7 @@ export default {
       console.log(domains_data)
       this.$store.commit("domain/set_domains", {domains_data, language})
       console.log(data.data.templates_and_codes)
-      await this.$store.dispatch("set_templates_codes", data.data.templates_and_codes)
+      this.$store.commit("templates/add_templates_codes", data.data.templates_and_codes)
       return Promise.resolve()
     },
   }

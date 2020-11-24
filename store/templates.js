@@ -10,8 +10,9 @@ export const state = () => ({
    * lang -> where complete templates go in
    * lang.en = ...
    */
+
   entry_types: new Map(), // types for creation
-  notes: {}
+  codes: new Map()
 })
 
 
@@ -24,6 +25,20 @@ export const getters = {
         console.log("WARNING, store,entrytype.getters.entry_type: type for slug missing", type_slug, "returning null, should be catched earlier")
       }
       const base_template = state.entry_types.get(type_slug)
+      if (base_template.lang.hasOwnProperty(language)) {
+        return base_template.lang[language]
+      } else {
+        return base_template.lang[Object.keys(base_template.lang)[0]]
+      }
+    }
+  },
+  code(state) {
+        return (type_slug, language) => {
+      // console.log("getting entry_type for slug", type_slug, state.entry_types)
+      if (!state.codes.has(type_slug)) {
+        console.log("WARNING, store,entrytype.getters.entry_type. type for slug missing:", type_slug, "returning null, should be catched earlier")
+      }
+      const base_template = state.codes.get(type_slug)
       if (base_template.lang.hasOwnProperty(language)) {
         return base_template.lang[language]
       } else {
@@ -59,156 +74,25 @@ export const getters = {
   },
   entry_types_array(state) {
     return language => (Array.from(state.entry_types.values()).map(d => d.lang[language || "en"]))
-  },
-  all_notes(state) {
-    return state.notes
-  },
-  type_notes(state) { // ENTRYTPES_TYPE_NOTES
-    return (type_slug) => {
-      return state.notes[type_slug]
-    }
-  },
-  note(state, getters) {
-    return aspect_descr_loc => {
-      let type_notes = getters.type_notes(aspect_descr_loc[0])
-      aspect_descr_loc = ld.drop(aspect_descr_loc)
-      let select = type_notes
-      //console.log(type_notes)
-
-      if (!type_notes) {
-        //console.log("no notes for this type")
-        return null
-      }
-
-      const c_s = (loc) => {
-        if (!select) {
-          console.log("note error access:", select, loc, aspect_descr_loc)
-        }
-        return select
-      }
-
-      for (let loc of aspect_descr_loc) {
-        if (!c_s()) {
-          return select
-        }
-        select = select[loc]
-      }
-      if (!c_s()) {
-        return select
-      } else {
-        return select._note
-      }
-    }
-  },
-  // get_entrylist_aspect_locs(state, getters) {
-  //   return (type_slug) => {
-  //     const locations = []
-  //     const e_type = getters.entry_type(type_slug)
-  //     for (let aspect of e_type.aspects) {
-  //       if (aspect.type === ENTRYLIST) {
-  //         // console.log([ASPECT, aspect.name])
-  //         locations.push([[ASPECT, aspect.name]])
-  //       }
-  //     }
-  //     return locations
-  //   }
-  // }
-}
-
-export const mutations = {
-  // set_templates(state, templates) {
-  //   state.entry_types = templates
-  // },
-  // entrytype(state, newtype) {
-  //   state.entry_types[newtype.type_slug] = newtype;
-  //   //state.entry_type_slug_index_dict[newtype.slug] = state.available_entries.length - 1;
-  // },
-  add_templates(state, template_arr) {
-    for (let template of template_arr) {
-      console.log(template)
-      if (state.entry_types.has(template.slug)) {
-        state.entry_types.get(template.slug).lang[template.language] = template
-      } else {
-        state.entry_types.set(template.slug, {
-          slug: template.slug,
-          domain: template.domain,
-          lang: {
-            [template.language]: template
-          }
-        })
-      }
-      // state.entry_types.set(template.slug, template);
-    }
-  },
-  set_notes(state, notes) {
-    state.notes = notes
-  },
-  set_type_notes(state, {type_slug, notes}) {
-    state.notes[type_slug] = notes
-    // todo this is a shame. no re-assign no update!
-    // state.notes = new Map(Array.from(state.notes))
-  },
-  init_notes(state, type_slug) {
-    state.notes[type_slug] = {}
-  },
-  add_aspect_descr_notes(state, {type_slug, aspect_name, notes}) {
-    state.notes[type_slug][aspect_name] = notes
-  },
-  add_note(state, {note_location, note}) {
-    // console.log("adding note", note_location, "<", note, ">")
-    const type_slug = note_location[0]
-    const type_notes = state.notes[type_slug]
-    if (type_notes) {
-      let select = type_notes
-      note_location = ld.drop(note_location)
-      for (let loc of note_location) {
-        select = select[loc]
-      }
-      select = Object.assign(select, {_note: note})
-      select = ld.cloneDeep(select)
-      // TODO fucking annoying, and triggers update on all aspects!
-      state.notes = ld.cloneDeep(state.notes)
-    } else {
-      console.log("entrytypes: add_note: wtf!")
-    }
-  },
-  init_aspect_note(state, aspect_loc) {
-    let select = state.notes
-    for (let loc of aspect_loc) {
-      if (select.hasOwnProperty(loc)) {
-        select = select[loc]
-      } else {
-        select[loc] = {_note: null}
-      }
-    }
   }
 }
 
-export const actions = {
-  // todo not used atm
-  init_notes(context, type_slug) {
-    let entry_type = context.getters.entry_type(type_slug)
-
-    const rec_aspect_descr_note_init = (aspect) => {
-      let note_wrapper = {
-        _note: null
+export const mutations = {
+  add_templates_codes(state, arr) {
+    for (let t_c of arr) {
+      console.log(t_c)
+      const insert = t_c.type === "template" ? state.entry_types : state.codes
+      if (insert.has(t_c.slug)) {
+        insert.get(t_c.slug).lang[t_c.language] = t_c
+      } else {
+        insert.set(t_c.slug, {
+          slug: t_c.slug,
+          domain: t_c.domain,
+          lang: {
+            [t_c.language]: t_c
+          }
+        })
       }
-      if (aspect.type === LIST) {
-        note_wrapper[aspect.items.name] = rec_aspect_descr_note_init(aspect.items)
-      } else if (aspect.type === COMPOSITE) {
-        aspect.components.forEach(c => note_wrapper[c.name] = rec_aspect_descr_note_init(c))
-      }
-      return note_wrapper
-    }
-
-    context.commit("init_notes", type_slug)
-    for (let aspect of entry_type.aspects) {
-      //console.log(aspect.name)
-      context.commit("add_aspect_descr_notes", {
-        type_slug,
-        aspect_name: aspect.name,
-        notes: rec_aspect_descr_note_init(aspect)
-      })
     }
   }
 }

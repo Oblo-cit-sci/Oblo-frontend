@@ -1,4 +1,4 @@
-import {transform_options_list} from "~/lib/options"
+import {transform_options_list, tree_options_add_ids} from "~/lib/options"
 import TagsMixin from "~/lib/TagsMixin"
 import TreeMixin from "~/lib/TreeMixin"
 import {mapGetters} from "vuex"
@@ -16,6 +16,21 @@ export default {
     ...mapGetters({get_code_entry: "get_code"})
   },
   methods: {
+    get_codes_as_options(code_slug) {
+      const language = this.$store.getters["user/settings"].domain_language
+      const code_entry = this.$store.getters["templates/code"](code_slug, language)
+      if (code_entry) {
+        if (code_entry.template === "value_list") {
+          return code_entry.values.list
+        } else if (code_entry.template === "value_tree") {
+          const tree_ = this.$_.cloneDeep(code_entry.values)
+          tree_options_add_ids(tree_)
+          return tree_
+        }
+      } else {
+        return []
+      }
+    },
     get_items(input, mode) {
       /**
        * returns an array of str || objects (each obj. must have "value")
@@ -33,7 +48,7 @@ export default {
         // console.log("get_items.input array")
         input = this.resolve_items(input)
         return this.get_options(input)
-      } else if (typeof  input === "object") {
+      } else if (typeof input === "object") {
         return this.resolve_object(input).value
       } else {
         console.log("get items must have a string (code-entry_slug) or an array")
@@ -110,12 +125,12 @@ export default {
     select_from_tree(input_from_tree) {
       // console.log(input)
       const tree_entry = this.get_code_entry(input_from_tree.tree)
-      if(!tree_entry) {
+      if (!tree_entry) {
         console.log("optionsMixin.select_from_tree no code_entry", input_from_tree.tree)
         return []
       }
       let node = null
-      if(input_from_tree.select) {
+      if (input_from_tree.select) {
         // console.log(input_from_tree.select)
         node = this.simple_select(tree_entry.values, input_from_tree.select)
       } else {
