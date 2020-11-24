@@ -90,7 +90,8 @@ export default {
       return this.$store.getters["templates/entry_type"](this.template_slug, lang)
     },
     template_color() {
-      return this.$_.get(this.template, "rules.map.marker_color")
+      console.log(this.template)
+      return this.$_.get(this.template, "rules.map_marker_color")
     },
     // title() {
     //   return this.$store.getters["entries/get_entry_title"](this.uuid)

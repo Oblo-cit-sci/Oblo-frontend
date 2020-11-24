@@ -143,6 +143,19 @@ export default {
         error: true
       }
     },
+    asp_language(name = null, alt_label_descr = undefined) {
+      return {
+        name: name ? name : "language",
+        t_label: this.t_label("asp.language.", alt_label_descr),
+        t_description: this.t_description("asp.language.", alt_label_descr),
+        type: "select",
+        attr: {
+          force_view: "select",
+          unpacked: true
+        },
+        items: "languages"
+      }
+    },
     asp_privacy(name = null, alt_label_descr = undefined) {
       return {
         name: name ? name : "privacy",
@@ -183,22 +196,9 @@ export default {
         items: []
       }
       for (let license_group of include) {
-        if (this.$store.state.codes.hasOwnProperty(license_group)) {
-          // `.values.licences` should be documentented somewhere or be more flexible
-          const licence_entry = this.$store.state.codes[license_group]
-          // const select_transform_keys = this.$_.get(licence_entry, "rules.edit.select_transform_keys", null)
-          // if (select_transform_keys) {
-          //   aspect.items = this.$_.map(licence_entry.values.licenses, (l) => {
-          //       const transformed = {}
-          //       this.$_.forEach(select_transform_keys, (k, v) => {
-          //         transformed[v] = l[k]
-          //       })
-          //       return Object.assign(transformed, l)
-          //     }
-          //   )
-          // } else {
+        const licence_entry = this.$store.getters["templates/code"](license_group)
+        if (licence_entry) {
           aspect.items = licence_entry.values.licenses
-          // }
         } else {
           console.log("cannot include license group", license_group)
         }

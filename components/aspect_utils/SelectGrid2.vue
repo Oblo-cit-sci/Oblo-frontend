@@ -49,6 +49,7 @@ export default {
     i_value: {
       get: function () {
         if (this.multiple) {
+          console.log(this.value)
           this.value.map(v => this.$_.findIndex(this.options, o => this.$_.isEqual(o.value, v)))
         } else {
           // todo

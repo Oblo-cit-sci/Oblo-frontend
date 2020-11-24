@@ -1,5 +1,6 @@
 <template lang="pug">
   div(v-if="!is_view_mode")
+    LanguageCodeFallback(v-if="!code_entry_language_match")
     v-checkbox(
       v-if="select_check"
       v-model="check_box_value"
@@ -25,9 +26,11 @@
   import SelectMixin from "./SelectMixin";
   import AspectComponentMixin from "./AspectComponentMixin";
   import {server_icon_path} from "~/lib/client"
+  import LanguageCodeFallback from "~/components/aspect_utils/LanguageCodeFallback";
 
   export default {
     name: "SelectAspect",
+    components: {LanguageCodeFallback},
     mixins: [SelectMixin, AspectComponentMixin],
     props: {
       aspect: {
@@ -51,7 +54,6 @@
         }
       }
       this.set_selection()
-      console.log("nna", this.options)
     },
     methods: {
       set_selection() {

@@ -347,6 +347,8 @@ export default {
     /* map */
     map_location_selected(map, mapboxEvent) {
       // we are gonna call snap_to_feature, so lets get out here
+      console.log(mapboxEvent)
+      // debugger
       if (this.act_hoover_id) {
         return
       }
@@ -357,20 +359,20 @@ export default {
       if (this.has_output_place) {
         const coords = {lon: mapboxEvent.lngLat.lng, lat: mapboxEvent.lngLat.lat}
         this.rev_geocode(coords).then(data => {
+            // debugger
             if (data.features.length === 0) { // oceans
               // todo add filler
             } else {
-              // console.log(coords, data.features)
               this.complete_value({
                 coordinates: coords,
                 location_precision: LOCATION_PRECISION_POINT,
               }, data.features)
             }
           }
-        ).catch((err) => {
-          console.log(err)
-          console.log("no location found")
-        }).finally(() => {
+          ,err => {
+            console.log(err)
+            console.log("no location found")
+          }).finally(() => {
         })
       }
     },

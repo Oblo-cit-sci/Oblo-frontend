@@ -52,12 +52,13 @@
   import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
   import AspectListMixin from "~/components/global/AspectListMixin"
   import {MSG_PATH_SOMETHING_WENT_WRONG} from "~/lib/consts"
+  import LanguageMixin from "~/components/LanguageMixin";
 
 
   export default {
     name: "settings",
     components: {EntryPreviewList, LoadFileButton, Aspect},
-    mixins: [TriggerSnackbarMixin, PersistentStorageMixin, AspectListMixin, FixDomainMixin, TypicalAspectMixin],
+    mixins: [TriggerSnackbarMixin, PersistentStorageMixin, AspectListMixin, FixDomainMixin, LanguageMixin, TypicalAspectMixin],
     created() {
       const settings = this.$store.getters["user/settings"]
       for (let name in this.aspect_map) {
@@ -65,12 +66,15 @@
       }
     },
     data() {
+      const ui_lang_aspect = this.asp_language("ui_language","ui")
+      ui_lang_aspect.items = this.get_language_options()
+
       const settings_aspects = [
         // this.asp_location_privacy(), // taken out for now. always ask is the default.
         this.asp_privacy("default_privacy", "default"),
         this.asp_license("default_license", ["cc_licenses"], null, "default"),
+        ui_lang_aspect
       ]
-
       return {
         dialog_data: {
           id: ""
@@ -103,6 +107,7 @@
           // console.log(data.settings)
           this.ok_snackbar(this.$t("page.settings.settings_updated"))
           this.$store.commit("user/set_settings", data.settings)
+          this.change_language(data.settings.ui_language, false)
           this.persist_user_settings()
           this.$router.push({name: PAGE_PROFILE})
         }).catch(err => {

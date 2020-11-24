@@ -32,11 +32,17 @@ export const getters = {
       }
     }
   },
+  has_code(state, getters) {
+    return(type_slug, language) => {
+      getters.code !== null
+    }
+  },
   code(state) {
-        return (type_slug, language) => {
+    return (type_slug, language) => {
       // console.log("getting entry_type for slug", type_slug, state.entry_types)
       if (!state.codes.has(type_slug)) {
         console.log("WARNING, store,entrytype.getters.entry_type. type for slug missing:", type_slug, "returning null, should be catched earlier")
+        return null
       }
       const base_template = state.codes.get(type_slug)
       if (base_template.lang.hasOwnProperty(language)) {

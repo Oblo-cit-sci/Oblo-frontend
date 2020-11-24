@@ -56,5 +56,14 @@ export default {
       this.$store.commit("templates/add_templates_codes", data.data.templates_and_codes)
       return Promise.resolve()
     },
+    filter_language_items(language_items, keep_codes) {
+      return this.$_.filter(language_items, i => keep_codes.includes(i.value))
+    },
+    get_language_options(codes) {
+      if(!codes) {
+        codes = this.$store.getters["available_languages"]
+      }
+      return this.$store.getters["templates/code"]("languages").values.list.filter(v => codes.includes(v.value))
+    }
   }
 }

@@ -1,5 +1,6 @@
 <template lang="pug">
   div(v-if="!is_view_mode")
+    LanguageCodeFallback(v-if="!code_entry_language_match" :actual_lang="code_entry_language")
     v-autocomplete(v-if="direct_select && is_empty"
       outlined
       single-line
@@ -50,6 +51,8 @@ import AspectComponentMixin from "./AspectComponentMixin";
 import GeneralSelectMixin from "~/components/aspect_utils/GeneralSelectMixin"
 import {unpack} from "~/lib/aspect"
 import OptionsMixin from "~/components/aspect_utils/OptionsMixin";
+import LanguageCodeFallback from "~/components/aspect_utils/LanguageCodeFallback";
+import SelectMixin from "~/components/aspects/SelectMixin";
 
 /*
 the start of a custom value field. but wtf...
@@ -65,8 +68,8 @@ the start of a custom value field. but wtf...
 
 export default {
   name: "TreeSelectAspect",
-  components: {TreeleafPicker},
-  mixins: [AspectComponentMixin, GeneralSelectMixin, OptionsMixin],
+  components: {LanguageCodeFallback, TreeleafPicker},
+  mixins: [AspectComponentMixin, GeneralSelectMixin, OptionsMixin, SelectMixin],
   data() {
     return {
       tree: {},
@@ -114,6 +117,12 @@ export default {
       // let passed_tree = this.aspect.items;
       if (typeof this.aspect.items === "string") {
         this.tree = this.get_codes_as_options(this.aspect.items)
+        // todo SELECT_MIXIN!!
+        this.from_code_entry = true
+        const match = this.check_language_match(this.aspect.items)
+        this.code_entry_language_match = match[0]
+        this.code_entry_language = match[2]
+        //
       } else {
         this.tree = this.aspect.items
       }
@@ -164,7 +173,7 @@ export default {
         if (this.value.constructor === Array) {
           // console.log("TV", this.value)
           return this.value.map(v => {
-            if(typeof v === "string")
+            if (typeof v === "string")
               return v
             let base = v.text
             base += v.extra_value ? " / " + unpack(v.extra_value) : ""
