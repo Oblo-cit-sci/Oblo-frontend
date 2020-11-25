@@ -7,11 +7,10 @@
 
 <script>
 import FixDomainMixin from "~/components/global/FixDomainMixin"
-import DomainLanguageMixin from "~/components/domain/DomainLanguageMixin"
 
 export default {
   name: "NotificationBanner",
-  mixins: [FixDomainMixin, DomainLanguageMixin],
+  mixins: [FixDomainMixin],
   components: {},
   props: {},
   data() {
@@ -22,12 +21,12 @@ export default {
       return this.$_.get(this.$store.getters.user.config_share, "profile_edited", false)
     },
     fixed_domain_edited() {
-      const ui_lang_domain_data = this.ui_lang_domain_data(this.is_fixed_domain)
-      const domain_specific_aspects = this.$_.cloneDeep(this.$_.get(ui_lang_domain_data, "users.profile.additional_aspects", []))
+      if(!this.is_fixed_domain)
+        return true
+      const domain_specific_aspects = this.$_.cloneDeep(this.$_.get(this.$store.getters["domain/act_lang_domain_data"], "users.profile.additional_aspects", []))
       // todo here call a function that assigns external conditions
 
-      return !this.is_fixed_domain || // no fixed domain
-        this.$_.isEmpty(domain_specific_aspects) ||
+      return  this.$_.isEmpty(domain_specific_aspects) ||
         this.$_.get(this.$store.getters.user.config_share, `domain.${this.is_fixed_domain}`)
     },
     show_profile_complete_banner: function () {

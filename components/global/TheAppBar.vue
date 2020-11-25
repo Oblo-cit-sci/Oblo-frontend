@@ -27,7 +27,6 @@ import NavBaseMixin from "~/components/NavBaseMixin"
 import CreateEntryButton from "~/components/CreateEntryButton";
 import ResponsivenessMixin from "~/components/ResponsivenessMixin";
 import URLQueryMixin from "~/components/util/URLQueryMixin";
-import DomainLanguageMixin from "~/components/domain/DomainLanguageMixin"
 import Dialog from "~/components/dialogs/Dialog"
 import LoginComponent from "~/components/page_components/LoginComponent"
 import HasMainNavComponentMixin, {ENTRY} from "~/components/global/HasMainNavComponentMixin"
@@ -38,7 +37,7 @@ const pkg = require('~/package.json')
 
 export default {
   name: "TheAppBar",
-  mixins: [NavBaseMixin, ResponsivenessMixin, URLQueryMixin, DomainLanguageMixin, HasMainNavComponentMixin, EnvMixin],
+  mixins: [NavBaseMixin, ResponsivenessMixin, URLQueryMixin, HasMainNavComponentMixin, EnvMixin],
   components: {LoginComponent, Dialog, CreateEntryButton},
   data() {
     return {

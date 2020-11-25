@@ -48,9 +48,9 @@ export default {
   computed: {
     i_value: {
       get: function () {
-        if (this.multiple) {
-          console.log(this.value)
-          this.value.map(v => this.$_.findIndex(this.options, o => this.$_.isEqual(o.value, v)))
+        // todo this.value should not be null, but the default (here [])
+        if (this.multiple && this.value) {
+          return this.value.map(v => this.$_.findIndex(this.options, o => this.$_.isEqual(o.value, v)))
         } else {
           // todo
         }

@@ -24,8 +24,6 @@ export default {
           }
       },
       created() {
-        this.entry = this.$store.state.codes.Countrycodes
-        console.log(this.entry)
       },
       computed: {
 

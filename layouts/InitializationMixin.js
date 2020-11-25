@@ -4,13 +4,14 @@ import {PAGE_INDEX} from "~/lib/pages"
 import {default_settings} from "~/lib/settings"
 import {db_vars} from "~/lib/db_vars"
 import SettingsChangeMixin from "~/components/global/SettingsChangeMixin"
-import {NO_DOMAIN} from "~/lib/consts"
+import {NO_DOMAIN, QP_lang} from "~/lib/consts"
 import HomePathMixin from "~/components/menu/HomePathMixin"
 import EnvMixin from "~/components/global/EnvMixin"
+import URLQueryMixin from "~/components/util/URLQueryMixin";
 
 export default {
   name: "InitializationMixin",
-  mixins: [FixDomainMixin, SettingsChangeMixin, HomePathMixin, EnvMixin],
+  mixins: [FixDomainMixin, SettingsChangeMixin, HomePathMixin, EnvMixin, URLQueryMixin],
   created() {
     if (!this.db_loaded)
       this.reload_storage()
@@ -55,7 +56,6 @@ export default {
       // todo maybe this should be before init_data, to request the set language
       const auth_token = this.$store.getters["user/get_auth_token"]
       // debugger
-      console.log("i")
       if (auth_token.access_token) {
         const login = await this.$api.actor.validate_token(auth_token)
         console.log("ii")
@@ -76,12 +76,15 @@ export default {
       }
       // todo maybe the language should come not from the settings, since setting the language triggers
       // reload...
-      const {data} = await this.$api.init_data()
+      const user_settings = this.$route.query[QP_lang] || this.$store.getters["user/settings"]
+      const domain_name = this.query_param_domain_name || user_settings.fixed_domain
+      const i_language = user_settings.domain_language || process.env.default_language || "en"
+      const {data} = await this.$api.init_data(domain_name, i_language)
       const domains_data = data.data.domains
       const language = data.data.language
       this.$store.commit("domain/set_domains", {domains_data, language})
       this.$store.commit("templates/add_templates_codes", data.data.templates_and_codes)
-
+      console.log("template/codes stored")
       // console.log(data.data)
       this.$store.commit("set_available_languages", data.data.languages)
 
@@ -102,7 +105,7 @@ export default {
         }
       }
       // console.log("done")
-      return Promise.resolve()
+      return Promise.resolve({language})
     }
   },
   watch: {
@@ -119,9 +122,8 @@ export default {
           }, 80)
           return
         }
-        this.initialize().then(() => {
+        this.initialize().then(({language}) => {
           console.log("connected")
-
 
           this.$store.dispatch("app/connected")
           // console.log("initialize multiple domains?", this.has_multiple_domains)
@@ -129,6 +131,8 @@ export default {
             // console.log("1 domain:", this.get_one_domain_name)
             this.$store.commit("domain/set_act_domain", this.$store.getters["domain/domain_by_name"](this.get_one_domain_name).name)
             this.fix_domain(this.get_one_domain_name)
+            this.$store.commit("domain/set_act_lang_domain_data",{domain_name:this.get_one_domain_name, language})
+
             // todo, maybe this should be replaces by something in the store
             // similar the change of the home route...
             default_settings.fixed_domain = this.get_one_domain_name

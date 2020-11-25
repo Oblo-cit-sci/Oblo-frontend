@@ -10,7 +10,8 @@ export const state = () => ({
    * lang.en = ...
    */
   domains: new Map(),
-  act_domain_name: NO_DOMAIN
+  act_domain_name: NO_DOMAIN,
+  act_lang_domain_data: null
 })
 
 export const mutations = {
@@ -38,20 +39,26 @@ export const mutations = {
   clear_domain(state) {
     state.act_domain_name = NO_DOMAIN
   },
-  // delete_domain(state, domain_name) {
-  //   state.domains = ld.filter(state.domains, domain => domain.value !== domain_name)
-  // }
+  set_act_lang_domain_data(state, {domain_name, language}) {
+    const domain_base = state.domains.get(domain_name)
+    if(domain_base) {
+      let domain_data = domain_base.langs[language]
+      if(domain_data){
+        state.act_lang_domain_data = domain_data
+      } else {
+        state.act_lang_domain_data = this.$_.values(domain_base.langs)[0]
+      }
+    }
+  }
 };
 
 export const getters = {
   domains(state) {
     return Array.from(state.domains.values())
   },
-  // todo act_domain_name
   act_domain_name(state) {
     return state.act_domain_name
   },
-  // todo act_domain_data
   act_domain_data(state, getters) {
     return getters.domains.find(d => d.name === state.act_domain_name)
   },
@@ -59,8 +66,8 @@ export const getters = {
   act_domain_title(state, getters) {
     return getters.act_lang_domain_data.title
   },
-  act_lang_domain_data(state, getters, rootGetters) {
-    return getters.lang_domain_data(state.act_domain_name, rootGetters.user.settings.domain_language)
+  act_lang_domain_data(state) {
+    return state.act_lang_domain_data
   },
   domain_by_name(state) {
     return domain_name => {

@@ -1,48 +1,36 @@
 <template lang="pug">
-  .fullSize
-    TitledDialog(:title="$t('page.domain.create_entry_dialog_title')" :dialog_open.sync="entrycreate_dialog_open" show_close_btn)
-      EntryCreateList(:template_entries="create_templates_options")
-    MapWrapper(
-      v-if="online"
-      height="100%"
-      :domain_data="domain_data"
-      @force_menu_mode_domain="set_menu_state(1)"
-      @create_entry="create_entry_or_open_dialog($event)"
-      @map="map=$event")
+  DomainComponent.fullSize(:domain_data="domain_data")
 </template>
 
 <script>
 
-import EntryCreateList from "~/components/EntryCreateList";
-import EntryNavMixin from "~/components/EntryNavMixin"
-import MapWrapper from "~/components/map/MapWrapper"
 import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
-import {MENU_MODE_DOMAIN, QP_D, QP_F, TEMPLATE} from "~/lib/consts"
-import URLParseMixin from "~/components/util/URLParseMixin"
-import URLQueryMixin from "~/components/util/URLQueryMixin"
-import DomainData_UtilMixin from "~/components/domain/DomainData_UtilMixin"
-import FilterMixin from "~/components/FilterMixin"
-import TitledDialog from "~/components/dialogs/TitledDialog"
-import EnvMixin from "~/components/global/EnvMixin"
-import EntryCreateMixin from "~/components/entry/EntryCreateMixin";
+import {QP_D, QP_F} from "~/lib/consts"
+import DomainComponent from "~/components/page_components/DomainComponent";
+import FixDomainMixin from "~/components/global/FixDomainMixin";
 
 export default {
   name: "domain",
-  components: {TitledDialog, MapWrapper, EntryCreateList},
-  mixins: [DomainData_UtilMixin, HasMainNavComponentMixin, EntryNavMixin,  URLQueryMixin, EntryCreateMixin,
-    URLParseMixin, FilterMixin, EnvMixin],
-  data() {
-    return {
-      entrycreate_dialog_open: false
+  mixins: [HasMainNavComponentMixin, FixDomainMixin],
+  components: {DomainComponent},
+  beforeRouteEnter(to, from, next) {
+    if (!(to.query[QP_D] || to.query[QP_F])) {
+      // todo somehow doesn't load...
+      next("/")
+    } else {
+      next()
     }
   },
   computed: {
-    dialog_width() {
-      return this.main_container_with
-    },
     domain_data() {
       const language = this.$store.getters["user/settings"].domain_language
-      return this.$store.getters["domain/lang_domain_data"](this.domain_name, language)
+      const dd = this.$store.getters["domain/lang_domain_data"](this.domain_name, language)
+
+      if(!dd) {
+
+      } else {
+        return dd
+      }
     },
     domain_name() {
       return this.query_param_domain_name
@@ -58,35 +46,6 @@ export default {
 
     if (this.$route.query.f && !this.is_fixed_domain) {
       this.fix_domain(this.$route.query.f)
-    }
-
-    this.set_menu_state(MENU_MODE_DOMAIN)
-    const config = this.search_config(this.$route.query.s)
-    if (config && config[0].name === TEMPLATE) {
-      const language = this.$store.getters["user/settings"].domain_language
-      this.$store.commit("search/replace_in_act_config", this.config_generate(config[0].name, config[0].value, language))
-    }
-    // get the default templates of the domain
-    this.$bus.$on("domain-create_entry", slug => this.create_entry_or_open_dialog(slug))
-  },
-  beforeDestroy() {
-    this.$bus.$off("domain-create_entry")
-  },
-  methods: {
-    create_entry_or_open_dialog(template_slug = null) {
-      if (template_slug) {
-        this.create_entry(template_slug)
-      } else {
-        this.entrycreate_dialog_open = true
-      }
-    }
-  },
-  beforeRouteEnter(to, from, next) {
-    if (!(to.query[QP_D] || to.query[QP_F])) {
-      // todo somehow doesn't load...
-      next("/")
-    } else {
-      next()
     }
   },
   beforeRouteLeave(from, to, next) {

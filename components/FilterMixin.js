@@ -93,8 +93,8 @@ export default {
       }
     },
     get_tags_filter_options(domain_name) {
-      const all_codes = this.$store.getters["all_codes"]
-      let filter_codes = Object.values(all_codes).filter(code_entry => code_entry.rules.tags || null)
+      const all_codes = this.$store.getters["templates/codes"]
+      let filter_codes = all_codes.filter(code_entry => this.$_.get(code_entry, "rules.tags"))
       if (domain_name) {
         filter_codes = entries_domain_filter(filter_codes, domain_name)
       }

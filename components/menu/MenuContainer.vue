@@ -17,7 +17,7 @@
           v-tab-item
             MainMenuList
           v-tab-item
-            DomainMenu(@force_menu_mode="this.menu_state=1" domain_name="licci")
+            DomainMenu(@force_menu_mode="this.menu_state=1" :domain_data="domain_data")
         #bottom_fixer(v-if="mobile && has_touch")
       MainMenuList.scrollable(v-else)
 </template>
@@ -30,12 +30,13 @@ import DomainMenu from "~/components/menu/DomainMenu"
 import NotificationBanner from "~/components/global/NotificationBanner"
 import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
 import ResponsivenessMixin from "~/components/ResponsivenessMixin";
+import URLQueryMixin from "~/components/util/URLQueryMixin";
 
 const mode_indices = [MENU_MODE_MAIN, MENU_MODE_DOMAIN]
 
 export default {
   name: "MenuContainer",
-  mixins: [HasMainNavComponentMixin, ResponsivenessMixin],
+  mixins: [HasMainNavComponentMixin, ResponsivenessMixin, URLQueryMixin],
   components: {NotificationBanner, DomainMenu, MainMenuList},
   props: {
     menu_mode_fixed: Boolean,
@@ -50,6 +51,15 @@ export default {
     this.$store.commit("menu/menu_width", this.menu_width)
   },
   computed: {
+    domain_data() {
+      const language = this.$store.getters["user/settings"].domain_language
+      const dd = this.$store.getters["domain/lang_domain_data"](this.query_param_domain_name, language)
+      if (!dd) {
+
+      } else {
+        return dd
+      }
+    },
     pad_if_over() {
       return {
         "padding-top": this.over ? (this.is_small ? "56px" : "64px") : 0
@@ -96,8 +106,7 @@ export default {
       }
     }
   },
-  methods: {
-  },
+  methods: {},
   watch: {
     state() {
       this.$store.commit("menu/menu_width", this.menu_width)

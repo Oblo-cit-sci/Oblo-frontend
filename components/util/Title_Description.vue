@@ -36,6 +36,9 @@
         type: String,
         default: ""
       },
+      dc_title: {
+        type: Boolean
+      },
       icon: {
         type: String
       },

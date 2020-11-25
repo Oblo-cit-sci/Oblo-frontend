@@ -23,9 +23,7 @@ export default {
   },
   computed: {
     source_entry() {
-      console.log(this.source_entry_slug)
-
-      return this.$store.getters.get_code(this.source_entry_slug)
+      return this.$store.getters["templates/code"](this.source_entry_slug)
     }
   },
   methods: {}

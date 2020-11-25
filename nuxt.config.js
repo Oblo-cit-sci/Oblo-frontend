@@ -31,7 +31,8 @@ module.exports = {
 
   env: {
     NODE_ENV: process.env.NODE_ENV || true,
-    release_mode: "opentek"
+    release_mode: "opentek",
+    default_language: "en"
   },
 
   server: {

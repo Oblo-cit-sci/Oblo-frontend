@@ -109,7 +109,6 @@ import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
 import FixDomainMixin from "~/components/global/FixDomainMixin"
 import GoToMixin from "~/components/global/GoToMixin"
 import GlobalRoleChip from "~/components/actor/GlobalRoleChip"
-import DomainLanguageMixin from "~/components/domain/DomainLanguageMixin";
 import AspectSet from "~/components/AspectSet"
 import Dialog from "~/components/dialogs/Dialog";
 import EditContextTitle from "~/components/util/EditContextTitle";
@@ -126,7 +125,7 @@ export default {
     LoadFileButton,
     Aspect
   },
-  mixins: [PersistentStorageMixin, TriggerSnackbarMixin, LayoutMixin, TypicalAspectMixin, FixDomainMixin, GoToMixin, DomainLanguageMixin, FilterMixin],
+  mixins: [PersistentStorageMixin, TriggerSnackbarMixin, LayoutMixin, TypicalAspectMixin, FixDomainMixin, GoToMixin, FilterMixin],
   data() {
     const new_pwd = this.asp_password(null, "new")
     return {
@@ -164,12 +163,13 @@ export default {
     }
   },
   created() {
-    console.log(this.ui_lang_domain_data(NO_DOMAIN))
-    this.no_domain_aspects = this.$_.cloneDeep(this.$_.get(this.ui_lang_domain_data(NO_DOMAIN), "users.profile.additional_aspects", []))
+
+    const domain_data = this.$store.getters["domain/lang_domain_data"](NO_DOMAIN, this.$store.getters["user/settings"].domain_language)
+    this.no_domain_aspects = this.$_.cloneDeep(this.$_.get(domain_data , "users.profile.additional_aspects", []))
 
     if (this.is_fixed_domain) {
-      const ui_lang_domain_data = this.ui_lang_domain_data(this.is_fixed_domain)
-      this.domain_specific_aspects = this.$_.cloneDeep(this.$_.get(ui_lang_domain_data, "users.profile.additional_aspects", []))
+      const lang_domain_data = this.$store.getters["domain/act_lang_domain_data"]
+      this.domain_specific_aspects = this.$_.cloneDeep(this.$_.get(lang_domain_data, "users.profile.additional_aspects", []))
       // todo here call a function that assigns external conditions
     }
     this.reset_edit_values()

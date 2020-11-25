@@ -52,6 +52,9 @@ export const getters = {
       }
     }
   },
+  codes(state) {
+    return Array.from(state.codes.values())
+  },
   template_title(state, getters) {
     return (slug, language) => {
       // console.log("typename of ", slug)
@@ -86,7 +89,6 @@ export const getters = {
 export const mutations = {
   add_templates_codes(state, arr) {
     for (let t_c of arr) {
-      console.log(t_c)
       const insert = t_c.type === "template" ? state.entry_types : state.codes
       if (insert.has(t_c.slug)) {
         insert.get(t_c.slug).lang[t_c.language] = t_c

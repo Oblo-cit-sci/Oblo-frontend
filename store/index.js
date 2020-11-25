@@ -1,7 +1,6 @@
 import {VISITOR} from "~/lib/consts";
 
 export const state = () => ({
-  codes: {},
   page_path: [],
   aspect_value_cache: {},
   available_languages: []
@@ -49,11 +48,6 @@ export const getters = {
   username(state) {
     return state.user.user_data.registered_name
   },
-  get_code(state) {
-    return (code_name) => {
-      return (state.codes[code_name])
-    }
-  },
   available_languages(state) {
     return state.available_languages
   },
@@ -62,13 +56,6 @@ export const getters = {
       return state.page_path[state.page_path.length - 1]
     else
       return null
-  },
-  codes(state) {
-    return state.codes
-  },
-  // @deprecated
-  all_codes(state) {
-    return state.codes
   },
   get_aspect_cache(state) {
     return (template_slug, aspect_name) => {
@@ -79,7 +66,7 @@ export const getters = {
       }
     }
   }
-};
+}
 
 export const actions = {
   clear_entries({commit}) {

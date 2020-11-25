@@ -39,13 +39,13 @@
             description: "entry types for creating entries",
             location: ["entry_types"]
           },
-          {
+          /*{
             text: "Codes",
             value: "codes",
             description: "codes that are used in entry creations",
             location: ["codes"]
           },
-          /*{
+          {
             text: "Fetched entries",
             value: "fetched",
             description: "entries of your timeline that you viewed",

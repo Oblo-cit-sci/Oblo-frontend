@@ -13,7 +13,7 @@ export default {
     // }
   },
   computed: {
-    ...mapGetters({get_code_entry: "get_code"})
+    ...mapGetters({get_code_entry: "templates/code"})
   },
   methods: {
     check_language_match(code_slug) {

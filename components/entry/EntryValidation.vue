@@ -54,11 +54,9 @@
         // console.log("validation update")
         let missing = []
         for (let aspect of aspects) {
-          //console.log("val", aspect.name)
+
           let required = true
-          if (this.$_.get(aspect,"attr.required")) {
-            required = aspect.attr.required
-          }
+          required = this.$_.get(aspect,"attr.required", true)
           if (required) {
             // todo, value thing not so elegant...
             // todo not always packed
@@ -68,7 +66,6 @@
             if (!unpacked) {
               a_value = a_w_value.value
             }
-
             const base_aspect_loc = loc_append([[EDIT, this.entry.uuid]], ASPECT, aspect.name)
             const validation = this.validate_aspect(aspect, a_w_value, base_aspect_loc)
             const valid = validation[0]
