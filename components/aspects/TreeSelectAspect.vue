@@ -78,7 +78,7 @@ export default {
     }
   },
   created() {
-    if (this.mode === EDIT) {
+    if (this.is_editable_mode) {
       this.calc_options()
     }
     // console.log("created", this.extra, this.value)

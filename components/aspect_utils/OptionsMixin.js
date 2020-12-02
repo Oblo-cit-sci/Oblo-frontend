@@ -26,9 +26,9 @@ export default {
       const language = this.$store.getters["user/settings"].domain_language
       const code_entry = this.$store.getters["templates/code"](code_slug, language)
       if (code_entry) {
-        if (code_entry.template === "value_list") {
+        if (code_entry.template.slug === "value_list") {
           return code_entry.values.list
-        } else if (code_entry.template === "value_tree") {
+        } else if (code_entry.template.slug === "value_tree") {
           const tree_ = this.$_.cloneDeep(code_entry.values)
           tree_options_add_ids(tree_)
           return tree_

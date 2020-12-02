@@ -21,8 +21,8 @@
     div.mx-4(v-if="last_selection_has_extra")
       Aspect(v-if="extra_aspect" :aspect="extra_aspect" :ext_value.sync="extra_value" mode="edit")
       <!--    .ml-3(v-if="last_description")-->
-        <!--      div Description:-->
-        <!--      div {{last_description}}-->
+      <!--      div Description:-->
+      <!--      div {{last_description}}-->
     v-btn(v-if="done_available" @click="done" color="success") {{$t('w.done')}}
 </template>
 
@@ -172,12 +172,7 @@ export default {
     }
   },
   created() {
-    if (this.tree.hasOwnProperty("level_names")) {
-      console.log("attribute level_names is depracated, use levels")
-      this.levels = this.tree.level_names;
-    } else if (this.tree.hasOwnProperty("levels")) {
-      this.levels = this.tree.levels
-    }
+    this.levels = this.tree.levels
   },
   methods: {
     select(value) {
