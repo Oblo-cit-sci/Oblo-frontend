@@ -11,7 +11,7 @@ export default {
       return this.$_.get(this.$store.getters["user/settings"], settings_key, default_settings[settings_key])
     },
     set_settings_value(settings_key, setting_value, update_server = true) {
-      this.$store.commit("user/change_setting", {key: settings_key, value: setting_value})
+      this.$store.commit("user/change_setting", {[settings_key]: setting_value})
       if (this.$store.getters["user/logged_in"] && update_server) {
         this.$api.actor.post_me({"settings": {[settings_key]: setting_value}})
         this.persist_user_settings()

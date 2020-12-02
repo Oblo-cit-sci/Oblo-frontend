@@ -54,6 +54,18 @@ export default {
     },
   },
   methods: {
+    // todo should have the method to set the act domain.
+    // todo than also this... :)
+    /*
+    function setFavicons(favImg){
+    let headTitle = document.querySelector('head');
+    let setFavicon = document.createElement('link');
+    setFavicon.setAttribute('rel','shortcut icon');
+    setFavicon.setAttribute('href',favImg);
+    headTitle.appendChild(setFavicon);
+}
+setFavicons('domain-icon');
+     */
     // ui_lang_domain_data(domain_name) {
     //   console.log(this.$store.getters["user/settings"].domain_language)
     //   return this.lang_domain_data(domain_name, this.$store.getters["user/settings"].domain_language)

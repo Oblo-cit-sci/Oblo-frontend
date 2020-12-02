@@ -37,6 +37,9 @@ import FlexibleTextSection from "~/components/global/FlexibleTextSection"
 import LayoutMixin from "~/components/global/LayoutMixin"
 import {MSG_PATH_SOMETHING_WENT_WRONG, RESPONSE_ERROR_MSG} from "~/lib/consts"
 
+/**
+ * TODO USE AspectSet
+ */
 export default {
   name: "register",
   components: {FlexibleTextSection, Aspect},
@@ -63,6 +66,8 @@ export default {
       return this.$_.some(this.aspects, (a) => a.hasOwnProperty("error") && a.error) || !this.agree
     },
     terms_of_use_section() {
+      // make this better so its not destroyed in the translation tables. translations shouldnt touch it.
+      // todo just grab it from the right location. rename p.index from h2 to p.h:terms_of_use and find by that key
       return this.$_.find(this.$i18n.msg("page.about"), s => s.flag === 'TERMS_OF_USE')
     }
   },
@@ -71,7 +76,7 @@ export default {
     submit() {
       this.submit_loading = true
       const settings = Object.assign(this.$_.cloneDeep(this.$store.getters["user/settings"]), overwrite_default_register_settings)
-      // todo better js!
+      // todo better js!... aspectset and recursive unpack. why not unpacked? make raw_unpacking feature of aspectset
       this.$api.actor.post_actor({
         registered_name: this.aspects.registered_name.value,
         email: this.aspects.email.value,

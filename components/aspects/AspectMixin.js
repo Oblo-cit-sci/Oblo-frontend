@@ -124,7 +124,6 @@ export default {
       return this.$_.get(this.aspect, "attr.unpacked", false)
     },
     mvalue() {
-      console.log("as-mix, mvalue", this.aspect.name)
       if (!this.aspect_loc) {
         if (this.ext_value !== undefined) {
           return this.ext_value

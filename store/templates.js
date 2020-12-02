@@ -19,7 +19,7 @@ export const state = () => ({
 export const getters = {
   entry_type(state) {
     // todo should have a 2nd parameter for language
-    return (type_slug, language) => {
+    return (type_slug, language, fallback = true) => {
       // console.log("getting entry_type for slug", type_slug, state.entry_types)
       if (!state.entry_types.has(type_slug)) {
         console.log("WARNING, store,entrytype.getters.entry_type: type for slug missing", type_slug, "returning null, should be catched earlier")
@@ -27,13 +27,15 @@ export const getters = {
       const base_template = state.entry_types.get(type_slug)
       if (base_template.lang.hasOwnProperty(language)) {
         return base_template.lang[language]
-      } else {
+      } else if(fallback) {
         return base_template.lang[Object.keys(base_template.lang)[0]]
+      } else {
+        return null
       }
     }
   },
   has_code(state, getters) {
-    return(type_slug, language) => {
+    return (type_slug, language) => {
       getters.code !== null
     }
   },
@@ -81,8 +83,11 @@ export const getters = {
       })
     }
   },
-  entry_types_array(state) {
-    return language => (Array.from(state.entry_types.values()).map(d => d.lang[language || "en"]))
+  entry_types_array(state, getters) {
+    return (language, fallback) => {
+      const lang = language || "en"
+        return Array.from(state.entry_types.values()).map(d => getters.entry_type(d.slug, lang, fallback)).filter(e => e != null)
+    }
   }
 }
 

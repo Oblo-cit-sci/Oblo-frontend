@@ -9,7 +9,6 @@ import {mapGetters} from "vuex"
 
 export default {
   mixins: [TriggerSnackbarMixin, NavBaseMixin, EntryActionsMixin, EntryActionsMixin, URLQueryMixin],
-
   methods: {
     // why does has_entry call get entry
     goto(uuid, force_mode) {
@@ -90,9 +89,8 @@ export default {
       }
     },
     to_parent(to_last_element = true, mode = VIEW) {
-      if (this.in_context) {
-        const parent_ref = this.entry.entry_refs.parent
-        let parent_entry_type_slug = this.$store.getters["entries/get_entry"](parent_ref.uuid).template.slug
+      if (this.entry.entry_refs.parent) {
+        let parent_entry_type_slug = this.$store.getters["entries/get_entry"](parent_ref.uuid).templates.slug
 
         const uuid = parent_ref.uuid
 
@@ -121,10 +119,6 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({has_entry:"entries/has_entry", has_full_entry:"entries/has_full_entry"}),
-    in_context() {
-      // todo rules check should go...
-      return this.template.rules.context !== GLOBAL || this.entry.entry_refs.parent
-    }
+    ...mapGetters({has_entry:"entries/has_entry", has_full_entry:"entries/has_full_entry"})
   }
 }

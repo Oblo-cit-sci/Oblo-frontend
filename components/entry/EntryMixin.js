@@ -22,7 +22,6 @@ import {check_str_is_uuid, printDate} from "~/lib/util";
 import EntryPagesMixin from "~/components/entry/EntryPagesMixin"
 import AspectListMixin from "~/components/global/AspectListMixin"
 import ExportMixin from "~/components/global/ExportMixin"
-import {CREATOR} from "~/lib/actors"
 
 export default {
   name: "EntryMixin",
@@ -49,7 +48,7 @@ export default {
       return printDate(new Date(this.entry.creation_ts))
     },
     in_context() {
-      return this.template.rules.context !== GLOBAL || this.entry.entry_refs.parent
+      return (this.template.rules.context || GLOBAL) !== GLOBAL || this.entry.entry_refs.parent
     },
     tags_config() {
       return this.$_.get(this.template.rules, "tags_config", [])
@@ -90,7 +89,6 @@ export default {
       return this.$store.getters["templates/entry_type"](this.template_slug, lang)
     },
     template_color() {
-      console.log(this.template)
       return this.$_.get(this.template, "rules.map_marker_color")
     },
     // title() {

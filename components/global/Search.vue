@@ -270,7 +270,7 @@ export default {
       let result_entries = this.entries() // must be a call
 
       const all_filters = this.$_.concat(this.act_config, this.search_config)
-      console.log("allf", this.act_config, this.search_config)
+     // console.log("allf", this.act_config, this.search_config)
       const has_local_filter = this.has_local_filter(all_filters)
       if (has_local_filter) {
         const local_entries_uuids = this.local_search(all_filters).reverse()

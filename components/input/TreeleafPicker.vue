@@ -4,7 +4,7 @@
       v-btn(icon small @click="close")
         v-icon mdi-close
     v-list(v-if="has_selection")
-      div.ml-3 Current selection
+      div.ml-3 {{$t('comp.treeleaf_picker.current')}}
       v-list-item(v-for="(node, index) of value", :key="index")
         v-list-item-content
           v-list-item-title {{levelname(index)}}: {{node.text}} {{extra_text(node)}}
@@ -23,7 +23,7 @@
       <!--    .ml-3(v-if="last_description")-->
         <!--      div Description:-->
         <!--      div {{last_description}}-->
-    v-btn(v-if="done_available" @click="done" color="success") Done
+    v-btn(v-if="done_available" @click="done" color="success") {{$t('w.done')}}
 </template>
 
 <script>
@@ -85,22 +85,16 @@ export default {
       }
     },
     act_options() {
-      console.log("ao", this.tree, this.value)
       let options = this.tree.root.children
-      // console.log("opt", options)
-      // console.log(this.value)
       for (let val of this.value) {
-        // console.log("a val", val)
         options = this.$_.get(options.find(o => o.value === val.value), "children", [])
       }
       options = this.$_.cloneDeep(options)
-      // console.log("opt", options)
       for (let index in options) {
         let node = options[index]
         node["id"] = parseInt(index)
       }
       return options
-      // return object_list2options(options, "title", "title")
     },
     done_available() {
       // console.log("done?", this.attr.allow_select_levels, this.act_level)

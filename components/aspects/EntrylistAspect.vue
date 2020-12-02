@@ -44,22 +44,22 @@
   import {
     EDIT,
     ENTRY_INDEX
-  } from "../../lib/consts";
-  import {create_entry} from "../../lib/entry";
+  } from "~/lib/consts";
   import EntryNavMixin from "../EntryNavMixin";
   import ListMixin from "../ListMixin";
-  import {aspect_loc_str} from "../../lib/aspect";
-  import {no_duplicate_texts} from "../../lib/options";
+  import {aspect_loc_str} from "~/lib/aspect";
+  import {no_duplicate_texts} from "~/lib/options";
   import ListPagination from "../aspect_utils/ListPagination";
   import PersistentStorageMixin from "../util/PersistentStorageMixin";
   import AspectComponentMixin from "./AspectComponentMixin";
+  import EntryCreateMixin from "~/components/entry/EntryCreateMixin";
 
 
 
   export default {
     name: "EntrylistAspect",
     components: {ListPagination},
-    mixins: [AspectComponentMixin, EntryNavMixin, ListMixin, PersistentStorageMixin],
+    mixins: [AspectComponentMixin, EntryNavMixin, ListMixin, PersistentStorageMixin, EntryCreateMixin],
     data() {
       return {
         item_type_slug: this.aspect.items,
@@ -128,7 +128,7 @@
         if (this.disabled)
           return
         const index_aspect_loc = this.aspect_loc_for_index(this.value.length)
-        const child = create_entry(this.$store, this.item_type_slug, {}, {
+        const child = this.create_entry(this.item_type_slug, this.get_entry().language, {
           uuid: this.$store.getters["entries/edit_uuid"],
           aspect_loc: index_aspect_loc,
         })

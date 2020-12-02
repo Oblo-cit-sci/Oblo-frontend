@@ -30,6 +30,7 @@ export default {
   beforeRouteEnter(to, from, next) {
     // console.log("entry enter.. to", to)
     if (!to.query.uuid) {
+      // todo page not found :(
       next(false)
     } else {
       next()

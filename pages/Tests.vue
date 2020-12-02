@@ -32,7 +32,7 @@ export default {
     AspectSet
   },
   created() {
-    console.log(this.$store.getters["domain/act_lang_domain_data"])
+
   },
   data() {
     return {

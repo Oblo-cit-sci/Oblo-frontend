@@ -3,6 +3,7 @@
     v-row
       v-col.pt-2(xs12 md12)
         Title_Description(
+          dc_title
           :title="entry_title"
           header_type="h1"
           :description="template.description"

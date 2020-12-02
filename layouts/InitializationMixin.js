@@ -4,14 +4,15 @@ import {PAGE_INDEX} from "~/lib/pages"
 import {default_settings} from "~/lib/settings"
 import {db_vars} from "~/lib/db_vars"
 import SettingsChangeMixin from "~/components/global/SettingsChangeMixin"
-import {NO_DOMAIN, QP_lang} from "~/lib/consts"
+import {DOMAIN_LANGUAGE, NO_DOMAIN, QP_lang, UI_LANGUAGE} from "~/lib/consts"
 import HomePathMixin from "~/components/menu/HomePathMixin"
 import EnvMixin from "~/components/global/EnvMixin"
 import URLQueryMixin from "~/components/util/URLQueryMixin";
+import LanguageMixin from "~/components/LanguageMixin";
 
 export default {
   name: "InitializationMixin",
-  mixins: [FixDomainMixin, SettingsChangeMixin, HomePathMixin, EnvMixin, URLQueryMixin],
+  mixins: [FixDomainMixin, SettingsChangeMixin, HomePathMixin, EnvMixin, URLQueryMixin, LanguageMixin],
   created() {
     if (!this.db_loaded)
       this.reload_storage()
@@ -58,7 +59,6 @@ export default {
       // debugger
       if (auth_token.access_token) {
         const login = await this.$api.actor.validate_token(auth_token)
-        console.log("ii")
         if (login.data.token_valid) {
           console.log("stored token is valid")
           this.$store.commit("user/login")
@@ -76,18 +76,27 @@ export default {
       }
       // todo maybe the language should come not from the settings, since setting the language triggers
       // reload...
-      const user_settings = this.$route.query[QP_lang] || this.$store.getters["user/settings"]
+      const user_settings = this.$store.getters["user/settings"]
       const domain_name = this.query_param_domain_name || user_settings.fixed_domain
-      const i_language = user_settings.domain_language || process.env.default_language || "en"
-      const {data} = await this.$api.init_data(domain_name, i_language)
+      const i_language = this.$route.query[QP_lang] || user_settings.domain_language || process.env.default_language || "en"
+      console.log("init with, ",domain_name, i_language)
+      const {data} = await this.$api.basic.init_data(domain_name ? [domain_name, NO_DOMAIN] : null, i_language)
+      console.log("connected")
+
       const domains_data = data.data.domains
       const language = data.data.language
+      console.log(domains_data[0].language)
+      console.log(data.data.templates_and_codes.map(e => {
+        return [e.slug, e.domain, e.language]
+      }))
       this.$store.commit("domain/set_domains", {domains_data, language})
       this.$store.commit("templates/add_templates_codes", data.data.templates_and_codes)
       console.log("template/codes stored")
       // console.log(data.data)
       this.$store.commit("set_available_languages", data.data.languages)
-
+      this.$store.commit("user/change_setting", {[DOMAIN_LANGUAGE]: language, [UI_LANGUAGE]: language})
+      console.log("language", language)
+      await this.change_language(language, false)
       // todo maybe this part should be handled by the individual page, so it can do its default behaviour
       // but a wrapper would be good.
       if (this.$route.query.uuid && !this.$store.getters["entries/has_full_entry"](this.$route.query.uuid)) {
@@ -104,8 +113,36 @@ export default {
           this.$router.push("/")
         }
       }
+
+
+      this.$store.dispatch("app/connected")
+      // console.log("initialize multiple domains?", this.has_multiple_domains)
+      if (!this.has_multiple_domains) {
+        // console.log("1 domain:", this.get_one_domain_name)
+        this.$store.commit("domain/set_act_domain", this.$store.getters["domain/domain_by_name"](this.get_one_domain_name).name)
+        this.fix_domain(this.get_one_domain_name)
+        this.$store.commit("domain/set_act_lang_domain_data", {domain_name: this.get_one_domain_name, language})
+
+        // todo, maybe this should be replaces by something in the store
+        // similar the change of the home route...
+        default_settings.fixed_domain = this.get_one_domain_name
+        // console.log("route name", this.$route.name, this.$route.name === PAGE_INDEX)
+        if (this.$route.name === PAGE_INDEX) {
+          // console.log("to domain page",this.get_one_domain_name)
+          this.to_domain(this.get_one_domain_name, true)
+          setTimeout(() => {
+            this.$store.commit("app/initialized")
+          }, 80)
+        } else {
+          const domain_name = this.$store.getters["user/settings"].fixed_domain || NO_DOMAIN
+          this.$store.commit("domain/set_act_domain", domain_name)
+          this.$store.commit("app/initialized")
+        }
+      } else {
+        this.$store.commit("app/initialized")
+      }
       // console.log("done")
-      return Promise.resolve({language})
+      return Promise.resolve()
     }
   },
   watch: {
@@ -122,35 +159,8 @@ export default {
           }, 80)
           return
         }
-        this.initialize().then(({language}) => {
-          console.log("connected")
+        this.initialize().then(() => {
 
-          this.$store.dispatch("app/connected")
-          // console.log("initialize multiple domains?", this.has_multiple_domains)
-          if (!this.has_multiple_domains) {
-            // console.log("1 domain:", this.get_one_domain_name)
-            this.$store.commit("domain/set_act_domain", this.$store.getters["domain/domain_by_name"](this.get_one_domain_name).name)
-            this.fix_domain(this.get_one_domain_name)
-            this.$store.commit("domain/set_act_lang_domain_data",{domain_name:this.get_one_domain_name, language})
-
-            // todo, maybe this should be replaces by something in the store
-            // similar the change of the home route...
-            default_settings.fixed_domain = this.get_one_domain_name
-            // console.log("route name", this.$route.name, this.$route.name === PAGE_INDEX)
-            if (this.$route.name === PAGE_INDEX) {
-              // console.log("to domain page",this.get_one_domain_name)
-              this.to_domain(this.get_one_domain_name, true)
-              setTimeout(() => {
-                this.$store.commit("app/initialized")
-              }, 80)
-            } else {
-              const domain_name = this.$store.getters["user/settings"].fixed_domain || NO_DOMAIN
-              this.$store.commit("domain/set_act_domain", domain_name)
-              this.$store.commit("app/initialized")
-            }
-          } else {
-            this.$store.commit("app/initialized")
-          }
         }, err => {
           console.log("initialization failed", err)
         })

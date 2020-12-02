@@ -63,7 +63,7 @@ import {privacy_color, privacy_icon} from "~/lib/util"
 import {review_color, draft_color,EDIT, ENTRY, REVIEW, VIEW} from "~/lib/consts"
 import MetaChips from "./MetaChips"
 import Taglist from "../global/Taglist"
-import {create_entry, full_title} from "~/lib/entry"
+import {full_title} from "~/lib/entry"
 import MapJumpMixin from "../map/MapJumpMixin";
 import EntryMixin from "./EntryMixin";
 import PersistentStorageMixin from "../util/PersistentStorageMixin";
@@ -260,26 +260,26 @@ export default {
         this.goto_next_location(this.entry.location, this.uuid)
       }
     },
-    create_child_action() {
-      // not sure how/if this still works
-      if (this.disabled)
-        return
-      const index_aspect_loc = this.aspect_loc_for_index(this.value.length)
-      //console.log("index_aspect_loc", index_aspect_loc)
-      const child = create_entry(this.$store, this.item_type_slug, {}, {
-        uuid: this.$store.getters["entries/edit_uuid"],
-        aspect_loc: index_aspect_loc,
-      })
-
-      // saving the child, setting refrences, saving this entry(title),
-      this.$store.dispatch("entries/save_child_n_ref", {child: child, aspect_loc: index_aspect_loc})
-      // TODO this was there before, is it required???
-      // this.value_change(this.$_.concat(this.value, [child.uuid]))
-      // todo should be just one call
-      this.persist_entries()
-      this.to_entry(child.uuid, EDIT)
-      this.goto_delayed_last_page()
-    },
+    // create_child_action() {
+    //   // not sure how/if this still works
+    //   if (this.disabled)
+    //     return
+    //   const index_aspect_loc = this.aspect_loc_for_index(this.value.length)
+    //   //console.log("index_aspect_loc", index_aspect_loc)
+    //   const child = create_entry(this.$store, this.item_type_slug, {}, {
+    //     uuid: this.$store.getters["entries/edit_uuid"],
+    //     aspect_loc: index_aspect_loc,
+    //   })
+    //
+    //   // saving the child, setting refrences, saving this entry(title),
+    //   this.$store.dispatch("entries/save_child_n_ref", {child: child, aspect_loc: index_aspect_loc})
+    //   // TODO this was there before, is it required???
+    //   // this.value_change(this.$_.concat(this.value, [child.uuid]))
+    //   // todo should be just one call
+    //   this.persist_entries()
+    //   this.to_entry(child.uuid, EDIT)
+    //   this.goto_delayed_last_page()
+    // },
     additional_action(action_name) {
       console.log("additional_action", action_name)
       const preview_action = this.$_.find(this.additional_actions, a => a.name === action_name)
@@ -294,7 +294,7 @@ export default {
         case "create_child":
           const action_aspect_loc = aspect_loc_str2arr(preview_action.aspect)
           const aspect_loc = loc_prepend(ENTRY, this.entry.uuid, action_aspect_loc)
-          this.create_child(aspect_loc, preview_action.child_type_slug)
+          this.create_child(aspect_loc, this.entry.language, preview_action.child_type_slug)
           break
         case "download":
           this.download()

@@ -14,25 +14,25 @@ eovalue
 
 console.log("NUXT:CONFIG. env:server", process.env.SERVER)
 
-let axios_baseURL = "https://opentek.eu"
+let hostname = "https://opentek.eu"
 
 if (process.env.SERVER === "staging") {
   console.log("building for staging")
-  axios_baseURL = "https://staging.opentek.eu"
+  hostname = "https://staging.opentek.eu"
 }
 
 if (process.env.NODE_ENV === "development" || process.env.SERVER === "local") {
   console.log("building for localhost")
-  axios_baseURL = "http://localhost:8100"
+  hostname = "http://localhost:8100"
 }
 
 module.exports = {
-   telemetry: false,
+  telemetry: false,
 
   env: {
     NODE_ENV: process.env.NODE_ENV || true,
-    release_mode: "opentek",
-    default_language: "en"
+    DEFAULT_LANGUAGE: process.env.DEFAULT_LANGUAGE || "en",
+    HOSTNAME: hostname
   },
 
   server: {
@@ -121,14 +121,14 @@ module.exports = {
   ** Axios module configuration
   */
   axios: {
-    baseURL: axios_baseURL,
+    baseURL: hostname,
     withCredentials: true,
     defaults: {
+      // todo why not used?! needs to be added manually to all routes.
       paramsSerializer: function (params) {
         return qs.stringify(params, {arrayFormat: 'repeat'})
       }
     }
-
     // credentials: true,
     // proxyHeaders: true,
   },

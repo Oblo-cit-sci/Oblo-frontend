@@ -131,7 +131,6 @@ export default {
     return {
       profile_pic_upload_loading: false,
       profile_version_ts: Math.floor(new Date().getTime() / 1000),
-      grab_map_selection: false, // when coming back from the map
 
       img_loaded: false,
       security_dialog_open: false,
@@ -173,14 +172,6 @@ export default {
       // todo here call a function that assigns external conditions
     }
     this.reset_edit_values()
-  },
-  // todo this could help us to get the map location, but not sure where to get it in the lifecycle
-  beforeRouteEnter(to, from, next) {
-    next(vm => {
-      if (from.fullPath === "/map?mode=m_mode_point") {
-        vm.grab_map_selection = true
-      }
-    })
   },
   methods: {
     goto_top() {
@@ -252,7 +243,7 @@ export default {
       this.email_update_loading = true
       this.$api.actor.change_email(new_email).then(({data}) => {
         this.email_edit = false;
-        this.ok_snackbar(data.data)
+        this.ok_snackbar(data.msg)
         this.email_aspects.email.value = new_email.email
         // todo update user_data
         const user_data = this.$_.cloneDeep(this.user_data)

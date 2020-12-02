@@ -101,9 +101,9 @@ export default {
       if (this.is_published) {
         return this.$t("w.update")
       } else if (this.is_draft) {
-        return "submit"
+        return this.$t("comp.entry_actions.submit")
       } else if (this.entry.status === REQUIRES_REVIEW) {
-        return "accept"
+        return this.$t("comp.entry_actions.review.accept")
       }
     },
   },

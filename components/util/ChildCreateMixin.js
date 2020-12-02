@@ -1,15 +1,17 @@
 import {aspect_loc_uuid, pack_value} from "~/lib/aspect";
-import {create_entry} from "~/lib/entry";
 import {EDIT, ENTRY_INDEX} from "~/lib/consts";
+import EntryCreateMixin from "~/components/entry/EntryCreateMixin";
 
 export default {
   name: "ChildCreateMixin",
+  // todo: not sure why but including this kills the app
+  // mixins: [EntryCreateMixin],
   methods: {
-    create_child(aspect_loc, child_type_slug) {
+    create_child(aspect_loc, language, child_type_slug) {
       const entry_uuid = aspect_loc_uuid(aspect_loc)
       const value = this.$store.getters["entries/value"](aspect_loc).value
       const index_aspect_loc = this.aspect_loc_for_index(aspect_loc, value.length)
-      const child = create_entry(this.$store, child_type_slug, {}, {
+      const child = this.create_entry(child_type_slug, language, {}, {
         uuid: entry_uuid,
         aspect_loc: index_aspect_loc,
       })

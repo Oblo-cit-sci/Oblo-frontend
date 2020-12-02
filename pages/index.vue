@@ -2,7 +2,7 @@
   v-container(fluid)
     div(v-if="initialied")
       div(v-if="!logged_in")
-        v-row {{$t('page.index.p1', {server_name: server_name})}}
+        v-row {{$t('page.index.p1', {server_name: server_name})}} TODOOO QUE?!¿
         v-row(align="center")
           v-col(sm="4" offset="1")
             v-btn.mt-4.mb-8(large to="/register" rounded outlined) {{$t('page.index.btn_register')}}
@@ -32,9 +32,10 @@ import DomainCard from "../components/global/DomainCard";
 import Footer from "../components/global/Footer";
 import {UI_LANGUAGE} from "~/lib/consts"
 import SettingsChangeMixin from "~/components/global/SettingsChangeMixin"
+import EnvMixin from "~/components/global/EnvMixin";
 
 export default {
-  mixins: [SettingsChangeMixin],
+  mixins: [SettingsChangeMixin,EnvMixin],
   data() {
     return {}
   },
@@ -49,8 +50,8 @@ export default {
     ...mapGetters(["domains"]),
     ...mapGetters({logged_in: "user/logged_in"}),
     server_name() {
-      // todo
-      return "OpenTEK.eu"
+      // todo env.
+      return this.hostname
     },
   },
   methods: {

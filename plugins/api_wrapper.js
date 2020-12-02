@@ -16,13 +16,12 @@ class APIWrapper {
       this.axios_baseURL = axios.defaults.baseURL
     this.api_baseURL = this.axios_baseURL + "/api"
     //
-    this.basic_baseURL = this.api_baseURL + "/basic"
     this.domain_baseURL = this.api_baseURL + "/domain"
     this.entry_baseURL = this.api_baseURL + "/entry"
     this.entries_baseURL = this.api_baseURL + "/entries"
     this.static_baseURL = this.axios_baseURL + "/static"
 
-    // todo THE NEW WAY, refactor all methods like this... :)
+    this.basic = new Basic(this)
     this.entry = new Entry(this)
     this.entries = new Entries(this)
     this.actor = new Actor(this)
@@ -33,14 +32,7 @@ class APIWrapper {
     return this.axios !== null
   }
 
-  init_data(domain, language) {
-    // console.log("requesting language", language)
-    return this.axios.get(`${this.basic_baseURL}/init_data`, {
-      params: {
-        domain, language
-      }
-    })
-  }
+
 
   /**
    * basic information of all domains
@@ -151,6 +143,29 @@ class QueryBase {
 
   post(sub_path, data, config) {
     return this.axios.post(`${this.base}/${sub_path}`, data, config)
+  }
+}
+
+class Basic extends QueryBase {
+
+  constructor(api_wrapper) {
+    super(api_wrapper, "/basic")
+  }
+
+    init_data(domains, language) {
+    // console.log("requesting language", language)
+    const params = {}
+    if (domains) {
+      params.domains = domains
+    }
+    if (language) {
+      params.language = language
+    }
+    return this.get("init_data", {params,
+      paramsSerializer: function (params) {
+        return qs.stringify(params, {arrayFormat: 'repeat'})
+      },
+    })
   }
 }
 
@@ -338,17 +353,17 @@ class Actor extends QueryBase {
 
 class Language extends QueryBase {
 
-    constructor(api_wrapper) {
+  constructor(api_wrapper) {
     super(api_wrapper, "/language")
   }
 
-    get_component(component, language) {
-      return this.get("get_component", {
-        params: {
-          component, language
-        }
-      })
-    }
+  get_component(component, language) {
+    return this.get("get_component", {
+      params: {
+        component, language
+      }
+    })
+  }
 
 }
 

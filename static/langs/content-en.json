@@ -306,6 +306,7 @@
           "confirm_text": "delete"
         }
       },
+      "submit": "submit",
       "saved": "Entry saved",
       "saved_text": "Your entry is saved in the browser until you submit or cancel the creation.",
       "submitted": "Entry submitted",
@@ -431,6 +432,9 @@
     },
     "treeselect_asp": {
       "click_to_select": "Click to select"
+    },
+    "treeleaf_picker": {
+      "current": "Current selection"
     }
   },
   "lang": {

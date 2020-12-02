@@ -181,7 +181,7 @@ export default {
     },
     config_generate(filtername, filtervalue, language) {
       if (filtername === "template") {
-        const used_templates = this.$store.getters["templates/entry_types_array"](language).filter(template => filtervalue.includes(template.slug))
+        const used_templates = this.$store.getters["templates/entry_types_array"](language, true).filter(template => filtervalue.includes(template.slug))
         return {
           "name": "template",
           "t_label": "w.entrytype",
