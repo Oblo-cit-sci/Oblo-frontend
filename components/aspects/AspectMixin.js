@@ -10,6 +10,7 @@ import {
 } from "~/lib/aspect";
 import {select_aspect_loc} from "~/lib/entry"
 
+var jp = require('jsonpath')
 
 export default {
   props: {
@@ -74,6 +75,15 @@ export default {
         }
       } else {
         this.$emit("update:ext_value", up_value)
+      }
+
+      if (this.attr.tag) {
+        const tag = this.attr.tag
+        // console.log("taggy")
+        // console.log(this.attr.tag, up_value)
+        // let val = jp.value(up_value, "$.value[0].value")
+        // console.log("->", val)
+        this.$store.commit("entries/add_tag", {name:tag.name, value: jp.value(up_value,tag.subpath)})
       }
     },
     toString(value) {

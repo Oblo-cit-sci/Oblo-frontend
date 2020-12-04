@@ -14,6 +14,8 @@ import FlexibleTextSection from "~/components/global/FlexibleTextSection"
 
 const pkg = require('~/package.json')
 
+
+
 export default {
   name: "about",
   components: {FlexibleTextSection, Footer},

@@ -106,7 +106,7 @@ export default {
       }
     },
     selected(val) {
-      // console.log("TSA selected", val)
+      console.log("TSA selected", val)
       this.dialogOpen = false;
       if (val) {
         this.update_value(val.value)
@@ -154,6 +154,7 @@ export default {
         return this.value
       },
       set: function (val) {
+        console.log("tsa-val set. update...", val)
         this.update_value(val)
       }
     },

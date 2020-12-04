@@ -183,6 +183,12 @@ export const mutations = {
     if(entry) {
       entry.attached_files = entry.attached_files.filter(a => a.file_uuid !== file_uuid)
     }
+  },
+  add_tag(state, {name, value}) {
+    if(!Array.isArray(value)) {
+      value = [value]
+    }
+    state.edit.tags[name] = value
   }
 }
 
@@ -453,10 +459,10 @@ export const actions = {
     }
     // console.log("tags")
     // debugger
-    const tags = context.getters.entry_tags(uuid)
-    if (tags) {
-      context.commit("update_tags", {uuid, tags: tags})
-    }
+    // const tags = context.getters.entry_tags(uuid)
+    // if (tags) {
+    //   context.commit("update_tags", {uuid, tags: tags})
+    // }
   },
   set_edit(context, uuid) {
     if (!context.state.edit || context.state.edit.uuid !== uuid) {

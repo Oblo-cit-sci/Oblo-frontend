@@ -73,7 +73,7 @@ export default {
     }
   },
   computed: {
-    select_length() {
+    act_level() {
       return this.value ? this.value.length : 0
     },
     extra_value: {
@@ -105,10 +105,10 @@ export default {
       }
     },
     last_description() {
-      if (this.select_length === 0) {
+      if (this.act_level === 0) {
         return ""
       } else {
-        return this.value[this.act_level - 1].description || ""
+        return this.value[this.act_level].description || ""
       }
     },
     has_levels() {
@@ -116,20 +116,17 @@ export default {
     },
     has_selection() {
       // debugger
-      return this.select_length > 0
-    },
-    act_level() {
-      return this.select_length
+      return this.act_level > 0
     },
     has_options() {
       return this.act_options.length > 0
     },
     last_selection_has_extra() {
-      return this.has_selection && this.value[this.select_length - 1].extra || false
+      return this.has_selection && this.value[this.act_level - 1].extra || false
     },
     extra_aspect() {
       if (this.last_selection_has_extra) {
-        const last_extra = this.value[this.select_length - 1].extra
+        const last_extra = this.value[this.act_level - 1].extra
         if (last_extra.type === "text") {
           return {
             name: last_extra.name,
@@ -144,16 +141,13 @@ export default {
       }
     },
     act_levelname() {
-      // console.log("act_levelname", this.select_length)
-      return this.levelname(this.select_length)
+      // console.log("act_levelname", this.act_level)
+      return this.levelname(this.act_level)
     },
     act_level_description() {
-      console.log("act_level_description", this.levels, this.select_length)
-      if (typeof this.levels[this.select_length] === "string") {
-        return null
-      } else {
-        return this.levels[this.select_length].description
-      }
+      // console.log("act_level_description", this.levels, this.act_level)
+      //return "act l descr."
+      return this.levels[Math.min(this.act_level, this.levels.length - 1)].description
     },
     act_edit_mode() {
       return this.level_edit_mode(this.act_level)
@@ -175,9 +169,14 @@ export default {
     this.levels = this.tree.levels
   },
   methods: {
-    select(value) {
-      if (value)
-        this.$emit("input", this.$_.concat(this.value || [], [value]))
+    select(selection) {
+      console.log("TLP", selection)
+      if (selection)
+        this.$emit("input", this.$_.concat(this.value || [], [{
+          value: selection.value,
+          text: selection.text,
+          index: this.$_.findIndex(this.act_options, o => o.value === selection.value)
+        }]))
       else // clicked clear on select
         this.$emit("input", this.value)
     },

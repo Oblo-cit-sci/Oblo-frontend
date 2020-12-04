@@ -169,8 +169,18 @@ export default {
       return [EDIT, REVIEW].includes(this.mode)
     },
     tags() {
-      console.log("template", this.template)
-      return this.entry.tags || []
+      // console.log("template", this.template.entry_refs, this.entry.tags)
+      for(let group_name in this.entry.tags) {
+        let tag_values = this.entry.tags[group_name]
+        console.log(tag_values)
+        const code_slug = this.$_.find(this.template.entry_refs, ref => ref.tag.name === group_name).dest_slug
+        console.log(code_slug)
+        const lang = this.$store.getters["user/settings_value"]("ui_language")
+        console.log(lang)
+        const code_entry = this.$store.getters["templates/code"](code_slug, lang)
+        console.log(code_entry)
+      }
+      return this.entry.tags || {}
     },
     version() {
       return this.entry.version
