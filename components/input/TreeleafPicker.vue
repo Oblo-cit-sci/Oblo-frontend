@@ -148,7 +148,7 @@ export default {
       return this.levelname(this.select_length)
     },
     act_level_description() {
-      // console.log("act_level_description")
+      console.log("act_level_description", this.levels, this.select_length)
       if (typeof this.levels[this.select_length] === "string") {
         return null
       } else {

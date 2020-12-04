@@ -1,6 +1,6 @@
 <template lang="pug">
   v-container(fluid)
-    div(v-if="initialied")
+    div(v-if="initialized")
       div(v-if="!logged_in")
         v-row {{$t('page.index.p1', {server_name: server_name})}} TODOOO QUE?!¿
         v-row(align="center")
@@ -35,7 +35,7 @@ import SettingsChangeMixin from "~/components/global/SettingsChangeMixin"
 import EnvMixin from "~/components/global/EnvMixin";
 
 export default {
-  mixins: [SettingsChangeMixin,EnvMixin],
+  mixins: [SettingsChangeMixin, EnvMixin],
   data() {
     return {}
   },
@@ -47,8 +47,8 @@ export default {
     DomainCard,
   },
   computed: {
-    ...mapGetters(["domains"]),
-    ...mapGetters({logged_in: "user/logged_in"}),
+    ...mapGetters({domains: "domain/domains"}),
+    ...mapGetters({logged_in: "user/logged_in", initialized: "app/initialized"}),
     server_name() {
       // todo env.
       return this.hostname

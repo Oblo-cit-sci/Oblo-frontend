@@ -169,6 +169,7 @@ export default {
       return [EDIT, REVIEW].includes(this.mode)
     },
     tags() {
+      console.log("template", this.template)
       return this.entry.tags || []
     },
     version() {
