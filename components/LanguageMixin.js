@@ -3,9 +3,7 @@ import {DOMAIN_LANGUAGE, UI_LANGUAGE} from "~/lib/consts";
 export default {
   name: "LanguageMxin",
   computed: {
-    loaded_ui_languages() {
-      return Object.keys(this.$i18n.messages)
-    }
+
   },
   methods: {
     async change_language(language, update_settings = true, domain_language = null) {
@@ -18,7 +16,8 @@ export default {
         if (update_settings)
           this.set_settings_value(DOMAIN_LANGUAGE, domain_language)
       })
-      if (!this.loaded_ui_languages.includes(language)) {
+      // console.log("check have?", language, this.loaded_ui_languages.includes(language))
+      if (!this.$i18n.availableLocales.includes(language)) {
         try {
           const {data} = await this.$api.language.get_component("fe", language)
           this.$i18n.setLocaleMessage(language, data)

@@ -85,18 +85,27 @@ export default {
 
       const domains_data = data.data.domains
       const language = data.data.language
-      console.log(domains_data[0].language)
-      console.log(data.data.templates_and_codes.map(e => {
-        return [e.slug, e.domain, e.language]
-      }))
+      // console.log(domains_data[0].language)
+      // console.log(data.data.templates_and_codes.map(e => {
+      //   return [e.slug, e.domain, e.language]
+      // }))
       this.$store.commit("domain/set_domains", {domains_data, language})
       this.$store.commit("templates/add_templates_codes", data.data.templates_and_codes)
       console.log("template/codes stored")
       // console.log(data.data)
       this.$store.commit("set_available_languages", data.data.languages)
       this.$store.commit("user/change_setting", {[DOMAIN_LANGUAGE]: language, [UI_LANGUAGE]: language})
-      console.log("language", language)
-      await this.change_language(language, false)
+      // console.log("language", language)
+      // console.log("?", language, language !== this.$i18n.fallbackLocale, this.$i18n.fallbackLocale)
+      if (language !== this.$i18n.fallbackLocale) {
+        // console.log("change lang", language, data.data.messages)
+        this.$i18n.setLocaleMessage(language, data.data.messages)
+        // console.log(Object.keys(this.$i18n.getLocaleMessage(language)))
+        // const a = this
+        // debugger
+        await this.change_language(language, false)
+      }
+
       // todo maybe this part should be handled by the individual page, so it can do its default behaviour
       // but a wrapper would be good.
       if (this.$route.query.uuid && !this.$store.getters["entries/has_full_entry"](this.$route.query.uuid)) {
@@ -113,7 +122,6 @@ export default {
           this.$router.push("/")
         }
       }
-
 
       this.$store.dispatch("app/connected")
       // console.log("initialize multiple domains?", this.has_multiple_domains)
