@@ -95,7 +95,10 @@ export default {
   },
   methods: {
     domains() {
-      return object_list2options(this.$store.getters["domain/domains_for_lang"](this.$store.getters["user/settings_value"]("ui_language")), "title", "name", true)
+      console.log()
+      const l = this.$store.getters["user/settings_value"]("ui_language")
+      const domains = this.$store.getters["domain/domains_for_lang"](l)
+      return object_list2options(domains, "title", "name", true)
     },
     update_value(aspect, val) {
       if (aspect.name === GLOBAL_ROLE) {

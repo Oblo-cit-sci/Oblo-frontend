@@ -84,10 +84,10 @@ export default {
         password_confirm: this.aspects.password_confirm.value,
         settings
       }).then(({data}) => {
-        if (data.data) {
+        if (data.msg) {
           // this.$router.push({name: PAGE_LOGIN})
           this.$router.push("/basic/registration_done")
-          this.ok_snackbar(data.data)
+          this.ok_snackbar(data.msg)
         } else {
           this.errorMsg = data.error.msg
         }

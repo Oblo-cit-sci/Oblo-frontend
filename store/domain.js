@@ -17,9 +17,9 @@ export const state = () => ({
 export const mutations = {
   set_domains(state, {domains_data, language}) {
     if (state.domains.size === 0) {
-      domains_data = domains_data.map(d=> ({
+      domains_data = domains_data.map(d => ({
         name: d.name,
-        langs: {[d.language] : Object.assign(d.content, {title: d.title, name: d.name})},
+        langs: {[d.language]: Object.assign(d.content, {title: d.title, name: d.name})},
         languages: d.languages
       }))
       state.domains = new Map(ld.toPairs(ld.keyBy(domains_data, d => d.name)))
@@ -41,9 +41,9 @@ export const mutations = {
   },
   set_act_lang_domain_data(state, {domain_name, language}) {
     const domain_base = state.domains.get(domain_name)
-    if(domain_base) {
+    if (domain_base) {
       let domain_data = domain_base.langs[language]
-      if(domain_data){
+      if (domain_data) {
         state.act_lang_domain_data = domain_data
       } else {
         state.act_lang_domain_data = this.$_.values(domain_base.langs)[0]
@@ -85,11 +85,10 @@ export const getters = {
     }
   },
   // todo just used once atm. maybe not required as store getter
-  domains_for_lang(state) {
+  domains_for_lang(state, getters) {
     return (lang_code, keep_no_domain = false) => {
-      return ld.map(ld.filter(state.domains,
-        d => d.hasOwnProperty(lang_code) && d.name !== NO_DOMAIN),
-        d => (d[lang_code]))
+      return ld.filter(ld.map(getters.domains,  d => getters.lang_domain_data(d.name, lang_code)),
+      d => d && (keep_no_domain || d.name !== "no_domain"))
     }
   },
   // domain_options(state) {
