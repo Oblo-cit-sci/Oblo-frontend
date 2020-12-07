@@ -430,6 +430,9 @@
     "snackbar": {
       "something_went_wrong": "Something went wrong"
     },
+    "list_asp": {
+      "add": "Add {item_name}"
+    },
     "treeselect_asp": {
       "click_to_select": "Click to select"
     },

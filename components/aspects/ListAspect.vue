@@ -15,7 +15,7 @@
             @remove_value="remove_value($event)"
             v-on:move="move($event)")
       div(v-if="is_view_mode && is_empty")
-        .ml-2 {{aspect.attr.default_view}}
+        .ml-2 {{aspect.attr.default_view.text}}
     div(v-else class="mb-1 mt-1")
       v-expansion-panels(
         multiple
@@ -34,12 +34,12 @@
               v-on:remove_value="remove_value($event)"
               v-on:move="move($event)")
       div(v-if="is_view_mode && is_empty")
-        .ml-2 {{aspect.attr.default_view}}
+        .ml-2 {{aspect.attr.default_view.text}}
     MinMaxIndicators(
       v-if="!is_view_mode && !disabled"
       v-bind="min_max_props")
     .inline(v-if="adding_allowed && !fixed_length")
-      v-btn(:disabled="!more_allowed" @click="add_value()" :color="requieres_more_color") Add {{item_name}}
+      v-btn(:disabled="!more_allowed" @click="add_value()" :color="requieres_more_color") {{$t('comp.list_asp.add', {'item_name': item_name})}}
         v-icon mdi-plus
     ListPagination(
       v-if="has_pagination"
@@ -102,9 +102,9 @@ export default {
     //console.log("LA created", this.value)
     // todo. list, are extended lists by user, not select lists
     // todo the item should not be just a string, DEPRECATED
-    //console.log("object type", this.aspect.items)
-    this.item_aspect = this.aspect.items
-    if (this.aspect.items.type === "composite" || this.attr.force_panels) {
+    //console.log("object type", this.aspect.list_items)
+    this.item_aspect = this.aspect.list_items
+    if (this.item_aspect.type === "composite" || this.attr.force_panels) {
       this.structure = PANELS
       // get the titles // should cause having the panel titles when entry is entered
       // fill in the values of the titleAspect
@@ -215,7 +215,7 @@ export default {
       })
     },
     item_aspect_loc(index) {
-      return this.$_.concat(this.aspect_loc, [[INDEX, index, this.aspect.items.name]])
+      return this.$_.concat(this.aspect_loc, [[INDEX, index, this.item_aspect.name]])
     },
     indexed_item_aspect(index) {
       let aspect = {...this.item_aspect}
@@ -259,7 +259,7 @@ export default {
   },
   computed: {
     item_name() {
-      return this.aspect.items.name || this.aspect.attr.itemname || "item"
+      return this.item_aspect.name || this.aspect.attr.itemname || "item"
     },
     is_simple() {
       return this.structure === SIMPLE
@@ -271,7 +271,7 @@ export default {
       return this.aspect.attr.moveable || false
     },
     requires_delete() {
-      let itemtype = this.aspect.items.type
+      let itemtype = this.item_aspect.type
       return !(itemtype === "str" || itemtype === "int" || itemtype === "float" || itemtype === "tree")
     },
     titles() {
@@ -329,7 +329,7 @@ export default {
               }
 
             }
-            //console.log(titles[i], "from ", this.value[i], this.aspect.items.components)
+            //console.log(titles[i], "from ", this.value[i], this.item_aspect.components)
             // TODO here we should check if there is a ref_value and grab that
             if (Array.isArray(titles[i])) {
               console.log("ListAspect. recursive_unpack is depracated, try recursive_unpack2 instead")

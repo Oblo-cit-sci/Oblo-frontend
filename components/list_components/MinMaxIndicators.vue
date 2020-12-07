@@ -8,7 +8,7 @@
 </template>
 
 <script>
-    import {item_count_name} from "../../lib/listaspects";
+    import {item_count_name} from "~/lib/listaspects";
 
     export default {
         name: "MinMaxIndicators",
