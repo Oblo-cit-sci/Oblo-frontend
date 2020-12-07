@@ -1,5 +1,6 @@
 import {COMPOSITE, LIST} from "~/lib/consts";
 import {entries_domain_filter} from "~/lib/search";
+import {resolve_from_list_code, resolve_from_tree_code} from "~/lib/tags";
 
 const ld = require("lodash")
 
@@ -12,7 +13,8 @@ export const state = () => ({
    */
 
   entry_types: new Map(), // types for creation
-  codes: new Map()
+  codes: new Map(),
+  tags: {}
 })
 
 
@@ -27,7 +29,7 @@ export const getters = {
       const base_template = state.entry_types.get(type_slug)
       if (base_template.lang.hasOwnProperty(language)) {
         return base_template.lang[language]
-      } else if(fallback) {
+      } else if (fallback) {
         return base_template.lang[Object.keys(base_template.lang)[0]]
       } else {
         return null
@@ -86,25 +88,90 @@ export const getters = {
   entry_types_array(state, getters) {
     return (language, fallback) => {
       const lang = language || "en"
-        return Array.from(state.entry_types.values()).map(d => getters.entry_type(d.slug, lang, fallback)).filter(e => e != null)
+      return Array.from(state.entry_types.values()).map(d => getters.entry_type(d.slug, lang, fallback)).filter(e => e != null)
+    }
+  },
+  tags_of_code(state) {
+    return (code_slug, language, tag_values) => {
+      console.log(code_slug, language, tag_values)
+
+      if (!state.tags[code_slug]) {
+        console.log("templates/tags_of_code: no tags for entry_slug", code_slug)
+        console.log("options:", state.tags)
+        return tag_values
+      }
+      const entry_tags = state.tags[code_slug]
+      return ld.map(tag_values, v => {
+        if (!entry_tags[v]) {
+          console.log("templates/tags_of_code: no tag for slug, value", code_slug, v)
+          console.log("options:", entry_tags)
+          return v
+        } else {
+          if (entry_tags[v].has(language)) {
+            return entry_tags[v].get(language).text
+          } else {
+            console.log("templates/tags_of_code: no tag for slug, value, language", code_slug, v, language)
+            console.log("options", entry_tags[v].keys(), "->", entry_tags[v].values().next().value)
+            return entry_tags[v].values().next().value.text
+          }
+        }
+      })
     }
   }
 }
 
 export const mutations = {
-  add_templates_codes(state, arr) {
+  insert_template_code(state, t_c) {
+    const insert_into = t_c.type === "template" ? state.entry_types : state.codes
+    if (insert_into.has(t_c.slug)) {
+      insert_into.get(t_c.slug).lang[t_c.language] = t_c
+    } else {
+      insert_into.set(t_c.slug, {
+        slug: t_c.slug,
+        domain: t_c.domain,
+        lang: {
+          [t_c.language]: t_c
+        }
+      })
+    }
+  },
+  add_tags_from(state, entry) {
+    if (_.isEmpty(entry.rules.tags))
+      return;
+    const tags_rule = entry.rules.tags
+    let tags = null
+
+    if (tags_rule["from_tree"]) {
+      tags = resolve_from_tree_code(entry)
+    } else if (tags_rule["from_list"]) {
+      tags = resolve_from_list_code(entry)
+    }
+    if (tags) {
+      if (!state.tags[entry.slug]) {
+        state.tags[entry.slug] = {}
+      }
+      const insert_to = state.tags[entry.slug]
+      const lang = entry.language
+      console.log("insert tag for: ", entry.slug, lang)
+      for (let tag of tags) {
+        if (!insert_to[tag.value]) {
+          insert_to[tag.value] = new Map()
+        }
+        insert_to[tag.value].set(lang, {text: tag.text})
+        if (tag.description) {
+          insert_to[tag.value].get(lang)[description] = tag.description
+        }
+      }
+    }
+  }
+}
+
+export const actions = {
+  add_templates_codes({commit}, arr) {
     for (let t_c of arr) {
-      const insert = t_c.type === "template" ? state.entry_types : state.codes
-      if (insert.has(t_c.slug)) {
-        insert.get(t_c.slug).lang[t_c.language] = t_c
-      } else {
-        insert.set(t_c.slug, {
-          slug: t_c.slug,
-          domain: t_c.domain,
-          lang: {
-            [t_c.language]: t_c
-          }
-        })
+      commit("insert_template_code", t_c)
+      if (t_c.type === "code") {
+        commit("add_tags_from", t_c)
       }
     }
   }

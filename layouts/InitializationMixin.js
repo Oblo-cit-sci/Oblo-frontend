@@ -56,7 +56,6 @@ export default {
       console.log("initialize")
       // todo maybe this should be before init_data, to request the set language
       const auth_token = this.$store.getters["user/get_auth_token"]
-      // debugger
       if (auth_token.access_token) {
         const login = await this.$api.actor.validate_token(auth_token)
         if (login.data.token_valid) {
@@ -85,13 +84,9 @@ export default {
 
       const domains_data = data.data.domains
       const language = data.data.language
-      // console.log(domains_data[0].language)
-      // console.log(data.data.templates_and_codes.map(e => {
-      //   return [e.slug, e.domain, e.language]
-      // }))
       this.$store.commit("domain/set_domains", {domains_data, language})
-      this.$store.commit("templates/add_templates_codes", data.data.templates_and_codes)
-      console.log("template/codes stored")
+      await this.$store.dispatch("templates/add_templates_codes", data.data.templates_and_codes)
+      // console.log("template/codes stored")
       // console.log(data.data)
       this.$store.commit("set_available_languages", data.data.languages)
       this.$store.commit("user/change_setting", {[DOMAIN_LANGUAGE]: language, [UI_LANGUAGE]: language})

@@ -170,17 +170,17 @@ export default {
     },
     tags() {
       // console.log("template", this.template.entry_refs, this.entry.tags)
-      for(let group_name in this.entry.tags) {
-        let tag_values = this.entry.tags[group_name]
-        console.log(tag_values)
+      const e_tags = this.entry.tags
+      const result_tags = {}
+      for(let group_name in e_tags) {
+        let tag_values = e_tags[group_name]
         const code_slug = this.$_.find(this.template.entry_refs, ref => ref.tag.name === group_name).dest_slug
-        console.log(code_slug)
-        const lang = this.$store.getters["user/settings_value"]("ui_language")
-        console.log(lang)
-        const code_entry = this.$store.getters["templates/code"](code_slug, lang)
-        console.log(code_entry)
+        const lang = this.$store.getters["user/settings_value"]("domain_language")
+        // console.log(group_name, code_slug, lang)
+        const tags = this.$store.getters["templates/tags_of_code"](code_slug, lang, tag_values)
+        result_tags[group_name] = tags
       }
-      return this.entry.tags || {}
+      return result_tags
     },
     version() {
       return this.entry.version
