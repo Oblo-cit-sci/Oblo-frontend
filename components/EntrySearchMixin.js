@@ -1,8 +1,12 @@
 import FilterMixin from "~/components/FilterMixin"
+import {mapGetters} from "vuex";
 
 export default {
   name: "EntrySearchMixin",
   mixins: [FilterMixin],
+  computed: {
+    ...mapGetters({act_config: "search/get_act_config"})
+  },
   methods: {
     store_received_entries(entries) {
       this.$store.commit("entries/save_entries", entries)
@@ -88,6 +92,9 @@ export default {
         local_entries = this.apply_filter(filter, local_entries)
       }
       return local_entries.map(e => e.uuid)
+    },
+    act_config_by_name(filter_name) {
+      return this.$_.find(this.act_config, f => f.name === filter_name)
     }
   }
 }

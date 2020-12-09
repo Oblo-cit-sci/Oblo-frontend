@@ -1,7 +1,7 @@
-
 import {entries_domain_filter} from "~/lib/search"
 import {DOMAIN, DRAFT, MULTISELECT, STATUS, TREEMULTISELECT} from "~/lib/consts"
 import {build_tag_select_list, build_tag_select_tree, find_templates_using_code} from "~/lib/codes"
+
 
 export default {
   name: "FilterMixin",
@@ -18,6 +18,13 @@ export default {
     },
   },
   methods: {
+    get_filter_options_by_name(filter_name) {
+      switch (filter_name) {
+        case "template": return this.get_template_filter_options()
+        case "language": return this.get_language_filter_options()
+        case "tags":
+      }
+    },
     filter2maplegend(filter_config) {
       const template_filter_conf = filter_config.filter(fc => fc.name === "template")[0]
       this.$store.commit("map/set_filter_config", template_filter_conf.value.map(v => ({
@@ -60,6 +67,7 @@ export default {
         return this.$_.includes(entrytypes, e.type_slug)
       })
     },
+    // todo not really a filter. make them all so they dont require params,...
     get_domain_filter(domain_name) {
       return {
         name: DOMAIN,
@@ -73,7 +81,7 @@ export default {
         value: DRAFT
       }
     },
-    get_template_filter_options(domain_name) {
+    get_template_filter_options() {
       return {
         name: "template",
         t_label: "w.entrytype",
@@ -85,7 +93,6 @@ export default {
             min: 1,
             unpacked: true
           },
-          options: []
         },
         search_config: {
           name: "template",
@@ -129,7 +136,6 @@ export default {
           console.log(`unknown code template for ${code.title}, template slug: ${code.template.slug}`)
         }
       }
-
       return {
         name: "tags",
         "t_label": "w.tag",
@@ -150,6 +156,33 @@ export default {
         }
       }
     },
+    get_language_filter_options(domain_name) {
+      const domain_langs = this.$store.getters["domain/get_domain_languages"](domain_name)
+      const options = domain_langs.map(lang => ({"value": lang, "text": this.$t("lang." + lang)}))
+      // this.$store.getters["user/settings_value"]("ui_language")
+      // console.log(options)
+      return Object.assign(this.language_filter_config(),{
+        search_config: {
+          name: "language",
+        },
+        aspect: {
+          name: "language",
+          t_label: "asp.language.label",
+          type: "multiselect",
+          attr: {
+            min: 1,
+            unpacked: true
+          },
+          items: options
+        }
+      })
+    },
+    language_filter_config() {
+      return {
+        name: "language",
+        t_label: "asp.language.label",
+      }
+    },
     get_actor_filter(registered_name) {
       return {
         name: "actor",
@@ -163,7 +196,7 @@ export default {
       if (filter.name === "domain") {
         return entries.filter(e => e.domain === filter.value)
       } else if (filter.name === "template") {
-        console.log(filter, entries)
+        // console.log(filter, entries)
         return entries.filter(e => filter.value.includes(e.template.slug))
       } else if (filter.name === "status") {
         return entries.filter(e => e.status === filter.value)
@@ -179,6 +212,7 @@ export default {
         return entries
       }
     },
+    // todo maybe use a function template_filter_config... e.g. language_filter_config
     config_generate(filtername, filtervalue, language) {
       if (filtername === "template") {
         const used_templates = this.$store.getters["templates/entry_types_array"](language, true).filter(template => filtervalue.includes(template.slug))
@@ -188,6 +222,8 @@ export default {
           "value": filtervalue,
           "text": used_templates.map(t => t.title).join(", ")
         }
+      } else if(filtername === "language") {
+        return Object.assign(this.language_filter_config(), {value : filtervalue, "text": this.$t("lang." + language)}, )
       }
     },
     apply_tags_filter(tags_filter, entries) {

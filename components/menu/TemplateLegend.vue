@@ -65,6 +65,7 @@
         this.panel_state = false
       },
       template2filterlist_config(config) {
+        // todo use the replace_in_act_config method
         const act_config = this.$_.cloneDeep(this.$store.getters["search/get_act_config"])
         let template_config = act_config.find(cf => cf.name === "template")
         if (!template_config) {
@@ -80,7 +81,6 @@
             text: config.map(cf => cf.text).join(", ")
           })
         }
-        console.log("legend update search config")
         this.$store.commit("search/set_act_config", act_config)
       }
     }

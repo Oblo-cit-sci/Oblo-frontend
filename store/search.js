@@ -62,25 +62,31 @@ export const mutations = {
   },
   // todo not tested
   add_all_uuids(state, uuids) {
-    state.all_uuids= (state.all_uuids || []).concat(uuids)
+    state.all_uuids = (state.all_uuids || []).concat(uuids)
   },
   set_act_config(state, config) {
     state.act_config = config
   },
-  replace_in_act_config(state, config_item) {
+  replace_in_act_config(state, config_item_s) {
     /**
      * replace config item with same name is config_item.
      * ! we cant just manipuate the state.act_config, otherwise the watcher freaks out, and doesnt get the change...
      */
+    if (!Array.isArray(config_item_s))
+      config_item_s = [config_item_s]
+
     const new_config = ld.cloneDeep(state.act_config)
-    const existing_config = ld.find(state.act_config, cf => cf.name === config_item.name)
-    if(existing_config) {
-      const index = ld.findIndex(state.act_config, cf => cf.name === config_item.name)
-      $nuxt.$set(new_config, index, config_item)
-      // state.act_config.splice(index, 1, config_item)
-    } else {
-      $nuxt.$set(new_config, new_config.length, config_item)
+    for (let config_item of config_item_s) {
+      const existing_config = ld.find(state.act_config, cf => cf.name === config_item.name)
+      if (existing_config) {
+        const index = ld.findIndex(state.act_config, cf => cf.name === config_item.name)
+        $nuxt.$set(new_config, index, config_item)
+        // state.act_config.splice(index, 1, config_item)
+      } else {
+        $nuxt.$set(new_config, new_config.length, config_item)
+      }
     }
+
     state.act_config = new_config
   },
   remove_in_act_config(state, config_name) {

@@ -91,6 +91,11 @@ export const getters = {
       d => d && (keep_no_domain || d.name !== "no_domain"))
     }
   },
+  get_domain_languages(state, getters) {
+    return (domain_name) => {
+      return getters.domain_by_name(domain_name).languages
+    }
+  }
   // domain_options(state) {
   //   return () => {
   //     return object_list2options(state.domains, TITLE)

@@ -35,10 +35,11 @@ import {aspect_default_value, value_text} from "~/lib/aspect"
 import LayoutMixin from "~/components/global/LayoutMixin"
 import AspectDialog from "~/components/dialogs/AspectDialog"
 import {recursive_unpack2} from "~/lib/util"
+import FilterMixin from "~/components/FilterMixin";
 
 export default {
   name: "Filterlist",
-  mixins: [LayoutMixin],
+  mixins: [LayoutMixin, FilterMixin],
   components: {AspectDialog},
   props: {
     filter_options: Array,
@@ -93,7 +94,7 @@ export default {
       this.dialog_open = true
     },
     not_removable(filter) {
-      if (filter.name === "template") {
+      if (this.$_.get(this.filter_option_by_name(filter.name), "aspect.attr.min") > 0) {
         return true
       }
       return !this.$_.get(filter, "edit.removable", true)

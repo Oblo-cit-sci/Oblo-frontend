@@ -34,7 +34,7 @@ export default {
       const templates = this.domain_templates.filter(t => (
         this.$_.get(t, "rules.create", "public") === PUBLIC ||
         can_edit_entry(this.$store.getters.user, t)))
-      console.log(templates)
+      // console.log(templates)
       return templates
     },
     can_create_multiple_etypes() {

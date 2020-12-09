@@ -49,7 +49,7 @@ import NavBaseMixin from "../NavBaseMixin";
 import PersistentStorageMixin from "../util/PersistentStorageMixin";
 import {route_change_query} from "~/lib/util";
 import Filterlist from "~/components/util/Filterlist"
-import {QP_D, QP_SEARCH, TEMPLATE} from "~/lib/consts"
+import {LANGUAGE, QP_D, QP_SEARCH, TEMPLATE} from "~/lib/consts"
 import EntrySearchMixin from "~/components/EntrySearchMixin"
 import Aspect from "~/components/Aspect"
 import {aspect_default_value, unpack} from "~/lib/aspect"
@@ -119,12 +119,21 @@ export default {
       this.clear()
       this.$store.commit("search/set_route", this_route_data)
       // the default changes triggering config change will trigger a search
-      if (this.$store.getters["search/get_act_config"].length === 0 && this.domain_data) {
-        const language = this.$store.getters["user/settings"].domain_language
+      const language = this.$store.getters["user/settings"].domain_language
+      const search_config_update = []
+      if (!this.act_config_by_name("template") && this.domain_data) {
+
         const generated = this.config_generate(TEMPLATE, this.$_.get(this.domain_data, "search.default_templates", []), language)
-        this.$store.commit("search/replace_in_act_config", generated)
-      } else {
+        search_config_update.push(generated)
+      }
+      if(!this.act_config_by_name("language")) {
+          search_config_update.push(this.config_generate(LANGUAGE, [language], language))
+      }
+      if(this.$_.isEmpty(search_config_update)) {
+        // todo maybe that should set before_last: true?
         this.get_entries(false, false)
+      } else {
+          this.$store.commit("search/replace_in_act_config", search_config_update)
       }
     } else {
       // if uuids are selected, no search/update required.
@@ -174,6 +183,7 @@ export default {
       // console.log("act_config", val) //, prev_val, this.$_.isEqual(val, prev_val))
       // todo special treatment here:
       // if the template changed kickout the tags
+      console.log(val, prev_val)
       const old_template_filter = val.find(f => f.name === "template")
       const new_template_filter = prev_val.find(f => f.name === "template")
 

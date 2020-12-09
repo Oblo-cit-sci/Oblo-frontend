@@ -1,7 +1,9 @@
 import {DOMAIN_LANGUAGE, UI_LANGUAGE} from "~/lib/consts";
+import FilterMixin from "~/components/FilterMixin";
 
 export default {
   name: "LanguageMxin",
+  mixins: [FilterMixin],
   computed: {
 
   },
@@ -32,6 +34,14 @@ export default {
       if (update_settings)
         this.set_settings_value(UI_LANGUAGE, language)
       this._i18n.locale = language
+      // UPDATE SEARCH CONFIG
+
+      this.$store.commit("search/replace_in_act_config",
+        Object.assign(this.language_filter_config(),
+          {
+            value: [language],
+            text: this.$t("lang."+language)
+          }))
     },
     /**
      *
