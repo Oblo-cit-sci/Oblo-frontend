@@ -31,10 +31,11 @@ export default {
     },
     create_templates_options() {
       // todo needs refinement, what if this can be changed per user...
-      console.log(this.domain_templates)
-      return this.domain_templates.filter(t => (
+      const templates = this.domain_templates.filter(t => (
         this.$_.get(t, "rules.create", "public") === PUBLIC ||
         can_edit_entry(this.$store.getters.user, t)))
+      console.log(templates)
+      return templates
     },
     can_create_multiple_etypes() {
       return this.create_templates_options.length > 1

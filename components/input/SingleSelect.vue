@@ -17,7 +17,9 @@
           v-list-item-avatar(v-if="has_some_icons")
             v-img(:src="icon_path(item)"  contain max-height="25")
           v-list-item-content
-            v-list-item-title {{item.text}}
+            v-list-item-title
+              span {{item.text}}
+              LanguageCodeFallback.ml-2(v-if="alt_lang(item)" :actual_lang="alt_lang(item)" small)
             v-list-item-subtitle {{item.description}}
           v-list-item-action.align-self-center(v-if="action_icon")
             v-spacer
@@ -50,6 +52,7 @@
 
   import {server_icon_path} from "~/lib/client";
   import SelectGrid from "~/components/aspect_utils/SelectGrid"
+  import LanguageCodeFallback from "~/components/aspect_utils/LanguageCodeFallback";
 
   let select_tresh = 6;
   let autocomplet_thresh = 20
@@ -65,7 +68,7 @@
 
   export default {
     name: "SingleSelect",
-    components: {SelectGrid},
+    components: {LanguageCodeFallback, SelectGrid},
     props: {
       options: Array,
       selection: [Object, String],
@@ -132,6 +135,13 @@
       }
     },
     methods: {
+      alt_lang(item) {
+        if (item.language) {
+          return item.language
+        } else {
+          return null
+        }
+      },
       select(item) {
         if (this.disabled)
           return

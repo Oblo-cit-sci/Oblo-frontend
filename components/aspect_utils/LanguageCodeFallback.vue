@@ -1,5 +1,5 @@
 <template lang="pug">
-  LanguageChip(:language_code="actual_lang")
+  LanguageChip(:language_code="actual_lang" :x_small="x_small", :small="small")
 </template>
 
 <script>
@@ -9,7 +9,9 @@ export default {
   components: {LanguageChip},
   props: {
     intended_lang: String,
-    actual_lang: String
+    actual_lang: String,
+    "x_small": Boolean,
+    small: Boolean
   }
 }
 </script>
