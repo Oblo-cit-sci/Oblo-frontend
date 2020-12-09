@@ -19,7 +19,6 @@ export default {
     check_language_match(code_slug) {
       const language = this.$store.getters["user/settings"].domain_language
       const code_entry = this.$store.getters["templates/code"](code_slug, language)
-      console.log(language, code_entry.language)
       return [language === code_entry.language, language, code_entry.language]
     },
     get_codes_as_options(code_slug) {

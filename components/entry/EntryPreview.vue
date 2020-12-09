@@ -12,7 +12,7 @@
                 svg.mr-1(height=15 width=15 v-if="!show_entrytype_title")
                   circle(cx=8 cy=8 r=6 :stroke="marker_border_color" :fill="template_color" stroke-width=2)
                 span(@click="goto(entry.uuid, 'view')"  :style="title_style")
-                  span {{full_title}}
+                  span {{title}}
                   span(v-if="is_draft" :style="{color:'cornflowerblue'}") &nbsp; [{{$t('comp.entrypreview.draft')}}]
                     v-btn(v-if="show_title_action" @click="goto()" depressed small)
                       v-icon(:class="default_action_icon")
@@ -63,7 +63,6 @@ import {privacy_color, privacy_icon} from "~/lib/util"
 import {review_color, draft_color,EDIT, ENTRY, REVIEW, VIEW} from "~/lib/consts"
 import MetaChips from "./MetaChips"
 import Taglist from "../global/Taglist"
-import {full_title} from "~/lib/entry"
 import MapJumpMixin from "../map/MapJumpMixin";
 import EntryMixin from "./EntryMixin";
 import PersistentStorageMixin from "../util/PersistentStorageMixin";
@@ -153,11 +152,11 @@ export default {
     show_view() {
       return [EDIT, REVIEW].includes(this.proper_mode)
     },
-    full_title() {
+    title() {
       if (!this.show_entrytype_title) {
         return this.entry.title
       } else {
-        return full_title(this.$store, this.entry)
+        return this.full_title
       }
     },
     action_loading() {

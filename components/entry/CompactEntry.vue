@@ -8,7 +8,6 @@
 
 <script>
   import EntryMixin from "~/components/entry/EntryMixin"
-  import {full_title} from "~/lib/entry"
   import ActorChip from "~/components/actor/ActorChip"
 
   export default {
@@ -21,9 +20,6 @@
       return {}
     },
     computed: {
-      full_title() {
-        return full_title(this.$store, this.entry)
-      },
     },
     methods: {}
   }

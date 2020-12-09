@@ -15,7 +15,7 @@
             @remove_value="remove_value($event)"
             v-on:move="move($event)")
       div(v-if="is_view_mode && is_empty")
-        .ml-2 {{aspect.attr.default_view.text}}
+        .ml-2 {{default_view_text}}
     div(v-else class="mb-1 mt-1")
       v-expansion-panels(
         multiple
@@ -127,7 +127,7 @@ export default {
     }
     this.set_min_max()
     if (this.value && this.value.length === 0) {
-      for (let i = 0; i < this.aspect.attr.create || 0; i++) {
+      for (let i = 0; i < this.attr.create || 0; i++) {
         this.add_value()
       }
     }
@@ -232,7 +232,7 @@ export default {
     },
     list_extra(index) {
       const extra = Object.assign({
-        no_title: this.aspect.attr.hasOwnProperty("no_titles") ? this.aspect.attr.no_titles : true,
+        no_title: this.attr.hasOwnProperty("no_titles") ? this.attr.no_titles : true,
         clear: false,
         listitem: true,
         list_index: index
@@ -259,7 +259,7 @@ export default {
   },
   computed: {
     item_name() {
-      return this.item_aspect.name || this.aspect.attr.itemname || "item"
+      return this.item_aspect.name || this.attr.itemname || "item"
     },
     is_simple() {
       return this.structure === SIMPLE
@@ -268,15 +268,18 @@ export default {
       return this.extra.ref_length !== undefined
     },
     moveable() {
-      return this.aspect.attr.moveable || false
+      return this.attr.moveable || false
     },
     requires_delete() {
       let itemtype = this.item_aspect.type
       return !(itemtype === "str" || itemtype === "int" || itemtype === "float" || itemtype === "tree")
     },
+    default_view_text() {
+      return this.$_.get(this.attr, "default_view.text", "")
+    },
     titles() {
       let titles = new Array(this.value.length)
-      let titleAspectName = this.item_aspect.attr.titleAspect
+      let titleAspectName = (this.item_aspect.attr || {}).titleAspect
 
       let simple_type = SIMPLE_TYPE.includes(this.item_aspect.type)
       let item_name = this.item_name

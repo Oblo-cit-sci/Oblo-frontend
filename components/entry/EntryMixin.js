@@ -1,4 +1,4 @@
-import {full_title, get_creator, get_entry_titleAspect, has_parent} from "~/lib/entry";
+import {get_creator, get_entry_titleAspect, has_parent} from "~/lib/entry";
 import {aspect_loc_str2arr, loc_append, loc_prepend} from "~/lib/aspect";
 import {mapGetters} from "vuex"
 
@@ -96,7 +96,8 @@ export default {
     // },
     entry_title() {
       if (this.is_edit_mode) {
-        console.log("template", this.template)
+        // todo dirty. do this similar to new tag schema. have "titleAspect" in the attr of the actual aspect that
+        // sets the title
         let titleAspect = get_entry_titleAspect(this.template)
         if (!titleAspect) {
           return this.entry.title
@@ -106,8 +107,11 @@ export default {
         title = this.$_.get(title, "value", "")
         return this.template.title + (title ? ": " + title : "")
       } else {
-        return full_title(this.$store, this.entry)
+        return this.full_title
       }
+    },
+    full_title() {
+      return this.template.title + (this.entry.title ? ": " + this.entry.title : "")
     },
     entry_image() {
       if (this.entry.image) {

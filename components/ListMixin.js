@@ -19,12 +19,11 @@ export default {
   },
   methods: {
     set_min_max() {
-      const attr = this.aspect.attr
       for (let v of ["min", "max"]) {
-        if (attr[v] !== undefined) {
-          this[v] = attr[v]
-        } else if (attr.number !== undefined) {
-          this[v] = attr.number
+        if (this.attr[v] !== undefined) {
+          this[v] = this.attr[v]
+        } else if (this.attr.number !== undefined) {
+          this[v] = this.attr.number
         }
       }
     },
@@ -81,20 +80,20 @@ export default {
       return this.$_.some(this.value, iv => this.$_.isEqual(iv, this.item_default_value))
     },
     item_name() {
-      return this.aspect.attr.itemname || "item"
+      return this.attr.itemname || "item"
     },
     more_allowed() {
-      return (!this.max || this.value.length < this.max) && !this.disabled && !this.aspect.attr.ref_size && !this.has_one_empty
+      return (!this.max || this.value.length < this.max) && !this.disabled && !this.attr.ref_size && !this.has_one_empty
     },
     requieres_more_color() {
       return this.min && this.value.length < this.min ? "success" : undefined
     },
     //
     has_pagination() {
-      return this.value.length > this.pagination_tresh || this.aspect.attr.pagination
+      return this.value.length > this.pagination_tresh || this.attr.pagination
     },
     pagination_tresh() {
-      return this.aspect.attr.items_per_page || PAGINATION_TRESH
+      return this.attr.items_per_page || PAGINATION_TRESH
     },
     pages() {
       let pages = []
