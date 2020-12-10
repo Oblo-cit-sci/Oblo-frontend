@@ -26,7 +26,7 @@
                 @search="get_entries")
           v-row(v-if="has_prominent_filters")
             v-col.py-0(cols="12" v-for="filter in prominent_filters" :key="filter.name")
-              Aspect(:aspect="filter.aspect" mode="edit" :ext_value.sync="promoninent_filter_values[filter.name]")
+              Aspect(:aspect="filter.aspect" mode="edit" :ext_value.sync="prominent_filter_values[filter.name]")
     v-row.mt-3(v-if="prepend_search")
       v-col.py-0(offset="5" cols=2)
         v-progress-circular(indeterminate center size="35" color="success")
@@ -101,7 +101,7 @@ export default {
       prepend_search: false,
       filter_data: [],
       filter_changed: false,
-      promoninent_filter_values: this.$_.mapValues(prominent_filtersMap, a => aspect_default_value(a))
+      prominent_filter_values: this.$_.mapValues(prominent_filtersMap, a => aspect_default_value(a))
     }
   },
   created() {
@@ -236,15 +236,15 @@ export default {
         this.get_entries(false, prominent_filter_changed)
       }
     },
-    promoninent_filter_values: {
+    prominent_filter_values: {
       handler() {
         // console.log("values", values)
         for (let filter of this.prominent_filters) {
           // console.log(filter.name)
-          const val = this.promoninent_filter_values[filter.name]
+          const val = this.prominent_filter_values[filter.name]
           // console.log(val)
           // console.log(filter)
-          const value = unpack(this.promoninent_filter_values[filter.name])
+          const value = unpack(this.prominent_filter_values[filter.name])
           if (!value || this.$_.isEmpty(value)) {
             this.$store.commit("search/remove_in_act_config", filter.search_config.name)
           } else {
@@ -262,6 +262,16 @@ export default {
       total_count: "search/get_search_count",
       all_uuids: "search/get_all_uuids",
     }),
+      act_config: {
+      get: function () {
+        return this.$store.getters["search/get_act_config"]
+      },
+      set: function (val) {
+        this.filter_changed = true
+        this.$store.commit("search/set_act_config", val)
+        this.filter2maplegend(val)
+      }
+    },
     has_prominent_filters() {
       // console.log(this.prominent_filters)
       return !this.$_.isEmpty(this.prominent_filters)

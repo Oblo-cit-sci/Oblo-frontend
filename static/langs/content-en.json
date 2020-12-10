@@ -430,6 +430,9 @@
     "snackbar": {
       "something_went_wrong": "Something went wrong"
     },
+    "tagoptions_asp": {
+      "used_in": "Used in: "
+    },
     "list_asp": {
       "add": "Add {item_name}"
     },

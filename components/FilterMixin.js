@@ -7,7 +7,6 @@ import {mapGetters} from "vuex";
 export default {
   name: "FilterMixin",
   computed: {
-    ...mapGetters({domain_language: "user/settings_domain_language"}),
     act_config: {
       get: function () {
         return this.$store.getters["search/get_act_config"]
@@ -18,24 +17,25 @@ export default {
         this.filter2maplegend(val)
       }
     },
+    ...mapGetters({domain_language: "user/settings_domain_language"})
   },
   methods: {
     get_filter_options_by_name(filter_name) {
       switch (filter_name) {
-        case "template": return this.get_template_filter_options()
-        case "language": return this.get_language_filter_options()
-        case "tags":
+        case [TEMPLATE]: return this.get_template_filter_options()
+        case [LANGUAGE]: return this.get_language_filter_options()
+        case [TAGS]:
       }
     },
     filter2maplegend(filter_config) {
-      const template_filter_conf = filter_config.filter(fc => fc.name === "template")[0]
+      const template_filter_conf = filter_config.filter(fc => fc.name === TEMPLATE)[0]
       this.$store.commit("map/set_filter_config", template_filter_conf.value.map(v => ({
         value: v,
         name: "template"
       })))
     },
     get_filtered_template_slugs() {
-      const template_filter_conf = this.act_config.filter(fc => fc.name === "template")[0]
+      const template_filter_conf = this.act_config.filter(fc => fc.name === TEMPLATE)[0]
       return this.$_.get(template_filter_conf, "value", [])
     },
     // filter_entries_by_domains(entries, domains) {
@@ -119,7 +119,7 @@ export default {
           name: code.slug,
           text: code.title,
           label: code.title,
-          description: "Used in: " + used_in_templates.join(", "),
+          description: this.$t("comp.tagoptions_asp.used_in") + used_in_templates.join(", "),
           attr: {}
         }
         if (code.template.slug === "value_tree") {
@@ -167,6 +167,7 @@ export default {
         search_config: {
           name: "language",
         },
+        hide_on_value: [this.domain_language],
         aspect: {
           name: "language",
           t_label: "asp.language.label",
