@@ -21,9 +21,10 @@ import AspectComponentMixin from "~/components/aspects/AspectComponentMixin"
 import SingleSelect from "~/components/input/SingleSelect"
 import Aspect from "~/components/Aspect"
 import {object_list2options} from "~/lib/options"
-import {OPTION} from "~/lib/consts"
+import {OPTION, TEMPLATE} from "~/lib/consts"
 import {aspect_default_value} from "~/lib/aspect"
 import {get_code_of_template} from "~/lib/codes"
+import {mapGetters} from "vuex";
 
 export default {
   name: "TagOptions",
@@ -63,12 +64,14 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({domain_language: "user/settings_domain_language"}),
     disabled_options() {
-      const template_filter = this.$_.find(this.conditionals, cf => cf.name === "template")
+      const template_filter = this.$_.find(this.conditionals, cf => cf.name === TEMPLATE)
       // NEW APPROACH: ONLY INCLUDE TAGS THAT ARE INCLUDED IN ALL SELECTED TEMPLATES
       if (template_filter) {
-        console.log(template_filter.value)
-        const all_templates_codes = template_filter.value.map(template_slug => get_code_of_template(this.$store, template_slug))
+        // console.log("template_filter", template_filter.value)
+        const all_templates_codes = template_filter.value.map(template_slug => get_code_of_template(this.$store, template_slug, this.domain_language))
+        // console.log(all_templates_codes)
         return this.options.filter(o => !this.$_.every(all_templates_codes, codes => codes.includes(o.value))).map(o => o.value)
       } else { // actually never happens
         return []

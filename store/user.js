@@ -1,4 +1,4 @@
-import {ADMIN, VISITOR} from "~/lib/consts";
+import {ADMIN, DOMAIN_LANGUAGE, VISITOR} from "~/lib/consts";
 import {default_settings} from "~/lib/settings"
 
 let default_user_data = {
@@ -50,6 +50,9 @@ export const getters = {
     return (settings_key) => {
       return state.settings[settings_key]
     }
+  },
+  settings_domain_language(state, getters) {
+    return getters.settings_value(DOMAIN_LANGUAGE)
   }
 }
 

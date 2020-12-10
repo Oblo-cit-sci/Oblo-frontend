@@ -1,7 +1,7 @@
 <template lang="pug">
   div
     v-treeview(:items="root_items"
-      item-text="name"
+      item-text="text"
       @input="input($event)"
       dense
       :selectable="is_edit_mode")
@@ -34,7 +34,7 @@
       id_name_map() {
         const id_map = {}
         const rec_map = (node) => {
-          id_map[node.id] = node.name
+          id_map[node.id] = node.value
           for (let kid of node.children || []) {
             rec_map(kid)
           }

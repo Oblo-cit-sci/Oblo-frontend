@@ -1,11 +1,13 @@
 import {entries_domain_filter} from "~/lib/search"
-import {DOMAIN, DRAFT, MULTISELECT, STATUS, TREEMULTISELECT} from "~/lib/consts"
+import {ACTOR, DOMAIN, DRAFT, LANGUAGE, META, MULTISELECT, STATUS, TAGS, TEMPLATE, TREEMULTISELECT} from "~/lib/consts"
 import {build_tag_select_list, build_tag_select_tree, find_templates_using_code} from "~/lib/codes"
+import {mapGetters} from "vuex";
 
 
 export default {
   name: "FilterMixin",
   computed: {
+    ...mapGetters({domain_language: "user/settings_domain_language"}),
     act_config: {
       get: function () {
         return this.$store.getters["search/get_act_config"]
@@ -100,7 +102,7 @@ export default {
       }
     },
     get_tags_filter_options(domain_name) {
-      const all_codes = this.$store.getters["templates/codes"]
+      const all_codes = this.$store.getters["templates/codes_in_language"](this.domain_language)
       let filter_codes = all_codes.filter(code_entry => this.$_.get(code_entry, "rules.tags"))
       if (domain_name) {
         filter_codes = entries_domain_filter(filter_codes, domain_name)
@@ -109,7 +111,9 @@ export default {
       // filter_codes = object_list2options(filter_codes, "title", "slug")
       const options_aspects = []
       for (let code of filter_codes) {
-        const used_in_templates = find_templates_using_code(this.$store, code.slug).map(template => template.title)
+        // console.log("code use", code.slug, this.domain_language)
+        const used_in_templates = find_templates_using_code(this.$store, code.slug, this.domain_language).map(template => template.title)
+        // console.log("->", used_in_templates)
         // maybe the options-aspect should not take the label as text
         const base_aspect = {
           name: code.slug,
@@ -159,8 +163,6 @@ export default {
     get_language_filter_options(domain_name) {
       const domain_langs = this.$store.getters["domain/get_domain_languages"](domain_name)
       const options = domain_langs.map(lang => ({"value": lang, "text": this.$t("lang." + lang)}))
-      // this.$store.getters["user/settings_value"]("ui_language")
-      // console.log(options)
       return Object.assign(this.language_filter_config(),{
         search_config: {
           name: "language",
@@ -195,18 +197,20 @@ export default {
       }
       if (filter.name === "domain") {
         return entries.filter(e => e.domain === filter.value)
-      } else if (filter.name === "template") {
+      } else if (filter.name === TEMPLATE) {
         // console.log(filter, entries)
         return entries.filter(e => filter.value.includes(e.template.slug))
-      } else if (filter.name === "status") {
+      } else if (filter.name === STATUS) {
         return entries.filter(e => e.status === filter.value)
-      } else if (filter.name === "tags") {
+      } else if (filter.name === TAGS) {
         return this.apply_tags_filter(filter, entries)
-      } else if (filter.name === "meta") {
+      } else if (filter.name === META) {
         return entries.filter(e => e[filter.column] === filter.value)
-      } else if (filter.name === "actor") {
+      } else if (filter.name === ACTOR) {
         // later replace filter.registered_name with filter.value
         return entries.filter(e => this.$_.some(e.actors, entry_actor => entry_actor.actor.registered_name === filter.value))
+      } else if (filter.name === LANGUAGE) {
+        return entries.filter(e => filter.value.includes(e[filter.language]))
       } else {
         console.log("filter not applicable", filter.name)
         return entries
@@ -214,15 +218,17 @@ export default {
     },
     // todo maybe use a function template_filter_config... e.g. language_filter_config
     config_generate(filtername, filtervalue, language) {
-      if (filtername === "template") {
+      if (filtername === TEMPLATE) {
         const used_templates = this.$store.getters["templates/entry_types_array"](language, true).filter(template => filtervalue.includes(template.slug))
+        // filter out slugs that dont exist. todo maybe something on the server?
+        const valid_value = this.validate_filter_value(TEMPLATE, filtervalue)
         return {
-          "name": "template",
+          "name": TEMPLATE,
           "t_label": "w.entrytype",
-          "value": filtervalue,
+          "value": valid_value,
           "text": used_templates.map(t => t.title).join(", ")
         }
-      } else if(filtername === "language") {
+      } else if(filtername === LANGUAGE) {
         return Object.assign(this.language_filter_config(), {value : filtervalue, "text": this.$t("lang." + language)}, )
       }
     },
@@ -239,6 +245,12 @@ export default {
     },
     has_local_filter(filters) {
       return filters.filter(f => f.source_name === "local").length > 0
+    },
+    validate_filter_value(filter_name, value) {
+      if (filter_name === TEMPLATE) {
+        const language = this.$store.getters["user/settings_domain_language"]
+        return value.filter(val => this.$store.getters["templates/entry_type"](val, language))
+      }
     }
   }
 }

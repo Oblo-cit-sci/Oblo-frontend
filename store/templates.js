@@ -25,6 +25,7 @@ export const getters = {
       // console.log("getting entry_type for slug", type_slug, state.entry_types)
       if (!state.entry_types.has(type_slug)) {
         console.log("WARNING, store,entrytype.getters.entry_type: type for slug missing", type_slug, "returning null, should be catched earlier")
+        return null
       }
       const base_template = state.entry_types.get(type_slug)
       if (base_template.lang.hasOwnProperty(language)) {
@@ -37,9 +38,7 @@ export const getters = {
     }
   },
   has_code(state, getters) {
-    return (type_slug, language) => {
-      getters.code !== null
-    }
+    return (type_slug, language) => getters.code(type_slug, language) !== null
   },
   code(state) {
     return (type_slug, language) => {
@@ -59,6 +58,9 @@ export const getters = {
   codes(state) {
     return Array.from(state.codes.values())
   },
+  codes_in_language(state, getters) {
+    return language => getters.codes.map(c => getters.code(c.slug, language))
+  },
   template_title(state, getters) {
     return (slug, language) => {
       // console.log("typename of ", slug)
@@ -71,10 +73,10 @@ export const getters = {
       }
     }
   },
-  templates_of_domain(state, geters) {
+  templates_of_domain(state, getters) {
     return (domain_name, language) => {
       const domain_templates = entries_domain_filter(Array.from(state.entry_types.values()), domain_name).map(t => t.slug)
-      return domain_templates.map(t => geters.entry_type(t, language))
+      return domain_templates.map(t => getters.entry_type(t, language))
     }
   },
   get_aspect_def(state, getters) {
@@ -87,7 +89,7 @@ export const getters = {
   },
   entry_types_array(state, getters) {
     return (language, fallback) => {
-      const lang = language || "en"
+      const lang = language || "en" // language should not be missing, but rather when this getter is called, be set...
       return Array.from(state.entry_types.values()).map(d => getters.entry_type(d.slug, lang, fallback)).filter(e => e != null)
     }
   },

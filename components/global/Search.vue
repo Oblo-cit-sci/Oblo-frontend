@@ -121,12 +121,11 @@ export default {
       // the default changes triggering config change will trigger a search
       const language = this.$store.getters["user/settings"].domain_language
       const search_config_update = []
-      if (!this.act_config_by_name("template") && this.domain_data) {
-
+      if (!this.act_config_by_name(TEMPLATE) && this.domain_data) {
         const generated = this.config_generate(TEMPLATE, this.$_.get(this.domain_data, "search.default_templates", []), language)
         search_config_update.push(generated)
       }
-      if(!this.act_config_by_name("language")) {
+      if(!this.act_config_by_name(LANGUAGE)) {
           search_config_update.push(this.config_generate(LANGUAGE, [language], language))
       }
       if(this.$_.isEmpty(search_config_update)) {
@@ -183,7 +182,6 @@ export default {
       // console.log("act_config", val) //, prev_val, this.$_.isEqual(val, prev_val))
       // todo special treatment here:
       // if the template changed kickout the tags
-      console.log(val, prev_val)
       const old_template_filter = val.find(f => f.name === "template")
       const new_template_filter = prev_val.find(f => f.name === "template")
 
@@ -381,9 +379,8 @@ export default {
       // todo because of this stuff, grabbing and merging filters (user-set values) and info from the config
       // e.g. "include_as" we cant plug in the. the filters dont have a uniform structure (FilterMxin, get_...FILTER)
 
-      const filterlist_options = this.filterlist_options
       for (let filter of this.act_config) {
-        const filter_option = filterlist_options.find(fo => fo.name === filter.name)
+        const filter_option = this.$_.find(this.filterlist_options, fo => fo.name === filter.name)
         // all configs must be contained in the options, maybe not the best method... uuids_select doesnt need to be there
         if (filter_option) {
           const config = filter_option.search_config
