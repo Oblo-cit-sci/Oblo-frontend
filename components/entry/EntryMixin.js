@@ -12,7 +12,7 @@ import {
   META_ASPECT_LIST,
   PUBLISHED,
   REQUIRES_REVIEW,
-  REVIEW,
+  REVIEW, TAG,
   VIEW
 } from "~/lib/consts";
 
@@ -89,7 +89,7 @@ export default {
       return this.$store.getters["templates/entry_type"](this.template_slug, lang)
     },
     template_color() {
-      return this.$_.get(this.template, "rules.map_marker_color")
+      return this.$_.get(this.template, "rules.marker_color")
     },
     // title() {
     //   return this.$store.getters["entries/get_entry_title"](this.uuid)
@@ -178,7 +178,7 @@ export default {
       const result_tags = {}
       for(let group_name in e_tags) {
         let tag_values = e_tags[group_name]
-        const code_slug = this.$_.find(this.template.entry_refs, ref => ref.tag.name === group_name).dest_slug
+        const code_slug = this.$_.find(this.template.entry_refs.filter(t => t.ref_type === TAG), ref => this.$_.get(ref, "tag.name") === group_name).dest_slug
         const lang = this.$store.getters["user/settings_value"]("domain_language")
         // console.log(group_name, code_slug, lang)
         const tags = this.$store.getters["templates/tags_of_code"](code_slug, lang, tag_values)

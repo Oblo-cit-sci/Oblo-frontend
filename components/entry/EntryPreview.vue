@@ -16,6 +16,7 @@
                   span(v-if="is_draft" :style="{color:'cornflowerblue'}") &nbsp; [{{$t('comp.entrypreview.draft')}}]
                     v-btn(v-if="show_title_action" @click="goto()" depressed small)
                       v-icon(:class="default_action_icon")
+                  LanguageChip.mb-2(v-if="show_language_chip" :language_code="entry.language" small)
           v-row.pl-3(:style="{'text-align': 'right', 'font-size':'80%'}")
             span.my-auto(v-if="show_date") {{$t("comp.entrypreview.created")}} {{entry_date}}
           v-row.pl-3.py-1(v-if="show_meta_aspects")
@@ -74,11 +75,13 @@ import ActorChip from "../actor/ActorChip"
 import EntryActionsMixin from "~/components/entry/EntryActionsMixin"
 import EntryTags from "~/components/entry/EntryTags"
 import ActorAvatar from "~/components/actor/ActorAvatar"
+import LanguageCodeFallback from "~/components/aspect_utils/LanguageCodeFallback";
+import LanguageChip from "~/components/language/LanguageChip";
 
 
 export default {
   name: "EntryPreview",
-  components: {ActorAvatar, EntryTags, ActorChip, Aspect, MetaChips, Taglist},
+  components: {LanguageChip, LanguageCodeFallback, ActorAvatar, EntryTags, ActorChip, Aspect, MetaChips, Taglist},
   mixins: [EntryNavMixin, MapJumpMixin, EntryMixin, MapJumpMixin,
     PersistentStorageMixin, ChildCreateMixin, EntryActionsMixin],
   data() {
@@ -109,6 +112,7 @@ export default {
       default: false
     },
     show_entrytype_title: Boolean,
+    show_language_chip: Boolean,
     include_domain_tag: Boolean,
     show_title_action: Boolean,
     prevent_view_page_change: Boolean,

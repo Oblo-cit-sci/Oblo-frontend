@@ -29,7 +29,7 @@
       const templates = object_list2options(
         this.$store.getters["templates/templates_of_domain"](this.domain_name, language),
         "title", "slug", true,
-        [{"color": "rules.map_marker_color"}])
+        [{"color": "rules.marker_color"}])
       return {
         templates,
         panel_state: false

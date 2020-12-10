@@ -140,7 +140,7 @@ export default {
     },
     templates_color_list(templates) {
       return this.$_.reduce(templates, (t_color_arr, t) => {
-        t_color_arr.push(t.slug, this.$_.get(t, "rules.map.marker_color", "#AAAAAA"))
+        t_color_arr.push(t.slug, this.$_.get(t, "rules.marker_color", "#AAAAAA"))
         return t_color_arr
       }, [])
     },

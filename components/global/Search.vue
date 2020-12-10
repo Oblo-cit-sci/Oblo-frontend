@@ -34,7 +34,7 @@
       :entries="filtered_entries"
       :requesting_entries="searching"
       :total_count="total_count"
-      :preview_options="preview_options"
+      :preview_options="preview_options_search"
       @preview_action="$emit('preview_action',$event)"
       @request_more="request_more")
 </template>
@@ -125,14 +125,14 @@ export default {
         const generated = this.config_generate(TEMPLATE, this.$_.get(this.domain_data, "search.default_templates", []), language)
         search_config_update.push(generated)
       }
-      if(!this.act_config_by_name(LANGUAGE)) {
-          search_config_update.push(this.config_generate(LANGUAGE, [language], language))
+      if (!this.act_config_by_name(LANGUAGE)) {
+        search_config_update.push(this.config_generate(LANGUAGE, [language], language))
       }
-      if(this.$_.isEmpty(search_config_update)) {
+      if (this.$_.isEmpty(search_config_update)) {
         // todo maybe that should set before_last: true?
         this.get_entries(false, false)
       } else {
-          this.$store.commit("search/replace_in_act_config", search_config_update)
+        this.$store.commit("search/replace_in_act_config", search_config_update)
       }
     } else {
       // if uuids are selected, no search/update required.
@@ -262,7 +262,17 @@ export default {
       total_count: "search/get_search_count",
       all_uuids: "search/get_all_uuids",
     }),
-      act_config: {
+    preview_options_search() {
+      let options = this.$_.cloneDeep(this.preview_options)
+      const lang_filter = this.act_config.find(f => f.name === LANGUAGE)
+      if(lang_filter) {
+        if (lang_filter.value.length > 1) {
+          options.show_language_chip = true
+        }
+      }
+      return options
+    },
+    act_config: {
       get: function () {
         return this.$store.getters["search/get_act_config"]
       },
@@ -288,7 +298,7 @@ export default {
       let result_entries = this.entries() // must be a call
 
       const all_filters = this.$_.concat(this.act_config, this.search_config)
-     // console.log("allf", this.act_config, this.search_config)
+      // console.log("allf", this.act_config, this.search_config)
       const has_local_filter = this.has_local_filter(all_filters)
       if (has_local_filter) {
         const local_entries_uuids = this.local_search(all_filters).reverse()
