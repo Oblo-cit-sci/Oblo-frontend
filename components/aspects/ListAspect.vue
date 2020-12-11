@@ -34,7 +34,7 @@
               v-on:remove_value="remove_value($event)"
               v-on:move="move($event)")
       div(v-if="is_view_mode && is_empty")
-        .ml-2 {{aspect.attr.default_view.text}}
+        .ml-2 {{aspect.attr.default_view_text}}
     MinMaxIndicators(
       v-if="!is_view_mode && !disabled"
       v-bind="min_max_props")
@@ -275,7 +275,7 @@ export default {
       return !(itemtype === "str" || itemtype === "int" || itemtype === "float" || itemtype === "tree")
     },
     default_view_text() {
-      return this.$_.get(this.attr, "default_view.text", "")
+      return this.$_.get(this.attr, "default_view_text", "")
     },
     titles() {
       let titles = new Array(this.value.length)
