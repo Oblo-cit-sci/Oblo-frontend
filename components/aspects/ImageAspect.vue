@@ -8,7 +8,7 @@
       v-col(v-if="is_view_mode && !has_images")
         div {{$t('comp.image_asp.no_images')}}
     LoadFileButton(v-if="is_editable_mode"
-      label="Add image"
+      :label="add_btn_label"
       filetype="image"
       :size_limit="max_image_size"
       @fileload="add_image($event)")
@@ -89,6 +89,9 @@ export default {
     },
     has_images() {
       return this.images.length
+    },
+    add_btn_label() {
+      return this.$t("comp.image_asp.add_image", {item_name:"Image"})
     }
   },
   methods: {

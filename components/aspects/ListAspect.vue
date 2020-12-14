@@ -223,7 +223,7 @@ export default {
       return aspect
     },
     handleAspectAction(event, index) {
-      console.log("aspect-action", event)
+      // console.log("aspect-action", event)
       if (event.action === "clear") {
         this.remove_value(index)
       }/* else if(event.action === "value_set") {
@@ -298,6 +298,7 @@ export default {
       }
 
       for (let i = 0; i < titles.length; i++) {
+        // debugger
         if (!this.value[i]) {
           console.log(`list no value! index:${i}`)
           titles[i] = ""
@@ -311,8 +312,17 @@ export default {
           } else if (!this.value[i].value[titleAspectName]) {
             console.log(`list no component value! index:${i}, component:${titleAspectName}`)
           } else {
-            titles[i] = this.value[i].value[titleAspectName].value
-            if (!this.value[i].value[titleAspectName].value) {
+            let value = this.value[i].value[titleAspectName].value
+            if (value) {
+              if (typeof value === "string") {
+                titles[i] = value
+              } else {
+                if (value.text) {
+                  titles[i] = value.text
+                } else
+                  titles[i] = value.value
+              }
+            } else {
               // trying to pregrab a referenced value that hasnt been called yet. not setting it on the orig location
               if (titleAspectName) {
                 const ref_value = this.$_.find(this.item_aspect.components, c => c.name === titleAspectName).attr.ref_value

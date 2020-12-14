@@ -356,13 +356,22 @@
       "no_images": "No images",
       "cover_image": "cover image",
       "not_found": "Image could not be loaded",
-      "not_found_draft": "Image has been removed"
+      "not_found_draft": "Image has been removed",
+      "add_image": "@:w.add_item"
     },
     "language_select": {
       "label": "Language"
     },
     "legend": {
       "legend": "Legend"
+    },
+    "list_asp": {
+      "add": "@:w.add_item",
+      "actions": {
+        "delete_item": "delete {item_name}",
+        "move_down": "move down",
+        "move_up": "move up"
+      }
     },
     "location_asp": {
       "descr": "Search for a place or click on the map to set the location",
@@ -433,9 +442,6 @@
     "tagoptions_asp": {
       "used_in": "Used in: "
     },
-    "list_asp": {
-      "add": "Add {item_name}"
-    },
     "treeselect_asp": {
       "click_to_select": "Click to select"
     },
@@ -474,6 +480,7 @@
     "cancel": "cancel",
     "entrytype": "Entry type",
     "tag": "Tag",
+    "add_item": "add {item_name}",
     "_global.asp_location_privacy.labal": "Location privacy",
     "_global.asp_location_privacy.descr": "Specify the settings for the protection of the exact locations of your entries"
   }

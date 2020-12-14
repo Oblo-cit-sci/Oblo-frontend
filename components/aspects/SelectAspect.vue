@@ -57,9 +57,11 @@
     },
     methods: {
       set_selection() {
+        // console.log("set-sel: value", this.value)
         if (this.value !== null) {
+          // console.log(this.value)
           this.selection = this.$_.find(this.options, (o) => {
-            return o.value === this.value
+            return o.value === this.value.value
           })
           if (this.selection === undefined) {
             this.selection = null
@@ -68,7 +70,6 @@
           this.selection = null
           this.init = false
         }
-        //console.log('SELECT', this.selection)
       },
       icon_path(item) {
         return server_icon_path(this.$axios, item.icon)
@@ -95,7 +96,7 @@
         this.update_error(this.has_error)
       },
       selection() {
-        //console.log("watch sel", this.selection, this.init)
+        // console.log("watch sel", this.selection)
         //console.log("Select-selection", this.selection, "/",val, "/",prev_val, !prev_val)
         if (this.init) {
           this.init = false
@@ -105,7 +106,7 @@
         if (this.selection === null)
           this.update_value(null)
         else
-          this.update_value(this.selection.value)
+          this.update_value(this.selection)
       },
       check_box_value(val) {
         this.update_value(val ? this.options[1].value : this.options[0].value)
