@@ -9,6 +9,7 @@ import {
   pack_value, unpack
 } from "~/lib/aspect";
 import {select_aspect_loc} from "~/lib/entry"
+import {recursive_unpack, recursive_unpack2} from "~/lib/util";
 
 var jp = require('jsonpath')
 
@@ -106,7 +107,7 @@ export default {
       let condition_value = null
       if (this.attr.hasOwnProperty("condition")) {
         if (this.conditionals) {
-          condition_value = select_aspect_loc(null, aspect_loc_str2arr(this.attr.condition.aspect), false, this.conditionals)
+          condition_value = recursive_unpack2(select_aspect_loc(null, aspect_loc_str2arr(this.attr.condition.aspect), false, this.conditionals))
         } else if (this.aspect_loc) {
           let aspect_location = loc_prepend(this.edit ? EDIT : ENTRY, this.entry_uuid,
             aspect_loc_str2arr(this.attr.condition.aspect))
