@@ -83,7 +83,7 @@ export default {
         // console.log(this.attr.tag, up_value)
         // let val = jp.value(up_value, "$.value[0].value")
         // console.log("->", val)
-        this.$store.commit("entries/add_tag", {name:tag.name, value: jp.value(up_value,tag.subpath)})
+        this.$store.commit("entries/add_tag", {name: tag.name, value: jp.value(up_value, tag.subpath)})
       }
     },
     toString(value) {
@@ -105,15 +105,14 @@ export default {
       // todo this getting of the value, could maybe also go into the helper...
       let condition_value = null
       if (this.attr.hasOwnProperty("condition")) {
-        if (this.aspect_loc) {
+        if (this.conditionals) {
+          condition_value = select_aspect_loc(null, aspect_loc_str2arr(this.attr.condition.aspect), false, this.conditionals)
+        } else if (this.aspect_loc) {
           let aspect_location = loc_prepend(this.edit ? EDIT : ENTRY, this.entry_uuid,
             aspect_loc_str2arr(this.attr.condition.aspect))
           // console.log("checking condition for", this.aspect.name)
           // console.log("condition aspect-loc", aspect_location)
           condition_value = this.$store.getters["entries/value"](aspect_location)
-        } else if (this.conditionals) {
-          condition_value = select_aspect_loc(null, aspect_loc_str2arr(this.attr.condition.aspect), false, this.conditionals)
-          // console.log("condition_value", condition_value)
         } else {
           console.log(`condition for aspect ${this.aspect.name} cannot be checked. no aspect_loc and no conditionals`)
           return false

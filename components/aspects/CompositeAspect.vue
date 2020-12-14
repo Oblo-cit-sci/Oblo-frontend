@@ -9,6 +9,7 @@
           :aspect_loc="aspect_locs[comp_type.name]"
           :mode="mode"
           :disabled="disabled"
+          :conditionals="composite_conditionals"
           :extra="comp_extras(comp_type)")
 </template>
 
@@ -66,6 +67,13 @@ export default {
         }
       }
       return "xs12 lg12"
+    },
+    composite_conditionals() {
+      if (this.attr.add_components_as_conditionals) {
+        return this.value
+      } else {
+        return null
+      }
     }
   },
   beforeUpdate() {

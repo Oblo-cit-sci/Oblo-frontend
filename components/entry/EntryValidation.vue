@@ -144,7 +144,7 @@
             for (let item_index in raw_value) {
               const item = raw_value[item_index]
               const item_loc = loc_append(aspect_loc, INDEX, item_index)
-              const validation = this.validate_aspect(aspect.items, item || pack_value(null), item_loc, item_index)
+              const validation = this.validate_aspect(aspect.list_items, item || pack_value(null), item_loc, item_index)
               if (validation[0] !== OK) {
                 incomplete_items.push(parseInt(item_index) + 1)
               }
