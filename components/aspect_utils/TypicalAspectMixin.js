@@ -1,5 +1,6 @@
 import {settings_loc_privacy_ask, settings_loc_privacy_exact, settings_loc_privacy_random} from "~/lib/settings"
 import {STR} from "~/lib/consts"
+import {unpack} from "~/lib/aspect";
 
 let username_regex = new RegExp('^[a-z][a-z0-9_]*$');
 
@@ -22,11 +23,10 @@ export default {
       return {
         type: "str",
         // todo make small
-        name: "Username",
+        name: "registered_name",
         t_label: "asp.username.label",
         attr: {
           max: 30,
-          unpacked: true,
           extra: {
             rules: [
               v => v && v.length >= 4 || this.$t("asp.username.rule_length"),
@@ -45,7 +45,6 @@ export default {
         name: "user_query",
         attr: {
           max: 90,
-          unpacked: true,
           extra: {
             rules: [
               v => v && ((v.length >= 4 && username_regex.test(v)) || (/.+@.+\..+/.test(v))) || this.$t("asp.user_query.rule")
@@ -61,7 +60,6 @@ export default {
         type: "str",
         attr: {
           max: 30,
-          unpacked: true,
           extra: {
             rules: [
               v => v && v.length >= 2 && v.length <= 30 || this.$t("asp.public_name.rule_length"),
@@ -80,7 +78,6 @@ export default {
         type: "str",
         attr: {
           max: 980,
-          unpacked: true
         },
         error: false,
         value: ""
@@ -93,7 +90,6 @@ export default {
         t_label: "asp.email.label",
         attr: {
           max: 40,
-          unpacked: true,
           extra: {
             rules: this.$_.concat([
               v => /.+@.+\..+/.test(v) || this.$t("asp.email.rule")
@@ -107,7 +103,6 @@ export default {
     asp_password(name = undefined, alt_label = undefined, attributes = {}) {
       const attr = Object.assign({
         max: 40,
-        unpacked: true,
         component_type: "password",
         extra: {
           rules: [
@@ -127,15 +122,14 @@ export default {
     asp_password_confirm(password_aspect, alt_label = undefined) {
       return {
         type: "str",
-        name: "repeat password",
+        name: "password_confirm",
         t_label: this.t_label("asp.password.", alt_label),
         attr: {
           max: 40,
-          unpacked: true,
           component_type: "password",
           extra: {
             rules: [
-              v => v === password_aspect.value || this.$t("asp.password.rule_repeat_match")
+              v => v === unpack(password_aspect.value) || this.$t("asp.password.rule_repeat_match")
             ]
           }
         },
@@ -151,7 +145,6 @@ export default {
         type: "select",
         attr: {
           force_view: "select",
-          unpacked: true
         },
         items: "languages"
       }
@@ -162,9 +155,6 @@ export default {
         t_label: this.t_label("asp.privacy.", alt_label_descr),
         t_description: this.t_description("asp.privacy.", alt_label_descr),
         type: "select",
-        attr: {
-          unpacked: true
-        },
         items: [{
           text: this.$t("asp.privacy.options.public.text"),
           description: this.description("asp.privacy.options.public.", alt_label_descr),
@@ -191,7 +181,6 @@ export default {
         type: "select",
         attr: {
           descr_as_html: true,
-          unpacked: true,
         },
         items: []
       }
@@ -211,9 +200,6 @@ export default {
         t_label: "page.settings.asp.location_privacy.label",
         t_description: "page.settings.asp.location_privacy.description",
         type: "select",
-        attr: {
-          unpacked: true
-        },
         items: [
           {
             value: settings_loc_privacy_exact,
@@ -234,10 +220,7 @@ export default {
         name: "actors",
         t_label: "asp.entry_roles.label",
         t_description: "asp.entry_roles.descr",
-        type: "entry_roles",
-        attr: {
-          unpacked: true
-        }
+        type: "entry_roles"
       }
     }
   }

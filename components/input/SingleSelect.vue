@@ -12,8 +12,6 @@
           :disabled="disabled_item(item.value)"
           :class="{ marked: marked(item.value) }"
           class="single_select")
-          <!--          v-list-item-avatar(v-if="" tile)  TODO HAS SOME IMAGE...?-->
-          <!--            v-img(:src="icon_path(item)" contain)-->
           v-list-item-avatar(v-if="has_some_icons")
             v-img(:src="icon_path(item)"  contain max-height="25")
           v-list-item-content
@@ -170,6 +168,7 @@
         return server_icon_path(this.$axios, item.icon)
       },
       marked(key) {
+        // console.log(this.selection, key)
         if (this.selection)
           return key === this.selection.value && this.highlight;
       },
@@ -246,15 +245,8 @@
     },
     watch: {
       selected_item(item) {
+        // console.log("watchers: selected_item", item)
         this.emitUp(item)
-        /* console.log("emitup", item)
-        if (typeof item === "object") {
-            this.emitUp(item.value)
-        } else if (typeof item === "string") {
-            this.emitUp(item)
-        } else {
-          console.log("SingleSelect. unknown type to emit up")
-        }*/
       },
       selection(val) {
         this.set_selected_item()

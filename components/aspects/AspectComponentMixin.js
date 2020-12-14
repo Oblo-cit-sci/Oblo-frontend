@@ -44,19 +44,15 @@ export default {
     },
     value: {
       get: function () {
-        if (this.is_unpacked) {
-          return this.mvalue
-        } else {
           return this.mvalue.value
-        }
       },
       set: function (val) {
         this.update_value(val)
       }
     },
-    is_unpacked() {
-      return this.$_.get(this.aspect, "attr.unpacked", false)
-    },
+    // is_unpacked() {
+    //   return this.$_.get(this.aspect, "attr.unpacked", false)
+    // },
     clearIcon() {
       //console.log("AspMix - ", this.aspect.name, this.aspect.type, this.extra)
       return ((this.extra.listitem && this.mode === EDIT) || false) ? "mdi-close" : undefined //this.extra

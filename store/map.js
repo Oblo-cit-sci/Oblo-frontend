@@ -47,9 +47,9 @@ export const mutations = {
   set_entries_loaded(state, loaded) {
     state.entries_loaded = loaded
   },
-  set_filter_config(state, filter_config) {
-    state.filter_config = filter_config
-  },
+  // set_filter_config(state, filter_config) {
+  //   state.filter_config = filter_config
+  // },
   set_entry_feature(state, {domain_name, uuid, feature}) {
     const f_index = state.entries[domain_name].features.findIndex(f => f.properties.uuid === uuid)
     state.entries[domain_name].features[f_index] = feature
@@ -103,9 +103,9 @@ export const getters = {
       return state.cached_camera_options[domain]
     }
   },
-  get_filter_config(state) {
-    return state.filter_config
-  },
+  // get_filter_config(state) {
+  //   return state.filter_config
+  // },
   get_by_uuids(state) {
     return (uuids) => {
       let map_entries = []

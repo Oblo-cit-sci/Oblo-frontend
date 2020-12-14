@@ -3,9 +3,9 @@
     v-row
       v-col(cols="12" md="6")
         v-alert(color="info")
-          h3 Check your email!
-          div We send you an email with a verification link. Check your spam folder if it is not visible.
-          div If you haven't received the verification link request a new email!
+          h3 {{$t("page.registration_done.h1")}}
+          div {{$t("page.registration_done.p1")}}
+          div {{$t("page.registration_done.p2")}}
           div
             v-btn(@click="request_verification_mail" color="warning" rounded) {{$t('page.login.btn_resend_mail')}}
     LoginComponent
@@ -14,10 +14,11 @@
 
 <script>
 import LoginComponent from "~/components/page_components/LoginComponent"
+import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin";
 
 export default {
   name: "registration_done",
-  mixins: [],
+  mixins: [TriggerSnackbarMixin],
   components: {LoginComponent},
   props: {},
   data() {
@@ -31,8 +32,9 @@ export default {
   methods: {
     request_verification_mail() {
       this.$api.actor.resend_email_verification_mail(this.username).then(({data}) => {
-        this.ok_snackbar(data.data)
+        this.ok_snackbar(data.msg)
       }).catch(err => {
+        // backend always answers ok
         this.err_error_snackbar(err)
       })
     }

@@ -14,6 +14,7 @@
   import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
   import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
   import {MSG_PATH_SOMETHING_WENT_WRONG, RESPONSE_ERROR_MSG} from "~/lib/consts"
+  import {unpack} from "~/lib/aspect";
 
   export default {
     name: "init_password_reset",
@@ -29,7 +30,7 @@
     methods: {
       send() {
         this.send_button_loading = true
-        this.$api.actor.init_password_reset(this.query.value.toLowerCase()).then(({data}) => {
+        this.$api.actor.init_password_reset(unpack(this.query.value).toLowerCase()).then(({data}) => {
           this.ok_snackbar(data.data.msg)
           this.$router.push("/basic/reset_mail_sent")
         }).catch(err => {

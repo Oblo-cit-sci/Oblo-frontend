@@ -14,6 +14,7 @@
 <script>
   import {object_list2options} from "~/lib/options"
   import {TEMPLATE} from "~/lib/consts"
+  import {unpack} from "~/lib/aspect";
 
   export default {
     name: "TemplateLegend",
@@ -40,7 +41,7 @@
         get: function () {
           const search_conf = this.$store.getters["search/get_act_config"].find(cf => cf.name === TEMPLATE)
           if(search_conf) {
-            return search_conf.value.map(f => this.$_.findIndex(this.templates, t => t.value === f))
+            return unpack(search_conf.value).map(f => this.$_.findIndex(this.templates, t => t.value === f))
           }
         },
         set(selected_templates) {

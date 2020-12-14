@@ -21,7 +21,7 @@ import {EDITOR, GLOBAL_ROLE, SELECT} from "~/lib/consts"
 import Aspect from "~/components/Aspect"
 import {object_list2options} from "~/lib/options"
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
-import {extract_unpacked_values, pack_value} from "~/lib/aspect"
+import {extract_n_unpack_values, pack_value} from "~/lib/aspect"
 import AspectSet from "~/components/AspectSet"
 
 export default {
@@ -90,7 +90,7 @@ export default {
       return Object.values(this.aspects)
     },
     values() {
-      return extract_unpacked_values(this.aspects)
+      return extract_n_unpack_values(this.aspects)
     }
   },
   methods: {

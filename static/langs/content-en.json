@@ -64,6 +64,11 @@
       "i_agree_with": "I agree with the",
       "terms_of_use": "terms of use"
     },
+    "registration_done": {
+      "h1": "Check your email!",
+      "p1": "We send you an email with a verification link. Check your spam folder if it is not visible.",
+      "p2": "If you haven't received the verification link request a new email!"
+    },
     "login": {
       "h1": "@.capitalize:w.login",
       "btn_login": "@:w.login",

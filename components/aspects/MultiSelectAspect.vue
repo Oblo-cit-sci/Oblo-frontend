@@ -141,6 +141,7 @@ export default {
       if (this.selection === null)
         this.update_value(null)
       else {
+        console.log("selection", this.selection)
         this.update_value(this.selection)
       }
     }

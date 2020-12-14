@@ -1,4 +1,4 @@
-import {EDIT, ENTRY, FLEX, LIST_INDEX, REVIEW, VIEW} from "~/lib/consts";
+import {EDIT, ENTRY, FLEX, LIST_INDEX, META, REVIEW, VIEW} from "~/lib/consts";
 import {
   aspect_default_value,
   aspect_loc_str2arr,
@@ -9,7 +9,7 @@ import {
   pack_value, unpack
 } from "~/lib/aspect";
 import {select_aspect_loc} from "~/lib/entry"
-import {recursive_unpack, recursive_unpack2} from "~/lib/util";
+import {recursive_unpack2} from "~/lib/util";
 
 var jp = require('jsonpath')
 
@@ -49,22 +49,21 @@ export default {
   },
   methods: {
     // debounce to not to store contantly while typing
-    update_value(raw_value, comes_unpacked = true) {
-      // console.log("received update value", this.aspect.name)
-      if (raw_value === undefined)
-        raw_value = null
+    update_value(value) {
+      const is_mvalue = value.value && value.is_meta !== undefined
+      const mvalue = unpack(value) // thats why the is_mvalue unpacking is shit.
+      // todo it should be fck with 2 params, value, is_meta = false
+      console.log("received update value", this.aspect.name, value, is_mvalue)
+      if (value === undefined)
+        value = null
 
-      let up_value = null
-      if (this.attr.unpacked) {
-        up_value = raw_value
-      } else {
-        // we need this for options aspects
-        if (comes_unpacked) {
-          up_value = pack_value(raw_value)
-        } else {
-          up_value = raw_value
-        }
+      let up_value = value
+      debugger
+      if (!(this.is_meta || is_mvalue)) {
+        console.log("packing")
+        up_value = pack_value(value)
       }
+      console.log("upval", up_value)
       if (this.aspect_loc) {
         this.$store.dispatch("entries/set_entry_value", {aspect_loc: this.aspect_loc, value: up_value})
         if (this.attr.cache) {
@@ -129,21 +128,14 @@ export default {
     readOnly() {
       return this.mode === VIEW
     },
-    is_unpacked() {
-      // console.log("unpacked?", this.aspect.name, ld.get(this.aspect, "attr.unpacked", false))
-      return this.$_.get(this.aspect, "attr.unpacked", false)
-    },
     mvalue() {
       if (!this.aspect_loc) {
         if (this.ext_value !== undefined) {
           return this.ext_value
         } else {
           const raw = aspect_raw_default_value(this.aspect)
-          console.log("raw", raw, this.is_unpacked)
-          if (this.is_unpacked)
-            return raw
-          else
-            return {value: raw}
+          // console.log("raw", raw, this.is_unpacked)
+          return {value: raw}
         }
       }
       // if (!this.aspect.hasOwnProperty("attr")) {
@@ -211,18 +203,31 @@ export default {
           this.new_in_update = true
           let raw__new_value = aspect_raw_default_value(this.aspect)
           this.update_value(raw__new_value)
-          if (this.is_unpacked)
-            return raw__new_value
-          else
-            return pack_value(raw__new_value)
+          // if (this.is_unpacked)
+          //   return raw__new_value
+          // else
+          return pack_value(raw__new_value)
         }
+        if (this.is_meta) {
+          return pack_value(value)
+        }
+        console.log(this.aspect.name, this.aspect_loc, value)
         return value
       }
     },
+    is_meta() {
+      // maybe just for entries
+      if (this.aspect_loc) {
+        for (let a_v of this.aspect_loc) {
+          if (a_v[0] === META) {
+            return true
+          }
+        }
+      }
+      return false
+    },
     value() {
-      if (this.is_unpacked) {
-        return this.mvalue
-      } else return unpack(this.mvalue)
+      return unpack(this.mvalue)
     },
     entry_uuid() {
       return aspect_loc_uuid(this.aspect_loc)

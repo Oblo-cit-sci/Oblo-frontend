@@ -46,7 +46,7 @@
   import PersistentStorageMixin from "../components/util/PersistentStorageMixin";
   import EntryPreviewList from "../components/entry/EntryPreviewList";
 
-  import {extract_unpacked_values} from "~/lib/aspect"
+  import {extract_n_unpack_values, pack_value} from "~/lib/aspect"
   import FixDomainMixin from "~/components/global/FixDomainMixin"
   import {PAGE_PROFILE} from "~/lib/pages"
   import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
@@ -62,7 +62,7 @@
     created() {
       const settings = this.$store.getters["user/settings"]
       for (let name in this.aspect_map) {
-        this.aspect_map[name].value = settings[name]
+        this.aspect_map[name].value = pack_value(settings[name])
       }
     },
     data() {
@@ -103,7 +103,7 @@
     methods: {
       update_settings() {
         this.update_button_loading = true
-        this.$api.actor.post_me({settings: extract_unpacked_values(this.settings_aspects)}).then(({data}) => {
+        this.$api.actor.post_me({settings: extract_n_unpack_values(this.settings_aspects)}).then(({data}) => {
           // console.log(data.settings)
           this.ok_snackbar(this.$t("page.settings.settings_updated"))
           this.$store.commit("user/set_settings", data.settings)

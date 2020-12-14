@@ -36,6 +36,8 @@ import {overwrite_default_register_settings} from "~/lib/settings"
 import FlexibleTextSection from "~/components/global/FlexibleTextSection"
 import LayoutMixin from "~/components/global/LayoutMixin"
 import {MSG_PATH_SOMETHING_WENT_WRONG, RESPONSE_ERROR_MSG} from "~/lib/consts"
+import {assign_result} from "~/lib/aspect_actions";
+import {extract_n_unpack_values} from "~/lib/aspect";
 
 /**
  * TODO USE AspectSet
@@ -47,12 +49,12 @@ export default {
   data() {
     const password = this.asp_password()
     return {
-      aspects: {
-        registered_name: this.asp_registered_name(),
-        email: this.asp_email(),
-        password: password,
-        password_confirm: this.asp_password_confirm(password, "repeat"),
-      },
+      aspects: [
+        this.asp_registered_name(),
+        this.asp_email(),
+        password,
+        this.asp_password_confirm(password, "repeat"),
+      ],
       submitStatus: null,
       errorMsg: null,
       submit_loading: false,
@@ -77,16 +79,21 @@ export default {
       this.submit_loading = true
       const settings = Object.assign(this.$_.cloneDeep(this.$store.getters["user/settings"]), overwrite_default_register_settings)
       // todo better js!... aspectset and recursive unpack. why not unpacked? make raw_unpacking feature of aspectset
-      this.$api.actor.post_actor({
-        registered_name: this.aspects.registered_name.value,
-        email: this.aspects.email.value,
-        password: this.aspects.password.value,
-        password_confirm: this.aspects.password_confirm.value,
-        settings
-      }).then(({data}) => {
+      const send_data = Object.assign(extract_n_unpack_values(this.aspects), {settings})
+      this.$api.actor.post_actor(send_data
+      // this.$api.actor.post_actor({
+      //   registered_name: this.aspects.registered_name.value,
+      //   email: this.aspects.email.value,
+      //   password: this.aspects.password.value,
+      //   password_confirm: this.aspects.password_confirm.value,
+      //   settings
+      ).then(({data}) => {
         if (data.msg) {
           // this.$router.push({name: PAGE_LOGIN})
-          this.$router.push("/basic/registration_done")
+          this.$router.push({
+            path: "/basic/registration_done",
+            query: {username: send_data.registered_name}
+          })
           this.ok_snackbar(data.msg)
         } else {
           this.errorMsg = data.error.msg

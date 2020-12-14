@@ -48,10 +48,10 @@ export default {
   },
   computed: {
     all_actors_reg_names() {
+      console.log("all_actors_reg_names", this.value)
       return this.value.map(ra => ra.actor.registered_name)
     },
     available_roles() {
-      console.log()
       const base_path = "asp.entry_roles.roles."
       const roles = [
         {

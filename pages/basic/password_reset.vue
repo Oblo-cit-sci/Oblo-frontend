@@ -14,12 +14,13 @@
 <script>
   import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
   import Aspect from "~/components/Aspect"
-  import {extract_unpacked_values} from "~/lib/aspect"
+  import {extract_n_unpack_values} from "~/lib/aspect"
   import {PAGE_LOGIN} from "~/lib/pages"
+  import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin";
 
   export default {
     name: "password_reset",
-    mixins: [TypicalAspectMixin],
+    mixins: [TypicalAspectMixin, TriggerSnackbarMixin],
     components: {Aspect},
     props: {},
     data() {
@@ -27,10 +28,8 @@
       // asp_password.attr.extra.enter_pressed = true
       return {
         submit_loading: false,
-        aspects: {
-          password: password,
-          password_confirm: this.asp_password_confirm(password, "repeat")
-        }
+        aspects: [password,this.asp_password_confirm(password, "repeat")]
+
       }
     },
     computed: {
@@ -41,15 +40,17 @@
     },
     methods: {
       submit() {
-        const values = Object.assign(extract_unpacked_values(this.aspects), {
+        const values = Object.assign(extract_n_unpack_values(this.aspects), {
           code: this.$route.query.code,
           registered_name: this.$route.query.user
         })
-        console.log(values)
-          this.$api.actor.reset_password(values).then(res => {
-            // console.log(res)
+        // console.log(values)
+          this.$api.actor.reset_password(values).then(({data}) => {
+            this.ok_snackbar(data.msg)
             this.$router.push({name: PAGE_LOGIN})
-          })
+          }, (err) => {
+            this.err_error_snackbar(err)
+        })
       }
     }
   }

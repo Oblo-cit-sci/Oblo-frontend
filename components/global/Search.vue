@@ -52,7 +52,7 @@ import Filterlist from "~/components/util/Filterlist"
 import {LANGUAGE, QP_D, QP_SEARCH, TEMPLATE} from "~/lib/consts"
 import EntrySearchMixin from "~/components/EntrySearchMixin"
 import Aspect from "~/components/Aspect"
-import {aspect_default_value, unpack} from "~/lib/aspect"
+import {aspect_default_value, pack_value, unpack} from "~/lib/aspect"
 
 const LOG = false
 
@@ -126,7 +126,7 @@ export default {
         search_config_update.push(generated)
       }
       if (!this.act_config_by_name(LANGUAGE)) {
-        search_config_update.push(this.config_generate(LANGUAGE, [language], language))
+        search_config_update.push(this.config_generate(LANGUAGE, [language]))
       }
       if (this.$_.isEmpty(search_config_update)) {
         // todo maybe that should set before_last: true?
@@ -191,7 +191,7 @@ export default {
       // kickout tagfilter if template changed
       // only that one selected from the filterlist menu, not prominent filter, which will have another source_name
       if (old_template_filter && new_template_filter) { // old will be null initially, but there is nothing to kickout
-        const template_filter_change = !this.$_.isEqual(old_template_filter.value, new_template_filter.value)
+        const template_filter_change = !this.$_.isEqual(unpack(old_template_filter.value), unpack((new_template_filter.value)))
         if (template_filter_change) {
           // kickout tag filter
           // console.log(val)
@@ -210,7 +210,7 @@ export default {
       for (let changed_prominent_filter of new_config.filter(cf => this.$_.get(cf, "source_name", "regular") !== "regular")) {
         // console.log(changed_prominent_filter)
         const prev_filter = prev_val.find(cf => cf.name === changed_prominent_filter.name && cf.source_name === changed_prominent_filter.source_name)
-        if (!this.$_.isEqual(changed_prominent_filter.value, this.$_.get(prev_filter, "value"))) {
+        if (!this.$_.isEqual(unpack(changed_prominent_filter.value), unpack(this.$_.get(prev_filter, "value")))) {
           prominent_filter_changed = true
           break
         }
@@ -279,7 +279,6 @@ export default {
       set: function (val) {
         this.filter_changed = true
         this.$store.commit("search/set_act_config", val)
-        this.filter2maplegend(val)
       }
     },
     has_prominent_filters() {
@@ -339,6 +338,8 @@ export default {
         }
         this.$store.commit("search/set_route", this.act_relevant_route_data())
         this.$store.commit("search/set_searching", true)
+
+        console.log("config", config)
 
         // const prepend = this.entries().length > 0
         if (debounce) {
@@ -405,10 +406,10 @@ export default {
         if (filter_option) {
           const config = filter_option.search_config
           if (config.hasOwnProperty("name")) {
-            config.value = filter.value
+            config.value = unpack(filter.value)
             configuration.required.push(config)
           } else if (config.hasOwnProperty("include_as")) {
-            configuration.include[config.include_as] = filter.value
+            configuration.include[config.include_as] = unpack(filter.value)
           } else {
             console.log("error cannot proccess filter-option", filter.name)
           }

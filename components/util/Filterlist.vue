@@ -5,7 +5,7 @@
       v-list.py-0(dense)
         v-scroll-x-transition(group)
           v-list-item(v-for="(filter, index) in visible_filter" :key="index")
-            v-list-item-title {{$t(filter.t_label)}}:&nbsp;{{filter.text}}
+            v-list-item-title {{$t(filter.t_label)}}:&nbsp;{{filter_text(filter)}}
             v-btn(fab x-small rounded elevation="2" @click="edit_filter(index)" :disabled="not_editable(filter)")
               v-icon mdi-filter
             v-btn(fab x-small rounded elevation="2" @click="remove_filter(index)" :disabled="not_removable(filter)")
@@ -31,15 +31,17 @@
 </template>
 
 <script>
-import {aspect_default_value, value_text} from "~/lib/aspect"
+import {aspect_default_value, unpack, value_text} from "~/lib/aspect"
 import LayoutMixin from "~/components/global/LayoutMixin"
 import AspectDialog from "~/components/dialogs/AspectDialog"
 import {recursive_unpack2} from "~/lib/util"
 import FilterMixin from "~/components/FilterMixin";
+import {MULTISELECT, OPTIONS, SELECT} from "~/lib/consts";
+import SelectComponentMixin from "~/components/aspect_utils/SelectComponentMixin";
 
 export default {
   name: "Filterlist",
-  mixins: [LayoutMixin, FilterMixin],
+  mixins: [LayoutMixin, FilterMixin, SelectComponentMixin],
   components: {AspectDialog},
   props: {
     filter_options: Array,
@@ -78,13 +80,23 @@ export default {
     filter_option_by_name(name) {
       return this.$_.find(this.filter_options, f => f.name === name)
     },
+    filter_text(filter) {
+      console.log("filter_text(x2?)")
+      if (filter.value.text) {
+        // this is not gonna happen
+        return filter.value.text
+      }
+      const filter_option_aspect = this.filter_option_by_name(filter.name).aspect
+      console.log("filter.value", filter.value)
+      return this.get_text_of_mvalues(filter.value, filter_option_aspect)
+    },
     available_filter_label(filter) {
       // console.log(filter)
       if (filter.t_label) {
         return this.$tc(filter.t_label)
       } else {
-        console.log(filter)
-        console.log("warning. filter should have t_label")
+        // console.log(filter)
+        // console.log("warning. filter should have t_label")
         return filter.name
       }
     },
@@ -103,22 +115,24 @@ export default {
       return !this.$_.get(filter, "edit.editable", true)
     },
     set_filter_value(name, value) {
-      const new_value = recursive_unpack2(this.$_.cloneDeep(value))
-      if (!new_value) {
-        return
-      }
-      let text = value_text(this.active_filter.aspect, new_value)
+      console.log("FL:set_filter_value", value)
+      // const new_value = recursive_unpack2(this.$_.cloneDeep(value))
+      // console.log(new_value)
+      // if (!new_value) {
+      //   return
+      // }
+      // let text = value_text(this.active_filter.aspect, new_value)
       const new_filters = this.$_.cloneDeep(this.applied_filters)
       const existing_filter = new_filters.find(f => f.name === name)// && this.$_.get(f.source_name,"regular") === "regular")
       if (existing_filter) {
-        existing_filter.value = new_value
-        existing_filter.text = text
+        existing_filter.value = value
+        // existing_filter.text = text
       } else {
         const new_filter = {
           "name": this.active_filter.name,
           "t_label": this.active_filter.t_label,
-          "value": new_value,
-          "text": text
+          "value": value,
+          // "text": text
         }
         if (this.active_filter.source_name) {
           new_filter.source_name = this.active_filter.source_name
@@ -145,7 +159,8 @@ export default {
         return aspect_default_value(this.filter_option_by_name(name).aspect)
       }
     }
-  },
+  }
+  ,
   watch: {
     // this catches the problem, that if selection is cancelled (clicking outside)
     // the aspect is not deleted, and the options wont change, when another filter is selected

@@ -60,12 +60,12 @@
           if (required) {
             // todo, value thing not so elegant...
             // todo not always packed
-            const unpacked = this.$_.get(aspect, "attr.unpacked", false)
+            // const unpacked = this.$_.get(aspect, "attr.unpacked", false)
             const a_w_value = this.entry.values[aspect.name] || aspect_default_value(aspect)
-            let a_value = a_w_value
-            if (!unpacked) {
-              a_value = a_w_value.value
-            }
+            let a_value = a_w_value.value
+            // if (!unpacked) {
+            // a_value = a_w_value.value
+            // }
             const base_aspect_loc = loc_append([[EDIT, this.entry.uuid]], ASPECT, aspect.name)
             const validation = this.validate_aspect(aspect, a_w_value, base_aspect_loc)
             const valid = validation[0]

@@ -33,7 +33,7 @@ import LoginMixin from "~/components/actor/LoginMixin"
 import NavBaseMixin from "~/components/NavBaseMixin"
 import InitializationMixin from "~/layouts/InitializationMixin"
 import {mapGetters, mapMutations} from "vuex"
-import {extract_unpacked_values} from "~/lib/aspect"
+import {extract_n_unpack_values} from "~/lib/aspect"
 import LanguageMixin from "~/components/LanguageMixin";
 
 export default {
@@ -50,9 +50,7 @@ export default {
     const asp_password = this.asp_password()
     asp_password.attr.extra.enter_pressed = true
     return {
-      aspects: {
-        user_query: this.asp_user_query(), password: asp_password
-      },
+      aspects: [this.asp_user_query(), asp_password],
       login_loading: false,
       errorMsg: null,
       add_verification_resend_link: false,
@@ -78,7 +76,7 @@ export default {
     },
     async login() {
       this.login_loading = true
-      this.$api.actor.login(extract_unpacked_values(this.aspects)).then(({data}) => {
+      this.$api.actor.login(extract_n_unpack_values(this.aspects)).then(({data}) => {
         this.ok_snackbar(data.msg)
         this.process_login(data.data)
         // todo could just be index/clear_entries (change name) but needs await

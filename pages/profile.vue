@@ -97,7 +97,7 @@ import Aspect from "../components/Aspect";
 import {EDIT, NO_DOMAIN,  VIEW} from "~/lib/consts";
 
 import {mapGetters} from "vuex"
-import {extract_unpacked_values, set_value_and_error} from "~/lib/aspect";
+import {extract_n_unpack_values, pack_value, set_value_and_error} from "~/lib/aspect";
 import PersistentStorageMixin from "../components/util/PersistentStorageMixin";
 
 import LoadFileButton from "../components/util/LoadFileButton";
@@ -186,7 +186,7 @@ export default {
     reset_edit_values() {
       const user_data = this.$_.cloneDeep(this.user_data)
       for (let aspect of this.profile_aspects) {
-        aspect.value = user_data[aspect.name]
+        aspect.value = pack_value(user_data[aspect.name])
       }
 
       // this.email_aspects.email.value = this.user_data.email
@@ -219,7 +219,7 @@ export default {
       this.goto_top()
     },
     doneEdit: function () {
-      const new_profile = extract_unpacked_values(this.profile_aspects)
+      const new_profile = extract_n_unpack_values(this.profile_aspects)
 
       new_profile.domain = {}
       new_profile.domain.no_domain = this.no_domain_values
@@ -239,7 +239,7 @@ export default {
       })
     },
     change_email() {
-      const new_email = extract_unpacked_values(this.email_aspects)
+      const new_email = extract_n_unpack_values(this.email_aspects)
       this.email_update_loading = true
       this.$api.actor.change_email(new_email).then(({data}) => {
         this.email_edit = false;
@@ -259,7 +259,7 @@ export default {
       })
     },
     change_password() {
-      const new_password = extract_unpacked_values(this.password_aspects)
+      const new_password = extract_n_unpack_values(this.password_aspects)
       this.$api.actor.change_password(new_password).then(({data}) => {
         this.password_edit = false;
         this.ok_snackbar(this.$t("page.profile.msgs.password_changed"))

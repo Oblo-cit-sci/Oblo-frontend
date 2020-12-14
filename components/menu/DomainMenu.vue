@@ -54,7 +54,7 @@ export default {
       template_filter_options.aspect.items = object_list2options(
         this.$store.getters["templates/templates_of_domain"](this.domain_name, lang), "title", "slug", true)
       const tags_filter_options = this.get_tags_filter_options(this.domain_name)
-      console.log(tags_filter_options)
+      // console.log(tags_filter_options)
       // const uuids_select_option = get_uuids_select_option()
       const language_filter_options = this.get_language_filter_options(this.domain_name)
 

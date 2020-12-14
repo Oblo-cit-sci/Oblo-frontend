@@ -4,12 +4,14 @@
       v-icon {{back_icon}}
     v-toolbar-title
       span.font-weight-bold {{label}}
-      div(v-if="!edit") {{value}}
+      div(v-if="!edit") {{unpacked_value}}
     v-btn(icon v-if="!edit" color='green' size="32" @click="set_edit(true)")
       v-icon {{edit_icon}}
 </template>
 
 <script>
+import {unpack} from "~/lib/aspect";
+
 export default {
   name: "EditContextTitle",
   props: {
@@ -34,6 +36,11 @@ export default {
   methods: {
     set_edit(edit) {
       this.$emit("update:edit", edit)
+    }
+  },
+  computed: {
+    unpacked_value() {
+      return unpack(this.value)
     }
   }
 }

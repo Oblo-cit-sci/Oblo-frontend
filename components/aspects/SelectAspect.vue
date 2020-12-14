@@ -18,8 +18,8 @@
           v-img(:src="icon_path(selection)" contain max-height="40")
         div
           p.pl-2(v-if="select_check" class="text-uppercase") {{check_box_value ? options[1].text : options[0].text}}
-          p.body-1.readonly-aspect.pl-3(v-else) {{selection.text}}
-        div.pt-2(v-if="selection.description" style="clear:left") {{$t('comp.select_asp.descr')}}: {{selection.description}}
+          p.body-1.readonly-aspect.pl-3(v-else) {{view_mode_text}}
+        div.pt-2(v-if="view_mode_description" style="clear:left") {{$t('comp.select_asp.descr')}}: {{view_mode_description}}
 </template>
 
 <script>
@@ -27,10 +27,11 @@
   import AspectComponentMixin from "./AspectComponentMixin";
   import {server_icon_path} from "~/lib/client"
   import LanguageCodeFallback from "~/components/aspect_utils/LanguageCodeFallback";
+  import SingleSelect from "~/components/input/SingleSelect";
 
   export default {
     name: "SelectAspect",
-    components: {LanguageCodeFallback},
+    components: {SingleSelect, LanguageCodeFallback},
     mixins: [SelectMixin, AspectComponentMixin],
     props: {
       aspect: {
@@ -43,9 +44,9 @@
         init: true
       }
     },
-    beforeCreate: function () {
-      this.$options.components.SingleSelect = require('../input/SingleSelect.vue').default
-    },
+    // beforeCreate: function () {
+    //   this.$options.components.SingleSelect = require('../input/SingleSelect.vue').default
+    // },
     created() {
       if (this.select_check) {
         this.check_box_value = this.value === this.options[1].value // or maybe a value/default...
@@ -57,11 +58,11 @@
     },
     methods: {
       set_selection() {
-        // console.log("set-sel: value", this.value)
+        console.log("set-sel: value", this.value)
         if (this.value !== null) {
           // console.log(this.value)
           this.selection = this.$_.find(this.options, (o) => {
-            return o.value === this.value.value
+            return o.value === this.value
           })
           if (this.selection === undefined) {
             this.selection = null
@@ -86,6 +87,17 @@
       has_error() {
         // console.log("select error?", this.is_required)
         return this.is_required && !this.value
+      },
+      view_mode_text() {
+        console.log(this.selection)
+        if (this.selection) {
+          return this.selection.text || this.selection.value
+        }
+      },
+      view_mode_description() {
+        if (this.selection) {
+          return this.selection.description
+        }
       }
     },
     watch: {
@@ -106,7 +118,7 @@
         if (this.selection === null)
           this.update_value(null)
         else
-          this.update_value(this.selection)
+          this.update_value(this.selection.value)
       },
       check_box_value(val) {
         this.update_value(val ? this.options[1].value : this.options[0].value)
