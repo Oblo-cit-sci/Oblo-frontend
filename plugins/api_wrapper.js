@@ -324,13 +324,8 @@ class Actor extends QueryBase {
     return this.post("reset_password", data)
   }
 
-  post_global_role(registered_name, role, domain) {
-    return this.post(`${registered_name}/global_role`, {}, {
-      params: {
-        role,
-        domain
-      }
-    })
+  post_global_role(registered_name, data) {
+    return this.post(`${registered_name}/global_role`, data)
   }
 
   get_all(details = false) {

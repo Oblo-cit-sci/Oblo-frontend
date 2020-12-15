@@ -78,7 +78,6 @@ export default {
     submit() {
       this.submit_loading = true
       const settings = Object.assign(this.$_.cloneDeep(this.$store.getters["user/settings"]), overwrite_default_register_settings)
-      // todo better js!... aspectset and recursive unpack. why not unpacked? make raw_unpacking feature of aspectset
       const send_data = Object.assign(extract_n_unpack_values(this.aspects), {settings})
       this.$api.actor.post_actor(send_data
       // this.$api.actor.post_actor({

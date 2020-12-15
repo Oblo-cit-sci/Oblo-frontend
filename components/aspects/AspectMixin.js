@@ -134,7 +134,6 @@ export default {
           return this.ext_value
         } else {
           const raw = aspect_raw_default_value(this.aspect)
-          // console.log("raw", raw, this.is_unpacked)
           return {value: raw}
         }
       }

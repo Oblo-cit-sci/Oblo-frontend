@@ -8,7 +8,6 @@
         :key="a.name"
         :aspect="a"
         :ext_value.sync="a.value",
-        @update:ext_value="update_value(a, $event)"
         mode="edit"
         :conditionals="values"
         @update:error="a.error = $event")
@@ -17,107 +16,101 @@
 
 <script>
 
-import {EDITOR, GLOBAL_ROLE, SELECT} from "~/lib/consts"
+import {ADMIN, EDITOR, GLOBAL_ROLE, MULTISELECT, SELECT, USER} from "~/lib/consts"
 import Aspect from "~/components/Aspect"
 import {object_list2options} from "~/lib/options"
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
-import {extract_n_unpack_values, pack_value} from "~/lib/aspect"
+import {aspect_raw_default_value, extract_n_unpack_values, pack_value, unpack} from "~/lib/aspect"
 import AspectSet from "~/components/AspectSet"
+import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin";
 
 export default {
   name: "ActorAdminEdit",
   components: {AspectSet, Aspect},
-  mixins: [TriggerSnackbarMixin],
+  mixins: [TriggerSnackbarMixin, TypicalAspectMixin],
   comments: {},
   props: {
     actor: Object
   },
   data() {
     return {
-      aspects:
-        {
-          global_role: {
-            type: SELECT,
-            t_label: "page.actor.admin.asp_global_role",
-            name: "global_role",
-            attr: {
-              unpacked: true,
-              force_view: "select",
-              extra: {
-                rules: [
-                  // v => v && v.length >= 4 || 'Username must have at 4 characters',
-                ]
-              }
-            },
-            value: "",
-            items: [
-              {text: this.$t("comp.global_role.user"), value: "user"},
-              {text: this.$t("comp.global_role.editor"), value: "editor"},
-              {text: this.$t("comp.global_role.admin"), value: "admin"}
-            ],
-            error: true
-          },
-          editor_for: {
-            name: "editor_for",
-            t_label: "page.actor.admin.asp_editor_for_domain",
-            type: SELECT,
-            attr: {
-              force_view: "select",
-              hide_on_disabled: true,
-              condition: {
-                aspect: "# global_role",
-                value: "editor"
-              }
-            },
-            items: this.domains(),
-            value: pack_value()
+      aspects: [{
+        type: SELECT,
+        t_label: "page.actor.admin.asp_global_role",
+        name: "global_role",
+        attr: {
+          force_view: "select",
+          extra: {
+            rules: [
+              // v => v && v.length >= 4 || 'Username must have at 4 characters',
+            ]
           }
         },
+        value: "",
+        items: [
+          {text: this.$t("comp.global_role.user"), value: USER},
+          {text: this.$t("comp.global_role.editor"), value: EDITOR},
+          {text: this.$t("comp.global_role.admin"), value: ADMIN}
+        ],
+        error: true
+      },
+        {
+          name: "domain",
+          t_label: "page.actor.admin.asp_editor_for_domain",
+          type: MULTISELECT,
+          attr: {
+            force_view: "select",
+            hide_on_disabled: true,
+            condition: {
+              aspect: "# global_role",
+              value: "editor"
+            }
+          },
+          items: this.domains(),
+          value: pack_value()
+        }, this.asp_language(null, undefined, false,{
+          hide_on_disabled: true,
+          condition: {
+            aspect: "# global_role",
+            value: "editor"
+          }
+        })],
       has_errors: null
     }
   },
   created() {
     const user_data = this.$_.cloneDeep(this.actor)
-    this.aspects.global_role.value = user_data.global_role
     // todo disabledness should come through AspectSet, which can manage conditions
-    if (user_data.global_role === EDITOR) {
-      this.aspects.editor_for.attr.disable = false
-      this.aspects.editor_for.value.value = user_data.editor_domain
+    for (let aspect_name in this.aspect_map) {
+      this.aspect_map[aspect_name].value = pack_value(user_data[aspect_name] || this.raw_aspect_default_value(this.aspect_map[aspect_name]))
     }
   },
   computed: {
-    aspects_o() {
-      return Object.values(this.aspects)
-    },
     values() {
       return extract_n_unpack_values(this.aspects)
-    }
+    },
+    aspect_map() {
+      return this.$_.keyBy(this.aspects, "name")
+    },
   },
   methods: {
     domains() {
-      console.log()
       const l = this.$store.getters["user/settings_value"]("ui_language")
       const domains = this.$store.getters["domain/domains_for_lang"](l)
       return object_list2options(domains, "title", "name", true)
     },
-    update_value(aspect, val) {
-      if (aspect.name === GLOBAL_ROLE) {
-        this.aspects.editor_for.attr.disable = val !== "editor"
-        this.aspects.editor_for.value = pack_value()
-      }
-    },
     update() {
-      console.log(this.aspects.editor_for.value)
       this.$api.actor.post_global_role(
-        this.actor.registered_name,
-        this.aspects.global_role.value,
-        this.aspects.editor_for.value.value).then(({data}) => {
-        this.ok_snackbar(data.data)
-        this.$emit("role_changed", this.aspects.global_role.value)
+        this.actor.registered_name, this.values).then(({data}) => {
+        this.ok_snackbar(data.msg)
+        this.$emit("role_changed", unpack(this.values.global_role))
       }, err => {
         console.log(err)
       })
-    }
+    },
+    raw_aspect_default_value(aspect) {
+      return aspect_raw_default_value(aspect)
+    },
   }
 }
 </script>

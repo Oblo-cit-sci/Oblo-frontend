@@ -94,7 +94,6 @@ export default {
           type: "multiselect",
           attr: {
             min: 1,
-            unpacked: true
           },
         },
         search_config: {

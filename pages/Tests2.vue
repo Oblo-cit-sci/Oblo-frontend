@@ -130,7 +130,6 @@
           name: "EL",
           type: ENTRYLINK,
           attr: {
-            unpacked:true
           },
           value: "7ad5e7dc-d064-449c-a582-6a7cbf8f969a"
         }

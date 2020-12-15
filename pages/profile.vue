@@ -274,7 +274,6 @@ export default {
       if (image.ok) { // check != undefined, which comes from the (not removable? clearable on the fileinput
         let formData = new FormData();
         formData.append('file', base64file_to_blob(image.meta.type, image.data))
-        // formData.append("actor_in", JSON.stringify(extract_unpacked_values({no: 3})))
         this.profile_pic_upload_loading = true
         this.$api.actor.post_profile_pic(formData)
           .then(() => {

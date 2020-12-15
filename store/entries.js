@@ -407,9 +407,7 @@ export const getters = {
         tags = recursive_unpack(tags)
         tags = guarantee_array(tags)
         tags = ld.flattenDeep(tags)
-        // console.log("unpacked & flat tags", tags)
         tags = tags.filter(t => !ld.isEmpty(t))
-        // console.log("unpacked & flat, cleaned tags", tags)
         tags = Array.from(new Set(tags))
         if (tags.length > 0) {
           all_tags[tags_type] = tags

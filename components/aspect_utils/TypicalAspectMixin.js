@@ -1,5 +1,5 @@
 import {settings_loc_privacy_ask, settings_loc_privacy_exact, settings_loc_privacy_random} from "~/lib/settings"
-import {STR} from "~/lib/consts"
+import {MULTISELECT, SELECT, STR} from "~/lib/consts"
 import {unpack} from "~/lib/aspect";
 
 let username_regex = new RegExp('^[a-z][a-z0-9_]*$');
@@ -137,14 +137,14 @@ export default {
         error: true
       }
     },
-    asp_language(name = null, alt_label_descr = undefined) {
+    asp_language(name = null, alt_label_descr = undefined, single_select = true,  attr = {}) {
       return {
         name: name ? name : "language",
         t_label: this.t_label("asp.language.", alt_label_descr),
         t_description: this.t_description("asp.language.", alt_label_descr),
-        type: "select",
-        attr: {
-          force_view: "select",
+        type: single_select ? SELECT : MULTISELECT,
+        attr: attr || {
+          force_view: SELECT
         },
         items: "languages"
       }
@@ -154,7 +154,7 @@ export default {
         name: name ? name : "privacy",
         t_label: this.t_label("asp.privacy.", alt_label_descr),
         t_description: this.t_description("asp.privacy.", alt_label_descr),
-        type: "select",
+        type: SELECT,
         items: [{
           text: this.$t("asp.privacy.options.public.text"),
           description: this.description("asp.privacy.options.public.", alt_label_descr),
@@ -178,7 +178,7 @@ export default {
         name: name ? name : "license",
         t_label: this.t_label("asp.license.", alt_label_descr),
         t_description: this.t_description("asp.license.", alt_label_descr),
-        type: "select",
+        type: SELECT,
         attr: {
           descr_as_html: true,
         },
@@ -199,7 +199,7 @@ export default {
         name: "location_privacy",
         t_label: "page.settings.asp.location_privacy.label",
         t_description: "page.settings.asp.location_privacy.description",
-        type: "select",
+        type: SELECT,
         items: [
           {
             value: settings_loc_privacy_exact,

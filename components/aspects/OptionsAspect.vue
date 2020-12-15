@@ -45,9 +45,6 @@
       }
     },
     created() {
-      if(this.attr.unpacked || this.$_.some(this.aspect.options, o => o.attr.unpacked)) {
-        console.log("Warning, Neither the optionsaspect nor one of its options can be unpacked", this.aspect.name)
-      }
       if (this.mvalue.hasOwnProperty(OPTION)) {
         this.option_selected(this.mvalue.option, false)
       }
