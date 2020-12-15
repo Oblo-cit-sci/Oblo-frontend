@@ -146,6 +146,7 @@ export default {
         attr: attr || {
           force_view: SELECT
         },
+        value: single_select ? null : [],
         items: "languages"
       }
     },

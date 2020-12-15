@@ -68,7 +68,7 @@ export default {
           },
           items: this.domains(),
           value: pack_value()
-        }, this.asp_language(null, undefined, false,{
+        }, this.asp_language(null, undefined, false, {
           hide_on_disabled: true,
           condition: {
             aspect: "# global_role",
@@ -81,8 +81,12 @@ export default {
   created() {
     const user_data = this.$_.cloneDeep(this.actor)
     // todo disabledness should come through AspectSet, which can manage conditions
+    console.log(user_data.editor_config)
     for (let aspect_name in this.aspect_map) {
-      this.aspect_map[aspect_name].value = pack_value(user_data[aspect_name] || this.raw_aspect_default_value(this.aspect_map[aspect_name]))
+      if (aspect_name === GLOBAL_ROLE)
+        this.aspect_map[aspect_name].value = pack_value(user_data[aspect_name])
+      else
+        this.aspect_map[aspect_name].value = pack_value(user_data.editor_config[aspect_name])
     }
   },
   computed: {
@@ -105,6 +109,7 @@ export default {
         this.ok_snackbar(data.msg)
         this.$emit("role_changed", unpack(this.values.global_role))
       }, err => {
+        this.err_error_snackbar(err)
         console.log(err)
       })
     },
