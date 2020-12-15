@@ -86,7 +86,6 @@ export default {
           name: "Visible layers",
           type: "multiselect",
           attr: {
-            unpacked: true,
             force_view: "list"
           },
           items: null, // gets filled with 1. click

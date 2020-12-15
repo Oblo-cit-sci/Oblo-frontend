@@ -47,7 +47,7 @@ import {debounced_search, search_entries} from "~/lib/client"
 import FilterMixin from "../FilterMixin";
 import NavBaseMixin from "../NavBaseMixin";
 import PersistentStorageMixin from "../util/PersistentStorageMixin";
-import {route_change_query} from "~/lib/util";
+import {recursive_unpack2, route_change_query} from "~/lib/util";
 import Filterlist from "~/components/util/Filterlist"
 import {LANGUAGE, QP_D, QP_SEARCH, TEMPLATE} from "~/lib/consts"
 import EntrySearchMixin from "~/components/EntrySearchMixin"
@@ -409,7 +409,7 @@ export default {
             config.value = unpack(filter.value)
             configuration.required.push(config)
           } else if (config.hasOwnProperty("include_as")) {
-            configuration.include[config.include_as] = unpack(filter.value)
+            configuration.include[config.include_as] = recursive_unpack2(filter.value)
           } else {
             console.log("error cannot proccess filter-option", filter.name)
           }
