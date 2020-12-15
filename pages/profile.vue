@@ -35,7 +35,7 @@
         div
           EditContextTitle(v-if="!email_edit && !password_edit" :edit.sync="security_dialog_open" :label="$t('page.profile.h_email_password')" back_icon="mdi-close")
           EditContextTitle.pt-1(v-if="!password_edit" :edit.sync="email_edit"
-            :label="$t('asp.email.label')" :value="email_aspects.email.value")
+            :label="$t('asp.email.label')" :mvalue="email_aspects.email.value")
           v-container(v-if="email_edit")
             v-row.pl-2(v-for="a of email_aspects" :key="a.name")
               v-col.pa-0(cols=10)
