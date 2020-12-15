@@ -18,13 +18,13 @@ export default {
       /**
        * get the values from a list of items (select, multiselect)
        */
-        // console.log("mvalue", mvalue)
+        console.log("mvalue", mvalue)
       const aspect_type = aspect.type
       if ([MULTISELECT, SELECT].includes(aspect_type)) {
         // todo, the items could should in cases come from a code-entry
         return aspect.items.filter(i => unpack(mvalue).includes(i.value)).map(v => v.text)
       } else if ([TREE, TREEMULTISELECT].includes(aspect_type)) { // also treemultiselect ?
-        return this.get_text_of_tree_values(unpack(mvalue), aspect.items, language)
+        return this.get_text_of_tree_values(unpack(mvalue), aspect.items)
       } else if (aspect_type === OPTIONS) {
         // debugger
         // console.log("mvalue", mvalue, aspect.options)

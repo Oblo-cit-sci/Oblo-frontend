@@ -3,7 +3,7 @@
     v-treeview(:items="root_items"
       item-key="value"
       item-text="text"
-      :value="value"
+      :value="i_value"
       @input="input($event)"
       dense
       :selectable="is_edit_mode")
@@ -13,6 +13,7 @@
   import AspectComponentMixin from "~/components/aspects/AspectComponentMixin"
   import {get_codes_as_tree} from "~/lib/options"
   import TreeSelectComponentMixin from "~/components/aspect_utils/TreeSelectComponentMixin";
+  import {pack_value} from "~/lib/aspect";
 
   // todo fix item-text, item-value
 
@@ -28,18 +29,9 @@
       this.calc_options()
     },
     computed: {
-
-      // id_name_map() {
-      //   const id_map = {}
-      //   const rec_map = (node) => {
-      //     id_map[node.id] = node.value
-      //     for (let kid of node.children || []) {
-      //       rec_map(kid)
-      //     }
-      //   }
-      //   rec_map(this.tree.root)
-      //   return id_map
-      // },
+      i_value() {
+        return this.value || []
+      },
       root_items() {
         return this.tree.root.children
       }

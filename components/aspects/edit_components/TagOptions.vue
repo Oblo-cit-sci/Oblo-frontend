@@ -7,11 +7,11 @@
         @selection="option_selected($event)"
         :disabled_options="disabled_options"
         :only_value="true")
-    div(v-if="selected_option")
+    div(v-if="selected_aspect")
       Aspect(
         :aspect="selected_aspect"
         :aspect_loc="aspect_loc"
-        :ext_value="value"
+        :ext_value="i_value"
         @update:ext_value="update_value($event)"
         :extra="extra"
         mode="edit")
@@ -74,6 +74,14 @@ export default {
       } else { // actually never happens
         return []
       }
+    },
+    i_value() {
+      console.log(this.value, this.selected_option, this.selected_aspect)
+      if (!this.value) {
+        return this.aspect_default_value(this.selected_aspect)
+      }
+      return this.value
+
     }
   }
 }

@@ -1,5 +1,5 @@
 import {EDIT, REVIEW, VIEW} from "~/lib/consts";
-import {aspect_loc_uuid, aspect_raw_default_value, pack_value} from "~/lib/aspect";
+import {aspect_default_value, aspect_loc_uuid, aspect_raw_default_value, pack_value} from "~/lib/aspect";
 import {mapGetters} from "vuex"
 
 export default {
@@ -117,6 +117,15 @@ export default {
     },
     reset_value() {
       this.update_value(aspect_raw_default_value(this.aspect))
+    },
+    raw_default_value() {
+      return aspect_raw_default_value(this.aspect)
+    },
+    raw_aspect_default_value(aspect) {
+      return aspect_raw_default_value(aspect)
+    },
+    aspect_default_value(aspect) {
+      return aspect_default_value(aspect)
     }
   },
 }
