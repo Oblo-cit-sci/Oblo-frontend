@@ -14,7 +14,7 @@
           CreateEntryButton(:domain_data="domain_data" @create_entry="$emit('create_entry', $event)")
       .overlay_menu(v-if="show_legend")
         TemplateLegend(:domain_name="domain_name" ref="legendComponent")
-    AspectDialog(v-bind="aspectdialog_data" @update:dialog_open="aspectdialog_data.dialog_open = $event" :ext_value="layer_status" @update:ext_value="aspect_dialog_update($event)")
+    AspectDialog(v-bind="aspectdialog_data" @update:dialog_open="aspectdialog_data.dialog_open = $event" :ext_value="packed_layer_status" @update:ext_value="aspect_dialog_update($event)")
     client-only
       Mapbox(
         v-if="!map_hidden"
@@ -47,6 +47,7 @@ import MapEntriesMixin from "~/components/map/MapEntriesMixin"
 import CreateEntryButton from "~/components/CreateEntryButton";
 import ResponsivenessMixin from "~/components/ResponsivenessMixin";
 import EnvMixin from "~/components/global/EnvMixin"
+import {pack_value, unpack} from "~/lib/aspect";
 
 const cluster_layer_name = LAYER_BASE_ID + '_clusters'
 
@@ -109,6 +110,9 @@ export default {
     ...mapGetters({
       layer_status: "map/layer_status",
     }),
+    packed_layer_status() {
+      return pack_value(this.layer_status)
+    },
     selected_entry() {
       // console.log("comp.selected_entry")
       return this.$route.query.uuid
@@ -506,7 +510,7 @@ export default {
     },
     aspect_dialog_update(selected_layers) {
       // todo could be fixed by making multiselects default: []
-      this.set_layer_visibility(selected_layers)
+      this.set_layer_visibility(unpack(selected_layers))
     },
     change_entry_markers_mode(entry_uuid, selected) {
       if (!this.initialized) {
