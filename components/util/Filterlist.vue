@@ -87,8 +87,8 @@ export default {
         return filter.value.text
       }
       const filter_option_aspect = this.filter_option_by_name(filter.name).aspect
-      console.log("filter.value", filter.value)
-      return this.get_text_of_mvalues(filter.value, filter_option_aspect)
+      // console.log("filter.value", filter.value)
+      return this.get_texts_of_mvalues(filter.value, filter_option_aspect).join(", ")
     },
     available_filter_label(filter) {
       // console.log(filter)
@@ -132,7 +132,6 @@ export default {
           "name": this.active_filter.name,
           "t_label": this.active_filter.t_label,
           "value": value,
-          // "text": text
         }
         if (this.active_filter.source_name) {
           new_filter.source_name = this.active_filter.source_name

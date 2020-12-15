@@ -10,6 +10,7 @@
 <script>
   import AspectComponentMixin from "~/components/aspects/AspectComponentMixin"
   import {get_codes_as_tree} from "~/lib/options"
+  import {pack_value} from "~/lib/aspect";
 
   // todo fix item-text, item-value
 
@@ -48,7 +49,7 @@
     },
     methods: {
       input(selection) {
-        this.$emit("update_value", selection.map(id => this.id_name_map[id]))
+        this.$emit("update_value", pack_value(selection.map(id => this.id_name_map[id])))
       }
     }
   }
