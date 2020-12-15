@@ -53,6 +53,7 @@ import {unpack} from "~/lib/aspect"
 import OptionsMixin from "~/components/aspect_utils/OptionsMixin";
 import LanguageCodeFallback from "~/components/aspect_utils/LanguageCodeFallback";
 import SelectMixin from "~/components/aspects/SelectMixin";
+import TreeSelectComponentMixin from "~/components/aspect_utils/TreeSelectComponentMixin";
 
 /*
 the start of a custom value field. but wtf...
@@ -69,7 +70,7 @@ the start of a custom value field. but wtf...
 export default {
   name: "TreeSelectAspect",
   components: {LanguageCodeFallback, TreeleafPicker},
-  mixins: [AspectComponentMixin, GeneralSelectMixin, OptionsMixin, SelectMixin],
+  mixins: [AspectComponentMixin, GeneralSelectMixin, OptionsMixin, SelectMixin, TreeSelectComponentMixin],
   data() {
     return {
       tree: {},
@@ -80,10 +81,19 @@ export default {
   created() {
     if (this.is_editable_mode) {
       this.calc_options()
-    }
-    // console.log("created", this.extra, this.value)
-    if (this.extra.listitem && this.is_empty) {
-      this.dialogOpen = true
+      if (this.direct_select) {
+        let options = {}
+        if (this.attr.allow_select_levels) {
+          options.include_levels = this.attr.allow_select_levels
+        } else {
+          options.include_levels = [this.tree.levels.length - 1]
+        }
+        this.flat_options = this.flat_options(options)
+      }
+      // console.log("created", this.extra, this.value)
+      if (this.extra.listitem && this.is_empty) {
+        this.dialogOpen = true
+      }
     }
   },
   methods: {
@@ -106,38 +116,13 @@ export default {
       }
     },
     selected(val) {
-      console.log("TSA selected", val)
+      // console.log("TSA selected", val)
       this.dialogOpen = false;
       if (val) {
         this.update_value(val.value)
       }
     },
-    calc_options() {
-      // build the given_options (all tree available) from what is passed
-      // let passed_tree = this.aspect.items;
-      if (typeof this.aspect.items === "string") {
-        this.tree = this.get_codes_as_options(this.aspect.items)
-        // todo SELECT_MIXIN!!
-        this.from_code_entry = true
-        const match = this.check_language_match(this.aspect.items)
-        this.code_entry_language_match = match[0]
-        this.code_entry_language = match[2]
-        //
-      } else {
-        this.tree = this.aspect.items
-      }
-      // console.log(this.tree, options.include_levels)
-      if (this.direct_select) {
-        let options = {}
-        if (this.attr.allow_select_levels) {
-          options.include_levels = this.attr.allow_select_levels
-        } else {
-          options.include_levels = [this.tree.levels.length - 1]
-        }
-        this.flat_options = flatten_tree_to_options(this.tree, options)
-      }
-      // console.log(this.flat_options[0].parents)
-    },
+
     clear() {
       this.update_value([])
       this.dialogOpen = false;
@@ -154,7 +139,7 @@ export default {
         return this.value
       },
       set: function (val) {
-        console.log("tsa-val set. update...", val)
+        // console.log("tsa-val set. update...", val)
         this.update_value(val)
       }
     },

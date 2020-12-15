@@ -7,11 +7,11 @@
         @selection="option_selected($event)"
         :disabled_options="disabled_options"
         :only_value="true")
-    div(v-if="selected_option")
+    div(v-if="selected_aspect")
       Aspect(
         :aspect="selected_aspect"
         :aspect_loc="aspect_loc"
-        :ext_value="value"
+        :ext_value="i_value"
         @update:ext_value="update_value($event)"
         :extra="extra"
         mode="edit")
@@ -46,7 +46,7 @@ export default {
   },
   methods: {
     option_selected(option, selected = true) {
-      console.log(option, selected)
+      // console.log(option, selected)
       this.selected_option = option
       // console.log("option_selected", option)
       this.selected_aspect = this.$_.find(this.aspect.options, o => o.name === option)
@@ -57,7 +57,7 @@ export default {
       }
     },
     update_value(value) {
-      console.log("options.. update", value)
+      // console.log("options.. update", value)
       this.$emit("update_value", {value:{option: this.selected_option, value}, is_mvalue:true})
     }
   },
@@ -74,6 +74,14 @@ export default {
       } else { // actually never happens
         return []
       }
+    },
+    i_value() {
+      console.log(this.value, this.selected_option, this.selected_aspect)
+      if (!this.value) {
+        return this.aspect_default_value(this.selected_aspect)
+      }
+      return this.value
+
     }
   }
 }
