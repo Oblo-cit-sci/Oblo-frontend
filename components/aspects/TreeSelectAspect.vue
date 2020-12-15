@@ -88,7 +88,7 @@ export default {
         } else {
           options.include_levels = [this.tree.levels.length - 1]
         }
-        this.flat_options = this.flat_options(options)
+        this.flat_options = this.get_flat_options(options)
       }
       // console.log("created", this.extra, this.value)
       if (this.extra.listitem && this.is_empty) {

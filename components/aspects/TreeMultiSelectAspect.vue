@@ -10,72 +10,49 @@
 </template>
 
 <script>
-  import AspectComponentMixin from "~/components/aspects/AspectComponentMixin"
-  import {get_codes_as_tree} from "~/lib/options"
+import AspectComponentMixin from "~/components/aspects/AspectComponentMixin"
+import {get_codes_as_tree} from "~/lib/options"
+import TreeSelectComponentMixin from "~/components/aspect_utils/TreeSelectComponentMixin";
 
-  // todo fix item-text, item-value
+// todo fix item-text, item-value
 
-  export default {
-    name: "TreeMultiSelectAspect",
-    mixins: [AspectComponentMixin],
-    components: {},
-    props: {},
-    data() {
-      return {}
+export default {
+  name: "TreeMultiSelectAspect",
+  mixins: [AspectComponentMixin, TreeSelectComponentMixin],
+  components: {},
+  props: {},
+  data() {
+    return {}
+  },
+  created() {
+    this.calc_options()
+  },
+  computed: {
+    i_value() {
+      return this.value || []
     },
-    created() {
-      this.calc_options()
-    },
-    computed: {
-      i_value() {
-        return this.value || []
-      },
-      tree() {
-        if (typeof this.aspect.items === "string") {
-          return get_codes_as_tree(this.$store, this.aspect.items)
-        } else {
-          return this.aspect.items
-        }
-      },
-      // id_name_map() {
-      //   const id_map = {}
-      //   const rec_map = (node) => {
-      //     id_map[node.id] = node.value
-      //     for (let kid of node.children || []) {
-      //       rec_map(kid)
-      //     }
-      //   }
-      //   rec_map(this.tree.root)
-      //   return id_map
-      // },
-      root_items() {
-        return this.tree.root.children
-      }
-    },
-    methods: {
-          calc_options() {
-      // build the given_options (all tree available) from what is passed
-      // let passed_tree = this.aspect.items;
-      if (typeof this.aspect.items === "string") {
-        this.tree = this.get_codes_as_options(this.aspect.items)
-        // todo SELECT_MIXIN!!
-        this.from_code_entry = true
-        const match = this.check_language_match(this.aspect.items)
-        this.code_entry_language_match = match[0]
-        this.code_entry_language = match[2]
-        //
-      } else {
-        this.tree = this.aspect.items
-      }
-      // console.log(this.tree, options.include_levels)
-      // console.log(this.flat_options[0].parents)
-    },
-      input(selection) {
-        // console.log(selection)
-        this.update_value(selection) // selection.map(id => this.id_name_map[id]))
-      }
+    // id_name_map() {
+    //   const id_map = {}
+    //   const rec_map = (node) => {
+    //     id_map[node.id] = node.value
+    //     for (let kid of node.children || []) {
+    //       rec_map(kid)
+    //     }
+    //   }
+    //   rec_map(this.tree.root)
+    //   return id_map
+    // },
+    root_items() {
+      return this.tree.root.children
+    }
+  },
+  methods: {
+    input(selection) {
+      // console.log(selection)
+      this.update_value(selection) // selection.map(id => this.id_name_map[id]))
     }
   }
+}
 </script>
 
 <style scoped>

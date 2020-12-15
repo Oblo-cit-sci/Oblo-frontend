@@ -29,7 +29,7 @@ export default {
       // console.log(this.tree, options.include_levels)
       // console.log(this.flat_options[0].parents)
     },
-    flat_options(options) {
+    get_flat_options(options) {
       return flatten_tree_to_options(this.tree, options)
     }
   }
