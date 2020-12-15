@@ -266,7 +266,7 @@ export default {
       let options = this.$_.cloneDeep(this.preview_options)
       const lang_filter = this.act_config.find(f => f.name === LANGUAGE)
       if(lang_filter) {
-        if (lang_filter.value.length > 1) {
+        if (unpack(lang_filter.value).length > 1) {
           options.show_language_chip = true
         }
       }

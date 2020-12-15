@@ -1,5 +1,5 @@
 import {EDIT, REVIEW, VIEW} from "~/lib/consts";
-import {aspect_loc_uuid, aspect_raw_default_value} from "~/lib/aspect";
+import {aspect_loc_uuid, aspect_raw_default_value, pack_value} from "~/lib/aspect";
 import {mapGetters} from "vuex"
 
 export default {
@@ -44,7 +44,7 @@ export default {
     },
     value: {
       get: function () {
-          return this.mvalue.value
+        return this.mvalue.value
       },
       set: function (val) {
         this.update_value(val)
@@ -93,7 +93,10 @@ export default {
   },
   methods: {
     update_value(value) {
-      this.$emit("update_value", value)
+      this.$emit("update_value", pack_value(value))
+    },
+    update_mvalue(mvalue) {
+      this.$emit("update_value", mvalue)
     },
     update_error(has_error) {
       this.$emit("has_error", has_error)

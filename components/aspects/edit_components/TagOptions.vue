@@ -11,6 +11,7 @@
       Aspect(
         :aspect="selected_aspect"
         :aspect_loc="aspect_loc"
+        :ext_value="value"
         @update:ext_value="update_value($event)"
         :extra="extra"
         mode="edit")
@@ -45,19 +46,19 @@ export default {
   },
   methods: {
     option_selected(option, selected = true) {
-      console.log(option, selected)
+      // console.log(option, selected)
       this.selected_option = option
       // console.log("option_selected", option)
       this.selected_aspect = this.$_.find(this.aspect.options, o => o.name === option)
       if (selected) {
         let value = aspect_default_value(this.selected_aspect)
         // call method
-        this.$emit("update_value", {value: {option, value}, is_meta: true})
+        this.$emit("update_value", {value: {option, value}, is_mvalue: true})
       }
     },
     update_value(value) {
-      console.log("options.. update", value)
-      this.$emit("update_value", {value:{option: this.selected_option, value}, is_meta:true})
+      // console.log("options.. update", value)
+      this.$emit("update_value", {value:{option: this.selected_option, value}, is_mvalue:true})
     }
   },
   computed: {

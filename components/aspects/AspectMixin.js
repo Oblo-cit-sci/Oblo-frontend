@@ -49,21 +49,20 @@ export default {
   },
   methods: {
     // debounce to not to store contantly while typing
-    update_value(value) {
-      const is_mvalue = value.value && value.is_meta !== undefined
-      const mvalue = unpack(value) // thats why the is_mvalue unpacking is shit.
+    update_value({value, is_mvalue}) {
+      // const is_mvalue = value.value && value.is_meta !== undefined
+      // const mvalue = unpack(value) // thats why the is_mvalue unpacking is shit.
       // todo it should be fck with 2 params, value, is_meta = false
-      console.log("received update value", this.aspect.name, value, is_mvalue)
+      // console.log("received update value", this.aspect.name, value, is_mvalue)
       if (value === undefined)
         value = null
 
       let up_value = value
-      debugger
       if (!(this.is_meta || is_mvalue)) {
-        console.log("packing")
+        // console.log("packing")
         up_value = pack_value(value)
       }
-      console.log("upval", up_value)
+      // console.log("upval", up_value)
       if (this.aspect_loc) {
         this.$store.dispatch("entries/set_entry_value", {aspect_loc: this.aspect_loc, value: up_value})
         if (this.attr.cache) {
