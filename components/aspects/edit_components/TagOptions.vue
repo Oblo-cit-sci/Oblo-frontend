@@ -11,6 +11,7 @@
       Aspect(
         :aspect="selected_aspect"
         :aspect_loc="aspect_loc"
+        :ext_value="value"
         @update:ext_value="update_value($event)"
         :extra="extra"
         mode="edit")
