@@ -10,6 +10,7 @@
           :mode="mode"
           :disabled="disabled"
           :conditionals="composite_conditionals"
+          @aspectAction="$emit('aspectAction',$event)"
           :extra="comp_extras(comp_type)")
 </template>
 

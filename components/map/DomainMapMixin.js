@@ -1,4 +1,3 @@
-
 import {mapGetters} from "vuex"
 import FilterMixin from "~/components/FilterMixin"
 import {transform_options_list} from "~/lib/options"
@@ -24,7 +23,7 @@ export default {
     set_layer_visibility(active_layers = []) {
       // instead of transform_options_list, map_loaded uses 'get'
       const options_layer_map = this.$_.keyBy(transform_options_list(this.available_layers), "value")
-      for (let layer_name in options_layer_map) {
+      for (let layer_name of Object.keys(options_layer_map)) {
         const visibility = active_layers.includes(layer_name) ? "visible" : "none"
         const layerIds = this.$_.get(options_layer_map[layer_name], "additional", [layer_name])
         for (let layerId of layerIds) {
@@ -36,6 +35,7 @@ export default {
   },
   watch: {
     map_loaded() {
+      // console.log("loaded")
       if (!this.layer_status) {
         // sometimes {value, text} sometimes just a string
         const available_layer_names = this.available_layers.map(l => this.$_.get(l, "value", l))

@@ -101,6 +101,7 @@ export default {
       return this.mode === EDIT
     },
     condition_fail() {
+      // console.log("condition_fail?", this.aspect.name,  "condition_fail?")
       // todo pass if edit
       // todo this getting of the value, could maybe also go into the helper...
       let condition_value = null
@@ -210,7 +211,7 @@ export default {
         if (this.is_meta) {
           return pack_value(value)
         }
-        console.log(this.aspect.name, this.aspect_loc, value)
+        // console.log(this.aspect.name, this.aspect_loc, value)
         return value
       }
     },
@@ -236,7 +237,9 @@ export default {
     condition_fail(fail) {
       if (fail) {
         if (this.value !== aspect_raw_default_value(this.aspect)) {
-          this.update_value(aspect_raw_default_value(this.aspect))
+          this.update_value({
+            value: aspect_raw_default_value(this.aspect)
+          })
         }
       }
     }

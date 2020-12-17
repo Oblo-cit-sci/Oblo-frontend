@@ -189,6 +189,9 @@ export const mutations = {
       value = [value]
     }
     state.edit.tags[name] = value
+  },
+  set_edit_local(state, data) {
+    state.edit.local = Object.assign(state.edit.local, ld.cloneDeep(data))
   }
 }
 

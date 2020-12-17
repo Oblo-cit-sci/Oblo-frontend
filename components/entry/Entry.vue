@@ -49,6 +49,7 @@
             :aspect="aspect"
             :aspect_loc="aspect_locs[aspect.name]"
             :extra="aspect_extras"
+            @aspectAction="aspectAction($event)"
             :mode="mode")
     div(v-if="is_first_page && is_editable_mode")
       v-row
@@ -136,10 +137,14 @@ export default {
     return {
       entry_complete: false,
       router_next: null,
-      delete_entry: false
+      delete_entry: false,
+      disabled_aspects: {}
     }
   },
   methods: {
+    aspectAction(aspect_action) {
+
+    },
     entryAction(action) {
       // console.log("received entry-A", action)
       if (action === "delete") {

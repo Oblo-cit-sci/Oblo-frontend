@@ -28,7 +28,8 @@
           v-expansion-panel-header {{titles[index] || index + 1}}
           v-expansion-panel-content
             Aspect(
-              v-bind="list_aspect_props(index)")
+              v-bind="list_aspect_props(index)"
+              @aspectAction="handleAspectAction($event, index)")
             ListitemActions(v-if="!is_view_mode"
               v-bind="listitem_actions_prop(index)"
               v-on:remove_value="remove_value($event)"
@@ -226,9 +227,8 @@ export default {
       // console.log("aspect-action", event)
       if (event.action === "clear") {
         this.remove_value(index)
-      }/* else if(event.action === "value_set") {
-          this.has_one_empty = false
-        }*/
+      } else
+        this.$emit("aspectAction", event)
     },
     list_extra(index) {
       const extra = Object.assign({

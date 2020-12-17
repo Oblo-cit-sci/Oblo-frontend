@@ -11,7 +11,6 @@
 
 <script>
     import Title_Description from "./util/Title_Description";
-    import {label} from "~/lib/aspect";
     import {COMPOSITE, EDIT, LIST} from "~/lib/consts";
     import AsectDescr_NoteInput from "./AsectDescr_NoteInput";
 
@@ -42,7 +41,7 @@
         computed: {
             title_description() {
                 return {
-                    title: label(this.aspect),
+                    title: this.aspect.label,
                     description: this.aspect.description || "",
                     mode: EDIT
                 }

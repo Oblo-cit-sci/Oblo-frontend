@@ -42,6 +42,10 @@ export default {
             value: [language],
             text: this.$t("lang."+language)
           }))
+
+      this.$store.commit("domain/set_act_lang_domain_data", {
+        domain_name: this.$store.getters["domain/act_domain_name"],
+        language})
     },
     /**
      *

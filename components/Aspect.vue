@@ -45,6 +45,7 @@ import {
 import AspectMixin from "./aspects/AspectMixin";
 import AspectAction from "~/components/aspect_utils/AspectAction"
 
+
 export default {
   name: "Aspect",
   components: {
@@ -115,6 +116,7 @@ export default {
       return this.mode
     },
     disable() {
+      // console.log("Aspect.disable?", this.aspect.name, this.condition_fail)
       return this.condition_fail || this.$_.get(this.attr, "disable", false)
     },
     has_action() {
