@@ -103,10 +103,12 @@ export default {
     },
     get_tags_filter_options(domain_name) {
       const all_codes = this.$store.getters["templates/codes_in_language"](this.domain_language)
+      console.log("all-codes", domain_name, this.domain_language, all_codes.length)
       let filter_codes = all_codes.filter(code_entry => this.$_.get(code_entry, "rules.tags"))
       if (domain_name) {
         filter_codes = entries_domain_filter(filter_codes, domain_name)
       }
+      console.log("all-codes",  filter_codes.length)
       // console.log(all_codes)
       // filter_codes = object_list2options(filter_codes, "title", "slug")
       const options_aspects = []
@@ -211,7 +213,7 @@ export default {
         // later replace filter.registered_name with filter.value
         return entries.filter(e => this.$_.some(e.actors, entry_actor => entry_actor.actor.registered_name === filter_value))
       } else if (filter.name === LANGUAGE) {
-        return entries.filter(e => filter_value.includes(e[filter.language]))
+        return entries.filter(e => filter_value.includes(e.language))
       } else {
         console.log("filter not applicable", filter.name)
         return entries
