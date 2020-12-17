@@ -50,16 +50,6 @@ export default {
     label() {
       return this.$t("comp.language_select.label")
     }
-  },
-  watch: {
-    language(lang) {
-      console.log("w", lang)
-      // this._i18n.locale = lang
-      //
-      // if (!this.$store.getters["user/logged_in"]) {
-      //   this.$api.axios.defaults.headers.common["Content-Language"] = lang + "-" + lang.toUpperCase()
-      // }
-    }
   }
 }
 </script>

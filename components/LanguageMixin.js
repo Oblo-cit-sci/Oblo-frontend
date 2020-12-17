@@ -1,4 +1,4 @@
-import {DOMAIN_LANGUAGE, UI_LANGUAGE} from "~/lib/consts";
+import {DOMAIN_LANGUAGE, NO_DOMAIN, UI_LANGUAGE} from "~/lib/consts";
 import FilterMixin from "~/components/FilterMixin";
 
 export default {
@@ -61,9 +61,11 @@ export default {
       return this.init_specifics(domain, language)
     },
     async init_specifics(domain, language) {
+      if (!this.$store.getters["domain/has_lang_domain_data"](NO_DOMAIN, language)) {
+        domain = [domain, NO_DOMAIN]
+      }
       const {data} = await this.$api.basic.init_data(domain, language)
       const domains_data = data.data.domains
-      console.log(domains_data)
       this.$store.commit("domain/set_domains", {domains_data, language})
       console.log(data.data.templates_and_codes)
       await this.$store.dispatch("templates/add_templates_codes", data.data.templates_and_codes)
