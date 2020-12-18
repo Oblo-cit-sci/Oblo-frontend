@@ -1,4 +1,4 @@
-server_static_dir = "../licci_be/app/"
+server_static_dir = "../opentek_be/app/"
 
 remove_entry_images = process.argv[2] ? false : true
 

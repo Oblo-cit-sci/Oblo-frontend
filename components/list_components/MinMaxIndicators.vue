@@ -1,10 +1,10 @@
 <template lang="pug">
   div
     span {{count_text}}{{comma ? ", " : ""}} &nbsp
-    span(v-if="requires") {{min}} required
+    span(v-if="requires") {{$t('comp.min_max_indicator.required',{number: min})}}
     span(v-else)
-      span(v-if="min") min: {{min}} &nbsp;
-      span(v-if="max") max: {{max}}
+      span(v-if="min") {{$t('comp.min_max_indicator.min',{number: min})}}&nbsp;
+      span(v-if="max") {{$t('comp.min_max_indicator.max',{number: max})}}
 </template>
 
 <script>

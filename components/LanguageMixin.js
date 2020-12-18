@@ -4,9 +4,7 @@ import FilterMixin from "~/components/FilterMixin";
 export default {
   name: "LanguageMxin",
   mixins: [FilterMixin],
-  computed: {
-
-  },
+  computed: {},
   methods: {
     async change_language(language, update_settings = true, domain_language = null) {
       if (!domain_language) {
@@ -17,6 +15,11 @@ export default {
       this.complete_language_domains(domain, domain_language).then(() => {
         if (update_settings)
           this.set_settings_value(DOMAIN_LANGUAGE, domain_language)
+
+        this.$store.commit("domain/set_act_lang_domain_data", {
+          domain_name: this.$store.getters["domain/act_domain_name"],
+          language
+        })
       })
       // console.log("check have?", language, this.loaded_ui_languages.includes(language))
       if (!this.$i18n.availableLocales.includes(language)) {
@@ -40,12 +43,8 @@ export default {
         Object.assign(this.language_filter_config(),
           {
             value: [language],
-            text: this.$t("lang."+language)
+            text: this.$t("lang." + language)
           }))
-
-      this.$store.commit("domain/set_act_lang_domain_data", {
-        domain_name: this.$store.getters["domain/act_domain_name"],
-        language})
     },
     /**
      *
@@ -75,7 +74,7 @@ export default {
       return this.$_.filter(language_items, i => keep_codes.includes(i.value))
     },
     get_language_options(codes) {
-      if(!codes) {
+      if (!codes) {
         codes = this.$store.getters["available_languages"]
       }
       return this.$store.getters["templates/code"]("languages").values.list.filter(v => codes.includes(v.value))
