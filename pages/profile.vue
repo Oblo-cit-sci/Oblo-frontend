@@ -164,7 +164,7 @@ export default {
   created() {
 
     const domain_data = this.$store.getters["domain/lang_domain_data"](NO_DOMAIN, this.$store.getters["user/settings"].domain_language)
-    console.log("DD", domain_data, this.$store.getters["user/settings"].domain_language)
+    // console.log("DD", domain_data, this.$store.getters["user/settings"].domain_language)
     this.no_domain_aspects = this.$_.cloneDeep(this.$_.get(domain_data , "users.profile.additional_aspects", []))
 
     if (this.is_fixed_domain) {
