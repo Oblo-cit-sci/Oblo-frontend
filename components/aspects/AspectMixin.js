@@ -49,15 +49,18 @@ export default {
   },
   methods: {
     // debounce to not to store contantly while typing
-    update_value({value, is_mvalue}) {
+    update_value(mvalue) {
+      const value = mvalue.value || null
+      const is_mvalue = mvalue.is_mvalue
+      if (is_mvalue) {
+        delete mvalue.is_mvalue
+      }
       // const is_mvalue = value.value && value.is_meta !== undefined
       // const mvalue = unpack(value) // thats why the is_mvalue unpacking is shit.
       // todo it should be fck with 2 params, value, is_meta = false
       // console.log("received update value", this.aspect.name, value, is_mvalue)
-      if (value === undefined)
-        value = null
 
-      let up_value = value
+      let up_value = mvalue
       // debugger
       if (!(this.is_meta || is_mvalue)) {
         // console.log("packing")

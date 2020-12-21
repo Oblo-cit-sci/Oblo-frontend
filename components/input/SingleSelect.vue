@@ -141,6 +141,8 @@
         }
       },
       select(item) {
+        // console.log("selected". item)
+        // debugger
         if (this.disabled)
           return
         if (item.value === undefined)
@@ -176,7 +178,7 @@
         return item.type === "category"
       },
       emitUp(item) {
-        //console.log("emitUp", item)
+        console.log("emitUp", item)
         if (item === undefined)
           item = null
         // todo maybe just one emit?

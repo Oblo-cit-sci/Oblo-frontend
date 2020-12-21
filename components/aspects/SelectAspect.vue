@@ -118,7 +118,7 @@
         if (this.selection === null)
           this.update_value(null)
         else
-          this.update_value(this.selection.value)
+          this.update_mvalue(this.selection)
       },
       check_box_value(val) {
         this.update_value(val ? this.options[1].value : this.options[0].value)

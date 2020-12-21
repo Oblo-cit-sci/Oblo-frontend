@@ -296,7 +296,6 @@ export default {
         console.log(`json schema error. no simple aspect or titleAspectName in list with name ${this.aspect.name}`)
         return this.$_.fill([], "", 0, this.value.length)
       }
-
       for (let i = 0; i < titles.length; i++) {
         // debugger
         if (!this.value[i]) {
@@ -312,16 +311,12 @@ export default {
           } else if (!this.value[i].value[titleAspectName]) {
             console.log(`list no component value! index:${i}, component:${titleAspectName}`)
           } else {
-            let value = this.value[i].value[titleAspectName].value
+            let value = this.value[i].value[titleAspectName]
             if (value) {
-              if (typeof value === "string") {
-                titles[i] = value
-              } else {
-                if (value.text) {
-                  titles[i] = value.text
-                } else
-                  titles[i] = value.value
-              }
+              if (value.text) {
+                titles[i] = value.text
+              } else
+                titles[i] = value.value
             } else {
               // trying to pregrab a referenced value that hasnt been called yet. not setting it on the orig location
               if (titleAspectName) {
