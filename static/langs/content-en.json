@@ -412,6 +412,11 @@
       "tab_main": "Main",
       "tab_domain": "Entries"
     },
+    "min_max_indicator": {
+      "min": "min: {number}",
+      "max": "max: {number}",
+      "required": "Required: {number}"
+    },
     "multiselect_asp": {
       "min_rule": "not enough items selected",
       "max_rule": "too many items selected"

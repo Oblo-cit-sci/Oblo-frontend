@@ -126,7 +126,6 @@ export default {
     clear() {
       this.update_value([])
       this.dialogOpen = false;
-      // this.va = []
       this.$emit("aspectAction", {action: "clear"})
     }
   },

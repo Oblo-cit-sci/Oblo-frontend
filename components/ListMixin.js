@@ -79,8 +79,8 @@ export default {
     has_one_empty() {
       return this.$_.some(this.value, iv => this.$_.isEqual(iv, this.item_default_value))
     },
-    item_name() {
-      return this.attr.itemname || "item"
+    item_label() {
+      return this.item_aspect.label
     },
     more_allowed() {
       return (!this.max || this.value.length < this.max) && !this.disabled && !this.attr.ref_size && !this.has_one_empty

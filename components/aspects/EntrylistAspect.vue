@@ -13,7 +13,7 @@
             v-btn(@click="open_remove(index)" icon)
               v-icon(color="red" lighten-1) mdi-close
       .inline(v-if="more_allowed")
-        v-btn(@click="create_item()" :color="requieres_more_color") Add {{item_name}}
+        v-btn(@click="create_item()" :color="requieres_more_color") {{$t('comp.list_asp.add', {'item_name': item_label})}}
           v-icon mdi-plus
       .inline(v-else class="mb-2") Maximum reached
       ListPagination(

@@ -26,7 +26,7 @@
       :conditionals="conditionals"
       v-on:update_value="update_value($event)"
       @update:error="$emit('update:error', $event)"
-      v-on:aspectAction="$emit('aspectAction',$event)")
+      v-on:aspectAction="aspectAction($event)")
     div(v-if="has_action && edit")
       AspectAction(:aspect="aspect" :mvalue="mvalue" :extra="extra")
 </template>
@@ -140,6 +140,10 @@ export default {
     }
   },
   methods: {
+    aspectAction(event) {
+      if (event.action !== "clear" || this.extra.listitem)
+        this.$emit('aspectAction',event)
+    },
     flip_flex_mode() {
       this.flex_mode = this.flex_mode === VIEW ? EDIT : VIEW
       this.$emit("flex_mode_change", this.flex_mode)

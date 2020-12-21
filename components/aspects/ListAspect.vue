@@ -40,7 +40,7 @@
       v-if="!is_view_mode && !disabled"
       v-bind="min_max_props")
     .inline(v-if="adding_allowed && !fixed_length")
-      v-btn(:disabled="!more_allowed" @click="add_value()" :color="requieres_more_color") {{$t('comp.list_asp.add', {'item_name': item_name})}}
+      v-btn(:disabled="!more_allowed" @click="add_value()" :color="requieres_more_color") {{$t('comp.list_asp.add', {'item_name': item_label})}}
         v-icon mdi-plus
     ListPagination(
       v-if="has_pagination"
@@ -258,9 +258,6 @@ export default {
     }
   },
   computed: {
-    item_name() {
-      return this.item_aspect.name || this.attr.itemname || "item"
-    },
     is_simple() {
       return this.structure === SIMPLE
     },
@@ -282,7 +279,7 @@ export default {
       let titleAspectName = (this.item_aspect.attr || {}).titleAspect
 
       let simple_type = SIMPLE_TYPE.includes(this.item_aspect.type)
-      let item_name = this.item_name
+      let item_name = this.item_label
 
       if (!simple_type && !titleAspectName && this.item_aspect.type === COMPOSITE) {
         titleAspectName = this.item_aspect.components[0].name
