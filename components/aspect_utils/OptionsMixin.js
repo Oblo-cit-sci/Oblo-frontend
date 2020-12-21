@@ -63,7 +63,7 @@ export default {
       return input.map(i => {
         const type = typeof i
         if (type === "object") {
-          if (i.value)
+          if (i.value && !i.merge)
             return i
           else
             return this.resolve_object(i)
@@ -84,14 +84,8 @@ export default {
         delete res.merge
         return res
       } else if (input.from_tree) {
-        // text, from_tree(tree,select, layers), => text, value
-        // select, calls simple_select to select a node, and layers calls select_layers_from_tree_node
-        //
         const res = this.$_.cloneDeep(input)
-        // console.log("res. clone", res)
-        const value = this.select_from_tree(input.from_tree)
-        // console.log("res val", value)
-        res.value = value
+        res.value = this.select_from_tree(input.from_tree)
         delete res.from_tree
         return res
       } else {
@@ -141,7 +135,7 @@ export default {
       } else {
         node = tree_entry.values.root
       }
-      const nodes = this.select_layers_from_tree_node(node, input_from_tree.layers).map(n => n.name)
+      const nodes = this.select_layers_from_tree_node(node, input_from_tree.layers).map(n => n.value)
       return nodes
     }
   }

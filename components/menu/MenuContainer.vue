@@ -126,7 +126,7 @@ export default {
 
 .scrollable {
   max-height: 100%;
-  overflow-y: auto;
+  overflow-y: scroll;
   overflow-x: hidden;
 }
 

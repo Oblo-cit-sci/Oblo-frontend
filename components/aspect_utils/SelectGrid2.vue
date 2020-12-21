@@ -48,14 +48,25 @@ export default {
   computed: {
     i_value: {
       get: function () {
+        // console.log("ival", this.value)
+        // this.$_.map(this.options, o => to.value)
         // todo this.value should not be null, but the default (here [])
         if (this.multiple && this.value) {
-          return this.value.map(v => this.$_.findIndex(this.options, o => this.$_.isEqual(o.value, v)))
+          const set_selected = []
+          for (let v of this.value) {
+            const index = this.$_.findIndex(this.options, o => this.$_.includes(o.value, v))
+            if (set_selected.indexOf(index) === -1) {
+              set_selected.push(index)
+            }
+          }
+          return set_selected
         } else {
           // todo
+          return []
         }
       },
       set: function (val) {
+        // console.log("SSS", val)
         let up = null
         if (this.multiple) {
           up = this.$_.flatten(this.$_.filter(this.options, (o, i) => val.includes(i)).map(v => v.value))
