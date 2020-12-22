@@ -28,7 +28,7 @@ import EntryMixin from "./EntryMixin";
 
 import {mapGetters} from "vuex"
 import EntryActionButtons from "~/components/entry/EntryActionButtons"
-import {prepare_for_submission} from "~/lib/entry"
+import {prepare_for_submission, resolve_tags} from "~/lib/entry"
 import {base64file_to_blob} from "~/lib/util"
 
 export default {
@@ -66,6 +66,21 @@ export default {
         this.review(false)
       }
       this.$emit('entry-action', action)
+    },
+    save() {
+      // todo not if it is an aspect page
+      // console.log(this.entry.local)
+      // this.$store.commit("entries/save_entry", this.entry)
+      this.$store.dispatch("entries/save_entry", {entry: this.entry, template: this.template})
+      this.persist_entries()
+      this.$bus.$emit("dialog-open", {
+        data: {
+          title: this.$t('comp.entry_actions.saved'),
+          text: this.$t('comp.entry_actions.saved_text'),
+          show_cancel: false
+        }
+      })
+      this.back()
     },
     async submit() {
       // TODO not good. call update functions
@@ -157,22 +172,6 @@ export default {
         this.err_error_snackbar(err)
         this.sending = false
       }
-    },
-    save() {
-      // todo not if it is an aspect page
-      // console.log(this.entry.local)
-      this.$store.commit("entries/save_entry", this.entry)
-      this.$store.dispatch("entries/update_entry", this.uuid)
-      this.persist_entries()
-      // this.ok_snackbar()
-      this.$bus.$emit("dialog-open", {
-        data: {
-          title: this.$t('comp.entry_actions.saved'),
-          text: this.$t('comp.entry_actions.saved_text'),
-          show_cancel: false
-        }
-      })
-      this.back()
     },
     update_page(page) {
       this.page = page

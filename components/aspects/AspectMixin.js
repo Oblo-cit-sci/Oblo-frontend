@@ -11,7 +11,7 @@ import {
 import {select_aspect_loc} from "~/lib/entry"
 import {recursive_unpack2} from "~/lib/util";
 
-var jp = require('jsonpath')
+const jp = require('jsonpath')
 
 export default {
   props: {
@@ -79,14 +79,8 @@ export default {
       } else {
         this.$emit("update:ext_value", up_value)
       }
-
-      if (this.attr.tag) {
-        const tag = this.attr.tag
-        // console.log("taggy")
-        // console.log(this.attr.tag, up_value)
-        // let val = jp.value(up_value, "$.value[0].value")
-        // console.log("->", val)
-        this.$store.commit("entries/add_tag", {name: tag.name, value: jp.value(up_value, tag.subpath)})
+      if (this.attr.titleAspect) {
+        this.$store.commit("entries/update_title", {title: up_value.value})
       }
     },
     toString(value) {

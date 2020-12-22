@@ -1,5 +1,5 @@
 import {ASPECT, COMPONENT, DRAFT, EDIT, ENTRY, INDEX, META, PRIVATE_LOCAL, VIEW} from "~/lib/consts";
-import {default_values, get_entry_titleAspect, select_aspect_loc} from "~/lib/entry";
+import {default_values, get_entry_titleAspect, resolve_tags, select_aspect_loc} from "~/lib/entry";
 import {
   aspect_loc_str,
   aspect_loc_str2arr,
@@ -53,8 +53,8 @@ export const mutations = {
   set_ref_parent(state, {uuid, ref}) {
     state.entries.get(uuid).refs.parent = ref
   },
-  clear(state, keep_drafts= true) {
-    if(keep_drafts) {
+  clear(state, keep_drafts = true) {
+    if (keep_drafts) {
       const drafts = ld.filter(Array.from(state.entries.values()), e => e.status === DRAFT)
       state.entries = new Map(ld.map(drafts, e => [e.uuid, e]))
     } else {
@@ -112,16 +112,28 @@ export const mutations = {
     state.edit = entry_data
   },  // todo template for all kinds of computed meta-aspects
   update_title(state, {uuid, title}) {
-    state.entries.get(uuid).title = title
+    if (!uuid) {
+      state.edit.title = title
+    } else {
+      state.entries.get(uuid).title = title
+    }
   },
   update_location(state, {uuid, location}) {
     // todo, this shouldnt be here. the licci reviews are wrongly converted sometimes. into {lon:{}, lat:{}}
     location = ld.filter(location, loc => (loc && typeof loc.coordinates.lat === "number"))
-    state.entries.get(uuid).location = location
+    if (uuid) {
+      state.entries.get(uuid).location = location
+    } else {
+      state.edit.location = location
+    }
   },
   update_tags(state, {uuid, tags}) {
-    // console.log("update tags", tags)
-    state.entries.get(uuid).tags = tags
+    if (!uuid) {
+      state.edit.tags = tags
+    } else {
+      // console.log("update tags", tags)
+      state.entries.get(uuid).tags = tags
+    }
   },
   update_image(state, image_url) {
     state.edit.image = image_url
@@ -175,21 +187,21 @@ export const mutations = {
   },
   remove_file_attachment(state, {entry_uuid, file_uuid}) {
     let entry = null
-    if(ld.get(state.edit, "uuid") === entry_uuid) {
+    if (ld.get(state.edit, "uuid") === entry_uuid) {
       entry = state.edit
     } else {
       entry = state.entries.get(entry_uuid)
     }
-    if(entry) {
+    if (entry) {
       entry.attached_files = entry.attached_files.filter(a => a.file_uuid !== file_uuid)
     }
   },
-  add_tag(state, {name, value}) {
-    if(!Array.isArray(value)) {
-      value = [value]
-    }
-    state.edit.tags[name] = value
-  },
+  // add_tag(state, {name, value}) {
+  //   if(!Array.isArray(value)) {
+  //     value = [value]
+  //   }
+  //   state.edit.tags[name] = value
+  // },
   set_edit_local(state, data) {
     state.edit.local = Object.assign(state.edit.local, ld.cloneDeep(data))
   }
@@ -363,7 +375,8 @@ export const getters = {
   // todo this is more of an meta-aspect generator function
   entry_location: function (state, getters) {
     return (uuid) => {
-      const entry = getters.get_entry(uuid)
+      const entry = uuid ? getters.get_entry(uuid) : getters.get_edit()
+      debugger
       const entry_type = getters.get_entry_type(entry.template.slug)
       const locationAspect = entry_type.rules.locationAspect
       if (!locationAspect) {
@@ -371,7 +384,11 @@ export const getters = {
       }
       let location = null
       if (locationAspect) {
-        location = select_aspect_loc(state, loc_prepend(ENTRY, uuid, aspect_loc_str2arr(locationAspect)))
+        if (uuid) {
+          location = select_aspect_loc(state, loc_prepend(ENTRY, uuid, aspect_loc_str2arr(locationAspect)))
+        } else {
+          location = select_aspect_loc(state, loc_prepend(EDIT, entry.uuid, aspect_loc_str2arr(locationAspect)))
+        }
         // this is weird
         if (location && location.value)
           location = location.value
@@ -445,12 +462,21 @@ export const actions = {
   cancel_entry_edit({commit}, uuid) {
     commit("cancel_entry_edit", uuid)
   },
-  // rename to save edit entry
-  // todo: purpose/name: update meta or something like that?
-  //
+  save_entry(context, {entry, template}) {
+    context.commit("update_tags", resolve_tags(entry, template))
+    // todo duplicate of the one below:
+    const location = context.getters.entry_location()
+    // console.log("update_entry. location",location)
+    if (location) {
+      // console.log(recursive_unpack(location))
+      const simple_location = filter_empty(recursive_unpack(location))
+      context.commit("update_location", {location: simple_location})
+    }
+    context.commit("save_entry", context.getters.get_edit())
+  },
   update_entry(context, uuid) {
-    const entry_title = context.getters.get_entry_title(uuid)
-    context.commit("update_title", {uuid, title: entry_title})
+    //const entry_title = context.getters.get_entry_title(uuid)
+    // context.commit("update_title", {uuid, title: entry_title})
     const location = context.getters.entry_location(uuid)
     // console.log("update_entry. location",location)
     if (location) {
@@ -458,12 +484,6 @@ export const actions = {
       const simple_location = filter_empty(recursive_unpack(location))
       context.commit("update_location", {uuid, location: simple_location})
     }
-    // console.log("tags")
-    // debugger
-    // const tags = context.getters.entry_tags(uuid)
-    // if (tags) {
-    //   context.commit("update_tags", {uuid, tags: tags})
-    // }
   },
   set_edit(context, uuid) {
     if (!context.state.edit || context.state.edit.uuid !== uuid) {

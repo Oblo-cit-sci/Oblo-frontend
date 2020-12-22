@@ -66,11 +66,6 @@ export default {
         creation_ts: new Date(),
         attached_files: []
       }
-      if (template.rules.titleAspect) {
-        if (this.$_.get(template.rules, "setTitleAspect", false)) {
-          set_titleAspect(this.$store, entry)
-        }
-      }
       if (persist) {
         this.persist_after_entry_create(entry)
       }
