@@ -48,7 +48,7 @@ export default {
   },
   computed: {
     all_actors_reg_names() {
-      console.log("all_actors_reg_names", this.value)
+      // console.log("all_actors_reg_names", this.value)
       return this.value.map(ra => ra.actor.registered_name)
     },
     available_roles() {
@@ -109,7 +109,7 @@ export default {
           }
         }
       }
-      this.update_value(ungruouped_actors)
+      this.update_mvalue(ungruouped_actors)
     }
   }
 }

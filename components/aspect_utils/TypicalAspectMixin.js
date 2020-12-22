@@ -155,6 +155,10 @@ export default {
         name: name ? name : "privacy",
         t_label: this.t_label("asp.privacy.", alt_label_descr),
         t_description: this.t_description("asp.privacy.", alt_label_descr),
+        attr: {
+          only_value: true,
+          update_raw: true
+        },
         type: SELECT,
         items: [{
           text: this.$t("asp.privacy.options.public.text"),
@@ -182,6 +186,8 @@ export default {
         type: SELECT,
         attr: {
           descr_as_html: true,
+          only_value: true,
+          update_raw: true
         },
         items: []
       }
