@@ -1,5 +1,6 @@
 import {DOMAIN_LANGUAGE, NO_DOMAIN, UI_LANGUAGE} from "~/lib/consts";
 import FilterMixin from "~/components/FilterMixin";
+import {pack_value} from "~/lib/aspect";
 
 export default {
   name: "LanguageMxin",
@@ -45,7 +46,7 @@ export default {
       this.$store.commit("search/replace_in_act_config",
         Object.assign(this.language_filter_config(),
           {
-            value: [language],
+            value: pack_value([language]),
             text: this.$t("lang." + language)
           }))
     },

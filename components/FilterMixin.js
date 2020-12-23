@@ -149,7 +149,7 @@ export default {
         aspect: {
           name: "tags_select",
           t_label: "w.tag",
-          t_description: "filters.tag.description",
+          t_description: "comp.filters.tag.description",
           type: "options",
           attr: {
             edit_component: "tag_options",

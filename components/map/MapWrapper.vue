@@ -84,12 +84,13 @@ export default {
       set_dl: false,
       aspectdialog_data: {
         aspect: {
-          name: "Visible layers",
+          name: "visible layers",
+          label: this.$t("comp.map_wrapper.layer_asp.label"),
           type: "multiselect",
           attr: {
             force_view: "list"
           },
-          items: null, // gets filled with 1. click
+          items: null, // gets updated when opened
         },
         fix_width: 400,
         ext_value: {value: null},
@@ -472,41 +473,6 @@ export default {
         this.change_entry_markers_mode(this.selected_entry, true)
       }
 
-      //
-      // this.map.addSource("territories", {
-      //   type: "geojson",
-      //   data: "https://native-land.ca/coordinates/indigenousTerritories.json",
-      //   // generateId: true, // this fucks up selection state of features, since the ids change or something...
-      // })
-      //
-      // this.map.addLayer({
-      //   'id': 'territories_fills',
-      //   'type': 'fill',
-      //   'source': 'territories',
-      //   'layout': {},
-      //   'paint': {
-      //     'fill-color': ["get", "color"],
-      //     'fill-opacity': 0.9
-      //   }
-      // });
-      // this.map.addLayer({
-      //   'id': 'territories_names',
-      //   'type': 'symbol',
-      //   'source': 'territories',
-      //   'layout': {
-      //     'text-field': ["get","Name"],
-      //     'text-font': [
-      //       'Open Sans Bold',
-      //       'Arial Unicode MS Bold'
-      //     ],
-      //     'text-size': 11,
-      //   },
-      //   'paint': {
-      //     'text-color': '#202',
-      //     'text-halo-color': '#fff',
-      //     'text-halo-width': 2
-      //   },
-      // });
     },
     aspect_dialog_update(selected_layers) {
       // todo could be fixed by making multiselects default: []
@@ -635,9 +601,7 @@ export default {
       a.click()
     },
     open_layer_dialog() {
-      if (!this.aspectdialog_data.aspect.items) {
-        this.aspectdialog_data.aspect.items = this.available_layers
-      }
+      this.aspectdialog_data.aspect.items = this.available_layers
       this.aspectdialog_data.dialog_open = true
     },
     store_cam_options() {

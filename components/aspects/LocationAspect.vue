@@ -28,13 +28,13 @@
                 v-chip(v-for="(place_part, index) in precision_options" :key="index"
                   text-color="black"
                   @click="public_location_precision_selected(index)" active-class="selected_prec_chip") {{place_part}}
-              div(v-if="!public_location_selector_on && !snap_to_existing")
-                v-btn(text small v-if="point_location_precision" @click="activate_custom_privacy_setting") change public location
-                span Change your default settings for your public location:
-                v-btn(text small @click="setting_dialog_open=true") settings
+              div(v-if="!public_location_selector_on && !location_set && !snap_to_existing")
+                v-btn(text small v-if="point_location_precision" @click="activate_custom_privacy_setting") {{$t("comp.location_asp.public_loc.change")}}
+                span {{$t("comp.location_asp.public_loc.change_default_setting")}}
+                v-btn(text small @click="setting_dialog_open=true") {{$t("w.settings")}}
                 AspectDialog(
                   :aspect="location_privacy_setting_aspect"
-                  :ext_value="privacy_setting"
+                  :ext_value="packed_privacy_setting"
                   @update:ext_value="change_default_private_setting($event)"
                   :dialog_open.sync="setting_dialog_open")
     div(v-else)
@@ -81,7 +81,7 @@ import {settings_loc_privacy_ask, settings_loc_privacy_exact, settings_loc_priva
 import EntrySearchMixin from "~/components/EntrySearchMixin"
 import MapEntriesMixin from "~/components/map/MapEntriesMixin"
 import EntryFetchMixin from "~/components/entry/EntryFetchMixin"
-import {unpack} from "~/lib/aspect"
+import {pack_value, unpack} from "~/lib/aspect"
 import ResponsivenessMixin from "~/components/ResponsivenessMixin";
 import AspectDialog from "~/components/dialogs/AspectDialog"
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
@@ -182,6 +182,9 @@ export default {
     privacy_setting() {
       return this.user_settings.location_privacy
     },
+    packed_privacy_setting() {
+      return pack_value(this.user_settings.location_privacy)
+    },
     show_show_my_entries_btn() {
       return this.logged_in && this.is_editable_mode
     },
@@ -189,7 +192,7 @@ export default {
       return this.$_.get(this.value, "location_precision") === LOCATION_PRECISION_POINT
     },
     public_location_selector_on() {
-      // console.log("public_location_selector_on", this.location_set, this.point_location_precision, this.privacy_setting, this.custom_privacy_setting)
+      console.log("public_location_selector_on", this.location_set, this.point_location_precision, this.privacy_setting, this.custom_privacy_setting)
       return this.location_set &&
         this.point_location_precision &&
         !this.snap_to_existing &&
@@ -369,7 +372,7 @@ export default {
               }, data.features)
             }
           }
-          ,err => {
+          , err => {
             console.log(err)
             console.log("no location found")
           }).finally(() => {
@@ -526,10 +529,10 @@ export default {
       }
     },
     change_default_private_setting(setting_value) {
-      // console.log(setting_value)
+      console.log("setting_value", setting_value)
       // this.update_button_loading = true
       const existing_settings = Object.assign({}, this.user_settings)
-      this.$api.actor.post_me({settings: Object.assign(existing_settings, {[this.location_privacy_setting_aspect.name]: setting_value})}).then(({data}) => {
+      this.$api.actor.post_me({settings: Object.assign(existing_settings, {[this.location_privacy_setting_aspect.name]: setting_value.value})}).then(({data}) => {
         // console.log(data.settings)
         this.ok_snackbar(this.$t("page.settings.settings_updated"))
         this.$store.commit("user/set_settings", data.settings)

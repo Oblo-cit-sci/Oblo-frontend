@@ -29,9 +29,9 @@ export default {
     const default_config = {
       title: "",
       text: "",
-      cancel_text: "Cancel",
+      cancel_text: this.$t("comp.decision_dialog.cancel"),
       cancel_color: "error",
-      confirm_text: "Confirm",
+      confirm_text: this.$t("comp.decision_dialog.confirm"),
       confirm_color: "success",
       show_cancel: true
     }

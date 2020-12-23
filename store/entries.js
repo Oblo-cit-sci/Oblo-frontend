@@ -171,11 +171,6 @@ export const mutations = {
       console.log("cannot set status, entry missing", uuid)
     }
   },
-  // fixer
-  fix_refs(state, {parent_uuid, child_uuid, aspect_loc}) {
-    state.entries.get(parent_uuid).refs.children[child_uuid] = aspect_loc
-    state.entries.get(child_uuid).refs.parent.aspect_loc = aspect_loc
-  },
   add_file_attachment(state, attachment) {
     const {entry_uuid, ...attachment_data} = attachment
     let entry = null
@@ -196,12 +191,6 @@ export const mutations = {
       entry.attached_files = entry.attached_files.filter(a => a.file_uuid !== file_uuid)
     }
   },
-  // add_tag(state, {name, value}) {
-  //   if(!Array.isArray(value)) {
-  //     value = [value]
-  //   }
-  //   state.edit.tags[name] = value
-  // },
   set_edit_local(state, data) {
     state.edit.local = Object.assign(state.edit.local, ld.cloneDeep(data))
   }
@@ -376,7 +365,6 @@ export const getters = {
   entry_location: function (state, getters) {
     return (uuid) => {
       const entry = uuid ? getters.get_entry(uuid) : getters.get_edit()
-      debugger
       const entry_type = getters.get_entry_type(entry.template.slug)
       const locationAspect = entry_type.rules.locationAspect
       if (!locationAspect) {
@@ -417,7 +405,7 @@ export const getters = {
   entry_tags(state, getters) {
     return (uuid) => {
       // console.log("entry_tags")
-      const entry = getters.get_entry(uuid)
+      const entry = uuid ? getters.get_entry(uuid) : getters.get_edit()
       const entry_type = getters.get_entry_type(entry.template.slug)
       const tagsAspect = entry_type.rules.tagsAspect
       const all_tags = {}
@@ -463,7 +451,7 @@ export const actions = {
     commit("cancel_entry_edit", uuid)
   },
   save_entry(context, {entry, template}) {
-    context.commit("update_tags", resolve_tags(entry, template))
+    context.commit("update_tags", {tags:resolve_tags(entry, template)})
     // todo duplicate of the one below:
     const location = context.getters.entry_location()
     // console.log("update_entry. location",location)
