@@ -103,12 +103,12 @@ export default {
     },
     get_tags_filter_options(domain_name) {
       const all_codes = this.$store.getters["templates/codes_in_language"](this.domain_language)
-      console.log("all-codes", domain_name, this.domain_language, all_codes.length)
+      // console.log("all-codes", domain_name, this.domain_language, all_codes.length)
       let filter_codes = all_codes.filter(code_entry => this.$_.get(code_entry, "rules.tags"))
       if (domain_name) {
         filter_codes = entries_domain_filter(filter_codes, domain_name)
       }
-      console.log("all-codes",  filter_codes.length)
+      // console.log("all-codes",  filter_codes.length)
       // console.log(all_codes)
       // filter_codes = object_list2options(filter_codes, "title", "slug")
       const options_aspects = []
@@ -148,8 +148,8 @@ export default {
         options: filter_codes.map(c => c.title),
         aspect: {
           name: "tags_select",
-          "t_label": "w.tag",
-          description: "Start with source-entry for tags. Then select multiple tags that you would like to include in your search. Any entry that includes at least one of the selected tags will be included in the result.",
+          t_label: "w.tag",
+          t_description: "filters.tag.description",
           type: "options",
           attr: {
             edit_component: "tag_options",

@@ -83,7 +83,7 @@ export default {
       return !this.connected
     },
     can_download() {
-      return true//this.template.rules.download
+      return this.logged_in//this.template.rules.download
     },
     save_text() {
       if (this.in_context) {

@@ -20,6 +20,9 @@ export default {
           domain_name: this.$store.getters["domain/act_domain_name"],
           language
         })
+        if (update_settings) {
+          this.set_settings_value(DOMAIN_LANGUAGE, domain_language)
+        }
       })
       // console.log("check have?", language, this.loaded_ui_languages.includes(language))
       if (!this.$i18n.availableLocales.includes(language)) {

@@ -78,14 +78,14 @@ export default {
       this.login_loading = true
       this.$api.actor.login(extract_n_unpack_values(this.aspects)).then(({data}) => {
         this.ok_snackbar(data.msg)
-        this.process_login(data.data)
+
         // todo could just be index/clear_entries (change name) but needs await
         this.clear_search()
         this.clear_entries()
         this.map_clear()
-        const settings = this.user_settings
-
+        const settings = data.data.user.settings
         this.change_language(settings.ui_language, false, settings.domain_language).then(() => {
+          this.process_login(data.data)
           if(this.go_home) {
             this.home()
           } else {

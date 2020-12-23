@@ -69,8 +69,6 @@ export default {
     },
     save() {
       // todo not if it is an aspect page
-      // console.log(this.entry.local)
-      // this.$store.commit("entries/save_entry", this.entry)
       this.$store.dispatch("entries/save_entry", {entry: this.entry, template: this.template})
       this.persist_entries()
       this.$bus.$emit("dialog-open", {
@@ -83,11 +81,7 @@ export default {
       this.back()
     },
     async submit() {
-      // TODO not good. call update functions
-      // but important since edit is not synced
-      this.$store.commit("entries/save_entry", this.entry)
-      await this.$store.dispatch("entries/update_entry", this.uuid)
-      // todo just this.entry ???
+      await this.$store.dispatch("entries/save_entry", {entry: this.entry, template: this.template})
       const sending_entry = prepare_for_submission(this.$store.getters["entries/get_entry"](this.uuid))
 
       // would be the same as checking is_published
@@ -128,10 +122,6 @@ export default {
           }
           this.$store.commit("entries/save_entry", res.data.data.entry)
           this.$store.commit("entries/set_edit", res.data.data.entry)
-          // this.$store.commit("map/update_entry_features", {
-          //   domain: this.entry.domain,
-          //   entry_features: res.data.data.map_features
-          // })
           this.back(["search"])
         } catch (err) {
           console.log(err)
@@ -144,9 +134,7 @@ export default {
     async review(accept) {
       this.sending = true
       const method = accept ? "patch_entry__$uuid_accept" : "patch_entry__$uuid_reject"
-      this.$store.commit("entries/save_entry", this.entry)
-      await this.$store.dispatch("entries/update_entry", this.uuid)
-      // todo just this.entry ???
+      await this.$store.dispatch("entries/save_entry", {entry: this.entry, template: this.template})
       const sending_entry = prepare_for_submission(this.$store.getters["entries/get_entry"](this.uuid))
       try {
         const {data} = await this.$api[method](sending_entry)

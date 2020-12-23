@@ -176,13 +176,20 @@ export default {
       // console.log("template", this.template.entry_refs, this.entry.tags)
       const e_tags = this.entry.tags
       const result_tags = {}
-      for(let group_name in e_tags) {
+      for(let group_name of Object.keys(this.entry.tags)) {
         let tag_values = e_tags[group_name]
-        const code_slug = this.$_.find(this.template.entry_refs.filter(t => t.ref_type === TAG), ref => this.$_.get(ref, "tag.name") === group_name).dest_slug
+        const template_tag_refs = this.template.entry_refs.filter(t => t.ref_type === TAG)
+        // console.log(template_tag_refs)
+        const code_slug =  this.$_.find(template_tag_refs, ref => {
+          if (!Array.isArray(ref.tag)) {
+            return ref.tag.name === group_name
+          } else {
+            return this.$_.some(ref.tag, tag_d => tag_d.name === group_name)
+          }
+        }).dest_slug
         const lang = this.$store.getters["user/settings_value"]("domain_language")
         // console.log(group_name, code_slug, lang)
-        const tags = this.$store.getters["templates/tags_of_code"](code_slug, lang, tag_values)
-        result_tags[group_name] = tags
+        result_tags[group_name] = this.$store.getters["templates/tags_of_code"](code_slug, lang, tag_values)
       }
       return result_tags
     },

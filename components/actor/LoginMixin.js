@@ -7,7 +7,7 @@ export default {
   methods: {
     process_login(login_response_data) {
       this.$store.dispatch("user/login", login_response_data)
-      const settings = this.$store.getters["user/settings"]
+      //const settings = this.$store.getters["user/settings"]
       this.persist_user_data()
       this.persist_auth_token()
       // todo maybe somewhere else, a language setter mixin...
