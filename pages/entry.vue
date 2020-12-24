@@ -26,6 +26,7 @@ export default {
       this.$router.push("/")
     }
     this.$store.dispatch("entries/set_edit", this.uuid)
+
   },
   beforeRouteEnter(to, from, next) {
     // console.log("entry enter.. to", to)
@@ -52,7 +53,6 @@ export default {
   },
   beforeRouteLeave(to, from, next) {
     // console.log("entry leave")
-    // BEWARE, this is not called when navigating from one entry to another
     if(this.entry.is_draft) {
       this.persist_entries()
     }
@@ -67,15 +67,7 @@ export default {
     },
     mode() {
       return this.$route.query.entry_mode || VIEW
-    },
-    is_dirty() {
-      if (this.is_draft || this.mode === VIEW) {
-        return false
-      }
-      const edit_entry = this.$_.omit(this.$store.getters["entries/get_edit"](), ["local"])
-      const original_entry = this.$_.omit(this.$store.getters["entries/get_entry"](this.uuid), ["local"])
-      return !this.$_.isEqual(edit_entry, original_entry)
-    },
+    }
   }
 }
 </script>

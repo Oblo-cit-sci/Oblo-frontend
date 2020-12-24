@@ -110,12 +110,15 @@ import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
 import EntryTags from "~/components/entry/EntryTags"
 import AspectSetMixin from "~/components/aspects/AspectSetMixin"
 import {CREATOR} from "~/lib/actors"
+import LanguageChip from "~/components/language/LanguageChip";
+import TemplateHelperMixin from "~/components/templates/TemplateHelperMixin";
 
 export default {
   name: "Entry",
   mixins: [EntryNavMixin, EntryMixin, TriggerSnackbarMixin, TypicalAspectMixin, PersistentStorageMixin,
-    FullEntryMixin, AspectSetMixin],
+    FullEntryMixin, AspectSetMixin, TemplateHelperMixin],
   components: {
+    LanguageChip,
     EntryTags,
     Taglist,
     EntryActorList,
@@ -131,14 +134,18 @@ export default {
   },
   created() {
     this.set_aspects([this.asp_entry_roles()])
-    this.check_creator_switch()
+    if (this.is_draft && this.is_edit_mode) {
+      this.check_creator_switch()
+      this.check_language_switch()
+    }
   },
   data() {
     return {
       entry_complete: false,
       router_next: null,
       delete_entry: false,
-      disabled_aspects: {}
+      disabled_aspects: {},
+      force_entry_language: false // when draft is created in another language. a popup asks to switch to its language
     }
   },
   methods: {
@@ -152,33 +159,55 @@ export default {
       }
     },
     check_creator_switch() {
-      if (this.entry.status === DRAFT && this.mode === EDIT) {
-        const roles = this.$_.cloneDeep(this.entry.actors)
-        const creator = roles.find(ea => ea.role === CREATOR)
-        if (creator.actor.registered_name !== this.username) {
-          // ${creator.actor.public_name}
-          this.$bus.$emit("dialog-open", {
-            data: {
-              cancel_text: this.$t("comp.entry.creator_switch_dialog.cancel_text"),
-              title: this.$t("comp.entry.creator_switch_dialog.title"),
-              text: this.$t("comp.entry.creator_switch_dialog.text",
-                {original: creator.actor.public_name, user: this.user.public_name})
-            },
-            cancel_method: () => {
-              this.$router.back()
-            },
-            confirm_method: () => {
-              const {public_name, registered_name} = this.user
-              const orig_user = creator.actor.public_name
-              creator.actor = {public_name, registered_name}
-              this.$store.commit("entries/_set_entry_value", {
-                aspect_loc: [[EDIT, this.uuid], ["meta", "actors"]],
-                value: roles
-              })
+      const roles = this.$_.cloneDeep(this.entry.actors)
+      const creator = roles.find(ea => ea.role === CREATOR)
+      if (creator.actor.registered_name !== this.username) {
+        // ${creator.actor.public_name}
+        this.$bus.$emit("dialog-open", {
+          data: {
+            cancel_text: this.$t("comp.entry.creator_switch_dialog.cancel_text"),
+            title: this.$t("comp.entry.creator_switch_dialog.title"),
+            text: this.$t("comp.entry.creator_switch_dialog.text",
+              {original: creator.actor.public_name, user: this.user.public_name})
+          },
+          cancel_method: () => {
+            this.$router.back()
+          },
+          confirm_method: () => {
+            const {public_name, registered_name} = this.user
+            const orig_user = creator.actor.public_name
+            creator.actor = {public_name, registered_name}
+            this.$store.commit("entries/_set_entry_value", {
+              aspect_loc: [[EDIT, this.uuid], ["meta", "actors"]],
+              value: roles
+            })
+          }
+        })
+      }
+    },
+    check_language_switch() {
+      if (this.entry.language !== this.$store.getters.domain_language) {
+        this.$bus.$emit("dialog-open", {
+          data: {
+            cancel_text: this.$t("comp.entry.language_switch_dialog.cancel_text"),
+            title: this.$t("comp.entry.language_switch_dialog.title"),
+            text: this.$t("comp.entry.language_switch_dialog.text",
+              {language: this.$t("lang."+this.entry.language)})
+          },
+          cancel_method: () => {
+            this.$router.back()
+          },
+          confirm_method: async () => {
+            const template_slug = this.template.slug
+            const entry_lang = this.entry.language
+            const entries = await this.guarantee_slugs_in_language(this.get_reference_slugs().concat([template_slug]), entry_lang)
+            if (this.$_.some(entries, e => e.slug === template_slug)) {
+              this.force_entry_language = true
+            } else {
+              this.error_snackbar(this.$t("comp.entry.template_not_in_lang", {language: entry_lang}))
             }
-          })
-          // this.ok_snackbar(`Creator changed to ${creator.actor.public_name}`)
-        }
+          }
+        })
       }
     }
   },
@@ -229,6 +258,7 @@ export default {
         color: privacy_color(this.entry.privacy)
       })
       result.push({name: "License: " + this.entry.license})
+      result.push({name: this.$t(`lang.${this.entry.language}`), color: "yellow"})
       return result
     },
     show_image() {

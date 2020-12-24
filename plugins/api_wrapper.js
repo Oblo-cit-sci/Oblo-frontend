@@ -32,8 +32,6 @@ class APIWrapper {
     return this.axios !== null
   }
 
-
-
   /**
    * basic information of all domains
    * @returns {*} promise
@@ -152,7 +150,7 @@ class Basic extends QueryBase {
     super(api_wrapper, "/basic")
   }
 
-    init_data(domains, language) {
+  init_data(domains, language) {
     // console.log("requesting language", language)
     const params = {}
     if (domains) {
@@ -161,7 +159,8 @@ class Basic extends QueryBase {
     if (language) {
       params.language = language
     }
-    return this.get("init_data", {params,
+    return this.get("init_data", {
+      params,
       paramsSerializer: function (params) {
         return qs.stringify(params, {arrayFormat: 'repeat'})
       },
@@ -203,6 +202,14 @@ class Entries extends QueryBase {
       params: {
         limit,
         offset
+      }
+    })
+  }
+
+  async get_entries_by_slugs(slugs, language) {
+    return this.get("get_entries_by_slugs", {
+      params: {slugs, language}, paramsSerializer: function (params) {
+        return qs.stringify(params, {arrayFormat: 'repeat'})
       }
     })
   }

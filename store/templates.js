@@ -20,11 +20,12 @@ export const state = () => ({
 
 export const getters = {
   entry_type(state) {
-    // todo should have a 2nd parameter for language
-    return (type_slug, language, fallback = true) => {
+    return (type_slug, language, fallback = true, show_warning = true) => {
       // console.log("getting entry_type for slug", type_slug, state.entry_types)
       if (!state.entry_types.has(type_slug)) {
-        console.log("WARNING, store,entrytype.getters.entry_type: type for slug missing", type_slug, "returning null, should be catched earlier")
+        if (show_warning) {
+          console.log("WARNING, store,entrytype.getters.entry_type: type for slug missing", type_slug, "returning null, should be catched earlier")
+        }
         return null
       }
       const base_template = state.entry_types.get(type_slug)
@@ -37,22 +38,65 @@ export const getters = {
       }
     }
   },
+  has_template_in_lang(state, getters) {
+    return (slug, language) => {
+      return getters.entry_type(slug, language, false, false) !== null
+    }
+  },
   has_code(state, getters) {
     return (type_slug, language) => getters.code(type_slug, language) !== null
   },
   code(state) {
-    return (type_slug, language) => {
+    return (slug, language) => {
       // console.log("getting entry_type for slug", type_slug, state.entry_types)
-      if (!state.codes.has(type_slug)) {
+      if (!state.codes.has(slug)) {
         console.log("WARNING, store,entrytype.getters.entry_type. type for slug missing:", type_slug, "returning null, should be catched earlier")
         return null
       }
-      const base_template = state.codes.get(type_slug)
+      const base_template = state.codes.get(slug)
       if (base_template.lang.hasOwnProperty(language)) {
         return base_template.lang[language]
       } else {
         return base_template.lang[Object.keys(base_template.lang)[0]]
       }
+    }
+  },
+  get_code_in_lang(state, getters, rootState, rootGetters) {
+    return (slug, language, fallback = true, show_warning = true) => {
+      // console.log("getting entry_type for slug", type_slug, state.entry_types)
+      const base = state.codes.get(slug)
+      if (!base) {
+        if (show_warning) {
+          console.log("WARNING, store,templates.get_code_in_lang: code-base for slug missing", slug, "returning null, should be catched earlier")
+        }
+        return null
+      }
+      const code = ld.get(base, `lang.${language}`, null)
+      if (code) {
+        return code
+      } else if (fallback) {
+        const default_language = rootGetters["domain/get_domain_default_language"](base.domain)
+        const code = base.lang[default_language]
+        if (code)
+          return code
+        else if (show_warning) {
+          console.log("WARNING, store,templates.get_code_in_lang: code for slug missing for fallback lang", slug, default_language, "returning null, should be catched earlier")
+          return null
+        }
+      } else {
+        return null
+      }
+    }
+  },
+  has_code_in_lang(state, getters) {
+    return (slug, language) => {
+      return getters.get_code_in_lang(slug, language, false, false)
+    }
+  },
+  has_slug_in_lang(state, getters) {
+    return (slug, language) => {
+      console.log("has slug?", slug, language, getters.has_template_in_lang(slug, language), getters.has_code_in_lang (slug, language))
+      return getters.has_template_in_lang(slug, language) || getters.has_code_in_lang(slug, language)
     }
   },
   codes(state) {

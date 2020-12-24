@@ -65,6 +65,12 @@ export const getters = {
         return template_cache[aspect_name]
       }
     }
+  },
+  domain_language(state, getters) {
+    return getters["user/settings_value"]("domain_language")
+  },
+  ui_language(state, getters) {
+    return getters["user/settings_value"]("ui_language")
   }
 }
 

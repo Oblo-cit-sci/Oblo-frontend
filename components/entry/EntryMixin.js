@@ -22,10 +22,11 @@ import {check_str_is_uuid, printDate} from "~/lib/util";
 import EntryPagesMixin from "~/components/entry/EntryPagesMixin"
 import AspectListMixin from "~/components/global/AspectListMixin"
 import ExportMixin from "~/components/global/ExportMixin"
+import TemplateHelperMixin from "~/components/templates/TemplateHelperMixin";
 
 export default {
   name: "EntryMixin",
-  mixins: [EntryPagesMixin, AspectListMixin, ExportMixin],
+  mixins: [EntryPagesMixin, AspectListMixin, ExportMixin, TemplateHelperMixin],
   props:
     {
       entry: {
@@ -85,15 +86,15 @@ export default {
       return this.entry.template.slug
     },
     template() {
-      const lang = this.$store.getters["user/settings"].domain_language
+      const lang = this.$store.getters.domain_language
+      if (this.force_entry_language) {
+        return this.$store.getters["templates/entry_type"](this.template_slug, this.entry.language)
+      }
       return this.$store.getters["templates/entry_type"](this.template_slug, lang)
     },
     template_color() {
       return this.$_.get(this.template, "rules.marker_color")
     },
-    // title() {
-    //   return this.$store.getters["entries/get_entry_title"](this.uuid)
-    // },
     entry_title() {
       if (this.is_edit_mode) {
         // todo dirty. do this similar to new tag schema. have "titleAspect" in the attr of the actual aspect that

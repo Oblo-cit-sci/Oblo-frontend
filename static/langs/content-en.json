@@ -290,10 +290,16 @@
       "fix_label": "Stay within {domain_title}"
     },
     "entry": {
+      "template_not_in_lang": "The entrytype is not available in {language}",
       "creator_switch_dialog": {
         "cancel_text": "Back",
         "title": "Creator changed",
         "text": "This draft was created by {original}. Do you want to change the creator to {user}?"
+      },
+      "language_switch_dialog": {
+        "cancel_text": "@:w.back",
+        "title": "Language changed",
+        "text": "This draft was created in {language}. Do you want to change the temporarily change to {language}?"
       }
     },
     "entry_actions": {

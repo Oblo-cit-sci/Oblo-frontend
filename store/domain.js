@@ -20,7 +20,8 @@ export const mutations = {
       domains_data = domains_data.map(d => ({
         name: d.name,
         langs: {[d.language]: Object.assign(d.content, {title: d.title, name: d.name})},
-        languages: d.languages
+        languages: d.languages,
+        default_language: d.default_language
       }))
       state.domains = new Map(ld.toPairs(ld.keyBy(domains_data, d => d.name)))
       // console.log(state.domains)
@@ -94,6 +95,11 @@ export const getters = {
   get_domain_languages(state, getters) {
     return (domain_name) => {
       return getters.domain_by_name(domain_name).languages
+    }
+  },
+  get_domain_default_language(state, getters) {
+    return (domain_name) => {
+      return getters.domain_by_name(domain_name).default_language
     }
   }
   // domain_options(state) {
