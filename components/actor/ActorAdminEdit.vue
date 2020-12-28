@@ -80,9 +80,7 @@ export default {
   },
   created() {
     const user_data = this.$_.cloneDeep(this.actor)
-    // todo disabledness should come through AspectSet, which can manage conditions
-    console.log(user_data.editor_config)
-    for (let aspect_name in this.aspect_map) {
+    for (let aspect_name of Object.keys(this.aspect_map)) {
       if (aspect_name === GLOBAL_ROLE)
         this.aspect_map[aspect_name].value = pack_value(user_data[aspect_name])
       else

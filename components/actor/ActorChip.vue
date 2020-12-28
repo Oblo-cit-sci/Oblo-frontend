@@ -8,6 +8,7 @@
 
 <script>
   import ActorMixin from "~/components/actor/ActorMixin"
+  import {COLLABORATOR, CREATOR, REVIEWER, ROLE_ICONS, SHARED} from "~/lib/actors";
 
   export default {
     name: "ActorChip",
@@ -17,21 +18,7 @@
     },
     computed: {
       role_icon() {
-        // todo, these icons should be defined somewhere else
-        switch (this.role) {
-          case "creator":
-            return "mdi-file-edit-outline"
-          case "collaborator":
-            return "mdi-pencil"
-          case "shared":
-            return "mdi-eye-outline"
-          case "reviewer":
-            return "mdi-file-document-box-check-outline" //"mdi-text-box-check"
-          default: {
-            console.log("unknown role", this.role)
-            return ""
-          }
-        }
+        return ROLE_ICONS[this.role]
       },
       is_visitor() {
         return this.actor.registered_name === "visitor"

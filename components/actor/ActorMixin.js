@@ -1,5 +1,4 @@
 import {VISITOR} from "~/lib/consts"
-import {USER_GET_USER_DATA} from "~/store"
 import {place2str} from "~/lib/location"
 
 export default {
