@@ -1,4 +1,4 @@
-import {ADMIN, DOMAIN_LANGUAGE, VISITOR} from "~/lib/consts";
+import {ADMIN, DOMAIN_LANGUAGE, UI_LANGUAGE, VISITOR} from "~/lib/consts";
 import {default_settings} from "~/lib/settings"
 
 let default_user_data = {
@@ -53,6 +53,9 @@ export const getters = {
   },
   settings_domain_language(state, getters) {
     return getters.settings_value(DOMAIN_LANGUAGE)
+  },
+  settings_ui_language(state, getters) {
+    return getters.settings_value(UI_LANGUAGE)
   }
 }
 
@@ -80,7 +83,7 @@ export const mutations = {
     state.settings = settings
   },
   change_setting(state, data) {
-    for(let key in data) {
+    for (let key in data) {
       $nuxt.$set(state.settings, key, data[key])
     }
   }
@@ -95,9 +98,12 @@ export const actions = {
     commit("set_auth_token", {access_token, token_type, expiration_date})
     commit("login")
   },
-  logout({commit}) {
+  logout({commit, getters}) {
     commit("set_user_data", Object.assign({}, default_user_data))
-    commit("set_settings", Object.assign({}, default_settings))
+    commit("set_settings", Object.assign({}, default_settings, {
+      "ui_language": getters.settings_ui_language,
+      "domain_language": getters.settings_domain_language
+    }))
     commit("logout")
     commit("reset_auth_token")
   }
