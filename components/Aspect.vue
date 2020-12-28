@@ -117,7 +117,7 @@ export default {
     },
     disable() {
       // console.log("Aspect.disable?", this.aspect.name, this.condition_fail)
-      return this.condition_fail || this.$_.get(this.attr, "disable", false)
+      return this.condition_fail || this.attr.disable
     },
     has_action() {
       return this.attr.hasOwnProperty("action")

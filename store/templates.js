@@ -95,7 +95,6 @@ export const getters = {
   },
   has_slug_in_lang(state, getters) {
     return (slug, language) => {
-      console.log("has slug?", slug, language, getters.has_template_in_lang(slug, language), getters.has_code_in_lang (slug, language))
       return getters.has_template_in_lang(slug, language) || getters.has_code_in_lang(slug, language)
     }
   },

@@ -152,9 +152,6 @@ export const mutations = {
     //let entry =
     //remove_entry_loc
   },
-  _update_parent_version(state, {uuid, version}) {
-    state.entries.get(uuid).template_version = version
-  },
   insert_missing_default_values(state, {uuid, type_default_values}) {
     let values = state.entries.get(uuid).values
     for (let key in type_default_values) {
@@ -479,32 +476,13 @@ export const actions = {
       context.commit("set_edit", ld.cloneDeep(entry))
     }
   },
-  delete_ref_child(context, {uuid, child_uuid}) {
-    let aspect_loc = context.state.entries.get(uuid).refs.children[child_uuid]
-    context.commit("_remove_entry_value_index", ld.concat([[ENTRY, uuid]], aspect_loc))
-    context.commit("_remove_entry_ref_index", {uuid, child_uuid, aspect_loc})
-  },
   delete_entry(context, uuid) {
     // console.log(uuid)
     const entry = context.state.entries.get(uuid)
     if (entry) {
-      for (let child_uuid in entry.entry_refs.children) {
-        context.dispatch("delete_entry", child_uuid)
-      }
-      if (entry.status !== "orphan" && entry.entry_refs.parent) {
-        const parent = entry.entry_refs.parent
-        if (parent)
-          context.dispatch("delete_ref_child", {uuid: parent.uuid, child_uuid: uuid})
-      }
       context.commit("delete_entry", uuid)
     } else {
       console.log("store: entries DELETE tries to delete some entry that doesnt exist!")
     }
-  },
-  update_parent_version(context, uuid) {
-    const template = context.getters.get_entry_type(context.getters.get_entry(uuid).template.slug)
-    const type_default_values = default_values(template)
-    context.commit("insert_missing_default_values", {uuid, type_default_values})
-    context.commit("_update_parent_version", {uuid, version: template.version})
   }
 }

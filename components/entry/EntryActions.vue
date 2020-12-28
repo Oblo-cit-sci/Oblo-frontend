@@ -64,6 +64,8 @@ export default {
         this.review(true)
       } else if (action === "reject") {
         this.review(false)
+      } else if (action === "delete") {
+        this.delete()
       }
       this.$emit('entry-action', action)
     },
@@ -164,6 +166,29 @@ export default {
     update_page(page) {
       this.page = page
       this.$emit('update:page', page)
+    },
+    async delete() {
+      const base_t_delete_loc = "comp.entry_actions.dialogs.delete"
+      this.$bus.$emit("dialog-open", {
+        data: {
+          title: this.$t(`${base_t_delete_loc}.title`),
+          text: this.$t(`${base_t_delete_loc}.text`),
+          cancel_color: "",
+          confirm_color: "error",
+          confirm_text: this.$t(`${base_t_delete_loc}.confirm_text`)
+        }, confirm_method: () => {
+          this.$api.delete_entry__$uuid(this.uuid).then(() => {
+            this.$store.dispatch("entries/delete_entry", this.uuid)
+            this.$store.commit("search/delete_entry", this.uuid)
+            this.$store.commit("map/delete_feature", {domain_name: this.entry.domain, uuid: this.uuid})
+            this.ok_snackbar(this.$t("comp.entry_actions.delete_entry"))
+            this.$emit("entry-action", "delete")
+            this.back()
+          }).catch(err => {
+            this.err_error_snackbar(err)
+          })
+        }
+      })
     },
     lastpage_reached($event) {
       console.log("an action lastpage_reached", $event)

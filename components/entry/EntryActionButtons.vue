@@ -134,26 +134,7 @@ export default {
       }
     },
     delete_entry() {
-      const base_t_delete_loc = "comp.entry_actions.dialogs.delete"
-      this.$bus.$emit("dialog-open", {
-        data: {
-          title: this.$t(`${base_t_delete_loc}.title`),
-          text: this.$t(`${base_t_delete_loc}.text`),
-          cancel_color: "",
-          confirm_color: "error",
-          confirm_text: this.$t(`${base_t_delete_loc}.confirm_text`)
-        }, confirm_method: () => {
-          this.$api.delete_entry__$uuid(this.uuid).then(() => {
-            this.$store.dispatch("entries/delete_entry", this.uuid)
-            this.$store.commit("search/delete_entry", this.uuid)
-            this.ok_snackbar(this.$t("comp.entry_actions.delete_entry"))
-            this.$emit("entry-action", "delete")
-            this.back()
-          }).catch(err => {
-            this.err_error_snackbar(err)
-          })
-        }
-      })
+      this.$emit("entry-action","delete")
     },
     save() {
       this.$emit("entry-action", "save")
