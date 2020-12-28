@@ -23,7 +23,7 @@ export default {
       type: [Object, String, Number, Array, Boolean],
       default: undefined
     },
-    mode: { // todo well, this is gonna be messy
+    mode: {
       type: String,
       default: VIEW,
       validator: (value) => {
@@ -99,7 +99,6 @@ export default {
     },
     condition_fail() {
       // console.log("condition_fail?", this.aspect.name,  "condition_fail?")
-      // todo pass if edit
       // todo this getting of the value, could maybe also go into the helper...
       let condition_value = null
       if (this.attr.hasOwnProperty("condition")) {

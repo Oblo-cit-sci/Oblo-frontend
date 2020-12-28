@@ -20,9 +20,6 @@
       Paginated_Select(v-if="edit_mode_paginated" :options="act_options" :edit_mode="level_edit_mode(act_level + 1)" v-on:selection="select($event)")
     div.mx-4(v-if="last_selection_has_extra")
       Aspect(v-if="extra_aspect" :aspect="extra_aspect" :ext_value.sync="extra_value" mode="edit")
-      <!--    .ml-3(v-if="last_description")-->
-      <!--      div Description:-->
-      <!--      div {{last_description}}-->
     v-btn(v-if="done_available" @click="done" color="success") {{$t('w.done')}}
 </template>
 
@@ -129,7 +126,7 @@ export default {
         const last_extra = this.value[this.act_level - 1].extra
         if (last_extra.type === "text") {
           return {
-            name: last_extra.name,
+            name: last_extra.text,
             type: "str",
             attr: {
               max: 90
@@ -175,6 +172,7 @@ export default {
         this.$emit("input", this.$_.concat(this.value || [], [{
           value: selection.value,
           text: selection.text,
+          extra: selection.extra,
           index: this.$_.findIndex(this.act_options, o => o.value === selection.value)
         }]))
       else // clicked clear on select
@@ -200,9 +198,9 @@ export default {
       return this.has_selection && this.act_options.length > 0
     },
     done() {
-      // todo do better js :/
       this.$emit("selected", pack_value(this.value.map(e => {
-        return {text: e.text, value: e.value, extra_value: e.extra_value}
+        let {text, value, extra_value} = e
+        return {text,value, extra_value}
       })))
     },
     level_edit_mode(level) {

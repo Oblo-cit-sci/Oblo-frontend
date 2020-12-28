@@ -15,7 +15,7 @@ export default {
       type: Object,
       required: true
     },
-    mode: { // todo well, this is gonna be messy
+    mode: {
       type: String,
       default: VIEW,
       validator: (value) => {

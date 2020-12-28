@@ -124,6 +124,7 @@ export default {
       } else {
         if (!this.multiple && this.selection) {
           // todo remove first one
+          console.log("actor search. que?")
         }
       }
       this.errorMsg = null

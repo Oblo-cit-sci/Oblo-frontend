@@ -14,7 +14,7 @@
 <script>
 import AspectComponentMixin from "./AspectComponentMixin";
 import ActorSearch from "../actor/ActorSearch";
-import {COLLABORATOR, CREATOR, SHARED} from "~/lib/actors"
+import {COLLABORATOR, CREATOR, ROLE_ICONS, SHARED} from "~/lib/actors"
 import Title_Description from "~/components/util/Title_Description"
 import {REQUIRES_REVIEW, VISITOR} from "~/lib/consts"
 import {get_creator} from "~/lib/entry"
@@ -58,7 +58,7 @@ export default {
           name: COLLABORATOR,
           label: this.$t(base_path + "collaborator.label"),
           description: this.$t(base_path + "collaborator.descr"),
-          icon: "mdi-pencil"
+          icon: ROLE_ICONS[COLLABORATOR]
         }
       ]
       const entry = this.get_entry()
@@ -68,7 +68,7 @@ export default {
             name: CREATOR,
             label: this.$t(base_path + "creator.label"),
             description: this.$t(base_path + "creator.descr"),
-            icon: "mdi-file-edit-outline"
+            icon: ROLE_ICONS[CREATOR]
           }
         )
       }
@@ -77,7 +77,7 @@ export default {
           name: SHARED,
           label: this.$t(base_path + "shared.label"),
           description: this.$t(base_path + "shared.descr"),
-          icon: "mdi-eye-outline"
+          icon: ROLE_ICONS[SHARED]
         })
       }
       return roles

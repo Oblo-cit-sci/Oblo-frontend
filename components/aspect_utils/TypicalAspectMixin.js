@@ -22,7 +22,6 @@ export default {
     asp_registered_name() {
       return {
         type: "str",
-        // todo make small
         name: "registered_name",
         t_label: "asp.username.label",
         attr: {

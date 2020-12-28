@@ -36,8 +36,7 @@ export default {
   },
   computed: {
     value() {
-      // todo should be somewhere else
-      return this.$_.get(this.mvalue, "value", this.mvalue)
+      return unpack(this.mvalue)
     },
     action() {
       return this.aspect.attr.action

@@ -33,8 +33,7 @@
       },
       computed: {
         act_options() {
-          // todo messing with the store?? also in treeleadpicker
-          const act_children = this.options[this.page - 1].children
+          const act_children = this.$_.cloneDeep(this.options[this.page - 1].children)
           for (let index in act_children) {
             let node = act_children[index]
             node["title"] = node["name"]
