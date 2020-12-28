@@ -6,10 +6,14 @@ export default {
     return {
     }
   },
-  methods: {},
+  methods: {
+    get_attr(aspect) {
+      return aspect.attr || {}
+    }
+  },
   computed: {
     attr() {
-      return this.aspect.attr || {}
-    }
+      return this.get_attr(this.aspect)
+    },
   }
 }

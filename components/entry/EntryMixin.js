@@ -180,17 +180,20 @@ export default {
       for(let group_name of Object.keys(this.entry.tags)) {
         let tag_values = e_tags[group_name]
         const template_tag_refs = this.template.entry_refs.filter(t => t.ref_type === TAG)
-        // console.log(template_tag_refs)
-        const code_slug =  this.$_.find(template_tag_refs, ref => {
+        const tag_ =  this.$_.find(template_tag_refs, ref => {
           if (!Array.isArray(ref.tag)) {
             return ref.tag.name === group_name
           } else {
             return this.$_.some(ref.tag, tag_d => tag_d.name === group_name)
           }
-        }).dest_slug
-        const lang = this.$store.getters["user/settings_value"]("domain_language")
-        // console.log(group_name, code_slug, lang)
-        result_tags[group_name] = this.$store.getters["templates/tags_of_code"](code_slug, lang, tag_values)
+        })
+        if (tag_) {
+          const code_slug = tag_.dest_slug
+          const lang = this.$store.getters["user/settings_value"]("domain_language")
+          result_tags[group_name] = this.$store.getters["templates/tags_of_code"](code_slug, lang, tag_values)
+        } else {
+          console.log("could not find tag for ", group_name, "in", template_tag_refs)
+        }
       }
       return result_tags
     },

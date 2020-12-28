@@ -276,13 +276,12 @@ export default {
     },
     titles() {
       let titles = new Array(this.value.length)
-      let titleAspectName = (this.item_aspect.attr || {}).titleAspect
-
+      let titleAspectName = this.get_attr(this.item_aspect).titleComponent
       let simple_type = SIMPLE_TYPE.includes(this.item_aspect.type)
       let item_name = this.item_label
 
       if (!simple_type && !titleAspectName && this.item_aspect.type === COMPOSITE) {
-        titleAspectName = this.item_aspect.components[0].name
+        titleAspectName = [this.item_aspect.components[0].name]
         if (!item_name) {
           item_name = titleAspectName
         }
@@ -305,41 +304,20 @@ export default {
             titles[i] = this.value[i].value
           } else if (this.attr.indexTitle) {
             titles[i] = index_name
-          } else if (!this.value[i].value[titleAspectName]) {
-            console.log(`list no component value! index:${i}, component:${titleAspectName}`)
-          } else {
-            let value = this.value[i].value[titleAspectName]
-            if (value) {
-              if (value.text) {
-                titles[i] = value.text
-              } else
-                titles[i] = value.value
-            } else {
-              // trying to pregrab a referenced value that hasnt been called yet. not setting it on the orig location
-              if (titleAspectName) {
-                const ref_value = this.$_.find(this.item_aspect.components, c => c.name === titleAspectName).attr.ref_value
-                if (ref_value) {
-                  let aspect_location = complete_aspect_loc(
-                    aspect_loc_uuid(this.aspect_loc),
-                    aspect_loc_str2arr(ref_value),
-                    i)
-                  // console.log("value ref,  ",this.aspect.name, aspect_location)
-                  titles[i] = (this.$store.getters["entries/value"](aspect_location) || pack_value()).value
-                  //console.log("ref value", ref_value)
-                  if (titles[i] === undefined) {
-                    console.log("broken ref!")
-                    titles[i] = pack_value(aspect_raw_default_value(this.aspect))
-                  }
-                }
-              }
-
+          } else if (titleAspectName) { // its a list
+            if (!Array.isArray(titleAspectName)) {
+              titleAspectName = [titleAspectName]
             }
-            //console.log(titles[i], "from ", this.value[i], this.item_aspect.components)
-            // TODO here we should check if there is a ref_value and grab that
-            if (Array.isArray(titles[i])) {
-              console.log("ListAspect. recursive_unpack is depracated, try recursive_unpack2 instead")
-              const list_values = recursive_unpack(this.value[i].value[titleAspectName].value).filter(v => Object.keys(v).length > 0)
-              titles[i] = list_values.join(", ")
+            for (let titleAspectName_ of titleAspectName) {
+              let value = this.value[i].value[titleAspectName_]
+              if (value.value) {
+                if (value.text) {
+                  titles[i] = value.text
+                } else {
+                  titles[i] = value.value
+                }
+                break
+              }
             }
           }
           if (titles[i] === "" || titles[i] === null) {

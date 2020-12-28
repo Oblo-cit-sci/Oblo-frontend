@@ -1,9 +1,11 @@
 import {EDIT, REVIEW, VIEW} from "~/lib/consts";
 import {aspect_default_value, aspect_loc_uuid, aspect_raw_default_value, pack_value} from "~/lib/aspect";
 import {mapGetters} from "vuex"
+import AspectBaseMixin from "~/components/aspect_utils/AspectBaseMixin";
 
 export default {
   name: "AspectComponentMixin",
+  mixins: [AspectBaseMixin],
   props: {
     mvalue: {
       type: [Object, String, Number, Array, Boolean, null],
@@ -39,9 +41,7 @@ export default {
   },
   computed: {
     ...mapGetters({"is_admin": "user/is_admin"}),
-    attr() {
-      return this.$_.get(this.aspect, "attr", {})
-    },
+
     value: {
       get: function () {
         return this.mvalue.value

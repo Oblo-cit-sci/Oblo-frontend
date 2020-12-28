@@ -58,7 +58,7 @@ export default {
   },
   methods: {
     set_selection() {
-      console.log("set-sel: value", this.value)
+      // console.log("set-sel: value", this.value)
       // debugger
       if (this.value !== null) {
         // console.log(this.value)
@@ -111,7 +111,7 @@ export default {
     },
     selection() {
       let send_value = this.selection
-      console.log("watch sel",)
+      // console.log("watch sel",)
 
       //console.log("Select-selection", this.selection, "/",val, "/",prev_val, !prev_val)
       if (this.init) {
