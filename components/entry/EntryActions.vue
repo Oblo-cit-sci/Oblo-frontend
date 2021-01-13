@@ -141,7 +141,7 @@ export default {
       try {
         const {data} = await this.$api[method](sending_entry)
         this.sending = false
-        this.ok_snackbar("Entry reviewed")
+        this.ok_snackbar(data.msg)
         if (accept) {
           this.$store.commit("entries/save_entry", data.data.entry)
           console.log(this.entry.status, sending_entry.status, data.data.entry.status)

@@ -8,6 +8,7 @@ export default {
   mixins: [TriggerSnackbarMixin, SettingsChangeMixin, HomePathMixin],
   computed: {
     is_fixed_domain() {
+      // console.log("fix domain. is fixed?",this.$store.getters["user/settings"])
       return this.$_.get(this.$store.getters["user/settings"], FIXED_DOMAIN, null)
     },
     has_multiple_domains() {
@@ -19,9 +20,10 @@ export default {
   },
   methods: {
     fix_domain(domain_name = null, update_server = true) {
-      this.set_settings_value(FIXED_DOMAIN, domain_name)
+      this.set_settings_value(FIXED_DOMAIN, domain_name, update_server)
       // console.log("fix_domain", domain_name)
       this.set_domain_as_home_path(domain_name)
+      // console.log("domain fixed and set as home", domain_name)
     },
     reset_fixed_domain(snackbar) {
       this.reset_settings_value(FIXED_DOMAIN, "Fixed domain reset")

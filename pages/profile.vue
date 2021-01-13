@@ -229,11 +229,12 @@ export default {
         new_profile.domain[this.is_fixed_domain] = this.domain_specific_aspects_values
       }
       this.$api.actor.post_me(new_profile).then(({data}) => {
-        this.$store.commit("user/set_user_data", data)
+        console.log(data)
+        this.$store.commit("user/set_user_data", data.data)
         this.persist_user_data()
         // this.setEdit(false)
         this.reset_edit_values()
-        this.ok_snackbar("Profile updated")
+        this.ok_snackbar(data.msg)
         this.$router.back()
       }).catch((err) => {
         this.err_error_snackbar(err)

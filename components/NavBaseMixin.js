@@ -17,6 +17,7 @@ export default {
   methods: {
     home() {
       // actually the redirect takes care of this...
+      // console.log("going home", this.is_fixed_domain)
       if (this.is_fixed_domain) {
         this.$router.push({
             name: PAGE_DOMAIN,

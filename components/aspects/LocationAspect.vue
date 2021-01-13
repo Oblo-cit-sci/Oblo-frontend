@@ -605,7 +605,7 @@ export default {
         public_loc.place = this.$_.cloneDeep(value.place)
         public_loc.place_name = place2str(public_loc.place)
       } else if (option === PREC_OPTION_RANDOM) {
-        public_loc.coordinates = create_location_error(value.coordinates,)
+        public_loc.coordinates = create_location_error(value.coordinates)
         public_loc.location_precision = LOCATION_PRECISION_POINT
         public_loc.place = this.$_.cloneDeep(value.place)
         delete public_loc.place["place"] // remove lowest resolution for privacy
@@ -738,6 +738,49 @@ export default {
       if (value.place_name) {
         this.search_query = value.place_name
       }
+
+      const circle_around = (coordinate, radius_km, circle_points) => {
+        const xc = coordinate["lon"]
+        const yc = coordinate["lat"]
+        const radius = radius_km / 111
+        const dr = (Math.PI * 2) / circle_points
+        return [...Array(circle_points + 1).keys()].map(i => [xc + Math.cos((i % circle_points) * dr) * radius, yc + Math.sin((i % circle_points) * dr) * radius])
+      }
+
+      if(this.map) {
+        const circle = circle_around(value.coordinates, 50, 36)
+        const data = {
+          'type': 'Feature',
+          'properties': {},
+          'geometry': {
+            'type': 'LineString',
+            'coordinates': circle
+          }
+        }
+        const existing_circle_source = this.map.getSource("circle")
+        if (existing_circle_source) {
+          existing_circle_source.setData(data)
+        } else {
+          this.map.addSource('circle', {
+            'type': 'geojson',
+            'data': data
+          })
+          this.map.addLayer({
+            'id': 'route',
+            'type': 'line',
+            'source': 'circle',
+            'layout': {
+              'line-join': 'round',
+              'line-cap': 'round'
+            },
+            'paint': {
+              'line-color': '#FFFF00',
+              'line-width': 2
+            }
+          })
+        }
+      }
+
     }
   }
 }

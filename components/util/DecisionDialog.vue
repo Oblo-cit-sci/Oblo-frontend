@@ -26,20 +26,23 @@ export default {
     })
   },
   data() {
-    const default_config = {
-      title: "",
-      text: "",
-      cancel_text: this.$t("comp.decision_dialog.cancel"),
-      cancel_color: "error",
-      confirm_text: this.$t("comp.decision_dialog.confirm"),
-      confirm_color: "success",
-      show_cancel: true
-    }
     return {
       dialog_open: false,
-      default_config,
-      config: default_config,
+      config: {},
       callback_methods: {}
+    }
+  },
+  computed: {
+    default_config() {
+      return {
+        title: "",
+        text: "",
+        cancel_text: this.$t("comp.decision_dialog.cancel"),
+        cancel_color: "error",
+        confirm_text: this.$t("comp.decision_dialog.confirm"),
+        confirm_color: "success",
+        show_cancel: true
+      }
     }
   },
   methods: {

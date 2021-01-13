@@ -10,7 +10,7 @@
             v-btn.mt-4.mb-8(large to="/login" rounded outlined) {{$t('page.index.btn_login')}}
       v-row(align="center" justify="center")
         v-col(class="col-lg-6 col-xs-12")
-          div(v-for="domain in domains" :key="domain.name")
+          div(v-for="domain in visible_domains" :key="domain.name")
             DomainCard(
               v-if="domain_available_in_language(domain) && domain.name !== 'no_domain'"
               :domain_data="languaged_domain_data(domain)"
@@ -30,7 +30,7 @@ import {mapGetters} from "vuex"
 
 import DomainCard from "../components/global/DomainCard";
 import Footer from "../components/global/Footer";
-import {UI_LANGUAGE} from "~/lib/consts"
+import {NO_DOMAIN, UI_LANGUAGE} from "~/lib/consts"
 import SettingsChangeMixin from "~/components/global/SettingsChangeMixin"
 import EnvMixin from "~/components/global/EnvMixin";
 
@@ -53,13 +53,16 @@ export default {
       // todo env.
       return this.hostname
     },
+    visible_domains() {
+      return this.domains.filter(d => d.name !== NO_DOMAIN)
+    }
   },
   methods: {
     domain_available_in_language(domain) {
       return !this.$_.isEmpty(this.languaged_domain_data(domain))
     },
     languaged_domain_data(domain) {
-      return domain[this.setting(UI_LANGUAGE)]
+      return this.$store.getters["domain/lang_domain_data"](domain.name, this.setting(UI_LANGUAGE))
     },
     domain_icon(domain_name) {
       return this.$api.static_url_$domain_name_icon(domain_name)
