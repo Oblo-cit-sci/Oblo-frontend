@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import {EDIT, PUBLISHED, REVIEW, VIEW} from "~/lib/consts";
+import {EDIT, REVIEW, VIEW} from "~/lib/consts";
 import Paginate from "../global/Paginate";
 
 import EntryNavMixin from "../EntryNavMixin";
@@ -28,13 +28,14 @@ import EntryMixin from "./EntryMixin";
 
 import {mapGetters} from "vuex"
 import EntryActionButtons from "~/components/entry/EntryActionButtons"
-import {prepare_for_submission, resolve_tags} from "~/lib/entry"
+import {prepare_for_submission} from "~/lib/entry"
 import {base64file_to_blob} from "~/lib/util"
+import AttachedFilesMixin from "~/components/aspect_utils/AttachedFilesMixin";
 
 export default {
   name: "EntryActions",
   components: {EntryActionButtons, Paginate},
-  mixins: [EntryNavMixin, TriggerSnackbarMixin, PersistentStorageMixin, EntryMixin],
+  mixins: [EntryNavMixin, TriggerSnackbarMixin, PersistentStorageMixin, EntryMixin, AttachedFilesMixin],
   props: {
     mode: {
       type: String,
@@ -56,16 +57,22 @@ export default {
   },
   methods: {
     entryAction(action) {
-      if (action === "save") {
-        this.save()
-      } else if (action === "submit") {
-        this.submit()
-      } else if (action === "accept") {
-        this.review(true)
-      } else if (action === "reject") {
-        this.review(false)
-      } else if (action === "delete") {
-        this.delete()
+      switch (action) {
+        case "save":
+          this.save()
+          break
+        case "submit":
+          this.submit()
+          break
+        case "accept":
+          this.review(true)
+          break
+        case "reject":
+          this.review(false)
+          break
+        case "delete":
+          this.delete()
+          break
       }
       this.$emit('entry-action', action)
     },
@@ -102,21 +109,7 @@ export default {
           const res = await this.$api.entry[method](sending_entry)
           this.sending = false
           const attachments_data = this.get_attachments_to_post(sending_entry)
-          // console.log(attachments_data)
-          for (let attachment_data of attachments_data) {
-            const file_uuid = attachment_data.file_uuid
-            const stored_file = this.$store.getters["files/get_file"](file_uuid)
-            if (stored_file) {
-              const blob = base64file_to_blob(stored_file.meta.type, stored_file.data)
-              const formData = new FormData()
-              formData.append("file", blob, stored_file.meta.name)
-              this.$api.entry.post_attachment(this.uuid, file_uuid, formData).then((res) => {
-                this.$store.commit("files/remove_file", file_uuid)
-              }).catch(err => {
-                this.error_snackbar("File could not be uploaded", stored_file.meta.name)
-              })
-            }
-          }
+          this.send_attachments(attachments_data, this.entry.uuid)
           if (this.is_published) {
             this.ok_snackbar(this.$t('comp.entry_actions.updated'))
           } else {

@@ -1,10 +1,12 @@
+import {base64file_to_blob} from "~/lib/util";
+
 /**
  * this is for aspects like ImageAspect.
  * type (similar to what the LoadFileButton proposes. json, image for now
  * internal_formats:
-    - raw: str (e.g. base64 image)
-    - loc: array for aspect location
-    - url: url
+ - raw: str (e.g. base64 image)
+ - loc: array for aspect location
+ - url: url
  */
 
 export default {
@@ -15,6 +17,31 @@ export default {
     },
     remove_file_attachment(entry_uuid, file_uuid) {
       this.$store.commit("entries/remove_file_attachment", {entry_uuid, file_uuid})
+    },
+    get_attachments_to_post(entry) {
+      const new_files_data = []
+      for (let file of entry.attached_files) {
+        if (!file.hasOwnProperty("url")) {
+          new_files_data.push(file)
+        }
+      }
+      return new_files_data
+    },
+    send_attachments(attachments_data, entry_uuid) {
+      for (let attachment_data of attachments_data) {
+        const file_uuid = attachment_data.file_uuid
+        const stored_file = this.$store.getters["files/get_file"](file_uuid)
+        if (stored_file) {
+          const blob = base64file_to_blob(stored_file.meta.type, stored_file.data)
+          const formData = new FormData()
+          formData.append("file", blob, stored_file.meta.name)
+          this.$api.entry.post_attachment(entry_uuid, file_uuid, formData).then((res) => {
+            this.$store.commit("files/remove_file", file_uuid)
+          }).catch(err => {
+            this.error_snackbar("File could not be uploaded", stored_file.meta.name)
+          })
+        }
+      }
     }
   }
 }
