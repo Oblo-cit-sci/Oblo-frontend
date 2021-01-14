@@ -299,7 +299,7 @@
       "language_switch_dialog": {
         "cancel_text": "@:w.back",
         "title": "Language changed",
-        "text": "This draft was created in {language}. Do you want to change the temporarily change to {language}?"
+        "text": "This draft was created in {language}. Do you want to temporarily change to {language}?"
       }
     },
     "entry_actions": {

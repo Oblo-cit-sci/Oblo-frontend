@@ -16,12 +16,12 @@ class APIWrapper {
       this.axios_baseURL = axios.defaults.baseURL
     this.api_baseURL = this.axios_baseURL + "/api"
     //
-    this.domain_baseURL = this.api_baseURL + "/domain"
     this.entry_baseURL = this.api_baseURL + "/entry"
     this.entries_baseURL = this.api_baseURL + "/entries"
     this.static_baseURL = this.axios_baseURL + "/static"
 
     this.basic = new Basic(this)
+    this.domain = new Domain(this)
     this.entry = new Entry(this)
     this.entries = new Entries(this)
     this.actor = new Actor(this)
@@ -32,20 +32,6 @@ class APIWrapper {
     return this.axios !== null
   }
 
-  /**
-   * basic information of all domains
-   * @returns {*} promise
-   */
-  domain() {
-    return this.axios.get(`${this.domain_baseURL}/`)
-  }
-
-  /**
-   * all templates and codes of a domain
-   */
-  async domain__$domain_name__basic_entries(domain_name) {
-    return this.axios.get(`${this.domain_baseURL}/${domain_name}/basic_entries`)
-  }
 
   get_static_url(sub) {
     return `${this.static_baseURL}/${sub}`
@@ -142,6 +128,15 @@ class QueryBase {
   post(sub_path, data, config) {
     return this.axios.post(`${this.base}/${sub_path}`, data, config)
   }
+
+  _post(sub_path, data, config) {
+    let promise = this.axios.post(`${this.base}/${sub_path}`, data, config)
+    promise.then((res, rej) => {
+      console.log("secret res", res)
+    })
+
+    return promise
+  }
 }
 
 class Basic extends QueryBase {
@@ -165,6 +160,20 @@ class Basic extends QueryBase {
         return qs.stringify(params, {arrayFormat: 'repeat'})
       },
     })
+  }
+}
+
+class Domain extends QueryBase {
+
+  constructor(api_wrapper) {
+    super(api_wrapper, "/domain")
+  }
+
+  /**
+   * all templates and codes of a domain
+   */
+  async basic_entries(domain_name) {
+    return this.axios.get(`${domain_name}/basic_entries`)
   }
 }
 
@@ -250,7 +259,7 @@ class Actor extends QueryBase {
    * @param profile_data
    */
   post_me(profile_data) {
-    return this.post("me", profile_data)
+    return this._post("me", profile_data)
   }
 
   change_email(data) {
@@ -369,5 +378,5 @@ class Language extends QueryBase {
 
 }
 
-// console.log(Nuxt)
+
 Vue.prototype.$api = new APIWrapper()

@@ -70,7 +70,7 @@ export default {
   computed: {
     ...mapGetters({connected: "app/connected", logged_in: "user/logged_in"}),
     show_submit() {
-      return !this.private_local && !this.is_view_mode && !this.is_review_mode && !this.in_context
+      return !this.is_view_mode && !this.is_review_mode && !this.in_context && this.entry.status !== "rejected"
     },
     disable_submit() {
       if (!this.connected || !this.entry_complete || this.has_errors) {
