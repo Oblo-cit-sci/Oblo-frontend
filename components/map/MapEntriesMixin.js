@@ -28,7 +28,7 @@ export default {
           config.required.push({name: "before_ts", ts: search_time})
         }
       }
-      const {data} = await this.$api.entries_map_entries(config, true)
+      const {data} = await this.$api.entries.map_entries(config, true)
       // console.log(data.data.entries.features.length)
       await this.$store.dispatch("map/add_entries", {domain: domain_name, entries: data.data.entries, ts: data.data.ts})
     },

@@ -125,7 +125,7 @@ export default {
               return img_data.data
             }
           } else {
-            return this.$api.url_entry__$uuid__attachment__$file_uuid(this.uuid, this.entry.image)
+            return this.$api.entry.url_uuid_attachment(this.uuid, this.entry.image)
           }
         } else {
           return null

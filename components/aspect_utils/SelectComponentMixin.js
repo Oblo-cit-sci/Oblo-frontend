@@ -9,9 +9,9 @@ export default {
   methods: {
     get_icon_url(icon) {
       if (this.data_source) {
-        return this.$api.url_entry__$slug__entry_file__$file_name(this.data_source, icon)
+        return this.$api.entry.url_slug_attachment(this.data_source, icon)
       } else {
-        return this.$api.get_static_url(icon)
+        return this.$api.static.url(icon)
       }
     },
     get_texts_of_mvalues(mvalue, aspect) {

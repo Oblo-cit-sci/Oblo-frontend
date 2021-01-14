@@ -23,7 +23,7 @@ export default {
         // console.log("grabbing")
         // console.log("fetching...")
         // todo, wanted to use this.fetch but doesnt work...
-        this.$api.entry__$uuid(this.entry.uuid).then(({data}) => {
+        this.$api.entry.get_(this.entry.uuid).then(({data}) => {
           if (data.data) {
             const entry = data.data
             this.$store.commit("entries/save_entry", entry)
@@ -50,7 +50,7 @@ export default {
       }
     },
     async fetch(uuid) {
-      const data = await this.$api.entry__$uuid(uuid)
+      const data = await this.$api.entry.get_(uuid)
       if(data.status === 200) {
         // beautiful
         const entry = data.data.data
@@ -63,7 +63,7 @@ export default {
       }
     },
     fetch_and_nav(uuid) {
-      this.$api.entry__$uuid(uuid).then(({data}) => {
+      this.$api.entry.get_(uuid).then(({data}) => {
         if (data.data) {
           // console.log("downloading entry", res)
           const entry = Object.assign(data.data, {local: {}})

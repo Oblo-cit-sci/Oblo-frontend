@@ -40,7 +40,7 @@ export default {
       }
     },
     async async_entry_search(config, offset = 0, limit = 40) {
-      return this.$api.entries_search(limit, offset, config)
+      return this.$api.entries.search(limit, offset, config)
     },
     async get_complete_missing_meta(uuids) {
       /**

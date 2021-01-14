@@ -149,7 +149,7 @@ export default {
         if (img_data) {
           return img_data.data
         } else {
-          return this.$api.url_entry__$uuid__attachment__$file_uuid(this.entry_uuid(), (this.images[index].file_uuid))
+          return this.$api.entry.url_uuid_attachment(this.entry_uuid(), (this.images[index].file_uuid))
         }
       } else {
         return this.images[index].url
@@ -180,7 +180,7 @@ export default {
             del_all()
           } else {
             const file_uuid = this.value[index].file_uuid
-            this.$api.delete_entry__$uuid__attachment__$file_uuid(this.entry_uuid(), file_uuid).then(resp => {
+            this.$api.entry.delete_attachment(this.entry_uuid(), file_uuid).then(resp => {
               del_all()
             }).catch(err => {
             })

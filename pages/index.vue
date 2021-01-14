@@ -65,7 +65,7 @@ export default {
       return this.$store.getters["domain/lang_domain_data"](domain.name, this.setting(UI_LANGUAGE))
     },
     domain_icon(domain_name) {
-      return this.$api.static_url_$domain_name_icon(domain_name)
+      return this.$api.static.domain_icon(domain_name)
     },
     languages(domain) {
       return domain.languages.map(lang => this.$t("lang." + lang))

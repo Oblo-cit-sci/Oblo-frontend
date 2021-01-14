@@ -89,17 +89,17 @@ export default {
       // would be the same as checking is_published
       let method = null
       if (this.is_draft) {
-        method = "post_entry__$uuid"
+        method = "post"
         const {data} = await this.$api.entry.exists(this.uuid)
         if (data.data) {
-          method = "patch_entry__$uuid"
+          method = "patch"
         }
       } else if (this.is_published) {
-        method = "patch_entry__$uuid"
+        method = "patch"
       }
       if (method) {
         try {
-          const res = await this.$api[method](sending_entry)
+          const res = await this.$api.entry[method](sending_entry)
           this.sending = false
           const attachments_data = this.get_attachments_to_post(sending_entry)
           // console.log(attachments_data)
@@ -110,7 +110,7 @@ export default {
               const blob = base64file_to_blob(stored_file.meta.type, stored_file.data)
               const formData = new FormData()
               formData.append("file", blob, stored_file.meta.name)
-              this.$api.post_entry__$uuid__attachment__$file_uuid(this.uuid, file_uuid, formData).then((res) => {
+              this.$api.entry.post_attachment(this.uuid, file_uuid, formData).then((res) => {
                 this.$store.commit("files/remove_file", file_uuid)
               }).catch(err => {
                 this.error_snackbar("File could not be uploaded", stored_file.meta.name)
@@ -135,11 +135,11 @@ export default {
     },
     async review(accept) {
       this.sending = true
-      const method = accept ? "patch_entry__$uuid_accept" : "patch_entry__$uuid_reject"
+      const method = accept ? this.$api.entry.patch_accept : this.$api.entry.patch_reject
       await this.$store.dispatch("entries/save_entry", {entry: this.entry, template: this.template})
       const sending_entry = prepare_for_submission(this.$store.getters["entries/get_entry"](this.uuid))
       try {
-        const {data} = await this.$api[method](sending_entry)
+        const {data} = await method(sending_entry)
         this.sending = false
         this.ok_snackbar(data.msg)
         if (accept) {
@@ -177,7 +177,7 @@ export default {
           confirm_color: "error",
           confirm_text: this.$t(`${base_t_delete_loc}.confirm_text`)
         }, confirm_method: () => {
-          this.$api.delete_entry__$uuid(this.uuid).then(() => {
+          this.$api.entry.delete(this.uuid).then(() => {
             this.$store.dispatch("entries/delete_entry", this.uuid)
             this.$store.commit("search/delete_entry", this.uuid)
             this.$store.commit("map/delete_feature", {domain_name: this.entry.domain, uuid: this.uuid})

@@ -117,7 +117,7 @@ export default {
       if (this.data_source) {
         return this.$api.url_entry__$slug__entry_file__$file_name(this.data_source, icon)
       } else {
-        return this.$api.get_static_url(icon)
+        return this.$api.static.url(icon)
       }
     },
     img_loaded(index) {

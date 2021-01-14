@@ -42,10 +42,10 @@ export default {
     },
     // todo can go to DomainMixin
     image() {
-      return this.$api.static_url_$domain_name_banner(this.domain_name)
+      return this.$api.static.domain_banner(this.domain_name)
     },
     icon() {
-      return this.$api.static_url_$domain_name_icon(this.domain_name)
+      return this.$api.static.domain_icon(this.domain_name)
     },
     domain_pre_filter() {
       return [this.get_domain_filter(this.domain_name)]

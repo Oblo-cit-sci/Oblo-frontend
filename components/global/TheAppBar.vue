@@ -64,7 +64,7 @@ export default {
     },
     domain_icon() {
       // todo only use name, but set change it in no_domain
-      return this.$api.static_url_$domain_name_icon(this.act_domain_name)
+      return this.$api.static.domain_icon(this.act_domain_name)
     },
     domain_headline() {
       return this.$_.get(this.act_lang_domain_data, "long_title", "")
