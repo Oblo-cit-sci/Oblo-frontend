@@ -76,9 +76,11 @@ export default {
       tree: {},
       flat_options: [],
       dialogOpen: false,
+      int_value: null
     }
   },
   created() {
+    this.int_value = this.value
     if (this.is_editable_mode) {
       this.calc_options()
       if (this.direct_select) {
@@ -133,15 +135,15 @@ export default {
     is_empty() {
       return this.$_.isEmpty(this.value)
     },
-    int_value: {
-      get: function () {
-        return this.value
-      },
-      set: function (val) {
-        // console.log("tsa-val set. update...", val)
-        this.update_value(val)
-      }
-    },
+    // int_value: {
+    //   get: function () {
+    //     return this.value
+    //   },
+    //   set: function (val) {
+    //     // console.log("tsa-val set. update...", val)
+    //     this.update_value(val)
+    //   }
+    // },
     prependIcon() {
       return this.is_view_mode ? '' : 'mdi-file-tree'
     },

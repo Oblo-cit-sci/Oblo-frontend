@@ -167,7 +167,7 @@ export default {
   },
   methods: {
     select(selection) {
-      console.log("TLP", selection)
+      // console.log("TLP", selection)
       if (selection)
         this.$emit("input", this.$_.concat(this.value || [], [{
           value: selection.value,
