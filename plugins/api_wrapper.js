@@ -136,8 +136,10 @@ class Entry extends QueryBase {
     return this.get_(`${uuid}`)
   }
 
+  // TODO why this slash?? otherwise it throws a 405 on the server!
   post(entry_data) {
-    return this.post_(`${entry_data.uuid}`, entry_data)
+    console.log(`${entry_data.uuid}`)
+    return this.post_(`${entry_data.uuid}/`, entry_data)
   }
 
   patch(entry_data) {
