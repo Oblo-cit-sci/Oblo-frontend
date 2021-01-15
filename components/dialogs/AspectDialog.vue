@@ -89,6 +89,11 @@ export default {
       this.$emit("update:ext_value", this.int_value)
       this.close()
     }
+  },
+  watch: {
+    ext_value() {
+      this.int_value = this.ext_value
+    }
   }
 }
 </script>
