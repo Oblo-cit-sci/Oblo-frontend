@@ -8,7 +8,7 @@
           header_type="h1"
           :description="template.description"
           :mode="mode")
-          span.ml-1.blue--text {{is_draft ? "[" + $t('comp.entrypreview.draft') +"]" : ""}}
+          span.ml-1(:style="{'color': draft_color}") {{is_draft ? "[" + $t('comp.entrypreview.draft') +"]" : ""}}
     v-row
       v-col(v-if="has_parent")
         span This entry is part of:&nbsp
@@ -73,11 +73,11 @@
         ChangedAspectNotice(:is_draft="is_draft")
     v-row(v-if="is_edit_mode && can_edit && !logged_in")
       v-col.pl-0(:cols="base_cols")
-        v-alert(color="info" type="warning")
+        v-alert(color="red" type="warning" outlined dense)
           b {{$t("comp.entry_action_buttons.not_logged_in.title")}}
           div
             span {{$t("comp.entry_action_buttons.not_logged_in.text")}}
-            a(href="https://creativecommons.org/share-your-work/public-domain/cc0/" target="_blank" style="color:white")  {{$t("comp.entry_action_buttons.not_logged_in.cc_ref_text")}}
+            a(href="https://creativecommons.org/share-your-work/public-domain/cc0/" target="_blank")  {{$t("comp.entry_action_buttons.not_logged_in.cc_ref_text")}}
     v-row
       EntryActions(
         v-bind="entry_actions_props"
@@ -100,7 +100,7 @@ import FullEntryMixin from "./FullEntryMixin";
 import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
 import PersistentStorageMixin from "../util/PersistentStorageMixin";
 import EntryValidation from "./EntryValidation";
-import {DRAFT, EDIT, ENTRY, REVIEW, VIEW} from "~/lib/consts";
+import {DRAFT, draft_color, EDIT, ENTRY, REVIEW, VIEW} from "~/lib/consts";
 import {privacy_color, privacy_icon} from "~/lib/util";
 import ChangedAspectNotice from "./ChangedAspectNotice";
 import MetaChips from "./MetaChips";
@@ -213,6 +213,9 @@ export default {
   },
   computed: {
     ...mapGetters({logged_in: "user/logged_in", user: "user"}),
+    draft_color() {
+      return draft_color
+    },
     aspect_loc() {
       if (this.is_editable_mode) {
         return [EDIT, this.uuid]

@@ -97,6 +97,10 @@ export default {
     edit() {
       return this.mode === EDIT
     },
+    is_optional() {
+      console.log(this.aspect.name, this.attr)
+      return this.$_.get(this.attr,"required", true) === false
+    },
     condition_fail() {
       // console.log("condition_fail?", this.aspect.name,  "condition_fail?")
       // todo this getting of the value, could maybe also go into the helper...

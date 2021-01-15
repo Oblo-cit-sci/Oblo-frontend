@@ -1,5 +1,16 @@
 import {entries_domain_filter} from "~/lib/search"
-import {ACTOR, DOMAIN, DRAFT, LANGUAGE, META, MULTISELECT, STATUS, TAGS, TEMPLATE, TREEMULTISELECT} from "~/lib/consts"
+import {
+  ACTOR,
+  DOMAIN,
+  DRAFT,
+  LANGUAGE,
+  META,
+  MULTISELECT,
+  STATUS,
+  TAGS,
+  TEMPLATE,
+  TREEMULTISELECT
+} from "~/lib/consts"
 import {build_tag_select_list, build_tag_select_tree, find_templates_using_code} from "~/lib/codes"
 import {mapGetters} from "vuex";
 import {pack_value, unpack} from "~/lib/aspect";
@@ -23,8 +34,10 @@ export default {
   methods: {
     get_filter_options_by_name(filter_name) {
       switch (filter_name) {
-        case [TEMPLATE]: return this.get_template_filter_options()
-        case [LANGUAGE]: return this.get_language_filter_options()
+        case [TEMPLATE]:
+          return this.get_template_filter_options()
+        case [LANGUAGE]:
+          return this.get_language_filter_options()
         case [TAGS]:
       }
     },
@@ -77,11 +90,11 @@ export default {
         value: domain_name
       }
     },
-    get_drafts_filter() {
+    get_status_filter(statuses = [DRAFT]) {
       return {
         name: STATUS,
         source_name: "local",
-        value: DRAFT
+        value: statuses
       }
     },
     get_template_filter_options() {
@@ -165,7 +178,7 @@ export default {
     get_language_filter_options(domain_name) {
       const domain_langs = this.$store.getters["domain/get_domain_languages"](domain_name)
       const options = domain_langs.map(lang => ({"value": lang, "text": this.$t("lang." + lang)}))
-      return Object.assign(this.language_filter_config(),{
+      return Object.assign(this.language_filter_config(), {
         search_config: {
           name: "language",
         },
@@ -204,7 +217,7 @@ export default {
         // console.log(filter, entries)
         return entries.filter(e => filter_value.includes(e.template.slug))
       } else if (filter.name === STATUS) {
-        return entries.filter(e => e.status === filter_value)
+        return entries.filter(e => filter_value.includes(e.status))
       } else if (filter.name === TAGS) {
         return this.apply_tags_filter(filter, entries)
       } else if (filter.name === META) {
@@ -233,8 +246,8 @@ export default {
           "t_label": "w.entrytype",
           "value": pack_value(valid_value),
         }
-      } else if(filtername === LANGUAGE) {
-        return Object.assign(this.language_filter_config(), {value : pack_value(filtervalue)})
+      } else if (filtername === LANGUAGE) {
+        return Object.assign(this.language_filter_config(), {value: pack_value(filtervalue)})
       }
     },
     apply_tags_filter(tags_filter, entries) {

@@ -12,6 +12,7 @@
       :disabled="disable"
       :disabled_text="disabled_text"
       :mode="real_mode")
+      span.grey--text(v-if="is_optional") &nbsp;({{$t("comp.aspect.optional")}})
     v-icon.ml-2(v-if="is_flex" color='green' size="32" @click="flip_flex_mode") {{flex_switch_icon}}
     component(
       v-if="!disable"

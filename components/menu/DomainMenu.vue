@@ -65,7 +65,7 @@ export default {
         return this.$store.getters["entries/get_entry"](this.$route.query.uuid)
     },
     search_config() {
-      return this.$_.concat(this.domain_pre_filter, this.get_drafts_filter())
+      return this.$_.concat(this.domain_pre_filter, this.get_status_filter()) // this.get_drafts_filter()
     }
   }
 }

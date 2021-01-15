@@ -266,6 +266,9 @@
     "actor": {
       "deactivated": "deactivated"
     },
+    "aspect": {
+      "optional": "optional"
+    },
     "actor_index": {
       "search": "Search a user",
       "no_user_found": "No user found"
