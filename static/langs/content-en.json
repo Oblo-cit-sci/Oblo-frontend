@@ -275,6 +275,7 @@
     },
     "entrypreview": {
       "draft": "Draft",
+      "requries_review": "Requires review",
       "created": "created",
       "outdated": "Created from an outdated version. Some values might change. Download the entry before updating is recommended",
       "view": "@:w.view",

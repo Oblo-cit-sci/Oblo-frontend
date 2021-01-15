@@ -10,12 +10,14 @@
               p.subtitle-1.mb-1
                 ActorAvatar(:actor="creator")
                 svg.mr-1(height=15 width=15 v-if="!show_entrytype_title")
-                  circle(cx=8 cy=8 r=6 :stroke="marker_border_color" :fill="template_color" stroke-width=2)
+                  circle(cx=8 cy=8 r=6 :stroke="status_color" :fill="template_color" stroke-width=2)
                 span(@click="goto(entry.uuid, 'view')"  :style="title_style")
                   span {{title}}
-                  span(v-if="is_draft" :style="{color:'cornflowerblue'}") &nbsp; [{{$t('comp.entrypreview.draft')}}]
-                    v-btn(v-if="show_title_action" @click="goto()" depressed small)
-                      v-icon(:class="default_action_icon")
+                  span(v-if="is_draft" :style="{color:status_color}") &nbsp; [{{$t('comp.entrypreview.draft')}}]
+                  span(v-if="is_requires_review" :style="{color:status_color}") &nbsp; [{{$t('comp.entrypreview.requries_review')}}]
+                  <!-- CLEAN THIS OUT -->
+                  v-btn(v-if="show_title_action" @click="goto()" depressed small)
+                    v-icon(:class="default_action_icon")
                   LanguageChip.mb-2(v-if="show_language_chip" :language_code="entry.language" small)
           v-row.pl-3(:style="{'text-align': 'right', 'font-size':'80%'}")
             span.my-auto(v-if="show_date") {{$t("comp.entrypreview.created")}} {{entry_date}}
@@ -133,7 +135,7 @@ export default {
         return {"border": `solid 1px ${review_color} !important`}
       }
     },
-    marker_border_color() {
+    status_color() {
       if(this.is_draft)
         return draft_color
       else if(this.is_requires_review)
