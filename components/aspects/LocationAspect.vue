@@ -53,7 +53,7 @@
           style="height:400px"
           :access-token="access_token"
           :map-options="map_options"
-          @map-load="onMapLoaded"
+          @map-load="aspect_onMapLoaded"
           @click="map_location_selected"
           :navControl="nav_control_options")
 </template>
@@ -304,9 +304,18 @@ export default {
           }
         }
       }
+      if (this.is_edit_mode) {
+
+      }
     }
   },
   methods: {
+    aspect_onMapLoaded(map) {
+      this.onMapLoaded(map)
+      if (this.value && this.is_editable_mode) {
+        this.update_public_location_circle()
+      }
+    },
     clear() {
       // console.log("clear")
       this.custom_privacy_setting = null
@@ -708,6 +717,60 @@ export default {
         }
       }
       return options
+    },
+    update_public_location_circle() {
+      if (this.value.public_precision === PREC_OPTION_RANDOM) {
+        this.public_location_circle()
+      } else {
+        const circle_layer = this.map.getLayer("public_loc_circle")
+        if (circle_layer) {
+          this.map.setLayoutProperty("public_loc_circle", "visibility", "none")
+        }
+      }
+    },
+    public_location_circle() {
+      const circle_around = (coordinate, radius_km, circle_points) => {
+        const xc = coordinate["lon"]
+        const yc = coordinate["lat"]
+        const radius = radius_km / 111
+        const dr = (Math.PI * 2) / circle_points
+        return [...Array(circle_points + 1).keys()].map(
+          i => [xc + Math.cos((i % circle_points) * dr) * radius,
+            yc + Math.sin((i % circle_points) * dr) * radius])
+      }
+
+      const circle = circle_around(this.value.coordinates, 50, 36)
+      const data = {
+        'type': 'Feature',
+        'properties': {},
+        'geometry': {
+          'type': 'LineString',
+          'coordinates': circle
+        }
+      }
+      const existing_circle_source = this.map.getSource("circle")
+      if (existing_circle_source) {
+        existing_circle_source.setData(data)
+        this.map.setLayoutProperty("public_loc_circle", "visibility", "visible")
+      } else {
+        this.map.addSource('circle', {
+          'type': 'geojson',
+          'data': data
+        })
+        this.map.addLayer({
+          'id': 'public_loc_circle',
+          'type': 'line',
+          'source': 'circle',
+          'layout': {
+            'line-join': 'round',
+            'line-cap': 'round'
+          },
+          'paint': {
+            'line-color': '#FFFF00',
+            'line-width': 2
+          }
+        })
+      }
     }
   },
   watch: {
@@ -732,6 +795,7 @@ export default {
       }
       if (this.map_loaded) {
         this.update_marker(true)
+        this.update_public_location_circle()
       }
       // this when the value comes down as cache /or in whatever way
       // console.log("value.pn", value.place_name)
@@ -739,47 +803,6 @@ export default {
         this.search_query = value.place_name
       }
 
-      const circle_around = (coordinate, radius_km, circle_points) => {
-        const xc = coordinate["lon"]
-        const yc = coordinate["lat"]
-        const radius = radius_km / 111
-        const dr = (Math.PI * 2) / circle_points
-        return [...Array(circle_points + 1).keys()].map(i => [xc + Math.cos((i % circle_points) * dr) * radius, yc + Math.sin((i % circle_points) * dr) * radius])
-      }
-
-      if(this.map) {
-        const circle = circle_around(value.coordinates, 50, 36)
-        const data = {
-          'type': 'Feature',
-          'properties': {},
-          'geometry': {
-            'type': 'LineString',
-            'coordinates': circle
-          }
-        }
-        const existing_circle_source = this.map.getSource("circle")
-        if (existing_circle_source) {
-          existing_circle_source.setData(data)
-        } else {
-          this.map.addSource('circle', {
-            'type': 'geojson',
-            'data': data
-          })
-          this.map.addLayer({
-            'id': 'route',
-            'type': 'line',
-            'source': 'circle',
-            'layout': {
-              'line-join': 'round',
-              'line-cap': 'round'
-            },
-            'paint': {
-              'line-color': '#FFFF00',
-              'line-width': 2
-            }
-          })
-        }
-      }
 
     }
   }

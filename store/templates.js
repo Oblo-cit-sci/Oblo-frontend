@@ -138,7 +138,7 @@ export const getters = {
   },
   tags_of_code(state) {
     return (code_slug, language, tag_values) => {
-      console.log(code_slug, language, tag_values)
+      // console.log(code_slug, language, tag_values)
 
       if (!state.tags[code_slug]) {
         console.log("templates/tags_of_code: no tags for entry_slug", code_slug)

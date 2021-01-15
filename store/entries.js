@@ -128,6 +128,7 @@ export const mutations = {
     }
   },
   update_tags(state, {uuid, tags}) {
+    // console.log(tags)
     if (!uuid) {
       state.edit.tags = tags
     } else {

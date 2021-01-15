@@ -103,10 +103,11 @@ export default {
       return this.mode === FLEX
     },
     real_mode() {
-      if ((this.attr && this.attr.ref_value) || this.fixed_value) {
+      // console.log("real-mode", this.aspect.name, this.attr)
+      if ((this.attr.ref_value) || this.fixed_value) {
         return VIEW
       }
-      if (this.attr && this.attr.mode !== undefined) {
+      if (this.attr.mode !== undefined) {
         return this.attr.mode
       }
       // console.log("is flex", this.is_flex, this.flex_mode)
