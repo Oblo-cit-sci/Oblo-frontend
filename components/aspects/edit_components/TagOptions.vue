@@ -53,12 +53,12 @@ export default {
       if (selected) {
         let value = aspect_default_value(this.selected_aspect)
         // call method
-        this.$emit("update_value", {value: {option, value}, is_mvalue: true})
+        this.$emit("update_value", {option, value, is_mvalue:true})
       }
     },
     update_value(value) {
       // console.log("options.. update", value)
-      this.$emit("update_value", {value:{option: this.selected_option, value}, is_mvalue:true})
+      this.$emit("update_value", {option: this.selected_option, value, is_mvalue:true})
     }
   },
   computed: {

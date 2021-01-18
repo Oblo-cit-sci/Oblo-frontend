@@ -1,8 +1,9 @@
 <template lang="pug">
   v-select.mt-8.my-2.px-3(
     v-if="has_multiple_languages"
-    dense flat
+    flat
     :items="available_languages"
+    :disabled="is_disabled"
     prepend-icon="mdi-translate"
     v-model="language"
     hide-details
@@ -11,12 +12,22 @@
 
 <script>
 import SettingsChangeMixin from "~/components/global/SettingsChangeMixin"
-import {DOMAIN_LANGUAGE, UI_LANGUAGE} from "~/lib/consts"
+import {EDIT, UI_LANGUAGE} from "~/lib/consts"
 import LanguageMixin from "~/components/LanguageMixin";
+import {PAGE_ENTRY} from "~/lib/pages";
+import URLQueryMixin from "~/components/util/URLQueryMixin";
 
+/**
+ * TODO.
+ * language can not be changed during entry creation.
+ * tried global-dialog: :value/@input props on v-select but its internal value, will still change,
+ * even if caught in the computed methods.
+ * also hints should be shown, but arent :/
+ * not it just disables without any user-feedback
+ */
 export default {
   name: "LanguageSelector",
-  mixins: [SettingsChangeMixin, LanguageMixin],
+  mixins: [SettingsChangeMixin, LanguageMixin, URLQueryMixin],
   components: {},
   props: {},
   data() {
@@ -31,6 +42,11 @@ export default {
     has_multiple_languages() {
       return this.available_languages.length > 1
     },
+    // message() {
+    //   if (this.is_disabled) {
+    //     return "You cannot change the language during entry creation"
+    //   }
+    // },
     available_languages() {
       // todo when on domain page only take
       const available_languages = this.$store.getters["available_languages"]
@@ -39,12 +55,25 @@ export default {
         "text": (this.$t("lang." + l))
       }))
     },
+    is_disabled() {
+      return (this.$route.name === PAGE_ENTRY && this.entry_mode === EDIT)
+    },
     language: {
       get: function () {
         return this.setting(UI_LANGUAGE)
       },
-      set: async function (language) {
-        await this.change_language(language)
+      set: function (language) {
+        //  {
+        //   this.$bus.$emit("dialog-open", {
+        //     data: {
+        //       title: "language",
+        //       text: "You cannot change the language during entry creation",
+        //       show_cancel: false
+        //     }
+        //   })
+        //   return
+        // }
+        this.change_language(language)
       }
     },
     label() {

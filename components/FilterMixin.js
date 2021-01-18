@@ -14,6 +14,7 @@ import {
 import {build_tag_select_list, build_tag_select_tree, find_templates_using_code} from "~/lib/codes"
 import {mapGetters} from "vuex";
 import {pack_value, unpack} from "~/lib/aspect";
+import {recursive_unpack2} from "~/lib/util";
 
 
 export default {
@@ -253,12 +254,13 @@ export default {
     apply_tags_filter(tags_filter, entries) {
       const tag_filter = (e) => {
         for (let tags of Object.values(e.tags)) {
-          const included = this.$_.some(tags, t => unpack(tags_filter.value).includes(t))
+          const included = this.$_.some(tags, t => recursive_unpack2(tags_filter.value).includes(t))
           if (included)
             return true
         }
         return false
       }
+      // console.log(tags_filter, entries)
       return entries.filter(tag_filter)
     },
     has_local_filter(filters) {
