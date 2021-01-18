@@ -197,6 +197,7 @@ export default {
         return this.$store.getters["entries/value"](this.aspect_loc)
       } else {
         // console.log("getting value...", this.aspect_loc)
+        console.log(this.aspect.name, this.aspect_loc)
         let value = this.$store.getters["entries/value"](this.aspect_loc)
         if (value === undefined) {
           // console.log("undefined, probably means update", this.aspect, this.extra)

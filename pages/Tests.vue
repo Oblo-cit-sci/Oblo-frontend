@@ -1,8 +1,8 @@
 <template lang="pug">
   div
-    AspectSet(:aspects="aspects" mode="edit" :values.sync="values")
-    div {{values}}
-    Aspect(:aspect="multitest" mode="edit" :ext_value.sync="multitest.value")
+    <!--    AspectSet(:aspects="aspects" mode="edit" :values.sync="values")-->
+    <!--    div {{values}}-->
+    <!--    Aspect(:aspect="multitest" mode="edit" :ext_value.sync="multitest.value")-->
     <!--    MultipageDialog(:dialog_open="dialog_open"-->
     <!--      :page_data="page_data"-->
     <!--      :act_page.sync="page"-->
@@ -10,8 +10,8 @@
     <!--      :globals="globals"-->
     <!--      :generated_data_template="generated_data_template"-->
     <!--      @cancel="cancel")-->
-    v-sheet.pa-1(rounded color="white" max-width=40 outlined)
-      div cool this is very nice but
+    //DirectAspectCreator
+    MessageTranslationBlock
 </template>
 
 <script>
@@ -21,11 +21,15 @@ import AspectSet from "~/components/AspectSet"
 import Dialog from "~/components/dialogs/Dialog";
 import Aspect from "~/components/Aspect"
 import MultipageDialog from "~/components/dialogs/MultipageDialog"
+import DirectAspectCreator from "~/components/DirectAspectCreator"
+import MessageTranslationBlock from "~/components/language/MessageTranslationBlock"
 
 export default {
   name: "Tests",
   mixins: [],
   components: {
+    MessageTranslationBlock,
+    DirectAspectCreator,
     MultipageDialog,
     Aspect,
     Dialog,

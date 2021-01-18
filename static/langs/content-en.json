@@ -433,6 +433,9 @@
       "tab_main": "Main",
       "tab_domain": "Entries"
     },
+    "message_translation": {
+      "index": "index"
+    },
     "min_max_indicator": {
       "min": "min: {number}",
       "max": "max: {number}",
