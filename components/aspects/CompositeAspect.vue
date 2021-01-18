@@ -2,9 +2,9 @@
   div
     v-container.pt-1(v-if="compact" justify-center align-center)
       v-row
-        v-col(
+        v-col.pa-0.ma-0(
           v-for="(comp_type, index) in aspect.components" :key="index"
-          alignSelf="stretch" :cols="base_cols/2" :lg="base_cols/3" :xl="base_cols/4")
+          alignSelf="stretch" :cols="base_cols" :md="base_cols/3")
           Aspect(
             :aspect="comp_type"
             :ext_value="ext_values()[comp_type.name]"

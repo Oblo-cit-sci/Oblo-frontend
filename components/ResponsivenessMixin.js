@@ -4,6 +4,9 @@ export default {
     bp() {
       return this.$vuetify.breakpoint
     },
+    is_rtl() {
+      return this.$vuetify.rtl
+    },
     mobile() {
       return this.bp.mobile
     },

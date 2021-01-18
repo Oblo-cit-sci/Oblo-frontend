@@ -425,6 +425,7 @@
       "logout": "Logout",
       "register": "@.capitalize:w.register",
       "users": "Users",
+      "translate": "Translate",
       "admin": "Admin",
       "about": "About",
       "tests": "Test"
@@ -475,6 +476,26 @@
     },
     "tagoptions_asp": {
       "used_in": "Used in: "
+    },
+    "translate": {
+      "component_select_asp": {
+        "label": "Part of OpenTEK",
+        "description": "Which part do you want to translate?",
+        "options": {
+          "fe": "User interface",
+          "be": "Server messages"
+        }
+      },
+      "src_lang": {
+        "label": "Source language",
+        "descr": "From which language are you translating from?"
+      },
+      "dest_lang": {
+        "label": "Destination language",
+        "descr": "Which language do you want to help completing?"
+      },
+      "start": "start",
+      "setup_incomplete_text": ""
     },
     "treeselect_asp": {
       "click_to_select": "Click to select"

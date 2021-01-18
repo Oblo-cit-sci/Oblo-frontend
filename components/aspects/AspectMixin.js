@@ -11,7 +11,6 @@ import {
 import {select_aspect_loc} from "~/lib/entry"
 import {recursive_unpack2} from "~/lib/util";
 
-const jp = require('jsonpath')
 
 export default {
   props: {
@@ -45,6 +44,9 @@ export default {
       default: () => {
         return {}
       }
+    },
+    is_set: {
+      type: Boolean
     }
   },
   methods: {
@@ -98,8 +100,8 @@ export default {
       return this.mode === EDIT
     },
     is_optional() {
-      console.log(this.aspect.name, this.attr)
-      return this.$_.get(this.attr,"required", true) === false
+      // console.log(this.aspect.name, this.attr)
+      return this.$_.get(this.attr, "required", true) === false
     },
     condition_fail() {
       // console.log("condition_fail?", this.aspect.name,  "condition_fail?")
@@ -143,16 +145,16 @@ export default {
       //   return pack_value(aspect_raw_default_value(this.aspect))
       // }
       //console.log("value . ",this.aspect.name)
-      if (this.attr.IDAspect) {
-        let this_uuid = aspect_loc_uuid(this.aspect_loc)
-        let entry = this.$store.getters["entries/get_entry"](this_uuid)
-        let id = this.$_.last(entry.entry_refs.parent.aspect_loc)[1] + 1
-        let stored_value = this.$store.getters["entries/value"](this.aspect_loc).value
-        if (stored_value !== id) {
-          this.update_value(id)
-        }
-        return {value: id}
-      }
+      // if (this.attr.IDAspect) {
+      //   let this_uuid = aspect_loc_uuid(this.aspect_loc)
+      //   let entry = this.$store.getters["entries/get_entry"](this_uuid)
+      //   let id = this.$_.last(entry.entry_refs.parent.aspect_loc)[1] + 1
+      //   let stored_value = this.$store.getters["entries/value"](this.aspect_loc).value
+      //   if (stored_value !== id) {
+      //     this.update_value(id)
+      //   }
+      //   return {value: id}
+      // }
       if (this.attr.ref_value) {
         //console.log("ref")
         // GRAB REF
@@ -197,11 +199,10 @@ export default {
         return this.$store.getters["entries/value"](this.aspect_loc)
       } else {
         // console.log("getting value...", this.aspect_loc)
-        console.log(this.aspect.name, this.aspect_loc)
+        // console.log(this.aspect.name, this.aspect_loc)
         let value = this.$store.getters["entries/value"](this.aspect_loc)
         if (value === undefined) {
           // console.log("undefined, probably means update", this.aspect, this.extra)
-          this.new_in_update = true
           let raw__new_value = aspect_raw_default_value(this.aspect)
           this.update_value(raw__new_value)
           // if (this.is_unpacked)
@@ -232,6 +233,9 @@ export default {
     },
     entry_uuid() {
       return aspect_loc_uuid(this.aspect_loc)
+    },
+    i_is_set() {
+      return this.value !== aspect_raw_default_value(this.aspect)
     }
   },
   watch: {
@@ -242,6 +246,12 @@ export default {
             value: aspect_raw_default_value(this.aspect)
           })
         }
+      }
+    },
+    i_is_set: {
+      immediate: true,
+      handler: function () {
+        this.$emit("update:is_set", this.i_is_set)
       }
     }
   }

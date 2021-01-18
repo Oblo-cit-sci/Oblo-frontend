@@ -137,6 +137,9 @@ export default {
       }
       const nodes = this.select_layers_from_tree_node(node, input_from_tree.layers).map(n => n.value)
       return nodes
+    },
+    create_option(value, text) {
+      return {value, text: text ? text : value}
     }
   }
 }

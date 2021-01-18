@@ -2,6 +2,7 @@
   div#menu_container
     v-navigation-drawer(
       v-model="menu_open"
+      :right="is_rtl"
       :temporary="over"
       :hide-overlay="over"
       :stateless="over"
