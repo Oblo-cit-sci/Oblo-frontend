@@ -15,29 +15,29 @@ export default {
   mixins: [AspectBaseMixin],
   components: {Aspect, CompositeAspect},
   props: {
-    /*"translation": {
+    "translation": {
       type: Object,
       required: true
-    }*/
+    }
   },
   data() {
     return {
-      translation: {
-        index: "page.h",
-        translations: {
-          en: "hi",
-          es: null
-        },
-        dest_language: "es"
-      }
+      // translation: {
+      //   index: "page.h",
+      //   messages: ["hi", null],
+      //   languages: ["en", "es"],
+      //   dest_language: "es"
+      // }
     }
   },
   computed: {
     value() {
-      return pack_value(
-        Object.assign({"index": pack_value(this.translation.index)},
-          this.$_.mapValues(this.translation.translations, (v) => pack_value(v)))
-      )
+      const t = this.translation
+      return pack_value({
+        "index": pack_value(t.index),
+        [t.languages[0]]: pack_value(t.messages[0]),
+        [t.languages[1]]: pack_value(t.messages[1])
+      })
     },
     aspect() {
       const message_aspect = (language, mode) => {
@@ -51,8 +51,9 @@ export default {
           }
         }
       }
-      const translation_components = this.$_.map(this.translation.translations, (message, lang) =>
-        message_aspect(lang, lang === this.translation.dest_language ? EDIT : VIEW))
+      const translation_components = [
+        message_aspect(this.translation.languages[0], VIEW),
+        message_aspect(this.translation.languages[1], EDIT)]
       const index_component = {
         name: "index",
         type: "str",
@@ -72,7 +73,7 @@ export default {
         return this.value
       }, set: function (value) {
         // not sure how this magically changes: this.translation, ... well its in data
-        this.translation.translations[this.translation.dest_language] = value.value[this.translation.dest_language].value
+        this.translation.messages[1] = value.value[this.translation.dest_language].value
         console.log(this.translation)
       }
     }

@@ -24,7 +24,7 @@ import ResponsivenessMixin from "~/components/ResponsivenessMixin"
 
 let require_login = ["/profile", "/logout"]
 let hide_logged_in = ["/login", "/register"]
-let require_admin = ["/admin", "/translate"]
+let require_admin = ["/admin", "/translate/setup"]
 let hide_no_be = ["/register", "/login"] // if not connected out and if logged in out
 let show_inDev = ["/tests"] //, "Types", "Entrytypes", "Aspectbuild"]
 let show_in_fixed_domain = ["/about"]

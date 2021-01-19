@@ -1,5 +1,5 @@
 <template lang="pug">
-  div
+  div.ml-2
     AspectSet(
       :aspects="setup_aspects"
       :values.sync="setup_values"
@@ -84,7 +84,8 @@ export default {
     async init() {
       const {component, src_lang, dest_lang} = extract_n_unpack_values(this.setup_values)
       const {data} = await this.$api.language.get_component(component, [src_lang, dest_lang], false)
-      console.log(data)
+      await this.$store.dispatch("translate/setup", {component, src_lang, dest_lang, messages: data})
+      await this.$router.push("/translate")
     }
   }
 }
