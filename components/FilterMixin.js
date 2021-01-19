@@ -42,39 +42,10 @@ export default {
         case [TAGS]:
       }
     },
-    // filter2maplegend(filter_config) {
-    //   const template_filter_conf = filter_config.filter(fc => fc.name === TEMPLATE)[0]
-    //   this.$store.commit("map/set_filter_config", template_filter_conf.value.map(v => ({
-    //     value: v,
-    //     name: "template"
-    //   })))
-    // },
     get_filtered_template_slugs() {
       const template_filter_conf = this.act_config.filter(fc => fc.name === TEMPLATE)[0]
       return unpack(this.$_.get(template_filter_conf, "value", []))
     },
-    // filter_entries_by_domains(entries, domains) {
-    //   // todo check if string instead
-    //   if (domains.constructor !== Array) {
-    //     domains = [domains]
-    //   }
-    //
-    //   /*
-    //   todo bring back later, for bringing the basic type, valuelist, ...
-    //   if (include_no_domain) {
-    //     domains = this.$_.concat(domains, NO_DOMAIN)
-    //   }
-    //   */
-    //
-    //   const etype_domain_map = {}
-    //   this.$store.getters.entry_types_array.forEach(et => {
-    //     etype_domain_map[et.slug] = et.domain
-    //   })
-    //
-    //   return this.$_.filter(entries, e => {
-    //     return this.$_.includes(domains, etype_domain_map[e.type_slug])
-    //   })
-    // },
     entrytype(entries, entrytypes) {
       if (entrytypes.constructor !== Array) {
         entrytypes = [entrytypes]

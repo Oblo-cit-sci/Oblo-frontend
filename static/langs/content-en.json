@@ -381,7 +381,8 @@
       "add_image": "@:w.add_item"
     },
     "language_select": {
-      "label": "Language"
+      "label": "Language",
+      "change_not_possible": "You cannot change the language on this page."
     },
     "legend": {
       "legend": "Legend"

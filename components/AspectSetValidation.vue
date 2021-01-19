@@ -5,7 +5,7 @@
       b {{$t("comp.entry_validation.has_missing")}}
       div {{$t("comp.entry_validation.has_missing_t")}}
     div(v-else) {{$t("comp.entry_validation.ok")}}
-    .required_aspect.red--text(v-for="(aspect, i) in missing" :key="i") {{aspect}}
+    .required_aspect.red--text(v-for="(aspect, i) in missing_aspects" :key="i") {{validation(aspect)}}
 </template>
 
 <script>
@@ -22,11 +22,18 @@ export default {
     }
   },
   computed: {
-    missing() {
-      return Object.keys(this.$_.pickBy(this.aspects_set, a => !a))
+    missing_aspects() {
+      return this.$_.map(
+        this.$_.pickBy(this.aspects_set, a => !a),
+        (_, a_name) => this.aspects.find(a => a.name === a_name))
     },
     has_missing() {
-      return this.missing.length > 0
+      return this.missing_aspects.length > 0
+    }
+  },
+  methods: {
+    validation(aspect) {
+      return this.$t("comp.entry_validation.msgs.missing", {aspect_label: aspect.label})
     }
   }
 }

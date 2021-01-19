@@ -1,13 +1,15 @@
 <template lang="pug">
-  v-select.mt-8.my-2.px-3(
-    v-if="has_multiple_languages"
-    flat
-    :items="available_languages"
-    :disabled="is_disabled"
-    prepend-icon="mdi-translate"
-    v-model="language"
-    hide-details
-    :label="label")
+  div.mt-8.my-2.px-3
+    v-select(
+      v-if="has_multiple_languages"
+      flat
+      :items="available_languages"
+      :disabled="is_disabled"
+      prepend-icon="mdi-translate"
+      v-model="language"
+      hide-details
+      :label="$t('comp.language_select.label')")
+    div.mt-2(v-if="is_disabled") {{$t("comp.language_select.change_not_possible")}}
 </template>
 
 <script>
@@ -75,9 +77,6 @@ export default {
         // }
         this.change_language(language)
       }
-    },
-    label() {
-      return this.$t("comp.language_select.label")
     }
   }
 }

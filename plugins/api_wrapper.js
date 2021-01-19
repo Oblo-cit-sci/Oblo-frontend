@@ -384,10 +384,12 @@ class Language extends QueryBase {
     super(api_wrapper, "/language")
   }
 
-  get_component(component, language) {
+  get_component(component, languages, structured = true) {
     return this.get_("get_component", {
       params: {
-        component, language
+        component, languages, structured
+      }, paramsSerializer: function (params) {
+        return qs.stringify(params, {arrayFormat: 'repeat'})
       }
     })
   }

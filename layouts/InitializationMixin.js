@@ -94,7 +94,7 @@ export default {
       // console.log("?", language, language !== this.$i18n.fallbackLocale, this.$i18n.fallbackLocale)
       if (language !== this.$i18n.fallbackLocale) {
         // console.log("change lang", language, data.data.messages)
-        this.$i18n.setLocaleMessage(language, data.data.messages)
+        this.$i18n.setLocaleMessage(language, data.data.messages[language])
         // console.log(Object.keys(this.$i18n.getLocaleMessage(language)))
         // const a = this
         // debugger

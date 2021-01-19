@@ -28,8 +28,8 @@ export default {
       // console.log("check have?", language, this.loaded_ui_languages.includes(language))
       if (!this.$i18n.availableLocales.includes(language)) {
         try {
-          const {data} = await this.$api.language.get_component("fe", language)
-          this.$i18n.setLocaleMessage(language, data)
+          const {data} = await this.$api.language.get_component("fe", [language])
+          this.$i18n.setLocaleMessage(language, data[language])
         } catch (e) {
           if (e.response.status === 404) {
             console.log("frontend not available in the language:", language)
@@ -68,9 +68,10 @@ export default {
         domain = [domain, NO_DOMAIN]
       }
       const {data} = await this.$api.basic.init_data(domain, language)
+      // todo this also gets all the messages
       const domains_data = data.data.domains
       this.$store.commit("domain/set_domains", {domains_data, language})
-      console.log(data.data.templates_and_codes)
+      // console.log(data.data.templates_and_codes)
       await this.$store.dispatch("templates/add_templates_codes", data.data.templates_and_codes)
       return Promise.resolve()
     },

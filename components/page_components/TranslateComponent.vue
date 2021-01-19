@@ -13,7 +13,7 @@
 
 import OptionsMixin from "~/components/aspect_utils/OptionsMixin";
 import Aspect from "~/components/Aspect";
-import {pack_value} from "~/lib/aspect";
+import {extract_n_unpack_values, pack_value} from "~/lib/aspect";
 import {SELECT, UI_LANGUAGE} from "~/lib/consts";
 import AspectSet from "~/components/AspectSet";
 
@@ -81,8 +81,10 @@ export default {
     }
   },
   methods: {
-    init() {
-
+    async init() {
+      const {component, src_lang, dest_lang} = extract_n_unpack_values(this.setup_values)
+      const {data} = await this.$api.language.get_component(component, [src_lang, dest_lang], false)
+      console.log(data)
     }
   }
 }
