@@ -94,7 +94,7 @@
 
 
 import Aspect from "../components/Aspect";
-import {EDIT, NO_DOMAIN,  VIEW} from "~/lib/consts";
+import {DRAFT, EDIT, NO_DOMAIN, VIEW} from "~/lib/consts";
 
 import {mapGetters} from "vuex"
 import {extract_n_unpack_values, pack_value, set_value_and_error} from "~/lib/aspect";
@@ -308,7 +308,7 @@ export default {
     }),
     entry_search_config() {
       return [this.get_actor_filter(this.registered_name),
-        this.get_drafts_filter()
+        this.get_status_filter([DRAFT])
       ]
     },
     registered_name() {
