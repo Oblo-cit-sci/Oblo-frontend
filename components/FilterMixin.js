@@ -5,7 +5,7 @@ import {
   DRAFT,
   LANGUAGE,
   META,
-  MULTISELECT,
+  MULTISELECT, REQUIRES_REVIEW,
   STATUS,
   TAGS,
   TEMPLATE,
@@ -67,6 +67,19 @@ export default {
         name: STATUS,
         source_name: "local",
         value: statuses
+      }
+    },
+    get_requires_review_filter() {
+      return {
+        name: "requires_review",
+        t_label: "w.review_required",
+        edit: {
+          editable: false
+        },
+        value: [REQUIRES_REVIEW],
+        search_config: {
+          name: "status",
+        },
       }
     },
     get_template_filter_options() {

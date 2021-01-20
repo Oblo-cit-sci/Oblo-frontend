@@ -39,6 +39,9 @@ import FilterMixin from "~/components/FilterMixin";
 import {MULTISELECT, OPTIONS, SELECT} from "~/lib/consts";
 import SelectComponentMixin from "~/components/aspect_utils/SelectComponentMixin";
 
+/**
+ * refactor the whole thing, so that the check of if there is an aspect is required (for requires_review filter)
+ */
 export default {
   name: "Filterlist",
   mixins: [LayoutMixin, FilterMixin, SelectComponentMixin],
@@ -81,29 +84,34 @@ export default {
       return this.$_.find(this.filter_options, f => f.name === name)
     },
     filter_text(filter) {
-      console.log("filter_text(x2?)")
+      // console.log("filter_text", filter)
       if (filter.value.text) {
         // this is not gonna happen
         return filter.value.text
       }
       const filter_option_aspect = this.filter_option_by_name(filter.name).aspect
       // console.log("filter.value", filter.value)
-      return this.get_texts_of_mvalues(filter.value, filter_option_aspect).join(", ")
+      if(filter_option_aspect) {
+        return this.get_texts_of_mvalues(filter.value, filter_option_aspect).join(", ")
+      }
+      // TODO doesnt apply for e.g. requires review
     },
     available_filter_label(filter) {
-      // console.log(filter)
       if (filter.t_label) {
         return this.$tc(filter.t_label)
       } else {
-        // console.log(filter)
-        // console.log("warning. filter should have t_label")
         return filter.name
       }
     },
     create_filter(name) {
-      this.active_filter = Object.assign({}, this.filter_option_by_name(name))
-      // console.log("active filter", this.active_filter)
-      this.dialog_open = true
+      const selected_filter = this.filter_option_by_name(name)
+      this.active_filter = Object.assign({}, selected_filter)
+      if(selected_filter.aspect) {
+        // console.log("active filter", this.active_filter)
+        this.dialog_open = true
+      } else {
+        this.set_filter_value(selected_filter.name, selected_filter.value)
+      }
     },
     not_removable(filter) {
       if (this.$_.get(this.filter_option_by_name(filter.name), "aspect.attr.min") > 0) {
@@ -115,12 +123,9 @@ export default {
       return !this.$_.get(filter, "edit.editable", true)
     },
     set_filter_value(name, value) {
-      console.log("FL:set_filter_value", value)
+      // console.log("FL:set_filter_value", value)
       // const new_value = recursive_unpack2(this.$_.cloneDeep(value))
       // console.log(new_value)
-      // if (!new_value) {
-      //   return
-      // }
       // let text = value_text(this.active_filter.aspect, new_value)
       const new_filters = this.$_.cloneDeep(this.applied_filters)
       const existing_filter = new_filters.find(f => f.name === name)// && this.$_.get(f.source_name,"regular") === "regular")
@@ -131,7 +136,10 @@ export default {
         const new_filter = {
           "name": this.active_filter.name,
           "t_label": this.active_filter.t_label,
-          "value": value,
+          "value": value
+        }
+        if(this.active_filter.edit) {
+          new_filter.edit = this.active_filter.edit
         }
         if (this.active_filter.source_name) {
           new_filter.source_name = this.active_filter.source_name
@@ -139,7 +147,6 @@ export default {
         new_filters.push(new_filter)
       }
       this.$emit("input", new_filters)
-      // console.log("new filtervalue")
       this.dialog_open = false
     },
     edit_filter(index) {
@@ -150,12 +157,13 @@ export default {
       this.$emit("input", this.$_.filter(this.value, (v, i) => i !== index))
     },
     filter_value(name) {
-      // console.log("filter_value")
       const existing_filter = this.applied_filters.find(f => f.name === name)
       if (existing_filter) {
         return existing_filter.value
       } else {
-        return aspect_default_value(this.filter_option_by_name(name).aspect)
+        if(this.filter_option_by_name(name).aspect) {
+          return aspect_default_value(this.filter_option_by_name(name).aspect)
+        }
       }
     }
   }

@@ -11,7 +11,6 @@
     <!--      :generated_data_template="generated_data_template"-->
     <!--      @cancel="cancel")-->
     //DirectAspectCreator
-    MessageTranslationBlock
 </template>
 
 <script>

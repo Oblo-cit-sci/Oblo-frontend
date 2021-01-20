@@ -197,7 +197,7 @@ export const mutations = {
       }
       const insert_to = state.tags[entry.slug]
       const lang = entry.language
-      console.log("insert tag for: ", entry.slug, lang)
+      // console.log("insert tag for: ", entry.slug, lang)
       for (let tag of tags) {
         if (!insert_to[tag.value]) {
           insert_to[tag.value] = new Map()

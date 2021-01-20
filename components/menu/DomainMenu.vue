@@ -33,6 +33,7 @@ import {object_list2options} from "~/lib/options"
 import FixDomainMixin from "~/components/global/FixDomainMixin"
 import FilterMixin from "~/components/FilterMixin"
 import DomainDataMixin from "~/components/domain/DomainDataMixin";
+import {ADMIN, EDITOR, REQUIRES_REVIEW} from "~/lib/consts";
 
 export default {
   name: "DomainMenu",
@@ -58,7 +59,12 @@ export default {
       // const uuids_select_option = get_uuids_select_option()
       const language_filter_options = this.get_language_filter_options(this.domain_name)
 
-      return [template_filter_options, tags_filter_options, language_filter_options]
+      const filters = [template_filter_options, tags_filter_options, language_filter_options]
+      if ([EDITOR, ADMIN].includes(this.$store.getters["user/global_role"])) {
+        filters.push(this.get_requires_review_filter())
+      }
+
+      return filters
     },
     selected_entry() {
       if (this.$route.query.uuid)
