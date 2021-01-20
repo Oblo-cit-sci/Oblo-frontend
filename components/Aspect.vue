@@ -26,6 +26,7 @@
       v-bind="extra"
       :conditionals="conditionals"
       @has_changed="$emit('has_changed',$event)"
+      ref="aspect_component"
       :change_status="has_changed"
       v-on:update_value="update_value($event)"
       @update:error="$emit('update:error', $event)"

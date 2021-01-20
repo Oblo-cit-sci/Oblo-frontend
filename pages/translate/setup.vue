@@ -1,12 +1,12 @@
 <template lang="pug">
-  TranslateComponent
+  TranslateSetupComponent
 </template>
 
 <script>
-import TranslateComponent from "~/components/page_components/TranslateComponent";
+import TranslateSetupComponent from "~/components/page_components/TranslateSetupComponent";
 export default {
-  name: "translate",
-  components: {TranslateComponent}
+  name: "setup",
+  components: {TranslateSetupComponent}
 }
 </script>
 

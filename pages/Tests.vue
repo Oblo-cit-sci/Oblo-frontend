@@ -11,6 +11,7 @@
     <!--      :generated_data_template="generated_data_template"-->
     <!--      @cancel="cancel")-->
     //DirectAspectCreator
+    MessageTranslationBlock(v-bind="translation" @has_changed="has_changed($event)")
 </template>
 
 <script>
@@ -39,6 +40,11 @@ export default {
   },
   data() {
     return {
+      translation: {
+        index: "word",
+        messages: ["nice", "bueno"],
+        languages: ["en", "es"]
+      },
       dialog_open: true,
       cancel: () => {
         console.log("bye")
@@ -107,7 +113,6 @@ export default {
         items: ["a", "b", {value: "xxx", condition: {exclude: ["a"]}}]
       },
       value: [],
-
     }
   },
   computed: {
@@ -115,6 +120,9 @@ export default {
   methods: {
     click() {
       console.log("click")
+    },
+    has_changed(event) {
+      console.log("top", event)
     }
   },
   watch: {}

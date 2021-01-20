@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    v-container.pt-1(v-if="compact" justify-center align-center)
+    v-container.pt-1.pb-0(v-if="compact" justify-center align-center)
       v-row.pl-1(:class="row_border")
         v-col.pa-0.ma-0(
           v-for="(comp_type, index) in aspect.components" :key="index"
@@ -12,6 +12,7 @@
             :aspect_loc="aspect_locs[comp_type.name]"
             :mode="mode"
             :disabled="disabled"
+            :ref="comp_type.name"
             :conditionals="composite_conditionals"
             @aspectAction="$emit('aspectAction',$event)"
             @has_changed="has_changed(comp_type.name, $event)"
@@ -27,6 +28,7 @@
             :aspect_loc="aspect_locs[comp_type.name]"
             :mode="mode"
             :disabled="disabled"
+            :ref="comp_type.name"
             :conditionals="composite_conditionals"
             @has_changed="has_changed(comp_type.name, $event)"
             @aspectAction="$emit('aspectAction',$event)"
@@ -84,8 +86,14 @@ export default {
     update_component_value(component_name, value) {
       this.update_value(Object.assign(this.value, {[component_name]: value}))
     },
-    has_changed(comp_name, change) {
-      this.$emit("has_changed", {name: `${this.aspect.name}.${comp_name}`, change})
+    has_changed(comp_name, event) {
+      // console.log("composition.has_changed", comp_name, event)
+      this.$emit("has_changed", {name: `${this.aspect.name}.${comp_name}`, change: event.change})
+    },
+    refresh_original() {
+      for(let component_aspect of Object.values(this.$refs)) {
+        component_aspect[0].refresh_original()
+      }
     }
   },
   computed: {

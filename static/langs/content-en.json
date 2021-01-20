@@ -321,7 +321,7 @@
           "confirm_text": "delete"
         }
       },
-      "submit": "submit",
+      "submit": "@:w.submit",
       "saved": "Entry saved",
       "saved_text": "Your entry is saved in the browser until you submit or cancel the creation.",
       "submitted": "Entry submitted",
@@ -530,6 +530,7 @@
     "username": "Username",
     "back": "back",
     "status": "status",
+    "submit": "submit",
     "view": "view",
     "edit": "edit",
     "done": "done",

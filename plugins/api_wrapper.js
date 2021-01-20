@@ -46,14 +46,14 @@ class QueryBase {
     return this.axios.post(`${this.base}/${sub_path}`, data, config)
   }
 
-  _post(sub_path, data, config) {
-    let promise = this.axios.post(`${this.base}/${sub_path}`, data, config)
-    promise.then((res, rej) => {
-      console.log("secret res", res)
-    })
-
-    return promise
-  }
+  // _post(sub_path, data, config) {
+  //   let promise = this.axios.post(`${this.base}/${sub_path}`, data, config)
+  //   promise.then((res, rej) => {
+  //     console.log("secret res", res)
+  //   })
+  //
+  //   return promise
+  // }
 
   patch_(sub_path, data, config) {
     return this.axios.patch(`${this.base}/${sub_path}`, data, config)
@@ -394,6 +394,14 @@ class Language extends QueryBase {
     })
   }
 
+  update_messages(component, language, data) {
+    return this.post_("update_messages", data, {
+      params: {
+        component,
+        language
+      }
+    })
+  }
 }
 
 

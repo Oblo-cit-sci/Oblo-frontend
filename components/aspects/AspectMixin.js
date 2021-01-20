@@ -100,6 +100,12 @@ export default {
     },
     get_entry() {
       return this.$store.getters["entries/get_entry"](this.entry_uuid)
+    },
+    refresh_original() {
+      this.original_value = this.value
+      if(this.$refs.aspect_component.refresh_original) {
+        this.$refs.aspect_component.refresh_original()
+      }
     }
   },
   computed: {
@@ -273,7 +279,7 @@ export default {
       }
     },
     has_changed(change, prev) {
-      // console.log(this.aspect.type, change)
+      // console.log("aspect_mxn.has_changed", this.aspect.name, this.aspect.type, change, prev)
       this.$emit("has_changed", {name: this.aspect.name, change})
     }
   }

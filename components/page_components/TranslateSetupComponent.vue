@@ -20,7 +20,7 @@ import AspectSet from "~/components/AspectSet";
 const components = ["fe", "be"]
 
 export default {
-  name: "TranslateComponent",
+  name: "TranslateSetupComponent",
   components: {AspectSet, Aspect},
   mixins: [OptionsMixin],
   data() {
@@ -85,7 +85,7 @@ export default {
       const {component, src_lang, dest_lang} = extract_n_unpack_values(this.setup_values)
       const {data} = await this.$api.language.get_component(component, [src_lang, dest_lang], false)
       await this.$store.dispatch("translate/setup", {component, src_lang, dest_lang, messages: data})
-      await this.$router.push("/translate")
+      await this.$router.push("/translate/translate")
     }
   }
 }
