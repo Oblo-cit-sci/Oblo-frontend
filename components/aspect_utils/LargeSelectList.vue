@@ -48,7 +48,7 @@ export default {
   },
   watch: {
     selected(value) {
-      console.log("select", value)
+      // console.log("select", value)
       this.$emit("selection", this.options[value])
     }
   }

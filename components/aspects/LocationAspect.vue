@@ -192,7 +192,7 @@ export default {
       return this.$_.get(this.value, "location_precision") === LOCATION_PRECISION_POINT
     },
     public_location_selector_on() {
-      console.log("public_location_selector_on", this.location_set, this.point_location_precision, this.privacy_setting, this.custom_privacy_setting)
+      // console.log("public_location_selector_on", this.location_set, this.point_location_precision, this.privacy_setting, this.custom_privacy_setting)
       return this.location_set &&
         this.point_location_precision &&
         !this.snap_to_existing &&
@@ -336,7 +336,7 @@ export default {
         this.update_value(null)
       } else {
         const feature = this.$_.find(this.search_results, feature => feature.id === selection)
-        console.log("srs", feature, feature.place_type[0])
+        // console.log("srs", feature, feature.place_type[0])
         if (this.user_settings.location_privacy === settings_loc_privacy_ask) {
           // console.log("srs -> always ask", feature, feature.place_type[0])
           // const result = await this.rev_geocode({
@@ -359,7 +359,7 @@ export default {
     /* map */
     map_location_selected(map, mapboxEvent) {
       // we are gonna call snap_to_feature, so lets get out here
-      console.log(mapboxEvent)
+      // console.log(mapboxEvent)
       // debugger
       if (this.act_hoover_id) {
         return

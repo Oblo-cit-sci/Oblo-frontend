@@ -92,7 +92,8 @@ export default {
     prominent_filters: Array
   },
   data() {
-    const prominent_filtersMap = this.$_.keyBy(this.prominent_filters, "name")
+    const prominent_filter_values = this.get_prominent_filter_values_map()
+    //
     return {
       search_panel_state: null,
       filter_values: {},
@@ -101,12 +102,11 @@ export default {
       prepend_search: false,
       filter_data: [],
       filter_changed: false,
-      prominent_filter_values: this.$_.mapValues(prominent_filtersMap, a => aspect_default_value(a))
+      prominent_filter_values: prominent_filter_values
     }
   },
   created() {
     // console.log("search created")
-
     const last_route = this.$store.getters["search/get_route"]
     // console.log(last_route)
     if (this.$route.query.search) {
@@ -241,7 +241,7 @@ export default {
         // console.log("values", values)
         for (let filter of this.prominent_filters) {
           // console.log(filter.name)
-          const val = this.prominent_filter_values[filter.name]
+          // const val = this.prominent_filter_values[filter.name]
           // console.log(val)
           // console.log(filter)
           const value = unpack(this.prominent_filter_values[filter.name])
@@ -265,7 +265,7 @@ export default {
     preview_options_search() {
       let options = this.$_.cloneDeep(this.preview_options)
       const lang_filter = this.act_config.find(f => f.name === LANGUAGE)
-      if(lang_filter) {
+      if (lang_filter) {
         if (unpack(lang_filter.value).length > 1) {
           options.show_language_chip = true
         }
@@ -318,6 +318,23 @@ export default {
   },
   methods: {
     ...mapMutations({"clear": "search/clear"}),
+    get_prominent_filter_values_map() {
+      /**
+       Just used for data, to restore existing values
+       */
+      const prominent_filtersMap = this.$_.keyBy(this.prominent_filters, "name")
+      const act_config = this.$store.getters["search/get_act_config"]
+      return this.$_.mapValues(prominent_filtersMap, filter => {
+        const existing_search_config = act_config.find(
+          f => f.name === filter.search_config.name &&
+            f.source_name === filter.search_config.source_name)
+        if (existing_search_config) {
+          return pack_value(existing_search_config.value)
+        } else {
+          return aspect_default_value(filter.aspect)
+        }
+      })
+    },
     search_keypress(keyEvent) {
       if (keyEvent.keyCode === 13) {
         this.$router.push(route_change_query(this.$route))
@@ -339,7 +356,7 @@ export default {
         this.$store.commit("search/set_route", this.act_relevant_route_data())
         this.$store.commit("search/set_searching", true)
 
-        console.log("config", config)
+        // console.log("config", config)
 
         // const prepend = this.entries().length > 0
         if (debounce) {

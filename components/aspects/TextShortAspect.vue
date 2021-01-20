@@ -18,7 +18,7 @@
       :value="value"
       @input="update_value($event)"
       @update:error="$emit('update:error', $event)")
-    p.body-1.readonly-aspect(v-else) {{value}}
+    p.body-1.readonly-aspect.break_word(v-else) {{value}}
 </template>
 
 <script>
@@ -43,5 +43,7 @@
 </script>
 
 <style scoped>
-
+  .break_word {
+    word-break: break-word;
+  }
 </style>
