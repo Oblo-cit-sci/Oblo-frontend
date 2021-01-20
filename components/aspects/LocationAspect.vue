@@ -335,25 +335,15 @@ export default {
         this.snap_to_existing = false
         this.update_value(null)
       } else {
+        debugger
         const feature = this.$_.find(this.search_results, feature => feature.id === selection)
         // console.log("srs", feature, feature.place_type[0])
-        if (this.user_settings.location_privacy === settings_loc_privacy_ask) {
-          // console.log("srs -> always ask", feature, feature.place_type[0])
-          // const result = await this.rev_geocode({
-          //   lon: feature.geometry.coordinates[0],
-          //   lat: feature.geometry.coordinates[1]
-          // })
-          this.complete_value({
-            coordinates: arr2coords(feature.geometry.coordinates),
-            location_precision: feature.place_type[0],
-          }, feature)
-          // console.log(feature.place_type[0])
-        } else {
-          this.complete_value({
-            coordinates: arr2coords(feature.geometry.coordinates),
-            location_precision: feature.place_type[0],
-          }, feature)
-        }
+
+        // TODO dont call this or only use the first part...
+        this.complete_value({
+          coordinates: arr2coords(feature.geometry.coordinates),
+          location_precision: LOCATION_PRECISION_POINT,
+        }, feature)
       }
     },
     /* map */
@@ -469,6 +459,7 @@ export default {
     },
     /* util */
     complete_value(value, features) {
+      debugger
       /*
       value contains just the coordinates
       features should have the results of rev-geoquery of the coordinates
@@ -536,6 +527,7 @@ export default {
       if (this.public_location_marker) {
         this.public_location_marker.remove()
       }
+      this.update_public_location_circle()
     },
     change_default_private_setting(setting_value) {
       console.log("setting_value", setting_value)
@@ -719,7 +711,8 @@ export default {
       return options
     },
     update_public_location_circle() {
-      if (this.value.public_precision === PREC_OPTION_RANDOM) {
+      console.log(this.value)
+      if (this.location_set && this.value.public_precision === PREC_OPTION_RANDOM) {
         this.public_location_circle()
       } else {
         const circle_layer = this.map.getLayer("public_loc_circle")
@@ -788,7 +781,7 @@ export default {
       this.search_result_selected(sel)
     },
     value(value) {
-      // console.log("location aspect value watch", value)
+      console.log("location aspect value watch", value)
       if (!value) {
         this.reset()
         return

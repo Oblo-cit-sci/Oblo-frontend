@@ -25,6 +25,8 @@
       :extra="extra"
       v-bind="extra"
       :conditionals="conditionals"
+      @has_changed="$emit('has_changed',$event)"
+      :change_status="has_changed"
       v-on:update_value="update_value($event)"
       @update:error="$emit('update:error', $event)"
       v-on:aspectAction="aspectAction($event)")

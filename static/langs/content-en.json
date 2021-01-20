@@ -278,7 +278,7 @@
     },
     "entrypreview": {
       "draft": "Draft",
-      "requries_review": "Requires review",
+      "requries_review": "@.capitalize:w.review_required",
       "created": "created",
       "outdated": "Created from an outdated version. Some values might change. Download the entry before updating is recommended",
       "view": "@:w.view",
@@ -529,6 +529,7 @@
     "delete": "delete",
     "username": "Username",
     "back": "back",
+    "status": "status",
     "view": "view",
     "edit": "edit",
     "done": "done",
@@ -538,6 +539,7 @@
     "entrytype": "Entry type",
     "tag": "Tag",
     "add_item": "add {item_name}",
+    "review_required": "Requires review",
     "_global.asp_location_privacy.labal": "Location privacy",
     "_global.asp_location_privacy.descr": "Specify the settings for the protection of the exact locations of your entries"
   }

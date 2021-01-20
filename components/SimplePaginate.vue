@@ -8,6 +8,10 @@
 </template>
 
 <script>
+/**
+ * TODO FIX THIS!
+ * COUNTING SHOULD STATY WITH 1 (NOT WITH 0)
+ */
 export default {
   name: "SimplePaginate",
   mixins: [],

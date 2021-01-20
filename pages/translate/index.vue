@@ -1,15 +1,28 @@
 <template lang="pug">
   div
-    MessageTranslationBlock(v-for="t in translations" :translation="t" :key="t.index")
+    MessageTranslationBlock(v-for="t in show_translations" :translation="t" :key="t.index")
+    SimplePaginate(:total_pages="total_pages" v-model="page")
 </template>
 
 <script>
 import {mapGetters} from "vuex";
 import MessageTranslationBlock from "~/components/language/MessageTranslationBlock";
+import SimplePaginate from "~/components/SimplePaginate";
 
 export default {
   name: "setup",
-  components: {MessageTranslationBlock},
+  components: {SimplePaginate, MessageTranslationBlock},
+  created() {
+    if(!this.translation.dest_lang) {
+      this.$router.push("/translate/setup")
+    }
+  },
+  data() {
+    return {
+      page: 1,
+      messages_per_page: 20
+    }
+  },
   computed: {
     ...mapGetters({translation: "translate/translation"}),
     translations() {
@@ -19,6 +32,18 @@ export default {
         messages: [msg[1], msg[2]],
         dest_language: this.translation.dest_lang
       }))
+    },
+    total_pages() {
+      // console.log("total", this.translations.length, this.translations.length / this.messages_per_page, Math.ceil(this.translations.length / this.messages_per_page))
+      return Math.ceil(this.translations.length / this.messages_per_page)
+    },
+    show_translations() {
+      return this.translations.slice((this.page - 1) * this.messages_per_page, (this.page) * this.messages_per_page)
+    }
+  },
+  watch: {
+    page(current, prev) {
+      this.$vuetify.goTo("body", {offset: 0, duration: 1000, easing: "easeInOutCubic"})
     }
   }
 }

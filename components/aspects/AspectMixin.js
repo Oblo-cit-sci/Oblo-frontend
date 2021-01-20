@@ -49,6 +49,16 @@ export default {
       type: Boolean
     }
   },
+  data() {
+    return {
+      original_value: null,
+    }
+  },
+  created() {
+    if (this.track_change) {
+      this.original_value = this.value
+    }
+  },
   methods: {
     // debounce to not to store contantly while typing
     update_value(mvalue) {
@@ -95,6 +105,9 @@ export default {
   computed: {
     attr() {
       return this.$_.get(this.aspect, "attr", {})
+    },
+    track_change() {
+      return this.attr.track_change || false
     },
     edit() {
       return this.mode === EDIT
@@ -236,9 +249,14 @@ export default {
     },
     i_is_set() {
       return this.value !== aspect_raw_default_value(this.aspect)
+    },
+    has_changed() {
+      // console.log(this.aspect.type, this.track_change && this.value !== this.original_value)
+      return this.track_change && this.value !== this.original_value
     }
   },
   watch: {
+    // todo maybe use the default methods from AspectBaseMixin
     condition_fail(fail) {
       if (fail) {
         if (this.value !== aspect_raw_default_value(this.aspect)) {
@@ -253,6 +271,10 @@ export default {
       handler: function () {
         this.$emit("update:is_set", this.i_is_set)
       }
+    },
+    has_changed(change, prev) {
+      // console.log(this.aspect.type, change)
+      this.$emit("has_changed", {name: this.aspect.name, change})
     }
   }
 }

@@ -1,7 +1,7 @@
 <template lang="pug">
   div
     v-container.pt-1(v-if="compact" justify-center align-center)
-      v-row
+      v-row.pl-1(:class="row_border")
         v-col.pa-0.ma-0(
           v-for="(comp_type, index) in aspect.components" :key="index"
           alignSelf="stretch" :cols="base_cols" :md="base_cols/3")
@@ -14,6 +14,7 @@
             :disabled="disabled"
             :conditionals="composite_conditionals"
             @aspectAction="$emit('aspectAction',$event)"
+            @has_changed="has_changed(comp_type.name, $event)"
             :extra="comp_extras(comp_type)")
     v-layout(v-else wrap)
       v-flex(
@@ -27,9 +28,9 @@
             :mode="mode"
             :disabled="disabled"
             :conditionals="composite_conditionals"
+            @has_changed="has_changed(comp_type.name, $event)"
             @aspectAction="$emit('aspectAction',$event)"
             :extra="comp_extras(comp_type)")
-
 </template>
 
 <script>
@@ -78,16 +79,24 @@ export default {
       }
     },
     ext_values() {
-      //console.log("xt?",this.value)
       return this.value
     },
     update_component_value(component_name, value) {
       this.update_value(Object.assign(this.value, {[component_name]: value}))
+    },
+    has_changed(comp_name, change) {
+      this.$emit("has_changed", {name: `${this.aspect.name}.${comp_name}`, change})
     }
   },
   computed: {
     compact() {
       return this.attr.compact
+    },
+    row_border() {
+      return  {
+        "border-left-style": this.change_status ? "solid" : "hidden",
+        "border-left-color": "green"
+      }
     },
     layoutClasses() {
       if (this.aspect.components.length === 2 && this.aspect.mode === 'edit') {

@@ -37,6 +37,10 @@ export default {
       default: () => {
         return {}
       }
+    },
+    change_status: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
