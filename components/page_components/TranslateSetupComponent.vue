@@ -24,11 +24,12 @@ export default {
   components: {AspectSet, Aspect},
   mixins: [OptionsMixin],
   data() {
+    const {component, src_lang, dest_lang} = this.$store.getters["translate/translation"]
     return {
       setup_values: {
-        component: pack_value(),
-        src_lang: pack_value(this.$store.getters["user/settings_value"](UI_LANGUAGE)),
-        dest_lang: pack_value()
+        component: pack_value(component),
+        src_lang: pack_value(src_lang || this.$store.getters["user/settings_value"](UI_LANGUAGE)),
+        dest_lang: pack_value(dest_lang)
       },
       setup_is_complete: false
     }

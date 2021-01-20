@@ -69,6 +69,9 @@
       "p1": "We send you an email with a verification link. Check your spam folder if it is not visible.",
       "p2": "If you haven't received the verification link request a new email!"
     },
+    "translate": {
+      "back": "back to setup"
+    },
     "login": {
       "h1": "@.capitalize:w.login",
       "btn_login": "@:w.login",

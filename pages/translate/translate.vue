@@ -1,5 +1,6 @@
 <template lang="pug">
   div
+    v-btn(@click="back") {{$t("page.translate.back")}}
     MessageTranslationBlock(v-for="t in show_translations"
       v-bind="t"
       :ref="t.index"
@@ -72,6 +73,9 @@ export default {
       }, err => {
         this.err_error_snackbar(err)
       })
+    },
+    back() {
+      this.$router.push("/translate/setup")
     }
   },
   watch: {
