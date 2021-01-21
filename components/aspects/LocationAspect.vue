@@ -675,11 +675,15 @@ export default {
             clusterMaxZoom: 14,
             clusterRadius: 25
           })
+
+          const tt = this
+          debugger
+
           this.add_entry_layer("my_entries_source", "entries_layer", {
             'circle-color': [
               'match',
               ['get', "template"],
-              ...this.templates_color_list(this.$store.getters["templates/entry_types_array"]),
+              ...this.templates_color_list(this.$store.getters["templates/entry_types_array"]()),
               '#ccc'],
             "circle-radius": [
               'case',
