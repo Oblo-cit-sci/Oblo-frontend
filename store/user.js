@@ -19,7 +19,8 @@ let default_user_data = {
 export const state = () => ({
   logged_in: false, // todo should go somewhere else, so persist doesnt mess it up.
   user_data: default_user_data,
-  settings: default_settings,
+  // is set during initialization, logout...
+  settings: {},
   auth_token: {
     access_token: null,
     token_type: "",
@@ -91,6 +92,7 @@ export const mutations = {
 
 export const actions = {
   login({commit}, data) {
+    // console.log("login-action")
     const {access_token, token_type, expiration_date, ...user_data} = data
     const {settings, ...user} = user_data.user
     commit("set_settings", settings)
@@ -99,6 +101,7 @@ export const actions = {
     commit("login")
   },
   logout({commit, getters}) {
+    // console.log("logout-action")
     commit("set_user_data", Object.assign({}, default_user_data))
     commit("set_settings", Object.assign({}, default_settings, {
       "ui_language": getters.settings_ui_language,

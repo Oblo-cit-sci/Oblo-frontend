@@ -132,8 +132,7 @@ export const getters = {
   },
   entry_types_array(state, getters) {
     return (language, fallback) => {
-      const lang = language || "en" // language should not be missing, but rather when this getter is called, be set...
-      return Array.from(state.entry_types.values()).map(d => getters.entry_type(d.slug, lang, fallback)).filter(e => e != null)
+      return Array.from(state.entry_types.values()).map(d => getters.entry_type(d.slug, language, fallback)).filter(e => e != null)
     }
   },
   tags_of_code(state) {

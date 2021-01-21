@@ -31,7 +31,8 @@ module.exports = {
 
   env: {
     NODE_ENV: process.env.NODE_ENV || true,
-    DEFAULT_LANGUAGE: process.env.DEFAULT_LANGUAGE || "en",
+    DEFAUL_OP_LANGUAGE: "en", // 639-1
+    DEFAULT_LANGUAGE: process.env.DEFAULT_LANGUAGE || "en", // for the ui... // 639-3
     HOSTNAME: hostname
   },
 
@@ -79,10 +80,10 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    "~/plugins/i18n.js",
     '~/plugins/lodash.js',
+    "~/plugins/bus.js",
     '~/plugins/api_wrapper',
-    "~/plugins/bus.js"
+    "~/plugins/i18n.js"
   ],
 
   /*

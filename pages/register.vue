@@ -9,10 +9,10 @@
         @update:error="a.error = $event"
         :extra="{clearable:false}"
         mode="edit")
-    v-checkbox(v-model="agree")
-      template(v-slot:label)
-        div {{$t('page.register.i_agree_with')}} &nbsp;
-          a(@click="terms_dialog_open = true") {{$t('page.register.terms_of_use')}}
+    v-row(align="center")
+      v-checkbox(v-model="agree")
+      div {{$t('page.register.i_agree_with')}} &nbsp;
+        a(@click="terms_dialog_open = true") {{$t('page.register.terms_of_use')}}
     v-btn.m-4(@click='submit' rounded large :disabled="any_invalid || submitStatus === 'PENDING'" :loading="submit_loading" color='success') {{$t('page.register.btn_register')}}
     v-alert(:value='errorMsg !== null' type='error' prominent) {{errorMsg}}
     v-dialog(v-model="terms_dialog_open" :width="main_container_with")

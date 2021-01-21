@@ -22,7 +22,7 @@
           :description="entry_type.description"
           mode="edit")
         v-divider(class="wide_divider")
-        div(v-for="(aspect,index) in shown_aspects" :key="aspect.key")
+        div(v-for="aspect in shown_aspects" :key="aspect.key")
           AspectDescription(:aspect="aspect" :loc="aspect_descr_loc(aspect)")
         v-divider(class="wide_divider")
         Paginate(
@@ -50,6 +50,9 @@
   import EntrytypePageMixin from "../components/EntrytypePageMixin";
   import goTo from 'vuetify/lib/services/goto'
 
+  /**
+   * NOT USED ATM
+   */
   export default {
     name: "EntrytypeNotes",
     mixins: [PersistentStorageMixin, EntrytypePageMixin],
@@ -106,7 +109,7 @@
       },*/
       // ...mapGetters({types: "templates/entrytypes"}),
       options() {
-        return this.$_.map(this.$store.getters["templates/entry_types_array"], o => {
+        return this.$_.map(this.$store.getters["templates/entry_types_array"](), o => {
           return {
             text: o.title,
             value: o.slug,

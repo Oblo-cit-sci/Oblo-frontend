@@ -14,6 +14,9 @@ export default {
   name: "InitializationMixin",
   mixins: [FixDomainMixin, SettingsChangeMixin, HomePathMixin, EnvMixin, URLQueryMixin, LanguageMixin],
   created() {
+    // console.log("db loaded??", this.db_loaded)
+    default_settings.ui_language = this.default_language
+    default_settings.domain_language = this.default_language
     if (!this.db_loaded)
       this.reload_storage()
     if (!this.$api.is_initialized()) {
@@ -77,7 +80,7 @@ export default {
       // reload...
       const user_settings = this.$store.getters["user/settings"]
       const domain_name = this.query_param_domain_name || user_settings.fixed_domain
-      const i_language = this.$route.query[QP_lang] || user_settings.domain_language || process.env.default_language || "en"
+      const i_language = this.$route.query[QP_lang] || user_settings.domain_language || this.default_language
       console.log("init with, ",domain_name, i_language)
       const {data} = await this.$api.basic.init_data(domain_name ? [domain_name, NO_DOMAIN] : null, i_language)
       console.log("connected")
@@ -149,9 +152,9 @@ export default {
     }
   },
   watch: {
-    db_loaded(val) {
-      // console.log("db loaded", this.initialized)
-      if (val) {
+    db_loaded(loaded) {
+      console.log("db loaded", loaded)
+      if (loaded) {
         // console.log("layout. initializing")
         if (this.$nuxt.isOffline) {
           console.log("offline")
@@ -163,7 +166,6 @@ export default {
           return
         }
         this.initialize().then(() => {
-
         }, err => {
           console.log("initialization failed", err)
         })
