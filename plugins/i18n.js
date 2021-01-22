@@ -10,7 +10,7 @@ Vue.use(VueI18n)
 
 // const base_path = "~/static/langs/"
 
-export default ({ app }) => {
+export default ({app}) => {
   // Set the i18n instance on app
   // This way we can use it globally in our components through this.$i18n
   const lang = app.context.env.DEFAULT_LANGUAGE
@@ -27,14 +27,24 @@ export default ({ app }) => {
       [lang]: require(`~/static/langs/content-${lang}.json`),
     },
 
-    // postTranslation: function (result, path) {
-    // could be used to collect all paths required for all individual pages
-    //   // console.log("post", path)
-    //   // console.log(app)
-    //   // console.log(app.$axios, app.context.route.name)
-    //   return result
-    // }
+    postTranslation: function (result, path) {
+      if (app.context.isDev && app.context.env.COLLECT_MESSAGE_PATHS) {
+        let {page_messages} = app.store.getters["app/get_dev"]
+        if (!page_messages)
+          page_messages = {}
+        let route_msgs = page_messages[app.context.route.name]
+        if (!route_msgs) {
+          route_msgs = new Set()
+          page_messages[app.context.route.name] = route_msgs
+        }
+        if (!route_msgs.has(path)) {
+          route_msgs.add(path)
+          app.context.store.commit("app/set_dev", {data: {page_messages}, merge: true})
+        }
+      }
+      return result
+    }
   })
 
-  app.i18n.msg = (loc) => ld.get(app.i18n.messages[app.i18n.locale],loc)
+  app.i18n.msg = (loc) => ld.get(app.i18n.messages[app.i18n.locale], loc)
 }

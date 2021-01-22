@@ -33,7 +33,8 @@ module.exports = {
     NODE_ENV: process.env.NODE_ENV || true,
     DEFAUL_OP_LANGUAGE: "en", // 639-1
     DEFAULT_LANGUAGE: process.env.DEFAULT_LANGUAGE || "en", // for the ui... // 639-3
-    HOSTNAME: hostname
+    HOSTNAME: hostname,
+    COLLECT_MESSAGE_PATHS: false, // during development. collect all messages path grouped by their page in the store.
   },
 
   server: {

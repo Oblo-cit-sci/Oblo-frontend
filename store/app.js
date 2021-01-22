@@ -5,7 +5,8 @@ export const state = () => ({
     initialized: false,
     connecting: false,
     connected: false,
-    privacy_sheet_open: true
+    privacy_sheet_open: true,
+    dev: {} // arbitrary data collected during development
   }
 )
 
@@ -24,6 +25,14 @@ export const mutations = {
   },
   close_privacy_sheet(state) {
     state.privacy_sheet_open = false
+  },
+  set_dev(state, {data, merge}) {
+    console.log(data, merge)
+    if(merge) {
+      state.dev = Object.assign(state.dev, data)
+    } else {
+      state.dev = data
+    }
   }
 }
 
@@ -42,6 +51,9 @@ export const getters = {
   },
   privacy_sheet_open(state) {
     return state.privacy_sheet_open
+  },
+  get_dev(state) {
+    return state.dev
   }
 }
 
