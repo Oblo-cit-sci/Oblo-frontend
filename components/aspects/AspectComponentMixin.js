@@ -45,7 +45,6 @@ export default {
   },
   computed: {
     ...mapGetters({"is_admin": "user/is_admin"}),
-
     value: {
       get: function () {
         return this.mvalue.value
@@ -98,9 +97,9 @@ export default {
     },
     update_mvalue(mvalue) {
       mvalue.is_mvalue = true
-      if (this.attr.update_raw) {
-        mvalue = mvalue.value
-      }
+      // if (this.attr.update_raw) {
+      //   mvalue = mvalue.value
+      // }
       this.$emit("update_value", mvalue)
     },
     update_error(has_error) {

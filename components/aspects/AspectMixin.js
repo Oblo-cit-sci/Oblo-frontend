@@ -62,7 +62,6 @@ export default {
   methods: {
     // debounce to not to store contantly while typing
     update_value(mvalue) {
-      // debugger
       const value = mvalue.value || null
       const is_mvalue = mvalue.is_mvalue
       if (is_mvalue) {

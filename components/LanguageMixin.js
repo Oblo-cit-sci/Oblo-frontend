@@ -5,7 +5,11 @@ import {pack_value} from "~/lib/aspect";
 export default {
   name: "LanguageMxin",
   mixins: [FilterMixin],
-  computed: {},
+  computed: {
+    default_language() {
+      return this.$nuxt.context.env.DEFAULT_LANGUAGE
+    }
+  },
   methods: {
     async change_language(language, update_settings = true, domain_language = null) {
       if (!domain_language) {
@@ -83,6 +87,15 @@ export default {
         codes = this.$store.getters["available_languages"]
       }
       return this.$store.getters["templates/code"]("languages").values.list.filter(v => codes.includes(v.value))
+    },
+    update_language_names() {
+      // todo some api call
+      // something like this:
+      // this.$i18n.mergeLocaleMessage("en", {
+      //   lang: {
+      //     de: "german"
+      //   }
+      // })
     }
   }
 }

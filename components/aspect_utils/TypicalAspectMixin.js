@@ -156,7 +156,7 @@ export default {
         t_description: this.t_description("asp.privacy.", alt_label_descr),
         attr: {
           only_value: true,
-          update_raw: true
+          // update_raw: true
         },
         type: SELECT,
         items: [{
@@ -186,7 +186,7 @@ export default {
         attr: {
           descr_as_html: true,
           only_value: true,
-          update_raw: true
+          // update_raw: true
         },
         items: []
       }

@@ -103,11 +103,11 @@
     methods: {
       update_settings() {
         this.update_button_loading = true
+        debugger
         this.$api.actor.post_me({settings: extract_n_unpack_values(this.settings_aspects)}).then(({data}) => {
-          // console.log(data.settings)
+          this.$store.commit("user/set_settings", data.data.settings)
+          this.change_language(data.data.settings.ui_language, false)
           this.ok_snackbar(this.$t("page.settings.settings_updated"))
-          this.$store.commit("user/set_settings", data.settings)
-          this.change_language(data.settings.ui_language, false)
           this.persist_user_settings()
           this.$router.push({name: PAGE_PROFILE})
         }).catch(err => {

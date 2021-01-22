@@ -536,6 +536,7 @@ export default {
       this.$api.actor.post_me({settings: Object.assign(existing_settings, {[this.location_privacy_setting_aspect.name]: setting_value.value})}).then(({data}) => {
         // console.log(data.settings)
         this.ok_snackbar(this.$t("page.settings.settings_updated"))
+        // todo maybe a mixin
         this.$store.commit("user/set_settings", data.settings)
         this.persist_user_settings()
 
