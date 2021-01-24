@@ -12,7 +12,7 @@
     v-row(align="center")
       v-checkbox(v-model="agree")
       div {{$t('page.register.i_agree_with')}} &nbsp;
-        a(@click="terms_dialog_open = true") {{$t('page.register.terms_of_use')}}
+        a(@click="terms_dialog_open = true") {{$t('page.about[3].h2')}}
     v-btn.m-4(@click='submit' rounded large :disabled="any_invalid || submitStatus === 'PENDING'" :loading="submit_loading" color='success') {{$t('page.register.btn_register')}}
     v-alert(:value='errorMsg !== null' type='error' prominent) {{errorMsg}}
     v-dialog(v-model="terms_dialog_open" :width="main_container_with")
@@ -70,7 +70,7 @@ export default {
     terms_of_use_section() {
       // make this better so its not destroyed in the translation tables. translations shouldnt touch it.
       // todo just grab it from the right location. rename p.index from h2 to p.h:terms_of_use and find by that key
-      return this.$_.find(this.$i18n.msg("page.about"), s => s.flag === 'TERMS_OF_USE')
+      return this.$_.find(this.$i18n.msg("page.about"), s => s.hasOwnProperty("terms_of_use"))
     }
   },
   methods: {
