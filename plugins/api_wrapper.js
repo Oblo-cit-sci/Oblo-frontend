@@ -402,6 +402,18 @@ class Language extends QueryBase {
       }
     })
   }
+
+  search(search_query) {
+    return this.get_("search", {
+      params: {
+        search_query
+      }
+    })
+  }
+
+  add_language(language_code) {
+    return this.post_("add_language", null,{params: {language_code}})
+  }
 }
 
 

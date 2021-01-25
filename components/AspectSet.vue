@@ -9,7 +9,8 @@
           :is_set.sync="i_values_set[aspect.name]"
           :extra="{clearable:false}"
           :mode="mode")
-    v-row(v-if="show_validation")
+    slot(name="pre_validation")
+    v-row.mt-2(v-if="show_validation")
       AspectSetValidation(:aspects="aspects" :aspects_set="i_values_set")
 </template>
 

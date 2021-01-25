@@ -6,7 +6,14 @@
       mode="edit"
       @is_complete="setup_is_complete = $event"
       :include_validation="true")
+      template(v-slot:pre_validation)
+        v-btn(@click="new_lang") {{$t("comp.translate.new.new_lang")}}
     v-btn(@click="init" :disabled="!setup_is_complete" color="success") {{$t("comp.translate.start")}}
+    Dialog(:dialog_open.sync="new_lang_dialog_open")
+      h3 {{$t("comp.translate.new.descr")}}
+      LanguageSearch(v-model="new_language")
+      v-btn(@click="add_language" :disabled="!new_language" color="success") {{$t("comp.translate.start")}}
+      p.mt-2 {{$t("comp.translate.new.get_in_touch")}}
 </template>
 
 <script>
@@ -16,13 +23,16 @@ import Aspect from "~/components/Aspect";
 import {extract_n_unpack_values, pack_value} from "~/lib/aspect";
 import {SELECT, UI_LANGUAGE} from "~/lib/consts";
 import AspectSet from "~/components/AspectSet";
+import LanguageSearch from "~/components/language/LanguageSearch";
+import Dialog from "~/components/dialogs/Dialog";
+import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin";
 
 const components = ["fe", "be"]
 
 export default {
   name: "TranslateSetupComponent",
-  components: {AspectSet, Aspect},
-  mixins: [OptionsMixin],
+  components: {Dialog, LanguageSearch, AspectSet, Aspect},
+  mixins: [OptionsMixin, TriggerSnackbarMixin],
   data() {
     const {component, src_lang, dest_lang} = this.$store.getters["translate/translation"]
     return {
@@ -31,7 +41,9 @@ export default {
         src_lang: pack_value(src_lang || this.$store.getters["user/settings_value"](UI_LANGUAGE)),
         dest_lang: pack_value(dest_lang)
       },
-      setup_is_complete: false
+      setup_is_complete: false,
+      new_lang_dialog_open:false,
+      new_language: null
     }
   },
   computed: {
@@ -87,6 +99,17 @@ export default {
       const {data} = await this.$api.language.get_component(component, [src_lang, dest_lang], false)
       await this.$store.dispatch("translate/setup", {component, src_lang, dest_lang, messages: data})
       await this.$router.push("/translate/translate")
+    },
+    new_lang() {
+      this.new_lang_dialog_open = true
+    },
+    add_language() {
+      console.log(this.new_language)
+      this.$api.language.add_language(this.new_language).then(res => {
+
+      }, err => {
+          this.err_error_snackbar(err)
+      })
     }
   }
 }

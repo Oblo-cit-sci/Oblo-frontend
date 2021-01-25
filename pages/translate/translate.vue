@@ -1,6 +1,8 @@
 <template lang="pug">
   div
     v-btn(@click="back") {{$t("page.translate.back")}}
+    v-checkbox(v-model="show_only_incomplete" :label="$t('page.translate.only_undone')")
+    h3 {{}}
     MessageTranslationBlock(v-for="t in show_translations"
       v-bind="t"
       :ref="t.index"
@@ -29,6 +31,7 @@ export default {
   },
   data() {
     return {
+      show_only_incomplete: false,
       page: 1,
       messages_per_page: 20,
       changed_messages: {},
@@ -49,7 +52,11 @@ export default {
       return Math.ceil(this.translations.length / this.messages_per_page)
     },
     show_translations() {
-      return this.translations.slice((this.page - 1) * this.messages_per_page, (this.page) * this.messages_per_page)
+      let translations = this.translations
+      if (this.show_only_incomplete) {
+        translations = translations.filter(t => t.messages[1] === "")
+      }
+      return translations.slice((this.page - 1) * this.messages_per_page, (this.page) * this.messages_per_page)
     }
   },
   methods: {
@@ -66,7 +73,7 @@ export default {
       this.$api.language.update_messages(this.translation.component, this.translation.dest_lang, messages).then(({data}) => {
         this.ok_snackbar(data.msg)
         // console.log(messages)
-        for(let m of messages) {
+        for (let m of messages) {
           // console.log(this.$refs[m[0]][0])
           this.$refs[m[0]][0].refresh_original()
         }

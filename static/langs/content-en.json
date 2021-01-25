@@ -70,7 +70,8 @@
       "p2": "If you haven't received the verification link request a new email!"
     },
     "translate": {
-      "back": "back to setup"
+      "back": "back to setup",
+      "only_undone": "show only missing or outdated messages"
     },
     "login": {
       "h1": "@.capitalize:w.login",
@@ -499,7 +500,11 @@
         "descr": "Which language do you want to help completing?"
       },
       "start": "start",
-      "setup_incomplete_text": ""
+      "new": {
+        "new_lang": "Add another language",
+        "descr": "Which language do you want to add?",
+        "get_in_touch":"If you cannot find the language get in touch with us, we will make it happen!"
+      }
     },
     "treeselect_asp": {
       "click_to_select": "Click to select"

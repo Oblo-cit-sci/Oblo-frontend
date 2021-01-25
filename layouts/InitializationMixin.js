@@ -81,7 +81,7 @@ export default {
       const user_settings = this.$store.getters["user/settings"]
       const domain_name = this.query_param_domain_name || user_settings.fixed_domain
       const i_language = this.$route.query[QP_lang] || user_settings.domain_language || this.default_language
-      console.log("init with, ",domain_name, i_language)
+      console.log("init with, ", domain_name, i_language)
       const {data} = await this.$api.basic.init_data(domain_name ? [domain_name, NO_DOMAIN] : null, i_language)
       console.log("connected")
 
@@ -166,6 +166,12 @@ export default {
           return
         }
         this.initialize().then(() => {
+          console.log("all done")
+          // const token = this.$store.getters["user/get_auth_token"]
+          // const evtSource = new EventSource(this.$api.api_baseURL + `/sse/stream?token=${token.access_token}`);
+          // evtSource.onmessage = function (event) {
+          //   console.log(event.data)
+          // }
         }, err => {
           console.log("initialization failed", err)
         })
