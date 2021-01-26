@@ -3,6 +3,7 @@
     outlined
     :search-input.sync="query"
     :loading="isLoading"
+    hide-no-data
     v-model="selectedLanguage"
     :items="languageOptions")
 </template>

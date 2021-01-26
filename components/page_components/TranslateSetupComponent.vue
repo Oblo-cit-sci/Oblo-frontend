@@ -4,11 +4,11 @@
       :aspects="setup_aspects"
       :values.sync="setup_values"
       mode="edit"
-      @is_complete="setup_is_complete = $event"
+      @is_complete="is_aspects_complete = $event"
       :include_validation="true")
       template(v-slot:pre_validation)
         v-btn(@click="new_lang") {{$t("comp.translate.new.new_lang")}}
-    v-btn(@click="init" :disabled="!setup_is_complete" color="success") {{$t("comp.translate.start")}}
+    v-btn(@click="init" :disabled="!is_setup_valid" color="success") {{$t("comp.translate.start")}}
     Dialog(:dialog_open.sync="new_lang_dialog_open")
       h3 {{$t("comp.translate.new.descr")}}
       LanguageSearch(v-model="new_language")
@@ -41,7 +41,7 @@ export default {
         src_lang: pack_value(src_lang || this.$store.getters["user/settings_value"](UI_LANGUAGE)),
         dest_lang: pack_value(dest_lang)
       },
-      setup_is_complete: false,
+      is_aspects_complete: false,
       new_lang_dialog_open:false,
       new_language: null
     }
@@ -49,6 +49,9 @@ export default {
   computed: {
     available_components_options() {
       return components.map(c => this.create_option(c, this.$t("comp.translate.component_select_asp.options." + c)))
+    },
+    is_setup_valid() {
+      return this.is_aspects_complete && this.setup_values.src_lang.value !== this.setup_values.dest_lang.value
     },
     component_select_aspect() {
       return {

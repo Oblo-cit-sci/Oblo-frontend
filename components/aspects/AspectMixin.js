@@ -33,7 +33,7 @@ export default {
       type: Boolean,
       default: false
     },
-    aspect_loc: { // when not passed on, it is somew kind of anonymous aspect, probably defined on that page (e.g. register)
+    aspect_loc: { // when not passed on, it is some kind of anonymous aspect, probably defined on that page (e.g. register)
       type: Array, // for composites and lists pass it down...
     },
     conditionals: {
@@ -114,12 +114,14 @@ export default {
     track_change() {
       return this.attr.track_change || false
     },
+    is_required() {
+      return this.$_.get(this.attr, "required", true)
+    },
     edit() {
       return this.mode === EDIT
     },
-    is_optional() {
-      // console.log(this.aspect.name, this.attr)
-      return this.$_.get(this.attr, "required", true) === false
+    show_is_optional() {
+      return !this.is_required && this.edit
     },
     condition_fail() {
       // console.log("condition_fail?", this.aspect.name,  "condition_fail?")
@@ -277,7 +279,7 @@ export default {
         this.$emit("update:is_set", this.i_is_set)
       }
     },
-    has_changed(change, prev) {
+    has_changed(change) {
       // console.log("aspect_mxn.has_changed", this.aspect.name, this.aspect.type, change, prev)
       this.$emit("has_changed", {name: this.aspect.name, change})
     }

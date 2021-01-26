@@ -1,11 +1,11 @@
 <template lang="pug">
   v-snackbar(bottom=true v-model="show" centered :timeout="timeout" :color="color" multi-line)
-    b.snack_text {{message}}
+    b.snack_text(:class="{small: long_text}") {{message}}
 </template>
 
 <script>
   import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
-
+  // You need to verify your email address before logging in
   export default {
     name: "TheSnackbar",
     mixins: [TriggerSnackbarMixin],
@@ -14,7 +14,12 @@
         show: false,
         color: null,
         message: "",
-        timeout:2000
+        timeout:2500
+      }
+    },
+    computed: {
+      long_text() {
+        return this.message.length > 40
       }
     },
     created: function () {
@@ -40,5 +45,9 @@
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+  }
+
+  .small {
+    font-size: 120%;
   }
 </style>

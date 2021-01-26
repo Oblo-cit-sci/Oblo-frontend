@@ -91,7 +91,6 @@ export default {
       return this.is_required && !this.value
     },
     view_mode_text() {
-      // console.log(this.selection)
       if (this.selection) {
         return this.selection.text || this.selection.value
       }

@@ -2,7 +2,6 @@
   div
     v-btn(@click="back") {{$t("page.translate.back")}}
     v-checkbox(v-model="show_only_incomplete" :label="$t('page.translate.only_undone')")
-    h3 {{}}
     MessageTranslationBlock(v-for="t in show_translations"
       v-bind="t"
       :ref="t.index"

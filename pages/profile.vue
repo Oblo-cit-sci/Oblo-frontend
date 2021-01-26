@@ -84,6 +84,7 @@
       EntryListWrapper(
         :wait="waiting"
         :style="main_container_width_style"
+        :preview_options="entry_preview_options"
         :init_request="true"
         :search_config="entry_search_config")
 </template>
@@ -310,6 +311,11 @@ export default {
       return [this.get_actor_filter(this.registered_name),
         this.get_status_filter([DRAFT])
       ]
+    },
+    entry_preview_options() {
+      return {
+        show_language_chip: true
+      }
     },
     registered_name() {
       return this.user_data.registered_name
