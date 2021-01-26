@@ -81,8 +81,8 @@ export default {
   },
   created() {
     this.int_value = this.value
+    this.calc_options()
     if (this.is_editable_mode) {
-      this.calc_options()
       if (this.direct_select) {
         let options = {}
         if (this.attr.allow_select_levels) {
@@ -156,20 +156,16 @@ export default {
     },
     value_text() {
       // console.log("val text", this.value)
-      if (this.value) {
-        if (this.value.constructor === Array) {
-          // console.log("TV", this.value)
-          return this.value.map(v => {
-            if (typeof v === "string")
-              return v
-            let base = v.text
-            base += v.extra_value ? " / " + unpack(v.extra_value) : ""
-            return base
-          }).join(" \u21D2 ")
-        } else {
-          return this.value
-        }
-      }
+      // console.log("TV", this.value)
+      let act_tree_node = this.tree.root
+      return this.value.map(v => {
+        if (typeof v === "string")
+          return v
+        act_tree_node = act_tree_node.children.find(node => node.value === v.value)
+        let base = act_tree_node.text
+        base += v.extra_value ? " / " + unpack(v.extra_value) : ""
+        return base
+      }).join(" \u21D2 ")
     }
   },
   watch: {
