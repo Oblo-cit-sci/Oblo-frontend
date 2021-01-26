@@ -128,11 +128,11 @@ export default {
     },
     async review(accept) {
       this.sending = true
-      const method = accept ? this.$api.entry.patch_accept : this.$api.entry.patch_reject
+      const method = accept ? "patch_accept" : "patch_reject"
       await this.$store.dispatch("entries/save_entry", {entry: this.entry, template: this.template})
       const sending_entry = prepare_for_submission(this.$store.getters["entries/get_entry"](this.uuid))
       try {
-        const {data} = await method(sending_entry)
+        const {data} = await this.$api.entry[method](sending_entry)
         this.sending = false
         this.ok_snackbar(data.msg)
         if (accept) {

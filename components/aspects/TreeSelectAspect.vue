@@ -158,10 +158,13 @@ export default {
       // console.log("val text", this.value)
       // console.log("TV", this.value)
       let act_tree_node = this.tree.root
+      // console.log("ATN",act_tree_node, this.value)
       return this.value.map(v => {
+        // console.log("v?",v, act_tree_node.children)
         if (typeof v === "string")
           return v
         act_tree_node = act_tree_node.children.find(node => node.value === v.value)
+        // console.log("->",act_tree_node.value,  act_tree_node.text)
         let base = act_tree_node.text
         base += v.extra_value ? " / " + unpack(v.extra_value) : ""
         return base

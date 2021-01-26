@@ -459,7 +459,6 @@ export default {
     },
     /* util */
     complete_value(value, features) {
-      debugger
       /*
       value contains just the coordinates
       features should have the results of rev-geoquery of the coordinates

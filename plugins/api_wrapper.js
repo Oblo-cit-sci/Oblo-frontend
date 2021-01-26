@@ -146,11 +146,11 @@ class Entry extends QueryBase {
   }
 
   patch_accept(entry_data) {
-    return this.patch_(`{entry_data.uuid}/accept`, entry_data)
+    return this.patch_(`${entry_data.uuid}/accept`, entry_data)
   }
 
   patch_reject(entry_data) {
-    return this.axios.patch_(`${entry_data.uuid}/reject`, entry_data)
+    return this.patch_(`${entry_data.uuid}/reject`, entry_data)
   }
 
   delete(uuid) {

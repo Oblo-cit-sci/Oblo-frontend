@@ -36,17 +36,8 @@
     computed: {
       options() {
         // console.log("E Create options", this.template_entries)
-        return this.$_.map(this.template_entries, o => {
-          const option = {
-            text: o.title,
-            value: o.slug,
-            description: o.description,
-          }
-          if (o.language !== this.$store.getters["user/settings_value"]("domain_language")) {
-            option.language = o.language
-          }
-          return option
-        })
+        const lang = this.$store.getters["user/settings_value"]("domain_language")
+        return this.entry_select_items(this.template_entries, lang)
       }
     },
   }

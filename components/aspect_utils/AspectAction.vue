@@ -107,40 +107,49 @@ export default {
       })
     },
     process_result(data) {
+      // TODO...
       const process = this.action.properties.process_result
       if (!process) {
         return data
       }
-      const result = []
-      for (let i of process) {
-        const k = Object.keys(i)[0]
-        const v = i[k]
-        let read = null
-        // if value is just str, the string is the location of a simple value
-        // if value is array, first is location, probably to an object, and the 2nd is how the keys are "joined"
-        let joined = false
-        if (this.$_.isArray(v)) {
-          read = this.$_.get(data, v[0])
-          joined = true
-        } else {
-          read = this.$_.get(data, v)
-        }
-        if (read) {
-          if (joined) {
-            const join_obj = (val) => {
-              const keys_to_join = v[1]
-              return this.$_.map(keys_to_join, prop => val[prop]).join(", ")
-            }
-            if (Array.isArray(read)) {
-              read = read.map(i => join_obj(i))
-            } else {
-              read = join_obj(v)
-            }
-          }
-          result.push({[k]: read})
+      for (let process of this.action.properties.process_result) {
+        const {name,value} = process
+        if (name === "list_filter_index") {
+          console.log(data)
+          debugger
         }
       }
-      return result
+      return data
+      // const result = []
+      // for (let i of process) {
+      //   const k = Object.keys(i)[0]
+      //   const v = i[k]
+      //   let read = null
+      //   // if value is just str, the string is the location of a simple value
+      //   // if value is array, first is location, probably to an object, and the 2nd is how the keys are "joined"
+      //   let joined = false
+      //   if (this.$_.isArray(v)) {
+      //     read = this.$_.get(data, v[0])
+      //     joined = true
+      //   } else {
+      //     read = this.$_.get(data, v)
+      //   }
+      //   if (read) {
+      //     if (joined) {
+      //       const join_obj = (val) => {
+      //         const keys_to_join = v[1]
+      //         return this.$_.map(keys_to_join, prop => val[prop]).join(", ")
+      //       }
+      //       if (Array.isArray(read)) {
+      //         read = read.map(i => join_obj(i))
+      //       } else {
+      //         read = join_obj(v)
+      //       }
+      //     }
+      //     result.push({[k]: read})
+      //   }
+      // }
+      // return result
     },
     transform_data(data) {
       const transformer = this.action.properties.transform_result
@@ -178,6 +187,7 @@ export default {
       }
     },
     handle_result(result) {
+      console.log("result", result)
       const handle = this.action.properties.handle_result
       if (handle) {
         if (handle.type === "assign_to_aspect") {

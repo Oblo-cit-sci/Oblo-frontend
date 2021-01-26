@@ -488,8 +488,14 @@
         "description": "Which part do you want to translate?",
         "options": {
           "fe": "User interface",
-          "be": "Server messages"
+          "be": "Server messages",
+          "domain": "Domain info",
+          "entries": "Entrytypes and codes"
         }
+      },
+      "entry_select_asp": {
+        "label": "Entrytype or code",
+        "description": "Select the entrytype or code to translate"
       },
       "src_lang": {
         "label": "Source language",

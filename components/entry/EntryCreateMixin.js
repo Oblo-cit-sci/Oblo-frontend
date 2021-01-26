@@ -77,6 +77,17 @@ export default {
     persist_after_entry_create(entry) {
       this.$store.commit("entries/save_entry", entry)
       this.persist_entries()
+    },
+    entry_select_items(entries, indicate_alt_language =null) {
+      return entries.reduce((items, e) => {
+        const {slug: value, title: text, description} = e;
+        const item = {value, text, description}
+        if (indicate_alt_language !== null && e.language !== indicate_alt_language) {
+          item.language = e.language
+        }
+        items.push(item)
+        return items
+      }, [])
     }
   }
 }

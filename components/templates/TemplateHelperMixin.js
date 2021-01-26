@@ -24,10 +24,11 @@ export default {
     // todo this maybe somewhere else
     async guarantee_slugs_in_language(slugs, language) {
       const missing = slugs.filter(slug => !this.has_slug_in_lang(slug,  language))
-      const {data} = await this.$api.entries.get_entries_by_slugs(missing, language)
-      const entries = data.data
-      await this.$store.dispatch("templates/add_templates_codes", entries)
-      return entries
+      if(!this.$_.isEmpty(missing)) {
+        const {data} = await this.$api.entries.get_entries_by_slugs(missing, language)
+        const entries = data.data
+        await this.$store.dispatch("templates/add_templates_codes", entries)
+      }
     }
   }
 }

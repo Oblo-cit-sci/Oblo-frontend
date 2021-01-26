@@ -200,11 +200,12 @@ export default {
           confirm_method: async () => {
             const template_slug = this.template.slug
             const entry_lang = this.entry.language
-            const entries = await this.guarantee_slugs_in_language(this.get_reference_slugs().concat([template_slug]), entry_lang)
-            if (this.$_.some(entries, e => e.slug === template_slug)) {
+            await this.guarantee_slugs_in_language(this.get_reference_slugs().concat([template_slug]), entry_lang)
+            const has_entry = this.$store.getters["templates/has_template_in_lang"](this.template.slug, this.entry.language)
+            if(has_entry) {
               this.force_entry_language = true
             } else {
-              this.error_snackbar(this.$t("comp.entry.template_not_in_lang", {language: entry_lang}))
+              this.error_snackbar(this.$t("comp.entry.template_not_in_lang"))
             }
           }
         })
