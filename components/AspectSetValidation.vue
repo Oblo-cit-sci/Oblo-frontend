@@ -16,7 +16,7 @@ export default {
       type: Array,
       required: true
     },
-    aspects_set: {
+    aspects_state: {
       type: Object,
       required: true
     }

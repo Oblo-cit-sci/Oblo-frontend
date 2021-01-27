@@ -120,10 +120,6 @@ export default {
       }
       return this.mode
     },
-    disable() {
-      // console.log("Aspect.disable?", this.aspect.name, this.condition_fail)
-      return this.condition_fail || this.attr.disable
-    },
     has_action() {
       return this.attr.hasOwnProperty("action")
     },

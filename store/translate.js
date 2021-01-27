@@ -2,6 +2,7 @@ import {MENU_MODE_DOMAIN} from "~/lib/consts";
 
 export const state = () => ({
     component: null,
+    entry: null,
     src_lang: null,
     dest_lang: null,
     messages: [],

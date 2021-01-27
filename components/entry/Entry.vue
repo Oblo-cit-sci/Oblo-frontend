@@ -100,7 +100,7 @@ import FullEntryMixin from "./FullEntryMixin";
 import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
 import PersistentStorageMixin from "../util/PersistentStorageMixin";
 import EntryValidation from "./EntryValidation";
-import {DRAFT, draft_color, EDIT, ENTRY, REVIEW, VIEW} from "~/lib/consts";
+import {draft_color, EDIT, ENTRY, VIEW} from "~/lib/consts";
 import {privacy_color, privacy_icon} from "~/lib/util";
 import ChangedAspectNotice from "./ChangedAspectNotice";
 import MetaChips from "./MetaChips";
@@ -136,7 +136,7 @@ export default {
     this.set_aspects([this.asp_entry_roles()])
     if (this.is_draft && this.is_edit_mode) {
       this.check_creator_switch()
-      this.check_language_switch()
+      // this.check_language_switch()
     }
   },
   data() {
@@ -150,7 +150,6 @@ export default {
   },
   methods: {
     aspectAction(aspect_action) {
-
     },
     entryAction(action) {
       // console.log("received entry-A", action)
@@ -181,32 +180,6 @@ export default {
               aspect_loc: [[EDIT, this.uuid], ["meta", "actors"]],
               value: roles
             })
-          }
-        })
-      }
-    },
-    check_language_switch() {
-      if (this.entry.language !== this.$store.getters.domain_language) {
-        this.$bus.$emit("dialog-open", {
-          data: {
-            cancel_text: this.$t("comp.entry.language_switch_dialog.cancel_text"),
-            title: this.$t("comp.entry.language_switch_dialog.title"),
-            text: this.$t("comp.entry.language_switch_dialog.text",
-              {language: this.$t("lang."+this.entry.language)})
-          },
-          cancel_method: () => {
-            this.$router.back()
-          },
-          confirm_method: async () => {
-            const template_slug = this.template.slug
-            const entry_lang = this.entry.language
-            await this.guarantee_slugs_in_language(this.get_reference_slugs().concat([template_slug]), entry_lang)
-            const has_entry = this.$store.getters["templates/has_template_in_lang"](this.template.slug, this.entry.language)
-            if(has_entry) {
-              this.force_entry_language = true
-            } else {
-              this.error_snackbar(this.$t("comp.entry.template_not_in_lang"))
-            }
           }
         })
       }

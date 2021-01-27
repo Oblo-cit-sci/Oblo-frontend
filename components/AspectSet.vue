@@ -6,18 +6,18 @@
           :ext_value.sync="i_values[aspect.name]"
           :conditionals="i_values"
           @update:error="errors[aspect.name] = $event"
-          :is_set.sync="i_values_set[aspect.name]"
+          @update:state="state[aspect.name] = $event"
           :extra="{clearable:false}"
           :mode="mode")
     slot(name="pre_validation")
     v-row.mt-2(v-if="show_validation")
-      AspectSetValidation(:aspects="aspects" :aspects_set="i_values_set")
+      AspectSetValidation(:aspects="aspects" :aspects_state="state")
 </template>
 
 <script>
 import {aspect_default_value} from "~/lib/aspect"
 import Aspect from "~/components/Aspect"
-import {VIEW} from "~/lib/consts"
+import {ASP_ERROR, ASP_UNSET, VIEW} from "~/lib/consts"
 import AspectSetValidation from "~/components/AspectSetValidation";
 
 export default {
@@ -40,9 +40,6 @@ export default {
       type: Boolean,
       default: true
     },
-    values_set: {
-      type: Object
-    },
     include_validation: {
       type: Boolean
     },
@@ -61,19 +58,28 @@ export default {
     }
     return {
       i_values: i_values,
+      // state should replace, error including: unset, set, error, disabled
       errors: this.$_.mapValues(aspectMap, () => null),
+      state: this.$_.mapValues(aspectMap, () => null),
       initial_values: null,
       has_changes: false,
-      i_values_set: this.$_.mapValues(aspectMap, () => false)
     }
   },
   computed: {
+    aspect_names() {
+      return this.$_.map(this.aspects, "name")
+    },
     has_error() {
-      // console.log("check errs")
       return this.$_.filter(this.errors, e => e).length > 0
     },
     is_complete() {
-      return Object.values(this.i_values_set).every(is_set => is_set)
+      for(let aspect of this.aspect_names){
+          // console.log(aspect, this.state[aspect])
+          if([ASP_UNSET,ASP_ERROR].includes(this.state[aspect])) {
+            return false
+          }
+      }
+      return true
     },
     show_validation() {
       return this.include_validation && !(this.hide_validation_if_valid && this.is_complete)
@@ -102,15 +108,16 @@ export default {
     has_errors: {
       deep: true,
       handler(has_errs) {
-        console.log("er up")
+        // console.log("er up")
         this.$emit("has_errors", has_errs)
       }
     },
-    i_values_set: {
+    state: {
       immediate: true,
       deep: true,
-      handler: function (is_set) {
-        this.$emit("update:is_set", is_set)
+      handler: function (state) {
+        // console.log("set state", state)
+        this.$emit("update:state", state)
       }
     },
     is_complete: {

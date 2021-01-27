@@ -26,23 +26,25 @@ import AspectSet from "~/components/AspectSet";
 import LanguageSearch from "~/components/language/LanguageSearch";
 import Dialog from "~/components/dialogs/Dialog";
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin";
+import EntryCreateMixin from "~/components/entry/EntryCreateMixin";
 
-const components = ["fe", "be"]
+const components = ["fe", "be", "domain", "entries"]
 
 export default {
   name: "TranslateSetupComponent",
   components: {Dialog, LanguageSearch, AspectSet, Aspect},
-  mixins: [OptionsMixin, TriggerSnackbarMixin],
+  mixins: [OptionsMixin, TriggerSnackbarMixin, EntryCreateMixin],
   data() {
-    const {component, src_lang, dest_lang} = this.$store.getters["translate/translation"]
+    const {component, entry, src_lang, dest_lang} = this.$store.getters["translate/translation"]
     return {
       setup_values: {
         component: pack_value(component),
+        entry: pack_value(entry),
         src_lang: pack_value(src_lang || this.$store.getters["user/settings_value"](UI_LANGUAGE)),
         dest_lang: pack_value(dest_lang)
       },
       is_aspects_complete: false,
-      new_lang_dialog_open:false,
+      new_lang_dialog_open: false,
       new_language: null
     }
   },
@@ -57,10 +59,27 @@ export default {
       return {
         name: "component",
         type: SELECT,
-        attr: {},
         label: this.$t("comp.translate.component_select_asp.label"),
         description: this.$t("comp.translate.component_select_asp.description"),
         items: this.available_components_options
+      }
+    },
+    entry_select_aspect() {
+      const entries = this.$store.getters["templates/templates_of_domain"]("licci","en")
+      // console.log(entries)
+      return {
+        name: "entry",
+        type: SELECT,
+        attr: {
+          hide_on_disabled: true,
+          condition: {
+            aspect: "# component",
+            value: "entries"
+          }
+        },
+        label: this.$t("comp.translate.entry_select_asp.label"),
+        description: this.$t("comp.translate.entry_select_asp.description"),
+        items: this.entry_select_items(entries) // EntryCreateMixin
       }
     },
     language_select_aspect() {
@@ -90,7 +109,7 @@ export default {
       return this.$_.map(m, (l_code, language_name) => this.create_option(language_name, l_code))
     },
     setup_aspects() {
-      return [this.component_select_aspect, this.src_language_select_aspect, this.dest_language_select_aspect]
+      return [this.component_select_aspect, this.entry_select_aspect, this.src_language_select_aspect, this.dest_language_select_aspect]
     },
     disable_init() {
       return true
@@ -98,6 +117,7 @@ export default {
   },
   methods: {
     async init() {
+      console.log(this.setup_values)
       const {component, src_lang, dest_lang} = extract_n_unpack_values(this.setup_values)
       const {data} = await this.$api.language.get_component(component, [src_lang, dest_lang], false)
       await this.$store.dispatch("translate/setup", {component, src_lang, dest_lang, messages: data})
@@ -111,7 +131,7 @@ export default {
       this.$api.language.add_language(this.new_language).then(res => {
 
       }, err => {
-          this.err_error_snackbar(err)
+        this.err_error_snackbar(err)
       })
     }
   }

@@ -1,4 +1,4 @@
-import {EDIT, ENTRY, FLEX, LIST_INDEX, META, REVIEW, VIEW} from "~/lib/consts";
+import {ASP_DISABLED, ASP_SET, ASP_UNSET, EDIT, ENTRY, FLEX, LIST_INDEX, META, REVIEW, VIEW} from "~/lib/consts";
 import {
   aspect_default_value,
   aspect_loc_str2arr,
@@ -102,7 +102,7 @@ export default {
     },
     refresh_original() {
       this.original_value = this.value
-      if(this.$refs.aspect_component.refresh_original) {
+      if (this.$refs.aspect_component.refresh_original) {
         this.$refs.aspect_component.refresh_original()
       }
     }
@@ -115,13 +115,17 @@ export default {
       return this.attr.track_change || false
     },
     is_required() {
-      return this.$_.get(this.attr, "required", true)
+      return this.attr.required || true
     },
     edit() {
       return this.mode === EDIT
     },
     show_is_optional() {
       return !this.is_required && this.edit
+    },
+    disable() {
+      // console.log("Aspect.disable?", this.aspect.name, this.condition_fail)
+      return this.condition_fail || this.attr.disable || this.disabled
     },
     condition_fail() {
       // console.log("condition_fail?", this.aspect.name,  "condition_fail?")
@@ -150,6 +154,17 @@ export default {
     },
     readOnly() {
       return this.mode === VIEW
+    },
+    asp_state() {
+      // console.log("asp-state", this.aspect.name, this.i_is_set, this.disable)
+      if (this.i_is_set) {
+        return ASP_SET
+      } else if (this.disable) {
+        return ASP_DISABLED
+      } else {
+      return ASP_UNSET
+      }
+      // ERROR?
     },
     mvalue() {
       if (!this.aspect_loc) {
@@ -263,6 +278,12 @@ export default {
     }
   },
   watch: {
+    asp_state: {
+      immediate: true,
+      handler(value) {
+        this.$emit("update:state",value)
+      }
+    },
     // todo maybe use the default methods from AspectBaseMixin
     condition_fail(fail) {
       if (fail) {
@@ -272,17 +293,11 @@ export default {
           })
         }
       }
-    },
-    i_is_set: {
-      immediate: true,
-      handler: function () {
-        this.$emit("update:is_set", this.i_is_set)
-      }
-    },
-    has_changed(change) {
-      // console.log("aspect_mxn.has_changed", this.aspect.name, this.aspect.type, change, prev)
-      this.$emit("has_changed", {name: this.aspect.name, change})
     }
+  },
+  has_changed(change) {
+    // console.log("aspect_mxn.has_changed", this.aspect.name, this.aspect.type, change, prev)
+    this.$emit("has_changed", {name: this.aspect.name, change})
   }
 }
 
