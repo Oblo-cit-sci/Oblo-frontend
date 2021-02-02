@@ -145,6 +145,10 @@ export default {
           this.$store.commit("app/initialized")
         }
       } else {
+        await this.$store.dispatch("domain/set_act_domain_lang", {
+          domain_name: NO_DOMAIN,
+          language
+        })
         this.$store.commit("app/initialized")
       }
       // console.log("done")

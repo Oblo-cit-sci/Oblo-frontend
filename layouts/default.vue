@@ -8,6 +8,7 @@
       div(v-if="is_domain_page")
         nuxt
       v-container(v-else :style="container_style")
+        TheOverlay
         nuxt
     TheSnackbar
     ThePrivacySheet
@@ -26,9 +27,10 @@ import InitializationMixin from "~/layouts/InitializationMixin"
 import MenuContainer from "~/components/menu/MenuContainer"
 import NotificationBanner from "~/components/global/NotificationBanner"
 import DecisionDialog from "~/components/util/DecisionDialog"
+import TheOverlay from "~/components/global/TheOverlay";
 
 export default {
-  components: {DecisionDialog, NotificationBanner, MenuContainer, TheAppBar, ThePrivacySheet, TheSnackbar},
+  components: {TheOverlay, DecisionDialog, NotificationBanner, MenuContainer, TheAppBar, ThePrivacySheet, TheSnackbar},
   mixins: [InitializationMixin, NavBaseMixin],
   data() {
     return {

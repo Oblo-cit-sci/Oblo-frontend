@@ -1,48 +1,68 @@
 <template lang="pug">
   div
-    Aspect(:aspect="aspect" :ext_value.sync="value" mode="edit")
-    Aspect(:aspect="aspect" :ext_value.sync="value" mode="view")
+    Aspect(:aspect="aspect" :ext_value="val" mode="edit" @has_changed="has_changed($event)")
+    div {{CC.change}}
+    Aspect(:aspect="test" :ext_value.sync="text" mode="edit")
+    MessageTranslationBlock(v-bind="translate_data")
 </template>
 
 <script>
 
 
-import AspectSet from "~/components/AspectSet"
-import Dialog from "~/components/dialogs/Dialog";
 import Aspect from "~/components/Aspect"
-import MultipageDialog from "~/components/dialogs/MultipageDialog"
-import DirectAspectCreator from "~/components/DirectAspectCreator"
-import MessageTranslationBlock from "~/components/language/MessageTranslationBlock"
-import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin";
-import {pack_value} from "~/lib/aspect";
+import {aspect_default_value, pack_value, unpack} from "~/lib/aspect";
+import MessageTranslationBlock from "~/components/language/MessageTranslationBlock";
 
 export default {
   name: "Tests",
-  mixins: [TriggerSnackbarMixin],
+  mixins: [],
   components: {
+    MessageTranslationBlock,
     Aspect
   },
   created() {
 
   },
   data() {
+    const aspect = {
+      "name": "translation",
+      "label": "",
+      "type": "composite",
+      "attr": {"compact": true, "track_change": true},
+      "components": [{
+        "name": "index",
+        "type": "str",
+        "attr": {"max": 90, "mode": "view"},
+        "t_label": "comp.message_translation.index"
+      }, {
+        "type": "str",
+        "name": "en",
+        "label": "english",
+        "attr": {"max": 90, "mode": "view", "track_change": false}
+      }, {"type": "str", "name": "de", "label": "german", "attr": {"max": 90, "mode": "edit", "track_change": true}}]
+    }
     return {
-      value: pack_value(null),
-      aspect : {
-        name:"jo",
-        type: "select",
-        items: [{value:"jo",text:"JO"}, "no"]
+      translate_data: {
+        index:"ok",
+        languages: ["en","de"],
+        messages: ["ok",""]
+      },
+      val: aspect_default_value(aspect),
+      aspect,
+      text: pack_value(""),
+      CC: {},
+      test: {
+        name: "a",
+        type: "str",
+        attr: {max: 90}
       }
     }
   },
-  computed: {
-  },
+  computed: {},
   methods: {
-    short() {
-      this.ok_snackbar("short hello")
-    },
-    long(event) {
-      this.ok_snackbar("this is a very long message. so long it needs more lines")
+    has_changed(event) {
+      console.log(event)
+      this.CC = event
     }
   },
   watch: {}

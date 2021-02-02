@@ -24,7 +24,7 @@ export default {
   components: {SimplePaginate, MessageTranslationBlock},
   mixins: [TriggerSnackbarMixin],
   created() {
-    if (!this.translation.dest_lang) {
+    if (!this.setup.dest_lang) {
       this.$router.push("/translate/setup")
     }
   },
@@ -38,16 +38,16 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({translation: "translate/translation"}),
+    ...mapGetters({setup: "translate/setup_values"}),
     translations() {
-      return this.translation.messages.map(msg => ({
+      return this.setup.messages.map(msg => ({
         index: msg[0],
-        languages: [this.translation.src_lang, this.translation.dest_lang],
+        languages: [this.setup.src_lang, this.setup.dest_lang],
         messages: [msg[1], msg[2]]
       }))
     },
     total_pages() {
-      // console.log("total", this.translations.length, this.translations.length / this.messages_per_page, Math.ceil(this.translations.length / this.messages_per_page))
+      // console.log("total", this.setups.length, this.setups.length / this.messages_per_page, Math.ceil(this.setups.length / this.messages_per_page))
       return Math.ceil(this.translations.length / this.messages_per_page)
     },
     show_translations() {
@@ -60,6 +60,7 @@ export default {
   },
   methods: {
     has_changed({name, change, value}) {
+      // console.log("msg change", name, change)
       if (change) {
         this.changed_messages[name] = value
       } else {
@@ -67,21 +68,48 @@ export default {
       }
       this.no_changes = this.$_.isEmpty(this.changed_messages)
     },
-    submit() {
-      const messages = Object.entries(this.changed_messages)
-      this.$api.language.update_messages(this.translation.component, this.translation.dest_lang, messages).then(({data}) => {
-        this.ok_snackbar(data.msg)
-        // console.log(messages)
-        for (let m of messages) {
-          // console.log(this.$refs[m[0]][0])
-          this.$refs[m[0]][0].refresh_original()
+    async submit() {
+      try {
+        if (["fe", "be"].includes(this.setup.component)) {
+          const messages = Object.entries(this.changed_messages)
+          const {data} = await this.$api.language.update_messages(this.setup.component, this.setup.dest_lang, messages)
+          this.ok_snackbar(data.msg)
+          for (let m of messages) {
+            this.$refs[m[0]][0].refresh_original()
+          }
+        } else if (this.setup.component === "domain") {
+          const messages = this.get_flat_messages()
+          if (this.setup.config.new_o) {
+            const {data} = await this.$api.domain.post_from_flat(this.setup.config.domain, this.setup.dest_lang, messages)
+          } else {
+            const {data} = await this.$api.domain.patch_from_flat(this.setup.config.domain, this.setup.dest_lang, messages)
+          }
+          const changed_messages = Object.entries(this.changed_messages)
+          for (let m of changed_messages) {
+            this.$refs[m[0]][0].refresh_original()
+          }
         }
-      }, err => {
+      } catch (err) {
         this.err_error_snackbar(err)
-      })
+        // console.log(err)
+      }
     },
     back() {
       this.$router.push("/translate/setup")
+    },
+    get_flat_messages() {
+      /**
+       * just get the index and dest_msg for all messages (used for domain, entry)
+       */
+      return this.translations.map(t => [t.index, t.messages[1]])
+    },
+    find_title_message(flat_messages) {
+      for (let msg of flat_messages) {
+        if (msg[0] === "title") {
+          return msg[1]
+        }
+      }
+      console.error("title message not found")
     }
   },
   watch: {

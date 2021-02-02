@@ -9,6 +9,7 @@
       :selection.sync="selection"
       :force_view="force_view"
       :disabled="disabled"
+      v-bind="extra"
       :hide_details="hide_details"
       :clearable="!is_required")
   div(v-else)
@@ -58,7 +59,7 @@ export default {
   },
   methods: {
     set_selection() {
-      // console.log("set-sel: value", this.value)
+      // console.log("SelectAspect", this.value)
       // debugger
       if (this.value !== null) {
         // console.log(this.value)
@@ -67,6 +68,7 @@ export default {
         })
         if (this.selection === undefined) {
           this.selection = null
+          this.update_value(null)
         }
       } else {
         // console.log(this.selection)
@@ -109,6 +111,7 @@ export default {
       this.update_error(this.has_error)
     },
     selection() {
+      // console.log("Sel Asp", this.selection)
       let send_value = this.selection
       // console.log("watch sel",)
 

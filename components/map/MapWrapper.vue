@@ -152,7 +152,9 @@ export default {
       return this.all_map_entries(this.domain_name)
     },
     show_legend() {
-      return (this.is_md && !this.menu_open) || this.is_large
+      if(!this.$_.isEmpty(this.templates_color_list())) {
+        return (this.is_md && !this.menu_open) || this.is_large
+      }
     },
     map_height() {
       return {
@@ -233,38 +235,40 @@ export default {
 
       // entries layer
       const entries_layer_name = layer_base_id + '_entries' // all_entries_entries
-      // console.log(entries_layer_name)
       // console.log("l",this.map.getLayer(entries_layer_name))
-      this.add_entry_layer(source_name, entries_layer_name, {
-        'circle-color': [
-          'match',
-          ['get', "template"],
-          ...this.domain_templates_color_list,
-          '#ccc'],
-        "circle-opacity": 0.8,
-        "circle-radius": [
-          'case',
-          ["boolean", ['feature-state', 'hover'], false], //["any", ["boolean", ['feature-state', 'hover'], false], ["boolean", ['feature-state', 'selected'], false]],
-          9,
-          this.is_small ? 9 : 7 // tried ["interpolate", ["linear"], ["zoom"], 1, 10, 13, 20]
-        ],
-        "circle-stroke-color": [
-          "match",
-          ["get", "status"],
-          "draft",
-          draft_color,
-          "requires_review",
-          review_color,
-          cluster_color
-        ],
-        "circle-stroke-width": [
-          "case",
-          ["any", ["boolean", ["feature-state", "selected"], false], ["==", ["get", "status"], "draft"], ["==", ["get", "status"], "requires_review"]],
-          2,
-          0
-        ]
-      })
-
+      if (!this.$_.isEmpty(this.domain_templates_color_list)) {
+        this.add_entry_layer(source_name, entries_layer_name, {
+          'circle-color': [
+            'match',
+            ['get', "template"],
+            ...this.domain_templates_color_list,
+            '#ccc'],
+          "circle-opacity": 0.8,
+          "circle-radius": [
+            'case',
+            ["boolean", ['feature-state', 'hover'], false], //["any", ["boolean", ['feature-state', 'hover'], false], ["boolean", ['feature-state', 'selected'], false]],
+            9,
+            this.is_small ? 9 : 7 // tried ["interpolate", ["linear"], ["zoom"], 1, 10, 13, 20]
+          ],
+          "circle-stroke-color": [
+            "match",
+            ["get", "status"],
+            "draft",
+            draft_color,
+            "requires_review",
+            review_color,
+            cluster_color
+          ],
+          "circle-stroke-width": [
+            "case",
+            ["any", ["boolean", ["feature-state", "selected"], false], ["==", ["get", "status"], "draft"], ["==", ["get", "status"], "requires_review"]],
+            2,
+            0
+          ]
+        })
+      } else {
+        console.log("no template color list. skipping entry layer and legend")
+      }
       // Interactions
       this.add_default_entries_layer_interactions(source_name, entries_layer_name, (features) => {
         this.select_entry_marker(features[0])

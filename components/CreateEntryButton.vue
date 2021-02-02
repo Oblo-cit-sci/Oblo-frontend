@@ -1,5 +1,6 @@
 <template lang="pug">
   v-btn(
+    v-if="can_create_some_entry"
     ref="create_button"
     large
     v-bind="bp_based_main_create_btn_props"
@@ -46,12 +47,17 @@ export default {
     }
   },
   mounted() {
-    this.button_width = this.$refs.create_button.$el.offsetWidth
+    if (this.can_create_some_entry) {
+      this.button_width = this.$refs.create_button.$el.offsetWidth
+    }
   },
   computed: {
     ...mapGetters({
       menu_open: "menu/open"
     }),
+    can_create_some_entry() {
+      return this.create_templates_options.length > 0
+    },
     bp_based_main_create_btn_props() {
       if (this.show_main_template_create_text) {
         return {"rounded": true, "large": true}
@@ -69,6 +75,7 @@ export default {
   },
   methods: {
     create_entry() {
+      debugger
       if (this.can_create_multiple_etypes) {
         this.$bus.$emit("domain-create_entry")
         // this.$bus.$emit("create_entry")

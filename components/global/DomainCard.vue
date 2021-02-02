@@ -1,10 +1,14 @@
 <template lang="pug">
   v-card(class="mb-10" outlined :width="550" @click="goto_domain" :ripple="false")
     v-img(:src="image" max-height="auto")
-      v-hover(v-for="lang_tag in languages"
-        :key="lang_tag")
-        v-chip.mt-2.ml-2(:style="{opacity:'70%'}" :color="hover ? 'yellow' :'info'" slot-scope="{ hover }") {{lang_tag}}
-      v-card-title(class="align-end fill-height shadow") {{title}}
+      v-hover(v-for="lang in languages"
+        :key="lang")
+        v-chip.mt-2.ml-2(
+          :style="{opacity:'70%'}"
+          :color="hover ? 'yellow' :'info'"
+          @click="to_language(lang)"
+          slot-scope="{ hover }") {{$t("lang." + lang)}}
+      v-card-title.align-end.shadow {{title}}
     v-card-text
       v-img.float-left.mr-3.mb-1(:src="icon" left width="40" height="40")
       span {{description}}
@@ -15,17 +19,29 @@
 
 import {PAGE_DOMAIN} from "~/lib/pages"
 import DomainDataMixin from "~/components/domain/DomainDataMixin"
+import {QP_D, QP_lang} from "~/lib/consts";
 
 export default {
   name: "DomainCard",
   mixins: [DomainDataMixin],
+  data() {
+    return {
+      language: null
+    }
+  },
   props: {
     languages: Array
   },
+  computed: {
+  },
   methods: {
     goto_domain() {
-      this.$router.push({name: PAGE_DOMAIN, query: {d: this.domain_name}})
+      console.log("goto", this.language)
+      this.$router.push({name: PAGE_DOMAIN, query: {[QP_D]: this.domain_name, [QP_lang]: this.language}})
     },
+    to_language(language) {
+      this.language = language
+    }
   }
 }
 </script>

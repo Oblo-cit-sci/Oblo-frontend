@@ -35,6 +35,7 @@ import InitializationMixin from "~/layouts/InitializationMixin"
 import {mapGetters, mapMutations} from "vuex"
 import {extract_n_unpack_values} from "~/lib/aspect"
 import LanguageMixin from "~/components/LanguageMixin";
+import {MSG_PATH_SOMETHING_WENT_WRONG, NO_DOMAIN, RESPONSE_ERROR_MSG} from "~/lib/consts";
 
 export default {
   name: "LoginComponent",
@@ -68,7 +69,8 @@ export default {
     ...mapMutations({
       "clear_search": "search/clear",
       clear_entries: "entries/clear",
-      map_clear: "map/clear"}),
+      map_clear: "map/clear"
+    }),
     aspect_action(event) {
       if (event === "enter_pressed" && !this.any_invalid) {
         this.login()
@@ -76,37 +78,46 @@ export default {
     },
     async login() {
       this.login_loading = true
-      this.$api.actor.login(extract_n_unpack_values(this.aspects)).then(({data}) => {
-        this.ok_snackbar(data.msg)
-
-        // todo could just be index/clear_entries (change name) but needs await
+      let user_settings = null
+      try {
+        const login_res = await this.$api.actor.login(extract_n_unpack_values(this.aspects))
+        const login_data = login_res.data
+        this.ok_snackbar(login_data.msg)
+        //   // todo could just be index/clear_entries (change name) but needs await
         this.clear_search()
         this.clear_entries()
         this.map_clear()
-        const settings = data.data.user.settings
-        this.change_language(settings.ui_language, false, settings.domain_language).then(() => {
-          this.process_login(data.data)
-          if(this.go_home) {
-            this.home()
-          } else {
-            // watched by Search.vue and MapWrapper
-            this.$bus.$emit("trigger_search")
-          }
-          this.$emit("logged_in")
-        }, (err) => {
-          console.log(err)
-        })
-      }).catch(err => {
+        user_settings = login_data.data.user.settings
+        this.process_login(login_data.data)
+      } catch (err) {
         console.log(err)
-        this.err_error_snackbar(err)
+        this.errorMsg = this.$_.get(err, RESPONSE_ERROR_MSG, this.$t(MSG_PATH_SOMETHING_WENT_WRONG))
         if (this.$_.get(err, "response.data.error.data.error_type", 0) === 1) {
           this.add_verification_resend_link = true
           this.registered_name = this.$_.get(err, "response.data.error.data.registered_name")
         }
         setTimeout(() => this.errorMsg = null, 5000)
-      }).finally(() => {
+        return
+      } finally {
         this.login_loading = false
-      })
+      }
+
+      try {
+        await this.change_language(user_settings.ui_language, false, user_settings.domain_language)
+        if (user_settings.fixed_domain) {
+          await this.init_specifics(user_settings.fixed_domain, user_settings.domain_language)
+        }
+
+        if (this.go_home) {
+          this.home()
+        } else {
+          // watched by Search.vue and MapWrapper
+          this.$bus.$emit("trigger_search")
+        }
+      } catch (err) {
+        console.log(err)
+      }
+      this.$emit("logged_in")
     },
     request_verification_mail() {
       this.$api.actor.resend_email_verification_mail(this.registered_name).then(({data}) => {
@@ -120,7 +131,7 @@ export default {
     page_change() {
       setTimeout(() => {
         this.$emit('page_change')
-      },200)
+      }, 200)
     }
   }
 }

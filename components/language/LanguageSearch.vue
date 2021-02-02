@@ -14,6 +14,9 @@ export default {
   props: {
     value: {
       type: String
+    },
+    filter_out: {
+      type: Array
     }
   },
   data() {

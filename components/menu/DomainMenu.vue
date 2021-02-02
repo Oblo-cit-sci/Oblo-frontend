@@ -2,7 +2,7 @@
   div
     v-row(v-if="!is_fixed_domain" :style="{'background-color':'#00A0A080'}")
       v-list-item
-        v-list-item-content {{$t('comp.domain_menu.fix_label', {title})}}
+        v-list-item-content {{$t('comp.domain_menu.fix_label', {domain_title:title})}}
         v-list-item-action
           v-btn(small @click="fix_domain(domain_name)")
             v-icon mdi-book-lock

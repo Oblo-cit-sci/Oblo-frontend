@@ -1,6 +1,6 @@
 import {settings_loc_privacy_ask, settings_loc_privacy_exact, settings_loc_privacy_random} from "~/lib/settings"
 import {MULTISELECT, SELECT, STR} from "~/lib/consts"
-import {unpack} from "~/lib/aspect";
+import {pack_value, unpack} from "~/lib/aspect";
 
 let username_regex = new RegExp('^[a-z][a-z0-9_]*$');
 
@@ -33,7 +33,7 @@ export default {
             ]
           }
         },
-        value: "",
+        value: pack_value(""),
         error: true
       }
     },
@@ -49,7 +49,8 @@ export default {
               v => v && ((v.length >= 4 && username_regex.test(v)) || (/.+@.+\..+/.test(v))) || this.$t("asp.user_query.rule")
             ]
           }
-        }
+        },
+        value: pack_value("")
       }
     },
     asp_public_name() {
@@ -65,7 +66,7 @@ export default {
             ]
           }
         },
-        value: "",
+        value: pack_value(""),
         error: false
       }
     },
@@ -79,7 +80,7 @@ export default {
           max: 980,
         },
         error: false,
-        value: ""
+        value: pack_value("")
       }
     },
     asp_email(extra_rules = []) {
@@ -96,7 +97,7 @@ export default {
           }
         },
         error: false,
-        value: ""
+        value: pack_value(""),
       }
     },
     asp_password(name = undefined, alt_label = undefined, attributes = {}) {
@@ -114,7 +115,7 @@ export default {
         name: name ? name : "password",
         t_label: this.t_label("asp.password.", alt_label),
         attr,
-        value: "",
+        value: pack_value(""),
         error: true
       }
     },
@@ -132,7 +133,7 @@ export default {
             ]
           }
         },
-        value: "",
+        value: pack_value(""),
         error: true
       }
     },
@@ -145,7 +146,7 @@ export default {
         attr: attr || {
           force_view: SELECT
         },
-        value: single_select ? null : [],
+        value: pack_value(single_select ? null : []),
         items: "languages"
       }
     },
@@ -169,7 +170,8 @@ export default {
           description: this.description("asp.privacy.options.private.", alt_label_descr),
           value: "private",
           icon: "privacy/lock-outline.png"
-        }]
+        }],
+        value: pack_value()
       }
       // todo privacy mode: something from the entry template rules en-foreces the privacy
       /*
@@ -188,7 +190,8 @@ export default {
           only_value: true,
           // update_raw: true
         },
-        items: []
+        items: [],
+        value: pack_value()
       }
       for (let license_group of include) {
         const licence_entry = this.$store.getters["templates/code"](license_group)
@@ -218,7 +221,7 @@ export default {
           {value: settings_loc_privacy_ask, text: this.$t("page.settings.asp.location_privacy.options.always_ask")}
           // settings_loc_privacy_ask
         ],
-        value: null,
+        value: pack_value(),
       }
     },
     asp_entry_roles() {

@@ -3,8 +3,8 @@
     v-row
       v-col
         div {{$t("asp.username.label")}}: {{registered_name}}
-        GlobalRoleChip.mt-2(:global_role="user_data.global_role")
-        div.mt-2(v-if="user_data.account_deactivated" style="color:red") {{$t("page.actor.deactivated")}}
+        GlobalRoleChip.mt-2(:global_role="global_role")
+        div.mt-2(v-if="account_deactivated" style="color:red") {{$t("page.actor.deactivated")}}
       v-col
         v-row
           v-skeleton-loader.m-auto(width="80%" max-height="200px" type="image" loading v-if="!img_loaded")
@@ -35,6 +35,7 @@ import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
 import NavBaseMixin from "~/components/NavBaseMixin"
 import FilterMixin from "~/components/FilterMixin"
 import {mapGetters} from "vuex"
+import {pack_value, unpack} from "~/lib/aspect";
 
 export default {
   name: "actor",
@@ -60,7 +61,8 @@ export default {
   },
   created() {
     this.$api.actor.basic(this.registered_name).then(({data}) => {
-      this.user_data = data.data
+      this.user_data = this.$_.mapValues(data.data, v => pack_value(v))
+
       // console.log(this.user_data)
       this.user_loaded = true
       this.waiting = false
@@ -76,6 +78,12 @@ export default {
     profile_pic() {
       return this.$api.actor.url_profile_pic(this.registered_name)
     },
+    global_role() {
+      return unpack(this.user_data.global_role)
+    },
+    account_deactivated() {
+      return unpack(this.user_data.account_deactivated)
+    },
     registered_name() {
       return this.$route.query.name
     },
@@ -90,7 +98,7 @@ export default {
   },
   methods: {
     new_global_role(role) {
-      this.user_data.global_role = role
+      this.user_data.global_role = pack_value(role)
     }
   },
   watch: {}

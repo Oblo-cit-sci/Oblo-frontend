@@ -1,13 +1,13 @@
 <template lang="pug">
   div
     v-container.pt-1.pb-0(v-if="compact" justify-center align-center)
-      v-row.pl-1(:class="row_border")
+      v-row.pl-1()
         v-col.pa-0.ma-0(
           v-for="(comp_type, index) in aspect.components" :key="index"
           alignSelf="stretch" :cols="base_cols" :md="base_cols/3")
           Aspect(
             :aspect="comp_type"
-            :ext_value="ext_values()[comp_type.name]"
+            :ext_value="value[comp_type.name]"
             @update:ext_value="update_component_value(comp_type.name, $event)"
             :aspect_loc="aspect_locs[comp_type.name]"
             :mode="mode"
@@ -21,18 +21,18 @@
       v-flex(
         v-for="(comp_type, index) in aspect.components" :key="index"
         :class="layoutClasses")
-          Aspect(
-            :aspect="comp_type"
-            :ext_value="ext_values()[comp_type.name]"
-            @update:ext_value="update_component_value(comp_type.name, $event)"
-            :aspect_loc="aspect_locs[comp_type.name]"
-            :mode="mode"
-            :disabled="disabled"
-            :ref="comp_type.name"
-            :conditionals="composite_conditionals"
-            @has_changed="has_changed(comp_type.name, $event)"
-            @aspectAction="$emit('aspectAction',$event)"
-            :extra="comp_extras(comp_type)")
+        Aspect(
+          :aspect="comp_type"
+          :ext_value="value[comp_type.name]"
+          @update:ext_value="update_component_value(comp_type.name, $event)"
+          :aspect_loc="aspect_locs[comp_type.name]"
+          :mode="mode"
+          :disabled="disabled"
+          :ref="comp_type.name"
+          :conditionals="composite_conditionals"
+          @has_changed="has_changed(comp_type.name, $event)"
+          @aspectAction="$emit('aspectAction',$event)"
+          :extra="comp_extras(comp_type)")
 </template>
 
 <script>
@@ -80,10 +80,8 @@ export default {
         this.aspect_locs[component.name] = this.aspect_loc ? loc_append(this.aspect_loc, COMPONENT, component.name) : undefined
       }
     },
-    ext_values() {
-      return this.value
-    },
     update_component_value(component_name, value) {
+      // console.log("composite_update_component_value")
       this.update_value(Object.assign(this.value, {[component_name]: value}))
     },
     has_changed(comp_name, event) {
@@ -91,7 +89,7 @@ export default {
       this.$emit("has_changed", {name: `${this.aspect.name}.${comp_name}`, change: event.change})
     },
     refresh_original() {
-      for(let component_aspect of Object.values(this.$refs)) {
+      for (let component_aspect of Object.values(this.$refs)) {
         component_aspect[0].refresh_original()
       }
     }
@@ -100,12 +98,7 @@ export default {
     compact() {
       return this.attr.compact
     },
-    row_border() {
-      return  {
-        "border-left-style": this.change_status ? "solid" : "hidden",
-        "border-left-color": "green"
-      }
-    },
+
     layoutClasses() {
       if (this.aspect.components.length === 2 && this.aspect.mode === 'edit') {
         const comp_types = this.aspect.components.map(c => c.type)

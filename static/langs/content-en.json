@@ -1,7 +1,6 @@
 {
   "page": {
     "index": {
-      "p1": "With an account on {server_name} you'll be able to create entries and join groups.",
       "about_a": "About The Project",
       "privacy_a": "Privacy Policy",
       "btn_login": "@:w.login",
@@ -539,6 +538,7 @@
     "location": "Location",
     "n_locations": "No locations | {n} location | {n} locations",
     "description": "description",
+    "domain": "domain",
     "update": "update",
     "delete": "delete",
     "username": "Username",

@@ -51,7 +51,14 @@ export const mutations = {
       }
     }
   }
-};
+}
+
+export const actions = {
+  set_act_domain_lang({commit},  {domain_name, language}) {
+    commit("set_act_domain",domain_name)
+    commit("set_act_lang_domain_data", {domain_name, language})
+  }
+}
 
 export const getters = {
   domains(state) {

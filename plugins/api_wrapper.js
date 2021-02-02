@@ -38,8 +38,12 @@ class QueryBase {
     this.base = api_wrapper.api_baseURL + base_sub_path
   }
 
-  get_(sub_path, config) {
-    return this.axios.get(`${this.base}/${sub_path}`, config)
+  get_(sub_path, config = {}) {
+    return this.axios.get(`${this.base}/${sub_path}`, Object.assign(config, {
+      paramsSerializer: function (params) {
+        return qs.stringify(params, {arrayFormat: 'repeat'})
+      }
+    }))
   }
 
   post_(sub_path, data, config) {
@@ -119,6 +123,32 @@ class Domain extends QueryBase {
    */
   async basic_entries(domain_name) {
     return this.axios.get(`${domain_name}/basic_entries`)
+  }
+
+  async info(domain_name, language) {
+    return this.get_(`${domain_name}/basic_entries`, {params: {language}})
+  }
+
+  async metainfo(domain_names) {
+    return this.get_("metainfo", {
+      params: {domain_names}
+    })
+  }
+
+  async domain_content_as_index_table(domain_name, language) {
+    return this.get_("domain_content_as_index_table", {
+      params: {domain_name, language}
+    })
+  }
+
+  async post_from_flat(domain_name, language, content) {
+    content.push(["language", language])
+    return this.post_(`${domain_name}/from_flat`, content)
+  }
+
+  async patch_from_flat(domain_name, language, content) {
+    content.push(["language", language])
+    return this.patch_(`${domain_name}/from_flat`, content)
   }
 }
 
@@ -412,7 +442,11 @@ class Language extends QueryBase {
   }
 
   add_language(language_code) {
-    return this.post_("add_language", null,{params: {language_code}})
+    return this.post_("add_language", null, {params: {language_code}})
+  }
+
+  all_added_languages() {
+    return this.get_("all_added_languages")
   }
 }
 

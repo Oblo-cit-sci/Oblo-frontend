@@ -41,7 +41,10 @@ export default {
       window.history.replaceState(null, document.title, "/licci")
     }
     if (this.domain_name !== this.$store.getters["domain/act_domain_name"]) {
-      this.$store.commit("domain/set_act_domain", this.domain_name)
+      this.$store.dispatch("domain/set_act_domain_lang",
+        {
+          domain_name: this.domain_name,
+          language: this.$store.getters["user/settings_ui_language"]})
     }
 
     if (this.$route.query.f && !this.is_fixed_domain) {

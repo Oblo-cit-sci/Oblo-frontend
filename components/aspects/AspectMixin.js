@@ -19,7 +19,7 @@ export default {
       required: true
     },
     ext_value: {
-      type: [Object, String, Number, Array, Boolean],
+      type: Object,
       default: undefined
     },
     mode: {
@@ -56,13 +56,14 @@ export default {
   },
   created() {
     if (this.track_change) {
-      this.original_value = this.value
+      this.original_value = this.$_.cloneDeep(this.value)
     }
   },
   methods: {
     // debounce to not to store contantly while typing
     update_value(mvalue) {
-      const value = mvalue.value || null
+      // value could be "" or 0 in case of strings, numbers
+      const value = mvalue.value === undefined ? null : mvalue.value
       const is_mvalue = mvalue.is_mvalue
       if (is_mvalue) {
         delete mvalue.is_mvalue
@@ -88,6 +89,7 @@ export default {
           })
         }
       } else {
+        // console.log("aspect update.ext", up_value)
         this.$emit("update:ext_value", up_value)
       }
       if (this.attr.titleAspect) {
@@ -101,7 +103,7 @@ export default {
       return this.$store.getters["entries/get_entry"](this.entry_uuid)
     },
     refresh_original() {
-      this.original_value = this.value
+      this.original_value = this.$_.cloneDeep(this.value)
       if (this.$refs.aspect_component.refresh_original) {
         this.$refs.aspect_component.refresh_original()
       }
@@ -162,7 +164,7 @@ export default {
       } else if (this.disable) {
         return ASP_DISABLED
       } else {
-      return ASP_UNSET
+        return ASP_UNSET
       }
       // ERROR?
     },
@@ -273,15 +275,16 @@ export default {
       return this.value !== aspect_raw_default_value(this.aspect)
     },
     has_changed() {
-      // console.log(this.aspect.type, this.track_change && this.value !== this.original_value)
-      return this.track_change && this.value !== this.original_value
+      // console.log("aspmxn.has_changed", this.aspect.type, !this.$_.isEqual(this.value, this.original_value))
+      //   this.value, this.original_value, !this.$_.isEqual(this.value,  this.original_value))
+      return this.track_change && !this.$_.isEqual(this.value, this.original_value)
     }
   },
   watch: {
     asp_state: {
       immediate: true,
       handler(value) {
-        this.$emit("update:state",value)
+        this.$emit("update:state", value)
       }
     },
     // todo maybe use the default methods from AspectBaseMixin
@@ -293,11 +296,11 @@ export default {
           })
         }
       }
+    },
+    has_changed(change) {
+      // console.log("aspect_mxn.has_changed", this.aspect.name, this.aspect.type, change)
+      this.$emit("has_changed", {name: this.aspect.name, change})
     }
-  },
-  has_changed(change) {
-    // console.log("aspect_mxn.has_changed", this.aspect.name, this.aspect.type, change, prev)
-    this.$emit("has_changed", {name: this.aspect.name, change})
   }
 }
 

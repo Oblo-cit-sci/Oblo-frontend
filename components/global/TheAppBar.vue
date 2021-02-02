@@ -32,6 +32,7 @@ import LoginComponent from "~/components/page_components/LoginComponent"
 import HasMainNavComponentMixin, {ENTRY} from "~/components/global/HasMainNavComponentMixin"
 import {VIEW} from "~/lib/consts"
 import EnvMixin from "~/components/global/EnvMixin"
+import {PAGE_INDEX} from "~/lib/pages";
 
 const pkg = require('~/package.json')
 
@@ -111,7 +112,7 @@ export default {
     //   return this.$store.getters["domain_data"](this.query_param_domain_name, this.$store.getters["user/settings"].ui_language)
     // },
     show_login_btn() {
-      return this.smAndUp && !this.logged_in
+      return this.smAndUp && !this.logged_in && this.$route.name !== PAGE_INDEX
     },
     //
     version() {

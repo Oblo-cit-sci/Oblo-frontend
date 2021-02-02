@@ -19,7 +19,12 @@
     },
     computed: {
       long_text() {
-        return this.message.length > 40
+        try {
+          return this.message.length > 40
+        } catch (err) {
+          console.error(this.message)
+          return false
+        }
       }
     },
     created: function () {

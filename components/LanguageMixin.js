@@ -60,7 +60,7 @@ export default {
      * @param language the language required
      */
     async complete_language_domains(domain, language) {
-      // console.log("completing", domain, language)
+      console.log("completing...", domain, language)
       if (this.$store.getters["domain/has_lang_domain_data"](domain, language)) {
         console.log("got it already")
         return Promise.resolve()
