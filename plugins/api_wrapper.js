@@ -150,6 +150,10 @@ class Domain extends QueryBase {
     content.push(["language", language])
     return this.patch_(`${domain_name}/from_flat`, content)
   }
+
+  async overview(language) {
+    return this.get_("overview", {params: {language}})
+  }
 }
 
 class Entry extends QueryBase {
@@ -447,6 +451,12 @@ class Language extends QueryBase {
 
   all_added_languages() {
     return this.get_("all_added_languages")
+  }
+
+  get_language_names(lang_code) {
+    return this.get_("get_language_names", {
+      params: {lang_code}
+    })
   }
 }
 

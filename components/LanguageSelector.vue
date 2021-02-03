@@ -52,6 +52,7 @@ export default {
     available_languages() {
       // todo when on domain page only take
       const available_languages = this.$store.getters["available_languages"]
+      // todo use helper function for this
       return available_languages.map(l => ({
         "value": l,
         "text": (this.$t("lang." + l))

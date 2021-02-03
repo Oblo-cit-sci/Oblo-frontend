@@ -6,6 +6,8 @@
       :value="i_value"
       @input="input($event)"
       dense
+      :selection-type="selection_type"
+      item-disabled="dis"
       :selectable="is_edit_mode")
 </template>
 
@@ -14,8 +16,7 @@ import AspectComponentMixin from "~/components/aspects/AspectComponentMixin"
 import {get_codes_as_tree} from "~/lib/options"
 import TreeSelectComponentMixin from "~/components/aspect_utils/TreeSelectComponentMixin";
 
-// todo fix item-text, item-value
-
+// todo how to get tag (different groups on different levels)
 export default {
   name: "TreeMultiSelectAspect",
   mixins: [AspectComponentMixin, TreeSelectComponentMixin],
@@ -25,11 +26,24 @@ export default {
     return {}
   },
   created() {
-    this.calc_options()
+    this.calc_options(this.allow_select_levels)
   },
   computed: {
     i_value() {
       return this.value || []
+    },
+    independent() {
+      return this.$_.get(this.attr,"independent", false)
+    },
+    allow_select_levels() {
+      return this.$_.get(this.attr, "allow_select_levels", null)
+    },
+    selection_type() {
+      if (this.independent) {
+        return "independent"
+      } else {
+        return "leaf"
+      }
     },
     // id_name_map() {
     //   const id_map = {}

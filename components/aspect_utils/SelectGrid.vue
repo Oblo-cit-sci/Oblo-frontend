@@ -1,7 +1,8 @@
 <template lang="pug">
   div
     div.d-flex.flex-wrap
-      .cell(v-for="(c, i) in options" :key="i" :style="cell_style")
+      .cell(v-for="(c, i) in options" :key="i" :style="cell_style"
+        :class="{cell_border: cell_border}")
         v-container.pt-1
           v-row.mt-1.mb-1.justify-center
             v-img.sel_cursor(v-if="c.icon" :src="get_icon_url(c.icon)" :style="img_style" contain @click="select(c)" class="")
@@ -23,7 +24,10 @@ export default {
     max_cell_width: {
       type: Number
     },
-    no_border: Boolean
+    cell_border: {
+      type: Boolean,
+      default: true
+    }
   },
   data() {
     return {
@@ -39,7 +43,6 @@ export default {
     cell_style() {
       return {
         "max-width": (this.is_xsmall ? 90 : this.is_small ? 120 : 160) + "px",
-        "border": this.no_border ? "none" : "1px grey solid"
       }
     },
     img_style() {
@@ -79,5 +82,9 @@ export default {
   width: 160px;
   text-align: center;
   max-height: 80px;
+}
+
+.cell_border{
+  border: 1px grey solid;
 }
 </style>

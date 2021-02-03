@@ -1,6 +1,8 @@
 <template lang="pug">
   div.pa-0(v-if="view_clearlist")
+    div(v-if="no_options") {{$t("comp.select_asp.no_options")}}
     v-list.pa-0(
+      v-else
       :three-line="has_some_description"
       dense
       class="singleselect_list"
@@ -26,7 +28,7 @@
   div(v-else-if="view_select")
     v-select(outlined single-line :hide-details="hide_details" :multiple=false v-model="selected_item" :items="select_options" return-object :clearable="clearable" :placeholder="placeholder" :disabled="disabled" )
     div(v-if="selected_item")
-      div.mt-1(v-if="selected_item.description") Description: {{selected_item.description}}
+      div.mt-1(v-if="selected_item.description") {{$t("comp.select_asp.descr")}}: {{selected_item.description}}
       div.mt-1(v-if="has_some_icons")
         v-img(:src="icon_path(selected_item)" contain max-height="40")
   div(v-else-if="view_autocomplete")
@@ -37,7 +39,7 @@
   div(v-else-if="view_grid")
     SelectGrid(:options="options" v-on:selection="select($event)")
   div(v-else-if="none")
-    div Nothing to select from
+    div {{$t("comp.select_asp.no_options")}}
 </template>
 
 <script>
@@ -55,7 +57,7 @@ import LanguageCodeFallback from "~/components/aspect_utils/LanguageCodeFallback
 let select_tresh = 6;
 let autocomplet_thresh = 20
 
-const NONE = -1
+const NONE = "none"
 const CLEAR_LIST = "list";
 const SELECT = "select";
 const AUTOCOMPLETE = "autocomplete"
@@ -234,6 +236,9 @@ export default {
     },
     none() {
       return this.viewStyle === NONE
+    },
+    no_options() {
+      return this.options.length === 0
     }
   },
   watch: {
@@ -255,7 +260,7 @@ export default {
       // console.log("watchers: selected_item", item)
       this.emitUp(item)
     },
-    selection(val) {
+    selection() {
       this.set_selected_item()
     },
     disabled_options(options) {

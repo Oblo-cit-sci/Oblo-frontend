@@ -58,6 +58,9 @@ export default {
     async initialize() {
       console.log("initialize")
       // todo maybe this should be before init_data, to request the set language
+      /*
+        Authentication
+       */
       const auth_token = this.$store.getters["user/get_auth_token"]
       if (auth_token.access_token) {
         const login = await this.$api.actor.validate_token(auth_token)
@@ -76,18 +79,30 @@ export default {
         await this.$store.dispatch("user/logout")
         this.$localForage.removeItem("auth_token")
       }
+      /*
+       * get the language from the settings and
+       */
       // todo maybe the language should come not from the settings, since setting the language triggers
       // reload...
       const user_settings = this.$store.getters["user/settings"]
       const domain_name = this.query_param_domain_name || user_settings.fixed_domain
       const i_language = this.$route.query[QP_lang] || user_settings.domain_language || this.default_language
       console.log("init with, ", domain_name, i_language)
+
+
+      if (i_language === this.default_language) {
+        // messages are already in the page but not those of lang.<lang_code>
+        this.$api.language.get_language_names(i_language).then(({data}) => {
+          this.$i18n.mergeLocaleMessage(i_language, data)
+        })
+      }
+
       const {data} = await this.$api.basic.init_data(domain_name ? [domain_name, NO_DOMAIN] : null, i_language)
       console.log("connected")
 
       const domains_data = data.data.domains
       const language = data.data.language
-      this.$store.commit("domain/set_domains", {domains_data, language})
+      await this.$store.dispatch("domain/set_domains", {domains_data, language})
       await this.$store.dispatch("templates/add_templates_codes", data.data.templates_and_codes)
       // console.log("template/codes stored")
       // console.log(data.data)

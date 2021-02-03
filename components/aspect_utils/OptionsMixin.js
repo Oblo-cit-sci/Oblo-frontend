@@ -21,9 +21,12 @@ export default {
       const code_entry = this.$store.getters["templates/code"](code_slug, language)
       return [language === code_entry.language, language, code_entry.language]
     },
+    get_lang_code_entry(code_slug) {
+            const language = this.$store.getters["user/settings"].domain_language
+      return this.get_code_entry(code_slug, language)
+    },
     get_codes_as_options(code_slug) {
-      const language = this.$store.getters["user/settings"].domain_language
-      const code_entry = this.$store.getters["templates/code"](code_slug, language)
+      const code_entry = this.get_lang_code_entry(code_slug)
       if (code_entry) {
         if (code_entry.template.slug === "value_list") {
           return code_entry.values.list
@@ -43,7 +46,7 @@ export default {
       // console.log("get_items", input, typeof input)
       if (typeof input === "string") {
         // console.log("get_items.input str")
-        const code_entry = this.get_code_entry(input)
+        const code_entry = this.get_lang_code_entry(input)
         if (!code_entry) {
           console.log("error, code entry with slug not found:", input)
           return []
@@ -94,7 +97,7 @@ export default {
     },
     resolve_code_entry(entry_slug) {
       // todo mnaa
-      const code_entry = this.get_code_entry(entry_slug)
+      const code_entry = this.get_lang_code_entry(entry_slug)
       if (code_entry) {
         return this.create_tags(code_entry)
       } else {
@@ -123,7 +126,7 @@ export default {
     // },
     select_from_tree(input_from_tree) {
       // console.log(input)
-      const tree_entry = this.get_code_entry(input_from_tree.tree)
+      const tree_entry = this.get_lang_code_entry(input_from_tree.tree)
       if (!tree_entry) {
         console.log("optionsMixin.select_from_tree no code_entry", input_from_tree.tree)
         return []

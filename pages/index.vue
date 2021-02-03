@@ -15,15 +15,9 @@
         v-col(class="col-lg-6 col-xs-12")
           div(v-for="domain in visible_domains" :key="domain.name")
             DomainCard(
-              v-if="domain_available_in_language(domain) && domain.name !== 'no_domain'"
-              :domain_data="languaged_domain_data(domain)"
+              :domain_data="languaged_domain_overview(domain)"
               :languages="languages(domain)")
-            div(v-else)
-              v-img.float-left.mr-3.mb-1(:src="domain_icon(domain.name)" left width="40" height="40")
-              span {{domain.name}} is only available in {{languages(domain).join(", ")}}.
 
-      iframe(width="560" height="315" src="https://www.youtube.com/embed/dMexZqK51YI" frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen)
       v-row(justify="center")
         v-btn(text nuxt to="about") {{$t('page.index.about_a')}}
         v-btn(text nuxt to="about") {{$t('page.index.privacy_a')}}
@@ -32,6 +26,15 @@
 
 <script>
 
+/*
+prev else to
+domaincard
+            v-row(v-else)
+              div
+                v-img.float-left.mr-3.mb-1(:src="domain_icon(domain.name)" left width="40" height="40")
+                span {{$t("page.index.domain_only_available_in_langs", {domain_name: domain.name, languages: language_names(domain)})}}
+ */
+
 import {mapGetters} from "vuex"
 
 import DomainCard from "../components/global/DomainCard";
@@ -39,9 +42,10 @@ import Footer from "../components/global/Footer";
 import {NO_DOMAIN, UI_LANGUAGE} from "~/lib/consts"
 import SettingsChangeMixin from "~/components/global/SettingsChangeMixin"
 import EnvMixin from "~/components/global/EnvMixin";
+import LanguageMixin from "~/components/LanguageMixin";
 
 export default {
-  mixins: [SettingsChangeMixin, EnvMixin],
+  mixins: [SettingsChangeMixin, EnvMixin, LanguageMixin],
   data() {
     return {}
   },
@@ -61,20 +65,25 @@ export default {
     },
     visible_domains() {
       return this.domains.filter(d => d.name !== NO_DOMAIN)
-    }
+    },
   },
   methods: {
     domain_available_in_language(domain) {
-      return !this.$_.isEmpty(this.languaged_domain_data(domain))
+      return  !this.$_.isEmpty(this.languaged_domain_overview(domain))
     },
-    languaged_domain_data(domain) {
-      return this.$store.getters["domain/lang_domain_data"](domain.name, this.setting(UI_LANGUAGE))
+    languaged_domain_overview(domain) {
+      const d = this.$store.getters["domain/domain_overview"](domain.name, this.setting(UI_LANGUAGE))
+      d.name = domain.name
+      return d
     },
     domain_icon(domain_name) {
       return this.$api.static.domain_icon(domain_name)
     },
     languages(domain) {
       return domain.languages
+    },
+    language_names(domain) {
+      return this.languages(domain).map(lc => this.t_lang(lc))
     }
   }
 }

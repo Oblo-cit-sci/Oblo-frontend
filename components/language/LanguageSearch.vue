@@ -13,7 +13,7 @@ export default {
   name: "LanguageSearch",
   props: {
     value: {
-      type: String
+      type: Object
     },
     filter_out: {
       type: Array
@@ -32,7 +32,7 @@ export default {
         return this.value
       },
       set: function (val) {
-        this.$emit("input", val)
+        this.$emit("input", this.languageOptions.filter(o => o.value === val)[0])
       }
     }
   },
@@ -41,12 +41,10 @@ export default {
       if (!val) {
         return
       }
-
       if (this.isLoading || val.length < 2) return
       this.isLoading = true
       this.$api.language.search(val).then(({data}) => {
         this.languageOptions = data.languages
-
         if (this.languageOptions.length === 0) {
           this.errorMsg = "No  language found"
         }

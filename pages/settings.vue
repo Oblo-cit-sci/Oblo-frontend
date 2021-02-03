@@ -16,6 +16,7 @@
         span . {{$t("page.settings.fixed_domain.p2")}}
       v-btn(@click="reset_fixed_domain()") {{$t("page.settings.fixed_domain.btn_reset")}}
     br
+    v-btn(@click="back") {{$t("w.back")}}
     v-btn(@click="update_settings" :loading="update_button_loading" color="success") {{$t('w.update')}}
     br
     <!--    h3 Export data-->
@@ -59,20 +60,21 @@
     name: "settings",
     components: {EntryPreviewList, LoadFileButton, Aspect},
     mixins: [TriggerSnackbarMixin, PersistentStorageMixin, AspectListMixin, FixDomainMixin, LanguageMixin, TypicalAspectMixin],
-    created() {
-      const settings = this.$store.getters["user/settings"]
-      for (let name in this.aspect_map) {
-        this.aspect_map[name].value = pack_value(settings[name])
-      }
-    },
     data() {
+      const privacy_aspect = this.asp_privacy("default_privacy", "default")
+      const license_aspect = this.asp_license("default_license", ["cc_licenses"], null, "default")
       const ui_lang_aspect = this.asp_language("ui_language","ui")
       ui_lang_aspect.items = this.get_language_options()
 
+      const settings = this.$store.getters["user/settings"]
+      privacy_aspect.value = pack_value(settings.default_privacy)
+      license_aspect.value = pack_value(settings.default_license)
+      ui_lang_aspect.value = pack_value(settings.ui_language)
+
       const settings_aspects = [
         // this.asp_location_privacy(), // taken out for now. always ask is the default.
-        this.asp_privacy("default_privacy", "default"),
-        this.asp_license("default_license", ["cc_licenses"], null, "default"),
+        privacy_aspect,
+        license_aspect,
         ui_lang_aspect
       ]
       return {
@@ -167,6 +169,9 @@
         this.$store.dispatch("clear_entries")
         this.persist_entries()
       },
+      back() {
+        this.$router.back()
+      }
     },
     computed: {
       aspect_map() {

@@ -15,21 +15,12 @@ export const state = () => ({
 })
 
 export const mutations = {
-  set_domains(state, {domains_data, language}) {
-    if (state.domains.size === 0) {
-      domains_data = domains_data.map(d => ({
-        name: d.name,
-        langs: {[d.language]: Object.assign(d.content, {title: d.title, name: d.name})},
-        languages: d.languages,
-        default_language: d.default_language
-      }))
-      state.domains = new Map(ld.toPairs(ld.keyBy(domains_data, d => d.name)))
-      // console.log(state.domains)
-    } else {
-      console.log("inserting new language")
-      for (let d of domains_data) {
-        Object.assign(d.content, {title: d.title, name: d.name})
-        state.domains.get(d.name).langs[d.language] = d.content
+  add_domains_overviews(state, domain_overviews) {
+    console.log(state.domains)
+    for (let domain_o of domain_overviews) {
+      state.domains.get(domain_o.name).overviews[domain_o.language] = {
+        title: domain_o.title,
+        description: domain_o.description
       }
     }
   },
@@ -50,13 +41,44 @@ export const mutations = {
         console.log("Cannot set domain language to language that does not exist. catch before!")
       }
     }
+  },
+  add_domains_data(state, domains_data) {
+    if (state.domains.size === 0) {
+      domains_data = domains_data.map(d => ({
+        name: d.name,
+        langs: {[d.language]: Object.assign(d.content, {title: d.title, name: d.name})},
+        languages: d.languages,
+        default_language: d.default_language,
+        overviews: {}
+      }))
+      state.domains = new Map(ld.toPairs(ld.keyBy(domains_data, d => d.name)))
+      // console.log(state.domains)
+    } else {
+      console.log("inserting new language")
+      for (let d of domains_data) {
+        Object.assign(d.content, {title: d.title, name: d.name})
+        state.domains.get(d.name).langs[d.language] = d.content
+      }
+    }
   }
 }
 
 export const actions = {
-  set_act_domain_lang({commit},  {domain_name, language}) {
-    commit("set_act_domain",domain_name)
+  set_act_domain_lang({commit}, {domain_name, language}) {
+    commit("set_act_domain", domain_name)
     commit("set_act_lang_domain_data", {domain_name, language})
+  },
+  set_domains({commit}, {domains_data, language}) {
+    console.log(domains_data)
+    commit("add_domains_data", domains_data)
+    commit("add_domains_overviews", domains_data.map(d => (
+      {
+        name: d.name,
+        language: language,
+        title: d.title,
+        description: d.content.description
+      }
+    )))
   }
 }
 
@@ -83,8 +105,23 @@ export const getters = {
     }
   },
   lang_domain_data(state, getters) {
-    return (domain_name, language) => {
-      return getters.domain_by_name(domain_name).langs[language]
+    return (domain_name, language, with_default = true) => {
+      // console.log(domain_name, getters.get_domain_languages(domain_name),getters.get_domain_default_language(domain_name))
+      // console.log(getters.get_domain_languages(domain_name).includes(language))
+      if (getters.get_domain_languages(domain_name).includes(language) || !with_default)
+        return getters.domain_by_name(domain_name).langs[language]
+      else
+        return getters.domain_by_name(domain_name).langs[getters.get_domain_default_language(domain_name)]
+    }
+  },
+  domain_overview(state, getters) {
+    return (domain_name, language, with_default = true) => {
+      // console.log(domain_name, getters.get_domain_languages(domain_name),getters.get_domain_default_language(domain_name))
+      // console.log(getters.get_domain_languages(domain_name).includes(language))
+      if (getters.get_domain_languages(domain_name).includes(language) || !with_default)
+        return getters.domain_by_name(domain_name).overviews[language]
+      else
+        return getters.domain_by_name(domain_name).overviews[getters.get_domain_default_language(domain_name)]
     }
   },
   has_lang_domain_data(state, getters) {
@@ -95,8 +132,8 @@ export const getters = {
   // todo just used once atm. maybe not required as store getter
   domains_for_lang(state, getters) {
     return (lang_code, keep_no_domain = false) => {
-      return ld.filter(ld.map(getters.domains,  d => getters.lang_domain_data(d.name, lang_code)),
-      d => d && (keep_no_domain || d.name !== "no_domain"))
+      return ld.filter(ld.map(getters.domains, d => getters.lang_domain_data(d.name, lang_code)),
+        d => d && (keep_no_domain || d.name !== "no_domain"))
     }
   },
   get_domain_languages(state, getters) {

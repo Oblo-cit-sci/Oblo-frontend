@@ -293,6 +293,9 @@
       "cancel": "@.capitalize:w.cancel",
       "confirm": "Confirm"
     },
+    "domain_card": {
+      "not_available_in_lang": "{domain_name} is not available in {language}"
+    },
     "domain_menu": {
       "fix_label": "Stay within {domain_title}"
     },
@@ -468,7 +471,8 @@
       "search_filter": "Search & Filter"
     },
     "select_asp": {
-      "descr": "@.capitalize:w.description"
+      "descr": "@.capitalize:w.description",
+      "no_options": "nothing to select from"
     },
     "simple_paginate": {
       "page": "page",
@@ -508,7 +512,7 @@
       "new": {
         "new_lang": "Add another language",
         "descr": "Which language do you want to add?",
-        "get_in_touch":"If you cannot find the language get in touch with us, we will make it happen!"
+        "get_in_touch": "If you cannot find the language get in touch with us, we will make it happen!"
       }
     },
     "treeselect_asp": {
@@ -517,12 +521,6 @@
     "treeleaf_picker": {
       "current": "Current selection"
     }
-  },
-  "lang": {
-    "en": "english",
-    "es": "spanish",
-    "de": "german",
-    "fr": "french"
   },
   "mixin": {
     "init": {

@@ -1,4 +1,4 @@
-import {DOMAIN_LANGUAGE, NO_DOMAIN, UI_LANGUAGE} from "~/lib/consts";
+import {DOMAIN_LANGUAGE, NO_DOMAIN, UI_LANGUAGE, VALUE} from "~/lib/consts";
 import FilterMixin from "~/components/FilterMixin";
 import {pack_value} from "~/lib/aspect";
 
@@ -15,20 +15,29 @@ export default {
       if (!domain_language) {
         domain_language = language
       }
+      // TODO comment is not true: no_domain
       let domain = this.$store.getters["domain/act_domain_name"] // undefined for non-domain
       // todo maybe can go into a mixin, if there are other settings for the language
-      this.complete_language_domains(domain, domain_language).then(() => {
-        if (update_settings)
-          this.set_settings_value(DOMAIN_LANGUAGE, domain_language)
+      if (domain === NO_DOMAIN) {
+        const {data} = await this.$api.domain.overview(language)
+        console.log(data)
+        this.$store.commit("domain/add_domains_overviews", data.data)
+      }
+      if (domain !== NO_DOMAIN) {
 
-        this.$store.commit("domain/set_act_lang_domain_data", {
-          domain_name: this.$store.getters["domain/act_domain_name"],
-          language
+        this.complete_language_domains(domain, domain_language).then(() => {
+          if (update_settings)
+            this.set_settings_value(DOMAIN_LANGUAGE, domain_language)
+
+          this.$store.commit("domain/set_act_lang_domain_data", {
+            domain_name: this.$store.getters["domain/act_domain_name"],
+            language
+          })
+          if (update_settings) {
+            this.set_settings_value(DOMAIN_LANGUAGE, domain_language)
+          }
         })
-        if (update_settings) {
-          this.set_settings_value(DOMAIN_LANGUAGE, domain_language)
-        }
-      })
+      }
       // console.log("check have?", language, this.loaded_ui_languages.includes(language))
       if (!this.$i18n.availableLocales.includes(language)) {
         try {
@@ -60,7 +69,7 @@ export default {
      * @param language the language required
      */
     async complete_language_domains(domain, language) {
-      console.log("completing...", domain, language)
+      // console.log("completing...", domain, language)
       if (this.$store.getters["domain/has_lang_domain_data"](domain, language)) {
         console.log("got it already")
         return Promise.resolve()
@@ -74,7 +83,7 @@ export default {
       const {data} = await this.$api.basic.init_data(domain, language)
       // todo this also gets all the messages
       const domains_data = data.data.domains
-      this.$store.commit("domain/set_domains", {domains_data, language})
+      await this.$store.dispatch("domain/set_domains", {domains_data, language})
       // console.log(data.data.templates_and_codes)
       await this.$store.dispatch("templates/add_templates_codes", data.data.templates_and_codes)
       return Promise.resolve()
@@ -86,16 +95,10 @@ export default {
       if (!codes) {
         codes = this.$store.getters["available_languages"]
       }
-      return this.$store.getters["templates/code"]("languages").values.list.filter(v => codes.includes(v.value))
+      return codes.map(c => ({value: c, "text": this.$t(`lang.${c}`)}))
     },
-    update_language_names() {
-      // todo some api call
-      // something like this:
-      // this.$i18n.mergeLocaleMessage("en", {
-      //   lang: {
-      //     de: "german"
-      //   }
-      // })
+    t_lang(lang_code) {
+      return this.$t(`lang.${lang_code}`)
     }
   }
 }

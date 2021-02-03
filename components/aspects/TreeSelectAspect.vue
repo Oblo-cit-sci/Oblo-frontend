@@ -118,13 +118,12 @@ export default {
       }
     },
     selected(val) {
-      // console.log("TSA selected", val)
+      console.log("TSA selected", val.value)
       this.dialogOpen = false;
       if (val) {
         this.update_value(val.value)
       }
     },
-
     clear() {
       this.update_value([])
       this.dialogOpen = false;
@@ -148,11 +147,7 @@ export default {
       return this.is_view_mode ? '' : 'mdi-file-tree'
     },
     direct_select() {
-      if (!this.aspect.attr.hasOwnProperty("direct_select"))
-        return true
-      else {
-        return this.aspect.attr.direct_select
-      }
+      return this.$_.get(this.attr, "direct_select", true)
     },
     value_text() {
       // console.log("val text", this.value)

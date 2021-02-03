@@ -31,7 +31,7 @@ import ApiHelperMixin from "~/components/ApiHelperMixin";
 import {object_list2options} from "~/lib/options";
 import {mapGetters} from "vuex";
 
-const components = ["fe", "be", "domain", "entries"]
+const components = ["fe", "be", "domain"] // "entries"
 
 // todo, doesnt refetch the settings from the store at the right moment
 // needs to set them after component is set...
@@ -53,6 +53,7 @@ export default {
       is_aspects_complete: false,
       new_lang_dialog_open: false,
       new_language: null,
+      temporary_additional_languages: []
     }
   },
   created() {
@@ -147,8 +148,11 @@ export default {
       const component = this.unpacked_values.component
       if (component === "domain") {
         const domain_info = this.domains_metainfos[this.unpacked_values.domain]
+        // console.log("domain_info", domain_info)
         if (domain_info) {
           return domain_info.active_languages.sort().map(l => this.create_option(l, this.$t(`lang.${l}`)))
+        } else {
+          return []
         }
       } else if (["fe", "be"].includes(component)) {
         return this.all_added_languages.sort()
@@ -162,10 +166,10 @@ export default {
     },
     dest_language_options() {
       const component = this.unpacked_values.component
+      let options = []
       if (component === "domain") {
         const domain_info = this.domains_metainfos[this.unpacked_values.domain]
         if (domain_info) {
-          let options = []
           domain_info.active_languages.sort().map(l => ({
             value: l,
             text: this.$t(`lang.${l}`),
@@ -184,18 +188,18 @@ export default {
               description: "not started"
             })).forEach(o => options.push(o))
           // console.log(options, this.unpacked_values.dest_lang)
-          options = options.filter(o => o.value !== this.unpacked_values.src_lang)
-          return options // domain_info.active_languages.sort().map(l => this.create_option(l, this.$t(`lang.${l}`)))
         }
       } else if (["fe", "be"].includes(component)) {
-        return this.all_added_languages.sort()
+        options = this.all_added_languages.sort()
           .map(l => ({
             value: l,
             text: this.$t(`lang.${l}`),
           }))
+          .filter(o => o.value !== this.unpacked_values.src_lang)
       } else {
-        return []
       }
+      options = options.concat(this.temporary_additional_languages)
+      return options.filter(o => o.value !== this.unpacked_values.src_lang)
     },
     setup_aspects() {
       return [this.component_select_aspect, this.domain_select_aspect, this.entry_select_aspect,
@@ -251,12 +255,17 @@ export default {
       this.new_lang_dialog_open = true
     },
     add_language() {
-      this.$api.language.add_language(this.new_language).then(({data}) => {
-        this.ok_snackbar(data.msg)
-        this.new_lang_dialog_open = false
-      }, err => {
-        this.err_error_snackbar(err)
-      })
+      if (["fe", "be"].includes(this.unpacked_values.component)) {
+        this.$api.language.add_language(this.new_language.value).then(({data}) => {
+          this.ok_snackbar(data.msg)
+          this.new_lang_dialog_open = false
+          this.temporary_additional_languages.push(this.new_language)
+        }, err => {
+          this.err_error_snackbar(err)
+        })
+      } else {
+        this.temporary_additional_languages.push(this.new_language)
+      }
     }
   }
 }

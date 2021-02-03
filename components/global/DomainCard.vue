@@ -2,6 +2,7 @@
   v-card(class="mb-10" outlined :width="550" @click="goto_domain" :ripple="false")
     v-img(:src="image" max-height="auto")
       v-hover(v-for="lang in languages"
+        v-if="not_ui_lang"
         :key="lang")
         v-chip.mt-2.ml-2(
           :style="{opacity:'70%'}"
@@ -20,10 +21,11 @@
 import {PAGE_DOMAIN} from "~/lib/pages"
 import DomainDataMixin from "~/components/domain/DomainDataMixin"
 import {QP_D, QP_lang} from "~/lib/consts";
+import LanguageMixin from "~/components/LanguageMixin";
 
 export default {
   name: "DomainCard",
-  mixins: [DomainDataMixin],
+  mixins: [DomainDataMixin, LanguageMixin],
   data() {
     return {
       language: null
@@ -33,11 +35,16 @@ export default {
     languages: Array
   },
   computed: {
+    not_ui_lang() {
+      return !this.languages.includes(this.$store.getters.ui_language)
+    }
   },
   methods: {
-    goto_domain() {
-      console.log("goto", this.language)
-      this.$router.push({name: PAGE_DOMAIN, query: {[QP_D]: this.domain_name, [QP_lang]: this.language}})
+    async goto_domain() {
+      if (this.language) {
+        await this.complete_language_domains(this.domain_name, this.language)
+      }
+      await this.$router.push({name: PAGE_DOMAIN, query: {[QP_D]: this.domain_name}})
     },
     to_language(language) {
       this.language = language
