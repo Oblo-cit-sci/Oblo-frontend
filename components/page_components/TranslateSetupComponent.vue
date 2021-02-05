@@ -31,7 +31,7 @@ import ApiHelperMixin from "~/components/ApiHelperMixin";
 import {object_list2options} from "~/lib/options";
 import {mapGetters} from "vuex";
 
-const components = ["fe", "be", "domain"] // "entries"
+const components = ["fe", "be", "domain","entries"]
 
 // todo, doesnt refetch the settings from the store at the right moment
 // needs to set them after component is set...
@@ -92,10 +92,14 @@ export default {
         type: SELECT,
         attr: {
           hide_on_disabled: true,
-          condition: {
+          condition: ["or",{
             aspect: "# component",
             value: "domain"
-          }
+          },
+          {
+            aspect: "# component",
+            value: "entries"
+          }]
         },
         label: this.$t("w.domain"),
         items: domain_items
@@ -103,7 +107,7 @@ export default {
     },
     entry_select_aspect() {
       const entries = this.$store.getters["templates/templates_of_domain"]("licci", "en")
-      // console.log(entries)
+      console.log(entries)
       return {
         name: "entry",
         type: SELECT,

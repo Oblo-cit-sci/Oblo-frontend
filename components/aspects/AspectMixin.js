@@ -107,7 +107,37 @@ export default {
       if (this.$refs.aspect_component.refresh_original) {
         this.$refs.aspect_component.refresh_original()
       }
-    }
+    },
+    check_recursive_condition(condition) {
+      if (Array.isArray(condition)) {
+        const method = condition[0].toLowerCase()
+        if (condition.length < 2 || !["and", "or"].includes(method)) {
+          console.log("Wrong condition format", condition)
+        }
+        const conditions = condition.slice(1)
+        if (method === "and") {
+          return conditions.every(conditions,c => this.check_recursive_condition(c))
+        } else {
+          return conditions.some(c => this.check_recursive_condition(c))
+        }
+      } else {
+        return this.check_single_condition(condition)
+      }
+    },
+    check_single_condition(condition) {
+      let condition_value = null
+      if (this.conditionals) {
+        condition_value = recursive_unpack2(select_aspect_loc(null, aspect_loc_str2arr(condition.aspect), false, this.conditionals))
+      } else if (this.aspect_loc) {
+        let aspect_location = loc_prepend(this.edit ? EDIT : ENTRY, this.entry_uuid,
+          aspect_loc_str2arr(condition.aspect))
+        condition_value = this.$store.getters["entries/value"](aspect_location)
+      } else {
+        console.log(`condition for aspect ${this.aspect.name} cannot be checked. no aspect_loc and no conditionals`)
+        return false
+      }
+      return check_condition_value(condition_value, condition)
+    },
   },
   computed: {
     attr() {
@@ -130,23 +160,8 @@ export default {
       return this.condition_fail || this.attr.disable || this.disabled
     },
     condition_fail() {
-      // console.log("condition_fail?", this.aspect.name,  "condition_fail?")
-      // todo this getting of the value, could maybe also go into the helper...
-      let condition_value = null
       if (this.attr.hasOwnProperty("condition")) {
-        if (this.conditionals) {
-          condition_value = recursive_unpack2(select_aspect_loc(null, aspect_loc_str2arr(this.attr.condition.aspect), false, this.conditionals))
-        } else if (this.aspect_loc) {
-          let aspect_location = loc_prepend(this.edit ? EDIT : ENTRY, this.entry_uuid,
-            aspect_loc_str2arr(this.attr.condition.aspect))
-          // console.log("checking condition for", this.aspect.name)
-          // console.log("condition aspect-loc", aspect_location)
-          condition_value = this.$store.getters["entries/value"](aspect_location)
-        } else {
-          console.log(`condition for aspect ${this.aspect.name} cannot be checked. no aspect_loc and no conditionals`)
-          return false
-        }
-        return !check_condition_value(condition_value, this.attr.condition)
+        return !this.check_recursive_condition(this.attr.condition)
       } else {
         return false
       }

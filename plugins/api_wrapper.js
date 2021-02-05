@@ -154,6 +154,10 @@ class Domain extends QueryBase {
   async overview(language) {
     return this.get_("overview", {params: {language}})
   }
+
+  async codes_templates(domain_name, language) {
+    return this.get_("codes_templates", {params: {domain_name, language}})
+  }
 }
 
 class Entry extends QueryBase {
