@@ -161,6 +161,7 @@ export default {
     },
     condition_fail() {
       if (this.attr.hasOwnProperty("condition")) {
+        // console.log("cond-fail", this.aspect.name,  !this.check_recursive_condition(this.attr.condition))
         return !this.check_recursive_condition(this.attr.condition)
       } else {
         return false

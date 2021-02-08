@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    v-btn(v-if="button_trigger" :disabled="!has_value" @click="trigger_action" :loading="button_trigger_loading") {{trigger.button_label}}
+    v-btn(v-if="button_trigger" :disabled="btn_disabled" @click="trigger_action" :loading="button_trigger_loading") {{trigger.button_label}}
 </template>
 
 <script>
@@ -34,6 +34,13 @@ export default {
       button_trigger_loading: false
     }
   },
+  created() {
+    if (this.button_trigger && this.trigger.requires_callback) {
+      this.$bus.$on(["aspect-action-done"], () => {
+        this.button_trigger_loading = false
+      })
+    }
+  },
   computed: {
     value() {
       return unpack(this.mvalue)
@@ -50,6 +57,9 @@ export default {
     button_trigger() {
       return this.trigger.type === "button"
     },
+    btn_disabled() {
+      return !this.has_value && !this.trigger.button_always_enabled
+    },
     auto_trigger() {
       return this.trigger.type === "auto"
     },
@@ -59,15 +69,23 @@ export default {
   },
   methods: {
     trigger_action() {
-      if (this.button_trigger) {
+      if (this.button_trigger && this.trigger.requires_callback) {
         this.button_trigger_loading = true
       }
       switch (this.action.type) {
         case "api-query":
           this.perform_api_query()
           break
-        default :
-          console.log("unknown action type")
+        case "emit":
+          this.$emit("aspectAction", {action: "defined_action", name:this.action.name})
+          // this.$bus.$on("aspect-action-done", () => {
+          //   console.log("ll")
+          //   this.button_trigger_loading = false
+          // })
+          break
+        default:
+          console.log(`unknown action type: ${this.action.type}`)
+          this.button_trigger_loading = false
       }
     },
     reset_action() {
@@ -113,7 +131,7 @@ export default {
         return data
       }
       for (let process of this.action.properties.process_result) {
-        const {name,value} = process
+        const {name, value} = process
         if (name === "list_filter_index") {
           console.log(data)
           debugger
@@ -233,6 +251,9 @@ export default {
         }
       }
     }
+  },
+  beforeDestroy() {
+    this.$bus.$off("aspect-action-done")
   }
 }
 </script>

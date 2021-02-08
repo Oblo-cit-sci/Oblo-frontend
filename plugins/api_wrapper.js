@@ -1,4 +1,4 @@
-import Vue from 'vue'
+import Vue from "vue"
 
 const qs = require('qs');
 
@@ -118,19 +118,9 @@ class Domain extends QueryBase {
     super(api_wrapper, "/domain")
   }
 
-  /**
-   * all templates and codes of a domain
-   */
-  async basic_entries(domain_name) {
-    return this.axios.get(`${domain_name}/basic_entries`)
-  }
 
-  async info(domain_name, language) {
-    return this.get_(`${domain_name}/basic_entries`, {params: {language}})
-  }
-
-  async metainfo(domain_names) {
-    return this.get_("metainfo", {
+  async meta_info(domain_names) {
+    return this.get_("meta_info", {
       params: {domain_names}
     })
   }
@@ -155,9 +145,6 @@ class Domain extends QueryBase {
     return this.get_("overview", {params: {language}})
   }
 
-  async codes_templates(domain_name, language) {
-    return this.get_("codes_templates", {params: {domain_name, language}})
-  }
 }
 
 class Entry extends QueryBase {
@@ -274,6 +261,10 @@ class Entries extends QueryBase {
         as_geojson
       }
     })
+  }
+
+  get_codes_templates(language) {
+    return this.get_("get_codes_templates", {params: {language}})
   }
 
 }

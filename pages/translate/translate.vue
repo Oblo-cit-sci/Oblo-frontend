@@ -40,6 +40,7 @@ export default {
   computed: {
     ...mapGetters({setup: "translate/setup_values"}),
     translations() {
+      // console.log(this.setup.messages)
       return this.setup.messages.map(msg => ({
         index: msg[0],
         languages: [this.setup.src_lang, this.setup.dest_lang],
@@ -79,14 +80,20 @@ export default {
           }
         } else if (this.setup.component === "domain") {
           const messages = this.get_flat_messages()
-          if (this.setup.config.new_o) {
-            const {data} = await this.$api.domain.post_from_flat(this.setup.config.domain, this.setup.dest_lang, messages)
-          } else {
-            const {data} = await this.$api.domain.patch_from_flat(this.setup.config.domain, this.setup.dest_lang, messages)
-          }
-          const changed_messages = Object.entries(this.changed_messages)
-          for (let m of changed_messages) {
-            this.$refs[m[0]][0].refresh_original()
+          try {
+            if (this.setup.config.new_o) {
+              const {data} = await this.$api.domain.post_from_flat(this.setup.config.domain, this.setup.dest_lang, messages)
+              this.ok_snackbar(data.msg)
+            } else {
+              const {data} = await this.$api.domain.patch_from_flat(this.setup.config.domain, this.setup.dest_lang, messages)
+              this.ok_snackbar(data.msg)
+            }
+            const changed_messages = Object.entries(this.changed_messages)
+            for (let m of changed_messages) {
+              this.$refs[m[0]][0].refresh_original()
+            }
+          } catch (e) {
+            this.err_error_snackbar(e)
           }
         }
       } catch (err) {

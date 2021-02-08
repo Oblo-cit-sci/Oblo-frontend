@@ -30,9 +30,9 @@
       :change_status="has_changed"
       v-on:update_value="update_value($event)"
       @update:error="$emit('update:error', $event)"
-      v-on:aspectAction="aspectAction($event)")
+      @aspectAction="aspectAction($event)")
     div(v-if="has_action && edit")
-      AspectAction(:aspect="aspect" :mvalue="mvalue" :extra="extra")
+      AspectAction(:aspect="aspect" :mvalue="mvalue" :extra="extra" @aspectAction="aspectAction($event)")
 </template>
 
 <script>

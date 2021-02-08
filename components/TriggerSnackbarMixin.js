@@ -15,6 +15,9 @@ export default {
       this.$bus.$emit("snackbar", {ok:false, message})
       // this.$store.commit(SNACKBAR, {ok: false, message})
     },
+    response_snackbar(response_data) {
+      console.log(response_data)
+    },
     err_error_snackbar(err) {
       this.error_snackbar(this.$_.get(err, RESPONSE_ERROR_MSG, this.$t(MSG_PATH_SOMETHING_WENT_WRONG)))
     }

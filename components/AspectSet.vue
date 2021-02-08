@@ -7,6 +7,7 @@
           :conditionals="i_values"
           @update:error="errors[aspect.name] = $event"
           @update:state="state[aspect.name] = $event"
+          @aspectAction="aspectAction($event)"
           :extra="{clearable:false}"
           :mode="mode")
     slot(name="pre_validation")
@@ -96,7 +97,11 @@ export default {
       this.initial_values = this.$_.cloneDeep(this.i_values)
     }
   },
-  methods: {},
+  methods: {
+    aspectAction(event) {
+      this.$emit("aspectAction",event)
+    }
+  },
   watch: {
     i_values: {
       deep: true,

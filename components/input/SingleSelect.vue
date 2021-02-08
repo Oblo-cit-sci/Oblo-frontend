@@ -16,6 +16,7 @@
           class="single_select")
           v-list-item-avatar(v-if="has_some_icons")
             v-img(:src="icon_path(item)"  contain max-height="25")
+          v-icon(v-if="item.mdi_icon") {{item.mdi_icon}}
           v-list-item-content
             v-list-item-title
               span {{item.text}}
