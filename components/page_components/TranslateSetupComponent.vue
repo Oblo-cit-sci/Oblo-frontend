@@ -21,7 +21,7 @@
 import OptionsMixin from "~/components/aspect_utils/OptionsMixin";
 import Aspect from "~/components/Aspect";
 import {extract_n_unpack_values, pack_value, unpack} from "~/lib/aspect";
-import {SELECT} from "~/lib/consts";
+import {PUBLISHED, SELECT} from "~/lib/consts";
 import AspectSet from "~/components/AspectSet";
 import LanguageSearch from "~/components/language/LanguageSearch";
 import Dialog from "~/components/dialogs/Dialog";
@@ -56,9 +56,11 @@ export default {
       new_lang_dialog_open: false,
       new_language: null,
       temporary_additional_languages: [],
-      //codes_templates_minimal_info: {}, // keys: domain,language,slug, ...
+      codes_templates_minimal_info: {}, // keys: domain,language,slug, ...
       //debounced_entries_search: this.$_.debounce(this.code_template_search, 200),
       all_entries_in_ui_lang: [],
+      get_entries_info: false,
+      code_templates_for_domain_lang: []
       // entries_options: [] // we differentiate null from [], cuz a domain, lang could indeed be empty
     }
   },
@@ -106,9 +108,11 @@ export default {
       const domains = this.$_.cloneDeep(this.$store.getters["domain/domains_for_lang"](l, true))
       domains.forEach(d => {
         const meta_info = this.domains_metainfos[d.name]
-        if (meta_info.active_languages.includes[this.unpacked_values.dest_lang])
+        // console.log(meta_info, this.unpacked_values.dest_lang)
+        // console.log(meta_info.active_languages.includes[this.unpacked_values.dest_lang])
+        if (meta_info.active_languages.includes(this.unpacked_values.dest_lang))
           d.description = "completed"
-        else if (meta_info.inactive_languages.includes[this.unpacked_values.dest_lang])
+        else if (meta_info.inactive_languages.includes(this.unpacked_values.dest_lang))
           d.description = "incomplete"
         else
           d.description = "not started"
@@ -136,18 +140,31 @@ export default {
     },
     entry_select_aspect() {
       let options = []
-      if (this.unpacked_values.domain) {
-        let entries = this.all_entries_in_ui_lang.filter(e => e.domain === this.unpacked_values.domain)
-        const domain = this.$store.getters["domain/domain_by_name"](this.unpacked_values.domain)
+      // console.log("e-sel-asp")
+      const {domain: domain_name} = this.unpacked_values
+      // console.log(domain_name)
+      if (domain_name) {
+        let entries = this.all_entries_in_ui_lang.filter(e => e.domain === domain_name)
+        const domain = this.$store.getters["domain/domain_by_name"](domain_name)
         const required_entries = domain.langs[Object.keys(domain.langs)[0]].required_entries || []
         // todo here something about their status
         entries.forEach(e => {
           if (required_entries.includes(e.slug))
             e.mdi_icon = "mdi-exclamation"
+          if (this.code_templates_for_domain_lang.hasOwnProperty(e.slug)) {
+            if (this.code_templates_for_domain_lang[e.slug].status === PUBLISHED) {
+              e.description = "complete"
+            } else {
+              e.description = "incomplete"
+            }
+          } else {
+            e.description = "not started"
+          }
         })
+
         entries = this.$_.sortBy(entries, e => e.mdi_icon)
         options = object_list2options(entries,
-          "title", "slug", true, ["mdi_icon"])
+          "title", "slug", true, ["mdi_icon", "description"])
       } else {
         options = []
       }
@@ -272,10 +289,6 @@ export default {
     unpacked_values() {
       return extract_n_unpack_values(this.setup_values)
     },
-    // entries_options() {
-    //   const res_entries_info = await this.$api.entries.get_codes_templates(this.ui_language)
-    //   return object_list2options(res_entries_info.data.data, "title", "slug", false)
-    // }
   },
   methods: {
     async fetch_init_data() {
@@ -290,18 +303,21 @@ export default {
     },
     async start() {
       const {component, src_lang, dest_lang, domain, entry} = this.unpacked_values
-      const setup = {component, src_lang, dest_lang, unpacked: this.setup_values}
+      const setup = {component, domain, src_lang, dest_lang, unpacked: this.setup_values}
       if (["be", "fe"].includes(component)) {
         const {data} = await this.$api.language.get_component(component, [src_lang, dest_lang], false)
         setup.messages = data
       } else if (component === "domain") {
         await this.start_domain(domain, setup, src_lang, dest_lang)
+      } else if (component === "entries") {
+        await this.start_entry(entry, setup)
       }
       console.log("done")
       this.$store.commit("translate/setup", setup)
       await this.$router.push("/translate/translate")
     },
     async start_domain(domain, setup, src_lang, dest_lang) {
+      // todo remove src_lang, dest_lang since we get setup...
       // todo inactive doesnt mean it should not be fetched
       // await this.guarantee_domain_language(domain, src_lang)
       // both languages already have a domain object on the server
@@ -314,12 +330,12 @@ export default {
         ])
         setup.messages = resp_src_data.data.data
         const dest_messages = resp_dest_data.data.data
-        console.log(setup.messages)
-        console.log(dest_messages)
+        // console.log(setup.messages)
+        // console.log(dest_messages)
         for (let i in setup.messages) {
           setup.messages[i].push(dest_messages[i][1])
         }
-        console.log(setup.messages)
+        // console.log(setup.messages)
         Object.assign(setup, {config: {domain, new_o: false}})
       } else { // destination language doesnt exist yet for the domain
         const {data} = await this.$api.domain.domain_content_as_index_table(domain, src_lang)
@@ -327,6 +343,53 @@ export default {
         data.data.forEach(m => m.push(""))
         Object.assign(setup, {messages: data.data, config: {domain, new_o: true}})
       }
+    },
+    async start_entry(entry, setup) {
+      console.log(entry)
+      console.log(setup)
+      console.log(this.code_templates_for_domain_lang)
+      const entry_in_lang = this.code_templates_for_domain_lang[entry]
+      if (entry_in_lang) {
+        const [resp_src_data, resp_dest_data] = await Promise.all([
+          this.$api.entry.aspects_as_index_table(entry, setup.src_lang),
+          this.$api.entry.aspects_as_index_table(entry, setup.dest_lang)
+        ])
+        setup.messages = resp_src_data.data.data
+        const dest_messages = resp_dest_data.data.data
+        // console.log(setup.messages)
+        // console.log(dest_messages)
+
+
+        // todo something like this (for domain also)
+        // tho this comes from errors in the backend. lang entries, miss something, but its ognored
+        // check and fill up missing (by index)
+        // console.log(setup.messages.length, dest_messages.length)
+        // const src_set = new Set(setup.messages.map(m => m[0]))
+        // const dest_set = new Set(dest_messages.map(m => m[0]))
+        //
+        // for (let index of src_set) {
+        //   if (!dest_set.has(index)) {
+        //     console.log("missing", index)
+        //   }
+        // }
+        // for (let index of dest_set) {
+        //   if (!src_set.has(index)) {
+        //     console.log("addition", index)
+        //   }
+        // }
+
+        for (let i in setup.messages) {
+          setup.messages[i].push(dest_messages[i][1])
+        }
+
+        Object.assign(setup, {config: {entry, new_o: false}})
+      } else {
+        const {data} = await this.$api.entry.aspects_as_index_table(entry, setup.src_lang)
+        console.log(data)
+        data.data.forEach(m => m.push(""))
+        Object.assign(setup, {messages: data.data, config: {entry, new_o: true}})
+      }
+      // this.codes_templates_minimal_info[setup.domain][setup.dest_lang]
     },
     new_lang() {
       this.new_lang_dialog_open = true
@@ -352,6 +415,14 @@ export default {
       if (event.requires_callback) {
         this.$bus.$emit("aspect-action-done", {name: event.name})
       }
+    },
+    add_code_templates(domain, language, entries) {
+      if (!this.codes_templates_minimal_info.hasOwnProperty(domain)) {
+        this.codes_templates_minimal_info[domain] = {}
+      }
+      const slug_map = this.$_.keyBy(entries, "slug")
+      this.codes_templates_minimal_info[domain][language] = slug_map
+      this.code_templates_for_domain_lang = slug_map
     }
   },
   watch: {
@@ -363,16 +434,29 @@ export default {
       }, err => {
         console.log(err)
       })
-
     },
-    // unpacked_values: async function(new_vals, old_vals) {
-    //   console.log(new_vals)
-    //   if(new_vals.domain !== old_vals.domain) {
-    //     if (new_vals.dest_language) {
-    //       await this.$api.domain.overview(new_vals.dest_language)
-    //     }
-    //   }
-    // }
+    unpacked_values: async function (new_vals, old_vals) {
+      const {domain, dest_lang} = new_vals
+      if (new_vals.component === "entries" && domain !== null && dest_lang !== null) {
+
+        const loaded_infos = this.$_.get(this.codes_templates_minimal_info, `${domain}.${dest_lang}`, null)
+        console.log(loaded_infos)
+        if (!this.get_entries_info && !loaded_infos) {
+          this.get_entries_info = true
+          this.code_templates_for_domain_lang = []
+          // console.log(new_vals, dest_lang)
+          this.$api.domain.get_codes_templates(domain, dest_lang, false).then(({data}) => {
+            this.add_code_templates(domain, dest_lang, data.data)
+          }, err => {
+            console.error(err)
+          }).finally(() => {
+            this.get_entries_info = false
+          })
+        } else if (domain !== old_vals.domain || dest_lang !== old_vals.dest_lang) {
+          this.code_templates_for_domain_lang = loaded_infos
+        }
+      }
+    }
   }
 }
 </script>

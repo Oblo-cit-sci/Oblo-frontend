@@ -145,6 +145,11 @@ class Domain extends QueryBase {
     return this.get_("overview", {params: {language}})
   }
 
+  async get_codes_templates(domain_name, language, full) {
+    return this.get_(`${domain_name}/get_codes_templates`, {
+      params: {language, full}
+    })
+  }
 }
 
 class Entry extends QueryBase {
@@ -186,7 +191,6 @@ class Entry extends QueryBase {
     return this.get_(`${uuid}/meta`)
   }
 
-
   url_uuid_attachment(uuid, file_uuid) {
     return `${this.base}/${uuid}/attachment/${file_uuid}`
   }
@@ -209,6 +213,9 @@ class Entry extends QueryBase {
     return this.delete_(`${uuid}/attachment/${file_uuid}`)
   }
 
+  aspects_as_index_table(slug, language) {
+    return this.get_(`${slug}/aspects_as_index_table`, {params: {language}})
+  }
 }
 
 class Entries extends QueryBase {
