@@ -1,4 +1,3 @@
-import {COMPOSITE, LIST} from "~/lib/consts";
 import {entries_domain_filter} from "~/lib/search";
 import {resolve_from_list_code, resolve_from_tree_code} from "~/lib/tags";
 
@@ -50,7 +49,7 @@ export const getters = {
     return (slug, language) => {
       // console.log("getting entry_type for slug", type_slug, state.entry_types)
       if (!state.codes.has(slug)) {
-        console.log("WARNING, store,entrytype.getters.entry_type. type for slug missing:", type_slug, "returning null, should be catched earlier")
+        console.log("WARNING, store,entrytype.getters.entry_type. type for slug missing:", slug, "returning null, should be catched earlier")
         return null
       }
       const base_template = state.codes.get(slug)
@@ -203,7 +202,7 @@ export const mutations = {
         }
         insert_to[tag.value].set(lang, {text: tag.text})
         if (tag.description) {
-          insert_to[tag.value].get(lang)[description] = tag.description
+          insert_to[tag.value].get(lang).description = tag.description
         }
       }
     }

@@ -95,6 +95,25 @@ export default {
           } catch (e) {
             this.err_error_snackbar(e)
           }
+        } else if (this.setup.component === "entries") {
+          const messages = this.get_flat_messages()
+          try {
+            if (this.setup.config.new_o) {
+              const {data} = await this.$api.entry.post_from_flat(this.setup.config.entry, this.setup.dest_lang, messages)
+              this.ok_snackbar(data.msg)
+            } else {
+              const {data} = await this.$api.entry.patch_from_flat(this.setup.config.entry, this.setup.dest_lang, messages)
+              this.ok_snackbar(data.msg)
+            }
+            const changed_messages = Object.entries(this.changed_messages)
+            for (let m of changed_messages) {
+              this.$refs[m[0]][0].refresh_original()
+            }
+          } catch (e) {
+            this.err_error_snackbar(e)
+          }
+        } else {
+          console.error("Unknown component", this.setup)
         }
       } catch (err) {
         this.err_error_snackbar(err)

@@ -75,7 +75,6 @@ export default {
   },
   methods: {
     create_entry() {
-      debugger
       if (this.can_create_multiple_etypes) {
         this.$bus.$emit("domain-create_entry")
         // this.$bus.$emit("create_entry")

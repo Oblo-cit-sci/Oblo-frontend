@@ -35,7 +35,7 @@ export default {
             if (code_entry.template.slug === "value_tree") {
                 return this.$_.cloneDeep(code_entry.values)
             } else {
-                logger.error("code entry is not of type tree")
+                console.error("code entry is not of type tree")
             }
         },
         prepare_tree_nodes(tree, only_levels) {

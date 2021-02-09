@@ -359,7 +359,6 @@ export default {
         // console.log(setup.messages)
         // console.log(dest_messages)
 
-
         // todo something like this (for domain also)
         // tho this comes from errors in the backend. lang entries, miss something, but its ognored
         // check and fill up missing (by index)
@@ -385,11 +384,9 @@ export default {
         Object.assign(setup, {config: {entry, new_o: false}})
       } else {
         const {data} = await this.$api.entry.aspects_as_index_table(entry, setup.src_lang)
-        console.log(data)
         data.data.forEach(m => m.push(""))
         Object.assign(setup, {messages: data.data, config: {entry, new_o: true}})
       }
-      // this.codes_templates_minimal_info[setup.domain][setup.dest_lang]
     },
     new_lang() {
       this.new_lang_dialog_open = true
