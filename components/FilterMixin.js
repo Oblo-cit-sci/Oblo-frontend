@@ -122,14 +122,14 @@ export default {
           description: this.$t("comp.tagoptions_asp.used_in") + used_in_templates.join(", "),
           attr: {}
         }
-        if (code.template.slug === "value_tree") {
+        if (code.rules.code_schema === "value_tree") {
           const tag_tree = build_tag_select_tree(this.$_.cloneDeep(code))
           options_aspects.push(Object.assign(base_aspect, {
               type: TREEMULTISELECT,
               items: tag_tree
             })
           )
-        } else if (code.template.slug === "value_list") {
+        } else if (code.rules.code_schema === "value_list") {
           const tag_list = build_tag_select_list(this.$_.cloneDeep(code))
           options_aspects.push(Object.assign(base_aspect, {
               type: MULTISELECT,
