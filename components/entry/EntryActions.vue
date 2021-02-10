@@ -106,8 +106,9 @@ export default {
       }
       if (method) {
         try {
-          const res = await this.$api.entry[method](sending_entry)
+          const {data: resp} = await this.$api.entry[method](sending_entry)
           this.sending = false
+
           const attachments_data = this.get_attachments_to_post(sending_entry)
           this.send_attachments(attachments_data, this.entry.uuid)
           if (this.is_published) {
@@ -115,8 +116,13 @@ export default {
           } else {
             this.ok_snackbar(this.$t('comp.entry_actions.submitted'))
           }
-          this.$store.commit("entries/save_entry", res.data.data.entry)
-          this.$store.commit("entries/set_edit", res.data.data.entry)
+          this.$store.commit("entries/save_entry", resp.data.entry)
+          this.$store.commit("entries/set_edit", resp.data.entry)
+
+          this.$store.commit("map/update_entry_features", {
+            domain: this.entry.domain,
+            entry_features: resp.data.map_features
+          })
           this.back(["search"])
         } catch (err) {
           console.log(err)
@@ -137,7 +143,7 @@ export default {
         this.ok_snackbar(data.msg)
         if (accept) {
           this.$store.commit("entries/save_entry", data.data.entry)
-          console.log(this.entry.status, sending_entry.status, data.data.entry.status)
+          // console.log(this.entry.status, sending_entry.status, data.data.entry.status)
           this.$store.commit("map/update_entry_features", {
             domain: this.entry.domain,
             entry_features: data.data.map_features

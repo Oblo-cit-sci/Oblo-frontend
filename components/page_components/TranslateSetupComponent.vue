@@ -80,11 +80,71 @@ export default {
         this.domain_select_aspect, this.entry_select_aspect, this.src_language_select_aspect
       ]
     },
-    available_components_options() {
-      return components.map(c => this.create_option(c, this.$t("comp.translate.component_select_asp.options." + c)))
+    dest_language_select_aspect() {
+      const base = "comp.translate.dest_lang."
+      return {
+        name: "dest_lang",
+        type: SELECT,
+        attr: {
+          force_view: "list",
+          action: {
+            type: "emit",
+            name: "new_lang_dialog",
+            trigger: {
+              type: "button",
+              button_always_enabled: true,
+              button_label: this.$t("comp.translate.new.new_lang"),
+              requires_callback: false
+            }
+          }
+        },
+        label: this.$t(`${base}label`),
+        description: this.$t(`${base}descr`),
+        items: this.dest_language_options
+      }
     },
-    is_setup_valid() {
-      return this.is_aspects_complete && this.setup_values.src_lang.value !== this.setup_values.dest_lang.value
+    dest_language_options() {
+      return this.all_added_languages.sort()
+        .map(l => ({
+          value: l,
+          text: this.$t(`lang.${l}`),
+        })).concat(this.temporary_additional_languages)
+
+
+      // const component = this.unpacked_values.component
+      // let options = []
+      // if (component === "domain") {
+      //   const domain_info = this.domains_metainfos[this.unpacked_values.domain]
+      //   if (domain_info) {
+      //     domain_info.active_languages.sort().map(l => ({
+      //       value: l,
+      //       text: this.$t(`lang.${l}`),
+      //       description: "complete"
+      //     })).forEach(o => options.push(o))
+      //     domain_info.inactive_languages.sort().map(l => ({
+      //       value: l,
+      //       text: this.$t(`lang.${l}`),
+      //       description: "incomplete"
+      //     })).forEach(o => options.push(o))
+      //     const includes_codes = options.map(l => l.value)
+      //     this.all_added_languages.filter(l => !includes_codes.includes(l))
+      //       .map(l => ({
+      //         value: l,
+      //         text: this.$t(`lang.${l}`),
+      //         description: "not started"
+      //       })).forEach(o => options.push(o))
+      //     // console.log(options, this.unpacked_values.dest_lang)
+      //   }
+      // } else if (["fe", "be"].includes(component)) {
+      //   options = this.all_added_languages.sort()
+      //     .map(l => ({
+      //       value: l,
+      //       text: this.$t(`lang.${l}`),
+      //     }))
+      //     .filter(o => o.value !== this.unpacked_values.src_lang)
+      // } else {
+      // }
+      // return options.filter(o => o.value !== this.unpacked_values.src_lang)
     },
     component_select_aspect() {
       return {
@@ -103,8 +163,11 @@ export default {
         items: this.available_components_options
       }
     },
+    available_components_options() {
+      return components.map(c => this.create_option(c, this.$t("comp.translate.component_select_asp.options." + c)))
+    },
     domain_select_aspect() {
-      const l = unpack(this.$store.getters["user/settings_value"]("ui_language"))
+      const l = this.$store.getters["user/settings_ui_language"]
       const domains = this.$_.cloneDeep(this.$store.getters["domain/domains_for_lang"](l, true))
       domains.forEach(d => {
         const meta_info = this.domains_metainfos[d.name]
@@ -184,6 +247,9 @@ export default {
         items: options// this.entry_select_items(entries) // EntryCreateMixin
       }
     },
+    is_setup_valid() {
+      return this.is_aspects_complete && this.setup_values.src_lang.value !== this.setup_values.dest_lang.value
+    },
     src_language_select_aspect() {
       // console.log("src lang", this.unpacked_values.component)
       const base = "comp.translate.src_lang."
@@ -194,29 +260,6 @@ export default {
         label: this.$t(`${base}label`),
         description: this.$t(`${base}descr`),
         items: this.src_language_options,
-      }
-    },
-    dest_language_select_aspect() {
-      const base = "comp.translate.dest_lang."
-      return {
-        name: "dest_lang",
-        type: SELECT,
-        attr: {
-          force_view: "list",
-          action: {
-            type: "emit",
-            name: "new_lang_dialog",
-            trigger: {
-              type: "button",
-              button_always_enabled: true,
-              button_label: this.$t("comp.translate.new.new_lang"),
-              requires_callback: false
-            }
-          }
-        },
-        label: this.$t(`${base}label`),
-        description: this.$t(`${base}descr`),
-        items: this.dest_language_options
       }
     },
     src_language_options() {
@@ -239,49 +282,6 @@ export default {
       } else {
       }
       return language_options.filter(o => o.value !== this.unpacked_values.dest_lang)
-    },
-    dest_language_options() {
-      return this.all_added_languages.sort()
-        .map(l => ({
-          value: l,
-          text: this.$t(`lang.${l}`),
-        })).concat(this.temporary_additional_languages)
-
-
-      // const component = this.unpacked_values.component
-      // let options = []
-      // if (component === "domain") {
-      //   const domain_info = this.domains_metainfos[this.unpacked_values.domain]
-      //   if (domain_info) {
-      //     domain_info.active_languages.sort().map(l => ({
-      //       value: l,
-      //       text: this.$t(`lang.${l}`),
-      //       description: "complete"
-      //     })).forEach(o => options.push(o))
-      //     domain_info.inactive_languages.sort().map(l => ({
-      //       value: l,
-      //       text: this.$t(`lang.${l}`),
-      //       description: "incomplete"
-      //     })).forEach(o => options.push(o))
-      //     const includes_codes = options.map(l => l.value)
-      //     this.all_added_languages.filter(l => !includes_codes.includes(l))
-      //       .map(l => ({
-      //         value: l,
-      //         text: this.$t(`lang.${l}`),
-      //         description: "not started"
-      //       })).forEach(o => options.push(o))
-      //     // console.log(options, this.unpacked_values.dest_lang)
-      //   }
-      // } else if (["fe", "be"].includes(component)) {
-      //   options = this.all_added_languages.sort()
-      //     .map(l => ({
-      //       value: l,
-      //       text: this.$t(`lang.${l}`),
-      //     }))
-      //     .filter(o => o.value !== this.unpacked_values.src_lang)
-      // } else {
-      // }
-      // return options.filter(o => o.value !== this.unpacked_values.src_lang)
     },
     disable_init() {
       return true

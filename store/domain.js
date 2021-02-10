@@ -94,7 +94,7 @@ export const getters = {
     return state.act_domain_name
   },
   act_domain_data(state, getters) {
-    return getters.domains.find(d => d.name === state.act_domain_name)
+    return getters.domains().find(d => d.name === state.act_domain_name)
   },
   // todo act_domain_title, REMOVE, language
   act_domain_title(state, getters) {
@@ -136,7 +136,8 @@ export const getters = {
   // todo just used once atm. maybe not required as store getter
   domains_for_lang(state, getters) {
     return (lang_code, keep_no_domain = false) => {
-      return ld.filter(ld.map(getters.domains, d => getters.lang_domain_data(d.name, lang_code)),
+      debugger
+      return ld.filter(ld.map(getters.domains(), d => getters.lang_domain_data(d.name, lang_code)),
         d => d && (keep_no_domain || d.name !== "no_domain"))
     }
   },
