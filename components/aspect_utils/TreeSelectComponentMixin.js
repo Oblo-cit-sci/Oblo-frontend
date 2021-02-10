@@ -32,7 +32,7 @@ export default {
         },
         get_tree_codes_tree(code_slug) {
             const code_entry = this.get_lang_code_entry(code_slug)
-            if (code_entry.template.slug === "value_tree") {
+            if (code_entry.rules.code_schema === "value_tree") {
                 return this.$_.cloneDeep(code_entry.values)
             } else {
                 console.error("code entry is not of type tree")

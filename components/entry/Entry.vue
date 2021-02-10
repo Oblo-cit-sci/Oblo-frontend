@@ -17,7 +17,7 @@
       v-row(:style="{'text-align': 'right', 'font-size':'80%'}")
         span.my-auto {{$t("comp.entrypreview.created")}} {{entry_date}}
       v-row
-        MetaChips(:meta_aspects="meta_aspects")
+        MetaChips(:meta_aspects="meta_aspect_chips")
       v-row
         EntryActorList.mt-2(:actors="actors")
       v-row
@@ -55,11 +55,7 @@
       v-row
         v-col(:cols="base_cols")
           v-divider.wide_divider
-      v-row(v-if="logged_in")
-        v-col(alignSelf="stretch" :cols="base_cols" :lg="base_cols/2" :xl="base_cols/3")
-          Aspect(:aspect="license_aspect" :aspect_loc="aspect_locs[license_aspect.name]" :mode="license_privacy_mode")
-        v-col(alignSelf="stretch" :cols="base_cols" :lg="base_cols/2")
-          Aspect(:aspect="asp_privacy()" :aspect_loc="aspect_locs[asp_privacy().name]" :mode="license_privacy_mode")
+      AspectSet(v-if="logged_in" :aspects="meta_aspects" :mode="license_privacy_mode" :values.sync="meta_aspects_values" :compact="true")
       v-row(v-if="is_creator || is_admin")
         v-col.pb-0(alignSelf="stretch" :cols="base_cols")
           Aspect(:aspect="asp_entry_roles()" :mode="entry_roles_mode" :aspect_loc="aspect_locs[asp_entry_roles().name]" :extra="{entry_is_private: entry.privacy==='private'}" @update:error="update_error('actors', $event)")
@@ -100,7 +96,7 @@ import FullEntryMixin from "./FullEntryMixin";
 import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
 import PersistentStorageMixin from "../util/PersistentStorageMixin";
 import EntryValidation from "./EntryValidation";
-import {draft_color, EDIT, ENTRY, VIEW} from "~/lib/consts";
+import {draft_color, EDIT, ENTRY, META, VIEW} from "~/lib/consts";
 import {privacy_color, privacy_icon} from "~/lib/util";
 import ChangedAspectNotice from "./ChangedAspectNotice";
 import MetaChips from "./MetaChips";
@@ -112,12 +108,15 @@ import AspectSetMixin from "~/components/aspects/AspectSetMixin"
 import {CREATOR} from "~/lib/actors"
 import LanguageChip from "~/components/language/LanguageChip";
 import TemplateHelperMixin from "~/components/templates/TemplateHelperMixin";
+import AspectSet from "~/components/AspectSet";
+import {unpack} from "~/lib/aspect";
 
 export default {
   name: "Entry",
   mixins: [EntryNavMixin, EntryMixin, TriggerSnackbarMixin, TypicalAspectMixin, PersistentStorageMixin,
     FullEntryMixin, AspectSetMixin, TemplateHelperMixin],
   components: {
+    AspectSet,
     LanguageChip,
     EntryTags,
     Taglist,
@@ -145,7 +144,8 @@ export default {
       router_next: null,
       delete_entry: false,
       disabled_aspects: {},
-      force_entry_language: false // when draft is created in another language. a popup asks to switch to its language
+      force_entry_language: false, // when draft is created in another language. a popup asks to switch to its language
+      meta_aspects_values: {"privacy": {value: this.entry.privacy}, license: {value: this.entry.license}}
     }
   },
   methods: {
@@ -203,6 +203,7 @@ export default {
     license_aspect() {
       return this.asp_license("license", ["cc_licenses"], null)
     },
+    // TODO should go to a mixin
     license_privacy_mode() {
       if (this.logged_in && this.is_creator || this.$store.getters["user/is_admin"]) {
         return EDIT
@@ -227,7 +228,7 @@ export default {
         return null
     },
     // wrong, create should be for all that are not local/saved or published
-    meta_aspects() {
+    meta_aspect_chips() {
       let result = []
       result.push({
         icon: privacy_icon(this.entry.privacy),
@@ -253,6 +254,26 @@ export default {
         // todo not great cuz the mixin for that is AspectSetMixin is in Entry
         has_errors: this.has_errors,
         is_dirty: this.is_dirty
+      }
+    }
+  },
+  watch: {
+    meta_aspects_values: {
+      deep: true,
+      handler: function (values, prev) {
+        // todo why does prev, return the same as values
+        // console.log(values.privacy.value, prev.privacy)
+        for (let aspect_name of Object.keys(values)) {
+          // console.log(aspect_name)
+          // console.log(values[aspect_name], prev[aspect_name])
+          if (!this.$_.isEqual(values[aspect_name], this.entry[aspect_name])) {
+            // console.log(aspect_name)
+            this.$store.commit("entries/_set_entry_value", {
+              aspect_loc: [[EDIT, this.uuid], [META, aspect_name]],
+              value: unpack(values[aspect_name])
+            })
+          }
+        }
       }
     }
   }

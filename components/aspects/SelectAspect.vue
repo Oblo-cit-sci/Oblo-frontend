@@ -29,6 +29,7 @@ import AspectComponentMixin from "./AspectComponentMixin";
 import {server_icon_path} from "~/lib/client"
 import LanguageCodeFallback from "~/components/aspect_utils/LanguageCodeFallback";
 import SingleSelect from "~/components/input/SingleSelect";
+import {unpack} from "~/lib/aspect";
 
 export default {
   name: "SelectAspect",
@@ -124,6 +125,7 @@ export default {
       if (this.selection === null)
         this.update_value(null)
       else {
+        // todo que?
         if (this.attr.only_value) {
           send_value = this.selection
         }

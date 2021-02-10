@@ -1,15 +1,29 @@
 <template lang="pug">
   div
-    v-row(v-for="aspect in aspects" :key="aspect.name")
-      v-col.py-0(cols=10)
-        Aspect(:aspect="aspect"
-          :ext_value.sync="i_values[aspect.name]"
-          :conditionals="i_values"
-          @update:error="errors[aspect.name] = $event"
-          @update:state="state[aspect.name] = $event"
-          @aspectAction="aspectAction($event)"
-          :extra="{clearable:false}"
-          :mode="mode")
+    div(v-if="normal_grid")
+      v-row(v-for="aspect in aspects" :key="aspect.name")
+        v-col.py-0(cols=10)
+          Aspect(:aspect="aspect"
+            :ext_value.sync="i_values[aspect.name]"
+            :conditionals="i_values"
+            @update:error="errors[aspect.name] = $event"
+            @update:state="state[aspect.name] = $event"
+            @aspectAction="aspectAction($event)"
+            :extra="{clearable:false}"
+            :mode="mode")
+    div(v-else)
+      v-row
+        v-col(
+          v-for="aspect in aspects" :key="aspect.name"
+          alignSelf="stretch" :cols="base_cols" :lg="base_cols/2" :xl="base_cols/3")
+          Aspect(:aspect="aspect"
+            :ext_value.sync="i_values[aspect.name]"
+            :conditionals="i_values"
+            @update:error="errors[aspect.name] = $event"
+            @update:state="state[aspect.name] = $event"
+            @aspectAction="aspectAction($event)"
+            :extra="{clearable:false}"
+            :mode="mode")
     slot(name="pre_validation")
     v-row.mt-2(v-if="show_validation")
       AspectSetValidation(:aspects="aspects" :aspects_state="state")
@@ -20,11 +34,12 @@ import {aspect_default_value} from "~/lib/aspect"
 import Aspect from "~/components/Aspect"
 import {ASP_ERROR, ASP_UNSET, VIEW} from "~/lib/consts"
 import AspectSetValidation from "~/components/AspectSetValidation";
+import AspectListMixin from "~/components/global/AspectListMixin";
 
 export default {
   name: "AspectSet",
   components: {AspectSetValidation, Aspect},
-  mixins: [],
+  mixins: [AspectListMixin],
   props: {
     aspects: {
       type: Array,
@@ -47,7 +62,8 @@ export default {
     hide_validation_if_valid: {
       type: Boolean,
       default: true
-    }
+    },
+    compact: Boolean
   },
   data() {
     const aspectMap = this.$_.keyBy(this.aspects, "name")
@@ -69,6 +85,9 @@ export default {
   computed: {
     aspect_names() {
       return this.$_.map(this.aspects, "name")
+    },
+    normal_grid() {
+      return !this.compact
     },
     has_error() {
       return this.$_.filter(this.errors, e => e).length > 0

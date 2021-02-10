@@ -9,7 +9,7 @@
           :ext_value.sync="aspect.value"
           mode="edit")
     div(v-if="is_fixed_domain && has_multiple_domains")
-      h3 {{$t("page.settings.fixed_domain.h")}}
+      h3 {{$t("page.settings.fixed_domain.h1")}}
       div
         span {{$t("page.settings.fixed_domain.p")}} &nbsp;
         b {{is_fixed_domain}}
@@ -113,6 +113,7 @@
           this.persist_user_settings()
           this.$router.push({name: PAGE_PROFILE})
         }).catch(err => {
+          this.err_error_snackbar(err)
           console.log(err)
         }).finally(() => {
           this.update_button_loading = false

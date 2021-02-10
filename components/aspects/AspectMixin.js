@@ -209,6 +209,8 @@ export default {
       //   return {value: id}
       // }
       if (this.attr.ref_value) {
+        console.log("no more refs like this")
+        /*
         //console.log("ref")
         // GRAB REF
         let aspect_location = complete_aspect_loc(
@@ -237,8 +239,10 @@ export default {
             this.update_value(ref_value.value)
           }
           return ref_value
-        }
+        } */
       } else if (this.attr.ref_length) { // this is for lists
+        console.log("no more list-refs like this")
+        /*
         let location_array = complete_aspect_loc(aspect_loc_uuid(this.aspect_loc), aspect_loc_str2arr(this.attr.ref_length))
         // USES lists or ints
         const length_value = this.$store.getters["entries/value"](location_array).value
@@ -250,8 +254,8 @@ export default {
           this.extra["ref_length"] = parseInt(length_value)
         }
         return this.$store.getters["entries/value"](this.aspect_loc)
+         */
       } else {
-        // console.log("getting value...", this.aspect_loc)
         // console.log(this.aspect.name, this.aspect_loc)
         let value = this.$store.getters["entries/value"](this.aspect_loc)
         if (value === undefined) {
