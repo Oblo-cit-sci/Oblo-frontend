@@ -5,6 +5,7 @@
 import TriggerSnackbarMixin from "../../components/TriggerSnackbarMixin"
 import LoginMixin from "../../components/actor/LoginMixin"
 import NavBaseMixin from "~/components/NavBaseMixin"
+import {PAGE_LOGIN} from "~/lib/pages";
 
 export default {
   name: "verify_email_address",
@@ -12,14 +13,8 @@ export default {
   created() {
     const logged_in = this.$store.getters["user/logged_in"]
     this.$api.actor.verify_email_address(this.$route.query.user, this.$route.query.code).then(({data}) => {
-      if (!logged_in && data.user) {
-        this.ok_snackbar(data.msg)
-        this.process_login(data)
-        this.home()
-      } else {
-        this.ok_snackbar(data.data)
-        this.home()
-      }
+      this.ok_snackbar(data.msg)
+      this.$router.push({name: PAGE_LOGIN})
     }).catch(err => {
       console.log(err)
       this.err_error_snackbar(err)
