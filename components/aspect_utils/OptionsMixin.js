@@ -28,9 +28,9 @@ export default {
     get_codes_as_options(code_slug) {
       const code_entry = this.get_lang_code_entry(code_slug)
       if (code_entry) {
-        if (code_entry.template.slug === "value_list") {
+        if (code_entry.rules.code_schema === "value_list") {
           return code_entry.values.list
-        } else if (code_entry.template.slug === "value_tree") {
+        } else if (code_entry.rules.code_schema === "value_tree") {
           const tree_ = this.$_.cloneDeep(code_entry.values)
           tree_options_add_ids(tree_)
           return tree_

@@ -17,7 +17,6 @@
             DomainCard(
               :domain_data="languaged_domain_overview(domain)"
               :languages="languages(domain)")
-
       v-row(justify="center")
         v-btn(text nuxt to="about") {{$t('page.index.about_a')}}
         v-btn(text nuxt to="about") {{$t('page.index.privacy_a')}}
@@ -64,7 +63,7 @@ export default {
       return this.hostname
     },
     visible_domains() {
-      return this.domains.filter(d => d.name !== NO_DOMAIN)
+      return this.domains().filter(d => d.name !== NO_DOMAIN)
     },
   },
   methods: {

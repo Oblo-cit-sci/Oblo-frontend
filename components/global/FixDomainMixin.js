@@ -12,10 +12,10 @@ export default {
       return this.$_.get(this.$store.getters["user/settings"], FIXED_DOMAIN, null)
     },
     has_multiple_domains() {
-      return this.$_.filter(this.$store.getters["domain/domains"], d => d.name !== NO_DOMAIN).length > 1
+      return this.$_.filter(this.$store.getters["domain/domains"](), d => d.name !== NO_DOMAIN).length > 1
     },
     get_one_domain_name() {
-      return this.$_.find(this.$store.getters["domain/domains"], d => d.name !== NO_DOMAIN).name
+      return this.$_.find(this.$store.getters["domain/domains"](), d => d.name !== NO_DOMAIN).name
     }
   },
   methods: {

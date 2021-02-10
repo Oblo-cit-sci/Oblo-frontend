@@ -89,6 +89,7 @@ export default {
       const i_language = this.$route.query[QP_lang] || user_settings.domain_language || this.default_language
       console.log("init with, ", domain_name, i_language)
 
+      const only_overview = domain_name === null
 
       if (i_language === this.default_language) {
         // messages are already in the page but not those of lang.<lang_code>
@@ -96,13 +97,24 @@ export default {
           this.$i18n.mergeLocaleMessage(i_language, data)
         })
       }
-
       const {data} = await this.$api.basic.init_data(domain_name ? [domain_name, NO_DOMAIN] : null, i_language)
       console.log("connected")
 
       const domains_data = data.data.domains
+
       const language = data.data.language
-      await this.$store.dispatch("domain/set_domains", {domains_data, language})
+
+      // console.log(domains_data)
+      // console.log("overview", only_overview)
+      if (only_overview) {
+        const domains_overview = data.data.domains_overview
+        await this.$store.dispatch("domain/set_domains", {domains_data, language})
+        this.$store.commit("domain/add_domains_overviews", domains_overview)
+      }
+      else {
+        await this.$store.dispatch("domain/set_domains", {domains_data, language})
+      }
+
       await this.$store.dispatch("templates/add_templates_codes", data.data.templates_and_codes)
       // console.log("template/codes stored")
       // console.log(data.data)
@@ -111,11 +123,7 @@ export default {
       // console.log("language", language)
       // console.log("?", language, language !== this.$i18n.fallbackLocale, this.$i18n.fallbackLocale)
       if (language !== this.$i18n.fallbackLocale) {
-        // console.log("change lang", language, data.data.messages)
         this.$i18n.setLocaleMessage(language, data.data.messages[language])
-        // console.log(Object.keys(this.$i18n.getLocaleMessage(language)))
-        // const a = this
-        // debugger
         await this.change_language(language, false)
       }
 
@@ -128,16 +136,16 @@ export default {
           if (response.status === 200) {
             this.$store.commit("entries/save_entry", response.data.data)
           } else {
-            this.$router.push("/")
+            await this.$router.push("/")
           }
         } catch (e) {
           console.log(e)
-          this.$router.push("/")
+          await this.$router.push("/")
         }
       }
 
       this.$store.dispatch("app/connected")
-      // console.log("initialize multiple domains?", this.has_multiple_domains)
+
       if (!this.has_multiple_domains) {
         // console.log("1 domain:", this.get_one_domain_name)
         this.$store.commit("domain/set_act_domain", this.$store.getters["domain/domain_by_name"](this.get_one_domain_name).name)

@@ -18,9 +18,13 @@ export const mutations = {
   add_domains_overviews(state, domain_overviews) {
     console.log(state.domains)
     for (let domain_o of domain_overviews) {
+      let {title, description, ...main_domain_data} = domain_o
+      if (!state.domains.has(domain_o.name)) {
+        state.domains.set(domain_o.name, Object.assign(main_domain_data, {overviews: {}, langs: {}}))
+      }
       state.domains.get(domain_o.name).overviews[domain_o.language] = {
-        title: domain_o.title,
-        description: domain_o.description
+        title,
+        description
       }
     }
   },
@@ -84,7 +88,7 @@ export const actions = {
 
 export const getters = {
   domains(state) {
-    return Array.from(state.domains.values())
+    return () => Array.from(state.domains.values())
   },
   act_domain_name(state) {
     return state.act_domain_name

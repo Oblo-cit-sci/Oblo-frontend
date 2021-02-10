@@ -20,11 +20,10 @@ export default {
       // todo maybe can go into a mixin, if there are other settings for the language
       if (domain === NO_DOMAIN) {
         const {data} = await this.$api.domain.overview(language)
-        console.log(data)
+        // console.log(data)
         this.$store.commit("domain/add_domains_overviews", data.data)
       }
       if (domain !== NO_DOMAIN) {
-
         this.complete_language_domains(domain, domain_language).then(() => {
           if (update_settings)
             this.set_settings_value(DOMAIN_LANGUAGE, domain_language)
@@ -74,12 +73,14 @@ export default {
         console.log("got it already")
         return Promise.resolve()
       }
+
       return this.init_specifics(domain, language)
     },
     async init_specifics(domain, language) {
       if (!this.$store.getters["domain/has_lang_domain_data"](NO_DOMAIN, language)) {
         domain = [domain, NO_DOMAIN]
       }
+      debugger
       const {data} = await this.$api.basic.init_data(domain, language)
       // todo this also gets all the messages
       const domains_data = data.data.domains
