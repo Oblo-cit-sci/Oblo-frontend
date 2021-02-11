@@ -39,8 +39,10 @@
         @selected="selected($event)"
         :disabled="disabled"
         :keep_selection="false")
+    v-img.value_icon(:src="value_icon" contain max-height="50")
   div(v-else)
     div {{value_text}}
+    v-img.value_icon(:src="value_icon" contain max-height="50")
 </template>
 
 <script>
@@ -118,7 +120,7 @@ export default {
       }
     },
     selected(val) {
-      console.log("TSA selected", val.value)
+      // console.log("TSA selected", val)
       this.dialogOpen = false;
       if (val) {
         this.update_value(val.value)
@@ -143,6 +145,15 @@ export default {
     //     this.update_value(val)
     //   }
     // },
+    value_icon() {
+      if (!this.is_empty) {
+        const icon_values = this.value.filter(v => v.icon)
+        if (!this.$_.isEmpty(icon_values)) {
+          const last_icon = this.$_.last(icon_values).icon
+          return this.$api.entry.url_slug_attachment(this.data_source, last_icon)
+        }
+      }
+    },
     prependIcon() {
       return this.is_view_mode ? '' : 'mdi-file-tree'
     },
@@ -181,4 +192,5 @@ export default {
 .pointer:hover {
   cursor: pointer;
 }
+
 </style>

@@ -11,12 +11,12 @@
             v-btn.mt-4.mb-8(text x-large rounded outlined :style="{background:'white'}" to="/login")
               v-icon(left) mdi-login
               span {{$t('page.index.btn_login')}}
-      v-row(align="center" justify="center")
-        v-col(class="col-lg-6 col-xs-12")
-          div(v-for="domain in visible_domains" :key="domain.name")
-            DomainCard(
-              :domain_data="languaged_domain_overview(domain)"
-              :languages="languages(domain)")
+      v-row()
+        v-col.col-6(class="col-xs-12" v-for="domain in visible_domains" :key="domain.name")
+          DomainCard(
+            :style="{'min-height':'320px'}"
+            :domain_data="languaged_domain_overview(domain)"
+            :languages="languages(domain)")
       v-row(justify="center")
         v-btn(text nuxt to="about") {{$t('page.index.about_a')}}
         v-btn(text nuxt to="about") {{$t('page.index.privacy_a')}}

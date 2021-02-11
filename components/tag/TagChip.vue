@@ -3,7 +3,10 @@
     template(v-slot:activator="{ on, attrs }")
       v-chip(class="custom-chip"  outlined  v-bind="attrs" v-on="on") {{tag.text}}
     div(v-html="hover_content")
-  v-chip(v-else class="custom-chip"  outlined) {{tag.text}}
+  v-chip(v-else class="custom-chip"  outlined)
+    v-avatar(left v-if="has_icon")
+      v-img(src="")
+    span {{tag.text}}
 </template>
 
 <script>
@@ -28,6 +31,9 @@ export default {
       } else {
         return this.tag.hover.map(e => `<div>${e}</div>`).join("")
       }
+    },
+    has_icon() {
+      return false
     }
   },
   methods: {}

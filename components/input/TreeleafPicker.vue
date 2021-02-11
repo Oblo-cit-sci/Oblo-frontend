@@ -173,6 +173,7 @@ export default {
           value: selection.value,
           text: selection.text,
           extra: selection.extra,
+          icon: selection.icon,
           index: this.$_.findIndex(this.act_options, o => o.value === selection.value)
         }]))
       else // clicked clear on select
@@ -199,8 +200,8 @@ export default {
     },
     done() {
       this.$emit("selected", pack_value(this.value.map(e => {
-        let {text, value, extra_value} = e
-        return {text,value, extra_value}
+        let {text, value, icon, extra_value} = e
+        return {text,value, icon, extra_value}
       })))
     },
     level_edit_mode(level) {
