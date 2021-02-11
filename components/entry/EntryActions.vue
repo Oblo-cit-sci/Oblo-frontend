@@ -141,7 +141,7 @@ export default {
           this.$store.commit("entries/save_entry", resp.data.entry)
           this.$store.commit("entries/set_edit", resp.data.entry)
 
-          this.$store.commit("map/update_entry_features", {
+          await this.$store.dispatch("map/update_entry_features", {
             domain: this.entry.domain,
             entry_features: resp.data.map_features
           })
@@ -167,7 +167,7 @@ export default {
         if (accept) {
           this.$store.commit("entries/save_entry", data.data.entry)
           // console.log(this.entry.status, sending_entry.status, data.data.entry.status)
-          this.$store.commit("map/update_entry_features", {
+          await this.$store.dispatch("map/update_entry_features", {
             domain: this.entry.domain,
             entry_features: data.data.map_features
           })

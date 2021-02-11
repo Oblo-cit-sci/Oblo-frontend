@@ -14,16 +14,14 @@ export const state = () => ({
 })
 
 export const mutations = {
-  add_entries(state, {domain, entries}) {
-    if (state.entries.hasOwnProperty(domain)) {
-      // console.log("setting", domain, entries)
-      // console.log("LLEE", state.entries[domain].features.length)
-      // console.log("+", entries.features.length)
-      state.entries[domain].features.push(...entries.features)
-    } else {
-      $nuxt.$set(state.entries, domain, entries)
+  guarantee_domain(state, domain) {
+    if (!state.entries.hasOwnProperty(domain)) {
+      $nuxt.$set(state.entries, domain, {type: "FeatureCollection", features: []})
     }
   },
+  // add_entries(state, {domain, entries}) {
+  //   state.entries[domain].features.push(...entries.features)
+  // },
   clear(state) {
     state.entries_loaded = false // probably not required
     state.entries = {}
@@ -59,14 +57,9 @@ export const mutations = {
     state.entries[domain_name].features.splice(f_index, 1)
   },
   update_entry_features(state, {domain, entry_features}) {
-    if (state.entries.hasOwnProperty(domain)) {
-      // console.log("in", entry_features, entry_features[0].properties.uuid)
-      // console.log(state.entries[domain].features)
-      const existing = ld.filter(state.entries[domain].features, f => f.properties.uuid !== entry_features[0].properties.uuid)
-      // console.log("f", ld.filter(state.entries[domain].features, f => f.properties.uuid === entry_features[0].properties.uuid))
-      state.entries[domain].features = ld.concat(existing,  entry_features)
-      console.log(ld.concat(existing,  entry_features).length)
-    }
+    const update_uuids = entry_features.map(e => e.properties.uuid)
+    const keep_as_is = ld.filter(state.entries[domain].features, f => !update_uuids.includes(f.properties.uuid))
+    state.entries[domain].features = ld.concat(keep_as_is, entry_features)
   }
 }
 
@@ -130,7 +123,6 @@ export const getters = {
   get_entry_and_domain_by_uuid(state) {
     return (uuid) => {
       for (let domain_name of Object.keys(state.entries)) {
-        // console.log(domain_entries_features.features)
         const domain_entries_features = state.entries[domain_name]
         const feature = ld.find(domain_entries_features.features, e => e.properties.uuid === uuid)
         if (feature)
@@ -144,9 +136,14 @@ export const getters = {
 
 export const actions = {
   // filters entries that have a location set
+  update_entry_features({commit}, {domain, entry_features}) {
+    commit("guarantee_domain", domain)
+    commit("update_entry_features", {domain, entry_features})
+  },
   add_entries({commit}, {domain, entries, ts}) {
     commit("set_entries_loaded", true)
-    commit("add_entries", {domain, entries})
+    commit("guarantee_domain", domain)
+    commit("update_entry_features", {domain, entry_features: entries.features})
     commit("set_searchtime", ts)
   },
   goto_done(context) {
