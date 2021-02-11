@@ -91,12 +91,6 @@ export default {
 
       const only_overview = domain_name === null
 
-      if (i_language === this.default_language) {
-        // messages are already in the page but not those of lang.<lang_code>
-        this.$api.language.get_language_names(i_language).then(({data}) => {
-          this.$i18n.mergeLocaleMessage(i_language, data)
-        })
-      }
       const {data: resp} = await this.$api.basic.init_data(domain_name ? [domain_name, NO_DOMAIN] : null, i_language)
       // console.log(resp)
       console.log("connected")
@@ -126,6 +120,8 @@ export default {
       if (language !== this.$i18n.fallbackLocale) {
         this.$i18n.setLocaleMessage(language, resp.data.messages[language])
         await this.change_language(language, false)
+      } else {
+        this.guarantee_default_lang_language_names()
       }
 
       // todo maybe this part should be handled by the individual page, so it can do its default behaviour
