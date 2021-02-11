@@ -54,7 +54,7 @@ export default {
       return printDate(new Date(this.entry.creation_ts))
     },
     in_context() {
-      return (this.template.rules.context || GLOBAL) !== GLOBAL || this.entry.entry_refs.parent
+      return (this.template.rules.context || GLOBAL) !== GLOBAL
     },
     tags_config() {
       return this.$_.get(this.template.rules, "tags_config", [])

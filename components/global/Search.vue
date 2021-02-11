@@ -259,7 +259,7 @@ export default {
     ...mapGetters({
       entries: "search/get_entries",
       get_searching: "search/get_searching",
-      total_count: "search/get_search_count",
+      search_total_count: "search/get_search_count",
       all_uuids: "search/get_all_uuids",
     }),
     preview_options_search() {
@@ -295,16 +295,13 @@ export default {
     },
     filtered_entries() {
       let result_entries = this.entries() // must be a call
-
       const all_filters = this.$_.concat(this.act_config, this.search_config)
       // console.log("allf", this.act_config, this.search_config)
       const has_local_filter = this.has_local_filter(all_filters)
-      console.log(has_local_filter, all_filters)
       if (has_local_filter) {
         const local_entries_uuids = this.local_search(all_filters).reverse()
         result_entries = local_entries_uuids.concat(result_entries)
       }
-
       // console.log("new filtered entries", result_entries)
       if (LOG) {
         console.log("Search.filtered_entries. entries:", result_entries.length)
@@ -316,6 +313,9 @@ export default {
     filterlist_options() {
       return this.include_filters
     },
+    total_count() {
+      return this.filtered_entries.length
+    }
   },
   methods: {
     ...mapMutations({"clear": "search/clear"}),

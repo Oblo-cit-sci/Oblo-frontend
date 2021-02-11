@@ -76,7 +76,7 @@ export default {
     },
     persist_after_entry_create(entry) {
       this.$store.commit("entries/save_entry", entry)
-      this.persist_entries()
+      // this.persist_entries()
     },
     entry_select_items(entries, indicate_alt_language =null) {
       return entries.reduce((items, e) => {

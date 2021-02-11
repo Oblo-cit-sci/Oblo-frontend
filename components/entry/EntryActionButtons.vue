@@ -112,26 +112,7 @@ export default {
       this.$emit("mode", this.proper_mode)
     },
     cancel() {
-      if (this.is_draft) {
-        const base_t_cancel_loc = "comp.entry_actions.dialogs.cancel"
-        this.$bus.$emit("dialog-open", {
-          data: {
-            title: this.$t(`${base_t_cancel_loc}.title`),
-            text: this.$t(`${base_t_cancel_loc}.text`),
-            cancel_color: "",
-            confirm_color: "error",
-            cancel_text: this.$t(`${base_t_cancel_loc}.cancel_text`),
-            confirm_text: this.$t(`${base_t_cancel_loc}.confirm_text`)
-          }, confirm_method: () => {
-            // this.$emit("entry-action", "delete")
-            this.$store.dispatch("entries/delete_entry", this.uuid)
-            this.back()
-            this.ok_snackbar(this.$t("comp.entry_actions.cancel_draft"))
-          }
-        })
-      } else {
-        this.back()
-      }
+      this.$emit("entry-action","cancel_draft")
     },
     delete_entry() {
       this.$emit("entry-action","delete")

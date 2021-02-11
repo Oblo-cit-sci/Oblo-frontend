@@ -56,7 +56,7 @@
                     if (img_data) {
                         return img_data.data
                     } else {
-                        return this.$api.url_entry__$uuid__attachment__$file_uuid(this.entry_uuid, (this.image_data.file_uuid))
+                        return this.$api.entry.url_uuid_attachment(this.entry_uuid, (this.image_data.file_uuid))
                     }
                 } else {
                     return this.image_data.url

@@ -58,6 +58,9 @@ export default {
   methods: {
     entryAction(action) {
       switch (action) {
+        case "cancel_draft":
+          this.cancel_draft()
+          break
         case "save":
           this.save()
           break
@@ -75,6 +78,29 @@ export default {
           break
       }
       this.$emit('entry-action', action)
+    },
+    cancel_draft() {
+      if (this.is_draft) {
+        const base_t_cancel_loc = "comp.entry_actions.dialogs.cancel"
+        this.$bus.$emit("dialog-open", {
+          data: {
+            title: this.$t(`${base_t_cancel_loc}.title`),
+            text: this.$t(`${base_t_cancel_loc}.text`),
+            cancel_color: "",
+            confirm_color: "error",
+            cancel_text: this.$t(`${base_t_cancel_loc}.cancel_text`),
+            confirm_text: this.$t(`${base_t_cancel_loc}.confirm_text`)
+          }, confirm_method: () => {
+            // this.$emit("entry-action", "delete")
+            this.$store.dispatch("entries/delete_entry", this.uuid)
+            this.back()
+            this.ok_snackbar(this.$t("comp.entry_actions.cancel_draft"))
+            this.persist_entries()
+          }
+        })
+      } else {
+        this.back()
+      }
     },
     save() {
       // todo not if it is an aspect page
@@ -124,6 +150,7 @@ export default {
             entry_features: resp.data.map_features
           })
           this.back(["search"])
+          this.persist_entries()
         } catch (err) {
           console.log(err)
           this.sending = false
