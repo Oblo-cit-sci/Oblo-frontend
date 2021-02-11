@@ -137,11 +137,7 @@ export default {
 
           const attachments_data = this.get_attachments_to_post(sending_entry)
           this.send_attachments(attachments_data, this.entry.uuid)
-          if (this.is_published) {
-            this.ok_snackbar(this.$t('comp.entry_actions.updated'))
-          } else {
-            this.ok_snackbar(this.$t('comp.entry_actions.submitted'))
-          }
+          this.ok_snackbar(resp.msg)
           this.$store.commit("entries/save_entry", resp.data.entry)
           this.$store.commit("entries/set_edit", resp.data.entry)
 
@@ -203,11 +199,12 @@ export default {
           confirm_color: "error",
           confirm_text: this.$t(`${base_t_delete_loc}.confirm_text`)
         }, confirm_method: () => {
-          this.$api.entry.delete(this.uuid).then(() => {
+          this.$api.entry.delete(this.uuid).then((resp) => {
             this.$store.dispatch("entries/delete_entry", this.uuid)
             this.$store.commit("search/delete_entry", this.uuid)
             this.$store.commit("map/delete_feature", {domain_name: this.entry.domain, uuid: this.uuid})
-            this.ok_snackbar(this.$t("comp.entry_actions.delete_entry"))
+            console.log(resp)
+            this.ok_snackbar(resp.data.msg)
             this.$emit("entry-action", "delete")
             this.back()
           }).catch(err => {
