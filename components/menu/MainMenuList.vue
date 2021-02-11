@@ -27,7 +27,7 @@ let hide_logged_in = ["/login", "/register"]
 let require_admin = [ "/translate/setup"] // "/admin",
 let hide_no_be = ["/register", "/login"] // if not connected out and if logged in out
 let show_inDev = ["/tests"] //, "Types", "Entrytypes", "Aspectbuild"]
-let show_in_fixed_domain = ["/about"]
+let show_in_fixed_domain = []
 
 export default {
   name: "MainMenuList",

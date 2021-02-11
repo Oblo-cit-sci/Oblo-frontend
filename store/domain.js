@@ -16,7 +16,6 @@ export const state = () => ({
 
 export const mutations = {
   add_domains_overviews(state, domain_overviews) {
-    console.log(state.domains)
     for (let domain_o of domain_overviews) {
       let {title, description, ...main_domain_data} = domain_o
       if (!state.domains.has(domain_o.name)) {
@@ -58,7 +57,7 @@ export const mutations = {
       state.domains = new Map(ld.toPairs(ld.keyBy(domains_data, d => d.name)))
       // console.log(state.domains)
     } else {
-      console.log("inserting new language")
+      // console.log("inserting new language")
       for (let d of domains_data) {
         Object.assign(d.content, {title: d.title, name: d.name})
         state.domains.get(d.name).langs[d.language] = d.content
@@ -136,7 +135,6 @@ export const getters = {
   // todo just used once atm. maybe not required as store getter
   domains_for_lang(state, getters) {
     return (lang_code, keep_no_domain = false) => {
-      debugger
       return ld.filter(ld.map(getters.domains(), d => getters.lang_domain_data(d.name, lang_code)),
         d => d && (keep_no_domain || d.name !== "no_domain"))
     }

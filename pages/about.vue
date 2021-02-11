@@ -11,9 +11,9 @@
 import GoToMixin from "~/components/global/GoToMixin"
 import Footer from "~/components/global/Footer"
 import FlexibleTextSection from "~/components/global/FlexibleTextSection"
+import {NO_DOMAIN} from "~/lib/consts";
 
 const pkg = require('~/package.json')
-
 
 
 export default {
@@ -22,7 +22,26 @@ export default {
   mixins: [GoToMixin],
   computed: {
     text_sections() {
-      return this.$t("page.about")
+      let sections = this.$t("page.about")
+      if (!Array.isArray(sections)) {
+        const le = Object.keys(sections).length
+        const sections_arr = []
+        for (let i = 0; i < le; i++) {
+          sections_arr.push(sections[i])
+        }
+        sections = sections_arr
+      }
+      if (this.is_concrete_domain) {
+        sections.splice(2, 0, this.about_domain)
+      }
+      return sections
+    },
+    is_concrete_domain() {
+      return this.$store.getters["domain/act_domain_name"] !== NO_DOMAIN
+    },
+    about_domain() {
+      const act_lang_domain_data = this.$store.getters["domain/act_lang_domain_data"]
+      return {h2: act_lang_domain_data.title, html: act_lang_domain_data.about}
     },
     version() {
       return pkg.version

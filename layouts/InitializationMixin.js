@@ -97,17 +97,18 @@ export default {
           this.$i18n.mergeLocaleMessage(i_language, data)
         })
       }
-      const {data} = await this.$api.basic.init_data(domain_name ? [domain_name, NO_DOMAIN] : null, i_language)
+      const {data: resp} = await this.$api.basic.init_data(domain_name ? [domain_name, NO_DOMAIN] : null, i_language)
+      // console.log(resp)
       console.log("connected")
 
-      const domains_data = data.data.domains
+      const domains_data = resp.data.domains
 
-      const language = data.data.language
+      const language = resp.data.language
 
       // console.log(domains_data)
       // console.log("overview", only_overview)
       if (only_overview) {
-        const domains_overview = data.data.domains_overview
+        const domains_overview = resp.data.domains_overview
         await this.$store.dispatch("domain/set_domains", {domains_data, language})
         this.$store.commit("domain/add_domains_overviews", domains_overview)
       }
@@ -115,15 +116,15 @@ export default {
         await this.$store.dispatch("domain/set_domains", {domains_data, language})
       }
 
-      await this.$store.dispatch("templates/add_templates_codes", data.data.templates_and_codes)
+      await this.$store.dispatch("templates/add_templates_codes", resp.data.templates_and_codes)
       // console.log("template/codes stored")
       // console.log(data.data)
-      this.$store.commit("set_available_languages", data.data.languages)
+      this.$store.commit("set_available_languages", resp.data.languages)
       this.$store.commit("user/change_setting", {[DOMAIN_LANGUAGE]: language, [UI_LANGUAGE]: language})
       // console.log("language", language)
       // console.log("?", language, language !== this.$i18n.fallbackLocale, this.$i18n.fallbackLocale)
       if (language !== this.$i18n.fallbackLocale) {
-        this.$i18n.setLocaleMessage(language, data.data.messages[language])
+        this.$i18n.setLocaleMessage(language, resp.data.messages[language])
         await this.change_language(language, false)
       }
 
@@ -144,7 +145,7 @@ export default {
         }
       }
 
-      this.$store.dispatch("app/connected")
+      await this.$store.dispatch("app/connected")
 
       if (!this.has_multiple_domains) {
         // console.log("1 domain:", this.get_one_domain_name)
