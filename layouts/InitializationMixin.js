@@ -127,7 +127,7 @@ export default {
       // todo maybe this part should be handled by the individual page, so it can do its default behaviour
       // but a wrapper would be good.
       if (this.$route.query.uuid && !this.$store.getters["entries/has_full_entry"](this.$route.query.uuid)) {
-        console.log("need to get that entry")
+        // console.log("need to get that entry")
         try {
           const response = await this.$api.entry.get_(this.$route.query.uuid)
           if (response.status === 200) {

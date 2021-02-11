@@ -8,10 +8,11 @@ import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMix
 import {QP_D, QP_F} from "~/lib/consts"
 import DomainComponent from "~/components/page_components/DomainComponent";
 import FixDomainMixin from "~/components/global/FixDomainMixin";
+import GuidelinesMixin from "~/components/GuidelinesMixin";
 
 export default {
   name: "domain",
-  mixins: [HasMainNavComponentMixin, FixDomainMixin],
+  mixins: [HasMainNavComponentMixin, FixDomainMixin, GuidelinesMixin],
   components: {DomainComponent},
   beforeRouteEnter(to, from, next) {
     if (!(to.query[QP_D] || to.query[QP_F])) {
@@ -50,6 +51,8 @@ export default {
     if (this.$route.query.f && !this.is_fixed_domain) {
       this.fix_domain(this.$route.query.f)
     }
+
+    this.show_guidelines()
   },
   beforeRouteLeave(from, to, next) {
     if (this.is_prod) {

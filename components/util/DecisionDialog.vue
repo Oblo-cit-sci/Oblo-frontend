@@ -3,6 +3,7 @@
     v-card
       v-card-title {{config.title}}
       v-card-text {{config.text}}
+        div(v-html="config.html_text")
       v-card-actions
         v-btn(v-if="config.show_cancel" text :color="config.cancel_color" @click="submit(false)") {{config.cancel_text}}
         v-btn(text :color="config.confirm_color" @click="submit(true)") {{config.confirm_text}}
