@@ -18,6 +18,7 @@ import {EDIT, UI_LANGUAGE} from "~/lib/consts"
 import LanguageMixin from "~/components/LanguageMixin";
 import {PAGE_ENTRY} from "~/lib/pages";
 import URLQueryMixin from "~/components/util/URLQueryMixin";
+import {create_option} from "~/lib/options";
 
 /**
  * TODO.
@@ -52,11 +53,7 @@ export default {
     available_languages() {
       // todo when on domain page only take
       const available_languages = this.$store.getters["available_languages"]
-      // todo use helper function for this
-      return available_languages.map(l => ({
-        "value": l,
-        "text": (this.$t("lang." + l))
-      }))
+      return available_languages.map(l => create_option(l, this.$t("lang." + l)))
     },
     is_disabled() {
       return (this.$route.name === PAGE_ENTRY && this.entry_mode === EDIT)
@@ -66,16 +63,6 @@ export default {
         return this.setting(UI_LANGUAGE)
       },
       set: function (language) {
-        //  {
-        //   this.$bus.$emit("dialog-open", {
-        //     data: {
-        //       title: "language",
-        //       text: "You cannot change the language during entry creation",
-        //       show_cancel: false
-        //     }
-        //   })
-        //   return
-        // }
         this.change_language(language)
       }
     }

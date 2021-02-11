@@ -23,20 +23,18 @@ export default {
         // console.log(data)
         this.$store.commit("domain/add_domains_overviews", data.data)
       }
-      if (domain !== NO_DOMAIN) {
-        this.complete_language_domains(domain, domain_language).then(() => {
-          if (update_settings)
-            this.set_settings_value(DOMAIN_LANGUAGE, domain_language)
+      this.complete_language_domains(domain, domain_language).then(() => {
+        if (update_settings)
+          this.set_settings_value(DOMAIN_LANGUAGE, domain_language)
 
-          this.$store.commit("domain/set_act_lang_domain_data", {
-            domain_name: this.$store.getters["domain/act_domain_name"],
-            language
-          })
-          if (update_settings) {
-            this.set_settings_value(DOMAIN_LANGUAGE, domain_language)
-          }
+        this.$store.commit("domain/set_act_lang_domain_data", {
+          domain_name: this.$store.getters["domain/act_domain_name"],
+          language
         })
-      }
+        if (update_settings) {
+          this.set_settings_value(DOMAIN_LANGUAGE, domain_language)
+        }
+      })
       // console.log("check have?", language, this.loaded_ui_languages.includes(language))
       if (!this.$i18n.availableLocales.includes(language)) {
         try {

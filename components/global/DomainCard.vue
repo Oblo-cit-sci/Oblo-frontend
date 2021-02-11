@@ -1,6 +1,7 @@
 <template lang="pug">
   v-card(class="mb-10" outlined :width="550" @click="goto_domain" :ripple="false")
     v-img(:src="image" max-height="auto")
+      v-card-title.align-end.shadow {{title}}
       v-hover(v-for="lang in languages"
         v-if="not_ui_lang"
         :key="lang")
@@ -9,7 +10,6 @@
           :color="hover ? 'yellow' :'info'"
           @click="to_language(lang)"
           slot-scope="{ hover }") {{$t("lang." + lang)}}
-      v-card-title.align-end.shadow {{title}}
     v-card-text
       v-img.float-left.mr-3.mb-1(:src="icon" left width="40" height="40")
       span {{description}}
