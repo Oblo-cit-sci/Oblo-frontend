@@ -131,13 +131,15 @@ export const getters = {
       // console.log(domain_name, getters.get_domain_languages(domain_name),getters.get_domain_default_language(domain_name))
       // console.log(getters.get_domain_languages(domain_name).includes(language))
       if (getters.get_domain_languages(domain_name).includes(language) || !with_default)
-        return getters.domain_by_name(domain_name).overviews[language]
+        return Object.assign({name: domain_name},
+          getters.domain_by_name(domain_name).overviews[language])
       else
-        return getters.domain_by_name(domain_name).overviews[getters.get_domain_default_language(domain_name)]
+        return Object.assign({name: domain_name},
+          getters.domain_by_name(domain_name).overviews[getters.get_domain_default_language(domain_name)])
     }
   },
   all_domains_overview(state, getters) {
-    /**
+    /***
      * nice
      */
     return (language, include_no_domain = false, fallback_default = true) => {
@@ -166,9 +168,4 @@ export const getters = {
       return getters.domain_by_name(domain_name).default_language
     }
   }
-  // domain_options(state) {
-  //   return () => {
-  //     return object_list2options(state.domains, TITLE)
-  //   }
-  // },
 };

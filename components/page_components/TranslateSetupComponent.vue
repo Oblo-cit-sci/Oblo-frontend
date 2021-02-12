@@ -30,6 +30,7 @@ import EntryCreateMixin from "~/components/entry/EntryCreateMixin";
 import ApiHelperMixin from "~/components/ApiHelperMixin";
 import {object_list2options} from "~/lib/options";
 import {mapGetters} from "vuex";
+import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin";
 
 const components = ["fe", "be", "domain", "entries"]
 
@@ -39,7 +40,7 @@ const components = ["fe", "be", "domain", "entries"]
 export default {
   name: "TranslateSetupComponent",
   components: {Dialog, LanguageSearch, AspectSet, Aspect},
-  mixins: [OptionsMixin, TriggerSnackbarMixin, EntryCreateMixin, ApiHelperMixin],
+  mixins: [OptionsMixin, TriggerSnackbarMixin, EntryCreateMixin, ApiHelperMixin, TypicalAspectMixin],
   data() {
     const {component} = this.$store.getters["translate/setup_values"]
     return {
@@ -109,42 +110,6 @@ export default {
           value: l,
           text: this.$t(`lang.${l}`),
         })).concat(this.temporary_additional_languages)
-
-
-      // const component = this.unpacked_values.component
-      // let options = []
-      // if (component === "domain") {
-      //   const domain_info = this.domains_metainfos[this.unpacked_values.domain]
-      //   if (domain_info) {
-      //     domain_info.active_languages.sort().map(l => ({
-      //       value: l,
-      //       text: this.$t(`lang.${l}`),
-      //       description: "complete"
-      //     })).forEach(o => options.push(o))
-      //     domain_info.inactive_languages.sort().map(l => ({
-      //       value: l,
-      //       text: this.$t(`lang.${l}`),
-      //       description: "incomplete"
-      //     })).forEach(o => options.push(o))
-      //     const includes_codes = options.map(l => l.value)
-      //     this.all_added_languages.filter(l => !includes_codes.includes(l))
-      //       .map(l => ({
-      //         value: l,
-      //         text: this.$t(`lang.${l}`),
-      //         description: "not started"
-      //       })).forEach(o => options.push(o))
-      //     // console.log(options, this.unpacked_values.dest_lang)
-      //   }
-      // } else if (["fe", "be"].includes(component)) {
-      //   options = this.all_added_languages.sort()
-      //     .map(l => ({
-      //       value: l,
-      //       text: this.$t(`lang.${l}`),
-      //     }))
-      //     .filter(o => o.value !== this.unpacked_values.src_lang)
-      // } else {
-      // }
-      // return options.filter(o => o.value !== this.unpacked_values.src_lang)
     },
     component_select_aspect() {
       return {
@@ -167,12 +132,16 @@ export default {
       return components.map(c => this.create_option(c, this.$t("comp.translate.component_select_asp.options." + c)))
     },
     domain_select_aspect() {
-      const l = this.$store.getters["user/settings_ui_language"]
-      const domains = this.$_.cloneDeep(this.$store.getters["domain/domains_for_lang"](l, true))
-      domains.forEach(d => {
-        const meta_info = this.domains_metainfos[d.name]
-        // console.log(meta_info, this.unpacked_values.dest_lang)
-        // console.log(meta_info.active_languages.includes[this.unpacked_values.dest_lang])
+      const domain_aspect = this.asp_domain_select("domain","w.domain",false,  {
+          hide_on_disabled: true,
+          condition: {
+            aspect: "# component",
+            value: ["domain", "entries"],
+            compare: "contains"
+          }
+        })
+      domain_aspect.items.forEach(d => {
+        const meta_info = this.domains_metainfos[d.value]
         if (meta_info.active_languages.includes(this.unpacked_values.dest_lang))
           d.description = "completed"
         else if (meta_info.inactive_languages.includes(this.unpacked_values.dest_lang))
@@ -180,26 +149,7 @@ export default {
         else
           d.description = "not started"
       })
-      // console.log(domains)
-      const domain_items = object_list2options(domains, "title", "name", true, ["description"])
-      // console.log(domain_items)
-      // for (let dmi of domain_items) {
-      //   dmi.description = "cool"
-      // }
-      return {
-        name: "domain",
-        type: SELECT,
-        attr: {
-          hide_on_disabled: true,
-          condition: {
-            aspect: "# component",
-            value: ["domain", "entries"],
-            compare: "contains"
-          }
-        },
-        label: this.$t("w.domain"),
-        items: domain_items
-      }
+      return domain_aspect
     },
     entry_select_aspect() {
       let options = []
@@ -208,8 +158,7 @@ export default {
       // console.log(domain_name)
       if (domain_name) {
         let entries = this.all_entries_in_ui_lang.filter(e => e.domain === domain_name)
-        const domain = this.$store.getters["domain/domain_by_name"](domain_name)
-        const required_entries = domain.langs[Object.keys(domain.langs)[0]].required_entries || []
+        const {required_entries} = this.domains_metainfos[domain_name]
         // todo here something about their status
         entries.forEach(e => {
           if (required_entries.includes(e.slug))
@@ -356,26 +305,6 @@ export default {
         ])
         setup.messages = resp_src_data.data.data
         const dest_messages = resp_dest_data.data.data
-        // console.log(setup.messages)
-        // console.log(dest_messages)
-
-        // todo something like this (for domain also)
-        // tho this comes from errors in the backend. lang entries, miss something, but its ognored
-        // check and fill up missing (by index)
-        // console.log(setup.messages.length, dest_messages.length)
-        // const src_set = new Set(setup.messages.map(m => m[0]))
-        // const dest_set = new Set(dest_messages.map(m => m[0]))
-        //
-        // for (let index of src_set) {
-        //   if (!dest_set.has(index)) {
-        //     console.log("missing", index)
-        //   }
-        // }
-        // for (let index of dest_set) {
-        //   if (!src_set.has(index)) {
-        //     console.log("addition", index)
-        //   }
-        // }
 
         for (let i in setup.messages) {
           setup.messages[i].push(dest_messages[i][1])
@@ -426,7 +355,7 @@ export default {
     '$store.state.user.settings.ui_language': async function (ui_language) {
       console.log(ui_language)
       this.$api.entries.get_codes_templates(this.$store.getters["user/settings_ui_language"]).then(({data}) => {
-        console.log(data)
+        // console.log(data)
         this.all_entries_in_ui_lang = data.data
       }, err => {
         console.log(err)
@@ -437,7 +366,7 @@ export default {
       if (new_vals.component === "entries" && domain !== null && dest_lang !== null) {
 
         const loaded_infos = this.$_.get(this.codes_templates_minimal_info, `${domain}.${dest_lang}`, null)
-        console.log(loaded_infos)
+        // console.log(loaded_infos)
         if (!this.get_entries_info && !loaded_infos) {
           this.get_entries_info = true
           this.code_templates_for_domain_lang = []

@@ -54,7 +54,7 @@ export default {
         ],
         error: true
       },
-        this.domain_select_aspect("domain",
+        this.asp_domain_select("domain",
           "page.actor.admin.asp_editor_for_domain",
           true,
           {

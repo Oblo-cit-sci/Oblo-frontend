@@ -122,7 +122,7 @@ export default {
         error: true
       }
     },
-    domain_select_aspect(name = "domain", t_label = "w.domain",multiselect = false, attr = {}) {
+    asp_domain_select(name = "domain", t_label = "w.domain",multiselect = false, attr = {}) {
       const all_domains_overview = this.$store.getters["domain/all_domains_overview"]
         (this.$store.getters["user/settings_ui_language"])
       const domain_options = object_list2options(all_domains_overview, "title", "name", true)
