@@ -29,9 +29,9 @@ export default {
       // if (typeof this.aspect.items === "string") {
       this.options = this.get_codes_as_options(this.aspect.items)
       this.from_code_entry = true
-      const match = this.check_language_match(this.aspect.items)
-      this.code_entry_language_match = match[0]
-      this.code_entry_language = match[2]
+      // const match = this.check_language_match(this.aspect.items)
+      // this.code_entry_language_match = match[0]
+      // this.code_entry_language = match[2]
       // TODO make this a function. str check is reference str begining. however here that should be either
       // clear or not checked like that...
     } else if (this.aspect.items instanceof Array) {

@@ -89,6 +89,15 @@ export const getters = {
   domains(state) {
     return () => Array.from(state.domains.values())
   },
+  all_domains_names(state, getters) {
+    return (include_no_domain = false) => {
+      const all_domains = getters.domains().map(d => d.name)
+      if (include_no_domain) {
+        return all_domains
+      } else
+        return all_domains.filter(l => l !== NO_DOMAIN)
+    }
+  },
   act_domain_name(state) {
     return state.act_domain_name
   },
@@ -125,6 +134,14 @@ export const getters = {
         return getters.domain_by_name(domain_name).overviews[language]
       else
         return getters.domain_by_name(domain_name).overviews[getters.get_domain_default_language(domain_name)]
+    }
+  },
+  all_domains_overview(state, getters) {
+    /**
+     * nice
+     */
+    return (language, include_no_domain = false, fallback_default = true) => {
+      return getters.all_domains_names(include_no_domain).map(d => getters.domain_overview(d, language, fallback_default))
     }
   },
   has_lang_domain_data(state, getters) {

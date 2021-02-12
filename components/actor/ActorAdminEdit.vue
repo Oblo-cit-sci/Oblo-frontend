@@ -46,7 +46,7 @@ export default {
             ]
           }
         },
-        value: "",
+        value: pack_value(),
         items: [
           {text: this.$t("comp.global_role.user"), value: USER},
           {text: this.$t("comp.global_role.editor"), value: EDITOR},
@@ -54,21 +54,18 @@ export default {
         ],
         error: true
       },
-        {
-          name: "domain",
-          t_label: "page.actor.admin.asp_editor_for_domain",
-          type: MULTISELECT,
-          attr: {
+        this.domain_select_aspect("domain",
+          "page.actor.admin.asp_editor_for_domain",
+          true,
+          {
             force_view: "select",
             hide_on_disabled: true,
             condition: {
               aspect: "# global_role",
               value: "editor"
             }
-          },
-          items: this.domains(),
-          value: pack_value()
-        }, this.asp_language(null, undefined, false, {
+          }),
+        this.asp_language(null, undefined, false, {
           hide_on_disabled: true,
           condition: {
             aspect: "# global_role",
@@ -82,9 +79,9 @@ export default {
     const user_data = this.$_.cloneDeep(this.actor)
     for (let aspect_name of Object.keys(this.aspect_map)) {
       if (aspect_name === GLOBAL_ROLE)
-        this.aspect_map[aspect_name].value = pack_value(user_data[aspect_name])
+        this.aspect_map[aspect_name].value = user_data[aspect_name]
       else
-        this.aspect_map[aspect_name].value = pack_value(user_data.editor_config[aspect_name])
+        this.aspect_map[aspect_name].value = user_data.editor_config[aspect_name]
     }
   },
   computed: {
@@ -98,12 +95,12 @@ export default {
   methods: {
     domains() {
       const l = this.$store.getters["user/settings_value"]("ui_language")
-      const domains = this.$store.getters["domain/domains_for_lang"](l)
+      const domains = this.$store.getters["domain/all_domains_overview"](l)
       return object_list2options(domains, "title", "name", true)
     },
     update() {
       this.$api.actor.post_global_role(
-        this.actor.registered_name, this.values).then(({data}) => {
+        this.actor.registered_name.value, this.values).then(({data}) => {
         this.ok_snackbar(data.msg)
         this.$emit("role_changed", unpack(this.values.global_role))
       }, err => {

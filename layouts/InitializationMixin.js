@@ -99,16 +99,9 @@ export default {
 
       const language = resp.data.language
 
-      // console.log(domains_data)
-      // console.log("overview", only_overview)
-      if (only_overview) {
-        const domains_overview = resp.data.domains_overview
-        await this.$store.dispatch("domain/set_domains", {domains_data, language})
-        this.$store.commit("domain/add_domains_overviews", domains_overview)
-      }
-      else {
-        await this.$store.dispatch("domain/set_domains", {domains_data, language})
-      }
+      const domains_overview = resp.data.domains_overview
+      this.$store.commit("domain/add_domains_overviews", domains_overview)
+      await this.$store.dispatch("domain/set_domains", {domains_data, language})
 
       await this.$store.dispatch("templates/add_templates_codes", resp.data.templates_and_codes)
       // console.log("template/codes stored")

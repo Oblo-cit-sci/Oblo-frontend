@@ -1,11 +1,14 @@
 import {settings_loc_privacy_ask, settings_loc_privacy_exact, settings_loc_privacy_random} from "~/lib/settings"
 import {MULTISELECT, SELECT, STR} from "~/lib/consts"
 import {pack_value, unpack} from "~/lib/aspect";
+import LanguageMixin from "~/components/LanguageMixin";
+import {object_list2options} from "~/lib/options";
 
 let username_regex = new RegExp('^[a-z][a-z0-9_]*$');
 
 export default {
   name: "TypicalAspectsMixin",
+  mixins: [LanguageMixin],
   methods: {
     label(base_name, alt_label) {
       return this.$t(this.t_label(base_name, alt_label))
@@ -119,6 +122,19 @@ export default {
         error: true
       }
     },
+    domain_select_aspect(name = "domain", t_label = "w.domain",multiselect = false, attr = {}) {
+      const all_domains_overview = this.$store.getters["domain/all_domains_overview"]
+        (this.$store.getters["user/settings_ui_language"])
+      const domain_options = object_list2options(all_domains_overview, "title", "name", true)
+      return {
+        name,
+        t_label,
+        type: multiselect ? MULTISELECT : SELECT,
+        attr,
+        value: pack_value(multiselect ? [] : null),
+        items: domain_options
+      }
+    },
     asp_password_confirm(password_aspect, alt_label = undefined) {
       return {
         type: "str",
@@ -137,7 +153,7 @@ export default {
         error: true
       }
     },
-    asp_language(name = null, alt_label_descr = undefined, single_select = true,  attr = {}) {
+    asp_language(name = null, alt_label_descr = undefined, single_select = true, attr = {}) {
       return {
         name: name ? name : "language",
         t_label: this.t_label("asp.language.", alt_label_descr),
@@ -147,7 +163,7 @@ export default {
           force_view: SELECT
         },
         value: pack_value(single_select ? null : []),
-        items: "languages"
+        items: this.get_language_options()
       }
     },
     asp_privacy(name = null, alt_label_descr = undefined) {
