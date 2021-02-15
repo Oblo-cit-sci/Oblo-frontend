@@ -32,7 +32,7 @@
       @update:error="$emit('update:error', $event)"
       @aspectAction="aspectAction($event)")
     div(v-if="has_action && edit")
-      AspectAction(:aspect="aspect" :mvalue="mvalue" :extra="extra" @aspectAction="aspectAction($event)")
+      AspectAction(:aspect="aspect" :mvalue="mvalue" :extra="extra" @aspectAction="aspectAction($event)" :has_changed="has_changed")
 </template>
 
 <script>

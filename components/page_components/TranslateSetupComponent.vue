@@ -27,7 +27,7 @@ import Dialog from "~/components/dialogs/Dialog";
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin";
 import EntryCreateMixin from "~/components/entry/EntryCreateMixin";
 import ApiHelperMixin from "~/components/ApiHelperMixin";
-import {object_list2options, string_list2options} from "~/lib/options";
+import {object_list2options} from "~/lib/options";
 import {mapGetters} from "vuex";
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin";
 
@@ -63,7 +63,7 @@ export default {
       get_entries_info: false,
       code_templates_for_domain_lang: [],
       // entries_options: [] // we differentiate null from [], cuz a domain, lang could indeed be empty
-      language_statuses: {} // keys: fe,be: <lang>: <status from server>
+      language_statuses: {} // keys: <lang>: <status from server>
     }
   },
   created() {
@@ -89,7 +89,6 @@ export default {
         name: "dest_lang",
         type: SELECT,
         attr: {
-          force_view: "list",
           action: {
             type: "emit",
             name: "new_lang_dialog",
@@ -119,7 +118,17 @@ export default {
         t_label: "comp.translate.lang_status.label",
         type: SELECT,
         attr: {
+          track_change: true,
           hide_on_disabled: true,
+          action: {
+            type: "emit",
+            name: "change_lang_status",
+            trigger: {
+              type: "button",
+              button_label: "Change state",
+              only_on_change: true
+            },
+          },
           condition: ["and", {
             aspect: "# component",
             value: ["fe", "be"],
@@ -399,6 +408,12 @@ export default {
     aspectAction(event) {
       if (event.name === "new_lang_dialog") {
         this.open_new_lang()
+      } else if (event.name === "change_lang_status") {
+        const {dest_lang: lang_code, language_active: active} = this.unpacked_values
+        this.$api.language.change_language_status(lang_code, active === "active").then(({data:res}) => {
+          console.log(res)
+          this.ok_response_snackbar(res)
+        })
       }
       // todo after execution
       if (event.requires_callback) {
@@ -425,11 +440,9 @@ export default {
       })
     },
     unpacked_values: async function (new_vals, old_vals) {
-      console.log("uppsi", new_vals)
       const {domain, dest_lang} = new_vals
       // get the templates and their status
       if (new_vals.component === "entries" && domain !== null && dest_lang !== null) {
-
         const loaded_infos = this.$_.get(this.codes_templates_minimal_info, `${domain}.${dest_lang}`, null)
         // console.log(loaded_infos)
         if (!this.get_entries_info && !loaded_infos) {
@@ -448,13 +461,10 @@ export default {
         }
       } else if (["fe", "be"].includes(new_vals.component) && new_vals.dest_lang) {
         const {component, dest_lang: lang} = new_vals
-        if (!this.language_statuses.hasOwnProperty(component)) {
-          this.language_statuses[component] = {}
-        }
-        if (!this.language_statuses[component].hasOwnProperty(lang)) {
+        if (!this.language_statuses.hasOwnProperty(lang)) {
           try {
             const {data: resp} = await this.$api.language.language_status(lang)
-            this.language_statuses[component][lang] = resp.data
+            this.language_statuses[lang] = resp.data
             // console.log(this.setup_values, pack_value(resp.data.active ? "active" : "inactive"))
             this.setup_values.language_active = pack_value(resp.data.active ? "active" : "inactive")
           } catch (err) {

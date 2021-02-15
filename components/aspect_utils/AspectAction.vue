@@ -27,7 +27,8 @@ export default {
   props: {
     aspect: Object,
     extra: Object,
-    mvalue: Object
+    mvalue: Object,
+    has_changed: Boolean
   },
   data() {
     return {
@@ -58,7 +59,7 @@ export default {
       return this.trigger.type === "button"
     },
     btn_disabled() {
-      return !this.has_value && !this.trigger.button_always_enabled
+      return (!this.has_value && !this.trigger.button_always_enabled) || (this.trigger.only_on_change && !this.has_changed)
     },
     auto_trigger() {
       return this.trigger.type === "auto"
