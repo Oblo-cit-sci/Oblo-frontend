@@ -509,6 +509,11 @@
         "descr": "Which language do you want to help completing?"
       },
       "start": "start",
+      "lang_status": {
+        "label": "Language status",
+        "active": "active",
+        "inactive": "inactive"
+      },
       "new": {
         "new_lang": "Add another language",
         "descr": "Which language do you want to add?",

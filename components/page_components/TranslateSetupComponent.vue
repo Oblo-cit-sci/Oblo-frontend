@@ -6,8 +6,7 @@
       :values.sync="setup_values"
       mode="edit"
       @is_complete="is_aspects_complete = $event"
-      @aspectAction="aspectAction($event)"
-      :include_validation="true")
+      @aspectAction="aspectAction($event)")
     v-btn(@click="start" :disabled="!is_setup_valid" color="success") {{$t("comp.translate.start")}}
     Dialog(:dialog_open.sync="new_lang_dialog_open")
       h3 {{$t("comp.translate.new.descr")}}
@@ -20,7 +19,7 @@
 
 import OptionsMixin from "~/components/aspect_utils/OptionsMixin";
 import Aspect from "~/components/Aspect";
-import {extract_n_unpack_values, pack_value, unpack} from "~/lib/aspect";
+import {extract_n_unpack_values, pack_value} from "~/lib/aspect";
 import {PUBLISHED, SELECT} from "~/lib/consts";
 import AspectSet from "~/components/AspectSet";
 import LanguageSearch from "~/components/language/LanguageSearch";
@@ -28,7 +27,7 @@ import Dialog from "~/components/dialogs/Dialog";
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin";
 import EntryCreateMixin from "~/components/entry/EntryCreateMixin";
 import ApiHelperMixin from "~/components/ApiHelperMixin";
-import {object_list2options} from "~/lib/options";
+import {object_list2options, string_list2options} from "~/lib/options";
 import {mapGetters} from "vuex";
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin";
 
@@ -48,7 +47,8 @@ export default {
         component: pack_value(component),
         entry: pack_value(),
         src_lang: pack_value(),
-        dest_lang: pack_value()
+        dest_lang: pack_value(),
+        language_active: pack_value()
       },
       init_fetched: false,
       domains_metainfos: {},
@@ -61,8 +61,9 @@ export default {
       //debounced_entries_search: this.$_.debounce(this.code_template_search, 200),
       all_entries_in_ui_lang: [],
       get_entries_info: false,
-      code_templates_for_domain_lang: []
+      code_templates_for_domain_lang: [],
       // entries_options: [] // we differentiate null from [], cuz a domain, lang could indeed be empty
+      language_statuses: {} // keys: fe,be: <lang>: <status from server>
     }
   },
   created() {
@@ -78,6 +79,7 @@ export default {
     setup_aspects() {
       return [
         this.dest_language_select_aspect, this.component_select_aspect,
+        this.language_active_aspect,
         this.domain_select_aspect, this.entry_select_aspect, this.src_language_select_aspect
       ]
     },
@@ -111,6 +113,35 @@ export default {
           text: this.$t(`lang.${l}`),
         })).concat(this.temporary_additional_languages)
     },
+    language_active_aspect() {
+      return {
+        name: "language_active",
+        t_label: "comp.translate.lang_status.label",
+        type: SELECT,
+        attr: {
+          hide_on_disabled: true,
+          condition: ["and", {
+            aspect: "# component",
+            value: ["fe", "be"],
+            compare: "contains"
+          }, {
+            aspect: "# dest_lang",
+            value: null,
+            compare: "unequal"
+          }]
+        },
+        items: [
+          {
+            value: "active",
+            text: this.$t("comp.translate.lang_status.active")
+          },
+          {
+            value: "inactive",
+            text: this.$t("comp.translate.lang_status.inactive")
+          }
+        ]
+      }
+    },
     component_select_aspect() {
       return {
         name: "component",
@@ -135,10 +166,7 @@ export default {
       return this.temporary_additional_languages.map(l => l.value).concat(this.all_added_languages)
     },
     new_language_addable() {
-      // console.log(this.temporary_additional_languages)
-      // console.log("new", this.new_language)
       const added = this.$_.find(this.temporary_additional_languages, l => l.value === this.new_language.value)
-      // console.log("added", added)
       return this.new_language !== null && !added
     },
     domain_select_aspect() {
@@ -397,7 +425,9 @@ export default {
       })
     },
     unpacked_values: async function (new_vals, old_vals) {
+      console.log("uppsi", new_vals)
       const {domain, dest_lang} = new_vals
+      // get the templates and their status
       if (new_vals.component === "entries" && domain !== null && dest_lang !== null) {
 
         const loaded_infos = this.$_.get(this.codes_templates_minimal_info, `${domain}.${dest_lang}`, null)
@@ -415,6 +445,22 @@ export default {
           })
         } else if (domain !== old_vals.domain || dest_lang !== old_vals.dest_lang) {
           this.code_templates_for_domain_lang = loaded_infos
+        }
+      } else if (["fe", "be"].includes(new_vals.component) && new_vals.dest_lang) {
+        const {component, dest_lang: lang} = new_vals
+        if (!this.language_statuses.hasOwnProperty(component)) {
+          this.language_statuses[component] = {}
+        }
+        if (!this.language_statuses[component].hasOwnProperty(lang)) {
+          try {
+            const {data: resp} = await this.$api.language.language_status(lang)
+            this.language_statuses[component][lang] = resp.data
+            // console.log(this.setup_values, pack_value(resp.data.active ? "active" : "inactive"))
+            this.setup_values.language_active = pack_value(resp.data.active ? "active" : "inactive")
+          } catch (err) {
+            console.log(err)
+            this.err_error_snackbar(err)
+          }
         }
       }
     }

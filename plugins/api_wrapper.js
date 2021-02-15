@@ -472,6 +472,10 @@ class Language extends QueryBase {
       params: {lang_code}
     })
   }
+
+  language_status(lang_code) {
+    return this.get_("language_status", {params: {lang_code}})
+  }
 }
 
 

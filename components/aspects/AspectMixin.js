@@ -116,7 +116,7 @@ export default {
         }
         const conditions = condition.slice(1)
         if (method === "and") {
-          return conditions.every(conditions,c => this.check_recursive_condition(c))
+          return conditions.every(c => this.check_recursive_condition(c))
         } else {
           return conditions.some(c => this.check_recursive_condition(c))
         }
