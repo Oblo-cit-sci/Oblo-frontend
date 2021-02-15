@@ -46,8 +46,13 @@ export default {
       this.$api.language.search(val).then(({data}) => {
         this.languageOptions = data.languages
         if (this.languageOptions.length === 0) {
-          this.errorMsg = "No  language found"
+          this.errorMsg = "EN:No language found"
         }
+        this.languageOptions.forEach(o => {
+          if (this.filter_out.includes(o.value)) {
+            o.disabled = true
+          }
+        })
       }, err => {
         console.log(err)
       }).finally(() => (this.isLoading = false))

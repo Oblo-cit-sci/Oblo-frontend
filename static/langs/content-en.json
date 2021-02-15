@@ -512,7 +512,8 @@
       "new": {
         "new_lang": "Add another language",
         "descr": "Which language do you want to add?",
-        "get_in_touch": "If you cannot find the language get in touch with us, we will make it happen!"
+        "get_in_touch": "If you cannot find the language get in touch with us, we will make it happen!",
+        "add": "Add language"
       }
     },
     "treeselect_asp": {

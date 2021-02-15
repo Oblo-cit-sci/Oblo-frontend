@@ -11,8 +11,8 @@
     v-btn(@click="start" :disabled="!is_setup_valid" color="success") {{$t("comp.translate.start")}}
     Dialog(:dialog_open.sync="new_lang_dialog_open")
       h3 {{$t("comp.translate.new.descr")}}
-      LanguageSearch(v-model="new_language")
-      v-btn(@click="add_language" :disabled="!new_language" color="success") {{$t("comp.translate.start")}}
+      LanguageSearch(v-model="new_language" :filter_out="exclude_from_search")
+      v-btn(@click="add_language" :disabled="!new_language_addable" color="success") {{$t("comp.translate.new.add")}}
       p.mt-2 {{$t("comp.translate.new.get_in_touch")}}
 </template>
 
@@ -131,15 +131,25 @@ export default {
     available_components_options() {
       return components.map(c => this.create_option(c, this.$t("comp.translate.component_select_asp.options." + c)))
     },
+    exclude_from_search() {
+      return this.temporary_additional_languages.map(l => l.value).concat(this.all_added_languages)
+    },
+    new_language_addable() {
+      // console.log(this.temporary_additional_languages)
+      // console.log("new", this.new_language)
+      const added = this.$_.find(this.temporary_additional_languages, l => l.value === this.new_language.value)
+      // console.log("added", added)
+      return this.new_language !== null && !added
+    },
     domain_select_aspect() {
-      const domain_aspect = this.asp_domain_select("domain","w.domain",false,  {
-          hide_on_disabled: true,
-          condition: {
-            aspect: "# component",
-            value: ["domain", "entries"],
-            compare: "contains"
-          }
-        })
+      const domain_aspect = this.asp_domain_select("domain", "w.domain", false, {
+        hide_on_disabled: true,
+        condition: {
+          aspect: "# component",
+          value: ["domain", "entries"],
+          compare: "contains"
+        }
+      })
       domain_aspect.items.forEach(d => {
         const meta_info = this.domains_metainfos[d.value]
         if (meta_info.active_languages.includes(this.unpacked_values.dest_lang))
@@ -254,16 +264,27 @@ export default {
       const {component, src_lang, dest_lang, domain, entry} = this.unpacked_values
       const setup = {component, domain, src_lang, dest_lang, unpacked: this.setup_values}
       if (["be", "fe"].includes(component)) {
-        const {data} = await this.$api.language.get_component(component, [src_lang, dest_lang], false)
-        setup.messages = data
+        await this.start_message_component(setup)
       } else if (component === "domain") {
         await this.start_domain(domain, setup, src_lang, dest_lang)
       } else if (component === "entries") {
         await this.start_entry(entry, setup)
       }
       console.log("done")
+      // todo, actually all already downloaded fe languages need to be updated
       this.$store.commit("translate/setup", setup)
       await this.$router.push("/translate/translate")
+    },
+    async start_message_component(setup) {
+      const {component, src_lang, dest_lang} = this.unpacked_values
+      if (!this.all_added_languages.includes(dest_lang)) {
+        await this.$api.language.add_language(dest_lang)
+        const {data} = await this.$api.language.get_component(component, [src_lang, dest_lang], false)
+        setup.messages = data
+      } else {
+        const {data} = await this.$api.language.get_component(component, [src_lang, dest_lang], false)
+        setup.messages = data
+      }
     },
     async start_domain(domain, setup, src_lang, dest_lang) {
       // todo remove src_lang, dest_lang since we get setup...
@@ -279,8 +300,18 @@ export default {
         ])
         setup.messages = resp_src_data.data.data
         const dest_messages = resp_dest_data.data.data
-        // console.log(setup.messages)
-        // console.log(dest_messages)
+        // TODO still an issue. not matching messages
+        // console.log(setup.messages.length, dest_messages.length)
+        // if (setup.messages.length !== dest_messages.length) {
+        //   for (let msg of setup.messages) {
+        //     console.log(msg[0])
+        //     const match = dest_messages.filter(m => m[0] === msg[0])
+        //     console.log(match)
+        //     if (!match) {
+        //       console.log("not found", msg)
+        //     }
+        //   }
+        // }
         for (let i in setup.messages) {
           setup.messages[i].push(dest_messages[i][1])
         }
@@ -317,25 +348,29 @@ export default {
         Object.assign(setup, {messages: data.data, config: {entry, new_o: true}})
       }
     },
-    new_lang() {
+    open_new_lang() {
+      this.new_language = null
       this.new_lang_dialog_open = true
     },
     add_language() {
-      if (["fe", "be"].includes(this.unpacked_values.component)) {
-        this.$api.language.add_language(this.new_language.value).then(({data}) => {
-          this.ok_snackbar(data.msg)
-          this.new_lang_dialog_open = false
-          this.temporary_additional_languages.push(this.new_language)
-        }, err => {
-          this.err_error_snackbar(err)
-        })
-      } else {
-        this.temporary_additional_languages.push(this.new_language)
-      }
+      // if (["fe", "be"].includes(this.unpacked_values.component)) {
+      //   this.$api.language.add_language(this.new_language.value).then(({data}) => {
+      //     this.ok_snackbar(data.msg)
+      //     this.new_lang_dialog_open = false
+      //     this.temporary_additional_languages.push(this.new_language)
+      //   }, err => {
+      //     console.log(err)
+      //     this.err_error_snackbar(err)
+      //   }).finally(() => this.new_lang_dialog_open = false)
+      // } else {
+      this.temporary_additional_languages.push(this.new_language)
+      this.new_lang_dialog_open = false
+      this.$i18n.mergeLocaleMessage(this.$store.getters.ui_language,
+        {[`lang.${this.new_language.value}`]: this.new_language.text})
     },
     aspectAction(event) {
       if (event.name === "new_lang_dialog") {
-        this.new_lang()
+        this.open_new_lang()
       }
       // todo after execution
       if (event.requires_callback) {

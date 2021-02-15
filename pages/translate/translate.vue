@@ -29,30 +29,29 @@ export default {
     }
   },
   data() {
+    const setup = this.$store.getters["translate/setup_values"]
+    const translations = new Map(setup.messages.map(msg => ([msg[0], {
+      index: msg[0],
+      languages: [setup.src_lang, setup.dest_lang],
+      messages: [msg[1], msg[2]]
+    }])))
     return {
       show_only_incomplete: false,
       page: 1,
       messages_per_page: 20,
-      changed_messages: {},
-      no_changes: true
+      changed_messages: new Set(),
+      no_changes: true,
+      translations
     }
   },
   computed: {
     ...mapGetters({setup: "translate/setup_values"}),
-    translations() {
-      // console.log(this.setup.messages)
-      return this.setup.messages.map(msg => ({
-        index: msg[0],
-        languages: [this.setup.src_lang, this.setup.dest_lang],
-        messages: [msg[1], msg[2]]
-      }))
-    },
     total_pages() {
       // console.log("total", this.setups.length, this.setups.length / this.messages_per_page, Math.ceil(this.setups.length / this.messages_per_page))
       return Math.ceil(this.translations.length / this.messages_per_page)
     },
     show_translations() {
-      let translations = this.translations
+      let translations = Array.from(this.translations.values())
       if (this.show_only_incomplete) {
         translations = translations.filter(t => t.messages[1] === "")
       }
@@ -63,16 +62,16 @@ export default {
     has_changed({name, change, value}) {
       // console.log("msg change", name, change)
       if (change) {
-        this.changed_messages[name] = value
+        this.changed_messages.add(name)
       } else {
-        delete this.changed_messages[name]
+        this.changed_messages.delete(name)
       }
-      this.no_changes = this.$_.isEmpty(this.changed_messages)
+      this.no_changes = this.changed_messages.size === 0
     },
     async submit() {
       try {
         if (["fe", "be"].includes(this.setup.component)) {
-          const messages = Object.entries(this.changed_messages)
+          const messages = Array.from(this.changed_messages).map(v => [v, this.translations.get(v).messages[1]])
           const {data} = await this.$api.language.update_messages(this.setup.component, this.setup.dest_lang, messages)
           this.ok_snackbar(data.msg)
           for (let m of messages) {
@@ -81,18 +80,22 @@ export default {
         } else if (this.setup.component === "domain") {
           const messages = this.get_flat_messages()
           try {
+            // todo after the 1. submission, the domain- obj is created, and needs to be patched!
             if (this.setup.config.new_o) {
               const {data} = await this.$api.domain.post_from_flat(this.setup.config.domain, this.setup.dest_lang, messages)
               this.ok_snackbar(data.msg)
+              // todo: this.setup.config.new_o should be changed to false
             } else {
               const {data} = await this.$api.domain.patch_from_flat(this.setup.config.domain, this.setup.dest_lang, messages)
               this.ok_snackbar(data.msg)
             }
+            // console.log(this.changed_messages, "CM")
             const changed_messages = Object.entries(this.changed_messages)
-            for (let m of changed_messages) {
-              this.$refs[m[0]][0].refresh_original()
+            for (let m of this.changed_messages) {
+              this.$refs[m][0].refresh_original()
             }
           } catch (e) {
+            console.log(e)
             this.err_error_snackbar(e)
           }
         } else if (this.setup.component === "entries") {
@@ -127,7 +130,7 @@ export default {
       /**
        * just get the index and dest_msg for all messages (used for domain, entry)
        */
-      return this.translations.map(t => [t.index, t.messages[1]])
+      return Array.from(this.translations).map(t => [t[0], t[1].messages[1]])
     },
     find_title_message(flat_messages) {
       for (let msg of flat_messages) {
