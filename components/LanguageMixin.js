@@ -83,11 +83,14 @@ export default {
       }
       return this.init_specifics(domain, language)
     },
-    async init_specifics(domain, language) {
-      if (!this.$store.getters["domain/has_lang_domain_data"](NO_DOMAIN, language)) {
-        domain = [domain, NO_DOMAIN]
+    async init_specifics(domains, language) {
+      if (!Array.isArray(domains)) {
+        domains = [domains]
       }
-      const {data} = await this.$api.basic.init_data(domain, language)
+      if (!this.$store.getters["domain/has_lang_domain_data"](NO_DOMAIN, language)) {
+        domains.push(NO_DOMAIN)
+      }
+      const {data} = await this.$api.basic.init_data(domains, language)
       // todo this also gets all the messages
       const domains_data = data.data.domains
       await this.$store.dispatch("domain/set_domains", {domains_data, language})

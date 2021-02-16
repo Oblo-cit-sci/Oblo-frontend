@@ -41,6 +41,8 @@ export default {
       aspect_extras: {}
     }
   },
+  async created() {
+  },
   computed: {
     ...mapGetters({"is_admin": "user/is_admin", "username": "user/registered_name"}),
     meta_aspects() {
@@ -91,10 +93,7 @@ export default {
       return this.entry.template.slug
     },
     template() {
-      const lang = this.$store.getters.domain_language
-      if (this.force_entry_language) {
-        return this.$store.getters["templates/entry_type"](this.template_slug, this.entry.language)
-      }
+      const lang = this.force_entry_language ? this.entry.language : this.$store.getters.domain_language
       return this.$store.getters["templates/entry_type"](this.template_slug, lang)
     },
     template_color() {

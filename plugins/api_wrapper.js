@@ -166,6 +166,14 @@ class Entry extends QueryBase {
     return this.get_(`${uuid}`)
   }
 
+  get_slug_lang(slug, language) {
+    return this.get_(`${slug}`, {
+      params: {
+        language
+      }
+    })
+  }
+
   // TODO why this slash?? otherwise it throws a 405 on the server!
   post(entry_data) {
     return this.post_(`${entry_data.uuid}`, entry_data)
@@ -282,8 +290,8 @@ class Entries extends QueryBase {
     })
   }
 
-  get_codes_templates(language) {
-    return this.get_("get_codes_templates", {params: {language}})
+  get_codes_templates(domain_names, language) {
+    return this.get_("get_codes_templates", {params: {domain_names, language}})
   }
 
 }

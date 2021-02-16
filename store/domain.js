@@ -73,7 +73,6 @@ export const actions = {
     commit("set_act_lang_domain_data", {domain_name, language})
   },
   set_domains({commit}, {domains_data, language}) {
-    console.log(domains_data)
     commit("add_domains_data", domains_data)
     commit("add_domains_overviews", domains_data.map(d => (
       {

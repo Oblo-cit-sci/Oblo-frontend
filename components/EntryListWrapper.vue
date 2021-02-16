@@ -25,10 +25,11 @@ import TriggerSnackbarMixin from "./TriggerSnackbarMixin"
 import CompactEntryList from "~/components/entry/CompactEntryList"
 import EntrySearchMixin from "~/components/EntrySearchMixin"
 import FilterMixin from "~/components/FilterMixin"
+import EntryFetchMixin from "~/components/entry/EntryFetchMixin";
 
 export default {
   name: "EntryListWrapper",
-  mixins: [TriggerSnackbarMixin, EntrySearchMixin, FilterMixin],
+  mixins: [TriggerSnackbarMixin, EntrySearchMixin, FilterMixin, EntryFetchMixin],
   components: {CompactEntryList, EntryPreviewList},
   props: {
     view_mode: {
@@ -38,7 +39,8 @@ export default {
     search_config: Array,
     init_request: Boolean,
     wait: Boolean, // created but parent still waits for other data, so show loading,
-    preview_options: Object
+    preview_options: Object,
+    templates_codes_loaded: false
   },
   data() {
     return {
@@ -55,15 +57,17 @@ export default {
     }
   },
   methods: {
-    request_more() {
+    async request_more() {
       // console.log("request more")
       this.searching = true
       // console.log("conf", conf)
       const search_config = this.build_search_config(this.search_config)
-      this.async_entry_search(search_config, this.entries_uuids.length).then(({data}) => {
+      this.async_entry_search(search_config, this.entries_uuids.length).then(async ({data}) => {
         const result = data.data
+        if (!this.$_.isEmpty(result.entries)) {
+          await this.guarantee_templates_codes(result.entries, this.$store.getters.ui_language)
+        }
         const entry_uuids = store_received_entries(this.$store, result.entries)
-
         if (this.$_.isEmpty(this.entries_uuids)) {
           // const local_search_config = this.search_config
           // console.log(local_search_config)
