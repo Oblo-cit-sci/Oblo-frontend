@@ -10,7 +10,7 @@
           :color="hover ? 'yellow' :'info'"
           @click="to_language(lang)"
           slot-scope="{ hover }") {{$t("lang." + lang)}}
-    v-card-text
+    v-card-text(:style="{'min-height':'80px'}")
       v-img.float-left.mr-3.mb-1(:src="icon" left width="40" height="40")
       span {{description}}
 </template>
