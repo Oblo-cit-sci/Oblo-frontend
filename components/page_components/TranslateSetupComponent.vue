@@ -335,23 +335,10 @@ export default {
           this.$api.domain.domain_content_as_index_table(domain, src_lang),
           this.$api.domain.domain_content_as_index_table(domain, dest_lang)
         ])
-        setup.messages = resp_src_data.data.data
-        const dest_messages = resp_dest_data.data.data
-        // TODO still an issue. not matching messages
-        // console.log(setup.messages.length, dest_messages.length)
-        // if (setup.messages.length !== dest_messages.length) {
-        //   for (let msg of setup.messages) {
-        //     console.log(msg[0])
-        //     const match = dest_messages.filter(m => m[0] === msg[0])
-        //     console.log(match)
-        //     if (!match) {
-        //       console.log("not found", msg)
-        //     }
-        //   }
-        // }
-        for (let i in setup.messages) {
-          setup.messages[i].push(dest_messages[i][1])
-        }
+        // setup.messages = resp_src_data.data.data
+        // const dest_messages = resp_dest_data.data.data
+        setup.messages = this.match_messages(resp_src_data.data.data, resp_dest_data.data.data)
+        console.log(setup.messages)
         // console.log(setup.messages)
         Object.assign(setup, {config: {domain, new_o: false}})
       } else { // destination language doesnt exist yet for the domain
@@ -362,22 +349,16 @@ export default {
       }
     },
     async start_entry(entry, setup) {
-      console.log(entry)
-      console.log(setup)
-      console.log(this.code_templates_for_domain_lang)
+      // console.log(entry)
+      // console.log(setup)
+      // console.log(this.code_templates_for_domain_lang)
       const entry_in_lang = this.code_templates_for_domain_lang[entry]
       if (entry_in_lang) {
         const [resp_src_data, resp_dest_data] = await Promise.all([
           this.$api.entry.aspects_as_index_table(entry, setup.src_lang),
           this.$api.entry.aspects_as_index_table(entry, setup.dest_lang)
         ])
-        setup.messages = resp_src_data.data.data
-        const dest_messages = resp_dest_data.data.data
-
-        for (let i in setup.messages) {
-          setup.messages[i].push(dest_messages[i][1])
-        }
-
+        setup.messages = this.match_messages(resp_src_data.data.data, resp_dest_data.data.data)
         Object.assign(setup, {config: {entry, new_o: false}})
       } else {
         const {data} = await this.$api.entry.aspects_as_index_table(entry, setup.src_lang)
@@ -427,6 +408,18 @@ export default {
       const slug_map = this.$_.keyBy(entries, "slug")
       this.codes_templates_minimal_info[domain][language] = slug_map
       this.code_templates_for_domain_lang = slug_map
+    },
+    match_messages(src_messages, dest_messages) {
+      debugger
+      const dest_map = new Map(dest_messages)
+      const result = []
+      for (let src_word of src_messages) {
+        let dest_w = dest_map.get(src_word[0])
+        if (!dest_w)
+          dest_w = null
+        result.push([src_word[0],src_word[1], dest_w])
+      }
+      return result
     }
   },
   watch: {
