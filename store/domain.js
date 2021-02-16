@@ -31,9 +31,6 @@ export const mutations = {
     // todo could use a validator. check if the names exists in all domains
     state.act_domain_name = domain_name
   },
-  clear_domain(state) {
-    state.act_domain_name = NO_DOMAIN
-  },
   set_act_lang_domain_data(state, {domain_name, language}) {
     const domain_base = state.domains.get(domain_name)
     if (domain_base) {
@@ -67,6 +64,10 @@ export const mutations = {
 }
 
 export const actions = {
+  clear_domain({commit}, language) {
+    commit("set_act_domain", NO_DOMAIN)
+    commit("set_act_lang_domain_data", {domain_name:NO_DOMAIN, language})
+  },
   set_act_domain_lang({commit}, {domain_name, language}) {
     commit("set_act_domain", domain_name)
     commit("set_act_lang_domain_data", {domain_name, language})
@@ -110,6 +111,9 @@ export const getters = {
   },
   act_lang_domain_data(state) {
     return state.act_lang_domain_data
+  },
+  cur_act_lang_domain_data(state) {
+    return () => state.act_lang_domain_data
   },
   domain_by_name(state) {
     return domain_name => {

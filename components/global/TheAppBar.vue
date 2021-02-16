@@ -50,7 +50,6 @@ export default {
       logged_in: "user/logged_in",
       connected: "app/connected",
       initialized: "app/initialized",
-      act_domain_name: "domain/act_domain_name",
       act_lang_domain_data: "domain/act_lang_domain_data"
     }),
     reduce_when_small() {
@@ -60,12 +59,14 @@ export default {
         return {"font-size": "90%"}
       }
     },
+    // domain_data() {
+    //   return this.cur_act_lang_domain_data()
+    // },
     domain_title() {
       return this.$_.get(this.act_lang_domain_data, "title", "Offline")
     },
     domain_icon() {
-      // todo only use name, but set change it in no_domain
-      return this.$api.static.domain_icon(this.act_domain_name)
+      return this.$api.static.domain_icon(this.act_lang_domain_data.name)
     },
     domain_headline() {
       return this.$_.get(this.act_lang_domain_data, "long_title", "")
@@ -108,9 +109,6 @@ export default {
     show_create_entry_button() {
       return this.is_domain_page && this.is_small && this.initialized
     },
-    // domain_data() {
-    //   return this.$store.getters["domain_data"](this.query_param_domain_name, this.$store.getters["user/settings"].ui_language)
-    // },
     show_login_btn() {
       return this.smAndUp && !this.logged_in && this.$route.name !== PAGE_INDEX
     },

@@ -26,9 +26,7 @@ export default {
     domain_data() {
       const language = this.$store.getters["user/settings"].domain_language
       const dd = this.$store.getters["domain/lang_domain_data"](this.domain_name, language)
-
       if(!dd) {
-
       } else {
         return dd
       }
@@ -47,7 +45,6 @@ export default {
           domain_name: this.domain_name,
           language: this.$store.getters["user/settings_ui_language"]})
     }
-
     if (this.$route.query.f && !this.is_fixed_domain) {
       this.fix_domain(this.$route.query.f)
     }

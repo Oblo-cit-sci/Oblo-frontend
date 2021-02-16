@@ -49,7 +49,7 @@ export default {
     return {}
   },
   created() {
-    this.$store.commit("domain/clear_domain")
+    this.$store.dispatch("domain/clear_domain", this.$store.getters.ui_language)
   },
   components: {
     Footer,
@@ -68,7 +68,7 @@ export default {
   },
   methods: {
     domain_available_in_language(domain) {
-      return  !this.$_.isEmpty(this.languaged_domain_overview(domain))
+      return !this.$_.isEmpty(this.languaged_domain_overview(domain))
     },
     languaged_domain_overview(domain) {
       const d = this.$store.getters["domain/domain_overview"](domain.name, this.setting(UI_LANGUAGE))
