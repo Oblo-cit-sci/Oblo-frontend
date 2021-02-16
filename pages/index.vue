@@ -12,9 +12,9 @@
               v-icon(left) mdi-login
               span {{$t('page.index.btn_login')}}
       v-row()
-        v-col.col-6(class="col-xs-12" v-for="domain in visible_domains" :key="domain.name")
+        v-col.col-sm-12.col-md-6.py-0(v-for="domain in visible_domains" :key="domain.name")
           DomainCard(
-            :style="{'min-height':'320px'}"
+            :style="{'max-height':'320px'}"
             :domain_data="languaged_domain_overview(domain)"
             :languages="languages(domain)")
       v-row(justify="center")

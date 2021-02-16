@@ -1,6 +1,6 @@
 <template lang="pug">
-  v-card(class="mb-10" outlined :width="550" @click="goto_domain" :ripple="false")
-    v-img(:src="image" max-height="auto")
+  v-card(class="mb-4" outlined :width="550" @click="goto_domain" :ripple="false")
+    v-img(:src="image" :max-height="img_max_height")
       v-card-title.align-end.shadow {{title}}
       v-hover(v-for="lang in languages"
         v-if="not_ui_lang"
@@ -16,16 +16,16 @@
 </template>
 
 <script>
-// import {GET_DOMAIN_TEMPLATES_FETCHED, SET_DOMAIN, SET_TEMPLATES_CODES_FOR_DOMAIN} from "../store";
 
 import {PAGE_DOMAIN} from "~/lib/pages"
 import DomainDataMixin from "~/components/domain/DomainDataMixin"
 import {QP_D, QP_lang} from "~/lib/consts";
 import LanguageMixin from "~/components/LanguageMixin";
+import ResponsivenessMixin from "~/components/ResponsivenessMixin";
 
 export default {
   name: "DomainCard",
-  mixins: [DomainDataMixin, LanguageMixin],
+  mixins: [DomainDataMixin, LanguageMixin, ResponsivenessMixin],
   data() {
     return {
       language: null
@@ -37,6 +37,13 @@ export default {
   computed: {
     not_ui_lang() {
       return !this.languages.includes(this.$store.getters.ui_language)
+    },
+    img_max_height() {
+      if(this.is_small) {
+        return "120px"
+      } else {
+        return "auto"
+      }
     }
   },
   methods: {
