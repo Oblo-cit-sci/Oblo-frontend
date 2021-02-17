@@ -150,6 +150,12 @@ class Domain extends QueryBase {
       params: {language, full}
     })
   }
+
+    async multi_d_get_codes_templates(domain_names, language, full) {
+    return this.get_("get_codes_templates", {
+      params: {domain_names, language, full}
+    })
+  }
 }
 
 class Entry extends QueryBase {
@@ -290,8 +296,8 @@ class Entries extends QueryBase {
     })
   }
 
-  get_codes_templates(domain_names, language) {
-    return this.get_("get_codes_templates", {params: {domain_names, language}})
+  get_codes_templates(language, full = true) {
+    return this.get_("get_codes_templates", {params: {language, full}})
   }
 
 }

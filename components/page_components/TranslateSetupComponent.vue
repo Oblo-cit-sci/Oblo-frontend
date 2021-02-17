@@ -204,6 +204,7 @@ export default {
       const {domain: domain_name} = this.unpacked_values
       // console.log(domain_name)
       if (domain_name) {
+        debugger
         let entries = this.all_entries_in_ui_lang.filter(e => e.domain === domain_name)
         const {required_entries} = this.domains_metainfos[domain_name]
         // todo here something about their status
@@ -290,7 +291,7 @@ export default {
     async fetch_init_data() {
       let [res_domain_metainfo, res_entries_info, res_all_languages] = await Promise.all([
         this.$api.domain.meta_info(),
-        this.$api.entries.get_codes_templates(this.$store.getters["user/settings_ui_language"]),
+        this.$api.entries.get_codes_templates(this.$store.getters.ui_language, false),
         this.$api.language.all_added_languages()])
       this.domains_metainfos = res_domain_metainfo.data
       this.all_entries_in_ui_lang = res_entries_info.data.data
