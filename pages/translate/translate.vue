@@ -53,7 +53,7 @@ export default {
     show_translations() {
       let translations = Array.from(this.translations.values())
       if (this.show_only_incomplete) {
-        translations = translations.filter(t => t.messages[1] === "")
+        translations = translations.filter(t => ["", null].includes(t.messages[1]))
       }
       return translations.slice((this.page - 1) * this.messages_per_page, (this.page) * this.messages_per_page)
     }
@@ -79,6 +79,7 @@ export default {
           }
         } else if (this.setup.component === "domain") {
           const messages = this.get_flat_messages()
+          debugger
           try {
             // todo after the 1. submission, the domain- obj is created, and needs to be patched!
             if (this.setup.config.new_o) {
@@ -89,7 +90,6 @@ export default {
               const {data} = await this.$api.domain.patch_from_flat(this.setup.config.domain, this.setup.dest_lang, messages)
               this.ok_snackbar(data.msg)
             }
-            // console.log(this.changed_messages, "CM")
             const changed_messages = Object.entries(this.changed_messages)
             for (let m of this.changed_messages) {
               this.$refs[m][0].refresh_original()

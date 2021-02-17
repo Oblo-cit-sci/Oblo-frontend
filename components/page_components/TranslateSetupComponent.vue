@@ -200,11 +200,8 @@ export default {
     },
     entry_select_aspect() {
       let options = []
-      // console.log("e-sel-asp")
       const {domain: domain_name} = this.unpacked_values
-      // console.log(domain_name)
       if (domain_name) {
-        debugger
         let entries = this.all_entries_in_ui_lang.filter(e => e.domain === domain_name)
         const {required_entries} = this.domains_metainfos[domain_name]
         // todo here something about their status
@@ -336,11 +333,7 @@ export default {
           this.$api.domain.domain_content_as_index_table(domain, src_lang),
           this.$api.domain.domain_content_as_index_table(domain, dest_lang)
         ])
-        // setup.messages = resp_src_data.data.data
-        // const dest_messages = resp_dest_data.data.data
         setup.messages = this.match_messages(resp_src_data.data.data, resp_dest_data.data.data)
-        console.log(setup.messages)
-        // console.log(setup.messages)
         Object.assign(setup, {config: {domain, new_o: false}})
       } else { // destination language doesnt exist yet for the domain
         const {data} = await this.$api.domain.domain_content_as_index_table(domain, src_lang)
@@ -411,13 +404,12 @@ export default {
       this.code_templates_for_domain_lang = slug_map
     },
     match_messages(src_messages, dest_messages) {
-      debugger
       const dest_map = new Map(dest_messages)
       const result = []
       for (let src_word of src_messages) {
         let dest_w = dest_map.get(src_word[0])
         if (!dest_w)
-          dest_w = null
+          dest_w = ""
         result.push([src_word[0],src_word[1], dest_w])
       }
       return result
