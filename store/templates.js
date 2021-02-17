@@ -13,9 +13,9 @@ export const state = () => ({
 
   entry_types: new Map(), // types for creation
   codes: new Map(),
-  tags: {}
+  tags: {},
+  requested: {} // key: domain, values: Set of lang, to prevent reloading
 })
-
 
 export const getters = {
   entry_type(state) {
@@ -160,6 +160,28 @@ export const getters = {
         }
       })
     }
+  },
+  get_missing_domain_language(state) {
+    return entries => {
+      const missing = []
+      entries.forEach(e => {
+        let add = false
+        const {domain, language} = e
+        if (!state.requested.hasOwnProperty(domain)) {
+          add = true
+        } else if (!state.requested[domain].has(language)) {
+          add = true
+        }
+        if (add) {
+          if (!missing.some(domain_lang =>
+            domain_lang.domain === domain && domain_lang.language === language
+          )) {
+            missing.push({domain, language})
+          }
+        }
+      })
+      return missing
+    }
   }
 }
 
@@ -206,16 +228,28 @@ export const mutations = {
         }
       }
     }
+  },
+  add_to_requested(state, entries) {
+    entries.forEach(e => {
+      // console.log(e.domain,e.language)
+      const {domain, language} = e
+      if (!state.requested.hasOwnProperty(domain)) {
+        state.requested[domain] = new Set([language])
+      } else {
+        state.requested[domain].add(language)
+      }
+    })
   }
 }
 
 export const actions = {
-  add_templates_codes({commit}, arr) {
-    for (let t_c of arr) {
+  add_templates_codes({commit}, entries) {
+    for (let t_c of entries) {
       commit("insert_template_code", t_c)
       if (t_c.type === "code") {
         commit("add_tags_from", t_c)
       }
     }
+    commit("add_to_requested", entries)
   }
 }
