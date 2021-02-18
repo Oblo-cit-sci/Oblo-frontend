@@ -29,8 +29,8 @@ export default {
       this.reset_settings_value(FIXED_DOMAIN, "Fixed domain reset")
     },
     set_domain_as_home_path(domain_name) {
-      // console.log("set_domain_as_home_path", domain_name)
-      if (domain_name)
+      // console.log("FixDomainMixin:set_domain_as_home_path", domain_name)
+      if (domain_name && domain_name !== NO_DOMAIN)
         this.set_home_path(`/domain?f=${domain_name}`)
       else
         this.set_home_path()
@@ -38,7 +38,8 @@ export default {
   }, watch: {
     is_fixed_domain(domain_name) {
       // console.log("watch:is_fixed_domain", domain_name)
-      this.set_domain_as_home_path(domain_name)
+
+        this.set_domain_as_home_path(domain_name)
     }
   }
 }

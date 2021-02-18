@@ -1,11 +1,10 @@
 <template lang="pug">
   div
-    v-row(v-if="!is_fixed_domain" :style="{'background-color':'#00A0A080'}")
-      v-list-item
-        v-list-item-content {{$t('comp.domain_menu.fix_label', {domain_title:title})}}
-        v-list-item-action
-          v-btn(small @click="fix_domain(domain_name)")
-            v-icon mdi-book-lock
+    v-list-item(v-if="!is_fixed_domain" :style="{'background-color':'#00A0A080'}")
+      v-list-item-content {{$t('comp.domain_menu.fix_label', {domain_title:title})}}
+      v-list-item-action
+        v-btn(small @click="fix_domain(domain_name)")
+          v-icon mdi-book-lock
     Search(v-show="nav_mode_search"
       :preview_options="preview_options"
       :search_config="search_config"

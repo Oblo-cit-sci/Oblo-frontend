@@ -136,6 +136,7 @@ export default {
 
       await this.$store.dispatch("app/connected")
 
+      console.log("multi domains?", this.has_multiple_domains)
       if (!this.has_multiple_domains) {
         // console.log("1 domain:", this.get_one_domain_name)
         this.$store.commit("domain/set_act_domain", this.$store.getters["domain/domain_by_name"](this.get_one_domain_name).name)
@@ -153,16 +154,30 @@ export default {
             this.$store.commit("app/initialized")
           }, 80)
         } else {
+          // todo not sure why this is here- just one domain anyway
           const domain_name = this.$store.getters["user/settings"].fixed_domain || NO_DOMAIN
           this.$store.commit("domain/set_act_domain", domain_name)
           this.$store.commit("app/initialized")
         }
       } else {
+        const fixed_domain = this.$store.getters["user/settings"].fixed_domain || NO_DOMAIN
+        console.log(`user fixed-domain: ${fixed_domain}`)
         await this.$store.dispatch("domain/set_act_domain_lang", {
-          domain_name: NO_DOMAIN,
+          domain_name: fixed_domain,
           language
         })
-        this.$store.commit("app/initialized")
+        if (this.$route.name === PAGE_INDEX) {
+          // console.log("to domain page",this.get_one_domain_name)
+          if (fixed_domain !== NO_DOMAIN) {
+            this.to_domain(fixed_domain, true).then(() => {
+              this.$store.commit("app/initialized")
+            })
+          } else {
+            this.$store.commit("app/initialized")
+          }
+        } else {
+          this.$store.commit("app/initialized")
+        }
       }
       // console.log("done")
       return Promise.resolve()

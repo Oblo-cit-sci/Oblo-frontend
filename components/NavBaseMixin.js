@@ -38,8 +38,8 @@ export default {
         })
       }
     },
-    to_domain(domain_name, fixed = false) {
-      this.$router.push({
+    async to_domain(domain_name, fixed = false) {
+      return this.$router.push({
         name: PAGE_DOMAIN, query: {[fixed ? QP_F : this.domain_param_key]: domain_name}
       })
     },
