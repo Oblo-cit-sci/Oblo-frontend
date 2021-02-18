@@ -15,7 +15,7 @@
 
 <script>
 import {all_pages_n_actions} from "~/lib/pages"
-import {ADMIN, DOMAIN} from "~/lib/consts"
+import {ADMIN, DOMAIN, NO_DOMAIN} from "~/lib/consts"
 import LanguageSelector from "~/components/LanguageSelector"
 import URLQueryMixin from "~/components/util/URLQueryMixin"
 import FixDomainMixin from "~/components/global/FixDomainMixin"
@@ -88,11 +88,14 @@ export default {
       let route_name = item.to
       if (item.to.indexOf("?") !== -1)
         route_name = item.to.substring(0, item.to.indexOf("?"))
-      // console.log(item.to, route_name, this.$route.path)
       if (route_name === this.$route.path) {
         this.switch_menu_open()
       }
-      this.$router.push(item.to)
+      if (item.name === "about" && this.$store.getters["domain/act_domain_name"] !== NO_DOMAIN) {
+        this.$router.push({path : `/about`, query: {d:this.$store.getters["domain/act_domain_name"]}})
+      } else{
+        this.$router.push(item.to)
+      }
     }
   }
 }

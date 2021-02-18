@@ -64,8 +64,10 @@ export const mutations = {
 }
 
 export const actions = {
-  clear_domain({commit}, language) {
+  clear_domain({commit, getters}, language) {
     commit("set_act_domain", NO_DOMAIN)
+    if (!getters.has_lang_domain_data(NO_DOMAIN, language))
+      language = getters.get_domain_default_language(NO_DOMAIN)
     commit("set_act_lang_domain_data", {domain_name:NO_DOMAIN, language})
   },
   set_act_domain_lang({commit, getters}, {domain_name, language}) {

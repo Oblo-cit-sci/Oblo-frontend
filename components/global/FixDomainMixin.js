@@ -37,8 +37,6 @@ export default {
     }
   }, watch: {
     is_fixed_domain(domain_name) {
-      // console.log("watch:is_fixed_domain", domain_name)
-
         this.set_domain_as_home_path(domain_name)
     }
   }
