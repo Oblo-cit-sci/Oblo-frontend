@@ -38,7 +38,6 @@ export default {
     },
   },
   data() {
-
     const value = pack_value({
       "index": pack_value(this.index),
       [this.languages[0]]: pack_value(this.messages[0]),
@@ -110,7 +109,8 @@ export default {
   },
   watch: {
     value(value) {
-      this.messages[1] = value.value[this.languages[1]].value
+      //this.messages[1] = value.value[this.languages[1]].value
+      this.$emit("update", value.value[this.languages[1]].value)
     }
   }
 }
