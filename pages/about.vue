@@ -1,5 +1,8 @@
 <template lang="pug">
   div
+    v-row(align="center" justify="center")
+      v-col.col-lg-6.col-xs-12
+        LanguageChip(v-if="language_fallback" :language_code="$i18n.fallbackLocale")
     v-row(align="center" justify="center" v-for="section in text_sections" :key="section.h")
       v-col.col-lg-6.col-xs-12
         FlexibleTextSection(:section="section")
@@ -12,17 +15,27 @@ import GoToMixin from "~/components/global/GoToMixin"
 import Footer from "~/components/global/Footer"
 import FlexibleTextSection from "~/components/global/FlexibleTextSection"
 import {NO_DOMAIN} from "~/lib/consts";
+import LanguageChip from "~/components/language/LanguageChip";
 
 const pkg = require('~/package.json')
 
 
 export default {
   name: "about",
-  components: {FlexibleTextSection, Footer},
+  components: {LanguageChip, FlexibleTextSection, Footer},
   mixins: [GoToMixin],
+  data() {
+    return {
+      language_fallback: false
+    }
+  },
   computed: {
     text_sections() {
       let sections = this.$t("page.about")
+      if (!sections[0].h1) {
+        sections = this.$i18n.getLocaleMessage(this.$i18n.fallbackLocale).page.about
+        this.language_fallback = true
+      }
       if (!Array.isArray(sections)) {
         const le = Object.keys(sections).length
         const sections_arr = []
