@@ -212,7 +212,7 @@ export default {
       for (let license_group of include) {
         const licence_entry = this.$store.getters["templates/code"](license_group)
         if (licence_entry) {
-          aspect.items = licence_entry.values.licenses
+          aspect.items = licence_entry.values.list
         } else {
           console.log("cannot include license group", license_group)
         }
