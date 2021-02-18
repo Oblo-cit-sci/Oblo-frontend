@@ -286,7 +286,6 @@ export default {
           item_name = titleAspectName
         }
       }
-
       // condition hell should go if we apply json schema properly, this is all fallback stuff
       if (!(simple_type || titleAspectName)) {
         console.log(`json schema error. no simple aspect or titleAspectName in list with name ${this.aspect.name}`)
@@ -311,6 +310,14 @@ export default {
             for (let titleAspectName_ of titleAspectName) {
               let value = this.value[i].value[titleAspectName_]
               if (value.value) {
+                // treeselect -> [[value,text],[value,text],...]
+                if (Array.isArray(value.value)) {
+                  if (this.$_.isEmpty(value.value)) {
+                    titles[i] = ""
+                    break
+                  }
+                  value = this.$_.last(value.value)
+                }
                 if (value.text) {
                   titles[i] = value.text
                 } else {
