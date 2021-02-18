@@ -68,7 +68,11 @@ export const actions = {
     commit("set_act_domain", NO_DOMAIN)
     commit("set_act_lang_domain_data", {domain_name:NO_DOMAIN, language})
   },
-  set_act_domain_lang({commit}, {domain_name, language}) {
+  set_act_domain_lang({commit, getters}, {domain_name, language}) {
+    const has_domain_lang = getters.has_lang_domain_data(domain_name, language)
+    if (!has_domain_lang) {
+      language = getters.get_domain_default_language(domain_name)
+    }
     commit("set_act_domain", domain_name)
     commit("set_act_lang_domain_data", {domain_name, language})
   },
@@ -151,7 +155,7 @@ export const getters = {
   },
   has_lang_domain_data(state, getters) {
     return (domain_name, language) => {
-      return getters.lang_domain_data(domain_name, language) !== undefined
+      return getters.lang_domain_data(domain_name, language, false) !== undefined
     }
   },
   // todo just used once atm. maybe not required as store getter

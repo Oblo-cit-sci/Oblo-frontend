@@ -34,7 +34,6 @@ export default {
         data: {
           title: guidelines[0],
           html_text: guidelines[1],
-          confirm_text: "close",
           show_cancel: false
         },
         confirm_method: () => {

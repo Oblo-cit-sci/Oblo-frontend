@@ -63,7 +63,7 @@ export default {
       return this.hostname
     },
     visible_domains() {
-      return this.domains().filter(d => d.name !== NO_DOMAIN)
+      return this.$_.sortBy(this.domains().filter(d => d.name !== NO_DOMAIN),["index"])
     },
   },
   methods: {
