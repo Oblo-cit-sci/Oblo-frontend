@@ -38,9 +38,13 @@ export default {
         })
       }
     },
-    async to_domain(domain_name, fixed = false) {
-      return this.$router.push({
+    to_domain(domain_name, fixed = false, callback) {
+      this.$router.push({
         name: PAGE_DOMAIN, query: {[fixed ? QP_F : this.domain_param_key]: domain_name}
+      }, () => {
+        if (callback) {
+          callback()
+        }
       })
     },
     to_entry(uuid, mode = VIEW, query = {}, log_page = true) {

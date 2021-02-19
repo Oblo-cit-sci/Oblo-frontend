@@ -89,7 +89,7 @@ export default {
       const i_language = this.$route.query[QP_lang] || user_settings.domain_language || this.default_language
       console.log("init with, ", domain_name, i_language)
 
-      const only_overview = domain_name === null
+      // const only_overview = domain_name === null
 
       const {data: resp} = await this.$api.basic.init_data(domain_name ? [domain_name, NO_DOMAIN] : null, i_language)
       // console.log(resp)
@@ -149,10 +149,9 @@ export default {
         // console.log("route name", this.$route.name, this.$route.name === PAGE_INDEX)
         if (this.$route.name === PAGE_INDEX) {
           // console.log("to domain page",this.get_one_domain_name)
-          this.to_domain(this.get_one_domain_name, true)
-          setTimeout(() => {
+          this.to_domain(this.get_one_domain_name, true, () => {
             this.$store.commit("app/initialized")
-          }, 80)
+          })
         } else {
           // todo not sure why this is here- just one domain anyway
           const domain_name = this.$store.getters["user/settings"].fixed_domain || NO_DOMAIN
@@ -169,7 +168,7 @@ export default {
         if (this.$route.name === PAGE_INDEX) {
           // console.log("to domain page",this.get_one_domain_name)
           if (fixed_domain !== NO_DOMAIN) {
-            this.to_domain(fixed_domain, true).then(() => {
+            this.to_domain(fixed_domain, true, () => {
               this.$store.commit("app/initialized")
             })
           } else {
