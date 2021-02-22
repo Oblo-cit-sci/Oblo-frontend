@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    ActorChip(v-for="actor_role in ordered_actors" :actor="actor_role.actor" :role="actor_role.role" :key="actor_role.actor.registered_name")
+    ActorChip.mb-2(v-for="actor_role in ordered_actors" :actor="actor_role.actor" :role="actor_role.role" :key="actor_role.actor.registered_name")
 </template>
 
 <script>

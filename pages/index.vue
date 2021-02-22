@@ -67,7 +67,7 @@ export default {
       return this.$_.sortBy(this.domains().filter(d => d.name !== NO_DOMAIN),["index"])
     },
     x_large_btn() {
-      return this.is_md
+      return this.is_mdAndUp
     }
   },
   methods: {
