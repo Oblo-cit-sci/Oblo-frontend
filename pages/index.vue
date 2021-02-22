@@ -2,13 +2,13 @@
   v-container(fluid)
     div(v-if="initialized")
       div(v-if="!logged_in")
-        v-row(align="center")
-          v-col(sm="4" offset="1")
-            v-btn.mt-4.mb-8(text x-large rounded outlined :style="{background:'white'}" to="/register")
+        v-row.mb-2.mb-sm-5.pb-3.pb-md-1(align="center")
+          v-col.py-0.mt-0.mt-md-4.mb-md-3(sm="4" offset-md="1")
+            v-btn.mt-4.mb-md-3(text :x-large="x_large_btn" rounded outlined :style="{background:'white'}" to="/register")
               v-icon(left) mdi-account-check
               span {{$t('page.index.btn_register')}}
-          v-col(sm="4")
-            v-btn.mt-4.mb-8(text x-large rounded outlined :style="{background:'white'}" to="/login")
+          v-col.py-0.mt-0.mt-md-4.mb-md-3(sm="4")
+            v-btn.mt-4.mb-md-3(text :x-large="x_large_btn" rounded outlined :style="{background:'white'}" to="/login")
               v-icon(left) mdi-login
               span {{$t('page.index.btn_login')}}
       v-row()
@@ -42,9 +42,10 @@ import {NO_DOMAIN, UI_LANGUAGE} from "~/lib/consts"
 import SettingsChangeMixin from "~/components/global/SettingsChangeMixin"
 import EnvMixin from "~/components/global/EnvMixin";
 import LanguageMixin from "~/components/LanguageMixin";
+import ResponsivenessMixin from "~/components/ResponsivenessMixin";
 
 export default {
-  mixins: [SettingsChangeMixin, EnvMixin, LanguageMixin],
+  mixins: [SettingsChangeMixin, EnvMixin, LanguageMixin, ResponsivenessMixin],
   data() {
     return {}
   },
@@ -65,6 +66,9 @@ export default {
     visible_domains() {
       return this.$_.sortBy(this.domains().filter(d => d.name !== NO_DOMAIN),["index"])
     },
+    x_large_btn() {
+      return this.is_md
+    }
   },
   methods: {
     domain_available_in_language(domain) {

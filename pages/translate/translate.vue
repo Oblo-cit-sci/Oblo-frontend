@@ -16,15 +16,15 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import {mapGetters} from 'vuex'
 import MessageTranslationBlock from '~/components/language/MessageTranslationBlock'
 import SimplePaginate from '~/components/SimplePaginate'
 import TriggerSnackbarMixin from '~/components/TriggerSnackbarMixin'
-import { DOMAIN } from '~/lib/consts'
+import {DOMAIN} from '~/lib/consts'
 
 export default {
   name: 'Translate',
-  components: { SimplePaginate, MessageTranslationBlock },
+  components: {SimplePaginate, MessageTranslationBlock},
   mixins: [TriggerSnackbarMixin],
   data() {
     const setup = this.$store.getters['translate/setup_values']
@@ -64,13 +64,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({ setup: 'translate/setup_values' }),
+    ...mapGetters({setup: 'translate/setup_values'}),
     disable_submit() {
       return this.no_changes //|| !this.field_requirements_fulfilled
     },
-    // all_messages() {
-    //   return this.translations.values()
-    // },
     total_pages() {
       // console.log("total", this.setups.length, this.setups.length / this.messages_per_page, Math.ceil(this.setups.length / this.messages_per_page))
       return Math.ceil(this.message_order.length / this.messages_per_page)
@@ -104,7 +101,7 @@ export default {
     },
   },
   methods: {
-    has_changed({ name, change, value }) {
+    has_changed({name, change, value}) {
       // console.log("msg change", name, change)
       if (change) {
         this.changed_messages.add(name)
@@ -118,9 +115,9 @@ export default {
         if (['fe', 'be'].includes(this.setup.component)) {
           const messages = Array.from(this.changed_messages).map((v) => [
             v,
-            this.translations.get(v).messages[1],
+            this.translation_o[v].messages[1],
           ])
-          const { data } = await this.$api.language.update_messages(
+          const {data} = await this.$api.language.update_messages(
             this.setup.component,
             this.setup.dest_lang,
             messages
@@ -135,7 +132,7 @@ export default {
           try {
             // todo after the 1. submission, the domain- obj is created, and needs to be patched!
             if (this.setup.config.new_o) {
-              const { data } = await this.$api.domain.post_from_flat(
+              const {data} = await this.$api.domain.post_from_flat(
                 this.setup.config.domain,
                 this.setup.dest_lang,
                 messages
@@ -143,7 +140,7 @@ export default {
               this.ok_snackbar(data.msg)
               // todo: this.setup.config.new_o should be changed to false
             } else {
-              const { data } = await this.$api.domain.patch_from_flat(
+              const {data} = await this.$api.domain.patch_from_flat(
                 this.setup.config.domain,
                 this.setup.dest_lang,
                 messages
@@ -162,14 +159,14 @@ export default {
           const messages = this.get_flat_messages()
           try {
             if (this.setup.config.new_o) {
-              const { data } = await this.$api.entry.post_from_flat(
+              const {data} = await this.$api.entry.post_from_flat(
                 this.setup.config.entry,
                 this.setup.dest_lang,
                 messages
               )
               this.ok_snackbar(data.msg)
             } else {
-              const { data } = await this.$api.entry.patch_from_flat(
+              const {data} = await this.$api.entry.patch_from_flat(
                 this.setup.config.entry,
                 this.setup.dest_lang,
                 messages

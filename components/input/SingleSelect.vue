@@ -14,7 +14,7 @@
           :disabled="disabled_item(item.value)"
           :class="{ marked: marked(item.value) }"
           class="single_select")
-          v-list-item-avatar()
+          v-list-item-avatar(v-if="option_icon(item)")
             v-img(:src="option_icon(item)"  contain max-height="25")
           v-icon(v-if="item.mdi_icon") {{item.mdi_icon}}
           v-list-item-content
@@ -208,10 +208,14 @@ export default {
       return this.disabled_options.includes(item_value)
     },
     option_icon(item) {
-      if (this.data_source) {
-        return this.$api.entry.url_slug_attachment(this.data_source, item.icon)
+      if (item.icon) {
+        if (this.data_source) {
+          return this.$api.entry.url_slug_attachment(this.data_source, item.icon)
+        } else {
+          return this.$api.static.url(item.icon)
+        }
       } else {
-        return this.$api.static.url(item.icon)
+        return null
       }
     }
   },
