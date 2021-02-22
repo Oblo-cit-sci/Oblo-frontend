@@ -90,6 +90,15 @@ class Basic extends QueryBase {
       },
     })
   }
+
+  oauth_complete(access_token, code) {
+    console.log(access_token, code)
+    return this.get_("oauth_complete", {
+      params: {
+        access_token, code
+      }
+    })
+  }
 }
 
 class Static extends QueryBase {
@@ -151,7 +160,7 @@ class Domain extends QueryBase {
     })
   }
 
-    async multi_d_get_codes_templates(domain_names, language, full) {
+  async multi_d_get_codes_templates(domain_names, language, full) {
     return this.get_("get_codes_templates", {
       params: {domain_names, language, full}
     })

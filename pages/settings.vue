@@ -62,6 +62,7 @@
     mixins: [TriggerSnackbarMixin, PersistentStorageMixin, AspectListMixin, FixDomainMixin, LanguageMixin, TypicalAspectMixin],
     data() {
       const privacy_aspect = this.asp_privacy("default_privacy", "default")
+      // todo the cc_licenses should come from a definition in the domain (licci)
       const license_aspect = this.asp_license("default_license", ["cc_licenses"], null, "default")
       const ui_lang_aspect = this.asp_language("ui_language","ui")
       ui_lang_aspect.items = this.get_language_options()

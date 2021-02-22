@@ -14,8 +14,8 @@
           :disabled="disabled_item(item.value)"
           :class="{ marked: marked(item.value) }"
           class="single_select")
-          v-list-item-avatar(v-if="has_some_icons")
-            v-img(:src="icon_path(item)"  contain max-height="25")
+          v-list-item-avatar()
+            v-img(:src="option_icon(item)"  contain max-height="25")
           v-icon(v-if="item.mdi_icon") {{item.mdi_icon}}
           v-list-item-content
             v-list-item-title
@@ -30,8 +30,8 @@
     v-select(outlined single-line :hide-details="hide_details" :multiple=false v-model="selected_item" :items="select_options" return-object :clearable="clearable" :placeholder="placeholder" :disabled="disabled" )
     div(v-if="selected_item")
       div.mt-1(v-if="selected_item.description") {{$t("comp.select_asp.descr")}}: {{selected_item.description}}
-      div.mt-1(v-if="has_some_icons")
-        v-img(:src="icon_path(selected_item)" contain max-height="40")
+      div.mt-1(v-if="value_icon")
+        v-img(:src="value_icon" contain max-height="40")
   div(v-else-if="view_autocomplete")
     v-autocomplete(outlined single-line v-model="selected_item" :hide_details="hide_details" :items="options" return-object :clearable="clearable" :placeholder="placeholder" :disabled="disabled" )
   div(v-else-if="view_radiogroup")
@@ -51,7 +51,6 @@ text, value
 and optional "description"
  */
 
-import {server_icon_path} from "~/lib/client";
 import SelectGrid from "~/components/aspect_utils/SelectGrid"
 import LanguageCodeFallback from "~/components/aspect_utils/LanguageCodeFallback";
 
@@ -91,6 +90,9 @@ export default {
     }, // either (CLEAR_LIST | VUETIFY_SELECT)
     only_value: {
       type: Boolean
+    },
+    data_source: {
+      type: String
     },
     disabled: {
       type: Boolean,
@@ -159,10 +161,6 @@ export default {
         this.viewStyle = AUTOCOMPLETE
       }
     },
-    // todo dont do that. take it from the real server. the last function that usess: server_icon_path
-    icon_path(item) {
-      return server_icon_path(this.$axios, item.icon)
-    },
     marked(key) {
       // console.log(this.selection, key)
       if (this.selection)
@@ -208,6 +206,13 @@ export default {
         return false
       }
       return this.disabled_options.includes(item_value)
+    },
+    option_icon(item) {
+      if (this.data_source) {
+        return this.$api.entry.url_slug_attachment(this.data_source, item.icon)
+      } else {
+        return this.$api.static.url(item.icon)
+      }
     }
   },
   computed: {
@@ -216,9 +221,6 @@ export default {
     },
     has_some_description() {
       return this.$_.find(this.options, (o) => o.description && o.description !== "") !== undefined
-    },
-    has_some_icons() {
-      return this.$_.find(this.options, (o) => o.icon && o.icon !== "") !== undefined
     },
     view_clearlist() {
       return this.viewStyle === CLEAR_LIST
@@ -240,7 +242,16 @@ export default {
     },
     no_options() {
       return this.options.length === 0
-    }
+    },
+    value_icon() {
+      if (this.selection) {
+        if (this.data_source) {
+          return this.$api.entry.url_slug_attachment(this.data_source, this.selection.icon)
+        } else {
+          return this.$api.static.url(this.selection.icon)
+        }
+      }
+    },
   },
   watch: {
     options: {

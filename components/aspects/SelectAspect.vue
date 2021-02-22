@@ -9,14 +9,15 @@
       :selection.sync="selection"
       :force_view="force_view"
       :disabled="disabled"
+      :data_source="data_source"
       v-bind="extra"
       :hide_details="hide_details"
       :clearable="!is_required")
   div(v-else)
     div.mt-3(v-if="value")
       div
-        div.px-2(v-if="has_some_icons" style="float:left")
-          v-img(:src="icon_path(selection)" contain max-height="40")
+        div.mt-1(v-if="value_icon")
+          v-img(:src="value_icon" contain max-height="40")
         div
           p.pl-2(v-if="select_check" class="text-uppercase") {{check_box_value ? options[1].text : options[0].text}}
           p.body-1.readonly-aspect.pl-3(v-else) {{view_mode_text}}
@@ -26,10 +27,8 @@
 <script>
 import SelectMixin from "./SelectMixin";
 import AspectComponentMixin from "./AspectComponentMixin";
-import {server_icon_path} from "~/lib/client"
 import LanguageCodeFallback from "~/components/aspect_utils/LanguageCodeFallback";
 import SingleSelect from "~/components/input/SingleSelect";
-import {unpack} from "~/lib/aspect";
 
 export default {
   name: "SelectAspect",
@@ -46,9 +45,6 @@ export default {
       init: true
     }
   },
-  // beforeCreate: function () {
-  //   this.$options.components.SingleSelect = require('../input/SingleSelect.vue').default
-  // },
   created() {
     if (this.select_check) {
       this.check_box_value = this.value === this.options[1].value // or maybe a value/default...
@@ -77,20 +73,12 @@ export default {
         this.init = false
       }
     },
-    icon_path(item) {
-      return server_icon_path(this.$axios, item.icon)
-    },
   },
   computed: {
     force_view() {
       return this.attr.force_view
     },
-    has_some_icons() {
-      // o._icon is basically just for privacy, check if
-      return this.$_.find(this.options, (o) => o.icon && o.icon !== "") !== undefined
-    },
     has_error() {
-      // console.log("select error?", this.is_required)
       return this.is_required && !this.value
     },
     view_mode_text() {
@@ -102,7 +90,20 @@ export default {
       if (this.selection) {
         return this.selection.description
       }
-    }
+    },
+    data_source() {
+      if (typeof this.aspect.items === "string")
+        return this.aspect.items
+    },
+    value_icon() {
+      if (this.selection) {
+        if (this.data_source) {
+          return this.$api.entry.url_slug_attachment(this.data_source, this.selection.icon)
+        } else {
+          return this.$api.static.url(this.selection.icon)
+        }
+      }
+    },
   },
   watch: {
     value() {
@@ -112,16 +113,13 @@ export default {
       this.update_error(this.has_error)
     },
     selection() {
-      // console.log("Sel Asp", this.selection)
       let send_value = this.selection
       // console.log("watch sel",)
-
       //console.log("Select-selection", this.selection, "/",val, "/",prev_val, !prev_val)
       if (this.init) {
         this.init = false
         return
       }
-      //console.log("select", this.aspect, this.selection)
       if (this.selection === null)
         this.update_value(null)
       else {

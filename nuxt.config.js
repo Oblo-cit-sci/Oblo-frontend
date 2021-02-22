@@ -97,7 +97,6 @@ module.exports = {
     '@nuxtjs/localforage'
   ],
 
-
   buildModules: [
     ['@nuxtjs/vuetify', {
       defaultAssets: false,

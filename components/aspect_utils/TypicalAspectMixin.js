@@ -180,12 +180,12 @@ export default {
           text: this.$t("asp.privacy.options.public.text"),
           description: this.description("asp.privacy.options.public.", alt_label_descr),
           value: "public",
-          icon: "privacy/earth.png"
+          icon: "images/icons/privacy/earth.png"
         }, {
           text: this.$t("asp.privacy.options.private.text"),
           description: this.description("asp.privacy.options.private.", alt_label_descr),
           value: "private",
-          icon: "privacy/lock-outline.png"
+          icon: "images/icons/privacy/lock-outline.png"
         }],
         value: pack_value()
       }
@@ -206,17 +206,18 @@ export default {
           only_value: true,
           // update_raw: true
         },
-        items: [],
+        // todo problematic when more
+        items: include[0],
         value: pack_value()
       }
-      for (let license_group of include) {
-        const licence_entry = this.$store.getters["templates/code"](license_group)
-        if (licence_entry) {
-          aspect.items = licence_entry.values.list
-        } else {
-          console.log("cannot include license group", license_group)
-        }
-      }
+      // for (let license_group of include) {
+      //   const licence_entry = this.$store.getters["templates/code"](license_group)
+      //   if (licence_entry) {
+      //     aspect.items = licence_entry.values.list
+      //   } else {
+      //     console.log("cannot include license group", license_group)
+      //   }
+      // }
       return aspect
     },
     asp_location_privacy() {
