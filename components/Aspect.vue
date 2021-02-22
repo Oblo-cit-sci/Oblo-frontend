@@ -31,7 +31,7 @@
       v-on:update_value="update_value($event)"
       @update:error="$emit('update:error', $event)"
       @aspectAction="aspectAction($event)")
-    div(v-if="has_action && edit")
+    div(v-if="has_action && is_editable_mode")
       AspectAction(:aspect="aspect" :mvalue="mvalue" :extra="extra" @aspectAction="aspectAction($event)" :has_changed="has_changed")
 </template>
 

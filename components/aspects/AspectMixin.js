@@ -152,6 +152,9 @@ export default {
     edit() {
       return this.mode === EDIT
     },
+    is_editable_mode() {
+      return [EDIT, REVIEW].includes(this.mode)
+    },
     show_is_optional() {
       return !this.is_required && this.edit
     },
