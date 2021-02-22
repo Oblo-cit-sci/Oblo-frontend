@@ -17,11 +17,8 @@ export default {
         this.persist_user_settings()
       }
     },
-    reset_settings_value(settings_key, snackbar = "") {
+    reset_settings_value(settings_key) {
       this.set_settings_value(settings_key, default_settings[settings_key])
-      if (snackbar !== "") {
-        this.ok_snackbar(snackbar)
-      }
     },
   }
 }

@@ -149,7 +149,8 @@
         "h1": "Fixed domain",
         "p": "You are only seeing the domain",
         "p2": "However there are more domains to explore. Resetting your fixed domain, will show you a domain overview on the home page. Click the button to reset the fixed domain.",
-        "btn_reset": "Reset fixed domain"
+        "btn_reset": "Reset fixed domain",
+        "fixed_domain_reset":"Fixed domain reset"
       },
       "settings_updated": "Settings updated"
     },

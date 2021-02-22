@@ -121,7 +121,7 @@ export default {
     },
     request_verification_mail() {
       this.$api.actor.resend_email_verification_mail(this.registered_name).then(({data}) => {
-        this.ok_snackbar(data.data)
+        this.ok_snackbar(data.msg)
         this.add_verification_resend_link = false
         this.errorMsg = null
       }).catch(err => {
