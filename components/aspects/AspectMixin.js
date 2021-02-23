@@ -62,6 +62,7 @@ export default {
   methods: {
     // debounce to not to store contantly while typing
     update_value(mvalue) {
+      // console.log(mvalue)
       // value could be "" or 0 in case of strings, numbers
       const value = mvalue.value === undefined ? null : mvalue.value
       const is_mvalue = mvalue.is_mvalue

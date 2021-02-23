@@ -11,7 +11,7 @@
       :rules="rules"
       :prependIcon="prependIcon"
       :type="attr.component_type === 'password' ? 'password' : 'text'"
-      @click:prepend="$emit('clickPrepend')"
+      @click:prepend="$emit('aspectAction',{action:'clickPrepend'})"
       @keydown="keydown($event)"
       :append-outer-icon="clearIcon"
       @click:append-outer="$emit('aspectAction', {action: 'clear'})"

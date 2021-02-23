@@ -22,8 +22,8 @@
       :aspect_loc="aspect_loc"
       :disabled="disable"
       :mode="real_mode"
-      :extra="extra"
-      v-bind="extra"
+      :extra="merge_extra"
+      v-bind="merge_extra"
       :conditionals="conditionals"
       @has_changed="$emit('has_changed',$event)"
       ref="aspect_component"
@@ -44,7 +44,7 @@ import {
   aspect_default_value,
   aspect_loc2aspect_descr_loc,
   aspect_loc_str,
-  get_aspect_vue_component
+  get_aspect_vue_component, pack_value
 } from "~/lib/aspect";
 import AspectMixin from "./aspects/AspectMixin";
 import AspectAction from "~/components/aspect_utils/AspectAction"
@@ -86,6 +86,13 @@ export default {
   computed: {
     descr_as_html() {
       return this.attr.descr_as_html
+    },
+    merge_extra() {
+      const merge = Object.assign(Object.assign({}, this.extra), this.attr.extra)
+      if (merge.add_undo) {
+        merge.prependIcon = "mdi-undo"
+      }
+      return merge
     },
     flex_switch_icon() {
       return this.flex_mode === VIEW ? "mdi-pencil-outline" : "mdi-check"
@@ -142,8 +149,14 @@ export default {
   },
   methods: {
     aspectAction(event) {
+      console.log("asp-act", event, this.merge_extra.add_undo)
       if (event.action !== "clear" || this.extra.listitem)
-        this.$emit('aspectAction',event)
+        this.$emit('aspectAction', event)
+      if (event.action === "clickPrepend" && this.merge_extra.add_undo)  {
+        // this.$emit()
+        console.log("reset")
+        this.update_value(pack_value(this.original_value))
+      }
     },
     flip_flex_mode() {
       this.flex_mode = this.flex_mode === VIEW ? EDIT : VIEW

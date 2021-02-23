@@ -1,9 +1,10 @@
 <template lang="pug">
-  div
+  v-sheet(:style="change_status")
     Aspect.pa-0(
       :aspect="aspect"
       :ext_value.sync="value"
       @has_changed="has_changed($event)" ref="aspect"
+      @aspectAction="aspectAction($event)"
       mode="edit")
 </template>
 
@@ -32,6 +33,9 @@ export default {
       type: Array,
       required: true
     },
+    orig_dest_message: {
+      type: String
+    },
     languages: {
       type: Array,
       required: true
@@ -50,6 +54,15 @@ export default {
     }
   },
   computed: {
+    change_status() {
+      if (this.i_has_changed) {
+        return {
+          "box-shadow": "-5px 0px 0px 0px #14d814"
+        }
+      } else {
+        return {}
+      }
+    },
     aspect() {
       const message_aspect = (language, mode, track_change) => {
         return {
@@ -72,6 +85,7 @@ export default {
         attr: {max: 90, mode: VIEW},
         t_label: "comp.message_translation.index"
       }
+      translation_components[1].attr["extra"] = {add_undo: true}
       return {
         "name": "translation",
         label: "",
@@ -105,6 +119,9 @@ export default {
     },
     refresh_original() {
       this.$refs.aspect.refresh_original()
+    },
+    aspectAction(event) {
+      console.log("asp act", event)
     }
   },
   watch: {

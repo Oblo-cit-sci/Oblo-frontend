@@ -16,5 +16,7 @@ export default {
       return ((this.extra.listitem && this.mode === EDIT) || false) ? "mdi-close" : undefined //this.extra
     },
   },
+  methods: {
+  }
 }
 

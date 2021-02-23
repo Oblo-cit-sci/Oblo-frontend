@@ -12,7 +12,8 @@
     v-row(justify="center")
       v-col.col-2
         v-btn(:disabled="disable_submit" @click="submit" color="success" large) {{$t("w.submit")}}
-    SimplePaginate(:total_pages="total_pages" v-model="page")
+    v-sheet.no_page_change(min-height="30px") {{can_change_page_text}}
+    SimplePaginate(:total_pages="total_pages" v-model="page" :allow="no_changes")
 </template>
 
 <script>
@@ -29,20 +30,11 @@ export default {
   data() {
     const setup = this.$store.getters['translate/setup_values']
     const message_order = setup.messages.map((msg) => msg[0])
-    const translations = new Map(
-      setup.messages.map((msg) => [
-        msg[0],
-        {
-          index: msg[0],
-          languages: [setup.src_lang, setup.dest_lang],
-          messages: [msg[1], msg[2]],
-        },
-      ])
-    )
     const translation_o = this.$_.keyBy(
       setup.messages.map((msg) => ({
         index: msg[0],
         languages: [setup.src_lang, setup.dest_lang],
+        original: msg[2],
         messages: [msg[1], msg[2]],
       })),
       (m) => m.index
@@ -50,10 +42,9 @@ export default {
     return {
       show_only_incomplete: false,
       page: 1,
-      messages_per_page: 20,
+      messages_per_page: 2,
       changed_messages: new Set(),
       no_changes: true,
-      translations,
       message_order,
       translation_o,
     }
@@ -66,7 +57,14 @@ export default {
   computed: {
     ...mapGetters({setup: 'translate/setup_values'}),
     disable_submit() {
-      return this.no_changes //|| !this.field_requirements_fulfilled
+      return this.no_changes
+    },
+    can_change_page_text() {
+      if (this.no_changes) {
+        return ""
+      } else {
+        return "You have to submit your changes before changing the page"
+      }
     },
     total_pages() {
       // console.log("total", this.setups.length, this.setups.length / this.messages_per_page, Math.ceil(this.setups.length / this.messages_per_page))
@@ -85,20 +83,7 @@ export default {
         this.page * this.messages_per_page
       ) // translations.slice((this.page - 1) * this.messages_per_page, (this.page) * this.messages_per_page)
     },
-    required_messages() {
-      return this.get_required_words().map(
-        (w) => this.translations.get(w).messages
-      )
-    },
-    field_requirements_fulfilled() {
-      for (const req_msg of this.required_messages) {
-        console.log(req_msg)
-        if (!this.translation_passes(req_msg)) {
-          return false
-        }
-      }
-      return true
-    },
+
   },
   methods: {
     has_changed({name, change, value}) {
@@ -213,7 +198,6 @@ export default {
       } else return []
     },
     update_msg(index, message) {
-      console.log(index, message)
       this.translation_o[index].messages[1] = message
     },
   },
@@ -243,4 +227,7 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+
+
+</style>

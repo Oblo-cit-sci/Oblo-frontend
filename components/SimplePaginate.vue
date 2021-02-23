@@ -28,6 +28,10 @@ export default {
     show_page_index: {
       type: Boolean,
       default: true
+    },
+    allow: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -44,13 +48,13 @@ export default {
     },
     _has_next() {
       if (this.total_pages) {
-        return this.page < this.total_pages
+        return this.page < this.total_pages && this.allow
       } else {
-        return this.has_next
+        return this.has_next && this.allow
       }
     },
     _has_prev() {
-      return this.page > 1
+      return this.page > 1 && this.allow
     }
   },
   methods: {

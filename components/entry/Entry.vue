@@ -245,6 +245,9 @@ export default {
     show_tags() {
       return this.entry.tags && Object.keys(this.entry.tags).length > 0
     },
+    allow_download() {
+      return this.$_.get(this.template.rules, "allow_download", true)
+    },
     entry_actions_props() {
       // console.log("update actions props")
       return {
@@ -253,7 +256,8 @@ export default {
         entry_complete: this.entry_complete,
         // todo not great cuz the mixin for that is AspectSetMixin is in Entry
         has_errors: this.has_errors,
-        is_dirty: this.is_dirty
+        is_dirty: this.is_dirty,
+        allow_download: this.allow_download
       }
     }
   },

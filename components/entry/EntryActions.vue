@@ -48,7 +48,11 @@ export default {
     },
     entry_complete: Boolean,
     is_dirty: Boolean,
-    has_errors: Boolean
+    has_errors: Boolean,
+    allow_download: {
+      type: Boolean,
+      default: true
+    }
   },
   data() {
     return {
@@ -227,7 +231,8 @@ export default {
         mode: this.mode,
         entry_complete: this.entry_complete,
         is_dirty: this.is_dirty,
-        has_errors: this.has_errors
+        has_errors: this.has_errors,
+        allow_download: this.allow_download
       }
     }
   }
