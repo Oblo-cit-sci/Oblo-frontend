@@ -70,7 +70,8 @@
     },
     "translate": {
       "back": "back to setup",
-      "only_undone": "show only missing or outdated messages"
+      "only_undone": "show only missing or outdated messages",
+      "submit_required": "You have to submit your changes before changing the page"
     },
     "login": {
       "h1": "@.capitalize:w.login",
@@ -512,6 +513,7 @@
       "start": "start",
       "lang_status": {
         "label": "Language status",
+        "description": "Only Active languages are available to be selected as interface language",
         "active": "active",
         "inactive": "inactive"
       },

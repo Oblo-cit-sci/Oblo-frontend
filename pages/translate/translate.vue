@@ -12,7 +12,7 @@
     v-row(justify="center")
       v-col.col-2
         v-btn(:disabled="disable_submit" @click="submit" color="success" large) {{$t("w.submit")}}
-    v-sheet.no_page_change(min-height="30px") {{can_change_page_text}}
+    v-sheet(min-height="30px") {{can_change_page_text}}
     SimplePaginate(:total_pages="total_pages" v-model="page" :allow="no_changes")
 </template>
 
@@ -63,7 +63,7 @@ export default {
       if (this.no_changes) {
         return ""
       } else {
-        return "You have to submit your changes before changing the page"
+        return this.$t("page.translate.submit_required")
       }
     },
     total_pages() {
@@ -98,10 +98,16 @@ export default {
     async submit() {
       try {
         if (['fe', 'be'].includes(this.setup.component)) {
-          const messages = Array.from(this.changed_messages).map((v) => [
-            v,
-            this.translation_o[v].messages[1],
-          ])
+          const messages = Array.from(this.changed_messages).map((v) => {
+              let dest_msg = this.translation_o[v].messages[1]
+              if (dest_msg === "")
+                dest_msg = null
+              return [
+                v,
+                dest_msg,
+              ]
+            }
+          )
           const {data} = await this.$api.language.update_messages(
             this.setup.component,
             this.setup.dest_lang,
@@ -228,6 +234,4 @@ export default {
 </script>
 
 <style scoped>
-
-
 </style>

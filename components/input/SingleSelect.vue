@@ -15,7 +15,7 @@
           :class="{ marked: marked(item.value) }"
           class="single_select")
           v-list-item-avatar(v-if="option_icon(item)")
-            v-img(:src="option_icon(item)"  contain max-height="25")
+            v-img(:src="option_icon(item)" contain max-height="25")
           v-icon(v-if="item.mdi_icon") {{item.mdi_icon}}
           v-list-item-content
             v-list-item-title
@@ -208,6 +208,7 @@ export default {
       return this.disabled_options.includes(item_value)
     },
     option_icon(item) {
+      // console.log(item,  item.icon)
       if (item.icon) {
         if (this.data_source) {
           return this.$api.entry.url_slug_attachment(this.data_source, item.icon)
@@ -248,7 +249,7 @@ export default {
       return this.options.length === 0
     },
     value_icon() {
-      if (this.selection) {
+      if (this.$_.get(this.selection, "icon")) {
         if (this.data_source) {
           return this.$api.entry.url_slug_attachment(this.data_source, this.selection.icon)
         } else {

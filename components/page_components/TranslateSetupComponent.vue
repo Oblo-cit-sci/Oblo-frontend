@@ -45,6 +45,7 @@ export default {
     return {
       setup_values: {
         component: pack_value(component),
+        domain: pack_value(),
         entry: pack_value(),
         src_lang: pack_value(),
         dest_lang: pack_value(),
@@ -116,6 +117,7 @@ export default {
       return {
         name: "language_active",
         t_label: "comp.translate.lang_status.label",
+        t_description: "comp.translate.lang_status.description",
         type: SELECT,
         attr: {
           track_change: true,
@@ -391,7 +393,7 @@ export default {
       } else if (event.name === "change_lang_status") {
         const {dest_lang: lang_code, language_active: active} = this.unpacked_values
         this.$api.language.change_language_status(lang_code, active === "active").then(({data:res}) => {
-          console.log(res)
+          // console.log(res)
           this.ok_response_snackbar(res)
         })
       }
@@ -431,6 +433,19 @@ export default {
       })
     },
     unpacked_values: async function (new_vals, old_vals) {
+      if (this.$_.isEqual(new_vals, old_vals)) {
+        return
+      }
+      for (let a of Object.keys(new_vals)) {
+        if (new_vals[a] !== old_vals[a]) {
+          if (a === "language_active")
+            return
+          if (a === "component") {
+            this.setup_values["src_lang"] = pack_value()
+          }
+        }
+      }
+      // todo maybe whats below here should use the logic above (checking what changed...)
       const {domain, dest_lang} = new_vals
       // get the templates and their status
       if (new_vals.component === "entries" && domain !== null && dest_lang !== null) {
@@ -439,7 +454,6 @@ export default {
         if (!this.get_entries_info && !loaded_infos) {
           this.get_entries_info = true
           this.code_templates_for_domain_lang = []
-          // console.log(new_vals, dest_lang)
           this.$api.domain.get_codes_templates(domain, dest_lang, false).then(({data}) => {
             this.add_code_templates(domain, dest_lang, data.data)
           }, err => {
@@ -451,7 +465,8 @@ export default {
           this.code_templates_for_domain_lang = loaded_infos
         }
       } else if (["fe", "be"].includes(new_vals.component) && new_vals.dest_lang) {
-        const {component, dest_lang: lang} = new_vals
+        const {dest_lang: lang} = new_vals
+        // console.log("check language statuses", this.language_statuses)
         if (!this.language_statuses.hasOwnProperty(lang)) {
           try {
             const {data: resp} = await this.$api.language.language_status(lang)
@@ -462,6 +477,8 @@ export default {
             console.log(err)
             this.err_error_snackbar(err)
           }
+        } else {
+          this.setup_values.language_active = pack_value(this.language_statuses[lang] ? "active" : "inactive")
         }
       }
     }
