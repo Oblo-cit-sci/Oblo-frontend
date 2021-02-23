@@ -305,7 +305,12 @@ export default {
       } else if (component === "entries") {
         await this.start_entry(entry, setup)
       }
-      console.log("done")
+      setup.messages.forEach(m => {
+        if (m[2] === null) {
+          m[2] = ""
+        }
+      })
+      // console.log("done")
       // todo, actually all already downloaded fe languages need to be updated
       this.$store.commit("translate/setup", setup)
       await this.$router.push("/translate/translate")
