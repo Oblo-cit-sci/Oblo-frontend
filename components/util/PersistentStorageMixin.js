@@ -30,9 +30,6 @@ export default {
     },
     persist_user_settings() {
       this.store_value("user_settings", this.$store.getters["user/settings"])
-    },
-    persist_auth_token() {
-      this.store_value("auth_token", this.$store.getters["user/get_auth_token"])
     }
   }
 }

@@ -3,13 +3,12 @@
 
 <script>
 import TriggerSnackbarMixin from "../../components/TriggerSnackbarMixin"
-import LoginMixin from "../../components/actor/LoginMixin"
 import NavBaseMixin from "~/components/NavBaseMixin"
 import {PAGE_LOGIN} from "~/lib/pages";
 
 export default {
   name: "verify_email_address",
-  mixins: [TriggerSnackbarMixin, LoginMixin, NavBaseMixin],
+  mixins: [TriggerSnackbarMixin, NavBaseMixin],
   created() {
     const logged_in = this.$store.getters["user/logged_in"]
     this.$api.actor.verify_email_address(this.$route.query.user, this.$route.query.code).then(({data}) => {

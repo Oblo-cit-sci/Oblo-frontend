@@ -28,15 +28,12 @@
 
 import Aspect from "../components/Aspect";
 import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
-import LoginMixin from "../components/actor/LoginMixin";
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
-import {PAGE_LOGIN} from "~/lib/pages"
 import FixDomainMixin from "~/components/global/FixDomainMixin"
 import {overwrite_default_register_settings} from "~/lib/settings"
 import FlexibleTextSection from "~/components/global/FlexibleTextSection"
 import LayoutMixin from "~/components/global/LayoutMixin"
 import {MSG_PATH_SOMETHING_WENT_WRONG, RESPONSE_ERROR_MSG} from "~/lib/consts"
-import {assign_result} from "~/lib/aspect_actions";
 import {extract_n_unpack_values} from "~/lib/aspect";
 
 /**
@@ -45,7 +42,7 @@ import {extract_n_unpack_values} from "~/lib/aspect";
 export default {
   name: "register",
   components: {FlexibleTextSection, Aspect},
-  mixins: [TriggerSnackbarMixin, LoginMixin, TypicalAspectMixin, FixDomainMixin, LayoutMixin],
+  mixins: [TriggerSnackbarMixin, TypicalAspectMixin, FixDomainMixin, LayoutMixin],
   data() {
     const password = this.asp_password()
     return {

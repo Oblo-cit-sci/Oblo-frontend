@@ -333,14 +333,13 @@ class Actor extends QueryBase {
     })
   }
 
-  validate_token(auth_token) {
-    return this.get_("validate_token", {
-      headers: {
-        "Authorization": auth_token.token_type + " " + auth_token.access_token
-      }
-    })
+  validate_session(auth_token) {
+    return this.get_("validate_session")
   }
 
+  get_me() {
+    return this.get_("me")
+  }
   /**
    * update the user profile or settings
    * @param profile_data

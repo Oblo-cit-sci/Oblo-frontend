@@ -24,6 +24,7 @@ export default {
       if (this.is_prod) {
         this.privacy_sheet_open = true
       }
+      // console.log(this.$api.axios.)
     }
   },
   computed: {
@@ -61,24 +62,32 @@ export default {
       /*
         Authentication
        */
-      const auth_token = this.$store.getters["user/get_auth_token"]
-      if (auth_token.access_token) {
-        const login = await this.$api.actor.validate_token(auth_token)
-        if (login.data.token_valid) {
-          console.log("stored token is valid")
-          this.$store.commit("user/login")
-          this.$api.axios.setToken(auth_token.access_token, "Bearer")
-        } else {
-          console.log("stored token is not valid anymore")
-          // todo, bring this method to the mixin, so we can trigger a snackbar
-          this.$store.dispatch("user/logout")
-          this.$localForage.removeItem("auth_token")
-          this.error_snackbar(this.$t("mixin.init.logged_out"))
+      try {
+        const {data: resp} = await this.$api.actor.validate_session()
+        if (resp.session_valid) {
+          this.$store.dispatch("user/login", resp.data)
         }
-      } else {
-        await this.$store.dispatch("user/logout")
-        this.$localForage.removeItem("auth_token")
+        // this.process_login(me.data)
+      } catch (e) {
+        console.log("not logged in")
       }
+      // if (auth_token.access_token) {
+      //   const login = await this.$api.actor.validate_token(auth_token)
+      //   if (login.data.token_valid) {
+      //     console.log("stored token is valid")
+      //     this.$store.commit("user/login")
+      //     this.$api.axios.setToken(auth_token.access_token, "Bearer")
+      //   } else {
+      //     console.log("stored token is not valid anymore")
+      //     // todo, bring this method to the mixin, so we can trigger a snackbar
+      //     this.$store.dispatch("user/logout")
+      //     this.$localForage.removeItem("auth_token")
+      //     this.error_snackbar(this.$t("mixin.init.logged_out"))
+      //   }
+      // } else {
+      //   await this.$store.dispatch("user/logout")
+      //   this.$localForage.removeItem("auth_token")
+      // }
       /*
        * get the language from the settings and
        */

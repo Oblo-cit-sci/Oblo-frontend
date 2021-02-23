@@ -7,11 +7,7 @@ export default {
   mixins: [PersistentStorageMixin, LanguageMixin],
   methods: {
     process_login(login_response_data) {
-      this.$store.dispatch("user/login", login_response_data)
-      //const settings = this.$store.getters["user/settings"]
-      this.persist_user_data()
-      this.persist_auth_token()
-      this.$axios.setToken(login_response_data.access_token, "Bearer")
+
     }
   }
 }

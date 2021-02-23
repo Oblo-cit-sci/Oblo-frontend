@@ -94,7 +94,8 @@ module.exports = {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
-    '@nuxtjs/localforage'
+    '@nuxtjs/localforage',
+    '@nuxtjs/proxy'
   ],
 
   buildModules: [
@@ -124,14 +125,19 @@ module.exports = {
   axios: {
     baseURL: hostname,
     withCredentials: true,
+    credentials: true,
+    // proxy: true,
     defaults: {
       // todo why not used?! needs to be added manually to all routes.
       paramsSerializer: function (params) {
         return qs.stringify(params, {arrayFormat: 'repeat'})
       }
-    }
+    },
     // credentials: true,
-    // proxyHeaders: true,
+     proxyHeaders: true,
+  },
+  proxy: {
+   // '/api': 'http://localhost:8100'
   },
   /*
   ** Build configuration

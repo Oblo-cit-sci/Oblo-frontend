@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    v-btn(:href="inat_link") login with i nat
+    //v-btn(:href="inat_link") login with i nat
 </template>
 
 <script>
@@ -19,7 +19,14 @@ export default {
     Aspect
   },
   created() {
-
+    console.log(this.$api.axios.baseURL)
+    this.$api.actor.login({user_query: "admin", password: "admin123"}).then(res => {
+      // console.log(res)
+      this.$api.actor.get_me().then(res => {
+      }, err => {
+        console.error(err)
+      })
+    })
   },
   data() {
     return {

@@ -35,9 +35,6 @@ export const getters = {
   registered_name(state) {
     return state.user_data.registered_name
   },
-  get_auth_token(state) {
-    return state.auth_token
-  },
   global_role(state) {
     return state.user_data.global_role
   },
@@ -70,9 +67,9 @@ export const mutations = {
   login(state) {
     state.logged_in = true
   },
-  set_auth_token(state, auth_token) {
-    state.auth_token = auth_token
-  },
+  // set_auth_token(state, auth_token) {
+  //   state.auth_token = auth_token
+  // },
   reset_auth_token(state) {
     state.auth_token = {
       access_token: null,
@@ -91,13 +88,12 @@ export const mutations = {
 }
 
 export const actions = {
-  login({commit}, data) {
+  login({commit}, user_data) {
     // console.log("login-action")
-    const {access_token, token_type, expiration_date, ...user_data} = data
-    const {settings, ...user} = user_data.user
+    const {settings, ...user} = user_data
     commit("set_settings", settings)
     commit("set_user_data", user)
-    commit("set_auth_token", {access_token, token_type, expiration_date})
+    // commit("set_auth_token", {access_token, token_type, expiration_date})
     commit("login")
   },
   logout({commit, getters}) {

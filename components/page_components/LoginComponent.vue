@@ -80,15 +80,18 @@ export default {
       this.login_loading = true
       let user_settings = null
       try {
-        const login_res = await this.$api.actor.login(extract_n_unpack_values(this.aspects))
-        const login_data = login_res.data
-        this.ok_snackbar(login_data.msg)
+        const {data: response_data} = await this.$api.actor.login(extract_n_unpack_values(this.aspects))
+        console.log(response_data.msg)
+        this.ok_snackbar(response_data.msg)
         //   // todo could just be index/clear_entries (change name) but needs await
         this.clear_search()
         this.clear_entries()
         this.map_clear()
-        user_settings = login_data.data.user.settings
-        this.process_login(login_data.data)
+        const user_data = response_data.data
+        console.log("user_data", user_data)
+        user_settings = user_data.settings
+        this.$store.dispatch("user/login", user_data)
+        this.persist_user_data()
       } catch (err) {
         console.log(err)
         this.errorMsg = this.$_.get(err, RESPONSE_ERROR_MSG, this.$t(MSG_PATH_SOMETHING_WENT_WRONG))
