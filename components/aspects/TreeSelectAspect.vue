@@ -107,11 +107,7 @@ export default {
       }
     },
     auto_select(value) {
-      // console.log("autoselect", value)
-      const result = this.$_.concat((value.parents || []).map(v => ({value: v, text: v})), {
-        value: value.value,
-        text: value.value
-      })
+      const result = this.$_.concat((value.parents || []), [value])
       this.update_value(result)
     },
     open_if_empty() {

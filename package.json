@@ -1,6 +1,6 @@
 {
   "name": "OpenTEK",
-  "version": "0.9.13",
+  "version": "0.9.15",
   "description": "Sharing Traditional Ecological Knowledge related to biodiversity and local indicators of climate change impacts.",
   "author": "Ramin S",
   "private": true,
@@ -46,7 +46,7 @@
     "update": "^0.7.4",
     "uuid": "^3.4.0",
     "vue-i18n": "^8.22.2",
-    "vuetify": "^2.3.18",
+    "vuetify": "^2.4.4",
     "vuetify-loader": "^1.6.0"
   },
   "devDependencies": {

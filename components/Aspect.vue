@@ -149,12 +149,11 @@ export default {
   },
   methods: {
     aspectAction(event) {
-      console.log("asp-act", event, this.merge_extra.add_undo)
+      // console.log("asp-act", event, this.merge_extra.add_undo)
       if (event.action !== "clear" || this.extra.listitem)
         this.$emit('aspectAction', event)
       if (event.action === "clickPrepend" && this.merge_extra.add_undo)  {
-        // this.$emit()
-        console.log("reset")
+        // console.log("reset")
         this.update_value(pack_value(this.original_value))
       }
     },
