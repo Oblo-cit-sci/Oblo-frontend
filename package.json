@@ -1,7 +1,7 @@
 {
-  "name": "OpenTEK",
-  "version": "0.9.16",
-  "description": "Sharing Traditional Ecological Knowledge related to biodiversity and local indicators of climate change impacts.",
+  "name": "oblo",
+  "version": "0.9.17",
+  "description": "",
   "author": "Ramin S",
   "private": true,
   "scripts": {
