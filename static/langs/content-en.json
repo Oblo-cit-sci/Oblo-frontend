@@ -11,22 +11,19 @@
     },
     "about": [
       {
-        "h1": "About OpenTEK"
+        "h1": "About {{platform_title}}"
       },
       {
         "h2": "Goals and Background",
         "p": [
-          "OpenTEK is a free and open source platform to document and share traditional ecological knowledge (TEK). Specifically, OpenTEK's focuses on knowledge related to the use and management of (agro)biodiversity and the impacts of climate change.",
-          "The platform is designed as a progressive web-app (PWA) allowing users both to visualize existing geolocalized data and to collect new data from any device and while in the field.",
-          "OpenTEK is linked to two citizen science projects documenting traditional ecological knowledge around the world: LICCI (www.licci.eu) and CONECT-e (www.conecte.es).",
-          "LICCI wants to bring insights from local knowledge to climate research and policy. To do that, LICCI documents and classifies local observations of climate change impacts (e.g., changes in rainfall patterns or impacts of weather changes on wild animal abundance).",
-          "CONECT-e aims to revitalize and protect traditional ecological knoweldge related to plants and landraces in Spain. To do so, CONECT-e documents (and protects with Creative Commons licenses) plant's traditional uses, management and local names (e.g., medicinal plant uses or landrace names and cultivation practices)."
+          "{{platform_title}} is a free and open source platform to document and share traditional ecological knowledge (TEK). Specifically, {{platform_title}}'s focuses on knowledge related to the use and management of (agro)biodiversity and the impacts of climate change.",
+          "The platform is designed as a progressive web-app (PWA) allowing users both to visualize existing geolocalized data and to collect new data from any device and while in the field."
         ]
       },
       {
         "h2": "Funding",
         "p": [
-          "This application is funded primarily by the LICCI and ICCION projects of the European Research Council (Grant Agreement Nr. FP7-771056-LICCI and ERC-2019-PoC-899209).",
+          "This application is funded primarily by the LICCI and LICCION projects of the European Research Council (Grant Agreement Nr. FP7-771056-LICCI and ERC-2019-PoC-899209).",
           "This application has also received funding from the European Union’s Horizon 2020 research and innovation programme. The JRC, or as the case may be the European Commission, shall not be held liable for any direct or indirect, incidental, consequential or other damages, including but not limited to the loss of data, loss of profits, or any other financial loss arising from the use of this application, or inability to use it, even if the JRC is notified of the possibility of such damages."
         ]
       },
@@ -34,7 +31,7 @@
         "h2": "Terms of use",
         "terms_of_use": "",
         "p": [
-          "Registration in OpenTEK implies the express free informed consent of the user or its carer/guardian to participate and transfer their personal data and traditional knowledge to the platform under the following conditions:",
+          "Registration in {{platform_title}} implies the express free informed consent of the user or its carer/guardian to participate and transfer their personal data and traditional knowledge to the platform under the following conditions:",
           "- All information in the platform will be anonymized and only used for research and advocacy purposes, without it being transferred to third parties.",
           "- All users have the right to withdraw from the project and delete their profile data and entries from the platform at any time they wish.",
           "- The personal profile data voluntarily provided by the user will be treated confidentially and only used for research purposes, without it being public.",
@@ -47,9 +44,9 @@
         "h2": "Privacy Policy"
       },
       {
-        "h3": "OpenTEK platform",
+        "h3": "{{platform_title}} platform",
         "p": [
-          "OpenTEK only collects data the user is freely and willingly providing. We do not use cookies nor do we include any 3rd party cookies. We only store the data that you directly provide in your public user profile or in the entries you create or contribute to. Users agree that the data which they provide will be transferred to and stored within the borders of the EU."
+          "{{platform_title}} only collects data the user is freely and willingly providing. We do not use cookies nor do we include any 3rd party cookies. We only store the data that you directly provide in your public user profile or in the entries you create or contribute to. Users agree that the data which they provide will be transferred to and stored within the borders of the EU."
         ]
       },
       {
@@ -86,7 +83,7 @@
     "profile": {
       "h_public": "Public information",
       "h_research": "Research related information",
-      "research_info": "Answering these questions is optional. The information is only used for research purposes of the creator of OpenTEK",
+      "research_info": "Answering these questions is optional. The information is only used for research purposes of the creator of {{platform_title}}",
       "h_domain": "Domain specific questions",
       "h_email_password": "Email address and password",
       "bt_change_email_pwd": "Change email and password",
@@ -489,7 +486,7 @@
     },
     "translate": {
       "component_select_asp": {
-        "label": "Part of OpenTEK",
+        "label": "Part of the platform",
         "description": "Which part do you want to translate?",
         "options": {
           "fe": "User interface",

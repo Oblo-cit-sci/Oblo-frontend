@@ -95,7 +95,7 @@
 
 
 import Aspect from "../components/Aspect";
-import {DRAFT, EDIT, NO_DOMAIN, VIEW} from "~/lib/consts";
+import {DRAFT, EDIT, NO_DOMAIN, VIEW, VISITOR} from "~/lib/consts";
 
 import {mapGetters} from "vuex"
 import {extract_n_unpack_values, pack_value, set_value_and_error} from "~/lib/aspect";
@@ -114,6 +114,7 @@ import AspectSet from "~/components/AspectSet"
 import Dialog from "~/components/dialogs/Dialog";
 import EditContextTitle from "~/components/util/EditContextTitle";
 import FilterMixin from "~/components/FilterMixin"
+import NavBaseMixin from "~/components/NavBaseMixin";
 
 export default {
   name: "profile",
@@ -126,7 +127,7 @@ export default {
     LoadFileButton,
     Aspect
   },
-  mixins: [PersistentStorageMixin, TriggerSnackbarMixin, LayoutMixin, TypicalAspectMixin, FixDomainMixin, GoToMixin, FilterMixin],
+  mixins: [PersistentStorageMixin, NavBaseMixin, TriggerSnackbarMixin, LayoutMixin, TypicalAspectMixin, FixDomainMixin, GoToMixin, FilterMixin],
   data() {
     const new_pwd = this.asp_password(null, "new")
     return {
@@ -162,8 +163,10 @@ export default {
       waiting: false,
     }
   },
-  created() {
-
+  async created() {
+    if (this.$store.getters.username === VISITOR) {
+      await this.home()
+    }
     const domain_data = this.$store.getters["domain/lang_domain_data"](NO_DOMAIN, this.$store.getters["user/settings"].domain_language)
     // console.log("DD", domain_data, this.$store.getters["user/settings"].domain_language)
     this.no_domain_aspects = this.$_.cloneDeep(this.$_.get(domain_data , "users.profile.additional_aspects", []))

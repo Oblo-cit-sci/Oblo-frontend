@@ -76,7 +76,7 @@ export default {
     //this.debounced_entries_search = this.$_.debounce(this.code_template_search, 200)
   },
   computed: {
-    ...mapGetters({translate_setup: "translate/setup_values", ui_language: "user/settings_ui_language"}),
+    ...mapGetters({translate_setup: "translate/setup_values", ui_language: "ui_language"}),
     setup_aspects() {
       return [
         this.dest_language_select_aspect, this.component_select_aspect,
@@ -290,7 +290,7 @@ export default {
     async fetch_init_data() {
       let [res_domain_metainfo, res_entries_info, res_all_languages] = await Promise.all([
         this.$api.domain.meta_info(),
-        this.$api.entries.get_codes_templates(this.$store.getters.ui_language, false),
+        this.$api.entries.get_codes_templates(this.ui_language, false),
         this.$api.language.all_added_languages()])
       this.domains_metainfos = res_domain_metainfo.data
       this.all_entries_in_ui_lang = res_entries_info.data.data
@@ -384,7 +384,7 @@ export default {
       // } else {
       this.temporary_additional_languages.push(this.new_language)
       this.new_lang_dialog_open = false
-      this.$i18n.mergeLocaleMessage(this.$store.getters.ui_language,
+      this.$i18n.mergeLocaleMessage(this.ui_language,
         {[`lang.${this.new_language.value}`]: this.new_language.text})
     },
     aspectAction(event) {
@@ -425,7 +425,7 @@ export default {
   watch: {
     '$store.state.user.settings.ui_language': async function (ui_language) {
       console.log(ui_language)
-      this.$api.entries.get_codes_templates(this.$store.getters["user/settings_ui_language"]).then(({data}) => {
+      this.$api.entries.get_codes_templates(ui_language).then(({data}) => {
         // console.log(data)
         this.all_entries_in_ui_lang = data.data
       }, err => {

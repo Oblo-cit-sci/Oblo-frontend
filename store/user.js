@@ -67,16 +67,6 @@ export const mutations = {
   login(state) {
     state.logged_in = true
   },
-  // set_auth_token(state, auth_token) {
-  //   state.auth_token = auth_token
-  // },
-  reset_auth_token(state) {
-    state.auth_token = {
-      access_token: null,
-      token_type: "",
-      expiration_date: null
-    }
-  },
   set_settings(state, settings) {
     state.settings = settings
   },
@@ -104,7 +94,7 @@ export const actions = {
       "domain_language": getters.settings_domain_language
     }))
     commit("logout")
-    commit("reset_auth_token")
+    // commit("reset_auth_token")
   }
 }
 

@@ -71,23 +71,6 @@ export default {
       } catch (e) {
         console.log("not logged in")
       }
-      // if (auth_token.access_token) {
-      //   const login = await this.$api.actor.validate_token(auth_token)
-      //   if (login.data.token_valid) {
-      //     console.log("stored token is valid")
-      //     this.$store.commit("user/login")
-      //     this.$api.axios.setToken(auth_token.access_token, "Bearer")
-      //   } else {
-      //     console.log("stored token is not valid anymore")
-      //     // todo, bring this method to the mixin, so we can trigger a snackbar
-      //     this.$store.dispatch("user/logout")
-      //     this.$localForage.removeItem("auth_token")
-      //     this.error_snackbar(this.$t("mixin.init.logged_out"))
-      //   }
-      // } else {
-      //   await this.$store.dispatch("user/logout")
-      //   this.$localForage.removeItem("auth_token")
-      // }
       /*
        * get the language from the settings and
        */
@@ -98,12 +81,12 @@ export default {
       const i_language = this.$route.query[QP_lang] || user_settings.domain_language || this.default_language
       console.log("init with, ", domain_name, i_language)
 
-      // const only_overview = domain_name === null
-
       const {data: resp} = await this.$api.basic.init_data(domain_name ? [domain_name, NO_DOMAIN] : null, i_language)
       // console.log(resp)
       console.log("connected")
 
+      const platform_data = resp.data.platform
+      this.$store.commit("app/platform_data", platform_data)
       const domains_data = resp.data.domains
 
       const language = resp.data.language

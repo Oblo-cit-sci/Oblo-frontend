@@ -43,7 +43,7 @@ export default {
       this.$store.dispatch("domain/set_act_domain_lang",
         {
           domain_name: this.domain_name,
-          language: this.$store.getters["user/settings_ui_language"]})
+          language: this.$store.getters["ui_language"]})
     }
     if (this.$route.query.f && !this.is_fixed_domain) {
       this.fix_domain(this.$route.query.f)

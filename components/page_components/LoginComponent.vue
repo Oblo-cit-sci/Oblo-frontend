@@ -29,7 +29,6 @@ import Aspect from "~/components/Aspect";
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
 import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
-import LoginMixin from "~/components/actor/LoginMixin"
 import NavBaseMixin from "~/components/NavBaseMixin"
 import InitializationMixin from "~/layouts/InitializationMixin"
 import {mapGetters, mapMutations} from "vuex"
@@ -39,7 +38,7 @@ import {MSG_PATH_SOMETHING_WENT_WRONG, NO_DOMAIN, RESPONSE_ERROR_MSG} from "~/li
 
 export default {
   name: "LoginComponent",
-  mixins: [TypicalAspectMixin, TriggerSnackbarMixin, PersistentStorageMixin, LoginMixin, NavBaseMixin, LanguageMixin, InitializationMixin],
+  mixins: [TypicalAspectMixin, TriggerSnackbarMixin, PersistentStorageMixin, NavBaseMixin, LanguageMixin, InitializationMixin],
   components: {Aspect},
   props: {
     go_home: {

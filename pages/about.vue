@@ -5,7 +5,7 @@
         LanguageChip(v-if="language_fallback" :language_code="$i18n.fallbackLocale")
     v-row(align="center" justify="center" v-for="section in text_sections" :key="section.h")
       v-col.col-lg-6.col-xs-12
-        FlexibleTextSection(:section="section")
+        FlexibleTextSection(:section="section" :fields="template_fields")
     p(class="package-version") version {{version}}
     Footer
 </template>
@@ -19,7 +19,6 @@ import LanguageChip from "~/components/language/LanguageChip";
 import URLQueryMixin from "~/components/util/URLQueryMixin";
 
 const pkg = require('~/package.json')
-
 
 export default {
   name: "about",
@@ -66,6 +65,11 @@ export default {
     },
     version() {
       return pkg.version
+    },
+    template_fields() {
+      return {
+        platform_title: this.$store.getters["app/platform_data"].title
+      }
     }
   }
 }

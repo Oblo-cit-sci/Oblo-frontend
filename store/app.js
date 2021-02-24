@@ -6,7 +6,8 @@ export const state = () => ({
     connecting: false,
     connected: false,
     privacy_sheet_open: true,
-    dev: {} // arbitrary data collected during development
+    dev: {}, // arbitrary data collected during development
+    platform: {}
   }
 )
 
@@ -33,6 +34,9 @@ export const mutations = {
     } else {
       state.dev = data
     }
+  },
+  platform_data(state, data) {
+    state.platform = data
   }
 }
 
@@ -54,6 +58,9 @@ export const getters = {
   },
   get_dev(state) {
     return state.dev
+  },
+  platform_data(state) {
+    return state.platform
   }
 }
 
