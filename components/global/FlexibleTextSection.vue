@@ -1,7 +1,7 @@
 <template lang="pug">
   div
     component(:is="section_heading_elem(section)") {{render(section_heading(section))}}
-    p(v-for="(paragraph,index) in section.p" :key="index") {{render(paragraph)}}
+    p(v-for="(paragraph,index) in section.p" :key="index" v-html="render(paragraph)")
     div(v-if="section.html" v-html="section.html")
     v-divider.wide_divider(v-if="show_divider")
 </template>
@@ -25,7 +25,8 @@ export default {
     },
     // replace fields with mustache
     fields: {
-      type: Object
+      type: Object,
+      default: () => ({})
     }
   },
   data() {
@@ -36,6 +37,9 @@ export default {
       return this.section_heading_elem(this.section) === 'h2' && this.section.p && !this.disable_divider
     }
   },
+  // created() {
+  //   console.log(this.section)
+  // },
   methods: {
     section_heading_elem(section) {
       for (let i in [...Array(4).keys()]) {
@@ -46,7 +50,7 @@ export default {
       }
     },
     section_heading(selection) {
-      return selection[this.section_heading_elem(selection)]
+      return selection[this.section_heading_elem(selection)] || ""
     },
     render(paragraph) {
       return Mustache.render(paragraph, this.fields)

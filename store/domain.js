@@ -176,5 +176,10 @@ export const getters = {
     return (domain_name) => {
       return getters.domain_by_name(domain_name).default_language
     }
+  },
+  get_domain_default_lang_data(state, getters) {
+    return (domain_name) => {
+      return getters.lang_domain_data(domain_name, getters.get_domain_default_language(domain_name))
+    }
   }
 };

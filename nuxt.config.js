@@ -28,7 +28,6 @@ if (process.env.NODE_ENV === "development" || process.env.SERVER === "local") {
 
 module.exports = {
   telemetry: false,
-
   env: {
     NODE_ENV: process.env.NODE_ENV || true,
     DEFAUL_OP_LANGUAGE: "en", // 639-1
@@ -133,7 +132,6 @@ module.exports = {
         return qs.stringify(params, {arrayFormat: 'repeat'})
       }
     },
-    // credentials: true,
      proxyHeaders: true,
   },
   proxy: {

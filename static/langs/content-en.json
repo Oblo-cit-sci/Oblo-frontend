@@ -11,16 +11,6 @@
     },
     "about": [
       {
-        "h1": "About {{platform_title}}"
-      },
-      {
-        "h2": "Goals and Background",
-        "p": [
-          "{{platform_title}} is a free and open source platform to document and share traditional ecological knowledge (TEK). Specifically, {{platform_title}}'s focuses on knowledge related to the use and management of (agro)biodiversity and the impacts of climate change.",
-          "The platform is designed as a progressive web-app (PWA) allowing users both to visualize existing geolocalized data and to collect new data from any device and while in the field."
-        ]
-      },
-      {
         "h2": "Funding",
         "p": [
           "This application is funded primarily by the LICCI and LICCION projects of the European Research Council (Grant Agreement Nr. FP7-771056-LICCI and ERC-2019-PoC-899209).",

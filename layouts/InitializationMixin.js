@@ -77,7 +77,7 @@ export default {
       // todo maybe the language should come not from the settings, since setting the language triggers
       // reload...
       const user_settings = this.$store.getters["user/settings"]
-      const domain_name = this.query_param_domain_name || user_settings.fixed_domain
+      const domain_name = this.query_param_domain_name || user_settings.fixed_domain || NO_DOMAIN
       const i_language = this.$route.query[QP_lang] || user_settings.domain_language || this.default_language
       console.log("init with, ", domain_name, i_language)
 
@@ -152,9 +152,12 @@ export default {
         }
       } else {
         const fixed_domain = this.$store.getters["user/settings"].fixed_domain || NO_DOMAIN
-        console.log(`user fixed-domain: ${fixed_domain}`)
+        // if (fixed_domain) {
+        //   domain_name = fixed_domain
+        // }
+        // console.log(`user fixed-domain: ${fixed_domain}`)
         await this.$store.dispatch("domain/set_act_domain_lang", {
-          domain_name: fixed_domain,
+          domain_name: domain_name,
           language
         })
         if (this.$route.name === PAGE_INDEX) {

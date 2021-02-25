@@ -12,12 +12,12 @@
     v-row(align="center")
       v-checkbox(v-model="agree")
       div {{$t('page.register.i_agree_with')}} &nbsp;
-        a(@click="terms_dialog_open = true") {{$t('page.about[3].h2')}}
+        a(@click="terms_dialog_open = true") {{$t('page.about[1].h2')}}
     v-btn.m-4(@click='submit' rounded large :disabled="any_invalid || submitStatus === 'PENDING'" :loading="submit_loading" color='success') {{$t('page.register.btn_register')}}
     v-alert(:value='errorMsg !== null' type='error' prominent) {{errorMsg}}
     v-dialog(v-model="terms_dialog_open" :width="main_container_with")
       v-card
-        FlexibleTextSection.pa-4.pb-1(:section="terms_of_use_section" disable_divider)
+        FlexibleTextSection.pa-4.pb-1(:section="terms_of_use_section" disable_divider, :fields="template_fields")
         v-card-actions
           v-btn(icon text @click="terms_dialog_open=false")
             v-icon mdi-close
@@ -68,6 +68,11 @@ export default {
       // make this better so its not destroyed in the translation tables. translations shouldnt touch it.
       // todo just grab it from the right location. rename p.index from h2 to p.h:terms_of_use and find by that key
       return this.$_.find(this.$i18n.msg("page.about"), s => s.hasOwnProperty("terms_of_use"))
+    },
+    template_fields() {
+      return {
+        platform_title: this.$store.getters["app/platform_data"].title
+      }
     }
   },
   methods: {
@@ -77,12 +82,12 @@ export default {
       const settings = Object.assign(this.$_.cloneDeep(this.$store.getters["user/settings"]), overwrite_default_register_settings)
       const send_data = Object.assign(extract_n_unpack_values(this.aspects), {settings})
       this.$api.actor.post_actor(send_data
-      // this.$api.actor.post_actor({
-      //   registered_name: this.aspects.registered_name.value,
-      //   email: this.aspects.email.value,
-      //   password: this.aspects.password.value,
-      //   password_confirm: this.aspects.password_confirm.value,
-      //   settings
+        // this.$api.actor.post_actor({
+        //   registered_name: this.aspects.registered_name.value,
+        //   email: this.aspects.email.value,
+        //   password: this.aspects.password.value,
+        //   password_confirm: this.aspects.password_confirm.value,
+        //   settings
       ).then(({data}) => {
         if (data.msg) {
           // this.$router.push({name: PAGE_LOGIN})

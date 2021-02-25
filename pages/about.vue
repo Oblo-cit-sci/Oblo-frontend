@@ -31,37 +31,41 @@ export default {
   },
   computed: {
     text_sections() {
+      // get sections from the fe-component
+      console.log("text")
       let sections = this.$t("page.about")
-      if (!sections[0].h1) {
+      if (!sections[0].h2) { // todo make a better detection if it exists in the lang
         sections = this.$i18n.getLocaleMessage(this.$i18n.fallbackLocale).page.about
         this.language_fallback = true
       } else {
         this.language_fallback = false
       }
+
+      // from the fe, we dont get an array but an object, with indices as keys... :/
       if (!Array.isArray(sections)) {
-        const le = Object.keys(sections).length
-        const sections_arr = []
-        for (let i = 0; i < le; i++) {
-          sections_arr.push(sections[i])
-        }
-        sections = sections_arr
+        sections = this.$_.times(Object.keys(sections).length, i => sections[i])
       }
-      if (this.is_concrete_domain) {
-        sections.splice(2, 0, this.about_domain)
-      }
+      sections = this.$_.concat(this.about_domain, sections)
       return sections
     },
-    is_concrete_domain() {
-      return this.$store.getters["domain/act_domain_name"] !== NO_DOMAIN || this.query_param_domain_name !== undefined
-    },
     about_domain() {
-      let act_lang_domain_data = this.$store.getters["domain/act_lang_domain_data"]
-      if (this.query_param_domain_name !== NO_DOMAIN && this.query_param_domain_name) {
-        act_lang_domain_data = this.$store.getters["domain/lang_domain_data"]
+      let act_lang_domain_data = null
+      console.log("domain about")
+      if (this.query_param_domain_name) {
+        act_lang_domain_data = act_lang_domain_data = this.$store.getters["domain/lang_domain_data"]
         (this.query_param_domain_name, this.$store.getters.ui_language)
+      } else {
+        act_lang_domain_data = this.$store.getters["domain/act_lang_domain_data"]
       }
-      // console.log("act_lang_domain_data", act_lang_domain_data)
-      return {h2: act_lang_domain_data.title, html: act_lang_domain_data.about}
+      let domain_about = act_lang_domain_data.about
+      // console.log(domain_about)
+      if (!domain_about) {
+        const domain_name = act_lang_domain_data.name
+        domain_about = this.$store.getters["domain/get_domain_default_lang_data"](domain_name).about
+        // console.log(this.domain_name, domain_about)
+      }
+      // console.log(domain_about)
+      return domain_about
     },
     version() {
       return pkg.version
