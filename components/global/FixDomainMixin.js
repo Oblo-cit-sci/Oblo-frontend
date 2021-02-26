@@ -3,19 +3,21 @@ import SettingsChangeMixin from "~/components/global/SettingsChangeMixin"
 import {FIXED_DOMAIN, NO_DOMAIN} from "~/lib/consts"
 import HomePathMixin from "~/components/menu/HomePathMixin"
 
+import {mapGetters} from "vuex"
+
 export default {
   name: "FixDomainMixin",
   mixins: [TriggerSnackbarMixin, SettingsChangeMixin, HomePathMixin],
   computed: {
+    ...mapGetters({fixed_domain: "fixed_domain", get_domains: "domain/domains"}),
     is_fixed_domain() {
-      // console.log("fix domain. is fixed?",this.$store.getters["user/settings"])
-      return this.$_.get(this.$store.getters["user/settings"], FIXED_DOMAIN, null)
+      return !!this.fixed_domain
     },
     has_multiple_domains() {
-      return this.$_.filter(this.$store.getters["domain/domains"](), d => d.name !== NO_DOMAIN).length > 1
+      return this.$_.filter(this.get_domains(), d => d.name !== NO_DOMAIN).length > 1
     },
     get_one_domain_name() {
-      return this.$_.find(this.$store.getters["domain/domains"](), d => d.name !== NO_DOMAIN).name
+      return this.$_.find(this.get_domains(), d => d.name !== NO_DOMAIN).name
     }
   },
   methods: {

@@ -12,7 +12,7 @@
       h3 {{$t("page.settings.fixed_domain.h1")}}
       div
         span {{$t("page.settings.fixed_domain.p")}} &nbsp;
-        b {{is_fixed_domain}}
+        b {{act_domain_title}}
         span . {{$t("page.settings.fixed_domain.p2")}}
       v-btn(@click="reset_fixed_domain()") {{$t("page.settings.fixed_domain.btn_reset")}}
     br
@@ -179,7 +179,7 @@
       aspect_map() {
         return this.$_.keyBy(this.settings_aspects, "name")
       },
-      fixed_domain_name() {
+      act_domain_title() {
         return this.$store.getters["domain/act_domain_title"]
       }
     }

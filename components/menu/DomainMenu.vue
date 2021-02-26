@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    v-list-item(v-if="!is_fixed_domain" :style="{'background-color':'#00A0A080'}")
+    v-list-item(v-if="can_fix_domain" :style="{'background-color':'#00A0A080'}")
       v-list-item-content {{$t('comp.domain_menu.fix_label', {domain_title:title})}}
       v-list-item-action
         v-btn(small @click="fix_domain(domain_name)")
@@ -71,6 +71,9 @@ export default {
     },
     search_config() {
       return this.$_.concat(this.domain_pre_filter, this.get_status_filter()) // this.get_drafts_filter()
+    },
+    can_fix_domain() {
+      return !this.is_fixed_domain  && !this.$store.getters.is_visitor
     }
   }
 }

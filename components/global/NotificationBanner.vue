@@ -27,7 +27,7 @@ export default {
       // todo here call a function that assigns external conditions
 
       return  this.$_.isEmpty(domain_specific_aspects) ||
-        this.$_.get(this.$store.getters.user.config_share, `domain.${this.is_fixed_domain}`)
+        this.$_.get(this.$store.getters.user.config_share, `domain.${this.fixed_domain}`)
     },
     show_profile_complete_banner: function () {
       // dont show banner on profile edit page, or when visititor

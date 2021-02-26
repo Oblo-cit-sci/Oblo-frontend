@@ -21,7 +21,7 @@ export default {
       if (this.is_fixed_domain) {
         this.$router.push({
             name: PAGE_DOMAIN,
-            [QP_F]: this.is_fixed_domain
+            [QP_F]: this.fixed_domain
           }
         )
       } else {

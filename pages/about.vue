@@ -32,7 +32,6 @@ export default {
   computed: {
     text_sections() {
       // get sections from the fe-component
-      console.log("text")
       let sections = this.$t("page.about")
       if (!sections[0].h2) { // todo make a better detection if it exists in the lang
         sections = this.$i18n.getLocaleMessage(this.$i18n.fallbackLocale).page.about
@@ -50,7 +49,6 @@ export default {
     },
     about_domain() {
       let act_lang_domain_data = null
-      console.log("domain about")
       if (this.query_param_domain_name) {
         act_lang_domain_data = act_lang_domain_data = this.$store.getters["domain/lang_domain_data"]
         (this.query_param_domain_name, this.$store.getters.ui_language)

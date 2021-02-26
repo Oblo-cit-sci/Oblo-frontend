@@ -71,6 +71,9 @@ export const getters = {
   },
   ui_language(state, getters) {
     return getters["user/settings_value"]("ui_language")
+  },
+  fixed_domain(state, getters) {
+    return getters["user/settings_value"]("fixed_domain")
   }
 }
 

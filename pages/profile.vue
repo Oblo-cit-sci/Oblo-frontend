@@ -156,7 +156,7 @@ export default {
       },
       no_domain_aspects: [],
       no_domain_values: {},
-
+      // todo todo what is this??, for which domain? always just on fixed?
       domain_specific_aspects: [],
       domain_specific_aspects_values: {},
 
@@ -206,11 +206,13 @@ export default {
         this.no_domain_values = no_domain_data
       }
 
-      if (this.$_.get(user_data.config_share, `domain.${this.is_fixed_domain}`)) {
-        const domain_values = user_data.config_share.domain[this.is_fixed_domain]
-        for (let aspect of this.domain_specific_aspects) {
-          // aspect.value = domain_values[aspect.name]
-          this.domain_specific_aspects_values[aspect.name] = domain_values[aspect.name]
+      if (this.is_fixed_domain) {
+        if (this.$_.get(user_data.config_share, `domain.${this.fixed_domain}`)) {
+          const domain_values = user_data.config_share.domain[this.fixed_domain]
+          for (let aspect of this.domain_specific_aspects) {
+            // aspect.value = domain_values[aspect.name]
+            this.domain_specific_aspects_values[aspect.name] = domain_values[aspect.name]
+          }
         }
       }
     },
@@ -230,7 +232,7 @@ export default {
       new_profile.domain.no_domain = this.no_domain_values
 
       if (this.is_fixed_domain) {
-        new_profile.domain[this.is_fixed_domain] = this.domain_specific_aspects_values
+        new_profile.domain[this.fixed_domain] = this.domain_specific_aspects_values
       }
       this.$api.actor.post_me(new_profile).then(({data}) => {
         console.log(data)
