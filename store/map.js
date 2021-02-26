@@ -26,6 +26,8 @@ export const mutations = {
     state.entries_loaded = false // probably not required
     state.entries = {}
     state.search_time = null
+    state.cached_camera_options = {}
+    state.layer_status = null
   },
   goto_location(state, location) {
     state.goto_location = location

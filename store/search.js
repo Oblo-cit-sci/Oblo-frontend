@@ -47,6 +47,10 @@ export const mutations = {
     state.search_count = 0
     state.path = ""
     state.searchtime = null
+    //
+    state.act_config = []
+    state.all_uuids = null
+    state.relevant_path_query_values = {}
   },
   set_search_count(state, count) {
     state.search_count = count

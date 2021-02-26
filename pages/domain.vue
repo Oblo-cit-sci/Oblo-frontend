@@ -1,5 +1,5 @@
 <template lang="pug">
-  DomainComponent.fullSize(:domain_data="domain_data")
+  DomainComponent.fullSize(v-if="has_domain_name" :domain_data="domain_data")
 </template>
 
 <script>
@@ -23,16 +23,19 @@ export default {
     }
   },
   computed: {
-    domain_data() {
-      const language = this.$store.getters["user/settings"].domain_language
-      const dd = this.$store.getters["domain/lang_domain_data"](this.domain_name, language)
-      if(!dd) {
-      } else {
-        return dd
-      }
-    },
+    // this is false for a short bit when logging out
+    // console.log(this.$route.fullPath) is actually /logout, some async stuff...
     domain_name() {
       return this.query_param_domain_name
+    },
+    has_domain_name() {
+      return !!this.domain_name
+    },
+    domain_data() {
+      if (!this.has_domain_name)
+        return null
+      const language = this.$store.getters["user/settings"].domain_language
+      return this.$store.getters["domain/lang_domain_data"](this.domain_name, language)
     }
   },
   created() {
@@ -43,7 +46,8 @@ export default {
       this.$store.dispatch("domain/set_act_domain_lang",
         {
           domain_name: this.domain_name,
-          language: this.$store.getters["ui_language"]})
+          language: this.$store.getters["ui_language"]
+        })
     }
     if (this.$route.query.f && !this.is_fixed_domain) {
       this.fix_domain(this.$route.query.f)

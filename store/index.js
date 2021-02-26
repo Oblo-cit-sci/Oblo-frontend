@@ -86,6 +86,7 @@ export const actions = {
     dispatch("clear_entries")
     dispatch("user/logout")
     commit("search/clear")
+    commit("map/clear")
   }
 }
 

@@ -1,6 +1,4 @@
 <template lang="pug">
-
-
 </template>
 
 <script>
@@ -20,22 +18,22 @@
     computed: {},
     methods: {},
     created() {
-      this.$api.actor.logout().then(({data}) => {
+      this.$api.actor.logout().then(async ({data}) => {
         this.ok_snackbar(data.msg)
         this.clear_storage()
         // store back drafts
         this.persist_entries()
-        this.$store.dispatch("logout")
+        await this.$store.dispatch("logout")
         this.$store.commit("menu/open", false)
-        this.home()
-      }).catch((err) => {
+      }).catch(async (err) => {
         console.log("logout error", err)
         if (this.$_.get(err, "response.status") === 401) {
           this.err_error_snackbar(err)
         }
         this.remove_from_storage("auth_token")
-        this.$store.dispatch("logout")
+        await this.$store.dispatch("logout")
         this.$store.commit("menu/open", false)
+      }).finally(() => {
         this.home()
       })
     }
