@@ -84,14 +84,23 @@ export default {
       return this.$_.find(this.filter_options, f => f.name === name)
     },
     filter_text(filter) {
-      // console.log("filter_text", filter)
       if (filter.value.text) {
         // this is not gonna happen
         return filter.value.text
       }
-      const filter_option_aspect = this.filter_option_by_name(filter.name).aspect
+      // todo fix how text is stored for location-agregate marker
+      if (filter.text) {
+        console.warn("filter-text is filter not in filter.value, ...")
+        return filter.text
+      }
+      const filter_option = this.filter_option_by_name(filter.name)
+      if (!filter_option) {
+        console.error("Filterlist.filter_text option missing for filter.name", filter.name)
+        return ""
+      }
+      const filter_option_aspect = filter_option.aspect
       // console.log("filter.value", filter.value)
-      if(filter_option_aspect) {
+      if (filter_option_aspect) {
         return this.get_texts_of_mvalues(filter.value, filter_option_aspect).join(", ")
       }
       // TODO doesnt apply for e.g. requires review
@@ -106,7 +115,7 @@ export default {
     create_filter(name) {
       const selected_filter = this.filter_option_by_name(name)
       this.active_filter = Object.assign({}, selected_filter)
-      if(selected_filter.aspect) {
+      if (selected_filter.aspect) {
         // console.log("active filter", this.active_filter)
         this.dialog_open = true
       } else {
@@ -138,7 +147,7 @@ export default {
           "t_label": this.active_filter.t_label,
           "value": value
         }
-        if(this.active_filter.edit) {
+        if (this.active_filter.edit) {
           new_filter.edit = this.active_filter.edit
         }
         if (this.active_filter.source_name) {
@@ -161,7 +170,7 @@ export default {
       if (existing_filter) {
         return existing_filter.value
       } else {
-        if(this.filter_option_by_name(name).aspect) {
+        if (this.filter_option_by_name(name).aspect) {
           return aspect_default_value(this.filter_option_by_name(name).aspect)
         }
       }
