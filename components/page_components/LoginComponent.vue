@@ -35,10 +35,11 @@ import {mapGetters, mapMutations} from "vuex"
 import {extract_n_unpack_values} from "~/lib/aspect"
 import LanguageMixin from "~/components/LanguageMixin";
 import {MSG_PATH_SOMETHING_WENT_WRONG, NO_DOMAIN, RESPONSE_ERROR_MSG} from "~/lib/consts";
+import URLQueryMixin from "~/components/util/URLQueryMixin";
 
 export default {
   name: "LoginComponent",
-  mixins: [TypicalAspectMixin, TriggerSnackbarMixin, PersistentStorageMixin, NavBaseMixin, LanguageMixin, InitializationMixin],
+  mixins: [TypicalAspectMixin, TriggerSnackbarMixin, URLQueryMixin, PersistentStorageMixin, NavBaseMixin, LanguageMixin, InitializationMixin],
   components: {Aspect},
   props: {
     go_home: {
@@ -84,7 +85,9 @@ export default {
         this.ok_snackbar(response_data.msg)
         //   // todo could just be index/clear_entries (change name) but needs await
         this.clear_search()
-        this.clear_entries()
+
+        this.clear_entries({keep_drafts:true, keep_uuid: this.query_entry_uuid})
+
         this.map_clear()
         const user_data = response_data.data
         console.log("user_data", user_data)

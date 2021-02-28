@@ -79,7 +79,7 @@ export const getters = {
 
 export const actions = {
   clear_entries({commit}) {
-    commit("entries/clear")
+    commit("entries/clear", {})
     commit("search/clear")
   },
   logout({commit, dispatch}) {

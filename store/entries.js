@@ -53,12 +53,19 @@ export const mutations = {
   set_ref_parent(state, {uuid, ref}) {
     state.entries.get(uuid).refs.parent = ref
   },
-  clear(state, keep_drafts = true) {
+  clear(state, {keep_drafts=true, keep_uuid}) {
+    let kept_entry = null
+    if(keep_uuid) {
+      kept_entry = state.entries.get(keep_uuid)
+    }
     if (keep_drafts) {
       const drafts = ld.filter(Array.from(state.entries.values()), e => e.status === DRAFT)
       state.entries = new Map(ld.map(drafts, e => [e.uuid, e]))
     } else {
       state.entries.clear()
+    }
+    if (kept_entry) {
+      state.entries.set(kept_entry.uuid, kept_entry)
     }
     state.edit = null
   },

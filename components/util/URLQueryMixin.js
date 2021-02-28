@@ -1,23 +1,32 @@
-import {QP_D, QP_F, VIEW} from "~/lib/consts"
+import {QP_D, QP_ENTRY_ACCESS_KEY, QP_ENTRY_MODE, QP_F, QP_UUID, VIEW} from "~/lib/consts"
 
 export default {
   name: "URLQueryMixin",
   computed: {
+    q() {
+      return this.$route.query
+    },
     query_param_domain() {
       const res = {}
-      if (this.$route.query[QP_D]) {
-        res[QP_D] = this.$route.query[QP_D]
+      if (this.q[QP_D]) {
+        res[QP_D] = this.q[QP_D]
       }
-      if (this.$route.query[QP_F]) {
-         res[QP_F] = this.$route.query[QP_F]
+      if (this.q[QP_F]) {
+        res[QP_F] = this.q[QP_F]
       }
       return res
     },
     query_param_domain_name() {
-      return this.$route.query[QP_D] || this.$route.query[QP_F]
+      return this.q[QP_D] || this.q[QP_F]
+    },
+    query_entry_uuid() {
+      return this.q[QP_UUID]
     },
     entry_mode() {
-      return this.$_.get(this.$route.query, "entry_mode", VIEW)
-    }
+      return this.$_.get(this.q, QP_ENTRY_MODE, VIEW)
+    },
+    query_entry_access_key() {
+      return this.q[QP_ENTRY_ACCESS_KEY]
+    },
   }
 }
