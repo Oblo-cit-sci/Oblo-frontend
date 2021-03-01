@@ -392,8 +392,8 @@ export default {
         this.open_new_lang()
       } else if (event.name === "change_lang_status") {
         const {dest_lang: lang_code, language_active: active} = this.unpacked_values
-        this.$api.language.change_language_status(lang_code, active === "active").then(({data:res}) => {
-          // console.log(res)
+        this.$api.language.change_language_status(lang_code, active === "active").then(({data: res}) => {
+          this.language_statuses[lang_code].active = res.data.active
           this.ok_response_snackbar(res)
         })
       }
@@ -417,7 +417,7 @@ export default {
         let dest_w = dest_map.get(src_word[0])
         if (!dest_w)
           dest_w = ""
-        result.push([src_word[0],src_word[1], dest_w])
+        result.push([src_word[0], src_word[1], dest_w])
       }
       return result
     }
@@ -442,6 +442,25 @@ export default {
             return
           if (a === "component") {
             this.setup_values["src_lang"] = pack_value()
+
+            if (["fe", "be"].includes(new_vals.component) && new_vals.dest_lang) {
+              const {dest_lang: lang} = new_vals
+              // console.log("check language statuses", this.language_statuses)
+              if (!this.language_statuses.hasOwnProperty(lang)) {
+                try {
+                  const {data: resp} = await this.$api.language.language_status(lang)
+                  this.language_statuses[lang] = resp.data
+                  // console.log(this.setup_values, pack_value(resp.data.active ? "active" : "inactive"))
+                  this.setup_values.language_active = pack_value(resp.data.active ? "active" : "inactive")
+                } catch (err) {
+                  console.log(err)
+                  this.err_error_snackbar(err)
+                }
+              } else {
+                this.setup_values.language_active = pack_value(this.language_statuses[lang].active ? "active" : "inactive")
+              }
+            }
+
           }
         }
       }
@@ -463,22 +482,6 @@ export default {
           })
         } else if (domain !== old_vals.domain || dest_lang !== old_vals.dest_lang) {
           this.code_templates_for_domain_lang = loaded_infos
-        }
-      } else if (["fe", "be"].includes(new_vals.component) && new_vals.dest_lang) {
-        const {dest_lang: lang} = new_vals
-        // console.log("check language statuses", this.language_statuses)
-        if (!this.language_statuses.hasOwnProperty(lang)) {
-          try {
-            const {data: resp} = await this.$api.language.language_status(lang)
-            this.language_statuses[lang] = resp.data
-            // console.log(this.setup_values, pack_value(resp.data.active ? "active" : "inactive"))
-            this.setup_values.language_active = pack_value(resp.data.active ? "active" : "inactive")
-          } catch (err) {
-            console.log(err)
-            this.err_error_snackbar(err)
-          }
-        } else {
-          this.setup_values.language_active = pack_value(this.language_statuses[lang] ? "active" : "inactive")
         }
       }
     }

@@ -42,7 +42,7 @@ export default {
     return {
       show_only_incomplete: false,
       page: 1,
-      messages_per_page: 2,
+      messages_per_page: 20,
       changed_messages: new Set(),
       no_changes: true,
       message_order,
