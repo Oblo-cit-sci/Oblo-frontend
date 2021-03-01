@@ -66,6 +66,10 @@ class QueryBase {
   delete_(sub_path, data, config) {
     return this.axios.delete(`${this.base}/${sub_path}`, data, config)
   }
+
+  url_(sub_path) {
+    return `${this.base}/${sub_path}`
+  }
 }
 
 class Basic extends QueryBase {
@@ -91,8 +95,18 @@ class Basic extends QueryBase {
     })
   }
 
+  init_oauth(service) {
+    return this.get_("init_oauth", {
+      params: {service}
+    })
+  }
+
+  url_init_oauth(service) {
+    return `${this.url_("init_oauth")}?service=${service}`
+  }
+
   oauth_complete(access_token, code) {
-    console.log(access_token, code)
+    // console.log(access_token, code)
     return this.get_("oauth_complete", {
       params: {
         access_token, code

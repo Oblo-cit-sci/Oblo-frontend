@@ -1,6 +1,7 @@
 <template lang="pug">
   div
-    //v-btn(:href="inat_link") login with i nat
+    v-btn(:href="inat_link") login with i nat
+    v-btn(:href="orcid_link") login with orchid
 </template>
 
 <script>
@@ -45,20 +46,31 @@ export default {
   },
   computed: {
     inat_link() {
-      inat_init_redirect
-      // console.log("inat")
-      // const client_id = "c1a4ab23afe83f7b1788548ead3ebe65a6a2991e66372ab70ce77ded41d9ce6a"
-      // const redirect_uri = "https://staging.opentek.eu/oauth_complete"
-      // const response_type = "code"
-      // const base_url = "https://inaturalist.org/oauth/authorize"
-      // const code = "abcdefghijkl"
-      // return `${base_url}?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=${response_type}&code=${code}`
+      // inat_init_redirect
+      console.log("inat")
+      const client_id = "c1a4ab23afe83f7b1788548ead3ebe65a6a2991e66372ab70ce77ded41d9ce6a"
+      const redirect_uri = "https://staging.opentek.eu/oauth_complete"
+      const response_type = "code"
+      const base_url = "https://inaturalist.org/oauth/authorize"
+      const state = "abcdefghijkl"
+      return `${base_url}?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=${response_type}&state=${state}`
       // return new Location({path: base_url, query: {client_id, redirect_uri, response_type}})
+    },
+    orcid_link() {
+      return this.$api.basic.url_init_oauth("orcid")
     }
   },
   methods: {
     inat() {
       this.$router.push()
+    },
+    async orchid_link() {
+      try {
+        const result = await this.$api.basic.init_oauth("orchid")
+        window.location.href=result.data
+      } catch (e) {
+        console.log(e)
+      }
     }
   },
   watch: {}
