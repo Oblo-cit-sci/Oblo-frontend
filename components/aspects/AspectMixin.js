@@ -194,77 +194,19 @@ export default {
           return this.ext_value
         } else {
           const raw = aspect_raw_default_value(this.aspect)
+          console.log("no aspect-loc and no ext_value using default value", raw)
           return {value: raw}
         }
-      }
-      // if (!this.aspect.hasOwnProperty("attr")) {
-      //   console.log("AspectMixin.mvalue: broken Aspect, no ATTR:", this.aspect.name)
-      //   return pack_value(aspect_raw_default_value(this.aspect))
-      // }
-      //console.log("value . ",this.aspect.name)
-      // if (this.attr.IDAspect) {
-      //   let this_uuid = aspect_loc_uuid(this.aspect_loc)
-      //   let entry = this.$store.getters["entries/get_entry"](this_uuid)
-      //   let id = this.$_.last(entry.entry_refs.parent.aspect_loc)[1] + 1
-      //   let stored_value = this.$store.getters["entries/value"](this.aspect_loc).value
-      //   if (stored_value !== id) {
-      //     this.update_value(id)
-      //   }
-      //   return {value: id}
-      // }
-      if (this.attr.ref_value) {
-        console.log("no more refs like this")
-        /*
-        //console.log("ref")
-        // GRAB REF
-        let aspect_location = complete_aspect_loc(
-          aspect_loc_uuid(this.aspect_loc),
-          aspect_loc_str2arr(this.attr.ref_value),
-          this.extra[LIST_INDEX])
-        // console.log("value ref,  ",this.aspect.name, aspect_location)
-        let ref_value = this.$store.getters["entries/value"](aspect_location)
-        //console.log("ref value", ref_value)
-        if (ref_value === undefined) {
-          console.log("broken ref!")
-          ref_value = pack_value(aspect_raw_default_value(this.aspect))
-        }
-
-        let stored_value = this.$store.getters["entries/value"](this.aspect_loc)
-        if (this.attr.ref_update === "create") {
-          if (this.$_.isEqual(stored_value, aspect_default_value(this.aspect)) &&
-            !this.$_.isEqual(stored_value, ref_value)) { // this will catch a inf loop when ref_value === default
-            this.update_value(ref_value.value)
-            return ref_value
-          } else {
-            return stored_value
-          }
-        } else {
-          if (!this.$_.isEqual(stored_value, ref_value)) {
-            this.update_value(ref_value.value)
-          }
-          return ref_value
-        } */
-      } else if (this.attr.ref_length) { // this is for lists
-        console.log("no more list-refs like this")
-        /*
-        let location_array = complete_aspect_loc(aspect_loc_uuid(this.aspect_loc), aspect_loc_str2arr(this.attr.ref_length))
-        // USES lists or ints
-        const length_value = this.$store.getters["entries/value"](location_array).value
-
-        // todo use the aspect_descr to find out if its a list or an int
-        if (Array.isArray(length_value)) {
-          this.extra["ref_length"] = length_value.length
-        } else {
-          this.extra["ref_length"] = parseInt(length_value)
-        }
-        return this.$store.getters["entries/value"](this.aspect_loc)
-         */
       } else {
-        // console.log(this.aspect.name, this.aspect_loc)
+      // todo removed this legacy functionality
+      // if (this.attr.IDAspect) {...
+      // and...
+      // if (this.attr.ref_value) {
         let value = this.$store.getters["entries/value"](this.aspect_loc)
         if (value === undefined) {
           // console.log("undefined, probably means update", this.aspect, this.extra)
           let raw__new_value = aspect_raw_default_value(this.aspect)
+
           this.update_value(raw__new_value)
           // if (this.is_unpacked)
           //   return raw__new_value
