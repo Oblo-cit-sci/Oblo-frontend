@@ -111,10 +111,16 @@ export default {
 
       // todo maybe this part should be handled by the individual page, so it can do its default behaviour
       // but a wrapper would be good.
-      if (this.$route.query.uuid && !this.$store.getters["entries/has_full_entry"](this.$route.query.uuid)) {
+
+      if (this.query_entry_uuid && !this.$store.getters["entries/has_full_entry"](this.query_entry_uuid)) {
         // console.log("need to get that entry")
         try {
-          const response = await this.$api.entry.get_(this.$route.query.uuid)
+          let response = null
+          if (!this.query_entry_access_key) {
+            response = await this.$api.entry.get(this.query_entry_uuid)
+          } else {
+            response = await this.$api.entry.get_shared(this.query_entry_uuid, this.query_entry_access_key)
+          }
           if (response.status === 200) {
             this.$store.commit("entries/save_entry", response.data.data)
           } else {

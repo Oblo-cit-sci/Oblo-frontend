@@ -90,7 +90,7 @@ export default {
 
         this.map_clear()
         const user_data = response_data.data
-        console.log("user_data", user_data)
+        // console.log("user_data", user_data)
         user_settings = user_data.settings
         this.$store.dispatch("user/login", user_data)
         this.persist_user_data()

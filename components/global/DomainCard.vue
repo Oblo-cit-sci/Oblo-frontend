@@ -1,18 +1,18 @@
 <template lang="pug">
-  v-card(class="mb-4" outlined :width="550" @click="goto_domain" :ripple="false")
+  v-card.mb-4.pb-1(outlined :width="550" @click="goto_domain" :ripple="false")
     v-img(:src="image" :max-height="img_max_height")
       v-card-title.align-end.shadow {{title}}
       v-hover(v-for="lang in languages"
         v-if="not_ui_lang"
         :key="lang")
         v-chip.mt-2.ml-2(
-          :style="{opacity:'70%'}"
+          :style="{opacity:'85%'}"
           :color="hover ? 'yellow' :'info'"
           @click="to_language(lang)"
           slot-scope="{ hover }") {{$t("lang." + lang)}}
-    v-card-text(:style="{'min-height':'80px'}")
+    v-card-text.pb-2(:style="{'min-height':'80px'}")
       v-img.float-left.mr-3.mb-1(:src="icon" left width="40" height="40")
-      span {{description}}
+      div {{description}}
 </template>
 
 <script>

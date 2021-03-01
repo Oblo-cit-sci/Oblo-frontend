@@ -33,13 +33,17 @@ export default {
     },
     set_domain_as_home_path(domain_name) {
       // console.log("FixDomainMixin:set_domain_as_home_path", domain_name)
+      if (domain_name === NO_DOMAIN) {
+        console.log("fixe_d_mxn: set_domain_as_home_path should rather be null not no_domain")
+      }
+      // todo: here we call bus to the menu instead of this stuff
       if (domain_name && domain_name !== NO_DOMAIN)
         this.set_home_path(`/domain?f=${domain_name}`)
       else
         this.set_home_path()
     }
   }, watch: {
-    is_fixed_domain(domain_name) {
+    fixed_domain(domain_name) {
       this.set_domain_as_home_path(domain_name)
     }
   }

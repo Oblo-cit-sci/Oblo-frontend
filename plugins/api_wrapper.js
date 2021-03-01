@@ -181,6 +181,10 @@ class Entry extends QueryBase {
     return this.get_(`${uuid}`)
   }
 
+  get_shared(uuid, entry_access_key) {
+    return this.get_(`${uuid}/${entry_access_key}`)
+  }
+
   get_slug_lang(slug, language) {
     return this.get_(`${slug}`, {
       params: {
