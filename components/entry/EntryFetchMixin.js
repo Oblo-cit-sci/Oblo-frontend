@@ -22,10 +22,13 @@ export default {
     async guarantee_templates_codes(entries) {
       const missing_domain_lang_entries = this.$store.getters["templates/get_missing_domain_language"](entries)
       const missing_domains = missing_domain_lang_entries.map(dom_lang => dom_lang.domain)
+      // console.log("domains", missing_domains)
       if (missing_domains.length > 0) {
         const {data: resp} = await this.$api.domain.multi_d_get_codes_templates(Array.from(missing_domains), this.$store.getters.ui_language)
         await this.$store.dispatch("templates/add_templates_codes", resp.data)
+        return resp.data
       }
+      return []
     }
   }
 }

@@ -152,7 +152,7 @@ export default {
       return this.all_map_entries(this.domain_name)
     },
     show_legend() {
-      if(!this.$_.isEmpty(this.templates_color_list())) {
+      if(!this.$_.isEmpty(this.domain_templates_color_list)) {
         return (this.is_md && !this.menu_open) || this.is_large
       }
     },
