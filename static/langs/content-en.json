@@ -377,7 +377,8 @@
     },
     "language_select": {
       "label": "Language",
-      "change_not_possible": "You cannot change the language on this page."
+      "change_not_possible": "You cannot change the language on this page.",
+      "language_changed": "Language changed to {language_name}"
     },
     "legend": {
       "legend": "Legend"

@@ -30,6 +30,7 @@ import ApiHelperMixin from "~/components/ApiHelperMixin";
 import {object_list2options} from "~/lib/options";
 import {mapGetters} from "vuex";
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin";
+import LanguageMixin from "~/components/LanguageMixin";
 
 const components = ["fe", "be", "domain", "entries"]
 
@@ -39,7 +40,7 @@ const components = ["fe", "be", "domain", "entries"]
 export default {
   name: "TranslateSetupComponent",
   components: {Dialog, LanguageSearch, AspectSet, Aspect},
-  mixins: [OptionsMixin, TriggerSnackbarMixin, EntryCreateMixin, ApiHelperMixin, TypicalAspectMixin],
+  mixins: [OptionsMixin, TriggerSnackbarMixin, EntryCreateMixin, ApiHelperMixin, TypicalAspectMixin, LanguageMixin],
   data() {
     const {component} = this.$store.getters["translate/setup_values"]
     return {
@@ -393,8 +394,18 @@ export default {
       } else if (event.name === "change_lang_status") {
         const {dest_lang: lang_code, language_active: active} = this.unpacked_values
         this.$api.language.change_language_status(lang_code, active === "active").then(({data: res}) => {
-          this.language_statuses[lang_code].active = res.data.active
+          const new_state = res.data.active
+          this.language_statuses[lang_code].active = new_state
           this.ok_response_snackbar(res)
+          if (this.$store.getters.ui_language === lang_code && !new_state) {
+            console.log("active lang in ui")
+            this.change_language(this.default_language, true, null, true)
+          }
+          if (new_state) {
+            this.$store.commit("add_language", lang_code)
+          } else {
+            this.$store.commit("remove_language", lang_code)
+          }
         })
       }
       // todo after execution

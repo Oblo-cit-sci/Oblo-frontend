@@ -31,6 +31,18 @@ export const mutations = {
   },
   set_available_languages(state, language_codes) {
     state.available_languages = language_codes
+  },
+  add_language(state, lang_code) {
+    const index = state.available_languages.indexOf(lang_code)
+    // maybe sorted?
+    if (index === -1) {
+      state.available_languages = ld.concat(state.available_languages, lang_code)
+    }
+  },
+  remove_language(state, lang_code) {
+    state.available_languages = ld.filter(state.available_languages, e => {
+      return e !== lang_code
+    })
   }
 };
 

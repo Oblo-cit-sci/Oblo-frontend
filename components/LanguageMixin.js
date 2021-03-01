@@ -1,10 +1,12 @@
 import {DOMAIN_LANGUAGE, NO_DOMAIN, UI_LANGUAGE, VALUE} from "~/lib/consts";
 import FilterMixin from "~/components/FilterMixin";
 import {pack_value} from "~/lib/aspect";
+import SettingsChangeMixin from "~/components/global/SettingsChangeMixin";
+import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin";
 
 export default {
   name: "LanguageMxin",
-  mixins: [FilterMixin],
+  mixins: [FilterMixin, SettingsChangeMixin, TriggerSnackbarMixin],
   computed: {
     default_language() {
       return this.$nuxt.context.env.DEFAULT_LANGUAGE
@@ -18,7 +20,7 @@ export default {
         })
       }
     },
-    async change_language(language, update_settings = true, domain_language = null) {
+    async change_language(language, update_settings = true, domain_language = null, snackbar = false) {
       if (!domain_language) {
         domain_language = language
       }
@@ -69,6 +71,10 @@ export default {
             value: pack_value([language]),
             text: this.$t("lang." + language)
           }))
+
+      if (snackbar) {
+        this.ok_snackbar(this.$t("comp.language_select.language_changed", {language_name: this.t_lang(language)}))
+      }
     },
     /**
      *

@@ -30,7 +30,7 @@ import {create_option} from "~/lib/options";
  */
 export default {
   name: "LanguageSelector",
-  mixins: [SettingsChangeMixin, LanguageMixin, URLQueryMixin],
+  mixins: [LanguageMixin, URLQueryMixin],
   components: {},
   props: {},
   data() {
