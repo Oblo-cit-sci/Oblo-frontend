@@ -68,8 +68,7 @@ export default {
       this.$store.commit("search/replace_in_act_config",
         Object.assign(this.language_filter_config(),
           {
-            value: pack_value([language]),
-            text: this.$t("lang." + language)
+            value: pack_value([language])
           }))
 
       if (snackbar) {

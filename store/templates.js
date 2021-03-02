@@ -153,8 +153,8 @@ export const getters = {
           if (entry_tags[v].has(language)) {
             return entry_tags[v].get(language).text
           } else {
-            console.log("templates/tags_of_code: no tag for slug, value, language", code_slug, v, language)
-            console.log("options", entry_tags[v].keys(), "->", entry_tags[v].values().next().value)
+            // console.log("templates/tags_of_code: no tag for slug, value, language", code_slug, v, language)
+            // console.log("options", entry_tags[v].keys(), "->", entry_tags[v].values().next().value)
             return entry_tags[v].values().next().value.text
           }
         }
