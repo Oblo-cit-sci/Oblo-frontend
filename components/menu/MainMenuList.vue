@@ -1,10 +1,10 @@
 <template lang="pug">
-  v-list
-    v-list-item-group(v-for="group in groups" :key="group.name")
-      v-list-item(v-for="item in group.items" :key="item.to")
-        v-list-item-icon(@click="select(item)")
+  div
+    v-list
+      v-list-item(v-for="item in filtered_pages" :key="item.icon" :to="item.to" nuxt @click="select(item)")
+        v-list-item-icon()
           v-icon {{item.icon}}
-        v-list-item-content(@click="select(item)")
+        v-list-item-content()
           v-list-item-title(v-text="$t(item.t_title)")
         v-list-item-action
           v-btn(icon small v-if="show_close_btn(item)" @click="close_menu")
@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import {all_pages_n_actions} from "~/lib/pages"
+import {all_pages_n_actions, PAGE_ABOUT} from "~/lib/pages"
 import {ADMIN, DOMAIN, NO_DOMAIN} from "~/lib/consts"
 import LanguageSelector from "~/components/LanguageSelector"
 import URLQueryMixin from "~/components/util/URLQueryMixin"
@@ -24,7 +24,7 @@ import ResponsivenessMixin from "~/components/ResponsivenessMixin"
 
 let require_login = ["/profile", "/logout"]
 let hide_logged_in = ["/login", "/register"]
-let require_admin = [ "/translate/setup"] // "/admin",
+let require_admin = ["/translate/setup"] // "/admin",
 let hide_no_be = ["/register", "/login"] // if not connected out and if logged in out
 let show_inDev = ["/tests"] //, "Types", "Entrytypes", "Aspectbuild"]
 let show_in_fixed_domain = []
@@ -35,7 +35,10 @@ export default {
   components: {LanguageSelector},
   props: {},
   data() {
-    return {}
+    const pages = all_pages_n_actions
+    return {
+      pages
+    }
   },
   computed: {
     ...mapGetters({
@@ -43,33 +46,42 @@ export default {
         connected: "app/connected"
       }
     ),
-    groups() {
-      const home = all_pages_n_actions[0]
-      let other_pages = this.$_.tail(all_pages_n_actions)
+    filtered_pages() {
+      // const home = all_pages_n_actions[0]
+      let filtered_pages = this.pages
       if (!this.connected) {
-        other_pages = other_pages.filter(p => !hide_no_be.includes(p.to))
+        filtered_pages = filtered_pages.filter(p => !hide_no_be.includes(p.to))
       }
       if (this.logged_in) {
-        other_pages = other_pages.filter(p => !hide_logged_in.includes(p.to))
+        filtered_pages = filtered_pages.filter(p => !hide_logged_in.includes(p.to))
       } else {
-        other_pages = other_pages.filter(p => !require_login.includes(p.to))
+        filtered_pages = filtered_pages.filter(p => !require_login.includes(p.to))
       }
       if (!this.$store.getters["user/is_admin"]) {
-        other_pages = other_pages.filter(p => !require_admin.includes(p.to))
+        filtered_pages = filtered_pages.filter(p => !require_admin.includes(p.to))
       }
       if (process.env.NODE_ENV !== "development") {
-        other_pages = other_pages.filter(p => !show_inDev.includes(p.to))
+        filtered_pages = filtered_pages.filter(p => !show_inDev.includes(p.to))
       }
 
-      if (this.is_fixed_domain) {
-        // other_pages = other_pages.filter(p => !show_in_fixed_domain.includes(p.t_title))
-      } else {
-        other_pages = other_pages.filter(p => !show_in_fixed_domain.includes(p.to))
+      if (!this.is_fixed_domain) {
+        filtered_pages = filtered_pages.filter(p => !show_in_fixed_domain.includes(p.to))
       }
 
-      return [{name: "home", items: [home]},
-        {name: "other", items: other_pages}]
+      if (this.$store.getters["domain/act_domain_name"] !== NO_DOMAIN) {
+        this.$_.find(filtered_pages, p => p.name === PAGE_ABOUT).to.query = {d: this.$store.getters["domain/act_domain_name"]}
+      }
+
+      return filtered_pages
     }
+  },
+  created() {
+    this.$bus.$on("main-menu-set", ({name, to}) => {
+      const page = this.$_.find(this.pages, p => p.name === name)
+      if (page) {
+        page.to = to
+      }
+    })
   },
   methods: {
     ...mapMutations({switch_menu_open: 'menu/switch_open'}),
@@ -80,21 +92,8 @@ export default {
       this.$store.commit("menu/open", false)
     },
     select(item) {
-      // console.log("select", item)
-      if (item.action) {
-        action(item.action)
-      }
-      // doesnt apply for "home" for fixed_domain since that has a query param
-      let route_name = item.to
-      if (item.to.indexOf("?") !== -1)
-        route_name = item.to.substring(0, item.to.indexOf("?"))
-      if (route_name === this.$route.path) {
+      if (item.name === this.$route.name) {
         this.switch_menu_open()
-      }
-      if (item.name === "about" && this.$store.getters["domain/act_domain_name"] !== NO_DOMAIN) {
-        this.$router.push({path : `/about`, query: {d:this.$store.getters["domain/act_domain_name"]}})
-      } else{
-        this.$router.push(item.to)
       }
     }
   }

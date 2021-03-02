@@ -45,6 +45,7 @@ import LanguageMixin from "~/components/LanguageMixin";
 import ResponsivenessMixin from "~/components/ResponsivenessMixin";
 
 export default {
+  name: "index",
   mixins: [SettingsChangeMixin, EnvMixin, LanguageMixin, ResponsivenessMixin],
   data() {
     return {}
@@ -64,7 +65,7 @@ export default {
       return this.hostname
     },
     visible_domains() {
-      return this.$_.sortBy(this.domains().filter(d => d.name !== NO_DOMAIN),["index"])
+      return this.$_.sortBy(this.domains().filter(d => d.name !== NO_DOMAIN), ["index"])
     },
     x_large_btn() {
       return this.is_mdAndUp

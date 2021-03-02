@@ -1,11 +1,10 @@
-import {all_pages_n_actions} from "~/lib/pages"
+import {all_pages_n_actions, PAGE_INDEX} from "~/lib/pages"
 
 export default {
   name: "HomePathMixin",
   methods: {
     set_home_path(path = "/") {
-      // console.log("HomePathMixin:set_domain_as_home_path to ", path)
-      all_pages_n_actions[0].to = path
+      this.$bus.$emit("main-menu-set",{name:PAGE_INDEX, to: path})
     }
   }
 }
