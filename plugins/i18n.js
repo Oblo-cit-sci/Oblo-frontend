@@ -47,4 +47,6 @@ export default ({app}) => {
   })
 
   app.i18n.msg = (loc) => ld.get(app.i18n.messages[app.i18n.locale], loc)
+  app.i18n.silence = silence => app.i18n.silentTranslationWarn = silence
+
 }

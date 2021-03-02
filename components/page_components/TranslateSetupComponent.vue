@@ -203,28 +203,28 @@ export default {
     },
     entry_select_aspect() {
       let options = []
-      const {domain: domain_name} = this.unpacked_values
+      const {domain: domain_name, dest_lang} = this.unpacked_values
       if (domain_name) {
-        let entries = this.all_entries_in_ui_lang.filter(e => e.domain === domain_name)
         const {required_entries} = this.domains_metainfos[domain_name]
-        // todo here something about their status
-        entries.forEach(e => {
-          if (required_entries.includes(e.slug))
-            e.mdi_icon = "mdi-exclamation"
-          if (this.code_templates_for_domain_lang.hasOwnProperty(e.slug)) {
-            if (this.code_templates_for_domain_lang[e.slug].status === PUBLISHED) {
-              e.description = "complete"
+        options = Object.values(this.code_templates_for_domain_lang).map(e => {
+          const res = {value: e.slug, text: e.title}
+          if (e.language === dest_lang) {
+            if (e.status === PUBLISHED) {
+              res.description = "complete"
             } else {
-              e.description = "incomplete"
+              res.description = "incomplete"
             }
           } else {
-            e.description = "not started"
+            res.description = "not started"
+            if (e.language !== this.ui_language) {
+              res.language = e.language
+            }
           }
+          if (required_entries.includes(e.slug))
+            res.mdi_icon = "mdi-exclamation"
+          return res
         })
-
-        entries = this.$_.sortBy(entries, e => e.mdi_icon)
-        options = object_list2options(entries,
-          "title", "slug", true, ["mdi_icon", "description"])
+        options = this.$_.sortBy(options, e => e.mdi_icon)
       } else {
         options = []
       }
@@ -414,6 +414,7 @@ export default {
       }
     },
     add_code_templates(domain, language, entries) {
+      console.log("add", domain, language, entries)
       if (!this.codes_templates_minimal_info.hasOwnProperty(domain)) {
         this.codes_templates_minimal_info[domain] = {}
       }
@@ -431,6 +432,27 @@ export default {
         result.push([src_word[0], src_word[1], dest_w])
       }
       return result
+    },
+    re_calc_entries_for_domain(domain, dest_lang) {
+      /**
+       * called whenever component is set to "entries" domain changes, or dest_lang changed
+       */
+      const loaded_infos = this.$_.get(this.codes_templates_minimal_info, `${domain}.${dest_lang}`, null)
+      console.log("recalc", domain, dest_lang)
+      // console.log(loaded_infos)
+      if (!this.get_entries_info && !loaded_infos) {
+        this.get_entries_info = true
+        this.code_templates_for_domain_lang = []
+        this.$api.domain.get_codes_templates(domain, dest_lang, false).then(({data}) => {
+          this.add_code_templates(domain, dest_lang, data.data)
+        }, err => {
+          console.error(err)
+        }).finally(() => {
+          this.get_entries_info = false
+        })
+      } else {
+        this.code_templates_for_domain_lang = loaded_infos
+      }
     }
   },
   watch: {
@@ -447,14 +469,14 @@ export default {
       if (this.$_.isEqual(new_vals, old_vals)) {
         return
       }
+      const {component, domain, dest_lang} = new_vals
       for (let a of Object.keys(new_vals)) {
         if (new_vals[a] !== old_vals[a]) {
           if (a === "language_active")
             return
           if (a === "component") {
             this.setup_values["src_lang"] = pack_value()
-
-            if (["fe", "be"].includes(new_vals.component) && new_vals.dest_lang) {
+            if (["fe", "be"].includes(component) && dest_lang) {
               const {dest_lang: lang} = new_vals
               // console.log("check language statuses", this.language_statuses)
               if (!this.language_statuses.hasOwnProperty(lang)) {
@@ -470,29 +492,20 @@ export default {
               } else {
                 this.setup_values.language_active = pack_value(this.language_statuses[lang].active ? "active" : "inactive")
               }
+            } else if (component === "entries") {
+              if (component === "entries" && domain !== null && dest_lang !== null) {
+                this.re_calc_entries_for_domain(domain, dest_lang)
+              }
             }
-
+          } else if (a === "domain") {
+            if (component === "entries" && domain !== null && dest_lang !== null) {
+              this.re_calc_entries_for_domain(domain, dest_lang)
+            }
+          } else if (a === "dest_lang") {
+            if (component === "entries" && domain !== null && dest_lang !== null) {
+              this.re_calc_entries_for_domain(domain, dest_lang)
+            }
           }
-        }
-      }
-      // todo maybe whats below here should use the logic above (checking what changed...)
-      const {domain, dest_lang} = new_vals
-      // get the templates and their status
-      if (new_vals.component === "entries" && domain !== null && dest_lang !== null) {
-        const loaded_infos = this.$_.get(this.codes_templates_minimal_info, `${domain}.${dest_lang}`, null)
-        // console.log(loaded_infos)
-        if (!this.get_entries_info && !loaded_infos) {
-          this.get_entries_info = true
-          this.code_templates_for_domain_lang = []
-          this.$api.domain.get_codes_templates(domain, dest_lang, false).then(({data}) => {
-            this.add_code_templates(domain, dest_lang, data.data)
-          }, err => {
-            console.error(err)
-          }).finally(() => {
-            this.get_entries_info = false
-          })
-        } else if (domain !== old_vals.domain || dest_lang !== old_vals.dest_lang) {
-          this.code_templates_for_domain_lang = loaded_infos
         }
       }
     }
