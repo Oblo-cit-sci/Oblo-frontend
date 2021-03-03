@@ -17,7 +17,7 @@ export default {
     }
   },
   name: "FullEntryMixin",
-    mixins: [LanguageMixin],
+  mixins: [LanguageMixin],
   computed: {
     mode: {
       get() {
@@ -36,23 +36,15 @@ export default {
               cancel_method: () => {
               },
               confirm_method: async () => {
-                  await this.change_language(this.entry.language)
-                  this.to_entry(this.uuid, mode, {}, false)
-                // const template_slug = this.entry.template.slug
-                // await this.guarantee_slugs_in_language(this.get_reference_slugs().concat([template_slug]), entry_lang)
-                // const has_entry = this.$store.getters["templates/has_template_in_lang"](template_slug, entry_lang)
-                // if (has_entry) {
-                //   this.force_entry_language = true
-                // } else {
-                //   this.error_snackbar(this.$t("comp.entry.template_not_in_lang"))
-                // }
+                await this.change_language(this.entry.language)
+                this.to_entry(this.uuid, mode, {}, false)
               }
             })
+          } else {
+            this.to_entry(this.uuid, mode, {}, false)
           }
-          else {
-              this.to_entry(this.uuid, mode, {}, false)
-          }
-          //
+        } else {
+          this.to_entry(this.uuid, mode, {}, false)
         }
       }
     },

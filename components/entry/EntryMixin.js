@@ -87,7 +87,8 @@ export default {
     },
     is_creator() {
       // console.log(this.creator, this.$store.getters.registered_name)
-      return this.creator.registered_name === this.username
+      // there might be no creator in review mode
+      return this.$_.get(this.creator, "registered_name") === this.username
     },
     template_slug() {
       return this.entry.template.slug
