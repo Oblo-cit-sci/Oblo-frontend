@@ -75,6 +75,7 @@
             span {{$t("comp.entry_action_buttons.not_logged_in.text")}}
             a(href="https://creativecommons.org/share-your-work/public-domain/cc0/" target="_blank")  {{$t("comp.entry_action_buttons.not_logged_in.cc_ref_text")}}
     v-row
+      // checkout FullEntryMixin for the mode switch (eventually changing language)
       EntryActions(
         v-bind="entry_actions_props"
         :page.sync="page"
@@ -144,7 +145,6 @@ export default {
       router_next: null,
       delete_entry: false,
       disabled_aspects: {},
-      force_entry_language: false, // when draft is created in another language. a popup asks to switch to its language
       meta_aspects_values: {"privacy": {value: this.entry.privacy}, license: {value: this.entry.license}}
     }
   },

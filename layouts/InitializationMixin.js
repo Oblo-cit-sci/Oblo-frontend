@@ -4,7 +4,7 @@ import {PAGE_INDEX} from "~/lib/pages"
 import {default_settings} from "~/lib/settings"
 import {db_vars} from "~/lib/db_vars"
 import SettingsChangeMixin from "~/components/global/SettingsChangeMixin"
-import {DOMAIN_LANGUAGE, NO_DOMAIN, QP_lang, UI_LANGUAGE} from "~/lib/consts"
+import {DOMAIN_LANGUAGE, NO_DOMAIN, QP_lang, UI_LANGUAGE, VISITOR} from "~/lib/consts"
 import HomePathMixin from "~/components/menu/HomePathMixin"
 import EnvMixin from "~/components/global/EnvMixin"
 import URLQueryMixin from "~/components/util/URLQueryMixin";
@@ -99,7 +99,12 @@ export default {
       // console.log("template/codes stored")
       // console.log(data.data)
       this.$store.commit("set_available_languages", resp.data.languages)
-      this.$store.commit("user/change_setting", {[DOMAIN_LANGUAGE]: language, [UI_LANGUAGE]: language})
+
+      if (this.$store.getters.username === VISITOR) {
+        const settings = this.$_.cloneDeep(default_settings)
+        Object.assign(settings,{[DOMAIN_LANGUAGE]: language, [UI_LANGUAGE]: language})
+        this.$store.commit("user/change_setting", settings)
+      }
       // console.log("language", language)
       // console.log("?", language, language !== this.$i18n.fallbackLocale, this.$i18n.fallbackLocale)
       if (language !== this.$i18n.fallbackLocale) {

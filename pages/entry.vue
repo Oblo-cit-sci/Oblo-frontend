@@ -28,7 +28,6 @@ export default {
     this.$store.dispatch("entries/set_edit", this.uuid)
   },
   beforeRouteEnter(to, from, next) {
-    // console.log("entry enter.. to", to)
     if (!to.query.uuid) {
       // todo page not found :(
       next(false)
@@ -37,21 +36,9 @@ export default {
     }
   },
   mounted() {
-    // if (this.$route.query.goTo) {
-    //   setTimeout(() => {
-    //     goTo("#" + this.$route.query.goTo, {
-    //       duration: 1200,
-    //       easing: "easeOutCubic"
-    //     })
-    //   }, 300)
-    // }
-    // if (this.outdated) {
-    //   this.$store.dispatch(ENTRIES_UPDATE_PARENT_VERSION, this.uuid)
-    //   this.ok_snackbar("Updated")
-    // }
+
   },
   beforeRouteLeave(to, from, next) {
-    // console.log("entry leave")
     if (this.entry.is_draft) {
       this.persist_entries()
     }
@@ -69,32 +56,7 @@ export default {
     }
   },
   methods: {
-    // check_language_switch() {
-    //   if (this.entry.language !== this.$store.getters.domain_language) {
-    //     this.$bus.$emit("dialog-open", {
-    //       data: {
-    //         cancel_text: this.$t("comp.entry.language_switch_dialog.cancel_text"),
-    //         title: this.$t("comp.entry.language_switch_dialog.title"),
-    //         text: this.$t("comp.entry.language_switch_dialog.text",
-    //           {language: this.$t("lang." + this.entry.language)})
-    //       },
-    //       cancel_method: () => {
-    //         this.$router.back()
-    //       },
-    //       confirm_method: async () => {
-    //         const template_slug = this.entry.template.slug
-    /*        const entry_lang = this.entry.language*/
-    //         await this.guarantee_slugs_in_language(this.get_reference_slugs().concat([template_slug]), entry_lang)
-    //         const has_entry = this.$store.getters["templates/has_template_in_lang"](template_slug, entry_lang)
-    //         if (has_entry) {
-    //           this.force_entry_language = true
-    //         } else {
-    //           this.error_snackbar(this.$t("comp.entry.template_not_in_lang"))
-    //         }
-    //       }
-    //     })
-    //   }
-    // }
+
   }
 }
 </script>

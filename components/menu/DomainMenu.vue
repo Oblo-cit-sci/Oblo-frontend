@@ -47,8 +47,6 @@ export default {
   computed: {
     filters() {
       const template_filter_options = this.get_template_filter_options()
-      // console.log(template_filter_options)
-      // console.log(this.domain_data)
       const lang = this.$store.getters["user/settings"].domain_language
 
       template_filter_options.aspect.items = object_list2options(
@@ -62,7 +60,6 @@ export default {
       if ([EDITOR, ADMIN].includes(this.$store.getters["user/global_role"])) {
         filters.push(this.get_requires_review_filter())
       }
-
       return filters
     },
     selected_entry() {
