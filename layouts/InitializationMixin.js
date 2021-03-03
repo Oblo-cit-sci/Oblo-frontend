@@ -111,7 +111,7 @@ export default {
         this.$i18n.setLocaleMessage(language, resp.data.messages[language])
         await this.change_language(language, false)
       } else {
-        this.guarantee_default_lang_language_names()
+        await this.guarantee_default_lang_language_names()
       }
 
       // todo maybe this part should be handled by the individual page, so it can do its default behaviour

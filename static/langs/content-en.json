@@ -73,7 +73,7 @@
     "profile": {
       "h_public": "Public information",
       "h_research": "Research related information",
-      "research_info": "Answering these questions is optional. The information is only used for research purposes of the creator of {{platform_title}}",
+      "research_info": "Answering these questions is optional. The information is only used for research purposes of the creator of {platform_title}",
       "h_domain": "Domain specific questions",
       "h_email_password": "Email address and password",
       "bt_change_email_pwd": "Change email and password",

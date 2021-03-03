@@ -94,7 +94,6 @@ export const actions = {
       "domain_language": getters.settings_domain_language
     }))
     commit("logout")
-    // commit("reset_auth_token")
   }
 }
 

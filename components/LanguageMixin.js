@@ -13,11 +13,10 @@ export default {
     }
   },
   methods: {
-    guarantee_default_lang_language_names() {
+    async guarantee_default_lang_language_names() {
       if (!this.$i18n.messages.langs) {
-        this.$api.language.get_language_names(this.default_language).then(({data}) => {
-          this.$i18n.mergeLocaleMessage(this.default_language, data)
-        })
+        const {data: resp_data} = await this.$api.language.get_language_names(this.default_language)
+        this.$i18n.mergeLocaleMessage(this.default_language, resp_data)
       }
     },
     async change_language(language, update_settings = true, domain_language = null, snackbar = false) {
@@ -57,7 +56,7 @@ export default {
         }
       }
       if (language === this.default_language) {
-        this.guarantee_default_lang_language_names()
+        await this.guarantee_default_lang_language_names()
       }
       this.$api.axios.defaults.headers.common["Accept-Language"] = language
       if (update_settings)
