@@ -106,7 +106,6 @@
     methods: {
       update_settings() {
         this.update_button_loading = true
-        debugger
         this.$api.actor.post_me({settings: extract_n_unpack_values(this.settings_aspects)}).then(({data}) => {
           this.$store.commit("user/set_settings", data.data.settings)
           this.change_language(data.data.settings.ui_language, false)

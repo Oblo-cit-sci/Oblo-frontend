@@ -64,7 +64,7 @@
     div(v-if="!$_.isEmpty(no_domain_aspects)")
     div(v-if="!$_.isEmpty(no_domain_aspects)")
       h2#research_aspects {{$t('page.profile.h_research')}}
-      div {{$t('page.profile.research_info')}}
+      div {{$t('page.profile.research_info', {platform_title: platform_title})}}
       AspectSet(:aspects="no_domain_aspects" :values.sync="no_domain_values" :mode="mode")
     <!-- domain specific aspects -->
     div(v-if="!$_.isEmpty(domain_specific_aspects)")
@@ -312,6 +312,9 @@ export default {
       is_visitor: "is_visitor",
       own_entries_uuids: "entries/get_own_entries_uuids"
     }),
+    platform_title() {
+      return this.$store.getters["app/platform_data"].title
+    },
     entry_search_config() {
       return [this.get_actor_filter(this.registered_name),
         this.get_status_filter([DRAFT])
