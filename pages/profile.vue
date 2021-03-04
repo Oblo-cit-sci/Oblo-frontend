@@ -68,7 +68,7 @@
       AspectSet(:aspects="no_domain_aspects" :values.sync="no_domain_values" :mode="mode")
     <!-- domain specific aspects -->
     div(v-if="!$_.isEmpty(domain_specific_aspects)")
-      h2#domains {{$t("page.profile.h_domain")}}
+      h2#domains {{$t("page.profile.h_domain")}} / {{domain_title}}
       AspectSet(:aspects="domain_specific_aspects" :values.sync="domain_specific_aspects_values" :mode="mode")
     div(v-if="!is_visitor")
       v-btn(v-if="!edit_mode" to="/settings" nuxt color="info") {{$t("page.profile.btn_settings")}}
@@ -312,6 +312,9 @@ export default {
       is_visitor: "is_visitor",
       own_entries_uuids: "entries/get_own_entries_uuids"
     }),
+    domain_title() {
+      return this.$store.getters["domain/act_lang_domain_data"].title
+    },
     platform_title() {
       return this.$store.getters["app/platform_data"].title
     },

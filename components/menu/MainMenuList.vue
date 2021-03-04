@@ -14,8 +14,8 @@
 </template>
 
 <script>
-import {all_pages_n_actions, PAGE_ABOUT} from "~/lib/pages"
-import {ADMIN, DOMAIN, NO_DOMAIN} from "~/lib/consts"
+import {all_pages_n_actions, PAGE_ABOUT, PAGE_INDEX} from "~/lib/pages"
+import { DOMAIN, NO_DOMAIN} from "~/lib/consts"
 import LanguageSelector from "~/components/LanguageSelector"
 import URLQueryMixin from "~/components/util/URLQueryMixin"
 import FixDomainMixin from "~/components/global/FixDomainMixin"
@@ -43,7 +43,8 @@ export default {
   computed: {
     ...mapGetters({
         logged_in: "user/logged_in",
-        connected: "app/connected"
+        connected: "app/connected",
+        act_domain_name: "domain/act_domain_name"
       }
     ),
     filtered_pages() {
@@ -68,10 +69,13 @@ export default {
         filtered_pages = filtered_pages.filter(p => !show_in_fixed_domain.includes(p.to))
       }
 
-      if (this.$store.getters["domain/act_domain_name"] !== NO_DOMAIN) {
-        this.$_.find(filtered_pages, p => p.name === PAGE_ABOUT).to.query = {d: this.$store.getters["domain/act_domain_name"]}
+      const about = this.$_.find(filtered_pages, p => p.name === PAGE_ABOUT)
+      if (this.act_domain_name !== NO_DOMAIN &&
+        this.$route.name !== PAGE_INDEX) {
+        about.to.query = {d: this.$store.getters["domain/act_domain_name"]}
+      } else {
+        about.to.query = {}
       }
-
       return filtered_pages
     }
   },
@@ -92,9 +96,7 @@ export default {
       this.$store.commit("menu/open", false)
     },
     select(item) {
-      if (item.name === this.$route.name) {
-        this.switch_menu_open()
-      }
+      this.close_menu()
     }
   }
 }

@@ -138,7 +138,7 @@
         "p": "You are only seeing the domain",
         "p2": "However there are more domains to explore. Resetting your fixed domain, will show you a domain overview on the home page. Click the button to reset the fixed domain.",
         "btn_reset": "Reset fixed domain",
-        "fixed_domain_reset":"Fixed domain reset"
+        "fixed_domain_reset": "Fixed domain reset"
       },
       "settings_updated": "Settings updated"
     },
@@ -298,7 +298,7 @@
       "language_switch_dialog": {
         "cancel_text": "@:w.back",
         "title": "Language changed",
-        "text": "This draft was created in {language}. Do you want to change your language to {language}?"
+        "text": "This entry was created in {language}. Do you want to change your language to {language}?"
       }
     },
     "entry_actions": {
@@ -351,6 +351,10 @@
         "composite_incomplete": "  is not complete: missing components: {invalid_components_msgs}",
         "listitem_incomplete": "{aspect_label} has at least one incomplete item: {invalid_item_msgs}"
       }
+    },
+    "external_account_asp": {
+      "not_given": "No account given",
+      "not_valid": "Invalid id"
     },
     "filters": {
       "tag": {
