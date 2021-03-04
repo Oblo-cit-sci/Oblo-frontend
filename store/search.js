@@ -48,7 +48,7 @@ export const mutations = {
     state.path = ""
     state.searchtime = null
     //
-    state.act_config = []
+    // state.act_config = []
     state.all_uuids = null
     state.relevant_path_query_values = {}
   },
@@ -69,9 +69,13 @@ export const mutations = {
     state.all_uuids = (state.all_uuids || []).concat(uuids)
   },
   set_act_config(state, config) {
+    // console.trace()
     state.act_config = config
   },
   replace_in_act_config(state, config_item_s) {
+    // console.trace()
+    // console.log("act_config", state.act_config)
+    // console.log("replace", config_item_s)
     /**
      * replace config item with same name is config_item.
      * ! we cant just manipuate the state.act_config, otherwise the watcher freaks out, and doesnt get the change...
@@ -82,18 +86,21 @@ export const mutations = {
     const new_config = ld.cloneDeep(state.act_config)
     for (let config_item of config_item_s) {
       const existing_config = ld.find(state.act_config, cf => cf.name === config_item.name)
+      // console.log("exi", existing_config)
       if (existing_config) {
         const index = ld.findIndex(state.act_config, cf => cf.name === config_item.name)
+        // console.log("index", index)
         $nuxt.$set(new_config, index, config_item)
         // state.act_config.splice(index, 1, config_item)
       } else {
         $nuxt.$set(new_config, new_config.length, config_item)
       }
     }
-
+    // console.log("->", new_config)
     state.act_config = new_config
   },
   remove_in_act_config(state, config_name) {
+    // console.trace()
     state.act_config = state.act_config.filter(cf => cf.name !== config_name)
   }
 }
