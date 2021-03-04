@@ -223,7 +223,7 @@ export default {
        *
        */
       if (filtername === TEMPLATE) {
-        const used_templates = this.$store.getters["templates/entry_types_array"](language, true).filter(template => filtervalue.includes(template.slug))
+        // const used_templates = this.$store.getters["templates/entry_types_array"](language, true).filter(template => filtervalue.includes(template.slug))
         // filter out slugs that dont exist. todo maybe something on the server?
         const valid_value = this.validate_filter_value(TEMPLATE, filtervalue)
         return {

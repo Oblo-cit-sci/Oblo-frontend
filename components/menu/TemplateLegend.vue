@@ -15,10 +15,11 @@
   import {object_list2options} from "~/lib/options"
   import {TEMPLATE} from "~/lib/consts"
   import {unpack} from "~/lib/aspect";
+  import FilterMixin from "~/components/FilterMixin";
 
   export default {
     name: "TemplateLegend",
-    mixins: [],
+    mixins: [FilterMixin],
     components: {},
     props: {
       domain_name: String
@@ -45,44 +46,14 @@
           }
         },
         set(selected_templates) {
-          console.log("setting", selected_templates)
-          // todo t_label?
-          selected_templates = selected_templates.map(i =>
-            Object.assign(
-              this.templates[i], {name: TEMPLATE, "t_label": "w.entrytype"})
-          )
-          const act_config = this.$store.getters["search/get_act_config"]
-          const new_conf = act_config.filter(conf => conf.name !== TEMPLATE)
-          for (let t of selected_templates) {
-            new_conf.push(t)
-          }
-          // this.$store.commit("map/set_filter_config", new_conf)
-          this.template2filterlist_config(new_conf)
+          const result = this.$_.map(selected_templates, (sel, index) => this.templates[sel].value)
+          this.$store.commit("search/replace_in_act_config", this.config_generate(TEMPLATE, result))
         }
       }
     },
     methods: {
       force_close() {
         this.panel_state = false
-      },
-      template2filterlist_config(config) {
-        // todo use the replace_in_act_config method
-        const act_config = this.$_.cloneDeep(this.$store.getters["search/get_act_config"])
-        let template_config = act_config.find(cf => cf.name === "template")
-        if (!template_config) {
-          act_config.unshift({
-            name: "template",
-            t_label: "w.entrytype",
-            value: config.map(cf => cf.value),
-            text: config.map(cf => cf.text).join(", ")
-          })
-        } else {
-          Object.assign(template_config, {
-            value: config.map(cf => cf.value),
-            text: config.map(cf => cf.text).join(", ")
-          })
-        }
-        this.$store.commit("search/set_act_config", act_config)
       }
     }
   }
