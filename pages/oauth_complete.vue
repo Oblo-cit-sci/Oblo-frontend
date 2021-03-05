@@ -7,8 +7,8 @@ export default {
   name: "oauth_complete",
   created() {
     const {code, access_token} = this.$route.query
-    console.log(this.$route)
-    this.$api.basic.oauth_complete(access_token, code).then(() => {
+    console.log()
+    this.$api.basic.oauth_complete(this.$route.query).then(() => {
       console.log("done")
     })
   }

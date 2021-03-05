@@ -105,13 +105,8 @@ class Basic extends QueryBase {
     return `${this.url_("init_oauth")}?service=${service}`
   }
 
-  oauth_complete(access_token, code) {
-    // console.log(access_token, code)
-    return this.get_("oauth_complete", {
-      params: {
-        access_token, code
-      }
-    })
+  oauth_complete(data) {
+    return this.post_("oauth_complete", data)
   }
 }
 
