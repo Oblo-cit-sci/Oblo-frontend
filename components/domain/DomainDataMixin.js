@@ -1,6 +1,6 @@
 import EntryCreateMixin from "~/components/entry/EntryCreateMixin";
 import {mapGetters} from "vuex";
-import {PUBLIC} from "~/lib/consts";
+import {PUBLIC, USER, VISITOR} from "~/lib/consts";
 import {can_edit_entry} from "~/lib/actors";
 import FilterMixin from "~/components/FilterMixin";
 import URLQueryMixin from "~/components/util/URLQueryMixin";
@@ -31,9 +31,12 @@ export default {
     },
     create_templates_options() {
       // todo needs refinement, what if this can be changed per user...
-      const templates = this.domain_templates.filter(t => (
-        this.$_.get(t, "rules.create", "public") === PUBLIC ||
-        can_edit_entry(this.$store.getters.user, t)))
+      const templates = this.domain_templates.filter(t => {
+        const create_rule = this.$_.get(t, "rules.create", "public")
+        return (
+         create_rule === PUBLIC ||
+          (create_rule === USER && this.$store.getters["username"] !== VISITOR) ||
+        can_edit_entry(this.$store.getters.user, t))})
       // console.log(templates)
       return templates
     },

@@ -305,7 +305,7 @@ export default {
     filtered_entries() {
       let result_entries = this.entries() // must be a call
       // console.log("allf", this.act_config, this.search_config)
-      result_entries = result_entries.concat(this.local_entries)
+      result_entries = this.local_entries.concat(result_entries)
       // console.log("new filtered entries", result_entries)
       if (LOG) {
         console.log("Search.filtered_entries. entries:", result_entries.length)

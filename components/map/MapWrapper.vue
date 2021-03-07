@@ -50,6 +50,7 @@ import EnvMixin from "~/components/global/EnvMixin"
 import {pack_value, unpack} from "~/lib/aspect";
 
 const cluster_layer_name = LAYER_BASE_ID + '_clusters'
+const show_cluster_place_name = false
 
 async function clusterLeaves(source, cluster_id, le) {
   return await new Promise((resolve, reject) => {
@@ -375,7 +376,6 @@ export default {
             this.$store.commit("search/replace_in_act_config", create_cluster_select_search_config(place_name, uuids))
             this.update_navigation_mode(null, false, false, this.is_mdAndUp)
           })
-          // }
         })
         // 2nd cluster count layer
         this.map.addLayer({
@@ -392,37 +392,39 @@ export default {
           }
         })
 
-        // 3rd a source layer for region names
-        // dynamically updated
-        const cluster_region_names_source = "cluster_region_names_source"
-        this.map.addSource(cluster_region_names_source, {
-          type: "geojson",
-          data: {
-            type: "FeatureCollection",
-            features: []
-          }
-        })
+        if (show_cluster_place_name) {
+          // 3rd a source layer for region names
+          // dynamically updated
+          const cluster_region_names_source = "cluster_region_names_source"
+          this.map.addSource(cluster_region_names_source, {
+            type: "geojson",
+            data: {
+              type: "FeatureCollection",
+              features: []
+            }
+          })
 
-        // 4th, region name layer
-        this.map.addLayer({
-          id: 'cluster-region-label',
-          type: 'symbol',
-          source: cluster_region_names_source,
-          layout: {
-            "text-allow-overlap": true,
-            // "text-ignore-placement": true,
-            "text-justify": "auto",
-            'text-variable-anchor': ['top', 'bottom'],
-            "text-field": ["get", "region_name"],
-            'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-            "text-offset": [0, 0.7],
-            'text-size': 14,
-          },
-          paint: {
-            "text-halo-color": "#fde7a4",
-            "text-halo-width": 1
-          }
-        })
+          // 4th, region name layer
+          this.map.addLayer({
+            id: 'cluster-region-label',
+            type: 'symbol',
+            source: cluster_region_names_source,
+            layout: {
+              "text-allow-overlap": true,
+              // "text-ignore-placement": true,
+              "text-justify": "auto",
+              'text-variable-anchor': ['top', 'bottom'],
+              "text-field": ["get", "region_name"],
+              'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+              "text-offset": [0, 0.7],
+              'text-size': 14,
+            },
+            paint: {
+              "text-halo-color": "#fde7a4",
+              "text-halo-width": 1
+            }
+          })
+        }
         this.debounced_cluster_status = this.$_.debounce(this.check_cluster_states, 30)
       } else {
         console.log("cluster layer exists already")
