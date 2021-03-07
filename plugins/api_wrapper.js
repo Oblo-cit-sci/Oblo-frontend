@@ -106,7 +106,9 @@ class Basic extends QueryBase {
   }
 
   oauth_complete(data) {
-    return this.post_("oauth_complete", data)
+    return this.get_("oauth_complete", {
+      params: data
+    })
   }
 }
 
