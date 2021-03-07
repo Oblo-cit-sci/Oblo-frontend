@@ -563,10 +563,14 @@ export default {
           })
         }
       }
-      this.map.getSource("cluster_region_names_source").setData({
-        "type": "FeatureCollection",
-        "features": region_source_features
-      })
+
+      if (show_cluster_place_name) {
+        this.map.getSource("cluster_region_names_source").setData({
+          "type": "FeatureCollection",
+          "features": region_source_features
+        })
+      }
+
     },
     check_hide_map() {
       if (this.$vuetify.breakpoint.smAndDown) {

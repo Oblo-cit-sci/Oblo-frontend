@@ -141,6 +141,7 @@ export default {
 
       console.log("multi domains?", this.has_multiple_domains)
       if (!this.has_multiple_domains) {
+        await this.complete_language_domains(this.get_one_domain_name, language)
         // console.log("1 domain:", this.get_one_domain_name)
         this.$store.commit("domain/set_act_domain", this.$store.getters["domain/domain_by_name"](this.get_one_domain_name).name)
         this.fix_domain(this.get_one_domain_name)
