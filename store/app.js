@@ -1,5 +1,3 @@
-
-
 export const state = () => ({
     db_loaded: false,
     initialized: false,
@@ -7,7 +5,8 @@ export const state = () => ({
     connected: false,
     privacy_sheet_open: true,
     dev: {}, // arbitrary data collected during development
-    platform: {}
+    platform: {},
+    oauth_services: []
   }
 )
 
@@ -29,7 +28,7 @@ export const mutations = {
   },
   set_dev(state, {data, merge}) {
     console.log(data, merge)
-    if(merge) {
+    if (merge) {
       state.dev = Object.assign(state.dev, data)
     } else {
       state.dev = data
@@ -37,6 +36,9 @@ export const mutations = {
   },
   platform_data(state, data) {
     state.platform = data
+  },
+  oauth_services(state, services) {
+    state.oauth_services = services
   }
 }
 
@@ -61,6 +63,9 @@ export const getters = {
   },
   platform_data(state) {
     return state.platform
+  },
+  oauth_services(state) {
+    return state.oauth_services
   }
 }
 

@@ -95,6 +95,10 @@ class Basic extends QueryBase {
     })
   }
 
+  oauth_services() {
+    return this.get_("oauth_services")
+  }
+
   init_oauth(service) {
     return this.get_("init_oauth", {
       params: {service}

@@ -87,6 +87,9 @@ export default {
 
       const platform_data = resp.data.platform
       this.$store.commit("app/platform_data", platform_data)
+
+      this.$store.commit("app/oauth_services", resp.data.oauth_services)
+
       const domains_data = resp.data.domains
 
       const language = resp.data.language
@@ -151,6 +154,7 @@ export default {
         // similar the change of the home route...
         default_settings.fixed_domain = this.get_one_domain_name
         // console.log("route name", this.$route.name, this.$route.name === PAGE_INDEX)
+        this.set_home_path(`/domain?f=${domain_name}`)
         if (this.$route.name === PAGE_INDEX) {
           // console.log("to domain page",this.get_one_domain_name)
           this.to_domain(this.get_one_domain_name, true, () => {
