@@ -4,7 +4,7 @@
 <script>
 import TriggerSnackbarMixin from "../../components/TriggerSnackbarMixin"
 import NavBaseMixin from "~/components/NavBaseMixin"
-import {PAGE_LOGIN} from "~/lib/pages";
+import {PAGE_INDEX, PAGE_LOGIN} from "~/lib/pages";
 
 export default {
   name: "verify_email_address",
@@ -17,6 +17,7 @@ export default {
     }).catch(err => {
       console.log(err)
       this.err_error_snackbar(err)
+      this.$router.push({name: PAGE_INDEX})
     })
   },
 }
