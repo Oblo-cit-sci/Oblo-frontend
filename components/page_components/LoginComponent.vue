@@ -129,6 +129,7 @@ export default {
         this.ok_snackbar(data.msg)
         this.add_verification_resend_link = false
         this.errorMsg = null
+        this.$router.push({path:"/basic/registration_done",query:{username:this.registered_name})
       }).catch(err => {
         this.err_error_snackbar(err)
       })
