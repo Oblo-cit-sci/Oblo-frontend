@@ -76,6 +76,10 @@ export default {
       } else {
         about.to.query = {}
       }
+
+      if (window.navigator.standalone !== true) {
+        filtered_pages = filtered_pages.filter(p => p.name !== "offline_test")
+      }
       return filtered_pages
     }
   },

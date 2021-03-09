@@ -429,7 +429,8 @@
       "translate": "Translate",
       "admin": "Admin",
       "about": "About",
-      "tests": "Test"
+      "tests": "Test",
+      "offline_test": "Offline Test"
     },
     "menucontainer": {
       "tab_main": "Main",
