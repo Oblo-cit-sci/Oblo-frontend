@@ -430,7 +430,7 @@
       "admin": "Admin",
       "about": "About",
       "tests": "Test",
-      "offline_test": "Offline Test"
+      "offline_settings": "Offline Settings"
     },
     "menucontainer": {
       "tab_main": "Main",

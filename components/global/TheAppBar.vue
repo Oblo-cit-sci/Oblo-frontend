@@ -30,7 +30,7 @@ import URLQueryMixin from "~/components/util/URLQueryMixin";
 import Dialog from "~/components/dialogs/Dialog"
 import LoginComponent from "~/components/page_components/LoginComponent"
 import HasMainNavComponentMixin, {ENTRY} from "~/components/global/HasMainNavComponentMixin"
-import {VIEW} from "~/lib/consts"
+import {NO_DOMAIN, VIEW} from "~/lib/consts"
 import EnvMixin from "~/components/global/EnvMixin"
 import {PAGE_INDEX, PAGE_LOGIN} from "~/lib/pages";
 
@@ -63,7 +63,11 @@ export default {
     //   return this.cur_act_lang_domain_data()
     // },
     domain_title() {
-      return this.$_.get(this.act_lang_domain_data, "title", "Offline")
+      if (this.$store.getters["domain/act_domain_name"] === NO_DOMAIN) {
+        return this.$store.getters["app/platform_data"].title
+      } else {
+        return this.$_.get(this.act_lang_domain_data, "title", "Offline")
+      }
     },
     domain_icon() {
       return this.$api.static.domain_icon(this.act_lang_domain_data.name)

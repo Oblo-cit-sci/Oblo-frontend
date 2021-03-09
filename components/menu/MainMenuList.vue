@@ -21,6 +21,7 @@ import URLQueryMixin from "~/components/util/URLQueryMixin"
 import FixDomainMixin from "~/components/global/FixDomainMixin"
 import {mapGetters, mapMutations} from "vuex"
 import ResponsivenessMixin from "~/components/ResponsivenessMixin"
+import {is_standalone} from "~/lib/pwa";
 
 let require_login = ["/profile", "/logout"]
 let hide_logged_in = ["/login", "/register"]
@@ -77,8 +78,9 @@ export default {
         about.to.query = {}
       }
 
-      if (window.navigator.standalone !== true) {
-        filtered_pages = filtered_pages.filter(p => p.name !== "offline_test")
+      // if not stand-alone, remove offline_settings
+      if (!is_standalone()) {
+        filtered_pages = filtered_pages.filter(p => p.name !== "offline_settings")
       }
       return filtered_pages
     }

@@ -24,6 +24,8 @@ if (process.env.NODE_ENV === "development" || process.env.SERVER === "local") {
   hostname = "http://localhost:8100"
 }
 
+const title = process.env.PLATFORM_TITLE
+console.log(`platform title: ${title}`)
 module.exports = {
   telemetry: false,
   env: {
@@ -43,7 +45,7 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    title: pkg.name,
+    title: title,
     meta: [
       {charset: 'utf-8'},
       {name: 'viewport', content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'},
@@ -81,7 +83,8 @@ module.exports = {
     '~/plugins/lodash.js',
     "~/plugins/bus.js",
     '~/plugins/api_wrapper',
-    "~/plugins/i18n.js"
+    "~/plugins/i18n.js",
+    "~/plugins/pwa.client.js"
   ],
 
   /*
