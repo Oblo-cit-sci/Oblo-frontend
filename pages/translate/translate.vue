@@ -114,12 +114,12 @@ export default {
             messages
           )
           this.ok_snackbar(data.msg)
+          // console.log("refs", this.$refs)
           for (const m of messages) {
             this.$refs[m[0]][0].refresh_original()
           }
         } else if (this.setup.component === 'domain') {
           const messages = this.get_flat_messages()
-          debugger
           try {
             // todo after the 1. submission, the domain- obj is created, and needs to be patched!
             if (this.setup.config.new_o) {
@@ -139,6 +139,7 @@ export default {
               this.ok_snackbar(data.msg)
             }
             // const changed_messages = Object.entries(this.changed_messages)
+            // todo, words??!?!
             for (const m of this.changed_messages) {
               this.$refs[m][0].refresh_original()
             }
@@ -164,11 +165,11 @@ export default {
               )
               this.ok_snackbar(data.msg)
             }
-            const changed_messages = Object.entries(this.changed_messages)
-            for (const m of changed_messages) {
-              this.$refs[m[0]][0].refresh_original()
+            for (const m of this.changed_messages) {
+              this.$refs[m][0].refresh_original()
             }
           } catch (e) {
+            console.error(e)
             this.err_error_snackbar(e)
           }
         } else {

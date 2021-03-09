@@ -354,8 +354,9 @@ export default {
       // console.log(entry)
       // console.log(setup)
       // console.log(this.code_templates_for_domain_lang)
-      const entry_in_lang = this.code_templates_for_domain_lang[entry]
-      if (entry_in_lang) {
+      const code_template = this.code_templates_for_domain_lang[entry]
+      // console.log(code_template.language === this.unpacked_values.dest_lang)
+      if (code_template.language === this.unpacked_values.dest_lang) {
         const [resp_src_data, resp_dest_data] = await Promise.all([
           this.$api.entry.aspects_as_index_table(entry, setup.src_lang),
           this.$api.entry.aspects_as_index_table(entry, setup.dest_lang)

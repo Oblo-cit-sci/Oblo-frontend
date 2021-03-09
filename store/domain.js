@@ -181,5 +181,8 @@ export const getters = {
     return (domain_name) => {
       return getters.lang_domain_data(domain_name, getters.get_domain_default_language(domain_name))
     }
+  },
+  is_concrete_domain(state) {
+    return state.act_domain_name !== NO_DOMAIN
   }
 };

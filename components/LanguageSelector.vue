@@ -51,9 +51,17 @@ export default {
     //   }
     // },
     available_languages() {
-      // todo when on domain page only take
-      const available_languages = this.$store.getters["available_languages"]
-      return available_languages.map(l => create_option(l, this.$t("lang." + l)))
+      const available_languages_codes = this.$store.getters["available_languages"]
+      let available_languages = available_languages_codes.map(l => create_option(l, this.$t("lang." + l)))
+      if (this.$store.getters["domain/is_concrete_domain"]) {
+        const domain_languages = this.$store.getters["domain/get_domain_languages"](this.$store.getters["domain/act_domain_name"])
+        for (const domain_lang of domain_languages) {
+          if (!available_languages_codes.includes(domain_lang)) {
+            available_languages.push(create_option(domain_lang, `${this.$t("lang." + domain_lang)} (domain)`))
+          }
+        }
+      }
+      return available_languages
     },
     is_disabled() {
       return (this.$route.name === PAGE_ENTRY && this.entry_mode === EDIT)
