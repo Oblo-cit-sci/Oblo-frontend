@@ -49,6 +49,9 @@ export default {
   methods: {
     async goto_domain() {
       const language = this.language ? this.language : this.$store.getters.ui_language
+      if (this.get_domain_language() !== language) {
+        await this.change_domain_language(language, true, false)
+      }
       await this.complete_language_domains(this.domain_name, language)
       await this.$router.push({name: PAGE_DOMAIN, query: {[QP_D]: this.domain_name}})
     },

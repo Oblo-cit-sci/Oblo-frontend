@@ -78,7 +78,7 @@ export default {
       // reload...
       const user_settings = this.$store.getters["user/settings"]
       const domain_name = this.query_param_domain_name || user_settings.fixed_domain || NO_DOMAIN
-      const i_language = this.$route.query[QP_lang] || user_settings.domain_language || this.default_language
+      const i_language = this.$route.query[QP_lang] || user_settings.ui_language || this.default_language
       console.log("init with, ", domain_name, i_language)
 
       const {data: resp} = await this.$api.basic.init_data(domain_name ? [domain_name, NO_DOMAIN] : null, i_language)

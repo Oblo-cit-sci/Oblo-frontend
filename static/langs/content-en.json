@@ -382,7 +382,8 @@
     "language_select": {
       "label": "Language",
       "change_not_possible": "You cannot change the language on this page.",
-      "language_changed": "Language changed to {language_name}"
+      "language_changed": "Language changed to {language_name}",
+      "domain_language_changed": "Language for entries changed to {language_name}"
     },
     "legend": {
       "legend": "Legend"

@@ -71,7 +71,13 @@ export default {
         return this.setting(UI_LANGUAGE)
       },
       set: function (language) {
-        this.change_language(language)
+        // console.log(language)
+        const available_languages_codes = this.$store.getters["available_languages"]
+        if (available_languages_codes.includes(language)) {
+          this.change_language(language)
+        } else {
+          this.change_language(this.setting(UI_LANGUAGE), true, language, true)
+        }
       }
     }
   }

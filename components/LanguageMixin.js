@@ -10,7 +10,7 @@ export default {
   computed: {
     default_language() {
       return this.$nuxt.context.env.DEFAULT_LANGUAGE
-    }
+    },
   },
   methods: {
     async guarantee_default_lang_language_names() {
@@ -23,6 +23,7 @@ export default {
       if (!domain_language) {
         domain_language = language
       }
+      console.log(language, domain_language)
       // TODO comment is not true: no_domain
       let domain = this.$store.getters["domain/act_domain_name"] // undefined for non-domain
       // todo maybe can go into a mixin, if there are other settings for the language
@@ -31,18 +32,7 @@ export default {
         // console.log(data)
         await this.$store.dispatch("domain/add_overviews", data.data)
       }
-      this.complete_language_domains(domain, domain_language).then(() => {
-        if (update_settings)
-          this.set_settings_value(DOMAIN_LANGUAGE, domain_language)
-
-        this.$store.commit("domain/set_act_lang_domain_data", {
-          domain_name: this.$store.getters["domain/act_domain_name"],
-          language
-        })
-        if (update_settings) {
-          this.set_settings_value(DOMAIN_LANGUAGE, domain_language)
-        }
-      })
+      await this.change_domain_language(domain_language, update_settings, language !== domain_language)
       // console.log("check have?", language, this.loaded_ui_languages.includes(language))
       if (!this.$i18n.availableLocales.includes(language)) {
         try {
@@ -59,20 +49,36 @@ export default {
         await this.guarantee_default_lang_language_names()
       }
       this.$api.axios.defaults.headers.common["Accept-Language"] = language
-      if (update_settings)
+      if (update_settings && this.get_ui_language() !== language) {
         this.set_settings_value(UI_LANGUAGE, language)
-      this._i18n.locale = language
-
-      // UPDATE SEARCH CONFIG
-      this.$store.commit("search/replace_in_act_config",
-        Object.assign(this.language_filter_config(),
-          {
-            value: pack_value([language])
-          }))
-
-      if (snackbar) {
-        this.ok_snackbar(this.$t("comp.language_select.language_changed", {language_name: this.t_lang(language)}))
+        this._i18n.locale = language
       }
+
+    },
+    async change_domain_language(domain_language, update_settings = true, snackbar = true) {
+      let domain = this.$store.getters["domain/act_domain_name"] // undefined for non-domain
+
+      this.complete_language_domains(domain, domain_language).then(() => {
+        // console.log("switching domain-lang", domain_language)
+        this.$store.commit("domain/set_act_lang_domain_data", {
+          domain_name: this.$store.getters["domain/act_domain_name"],
+          domain_language
+        })
+        if (update_settings) {
+          this.set_settings_value(DOMAIN_LANGUAGE, domain_language)
+        }
+
+        // UPDATE SEARCH CONFIG
+        this.$store.commit("search/replace_in_act_config",
+          Object.assign(this.language_filter_config(),
+            {
+              value: pack_value([domain_language])
+            }))
+
+        if (snackbar) {
+          this.ok_snackbar(this.$t("comp.language_select.domain_language_changed", {language_name: this.t_lang(domain_language)}))
+        }
+      })
     },
     /**
      *
@@ -113,6 +119,12 @@ export default {
     },
     t_lang(lang_code) {
       return this.$t(`lang.${lang_code}`)
+    },
+    get_ui_language() {
+      return this.$store.getters.ui_language
+    },
+    get_domain_language() {
+      return this.$store.getters.domain_language
     }
   }
 }
