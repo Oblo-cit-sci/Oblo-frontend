@@ -148,7 +148,7 @@ export default {
       return this.attr.track_change || false
     },
     is_required() {
-      return this.attr.required || true
+      return this.$_.get(this.attr,"required", true)
     },
     edit() {
       return this.mode === EDIT
