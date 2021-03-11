@@ -37,14 +37,14 @@ export default {
               },
               confirm_method: async () => {
                 await this.change_language(this.entry.language)
-                this.to_entry(this.uuid, mode, {}, false)
+                this.to_entry(this.uuid, mode, {}, true)
               }
             })
           } else {
-            this.to_entry(this.uuid, mode, {}, false)
+            this.to_entry(this.uuid, mode, {}, true)
           }
         } else {
-          this.to_entry(this.uuid, mode, {}, false)
+          this.to_entry(this.uuid, mode, {}, true)
         }
       }
     },
