@@ -77,7 +77,6 @@ export default {
         }
       }
     }
-
     if (this.is_flex) {
       this.flex_mode = VIEW
     }

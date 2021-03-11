@@ -70,6 +70,7 @@ export default {
   },
   methods: {
     trigger_action() {
+      // console.log("trigger action")
       if (this.button_trigger && this.trigger.requires_callback) {
         this.button_trigger_loading = true
       }
@@ -134,7 +135,7 @@ export default {
       for (let process of this.action.properties.process_result) {
         const {name, value} = process
         if (name === "list_filter_index") {
-          console.log(data)
+          // console.log(data)
           debugger
         }
       }
@@ -237,9 +238,8 @@ export default {
     mvalue: {
       immediate: true,
       handler(new_val, prev_val) {
-        // console.log(new_val, prev_val)
-        // catch create call with nothing
-        if (prev_val === undefined) {
+        // catch create call with nothing, and NOT initialized with aspect-default // false if value from aspect-cache
+        if (this.$_.isEqual(new_val,aspect_default_value(this.aspect)) && prev_val === undefined) {
           return
         }
         // todo could also be another default

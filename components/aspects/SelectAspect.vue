@@ -97,10 +97,12 @@ export default {
     },
     value_icon() {
       if (this.selection) {
-        if (this.data_source) {
-          return this.$api.entry.url_slug_attachment(this.data_source, this.selection.icon)
-        } else {
-          return this.$api.static.url(this.selection.icon)
+        if (this.selection.icon) {
+          if (this.data_source) {
+            return this.$api.entry.url_slug_attachment(this.data_source, this.selection.icon)
+          } else {
+            return this.$api.static.url(this.selection.icon)
+          }
         }
       }
     },
