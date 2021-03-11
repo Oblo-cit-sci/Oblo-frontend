@@ -29,7 +29,7 @@ export default {
       if (domain === NO_DOMAIN) {
         const {data} = await this.$api.domain.overview(language)
         // console.log(data)
-        this.$store.commit("domain/add_domains_overviews", data.data)
+        await this.$store.dispatch("domain/add_overviews", data.data)
       }
       this.complete_language_domains(domain, domain_language).then(() => {
         if (update_settings)

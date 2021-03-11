@@ -14,13 +14,48 @@ export const state = () => ({
   act_lang_domain_data: null
 })
 
+function domainmeta_and_store_init_struct(domain_data) {
+  const {name, index, languages, default_language} = domain_data
+  return {name, index, languages, default_language, langs: {}, overviews: {}}
+}
+
 export const mutations = {
+  guarantee_domains_and_sort(state, domains_data) {
+    let new_domain_added = false
+    const all_domains_data = Array.from(state.domains.values())
+    for (const d of domains_data) {
+      if (!state.domains.has(d.name)) {
+        all_domains_data.push(domainmeta_and_store_init_struct(d))
+        new_domain_added = true
+      }
+    }
+    if (new_domain_added) {
+      all_domains_data.sort((d1, d2) => d1.index - d2.index)
+      state.domains = new Map(ld.toPairs(ld.keyBy(all_domains_data, d => d.name)))
+    }
+  },
+  add_domains_data(state, domains_data) {
+    if (state.domains.size === 0) {
+      domains_data = domains_data.map(d => {
+        const base = domainmeta_and_store_init_struct(d)
+        base.langs[d.language] = Object.assign(d.content, {title: d.title, name: d.name})
+        return base
+      })
+      domains_data = domains_data.sort((d1, d2) => d1.index - d2.index)
+      state.domains = new Map(ld.toPairs(ld.keyBy(domains_data, d => d.name)))
+      // console.log(state.domains)
+    } else {
+      // console.log("inserting new language")
+      for (let d of domains_data) {
+        Object.assign(d.content, {title: d.title, name: d.name})
+        state.domains.get(d.name).langs[d.language] = d.content
+      }
+    }
+    // console.log(state.domains)
+  },
   add_domains_overviews(state, domain_overviews) {
     for (let domain_o of domain_overviews) {
-      let {title, description, ...main_domain_data} = domain_o
-      if (!state.domains.has(domain_o.name)) {
-        state.domains.set(domain_o.name, Object.assign(main_domain_data, {overviews: {}, langs: {}}))
-      }
+      let {title, description} = domain_o
       state.domains.get(domain_o.name).overviews[domain_o.language] = {
         title,
         description
@@ -41,25 +76,6 @@ export const mutations = {
         console.log("Cannot set domain language to language that does not exist. catch before!")
       }
     }
-  },
-  add_domains_data(state, domains_data) {
-    if (state.domains.size === 0) {
-      domains_data = domains_data.map(d => ({
-        name: d.name,
-        langs: {[d.language]: Object.assign(d.content, {title: d.title, name: d.name})},
-        languages: d.languages,
-        default_language: d.default_language,
-        overviews: {}
-      }))
-      state.domains = new Map(ld.toPairs(ld.keyBy(domains_data, d => d.name)))
-      // console.log(state.domains)
-    } else {
-      // console.log("inserting new language")
-      for (let d of domains_data) {
-        Object.assign(d.content, {title: d.title, name: d.name})
-        state.domains.get(d.name).langs[d.language] = d.content
-      }
-    }
   }
 }
 
@@ -68,7 +84,7 @@ export const actions = {
     commit("set_act_domain", NO_DOMAIN)
     if (!getters.has_lang_domain_data(NO_DOMAIN, language))
       language = getters.get_domain_default_language(NO_DOMAIN)
-    commit("set_act_lang_domain_data", {domain_name:NO_DOMAIN, language})
+    commit("set_act_lang_domain_data", {domain_name: NO_DOMAIN, language})
   },
   set_act_domain_lang({commit, getters}, {domain_name, language}) {
     const has_domain_lang = getters.has_lang_domain_data(domain_name, language)
@@ -88,6 +104,15 @@ export const actions = {
         description: d.content.description
       }
     )))
+  },
+  add_overviews({commit}, domain_overviews) {
+    const meta_datas = []
+    for (let domain_o of domain_overviews) {
+      let {title, description, ...domainmeta_data} = domain_o
+      meta_datas.push(domainmeta_data)
+    }
+    commit("guarantee_domains_and_sort", meta_datas)
+    commit("add_domains_overviews", domain_overviews)
   }
 }
 

@@ -189,7 +189,7 @@ export default {
           value: ["domain", "entries"],
           compare: "contains"
         }
-      })
+      }, true)
       domain_aspect.items.forEach(d => {
         const meta_info = this.domains_metainfos[d.value]
         if (meta_info.active_languages.includes(this.unpacked_values.dest_lang))
@@ -374,16 +374,6 @@ export default {
       this.new_lang_dialog_open = true
     },
     add_language() {
-      // if (["fe", "be"].includes(this.unpacked_values.component)) {
-      //   this.$api.language.add_language(this.new_language.value).then(({data}) => {
-      //     this.ok_snackbar(data.msg)
-      //     this.new_lang_dialog_open = false
-      //     this.temporary_additional_languages.push(this.new_language)
-      //   }, err => {
-      //     console.log(err)
-      //     this.err_error_snackbar(err)
-      //   }).finally(() => this.new_lang_dialog_open = false)
-      // } else {
       this.temporary_additional_languages.push(this.new_language)
       this.new_lang_dialog_open = false
       this.$i18n.mergeLocaleMessage(this.ui_language,

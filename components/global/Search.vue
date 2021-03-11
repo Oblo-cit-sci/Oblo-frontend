@@ -2,7 +2,9 @@
   v-container(fluid)
     v-expansion-panels(v-model="search_panel_state")
       v-expansion-panel
-        v-expansion-panel-header.px-3.py-1(color="#d6e5f0") {{$t('comp.search.search_filter')}}
+        v-expansion-panel-header.px-3.py-1(color="#d6e5f0")
+          v-icon mdi-magnify
+          span {{$t('comp.search.search_filter')}}
         v-expansion-panel-content.px-3.py-1.no-wrap(:style="{'background-image':'linear-gradient(rgb(214, 229, 240), white)'}")
           v-row(wrap justify-start)
             v-col.py-0(cols="12")
