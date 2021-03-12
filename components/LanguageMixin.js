@@ -23,8 +23,6 @@ export default {
       if (!domain_language) {
         domain_language = language
       }
-      console.log(language, domain_language)
-      // TODO comment is not true: no_domain
       let domain = this.$store.getters["domain/act_domain_name"] // undefined for non-domain
       // todo maybe can go into a mixin, if there are other settings for the language
       if (domain === NO_DOMAIN) {
@@ -62,7 +60,7 @@ export default {
         // console.log("switching domain-lang", domain_language)
         this.$store.commit("domain/set_act_lang_domain_data", {
           domain_name: this.$store.getters["domain/act_domain_name"],
-          domain_language
+          language: domain_language
         })
         if (update_settings) {
           this.set_settings_value(DOMAIN_LANGUAGE, domain_language)
@@ -88,7 +86,7 @@ export default {
     async complete_language_domains(domain, language) {
       // console.log("completing...", domain, language)
       if (this.$store.getters["domain/has_lang_domain_data"](domain, language)) {
-        console.log("got it already")
+        // console.log("got it already")
         return Promise.resolve()
       }
       return this.init_specifics(domain, language)

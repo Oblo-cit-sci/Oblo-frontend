@@ -73,7 +73,7 @@ export const mutations = {
       if (domain_data) {
         state.act_lang_domain_data = domain_data
       } else {
-        console.log("Cannot set domain language to language that does not exist. catch before!")
+        console.log(`Cannot set domain language (${domain_name}) to ${language} that does not exist. catch before!`)
       }
     }
   }

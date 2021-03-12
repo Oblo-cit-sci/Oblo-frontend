@@ -1,6 +1,6 @@
 import {mapGetters} from "vuex"
 import FixDomainMixin from "~/components/global/FixDomainMixin"
-import {PAGE_INDEX} from "~/lib/pages"
+import {PAGE_DOMAIN, PAGE_INDEX} from "~/lib/pages"
 import {default_settings} from "~/lib/settings"
 import {db_vars} from "~/lib/db_vars"
 import SettingsChangeMixin from "~/components/global/SettingsChangeMixin"
@@ -82,6 +82,8 @@ export default {
       console.log("init with, ", domain_name, i_language)
 
       const {data: resp} = await this.$api.basic.init_data(domain_name ? [domain_name, NO_DOMAIN] : null, i_language)
+
+      // todo here call complete_language_domains if on domain-page and domain-lang different than ui-lang
       // console.log(resp)
       console.log("connected")
 
@@ -97,15 +99,19 @@ export default {
       const domains_overview = resp.data.domains_overview
       await this.$store.dispatch("domain/set_domains", {domains_data, language})
       await this.$store.dispatch("domain/add_overviews", domains_overview)
-
       await this.$store.dispatch("templates/add_templates_codes", resp.data.templates_and_codes)
+
+      if (this.$route.name === PAGE_DOMAIN && user_settings.domain_language !== user_settings.ui_language) {
+        await this.complete_language_domains(domain_name, user_settings.domain_language)
+      }
+
       // console.log("template/codes stored")
       // console.log(data.data)
       this.$store.commit("set_available_languages", resp.data.languages)
 
       if (this.$store.getters.username === VISITOR) {
         const settings = this.$_.cloneDeep(default_settings)
-        Object.assign(settings,{[DOMAIN_LANGUAGE]: language, [UI_LANGUAGE]: language})
+        Object.assign(settings, {[DOMAIN_LANGUAGE]: language, [UI_LANGUAGE]: language})
         this.$store.commit("user/change_setting", settings)
       }
       // console.log("language", language)

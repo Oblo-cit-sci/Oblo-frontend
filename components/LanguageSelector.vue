@@ -14,9 +14,9 @@
 
 <script>
 import SettingsChangeMixin from "~/components/global/SettingsChangeMixin"
-import {EDIT, UI_LANGUAGE} from "~/lib/consts"
+import {DOMAIN_LANGUAGE, EDIT, UI_LANGUAGE} from "~/lib/consts"
 import LanguageMixin from "~/components/LanguageMixin";
-import {PAGE_ENTRY} from "~/lib/pages";
+import {PAGE_DOMAIN, PAGE_ENTRY} from "~/lib/pages";
 import URLQueryMixin from "~/components/util/URLQueryMixin";
 import {create_option} from "~/lib/options";
 
@@ -68,15 +68,20 @@ export default {
     },
     language: {
       get: function () {
-        return this.setting(UI_LANGUAGE)
+        if (this.$route.name === PAGE_DOMAIN) {
+          return this.setting(DOMAIN_LANGUAGE)
+        } else {
+          return this.setting(UI_LANGUAGE)
+        }
       },
-      set: function (language) {
+      set: async function (language) {
         // console.log(language)
         const available_languages_codes = this.$store.getters["available_languages"]
         if (available_languages_codes.includes(language)) {
-          this.change_language(language)
+          await this.change_language(language)
         } else {
-          this.change_language(this.setting(UI_LANGUAGE), true, language, true)
+          await this.change_domain_language(language,true,true)
+          // this.change_language(this.setting(UI_LANGUAGE), true, language, true)
         }
       }
     }
