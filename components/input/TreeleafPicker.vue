@@ -208,11 +208,12 @@ export default {
       return this.$_.get(this.attr, `edit[${level}]`, "list")
     },
     close() {
-      if (this.done_available) {
-        this.done()
-      } else {
-        this.clear()
-      }
+      this.clear()
+      // if (this.done_available) {
+      //   this.done()
+      // } else {
+      //   this.clear()
+      // }
     }
   }
 }

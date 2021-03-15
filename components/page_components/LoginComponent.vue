@@ -24,7 +24,7 @@
             nuxt-link(to="/register" @mousedown="$emit('page_change')") {{$t("page.login.go_here_to_register")}}
     v-row
       v-col
-        OAuthLoginButtonGroup
+        OAuthLoginButtonGroup(:go_home="go_home")
 </template>
 
 <script>
@@ -37,7 +37,7 @@ import InitializationMixin from "~/layouts/InitializationMixin"
 import {mapGetters, mapMutations} from "vuex"
 import {extract_n_unpack_values} from "~/lib/aspect"
 import LanguageMixin from "~/components/LanguageMixin";
-import {MSG_PATH_SOMETHING_WENT_WRONG, NO_DOMAIN, RESPONSE_ERROR_MSG} from "~/lib/consts";
+import {MSG_PATH_SOMETHING_WENT_WRONG, RESPONSE_ERROR_MSG} from "~/lib/consts";
 import URLQueryMixin from "~/components/util/URLQueryMixin";
 import OAuthLoginButtonGroup from "~/components/actor/OAuthLoginButtonGroup";
 
@@ -90,7 +90,7 @@ export default {
         //   // todo could just be index/clear_entries (change name) but needs await
         this.clear_search()
 
-        this.clear_entries({keep_drafts:true, keep_uuid: this.query_entry_uuid})
+        this.clear_entries({keep_drafts: true, keep_uuid: this.query_entry_uuid})
 
         this.map_clear()
         const user_data = response_data.data
@@ -126,6 +126,11 @@ export default {
       } catch (err) {
         console.log(err)
       }
+
+      if (this.query_entry_uuid) {
+        await this.guarantee_entry(this.query_entry_uuid, this.query_entry_access_key)
+      }
+
       this.$emit("logged_in")
     },
     request_verification_mail() {
@@ -133,7 +138,7 @@ export default {
         this.ok_snackbar(data.msg)
         this.add_verification_resend_link = false
         this.errorMsg = null
-        this.$router.push({path:"/basic/registration_done", query: {username: this.registered_name}})
+        this.$router.push({path: "/basic/registration_done", query: {username: this.registered_name}})
       }).catch(err => {
         this.err_error_snackbar(err)
       })

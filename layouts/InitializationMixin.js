@@ -9,10 +9,11 @@ import HomePathMixin from "~/components/menu/HomePathMixin"
 import EnvMixin from "~/components/global/EnvMixin"
 import URLQueryMixin from "~/components/util/URLQueryMixin";
 import LanguageMixin from "~/components/LanguageMixin";
+import EntryFetchMixin from "~/components/entry/EntryFetchMixin";
 
 export default {
   name: "InitializationMixin",
-  mixins: [FixDomainMixin, SettingsChangeMixin, HomePathMixin, EnvMixin, URLQueryMixin, LanguageMixin],
+  mixins: [FixDomainMixin, SettingsChangeMixin, HomePathMixin, EnvMixin, URLQueryMixin, LanguageMixin, EntryFetchMixin],
   created() {
     // console.log("db loaded??", this.db_loaded)
     default_settings.ui_language = this.default_language
@@ -126,28 +127,9 @@ export default {
       // todo maybe this part should be handled by the individual page, so it can do its default behaviour
       // but a wrapper would be good.
 
-      if (this.query_entry_uuid && !this.$store.getters["entries/has_full_entry"](this.query_entry_uuid)) {
-        // console.log("need to get that entry")
-        try {
-          let response = null
-          if (!this.query_entry_access_key) {
-            response = await this.$api.entry.get(this.query_entry_uuid)
-          } else {
-            response = await this.$api.entry.get_shared(this.query_entry_uuid, this.query_entry_access_key)
-          }
-          if (response.status === 200) {
-            const entry = response.data.data
-            this.$store.commit("entries/save_entry", entry)
-            await this.complete_language_domains(entry.domain, entry.language)
-          } else {
-            await this.$router.push("/")
-          }
-        } catch (e) {
-          console.log(e)
-          await this.$router.push("/")
-        }
+      if (this.query_entry_uuid) {
+        await this.guarantee_entry(this.query_entry_uuid, this.query_entry_access_key)
       }
-
       await this.$store.dispatch("app/connected")
 
       console.log("multi domains?", this.has_multiple_domains)
