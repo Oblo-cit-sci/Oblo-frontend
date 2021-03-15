@@ -27,10 +27,10 @@ import Dialog from "~/components/dialogs/Dialog";
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin";
 import EntryCreateMixin from "~/components/entry/EntryCreateMixin";
 import ApiHelperMixin from "~/components/ApiHelperMixin";
-import {object_list2options} from "~/lib/options";
 import {mapGetters} from "vuex";
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin";
 import LanguageMixin from "~/components/LanguageMixin";
+import {BUS_HIDE_OVERLAY, BUS_OVERLAY} from "~/plugins/bus";
 
 const components = ["fe", "be", "domain", "entries"]
 
@@ -42,14 +42,15 @@ export default {
   components: {Dialog, LanguageSearch, AspectSet, Aspect},
   mixins: [OptionsMixin, TriggerSnackbarMixin, EntryCreateMixin, ApiHelperMixin, TypicalAspectMixin, LanguageMixin],
   data() {
-    const {component} = this.$store.getters["translate/setup_values"]
+    console.log(this.$store.getters["translate/setup_values"])
+    const {component, domain, entry, src_lang, dest_lang} = this.$store.getters["translate/setup_values"]
     return {
       setup_values: {
         component: pack_value(component),
-        domain: pack_value(),
-        entry: pack_value(),
-        src_lang: pack_value(),
-        dest_lang: pack_value(),
+        domain: pack_value(domain),
+        entry: pack_value(entry),
+        src_lang: pack_value(src_lang),
+        dest_lang: pack_value(dest_lang),
         language_active: pack_value()
       },
       init_fetched: false,
@@ -69,16 +70,17 @@ export default {
     }
   },
   created() {
-    this.$bus.$emit("overlay")
+    this.$bus.$emit(BUS_OVERLAY)
     this.fetch_init_data().then(() => {
       this.init_fetched = true
-      this.$bus.$emit("hide-overlay")
+      this.$bus.$emit(BUS_HIDE_OVERLAY)
     })
     //this.debounced_entries_search = this.$_.debounce(this.code_template_search, 200)
   },
   computed: {
     ...mapGetters({translate_setup: "translate/setup_values", ui_language: "ui_language"}),
     setup_aspects() {
+      console.log("setup_aspects")
       return [
         this.dest_language_select_aspect, this.component_select_aspect,
         this.language_active_aspect,
@@ -469,7 +471,7 @@ export default {
             this.setup_values["src_lang"] = pack_value()
             if (["fe", "be"].includes(component) && dest_lang) {
               const {dest_lang: lang} = new_vals
-              // console.log("check language statuses", this.language_statuses)
+              console.log("check language statuses", this.language_statuses, lang)
               if (!this.language_statuses.hasOwnProperty(lang)) {
                 try {
                   const {data: resp} = await this.$api.language.language_status(lang)

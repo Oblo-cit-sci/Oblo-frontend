@@ -17,11 +17,14 @@
         div.mt-2(v-if="add_verification_resend_link")
           v-btn(@click="request_verification_mail" color="success" rounded) {{$t('page.login.btn_resend_mail')}}
         v-alert(:value='errorMsg != null' type='error' prominent transition="scroll-y-reverse-transition") {{errorMsg}}
-      v-col(cols="6" md="3" offset-md="1")
+      v-col(cols="12" md="3" offset-md="1")
         slot
           h3 {{$t("page.login.no_account")}}
           div(@mousedown="page_change")
             nuxt-link(to="/register" @mousedown="$emit('page_change')") {{$t("page.login.go_here_to_register")}}
+    v-row
+      v-col
+        OAuthLoginButtonGroup
 </template>
 
 <script>
@@ -36,11 +39,12 @@ import {extract_n_unpack_values} from "~/lib/aspect"
 import LanguageMixin from "~/components/LanguageMixin";
 import {MSG_PATH_SOMETHING_WENT_WRONG, NO_DOMAIN, RESPONSE_ERROR_MSG} from "~/lib/consts";
 import URLQueryMixin from "~/components/util/URLQueryMixin";
+import OAuthLoginButtonGroup from "~/components/actor/OAuthLoginButtonGroup";
 
 export default {
   name: "LoginComponent",
   mixins: [TypicalAspectMixin, TriggerSnackbarMixin, URLQueryMixin, PersistentStorageMixin, NavBaseMixin, LanguageMixin, InitializationMixin],
-  components: {Aspect},
+  components: {OAuthLoginButtonGroup, Aspect},
   props: {
     go_home: {
       type: Boolean,

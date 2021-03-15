@@ -453,6 +453,10 @@
       "complete_profile": "Complete your Profile",
       "complete_domain_aspects": "Answer some {domain_name} related questions"
     },
+    "oauth_login": {
+      "h": "Sign in with...",
+      "sign_in_with": "Sign in with {service}"
+    },
     "previewlist": {
       "num_entries": "@:w.n_entries"
     },

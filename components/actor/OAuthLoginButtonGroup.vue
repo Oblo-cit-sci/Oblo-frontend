@@ -1,9 +1,10 @@
 <template lang="pug">
   div
+    h2.mb-2 {{$t("comp.oauth_login.h")}}
     div(v-for="service in oauth_services" :key="service.service_name")
       v-btn(:href="service_link(service.service_name)")
         v-img.mr-1(:src="service.service_icon_url" width="20px")
-        span  login with {{service.service_name}}
+        span {{$t("comp.oauth_login.sign_in_with",{service: service.service_name})}}
 </template>
 
 <script>

@@ -4,6 +4,8 @@
 </template>
 
 <script>
+import {BUS_HIDE_OVERLAY, BUS_OVERLAY} from "~/plugins/bus";
+
 export default {
   name: "TheOverlay",
   data() {
@@ -13,11 +15,11 @@ export default {
     }
   },
   created() {
-    this.$bus.$on("overlay", (color) => {
+    this.$bus.$on(BUS_OVERLAY, (color) => {
       // this.color = color // ?
       this.overlay = true
     })
-    this.$bus.$on("hide-overlay", () => {
+    this.$bus.$on(BUS_HIDE_OVERLAY, () => {
       this.overlay = false
     })
   }
