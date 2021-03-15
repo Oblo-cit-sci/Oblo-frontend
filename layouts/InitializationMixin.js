@@ -136,7 +136,9 @@ export default {
             response = await this.$api.entry.get_shared(this.query_entry_uuid, this.query_entry_access_key)
           }
           if (response.status === 200) {
-            this.$store.commit("entries/save_entry", response.data.data)
+            const entry = response.data.data
+            this.$store.commit("entries/save_entry", entry)
+            await this.complete_language_domains(entry.domain, entry.language)
           } else {
             await this.$router.push("/")
           }

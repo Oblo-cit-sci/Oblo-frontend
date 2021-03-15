@@ -103,8 +103,7 @@ export default {
       }
       if (this.extra.hasOwnProperty("show_title_descr")) {
         return this.extra.show_title_descr
-      } else
-        return true
+      } else return !this.$_.get(this.extra, "no_title", false);
     },
     visible() {
       return !this.disable || !this.attr.hide_on_disabled
