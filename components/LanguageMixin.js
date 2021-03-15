@@ -49,9 +49,8 @@ export default {
       this.$api.axios.defaults.headers.common["Accept-Language"] = language
       if (update_settings && this.get_ui_language() !== language) {
         this.set_settings_value(UI_LANGUAGE, language)
-        this._i18n.locale = language
       }
-
+      this._i18n.locale = language
     },
     async change_domain_language(domain_language, update_settings = true, snackbar = true) {
       let domain = this.$store.getters["domain/act_domain_name"] // undefined for non-domain
