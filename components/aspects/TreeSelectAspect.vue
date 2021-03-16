@@ -29,7 +29,7 @@
         @click:clear="clear"
         @click="open_if_empty"
         :value="value_text")
-    v-dialog(width="800" v-model="dialogOpen" height="100%")
+    v-dialog(width="800" v-model="dialogOpen" height="100%" @click:outside="click_outside")
       TreeleafPicker(
         :tree="tree"
         :attr="attr"
@@ -101,6 +101,11 @@ export default {
     }
   },
   methods: {
+    click_outside() {
+      this.update_value([])
+      this.$emit("aspectAction", {action: "clear"})
+      this.int_value = []
+    },
     openDialog(short_persistence) {
       if (!this.disabled) {
         this.dialogOpen = true
@@ -123,6 +128,7 @@ export default {
       }
     },
     clear() {
+      // console.log("tree-sel clear")
       this.update_value([])
       this.dialogOpen = false;
       this.$emit("aspectAction", {action: "clear"})
