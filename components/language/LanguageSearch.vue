@@ -39,6 +39,7 @@ export default {
   watch: {
     query(val) {
       if (!val) {
+        this.languageOptions = []
         return
       }
       if (this.isLoading || val.length < 2) return

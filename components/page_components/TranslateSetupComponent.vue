@@ -180,8 +180,11 @@ export default {
       return this.temporary_additional_languages.map(l => l.value).concat(this.all_added_languages)
     },
     new_language_addable() {
-      const added = this.$_.find(this.temporary_additional_languages, l => l.value === this.new_language.value)
-      return this.new_language !== null && !added
+      // console.log(this.new_language)
+      // console.log(this.temporary_additional_languages)
+      if (this.new_language === null)
+        return
+      return !this.$_.find(this.temporary_additional_languages, l => l.value === this.new_language.value)
     },
     domain_select_aspect() {
       const domain_aspect = this.asp_domain_select("domain", "w.domain", false, {
@@ -380,6 +383,7 @@ export default {
       this.new_lang_dialog_open = false
       this.$i18n.mergeLocaleMessage(this.ui_language,
         {[`lang.${this.new_language.value}`]: this.new_language.text})
+      this.setup_values.dest_lang = this.new_language
     },
     aspectAction(event) {
       if (event.name === "new_lang_dialog") {
