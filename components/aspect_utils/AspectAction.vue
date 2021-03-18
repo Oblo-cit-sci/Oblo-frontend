@@ -207,7 +207,7 @@ export default {
       }
     },
     handle_result(result) {
-      console.log("result", result)
+      // console.log("result", result)
       const handle = this.action.properties.handle_result
       if (handle) {
         if (handle.type === "assign_to_aspect") {

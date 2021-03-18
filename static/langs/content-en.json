@@ -405,7 +405,7 @@
         "options": {
           "rnd": "The exact location is not visible, but a randomly moved location (max.50km) (yellow marker).",
           "exact": "The exact location will be visible.",
-          "region": "The location's administrative unit (region) will be visible (yellow marker)."
+          "region": "The location's administrative unit (region)."
         },
         "change_default_setting": "Change your default settings for your public location:",
         "change": "change public location"

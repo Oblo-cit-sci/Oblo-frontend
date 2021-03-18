@@ -64,7 +64,7 @@ import Mapbox from 'mapbox-gl-vue'
 import {
   array2coords,
   create_location_error,
-  LOCATION_PRECISION_POINT,
+  LOCATION_PRECISION_POINT, LOCATION_PRECISION_REGION,
   place2str,
   PREC_OPTION_EXACT,
   PREC_OPTION_RANDOM,
@@ -291,7 +291,6 @@ export default {
         }]
       // for a draft, set the
       if (this.public_location_selector_on && this.has_public_loc) {
-        // debugger
         if (this.point_location_precision &&
           this.value.public_loc.location_precision === LOCATION_PRECISION_POINT &&
           this.$_.isEqual(this.value.coordinates, this.value.public_loc.coordinates)) {
@@ -335,15 +334,24 @@ export default {
         this.snap_to_existing = false
         this.update_value(null)
       } else {
-        debugger
         const feature = this.$_.find(this.search_results, feature => feature.id === selection)
         // console.log("srs", feature, feature.place_type[0])
 
         // TODO dont call this or only use the first part...
         this.complete_value({
           coordinates: arr2coords(feature.geometry.coordinates),
-          location_precision: LOCATION_PRECISION_POINT,
+          location_precision: LOCATION_PRECISION_REGION,
         }, feature)
+
+
+        // try {
+        //   const place_type = selection.split(".")[0]
+        // } catch (e) {
+        //   console.error(e)
+        // }
+        // precision_options
+        // select the smallest given, which comes from the results...
+        this.selected_prec_option = 2
       }
     },
     /* map */
@@ -459,6 +467,7 @@ export default {
     },
     /* util */
     complete_value(value, features) {
+      console.log(value,  features)
       /*
       value contains just the coordinates
       features should have the results of rev-geoquery of the coordinates
@@ -495,6 +504,12 @@ export default {
       if (this.privacy_setting === settings_loc_privacy_exact) {
         option = PREC_OPTION_EXACT
       }
+      // from the search
+      if (!Array.isArray(features)) {
+        option = features.text
+      }
+      console.log("public pos options", option)
+
       // if (!this.point_location_precision) {
       //   // console.log("CC", value.place, value.location_precision, features[0].text)
       //   option = features[0].text// value.place[value.location_precision].name
@@ -676,9 +691,6 @@ export default {
             clusterRadius: 25
           })
 
-          const tt = this
-          debugger
-
           this.add_entry_layer("my_entries_source", "entries_layer", {
             'circle-color': [
               'match',
@@ -715,7 +727,7 @@ export default {
       return options
     },
     update_public_location_circle() {
-      console.log(this.value)
+      // console.log(this.value)
       if (this.location_set && this.value.public_precision === PREC_OPTION_RANDOM) {
         this.public_location_circle()
       } else {
@@ -785,7 +797,7 @@ export default {
       this.search_result_selected(sel)
     },
     value(value) {
-      console.log("location aspect value watch", value)
+      // console.log("location aspect value watch", value)
       if (!value) {
         this.reset()
         return
