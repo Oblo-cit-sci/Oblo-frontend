@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-dialog(v-model="dialog_open" max-width="500")
+  v-dialog(v-model="dialog_open" max-width="500" persistent)
     v-card
       v-card-title {{config.title}}
       v-card-text {{config.text}}
