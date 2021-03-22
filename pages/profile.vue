@@ -28,7 +28,7 @@
           @update:error="$set(aspect, 'error', $event)"
           :mode="mode")
     <!-- Email and Password edit -->
-    div(v-if="edit_mode")
+    div(v-if="can_edit_email_password")
       h3 {{$t('page.profile.h_email_password')}}
       v-btn(color="info" @click="security_dialog_open=true") {{$t('page.profile.bt_change_email_pwd')}}
       Dialog(:dialog_open.sync="security_dialog_open" persistent)
@@ -342,6 +342,9 @@ export default {
           return e
         }
       }
+    },
+    can_edit_email_password() {
+      return this.edit_mode && !this.registered_name.startsWith("oauth_")
     },
     mode() {
       if(this.edit_mode)
