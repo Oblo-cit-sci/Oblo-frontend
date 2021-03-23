@@ -182,7 +182,11 @@ export default {
           this.$store.commit("search/delete_entry", this.uuid)
           this.$store.commit("map/delete_feature", {domain_name: this.entry.domain, uuid: this.uuid})
         }
-        this.back(["search"])
+        let remove_params = ["search"]
+        if (!accept) {
+          remove_params = remove_params.concat(["uuid", "entry_mode"])
+        }
+        this.back(remove_params)
       } catch (err) {
         console.log(err)
         this.err_error_snackbar(err)
