@@ -17,7 +17,6 @@
     "build.local and move": "SERVER=local nuxt build --spa --pwa; node util/move2server.js",
     "build spa": "nuxt build --spa --pwa",
     "build and move": "nuxt build --spa --pwa; node util/move2server.js",
-    "build and move_staging": "nuxt build --spa --pwa; node util/move2server.js",
     "upload": "sudo python3 /media/ra/hd/projects/2019/liccibackend/helpers/app_upload.py",
     "test": "jest"
   },
