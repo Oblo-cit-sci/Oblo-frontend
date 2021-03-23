@@ -207,10 +207,12 @@ export default {
           else if (this.public_precision === PREC_OPTION_RANDOM) {
             return this.$t("comp.location_asp.public_loc.options.rnd")
           } else { // PREC_OPTION_REGION
+            console.log("pub is region")
             return this.$t("comp.location_asp.public_loc.options.region")
           }
         } else {
-          return this.$t("comp.location_asp.public_loc.options.region")
+          console.log("is region")
+          return this.$t("comp.location_asp.option_region")
         }
       } else {
         return ""
