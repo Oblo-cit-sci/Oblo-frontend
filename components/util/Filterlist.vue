@@ -6,9 +6,11 @@
         v-scroll-x-transition(group)
           v-list-item(v-for="(filter, index) in visible_filter" :key="index")
             v-list-item-title {{$t(filter.t_label)}}:&nbsp;{{filter_text(filter)}}
-            v-btn(fab x-small rounded elevation="2" @click="edit_filter(index)" :disabled="not_editable(filter)")
+            v-btn(fab x-small rounded elevation="2" @click="edit_filter(index)"
+              :disabled="not_editable(filter)" :style="filter_edit_button_style(filter)")
               v-icon mdi-filter
-            v-btn(fab x-small rounded elevation="2" @click="remove_filter(index)" :disabled="not_removable(filter)")
+            v-btn(fab x-small rounded elevation="2" @click="remove_filter(index)"
+              :disabled="not_removable(filter)" :style="filter_remove_button_style(filter)")
               v-icon mdi-window-close
     v-menu
       template(v-slot:activator="{ on: menu }")
@@ -130,6 +132,24 @@ export default {
     },
     not_editable(filter) {
       return !this.$_.get(filter, "edit.editable", true)
+    },
+    filter_edit_button_style(filter) {
+      console.log("filter_edit_button_style", this.not_editable(filter))
+      if (this.not_editable(filter)) {
+        console.log("hide edit btn!")
+        return {
+          opacity: 0
+        }
+      }
+    },
+    filter_remove_button_style(filter) {
+      console.log("filter_remove_button_style", this.not_editable(filter))
+      if (this.not_removable(filter)) {
+        console.log("hide edit btn!")
+        return {
+          opacity: 0
+        }
+      }
     },
     set_filter_value(name, value) {
       // console.log("FL:set_filter_value", value)
