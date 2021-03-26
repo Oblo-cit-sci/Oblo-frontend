@@ -659,8 +659,8 @@ export default {
           this.map_goto_location(feature.geometry)
         }
         this.update_navigation_mode(entry_uuid, VIEW, false)
-      }).catch(() => {
-        this.error_snackbar("Couldn't fetch entry")
+      },(err) => {
+        this.err_error_snackbar(err)
       })
     },
     trigger_dl() {

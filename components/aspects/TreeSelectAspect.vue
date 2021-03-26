@@ -164,19 +164,23 @@ export default {
       return this.$_.get(this.attr, "direct_select", true)
     },
     value_text() {
-      // console.log("val text", this.value)
-      // console.log("TV", this.value)
+      // console.log("tree-val text", this.value)
       let act_tree_node = this.tree.root
       // console.log("ATN",act_tree_node, this.value)
       return this.value.map(v => {
         // console.log("v?",v, act_tree_node.children)
         if (typeof v === "string")
           return v
-        act_tree_node = act_tree_node.children.find(node => node.value === v.value)
-        // console.log("->",act_tree_node.value,  act_tree_node.text)
-        let base = act_tree_node.text
-        base += v.extra_value ? " / " + unpack(v.extra_value) : ""
-        return base
+        act_tree_node = act_tree_node.children.find(node => node.value === v.value) || act_tree_node
+        if (!act_tree_node) {
+          console.error("No tree-node", v,  node.children)
+          return v.text || ""
+        } else {
+          // console.log("->", act_tree_node.value, act_tree_node.text)
+          let base = act_tree_node.text
+          base += v.extra_value ? " / " + unpack(v.extra_value) : ""
+          return base
+        }
       }).join(" \u21D2 ")
     }
   },

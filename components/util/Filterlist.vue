@@ -134,18 +134,14 @@ export default {
       return !this.$_.get(filter, "edit.editable", true)
     },
     filter_edit_button_style(filter) {
-      console.log("filter_edit_button_style", this.not_editable(filter))
       if (this.not_editable(filter)) {
-        console.log("hide edit btn!")
         return {
           opacity: 0
         }
       }
     },
     filter_remove_button_style(filter) {
-      console.log("filter_remove_button_style", this.not_editable(filter))
       if (this.not_removable(filter)) {
-        console.log("hide edit btn!")
         return {
           opacity: 0
         }

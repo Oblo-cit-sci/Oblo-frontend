@@ -27,8 +27,7 @@ export default {
             return Promise.reject(entry_response)
           }
         } catch (e) {
-          this.err_error_snackbar(e)
-          await this.$router.push("/")
+          return Promise.reject(e)
         }
       }
     },
