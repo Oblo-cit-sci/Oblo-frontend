@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    v-btn( to="user_guide?guide=index" nuxt) Back to index
+    v-btn(to="user_guide?guide=index" nuxt v-if="not_on_index") Back to index
     .main(v-html="user_guide_text")
 </template>
 
@@ -13,31 +13,41 @@ export default {
   mixins: [],
   data() {
     return {
-      guide_name: null,
       user_guide_text: null
     }
   },
   created() {
-    this.guide_name = this.$route.query.guide || "index"
-    this.$api.axios.get("api/basic/user_guide", {
-      params: {
-        language: this.$store.getters.ui_language,
-        user_guide_name: this.guide_name
-      }
-    }).then(resp => {
-      this.user_guide_text = MarkdownIt({html:true}).render(resp.data)
-    }, err => {
-      console.error(err)
-    })
+
   },
   computed: {
+    not_on_index() {
+      return this.guide_name !== "index"
+    },
     guide_name() {
-
+      return this.$route.query.guide || "index"
+    }
+  },
+  methods: {
+    fetch_guide() {
+      this.$api.axios.get("api/basic/user_guide", {
+        params: {
+          language: this.$store.getters.ui_language,
+          user_guide_name: this.guide_name
+        }
+      }).then(resp => {
+        this.user_guide_text = MarkdownIt({html: true}).render(resp.data)
+      }, err => {
+        console.error(err)
+      })
     }
   },
   watch: {
-    guide_name(new_name, old_name) {
-      console.log(new_name, old_name)
+
+    guide_name: {
+      immediate: true,
+      handler: function() {
+        this.fetch_guide()
+      }
     }
   }
 }
