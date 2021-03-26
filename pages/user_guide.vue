@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    v-btn(to="user_guide?guide=index" nuxt v-if="not_on_index") Back to index
+    v-btn(to="/user_guide?guide=index" nuxt v-if="not_on_index") Back to index
     .main(v-html="user_guide_text")
 </template>
 
@@ -42,7 +42,6 @@ export default {
     }
   },
   watch: {
-
     guide_name: {
       immediate: true,
       handler: function() {
