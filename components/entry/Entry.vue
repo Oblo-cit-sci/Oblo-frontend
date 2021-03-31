@@ -97,7 +97,7 @@ import FullEntryMixin from "./FullEntryMixin";
 import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
 import PersistentStorageMixin from "../util/PersistentStorageMixin";
 import EntryValidation from "./EntryValidation";
-import {draft_color, EDIT, ENTRY, META, VIEW} from "~/lib/consts";
+import {draft_color, EDIT, ENTRY, META, REJECTED, VIEW} from "~/lib/consts";
 import {privacy_color, privacy_icon} from "~/lib/util";
 import ChangedAspectNotice from "./ChangedAspectNotice";
 import MetaChips from "./MetaChips";
@@ -235,7 +235,10 @@ export default {
         name: this.entry.privacy,
         color: privacy_color(this.entry.privacy)
       })
-      result.push({name: "License: " + this.entry.license})
+      result.push({name: `${this.$t("comp.entry.license")}: ${this.entry.license}`})
+      if(this.entry.status === REJECTED) {
+        result.push({name: this.$t("comp.entry.rejected"), color: "red"})
+      }
       result.push({name: this.$t(`lang.${this.entry.language}`), color: "yellow"})
       return result
     },

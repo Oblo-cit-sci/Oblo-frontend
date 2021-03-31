@@ -55,6 +55,7 @@ import {LANGUAGE, QP_D, QP_SEARCH, TEMPLATE} from "~/lib/consts"
 import EntrySearchMixin from "~/components/EntrySearchMixin"
 import Aspect from "~/components/Aspect"
 import {aspect_default_value, pack_value, unpack} from "~/lib/aspect"
+import {BUS_TRIGGER_SEARCH} from "~/plugins/bus";
 
 const LOG = false
 
@@ -145,13 +146,13 @@ export default {
       }
     }
 
-    this.$bus.$on("trigger_search", () => {
-      this.get_entries(true, false)
+    this.$bus.$on(BUS_TRIGGER_SEARCH, (before_last=true, debounce=false) => {
+      this.get_entries(before_last, debounce)
     })
   },
   beforeDestroy() {
     // TODO WHY IS THIS REQUIRED. or why is bus listener added anytime we have this comp. created. so it would trigger many times...
-    this.$bus.$off("trigger_search")
+    this.$bus.$off(BUS_TRIGGER_SEARCH)
   },
   watch: {
     keyword: function (kw) {
@@ -236,6 +237,7 @@ export default {
         // console.log("config change get entries")
         // if a prominent filter changed debounce
         this.get_entries(false, prominent_filter_changed)
+
       }
     },
     prominent_filter_values: {

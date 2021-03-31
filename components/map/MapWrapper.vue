@@ -48,6 +48,7 @@ import CreateEntryButton from "~/components/CreateEntryButton";
 import ResponsivenessMixin from "~/components/ResponsivenessMixin";
 import EnvMixin from "~/components/global/EnvMixin"
 import {pack_value, unpack} from "~/lib/aspect";
+import {BUS_MAP_MARKER_HIDE, BUS_MAP_MARKER_SHOW, BUS_TRIGGER_SEARCH} from "~/plugins/bus";
 
 const cluster_layer_name = LAYER_BASE_ID + '_clusters'
 const show_cluster_place_name = false
@@ -185,18 +186,18 @@ export default {
     }
     this.last_map_options = this.map_options()
 
-    this.$bus.$on("map-marker-show", ({uuid}) => {
+    this.$bus.$on(BUS_MAP_MARKER_SHOW, ({uuid}) => {
       // console.log("bus-show")
       this.change_entry_markers_mode(uuid, true)
     })
-    this.$bus.$on("map-marker-hide", ({uuid}) => {
+    this.$bus.$on(BUS_MAP_MARKER_HIDE, ({uuid}) => {
       // console.log("bus-hide", this.selected_entry)
       // when entry is selected dont trigger this
       if (!this.selected_entry) {
         this.change_entry_markers_mode(uuid, false)
       }
     })
-    this.$bus.$on("trigger_search", () => {
+    this.$bus.$on(BUS_TRIGGER_SEARCH, () => {
       this.load_map_entries(this.domain_name)
     })
   },
@@ -680,9 +681,9 @@ export default {
     }
 
     this.store_cam_options()
-    this.$bus.$off("map-marker-show")
-    this.$bus.$off("map-marker-hide")
-    this.$bus.$off("trigger_search")
+    this.$bus.$off(BUS_MAP_MARKER_SHOW)
+    this.$bus.$off(BUS_MAP_MARKER_HIDE)
+    this.$bus.$off(BUS_TRIGGER_SEARCH)
   },
   watch: {
     map_hidden(hidden) {

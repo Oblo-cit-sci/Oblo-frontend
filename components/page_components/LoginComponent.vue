@@ -40,6 +40,7 @@ import LanguageMixin from "~/components/LanguageMixin";
 import {MSG_PATH_SOMETHING_WENT_WRONG, RESPONSE_ERROR_MSG} from "~/lib/consts";
 import URLQueryMixin from "~/components/util/URLQueryMixin";
 import OAuthLoginButtonGroup from "~/components/actor/OAuthLoginButtonGroup";
+import {BUS_TRIGGER_SEARCH} from "~/plugins/bus";
 
 export default {
   name: "LoginComponent",
@@ -120,8 +121,11 @@ export default {
         if (this.go_home) {
           this.home()
         } else {
+          // this does not seem to be necessary anymore, since language change triggers a new search...
           // watched by Search.vue and MapWrapper
-          this.$bus.$emit("trigger_search")
+          // search gets triggered already by search_config change.
+          // but map not, so its required and search is called twice...
+           this.$bus.$emit(BUS_TRIGGER_SEARCH)
         }
       } catch (err) {
         console.log(err)

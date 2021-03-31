@@ -79,6 +79,7 @@ import EntryTags from "~/components/entry/EntryTags"
 import ActorAvatar from "~/components/actor/ActorAvatar"
 import LanguageCodeFallback from "~/components/aspect_utils/LanguageCodeFallback";
 import LanguageChip from "~/components/language/LanguageChip";
+import {BUS_MAP_MARKER_HIDE, BUS_MAP_MARKER_SHOW} from "~/plugins/bus";
 
 
 export default {
@@ -252,10 +253,10 @@ export default {
   },
   methods: {
     title_mouseover() {
-      this.$bus.$emit("map-marker-show", {uuid:this.uuid})
+      this.$bus.$emit(BUS_MAP_MARKER_SHOW, {uuid:this.uuid})
     },
     title_mouseleave() {
-      this.$bus.$emit("map-marker-hide", {uuid:this.uuid})
+      this.$bus.$emit(BUS_MAP_MARKER_HIDE, {uuid:this.uuid})
     },
     privacy_icon(privacy) {
       return privacy_icon(privacy)

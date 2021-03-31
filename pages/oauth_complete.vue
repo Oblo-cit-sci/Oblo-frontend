@@ -8,7 +8,7 @@ import {mapMutations} from "vuex"
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin";
 import LanguageMixin from "~/components/LanguageMixin";
 import NavBaseMixin from "~/components/NavBaseMixin";
-import {BUS_HIDE_OVERLAY, BUS_OVERLAY} from "~/plugins/bus";
+import {BUS_HIDE_OVERLAY, BUS_OVERLAY, BUS_TRIGGER_SEARCH} from "~/plugins/bus";
 
 export default {
   name: "oauth_complete",
@@ -56,7 +56,7 @@ export default {
         this.home()
       } else {
         // watched by Search.vue and MapWrapper
-        this.$bus.$emit("trigger_search")
+        this.$bus.$emit(BUS_TRIGGER_SEARCH)
       }
     } catch (err) {
       console.log(err)
