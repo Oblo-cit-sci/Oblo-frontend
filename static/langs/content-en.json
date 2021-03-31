@@ -268,16 +268,6 @@
     "create_entry_button": {
       "create_text": "Create entry"
     },
-    "entrypreview": {
-      "draft": "Draft",
-      "requries_review": "@.capitalize:w.review_required",
-      "created": "created",
-      "outdated": "Created from an outdated version. Some values might change. Download the entry before updating is recommended",
-      "view": "@:w.view",
-      "edit": "@:w.edit",
-      "update": "update",
-      "review": "review"
-    },
     "decision_dialog": {
       "cancel": "@.capitalize:w.cancel",
       "confirm": "Confirm"
@@ -290,6 +280,8 @@
     },
     "entry": {
       "template_not_in_lang": "The entrytype is not available in {language}",
+      "rejected": "Rejected",
+      "license": "@.capitalize:w.license",
       "creator_switch_dialog": {
         "cancel_text": "Back",
         "title": "Creator changed",
@@ -300,6 +292,16 @@
         "title": "Language changed",
         "text": "This entry was created in {language}. Do you want to change your language to {language}?"
       }
+    },
+    "entrypreview": {
+      "draft": "Draft",
+      "requries_review": "@.capitalize:w.review_required",
+      "created": "created",
+      "outdated": "Created from an outdated version. Some values might change. Download the entry before updating is recommended",
+      "view": "@:w.view",
+      "edit": "@:w.edit",
+      "update": "update",
+      "review": "review"
     },
     "entry_actions": {
       "cancel_draft": "Creation canceled",
@@ -550,6 +552,7 @@
     "delete": "delete",
     "username": "Username",
     "back": "back",
+    "license": "license",
     "status": "status",
     "submit": "submit",
     "view": "view",
