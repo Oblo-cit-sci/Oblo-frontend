@@ -32,7 +32,7 @@
 
 import Mapbox from 'mapbox-gl-vue'
 import MapIncludeMixin from "~/components/map/MapIncludeMixin"
-import {review_color, draft_color, cluster_color, VIEW} from "~/lib/consts"
+import {review_color, draft_color, cluster_color, VIEW, MENU_MODE_DOMAIN} from "~/lib/consts"
 import {mapGetters} from "vuex"
 import DomainMapMixin from "~/components/map/DomainMapMixin"
 import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
@@ -346,10 +346,11 @@ export default {
           }
         })
 
+        // CLICK ON CLUSTER
         this.map.on('click', cluster_layer_name, e => {
           // console.log(cluster)
           const cluster = e.features[0]
-
+          this.update_menu_state(MENU_MODE_DOMAIN)
           this.map_goto_location(cluster.geometry)
           // this is used for real clusters, which expand, cuz the locations are not "exactly the same"
 

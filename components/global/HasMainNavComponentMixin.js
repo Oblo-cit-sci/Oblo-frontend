@@ -22,6 +22,7 @@ export default {
       menu_width: "menu/menu_width",
     }),
     navigation_mode() {
+      // todo should be menu-state? and MENU_MODE_MAIN, MENU_MODE_DOMAIN?
       if (this.$route.query.uuid) {
         return ENTRY
       } else
@@ -61,5 +62,8 @@ export default {
       Object.assign(query, this.query_param_domain)
       this.$router.push(route_change_query(this.$route, query, true))
     },
+    update_menu_state(state) {
+      this.$store.commit("menu/menu_state", state)
+    }
   }
 }
