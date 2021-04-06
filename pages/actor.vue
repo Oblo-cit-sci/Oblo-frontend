@@ -62,7 +62,6 @@ export default {
   created() {
     this.$api.actor.basic(this.registered_name).then(({data}) => {
       this.user_data = this.$_.mapValues(data.data, v => pack_value(v))
-
       // console.log(this.user_data)
       this.user_loaded = true
       this.waiting = false

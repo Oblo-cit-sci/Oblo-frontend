@@ -78,10 +78,8 @@ export default {
   created() {
     const user_data = this.$_.cloneDeep(this.actor)
     for (let aspect_name of Object.keys(this.aspect_map)) {
-      if (aspect_name === GLOBAL_ROLE)
-        this.aspect_map[aspect_name].value = user_data[aspect_name]
-      else
-        this.aspect_map[aspect_name].value = user_data.editor_config[aspect_name]
+      const editor_config = unpack(user_data.editor_config)
+      this.aspect_map[aspect_name].value = pack_value(editor_config[aspect_name])
     }
   },
   computed: {
