@@ -42,7 +42,7 @@ export default {
   components: {Dialog, LanguageSearch, AspectSet, Aspect},
   mixins: [OptionsMixin, TriggerSnackbarMixin, EntryCreateMixin, ApiHelperMixin, TypicalAspectMixin, LanguageMixin],
   data() {
-    console.log(this.$store.getters["translate/setup_values"])
+    // console.log(this.$store.getters["translate/setup_values"])
     const {component, domain, entry, src_lang, dest_lang} = this.$store.getters["translate/setup_values"]
     return {
       setup_values: {
@@ -80,7 +80,7 @@ export default {
   computed: {
     ...mapGetters({translate_setup: "translate/setup_values", ui_language: "ui_language"}),
     setup_aspects() {
-      console.log("setup_aspects")
+      // console.log("comp-setup_aspects")
       return [
         this.dest_language_select_aspect, this.component_select_aspect,
         this.language_active_aspect,
@@ -88,6 +88,8 @@ export default {
       ]
     },
     dest_language_select_aspect() {
+      // console.log("comp-dest_language_select_aspect")
+      // console.log("comp-dest_language_select_aspect-options", this.dest_language_options)
       const base = "comp.translate.dest_lang."
       return {
         name: "dest_lang",
@@ -117,6 +119,7 @@ export default {
         })).concat(this.temporary_additional_languages)
     },
     language_active_aspect() {
+      // console.log("comp-language_active_aspect")
       return {
         name: "language_active",
         t_label: "comp.translate.lang_status.label",
@@ -157,6 +160,7 @@ export default {
       }
     },
     component_select_aspect() {
+      // console.log("comp-component_select_aspect")
       return {
         name: "component",
         type: SELECT,
@@ -187,6 +191,7 @@ export default {
       return !this.$_.find(this.temporary_additional_languages, l => l.value === this.new_language.value)
     },
     domain_select_aspect() {
+      // console.log("comp-domain_select_aspect")
       const domain_aspect = this.asp_domain_select("domain", "w.domain", false, {
         hide_on_disabled: true,
         condition: {
@@ -207,6 +212,7 @@ export default {
       return domain_aspect
     },
     entry_select_aspect() {
+      // console.log("comp-entry_select_aspect")
       let options = []
       const {domain: domain_name, dest_lang} = this.unpacked_values
       if (domain_name) {
@@ -253,6 +259,8 @@ export default {
       return this.is_aspects_complete && this.setup_values.src_lang.value !== this.setup_values.dest_lang.value
     },
     src_language_select_aspect() {
+      // console.log("comp-src_language_select_aspect")
+      // console.log("comp-src_language_select_aspect", this.src_language_options)
       // console.log("src lang", this.unpacked_values.component)
       const base = "comp.translate.src_lang."
       // console.log("store", this.translate_setup.src_lang)
@@ -374,6 +382,22 @@ export default {
         Object.assign(setup, {messages: data.data, config: {entry, new_o: true}})
       }
     },
+    async get_language_status(language) {
+      if (!this.language_statuses.hasOwnProperty(language)) {
+        try {
+          const {data: resp} = await this.$api.language.language_status(language)
+          this.language_statuses[language] = resp.data
+          return Promise.resolve(resp.data.active ? "active" : "inactive")
+          // console.log("language_statuses", this.language_statuses)
+          // console.log(this.setup_values, pack_value(resp.data.active ? "active" : "inactive"))
+        } catch (err) {
+          console.log(err)
+          this.err_error_snackbar(err)
+        }
+      } else {
+        return Promise.resolve(this.language_statuses[language].active ? "active" : "inactive")
+      }
+    },
     open_new_lang() {
       this.new_language = null
       this.new_lang_dialog_open = true
@@ -435,7 +459,7 @@ export default {
        * called whenever component is set to "entries" domain changes, or dest_lang changed
        */
       const loaded_infos = this.$_.get(this.codes_templates_minimal_info, `${domain}.${dest_lang}`, null)
-      console.log("recalc", domain, dest_lang)
+      // console.log("recalc", domain, dest_lang)
       // console.log(loaded_infos)
       if (!this.get_entries_info && !loaded_infos) {
         this.get_entries_info = true
@@ -454,7 +478,7 @@ export default {
   },
   watch: {
     '$store.state.user.settings.ui_language': async function (ui_language) {
-      console.log(ui_language)
+      // console.log(ui_language)
       this.$api.entries.get_codes_templates(ui_language).then(({data}) => {
         // console.log(data)
         this.all_entries_in_ui_lang = data.data
@@ -463,11 +487,14 @@ export default {
       })
     },
     unpacked_values: async function (new_vals, old_vals) {
+      // console.log("watch-unpacked_values")
       if (this.$_.isEqual(new_vals, old_vals)) {
+        // console.log("watch-unpacked_values-xxx")
         return
       }
       const {component, domain, dest_lang} = new_vals
       for (let a of Object.keys(new_vals)) {
+        // console.log(a)
         if (new_vals[a] !== old_vals[a]) {
           if (a === "language_active")
             return
@@ -475,20 +502,9 @@ export default {
             this.setup_values["src_lang"] = pack_value()
             if (["fe", "be"].includes(component) && dest_lang) {
               const {dest_lang: lang} = new_vals
-              console.log("check language statuses", this.language_statuses, lang)
-              if (!this.language_statuses.hasOwnProperty(lang)) {
-                try {
-                  const {data: resp} = await this.$api.language.language_status(lang)
-                  this.language_statuses[lang] = resp.data
-                  // console.log(this.setup_values, pack_value(resp.data.active ? "active" : "inactive"))
-                  this.setup_values.language_active = pack_value(resp.data.active ? "active" : "inactive")
-                } catch (err) {
-                  console.log(err)
-                  this.err_error_snackbar(err)
-                }
-              } else {
-                this.setup_values.language_active = pack_value(this.language_statuses[lang].active ? "active" : "inactive")
-              }
+              // console.log("check language statuses", this.language_statuses, lang)
+              const status = await this.get_language_status(lang)
+              this.setup_values.language_active = pack_value(status)
             } else if (component === "entries") {
               if (component === "entries" && domain !== null && dest_lang !== null) {
                 this.re_calc_entries_for_domain(domain, dest_lang)
@@ -499,7 +515,11 @@ export default {
               this.re_calc_entries_for_domain(domain, dest_lang)
             }
           } else if (a === "dest_lang") {
-            if (component === "entries" && domain !== null && dest_lang !== null) {
+            // console.log("dest_lang-language_statuses", this.language_statuses)
+            if (["fe", "be"].includes(component)) {
+              const status = await this.get_language_status(dest_lang)
+              this.setup_values.language_active = pack_value(status)
+            } else if (component === "entries" && domain !== null && dest_lang !== null) {
               this.re_calc_entries_for_domain(domain, dest_lang)
             }
           }
