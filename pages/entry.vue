@@ -1,5 +1,6 @@
 <template lang="pug">
-  Entry(:entry="entry" :mode="mode")
+  div(v-if="entry")
+    Entry(:entry="entry" :mode="entry_mode")
 </template>
 
 <script>
@@ -8,28 +9,34 @@
 import PersistentStorageMixin from "../components/util/PersistentStorageMixin";
 import Entry from "../components/entry/Entry";
 import {VIEW} from "~/lib/consts"
+import URLQueryMixin from "~/components/util/URLQueryMixin";
+import EntryFetchMixin from "~/components/entry/EntryFetchMixin";
+import NavBaseMixin from "~/components/NavBaseMixin";
 
 // todo, use mapgetters with entries context
 export default {
   name: "entry",
-  mixins: [PersistentStorageMixin],
+  mixins: [EntryFetchMixin, PersistentStorageMixin, URLQueryMixin, NavBaseMixin],
   components: {
     Entry
   },
   data() {
-    return {}
+    return {
+      entry: null
+    }
   },
   created() {
     // todo some in case we want edit in main page, it wouldnt be set to edit yet, cuz this is the only place edit is set...
-    if (!this.$store.getters["entries/has_full_entry"](this.uuid)) {
-      // actually should be home or back. but we should always have it...
-      this.$router.push("/")
-    }
-    this.$store.dispatch("entries/set_edit", this.uuid)
+    this.guarantee_entry(this.query_entry_uuid, this.query_entry_access_key).then(entry => {
+      this.entry = entry
+      this.$store.dispatch("entries/set_edit", this.query_entry_uuid)
+    }, err => {
+      this.err_error_snackbar(err)
+      this.home()
+    })
   },
   beforeRouteEnter(to, from, next) {
     if (!to.query.uuid) {
-      // todo page not found :(
       next(false)
     } else {
       next()
@@ -39,25 +46,14 @@ export default {
 
   },
   beforeRouteLeave(to, from, next) {
-    if (this.entry.is_draft) {
-      this.persist_entries()
+    if (this.entry) {
+      if (this.entry.is_draft) {
+        this.persist_entries()
+      }
     }
     next()
   },
-  computed: {
-    uuid() {
-      return this.$route.query.uuid
-    },
-    entry() {
-      return this.$store.getters["entries/get_edit"]()
-    },
-    mode() {
-      return this.$route.query.entry_mode || VIEW
-    }
-  },
-  methods: {
-
-  }
+  methods: {}
 }
 </script>
 

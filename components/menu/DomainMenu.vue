@@ -13,7 +13,7 @@
       @all_received_uuids="$emit('all_received_uuids', $event)"
       :prominent_filters="prominent_filters"
       @preview_action="preview_action($event)")
-    div(v-if="nav_mode_entry")
+    div(v-if="nav_mode_entry && selected_entry")
       v-row
         v-col.py-0
           v-btn(@click="unselect_entry" text small)
@@ -33,15 +33,22 @@ import FixDomainMixin from "~/components/global/FixDomainMixin"
 import FilterMixin from "~/components/FilterMixin"
 import DomainDataMixin from "~/components/domain/DomainDataMixin";
 import {ADMIN, EDITOR, REQUIRES_REVIEW} from "~/lib/consts";
+import URLQueryMixin from "~/components/util/URLQueryMixin";
+import EntryFetchMixin from "~/components/entry/EntryFetchMixin";
 
 export default {
   name: "DomainMenu",
-  mixins: [MapNavigationMixin, HasMainNavComponentMixin, FixDomainMixin, FilterMixin, DomainDataMixin],
+  mixins: [MapNavigationMixin, URLQueryMixin, HasMainNavComponentMixin, EntryFetchMixin, FixDomainMixin, FilterMixin, DomainDataMixin],
   components: {Entry, Search},
   props: {
     domain_data: {
       type: Object,
       required: true
+    }
+  },
+  data() {
+    return {
+      selected_entry: undefined
     }
   },
   computed: {
@@ -62,15 +69,36 @@ export default {
       }
       return filters
     },
-    selected_entry() {
-      if (this.$route.query.uuid)
-        return this.$store.getters["entries/get_entry"](this.$route.query.uuid)
-    },
+    // async selected_entry() {
+    //
+    //   //
+    //   //
+    //   // if (this.$route.query.uuid)
+    //   //   return this.$store.getters["entries/get_entry"](this.$route.query.uuid)
+    // },
     search_config() {
       return this.$_.concat(this.domain_pre_filter, this.get_status_filter()) // this.get_drafts_filter()
     },
     can_fix_domain() {
-      return !this.is_fixed_domain  && !this.$store.getters.is_visitor
+      return !this.is_fixed_domain && !this.$store.getters.is_visitor
+    }
+  },
+  watch: {
+    query_entry_uuid: {
+      immediate: true,
+      handler: async function (uuid) {
+        // console.log("watch-query_entry_uuid", uuid)
+        if (uuid) {
+          try {
+            this.selected_entry = await this.guarantee_entry(uuid, this.query_entry_access_key)
+            // console.log("ee", this.selected_entry)
+            return this.selected_entry
+          } catch (e) {
+            this.to_no_entry_route()
+            // console.log("E", e)
+          }
+        }
+      }
     }
   }
 }

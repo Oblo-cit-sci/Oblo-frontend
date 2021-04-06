@@ -18,10 +18,12 @@ export default {
     home() {
       // actually the redirect takes care of this...
       // console.log("going home", this.is_fixed_domain)
+      console.log("-> home", this.is_fixed_domain, this.fixed_domain)
       if (this.is_fixed_domain) {
+        // this.$router.push("domain?d=licci")
         this.$router.push({
             name: PAGE_DOMAIN,
-            [QP_F]: this.fixed_domain
+            query: {[QP_F]: this.fixed_domain}
           }
         )
       } else {
@@ -61,6 +63,14 @@ export default {
         this.$store.commit("init_page_path", this.$route)
       }
       this.$router.push(route)
+    },
+    to_no_entry_route() {
+      // console.log("to no entry....")
+      if (this.$route.name === PAGE_DOMAIN) {
+        this.to_set_domain()
+      } else {
+        this.home()
+      }
     },
     back(remove_params = []) {
       // todo maybe use util.route_change_query

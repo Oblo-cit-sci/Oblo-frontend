@@ -118,7 +118,7 @@ export default {
     },
     selected_entry() {
       // console.log("comp.selected_entry")
-      return this.$route.query.uuid
+      return this.query_entry_uuid
     },
     button_group_shift() {
       let shift = "0.5%"

@@ -136,9 +136,6 @@ export default {
       // todo maybe this part should be handled by the individual page, so it can do its default behaviour
       // but a wrapper would be good.
 
-      if (this.query_entry_uuid) {
-        await this.guarantee_entry(this.query_entry_uuid, this.query_entry_access_key)
-      }
       await this.$store.dispatch("app/connected")
 
       console.log("multi domains?", this.has_multiple_domains)
@@ -157,13 +154,13 @@ export default {
         if (this.$route.name === PAGE_INDEX) {
           // console.log("to domain page",this.get_one_domain_name)
           this.to_domain(this.get_one_domain_name, true, () => {
-            this.$store.commit("app/initialized")
+            this.set_init_done()
           })
         } else {
           // todo not sure why this is here- just one domain anyway
           const domain_name = this.$store.getters["user/settings"].fixed_domain || NO_DOMAIN
           this.$store.commit("domain/set_act_domain", domain_name)
-          this.$store.commit("app/initialized")
+          this.set_init_done()
         }
       } else {
         const fixed_domain = this.$store.getters["user/settings"].fixed_domain || NO_DOMAIN
@@ -179,17 +176,21 @@ export default {
           // console.log("to domain page",this.get_one_domain_name)
           if (fixed_domain !== NO_DOMAIN) {
             this.to_domain(fixed_domain, true, () => {
-              this.$store.commit("app/initialized")
+              this.set_init_done()
             })
           } else {
-            this.$store.commit("app/initialized")
+            this.set_init_done()
           }
         } else {
-          this.$store.commit("app/initialized")
+          this.set_init_done()
         }
       }
       // console.log("done")
       return Promise.resolve()
+    },
+    set_init_done() {
+      console.log("set init done")
+      this.$store.commit("app/initialized")
     }
   },
   watch: {

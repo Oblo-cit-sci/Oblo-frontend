@@ -2,13 +2,14 @@ import {route_change_query} from "~/lib/util"
 import {mapMutations, mapGetters} from "vuex"
 import URLQueryMixin from "~/components/util/URLQueryMixin"
 import {VIEW} from "~/lib/consts"
+import EntryFetchMixin from "~/components/entry/EntryFetchMixin";
 
 export const SEARCH = "search"
 export const ENTRY = "entry"
 
 export default {
   name: "HasMainNavComponentMixin",
-  mixins: [URLQueryMixin],
+  mixins: [URLQueryMixin, EntryFetchMixin],
   computed: {
     // navgiagtion_component() {
     //   if (this.$vuetify.breakpoint.mdAndDown)
@@ -23,7 +24,7 @@ export default {
     }),
     navigation_mode() {
       // todo should be menu-state? and MENU_MODE_MAIN, MENU_MODE_DOMAIN?
-      if (this.$route.query.uuid) {
+      if (this.query_entry_uuid) {
         return ENTRY
       } else
         return SEARCH
@@ -40,7 +41,9 @@ export default {
     unselect_entry() {
       this.update_navigation_mode(null)
     },
-    update_navigation_mode(entry_uuid, entry_mode, easeToFirst = true, open_menu = true) {
+    async update_navigation_mode(entry_uuid, entry_mode, easeToFirst = true, open_menu = true) {
+      // console.log("HasMain...-update_navigation_mode", entry_uuid)
+      await this.guarantee_entry(entry_uuid, this.query_entry_access_key)
       // console.log("update_navigation_mode", easeToFirst)
       const query = {}
       if (entry_uuid) {
