@@ -79,7 +79,15 @@ export default {
       // reload...
       const user_settings = this.$store.getters["user/settings"]
       const domain_name = this.query_param_domain_name || user_settings.fixed_domain || NO_DOMAIN
-      const i_language = this.$route.query[QP_lang] || user_settings.ui_language || this.default_language
+
+      const qp_lang = this.$route.query[QP_lang]
+      if (qp_lang !== undefined) {
+        if (qp_lang !== user_settings.ui_language || qp_lang !== user_settings.domain_language) {
+          await this.change_language(qp_lang)
+        }
+      }
+      const i_language = qp_lang || user_settings.ui_language || this.default_language
+
       console.log("init with, ", domain_name, i_language)
 
       const {data: resp} = await this.$api.basic.init_data(domain_name ? [domain_name, NO_DOMAIN] : null, i_language)
@@ -113,6 +121,7 @@ export default {
       if (this.$store.getters.username === VISITOR) {
         const settings = this.$_.cloneDeep(default_settings)
         Object.assign(settings, {[DOMAIN_LANGUAGE]: language, [UI_LANGUAGE]: language})
+        // todo change_language call
         this.$store.commit("user/change_setting", settings)
       }
       // console.log("language", language)

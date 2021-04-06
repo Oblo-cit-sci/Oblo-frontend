@@ -38,6 +38,7 @@ export default {
   },
   mounted() {
     if (!this.language) {
+      // console.log("LanguageSelector-mounted without language")
       this.language = navigator.language.split("-")[0]
     }
   },
@@ -68,6 +69,7 @@ export default {
     },
     language: {
       get: function () {
+      // console.log("LanguageSelector-gettings language", this.setting(DOMAIN_LANGUAGE), this.setting(UI_LANGUAGE))
         if (this.$route.name === PAGE_DOMAIN) {
           return this.setting(DOMAIN_LANGUAGE)
         } else {
