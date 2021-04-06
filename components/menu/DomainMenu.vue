@@ -94,6 +94,7 @@ export default {
             // console.log("ee", this.selected_entry)
             return this.selected_entry
           } catch (e) {
+            this.err_error_snackbar(e)
             this.to_no_entry_route()
             // console.log("E", e)
           }

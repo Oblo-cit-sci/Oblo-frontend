@@ -19,7 +19,7 @@ export default {
     // },
     ...mapGetters({
       menu_open: "menu/open",
-      menu_state:"menu/menu_state",
+      menu_state: "menu/menu_state",
       menu_width: "menu/menu_width",
     }),
     navigation_mode() {
@@ -34,7 +34,11 @@ export default {
     }
   },
   methods: {
-    ...mapMutations({switch_menu_open: 'menu/switch_open', set_menu_open: "menu/open", set_menu_state:"menu/menu_state"}),
+    ...mapMutations({
+      switch_menu_open: 'menu/switch_open',
+      set_menu_open: "menu/open",
+      set_menu_state: "menu/menu_state"
+    }),
     navigate_entry({uuid, mode}) {
       this.update_navigation_mode(uuid, mode)
     },
@@ -43,10 +47,11 @@ export default {
     },
     async update_navigation_mode(entry_uuid, entry_mode, easeToFirst = true, open_menu = true) {
       // console.log("HasMain...-update_navigation_mode", entry_uuid)
-      await this.guarantee_entry(entry_uuid, this.query_entry_access_key)
+
       // console.log("update_navigation_mode", easeToFirst)
       const query = {}
       if (entry_uuid) {
+        await this.guarantee_entry(entry_uuid, this.query_entry_access_key)
         query.uuid = entry_uuid
       }
       if (entry_mode) {
@@ -59,7 +64,7 @@ export default {
           }
         }
       }
-      if(open_menu) {
+      if (open_menu) {
         this.set_menu_open(true)
       }
       Object.assign(query, this.query_param_domain)

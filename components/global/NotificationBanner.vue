@@ -23,7 +23,8 @@ export default {
     fixed_domain_edited() {
       if(!this.is_fixed_domain)
         return true
-      const domain_specific_aspects = this.$_.cloneDeep(this.$_.get(this.$store.getters["domain/act_lang_domain_data"], "users.profile.additional_aspects", []))
+      let domain_specific_aspects = this.$_.cloneDeep(this.$_.get(this.$store.getters["domain/act_lang_domain_data"], "users.profile.additional_aspects", []))
+      domain_specific_aspects = domain_specific_aspects.filter(a => this.$_.get(a, "attr.required", true))
       // todo here call a function that assigns external conditions
 
       return  this.$_.isEmpty(domain_specific_aspects) ||
