@@ -22,18 +22,23 @@ export default {
   },
   data() {
     return {
-      entry: null
+      has_entry: false
     }
   },
   created() {
-    // todo some in case we want edit in main page, it wouldnt be set to edit yet, cuz this is the only place edit is set...
-    this.guarantee_entry(this.query_entry_uuid, this.query_entry_access_key).then(entry => {
-      this.entry = entry
-      this.$store.dispatch("entries/set_edit", this.query_entry_uuid)
-    }, err => {
-      this.err_error_snackbar(err)
-      this.home()
-    })
+    console.log(this.$store.getters["entries/has_full_entry"](this.query_entry_uuid))
+    this.has_entry = this.$store.getters["entries/has_full_entry"](this.query_entry_uuid)
+    if (!this.has_entry) {
+      // actually should be home or back. but we should always have it...
+      this.guarantee_entry(this.query_entry_uuid, this.query_entry_access_key).then(entry => {
+        this.has_entry = true
+        this.$store.dispatch("entries/set_edit", this.query_entry_uuid)
+      }, err => {
+        this.err_error_snackbar(err)
+        this.home()
+      })
+    }
+    this.$store.dispatch("entries/set_edit", this.query_entry_uuid)
   },
   beforeRouteEnter(to, from, next) {
     if (!to.query.uuid) {
@@ -44,6 +49,12 @@ export default {
   },
   mounted() {
 
+  },
+  computed: {
+    entry() {
+      if (this.has_entry)
+        return this.$store.getters["entries/get_edit"]()
+    }
   },
   beforeRouteLeave(to, from, next) {
     if (this.entry) {
