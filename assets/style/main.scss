@@ -2,6 +2,12 @@
   overflow-y: hidden;
 }
 
+/* treeselect prepend value image */
+.treeselect_textarea .v-input__prepend-inner {
+  max-width: 70px;
+  transform: translateY(-10px);
+}
+
 html {
   overscroll-behavior: contain;
 }

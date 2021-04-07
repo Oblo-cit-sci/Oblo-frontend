@@ -15,7 +15,7 @@
       :prependIcon="prependIcon"
       @click:prepend="openDialog()")
     div(v-if="!direct_select || !is_empty")
-      v-textarea(
+      v-textarea.treeselect_textarea(
         :flat="!is_empty"
         :solo="!is_empty"
         hide-details
@@ -29,6 +29,8 @@
         @click:clear="clear"
         @click="open_if_empty"
         :value="value_text")
+        template(v-if="value_icon" v-slot:prepend-inner :style="value_icon_style")
+          v-img.value_icon(:src="value_icon" contain max-height="50")
     v-dialog(width="800" v-model="dialogOpen" height="100%" @click:outside="click_outside")
       TreeleafPicker(
         :tree="tree"
@@ -39,10 +41,9 @@
         @selected="selected($event)"
         :disabled="disabled"
         :keep_selection="false")
-    v-img.value_icon(:src="value_icon" contain max-height="50")
-  div(v-else)
-    div {{value_text}}
-    v-img.value_icon(:src="value_icon" contain max-height="50")
+  div(v-else :style="view_container_style")
+    v-img.value_icon(:src="value_icon" contain max-height="50" :style="{flex: '2'}")
+    span(:style="{flex: '8'}") {{value_text}}
 </template>
 
 <script>
@@ -136,18 +137,20 @@ export default {
     }
   },
   computed: {
+    view_container_style() {
+      return {
+        display: "inline-flex",
+      }
+    },
     is_empty() {
       return this.$_.isEmpty(this.value)
     },
-    // int_value: {
-    //   get: function () {
-    //     return this.value
-    //   },
-    //   set: function (val) {
-    //     // console.log("tsa-val set. update...", val)
-    //     this.update_value(val)
-    //   }
-    // },
+    value_icon_style() {
+      return {
+        width: "70px",
+        transform: "translateY(-10px)"
+      }
+    },
     value_icon() {
       if (!this.is_empty) {
         const icon_values = this.value.filter(v => v.icon)
@@ -173,7 +176,7 @@ export default {
           return v
         act_tree_node = act_tree_node.children.find(node => node.value === v.value) || act_tree_node
         if (!act_tree_node) {
-          console.error("No tree-node", v,  node.children)
+          console.error("No tree-node", v, node.children)
           return v.text || ""
         } else {
           // console.log("->", act_tree_node.value, act_tree_node.text)
