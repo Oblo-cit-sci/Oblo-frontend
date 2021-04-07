@@ -1,7 +1,7 @@
 <template lang="pug">
   div
     v-list
-      v-list-item(v-for="item in filtered_pages" :key="item.icon" :to="item.to" nuxt @click="select(item)")
+      v-list-item(v-for="item in filtered_pages" :key="item.icon" :href="item.to" :to="to(item)" :nuxt="is_nuxt(item)" :target="link_target(item)" @click="select(item)")
         v-list-item-icon()
           v-icon {{item.icon}}
         v-list-item-content()
@@ -15,7 +15,7 @@
 
 <script>
 import {all_pages_n_actions, PAGE_ABOUT, PAGE_INDEX} from "~/lib/pages"
-import { DOMAIN, NO_DOMAIN} from "~/lib/consts"
+import {DOMAIN, NO_DOMAIN} from "~/lib/consts"
 import LanguageSelector from "~/components/LanguageSelector"
 import URLQueryMixin from "~/components/util/URLQueryMixin"
 import FixDomainMixin from "~/components/global/FixDomainMixin"
@@ -103,6 +103,23 @@ export default {
     },
     select(item) {
       this.close_menu()
+    },
+    is_nuxt(item) {
+      if (typeof item.to === "string") {
+        if (item.to.startsWith("https://")) {
+          return false
+        }
+      }
+      return true
+    },
+    link_target(item) {
+      if (!this.is_nuxt(item))
+        return "_blank"
+    },
+    to(item) {
+      if (this.is_nuxt(item)) {
+        return item.to
+      }
     }
   }
 }
