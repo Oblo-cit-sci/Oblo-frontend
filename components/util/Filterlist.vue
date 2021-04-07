@@ -9,7 +9,7 @@
             v-btn(fab x-small rounded elevation="2" @click="edit_filter(index)"
               :disabled="not_editable(filter)" :style="filter_edit_button_style(filter)")
               v-icon mdi-filter
-            v-btn(fab x-small rounded elevation="2" @click="remove_filter(index)"
+            v-btn(fab x-small rounded elevation="2" @click="remove_filter(filter)"
               :disabled="not_removable(filter)" :style="filter_remove_button_style(filter)")
               v-icon mdi-window-close
     v-menu
@@ -33,12 +33,10 @@
 </template>
 
 <script>
-import {aspect_default_value, unpack, value_text} from "~/lib/aspect"
+import {aspect_default_value} from "~/lib/aspect"
 import LayoutMixin from "~/components/global/LayoutMixin"
 import AspectDialog from "~/components/dialogs/AspectDialog"
-import {recursive_unpack2} from "~/lib/util"
 import FilterMixin from "~/components/FilterMixin";
-import {MULTISELECT, OPTIONS, SELECT} from "~/lib/consts";
 import SelectComponentMixin from "~/components/aspect_utils/SelectComponentMixin";
 
 /**
@@ -178,8 +176,8 @@ export default {
       this.active_filter = Object.assign({}, this.filter_option_by_name(this.applied_filters[index].name))
       this.dialog_open = true
     },
-    remove_filter(index) {
-      this.$emit("input", this.$_.filter(this.value, (v, i) => i !== index))
+    remove_filter(filter) {
+      this.$emit("input", this.$_.filter(this.value, (v) => v.name !== filter.name))
     },
     filter_value(name) {
       const existing_filter = this.applied_filters.find(f => f.name === name)

@@ -212,8 +212,10 @@ export default {
         return entries.filter(e => this.$_.some(e.actors, entry_actor => entry_actor.actor.registered_name === filter_value))
       } else if (filter.name === LANGUAGE) {
         return entries.filter(e => filter_value.includes(e.language))
+      } else if (filter.name === REQUIRES_REVIEW) {
+        return entries.filter(e => e.status === REQUIRES_REVIEW)
       } else {
-        console.log("filter not applicable", filter.name)
+        console.log("filter not applicable for local entries", filter.name)
         return entries
       }
     },
