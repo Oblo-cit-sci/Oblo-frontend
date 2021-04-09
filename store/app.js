@@ -6,7 +6,8 @@ export const state = () => ({
     privacy_sheet_open: true,
     dev: {}, // arbitrary data collected during development
     platform: {},
-    oauth_services: []
+    oauth_services: [],
+    menu: {}
   }
 )
 
@@ -27,7 +28,7 @@ export const mutations = {
     state.privacy_sheet_open = false
   },
   set_dev(state, {data, merge}) {
-    console.log(data, merge)
+    // console.log(data, merge)
     if (merge) {
       state.dev = Object.assign(state.dev, data)
     } else {
@@ -39,6 +40,9 @@ export const mutations = {
   },
   oauth_services(state, services) {
     state.oauth_services = services
+  },
+  set_menu_item(state, {name, data}) {
+    state.menu[name] = data
   }
 }
 
@@ -66,6 +70,9 @@ export const getters = {
   },
   oauth_services(state) {
     return state.oauth_services
+  },
+  menu(state) {
+    return state.menu
   }
 }
 
