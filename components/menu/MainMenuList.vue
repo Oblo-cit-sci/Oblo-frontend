@@ -22,6 +22,7 @@ import FixDomainMixin from "~/components/global/FixDomainMixin"
 import {mapGetters, mapMutations} from "vuex"
 import ResponsivenessMixin from "~/components/ResponsivenessMixin"
 import {is_standalone} from "~/lib/pwa";
+import {BUS_MAIN_MENU_SET} from "~/plugins/bus";
 
 let require_login = ["/profile", "/logout"]
 let hide_logged_in = ["/login", "/register"]
@@ -86,7 +87,7 @@ export default {
     }
   },
   created() {
-    this.$bus.$on("main-menu-set", ({name, to}) => {
+    this.$bus.$on(BUS_MAIN_MENU_SET, ({name, to}) => {
       const page = this.$_.find(this.pages, p => p.name === name)
       if (page) {
         page.to = to

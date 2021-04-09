@@ -18,7 +18,7 @@ export default {
     home() {
       // actually the redirect takes care of this...
       // console.log("going home", this.is_fixed_domain)
-      console.log("-> home", this.is_fixed_domain, this.fixed_domain)
+      // console.log("-> home", this.is_fixed_domain, this.fixed_domain)
       if (this.is_fixed_domain) {
         // this.$router.push("domain?d=licci")
         this.$router.push({

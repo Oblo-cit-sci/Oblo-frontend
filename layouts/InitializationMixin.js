@@ -88,7 +88,7 @@ export default {
       }
       const i_language = qp_lang || user_settings.ui_language || this.default_language
 
-      console.log("init with, ", domain_name, i_language)
+      console.log(`init with domain: ${domain_name}, lang: ${i_language}`)
 
       const {data: resp} = await this.$api.basic.init_data(domain_name ? [domain_name, NO_DOMAIN] : null, i_language)
 
