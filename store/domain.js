@@ -76,6 +76,10 @@ export const mutations = {
         console.log(`Cannot set domain language (${domain_name}) to ${language} that does not exist. catch before!`)
       }
     }
+  },
+  // for offline mode
+  set_from_storage(state, domains) {
+    state.domains = new Map(domains)
   }
 }
 
@@ -137,6 +141,7 @@ export const getters = {
   },
   // todo act_domain_title, REMOVE, language
   act_domain_title(state, getters) {
+    console.trace()
     return getters.act_lang_domain_data.title
   },
   act_lang_domain_data(state) {

@@ -4,13 +4,16 @@
     div {{prompt_set}}
     div(v-if="!is_pwa")
       v-btn(@click="install_pwa") install
+    div {{is_offline}}
 </template>
 
 <script>
 import {install_pwa, is_prompt_set, is_standalone} from "~/lib/pwa";
+import OfflineMixin from "~/lib/OfflineMixin"
 
 export default {
   name: "offline_settings",
+  mixins: [OfflineMixin],
   data() {
     return {
 

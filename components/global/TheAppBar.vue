@@ -33,12 +33,13 @@ import HasMainNavComponentMixin, {ENTRY} from "~/components/global/HasMainNavCom
 import {NO_DOMAIN, VIEW} from "~/lib/consts"
 import EnvMixin from "~/components/global/EnvMixin"
 import {PAGE_INDEX, PAGE_LOGIN} from "~/lib/pages";
+import OfflineMixin from "~/lib/OfflineMixin"
 
 const pkg = require('~/package.json')
 
 export default {
   name: "TheAppBar",
-  mixins: [NavBaseMixin, ResponsivenessMixin, URLQueryMixin, HasMainNavComponentMixin, EnvMixin],
+  mixins: [NavBaseMixin, ResponsivenessMixin, URLQueryMixin, HasMainNavComponentMixin, EnvMixin, OfflineMixin],
   components: {LoginComponent, Dialog, CreateEntryButton},
   data() {
     return {
@@ -70,7 +71,8 @@ export default {
       }
     },
     domain_icon() {
-      return this.$api.static.domain_icon(this.act_lang_domain_data.name)
+      if (!this.is_offline)
+        return this.$api.static.domain_icon(this.act_lang_domain_data.name)
     },
     domain_headline() {
       return this.$_.get(this.act_lang_domain_data, "long_title", "")
@@ -114,7 +116,7 @@ export default {
       return this.is_domain_page && this.is_small && this.initialized
     },
     show_login_btn() {
-      return this.smAndUp && !this.logged_in && ![PAGE_INDEX, PAGE_LOGIN].includes(this.$route.name)
+      return this.smAndUp && !this.logged_in && ![PAGE_INDEX, PAGE_LOGIN].includes(this.$route.name) && !this.is_offline
     },
     //
     version() {
@@ -125,15 +127,15 @@ export default {
   methods: {
     ...mapMutations({switch_menu_open: 'menu/switch_open'}),
     switch_menu() {
-      if(this.is_small && this.navigation_mode === ENTRY)  {
-        if(this.entry_mode === VIEW) {
+      if (this.is_small && this.navigation_mode === ENTRY) {
+        if (this.entry_mode === VIEW) {
           this.unselect_entry()
         }
       }
       this.switch_menu_open()
     },
     open_login() {
-      this.login_dialog_open=true
+      this.login_dialog_open = true
       // console.log(this.$refs.login_dialog)
       // this.$bus.$emit("global_dialog", this.$refs.login_dialog)
     }

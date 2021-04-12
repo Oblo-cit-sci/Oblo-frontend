@@ -6,7 +6,7 @@
           .ml-2.mt-2(v-if="search_location_input_option")
             div {{$t("comp.location_asp.descr")}}
             v-autocomplete(
-              v-if="online"
+              v-if="!is_offline"
               :search-input.sync="search_query"
               hint="press enter or click the search button"
               append-outer-icon="mdi-magnify"
@@ -21,7 +21,10 @@
               auto-select-first
               v-model="place_select__"
               clearable)
-            div(v-else :style="{color: 'red'}") {{$t("comp.location_asp.offline")}}
+            div(v-else)
+              span(:style="{color: 'red'}") {{$t("comp.location_asp.offline")}}
+              v-btn(@click="get_geolocation")
+                v-icon mdi-crosshairs-gps
             div(v-if="value") {{$t("comp.location_asp.public_loc.base")}}:&nbsp;
               span {{public_location_text}}
               v-chip-group(v-if="public_location_selector_on" active-class="primary--text" mandatory v-model="selected_prec_option")
@@ -43,7 +46,7 @@
         v-icon mdi-map-marker
       div(v-if="!value") {{$t('comp.location_asp.no_loc')}}
     client-only
-      div(v-if="online")
+      div(v-if="!is_offline")
         .map_overlay
           v-btn(v-if="show_show_my_entries_btn" dark small :color="show_existing ? 'blue' : 'grey'" @click="toggle_show_existing" :loading="getting_my_entries_loading") {{$t('comp.location_asp.show entries')}}
             v-icon mdi-map-marker-circle
@@ -63,7 +66,7 @@
 import Mapbox from 'mapbox-gl-vue'
 import {
   array2coords,
-  create_location_error,
+  create_location_error, get_location,
   LOCATION_PRECISION_POINT, LOCATION_PRECISION_REGION,
   place2str,
   PREC_OPTION_EXACT,
@@ -87,6 +90,7 @@ import AspectDialog from "~/components/dialogs/AspectDialog"
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
 import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
 import EnvMixin from "~/components/global/EnvMixin"
+import OfflineMixin from "~/lib/OfflineMixin"
 
 // "attr.input" options
 const DEVICE = "device"
@@ -102,7 +106,7 @@ const default_output = [LOCATION, PLACE]
 export default {
   name: "LocationAspect",
   components: {AspectDialog, Mapbox},
-  mixins: [AspectComponentMixin, TriggerSnackbarMixin, MapIncludeMixin, GeocodingMixin, EnvMixin,
+  mixins: [AspectComponentMixin, TriggerSnackbarMixin, MapIncludeMixin, GeocodingMixin, OfflineMixin,
     MapEntriesMixin, EntrySearchMixin, EntryFetchMixin, ResponsivenessMixin, TypicalAspectMixin, PersistentStorageMixin],
   computed: {
     ...mapGetters({logged_in: "user/logged_in", user_settings: "user/settings", menu_state: "menu/menu_state"}),
@@ -323,6 +327,15 @@ export default {
       this.snap_to_existing = false
       this.update_value(null)
     },
+    get_geolocation() {
+      get_location(location => {
+        if (location) {
+          this.geolocate_success(location)
+        } else {
+          this.error_snackbar(this.$t("comp.location_asp.no_loc"))
+        }
+      })
+    },
     /* query */
     search_keypress(keyEvent) {
       // Enter,  this is the most robust among all platforms (desktop, mobile, chrome, ff)
@@ -469,7 +482,7 @@ export default {
     },
     /* util */
     complete_value(value, features) {
-      console.log(value,  features)
+      console.log(value, features)
       /*
       value contains just the coordinates
       features should have the results of rev-geoquery of the coordinates
@@ -733,9 +746,11 @@ export default {
       if (this.location_set && this.value.public_precision === PREC_OPTION_RANDOM) {
         this.public_location_circle()
       } else {
-        const circle_layer = this.map.getLayer("public_loc_circle")
-        if (circle_layer) {
-          this.map.setLayoutProperty("public_loc_circle", "visibility", "none")
+        if (this.map) { // no map while offline
+          const circle_layer = this.map.getLayer("public_loc_circle")
+          if (circle_layer) {
+            this.map.setLayoutProperty("public_loc_circle", "visibility", "none")
+          }
         }
       }
     },

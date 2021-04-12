@@ -1,5 +1,4 @@
 import MapboxBaseMixin from "~/components/map/MapboxBaseMixin"
-// const default_mapstyle = "mapbox://styles/ramin36/ckguv66lf2nfg19o0v3haftb0"
 // BASIC lAYER
 import MapEntriesMixin from "~/components/map/MapEntriesMixin"
 

@@ -5,10 +5,6 @@ export default {
     env() {
       return process.env.NODE_ENV
     },
-    // todo use OfflineModeMixin?
-    online() {
-      return this.$nuxt.isOnline
-    },
     hostname() {
       return process.env.HOSTNAME
     },

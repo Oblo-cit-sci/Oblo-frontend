@@ -47,6 +47,16 @@ import ResponsivenessMixin from "~/components/ResponsivenessMixin";
 export default {
   name: "index",
   mixins: [SettingsChangeMixin, EnvMixin, LanguageMixin, ResponsivenessMixin],
+  head() {
+    return {
+      link: [
+        {
+          rel:"authorization_endpoint",
+          href:`${this.env.hostname}/auth`
+        }
+      ]
+    }
+  },
   data() {
     return {}
   },
