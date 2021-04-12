@@ -21,11 +21,11 @@ export const state = () => ({
   user_data: default_user_data,
   // is set during initialization, logout...
   settings: {},
-  auth_token: {
-    access_token: null,
-    token_type: "",
-    expiration_date: null
-  }
+  // auth_token: {
+  //   access_token: null,
+  //   token_type: "",
+  //   expiration_date: null
+  // }
 })
 
 export const getters = {

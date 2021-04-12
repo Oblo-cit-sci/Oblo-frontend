@@ -1,7 +1,10 @@
 <template lang="pug">
   v-container(fluid)
     div(v-if="is_offline") You are offline
-    EntryCreateList(:template_entries="template_entries")
+    div
+      h3 {{$t('page.domain.create_entry_dialog_title')}}
+      EntryCreateList(:template_entries="template_entries")
+    EntryPreviewList(:entries="all_entries" :total_count="num_entries")
 </template>
 
 <script>
@@ -13,11 +16,12 @@ import OfflineMixin from "~/lib/OfflineMixin"
 import EntryCreateList from "~/components/EntryCreateList"
 import {PUBLIC, USER, VISITOR} from "~/lib/consts"
 import {can_edit_entry} from "~/lib/actors"
+import EntryPreviewList from "~/components/entry/EntryPreviewList"
 
 export default {
   name: "offline",
   mixins: [TriggerSnackbarMixin, HomePathMixin, TypicalAspectMixin, OfflineMixin],
-  components: {EntryCreateList, Aspect},
+  components: {EntryPreviewList, EntryCreateList, Aspect},
   props: {},
   data() {
     return {
@@ -28,15 +32,19 @@ export default {
     template_entries() {
       // console.log(this.$store.getters["templates/entry_types_array"]("en",false))
       // TODO THATS A DUPLICATE OF DOMAIN_COMPONENT PAGE
-      const templates = this.$store.getters["templates/entry_types_array"](this.$store.getters.ui_language,true).filter(t => {
+      return this.$store.getters["templates/entry_types_array"](this.$store.getters.ui_language,true).filter(t => {
         const create_rule = this.$_.get(t, "rules.create", "public")
         return (
           create_rule === PUBLIC ||
           (create_rule === USER && this.$store.getters["username"] !== VISITOR) ||
           can_edit_entry(this.$store.getters.user, t))
       })
-      // console.log(templates)
-      return templates
+    },
+    all_entries() {
+      return this.$store.getters["entries/all_uuids"]()
+    },
+    num_entries() {
+      return this.all_entries.length
     }
   },
   methods: {},

@@ -34,9 +34,14 @@ export default {
   name: "EntryPreviewList",
   components: {SimplePaginate, EntryPreview},
   props: {
-    entries: Array,
+    entries: {
+      type: Array,
+      required: true
+    },
     // this can be more then in entries, but will allow to navigate further with next, so another fetch is triggered
-    total_count: Number,
+    total_count: {
+      type:Number
+    },
     entries_per_page: {
       type: Number,
       default: 20
@@ -45,7 +50,8 @@ export default {
       type: Object
     },
     requesting_entries: {
-      type: Boolean
+      type: Boolean,
+      default: false
     }
   },
   data: function () {
@@ -104,13 +110,13 @@ export default {
             e => this.$store.getters["templates/entry_type"](e.template.slug))).values())
     },
     total_pages() {
-      return Math.ceil(this.total_count / this.entries_per_page)
+      return Math.ceil(this.num_entries / this.entries_per_page)
     },
     has_more_pages() {
-      return this.page * this.entries_per_page < this.total_count
+      return this.page * this.entries_per_page < this.num_entries
     },
     can_request_more() {
-      return this.entries.length < this.total_count
+      return this.entries.length < this.num_entries
     }
   },
   methods: {

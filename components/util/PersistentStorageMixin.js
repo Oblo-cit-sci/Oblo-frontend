@@ -31,6 +31,8 @@ export default {
       this.store_value("user_settings", this.$store.getters["user/settings"])
     },
     persist_for_offline_mode() {
+      // user-data
+      this.persist_user_data()
       // domains
       this.persist_domains()
       // templates & codes...

@@ -352,7 +352,7 @@ class Actor extends QueryBase {
     })
   }
 
-  validate_session(auth_token) {
+  validate_session() {
     return this.get_("validate_session")
   }
 
