@@ -3,10 +3,12 @@ import FilterMixin from "~/components/FilterMixin";
 import {pack_value} from "~/lib/aspect";
 import SettingsChangeMixin from "~/components/global/SettingsChangeMixin";
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin";
+import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
+import {is_standalone} from "~/lib/pwa"
 
 export default {
   name: "LanguageMxin",
-  mixins: [FilterMixin, SettingsChangeMixin, TriggerSnackbarMixin],
+  mixins: [FilterMixin, SettingsChangeMixin, TriggerSnackbarMixin, PersistentStorageMixin],
   computed: {
     default_language() {
       return this.$nuxt.context.env.DEFAULT_LANGUAGE
@@ -36,6 +38,9 @@ export default {
         try {
           const {data} = await this.$api.language.get_component("fe", [language])
           this.$i18n.setLocaleMessage(language, data[language])
+          if (is_standalone()) {
+            this.persist_messages()
+          }
         } catch (e) {
           if (e.response.status === 404) {
             console.log("frontend not available in the language:", language)
@@ -61,6 +66,10 @@ export default {
           domain_name: this.$store.getters["domain/act_domain_name"],
           language: domain_language
         })
+        if (is_standalone()) {
+          this.persist_domains()
+          this.persist_templates()
+        }
         if (update_settings) {
           this.set_settings_value(DOMAIN_LANGUAGE, domain_language)
         }

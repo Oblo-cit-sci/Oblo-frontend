@@ -89,13 +89,20 @@ export default {
       if(this.is_offline) {
         filtered_pages = filtered_pages.filter(p => !hide_if_offline.includes(p.name))
       }
+
+      filtered_pages.forEach(p => {
+        const alt_to = this.$store.getters["menu_page"](p.name)
+        if(alt_to) {
+          p.to = alt_to
+        }
+      })
       return filtered_pages
     }
   },
   created() {
+    console.log("main-menu create")
     this.$bus.$on("main-menu-set", ({name, to}) => {
       const page = this.$_.find(this.pages, p => p.name === name)
-      console.log(page)
       console.log(`setting page:${name} to ${to}`)
       if (page) {
         page.to = to

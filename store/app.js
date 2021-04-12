@@ -6,7 +6,8 @@ export const state = () => ({
     privacy_sheet_open: true,
     dev: {}, // arbitrary data collected during development
     platform: {},
-    oauth_services: []
+    oauth_services: [],
+    menu: {}
   }
 )
 
@@ -39,6 +40,9 @@ export const mutations = {
   },
   oauth_services(state, services) {
     state.oauth_services = services
+  },
+  set_menu_to(state, {name, to}) {
+    state.menu[name] = to
   }
 }
 

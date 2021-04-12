@@ -87,6 +87,9 @@ export const getters = {
   },
   fixed_domain(state, getters) {
     return getters["user/settings_value"]("fixed_domain")
+  },
+  menu_page(state) {
+    return name => state.app.menu[name]
   }
 }
 

@@ -193,6 +193,18 @@ export default {
     set_init_done() {
       console.log("set init done")
       this.$store.commit("app/initialized")
+    },
+    async load_offline_data() {
+      const domain_data = await this.$localForage.getItem("domains")
+      this.$store.commit("domain/set_from_storage", domain_data)
+      const tempates_data = await this.$localForage.getItem("templates")
+      this.$store.commit("templates/set_from_storage", tempates_data)
+
+      const messages = await this.$localForage.getItem("messages")
+      for (let lang in messages) {
+        this.$i18n.setLocaleMessage(lang, messages[lang])
+      }
+      this.$store.commit("set_available_languages", Array.from(Object.keys(messages)))
     }
   },
   watch: {
@@ -201,15 +213,11 @@ export default {
       if (loaded) {
         if (this.is_offline) {
           console.log("offline")
-          this.$bus.$emit("main-menu-set", {name: "index", to: "/offline"})
-
-          const domain_data = await this.$localForage.getItem("domains")
-          this.$store.commit("domain/set_from_storage", domain_data)
-          const tempates_data = await this.$localForage.getItem("templates")
-          this.$store.commit("templates/set_from_storage", tempates_data)
-
+          await this.load_offline_data()
           setTimeout(() => {
             this.$store.commit("app/initialized")
+            this.$store.commit("app/set_menu_to", {name: "index", to: "/offline"})
+            // this.$bus.$emit("main-menu-set", {name: "index", to: "/offline"})
           }, 80)
           this.$router.push("/offline")
         } else {

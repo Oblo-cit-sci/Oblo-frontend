@@ -26,9 +26,9 @@ export default {
   },
   computed: {
     template_entries() {
-      console.log(this.$store.getters["templates/entry_types_array"]("en",false))
+      // console.log(this.$store.getters["templates/entry_types_array"]("en",false))
       // TODO THATS A DUPLICATE OF DOMAIN_COMPONENT PAGE
-      const templates = this.$store.getters["templates/entry_types_array"]("en",true).filter(t => {
+      const templates = this.$store.getters["templates/entry_types_array"](this.$store.getters.ui_language,true).filter(t => {
         const create_rule = this.$_.get(t, "rules.create", "public")
         return (
           create_rule === PUBLIC ||

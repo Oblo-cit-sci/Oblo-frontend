@@ -31,14 +31,24 @@ export default {
       this.store_value("user_settings", this.$store.getters["user/settings"])
     },
     persist_for_offline_mode() {
-      // console.log(Array.from(this.$store.state.domain.domains.entries()))
-      this.store_value("domains", Array.from(this.$store.state.domain.domains.entries()))
-      // this.store_value("domains", Array.from(this.$store.state.domain.domains.entries()))
+      // domains
+      this.persist_domains()
       // templates & codes...
+      this.persist_templates()
+      // messages
+      this.persist_messages()
+    },
+    persist_domains() {
+      this.store_value("domains", Array.from(this.$store.state.domain.domains.entries()))
+    },
+    persist_templates() {
       const store_templates = this.$_.cloneDeep(this.$store.state.templates)
       store_templates.codes = Array.from(store_templates.codes.entries())
       store_templates.entry_types = Array.from(store_templates.entry_types.entries())
       this.store_value("templates", store_templates)
+    },
+    persist_messages() {
+      this.store_value("messages", this.$i18n.messages)
     }
   }
 }
