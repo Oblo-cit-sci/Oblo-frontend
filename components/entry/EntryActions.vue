@@ -226,7 +226,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({connected: "app/connected", logged_in: "user/logged_in"}),
+    ...mapGetters({connected: "app/connected"}),
     entry_action_buttons_props() {
       return {
         entry: this.entry,

@@ -28,10 +28,11 @@ import MenuContainer from "~/components/menu/MenuContainer"
 import NotificationBanner from "~/components/global/NotificationBanner"
 import DecisionDialog from "~/components/util/DecisionDialog"
 import TheOverlay from "~/components/global/TheOverlay";
+import OfflineMixin from "~/lib/OfflineMixin"
 
 export default {
   components: {TheOverlay, DecisionDialog, NotificationBanner, MenuContainer, TheAppBar, ThePrivacySheet, TheSnackbar},
-  mixins: [InitializationMixin, NavBaseMixin],
+  mixins: [InitializationMixin, NavBaseMixin, OfflineMixin],
   data() {
     return {
       global_dialog_comp: null
@@ -49,6 +50,13 @@ export default {
         }
       }
     },
+  },
+  watch: {
+    is_offline(offline) {
+      if(!["offline","offline_settings", "about", "entry"].includes(this.$route.name)) {
+        this.$router.push("/offline")
+      }
+    }
   }
 }
 </script>

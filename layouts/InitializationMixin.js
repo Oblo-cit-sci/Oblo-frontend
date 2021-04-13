@@ -205,6 +205,10 @@ export default {
         this.$i18n.setLocaleMessage(lang, messages[lang])
       }
       this.$store.commit("set_available_languages", Array.from(Object.keys(messages)))
+      const user_data = await this.$localforage.getItem("user_data")
+      this.$store.commit("user/set_user_data", user_data)
+      const user_settings = await this.$localforage.getItem("user_settings")
+      this.$store.commit("user/set_settings", user_settings)
     }
   },
   watch: {

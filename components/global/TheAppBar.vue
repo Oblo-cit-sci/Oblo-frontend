@@ -14,7 +14,9 @@
           v-btn(text large outlined rounded :style="{background:'white'}" @click="open_login")
             v-icon(left) mdi-login
             span {{$t('w.login')}}
-      div(:style="display_debug" v-if="is_dev") {{display_debug_text}} v{{version}}
+      div(:style="display_debug" v-if="is_dev")
+        v-btn(@click="switch_offline") S/OFF
+        span() {{display_debug_text}} v{{version}}
       CreateEntryButton(v-if="show_create_entry_button" :style="create_button_style" :domain_data="act_lang_domain_data")
       Dialog(:dialog_open.sync="login_dialog_open")
         LoginComponent(:go_home="false" @logged_in="login_dialog_open=false" @page_change="login_dialog_open=false")

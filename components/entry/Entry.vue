@@ -67,7 +67,7 @@
         EntryValidation(:entry="entry" :template_slug="template_slug" v-model="entry_complete")
       v-row(v-if="is_dirty")
         ChangedAspectNotice(:is_draft="is_draft")
-    v-row(v-if="is_edit_mode && can_edit && !logged_in")
+    v-row(v-if="show_visitor_message")
       v-col.pl-0(:cols="base_cols")
         v-alert(color="red" type="warning" outlined dense)
           b {{$t("comp.entry_action_buttons.not_logged_in.title")}}
@@ -189,6 +189,9 @@ export default {
     ...mapGetters({logged_in: "user/logged_in", user: "user"}),
     draft_color() {
       return draft_color
+    },
+    show_visitor_message() {
+      return this.is_edit_mode && this.can_edit && !this.logged_in
     },
     aspect_loc() {
       if (this.is_editable_mode) {

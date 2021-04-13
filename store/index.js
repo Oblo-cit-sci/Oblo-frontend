@@ -3,7 +3,8 @@ import {VISITOR} from "~/lib/consts";
 export const state = () => ({
   page_path: [],
   aspect_value_cache: {},
-  available_languages: []
+  available_languages: [],
+  dev_offline: null
 })
 
 const ld = require('lodash')
@@ -44,6 +45,13 @@ export const mutations = {
     state.available_languages = ld.filter(state.available_languages, e => {
       return e !== lang_code
     })
+  },
+  dev_switch_offline(state) {
+    if(state.dev_offline === null) {
+      state.dev_offline = true
+    } else {
+      state.dev_offline = !state.dev_offline
+    }
   }
 };
 
@@ -90,6 +98,9 @@ export const getters = {
   },
   menu_page(state) {
     return name => state.app.menu[name]
+  },
+  dev_offline(state) {
+    return state.dev_offline
   }
 }
 
