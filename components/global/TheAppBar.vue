@@ -66,23 +66,28 @@ export default {
     //   return this.cur_act_lang_domain_data()
     // },
     domain_title() {
+      const platform_title = this.$store.getters["app/platform_data"].title
+      if (this.$route.name === "offline" && !this.is_offline) {
+        return platform_title
+      }
       if (this.is_offline) {
-        return this.$store.getters["app/platform_data"].title + " / " + this.$t("page.settings.asp.offline.label")
+        return platform_title + " / " + this.$t("page.settings.asp.offline.label")
       }
       if (this.$store.getters["domain/act_domain_name"] === NO_DOMAIN) {
-        return this.$store.getters["app/platform_data"].title
+        return platform_title
       } else {
-        return this.$_.get(this.act_lang_domain_data, "title", "Offline")
+        return this.act_lang_domain_data.title
       }
     },
     domain_icon() {
-      if (this.is_offline)
+      if (this.is_offline || this.$route.name === "offline")
         return this.$api.static.domain_icon(NO_DOMAIN)
       else
         return this.$api.static.domain_icon(this.act_lang_domain_data.name)
     },
     domain_headline() {
-      return this.$_.get(this.act_lang_domain_data, "long_title", "")
+      if (!this.is_offline && this.$route.name !== "offline")
+        return this.$_.get(this.act_lang_domain_data, "long_title", "")
     },
     display_debug() {
       return {

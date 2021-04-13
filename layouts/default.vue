@@ -57,7 +57,9 @@ export default {
         if (!["offline", "offline_settings", "about", "entry"].includes(this.$route.name)) {
           this.$router.push("/offline")
         }
-        this.ok_snackbar()
+        this.ok_snackbar("EN:offline")
+      } else {
+        this.ok_snackbar("EN:Online")
       }
     }
   }

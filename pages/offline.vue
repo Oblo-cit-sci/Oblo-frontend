@@ -52,7 +52,6 @@ export default {
   watch: {
     is_offline(offline) {
       if (!offline) {
-        this.ok_snackbar("You are connected")
         this.set_home_path()
       }
     }

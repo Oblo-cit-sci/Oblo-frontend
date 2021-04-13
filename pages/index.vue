@@ -90,9 +90,6 @@ export default {
       d.name = domain.name
       return d
     },
-    domain_icon(domain_name) {
-      return this.$api.static.domain_icon(domain_name)
-    },
     languages(domain) {
       return domain.languages
     },
