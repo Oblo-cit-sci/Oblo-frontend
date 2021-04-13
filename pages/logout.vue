@@ -30,7 +30,7 @@
         if (this.$_.get(err, "response.status") === 401) {
           this.err_error_snackbar(err)
         }
-        this.remove_from_storage("auth_token")
+        // this.remove_from_storage("auth_token")
         await this.$store.dispatch("logout")
         this.$store.commit("menu/open", false)
       }).finally(() => {

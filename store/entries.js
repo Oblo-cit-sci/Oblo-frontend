@@ -214,6 +214,9 @@ export const getters = {
       return Array.from(state.entries.values())
     }
   },
+  all_uuids(state, getters) {
+    return () => getters.all_entries_array().map(e => e.uuid)
+  },
   get_size(state) {
     return state.entries.size
   },

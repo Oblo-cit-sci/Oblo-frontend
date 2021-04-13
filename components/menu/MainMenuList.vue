@@ -23,17 +23,19 @@ import {mapGetters, mapMutations} from "vuex"
 import ResponsivenessMixin from "~/components/ResponsivenessMixin"
 import {is_standalone} from "~/lib/pwa";
 import {BUS_MAIN_MENU_SET} from "~/plugins/bus";
+import OfflineMixin from "~/lib/OfflineMixin"
 
 let require_login = ["/profile", "/logout"]
 let hide_logged_in = ["/login", "/register"]
 let require_admin = ["/translate/setup"] // "/admin",
 let hide_no_be = ["/register", "/login"] // if not connected out and if logged in out
 let show_inDev = ["/tests"] //, "Types", "Entrytypes", "Aspectbuild"]
+let hide_if_offline = ["register", "login", "users", "translate", "user_guide"]
 let show_in_fixed_domain = []
 
 export default {
   name: "MainMenuList",
-  mixins: [URLQueryMixin, FixDomainMixin, ResponsivenessMixin],
+  mixins: [URLQueryMixin, FixDomainMixin, ResponsivenessMixin, OfflineMixin],
   components: {LanguageSelector},
   props: {},
   data() {
@@ -83,12 +85,25 @@ export default {
       if (!is_standalone()) {
         filtered_pages = filtered_pages.filter(p => p.name !== "offline_settings")
       }
+
+      console.log(this.is_offline)
+      if(this.is_offline) {
+        filtered_pages = filtered_pages.filter(p => !hide_if_offline.includes(p.name))
+      }
+
+      filtered_pages.forEach(p => {
+        const alt_to = this.$store.getters["menu_page"](p.name)
+        if(alt_to) {
+          p.to = alt_to
+        }
+      })
       return filtered_pages
     }
   },
   created() {
     this.$bus.$on(BUS_MAIN_MENU_SET, ({name, to}) => {
       const page = this.$_.find(this.pages, p => p.name === name)
+      console.log(`setting page:${name} to ${to}`)
       if (page) {
         page.to = to
       }

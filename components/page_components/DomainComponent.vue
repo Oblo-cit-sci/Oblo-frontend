@@ -3,7 +3,7 @@
     TitledDialog(:title="$t('page.domain.create_entry_dialog_title')" :dialog_open.sync="entrycreate_dialog_open" show_close_btn)
       EntryCreateList(:template_entries="create_templates_options")
     MapWrapper(
-      v-if="online"
+      v-if="!is_offline"
       height="100%"
       :domain_data="domain_data"
       @force_menu_mode_domain="set_menu_state(1)"
@@ -24,11 +24,12 @@ import FilterMixin from "~/components/FilterMixin";
 import EnvMixin from "~/components/global/EnvMixin";
 import {MENU_MODE_DOMAIN, QP_D, QP_F, TEMPLATE} from "~/lib/consts";
 import DomainDataMixin from "~/components/domain/DomainDataMixin";
+import OfflineMixin from "~/lib/OfflineMixin"
 
 export default {
   name: "DomainComponent",
   components: {TitledDialog, EntryCreateList, MapWrapper},
-  mixins: [DomainDataMixin, HasMainNavComponentMixin, EntryNavMixin, URLQueryMixin, EntryCreateMixin,
+  mixins: [DomainDataMixin, HasMainNavComponentMixin, EntryNavMixin, URLQueryMixin, EntryCreateMixin, OfflineMixin,
     URLParseMixin, FilterMixin, EnvMixin],
   data() {
     return {

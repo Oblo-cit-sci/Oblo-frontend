@@ -10,10 +10,12 @@ import EnvMixin from "~/components/global/EnvMixin"
 import URLQueryMixin from "~/components/util/URLQueryMixin";
 import LanguageMixin from "~/components/LanguageMixin";
 import EntryFetchMixin from "~/components/entry/EntryFetchMixin";
+import OfflineMixin from "~/lib/OfflineMixin"
+import {is_standalone} from "~/lib/pwa"
 
 export default {
   name: "InitializationMixin",
-  mixins: [FixDomainMixin, SettingsChangeMixin, HomePathMixin, EnvMixin, URLQueryMixin, LanguageMixin, EntryFetchMixin],
+  mixins: [FixDomainMixin, SettingsChangeMixin, HomePathMixin, EnvMixin, URLQueryMixin, LanguageMixin, EntryFetchMixin, OfflineMixin],
   created() {
     // console.log("db loaded??", this.db_loaded)
     default_settings.ui_language = this.default_language
@@ -191,32 +193,60 @@ export default {
     set_init_done() {
       console.log("set init done")
       this.$store.commit("app/initialized")
+    },
+    async load_offline_data() {
+      const domain_data = await this.$localForage.getItem("domains")
+      this.$store.commit("domain/set_from_storage", domain_data)
+      const tempates_data = await this.$localForage.getItem("templates")
+      this.$store.commit("templates/set_from_storage", tempates_data)
+
+      const messages = await this.$localForage.getItem("messages")
+      for (let lang in messages) {
+        this.$i18n.setLocaleMessage(lang, messages[lang])
+      }
+      this.$store.commit("set_available_languages", Array.from(Object.keys(messages)))
     }
   },
   watch: {
-    db_loaded(loaded) {
+    async db_loaded(loaded) {
       console.log("db loaded", loaded)
       if (loaded) {
-        // console.log("layout. initializing")
-        if (this.$nuxt.isOffline) {
+        if (this.is_offline) {
           console.log("offline")
-          this.$router.push("/offline")
-          this.set_home_path("/offline")
+          await this.load_offline_data()
           setTimeout(() => {
             this.$store.commit("app/initialized")
+            this.$store.commit("app/set_menu_to", {name: "index", to: "/offline"})
+            // this.$bus.$emit("main-menu-set", {name: "index", to: "/offline"})
           }, 80)
-          return
+          this.$router.push("/offline")
+        } else {
+          this.initialize().then(() => {
+            console.log("all done")
+            if (is_standalone()) {
+              console.log("gonna store all relevant data for offline mode")
+              this.persist_for_offline_mode()
+            }
+            // const token = this.$store.getters["user/get_auth_token"]
+            // const evtSource = new EventSource(this.$api.api_baseURL + `/sse/stream?token=${token.access_token}`);
+            // evtSource.onmessage = function (event) {
+            //   console.log(event.data)
+            // }
+          }, err => {
+            console.log("initialization failed", err)
+          })
         }
-        this.initialize().then(() => {
-          console.log("all done")
-          // const token = this.$store.getters["user/get_auth_token"]
-          // const evtSource = new EventSource(this.$api.api_baseURL + `/sse/stream?token=${token.access_token}`);
-          // evtSource.onmessage = function (event) {
-          //   console.log(event.data)
-          // }
-        }, err => {
-          console.log("initialization failed", err)
-        })
+        // console.log("layout. initializing")
+        // if (this.$nuxt.isOffline) {
+        //   console.log("offline")
+        //   this.$router.push("/offline")
+        //   this.set_home_path("/offline")
+        //   setTimeout(() => {
+        //     this.$store.commit("app/initialized")
+        //   }, 80)
+        //   return
+        // }
+
       }
     }
   }

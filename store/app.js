@@ -41,8 +41,8 @@ export const mutations = {
   oauth_services(state, services) {
     state.oauth_services = services
   },
-  set_menu_item(state, {name, data}) {
-    state.menu[name] = data
+  set_menu_to(state, {name, to}) {
+    state.menu[name] = to
   }
 }
 
@@ -70,9 +70,6 @@ export const getters = {
   },
   oauth_services(state) {
     return state.oauth_services
-  },
-  menu(state) {
-    return state.menu
   }
 }
 

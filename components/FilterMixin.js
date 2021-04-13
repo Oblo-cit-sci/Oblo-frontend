@@ -193,6 +193,7 @@ export default {
     },
     apply_filter(filter, entries) {
       const filter_value = unpack(filter.value)
+      // console.log(entries)
       if (filter.name === "select_uuids") {
         return entries.filter(e => filter.value.includes(e.uuid))
       }

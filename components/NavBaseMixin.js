@@ -60,7 +60,8 @@ export default {
         }
       }
       if (log_page) {
-        this.$store.commit("init_page_path", this.$route)
+        const {name, query} = this.$route
+        this.$store.commit("init_page_path",{name, query})
       }
       this.$router.push(route)
     },

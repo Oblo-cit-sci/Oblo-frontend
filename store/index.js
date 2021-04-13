@@ -10,6 +10,7 @@ const ld = require('lodash')
 
 export const mutations = {
   init_page_path(state, route) {
+    console.log(route)
     // todo, maybe it required more!?! check getter
     state.page_path = [route]
     //  state.page_path = [{
@@ -86,6 +87,9 @@ export const getters = {
   },
   fixed_domain(state, getters) {
     return getters["user/settings_value"]("fixed_domain")
+  },
+  menu_page(state) {
+    return name => state.app.menu[name]
   }
 }
 

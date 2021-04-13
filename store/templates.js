@@ -239,6 +239,12 @@ export const mutations = {
         state.requested[domain].add(language)
       }
     })
+  },
+  set_from_storage(state, templates) {
+    state.entry_types = new Map(templates.entry_types)
+    state.codes = new Map(templates.codes)
+    state.requested = templates.requested
+    state.tags = templates.tags
   }
 }
 
