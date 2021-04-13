@@ -25,13 +25,10 @@ export default {
     let user_settings  = null
     try {
       const {data: response_data} = await this.$api.basic.oauth_complete(this.$route.query)
-
       this.ok_snackbar(response_data.msg)
 
       this.clear_search()
-
       this.clear_entries({keep_drafts: true, keep_uuid: this.query_entry_uuid})
-
       this.map_clear()
       const user_data = response_data.data
       // console.log("user_data", user_data)
@@ -44,7 +41,6 @@ export default {
       this.home()
       return
     }
-
     try {
       await this.change_language(user_settings.ui_language, false, user_settings.domain_language)
       if (user_settings.fixed_domain) {

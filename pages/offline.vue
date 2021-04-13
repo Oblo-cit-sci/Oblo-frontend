@@ -1,10 +1,11 @@
 <template lang="pug">
   v-container(fluid)
-    div(v-if="is_offline") You are offline
     div
       h3 {{$t('page.domain.create_entry_dialog_title')}}
       EntryCreateList(:template_entries="template_entries")
-    EntryPreviewList(:entries="all_entries" :total_count="num_entries")
+    div
+      h3.text-capitalize {{$t('w.entries')}}
+      EntryPreviewList(:entries="all_entries" :total_count="num_entries" :preview_options="{show_botton_actions: true}")
 </template>
 
 <script>

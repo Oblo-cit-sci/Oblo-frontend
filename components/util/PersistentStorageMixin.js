@@ -40,6 +40,11 @@ export default {
       this.persist_templates()
       // messages
       this.persist_messages()
+      // misc
+      const offline_misc_data = {
+        "app/platform_data": this.$store.getters["app/platform_data"]
+      }
+      this.store_value("offline_misc_data", offline_misc_data)
     },
     persist_domains() {
       this.store_value("domains", Array.from(this.$store.state.domain.domains.entries()))

@@ -22,6 +22,7 @@ import FixDomainMixin from "~/components/global/FixDomainMixin"
 import {mapGetters, mapMutations} from "vuex"
 import ResponsivenessMixin from "~/components/ResponsivenessMixin"
 import {is_standalone} from "~/lib/pwa";
+import {BUS_MAIN_MENU_SET} from "~/plugins/bus";
 import OfflineMixin from "~/lib/OfflineMixin"
 
 let require_login = ["/profile", "/logout"]
@@ -85,7 +86,7 @@ export default {
         filtered_pages = filtered_pages.filter(p => p.name !== "offline_settings")
       }
 
-      console.log(this.is_offline)
+      // console.log(this.is_offline)
       if(this.is_offline) {
         filtered_pages = filtered_pages.filter(p => !hide_if_offline.includes(p.name))
       }
@@ -100,8 +101,7 @@ export default {
     }
   },
   created() {
-    console.log("main-menu create")
-    this.$bus.$on("main-menu-set", ({name, to}) => {
+    this.$bus.$on(BUS_MAIN_MENU_SET, ({name, to}) => {
       const page = this.$_.find(this.pages, p => p.name === name)
       console.log(`setting page:${name} to ${to}`)
       if (page) {

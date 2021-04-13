@@ -90,7 +90,7 @@ export default {
       }
       const i_language = qp_lang || user_settings.ui_language || this.default_language
 
-      console.log("init with, ", domain_name, i_language)
+      console.log(`init with domain: ${domain_name}, lang: ${i_language}`)
 
       const {data: resp} = await this.$api.basic.init_data(domain_name ? [domain_name, NO_DOMAIN] : null, i_language)
 
@@ -209,6 +209,9 @@ export default {
       this.$store.commit("user/set_user_data", user_data)
       const user_settings = await this.$localforage.getItem("user_settings")
       this.$store.commit("user/set_settings", user_settings)
+
+      const offline_misc_data = await this.$localForage.getItem("offline_misc_data")
+      await this.$store.dispatch("set_offline_misc_data", offline_misc_data)
     }
   },
   watch: {

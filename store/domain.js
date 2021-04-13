@@ -141,7 +141,6 @@ export const getters = {
   },
   // todo act_domain_title, REMOVE, language
   act_domain_title(state, getters) {
-    console.trace()
     return getters.act_lang_domain_data.title
   },
   act_lang_domain_data(state) {

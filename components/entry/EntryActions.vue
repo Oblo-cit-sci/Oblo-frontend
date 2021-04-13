@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import {EDIT, REVIEW, VIEW} from "~/lib/consts";
+import {EDIT, QP_ENTRY_ACCESS_KEY, QP_ENTRY_MODE, QP_UUID, REVIEW, VIEW} from "~/lib/consts";
 import Paginate from "../global/Paginate";
 
 import EntryNavMixin from "../EntryNavMixin";
@@ -97,7 +97,7 @@ export default {
           }, confirm_method: () => {
             // this.$emit("entry-action", "delete")
             this.$store.dispatch("entries/delete_entry", this.uuid)
-            this.back()
+            this.back([QP_UUID, QP_ENTRY_ACCESS_KEY, QP_ENTRY_MODE])
             this.ok_snackbar(this.$t("comp.entry_actions.cancel_draft"))
             this.persist_entries()
           }
@@ -211,10 +211,9 @@ export default {
             this.$store.dispatch("entries/delete_entry", this.uuid)
             this.$store.commit("search/delete_entry", this.uuid)
             this.$store.commit("map/delete_feature", {domain_name: this.entry.domain, uuid: this.uuid})
-            console.log(resp)
             this.ok_snackbar(resp.data.msg)
             this.$emit("entry-action", "delete")
-            this.back()
+            this.back([QP_UUID, QP_ENTRY_ACCESS_KEY, QP_ENTRY_MODE])
           }).catch(err => {
             this.err_error_snackbar(err)
           })

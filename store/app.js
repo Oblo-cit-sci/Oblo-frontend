@@ -28,7 +28,7 @@ export const mutations = {
     state.privacy_sheet_open = false
   },
   set_dev(state, {data, merge}) {
-    console.log(data, merge)
+    // console.log(data, merge)
     if (merge) {
       state.dev = Object.assign(state.dev, data)
     } else {
