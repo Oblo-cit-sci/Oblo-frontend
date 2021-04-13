@@ -103,6 +103,11 @@ export const actions = {
     dispatch("user/logout")
     commit("search/clear")
     commit("map/clear")
+  },
+  set_offline_misc_data({commit}, offline_misc_data) {
+    for(let commit_name in offline_misc_data) {
+      commit(commit_name, offline_misc_data[commit_name])
+    }
   }
 }
 

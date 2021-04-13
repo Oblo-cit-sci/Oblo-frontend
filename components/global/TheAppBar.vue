@@ -64,6 +64,9 @@ export default {
     //   return this.cur_act_lang_domain_data()
     // },
     domain_title() {
+      if (this.is_offline) {
+        return this.$store.getters["app/platform_data"].title + " / " + this.$t("page.settings.asp.offline.label")
+      }
       if (this.$store.getters["domain/act_domain_name"] === NO_DOMAIN) {
         return this.$store.getters["app/platform_data"].title
       } else {
@@ -71,7 +74,9 @@ export default {
       }
     },
     domain_icon() {
-      if (!this.is_offline)
+      if (this.is_offline)
+        return this.$api.static.domain_icon(NO_DOMAIN)
+      else
         return this.$api.static.domain_icon(this.act_lang_domain_data.name)
     },
     domain_headline() {

@@ -205,6 +205,8 @@ export default {
         this.$i18n.setLocaleMessage(lang, messages[lang])
       }
       this.$store.commit("set_available_languages", Array.from(Object.keys(messages)))
+      const offline_misc_data = await this.$localForage.getItem("offline_misc_data")
+      await this.$store.dispatch("set_offline_misc_data", offline_misc_data)
     }
   },
   watch: {

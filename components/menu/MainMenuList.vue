@@ -86,7 +86,7 @@ export default {
         filtered_pages = filtered_pages.filter(p => p.name !== "offline_settings")
       }
 
-      console.log(this.is_offline)
+      // console.log(this.is_offline)
       if(this.is_offline) {
         filtered_pages = filtered_pages.filter(p => !hide_if_offline.includes(p.name))
       }
