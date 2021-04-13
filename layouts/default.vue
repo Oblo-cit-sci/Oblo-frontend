@@ -29,10 +29,11 @@ import NotificationBanner from "~/components/global/NotificationBanner"
 import DecisionDialog from "~/components/util/DecisionDialog"
 import TheOverlay from "~/components/global/TheOverlay";
 import OfflineMixin from "~/lib/OfflineMixin"
+import HomePathMixin from "~/components/menu/HomePathMixin"
 
 export default {
   components: {TheOverlay, DecisionDialog, NotificationBanner, MenuContainer, TheAppBar, ThePrivacySheet, TheSnackbar},
-  mixins: [InitializationMixin, NavBaseMixin, OfflineMixin],
+  mixins: [InitializationMixin, NavBaseMixin, OfflineMixin, HomePathMixin],
   data() {
     return {
       global_dialog_comp: null
@@ -58,8 +59,10 @@ export default {
           this.$router.push("/offline")
         }
         this.ok_snackbar("EN:offline")
+        this.$store.commit("app/set_menu_to", {name: "index", to: "/offline"})
       } else {
         this.ok_snackbar("EN:Online")
+        this.set_home_path()
       }
     }
   }

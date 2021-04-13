@@ -15,7 +15,7 @@
             v-icon(left) mdi-login
             span {{$t('w.login')}}
       div(:style="display_debug" v-if="is_dev")
-        v-btn(@click="switch_offline") S/OFF
+        v-btn(@click="switch_offline") {{dev_offline_switch_button_label}}
         span() {{display_debug_text}} v{{version}}
       CreateEntryButton(v-if="show_create_entry_button" :style="create_button_style" :domain_data="act_lang_domain_data")
       Dialog(:dialog_open.sync="login_dialog_open")
@@ -134,6 +134,9 @@ export default {
     version() {
       console.log(process.env.NODE_ENV)
       return pkg.version
+    },
+    dev_offline_switch_button_label() {
+      return this.is_offline ? "S/ON" : "S/OFF"
     }
   },
   methods: {
