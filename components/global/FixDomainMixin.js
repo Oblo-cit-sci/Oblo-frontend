@@ -38,9 +38,11 @@ export default {
       }
       // todo: here we call bus to the menu instead of this stuff
       if (domain_name && domain_name !== NO_DOMAIN)
-        this.set_home_path(`/domain?f=${domain_name}`)
-      else
+        // todo cleaner to: name, query
+        this.$store.commit("app/set_menu_to", {name:"domain", to: `/domain?f=${domain_name}`})
+      else {
         this.set_home_path()
+      }
     }
   }, watch: {
     fixed_domain(domain_name) {

@@ -22,7 +22,6 @@ import FixDomainMixin from "~/components/global/FixDomainMixin"
 import {mapGetters, mapMutations} from "vuex"
 import ResponsivenessMixin from "~/components/ResponsivenessMixin"
 import {is_standalone} from "~/lib/pwa";
-import {BUS_MAIN_MENU_SET} from "~/plugins/bus";
 import OfflineMixin from "~/lib/OfflineMixin"
 
 let require_login = ["/profile", "/logout"]
@@ -101,13 +100,7 @@ export default {
     }
   },
   created() {
-    this.$bus.$on(BUS_MAIN_MENU_SET, ({name, to}) => {
-      const page = this.$_.find(this.pages, p => p.name === name)
-      console.log(`setting page:${name} to ${to}`)
-      if (page) {
-        page.to = to
-      }
-    })
+
   },
   methods: {
     ...mapMutations({switch_menu_open: 'menu/switch_open'}),

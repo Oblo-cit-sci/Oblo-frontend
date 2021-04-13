@@ -53,8 +53,11 @@ export default {
   },
   watch: {
     is_offline(offline) {
-      if(!["offline","offline_settings", "about", "entry"].includes(this.$route.name)) {
-        this.$router.push("/offline")
+      if(offline) {
+        if (!["offline", "offline_settings", "about", "entry"].includes(this.$route.name)) {
+          this.$router.push("/offline")
+        }
+        this.ok_snackbar()
       }
     }
   }
