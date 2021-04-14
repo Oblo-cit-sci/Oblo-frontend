@@ -33,6 +33,9 @@ export default {
       entry: {
         type: Object,
         required: true
+      },
+      include_etype_in_title: {
+        type: Boolean
       }
     },
   data() {
@@ -101,7 +104,7 @@ export default {
       return this.$_.get(this.template, "rules.marker_color")
     },
     entry_title() {
-      if (this.is_edit_mode) {
+      if (this.is_editable_mode) {
         // todo dirty. do this similar to new tag schema. have "titleAspect" in the attr of the actual aspect that
         // sets the title
         let titleAspect = get_entry_titleAspect(this.template)
@@ -111,13 +114,10 @@ export default {
         // todo maybe it would be cleaner to add "entry "+uuid , so that  aspect_loc_str2arr/is wrapped around
         let title = this.$store.getters["entries/value"](loc_prepend(EDIT, this.uuid, aspect_loc_str2arr(titleAspect)))
         title = this.$_.get(title, "value", "")
-        return this.template.title + (title ? ": " + title : "")
-      } else {
-        return this.full_title
+        return this.full_title(title)
+      } else { // VIEW
+        return this.full_title()
       }
-    },
-    full_title() {
-      return this.template.title + (this.entry.title ? ": " + this.entry.title : "")
     },
     entry_image() {
       if (this.entry.image) {
@@ -182,10 +182,10 @@ export default {
       // console.log("template", this.template.entry_refs, this.entry.tags)
       const e_tags = this.entry.tags
       const result_tags = {}
-      for(let group_name of Object.keys(this.entry.tags)) {
+      for (let group_name of Object.keys(this.entry.tags)) {
         let tag_values = e_tags[group_name]
         const template_tag_refs = this.template.entry_refs.filter(t => t.ref_type === TAG)
-        const tag_ =  this.$_.find(template_tag_refs, ref => {
+        const tag_ = this.$_.find(template_tag_refs, ref => {
           if (!Array.isArray(ref.tag)) {
             return ref.tag.name === group_name
           } else {
@@ -227,6 +227,23 @@ export default {
   //   this.update_aspect_locs()
   // },
   methods: {
+    full_title(title) {
+      // debugger
+      if (!title) {
+        title = this.entry.title
+      }
+      if (title === "")
+        return this.template.title
+      else {
+        let full_title = this.include_etype_in_title ? this.template.title : ""
+        if(this.include_etype_in_title) {
+          full_title += title ? ": " + title : ""
+        } else {
+          full_title = title
+        }
+        return full_title
+      }
+    },
     download() {
       //   return clone
       // })
