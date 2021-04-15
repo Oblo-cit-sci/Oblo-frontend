@@ -30,7 +30,7 @@ export const state = () => ({
 
 export const getters = {
   logged_in(state, getters) {
-    return getters.registered_name === VISITOR
+    return getters.registered_name !== VISITOR
   },
   registered_name(state) {
     return state.user_data.registered_name

@@ -51,11 +51,6 @@ export default {
         prevent_view_page_change: true
       }
       // return {}
-    },
-    entry_navigation_props() {
-      return {
-        show_back_button: false
-      }
     }
   },
   methods: {

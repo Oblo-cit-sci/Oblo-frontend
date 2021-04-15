@@ -16,11 +16,7 @@
     div(v-if="nav_mode_entry && selected_entry")
       v-row
         v-col.py-0
-          v-btn(@click="unselect_entry" text small)
-            v-icon mdi-arrow-left-thick
-      v-row
-        v-col.py-0
-          Entry(:entry="selected_entry" :navigation_props="entry_navigation_props")
+          Entry(:entry="selected_entry" show_back_button :back_button_function="back_from_entry")
 </template>
 
 <script>
@@ -81,6 +77,11 @@ export default {
     },
     can_fix_domain() {
       return !this.is_fixed_domain && !this.$store.getters.is_visitor
+    }
+  },
+  methods: {
+    back_from_entry() {
+      this.unselect_entry()
     }
   },
   watch: {

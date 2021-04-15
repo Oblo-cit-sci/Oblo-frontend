@@ -1,5 +1,9 @@
 <template lang="pug">
   v-container.pt-1(justify-center align-center v-if="entry")
+    v-row(v-if="show_back_button")
+      v-btn.my-auto(@click="back_button_function" text small)
+        v-icon mdi-arrow-left-thick
+      span.my-auto {{template.title}}
     v-row
       v-col.pt-2(xs12 md12)
         Title_Description(
@@ -130,7 +134,11 @@ export default {
     Title_Description,
   },
   props: {
-    is_dirty: Boolean
+    is_dirty: Boolean,
+    show_back_button: Boolean,
+    back_button_function: {
+      type: Function
+    }
   },
   created() {
     this.set_aspects([this.asp_entry_roles()])
@@ -174,7 +182,7 @@ export default {
           },
           confirm_method: () => {
             const {public_name, registered_name} = this.user
-            const orig_user = creator.actor.public_name
+            // const orig_user = creator.actor.public_name
             creator.actor = {public_name, registered_name}
             this.$store.commit("entries/_set_entry_value", {
               aspect_loc: [[EDIT, this.uuid], ["meta", "actors"]],
@@ -252,6 +260,7 @@ export default {
       return this.entry.tags && Object.keys(this.entry.tags).length > 0
     },
     allow_download() {
+      console.log("allow_download", this.$_.get(this.template.rules, "allow_download", true))
       return this.$_.get(this.template.rules, "allow_download", true)
     },
     entry_actions_props() {
@@ -270,7 +279,7 @@ export default {
   watch: {
     meta_aspects_values: {
       deep: true,
-      handler: function (values, prev) {
+      handler: function (values) {
         // todo why does prev, return the same as values
         // console.log(values.privacy.value, prev.privacy)
         for (let aspect_name of Object.keys(values)) {

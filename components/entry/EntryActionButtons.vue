@@ -61,7 +61,8 @@ export default {
     entry_complete: Boolean,
     sending: Boolean,
     is_dirty: Boolean,
-    has_errors: Boolean
+    has_errors: Boolean,
+    allow_download: Boolean
   },
   data() {
     return {

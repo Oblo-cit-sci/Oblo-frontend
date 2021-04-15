@@ -12,7 +12,7 @@
                 svg.mr-1(height=15 width=15 v-if="!show_entrytype_title")
                   circle(cx=8 cy=8 r=6 :stroke="status_color" :fill="template_color" stroke-width=2)
                 span(@click="goto(entry.uuid, 'view')"  :style="title_style")
-                  span {{title}}
+                  span {{full_title()}}
                   span(v-if="is_draft" :style="{color:status_color}") &nbsp; [{{$t('comp.entrypreview.draft')}}]
                   span(v-if="is_requires_review" :style="{color:status_color}") &nbsp; [{{$t('comp.entrypreview.requries_review')}}]
                   <!-- CLEAN THIS OUT -->
@@ -158,13 +158,6 @@ export default {
     },
     show_view() {
       return [EDIT, REVIEW].includes(this.proper_mode)
-    },
-    title() {
-      if (!this.show_entrytype_title) {
-        return this.entry.title
-      } else {
-        return this.full_title
-      }
     },
     action_loading() {
       return this.additional_action_loading
