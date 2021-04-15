@@ -31,11 +31,6 @@ import {create_option} from "~/lib/options";
 export default {
   name: "LanguageSelector",
   mixins: [LanguageMixin, URLQueryMixin],
-  components: {},
-  props: {},
-  data() {
-    return {}
-  },
   mounted() {
     if (!this.language) {
       // console.log("LanguageSelector-mounted without language")

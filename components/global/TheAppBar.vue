@@ -2,7 +2,7 @@
   v-app-bar(true app elevation="2" :style="{'z-index':7}")
     v-app-bar-nav-icon.rounded-circle(color="blue"  v-show="initialized" @click="switch_menu")
       v-icon {{main_icon}}
-    v-toolbar-title.pa-0(v-if="initialized")
+    v-toolbar-title.pa-0(:style="{width:'100%'}" v-if="initialized")
       v-list-item.pl-0
         v-list-item-avatar.header-avatar(@click="to_set_domain" width="50" height="auto" tile)
           v-img(contain :src="domain_icon")
@@ -14,12 +14,14 @@
           v-btn(text large outlined rounded :style="{background:'white'}" @click="open_login")
             v-icon(left) mdi-login
             span {{$t('w.login')}}
-      div(:style="display_debug" v-if="is_dev")
-        v-btn(@click="switch_offline") {{dev_offline_switch_button_label}}
-        span() {{display_debug_text}} v{{version}}
-      CreateEntryButton(v-if="show_create_entry_button" :style="create_button_style" :domain_data="act_lang_domain_data")
-      Dialog(:dialog_open.sync="login_dialog_open")
-        LoginComponent(:go_home="false" @logged_in="login_dialog_open=false" @page_change="login_dialog_open=false")
+    v-spacer
+    LanguageSelector(v-if="show_language_selector")
+    //div(:style="display_debug" v-if="is_dev")
+    //  v-btn(@click="switch_offline") {{dev_offline_switch_button_label}}
+    //  span() {{display_debug_text}} v{{version}}
+    CreateEntryButton(v-if="show_create_entry_button" :style="create_button_style" :domain_data="act_lang_domain_data")
+    Dialog(:dialog_open.sync="login_dialog_open")
+      LoginComponent(:go_home="false" @logged_in="login_dialog_open=false" @page_change="login_dialog_open=false")
 </template>
 
 <script>
@@ -36,13 +38,14 @@ import {NO_DOMAIN, VIEW} from "~/lib/consts"
 import EnvMixin from "~/components/global/EnvMixin"
 import {PAGE_INDEX, PAGE_LOGIN} from "~/lib/pages";
 import OfflineMixin from "~/lib/OfflineMixin"
+import LanguageSelector from "~/components/LanguageSelector"
 
 const pkg = require('~/package.json')
 
 export default {
   name: "TheAppBar",
   mixins: [NavBaseMixin, ResponsivenessMixin, URLQueryMixin, HasMainNavComponentMixin, EnvMixin, OfflineMixin],
-  components: {LoginComponent, Dialog, CreateEntryButton},
+  components: {LanguageSelector, LoginComponent, Dialog, CreateEntryButton},
   data() {
     return {
       login_dialog_open: false
@@ -61,6 +64,9 @@ export default {
       } else {
         return {"font-size": "90%"}
       }
+    },
+    show_language_selector() {
+      return this.is_large
     },
     // domain_data() {
     //   return this.cur_act_lang_domain_data()
@@ -120,7 +126,7 @@ export default {
     create_button_style() {
       return {
         "position": "fixed",
-        "right": "10%",
+        "right": "30%",
         "top": "5%"
       }
     },

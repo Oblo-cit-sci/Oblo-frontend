@@ -10,7 +10,7 @@
           v-btn(icon small v-if="show_close_btn(item)" @click="close_menu")
             v-icon  mdi-close
     v-divider
-    LanguageSelector
+    LanguageSelector(v-if="show_language_selector")
 </template>
 
 <script>
@@ -97,6 +97,9 @@ export default {
         }
       })
       return filtered_pages
+    },
+    show_language_selector() {
+      return !this.is_large
     }
   },
   created() {
