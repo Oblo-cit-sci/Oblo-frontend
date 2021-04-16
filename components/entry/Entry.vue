@@ -9,7 +9,7 @@
         Title_Description(
           dc_title
           :title="entry_title"
-          header_type="h1"
+          header_type="h3"
           :description="template.description"
           :mode="mode")
           span.ml-1(:style="{'color': draft_color}") {{is_draft ? "[" + $t('comp.entrypreview.draft') +"]" : ""}}
