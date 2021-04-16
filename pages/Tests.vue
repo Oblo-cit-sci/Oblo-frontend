@@ -7,13 +7,13 @@
 export default {
   name: "Tests",
   mixins: [],
-  components: {},
-  head() {
+  components: {
+  },
+  data() {
     return {
-      title: "cool",
     }
   },
-  async created() {
+  created() {
     // experimental feature. load and run domain-js-plugin
     const url = this.$api.static.url("js/licci.js")
     const domain_plugin = document.createElement('script')
@@ -29,11 +29,6 @@ export default {
     const fn = window["crossref_transform"];
     if (typeof fn === "function") fn({"cool": 4});
   },
-  data() {
-    return {}
-  },
-  computed: {},
-  methods: {},
   watch: {}
 }
 </script>
