@@ -42,13 +42,13 @@
                   :dialog_open.sync="setting_dialog_open")
     div(v-else)
       span.body-1.readonly-aspect {{place_name_display}}
-      v-btn(v-if="show_goto_button" icon @click="set_goto_location")
+      v-btn.py-0.my-0(v-if="show_goto_button" height="24px" icon @click="set_goto_location")
         v-icon mdi-map-marker
       div(v-if="!value") {{$t('comp.location_asp.no_loc')}}
     client-only
       div(v-if="!is_offline")
         .map_overlay
-          v-btn(v-if="show_show_my_entries_btn" dark small :color="show_existing ? 'blue' : 'grey'" @click="toggle_show_existing" :loading="getting_my_entries_loading") {{$t('comp.location_asp.show entries')}}
+          v-btn(v-if="show_show_my_entries_btn"  dark small :color="show_existing ? 'blue' : 'grey'" @click="toggle_show_existing" :loading="getting_my_entries_loading") {{$t('comp.location_asp.show entries')}}
             v-icon mdi-map-marker-circle
         Mapbox.crosshair.mt-3(
           :id="map_id"

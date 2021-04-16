@@ -2,9 +2,10 @@
   div
     div(v-if="is_simple")
       div(v-for="(value, index) in value" :key="index")
-        div(v-if="aspect_is_on_page(index)" :id="panel_id(index)")
+        div.py-0(v-if="aspect_is_on_page(index)" :id="panel_id(index)")
           b.m-1(v-if="has_indexTitle") {{titles[index]|| index + 1}}
-          Aspect(
+          span.float-left(v-if="text_only_item") - &nbsp;
+          Aspect.py-0(
             v-bind="list_aspect_props(index)"
             @aspectAction="handleAspectAction($event, index)"
             @update:ext_value="update_index_value(index, $event)"
@@ -55,7 +56,7 @@
 
 import Aspect from "../Aspect";
 import ListMixin from "../ListMixin";
-import {COMPOSITE, EDIT, INDEX, SIMPLE_TYPE} from "~/lib/consts";
+import {COMPOSITE, EDIT, FLOAT, INDEX, INT, SIMPLE_TYPE, STR} from "~/lib/consts";
 import {
   aspect_loc_str,
   aspect_loc_str2arr,
@@ -270,6 +271,9 @@ export default {
     requires_delete() {
       let itemtype = this.item_aspect.type
       return !(itemtype === "str" || itemtype === "int" || itemtype === "float" || itemtype === "tree")
+    },
+    text_only_item() {
+      return [STR, INT, FLOAT].includes(this.item_aspect.type)
     },
     default_view_text() {
       return this.$_.get(this.attr, "default_view_text", "")

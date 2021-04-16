@@ -14,13 +14,13 @@
       :hide_details="hide_details"
       :clearable="!is_required")
   div(v-else)
-    div.mt-3(v-if="value")
+    div(v-if="value")
       div
         div.mt-1(v-if="value_icon")
           v-img(:src="value_icon" contain max-height="40")
         div
           p.pl-2(v-if="select_check" class="text-uppercase") {{check_box_value ? options[1].text : options[0].text}}
-          p.body-1.readonly-aspect.pl-3(v-else) {{view_mode_text}}
+          p.body-1.readonly-aspect.break_word(v-else) {{view_mode_text}}
         div.pt-2(v-if="view_mode_description" style="clear:left") {{$t('comp.select_asp.descr')}}: {{view_mode_description}}
 </template>
 

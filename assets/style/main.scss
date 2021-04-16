@@ -8,6 +8,17 @@
   transform: translateY(-10px);
 }
 
+/* treeselect prepend value image */
+.value_icon .v-responsive__sizer {
+  padding-bottom: 0 !important;
+  height: 50px
+}
+
+
+.value_icon .v-responsive__content {
+  width: 50px !important;
+}
+
 html {
   overscroll-behavior: contain;
 }

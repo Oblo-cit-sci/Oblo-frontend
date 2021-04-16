@@ -21,11 +21,7 @@
       @update:error="$emit('update:error', $event)"
       single-line outlined chips multiple clearable)
   div(v-else)
-    v-chip(
-      v-for="(item, index) in selection" :key="index"
-      class="mr-2 mt-2 mb-4"
-    )
-      span {{item.text}}
+    p.body-1.readonly-aspect.break_word {{view_text}}
 </template>
 
 <script>
@@ -94,6 +90,9 @@ export default {
         rules.push(rule)
       }
       return rules
+    },
+    view_text() {
+      return this.selection.map(s => s.text).join("; ")
     }
   },
   methods: {
@@ -106,9 +105,6 @@ export default {
       } else {
         this.init = false
       }
-    },
-    toString(value) {
-      return value.join(", ") || ""
     },
     option_disabled(option) {
       if (option.condition) {

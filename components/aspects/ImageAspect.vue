@@ -5,7 +5,7 @@
         v-img.a_image(:src="get_image_data(index)" @click="open_image(index)" max-height="300" contain @error="image_error($event, index)")
           .header_image_wrapper(v-if="cover_image_index===index && is_editable_mode")
             div.ml-9.font-weight-light {{$t('comp.image_asp.cover_image')}}
-      v-col(v-if="is_view_mode && !has_images")
+      v-col.py-0(v-if="is_view_mode && !has_images")
         div {{$t('comp.image_asp.no_images')}}
     LoadFileButton(v-if="is_editable_mode"
       :label="add_btn_label"
