@@ -18,7 +18,7 @@
       div(v-if="is_view_mode && is_empty")
         .ml-2 {{default_view_text}}
     div(v-else class="mb-1 mt-1")
-      v-expansion-panels(
+      v-expansion-panels.complex_list_aspect(
         multiple
         v-model="panelState")
         v-expansion-panel(
@@ -56,7 +56,7 @@
 
 import Aspect from "../Aspect";
 import ListMixin from "../ListMixin";
-import {COMPOSITE, EDIT, FLOAT, INDEX, INT, SIMPLE_TYPE, STR} from "~/lib/consts";
+import {COMPOSITE, EDIT, FLOAT, INDEX, INT, SELECT, SIMPLE_TYPE, STR, TREE} from "~/lib/consts";
 import {
   aspect_loc_str,
   aspect_loc_str2arr,
@@ -273,7 +273,7 @@ export default {
       return !(itemtype === "str" || itemtype === "int" || itemtype === "float" || itemtype === "tree")
     },
     text_only_item() {
-      return [STR, INT, FLOAT].includes(this.item_aspect.type)
+      return [STR, INT, FLOAT, SELECT, TREE].includes(this.item_aspect.type)
     },
     default_view_text() {
       return this.$_.get(this.attr, "default_view_text", "")

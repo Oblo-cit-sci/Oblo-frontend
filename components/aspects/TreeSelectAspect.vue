@@ -41,9 +41,12 @@
         @selected="selected($event)"
         :disabled="disabled"
         :keep_selection="false")
-  div(v-else :style="view_container_style")
-    v-img.value_icon(:src="value_icon" contain max-height="50" max-width="70" :style="{flex: '2'}")
-    span(:style="{flex: '8'}") {{value_text}}
+  div(v-else)
+    div(v-if="value_icon" :style="view_container_style")
+      v-img.value_icon( :src="value_icon" contain max-height="50" max-width="70" :style="{flex: '2'}")
+      span(:style="{flex: '8'}") {{value_text}}
+    div(v-else)
+      span(:style="{flex: '8'}") {{value_text}}
 </template>
 
 <script>

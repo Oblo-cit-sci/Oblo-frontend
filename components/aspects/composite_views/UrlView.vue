@@ -1,8 +1,8 @@
 <template lang="pug">
   div
     a(:href="url"  target="_blank" )
-      span.body-1.readonly-aspect {{title_view}}
-    v-btn(v-if="value" :href="url"  target="_blank" icon)
+      span.body-1.readonly-aspect.break_word {{title_view}}
+    v-btn.my-0(v-if="value" :href="url"  target="_blank" icon height="24px")
       v-icon mdi-open-in-new
 </template>
 
