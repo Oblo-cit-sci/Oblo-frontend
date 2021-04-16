@@ -68,16 +68,20 @@
       AspectSet(:aspects="no_domain_aspects" :values.sync="no_domain_values" :mode="mode")
     <!-- domain specific aspects -->
     div(v-if="!$_.isEmpty(domain_specific_aspects)")
+      div(:style="{display:'none'}") {{domain_specific_aspects_values}}
       h2#domains {{$t("page.profile.h_domain")}} / {{domain_title}}
       AspectSet(:aspects="domain_specific_aspects" :values.sync="domain_specific_aspects_values" :mode="mode")
+    <!-- BUTTONS -->
     div(v-if="!is_visitor")
-      v-btn(v-if="!edit_mode" to="/settings" nuxt color="info") {{$t("page.profile.btn_settings")}}
-        v-icon(right) mdi-settings
-      v-btn(v-if="!edit_mode" color="info" @click="setEdit()") {{$t("page.profile.btn_edit_profile")}}
+      div(v-if="!edit_mode")
+        v-btn(color="info" to="/settings" nuxt) {{$t("page.profile.btn_settings")}}
+          v-icon(right) mdi-settings
+        v-btn(color="info" @click="setEdit()") {{$t("page.profile.btn_edit_profile")}}
+        v-btn(color="error" to="/basic/delete_account" nuxt) {{$t("page.profile.btn_delete")}}
       div(v-else)
         v-btn(@click="cancelEdit") {{$t('w.cancel')}}
         v-btn(color="success" @click="doneEdit" :disabled="any_invalid") {{$t("page.profile.btn_save")}}
-      v-btn(v-if="!edit_mode" color="error" to="/basic/delete_account") {{$t("page.profile.btn_delete")}}
+    <!-- ENTRIES -->
     div(v-if="!edit_mode")
       v-divider.wide_divider
       h2 {{$t("page.profile.h_entries")}}
@@ -156,7 +160,7 @@ export default {
       },
       no_domain_aspects: [],
       no_domain_values: {},
-      // todo todo what is this??, for which domain? always just on fixed?
+      // todo todo is this??, for which domain? always just on fixed?
       domain_specific_aspects: [],
       domain_specific_aspects_values: {},
 
@@ -167,15 +171,7 @@ export default {
     if (this.$store.getters.username === VISITOR) {
       await this.home()
     }
-    const domain_data = this.$store.getters["domain/lang_domain_data"](NO_DOMAIN, this.$store.getters["user/settings"].domain_language)
-    // console.log("DD", domain_data, this.$store.getters["user/settings"].domain_language)
-    this.no_domain_aspects = this.$_.cloneDeep(this.$_.get(domain_data , "users.profile.additional_aspects", []))
-
-    if (this.is_fixed_domain) {
-      const lang_domain_data = this.$store.getters["domain/act_lang_domain_data"]
-      this.domain_specific_aspects = this.$_.cloneDeep(this.$_.get(lang_domain_data, "users.profile.additional_aspects", []))
-      // todo here call a function that assigns external conditions
-    }
+    this.language_aspects()
     this.reset_edit_values()
   },
   methods: {
@@ -184,6 +180,17 @@ export default {
         duration: 300,
         easing: "easeOutCubic"
       }), 50)
+    },
+    language_aspects() {
+      const domain_data = this.$store.getters["domain/lang_domain_data"](NO_DOMAIN, this.domain_language)
+      // console.log("DD", domain_data, this.$store.getters["user/settings"].domain_language)
+      this.no_domain_aspects = this.$_.cloneDeep(this.$_.get(domain_data, "users.profile.additional_aspects", []))
+
+      if (this.is_fixed_domain) {
+        const lang_domain_data = this.$store.getters["domain/act_lang_domain_data"]
+        this.domain_specific_aspects = this.$_.cloneDeep(this.$_.get(lang_domain_data, "users.profile.additional_aspects", []))
+        // todo here call a function that assigns external conditions
+      }
     },
     // set_error(aspect_name, error) {
     //   this.$set(this.profile_aspects[aspect], error)
@@ -242,6 +249,7 @@ export default {
         this.reset_edit_values()
         this.ok_snackbar(data.msg)
         this.$router.back()
+        this.goto_top()
       }).catch((err) => {
         this.err_error_snackbar(err)
       })
@@ -253,7 +261,6 @@ export default {
         this.email_edit = false;
         this.ok_snackbar(data.msg)
         this.email_aspects.email.value = new_email.email
-        // todo update user_data
         const user_data = this.$_.cloneDeep(this.user_data)
         user_data.email = new_email.email
         this.$store.commit("user/set_user_data", user_data)
@@ -268,7 +275,7 @@ export default {
     },
     change_password() {
       const new_password = extract_n_unpack_values(this.password_aspects)
-      this.$api.actor.change_password(new_password).then(({data}) => {
+      this.$api.actor.change_password(new_password).then(() => {
         this.password_edit = false;
         this.ok_snackbar(this.$t("page.profile.msgs.password_changed"))
         for (let a of Object.values(this.password_aspects)) {
@@ -293,6 +300,7 @@ export default {
                 "accept": "image/jpeg"
               }
             }).catch(err => {
+              console.error(err)
               console.log("CORS error probably ok ON DEV")
             })
           })
@@ -303,14 +311,13 @@ export default {
         })
       }
     },
-    // email && password
-
   },
   computed: {
     ...mapGetters({
       user_data: "user",
       is_visitor: "is_visitor",
-      own_entries_uuids: "entries/get_own_entries_uuids"
+      own_entries_uuids: "entries/get_own_entries_uuids",
+      domain_language: "domain_language"
     }),
     domain_title() {
       return this.$store.getters["domain/act_lang_domain_data"].title
@@ -347,7 +354,7 @@ export default {
       return this.edit_mode && !this.registered_name.startsWith("oauth_")
     },
     mode() {
-      if(this.edit_mode)
+      if (this.edit_mode)
         return EDIT
       else
         return VIEW
@@ -381,6 +388,10 @@ export default {
         this.email_edit = false
         this.password_edit = false
       }
+    },
+    domain_language(lang) {
+      console.log("new domain lang", lang)
+      this.language_aspects()
     }
   }
 }

@@ -28,7 +28,7 @@ export default {
   mixins: [AspectComponentMixin],
   data() {
     return {
-      i_value: ""
+      i_value: null
     }
   },
   created() {
