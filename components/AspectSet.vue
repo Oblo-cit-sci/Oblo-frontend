@@ -124,7 +124,7 @@ export default {
   watch: {
     i_values: {
       deep: true,
-      handler(vals) {
+      handler() {
         this.$emit("update:values", this.i_values)
         this.has_changes = !this.$_.isEqual(this.initial_values, this.i_values)
       }

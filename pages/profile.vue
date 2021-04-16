@@ -22,7 +22,7 @@
     <!-- Public info -->
     h2 {{$t('page.profile.h_public')}}
     v-row(v-for="aspect in profile_aspects" :key="aspect.name")
-      v-col(cols=10)
+      v-col.py-0(cols=10)
         Aspect(:aspect="aspect"
           :ext_value.sync="aspect.value"
           @update:error="$set(aspect, 'error', $event)"

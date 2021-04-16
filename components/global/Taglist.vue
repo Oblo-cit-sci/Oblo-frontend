@@ -4,7 +4,7 @@
       span(v-for="tag in tag_list" :key="tag.text")
         TagChip.mr-1(:tag="tag")
     div(v-else)
-      div.mt-1.mr-1(v-for="tag in tag_list" :key="tag.text" :style="{display:'inline-block'}")
+      div.mt-1(v-for="tag in tag_list" :key="tag.text" :style="{display:'inline-block'}")
         TagChip(:tag="tag")
 </template>
 
