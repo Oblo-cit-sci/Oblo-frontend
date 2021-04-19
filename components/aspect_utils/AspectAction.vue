@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    v-btn(v-if="button_trigger" :disabled="btn_disabled" @click="trigger_action" :loading="button_trigger_loading") {{trigger.button_label}}
+    v-btn(v-if="has_button_trigger" :disabled="btn_disabled" @click="trigger_action" :loading="button_trigger_loading") {{trigger.button_label}}
 </template>
 
 <script>
@@ -20,6 +20,22 @@ import {
 import {transform_options_list} from "~/lib/options"
 import TemplateAccessMixin from "~/components/templates/TemplateAccessMixin"
 
+/**
+ * attr: {
+ *   action: {
+ *     type: "api-query" | "emit"
+ *     name?: str
+ *     trigger: {
+ *       type: "button" | "auto"
+ *       requires_callback?: bool
+ *       button_label?: str
+ *       button_always_enabled?: bool
+ *       only_on_change?: bool
+ *     }
+ *   }
+ * }
+ */
+// todo maybe trigger.requires_callback can go since its basically always the case for api-query...
 export default {
   name: "AspectAction",
   mixins: [TriggerSnackbarMixin, TemplateAccessMixin],
@@ -36,7 +52,7 @@ export default {
     }
   },
   created() {
-    if (this.button_trigger && this.trigger.requires_callback) {
+    if (this.has_button_trigger && this.trigger.requires_callback) {
       this.$bus.$on(["aspect-action-done"], () => {
         this.button_trigger_loading = false
       })
@@ -55,13 +71,13 @@ export default {
     properties() {
       return this.action.properties
     },
-    button_trigger() {
+    has_button_trigger() {
       return this.trigger.type === "button"
     },
     btn_disabled() {
       return (!this.has_value && !this.trigger.button_always_enabled) || (this.trigger.only_on_change && !this.has_changed)
     },
-    auto_trigger() {
+    has_auto_trigger() {
       return this.trigger.type === "auto"
     },
     has_value() {
@@ -71,7 +87,8 @@ export default {
   methods: {
     trigger_action() {
       // console.log("trigger action")
-      if (this.button_trigger && this.trigger.requires_callback) {
+
+      if (this.has_button_trigger && this.trigger.requires_callback) {
         this.button_trigger_loading = true
       }
       switch (this.action.type) {
@@ -229,7 +246,7 @@ export default {
       }
     },
     done() {
-      if (this.button_trigger) {
+      if (this.has_button_trigger) {
         this.button_trigger_loading = false
       }
     }
@@ -243,7 +260,7 @@ export default {
           return
         }
         // todo could also be another default
-        if (this.auto_trigger) {
+        if (this.has_auto_trigger) {
           if (this.$_.isEqual(unpack(new_val), aspect_raw_default_value(this.aspect))) {
             this.reset_action()
           } else {

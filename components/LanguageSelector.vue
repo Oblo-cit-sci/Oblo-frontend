@@ -1,7 +1,7 @@
 <template lang="pug">
-  div.mt-8.my-2.px-3
-    v-select(
-      v-if="has_multiple_languages"
+  div.my-2.px-3
+    v-select.mt-4(
+      v-if="has_multiple_languages && !is_disabled"
       flat
       :items="available_languages"
       :disabled="is_disabled"
@@ -9,7 +9,10 @@
       v-model="language"
       hide-details
       :label="$t('comp.language_select.label')")
-    div.mt-2(v-if="is_disabled") {{$t("comp.language_select.change_not_possible")}}
+    div(v-if="is_disabled" :style="{'font-size':'80%'}")
+      div.mr-2(:style="{float:'left'}")
+        v-icon.mt-2 mdi-translate
+      span.my-auto {{$t("comp.language_select.change_not_possible")}}
 </template>
 
 <script>

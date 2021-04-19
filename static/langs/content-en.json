@@ -74,7 +74,7 @@
       "h_public": "Public information",
       "h_research": "Research related information",
       "research_info": "Answering these questions is optional. The information is only used for research purposes of the creator of {platform_title}",
-      "h_domain": "Domain specific questions",
+      "h_domain": "@.capitalize:w.domain specific questions",
       "h_email_password": "Email address and password",
       "bt_change_email_pwd": "Change email and password",
       "btn_change_password": "Change password",
@@ -95,7 +95,7 @@
       "deactivated": "This user is no longer active",
       "admin": {
         "asp_global_role": "Global role",
-        "asp_editor_for_domain": "Editor for domain"
+        "asp_editor_for_domain": "Editor for @:w.domain"
       }
     },
     "init_password_reset": {
@@ -134,11 +134,11 @@
         }
       },
       "fixed_domain": {
-        "h1": "Fixed domain",
-        "p": "You are only seeing the domain",
-        "p2": "However there are more domains to explore. Resetting your fixed domain, will show you a domain overview on the home page. Click the button to reset the fixed domain.",
-        "btn_reset": "Reset fixed domain",
-        "fixed_domain_reset": "Fixed domain reset"
+        "h1": "Fixed @:w.domain",
+        "p": "You are only seeing the @:w.domain",
+        "p2": "However there are more domains to explore. Resetting your fixed @:w.domain, will show you a @:w.domain overview on the home page. Click the button to reset the fixed domain.",
+        "btn_reset": "Reset fixed @:w.domain",
+        "fixed_domain_reset": "Fixed @:w.domain reset"
       },
       "settings_updated": "Settings updated"
     },
@@ -161,15 +161,15 @@
       "rule": "Input doesn't seem to be a valid username nor email address"
     },
     "language": {
-      "label": "Language",
-      "descr": "Select a language",
+      "label": "@.capitalize:w.language",
+      "descr": "Select a @:w.language",
       "alt_label": {
         "ui": "User interface",
         "domain": "Forms and entries"
       },
       "alt_descr": {
-        "ui": "Select a language for the overall user interface",
-        "domain": "Select a language for all forms and entries"
+        "ui": "Select a @:w.language for the overall user interface",
+        "domain": "Select a @:w.language for all forms and entries"
       }
     },
     "password": {
@@ -290,7 +290,7 @@
       "language_switch_dialog": {
         "cancel_text": "@:w.back",
         "title": "Language changed",
-        "text": "This entry was created in {language}. Do you want to change your language to {language}?"
+        "text": "This entry was created in {language}. Do you want to change your @:w.language to {language}?"
       }
     },
     "entrypreview": {
@@ -383,7 +383,7 @@
     },
     "language_select": {
       "label": "Language",
-      "change_not_possible": "You cannot change the language on this page.",
+      "change_not_possible": "You cannot change the @:w.language on this page.",
       "language_changed": "Language changed to {language_name}",
       "domain_language_changed": "Language for entries changed to {language_name}"
     },
@@ -496,7 +496,7 @@
         "options": {
           "fe": "User interface",
           "be": "Server messages",
-          "domain": "Domain info",
+          "domain": "@.capitalize:w.domain info",
           "entries": "Entrytypes and codes"
         }
       },
@@ -505,25 +505,25 @@
         "description": "Select the entrytype or code to translate"
       },
       "src_lang": {
-        "label": "Source language",
-        "descr": "From which language are you translating from?"
+        "label": "Source @:w.language",
+        "descr": "From which @:w.language are you translating from?"
       },
       "dest_lang": {
-        "label": "Destination language",
+        "label": "Destination @:w.language",
         "descr": "Which language do you want to help completing?"
       },
       "start": "start",
       "lang_status": {
         "label": "Language status",
-        "description": "Only Active languages are available to be selected as interface language",
+        "description": "Only Active @:w.languages are available to be selected as interface @:w.language",
         "active": "active",
         "inactive": "inactive"
       },
       "new": {
-        "new_lang": "Add another language",
-        "descr": "Which language do you want to add?",
-        "get_in_touch": "If you cannot find the language get in touch with us, we will make it happen!",
-        "add": "Add language"
+        "new_lang": "Add another @:w.language",
+        "descr": "Which @:w.language do you want to add?",
+        "get_in_touch": "If you cannot find the @:w.language get in touch with us, we will make it happen!",
+        "add": "Add @:w.language"
       }
     },
     "treeselect_asp": {
@@ -544,10 +544,14 @@
     "search": "search",
     "entries": "entries",
     "n_entries": "No entries | {n} entry | {n} entries",
+    "language": "language",
+    "languages": "languages",
+    "languages_" : "@:w.language | @:w.languages",
     "location": "Location",
     "n_locations": "No locations | {n} location | {n} locations",
     "description": "description",
     "domain": "domain",
+    "domains": "domains",
     "update": "update",
     "delete": "delete",
     "username": "Username",

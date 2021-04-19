@@ -126,7 +126,7 @@ export default {
       return this.mode
     },
     has_action() {
-      return this.attr.hasOwnProperty("action")
+      return this.attr?.action
     },
     disabled_text() {
       if (this.condition_fail) {

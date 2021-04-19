@@ -16,9 +16,6 @@
             span {{$t('w.login')}}
     v-spacer
     LanguageSelector(v-if="show_language_selector")
-    //div(:style="display_debug" v-if="is_dev")
-    //  v-btn(@click="switch_offline") {{dev_offline_switch_button_label}}
-    //  span() {{display_debug_text}} v{{version}}
     CreateEntryButton(v-if="show_create_entry_button" :style="create_button_style" :domain_data="act_lang_domain_data")
     Dialog(:dialog_open.sync="login_dialog_open")
       LoginComponent(:go_home="false" @logged_in="login_dialog_open=false" @page_change="login_dialog_open=false")
@@ -95,22 +92,6 @@ export default {
       if (!this.is_offline && this.$route.name !== "offline")
         return this.$_.get(this.act_lang_domain_data, "long_title", "")
     },
-    display_debug() {
-      return {
-        padding: "0 8px",
-        "height": "20px",
-        "position": "fixed",
-        "right": "30px",
-        "top": "10px",
-        "font-size": "70%",
-        "background-color": "grey",
-        "text-align": "center",
-        "z-index": 10000
-      }
-    },
-    display_debug_text() {
-      return this.$vuetify.breakpoint.name
-    },
     main_icon() {
       if (this.is_domain_page && this.is_small) {
         if (this.$store.getters["menu/open"]) {
@@ -140,9 +121,6 @@ export default {
     version() {
       console.log(process.env.NODE_ENV)
       return pkg.version
-    },
-    dev_offline_switch_button_label() {
-      return this.is_offline ? "S/ON" : "S/OFF"
     }
   },
   methods: {

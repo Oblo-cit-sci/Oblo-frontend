@@ -44,7 +44,6 @@
 <style scoped>
   .snack_text {
     text-align: center;
-    /*width: 100%;*/
     position: absolute;
     font-size: 150%;
     left: 50%;

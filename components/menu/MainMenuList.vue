@@ -11,6 +11,8 @@
             v-icon  mdi-close
     v-divider
     LanguageSelector(v-if="show_language_selector")
+    div(v-if="is_dev")
+      v-btn(@click="switch_offline") {{dev_offline_switch_button_label}}
 </template>
 
 <script>
@@ -23,18 +25,19 @@ import {mapGetters, mapMutations} from "vuex"
 import ResponsivenessMixin from "~/components/ResponsivenessMixin"
 import {is_standalone} from "~/lib/pwa";
 import OfflineMixin from "~/lib/OfflineMixin"
+import EnvMixin from "~/components/global/EnvMixin"
 
 let require_login = ["/profile", "/logout"]
 let hide_logged_in = ["/login", "/register"]
 let require_admin = ["/translate/setup"] // "/admin",
 let hide_no_be = ["/register", "/login"] // if not connected out and if logged in out
 let show_inDev = ["/tests"] //, "Types", "Entrytypes", "Aspectbuild"]
-let hide_if_offline = ["register", "login", "users", "translate", "user_guide"]
+let hide_if_offline = ["register", "login", "users", "translate", "user_guide", "profile"]
 let show_in_fixed_domain = []
 
 export default {
   name: "MainMenuList",
-  mixins: [URLQueryMixin, FixDomainMixin, ResponsivenessMixin, OfflineMixin],
+  mixins: [URLQueryMixin, FixDomainMixin, ResponsivenessMixin, OfflineMixin, EnvMixin],
   components: {LanguageSelector},
   props: {},
   data() {
@@ -50,6 +53,9 @@ export default {
         act_domain_name: "domain/act_domain_name"
       }
     ),
+    dev_offline_switch_button_label() {
+      return this.is_offline ? "S/ON" : "S/OFF"
+    },
     filtered_pages() {
       // const home = all_pages_n_actions[0]
       let filtered_pages = this.pages
@@ -86,13 +92,13 @@ export default {
       }
 
       // console.log(this.is_offline)
-      if(this.is_offline) {
+      if (this.is_offline) {
         filtered_pages = filtered_pages.filter(p => !hide_if_offline.includes(p.name))
       }
 
       filtered_pages.forEach(p => {
         const alt_to = this.$store.getters["menu_page"](p.name)
-        if(alt_to) {
+        if (alt_to) {
           p.to = alt_to
         }
       })

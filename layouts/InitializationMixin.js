@@ -194,25 +194,6 @@ export default {
       console.log("set init done")
       this.$store.commit("app/initialized")
     },
-    async load_offline_data() {
-      const domain_data = await this.$localForage.getItem("domains")
-      this.$store.commit("domain/set_from_storage", domain_data)
-      const tempates_data = await this.$localForage.getItem("templates")
-      this.$store.commit("templates/set_from_storage", tempates_data)
-
-      const messages = await this.$localForage.getItem("messages")
-      for (let lang in messages) {
-        this.$i18n.setLocaleMessage(lang, messages[lang])
-      }
-      this.$store.commit("set_available_languages", Array.from(Object.keys(messages)))
-      const user_data = await this.$localforage.getItem("user_data")
-      this.$store.commit("user/set_user_data", user_data)
-      const user_settings = await this.$localforage.getItem("user_settings")
-      this.$store.commit("user/set_settings", user_settings)
-
-      const offline_misc_data = await this.$localForage.getItem("offline_misc_data")
-      await this.$store.dispatch("set_offline_misc_data", offline_misc_data)
-    }
   },
   watch: {
     async db_loaded(loaded) {
@@ -223,10 +204,11 @@ export default {
           await this.load_offline_data()
           setTimeout(() => {
             this.$store.commit("app/initialized")
+            // TODO use mixin
             this.$store.commit("app/set_menu_to", {name: "index", to: "/offline"})
             // this.$bus.$emit("main-menu-set", {name: "index", to: "/offline"})
           }, 80)
-          this.$router.push("/offline")
+          await this.$router.push("/offline")
         } else {
           this.initialize().then(() => {
             console.log("all done")
