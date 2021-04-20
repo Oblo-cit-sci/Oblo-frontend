@@ -59,6 +59,8 @@ export default {
           this.$router.push("/offline")
         }
         this.ok_snackbar("EN:offline")
+        this.disconnected()
+        this.persist_for_offline_mode()
         this.$store.commit("app/set_menu_to", {name: "index", to: "/offline"})
       } else {
         this.ok_snackbar("EN:Online")

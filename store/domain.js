@@ -35,32 +35,34 @@ export const mutations = {
     }
   },
   add_domains_data(state, domains_data) {
-    if (state.domains.size === 0) {
-      domains_data = domains_data.map(d => {
-        const base = domainmeta_and_store_init_struct(d)
-        base.langs[d.language] = Object.assign(d.content, {title: d.title, name: d.name})
-        return base
-      })
-      domains_data = domains_data.sort((d1, d2) => d1.index - d2.index)
-      state.domains = new Map(ld.toPairs(ld.keyBy(domains_data, d => d.name)))
-      // console.log(state.domains)
-    } else {
-      // console.log("inserting new language")
-      for (let d of domains_data) {
-        Object.assign(d.content, {title: d.title, name: d.name})
-        state.domains.get(d.name).langs[d.language] = d.content
+    for (let domain of domains_data) {
+      const domain_name = domain.name
+      if (!state.domains.has(domain_name)) {
+        state.domains.set(domain_name, domain)
+      } else {
+        const domain_langs = state.domains.get(domain_name).langs
+        state.domains.get(domain_name).langs = Object.assign(domain_langs, domain.langs)
+        const domain_overviews = state.domains.get(domain_name).overviews
+        state.domains.get(domain_name).overviews = Object.assign(domain_overviews, domain.overviews)
       }
     }
+    // if (state.domains.size === 0) {
+    //   domains_data = domains_data.map(d => {
+    //     const base = domainmeta_and_store_init_struct(d)
+    //     base.langs[d.language] = Object.assign(d.content, {title: d.title, name: d.name})
+    //     return base
+    //   })
+    //   domains_data = domains_data.sort((d1, d2) => d1.index - d2.index)
+    //   state.domains = new Map(ld.toPairs(ld.keyBy(domains_data, d => d.name)))
+    //   // console.log(state.domains)
+    // } else {
+    //   // console.log("inserting new language")
+    //   for (let d of domains_data) {
+    //     Object.assign(d.content, {title: d.title, name: d.name})
+    //     state.domains.get(d.name).langs[d.language] = d.content
+    //   }
+    // }
     // console.log(state.domains)
-  },
-  add_domains_overviews(state, domain_overviews) {
-    for (let domain_o of domain_overviews) {
-      let {title, description} = domain_o
-      state.domains.get(domain_o.name).overviews[domain_o.language] = {
-        title,
-        description
-      }
-    }
   },
   set_act_domain(state, domain_name) {
     // todo could use a validator. check if the names exists in all domains
@@ -98,25 +100,10 @@ export const actions = {
     commit("set_act_domain", domain_name)
     commit("set_act_lang_domain_data", {domain_name, language})
   },
-  set_domains({commit}, {domains_data, language}) {
+  set_domains({state, commit}, domains_data) {
+    console.log(domains_data)
     commit("add_domains_data", domains_data)
-    commit("add_domains_overviews", domains_data.map(d => (
-      {
-        name: d.name,
-        language: language,
-        title: d.title,
-        description: d.content.description
-      }
-    )))
-  },
-  add_overviews({commit}, domain_overviews) {
-    const meta_datas = []
-    for (let domain_o of domain_overviews) {
-      let {title, description, ...domainmeta_data} = domain_o
-      meta_datas.push(domainmeta_data)
-    }
-    commit("guarantee_domains_and_sort", meta_datas)
-    commit("add_domains_overviews", domain_overviews)
+    console.log(state.domains)
   }
 }
 

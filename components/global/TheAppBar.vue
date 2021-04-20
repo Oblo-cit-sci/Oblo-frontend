@@ -53,6 +53,7 @@ export default {
       logged_in: "user/logged_in",
       connected: "app/connected",
       initialized: "app/initialized",
+      act_domain_name: "domain/act_domain_name",
       act_lang_domain_data: "domain/act_lang_domain_data"
     }),
     reduce_when_small() {
@@ -86,7 +87,7 @@ export default {
       if (this.is_offline || this.$route.name === "offline")
         return this.$api.static.domain_icon(NO_DOMAIN)
       else
-        return this.$api.static.domain_icon(this.act_lang_domain_data.name)
+        return this.$api.static.domain_icon(this.act_domain_name)
     },
     domain_headline() {
       if (!this.is_offline && this.$route.name !== "offline")

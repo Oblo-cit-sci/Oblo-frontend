@@ -70,6 +70,13 @@
       "no_account": "No Account yet?",
       "go_here_to_register": "Click here to register!"
     },
+    "offline": {
+
+    },
+    "offline_settings": {
+      "h1": "Offline settings",
+      "no_data": "Nothing stored"
+    },
     "profile": {
       "h_public": "Public information",
       "h_research": "Research related information",

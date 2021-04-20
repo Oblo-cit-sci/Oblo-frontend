@@ -109,7 +109,7 @@ export default {
       const {data} = await this.$api.basic.init_data(domains, language)
       // todo this also gets all the messages
       const domains_data = data.data.domains
-      await this.$store.dispatch("domain/set_domains", {domains_data, language})
+      await this.$store.dispatch("domain/set_domains", domains_data)
       // console.log(data.data.templates_and_codes)
       await this.$store.dispatch("templates/add_templates_codes", data.data.templates_and_codes)
       return Promise.resolve()

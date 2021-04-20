@@ -107,9 +107,9 @@ export default {
 
       const language = resp.data.language
 
-      const domains_overview = resp.data.domains_overview
-      await this.$store.dispatch("domain/set_domains", {domains_data, language})
-      await this.$store.dispatch("domain/add_overviews", domains_overview)
+      // const domains_overview = resp.data.domains_overview
+      await this.$store.dispatch("domain/set_domains", domains_data)
+      // await this.$store.dispatch("domain/add_overviews", domains_overview)
       await this.$store.dispatch("templates/add_templates_codes", resp.data.templates_and_codes)
 
       if (this.$route.name === PAGE_DOMAIN && user_settings.domain_language !== user_settings.ui_language) {

@@ -34,6 +34,7 @@ export default {
     domain_data() {
       if (!this.has_domain_name)
         return null
+      // TODO DOMAIN LANGUAGE?
       const language = this.$store.getters["user/settings"].domain_language
       return this.$store.getters["domain/lang_domain_data"](this.domain_name, language)
     }
