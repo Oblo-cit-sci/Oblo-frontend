@@ -27,11 +27,11 @@ export default {
       }
       let domain = this.$store.getters["domain/act_domain_name"] // undefined for non-domain
       // todo maybe can go into a mixin, if there are other settings for the language
-      if (domain === NO_DOMAIN) {
-        const {data} = await this.$api.domain.overview(language)
-        // console.log(data)
-        await this.$store.dispatch("domain/add_overviews", data.data)
-      }
+      // if (domain === NO_DOMAIN) {
+      //   const {data} = await this.$api.domain.overview(language)
+      //   // console.log(data)
+      //   await this.$store.dispatch("domain/add_overviews", data.data)
+      // }
       await this.change_domain_language(domain_language, update_settings, language !== domain_language)
       // console.log("check have?", language, this.loaded_ui_languages.includes(language))
       if (!this.$i18n.availableLocales.includes(language)) {
@@ -109,7 +109,7 @@ export default {
       const {data} = await this.$api.basic.init_data(domains, language)
       // todo this also gets all the messages
       const domains_data = data.data.domains
-      await this.$store.dispatch("domain/set_domains", domains_data)
+      this.$store.commit("domain/add_domains_data", domains_data)
       // console.log(data.data.templates_and_codes)
       await this.$store.dispatch("templates/add_templates_codes", data.data.templates_and_codes)
       return Promise.resolve()

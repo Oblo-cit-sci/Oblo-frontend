@@ -46,23 +46,6 @@ export const mutations = {
         state.domains.get(domain_name).overviews = Object.assign(domain_overviews, domain.overviews)
       }
     }
-    // if (state.domains.size === 0) {
-    //   domains_data = domains_data.map(d => {
-    //     const base = domainmeta_and_store_init_struct(d)
-    //     base.langs[d.language] = Object.assign(d.content, {title: d.title, name: d.name})
-    //     return base
-    //   })
-    //   domains_data = domains_data.sort((d1, d2) => d1.index - d2.index)
-    //   state.domains = new Map(ld.toPairs(ld.keyBy(domains_data, d => d.name)))
-    //   // console.log(state.domains)
-    // } else {
-    //   // console.log("inserting new language")
-    //   for (let d of domains_data) {
-    //     Object.assign(d.content, {title: d.title, name: d.name})
-    //     state.domains.get(d.name).langs[d.language] = d.content
-    //   }
-    // }
-    // console.log(state.domains)
   },
   set_act_domain(state, domain_name) {
     // todo could use a validator. check if the names exists in all domains
@@ -100,11 +83,9 @@ export const actions = {
     commit("set_act_domain", domain_name)
     commit("set_act_lang_domain_data", {domain_name, language})
   },
-  set_domains({state, commit}, domains_data) {
-    console.log(domains_data)
-    commit("add_domains_data", domains_data)
-    console.log(state.domains)
-  }
+  // set_domains({state, commit}, domains_data) {
+  //   commit("add_domains_data", domains_data)
+  // }
 }
 
 export const getters = {

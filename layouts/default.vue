@@ -61,10 +61,10 @@ export default {
         this.ok_snackbar("EN:offline")
         this.disconnected()
         this.persist_for_offline_mode()
-        this.$store.commit("app/set_menu_to", {name: "index", to: "/offline"})
+        this.set_home_to_offline()
       } else {
         this.ok_snackbar("EN:Online")
-        this.set_home_path()
+        this.reset_home()
       }
     }
   }

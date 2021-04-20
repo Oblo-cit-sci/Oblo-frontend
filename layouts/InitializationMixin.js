@@ -108,7 +108,7 @@ export default {
       const language = resp.data.language
 
       // const domains_overview = resp.data.domains_overview
-      await this.$store.dispatch("domain/set_domains", domains_data)
+      await this.$store.commit("domain/add_domains_data", domains_data)
       // await this.$store.dispatch("domain/add_overviews", domains_overview)
       await this.$store.dispatch("templates/add_templates_codes", resp.data.templates_and_codes)
 
@@ -152,7 +152,7 @@ export default {
         // similar the change of the home route...
         default_settings.fixed_domain = this.get_one_domain_name
         // console.log("route name", this.$route.name, this.$route.name === PAGE_INDEX)
-        this.set_home_path(domain_name)
+        this.set_home_path_domain(domain_name)
         if (this.$route.name === PAGE_INDEX) {
           // console.log("to domain page",this.get_one_domain_name)
           this.to_domain(this.get_one_domain_name, true, () => {
@@ -204,8 +204,7 @@ export default {
           await this.load_offline_data()
           setTimeout(() => {
             this.$store.commit("app/initialized")
-            // TODO use mixin
-            this.$store.commit("app/set_menu_to", {name: "index", to: "/offline"})
+            this.set_home_to_offline()
             // this.$bus.$emit("main-menu-set", {name: "index", to: "/offline"})
           }, 80)
           await this.$router.push("/offline")

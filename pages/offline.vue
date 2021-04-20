@@ -58,7 +58,7 @@ export default {
   watch: {
     is_offline(offline) {
       if (!offline) {
-        this.set_home_path()
+        this.reset_home()
       }
     }
   }
