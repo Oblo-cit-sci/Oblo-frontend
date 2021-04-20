@@ -112,6 +112,10 @@ export default {
       this.$store.commit("domain/add_domains_data", domains_data)
       // console.log(data.data.templates_and_codes)
       await this.$store.dispatch("templates/add_templates_codes", data.data.templates_and_codes)
+            // domains
+      this.persist_domains()
+      // templates & codes...
+      this.persist_templates()
       return Promise.resolve()
     },
     filter_language_items(language_items, keep_codes) {

@@ -89,22 +89,17 @@ export default {
         }
       }
       const i_language = qp_lang || user_settings.ui_language || this.default_language
-
       console.log(`init with domain: ${domain_name}, lang: ${i_language}`)
-
       const {data: resp} = await this.$api.basic.init_data(domain_name ? [domain_name, NO_DOMAIN] : null, i_language)
 
       // todo here call complete_language_domains if on domain-page and domain-lang different than ui-lang
       // console.log(resp)
       console.log("connected")
-
       const platform_data = resp.data.platform
       this.$store.commit("app/platform_data", platform_data)
-
       this.$store.commit("app/oauth_services", resp.data.oauth_services)
 
       const domains_data = resp.data.domains
-
       const language = resp.data.language
 
       // const domains_overview = resp.data.domains_overview
