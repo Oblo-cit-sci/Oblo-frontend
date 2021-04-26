@@ -30,6 +30,7 @@ module.exports = {
   telemetry: false,
   env: {
     NODE_ENV: process.env.NODE_ENV || true,
+    SERVER: process.env.SERVER,
     DEFAUL_OP_LANGUAGE: "en", // 639-1
     DEFAULT_LANGUAGE: process.env.DEFAULT_LANGUAGE || "en", // for the ui... // 639-3
     HOSTNAME: hostname,
@@ -51,9 +52,9 @@ module.exports = {
       {name: 'viewport', content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'},
       {hid: 'description', name: 'description', content: pkg.description}
     ],
-    link: [
-      {rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'}
-    ]
+    // link: [
+    //   {rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'}
+    // ]
   },
 
   /*

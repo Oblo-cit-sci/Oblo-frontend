@@ -15,17 +15,18 @@
 </template>
 
 <script>
-import {install_pwa, is_prompt_set, is_standalone} from "~/lib/pwa";
+import {install_pwa, is_prompt_set} from "~/lib/pwa";
 import OfflineMixin from "~/lib/OfflineMixin"
 import {MULTISELECT, NO_DOMAIN} from "~/lib/consts"
 import Aspect from "~/components/Aspect"
 import {pack_value} from "~/lib/aspect"
 import LanguageMixin from "~/components/LanguageMixin"
+import EnvMixin from "~/components/global/EnvMixin";
 
 export default {
   name: "offline_settings",
   components: {Aspect},
-  mixins: [OfflineMixin, LanguageMixin],
+  mixins: [OfflineMixin, LanguageMixin, EnvMixin],
   data() {
     return {
       loaded: false,
@@ -78,9 +79,6 @@ export default {
     })
   },
   computed: {
-    is_pwa() {
-      return is_standalone()
-    },
     prompt_set() {
       return is_prompt_set()
     },

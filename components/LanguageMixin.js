@@ -4,11 +4,11 @@ import {pack_value} from "~/lib/aspect";
 import SettingsChangeMixin from "~/components/global/SettingsChangeMixin";
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin";
 import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
-import {is_standalone} from "~/lib/pwa"
+import EnvMixin from "~/components/global/EnvMixin";
 
 export default {
   name: "LanguageMxin",
-  mixins: [FilterMixin, SettingsChangeMixin, TriggerSnackbarMixin, PersistentStorageMixin],
+  mixins: [FilterMixin, SettingsChangeMixin, TriggerSnackbarMixin, PersistentStorageMixin, EnvMixin],
   computed: {
     default_language() {
       return this.$nuxt.context.env.DEFAULT_LANGUAGE
@@ -38,7 +38,7 @@ export default {
         try {
           const {data} = await this.$api.language.get_component("fe", [language])
           this.$i18n.setLocaleMessage(language, data[language])
-          if (is_standalone()) {
+          if (this.is_standalone) {
             this.persist_messages()
           }
         } catch (e) {
@@ -66,7 +66,7 @@ export default {
           domain_name: this.$store.getters["domain/act_domain_name"],
           language: domain_language
         })
-        if (is_standalone()) {
+        if (this.is_standalone) {
           this.persist_domains()
           this.persist_templates()
         }

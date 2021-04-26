@@ -4,7 +4,7 @@
     div(v-for="service in oauth_services" :key="service.service_name")
       v-btn(:href="service_link(service.service_name)")
         v-img.mr-1(:src="service.service_icon_url" width="20px")
-        span {{$t("comp.oauth_login.sign_in_with",{service: service.service_name})}}
+        span {{service.service_name}}
 </template>
 
 <script>

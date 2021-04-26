@@ -70,7 +70,7 @@ export default {
     //   return this.cur_act_lang_domain_data()
     // },
     domain_title() {
-      const platform_title = this.$store.getters["app/platform_data"].title
+      const platform_title = this.$store.getters["app/platform_data"].title || ""
       if (this.$route.name === "offline" && !this.is_offline) {
         return platform_title
       }
@@ -79,9 +79,11 @@ export default {
       }
       if (this.$store.getters["domain/act_domain_name"] === NO_DOMAIN) {
         return platform_title
-      } else {
+      }
+      if (this.act_lang_domain_data){
         return this.act_lang_domain_data.title
       }
+      return ""
     },
     domain_icon() {
       if (this.is_offline || this.$route.name === "offline")

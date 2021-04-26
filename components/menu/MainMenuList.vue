@@ -23,7 +23,6 @@ import URLQueryMixin from "~/components/util/URLQueryMixin"
 import FixDomainMixin from "~/components/global/FixDomainMixin"
 import {mapGetters, mapMutations} from "vuex"
 import ResponsivenessMixin from "~/components/ResponsivenessMixin"
-import {is_standalone} from "~/lib/pwa";
 import OfflineMixin from "~/lib/OfflineMixin"
 import EnvMixin from "~/components/global/EnvMixin"
 
@@ -70,7 +69,8 @@ export default {
       if (!this.$store.getters["user/is_admin"]) {
         filtered_pages = filtered_pages.filter(p => !require_admin.includes(p.to))
       }
-      if (process.env.NODE_ENV !== "development") {
+      // console.log(this.$nuxt.context.env, this.$store.getters.name)
+      if (process.env.NODE_ENV !== "development" && !(this.$nuxt.context.env.SERVER === "staging" && this.$store.getters.name === "admin")) {
         filtered_pages = filtered_pages.filter(p => !show_inDev.includes(p.to))
       }
 
@@ -87,7 +87,7 @@ export default {
       }
 
       // if not stand-alone, remove offline_settings
-      if (!is_standalone()) {
+      if (!this.is_standalone) {
         filtered_pages = filtered_pages.filter(p => p.name !== "offline_settings")
       }
 
@@ -96,12 +96,14 @@ export default {
         filtered_pages = filtered_pages.filter(p => !hide_if_offline.includes(p.name))
       }
 
+
       filtered_pages.forEach(p => {
         const alt_to = this.$store.getters["menu_page"](p.name)
         if (alt_to) {
           p.to = alt_to
         }
       })
+
       return filtered_pages
     },
     show_language_selector() {

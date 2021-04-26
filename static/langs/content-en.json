@@ -466,7 +466,7 @@
     },
     "oauth_login": {
       "h": "Sign in with...",
-      "sign_in_with": "Sign in with {service}"
+      "DEPR_sign_in_with": "Sign in with {service}"
     },
     "previewlist": {
       "num_entries": "@:w.n_entries"

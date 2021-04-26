@@ -1,7 +1,8 @@
 {
   "name": "opentek",
   "version": "0.10.0",
-  "description": "",
+  "description": "OpenTEK / LICCI - Local Indicators of Climate Change impacts",
+  "image": "https://staging.opentek.eu/static/images/domains/licci/icon.png",
   "author": "Ramin S",
   "private": true,
   "scripts": {

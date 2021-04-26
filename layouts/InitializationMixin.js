@@ -11,7 +11,6 @@ import URLQueryMixin from "~/components/util/URLQueryMixin";
 import LanguageMixin from "~/components/LanguageMixin";
 import EntryFetchMixin from "~/components/entry/EntryFetchMixin";
 import OfflineMixin from "~/lib/OfflineMixin"
-import {is_standalone} from "~/lib/pwa"
 
 export default {
   name: "InitializationMixin",
@@ -61,6 +60,8 @@ export default {
     },
     async initialize() {
       console.log("initialize")
+      // console.log("init.. url", this.$route.query.standalone || false)
+      this.$store.commit("app/standalone", this.$route.query.standalone || false)
       // todo maybe this should be before init_data, to request the set language
       /*
         Authentication
@@ -206,7 +207,7 @@ export default {
         } else {
           this.initialize().then(() => {
             console.log("all done")
-            if (is_standalone()) {
+            if (this.is_standalone) {
               console.log("gonna store all relevant data for offline mode")
               this.persist_for_offline_mode()
             }

@@ -6,6 +6,7 @@ export const state = () => ({
     privacy_sheet_open: true,
     dev: {}, // arbitrary data collected during development
     platform: {},
+    standalone: false,
     oauth_services: [],
     menu: {}
   }
@@ -43,6 +44,9 @@ export const mutations = {
   },
   set_menu_to(state, {name, to}) {
     state.menu[name] = to
+  },
+  standalone(state, standalone) {
+    state.standalone = standalone
   }
 }
 
@@ -70,6 +74,9 @@ export const getters = {
   },
   oauth_services(state) {
     return state.oauth_services
+  },
+  standalone(state) {
+    return state.standalone
   }
 }
 

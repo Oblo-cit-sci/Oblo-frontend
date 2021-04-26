@@ -1,5 +1,6 @@
 <template lang="pug">
-
+  v-container
+    //AspectSet
 </template>
 
 <script>
@@ -9,10 +10,13 @@ import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin";
 import LanguageMixin from "~/components/LanguageMixin";
 import NavBaseMixin from "~/components/NavBaseMixin";
 import {BUS_HIDE_OVERLAY, BUS_OVERLAY, BUS_TRIGGER_SEARCH} from "~/plugins/bus";
+import AspectSet from "~/components/AspectSet"
+import Aspect from "~/components/Aspect";
 
 export default {
   name: "oauth_complete",
   mixins: [TriggerSnackbarMixin, LanguageMixin, NavBaseMixin],
+  components: {AspectSet, Aspect},
   props: {
     go_home: {
       type: Boolean,
@@ -38,8 +42,8 @@ export default {
     } catch (err) {
       this.err_error_snackbar(err)
       this.$bus.$emit(BUS_HIDE_OVERLAY)
-      this.home()
-      return
+      // this.home()
+      // return
     }
     try {
       await this.change_language(user_settings.ui_language, false, user_settings.domain_language)
@@ -49,14 +53,14 @@ export default {
 
       this.$bus.$emit(BUS_HIDE_OVERLAY)
       if (this.go_home) {
-        this.home()
+        // this.home()
       } else {
         // watched by Search.vue and MapWrapper
         this.$bus.$emit(BUS_TRIGGER_SEARCH)
       }
     } catch (err) {
       console.log(err)
-      this.home()
+      // this.home()
     }
     this.$emit("logged_in")
   },
