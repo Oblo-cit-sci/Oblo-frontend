@@ -1,3 +1,5 @@
+import {is_standalone} from "~/lib/pwa";
+
 export default {
   name: "EnvMixin",
   methods: {},
@@ -13,6 +15,9 @@ export default {
     },
     is_prod() {
       return this.env === "production"
+    },
+    is_standalone() {
+      return this.$store.getters["app/standalone"] || is_standalone()
     }
   }
 }

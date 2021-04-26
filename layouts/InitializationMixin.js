@@ -11,7 +11,6 @@ import URLQueryMixin from "~/components/util/URLQueryMixin";
 import LanguageMixin from "~/components/LanguageMixin";
 import EntryFetchMixin from "~/components/entry/EntryFetchMixin";
 import OfflineMixin from "~/lib/OfflineMixin"
-import {is_standalone} from "~/lib/pwa"
 
 export default {
   name: "InitializationMixin",
@@ -61,6 +60,8 @@ export default {
     },
     async initialize() {
       console.log("initialize")
+      // console.log("init.. url", this.$route.query.standalone || false)
+      this.$store.commit("app/standalone", this.$route.query.standalone || false)
       // todo maybe this should be before init_data, to request the set language
       /*
         Authentication
@@ -89,27 +90,22 @@ export default {
         }
       }
       const i_language = qp_lang || user_settings.ui_language || this.default_language
-
       console.log(`init with domain: ${domain_name}, lang: ${i_language}`)
-
       const {data: resp} = await this.$api.basic.init_data(domain_name ? [domain_name, NO_DOMAIN] : null, i_language)
 
       // todo here call complete_language_domains if on domain-page and domain-lang different than ui-lang
       // console.log(resp)
       console.log("connected")
-
       const platform_data = resp.data.platform
       this.$store.commit("app/platform_data", platform_data)
-
       this.$store.commit("app/oauth_services", resp.data.oauth_services)
 
       const domains_data = resp.data.domains
-
       const language = resp.data.language
 
-      const domains_overview = resp.data.domains_overview
-      await this.$store.dispatch("domain/set_domains", {domains_data, language})
-      await this.$store.dispatch("domain/add_overviews", domains_overview)
+      // const domains_overview = resp.data.domains_overview
+      await this.$store.commit("domain/add_domains_data", domains_data)
+      // await this.$store.dispatch("domain/add_overviews", domains_overview)
       await this.$store.dispatch("templates/add_templates_codes", resp.data.templates_and_codes)
 
       if (this.$route.name === PAGE_DOMAIN && user_settings.domain_language !== user_settings.ui_language) {
@@ -152,7 +148,7 @@ export default {
         // similar the change of the home route...
         default_settings.fixed_domain = this.get_one_domain_name
         // console.log("route name", this.$route.name, this.$route.name === PAGE_INDEX)
-        this.set_home_path(domain_name)
+        this.set_home_path_domain(domain_name)
         if (this.$route.name === PAGE_INDEX) {
           // console.log("to domain page",this.get_one_domain_name)
           this.to_domain(this.get_one_domain_name, true, () => {
@@ -204,15 +200,14 @@ export default {
           await this.load_offline_data()
           setTimeout(() => {
             this.$store.commit("app/initialized")
-            // TODO use mixin
-            this.$store.commit("app/set_menu_to", {name: "index", to: "/offline"})
+            this.set_home_to_offline()
             // this.$bus.$emit("main-menu-set", {name: "index", to: "/offline"})
           }, 80)
           await this.$router.push("/offline")
         } else {
           this.initialize().then(() => {
             console.log("all done")
-            if (is_standalone()) {
+            if (this.is_standalone) {
               console.log("gonna store all relevant data for offline mode")
               this.persist_for_offline_mode()
             }

@@ -1,12 +1,13 @@
 <template lang="pug">
   div
-    h1 Offline Settings
+    h1 {{$t("page.offline_settings.h1")}}
     div(v-if="loaded")
-      Aspect(:aspect="messages_languages_aspect" :ext_value.sync="messages_languages_value"
-        mode="edit" @aspectAction="delete_languages()")
-      div
-        h2.text-capitalize {{$tc('w.domains')}}
+      div(v-if="has_any_domain")
+        Aspect(:aspect="messages_languages_aspect" :ext_value.sync="messages_languages_value"
+          mode="edit" @aspectAction="delete_languages()")
         Aspect(:aspect="lang_domain_aspect" :ext_value.sync="lang_domain_value" mode="edit")
+      div(v-else)
+        div {{$t("page.offline_settings.no_data")}}
     //div {{prompt_set}}
     //div(v-if="!is_pwa")
     //  v-btn(@click="install_pwa") install
@@ -14,17 +15,18 @@
 </template>
 
 <script>
-import {install_pwa, is_prompt_set, is_standalone} from "~/lib/pwa";
+import {install_pwa, is_prompt_set} from "~/lib/pwa";
 import OfflineMixin from "~/lib/OfflineMixin"
 import {MULTISELECT, NO_DOMAIN} from "~/lib/consts"
 import Aspect from "~/components/Aspect"
 import {pack_value} from "~/lib/aspect"
 import LanguageMixin from "~/components/LanguageMixin"
+import EnvMixin from "~/components/global/EnvMixin";
 
 export default {
   name: "offline_settings",
   components: {Aspect},
-  mixins: [OfflineMixin, LanguageMixin],
+  mixins: [OfflineMixin, LanguageMixin, EnvMixin],
   data() {
     return {
       loaded: false,
@@ -77,11 +79,11 @@ export default {
     })
   },
   computed: {
-    is_pwa() {
-      return is_standalone()
-    },
     prompt_set() {
       return is_prompt_set()
+    },
+    has_any_domain() {
+      return this.downloaded_domains.length > 1
     },
     downloaded_messages_languages() {
       return Array.from(Object.keys(this.offline_data.messages))

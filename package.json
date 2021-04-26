@@ -1,7 +1,8 @@
 {
   "name": "opentek",
-  "version": "0.9.32",
-  "description": "OpenTEK - traditional ecological knowledge / LICCI - Local Indicators of Climate Change Impacts",
+  "version": "0.10.0",
+  "description": "OpenTEK - traditional ecological knowledge / LICCI - Local Indicators of Climate Change impacts",
+  "image": "https://staging.opentek.eu/static/images/domains/licci/icon.png",
   "author": "Ramin S - ICTA / UAB",
   "private": true,
   "scripts": {

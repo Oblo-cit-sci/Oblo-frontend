@@ -14,6 +14,13 @@ export default {
   name: "domain",
   mixins: [HasMainNavComponentMixin, FixDomainMixin, GuidelinesMixin],
   components: {DomainComponent},
+  // head() {
+  //   return {
+  //     link: [
+  //       {rel: 'icon', type: 'image/x-icon', href: this.$api.static.domain_icon(this.domain_name)}
+  //     ]
+  //   }
+  // },
   beforeRouteEnter(to, from, next) {
     if (!(to.query[QP_D] || to.query[QP_F])) {
       // todo somehow doesn't load...
@@ -34,6 +41,7 @@ export default {
     domain_data() {
       if (!this.has_domain_name)
         return null
+      // TODO DOMAIN LANGUAGE?
       const language = this.$store.getters["user/settings"].domain_language
       return this.$store.getters["domain/lang_domain_data"](this.domain_name, language)
     }
@@ -54,6 +62,17 @@ export default {
     }
 
     this.show_guidelines()
+  },
+  mounted() {
+    // changing the this didnt work
+    // const dynamicFavicon = (favicon) => {
+    //   const link = document.createElement("link")
+    //   link.rel = "shortcut icon"
+    //   link.type = "image/png"
+    //   link.href = favicon
+    //   document.head.appendChild(link)
+    // }
+    // dynamicFavicon(this.$api.static.domain_icon(this.domain_name))
   },
   beforeRouteLeave(from, to, next) {
     if (this.is_prod) {

@@ -165,9 +165,9 @@ class Domain extends QueryBase {
     return this.patch_(`${domain_name}/from_flat`, content)
   }
 
-  async overview(language) {
-    return this.get_("overview", {params: {language}})
-  }
+  // async overview(language) {
+  //   return this.get_("overview", {params: {language}})
+  // }
 
   async get_codes_templates(domain_name, language, full) {
     return this.get_(`${domain_name}/get_codes_templates`, {

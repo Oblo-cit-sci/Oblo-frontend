@@ -4,11 +4,11 @@ import {pack_value} from "~/lib/aspect";
 import SettingsChangeMixin from "~/components/global/SettingsChangeMixin";
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin";
 import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
-import {is_standalone} from "~/lib/pwa"
+import EnvMixin from "~/components/global/EnvMixin";
 
 export default {
   name: "LanguageMxin",
-  mixins: [FilterMixin, SettingsChangeMixin, TriggerSnackbarMixin, PersistentStorageMixin],
+  mixins: [FilterMixin, SettingsChangeMixin, TriggerSnackbarMixin, PersistentStorageMixin, EnvMixin],
   computed: {
     default_language() {
       return this.$nuxt.context.env.DEFAULT_LANGUAGE
@@ -27,18 +27,18 @@ export default {
       }
       let domain = this.$store.getters["domain/act_domain_name"] // undefined for non-domain
       // todo maybe can go into a mixin, if there are other settings for the language
-      if (domain === NO_DOMAIN) {
-        const {data} = await this.$api.domain.overview(language)
-        // console.log(data)
-        await this.$store.dispatch("domain/add_overviews", data.data)
-      }
+      // if (domain === NO_DOMAIN) {
+      //   const {data} = await this.$api.domain.overview(language)
+      //   // console.log(data)
+      //   await this.$store.dispatch("domain/add_overviews", data.data)
+      // }
       await this.change_domain_language(domain_language, update_settings, language !== domain_language)
       // console.log("check have?", language, this.loaded_ui_languages.includes(language))
       if (!this.$i18n.availableLocales.includes(language)) {
         try {
           const {data} = await this.$api.language.get_component("fe", [language])
           this.$i18n.setLocaleMessage(language, data[language])
-          if (is_standalone()) {
+          if (this.is_standalone) {
             this.persist_messages()
           }
         } catch (e) {
@@ -66,7 +66,7 @@ export default {
           domain_name: this.$store.getters["domain/act_domain_name"],
           language: domain_language
         })
-        if (is_standalone()) {
+        if (this.is_standalone) {
           this.persist_domains()
           this.persist_templates()
         }
@@ -109,9 +109,13 @@ export default {
       const {data} = await this.$api.basic.init_data(domains, language)
       // todo this also gets all the messages
       const domains_data = data.data.domains
-      await this.$store.dispatch("domain/set_domains", {domains_data, language})
+      this.$store.commit("domain/add_domains_data", domains_data)
       // console.log(data.data.templates_and_codes)
       await this.$store.dispatch("templates/add_templates_codes", data.data.templates_and_codes)
+            // domains
+      this.persist_domains()
+      // templates & codes...
+      this.persist_templates()
       return Promise.resolve()
     },
     filter_language_items(language_items, keep_codes) {

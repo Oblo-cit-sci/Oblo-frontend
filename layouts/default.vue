@@ -39,6 +39,14 @@ export default {
       global_dialog_comp: null
     }
   },
+  // head() {
+  //   return {
+  //     meta: [
+  //       {hid: 'og:image', property: 'og:image', content: this.$api.axios_baseURL + "/static/images/domains/licci/icon.png",
+  //         href:this.$api.axios_baseURL + "/static/images/domains/licci/icon.png"}
+  //     ]
+  //   }
+  // },
   computed: {
     menu_over() {
       return this.is_domain_page
@@ -54,15 +62,17 @@ export default {
   },
   watch: {
     is_offline(offline) {
-      if(offline) {
+      if (offline) {
         if (!["offline", "offline_settings", "about", "entry"].includes(this.$route.name)) {
           this.$router.push("/offline")
         }
         this.ok_snackbar("EN:offline")
-        this.$store.commit("app/set_menu_to", {name: "index", to: "/offline"})
+        this.disconnected()
+        this.persist_for_offline_mode()
+        this.set_home_to_offline()
       } else {
         this.ok_snackbar("EN:Online")
-        this.set_home_path()
+        this.reset_home()
       }
     }
   }

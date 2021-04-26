@@ -1,8 +1,11 @@
 <template lang="pug">
   v-container(fluid)
     div
-      h3 {{$t('page.domain.create_entry_dialog_title')}}
-      EntryCreateList(:template_entries="template_entries")
+      div(v-if="has_templates")
+        h3 {{$t('page.domain.create_entry_dialog_title')}}
+        EntryCreateList(:template_entries="template_entries")
+      div(v-else)
+        h2 {{$t("page.offline_settings.no_data")}}
     div
       h3.text-capitalize {{$t('w.entries')}}
       EntryPreviewList(:entries="all_entries" :total_count="num_entries" :preview_options="{show_botton_actions: true}")
@@ -30,6 +33,9 @@ export default {
     }
   },
   computed: {
+    has_templates(){
+      return this.template_entries.length > 1
+    },
     template_entries() {
       // console.log(this.$store.getters["templates/entry_types_array"]("en",false))
       // TODO THATS A DUPLICATE OF DOMAIN_COMPONENT PAGE
@@ -52,7 +58,7 @@ export default {
   watch: {
     is_offline(offline) {
       if (!offline) {
-        this.set_home_path()
+        this.reset_home()
       }
     }
   }

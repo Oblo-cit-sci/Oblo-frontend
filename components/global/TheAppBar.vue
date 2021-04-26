@@ -53,6 +53,7 @@ export default {
       logged_in: "user/logged_in",
       connected: "app/connected",
       initialized: "app/initialized",
+      act_domain_name: "domain/act_domain_name",
       act_lang_domain_data: "domain/act_lang_domain_data"
     }),
     reduce_when_small() {
@@ -69,7 +70,7 @@ export default {
     //   return this.cur_act_lang_domain_data()
     // },
     domain_title() {
-      const platform_title = this.$store.getters["app/platform_data"].title
+      const platform_title = this.$store.getters["app/platform_data"].title || ""
       if (this.$route.name === "offline" && !this.is_offline) {
         return platform_title
       }
@@ -78,15 +79,17 @@ export default {
       }
       if (this.$store.getters["domain/act_domain_name"] === NO_DOMAIN) {
         return platform_title
-      } else {
+      }
+      if (this.act_lang_domain_data){
         return this.act_lang_domain_data.title
       }
+      return ""
     },
     domain_icon() {
       if (this.is_offline || this.$route.name === "offline")
         return this.$api.static.domain_icon(NO_DOMAIN)
       else
-        return this.$api.static.domain_icon(this.act_lang_domain_data.name)
+        return this.$api.static.domain_icon(this.act_domain_name)
     },
     domain_headline() {
       if (!this.is_offline && this.$route.name !== "offline")

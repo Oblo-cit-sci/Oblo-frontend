@@ -17,13 +17,14 @@ import FlexibleTextSection from "~/components/global/FlexibleTextSection"
 import {NO_DOMAIN} from "~/lib/consts";
 import LanguageChip from "~/components/language/LanguageChip";
 import URLQueryMixin from "~/components/util/URLQueryMixin";
+import NavBaseMixin from "~/components/NavBaseMixin";
 
 const pkg = require('~/package.json')
 
 export default {
   name: "about",
   components: {LanguageChip, FlexibleTextSection, Footer},
-  mixins: [GoToMixin, URLQueryMixin],
+  mixins: [GoToMixin, URLQueryMixin, NavBaseMixin],
   data() {
     return {
       language_fallback: false
@@ -55,6 +56,10 @@ export default {
       } else {
         act_lang_domain_data = this.$store.getters["domain/act_lang_domain_data"]
       }
+      if (!act_lang_domain_data) {
+        this.home()
+        return
+      }
       let domain_about = act_lang_domain_data.about
       // console.log(domain_about)
       if (!domain_about) {
@@ -62,8 +67,8 @@ export default {
         domain_about = this.$store.getters["domain/get_domain_default_lang_data"](domain_name).about
         // console.log(this.domain_name, domain_about)
       }
-      // console.log(domain_about)
       return domain_about
+      // console.log(domain_about)
     },
     version() {
       return pkg.version
