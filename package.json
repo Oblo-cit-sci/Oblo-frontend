@@ -1,8 +1,8 @@
 {
   "name": "opentek",
   "version": "0.9.32",
-  "description": "",
-  "author": "Ramin S",
+  "description": "OpenTEK - traditional ecological knowledge / LICCI - Local Indicators of Climate Change Impacts",
+  "author": "Ramin S - ICTA / UAB",
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon server/index.js --watch server",
