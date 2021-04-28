@@ -88,6 +88,7 @@ export default {
 
       // if not stand-alone, remove offline_settings
       if (!this.is_standalone) {
+        // console.log("kicking out 'offline settings'")
         filtered_pages = filtered_pages.filter(p => p.name !== "offline_settings")
       }
 

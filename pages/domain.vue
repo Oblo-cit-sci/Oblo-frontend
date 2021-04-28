@@ -14,13 +14,14 @@ export default {
   name: "domain",
   mixins: [HasMainNavComponentMixin, FixDomainMixin, GuidelinesMixin],
   components: {DomainComponent},
-  // head() {
-  //   return {
-  //     link: [
-  //       {rel: 'icon', type: 'image/x-icon', href: this.$api.static.domain_icon(this.domain_name)}
-  //     ]
-  //   }
-  // },
+  head() {
+    // seems to work in production?!
+    return {
+      link: [
+        {rel: 'icon', type: 'image/x-icon', href: this.$api.static.domain_icon(this.domain_name)}
+      ]
+    }
+  },
   beforeRouteEnter(to, from, next) {
     if (!(to.query[QP_D] || to.query[QP_F])) {
       // todo somehow doesn't load...

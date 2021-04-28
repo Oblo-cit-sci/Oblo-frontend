@@ -25,7 +25,7 @@ export default {
       if (!domain_language) {
         domain_language = language
       }
-      let domain = this.$store.getters["domain/act_domain_name"] // undefined for non-domain
+      // let domain = this.$store.getters["domain/act_domain_name"] // undefined for non-domain
       // todo maybe can go into a mixin, if there are other settings for the language
       // if (domain === NO_DOMAIN) {
       //   const {data} = await this.$api.domain.overview(language)
@@ -60,26 +60,31 @@ export default {
     async change_domain_language(domain_language, update_settings = true, snackbar = true) {
       let domain = this.$store.getters["domain/act_domain_name"] // undefined for non-domain
 
-      this.complete_language_domains(domain, domain_language).then(() => {
+      this.complete_language_domains(domain, domain_language).then(async () => {
         // console.log("switching domain-lang", domain_language)
-        this.$store.commit("domain/set_act_lang_domain_data", {
+        await this.$store.dispatch("domain/set_act_domain_lang", {
           domain_name: this.$store.getters["domain/act_domain_name"],
           language: domain_language
         })
+
+        const has_domain_lang = this.$store.getters["domain/has_lang_domain_data"](domain, domain_language)
+
         if (this.is_standalone) {
           this.persist_domains()
           this.persist_templates()
         }
-        if (update_settings) {
-          this.set_settings_value(DOMAIN_LANGUAGE, domain_language)
-        }
+        if (has_domain_lang) {
+          if (update_settings) {
+            this.set_settings_value(DOMAIN_LANGUAGE, domain_language)
+          }
 
-        // UPDATE SEARCH CONFIG
-        this.$store.commit("search/replace_in_act_config",
-          Object.assign(this.language_filter_config(),
-            {
-              value: pack_value([domain_language])
-            }))
+          // UPDATE SEARCH CONFIG
+          this.$store.commit("search/replace_in_act_config",
+            Object.assign(this.language_filter_config(),
+              {
+                value: pack_value([domain_language])
+              }))
+        }
 
         if (snackbar) {
           this.ok_snackbar(this.$t("comp.language_select.domain_language_changed", {language_name: this.t_lang(domain_language)}))
@@ -112,7 +117,7 @@ export default {
       this.$store.commit("domain/add_domains_data", domains_data)
       // console.log(data.data.templates_and_codes)
       await this.$store.dispatch("templates/add_templates_codes", data.data.templates_and_codes)
-            // domains
+      // domains
       this.persist_domains()
       // templates & codes...
       this.persist_templates()

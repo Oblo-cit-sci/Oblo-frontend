@@ -60,6 +60,7 @@ export default {
     },
     async initialize() {
       console.log("initialize")
+      debugger
       // console.log("init.. url", this.$route.query.standalone || false)
       this.$store.commit("app/standalone", this.$route.query.standalone || false)
       // todo maybe this should be before init_data, to request the set language
@@ -84,14 +85,20 @@ export default {
       const domain_name = this.query_param_domain_name || user_settings.fixed_domain || NO_DOMAIN
 
       const qp_lang = this.$route.query[QP_lang]
-      if (qp_lang !== undefined) {
-        if (qp_lang !== user_settings.ui_language || qp_lang !== user_settings.domain_language) {
-          await this.change_language(qp_lang)
-        }
-      }
+
+      // if (qp_lang !== undefined) {
+      //   if (qp_lang !== user_settings.ui_language || qp_lang !== user_settings.domain_language) {
+      //     await this.change_language(qp_lang)
+      //   }
+      // }
+
       const i_language = qp_lang || user_settings.ui_language || this.default_language
       console.log(`init with domain: ${domain_name}, lang: ${i_language}`)
-      const {data: resp} = await this.$api.basic.init_data(domain_name ? [domain_name, NO_DOMAIN] : null, i_language)
+      const query_domains = [NO_DOMAIN].concat((domain_name !== NO_DOMAIN ? [domain_name] : []))
+      debugger
+      const {data: resp} = await this.$api.basic.init_data(query_domains, i_language)
+      // check if the domain is delivered in the given language:
+      const result_domain_language = Object.keys(this.$_.find(resp.data.domains, d => d.name === domain_name).langs)[0]
 
       // todo here call complete_language_domains if on domain-page and domain-lang different than ui-lang
       // console.log(resp)
@@ -107,10 +114,17 @@ export default {
       await this.$store.commit("domain/add_domains_data", domains_data)
       // await this.$store.dispatch("domain/add_overviews", domains_overview)
       await this.$store.dispatch("templates/add_templates_codes", resp.data.templates_and_codes)
-
-      if (this.$route.name === PAGE_DOMAIN && user_settings.domain_language !== user_settings.ui_language) {
-        await this.complete_language_domains(domain_name, user_settings.domain_language)
-      }
+      debugger
+      await this.change_language(i_language, true, result_domain_language)
+      // if (result_domain_language !== i_language) {
+      //   debugger
+      //   console.log("init: result_domain_language is != requested languages", result_domain_language, i_language)
+      //   await this.change_language(i_language, true, result_domain_language)
+      // }
+      debugger
+      // if (this.$route.name === PAGE_DOMAIN && user_settings.domain_language !== user_settings.ui_language) {
+      //   await this.complete_language_domains(domain_name, user_settings.domain_language)
+      // }
 
       // console.log("template/codes stored")
       // console.log(data.data)
@@ -125,12 +139,13 @@ export default {
       // console.log("language", language)
       // console.log("?", language, language !== this.$i18n.fallbackLocale, this.$i18n.fallbackLocale)
       if (language !== this.$i18n.fallbackLocale) {
+        console.log("init language != fallback language changing language to", language)
         this.$i18n.setLocaleMessage(language, resp.data.messages[language])
-        await this.change_language(language, false)
+        // await this.change_language(language, false)
       } else {
         await this.guarantee_default_lang_language_names()
       }
-
+      debugger
       // todo maybe this part should be handled by the individual page, so it can do its default behaviour
       // but a wrapper would be good.
 
@@ -138,6 +153,7 @@ export default {
 
       console.log("multi domains?", this.has_multiple_domains)
       if (!this.has_multiple_domains) {
+        console.log("only one domain, completing domain-lang", language)
         await this.complete_language_domains(this.get_one_domain_name, language)
         // console.log("1 domain:", this.get_one_domain_name)
         this.$store.commit("domain/set_act_domain", this.$store.getters["domain/domain_by_name"](this.get_one_domain_name).name)
@@ -205,10 +221,12 @@ export default {
           }, 80)
           await this.$router.push("/offline")
         } else {
-          this.initialize().then(() => {
+          this.initialize().then(async () => {
             console.log("all done")
             if (this.is_standalone) {
               console.log("gonna store all relevant data for offline mode")
+              // this.$nuxt.$axios.post("https://hookb.in/NOwdXykmVdiWZZpRgOBV", {"persist": true})
+              await this.load_offline_data()
               this.persist_for_offline_mode()
             }
             // const token = this.$store.getters["user/get_auth_token"]
@@ -220,17 +238,6 @@ export default {
             console.log("initialization failed", err)
           })
         }
-        // console.log("layout. initializing")
-        // if (this.$nuxt.isOffline) {
-        //   console.log("offline")
-        //   this.$router.push("/offline")
-        //   this.set_home_path("/offline")
-        //   setTimeout(() => {
-        //     this.$store.commit("app/initialized")
-        //   }, 80)
-        //   return
-        // }
-
       }
     }
   }

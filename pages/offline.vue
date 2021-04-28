@@ -1,8 +1,8 @@
 <template lang="pug">
   v-container(fluid)
     div
+      h3 {{$t('page.domain.create_entry_dialog_title')}}
       div(v-if="has_templates")
-        h3 {{$t('page.domain.create_entry_dialog_title')}}
         EntryCreateList(:template_entries="template_entries")
       div(v-else)
         h2 {{$t("page.offline_settings.no_data")}}
@@ -34,7 +34,8 @@ export default {
   },
   computed: {
     has_templates(){
-      return this.template_entries.length > 1
+      console.log(this.template_entries)
+      return this.template_entries.length >= 1
     },
     template_entries() {
       // console.log(this.$store.getters["templates/entry_types_array"]("en",false))
