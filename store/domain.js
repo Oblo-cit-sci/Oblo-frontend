@@ -80,11 +80,13 @@ export const actions = {
     // console.log("set_act_domain_lang")
     if (has_domain_lang) {
       commit("set_act_lang_domain_data", {domain_name, language})
+      commit("set_act_domain", domain_name)
       return
     }
     if (domain_name !== getters.act_domain_name) {
       language = getters.get_domain_default_language(domain_name)
       commit("set_act_lang_domain_data", {domain_name, language})
+      commit("set_act_domain", domain_name)
     }
   },
   // set_domains({state, commit}, domains_data) {
