@@ -15,7 +15,7 @@
       v-row
         v-col(
           v-for="aspect in aspects" :key="aspect.name"
-          alignSelf="stretch" :cols="base_cols" :lg="base_cols/2" :xl="base_cols/3")
+          alignSelf="stretch" cols="12" :sm="6" :md="4" :lg="4" :xl="2")
           Aspect(:aspect="aspect"
             :ext_value.sync="i_values[aspect.name]"
             :conditionals="i_values"

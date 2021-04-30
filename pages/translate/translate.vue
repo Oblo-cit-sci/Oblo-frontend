@@ -3,7 +3,7 @@
     v-btn(@click="back")
       v-icon(left) mdi-arrow-left
       span {{$t("page.translate.back")}}
-    AspectSet(:aspects="setup_aspects" :values="setup_values" mode="view")
+    AspectSet(:aspects="setup_aspects" :values="setup_values" mode="view" compact)
     v-checkbox(v-model="show_only_incomplete" :label="$t('page.translate.only_undone')")
     MessageTranslationBlock(v-for="t in show_translations"
       v-bind="translation_o[t]"
