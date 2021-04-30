@@ -7,13 +7,7 @@ export default {
   name: "TranslationSetupMixin",
   mixins: [OptionsMixin, TypicalAspectMixin, LanguageMixin],
   computed: {
-    setup_aspects() {
-      return [
-        this.dest_language_select_aspect([this.setup_values["dest_lang"]]), this.component_select_aspect(),
-        this.domain_select_aspect(), this.entry_select_aspect([this.setup_values["entry"]]),
-        this.src_language_select_aspect([this.setup_values["src_lang"]])
-      ]
-    },
+
   },
   methods: {
     dest_language_select_aspect(items) {

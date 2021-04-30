@@ -61,6 +61,13 @@ export default {
     }
   },
   computed: {
+    setup_aspects() {
+      return [
+        this.dest_language_select_aspect([this.setup_values["dest_lang"]]), this.component_select_aspect(),
+        this.domain_select_aspect(), this.entry_select_aspect([this.setup_values["entry"]]),
+        this.src_language_select_aspect([this.setup_values["src_lang"]])
+      ]
+    },
     setup_values() {
       return this.$store.getters['translate/setup_values']["unpacked"]
     },

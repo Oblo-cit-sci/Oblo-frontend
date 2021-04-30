@@ -15,6 +15,7 @@
       v-row
         v-col(
           v-for="aspect in aspects" :key="aspect.name"
+          v-if="state[aspect.name] !== 'disabled'"
           alignSelf="stretch" cols="12" :sm="6" :md="4" :lg="4" :xl="2")
           Aspect(:aspect="aspect"
             :ext_value.sync="i_values[aspect.name]"
