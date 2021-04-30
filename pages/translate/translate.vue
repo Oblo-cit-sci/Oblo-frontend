@@ -1,6 +1,9 @@
 <template lang="pug">
   div
-    v-btn(@click="back") {{$t("page.translate.back")}}
+    v-btn(@click="back")
+      v-icon(left) mdi-arrow-left
+      span {{$t("page.translate.back")}}
+    AspectSet(:aspects="setup_aspects" :values="setup_values" mode="view")
     v-checkbox(v-model="show_only_incomplete" :label="$t('page.translate.only_undone')")
     MessageTranslationBlock(v-for="t in show_translations"
       v-bind="translation_o[t]"
@@ -21,12 +24,15 @@ import {mapGetters} from 'vuex'
 import MessageTranslationBlock from '~/components/language/MessageTranslationBlock'
 import SimplePaginate from '~/components/SimplePaginate'
 import TriggerSnackbarMixin from '~/components/TriggerSnackbarMixin'
-import {DOMAIN, PUBLISHED} from '~/lib/consts'
+import {DOMAIN, PUBLISHED, SELECT} from '~/lib/consts'
+import AspectSet from "~/components/AspectSet";
+import OptionsMixin from "~/components/aspect_utils/OptionsMixin";
+import TranslationSetupMixin from "~/components/language/TranslationSetupMixin";
 
 export default {
   name: 'Translate',
-  components: {SimplePaginate, MessageTranslationBlock},
-  mixins: [TriggerSnackbarMixin],
+  components: {SimplePaginate, MessageTranslationBlock, AspectSet},
+  mixins: [OptionsMixin, TriggerSnackbarMixin, TranslationSetupMixin],
   data() {
     const setup = this.$store.getters['translate/setup_values']
     const message_order = setup.messages.map((msg) => msg[0])
@@ -55,6 +61,9 @@ export default {
     }
   },
   computed: {
+    setup_values() {
+      return this.$store.getters['translate/setup_values']["unpacked"]
+    },
     ...mapGetters({setup: 'translate/setup_values'}),
     disable_submit() {
       return this.no_changes
@@ -165,7 +174,7 @@ export default {
               )
               this.ok_snackbar(data.msg)
               const entry = data.data
-              if(entry.status === PUBLISHED) {
+              if (entry.status === PUBLISHED) {
                 await this.$store.dispatch("templates/add_templates_codes", [entry])
               }
               //

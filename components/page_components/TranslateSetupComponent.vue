@@ -75,7 +75,6 @@ export default {
       this.init_fetched = true
       this.$bus.$emit(BUS_HIDE_OVERLAY)
     })
-    //this.debounced_entries_search = this.$_.debounce(this.code_template_search, 200)
   },
   computed: {
     ...mapGetters({translate_setup: "translate/setup_values", ui_language: "ui_language"}),
