@@ -115,6 +115,10 @@ class Basic extends QueryBase {
       params: data
     })
   }
+
+  oauth_register(data) {
+    return this.post_("oauth_register", data)
+  }
 }
 
 class Static extends QueryBase {

@@ -9,22 +9,13 @@
         @update:error="a.error = $event"
         :extra="{clearable:false}"
         mode="edit")
-    v-row.ml-2(align="center")
-      v-checkbox(v-model="agree")
-      div {{$t('page.register.i_agree_with')}} &nbsp;
-        a(@click="terms_dialog_open = true") {{$t('page.about[1].h2')}}
+    TermsOfUse(:agree.sync="agree" :terms_dialog_open.sync="terms_dialog_open")
     v-row
       v-col.py-0
         v-btn.m-4(@click='submit' rounded large :disabled="any_invalid || submitStatus === 'PENDING'" :loading="submit_loading" color='success') {{$t('page.register.btn_register')}}
         v-alert(:value='errorMsg !== null' type='error' prominent) {{errorMsg}}
     v-row.mt-2
       OAuthLoginButtonGroup
-    v-dialog(v-model="terms_dialog_open" :width="main_container_with")
-      v-card
-        FlexibleTextSection.pa-4.pb-1(:section="terms_of_use_section" disable_divider, :fields="template_fields")
-        v-card-actions
-          v-btn(icon text @click="terms_dialog_open=false")
-            v-icon mdi-close
 </template>
 
 <script>
@@ -40,13 +31,14 @@ import LayoutMixin from "~/components/global/LayoutMixin"
 import {MSG_PATH_SOMETHING_WENT_WRONG, RESPONSE_ERROR_MSG} from "~/lib/consts"
 import {extract_n_unpack_values} from "~/lib/aspect";
 import OAuthLoginButtonGroup from "~/components/actor/OAuthLoginButtonGroup";
+import TermsOfUse from "~/components/register/TermsOfUse";
 
 /**
  * TODO USE AspectSet
  */
 export default {
   name: "register",
-  components: {OAuthLoginButtonGroup, FlexibleTextSection, Aspect},
+  components: {OAuthLoginButtonGroup, FlexibleTextSection, Aspect, TermsOfUse},
   mixins: [TriggerSnackbarMixin, TypicalAspectMixin, FixDomainMixin, LayoutMixin],
   data() {
     const password = this.asp_password()

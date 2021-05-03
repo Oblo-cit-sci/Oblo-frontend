@@ -1,6 +1,9 @@
 <template lang="pug">
   v-container
-    //AspectSet
+    div(v-if="new_user")
+      AspectSet(:aspects="aspects" mode="edit" :values="aspect_values")
+      TermsOfUse(:agree.sync="terms_agree" :terms_dialog_open.sync="terms_dialog_open")
+      v-btn.m-4(@click='submit' rounded large :disabled="!agree" :loading="submit_loading" color='success') {{$t('page.register.btn_register')}}
 </template>
 
 <script>
@@ -12,29 +15,41 @@ import NavBaseMixin from "~/components/NavBaseMixin";
 import {BUS_HIDE_OVERLAY, BUS_OVERLAY, BUS_TRIGGER_SEARCH} from "~/plugins/bus";
 import AspectSet from "~/components/AspectSet"
 import Aspect from "~/components/Aspect";
+import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin";
+import TermsOfUse from "~/components/register/TermsOfUse";
 
 export default {
   name: "oauth_complete",
-  mixins: [TriggerSnackbarMixin, LanguageMixin, NavBaseMixin],
-  components: {AspectSet, Aspect},
+  mixins: [TriggerSnackbarMixin, LanguageMixin, NavBaseMixin, TypicalAspectMixin],
+  components: {AspectSet, Aspect, TermsOfUse},
   props: {
     go_home: {
       type: Boolean,
       default: true
     }
   },
+  data() {
+    return {
+      user_data: null,
+      new_user: null,
+      terms_dialog_open: false,
+      terms_agree: false,
+      submit_loading: false
+    }
+  },
   async created() {
     this.$bus.$emit(BUS_OVERLAY)
-    // const {code, access_token} = this.$route.query
-    let user_settings  = null
+    let user_settings = null
     try {
       const {data: response_data} = await this.$api.basic.oauth_complete(this.$route.query)
+      console.log(response_data)
       this.ok_snackbar(response_data.msg)
 
       this.clear_search()
       this.clear_entries({keep_drafts: true, keep_uuid: this.query_entry_uuid})
       this.map_clear()
-      const user_data = response_data.data
+      this.user_data = response_data.actor.data
+      this.new_user = response_data.is_new_actor
       // console.log("user_data", user_data)
       user_settings = user_data.settings
       this.$store.dispatch("user/login", user_data)
@@ -42,8 +57,8 @@ export default {
     } catch (err) {
       this.err_error_snackbar(err)
       this.$bus.$emit(BUS_HIDE_OVERLAY)
-      // this.home()
-      // return
+      this.home()
+      return
     }
     try {
       await this.change_language(user_settings.ui_language, false, user_settings.domain_language)
@@ -52,26 +67,41 @@ export default {
       }
 
       this.$bus.$emit(BUS_HIDE_OVERLAY)
-      if (this.go_home) {
-        // this.home()
-      } else {
-        // watched by Search.vue and MapWrapper
-        this.$bus.$emit(BUS_TRIGGER_SEARCH)
-      }
     } catch (err) {
       console.log(err)
       // this.home()
     }
-    this.$emit("logged_in")
+
+  },
+  computed: {
+    aspects() {
+      return [
+        this.asp_public_name(),
+        this.asp_actor_description()]
+    }
   },
   methods: {
     ...mapMutations({
       "clear_search": "search/clear",
       clear_entries: "entries/clear",
       map_clear: "map/clear"
-    })
-  }
+    }),
+    submit() {
+      this.$api.basic.oauth_register(this.user_data).then(() => {
+        this.$emit("logged_in")
+        if (this.go_home && !this.new_user) {
+          console.log("no new actor")
+          this.home()
+        } else {
+          // watched by Search.vue and MapWrapper
+          this.$bus.$emit(BUS_TRIGGER_SEARCH)
+        }
+      }, err => {
+        console.error(err)
+      })
 
+    }
+  }
 }
 </script>
 
