@@ -24,5 +24,8 @@ export const mutations = {
 export const getters = {
   setup_values(state) {
     return state.setup
+  },
+  packed_values(state) {
+    return state.setup.unpacked
   }
 }

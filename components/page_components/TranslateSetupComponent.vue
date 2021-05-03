@@ -43,16 +43,15 @@ export default {
   components: {Dialog, LanguageSearch, AspectSet, Aspect},
   mixins: [OptionsMixin, TriggerSnackbarMixin, EntryCreateMixin, ApiHelperMixin, TypicalAspectMixin, LanguageMixin, TranslationSetupMixin],
   data() {
-    // console.log(this.$store.getters["translate/setup_values"])
-    const {component, domain, entry, src_lang, dest_lang} = this.$store.getters["translate/setup_values"]
+    const {component, domain, entry, src_lang, dest_lang, language_active} = this.$store.getters["translate/packed_values"]
     return {
       setup_values: {
-        component: pack_value(component),
-        domain: pack_value(domain),
-        entry: pack_value(entry),
-        src_lang: pack_value(src_lang),
-        dest_lang: pack_value(dest_lang),
-        language_active: pack_value()
+        component: component,
+        domain: domain,
+        entry: entry,
+        src_lang: src_lang,
+        dest_lang: dest_lang,
+        language_active: language_active
       },
       init_fetched: false,
       domains_metainfos: {},
@@ -62,11 +61,9 @@ export default {
       new_language: null,
       temporary_additional_languages: [],
       codes_templates_minimal_info: {}, // keys: domain,language,slug, ...
-      //debounced_entries_search: this.$_.debounce(this.code_template_search, 200),
       all_entries_in_ui_lang: [],
       get_entries_info: false,
       code_templates_for_domain_lang: [],
-      // entries_options: [] // we differentiate null from [], cuz a domain, lang could indeed be empty
       language_statuses: {} // keys: <lang>: <status from server>
     }
   },
@@ -80,12 +77,11 @@ export default {
   computed: {
     ...mapGetters({translate_setup: "translate/setup_values", ui_language: "ui_language"}),
     setup_aspects() {
-      const aspects = [
+      return [
         this.dest_language_select_aspect(this.dest_language_options), this.component_select_aspect(this.available_components_options),
         this.language_active_aspect,
         this.setup_domain_select_aspect(), this.setup_entry_select_aspect(), this.src_language_select_aspect(this.src_language_options)
       ]
-      return aspects
     },
     dest_language_options() {
       return this.all_added_languages.sort()

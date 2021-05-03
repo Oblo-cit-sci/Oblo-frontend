@@ -69,7 +69,7 @@ export default {
       ]
     },
     setup_values() {
-      return this.$store.getters['translate/setup_values']["unpacked"]
+      return this.$store.getters['translate/packed_values']
     },
     ...mapGetters({setup: 'translate/setup_values'}),
     disable_submit() {

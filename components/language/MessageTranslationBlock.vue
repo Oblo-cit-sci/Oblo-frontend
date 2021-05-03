@@ -79,6 +79,7 @@ export default {
       const translation_components = [
         message_aspect(this.languages[0], VIEW, false),
         message_aspect(this.languages[1], EDIT, true)]
+
       const index_component = {
         name: "index",
         type: "str",
@@ -86,6 +87,9 @@ export default {
         t_label: "comp.message_translation.index"
       }
       translation_components[1].attr["extra"] = {add_undo: true}
+      if ((this.messages[0] || "").length > 40) {
+        delete translation_components[1].attr["max"]
+      }
       return {
         "name": "translation",
         label: "",
