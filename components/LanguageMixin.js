@@ -120,22 +120,13 @@ export default {
       // todo this also gets all the messages
       const domains_data = data.data.domains
 
-      const offline_dataL1 = await this.get_offline_data()
-      console.log("*** offline_dataL1", offline_dataL1.domain_data[1][1].langs)
-
-      console.log("store check", this.$store.state.domain.domains.get("licci"))
       this.$store.commit("domain/add_domains_data", domains_data)
       // console.log(data.data.templates_and_codes)
       await this.$store.dispatch("templates/add_templates_codes", data.data.templates_and_codes)
-      console.log("store check post", this.$store.state.domain.domains.get("licci"))
       // domains
-      this.persist_domains()
+      await this.persist_domains()
       // templates & codes...
-      this.persist_templates()
-
-      const offline_dataL2 = await this.get_offline_data()
-      console.log("*** offline_dataL2", offline_dataL2.domain_data[1][1].langs)
-
+      await  this.persist_templates()
       return Promise.resolve()
     },
     filter_language_items(language_items, keep_codes) {
