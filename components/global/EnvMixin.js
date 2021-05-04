@@ -17,7 +17,7 @@ export default {
       return this.env === "production"
     },
     is_standalone() {
-      return this.$store.getters["app/standalone"] || is_standalone()
+      return true // this.$store.getters["app/standalone"] || is_standalone()
     }
   }
 }

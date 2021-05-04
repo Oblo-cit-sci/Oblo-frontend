@@ -91,8 +91,7 @@ export default {
         return []
       }
       const real_domains = this.offline_data.domain_data.filter(d => d[0] !== NO_DOMAIN).map(d => d[1])
-      console.log(this.offline_data.domain_data.length)
-      return real_domains.reduce((res, domain) => {
+      return  real_domains.reduce((res, domain) => {
         // lang: domain_lang object, to list (but fiddle in the language...)
         // todo language should maybe be in the object (coming from the be)
         Object.entries(domain.langs).forEach(lang_domain => {

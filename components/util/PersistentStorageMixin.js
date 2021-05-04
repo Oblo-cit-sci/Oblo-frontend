@@ -1,62 +1,67 @@
 export default {
   name: "PersistentStorageMixin",
   methods: {
-    store_value(key, value) {
-      this.$localForage.setItem(key, value).then(() => {
-      }).catch(err => {
-        console.log("browser db error")
-        console.log(err)
-      })
+    async store_value(key, value) {
+      const result = await this.$localforage.setItem(key, value)
+      // console.log(result)
+      if (!result) {
+        console.error("browser db error")
+      }
+      //   .then(() => {
+      // }).catch(err => {
+      //   console.log("browser db error")
+      //   console.log(err)
+      // })
     },
-    clear_storage() {
-      this.$localForage.clear()
+    async clear_storage() {
+      await this.$localforage.clear()
     },
-    remove_from_storage(key) {
-      this.$localForage.removeItem(key)
+    async remove_from_storage(key) {
+      await this.$localforage.removeItem(key)
     },
-    persist_entries() {
+    async persist_entries() {
       // console.log("persist entries")
-      this.store_value("entries", this.$store.getters["entries/all_drafts"]().map(e => [e.uuid, e]))
+      await this.store_value("entries", this.$store.getters["entries/all_drafts"]().map(e => [e.uuid, e]))
     },
-    persist_user_key() {
-      this.store_value("user_key", this.$store.getters.user_key)
+    async persist_user_key() {
+      await this.store_value("user_key", this.$store.getters.user_key)
     },
-    persist_notes() {
-      this.store_value("notes", this.$store.getters["templates/all_notes"])
+    async persist_notes() {
+      await this.store_value("notes", this.$store.getters["templates/all_notes"])
     },
-    persist_user_data() {
-      this.store_value("user_data", this.$store.getters.user)
+    async persist_user_data() {
+      await this.store_value("user_data", this.$store.getters.user)
     },
-    persist_user_settings() {
-      this.store_value("user_settings", this.$store.getters["user/settings"])
+    async persist_user_settings() {
+      await this.store_value("user_settings", this.$store.getters["user/settings"])
     },
-    persist_for_offline_mode() {
+    async persist_for_offline_mode() {
       // user-data & settings
-      this.persist_user_data()
-      this.persist_user_settings()
+      await this.persist_user_data()
+      await this.persist_user_settings()
       // domains
-      this.persist_domains()
+      await this.persist_domains()
       // templates & codes...
-      this.persist_templates()
+      await this.persist_templates()
       // messages
-      this.persist_messages()
+      await this.persist_messages()
       // misc
       const offline_misc_data = {
         "app/platform_data": this.$store.getters["app/platform_data"]
       }
-      this.store_value("offline_misc_data", offline_misc_data)
+      await this.store_value("offline_misc_data", offline_misc_data)
     },
-    persist_domains() {
-      this.store_value("domains", Array.from(this.$store.state.domain.domains.entries()))
+    async persist_domains() {
+      await this.store_value("domains", Array.from(this.$store.state.domain.domains.entries()))
     },
-    persist_templates() {
+    async persist_templates() {
       const store_templates = this.$_.cloneDeep(this.$store.state.templates)
       store_templates.codes = Array.from(store_templates.codes.entries())
       store_templates.entry_types = Array.from(store_templates.entry_types.entries())
-      this.store_value("templates", store_templates)
+      await this.store_value("templates", store_templates)
     },
-    persist_messages() {
-      this.store_value("messages", this.$i18n.messages)
+    async persist_messages() {
+      await this.store_value("messages", this.$i18n.messages)
     }
   }
 }

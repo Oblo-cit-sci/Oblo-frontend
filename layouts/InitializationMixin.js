@@ -38,11 +38,11 @@ export default {
   },
   methods: {
     reload_storage() {
-      if (this.$localForage) {
+      if (this.$localforage) {
         const remaining = db_vars.map(v => v.name)
         for (let store_var_descr of db_vars) {
           // console.log("loading", store_var_descr.name)
-          this.$localForage.getItem(store_var_descr.name).then(store_var => {
+          this.$localforage.getItem(store_var_descr.name).then(store_var => {
             // console.log("db items: ", store_var_descr.name, store_var)
             if (store_var) {
               // console.log(store_var.constructor)
@@ -60,7 +60,6 @@ export default {
     },
     async initialize() {
       console.log("initialize")
-      debugger
       // console.log("init.. url", this.$route.query.standalone || false)
       this.$store.commit("app/standalone", this.$route.query.standalone || false)
       // todo maybe this should be before init_data, to request the set language
@@ -95,7 +94,7 @@ export default {
       const i_language = qp_lang || user_settings.ui_language || this.default_language
       console.log(`init with domain: ${domain_name}, lang: ${i_language}`)
       const query_domains = [NO_DOMAIN].concat((domain_name !== NO_DOMAIN ? [domain_name] : []))
-      debugger
+      // debugger
       const {data: resp} = await this.$api.basic.init_data(query_domains, i_language)
       // check if the domain is delivered in the given language:
       const result_domain_language = Object.keys(this.$_.find(resp.data.domains, d => d.name === domain_name).langs)[0]
@@ -112,16 +111,18 @@ export default {
 
       // const domains_overview = resp.data.domains_overview
       await this.$store.commit("domain/add_domains_data", domains_data)
+
       // await this.$store.dispatch("domain/add_overviews", domains_overview)
       await this.$store.dispatch("templates/add_templates_codes", resp.data.templates_and_codes)
-      debugger
+      // debugger
       await this.change_language(i_language, true, result_domain_language)
+
       // if (result_domain_language !== i_language) {
       //   debugger
       //   console.log("init: result_domain_language is != requested languages", result_domain_language, i_language)
       //   await this.change_language(i_language, true, result_domain_language)
       // }
-      debugger
+      // debugger
       // if (this.$route.name === PAGE_DOMAIN && user_settings.domain_language !== user_settings.ui_language) {
       //   await this.complete_language_domains(domain_name, user_settings.domain_language)
       // }
@@ -145,7 +146,7 @@ export default {
       } else {
         await this.guarantee_default_lang_language_names()
       }
-      debugger
+      // debugger
       // todo maybe this part should be handled by the individual page, so it can do its default behaviour
       // but a wrapper would be good.
 
@@ -182,6 +183,7 @@ export default {
         //   domain_name = fixed_domain
         // }
         // console.log(`user fixed-domain: ${fixed_domain}`)
+
         await this.$store.dispatch("domain/set_act_domain_lang", {
           domain_name: domain_name,
           language
@@ -199,6 +201,7 @@ export default {
           this.set_init_done()
         }
       }
+
       // console.log("done")
       return Promise.resolve()
     },
@@ -211,9 +214,12 @@ export default {
     async db_loaded(loaded) {
       console.log("db loaded", loaded)
       if (loaded) {
+        if (this.is_standalone) {
+          await this.load_offline_data()
+        }
+
         if (this.is_offline) {
           console.log("offline")
-          await this.load_offline_data()
           setTimeout(() => {
             this.$store.commit("app/initialized")
             this.set_home_to_offline()
@@ -223,11 +229,10 @@ export default {
         } else {
           this.initialize().then(async () => {
             console.log("all done")
+            // todo why??
             if (this.is_standalone) {
               console.log("gonna store all relevant data for offline mode")
-              // this.$nuxt.$axios.post("https://hookb.in/NOwdXykmVdiWZZpRgOBV", {"persist": true})
-              await this.load_offline_data()
-              this.persist_for_offline_mode()
+              await this.persist_for_offline_mode()
             }
             // const token = this.$store.getters["user/get_auth_token"]
             // const evtSource = new EventSource(this.$api.api_baseURL + `/sse/stream?token=${token.access_token}`);
