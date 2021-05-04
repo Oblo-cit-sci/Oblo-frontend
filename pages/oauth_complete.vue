@@ -66,8 +66,9 @@ export default {
       this.err_error_snackbar(err)
       this.$bus.$emit(BUS_HIDE_OVERLAY)
 
-      // this.home()
-      this.new_user = true
+      // switch those 2 for testing
+      this.home()
+      // this.new_user = true
       return
     }
     try {
@@ -78,7 +79,9 @@ export default {
       this.$bus.$emit(BUS_HIDE_OVERLAY)
       if (this.go_home && !this.new_user) {
         this.login(msg)
+        return
       }
+      this.aspect_error = this.aspect_values.public_name.value === ""
     } catch (err) {
       console.log("error in settings")
       console.log(err)
@@ -116,7 +119,7 @@ export default {
     },
     submit() {
       Object.assign(this.user_data, recursive_unpack2(this.aspect_values))
-      this.$api.oauth.oauth_register(this.user_data).then((data) => {
+      this.$api.oauth.oauth_register(this.user_data).then(({data}) => {
         this.login(data.msg)
       }, err => {
         console.error(err)
