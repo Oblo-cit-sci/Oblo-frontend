@@ -133,10 +133,9 @@ export default {
         this.has_changes = !this.$_.isEqual(this.initial_values, this.i_values)
       }
     },
-    has_errors: {
+    has_error: {
       deep: true,
       handler(has_errs) {
-        // console.log("er up")
         this.$emit("has_errors", has_errs)
       }
     },

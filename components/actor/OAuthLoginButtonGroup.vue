@@ -21,7 +21,7 @@ export default {
   },
   methods: {
     service_link(service_name) {
-      return this.$api.basic.url_init_oauth(service_name)
+      return this.$api.oauth.url_init_oauth(service_name)
     }
   }
 }

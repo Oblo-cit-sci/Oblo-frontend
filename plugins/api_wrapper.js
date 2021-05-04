@@ -17,6 +17,7 @@ class APIWrapper {
     this.api_baseURL = this.axios_baseURL + "/api"
 
     this.basic = new Basic(this)
+    this.oauth = new OAuth(this)
     this.static = new Static(this)
     this.domain = new Domain(this)
     this.entry = new Entry(this)
@@ -96,14 +97,29 @@ class Basic extends QueryBase {
     })
   }
 
-  oauth_services() {
-    return this.get_("oauth_services")
+  // oauth_services() {
+  //   return this.get_("oauth_services")
+  // }
+
+  // init_oauth(service) {
+  //   return this.get_("init_oauth", {
+  //     params: {service}
+  //   })
+  // }
+
+  oauth_complete(data) {
+    return this.get_("oauth_complete", {
+      params: data
+    })
   }
 
-  init_oauth(service) {
-    return this.get_("init_oauth", {
-      params: {service}
-    })
+}
+
+
+class OAuth extends QueryBase {
+
+  constructor(api_wrapper) {
+    super(api_wrapper, "/oauth")
   }
 
   url_init_oauth(service) {
@@ -119,6 +135,7 @@ class Basic extends QueryBase {
   oauth_register(data) {
     return this.post_("oauth_register", data)
   }
+
 }
 
 class Static extends QueryBase {
@@ -364,6 +381,7 @@ class Actor extends QueryBase {
   get_me() {
     return this.get_("me")
   }
+
   /**
    * update the user profile or settings
    * @param profile_data
