@@ -1,7 +1,7 @@
 <template lang="pug">
   v-container
     div(v-if="new_user")
-      AspectSet(:aspects="aspects" mode="edit" :values="aspect_values" @has_errors="has_errors($event)")
+      AspectSet(:aspects="aspects" mode="edit" :values.sync="aspect_values" @has_errors="has_errors($event)")
       TermsOfUse(:agree.sync="terms_agree" :terms_dialog_open.sync="terms_dialog_open")
       v-btn.m-4(@click='submit' rounded large :disabled="any_invalid" :loading="submit_loading" color='success') {{$t('page.register.btn_register')}}
 </template>
@@ -18,6 +18,7 @@ import Aspect from "~/components/Aspect";
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin";
 import TermsOfUse from "~/components/register/TermsOfUse";
 import {pack_value} from "~/lib/aspect";
+import {recursive_unpack2} from "~/lib/util";
 
 export default {
   name: "oauth_complete",
@@ -114,6 +115,7 @@ export default {
       this.aspect_error = error
     },
     submit() {
+      Object.assign(this.user_data, recursive_unpack2(this.aspect_values))
       this.$api.oauth.oauth_register(this.user_data).then((data) => {
         this.login(data.msg)
       }, err => {
