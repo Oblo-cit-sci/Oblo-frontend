@@ -56,7 +56,7 @@ export default {
       return this.is_offline ? "S/ON" : "S/OFF"
     },
     filtered_pages() {
-      // const home = all_pages_n_actions[0]
+      // console.log("filter page update")
       let filtered_pages = this.pages
       if (!this.connected) {
         filtered_pages = filtered_pages.filter(p => !hide_no_be.includes(p.to))
@@ -97,22 +97,17 @@ export default {
         filtered_pages = filtered_pages.filter(p => !hide_if_offline.includes(p.name))
       }
 
-
       filtered_pages.forEach(p => {
         const alt_to = this.$store.getters["menu_page"](p.name)
         if (alt_to) {
           p.to = alt_to
         }
       })
-
       return filtered_pages
     },
     show_language_selector() {
       return !this.is_large
     }
-  },
-  created() {
-
   },
   methods: {
     ...mapMutations({switch_menu_open: 'menu/switch_open'}),

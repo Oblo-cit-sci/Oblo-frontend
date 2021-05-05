@@ -109,6 +109,10 @@ export default {
       const domains_data = resp.data.domains
       const language = resp.data.language
 
+      if (resp.data.user_guide_url) {
+        this.$store.commit("translate/add_user_guide_link", {language_code:language, url: resp.data.user_guide_url})
+        this.$store.commit("app/set_menu_to", {name: "user_guide", to: resp.data.user_guide_url})
+      }
       // const domains_overview = resp.data.domains_overview
       await this.$store.commit("domain/add_domains_data", domains_data)
 
@@ -201,7 +205,6 @@ export default {
           this.set_init_done()
         }
       }
-
       // console.log("done")
       return Promise.resolve()
     },

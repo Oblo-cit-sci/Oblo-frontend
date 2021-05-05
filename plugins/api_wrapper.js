@@ -506,6 +506,14 @@ class Language extends QueryBase {
     })
   }
 
+  user_guide_url(language_code) {
+    return this.get_("user_guide_url", {
+      params: {
+        language_code
+      }
+    })
+  }
+
   update_messages(component, language, data) {
     return this.post_("update_messages", data, {
       params: {

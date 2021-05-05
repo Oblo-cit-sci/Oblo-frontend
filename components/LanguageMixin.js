@@ -6,6 +6,7 @@ import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin";
 import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
 import EnvMixin from "~/components/global/EnvMixin";
 import OfflineMixin from "~/lib/OfflineMixin";
+import {BUS_MENU_TO_CHANGE} from "~/plugins/bus";
 
 export default {
   name: "LanguageMxin",
@@ -33,10 +34,8 @@ export default {
       //   // console.log(data)
       //   await this.$store.dispatch("domain/add_overviews", data.data)
       // }
-
       await this.change_domain_language(domain_language, update_settings, language !== domain_language)
-
-      // console.log("check have?", language, this.loaded_ui_languages.includes(language))
+      // console.log("check have?", language, this.$i18n.availableLocales.includes(language))
       if (!this.$i18n.availableLocales.includes(language)) {
         try {
           const {data} = await this.$api.language.get_component("fe", [language])
@@ -51,6 +50,14 @@ export default {
           }
         }
       }
+
+      let user_guide_url = this.$store.getters["translate/user_guide_link"](language)
+      if (!user_guide_url) {
+        const user_guide_url_data = await this.$api.language.user_guide_url(language)
+        user_guide_url = user_guide_url_data.data.url
+        this.$store.commit("translate/add_user_guide_link", {language_code:language, url: user_guide_url})
+      }
+      this.$store.commit("app/set_menu_to", {name: "user_guide", to: user_guide_url})
 
       if (language === this.default_language) {
         await this.guarantee_default_lang_language_names()
@@ -75,7 +82,7 @@ export default {
 
       if (this.is_standalone) {
         await this.persist_domains()
-        this.persist_templates()
+        await this.persist_templates()
       }
 
       if (has_domain_lang) {
@@ -126,7 +133,7 @@ export default {
       // domains
       await this.persist_domains()
       // templates & codes...
-      await  this.persist_templates()
+      await this.persist_templates()
       return Promise.resolve()
     },
     filter_language_items(language_items, keep_codes) {

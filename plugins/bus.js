@@ -10,3 +10,4 @@ export const BUS_TRIGGER_SEARCH = "trigger_search"
 export const BUS_MAP_MARKER_SHOW = "map-marker-show"
 export const BUS_MAP_MARKER_HIDE = "map-marker-hide"
 
+
