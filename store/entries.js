@@ -35,6 +35,10 @@ export const mutations = {
   delete_entry(state, uuid) {
     state.entries.delete(uuid)
   },
+  delete_entries(state, uuids) {
+    // turn entries to array, filter by passed uuids; turn back into 2 val array, and rebuild Map
+    state.entries = new Map(Array.from(state.entries.values()).filter(e => !uuids.includes(e.uuid)).map(e => [e.uuid, e]))
+  },
   set_downloaded(state, local_id) {
     let e = state.entries.get(local_id)
     //console.log("DL ", e, local_id)

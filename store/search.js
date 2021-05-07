@@ -5,7 +5,7 @@ export const state = () => ({
   relevant_path_query_values: {}, // ?
   search_term: "",
   act_config: [], // config before search. set by domainMenu.search.filterlist and map_overlays.legend,
-  searching: false, // flag for loadin
+  searching: false, // flag for loading
   entries: [], // result
   entry_aspects: [], // result specifics, not used atm
   search_count: 0, // total count in the db, used for requesting more

@@ -63,6 +63,8 @@ export default {
   watch: {
     is_offline(offline) {
       if (offline) {
+        this.clear_entries()
+        this.$store.commit("search/clear")
         if (!["offline", "offline_settings", "about", "entry"].includes(this.$route.name)) {
           this.$router.push("/offline")
         }

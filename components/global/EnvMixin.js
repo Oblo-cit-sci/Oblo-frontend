@@ -1,4 +1,3 @@
-import {is_standalone} from "~/lib/pwa";
 
 export default {
   name: "EnvMixin",
@@ -17,7 +16,7 @@ export default {
       return this.env === "production"
     },
     is_standalone() {
-      return this.$store.getters["app/standalone"] || is_standalone()
+      return true //this.$store.getters["app/standalone"] || is_standalone()
     }
   }
 }

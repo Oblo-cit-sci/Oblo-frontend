@@ -64,14 +64,15 @@ export default {
   beforeUpdate() {
     this.deleted = this.$_.filter(this.deleted, uuid => !this.has_entry(uuid))
     // console.log("update", this.$refs, this.entries.length)
-    if (this.$refs.to_top_button) {
+      // console.log(this.$refs.to_top_button)
       // entries are not immediately there, so the offsetTop is 0
       setTimeout(() => {
-        this.show_to_top_button = this.$refs.to_top_button.offsetTop > window.innerHeight
+        if (this.$refs.to_top_button) {
+          this.show_to_top_button = this.$refs.to_top_button.offsetTop > window.innerHeight
+        } else {
+          console.log("no $refs.to_top_button")
+        }
       }, 100)
-    } else {
-      console.log("ref not found")
-    }
   },
   computed: {
     ...mapGetters({"has_entry": "entries/has_entry"}),
@@ -83,12 +84,13 @@ export default {
       //if()
     },
     visible_entries() {
+      // console.log("offline- all entries",  this.entries)
       let from_index = (this.page - 1) * this.entries_per_page
       let to_index = from_index + this.entries_per_page
       const entries = this.entries.slice(from_index, to_index)
       // todo unique is just required cuz the server does often sent less (actor rows problem when querying entries)
-      const uuids = this.$_.uniq(this.$_.filter(entries, e => !this.deleted.includes(e.uuid)))
-      return this.$_.map(uuids, uuid => this.$store.getters["entries/get_entry"](uuid))
+      const uuids = this.$_.uniq(this.$_.filter(entries, e => !this.deleted.includes(e)))
+      return this.$_.map(uuids, uuid => this.$store.getters["entries/get_entry"](uuid)).filter(e => e !== undefined)
     },
     has_entries() {
       return this.num_entries > 0
