@@ -5,9 +5,13 @@
         v-btn(v-if="!is_domain_page" @click="back()") {{$t("w.back")}}
         v-btn(v-if="can_edit" color="info" @click="to_proper_mode") {{proper_mode_text}}
       span
+        // cancel
         v-btn(v-if="!is_view_mode" @click="cancel") {{$t("w.cancel")}}
+        // save draft
         v-btn(v-if="is_edit_mode && is_draft" color="success" @click="save") {{save_text}}
+        // delete
         v-btn(v-if="is_edit_mode && !is_draft" color="error" @click="delete_entry") {{$t("w.delete")}}
+        // submit
         v-btn(
           v-if="show_submit"
           color="success"

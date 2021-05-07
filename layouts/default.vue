@@ -70,10 +70,12 @@ export default {
         }
         this.ok_snackbar("EN:offline")
         this.disconnected()
+        this.$store.commit("app/connected", false)
         this.persist_for_offline_mode()
         this.set_home_to_offline()
       } else {
         this.ok_snackbar("EN:Online")
+        this.$store.commit("app/connected", true)
         this.reset_home()
       }
     }
