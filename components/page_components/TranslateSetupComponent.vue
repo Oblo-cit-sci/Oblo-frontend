@@ -8,6 +8,8 @@
       @is_complete="is_aspects_complete = $event"
       @aspectAction="aspectAction($event)")
     v-btn(@click="start" :disabled="!is_setup_valid" color="success") {{$t("comp.translate.start")}}
+    LoadFileButton(filetype="csv" :label="$t('comp.translate.from_csv')" @fileload="from_csv($event)"
+      :btn_props="{disabled:!is_setup_valid}")
     Dialog(:dialog_open.sync="new_lang_dialog_open")
       h3 {{$t("comp.translate.new.descr")}}
       LanguageSearch(v-model="new_language" :filter_out="exclude_from_search")
@@ -32,6 +34,7 @@ import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin";
 import LanguageMixin from "~/components/LanguageMixin";
 import {BUS_HIDE_OVERLAY, BUS_OVERLAY} from "~/plugins/bus";
 import TranslationSetupMixin from "~/components/language/TranslationSetupMixin";
+import LoadFileButton from "~/components/util/LoadFileButton";
 
 const components = ["fe", "be", "domain", "entries"]
 
@@ -40,7 +43,7 @@ const components = ["fe", "be", "domain", "entries"]
 // todo this.entries_options needs to be called again after changing language
 export default {
   name: "TranslateSetupComponent",
-  components: {Dialog, LanguageSearch, AspectSet, Aspect},
+  components: {LoadFileButton, Dialog, LanguageSearch, AspectSet, Aspect},
   mixins: [OptionsMixin, TriggerSnackbarMixin, EntryCreateMixin, ApiHelperMixin, TypicalAspectMixin, LanguageMixin, TranslationSetupMixin],
   data() {
     const {component, domain, entry, src_lang, dest_lang, language_active} = this.$store.getters["translate/packed_values"]
@@ -391,6 +394,21 @@ export default {
         })
       } else {
         this.code_templates_for_domain_lang = loaded_infos
+      }
+    },
+    from_csv(file) {
+      const {component, dest_lang} = this.unpacked_values
+      if (["fe", "be"].includes(component)) {
+        this.$api.language.update_messages_from_csv(component, dest_lang, file).then(({data}) => {
+          this.ok_snackbar(data.msg)
+        }, err => {
+          console.error(err)
+          this.err_error_snackbar(err)
+        })
+      } else if(component === "domain") {
+
+      } else { // entry
+
       }
     }
   },

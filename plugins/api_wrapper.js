@@ -556,6 +556,20 @@ class Language extends QueryBase {
       }
     })
   }
+
+  update_messages_from_csv(component, language, file) {
+    const formData = new FormData();
+    let blob = new Blob([file.data], {type: 'text/csv'});
+    formData.append("file",blob, file.meta.name)
+    return this.post_("update_messages_from_csv", formData, {
+      params: {
+        component, language
+      },
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+  }
 }
 
 
