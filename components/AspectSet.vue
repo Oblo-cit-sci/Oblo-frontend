@@ -15,7 +15,8 @@
       v-row
         v-col(
           v-for="aspect in aspects" :key="aspect.name"
-          alignSelf="stretch" :cols="base_cols" :lg="base_cols/2" :xl="base_cols/3")
+          v-if="!hide_aspect_col(aspect)"
+          alignSelf="stretch" cols="12" :sm="6" :md="4" :lg="4" :xl="2")
           Aspect(:aspect="aspect"
             :ext_value.sync="i_values[aspect.name]"
             :conditionals="i_values"
@@ -94,7 +95,6 @@ export default {
     },
     is_complete() {
       for(let aspect of this.aspect_names){
-          // console.log(aspect, this.state[aspect])
           if([ASP_UNSET,ASP_ERROR].includes(this.state[aspect])) {
             return false
           }
@@ -119,6 +119,9 @@ export default {
   methods: {
     aspectAction(event) {
       this.$emit("aspectAction",event)
+    },
+    hide_aspect_col(aspect) {
+      return this.state[aspect.name] === 'disabled' && aspect.attr?.hide_on_disabled
     }
   },
   watch: {
@@ -129,10 +132,9 @@ export default {
         this.has_changes = !this.$_.isEqual(this.initial_values, this.i_values)
       }
     },
-    has_errors: {
+    has_error: {
       deep: true,
       handler(has_errs) {
-        // console.log("er up")
         this.$emit("has_errors", has_errs)
       }
     },

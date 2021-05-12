@@ -273,7 +273,16 @@ export default {
       return !(itemtype === "str" || itemtype === "int" || itemtype === "float" || itemtype === "tree")
     },
     text_only_item() {
-      return [STR, INT, FLOAT, SELECT, TREE].includes(this.item_aspect.type)
+      if (this.item_aspect.type === TREE) {
+        const list_values = this.value
+        const has_icon = this.$_.some(list_values.map(lv => (
+          this.$_.some(lv.value, vi => vi.icon !== undefined)
+        )))
+        if (has_icon) {
+          return false
+        }
+      }
+      return [STR, INT, FLOAT, SELECT].includes(this.item_aspect.type)
     },
     default_view_text() {
       return this.$_.get(this.attr, "default_view_text", "")

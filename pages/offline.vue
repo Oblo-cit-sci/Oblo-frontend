@@ -1,14 +1,14 @@
 <template lang="pug">
   v-container(fluid)
     div
+      h3 {{$t('page.domain.create_entry_dialog_title')}}
       div(v-if="has_templates")
-        h3 {{$t('page.domain.create_entry_dialog_title')}}
         EntryCreateList(:template_entries="template_entries")
       div(v-else)
         h2 {{$t("page.offline_settings.no_data")}}
     div
       h3.text-capitalize {{$t('w.entries')}}
-      EntryPreviewList(:entries="all_entries" :total_count="num_entries" :preview_options="{show_botton_actions: true}")
+      EntryPreviewList(:entries="all_entries_uuids" :total_count="num_entries" :preview_options="{show_botton_actions: true}")
 </template>
 
 <script>
@@ -34,7 +34,8 @@ export default {
   },
   computed: {
     has_templates(){
-      return this.template_entries.length > 1
+      // console.log(this.template_entries)
+      return this.template_entries.length >= 1
     },
     template_entries() {
       // console.log(this.$store.getters["templates/entry_types_array"]("en",false))
@@ -47,11 +48,11 @@ export default {
           can_edit_entry(this.$store.getters.user, t))
       })
     },
-    all_entries() {
+    all_entries_uuids() {
       return this.$store.getters["entries/all_uuids"]()
     },
     num_entries() {
-      return this.all_entries.length
+      return this.all_entries_uuids.length
     }
   },
   methods: {},

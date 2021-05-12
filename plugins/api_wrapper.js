@@ -17,6 +17,7 @@ class APIWrapper {
     this.api_baseURL = this.axios_baseURL + "/api"
 
     this.basic = new Basic(this)
+    this.oauth = new OAuth(this)
     this.static = new Static(this)
     this.domain = new Domain(this)
     this.entry = new Entry(this)
@@ -79,7 +80,8 @@ class Basic extends QueryBase {
   }
 
   init_data(domains, language) {
-    // console.log("requesting language", language)
+    console.log("init_data:requesting language", language)
+    // console.trace()
     const params = {}
     if (domains) {
       params.domains = domains
@@ -95,14 +97,29 @@ class Basic extends QueryBase {
     })
   }
 
-  oauth_services() {
-    return this.get_("oauth_services")
+  // oauth_services() {
+  //   return this.get_("oauth_services")
+  // }
+
+  // init_oauth(service) {
+  //   return this.get_("init_oauth", {
+  //     params: {service}
+  //   })
+  // }
+
+  oauth_complete(data) {
+    return this.get_("oauth_complete", {
+      params: data
+    })
   }
 
-  init_oauth(service) {
-    return this.get_("init_oauth", {
-      params: {service}
-    })
+}
+
+
+class OAuth extends QueryBase {
+
+  constructor(api_wrapper) {
+    super(api_wrapper, "/oauth")
   }
 
   url_init_oauth(service) {
@@ -114,6 +131,11 @@ class Basic extends QueryBase {
       params: data
     })
   }
+
+  oauth_register(data) {
+    return this.post_("oauth_register", data)
+  }
+
 }
 
 class Static extends QueryBase {
@@ -178,6 +200,20 @@ class Domain extends QueryBase {
   async multi_d_get_codes_templates(domain_names, language, full) {
     return this.get_("get_codes_templates", {
       params: {domain_names, language, full}
+    })
+  }
+
+  from_csv(domain_name, language, file) {
+    const formData = new FormData();
+    let blob = new Blob([file.data], {type: 'text/csv'});
+    formData.append("file", blob, file.meta.name)
+    return this.post_(`${domain_name}/from_csv`, formData, {
+      params: {
+        language
+      },
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
     })
   }
 }
@@ -359,6 +395,7 @@ class Actor extends QueryBase {
   get_me() {
     return this.get_("me")
   }
+
   /**
    * update the user profile or settings
    * @param profile_data
@@ -483,6 +520,14 @@ class Language extends QueryBase {
     })
   }
 
+  user_guide_url(language_code) {
+    return this.get_("user_guide_url", {
+      params: {
+        language_code
+      }
+    })
+  }
+
   update_messages(component, language, data) {
     return this.post_("update_messages", data, {
       params: {
@@ -522,6 +567,20 @@ class Language extends QueryBase {
     return this.post_("change_language_status", null, {
       params: {
         lang_code, active
+      }
+    })
+  }
+
+  update_messages_from_csv(component, language, file) {
+    const formData = new FormData();
+    let blob = new Blob([file.data], {type: 'text/csv'});
+    formData.append("file", blob, file.meta.name)
+    return this.post_("update_messages_from_csv", formData, {
+      params: {
+        component, language
+      },
+      headers: {
+        'Content-Type': 'multipart/form-data'
       }
     })
   }

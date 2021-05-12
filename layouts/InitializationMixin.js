@@ -38,11 +38,11 @@ export default {
   },
   methods: {
     reload_storage() {
-      if (this.$localForage) {
+      if (this.$localforage) {
         const remaining = db_vars.map(v => v.name)
         for (let store_var_descr of db_vars) {
           // console.log("loading", store_var_descr.name)
-          this.$localForage.getItem(store_var_descr.name).then(store_var => {
+          this.$localforage.getItem(store_var_descr.name).then(store_var => {
             // console.log("db items: ", store_var_descr.name, store_var)
             if (store_var) {
               // console.log(store_var.constructor)
@@ -84,14 +84,20 @@ export default {
       const domain_name = this.query_param_domain_name || user_settings.fixed_domain || NO_DOMAIN
 
       const qp_lang = this.$route.query[QP_lang]
-      if (qp_lang !== undefined) {
-        if (qp_lang !== user_settings.ui_language || qp_lang !== user_settings.domain_language) {
-          await this.change_language(qp_lang)
-        }
-      }
+
+      // if (qp_lang !== undefined) {
+      //   if (qp_lang !== user_settings.ui_language || qp_lang !== user_settings.domain_language) {
+      //     await this.change_language(qp_lang)
+      //   }
+      // }
+
       const i_language = qp_lang || user_settings.ui_language || this.default_language
       console.log(`init with domain: ${domain_name}, lang: ${i_language}`)
-      const {data: resp} = await this.$api.basic.init_data(domain_name ? [domain_name, NO_DOMAIN] : null, i_language)
+      const query_domains = [NO_DOMAIN].concat((domain_name !== NO_DOMAIN ? [domain_name] : []))
+      // debugger
+      const {data: resp} = await this.$api.basic.init_data(query_domains, i_language)
+      // check if the domain is delivered in the given language:
+      const result_domain_language = Object.keys(this.$_.find(resp.data.domains, d => d.name === domain_name).langs)[0]
 
       // todo here call complete_language_domains if on domain-page and domain-lang different than ui-lang
       // console.log(resp)
@@ -100,17 +106,35 @@ export default {
       this.$store.commit("app/platform_data", platform_data)
       this.$store.commit("app/oauth_services", resp.data.oauth_services)
 
+      // map
+      this.$store.commit("map/default_map_style", resp.data.map_default_map_style)
+      this.$store.commit("map/access_token", resp.data.map_access_token)
+
+
       const domains_data = resp.data.domains
       const language = resp.data.language
 
+      if (resp.data.user_guide_url) {
+        this.$store.commit("translate/add_user_guide_link", {language_code:language, url: resp.data.user_guide_url})
+        this.$store.commit("app/set_menu_to", {name: "user_guide", to: resp.data.user_guide_url})
+      }
       // const domains_overview = resp.data.domains_overview
       await this.$store.commit("domain/add_domains_data", domains_data)
+
       // await this.$store.dispatch("domain/add_overviews", domains_overview)
       await this.$store.dispatch("templates/add_templates_codes", resp.data.templates_and_codes)
+      // debugger
+      await this.change_language(i_language, true, result_domain_language)
 
-      if (this.$route.name === PAGE_DOMAIN && user_settings.domain_language !== user_settings.ui_language) {
-        await this.complete_language_domains(domain_name, user_settings.domain_language)
-      }
+      // if (result_domain_language !== i_language) {
+      //   debugger
+      //   console.log("init: result_domain_language is != requested languages", result_domain_language, i_language)
+      //   await this.change_language(i_language, true, result_domain_language)
+      // }
+      // debugger
+      // if (this.$route.name === PAGE_DOMAIN && user_settings.domain_language !== user_settings.ui_language) {
+      //   await this.complete_language_domains(domain_name, user_settings.domain_language)
+      // }
 
       // console.log("template/codes stored")
       // console.log(data.data)
@@ -125,12 +149,13 @@ export default {
       // console.log("language", language)
       // console.log("?", language, language !== this.$i18n.fallbackLocale, this.$i18n.fallbackLocale)
       if (language !== this.$i18n.fallbackLocale) {
+        console.log("init language != fallback language changing language to", language)
         this.$i18n.setLocaleMessage(language, resp.data.messages[language])
-        await this.change_language(language, false)
+        // await this.change_language(language, false)
       } else {
         await this.guarantee_default_lang_language_names()
       }
-
+      // debugger
       // todo maybe this part should be handled by the individual page, so it can do its default behaviour
       // but a wrapper would be good.
 
@@ -138,6 +163,7 @@ export default {
 
       console.log("multi domains?", this.has_multiple_domains)
       if (!this.has_multiple_domains) {
+        console.log("only one domain, completing domain-lang", language)
         await this.complete_language_domains(this.get_one_domain_name, language)
         // console.log("1 domain:", this.get_one_domain_name)
         this.$store.commit("domain/set_act_domain", this.$store.getters["domain/domain_by_name"](this.get_one_domain_name).name)
@@ -166,6 +192,7 @@ export default {
         //   domain_name = fixed_domain
         // }
         // console.log(`user fixed-domain: ${fixed_domain}`)
+
         await this.$store.dispatch("domain/set_act_domain_lang", {
           domain_name: domain_name,
           language
@@ -195,9 +222,12 @@ export default {
     async db_loaded(loaded) {
       console.log("db loaded", loaded)
       if (loaded) {
+        if (this.is_standalone) {
+          await this.load_offline_data()
+        }
+
         if (this.is_offline) {
           console.log("offline")
-          await this.load_offline_data()
           setTimeout(() => {
             this.$store.commit("app/initialized")
             this.set_home_to_offline()
@@ -205,11 +235,12 @@ export default {
           }, 80)
           await this.$router.push("/offline")
         } else {
-          this.initialize().then(() => {
+          this.initialize().then(async () => {
             console.log("all done")
+            // todo why??
             if (this.is_standalone) {
               console.log("gonna store all relevant data for offline mode")
-              this.persist_for_offline_mode()
+              await this.persist_for_offline_mode()
             }
             // const token = this.$store.getters["user/get_auth_token"]
             // const evtSource = new EventSource(this.$api.api_baseURL + `/sse/stream?token=${token.access_token}`);
@@ -220,17 +251,6 @@ export default {
             console.log("initialization failed", err)
           })
         }
-        // console.log("layout. initializing")
-        // if (this.$nuxt.isOffline) {
-        //   console.log("offline")
-        //   this.$router.push("/offline")
-        //   this.set_home_path("/offline")
-        //   setTimeout(() => {
-        //     this.$store.commit("app/initialized")
-        //   }, 80)
-        //   return
-        // }
-
       }
     }
   }

@@ -5,6 +5,8 @@ import SettingsChangeMixin from "~/components/global/SettingsChangeMixin";
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin";
 import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
 import EnvMixin from "~/components/global/EnvMixin";
+import OfflineMixin from "~/lib/OfflineMixin";
+import {BUS_MENU_TO_CHANGE} from "~/plugins/bus";
 
 export default {
   name: "LanguageMxin",
@@ -25,7 +27,7 @@ export default {
       if (!domain_language) {
         domain_language = language
       }
-      let domain = this.$store.getters["domain/act_domain_name"] // undefined for non-domain
+      // let domain = this.$store.getters["domain/act_domain_name"] // undefined for non-domain
       // todo maybe can go into a mixin, if there are other settings for the language
       // if (domain === NO_DOMAIN) {
       //   const {data} = await this.$api.domain.overview(language)
@@ -33,13 +35,13 @@ export default {
       //   await this.$store.dispatch("domain/add_overviews", data.data)
       // }
       await this.change_domain_language(domain_language, update_settings, language !== domain_language)
-      // console.log("check have?", language, this.loaded_ui_languages.includes(language))
+      // console.log("check have?", language, this.$i18n.availableLocales.includes(language))
       if (!this.$i18n.availableLocales.includes(language)) {
         try {
           const {data} = await this.$api.language.get_component("fe", [language])
           this.$i18n.setLocaleMessage(language, data[language])
           if (this.is_standalone) {
-            this.persist_messages()
+            await this.persist_messages()
           }
         } catch (e) {
           if (e.response.status === 404) {
@@ -48,6 +50,15 @@ export default {
           }
         }
       }
+
+      let user_guide_url = this.$store.getters["translate/user_guide_link"](language)
+      if (!user_guide_url) {
+        const user_guide_url_data = await this.$api.language.user_guide_url(language)
+        user_guide_url = user_guide_url_data.data.url
+        this.$store.commit("translate/add_user_guide_link", {language_code:language, url: user_guide_url})
+      }
+      this.$store.commit("app/set_menu_to", {name: "user_guide", to: user_guide_url})
+
       if (language === this.default_language) {
         await this.guarantee_default_lang_language_names()
       }
@@ -60,16 +71,21 @@ export default {
     async change_domain_language(domain_language, update_settings = true, snackbar = true) {
       let domain = this.$store.getters["domain/act_domain_name"] // undefined for non-domain
 
-      this.complete_language_domains(domain, domain_language).then(() => {
-        // console.log("switching domain-lang", domain_language)
-        this.$store.commit("domain/set_act_lang_domain_data", {
-          domain_name: this.$store.getters["domain/act_domain_name"],
-          language: domain_language
-        })
-        if (this.is_standalone) {
-          this.persist_domains()
-          this.persist_templates()
-        }
+      await this.complete_language_domains(domain, domain_language)
+
+      // console.log("switching domain-lang", domain_language)
+      await this.$store.dispatch("domain/set_act_domain_lang", {
+        domain_name: this.$store.getters["domain/act_domain_name"],
+        language: domain_language
+      })
+      const has_domain_lang = this.$store.getters["domain/has_lang_domain_data"](domain, domain_language)
+
+      if (this.is_standalone) {
+        await this.persist_domains()
+        await this.persist_templates()
+      }
+
+      if (has_domain_lang) {
         if (update_settings) {
           this.set_settings_value(DOMAIN_LANGUAGE, domain_language)
         }
@@ -80,11 +96,11 @@ export default {
             {
               value: pack_value([domain_language])
             }))
+      }
 
-        if (snackbar) {
-          this.ok_snackbar(this.$t("comp.language_select.domain_language_changed", {language_name: this.t_lang(domain_language)}))
-        }
-      })
+      if (snackbar) {
+        this.ok_snackbar(this.$t("comp.language_select.domain_language_changed", {language_name: this.t_lang(domain_language)}))
+      }
     },
     /**
      *
@@ -92,7 +108,7 @@ export default {
      * @param language the language required
      */
     async complete_language_domains(domain, language) {
-      // console.log("completing...", domain, language)
+      console.log("completing...", domain, language)
       if (this.$store.getters["domain/has_lang_domain_data"](domain, language)) {
         // console.log("got it already")
         return Promise.resolve()
@@ -100,6 +116,7 @@ export default {
       return this.init_specifics(domain, language)
     },
     async init_specifics(domains, language) {
+      console.log("init_specifics", domains, language)
       if (!Array.isArray(domains)) {
         domains = [domains]
       }
@@ -109,13 +126,14 @@ export default {
       const {data} = await this.$api.basic.init_data(domains, language)
       // todo this also gets all the messages
       const domains_data = data.data.domains
+
       this.$store.commit("domain/add_domains_data", domains_data)
       // console.log(data.data.templates_and_codes)
       await this.$store.dispatch("templates/add_templates_codes", data.data.templates_and_codes)
-            // domains
-      this.persist_domains()
+      // domains
+      await this.persist_domains()
       // templates & codes...
-      this.persist_templates()
+      await this.persist_templates()
       return Promise.resolve()
     },
     filter_language_items(language_items, keep_codes) {

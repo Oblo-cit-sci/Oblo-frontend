@@ -11,6 +11,8 @@ export const state = () => ({
   layer_status: null,
   cached_camera_options: {},
   search_time: null,
+  default_map_style: null,
+  access_token: null,
 })
 
 export const mutations = {
@@ -62,6 +64,12 @@ export const mutations = {
     const update_uuids = entry_features.map(e => e.properties.uuid)
     const keep_as_is = ld.filter(state.entries[domain].features, f => !update_uuids.includes(f.properties.uuid))
     state.entries[domain].features = ld.concat(keep_as_is, entry_features)
+  },
+  default_map_style(state, default_map_style) {
+    state.default_map_style = default_map_style
+  },
+  access_token(state, access_token) {
+    state.access_token = access_token
   }
 }
 
@@ -133,6 +141,12 @@ export const getters = {
       console.log("warning entry_feature for uuid not found")
       return null
     }
+  },
+  default_map_style(state) {
+    return state.default_map_style
+  },
+  access_token(state) {
+    return state.access_token
   }
 }
 

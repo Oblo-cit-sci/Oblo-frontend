@@ -77,11 +77,17 @@ export const actions = {
   },
   set_act_domain_lang({commit, getters}, {domain_name, language}) {
     const has_domain_lang = getters.has_lang_domain_data(domain_name, language)
-    if (!has_domain_lang) {
-      language = getters.get_domain_default_language(domain_name)
+    // console.log("set_act_domain_lang")
+    if (has_domain_lang) {
+      commit("set_act_lang_domain_data", {domain_name, language})
+      commit("set_act_domain", domain_name)
+      return
     }
-    commit("set_act_domain", domain_name)
-    commit("set_act_lang_domain_data", {domain_name, language})
+    if (domain_name !== getters.act_domain_name) {
+      language = getters.get_domain_default_language(domain_name)
+      commit("set_act_lang_domain_data", {domain_name, language})
+      commit("set_act_domain", domain_name)
+    }
   },
   // set_domains({state, commit}, domains_data) {
   //   commit("add_domains_data", domains_data)

@@ -2,12 +2,10 @@
   div
     h1 {{$t("page.offline_settings.h1")}}
     div(v-if="loaded")
-      div(v-if="has_any_domain")
-        Aspect(:aspect="messages_languages_aspect" :ext_value.sync="messages_languages_value"
-          mode="edit" @aspectAction="delete_languages()")
-        Aspect(:aspect="lang_domain_aspect" :ext_value.sync="lang_domain_value" mode="edit")
-      div(v-else)
-        div {{$t("page.offline_settings.no_data")}}
+      Aspect(:aspect="messages_languages_aspect" :ext_value.sync="messages_languages_value"
+        mode="edit" @aspectAction="delete_languages()")
+      Aspect(:aspect="lang_domain_aspect" :ext_value.sync="lang_domain_value" mode="edit")
+      //div {{downloaded_domains}}
     //div {{prompt_set}}
     //div(v-if="!is_pwa")
     //  v-btn(@click="install_pwa") install
@@ -82,15 +80,18 @@ export default {
     prompt_set() {
       return is_prompt_set()
     },
-    has_any_domain() {
-      return this.downloaded_domains.length > 1
-    },
     downloaded_messages_languages() {
+      if (!this.loaded) {
+        return []
+      }
       return Array.from(Object.keys(this.offline_data.messages))
     },
     downloaded_domains() {
+      if (!this.loaded) {
+        return []
+      }
       const real_domains = this.offline_data.domain_data.filter(d => d[0] !== NO_DOMAIN).map(d => d[1])
-      return real_domains.reduce((res, domain) => {
+      return  real_domains.reduce((res, domain) => {
         // lang: domain_lang object, to list (but fiddle in the language...)
         // todo language should maybe be in the object (coming from the be)
         Object.entries(domain.langs).forEach(lang_domain => {

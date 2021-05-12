@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-footer.justify-content-center.custom-footer(
+  v-footer.justify-content-center.custom_footer(
     elevation=4
     app)
     v-col(v-if="!this.$vuetify.breakpoint.sm && !this.$vuetify.breakpoint.xs")
@@ -78,7 +78,7 @@ export default {
 </script>
 
 <style scoped>
-.custom-footer {
+.custom_footer {
   border-top: 1px solid lightgray;
   background-color: white;
   color: black;

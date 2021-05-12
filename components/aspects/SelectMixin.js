@@ -28,7 +28,7 @@ export default {
     if (typeof this.aspect.items === "string") {
       // if (typeof this.aspect.items === "string") {
       this.options = this.get_codes_as_options(this.aspect.items)
-      console.log("options from code-entry")
+      // console.log("options from code-entry")
       this.from_code_entry = true
       // const match = this.check_language_match(this.aspect.items)
       // this.code_entry_language_match = match[0]

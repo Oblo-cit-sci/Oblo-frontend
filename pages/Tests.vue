@@ -1,16 +1,18 @@
 <template lang="pug">
   div
-    div match
     div {{is_standalone}}
+    div {{build_time}}
+    v-btn(@click="switch_offline") {{dev_offline_switch_button_label}}
 </template>
 
 <script>
 
 import EnvMixin from "~/components/global/EnvMixin";
+import OfflineMixin from "~/lib/OfflineMixin";
 
 export default {
   name: "tests",
-  mixins: [EnvMixin],
+  mixins: [EnvMixin, OfflineMixin],
   components: {},
   data() {
     return {
@@ -54,9 +56,17 @@ export default {
   },
   watch: {},
   computed: {
-    ini_p() {
-      return this.$store.getters["app/standalone"]
-    }
+    build_time() {
+      return process.env.BUILD_TIME || "no build time"
+    },
+    dev_offline_switch_button_label() {
+      return this.is_offline ? "S/ON" : "S/OFF"
+    },
+  },
+  methods: {
+    switch_offline() {
+      this.$store.commit("dev_switch_offline")
+    },
   }
 }
 </script>

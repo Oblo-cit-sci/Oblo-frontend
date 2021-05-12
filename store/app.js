@@ -1,3 +1,5 @@
+import Vue from "vue"
+
 export const state = () => ({
     db_loaded: false,
     initialized: false,
@@ -43,7 +45,7 @@ export const mutations = {
     state.oauth_services = services
   },
   set_menu_to(state, {name, to}) {
-    state.menu[name] = to
+    Vue.set(state.menu, name,  to)
   },
   standalone(state, standalone) {
     state.standalone = standalone

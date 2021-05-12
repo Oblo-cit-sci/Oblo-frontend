@@ -1,14 +1,12 @@
 import {ASP_DISABLED, ASP_SET, ASP_UNSET, EDIT, ENTRY, FLEX, LIST_INDEX, META, REVIEW, VIEW} from "~/lib/consts";
 import {
-  aspect_default_value,
   aspect_loc_str2arr,
   aspect_loc_uuid,
   aspect_raw_default_value,
-  check_condition_value,
-  complete_aspect_loc, loc_prepend,
+  check_condition_value, loc_prepend,
   pack_value, unpack
 } from "~/lib/aspect";
-import {select_aspect_loc} from "~/lib/entry"
+import {select_aspect_loc, temp_direct_select} from "~/lib/entry"
 import {recursive_unpack2} from "~/lib/util";
 
 
@@ -148,7 +146,7 @@ export default {
       return this.attr.track_change || false
     },
     is_required() {
-      return this.$_.get(this.attr,"required", true)
+      return this.$_.get(this.attr, "required", true)
     },
     edit() {
       return this.mode === EDIT
@@ -198,10 +196,10 @@ export default {
           return {value: raw}
         }
       } else {
-      // todo removed this legacy functionality
-      // if (this.attr.IDAspect) {...
-      // and...
-      // if (this.attr.ref_value) {
+        // todo removed this legacy functionality
+        // if (this.attr.IDAspect) {...
+        // and...
+        // if (this.attr.ref_value) {
         let value = this.$store.getters["entries/value"](this.aspect_loc)
         if (value === undefined) {
           // console.log("undefined, probably means update", this.aspect, this.extra)

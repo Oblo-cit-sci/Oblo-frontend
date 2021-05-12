@@ -20,9 +20,10 @@
     created() {
       this.$api.actor.logout().then(async ({data}) => {
         this.ok_snackbar(data.msg)
-        this.clear_storage()
+        this.clear_storage().then(() => {
+          this.persist_entries()
+        })
         // store back drafts
-        this.persist_entries()
         await this.$store.dispatch("logout")
         this.$store.commit("menu/open", false)
       }).catch(async (err) => {

@@ -28,12 +28,12 @@
       :aspect="$_.get(active_filter, 'aspect', dummy_aspect)"
       :conditionals="value"
       mode="edit"
-      :ext_value="$_.get(active_filter, 'name') ? filter_value($_.get(active_filter, 'name')) : null"
+      :ext_value="active_filter_value"
       @update:ext_value="set_filter_value(active_filter.name, $event)")
 </template>
 
 <script>
-import {aspect_default_value} from "~/lib/aspect"
+import {aspect_default_value, pack_value} from "~/lib/aspect"
 import LayoutMixin from "~/components/global/LayoutMixin"
 import AspectDialog from "~/components/dialogs/AspectDialog"
 import FilterMixin from "~/components/FilterMixin";
@@ -64,7 +64,16 @@ export default {
   },
   computed: {
     available_filter() {
-      return this.$_.differenceBy(this.filter_options, this.applied_filters, f => f.name)
+      // console.log(this.filter_options)
+      // console.log("applied", this.applied_filters)
+      // allow_multiple pass here, but are checked against their option in the value
+      let available_filters = this.$_.cloneDeep(this.filter_options)
+      let keep = this.$_.remove(available_filters, filter => filter.allow_multiple)
+      // console.log("keep", keep)
+      // console.log("av",available_filters)
+      available_filters = this.$_.differenceBy(available_filters, this.applied_filters, f => f.name)
+      // console.log("av--",available_filters)
+      return this.$_.concat(keep, available_filters)
     },
     has_applied_filters() {
       return this.applied_filters.length > 0
@@ -77,6 +86,15 @@ export default {
     },
     no_available_filters() {
       return this.available_filter.length === 0
+    },
+    active_filter_value() {
+      // console.log(this.active_filter)
+      if (this.active_filter?.allow_multiple) {
+        return pack_value(null)
+      }
+      const existing = this.$_.get(this.active_filter, 'name') ? this.filter_value(this.$_.get(this.active_filter, 'name')) : null
+      // console.log("existing", existing)
+      return existing
     }
   },
   methods: {
@@ -114,6 +132,7 @@ export default {
     },
     create_filter(name) {
       const selected_filter = this.filter_option_by_name(name)
+      // console.log(selected_filter)
       this.active_filter = Object.assign({}, selected_filter)
       if (selected_filter.aspect) {
         // console.log("active filter", this.active_filter)
@@ -146,29 +165,33 @@ export default {
       }
     },
     set_filter_value(name, value) {
-      // console.log("FL:set_filter_value", value)
-      // const new_value = recursive_unpack2(this.$_.cloneDeep(value))
-      // console.log(new_value)
-      // let text = value_text(this.active_filter.aspect, new_value)
       const new_filters = this.$_.cloneDeep(this.applied_filters)
       const existing_filter = new_filters.find(f => f.name === name)// && this.$_.get(f.source_name,"regular") === "regular")
       if (existing_filter) {
-        existing_filter.value = value
-        // existing_filter.text = text
-      } else {
-        const new_filter = {
-          "name": this.active_filter.name,
-          "t_label": this.active_filter.t_label,
-          "value": value
+        // allow just once in the list
+        if (!this.filter_option_by_name(existing_filter.name).allow_multiple) {
+          existing_filter.value = value
+          this.$emit("input", new_filters)
+          return
         }
-        if (this.active_filter.edit) {
-          new_filter.edit = this.active_filter.edit
+        if (existing_filter.value.option === value.option) {
+          existing_filter.value = value
+          this.$emit("input", new_filters)
+          return
         }
-        if (this.active_filter.source_name) {
-          new_filter.source_name = this.active_filter.source_name
-        }
-        new_filters.push(new_filter)
       }
+      const new_filter = {
+        "name": this.active_filter.name,
+        "t_label": this.active_filter.t_label,
+        "value": value
+      }
+      if (this.active_filter.edit) {
+        new_filter.edit = this.active_filter.edit
+      }
+      if (this.active_filter.source_name) {
+        new_filter.source_name = this.active_filter.source_name
+      }
+      new_filters.push(new_filter)
       this.$emit("input", new_filters)
       this.dialog_open = false
     },
@@ -177,7 +200,8 @@ export default {
       this.dialog_open = true
     },
     remove_filter(filter) {
-      this.$emit("input", this.$_.filter(this.value, (v) => v.name !== filter.name))
+      // console.log(this.value, filter)
+      this.$emit("input", this.$_.filter(this.value, (v) => !this.$_.isEqual(v, filter)))
     },
     filter_value(name) {
       const existing_filter = this.applied_filters.find(f => f.name === name)
@@ -189,8 +213,7 @@ export default {
         }
       }
     }
-  }
-  ,
+  },
   watch: {
     // this catches the problem, that if selection is cancelled (clicking outside)
     // the aspect is not deleted, and the options wont change, when another filter is selected

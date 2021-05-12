@@ -520,6 +520,7 @@
         "descr": "Which language do you want to help completing?"
       },
       "start": "start",
+      "from_csv": "From csv",
       "lang_status": {
         "label": "Language status",
         "description": "Only Active @:w.languages are available to be selected as interface @:w.language",

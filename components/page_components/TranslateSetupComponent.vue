@@ -5,9 +5,12 @@
       :aspects="setup_aspects"
       :values.sync="setup_values"
       mode="edit"
+      @update:state="update_aspect_states($event)"
       @is_complete="is_aspects_complete = $event"
       @aspectAction="aspectAction($event)")
-    v-btn(@click="start" :disabled="!is_setup_valid" color="success") {{$t("comp.translate.start")}}
+    v-btn(@click="start"  color='success' :disabled="!is_setup_valid"  :style="{float:'left'}") {{$t("comp.translate.start")}}
+    LoadFileButton(filetype="csv" :label="$t('comp.translate.from_csv')" @fileload="from_csv($event)"
+      :btn_props="{disabled:disable_csv_upload, color:'success'}")
     Dialog(:dialog_open.sync="new_lang_dialog_open")
       h3 {{$t("comp.translate.new.descr")}}
       LanguageSearch(v-model="new_language" :filter_out="exclude_from_search")
@@ -20,7 +23,7 @@
 import OptionsMixin from "~/components/aspect_utils/OptionsMixin";
 import Aspect from "~/components/Aspect";
 import {extract_n_unpack_values, pack_value} from "~/lib/aspect";
-import {PUBLISHED, SELECT} from "~/lib/consts";
+import {ASP_ERROR, ASP_UNSET, DOMAIN, ENTRY, PUBLISHED, SELECT} from "~/lib/consts";
 import AspectSet from "~/components/AspectSet";
 import LanguageSearch from "~/components/language/LanguageSearch";
 import Dialog from "~/components/dialogs/Dialog";
@@ -31,6 +34,8 @@ import {mapGetters} from "vuex";
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin";
 import LanguageMixin from "~/components/LanguageMixin";
 import {BUS_HIDE_OVERLAY, BUS_OVERLAY} from "~/plugins/bus";
+import TranslationSetupMixin from "~/components/language/TranslationSetupMixin";
+import LoadFileButton from "~/components/util/LoadFileButton";
 
 const components = ["fe", "be", "domain", "entries"]
 
@@ -39,20 +44,27 @@ const components = ["fe", "be", "domain", "entries"]
 // todo this.entries_options needs to be called again after changing language
 export default {
   name: "TranslateSetupComponent",
-  components: {Dialog, LanguageSearch, AspectSet, Aspect},
-  mixins: [OptionsMixin, TriggerSnackbarMixin, EntryCreateMixin, ApiHelperMixin, TypicalAspectMixin, LanguageMixin],
+  components: {LoadFileButton, Dialog, LanguageSearch, AspectSet, Aspect},
+  mixins: [OptionsMixin, TriggerSnackbarMixin, EntryCreateMixin, ApiHelperMixin, TypicalAspectMixin, LanguageMixin, TranslationSetupMixin],
   data() {
-    // console.log(this.$store.getters["translate/setup_values"])
-    const {component, domain, entry, src_lang, dest_lang} = this.$store.getters["translate/setup_values"]
+    const {
+      component,
+      domain,
+      entry,
+      src_lang,
+      dest_lang,
+      language_active
+    } = this.$store.getters["translate/packed_values"]
     return {
       setup_values: {
-        component: pack_value(component),
-        domain: pack_value(domain),
-        entry: pack_value(entry),
-        src_lang: pack_value(src_lang),
-        dest_lang: pack_value(dest_lang),
-        language_active: pack_value()
+        component: component,
+        domain: domain,
+        entry: entry,
+        src_lang: src_lang,
+        dest_lang: dest_lang,
+        language_active: language_active
       },
+      setup_value_states: {}, // just for disabling the with_csv
       init_fetched: false,
       domains_metainfos: {},
       all_added_languages: [],
@@ -61,11 +73,9 @@ export default {
       new_language: null,
       temporary_additional_languages: [],
       codes_templates_minimal_info: {}, // keys: domain,language,slug, ...
-      //debounced_entries_search: this.$_.debounce(this.code_template_search, 200),
       all_entries_in_ui_lang: [],
       get_entries_info: false,
       code_templates_for_domain_lang: [],
-      // entries_options: [] // we differentiate null from [], cuz a domain, lang could indeed be empty
       language_statuses: {} // keys: <lang>: <status from server>
     }
   },
@@ -75,41 +85,15 @@ export default {
       this.init_fetched = true
       this.$bus.$emit(BUS_HIDE_OVERLAY)
     })
-    //this.debounced_entries_search = this.$_.debounce(this.code_template_search, 200)
   },
   computed: {
     ...mapGetters({translate_setup: "translate/setup_values", ui_language: "ui_language"}),
     setup_aspects() {
-      // console.log("comp-setup_aspects")
       return [
-        this.dest_language_select_aspect, this.component_select_aspect,
+        this.dest_language_select_aspect(this.dest_language_options), this.component_select_aspect(this.available_components_options),
         this.language_active_aspect,
-        this.domain_select_aspect, this.entry_select_aspect, this.src_language_select_aspect
+        this.setup_domain_select_aspect(), this.setup_entry_select_aspect(), this.src_language_select_aspect(this.src_language_options)
       ]
-    },
-    dest_language_select_aspect() {
-      // console.log("comp-dest_language_select_aspect")
-      // console.log("comp-dest_language_select_aspect-options", this.dest_language_options)
-      const base = "comp.translate.dest_lang."
-      return {
-        name: "dest_lang",
-        type: SELECT,
-        attr: {
-          action: {
-            type: "emit",
-            name: "new_lang_dialog",
-            trigger: {
-              type: "button",
-              button_always_enabled: true,
-              button_label: this.$t("comp.translate.new.new_lang"),
-              requires_callback: false
-            }
-          }
-        },
-        label: this.$t(`${base}label`),
-        description: this.$t(`${base}descr`),
-        items: this.dest_language_options
-      }
     },
     dest_language_options() {
       return this.all_added_languages.sort()
@@ -159,24 +143,6 @@ export default {
         ]
       }
     },
-    component_select_aspect() {
-      // console.log("comp-component_select_aspect")
-      return {
-        name: "component",
-        type: SELECT,
-        attr: {
-          hide_on_disabled: true,
-          condition: {
-            aspect: "# dest_lang",
-            compare: "unequal",
-            value: null
-          }
-        },
-        label: this.$t("comp.translate.component_select_asp.label"),
-        description: this.$t("comp.translate.component_select_asp.description"),
-        items: this.available_components_options
-      }
-    },
     available_components_options() {
       return components.map(c => this.create_option(c, this.$t("comp.translate.component_select_asp.options." + c)))
     },
@@ -190,87 +156,23 @@ export default {
         return
       return !this.$_.find(this.temporary_additional_languages, l => l.value === this.new_language.value)
     },
-    domain_select_aspect() {
-      // console.log("comp-domain_select_aspect")
-      const domain_aspect = this.asp_domain_select("domain", "w.domain", false, {
-        hide_on_disabled: true,
-        condition: {
-          aspect: "# component",
-          value: ["domain", "entries"],
-          compare: "contains"
-        }
-      }, true)
-      domain_aspect.items.forEach(d => {
-        const meta_info = this.domains_metainfos[d.value]
-        if (meta_info.active_languages.includes(this.unpacked_values.dest_lang))
-          d.description = "completed"
-        else if (meta_info.inactive_languages.includes(this.unpacked_values.dest_lang))
-          d.description = "incomplete"
-        else
-          d.description = "not started"
-      })
-      return domain_aspect
-    },
-    entry_select_aspect() {
-      // console.log("comp-entry_select_aspect")
-      let options = []
-      const {domain: domain_name, dest_lang} = this.unpacked_values
-      if (domain_name) {
-        const {required_entries} = this.domains_metainfos[domain_name]
-        options = Object.values(this.code_templates_for_domain_lang).map(e => {
-          const res = {value: e.slug, text: e.title}
-          if (e.language === dest_lang) {
-            if (e.status === PUBLISHED) {
-              res.description = "complete"
-            } else {
-              res.description = "incomplete"
-            }
-          } else {
-            res.description = "not started"
-            if (e.language !== this.ui_language) {
-              res.language = e.language
-            }
-          }
-          if (required_entries.includes(e.slug))
-            res.mdi_icon = "mdi-exclamation"
-          return res
-        })
-        options = this.$_.sortBy(options, e => e.mdi_icon)
-      } else {
-        options = []
-      }
-      return {
-        name: "entry",
-        type: SELECT,
-        attr: {
-          hide_on_disabled: true,
-          force_view: "list",
-          condition: {
-            aspect: "# component",
-            value: "entries"
-          }
-        },
-        label: this.$t("comp.translate.entry_select_asp.label"),
-        description: this.$t("comp.translate.entry_select_asp.description"),
-        items: options// this.entry_select_items(entries) // EntryCreateMixin
-      }
-    },
     is_setup_valid() {
       return this.is_aspects_complete && this.setup_values.src_lang.value !== this.setup_values.dest_lang.value
     },
-    src_language_select_aspect() {
-      // console.log("comp-src_language_select_aspect")
-      // console.log("comp-src_language_select_aspect", this.src_language_options)
-      // console.log("src lang", this.unpacked_values.component)
-      const base = "comp.translate.src_lang."
-      // console.log("store", this.translate_setup.src_lang)
-      return {
-        name: "src_lang",
-        type: SELECT,
-        label: this.$t(`${base}label`),
-        description: this.$t(`${base}descr`),
-        items: this.src_language_options,
+    disable_csv_upload() {
+      // todo temporary!
+      if ([DOMAIN, ENTRY].includes(this.unpacked_values.component)) {
+        return true
       }
+      for (let aspect in this.setup_value_states) {
+        if (aspect === "src_lang") {
+          continue
+        }
+        if ([ASP_UNSET, ASP_ERROR].includes(this.setup_value_states[aspect])) {
+          return true
+        }
+      }
+      return false
     },
     src_language_options() {
       const component = this.unpacked_values.component
@@ -301,6 +203,52 @@ export default {
     },
   },
   methods: {
+    update_aspect_states(states) {
+      this.setup_value_states = states
+    },
+    setup_domain_select_aspect() {
+      const domain_select_aspect = this.domain_select_aspect()
+      domain_select_aspect.items.forEach(d => {
+        const meta_info = this.domains_metainfos[d.value]
+        if (meta_info.active_languages.includes(this.unpacked_values.dest_lang))
+          d.description = "completed"
+        else if (meta_info.inactive_languages.includes(this.unpacked_values.dest_lang))
+          d.description = "incomplete"
+        else
+          d.description = "not started"
+      })
+      return domain_select_aspect
+    },
+    setup_entry_select_aspect() {
+      // console.log("comp-entry_select_aspect")
+      let options = []
+      const {domain: domain_name, dest_lang} = this.unpacked_values
+      if (domain_name) {
+        const {required_entries} = this.domains_metainfos[domain_name]
+        options = Object.values(this.code_templates_for_domain_lang).map(e => {
+          const res = {value: e.slug, text: e.title}
+          if (e.language === dest_lang) {
+            if (e.status === PUBLISHED) {
+              res.description = "complete"
+            } else {
+              res.description = "incomplete"
+            }
+          } else {
+            res.description = "not started"
+            if (e.language !== this.ui_language) {
+              res.language = e.language
+            }
+          }
+          if (required_entries.includes(e.slug))
+            res.mdi_icon = "mdi-exclamation"
+          return res
+        })
+        options = this.$_.sortBy(options, e => e.mdi_icon)
+      } else {
+        options = []
+      }
+      return this.entry_select_aspect(options)
+    },
     async fetch_init_data() {
       let [res_domain_metainfo, res_entries_info, res_all_languages] = await Promise.all([
         this.$api.domain.meta_info(),
@@ -473,6 +421,27 @@ export default {
         })
       } else {
         this.code_templates_for_domain_lang = loaded_infos
+      }
+    },
+    from_csv(file) {
+      const {component, dest_lang} = this.unpacked_values
+      if (["fe", "be"].includes(component)) {
+        this.$api.language.update_messages_from_csv(component, dest_lang, file).then(({data}) => {
+          this.ok_snackbar(data.msg)
+        }, err => {
+          console.error(err)
+          this.err_error_snackbar(err)
+        })
+      } else if (component === "domain") {
+        const domain_name = this.unpacked_values.domain
+        this.$api.domain.from_csv(domain_name, dest_lang, file).then(({data}) => {
+          this.ok_snackbar(data.msg)
+        }, err => {
+          console.error(err)
+          this.err_error_snackbar(err)
+        })
+      } else { // entry
+
       }
     }
   },

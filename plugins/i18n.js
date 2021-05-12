@@ -5,10 +5,8 @@ const ld = require("lodash")
 import Vue from "vue"
 import VueI18n from "vue-i18n"
 
-// Tell Vue to use our plugin
 Vue.use(VueI18n)
 
-// const base_path = "~/static/langs/"
 
 export default ({app}) => {
   // Set the i18n instance on app

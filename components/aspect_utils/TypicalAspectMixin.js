@@ -86,13 +86,14 @@ export default {
         value: pack_value("")
       }
     },
-    asp_email(extra_rules = []) {
+    asp_email(extra_rules = [], required = true) {
       return {
         type: "str",
         name: "email",
         t_label: "asp.email.label",
         attr: {
           max: 40,
+          required,
           extra: {
             rules: this.$_.concat([
               v => /.+@.+\..+/.test(v) || this.$t("asp.email.rule")
@@ -197,7 +198,7 @@ export default {
        */
     },
     asp_license(name = null, include = [], exclude, alt_label_descr = undefined) {
-      const aspect = {
+      return {
         name: name ? name : "license",
         t_label: this.t_label("asp.license.", alt_label_descr),
         t_description: this.t_description("asp.license.", alt_label_descr),
@@ -219,7 +220,6 @@ export default {
       //     console.log("cannot include license group", license_group)
       //   }
       // }
-      return aspect
     },
     asp_location_privacy() {
       return {
