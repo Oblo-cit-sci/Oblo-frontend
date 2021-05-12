@@ -5,11 +5,12 @@
       :aspects="setup_aspects"
       :values.sync="setup_values"
       mode="edit"
+      @update:state="update_aspect_states($event)"
       @is_complete="is_aspects_complete = $event"
       @aspectAction="aspectAction($event)")
-    v-btn(@click="start" :disabled="!is_setup_valid" color="success") {{$t("comp.translate.start")}}
+    v-btn(@click="start"  color='success' :disabled="!is_setup_valid"  :style="{float:'left'}") {{$t("comp.translate.start")}}
     LoadFileButton(filetype="csv" :label="$t('comp.translate.from_csv')" @fileload="from_csv($event)"
-      :btn_props="{disabled:!is_setup_valid}")
+      :btn_props="{disabled:disable_csv_upload, color:'success'}")
     Dialog(:dialog_open.sync="new_lang_dialog_open")
       h3 {{$t("comp.translate.new.descr")}}
       LanguageSearch(v-model="new_language" :filter_out="exclude_from_search")
@@ -22,7 +23,7 @@
 import OptionsMixin from "~/components/aspect_utils/OptionsMixin";
 import Aspect from "~/components/Aspect";
 import {extract_n_unpack_values, pack_value} from "~/lib/aspect";
-import {PUBLISHED, SELECT} from "~/lib/consts";
+import {ASP_ERROR, ASP_UNSET, PUBLISHED, SELECT} from "~/lib/consts";
 import AspectSet from "~/components/AspectSet";
 import LanguageSearch from "~/components/language/LanguageSearch";
 import Dialog from "~/components/dialogs/Dialog";
@@ -46,7 +47,14 @@ export default {
   components: {LoadFileButton, Dialog, LanguageSearch, AspectSet, Aspect},
   mixins: [OptionsMixin, TriggerSnackbarMixin, EntryCreateMixin, ApiHelperMixin, TypicalAspectMixin, LanguageMixin, TranslationSetupMixin],
   data() {
-    const {component, domain, entry, src_lang, dest_lang, language_active} = this.$store.getters["translate/packed_values"]
+    const {
+      component,
+      domain,
+      entry,
+      src_lang,
+      dest_lang,
+      language_active
+    } = this.$store.getters["translate/packed_values"]
     return {
       setup_values: {
         component: component,
@@ -56,6 +64,7 @@ export default {
         dest_lang: dest_lang,
         language_active: language_active
       },
+      setup_value_states: {}, // just for disabling the with_csv
       init_fetched: false,
       domains_metainfos: {},
       all_added_languages: [],
@@ -150,6 +159,17 @@ export default {
     is_setup_valid() {
       return this.is_aspects_complete && this.setup_values.src_lang.value !== this.setup_values.dest_lang.value
     },
+    disable_csv_upload() {
+      for (let aspect in this.setup_value_states) {
+        if (aspect === "src_lang") {
+          continue
+        }
+        if ([ASP_UNSET, ASP_ERROR].includes(this.setup_value_states[aspect])) {
+          return true
+        }
+      }
+      return false
+    },
     src_language_options() {
       const component = this.unpacked_values.component
       let language_options = []
@@ -179,6 +199,9 @@ export default {
     },
   },
   methods: {
+    update_aspect_states(states) {
+      this.setup_value_states = states
+    },
     setup_domain_select_aspect() {
       const domain_select_aspect = this.domain_select_aspect()
       domain_select_aspect.items.forEach(d => {
@@ -405,8 +428,14 @@ export default {
           console.error(err)
           this.err_error_snackbar(err)
         })
-      } else if(component === "domain") {
-
+      } else if (component === "domain") {
+        const domain_name = this.unpacked_values.domain
+        this.$api.domain.from_csv(domain_name, dest_lang, file).then(({data}) => {
+          this.ok_snackbar(data.msg)
+        }, err => {
+          console.error(err)
+          this.err_error_snackbar(err)
+        })
       } else { // entry
 
       }

@@ -202,6 +202,20 @@ class Domain extends QueryBase {
       params: {domain_names, language, full}
     })
   }
+
+  from_csv(domain_name, language, file) {
+    const formData = new FormData();
+    let blob = new Blob([file.data], {type: 'text/csv'});
+    formData.append("file", blob, file.meta.name)
+    return this.post_(`${domain_name}/from_csv`, formData, {
+      params: {
+        language
+      },
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+  }
 }
 
 class Entry extends QueryBase {
@@ -560,7 +574,7 @@ class Language extends QueryBase {
   update_messages_from_csv(component, language, file) {
     const formData = new FormData();
     let blob = new Blob([file.data], {type: 'text/csv'});
-    formData.append("file",blob, file.meta.name)
+    formData.append("file", blob, file.meta.name)
     return this.post_("update_messages_from_csv", formData, {
       params: {
         component, language

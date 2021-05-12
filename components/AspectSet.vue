@@ -95,7 +95,6 @@ export default {
     },
     is_complete() {
       for(let aspect of this.aspect_names){
-          // console.log(aspect, this.state[aspect])
           if([ASP_UNSET,ASP_ERROR].includes(this.state[aspect])) {
             return false
           }
