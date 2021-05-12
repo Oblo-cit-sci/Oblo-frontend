@@ -106,6 +106,11 @@ export default {
       this.$store.commit("app/platform_data", platform_data)
       this.$store.commit("app/oauth_services", resp.data.oauth_services)
 
+      // map
+      this.$store.commit("map/default_map_style", resp.data.map_default_map_style)
+      this.$store.commit("map/access_token", resp.data.map_access_token)
+
+
       const domains_data = resp.data.domains
       const language = resp.data.language
 
