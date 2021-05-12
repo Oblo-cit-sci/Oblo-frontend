@@ -424,9 +424,10 @@ export default {
       }
       // todo because of this stuff, grabbing and merging filters (user-set values) and info from the config
       // e.g. "include_as" we cant plug in the. the filters dont have a uniform structure (FilterMxin, get_...FILTER)
-
+      // console.log(this.act_config)
       for (let filter of this.act_config) {
         const filter_option = this.$_.find(this.filterlist_options, fo => fo.name === filter.name)
+        // console.log(filter_option)
         // all configs must be contained in the options, maybe not the best method... uuids_select doesnt need to be there
         if (filter_option) {
           const config = filter_option.search_config
@@ -434,9 +435,11 @@ export default {
             config.value = unpack(filter.value)
             configuration.required.push(config)
           } else if (config.hasOwnProperty("include_as")) {
-            configuration.include[config.include_as] = recursive_unpack2(filter.value)
+            // mix if there might be multiple (tags)
+            const existing = configuration.include[config.include_as] || []
+            configuration.include[config.include_as] = this.$_.concat(existing, recursive_unpack2(filter.value))
           } else {
-            console.log("error cannot proccess filter-option", filter.name)
+            console.log("error cannot process filter-option", filter.name)
           }
         } else {
           console.log(filter, "not in options")

@@ -144,6 +144,7 @@ export default {
         name: "tags",
         "t_label": "w.tag",
         options: filter_codes.map(c => c.title),
+        allow_multiple: true,
         aspect: {
           name: "tags_select",
           t_label: "w.tag",

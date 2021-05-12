@@ -75,7 +75,7 @@ export default {
       }
     },
     i_value() {
-      console.log(this.value, this.selected_option, this.selected_aspect)
+      // console.log(this.value, this.selected_option, this.selected_aspect)
       if (!this.value) {
         return this.aspect_default_value(this.selected_aspect)
       }
