@@ -23,7 +23,7 @@
 import OptionsMixin from "~/components/aspect_utils/OptionsMixin";
 import Aspect from "~/components/Aspect";
 import {extract_n_unpack_values, pack_value} from "~/lib/aspect";
-import {ASP_ERROR, ASP_UNSET, PUBLISHED, SELECT} from "~/lib/consts";
+import {ASP_ERROR, ASP_UNSET, DOMAIN, ENTRY, PUBLISHED, SELECT} from "~/lib/consts";
 import AspectSet from "~/components/AspectSet";
 import LanguageSearch from "~/components/language/LanguageSearch";
 import Dialog from "~/components/dialogs/Dialog";
@@ -160,6 +160,10 @@ export default {
       return this.is_aspects_complete && this.setup_values.src_lang.value !== this.setup_values.dest_lang.value
     },
     disable_csv_upload() {
+      // todo temporary!
+      if ([DOMAIN, ENTRY].includes(this.unpacked_values.component)) {
+        return true
+      }
       for (let aspect in this.setup_value_states) {
         if (aspect === "src_lang") {
           continue
