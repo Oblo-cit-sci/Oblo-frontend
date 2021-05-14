@@ -147,6 +147,9 @@ export const getters = {
   },
   access_token(state) {
     return state.access_token
+  },
+  can_show_map(state) {
+    return state.default_map_style && state.access_token
   }
 }
 

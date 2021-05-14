@@ -102,7 +102,6 @@ export default {
       act_cluster_expansion_zoom: null,
       act_zoom: null,
       last_zoom: null,
-      map_hidden: false, // todo maybe just a computed
       initialized: false,
       layers_created: false,
       actual_markers: [],
@@ -113,6 +112,11 @@ export default {
     ...mapGetters({
       layer_status: "map/layer_status",
     }),
+    map_hidden() {
+      if (this.$vuetify.breakpoint.smAndDown) {
+        this.map_hidden = this.menu_open
+      }
+    },
     packed_layer_status() {
       return pack_value(this.layer_status)
     },
@@ -575,9 +579,7 @@ export default {
 
     },
     check_hide_map() {
-      if (this.$vuetify.breakpoint.smAndDown) {
-        this.map_hidden = this.menu_open
-      }
+
     },
     click(map, event) {
       // check since on small screens legend might not be there

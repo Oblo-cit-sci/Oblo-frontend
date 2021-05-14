@@ -3,7 +3,7 @@
     TitledDialog(:title="$t('page.domain.create_entry_dialog_title')" :dialog_open.sync="entrycreate_dialog_open" show_close_btn)
       EntryCreateList(:template_entries="create_templates_options")
     MapWrapper(
-      v-if="!is_offline"
+      v-if="show_map"
       height="100%"
       :domain_data="domain_data"
       @force_menu_mode_domain="set_menu_state(1)"
@@ -39,6 +39,9 @@ export default {
   computed: {
     dialog_width() {
       return this.main_container_with
+    },
+    show_map() {
+      return !this.is_offline && this.$store.getters["map/can_show_map"]
     }
   },
   created() {

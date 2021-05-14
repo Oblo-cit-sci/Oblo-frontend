@@ -103,6 +103,8 @@ export default {
           p.to = alt_to
         }
       })
+      // will throw out user_guide if it is not set
+      filtered_pages= filtered_pages.filter(page => page.to !== null)
       return filtered_pages
     },
     show_language_selector() {

@@ -1,6 +1,6 @@
 import {mapGetters} from "vuex"
 import FixDomainMixin from "~/components/global/FixDomainMixin"
-import {PAGE_DOMAIN, PAGE_INDEX} from "~/lib/pages"
+import {PAGE_INDEX} from "~/lib/pages"
 import {default_settings} from "~/lib/settings"
 import {db_vars} from "~/lib/db_vars"
 import SettingsChangeMixin from "~/components/global/SettingsChangeMixin"
