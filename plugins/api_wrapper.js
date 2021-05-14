@@ -306,6 +306,20 @@ class Entry extends QueryBase {
       params: {language}
     })
   }
+
+  async from_csv(slug, language, file) {
+    const formData = new FormData();
+    let blob = new Blob([file.data], {type: 'text/csv'});
+    formData.append("file", blob, file.meta.name)
+    return this.post_(`${slug}/from_csv`, formData, {
+      params: {
+        language
+      },
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+  }
 }
 
 class Entries extends QueryBase {

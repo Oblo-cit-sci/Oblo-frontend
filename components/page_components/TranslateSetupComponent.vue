@@ -160,10 +160,6 @@ export default {
       return this.is_aspects_complete && this.setup_values.src_lang.value !== this.setup_values.dest_lang.value
     },
     disable_csv_upload() {
-      // todo temporary!
-      if ([DOMAIN, ENTRY].includes(this.unpacked_values.component)) {
-        return true
-      }
       for (let aspect in this.setup_value_states) {
         if (aspect === "src_lang") {
           continue
@@ -441,7 +437,13 @@ export default {
           this.err_error_snackbar(err)
         })
       } else { // entry
-
+        const entry_slug = this.unpacked_values.entry
+        this.$api.entry.from_csv(entry_slug, dest_lang, file).then(({data}) => {
+          this.ok_snackbar(data.msg)
+        }, err => {
+          console.error(err)
+          this.err_error_snackbar(err)
+        })
       }
     }
   },
