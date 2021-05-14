@@ -4,7 +4,7 @@
       v-btn(:loading="btn_loading" v-bind="btn_props")
         v-icon {{btn_icon}}
         span(v-if="label!==''") {{label}}
-        input.input-file(type="file" @change="filesChange($event.target.files)" :accept="accepted")
+        input.input-file(ref="input" type="file" @change="filesChange($event.target.files)" :accept="accepted")
 </template>
 
 <script>
@@ -66,6 +66,8 @@ export default {
   methods: {
     filesChange(files) {
       const file = files[0]
+      // clear input so it gets triggers when same file is selected again
+      this.$refs.input.value = ""
       // todo could use lodash pick?
       this.file_meta = {
         name: file.name,
@@ -93,7 +95,8 @@ export default {
           break
         case "csv":
           reader.onload = this.onload_csv
-          reader.readAsBinaryString(file)
+          reader.readAsText(file)
+          // reader.readAsBinaryString(file)
           break
       }
     },
