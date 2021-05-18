@@ -6,7 +6,7 @@ import {
   check_condition_value, loc_prepend,
   pack_value, unpack
 } from "~/lib/aspect";
-import {select_aspect_loc, temp_direct_select} from "~/lib/entry"
+import {select_aspect_loc} from "~/lib/entry"
 import {recursive_unpack2} from "~/lib/util";
 
 
@@ -135,6 +135,7 @@ export default {
         console.log(`condition for aspect ${this.aspect.name} cannot be checked. no aspect_loc and no conditionals`)
         return false
       }
+      // console.log("check_single_condition", this.aspect.name, "condition_value", condition_value, check_condition_value(condition_value, condition))
       return check_condition_value(condition_value, condition)
     },
   },

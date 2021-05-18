@@ -59,7 +59,9 @@
       v-row
         v-col(:cols="base_cols")
           v-divider.wide_divider
-      AspectSet(v-if="logged_in" :aspects="meta_aspects" :mode="license_privacy_mode" :values.sync="meta_aspects_values" :compact="true")
+      v-row()
+        v-col(alignSelf="stretch" :cols="base_cols" :style="{padding:0}")
+          AspectSet(v-if="logged_in" :aspects="meta_aspects" :mode="license_privacy_mode" :values.sync="meta_aspects_values" :compact="true")
       v-row(v-if="is_creator || is_admin")
         v-col.pb-0(alignSelf="stretch" :cols="base_cols")
           Aspect(:aspect="asp_entry_roles()" :mode="entry_roles_mode" :aspect_loc="aspect_locs[asp_entry_roles().name]" :extra="{entry_is_private: entry.privacy==='private'}" @update:error="update_error('actors', $event)")

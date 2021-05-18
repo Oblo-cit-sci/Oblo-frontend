@@ -1,8 +1,11 @@
 <template lang="pug">
   div
-    div(v-if="normal_grid")
-      v-row(v-for="aspect in aspects" :key="aspect.name")
-        v-col.py-0(cols=10)
+    div(v-if="compact")
+      v-row
+        v-col(
+          v-for="aspect in aspects" :key="aspect.name"
+          v-if="!hide_aspect_col(aspect)"
+          alignSelf="stretch" :cols="compact_cols")
           Aspect(:aspect="aspect"
             :ext_value.sync="i_values[aspect.name]"
             :conditionals="i_values"
@@ -12,11 +15,8 @@
             :extra="{clearable:false}"
             :mode="mode")
     div(v-else)
-      v-row
-        v-col(
-          v-for="aspect in aspects" :key="aspect.name"
-          v-if="!hide_aspect_col(aspect)"
-          alignSelf="stretch" cols="12" :sm="6" :md="4" :lg="4" :xl="2")
+      v-row(v-for="aspect in aspects" :key="aspect.name")
+        v-col.py-0(cols=10)
           Aspect(:aspect="aspect"
             :ext_value.sync="i_values[aspect.name]"
             :conditionals="i_values"
@@ -87,17 +87,34 @@ export default {
     aspect_names() {
       return this.$_.map(this.aspects, "name")
     },
-    normal_grid() {
-      return !this.compact
+    compact_cols() {
+      const aspect_fit = Math.floor(12 / this.aspects.length)
+      let screen_fit = null
+      switch (this.$vuetify.breakpoint.name) {
+        case "xl":
+          screen_fit = 3
+          break
+        case "lg":
+        case "md":
+          screen_fit = 4
+          break
+        case "sm":
+          screen_fit = 6
+          break
+        case "xs":
+          screen_fit = 12
+          break
+      }
+      return Math.max(screen_fit, aspect_fit)
     },
     has_error() {
       return this.$_.filter(this.errors, e => e).length > 0
     },
     is_complete() {
-      for(let aspect of this.aspect_names){
-          if([ASP_UNSET,ASP_ERROR].includes(this.state[aspect])) {
-            return false
-          }
+      for (let aspect of this.aspect_names) {
+        if ([ASP_UNSET, ASP_ERROR].includes(this.state[aspect])) {
+          return false
+        }
       }
       return true
     },
@@ -118,7 +135,7 @@ export default {
   },
   methods: {
     aspectAction(event) {
-      this.$emit("aspectAction",event)
+      this.$emit("aspectAction", event)
     },
     hide_aspect_col(aspect) {
       return this.state[aspect.name] === 'disabled' && aspect.attr?.hide_on_disabled
