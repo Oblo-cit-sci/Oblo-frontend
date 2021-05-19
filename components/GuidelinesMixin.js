@@ -1,3 +1,5 @@
+import {BUS_DIALOG_OPEN} from "~/plugins/bus";
+
 export default {
   name: "GuidelinesMixin",
   data() {
@@ -17,7 +19,8 @@ export default {
     show_guidelines(guideline_name = "welcome") {
       if (this.has_guideline_for_page &&
         !this.$store.getters["guidelines/is_guideline_closed"](`${this.$route.name}.${guideline_name}`)) {
-        this.$bus.$emit("dialog-open", this.get_page_guidelines_as_dialog_data("welcome"))
+        // console.log(this.get_page_guidelines_as_dialog_data("welcome"))
+        this.$bus.$emit(BUS_DIALOG_OPEN, this.get_page_guidelines_as_dialog_data("welcome"))
       }
     },
     get_page_guidelines(guideline_name = "welcome") {
@@ -33,7 +36,7 @@ export default {
       return {
         data: {
           title: guidelines[0],
-          html_text: guidelines[1],
+          html_text: guidelines.slice(1),
           show_cancel: false
         },
         confirm_method: () => {

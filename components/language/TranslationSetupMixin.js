@@ -51,47 +51,6 @@ export default {
         items
       }
     },
-    // language_active_aspect() {
-    //   // console.log("comp-language_active_aspect")
-    //   return {
-    //     name: "language_active",
-    //     t_label: "comp.translate.lang_status.label",
-    //     t_description: "comp.translate.lang_status.description",
-    //     type: SELECT,
-    //     attr: {
-    //       track_change: true,
-    //       hide_on_disabled: true,
-    //       action: {
-    //         type: "emit",
-    //         name: "change_lang_status",
-    //         trigger: {
-    //           type: "button",
-    //           button_label: "Change state",
-    //           only_on_change: true
-    //         },
-    //       },
-    //       condition: ["and", {
-    //         aspect: "# component",
-    //         value: ["fe", "be"],
-    //         compare: "contains"
-    //       }, {
-    //         aspect: "# dest_lang",
-    //         value: null,
-    //         compare: "unequal"
-    //       }]
-    //     },
-    //     items: [
-    //       {
-    //         value: "active",
-    //         text: this.$t("comp.translate.lang_status.active")
-    //       },
-    //       {
-    //         value: "inactive",
-    //         text: this.$t("comp.translate.lang_status.inactive")
-    //       }
-    //     ]
-    //   }
-    // },
     domain_select_aspect() {
       // console.log("comp-domain_select_aspect")
       return this.asp_domain_select("domain", "w.domain", false, {

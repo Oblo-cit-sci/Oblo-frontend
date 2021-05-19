@@ -3,7 +3,7 @@
     v-card
       v-card-title {{config.title}}
       v-card-text {{config.text}}
-        div(v-html="config.html_text")
+        div(v-for="section in config.html_text" v-html="section")
       v-card-actions
         v-btn(v-if="config.show_cancel" text :color="config.cancel_color" @click="submit(false)") {{config.cancel_text}}
         v-btn(text :color="config.confirm_color" @click="submit(true)") {{config.confirm_text}}
@@ -11,12 +11,14 @@
 
 <script>
 
+import {BUS_DIALOG_OPEN} from "~/plugins/bus";
+
 const colors = ["error", "success"]
 
 export default {
   name: "DecisionDialog",
   created() {
-    this.$bus.$on("dialog-open", ({data, confirm_method, cancel_method}) => {
+    this.$bus.$on(BUS_DIALOG_OPEN, ({data, confirm_method, cancel_method}) => {
       // console.log("dialog-open", data, confirm_method)
       this.config = Object.assign(this.$_.cloneDeep(this.default_config), data)
       this.callback_methods = {

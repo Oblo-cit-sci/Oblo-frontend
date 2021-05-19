@@ -11,3 +11,4 @@ export const BUS_MAP_MARKER_SHOW = "map-marker-show"
 export const BUS_MAP_MARKER_HIDE = "map-marker-hide"
 
 
+export const BUS_DIALOG_OPEN = "dialog-open"

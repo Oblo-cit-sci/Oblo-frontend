@@ -8,9 +8,9 @@
       @update:state="update_aspect_states($event)"
       @is_complete="is_aspects_complete = $event"
       @aspectAction="aspectAction($event)")
-    v-btn(@click="start"  color='success' :disabled="!is_setup_valid"  :style="{float:'left'}") {{$t("comp.translate.start")}}
     LoadFileButton(filetype="csv" :label="$t('comp.translate.from_csv')" @fileload="from_csv($event)"
-      :btn_props="{disabled:disable_csv_upload, color:'success'}")
+      :btn_props="{disabled:disable_csv_upload, color:'success'}" :style="{float:'left'}")
+    v-btn(@click="start"  color='success' :disabled="!is_setup_valid")  {{$t("comp.translate.start")}}
     Dialog(:dialog_open.sync="new_lang_dialog_open")
       h3 {{$t("comp.translate.new.descr")}}
       LanguageSearch(v-model="new_language" :filter_out="exclude_from_search")
