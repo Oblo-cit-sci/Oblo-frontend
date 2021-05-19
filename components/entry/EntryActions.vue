@@ -31,6 +31,7 @@ import EntryActionButtons from "~/components/entry/EntryActionButtons"
 import {prepare_for_submission} from "~/lib/entry"
 import {base64file_to_blob} from "~/lib/util"
 import AttachedFilesMixin from "~/components/aspect_utils/AttachedFilesMixin";
+import {BUS_DIALOG_OPEN} from "~/plugins/bus";
 
 export default {
   name: "EntryActions",
@@ -86,7 +87,7 @@ export default {
     cancel_draft() {
       if (this.is_draft) {
         const base_t_cancel_loc = "comp.entry_actions.dialogs.cancel"
-        this.$bus.$emit("dialog-open", {
+        this.$bus.$emit(BUS_DIALOG_OPEN, {
           data: {
             title: this.$t(`${base_t_cancel_loc}.title`),
             text: this.$t(`${base_t_cancel_loc}.text`),
@@ -110,7 +111,7 @@ export default {
       // todo not if it is an aspect page
       this.$store.dispatch("entries/save_entry", {entry: this.entry, template: this.template})
       this.persist_entries()
-      this.$bus.$emit("dialog-open", {
+      this.$bus.$emit(BUS_DIALOG_OPEN, {
         data: {
           title: this.$t('comp.entry_actions.saved'),
           text: this.$t('comp.entry_actions.saved_text'),
@@ -199,7 +200,7 @@ export default {
     },
     async delete() {
       const base_t_delete_loc = "comp.entry_actions.dialogs.delete"
-      this.$bus.$emit("dialog-open", {
+      this.$bus.$emit(BUS_DIALOG_OPEN, {
         data: {
           title: this.$t(`${base_t_delete_loc}.title`),
           text: this.$t(`${base_t_delete_loc}.text`),

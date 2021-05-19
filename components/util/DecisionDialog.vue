@@ -19,7 +19,6 @@ export default {
   name: "DecisionDialog",
   created() {
     this.$bus.$on(BUS_DIALOG_OPEN, ({data, confirm_method, cancel_method}) => {
-      // console.log("dialog-open", data, confirm_method)
       this.config = Object.assign(this.$_.cloneDeep(this.default_config), data)
       this.callback_methods = {
         confirm: confirm_method,

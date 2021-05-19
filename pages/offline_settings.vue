@@ -107,6 +107,11 @@ export default {
     },
     delete_languages() {
       console.log(this.messages_languages_value)
+      console.log(this.$i18n)
+      delete this.$i18n.messages[this.messages_languages_value.value[0]]
+      this.$i18n.setLocaleMessage(this.messages_languages_value.value[0], null)
+      this.persist_messages()
+      //
     }
   }
 }

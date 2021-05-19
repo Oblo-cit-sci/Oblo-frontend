@@ -2,6 +2,7 @@ import {privacy_icon} from "~/lib/util";
 import {EDIT, VIEW} from "~/lib/consts";
 import {unsaved_changes_default_dialog} from "~/lib/dialogs";
 import LanguageMixin from "~/components/LanguageMixin";
+import {BUS_DIALOG_OPEN} from "~/plugins/bus";
 
 export default {
   data() {
@@ -26,7 +27,7 @@ export default {
       set(mode) {
         if (mode === EDIT) {
           if (this.entry.language !== this.$store.getters.domain_language) {
-            this.$bus.$emit("dialog-open", {
+            this.$bus.$emit(BUS_DIALOG_OPEN, {
               data: {
                 cancel_text: this.$t("comp.entry.language_switch_dialog.cancel_text"),
                 title: this.$t("comp.entry.language_switch_dialog.title"),

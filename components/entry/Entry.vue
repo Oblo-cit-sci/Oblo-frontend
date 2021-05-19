@@ -117,6 +117,7 @@ import LanguageChip from "~/components/language/LanguageChip";
 import TemplateHelperMixin from "~/components/templates/TemplateHelperMixin";
 import AspectSet from "~/components/AspectSet";
 import {unpack} from "~/lib/aspect";
+import {BUS_DIALOG_OPEN} from "~/plugins/bus";
 
 export default {
   name: "Entry",
@@ -172,7 +173,7 @@ export default {
       const creator = roles.find(ea => ea.role === CREATOR)
       if (creator.actor.registered_name !== this.username) {
         // ${creator.actor.public_name}
-        this.$bus.$emit("dialog-open", {
+        this.$bus.$emit(BUS_DIALOG_OPEN, {
           data: {
             cancel_text: this.$t("comp.entry.creator_switch_dialog.cancel_text"),
             title: this.$t("comp.entry.creator_switch_dialog.title"),
