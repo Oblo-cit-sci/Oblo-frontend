@@ -296,7 +296,7 @@
       },
       "language_switch_dialog": {
         "cancel_text": "@:w.back",
-        "title": "Language changed",
+        "title": "@.capitalize:w.language changed",
         "text": "This entry was created in {language}. Do you want to change your @:w.language to {language}?"
       }
     },
@@ -389,10 +389,10 @@
       "add_image": "@:w.add_item"
     },
     "language_select": {
-      "label": "Language",
+      "label": "@.capitalize:w.language",
       "change_not_possible": "You cannot change the @:w.language on this page.",
-      "language_changed": "Language changed to {language_name}",
-      "domain_language_changed": "Language for entries changed to {language_name}"
+      "language_changed": "@.capitalize:w.language changed to {language_name}",
+      "domain_language_changed": "@.capitalize:w.language for entries changed to {language_name}"
     },
     "legend": {
       "legend": "Legend"
@@ -522,7 +522,7 @@
       "start": "start",
       "from_csv": "From csv",
       "lang_status": {
-        "label": "Language status",
+        "label": "@:w.language status",
         "description": "Only Active @:w.languages are available to be selected as interface @:w.language",
         "active": "active",
         "inactive": "inactive"
