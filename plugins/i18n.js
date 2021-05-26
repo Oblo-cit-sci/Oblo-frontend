@@ -26,7 +26,8 @@ export default ({app}) => {
     },
 
     postTranslation: function (result, path) {
-      if (app.context.isDev && app.context.env.COLLECT_MESSAGE_PATHS) {
+      // console.log(app.context.isDev, app.context.env)
+      if (app.context.isDev) {
         let {page_messages} = app.store.getters["app/get_dev"]
         if (!page_messages)
           page_messages = {}

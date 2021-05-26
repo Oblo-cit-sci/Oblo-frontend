@@ -2,12 +2,11 @@
   v-card.mb-4.pb-1(outlined :width="550" @click="goto_domain" :ripple="false")
     v-img(:src="image" :max-height="img_max_height")
       v-card-title.align-end.shadow {{title}}
-      v-hover(v-for="lang in languages"
-        v-if="not_ui_lang"
+      v-hover(v-for="lang in lang_ordered"
         :key="lang")
         v-chip.mt-2.ml-2(
           :style="{opacity:'85%'}"
-          :color="hover ? 'yellow' :'info'"
+          :color="lang_chip_color(lang, hover)"
           @click="to_language(lang)"
           slot-scope="{ hover }") {{$t("lang." + lang)}}
     v-card-text.pb-2(:style="{'min-height':'80px'}")
@@ -35,11 +34,17 @@ export default {
     languages: Array
   },
   computed: {
+    lang_ordered() {
+      let result = this.$_.clone(this.languages)
+      const current_lang = this.$_.remove(result, l => l === this.$store.getters.ui_language)
+      const default_lang = this.$_.remove(result, l => l === this.default_language)
+      return this.$_.concat(current_lang, default_lang, result)
+    },
     not_ui_lang() {
       return !this.languages.includes(this.$store.getters.ui_language)
     },
     img_max_height() {
-      if(this.is_small) {
+      if (this.is_small) {
         return "120px"
       } else {
         return "auto"
@@ -57,6 +62,9 @@ export default {
     },
     to_language(language) {
       this.language = language
+    },
+    lang_chip_color(language, hover) {
+      return hover ? 'yellow' :'info'
     }
   }
 }
