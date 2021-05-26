@@ -17,6 +17,7 @@ import {
 } from "~/lib/aspect";
 import {ASPECT, COMPONENT, COMPOSITE, EDIT, ENTRYLIST, INDEX, LIST} from "~/lib/consts";
 import {item_count_name} from "~/lib/listaspects";
+import AspectConditionChecker from "~/components/aspect_utils/AspectConditionChecker";
 
 
 const OK = 0
@@ -33,6 +34,7 @@ export default {
     template_slug: String
   },
   components: {},
+  mixins: [AspectConditionChecker],
   data() {
     return {}
   },
@@ -52,9 +54,9 @@ export default {
       // console.log("validation update")
       let missing = []
       for (let aspect of aspects) {
-
-        let required = true
-        required = this.$_.get(aspect, "attr.required", true)
+        // let required = true
+        let required = this.$_.get(aspect, "attr.required", true)
+        // console.log(aspect.name,  required)
         if (required) {
           // todo, value thing not so elegant...
           // todo not always packed
@@ -63,6 +65,7 @@ export default {
           const base_aspect_loc = loc_append([[EDIT, this.entry.uuid]], ASPECT, aspect.name)
           const validation = this.validate_aspect(aspect, a_w_value, base_aspect_loc)
           const valid = validation[0]
+          // console.log(valid)
           const invalid_message = validation[1]
           let add_text = ""
           const aspect_label = aspect.label
@@ -119,9 +122,13 @@ export default {
       if (this.attr(aspect).IDAspect) {
         return [OK]
       }
-      if (disabled_by_condition(this.$store, aspect, aspect_loc, item_index, root_data)) {
+      if (this._condition_fail(aspect, aspect_loc, EDIT, this.entry.uuid, null)) {
         return [OK]
       }
+      // if (disabled_by_condition(this.$store, aspect, aspect_loc, item_index, root_data)) {
+      //   console.log(aspect.name, "disable by condition...")
+      //   return [OK]
+      // }
       if (!raw_value) {
         return [MISSING, ""]
       }
