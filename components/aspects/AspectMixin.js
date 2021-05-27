@@ -200,6 +200,9 @@ export default {
       return unpack(this.mvalue)
     },
     entry_uuid() {
+      if (!this.aspect_loc) {
+        return null
+      }
       return aspect_loc_uuid(this.aspect_loc)
     },
     i_is_set() {

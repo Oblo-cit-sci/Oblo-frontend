@@ -24,6 +24,7 @@ class APIWrapper {
     this.entries = new Entries(this)
     this.actor = new Actor(this)
     this.language = new Language(this)
+    this.util = new Util(this)
   }
 
   is_initialized() {
@@ -415,6 +416,7 @@ class Actor extends QueryBase {
    * @param profile_data
    */
   post_me(profile_data) {
+    console.trace()
     return this.post_("me", profile_data)
   }
 
@@ -600,5 +602,17 @@ class Language extends QueryBase {
   }
 }
 
+class Util extends QueryBase {
+
+  constructor(api_wrapper) {
+    super(api_wrapper, "/util")
+  }
+
+  init_data_translation_csv(domain, type, slug, language, dest_language) {
+    return this.get_("init_data_translation_csv", {params: {
+      domain,  type,  slug,  language,  dest_language, separator: ","
+      }})
+  }
+}
 
 Vue.prototype.$api = new APIWrapper()

@@ -71,21 +71,7 @@
       }
     },
     methods: {
-      export_data() {
-        let data = {}
-        for (let select of this.selected) {
-          const option = ld.find(this.options, (o) => {
-            return o.value === select
-          })
-          //console.log("export.", option, select)
-          let store_data = get_from_store_location(this.$store, option.location)
-          if (store_data.constructor === Map) {
-            store_data = mapToJson(store_data)
-          }
-          data[select] = store_data
-        }
-        return data
-      },
+
       blob_dl() {
         const filename = "export_" + printDateHours(new Date()) + ".json"
         export_data(this.export_data(), filename)

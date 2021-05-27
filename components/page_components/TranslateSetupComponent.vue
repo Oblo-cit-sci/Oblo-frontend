@@ -10,6 +10,8 @@
       @aspectAction="aspectAction($event)")
     LoadFileButton(filetype="csv" :label="$t('comp.translate.from_csv')" @fileload="from_csv($event)"
       :btn_props="{disabled:disable_csv_upload, color:'success'}" :style="{float:'left'}")
+    //v-btn(:disabled="!is_setup_valid"  @click="download_translation_table") DOWNLOAD
+    //  v-icon.ml-2 mdi-download
     v-btn(@click="start"  color='success' :disabled="!is_setup_valid")  {{$t("comp.translate.start")}}
     Dialog(:dialog_open.sync="new_lang_dialog_open")
       h3 {{$t("comp.translate.new.descr")}}
@@ -23,7 +25,7 @@
 import OptionsMixin from "~/components/aspect_utils/OptionsMixin";
 import Aspect from "~/components/Aspect";
 import {extract_n_unpack_values, pack_value} from "~/lib/aspect";
-import {ASP_ERROR, ASP_UNSET, DOMAIN, ENTRY, PUBLISHED, SELECT} from "~/lib/consts";
+import {ASP_ERROR, ASP_UNSET, PUBLISHED, SELECT} from "~/lib/consts";
 import AspectSet from "~/components/AspectSet";
 import LanguageSearch from "~/components/language/LanguageSearch";
 import Dialog from "~/components/dialogs/Dialog";
@@ -36,6 +38,9 @@ import LanguageMixin from "~/components/LanguageMixin";
 import {BUS_HIDE_OVERLAY, BUS_OVERLAY} from "~/plugins/bus";
 import TranslationSetupMixin from "~/components/language/TranslationSetupMixin";
 import LoadFileButton from "~/components/util/LoadFileButton";
+import ExportMixin from "~/components/global/ExportMixin";
+
+const FileSaver = require('file-saver')
 
 const components = ["fe", "be", "domain", "entries"]
 
@@ -45,7 +50,8 @@ const components = ["fe", "be", "domain", "entries"]
 export default {
   name: "TranslateSetupComponent",
   components: {LoadFileButton, Dialog, LanguageSearch, AspectSet, Aspect},
-  mixins: [OptionsMixin, TriggerSnackbarMixin, EntryCreateMixin, ApiHelperMixin, TypicalAspectMixin, LanguageMixin, TranslationSetupMixin],
+  mixins: [OptionsMixin, TriggerSnackbarMixin, EntryCreateMixin, ApiHelperMixin, TypicalAspectMixin, LanguageMixin,
+    TranslationSetupMixin, ExportMixin],
   data() {
     const {
       component,
@@ -201,6 +207,23 @@ export default {
   methods: {
     update_aspect_states(states) {
       this.setup_value_states = states
+    },
+    async download_translation_table() {
+      let file_name = "test"
+      let data = null
+      if (this.unpacked_values.component === "domain") {
+        file_name = "test"
+        const res = await this.$api.util.init_data_translation_csv(this.unpacked_values.domain,
+          "domain", "domain", this.unpacked_values.src_lang, this.unpacked_values.dest_language)
+      debugger
+        if (res.data) {
+          data = res.data
+        }
+      }
+
+      if (data) {
+        this.download_csv(data, file_name)
+      }
     },
     setup_domain_select_aspect() {
       const domain_select_aspect = this.domain_select_aspect()
