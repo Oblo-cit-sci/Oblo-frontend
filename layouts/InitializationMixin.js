@@ -70,6 +70,8 @@ export default {
         const {data: resp} = await this.$api.actor.validate_session()
         if (resp.session_valid) {
           this.$store.dispatch("user/login", resp.data)
+        } else {
+          this.$store.dispatch("user/logout")
         }
         // this.process_login(me.data)
       } catch (e) {
