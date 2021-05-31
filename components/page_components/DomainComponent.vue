@@ -37,9 +37,6 @@ export default {
     }
   },
   computed: {
-    dialog_width() {
-      return this.main_container_with
-    },
     show_map() {
       return !this.is_offline && this.$store.getters["map/can_show_map"]
     }

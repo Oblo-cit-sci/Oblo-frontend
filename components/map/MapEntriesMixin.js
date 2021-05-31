@@ -25,7 +25,7 @@ export default {
         required: [template_filter] // this.act_config // this.get_domain_filter(domain_name)
       }
       if (!this.$_.isEmpty(this.entries)) {
-        if (search_time) {
+        if (this.get_search_time) {
           config.required.push({name: "before_ts", ts: this.get_search_time})
         }
       }

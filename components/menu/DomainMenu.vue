@@ -64,13 +64,6 @@ export default {
       }
       return filters
     },
-    // async selected_entry() {
-    //
-    //   //
-    //   //
-    //   // if (this.$route.query.uuid)
-    //   //   return this.$store.getters["entries/get_entry"](this.$route.query.uuid)
-    // },
     search_config() {
       //  this.domain_pre_filter,
       return [this.get_status_filter()] // this.get_drafts_filter()

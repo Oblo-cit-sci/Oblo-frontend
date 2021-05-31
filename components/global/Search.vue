@@ -124,7 +124,7 @@ export default {
       // the default changes triggering config change will trigger a search
       const language = this.$store.getters["user/settings"].domain_language
       const search_config_update = []
-      if (!this.act_config_by_name(TEMPLATE) && this.domain_data) {
+      if (this.domain_data) {
         const generated = this.config_generate(TEMPLATE, this.$_.get(this.domain_data, "search.default_templates", []), language)
         search_config_update.push(generated)
       }

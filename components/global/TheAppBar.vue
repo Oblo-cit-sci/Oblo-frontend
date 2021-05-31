@@ -122,7 +122,7 @@ export default {
     },
     //
     version() {
-      console.log(process.env.NODE_ENV)
+      // console.log(process.env.NODE_ENV)
       return pkg.version
     }
   },

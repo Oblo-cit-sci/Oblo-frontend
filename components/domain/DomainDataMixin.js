@@ -63,7 +63,7 @@ export default {
       const language = this.$store.getters["user/settings"].domain_language
       let domain_templates = this.all_domains_templates(this.domain_name, language)
       if (include) {
-        domain_templates = domain_templates.concat(this.$store.getters["templates/templates_by_slugs"](this.domain_data.include_entries, language))
+        domain_templates = domain_templates.concat(this.$store.getters["templates/templates_by_slugs"](this.domain_data.include_entries || [], language))
       }
       return domain_templates
     },
