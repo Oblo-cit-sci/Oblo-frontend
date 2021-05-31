@@ -48,8 +48,8 @@ export default {
     }
   },
   created() {
-    if (this.is_prod) {
-      window.history.replaceState(null, document.title, "/licci")
+    if (this.is_prod && this.$route.query[QP_F] === this.domain_name) {
+      window.history.replaceState(null, document.title, `${this.domain_name}`)
     }
     if (this.domain_name !== this.$store.getters["domain/act_domain_name"]) {
       this.$store.dispatch("domain/set_act_domain_lang",
@@ -61,7 +61,6 @@ export default {
     if (this.$route.query.f && !this.is_fixed_domain) {
       this.fix_domain(this.$route.query.f)
     }
-
     this.show_guidelines()
   },
   mounted() {

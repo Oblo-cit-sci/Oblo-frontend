@@ -15,8 +15,9 @@ export default {
       return this.$_.get(this.domain_data, "map.layers", [])
     },
     domain_templates_color_list() {
-      const language = this.$store.getters["user/settings"].domain_language
-      return this.templates_color_list(this.$store.getters["templates/templates_of_domain"](this.domain_name, language))
+      // const language = this.$store.getters["user/settings"].domain_language
+      return this.templates_color_list(this.domain_templates(true))
+      // return this.templates_color_list(this.$store.getters["templates/templates_of_domain"](this.domain_name, language))
     }
   },
   methods: {

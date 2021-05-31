@@ -1,9 +1,10 @@
 import {mapGetters} from "vuex"
 import EntrySearchMixin from "~/components/EntrySearchMixin"
+import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin";
 
 export default {
   name: "MapEntriesMixin",
-  mixins: [EntrySearchMixin],
+  mixins: [EntrySearchMixin, TriggerSnackbarMixin],
   computed: {
     ...mapGetters({
       entries_loaded: "map/entries_loaded",
@@ -17,20 +18,29 @@ export default {
   },
   methods: {
     async load_map_entries(domain_name) {
-      // console.log("loading entries", this.$store.getters["map/loading_entries"])
       this.$store.commit("map/set_entries_loaded", false)
+      const template_filter = Object.assign(this.$_.cloneDeep(this.get_template_filter_options().search_config),
+        {value: this.domain_templates_slugs(true)})
       const config = {
-        required: [this.get_domain_filter(domain_name)]
+        required: [template_filter] // this.act_config // this.get_domain_filter(domain_name)
       }
       if (!this.$_.isEmpty(this.entries)) {
-        const search_time = this.get_search_time
-        if(search_time) {
-          config.required.push({name: "before_ts", ts: search_time})
+        if (search_time) {
+          config.required.push({name: "before_ts", ts: this.get_search_time})
         }
       }
-      const {data} = await this.$api.entries.map_entries(config, true)
-      // console.log(data.data.entries.features.length)
-      await this.$store.dispatch("map/add_entries", {domain: domain_name, entries: data.data.entries, ts: data.data.ts})
+      try {
+        const {data} = await this.$api.entries.map_entries(config, true)
+        await this.$store.dispatch("map/add_entries", {
+          domain: domain_name,
+          entries: data.data.entries,
+          ts: data.data.ts
+        })
+      } catch (e) {
+        // console.log("error", e)
+        this.error_snackbar("EN/map entries loading failed")
+        await this.$store.dispatch("map/add_entries", {domain: domain_name, entries: {"features": []}, ts: null})
+      }
     },
     get_my_locations() {
       // this.guarantee_entries_loaded()

@@ -80,6 +80,13 @@ class Basic extends QueryBase {
     super(api_wrapper, "/basic")
   }
 
+  // overview(language) {
+  //   console.log("init_data:requesting language", language)
+  //   return this.get_("init_data", {
+  //     params: {language}
+  //   })
+  // }
+
   init_data(domains, language) {
     console.log("init_data:requesting language", language)
     // console.trace()
@@ -416,7 +423,6 @@ class Actor extends QueryBase {
    * @param profile_data
    */
   post_me(profile_data) {
-    console.trace()
     return this.post_("me", profile_data)
   }
 
@@ -536,6 +542,14 @@ class Language extends QueryBase {
     })
   }
 
+  get_component_as_csv(component, languages) {
+    return this.get_("get_component_as_csv", {
+      params: {
+        component, languages
+      }
+    })
+  }
+
   user_guide_url(language_code) {
     return this.get_("user_guide_url", {
       params: {
@@ -609,9 +623,11 @@ class Util extends QueryBase {
   }
 
   init_data_translation_csv(domain, type, slug, language, dest_language) {
-    return this.get_("init_data_translation_csv", {params: {
-      domain,  type,  slug,  language,  dest_language, separator: ","
-      }})
+    return this.get_("init_data_translation_csv", {
+      params: {
+        domain, type, slug, language, dest_language, separator: ","
+      }
+    })
   }
 }
 

@@ -12,51 +12,48 @@
 </template>
 
 <script>
-  import {object_list2options} from "~/lib/options"
-  import {TEMPLATE} from "~/lib/consts"
-  import {unpack} from "~/lib/aspect";
-  import FilterMixin from "~/components/FilterMixin";
+import {object_list2options} from "~/lib/options"
+import {TEMPLATE} from "~/lib/consts"
+import {unpack} from "~/lib/aspect";
+import FilterMixin from "~/components/FilterMixin";
+import DomainDataMixin from "~/components/domain/DomainDataMixin";
 
-  export default {
-    name: "TemplateLegend",
-    mixins: [FilterMixin],
-    components: {},
-    props: {
-      domain_name: String
-    },
-    data() {
-      // this would add name: "template" to the selected
-      // const template_filter_options = Object.assign({}, entrytype_filter_options)
-      const language = this.$store.getters["user/settings"].domain_language
-      const templates = object_list2options(
-        this.$store.getters["templates/templates_of_domain"](this.domain_name, language),
-        "title", "slug", true,
-        [{"color": "rules.marker_color"}])
-      return {
-        templates,
-        panel_state: false
-      }
-    },
-    computed: {
-      selected: {
-        get: function () {
-          const search_conf = this.$store.getters["search/get_act_config"].find(cf => cf.name === TEMPLATE)
-          if(search_conf) {
-            return unpack(search_conf.value).map(f => this.$_.findIndex(this.templates, t => t.value === f))
-          }
-        },
-        set(selected_templates) {
-          const result = this.$_.map(selected_templates, (sel, index) => this.templates[sel].value)
-          this.$store.commit("search/replace_in_act_config", this.config_generate(TEMPLATE, result))
+export default {
+  name: "TemplateLegend",
+  mixins: [FilterMixin, DomainDataMixin],
+  components: {},
+  data() {
+    return {
+      templates: [],
+      panel_state: false
+    }
+  },
+  computed: {
+    selected: {
+      get: function () {
+        const search_conf = this.$store.getters["search/get_act_config"].find(cf => cf.name === TEMPLATE)
+        if (search_conf) {
+          return unpack(search_conf.value).map(f => this.$_.findIndex(this.templates, t => t.value === f))
         }
-      }
-    },
-    methods: {
-      force_close() {
-        this.panel_state = false
+      },
+      set(selected_templates) {
+        const result = this.$_.map(selected_templates, (sel, index) => this.templates[sel].value)
+        this.$store.commit("search/replace_in_act_config", this.config_generate(TEMPLATE, result))
       }
     }
+  },
+  methods: {
+    force_close() {
+      this.panel_state = false
+    }
+  },
+  created() {
+    // moved here cuz of store access (not working in data)
+    this.templates = object_list2options(this.domain_templates(true),
+      "title", "slug", true,
+      [{"color": "rules.marker_color"}])
   }
+}
 </script>
 
 <style scoped>

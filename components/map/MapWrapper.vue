@@ -13,7 +13,7 @@
         v-container.shift_anim(:style="center_button_shift")
           CreateEntryButton(:domain_data="domain_data" @create_entry="$emit('create_entry', $event)")
       .overlay_menu(v-if="show_legend")
-        TemplateLegend(:domain_name="domain_name" ref="legendComponent")
+        TemplateLegend(:domain_data="domain_data" ref="legendComponent")
     AspectDialog(v-bind="aspectdialog_data" @update:dialog_open="aspectdialog_data.dialog_open = $event" :ext_value="packed_layer_status" @update:ext_value="aspect_dialog_update($event)")
     client-only
       Mapbox(
@@ -238,7 +238,6 @@ export default {
         // console.log("layers_created", this.layers_created)
         return
       }
-
       // entries layer
       const entries_layer_name = layer_base_id + '_entries' // all_entries_entries
       // console.log("l",this.map.getLayer(entries_layer_name))

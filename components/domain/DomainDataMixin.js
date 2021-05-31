@@ -25,20 +25,16 @@ export default {
     description() {
       return this.domain_data.description
     },
-    domain_templates() {
-      const language = this.$store.getters["user/settings"].domain_language
-      return this.all_domains_templates(this.domain_name, language)
-    },
     create_templates_options() {
       // todo needs refinement, what if this can be changed per user...
-      const templates = this.domain_templates.filter(t => {
+      return  this.domain_templates(true).filter(t => {
         const create_rule = this.$_.get(t, "rules.create", "public")
         return (
-         create_rule === PUBLIC ||
+          create_rule === PUBLIC ||
           (create_rule === USER && this.$store.getters["username"] !== VISITOR) ||
-        can_edit_entry(this.$store.getters.user, t))})
+          can_edit_entry(this.$store.getters.user, t))
+      })
       // console.log(templates)
-      return templates
     },
     can_create_multiple_etypes() {
       return this.create_templates_options.length > 1
@@ -58,6 +54,22 @@ export default {
     },
   },
   methods: {
+    domain_templates(include = false) {
+      /**
+       * include: include those entries which are listed in the 'include_entries' field of the domain-meta.
+       * these are templates which are coming from other domains
+       *
+       */
+      const language = this.$store.getters["user/settings"].domain_language
+      let domain_templates = this.all_domains_templates(this.domain_name, language)
+      if (include) {
+        domain_templates = domain_templates.concat(this.$store.getters["templates/templates_by_slugs"](this.domain_data.include_entries, language))
+      }
+      return domain_templates
+    },
+    domain_templates_slugs(include=false) {
+      return this.domain_templates(include).map(t => t.slug)
+    }
     // todo should have the method to set the act domain.
     // todo than also this... :)
     /*

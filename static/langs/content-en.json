@@ -367,7 +367,7 @@
     },
     "filters": {
       "tag": {
-        "label": "@w.tag",
+        "label": "@:w.tag",
         "description": "Start selecting the general tag type. Then select multiple specific tags that you would like to include in your search. Any entry that includes at least one of the selected tags will be included in the result."
       }
     },
@@ -398,7 +398,7 @@
       "legend": "Legend"
     },
     "list_asp": {
-      "add": "@:w.add_item",
+      "add": "@w.add_item",
       "actions": {
         "delete_item": "delete {item_name}",
         "move_down": "move down",

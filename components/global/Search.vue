@@ -170,9 +170,6 @@ export default {
         this.get_entries()
       }
     },
-    view_mode(val) {
-      this.$emit("update:view_mode", val)
-    },
     searching(is_searching) {
       if (!is_searching) {
         this.$emit("received_search_results", this.entries())

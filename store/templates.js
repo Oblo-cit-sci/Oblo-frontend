@@ -182,6 +182,11 @@ export const getters = {
       })
       return missing
     }
+  },
+  templates_by_slugs(state, getters) {
+    return (template_slugs, language) => {
+      return template_slugs.map(t => getters.entry_type(t, language))
+    }
   }
 }
 

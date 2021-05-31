@@ -5,12 +5,14 @@ var qs = require('qs');
 
 const webpack = require('webpack')
 
+// console.log("env", process.env)
+
 console.log("NUXT:CONFIG. env:server", process.env.SERVER)
 
 let hostname = "https://opentek.eu"
 
-if (process.env.SERVER === "oblo") {
-  console.log("building for oblo")
+if (process.env.SERVER === "liccion") {
+  console.log("building for liccion")
   hostname = "https://oblo.network"
 }
 

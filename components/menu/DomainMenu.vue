@@ -50,10 +50,9 @@ export default {
   computed: {
     filters() {
       const template_filter_options = this.get_template_filter_options()
-      const lang = this.$store.getters["user/settings"].domain_language
 
-      template_filter_options.aspect.items = object_list2options(
-        this.$store.getters["templates/templates_of_domain"](this.domain_name, lang), "title", "slug", true)
+      template_filter_options.aspect.items = object_list2options(this.domain_templates(true), "title", "slug", true)
+
       const tags_filter_options = this.get_tags_filter_options(this.domain_name)
       // console.log(tags_filter_options)
       // const uuids_select_option = get_uuids_select_option()
@@ -73,7 +72,8 @@ export default {
     //   //   return this.$store.getters["entries/get_entry"](this.$route.query.uuid)
     // },
     search_config() {
-      return this.$_.concat(this.domain_pre_filter, this.get_status_filter()) // this.get_drafts_filter()
+      //  this.domain_pre_filter,
+      return [this.get_status_filter()] // this.get_drafts_filter()
     },
     can_fix_domain() {
       return !this.is_fixed_domain && !this.$store.getters.is_visitor
