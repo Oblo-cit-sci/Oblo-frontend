@@ -12,6 +12,7 @@ export const state = () => ({
   domains: new Map(),
   act_domain_name: NO_DOMAIN,
   act_lang_domain_data: null,
+  requested_overview_languages: new Set()
 })
 
 function domainmeta_and_store_init_struct(domain_data) {
@@ -65,6 +66,9 @@ export const mutations = {
   // for offline mode
   set_from_storage(state, domains) {
     state.domains = new Map(domains)
+  },
+  add_overview_language(state, language) {
+    state.requested_overview_languages.add(language)
   }
 }
 
@@ -197,18 +201,6 @@ export const getters = {
     return state.act_domain_name !== NO_DOMAIN
   },
   get_requested_overviews(state) {
-    return () => {
-      console.log("get_requested_overviews", state.domains.size)
-      if (state.domains.size === 0) {
-        return []
-      }
-      const all_overview_languages = new Set()
-      state.domains.forEach(d => {
-        Object.keys(d.overviews).forEach(overview_lang => {
-          all_overview_languages.add(overview_lang)
-        })
-      })
-      return all_overview_languages
-    }
+    return () => state.requested_overview_languages
   }
 };

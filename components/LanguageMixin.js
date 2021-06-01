@@ -70,6 +70,7 @@ export default {
     },
     async get_domain_overviews(language) {
       const requires_overviews = !this.$store.getters["domain/get_requested_overviews"]().has(language)
+      console.log(this.$store.getters["domain/get_requested_overviews"](), language)
       if (requires_overviews) {
         const {data} = await this.$api.domain.overviews(language)
         this.$store.commit("domain/add_domains_data", data.data)
