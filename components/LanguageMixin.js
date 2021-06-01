@@ -55,7 +55,7 @@ export default {
       if (!user_guide_url) {
         const user_guide_url_data = await this.$api.language.user_guide_url(language)
         user_guide_url = user_guide_url_data.data.url
-        this.$store.commit("translate/add_user_guide_link", {language_code:language, url: user_guide_url})
+        this.$store.commit("translate/add_user_guide_link", {language_code: language, url: user_guide_url})
       }
       this.$store.commit("app/set_menu_to", {name: "user_guide", to: user_guide_url})
 
@@ -67,6 +67,13 @@ export default {
         this.set_settings_value(UI_LANGUAGE, language)
       }
       this._i18n.locale = language
+    },
+    async get_domain_overviews(language) {
+      const requires_overviews = !this.$store.getters["domain/get_requested_overviews"]().has(language)
+      if (requires_overviews) {
+        const {data} = await this.$api.domain.overviews(language)
+        this.$store.commit("domain/add_domains_data", data.data)
+      }
     },
     async change_domain_language(domain_language, update_settings = true, snackbar = true) {
       let domain = this.$store.getters["domain/act_domain_name"] // undefined for non-domain
@@ -112,16 +119,9 @@ export default {
       console.log("completing...", domain, language)
 
       if (this.$store.getters["domain/has_lang_domain_data"](domain, language)) {
-        console.log("got it already",domain, language)
+        console.log("got it already", domain, language)
 
-        const requires_overviews = this.$store.getters["domain/get_requested_overviews"]().has(language)
-        console.log("requires overview", requires_overviews)
-        if (requires_overviews) {
-          this.$api.domain.overviews(language).then(({data}) => {
-            console.log(data.data)
-            this.$store.commit("domain/add_domains_data", data.data)
-          })
-        }
+
         return Promise.resolve()
       }
       return this.init_specifics(domain, language)
@@ -132,7 +132,7 @@ export default {
         domains = [domains]
       }
       if (!this.$store.getters["domain/has_lang_domain_data"](NO_DOMAIN, language)
-        && !domains.includes(NO_DOMAIN) ) {
+        && !domains.includes(NO_DOMAIN)) {
         domains.push(NO_DOMAIN)
       }
       const {data} = await this.$api.basic.init_data(domains, language)

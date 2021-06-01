@@ -98,6 +98,14 @@ export const getters = {
   domains(state) {
     return () => Array.from(state.domains.values())
   },
+  // domain_overviews(state) {
+  //   return (language) => {
+  //     const result = {}
+  //     Array.from(state.domains.entries()).forEach(name_data =>
+  //       result[name_data[0]] = name_data[1].overviews[language] || {})
+  //     return result
+  //   }
+  // },
   all_domains_names(state, getters) {
     return (include_no_domain = false) => {
       const all_domains = getters.domains().map(d => d.name)
@@ -197,7 +205,7 @@ export const getters = {
       const all_overview_languages = new Set()
       state.domains.forEach(d => {
         Object.keys(d.overviews).forEach(overview_lang => {
-            all_overview_languages.add(overview_lang)
+          all_overview_languages.add(overview_lang)
         })
       })
       return all_overview_languages

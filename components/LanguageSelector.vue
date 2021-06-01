@@ -16,7 +16,6 @@
 </template>
 
 <script>
-import SettingsChangeMixin from "~/components/global/SettingsChangeMixin"
 import {DOMAIN_LANGUAGE, EDIT, UI_LANGUAGE} from "~/lib/consts"
 import LanguageMixin from "~/components/LanguageMixin";
 import {PAGE_DOMAIN, PAGE_ENTRY} from "~/lib/pages";
@@ -77,6 +76,7 @@ export default {
       set: async function (language) {
         // console.log(language)
         const available_languages_codes = this.$store.getters["available_languages"]
+        await this.get_domain_overviews(language)
         if (available_languages_codes.includes(language)) {
           await this.change_language(language)
         } else {

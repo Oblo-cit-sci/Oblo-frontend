@@ -78,31 +78,20 @@ export default {
         console.log("not logged in")
       }
       /*
-       * get the language from the settings and
+       * get the language from the url-query-param or settings or platform defaults
        */
-      // todo maybe the language should come not from the settings, since setting the language triggers
-      // reload...
       const user_settings = this.$store.getters["user/settings"]
-      const domain_name = this.query_param_domain_name || user_settings.fixed_domain || NO_DOMAIN
-
       const qp_lang = this.$route.query[QP_lang]
-
-      // if (qp_lang !== undefined) {
-      //   if (qp_lang !== user_settings.ui_language || qp_lang !== user_settings.domain_language) {
-      //     await this.change_language(qp_lang)
-      //   }
-      // }
-
       const i_language = qp_lang || user_settings.ui_language || this.default_language
-      console.log(`init with domain: ${domain_name}, lang: ${i_language}`)
+
+      const domain_name = this.query_param_domain_name || user_settings.fixed_domain || NO_DOMAIN
       const query_domains = [NO_DOMAIN].concat((domain_name !== NO_DOMAIN ? [domain_name] : []))
-      // console.log(query_domains)
+      console.log(`init with domain: ${query_domains}, lang: ${i_language}`)
 
       this.$api.domain.overviews(i_language).then(({data}) => {
         this.$store.commit("domain/add_domains_data", data.data)
       })
 
-      // debugger
       const {data: resp} = await this.$api.basic.init_data(query_domains, i_language)
       // check if the domain is delivered in the given language:
       const result_domain_language = Object.keys(this.$_.find(resp.data.domains, d => d.name === domain_name).langs)[0]
@@ -169,8 +158,10 @@ export default {
 
       await this.$store.dispatch("app/connected")
 
-      console.log("multi domains?", this.has_multiple_domains)
-      if (!this.has_multiple_domains) {
+      const only_one_domain = resp.data.only_one_domain
+      console.log("multi domains?", only_one_domain, this.has_multiple_domains)
+
+      if (only_one_domain) {
         console.log("only one domain, completing domain-lang", language)
         await this.complete_language_domains(this.get_one_domain_name, language)
         // console.log("1 domain:", this.get_one_domain_name)
