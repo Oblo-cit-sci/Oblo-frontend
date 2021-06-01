@@ -34,6 +34,7 @@ export default {
       //   // console.log(data)
       //   await this.$store.dispatch("domain/add_overviews", data.data)
       // }
+      console.log("change-lang", language)
       await this.change_domain_language(domain_language, update_settings, language !== domain_language)
       // console.log("check have?", language, this.$i18n.availableLocales.includes(language))
       if (!this.$i18n.availableLocales.includes(language)) {
@@ -70,7 +71,7 @@ export default {
     },
     async get_domain_overviews(language) {
       const requires_overviews = !this.$store.getters["domain/get_requested_overviews"]().has(language)
-      console.log(this.$store.getters["domain/get_requested_overviews"](), language)
+      // console.log(this.$store.getters["domain/get_requested_overviews"](), language)
       if (requires_overviews) {
         const {data} = await this.$api.domain.overviews(language)
         this.$store.commit("domain/add_domains_data", data.data)
@@ -148,9 +149,6 @@ export default {
       // templates & codes...
       await this.persist_templates()
       return Promise.resolve()
-    },
-    filter_language_items(language_items, keep_codes) {
-      return this.$_.filter(language_items, i => keep_codes.includes(i.value))
     },
     get_language_options(codes) {
       if (!codes) {

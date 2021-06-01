@@ -53,8 +53,8 @@ export default {
   },
   computed: {
     domain_data() {
-      const language = this.$store.getters["user/settings"].domain_language
-      return this.$store.getters["domain/lang_domain_data"](this.query_param_domain_name, language)
+      // const language = this.$store.getters["user/settings"].domain_language
+      return this.$store.getters["domain/act_lang_domain_data"] //(this.query_param_domain_name, language)
     },
     pad_if_over() {
       return {

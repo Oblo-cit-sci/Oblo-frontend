@@ -1,5 +1,5 @@
 <template lang="pug">
-  DomainComponent.fullSize(v-if="has_domain_name" :domain_data="domain_data")
+  DomainComponent.fullSize(v-if="domain_data" :domain_data="domain_data")
 </template>
 
 <script>
@@ -24,8 +24,9 @@ export default {
   },
   beforeRouteEnter(to, from, next) {
     if (!(to.query[QP_D] || to.query[QP_F])) {
+      console.log(to, from, next)
       // todo somehow doesn't load...
-      next("/")
+      next({path: '/'})
     } else {
       next()
     }
@@ -40,11 +41,13 @@ export default {
       return !!this.domain_name
     },
     domain_data() {
+      console.log("DD data...", this.has_domain_name)
       if (!this.has_domain_name)
         return null
-      // TODO DOMAIN LANGUAGE?
-      const language = this.$store.getters["user/settings"].domain_language
-      return this.$store.getters["domain/lang_domain_data"](this.domain_name, language)
+      console.log(this.$store.getters["domain/act_lang_domain_data"])
+      return this.$store.getters["domain/act_lang_domain_data"]
+      // const language = this.$store.getters["user/settings"].domain_language
+      // return this.$store.getters["domain/lang_domain_data"](this.domain_name, language)
     }
   },
   created() {
@@ -55,15 +58,13 @@ export default {
       this.$store.dispatch("domain/set_act_domain_lang",
         {
           domain_name: this.domain_name,
-          language: this.$store.getters["ui_language"]
+          language: this.$store.getters.domain_language
         })
     }
     if (this.$route.query[QP_F] && !this.is_fixed_domain) {
       this.fix_domain(this.$route.query[QP_F])
     }
     // this was the only reliable way to consistently change (and keep) the window title
-    this.$nuxt.$options.head.title = this.domain_data.title
-    this.show_guidelines()
   },
   mounted() {
     // changing the this didnt work
@@ -83,6 +84,16 @@ export default {
     this.set_menu_open(false)
     next()
   },
+  watch: {
+    domain_data: {
+      deep: true,
+      handler: function (data) {
+        console.log("data arrived...")
+        this.$nuxt.$options.head.title = this.domain_data.title
+        this.show_guidelines()
+      }
+    }
+  }
 }
 </script>
 

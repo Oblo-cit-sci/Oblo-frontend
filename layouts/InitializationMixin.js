@@ -88,10 +88,11 @@ export default {
       const query_domains = [NO_DOMAIN].concat((domain_name !== NO_DOMAIN ? [domain_name] : []))
       console.log(`init with domain: ${query_domains}, lang: ${i_language}`)
 
-      this.$store.commit("domains/add_overview_language",i_language)
-      this.$api.domain.overviews(i_language).then(({data}) => {
-        this.$store.commit("domain/add_domains_data", data.data)
-      })
+      // this.$store.commit("domains/add_overview_language",i_language)
+      // this.$api.domain.overviews(i_language).then(({data}) => {
+      //   this.$store.commit("domain/add_domains_data", data.data)
+      // })
+      await this.get_domain_overviews(i_language)
 
       const {data: resp} = await this.$api.basic.init_data(query_domains, i_language)
       // check if the domain is delivered in the given language:
