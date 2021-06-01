@@ -58,21 +58,23 @@ export default {
           language: this.$store.getters["ui_language"]
         })
     }
-    if (this.$route.query.f && !this.is_fixed_domain) {
-      this.fix_domain(this.$route.query.f)
+    if (this.$route.query[QP_F] && !this.is_fixed_domain) {
+      this.fix_domain(this.$route.query[QP_F])
     }
+    // this was the only reliable way to consistently change (and keep) the window title
+    this.$nuxt.$options.head.title = this.domain_data.title
     this.show_guidelines()
   },
   mounted() {
     // changing the this didnt work
-    // const dynamicFavicon = (favicon) => {
-    //   const link = document.createElement("link")
-    //   link.rel = "shortcut icon"
-    //   link.type = "image/png"
-    //   link.href = favicon
-    //   document.head.appendChild(link)
-    // }
-    // dynamicFavicon(this.$api.static.domain_icon(this.domain_name))
+    const dynamicFavicon = (favicon) => {
+      const link = document.createElement("link")
+      link.rel = "shortcut icon"
+      link.type = "image/png"
+      link.href = favicon
+      document.head.appendChild(link)
+    }
+    dynamicFavicon(this.$api.static.domain_icon(this.domain_name))
   },
   beforeRouteLeave(from, to, next) {
     if (this.is_prod) {

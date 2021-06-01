@@ -10,8 +10,8 @@
       @aspectAction="aspectAction($event)")
     LoadFileButton(filetype="csv" :label="$t('comp.translate.from_csv')" @fileload="from_csv($event)"
       :btn_props="{disabled:disable_csv_upload, color:'success'}" :style="{float:'left'}")
-    //v-btn(:disabled="!is_setup_valid"  @click="download_translation_table") DOWNLOAD
-    //  v-icon.ml-2 mdi-download
+    v-btn(:disabled="!is_setup_valid"  @click="download_translation_table") DOWNLOAD
+      v-icon.ml-2 mdi-download
     v-btn(@click="start"  color='success' :disabled="!is_setup_valid")  {{$t("comp.translate.start")}}
     Dialog(:dialog_open.sync="new_lang_dialog_open")
       h3 {{$t("comp.translate.new.descr")}}
@@ -40,9 +40,12 @@ import TranslationSetupMixin from "~/components/language/TranslationSetupMixin";
 import LoadFileButton from "~/components/util/LoadFileButton";
 import ExportMixin from "~/components/global/ExportMixin";
 
-const FileSaver = require('file-saver')
 
-const components = ["fe", "be", "domain", "entries"]
+const FE = "fe"
+const BE = "be"
+const DOMAIN = "domain"
+const ENTRIES = "entries"
+const components = [FE, BE, DOMAIN, ENTRIES]
 
 // todo, doesnt refetch the settings from the store at the right moment
 // needs to set them after component is set...
@@ -129,7 +132,7 @@ export default {
           },
           condition: ["and", {
             aspect: "# component",
-            value: ["fe", "be"],
+            value: [FE, BE],
             compare: "contains"
           }, {
             aspect: "# dest_lang",
@@ -179,7 +182,7 @@ export default {
     src_language_options() {
       const component = this.unpacked_values.component
       let language_options = []
-      if (["domain", "entries"].includes(component)) {
+      if ([DOMAIN,  ENTRIES].includes(component)) {
         const domain_info = this.domains_metainfos[this.unpacked_values.domain]
         // console.log("domain_info", domain_info)
         if (domain_info) {
@@ -187,7 +190,7 @@ export default {
         } else {
 
         }
-      } else if (["fe", "be"].includes(component)) {
+      } else if ([FE, BE].includes(component)) {
         language_options = this.all_added_languages.sort()
           .map(l => ({
             value: l,
@@ -209,18 +212,31 @@ export default {
       this.setup_value_states = states
     },
     async download_translation_table() {
-      let file_name = "test"
+      let file_name = this.$store.getters["app/platform_data"].title
       let data = null
-      if (this.unpacked_values.component === "domain") {
-        file_name = "test"
-        const res = await this.$api.util.init_data_translation_csv(this.unpacked_values.domain,
-          "domain", "domain", this.unpacked_values.src_lang, this.unpacked_values.dest_language)
-      debugger
-        if (res.data) {
-          data = res.data
+      const {component, src_lang, dest_lang} = this.unpacked_values
+      const languages = [src_lang, dest_lang]
+      if ([FE, BE].includes(component)) {
+        const response = await this.$api.language.get_component_as_csv(component, languages)
+        file_name += `_${component}__${languages.join("_")}`
+        if (response.data) {
+          data = response.data
+        }
+      } else if (component === DOMAIN) {
+        const domain_name = this.unpacked_values.domain
+        const response = await this.$api.language.domain_as_csv(domain_name, languages)
+        file_name += `_${domain_name}__${languages.join("_")}`
+        if (response.data) {
+          data = response.data
+        }
+      } else if (component === ENTRIES) {
+        const slug = this.unpacked_values.entry
+        const response = await this.$api.language.entry_as_csv(slug, languages)
+        file_name += `_${slug}__${languages.join("_")}`
+        if (response.data) {
+          data = response.data
         }
       }
-
       if (data) {
         this.download_csv(data, file_name)
       }
@@ -281,11 +297,11 @@ export default {
     async start() {
       const {component, src_lang, dest_lang, domain, entry} = this.unpacked_values
       const setup = {component, domain, src_lang, dest_lang, unpacked: this.setup_values}
-      if (["be", "fe"].includes(component)) {
+      if ([FE, BE].includes(component)) {
         await this.start_message_component(setup)
-      } else if (component === "domain") {
+      } else if (component === DOMAIN) {
         await this.start_domain(domain, setup, src_lang, dest_lang)
-      } else if (component === "entries") {
+      } else if (component === ENTRIES) {
         await this.start_entry(entry, setup)
       }
       setup.messages.forEach(m => {
@@ -444,14 +460,14 @@ export default {
     },
     from_csv(file) {
       const {component, dest_lang} = this.unpacked_values
-      if (["fe", "be"].includes(component)) {
+      if ([FE,  BE].includes(component)) {
         this.$api.language.update_messages_from_csv(component, dest_lang, file).then(({data}) => {
           this.ok_snackbar(data.msg)
         }, err => {
           console.error(err)
           this.err_error_snackbar(err)
         })
-      } else if (component === "domain") {
+      } else if (component === DOMAIN) {
         const domain_name = this.unpacked_values.domain
         this.$api.domain.from_csv(domain_name, dest_lang, file).then(({data}) => {
           this.ok_snackbar(data.msg)
@@ -494,26 +510,26 @@ export default {
             return
           if (a === "component") {
             this.setup_values["src_lang"] = pack_value()
-            if (["fe", "be"].includes(component) && dest_lang) {
+            if ([FE, BE].includes(component) && dest_lang) {
               const {dest_lang: lang} = new_vals
               // console.log("check language statuses", this.language_statuses, lang)
               const status = await this.get_language_status(lang)
               this.setup_values.language_active = pack_value(status)
-            } else if (component === "entries") {
-              if (component === "entries" && domain !== null && dest_lang !== null) {
+            } else if (component === ENTRIES) {
+              if (component === ENTRIES && domain !== null && dest_lang !== null) {
                 this.re_calc_entries_for_domain(domain, dest_lang)
               }
             }
-          } else if (a === "domain") {
-            if (component === "entries" && domain !== null && dest_lang !== null) {
+          } else if (a === DOMAIN) {
+            if (component === ENTRIES && domain !== null && dest_lang !== null) {
               this.re_calc_entries_for_domain(domain, dest_lang)
             }
           } else if (a === "dest_lang") {
             // console.log("dest_lang-language_statuses", this.language_statuses)
-            if (["fe", "be"].includes(component)) {
+            if ([FE, BE].includes(component)) {
               const status = await this.get_language_status(dest_lang)
               this.setup_values.language_active = pack_value(status)
-            } else if (component === "entries" && domain !== null && dest_lang !== null) {
+            } else if (component === ENTRIES && domain !== null && dest_lang !== null) {
               this.re_calc_entries_for_domain(domain, dest_lang)
             }
           }

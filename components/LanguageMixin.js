@@ -70,6 +70,7 @@ export default {
     },
     async change_domain_language(domain_language, update_settings = true, snackbar = true) {
       let domain = this.$store.getters["domain/act_domain_name"] // undefined for non-domain
+      console.log("change domain lang", domain, domain_language)
 
       await this.complete_language_domains(domain, domain_language)
 
@@ -109,8 +110,18 @@ export default {
      */
     async complete_language_domains(domain, language) {
       console.log("completing...", domain, language)
+
       if (this.$store.getters["domain/has_lang_domain_data"](domain, language)) {
-        // console.log("got it already")
+        console.log("got it already",domain, language)
+
+        const requires_overviews = this.$store.getters["domain/get_requested_overviews"]().has(language)
+        console.log("requires overview", requires_overviews)
+        if (requires_overviews) {
+          this.$api.domain.overviews(language).then(({data}) => {
+            console.log(data.data)
+            this.$store.commit("domain/add_domains_data", data.data)
+          })
+        }
         return Promise.resolve()
       }
       return this.init_specifics(domain, language)
@@ -120,7 +131,8 @@ export default {
       if (!Array.isArray(domains)) {
         domains = [domains]
       }
-      if (!this.$store.getters["domain/has_lang_domain_data"](NO_DOMAIN, language)) {
+      if (!this.$store.getters["domain/has_lang_domain_data"](NO_DOMAIN, language)
+        && !domains.includes(NO_DOMAIN) ) {
         domains.push(NO_DOMAIN)
       }
       const {data} = await this.$api.basic.init_data(domains, language)

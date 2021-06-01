@@ -96,6 +96,12 @@ export default {
       const i_language = qp_lang || user_settings.ui_language || this.default_language
       console.log(`init with domain: ${domain_name}, lang: ${i_language}`)
       const query_domains = [NO_DOMAIN].concat((domain_name !== NO_DOMAIN ? [domain_name] : []))
+      // console.log(query_domains)
+
+      this.$api.domain.overviews(i_language).then(({data}) => {
+        this.$store.commit("domain/add_domains_data", data.data)
+      })
+
       // debugger
       const {data: resp} = await this.$api.basic.init_data(query_domains, i_language)
       // check if the domain is delivered in the given language:
@@ -117,7 +123,7 @@ export default {
       const language = resp.data.language
 
       if (resp.data.user_guide_url) {
-        this.$store.commit("translate/add_user_guide_link", {language_code:language, url: resp.data.user_guide_url})
+        this.$store.commit("translate/add_user_guide_link", {language_code: language, url: resp.data.user_guide_url})
         this.$store.commit("app/set_menu_to", {name: "user_guide", to: resp.data.user_guide_url})
       }
       // const domains_overview = resp.data.domains_overview

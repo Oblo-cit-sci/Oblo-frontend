@@ -21,11 +21,6 @@ export const state = () => ({
   user_data: default_user_data,
   // is set during initialization, logout...
   settings: {},
-  // auth_token: {
-  //   access_token: null,
-  //   token_type: "",
-  //   expiration_date: null
-  // }
 })
 
 export const getters = {
@@ -54,6 +49,9 @@ export const getters = {
   },
   settings_ui_language(state, getters) {
     return getters.settings_value(UI_LANGUAGE)
+  },
+  meta_aspects(state) {
+    return state.meta_aspects || []
   }
 }
 
@@ -74,6 +72,9 @@ export const mutations = {
     for (let key in data) {
       $nuxt.$set(state.settings, key, data[key])
     }
+  },
+  meta_aspects(state, merge_data) {
+    state.meta_aspects = Object.assign(state.meta_aspects, merge_data)
   }
 }
 

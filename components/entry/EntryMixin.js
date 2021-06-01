@@ -24,10 +24,11 @@ import AspectListMixin from "~/components/global/AspectListMixin"
 import ExportMixin from "~/components/global/ExportMixin"
 import TemplateHelperMixin from "~/components/templates/TemplateHelperMixin";
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin";
+import EntryMetaAspects from "~/components/EntryMetaAspects";
 
 export default {
   name: "EntryMixin",
-  mixins: [EntryPagesMixin, AspectListMixin, ExportMixin, TemplateHelperMixin, TypicalAspectMixin],
+  mixins: [EntryPagesMixin, AspectListMixin, ExportMixin, TemplateHelperMixin, TypicalAspectMixin, EntryMetaAspects],
   props:
     {
       entry: {
@@ -50,7 +51,9 @@ export default {
     ...mapGetters({"is_admin": "user/is_admin", "username": "user/registered_name"}),
     meta_aspects() {
       // todo be more generic where the licenses come form. user settings...
-      return [this.license_aspect, this.asp_privacy()]
+      console.log(this.get_meta_aspects(this.entry.domain))
+      this.license_aspect
+      return this.get_meta_aspects(this.entry.domain) // [this.license_aspect, this.asp_privacy()]
     },
     uuid() {
       return this.entry.uuid

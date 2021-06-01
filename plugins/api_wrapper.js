@@ -195,9 +195,9 @@ class Domain extends QueryBase {
     return this.patch_(`${domain_name}/from_flat`, content)
   }
 
-  // async overview(language) {
-  //   return this.get_("overview", {params: {language}})
-  // }
+  async overviews(language) {
+    return this.get_("overviews", {params: {language}})
+  }
 
   async get_codes_templates(domain_name, language, full) {
     return this.get_(`${domain_name}/get_codes_templates`, {
@@ -611,6 +611,22 @@ class Language extends QueryBase {
       },
       headers: {
         'Content-Type': 'multipart/form-data'
+      }
+    })
+  }
+
+  entry_as_csv(slug, languages) {
+    return this.get_("entry_as_csv", {
+      params: {
+        slug, languages
+      }
+    })
+  }
+
+  domain_as_csv(domain_name, languages) {
+    return this.get_("domain_as_csv", {
+      params: {
+        domain_name, languages
       }
     })
   }

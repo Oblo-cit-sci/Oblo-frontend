@@ -51,8 +51,8 @@ export default {
     return {
       link: [
         {
-          rel:"authorization_endpoint",
-          href:`${this.env.hostname}/auth`
+          rel: "authorization_endpoint",
+          href: `${this.env.hostname}/auth`
         }
       ]
     }
@@ -62,6 +62,8 @@ export default {
   },
   created() {
     this.$store.dispatch("domain/clear_domain", this.$store.getters.ui_language)
+    // this was the only reliable way to consistently change (and keep) the window title
+    this.$nuxt.$options.head.title = this.$store.getters["app/platform_data"].title
   },
   components: {
     Footer,

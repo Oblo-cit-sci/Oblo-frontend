@@ -13,9 +13,6 @@
     TheSnackbar
     ThePrivacySheet
     DecisionDialog
-    <!--    v-fab-transition-->
-    <!--      v-btn.help_button(float large fab color="info")-->
-    <!--        v-icon mdi-help-->
 </template>
 
 <script>
@@ -39,14 +36,18 @@ export default {
       global_dialog_comp: null
     }
   },
-  // head() {
-  //   return {
-  //     meta: [
-  //       {hid: 'og:image', property: 'og:image', content: this.$api.axios_baseURL + "/static/images/domains/licci/icon.png",
-  //         href:this.$api.axios_baseURL + "/static/images/domains/licci/icon.png"}
-  //     ]
-  //   }
-  // },
+  head() {
+    return {
+      meta: [
+        {
+          hid: 'og:image',
+          property: 'og:image',
+          content: this.$api.axios_baseURL + "/static/images/domains/licci/icon.png",
+          href: this.$api.axios_baseURL + "/static/images/domains/licci/icon.png"
+        }
+      ]
+    }
+  },
   computed: {
     menu_over() {
       return this.is_domain_page
@@ -59,6 +60,9 @@ export default {
         }
       }
     },
+    act_domain_data() {
+      return this.$store.getters["domain/act_domain_data"]
+    }
   },
   watch: {
     is_offline(offline) {
@@ -78,16 +82,17 @@ export default {
         this.$store.commit("app/connected", true)
         this.reset_home()
       }
+    },
+    act_domain_data: {
+      deep: true,
+      handler: function (data) {
+        console.log("new data", data)
+      }
     }
   }
 }
 </script>
 
 <style>
-.help_button {
-  position: fixed;
-  bottom: 40px;
-  left: 3%;
-  z-index: 1000;
-}
+
 </style>
