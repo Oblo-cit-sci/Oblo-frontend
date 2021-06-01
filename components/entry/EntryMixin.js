@@ -51,9 +51,10 @@ export default {
     ...mapGetters({"is_admin": "user/is_admin", "username": "user/registered_name"}),
     meta_aspects() {
       // todo be more generic where the licenses come form. user settings...
-      console.log(this.get_meta_aspects(this.entry.domain))
-      this.license_aspect
-      return this.get_meta_aspects(this.entry.domain) // [this.license_aspect, this.asp_privacy()]
+      // console.log(this.get_meta_aspects(this.entry.domain))
+      // this.license_aspect
+      // this.asp_privacy()
+      return [this.license_aspect, this.asp_privacy()] //this.get_meta_aspects(this.entry.domain) // [this.license_aspect, this.asp_privacy()]
     },
     uuid() {
       return this.entry.uuid
