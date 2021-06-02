@@ -82,14 +82,8 @@ export default {
     x_large_btn() {
       return this.is_mdAndUp
     },
-    // domain_overviews() {
-    //   return this.$store.getters["domain/domain_overviews"](this.setting(UI_LANGUAGE))
-    // }
   },
   methods: {
-    domain_available_in_language(domain) {
-      return !this.$_.isEmpty(this.languaged_domain_overview(domain))
-    },
     languaged_domain_overview(domain) {
       const d = this.$store.getters["domain/domain_overview"](domain.name, this.setting(UI_LANGUAGE))
       d.name = domain.name

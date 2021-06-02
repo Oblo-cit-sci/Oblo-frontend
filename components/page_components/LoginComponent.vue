@@ -87,6 +87,7 @@ export default {
       try {
         const {data: response_data} = await this.$api.actor.login(extract_n_unpack_values(this.aspects))
         console.log(response_data.msg)
+
         this.ok_snackbar(response_data.msg)
         //   // todo could just be index/clear_entries (change name) but needs await
         this.clear_search()
@@ -98,6 +99,7 @@ export default {
         // console.log("user_data", user_data)
         user_settings = user_data.settings
         this.$store.dispatch("user/login", user_data)
+        await this.get_domain_overviews(user_settings.ui_language)
         this.persist_user_data()
       } catch (err) {
         console.log(err)
