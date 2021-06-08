@@ -3,17 +3,19 @@
     div {{is_standalone}}
     div {{build_time}}
     v-btn(@click="switch_offline") {{dev_offline_switch_button_label}}
+    //Aspect(:aspect="aspect")
 </template>
 
 <script>
 
 import EnvMixin from "~/components/global/EnvMixin";
 import OfflineMixin from "~/lib/OfflineMixin";
+import Aspect from "~/components/Aspect"
 
 export default {
   name: "tests",
   mixins: [EnvMixin, OfflineMixin],
-  components: {},
+  components: {Aspect},
   data() {
     return {
       match: null,

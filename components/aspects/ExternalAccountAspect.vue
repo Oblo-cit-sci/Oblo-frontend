@@ -7,12 +7,17 @@
           a(itemprop="sameAs" :content="repr" :href="repr" target="orcid.widget" rel="me noopener noreferrer" style="vertical-align:top;")
             img(src="https://orcid.org/sites/default/files/images/orcid_16x16.png" style="width:1em;margin-right:.5em;" alt="ORCID iD icon")
             span {{repr}}
+        v-btn validate
       div(v-else) {{$t("comp.external_account_asp.not_given")}}
 </template>
 
 <script>
 import AspectComponentMixin from "~/components/aspects/AspectComponentMixin";
 
+/**
+ * these things should come from the backend
+ * @type {string[]}
+ */
 const services = ["orcid", "inaturalist"]
 
 const prefixes = {
