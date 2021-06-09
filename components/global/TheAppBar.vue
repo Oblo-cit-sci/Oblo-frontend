@@ -110,7 +110,7 @@ export default {
     create_button_style() {
       return {
         "position": "fixed",
-        "right": this.show_login_btn ? "40%": "1%",
+        "right": this.show_login_btn ? "25%": "1%",
         "top": "5%"
       }
     },
