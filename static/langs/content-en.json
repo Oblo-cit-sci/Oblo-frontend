@@ -398,7 +398,7 @@
       "legend": "Legend"
     },
     "list_asp": {
-      "add": "@w.add_item",
+      "add": "@:w.add_item",
       "actions": {
         "delete_item": "delete {item_name}",
         "move_down": "move down",
