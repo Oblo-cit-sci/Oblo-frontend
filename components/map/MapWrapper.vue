@@ -113,8 +113,9 @@ export default {
       layer_status: "map/layer_status",
     }),
     map_hidden() {
-      if (this.$vuetify.breakpoint.smAndDown) {
-        this.map_hidden = this.menu_open
+      //
+      if (this.is_small) {
+        return this.menu_open
       }
     },
     packed_layer_status() {
