@@ -158,7 +158,7 @@ export default {
       return this.all_map_entries(this.domain_name)
     },
     show_legend() {
-      if(!this.$_.isEmpty(this.domain_templates_color_list)) {
+      if (!this.$_.isEmpty(this.domain_templates_color_list)) {
         return (this.is_md && !this.menu_open) || this.is_large
       }
     },
@@ -207,10 +207,13 @@ export default {
   },
   methods: {
     map_options() {
-      const default_camera = this.$_.get(this.$store.getters["domain/domain_by_name"](this.domain_name), "map.default_camera")
       let options = this.$_.cloneDeep(this.default_map_options)
-      if (default_camera) {
-        Object.assign(options, default_camera)
+
+      const domain_init_map_options =
+        this.$_.get(this.$store.getters["domain/lang_domain_data"](this.domain_name, this.$store.getters.ui_language),
+          "map.init_map_options")
+      if (domain_init_map_options) {
+        Object.assign(options, domain_init_map_options)
       }
       const cached_options = this.$store.getters["map/cached_camera_options"](this.domain_name)
       if (cached_options) {
@@ -662,7 +665,7 @@ export default {
           this.map_goto_location(feature.geometry)
         }
         this.update_navigation_mode(entry_uuid, VIEW, false)
-      },(err) => {
+      }, (err) => {
         this.err_error_snackbar(err)
       })
     },
