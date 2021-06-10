@@ -60,9 +60,18 @@ export default {
   methods: {
     change_page(dir) {
       this.$emit('input', this.page + dir)
+    },
+    goto_page(page) {
+      this.$emit('input', page)
     }
   },
-  watch: {}
+  watch: {
+    total_pages(total_pages) {
+      if(total_pages < this.page) {
+        this.goto_page(total_pages)
+      }
+    }
+  }
 }
 </script>
 
