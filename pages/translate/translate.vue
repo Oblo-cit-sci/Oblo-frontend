@@ -5,6 +5,16 @@
       span {{$t("page.translate.back")}}
     AspectSet(:aspects="setup_aspects" :values="setup_values" mode="view" compact)
     v-checkbox(v-model="show_only_incomplete" :label="$t('page.translate.only_undone')")
+    v-container.pt-1.pb-0(justify-center align-center)
+      v-row.pl-1()
+        v-col.py-0(offset=4 cols=8)
+          v-text-field(
+            v-model="search_query"
+            :label="$t('comp.search.txt_field_label')"
+            solo
+            append-icon="mdi-magnify"
+            @click:append="search"
+            clearable)
     MessageTranslationBlock(v-for="t in show_translations"
       v-bind="translation_o[t]"
       @update="update_msg(t, $event)"
@@ -53,6 +63,8 @@ export default {
       no_changes: true,
       message_order,
       translation_o,
+      search_query: "",
+      search_results: null,
     }
   },
   created() {
@@ -82,26 +94,50 @@ export default {
         return this.$t("page.translate.submit_required")
       }
     },
-    total_pages() {
-      // console.log("total", this.setups.length, this.setups.length / this.messages_per_page, Math.ceil(this.setups.length / this.messages_per_page))
-      return Math.ceil(this.message_order.length / this.messages_per_page)
-    },
-    show_translations() {
-      // let translations = Array.from(this.translations.values())
+    filtered_messages() {
       let shown_messages = this.message_order
       if (this.show_only_incomplete) {
         shown_messages = shown_messages.filter((t) =>
           ['', null].includes(this.translation_o[t].messages[1])
         )
       }
-      return shown_messages.slice(
+      if (this.search_results !== null) {
+        shown_messages = shown_messages.filter(m => this.search_results.includes(m))
+      }
+      return shown_messages
+    },
+    total_pages() {
+      // console.log("total", this.setups.length, this.setups.length / this.messages_per_page, Math.ceil(this.setups.length / this.messages_per_page))
+      return Math.ceil(this.filtered_messages.length / this.messages_per_page)
+    },
+    show_translations() {
+      return this.filtered_messages.slice(
         (this.page - 1) * this.messages_per_page,
         this.page * this.messages_per_page
       ) // translations.slice((this.page - 1) * this.messages_per_page, (this.page) * this.messages_per_page)
     },
-
   },
   methods: {
+    search() {
+      if ((this.search_query?.length || 0) === 0) {
+        return
+      }
+      this.search_results = []
+      const query = this.search_query.toLowerCase()
+      for (let msg of this.setup.messages) {
+        if (msg[1]) {
+          if (msg[1].toLowerCase().search(query) !== -1) {
+            this.search_results.push(msg[0])
+            continue
+          }
+        }
+        if (msg[2]) {
+          if (msg[2].toLowerCase().search(query) !== -1) {
+            this.search_results.push(msg[0])
+          }
+        }
+      }
+    },
     has_changed({name, change, value}) {
       // console.log("msg change", name, change)
       if (change) {
@@ -251,6 +287,13 @@ export default {
         console.log('ta', val)
       },
     },
+    search_query(query) {
+      if ((query?.length || 0) < 4) {
+        this.search_results = null
+        return
+      }
+      this.search(query)
+    }
   },
 }
 </script>
