@@ -208,16 +208,18 @@ export default {
   methods: {
     map_options() {
       let options = this.$_.cloneDeep(this.default_map_options)
-
-      const domain_init_map_options =
-        this.$_.get(this.$store.getters["domain/lang_domain_data"](this.domain_name, this.$store.getters.ui_language),
-          "map.init_map_options")
-      if (domain_init_map_options) {
-        Object.assign(options, domain_init_map_options)
-      }
       const cached_options = this.$store.getters["map/cached_camera_options"](this.domain_name)
       if (cached_options) {
         Object.assign(options, cached_options)
+      } else {
+        // only consider default options, when nothing cached
+        // otherwise, center,zoom & bounds option would be present and mapbox takes bounds
+        const domain_init_map_options =
+          this.$_.get(this.$store.getters["domain/lang_domain_data"](this.domain_name, this.$store.getters.ui_language),
+            "map.init_map_options")
+        if (domain_init_map_options) {
+          Object.assign(options, domain_init_map_options)
+        }
       }
       return options
     },
