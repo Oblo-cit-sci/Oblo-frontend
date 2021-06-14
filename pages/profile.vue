@@ -255,7 +255,7 @@ export default {
       })
     },
     change_email() {
-      const new_email = extract_n_unpack_values(this.email_aspects)
+      const new_email = extract_n_unpack_values(this.$_.mapValues(this.email_aspects, a => a.value))
       this.email_update_loading = true
       this.$api.actor.change_email(new_email).then(({data}) => {
         this.email_edit = false;
@@ -274,7 +274,12 @@ export default {
       })
     },
     change_password() {
-      const new_password = extract_n_unpack_values(this.password_aspects)
+      // const pwd = this.password_aspects
+      // const ld = this.$_
+      // debugger
+      const new_password = extract_n_unpack_values(this.$_.mapValues(this.password_aspects, a => a.value))
+      // console.log(this.password_aspects)
+      console.log(new_password)
       this.$api.actor.change_password(new_password).then(() => {
         this.password_edit = false;
         this.ok_snackbar(this.$t("page.profile.msgs.password_changed"))
