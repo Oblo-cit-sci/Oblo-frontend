@@ -26,7 +26,7 @@
           v-for="(val, index) in value"
           :key="index"
           :id="panel_id(index)")
-          v-expansion-panel-header {{titles[index] || index + 1}}
+          v-expansion-panel-header.my-1 {{titles[index] || index + 1}}
           v-expansion-panel-content
             Aspect(
               v-bind="list_aspect_props(index)"
