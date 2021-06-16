@@ -14,7 +14,7 @@
           @update:error="error = $event")
       div
         v-btn(v-if="done_button" @click="cancel()") {{$t("w.cancel")}}
-        v-btn(v-if="done_button" :disabled="error" @click="done()" color="success") {{$t("w.done")}}
+        v-btn(v-if="done_button" :disabled="disable_done" @click="done()" color="success") {{$t("w.done")}}
 </template>
 
 <script>
@@ -22,6 +22,7 @@ import LayoutMixin from "~/components/global/LayoutMixin"
 import {DATE, EDIT, LOCATION, SELECT} from "~/lib/consts"
 import Aspect from "~/components/Aspect"
 import DialogMixin from "~/components/dialogs/DialogMixin"
+import {aspect_default_value} from "~/lib/aspect";
 
 export default {
   name: "AspectDialog",
@@ -56,6 +57,15 @@ export default {
   computed: {
     done_button() {
       return ![DATE, SELECT, LOCATION].includes(this.aspect.type)
+    },
+    has_value() {
+      // console.log("has-value", this.int_value, aspect_default_value(this.aspect))
+      // TODO does this work for all aspect-types of on options-aspect (in the filter-list)
+      return !this.$_.isEqual(this.int_value?.value, aspect_default_value(this.aspect))
+    },
+    disable_done() {
+      // console.log("disable_done", this.has_value)
+      return this.error || !this.has_value
     },
     width() {
       if (this.fix_width)

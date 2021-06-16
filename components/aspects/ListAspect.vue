@@ -17,7 +17,8 @@
             v-on:move="move($event)")
       div(v-if="is_view_mode && is_empty")
         .ml-2 {{default_view_text}}
-    div(v-else class="mb-1 mt-1")
+    div.mb-1.mt-1(v-else)
+      // class defined in main.scss
       v-expansion-panels.complex_list_aspect(
         multiple
         v-model="panelState")

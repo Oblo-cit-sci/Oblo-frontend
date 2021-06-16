@@ -18,8 +18,27 @@
             @has_changed="has_changed(comp_type.name, $event)"
             :extra="comp_extras(comp_type)")
     v-layout(v-else wrap)
-      v-flex(
-        v-for="(comp_type, index) in aspect.components" :key="index"
+      v-expansion-panels(v-if="collapsable")
+        v-expansion-panel
+          v-expansion-panel-header {{panel_header}}
+          v-expansion-panel-content
+            v-flex(
+              v-for="(comp_type, index) in aspect.components" :key="index"
+              :class="layoutClasses")
+              Aspect(
+                :aspect="comp_type"
+                :ext_value="value[comp_type.name]"
+                @update:ext_value="update_component_value(comp_type.name, $event)"
+                :aspect_loc="aspect_locs[comp_type.name]"
+                :mode="mode"
+                :disabled="disabled"
+                :ref="comp_type.name"
+                :conditionals="composite_conditionals"
+                @has_changed="has_changed(comp_type.name, $event)"
+                @aspectAction="$emit('aspectAction',$event)"
+                :extra="comp_extras(comp_type)")
+      v-flex(v-else
+      v-for="(comp_type, index) in aspect.components" :key="index"
         :class="layoutClasses")
         Aspect(
           :aspect="comp_type"
@@ -98,7 +117,23 @@ export default {
     compact() {
       return this.attr.compact
     },
-
+    collapsable() {
+      return this.attr.collapsable || false
+    },
+    panel_header() {
+      const title_component = this.attr.titleComponent || this.aspect.components[0].name
+      const comp_value = this.value[title_component]
+      let text = ""
+      if (comp_value.text) {
+        text = comp_value.text
+      } else {
+        text = comp_value.value
+      }
+      if (!text) {
+        return "..."
+      }
+      return text
+    },
     layoutClasses() {
       if (this.aspect.components.length === 2 && this.aspect.mode === 'edit') {
         const comp_types = this.aspect.components.map(c => c.type)
