@@ -64,6 +64,9 @@ export default {
     if (this.$route.query[QP_F] && !this.is_fixed_domain) {
       this.fix_domain(this.$route.query[QP_F])
     }
+
+    this.$nuxt.$options.head.title = this.domain_data?.title
+    this.show_guidelines()
     // this was the only reliable way to consistently change (and keep) the window title
   },
   mounted() {
@@ -83,16 +86,6 @@ export default {
     }
     this.set_menu_open(false)
     next()
-  },
-  watch: {
-    domain_data: {
-      deep: true,
-      handler: function (data) {
-        console.log("data arrived...")
-        this.$nuxt.$options.head.title = this.domain_data.title
-        this.show_guidelines()
-      }
-    }
   }
 }
 </script>

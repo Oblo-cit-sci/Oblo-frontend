@@ -62,7 +62,6 @@
     <!-- Other aspects -->
     <!-- Research aspects, no_domain aspects -->
     div(v-if="!$_.isEmpty(no_domain_aspects)")
-    div(v-if="!$_.isEmpty(no_domain_aspects)")
       h2#research_aspects {{$t('page.profile.h_research')}}
       div {{$t('page.profile.research_info', {platform_title: platform_title})}}
       AspectSet(:aspects="no_domain_aspects" :values.sync="no_domain_values" :mode="mode")
@@ -183,7 +182,7 @@ export default {
     },
     language_aspects() {
       const domain_data = this.$store.getters["domain/lang_domain_data"](NO_DOMAIN, this.domain_language)
-      // console.log("DD", domain_data, this.$store.getters["user/settings"].domain_language)
+      console.log("DD", domain_data, this.$store.getters["user/settings"].domain_language)
       this.no_domain_aspects = this.$_.cloneDeep(this.$_.get(domain_data, "users.profile.additional_aspects", []))
 
       if (this.is_fixed_domain) {
