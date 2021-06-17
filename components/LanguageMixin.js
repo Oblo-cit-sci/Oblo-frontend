@@ -99,7 +99,10 @@ export default {
 
         // UPDATE SEARCH CONFIG
         this.$store.commit("search/replace_in_act_config",
-          Object.assign(this.language_filter_config(),
+          Object.assign({
+              name: "language",
+              t_label: "asp.language.label",
+            },
             {
               value: pack_value([domain_language])
             }))
