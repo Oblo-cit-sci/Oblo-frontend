@@ -1,7 +1,8 @@
 <template lang="pug">
   #pwlist-container
     v-row.col-sm-12#pwlist-top(v-if="results_received && !requesting_entries")
-      div {{$tc("comp.previewlist.num_entries", num_entries)}}
+      v-col.pa-0(cols=12) {{$tc("comp.previewlist.num_entries", num_entries)}}
+      v-col.pa-0(cols=12 v-if="no_entries") {{$t("comp.previewlist.filter_change_hint")}}
     #pwlist-wrapper
       v-row.mx-1(v-for="entry in visible_entries"
         :key="entry.uuid")
@@ -40,7 +41,7 @@ export default {
     },
     // this can be more then in entries, but will allow to navigate further with next, so another fetch is triggered
     total_count: {
-      type:Number
+      type: Number
     },
     entries_per_page: {
       type: Number,
@@ -64,15 +65,15 @@ export default {
   beforeUpdate() {
     this.deleted = this.$_.filter(this.deleted, uuid => !this.has_entry(uuid))
     // console.log("update", this.$refs, this.entries.length)
-      // console.log(this.$refs.to_top_button)
-      // entries are not immediately there, so the offsetTop is 0
-      setTimeout(() => {
-        if (this.$refs.to_top_button) {
-          this.show_to_top_button = this.$refs.to_top_button.offsetTop > window.innerHeight
-        } else {
-          console.log("no $refs.to_top_button")
-        }
-      }, 100)
+    // console.log(this.$refs.to_top_button)
+    // entries are not immediately there, so the offsetTop is 0
+    setTimeout(() => {
+      if (this.$refs.to_top_button) {
+        this.show_to_top_button = this.$refs.to_top_button.offsetTop > window.innerHeight
+      } else {
+        console.log("no $refs.to_top_button")
+      }
+    }, 100)
   },
   computed: {
     ...mapGetters({"has_entry": "entries/has_entry"}),
@@ -101,6 +102,9 @@ export default {
         return this.total_count
       else
         return this.entries.length - this.deleted.length
+    },
+    no_entries() {
+      return this.num_entries === 0
     },
     // could be in some mixin
     set_of_types() {

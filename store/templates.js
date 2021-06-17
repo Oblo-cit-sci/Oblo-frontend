@@ -53,7 +53,9 @@ export const getters = {
         return null
       }
       const base_template = state.codes.get(slug)
+      // console.log("code",slug, Object.keys(base_template.lang))
       if (base_template.lang.hasOwnProperty(language)) {
+        // console.log("->", language)
         return base_template.lang[language]
       } else {
         return base_template.lang[Object.keys(base_template.lang)[0]]
@@ -97,11 +99,10 @@ export const getters = {
       return getters.has_template_in_lang(slug, language) || getters.has_code_in_lang(slug, language)
     }
   },
-  codes(state) {
-    return Array.from(state.codes.values())
-  },
   codes_in_language(state, getters) {
-    return language => getters.codes.map(c => getters.code(c.slug, language))
+    return language => {
+      return Array.from(state.codes.values()).map(c => getters.code(c.slug, language))
+    }
   },
   template_title(state, getters) {
     return (slug, language) => {
@@ -192,6 +193,7 @@ export const getters = {
 
 export const mutations = {
   insert_template_code(state, t_c) {
+    // console.log("inserting templates-codes")
     const insert_into = t_c.type === "template" ? state.entry_types : state.codes
     if (insert_into.has(t_c.slug)) {
       insert_into.get(t_c.slug).lang[t_c.language] = t_c

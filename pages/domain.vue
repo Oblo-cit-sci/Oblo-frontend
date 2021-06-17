@@ -41,10 +41,10 @@ export default {
       return !!this.domain_name
     },
     domain_data() {
-      console.log("DD data...", this.has_domain_name)
+      // console.log("DD data...", this.has_domain_name)
       if (!this.has_domain_name)
         return null
-      console.log(this.$store.getters["domain/act_lang_domain_data"])
+      // console.log(this.$store.getters["domain/act_lang_domain_data"])
       return this.$store.getters["domain/act_lang_domain_data"]
       // const language = this.$store.getters["user/settings"].domain_language
       // return this.$store.getters["domain/lang_domain_data"](this.domain_name, language)

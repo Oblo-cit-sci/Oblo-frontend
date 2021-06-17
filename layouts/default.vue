@@ -82,12 +82,6 @@ export default {
         this.$store.commit("app/connected", true)
         this.reset_home()
       }
-    },
-    act_domain_data: {
-      deep: true,
-      handler: function (data) {
-        console.log("new data", data)
-      }
     }
   }
 }

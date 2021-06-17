@@ -469,7 +469,8 @@
       "DEPR_sign_in_with": "Sign in with {service}"
     },
     "previewlist": {
-      "num_entries": "@:w.n_entries"
+      "num_entries": "@:w.n_entries",
+      "filter_change_hint": "Try changing the language or entry type filter"
     },
     "privacy_notification": {
       "h": "Your Privacy",

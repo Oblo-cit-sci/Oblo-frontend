@@ -15,10 +15,12 @@ import {build_tag_select_list, build_tag_select_tree, find_templates_using_code}
 import {mapGetters} from "vuex";
 import {pack_value, unpack} from "~/lib/aspect";
 import {recursive_unpack2} from "~/lib/util";
+import LanguageMixin from "~/components/LanguageMixin";
 
 
 export default {
   name: "FilterMixin",
+  mixins: [LanguageMixin],
   computed: {
     act_config: {
       get: function () {
@@ -99,8 +101,16 @@ export default {
         }
       }
     },
+    lang_tagged_entry_title(entry, default_lang) {
+      if (entry.language === default_lang) {
+        return entry.title
+      } else {
+        return `${entry.title} (${this.t_lang(entry.language)})`
+      }
+    },
     get_tags_filter_options(domain_name) {
       const all_codes = this.$store.getters["templates/codes_in_language"](this.domain_language)
+      // console.log(this.domain_language)
       // console.log("all-codes", domain_name, this.domain_language, all_codes.length)
       let filter_codes = all_codes.filter(code_entry => this.$_.get(code_entry, "rules.tags"))
       if (domain_name) {
@@ -111,15 +121,16 @@ export default {
       // filter_codes = object_list2options(filter_codes, "title", "slug")
       const options_aspects = []
       for (let code of filter_codes) {
-        // console.log("code use", code.slug, this.domain_language)
-        const used_in_templates = find_templates_using_code(this.$store, code.slug, this.domain_language).map(template => template.title)
-        // console.log("->", used_in_templates)
+        const used_in_templates = find_templates_using_code(this.$store, code.slug, this.domain_language)
+        const used_in_templates_titles =
+          used_in_templates.map(template => this.lang_tagged_entry_title(template, this.domain_language))
+        let text = this.lang_tagged_entry_title(code, this.domain_language)
         // maybe the options-aspect should not take the label as text
         const base_aspect = {
           name: code.slug,
-          text: code.title,
+          text,
           label: code.title,
-          description: this.$t("comp.tagoptions_asp.used_in") + used_in_templates.join(", "),
+          description: this.$t("comp.tagoptions_asp.used_in") + " " + used_in_templates_titles.join(", "),
           attr: {}
         }
         if (code.rules.code_schema === "value_tree") {
