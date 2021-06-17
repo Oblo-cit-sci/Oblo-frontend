@@ -14,7 +14,7 @@ export const state = () => ({
   entry_types: new Map(), // types for creation
   codes: new Map(),
   tags: {},
-  requested: {} // key: domain, values: Set of lang, to prevent reloading
+  //requested: {} // key: domain, values: Set of lang, to prevent reloading
 })
 
 export const getters = {
@@ -168,11 +168,15 @@ export const getters = {
       entries.forEach(e => {
         let add = false
         const {domain, language} = e
+        // console.log(domain,  language)
+        // console.log(state.requested)
+        // debugger
         if (!state.requested.hasOwnProperty(domain)) {
           add = true
         } else if (!state.requested[domain].has(language)) {
           add = true
         }
+        console.log(add)
         if (add) {
           if (!missing.some(domain_lang =>
             domain_lang.domain === domain && domain_lang.language === language
@@ -182,6 +186,13 @@ export const getters = {
         }
       })
       return missing
+    }
+  },
+  get_missing_templates(state, getters) {
+    return (entries, language) => {
+      const slugs = Array.from(new Set(ld.map(entries, e => e.template.slug)))
+      console.log("slugs", slugs)
+      return slugs.filter(s => !getters.has_template_in_lang(s, language))
     }
   },
   templates_by_slugs(state, getters) {
@@ -236,17 +247,17 @@ export const mutations = {
       }
     }
   },
-  add_to_requested(state, entries) {
-    entries.forEach(e => {
-      // console.log(e.domain,e.language)
-      const {domain, language} = e
-      if (!state.requested.hasOwnProperty(domain)) {
-        state.requested[domain] = new Set([language])
-      } else {
-        state.requested[domain].add(language)
-      }
-    })
-  },
+  // add_to_requested(state, entries) {
+  //   entries.forEach(e => {
+  //     console.log("add requested", e.slug, e.domain,e.language)
+  //     const {domain, language} = e
+  //     if (!state.requested.hasOwnProperty(domain)) {
+  //       state.requested[domain] = new Set([language])
+  //     } else {
+  //       state.requested[domain].add(language)
+  //     }
+  //   })
+  // },
   set_from_storage(state, templates) {
     state.entry_types = new Map(templates.entry_types)
     state.codes = new Map(templates.codes)
@@ -263,6 +274,7 @@ export const actions = {
         commit("add_tags_from", t_c)
       }
     }
-    commit("add_to_requested", entries)
+    console.log("adding...", entries)
+    // commit("add_to_requested", entries)
   }
 }

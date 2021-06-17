@@ -82,7 +82,6 @@ export default {
     },
     next_loading() {
       return this.requesting_entries && this.entries.length > 0
-      //if()
     },
     visible_entries() {
       // console.log("offline- all entries",  this.entries)
@@ -91,7 +90,7 @@ export default {
       const entries = this.entries.slice(from_index, to_index)
       // todo unique is just required cuz the server does often sent less (actor rows problem when querying entries)
       const uuids = this.$_.uniq(this.$_.filter(entries, e => !this.deleted.includes(e)))
-      return this.$_.map(uuids, uuid => this.$store.getters["entries/get_entry"](uuid)).filter(e => e !== undefined)
+      return [] // this.$_.map(uuids, uuid => this.$store.getters["entries/get_entry"](uuid)).filter(e => e !== undefined)
     },
     has_entries() {
       return this.num_entries > 0
@@ -107,14 +106,14 @@ export default {
       return this.num_entries === 0
     },
     // could be in some mixin
-    set_of_types() {
-      //console.log("num entries", this.entries.length)
-      return Array.from(
-        new Set(
-          this.$_.map(
-            this.entries,
-            e => this.$store.getters["templates/entry_type"](e.template.slug))).values())
-    },
+    // set_of_types() {
+    //   //console.log("num entries", this.entries.length)
+    //   return Array.from(
+    //     new Set(
+    //       this.$_.map(
+    //         this.entries,
+    //         e => this.$store.getters["templates/entry_type"](e.template.slug))).values())
+    // },
     total_pages() {
       return Math.ceil(this.num_entries / this.entries_per_page)
     },
@@ -144,6 +143,14 @@ export default {
     }
   },
   watch: {
+    // entries: {
+    //   immediate: true,
+    //   handler(entries) {
+    //     const entry_types = Array.from(new Set(this.$_.map(entries,
+    //       uuid => this.$store.getters["entries/get_entry"](uuid).template.slug)))
+    //     console.log(entry_types)
+    //   }
+    // },
     requesting_entries(val) {
       /**
        * val: boolean
