@@ -4,7 +4,7 @@
       div(v-for="(value, index) in value" :key="index")
         div.py-0(v-if="aspect_is_on_page(index)" :id="panel_id(index)")
           b.m-1(v-if="has_indexTitle") {{titles[index]|| index + 1}}
-          span.float-left(v-if="text_only_item") - &nbsp;
+          span.float-left(v-if="text_only_item && is_view_mode") - &nbsp;
           Aspect.py-0(
             v-bind="list_aspect_props(index)"
             @aspectAction="handleAspectAction($event, index)"
