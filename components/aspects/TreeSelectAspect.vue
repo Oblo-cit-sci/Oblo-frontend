@@ -1,5 +1,5 @@
 <template lang="pug">
-  div(v-if="!is_view_mode")
+  div(v-if="is_editable_mode")
     LanguageCodeFallback(v-if="!code_entry_language_match" :actual_lang="code_entry_language")
     v-autocomplete(v-if="direct_select && is_empty"
       outlined
