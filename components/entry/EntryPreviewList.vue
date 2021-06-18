@@ -90,7 +90,7 @@ export default {
       const entries = this.entries.slice(from_index, to_index)
       // todo unique is just required cuz the server does often sent less (actor rows problem when querying entries)
       const uuids = this.$_.uniq(this.$_.filter(entries, e => !this.deleted.includes(e)))
-      return [] // this.$_.map(uuids, uuid => this.$store.getters["entries/get_entry"](uuid)).filter(e => e !== undefined)
+      return this.$_.map(uuids, uuid => this.$store.getters["entries/get_entry"](uuid)).filter(e => e !== undefined)
     },
     has_entries() {
       return this.num_entries > 0

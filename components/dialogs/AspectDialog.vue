@@ -22,7 +22,7 @@ import LayoutMixin from "~/components/global/LayoutMixin"
 import {DATE, EDIT, LOCATION, SELECT} from "~/lib/consts"
 import Aspect from "~/components/Aspect"
 import DialogMixin from "~/components/dialogs/DialogMixin"
-import {aspect_default_value} from "~/lib/aspect";
+import {isEqual_default_value} from "~/lib/aspect";
 
 export default {
   name: "AspectDialog",
@@ -59,9 +59,13 @@ export default {
       return ![DATE, SELECT, LOCATION].includes(this.aspect.type)
     },
     has_value() {
-      // console.log("has-value", this.int_value, aspect_default_value(this.aspect))
+      // console.log("has-value", this.int_value?.value, aspect_default_value(this.aspect))
+      // const value_is_default = this.$_.isEqual(this.int_value?.value, aspect_default_value(this.aspect))
+      // console.log(this.int_value, aspect_default_value(this.aspect))
+      // console.log(this.aspect)
+      // console.log("has-value",value_is_default, !value_is_default)
       // TODO does this work for all aspect-types of on options-aspect (in the filter-list)
-      return !this.$_.isEqual(this.int_value?.value, aspect_default_value(this.aspect))
+      return !isEqual_default_value(this.int_value, this.aspect) //!this.$_.isEqual(this.int_value?.value, aspect_default_value(this.aspect))
     },
     disable_done() {
       // console.log("disable_done", this.has_value)
