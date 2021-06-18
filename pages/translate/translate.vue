@@ -82,19 +82,27 @@ export default {
         return this.$t("page.translate.submit_required")
       }
     },
-    total_pages() {
-      // console.log("total", this.setups.length, this.setups.length / this.messages_per_page, Math.ceil(this.setups.length / this.messages_per_page))
-      return Math.ceil(this.message_order.length / this.messages_per_page)
-    },
-    show_translations() {
-      // let translations = Array.from(this.translations.values())
+    selected_messages() {
       let shown_messages = this.message_order
       if (this.show_only_incomplete) {
         shown_messages = shown_messages.filter((t) =>
           ['', null].includes(this.translation_o[t].messages[1])
         )
       }
-      return shown_messages.slice(
+      return shown_messages
+    },
+    total_pages() {
+      // console.log("total", this.setups.length, this.setups.length / this.messages_per_page, Math.ceil(this.setups.length / this.messages_per_page))
+      return Math.ceil(this.selected_messages.length / this.messages_per_page)
+    },
+    show_translations() {
+      // let translations = Array.from(this.translations.values())
+      // console.log(shown_messages)
+      // console.log(shown_messages.slice(
+      //   (this.page - 1) * this.messages_per_page,
+      //   this.page * this.messages_per_page
+      // ))
+      return this.selected_messages.slice(
         (this.page - 1) * this.messages_per_page,
         this.page * this.messages_per_page
       ) // translations.slice((this.page - 1) * this.messages_per_page, (this.page) * this.messages_per_page)
