@@ -7,6 +7,7 @@ export default {
   name: "AspectConditionChecker",
   methods: {
     _condition_fail(aspect, aspect_loc, mode, entry_uuid, conditionals) {
+      console.log("aspect-condition fail check", aspect.name, aspect_loc)
       if (attr(aspect).hasOwnProperty("condition")) {
         return !this.check_recursive_condition(aspect.attr.condition, aspect_loc, mode, entry_uuid, conditionals)
       } else {
@@ -34,7 +35,7 @@ export default {
       if (conditionals) {
         condition_value = recursive_unpack2(select_aspect_loc(null, aspect_loc_str2arr(condition.aspect), false, conditionals))
       } else if (aspect_loc) {
-        let aspect_location = loc_prepend(mode ? EDIT : ENTRY, entry_uuid,
+        let aspect_location = loc_prepend(mode === EDIT ? EDIT : ENTRY, entry_uuid,
           aspect_loc_str2arr(condition.aspect))
         // console.log(aspect_location)
         condition_value = this.$store.getters["entries/value"](aspect_location)
