@@ -69,7 +69,7 @@ export default {
   methods: {
     delete_account() {
       this.$api.actor.delete_account(extract_n_unpack_values(this.aspects)).then(({data}) => {
-        this.ok_snackbar(data.data)
+        this.ok_snackbar(data.msg)
         this.clear_storage()
         this.$store.dispatch("logout")
         this.home()
