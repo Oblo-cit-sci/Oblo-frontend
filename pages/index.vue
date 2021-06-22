@@ -64,6 +64,7 @@ export default {
     this.$store.dispatch("domain/clear_domain", this.$store.getters.ui_language)
     // this was the only reliable way to consistently change (and keep) the window title
     this.$nuxt.$options.head.title = this.$store.getters["app/platform_data"].title
+    console.log(this.visible_domains.length)
   },
   components: {
     Footer,
@@ -72,10 +73,6 @@ export default {
   computed: {
     ...mapGetters({domains: "domain/domains"}),
     ...mapGetters({logged_in: "user/logged_in", initialized: "app/initialized"}),
-    server_name() {
-      // todo env.
-      return this.hostname
-    },
     visible_domains() {
       return this.$_.sortBy(this.domains().filter(d => d.name !== NO_DOMAIN), ["index"])
     },
