@@ -4,10 +4,11 @@ import SettingsChangeMixin from "~/components/global/SettingsChangeMixin";
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin";
 import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
 import EnvMixin from "~/components/global/EnvMixin";
+import LanguageMixin_ from "~/components/downstream/LanguageMixin_";
 
 export default {
   name: "LanguageMxin",
-  mixins: [SettingsChangeMixin, TriggerSnackbarMixin, PersistentStorageMixin, EnvMixin],
+  mixins: [SettingsChangeMixin, TriggerSnackbarMixin, PersistentStorageMixin, EnvMixin, LanguageMixin_],
   computed: {
     default_language() {
       return this.$nuxt.context.env.DEFAULT_LANGUAGE
@@ -117,15 +118,7 @@ export default {
      * @param domain one domain or null, which considers all domain
      * @param language the language required
      */
-    async complete_language_domains(domain, language) {
-      // console.log("completing...", domain, language)
 
-      if (this.$store.getters["domain/has_lang_domain_data"](domain, language)) {
-        // console.log("got it already", domain, language)
-        return Promise.resolve()
-      }
-      return this.init_specifics(domain, language)
-    },
     async init_specifics(domains, language) {
       console.log("init_specifics", domains, language)
       if (!Array.isArray(domains)) {

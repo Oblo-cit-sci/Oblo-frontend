@@ -15,12 +15,11 @@ import {build_tag_select_list, build_tag_select_tree, find_templates_using_code}
 import {mapGetters} from "vuex";
 import {pack_value, unpack} from "~/lib/aspect";
 import {recursive_unpack2} from "~/lib/util";
-import LanguageMixin from "~/components/LanguageMixin";
 
 
 export default {
   name: "FilterMixin",
-  mixins: [LanguageMixin],
+  mixins: [],
   computed: {
     act_config: {
       get: function () {
@@ -105,7 +104,9 @@ export default {
       if (entry.language === default_lang) {
         return entry.title
       } else {
-        return `${entry.title} (${this.t_lang(entry.language)})`
+        // previous: (${this.t_lang(entry.language)})
+        const lang_name = this.$t(`lang.${entry.language}`)
+        return `${entry.title} (${lang_name})`
       }
     },
     get_tags_filter_options(domain_name) {

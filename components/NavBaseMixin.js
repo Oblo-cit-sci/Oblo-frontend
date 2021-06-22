@@ -2,10 +2,13 @@ import {NO_DOMAIN, QP_D, QP_F, VIEW} from "~/lib/consts";
 
 import FixDomainMixin from "~/components/global/FixDomainMixin"
 import {PAGE_DOMAIN, PAGE_INDEX} from "~/lib/pages"
+import HomePathMixin from "~/components/menu/HomePathMixin";
+import LanguageMixin_ from "~/components/downstream/LanguageMixin_";
+import {default_settings} from "~/lib/settings";
 
 export default {
   name: "NavBaseMixin",
-  mixins: [FixDomainMixin],
+  mixins: [FixDomainMixin, HomePathMixin, LanguageMixin_],
   computed: {
     is_domain_page() {
       return this.$route.name === PAGE_DOMAIN
@@ -39,6 +42,19 @@ export default {
           name: PAGE_DOMAIN, query: {[this.domain_param_key]: domain_name}
         })
       }
+    },
+    async prepare_goto_domain(domain_name, language, fixed = false ) {
+      console.log("prepare goto", domain_name, fixed, language)
+      await this.complete_language_domains(domain_name, language)
+      this.$store.commit("domain/set_act_domain", domain_name)
+      this.fix_domain(domain_name)
+      this.$store.commit("domain/set_act_lang_domain_data", {domain_name, language})
+
+      // todo, maybe this should be replaces by something in the store
+      // similar the change of the home route...
+      default_settings.fixed_domain = domain_name
+      // console.log("route name", this.$route.name, this.$route.name === PAGE_INDEX)
+      this.set_home_path_domain(domain_name)
     },
     to_domain(domain_name, fixed = false, callback) {
       this.$router.push({
