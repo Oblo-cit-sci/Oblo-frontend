@@ -5,8 +5,8 @@
     v-toolbar-title
       span.font-weight-bold {{label}}
       div(v-if="!edit") {{value}}
-    v-btn(icon v-if="!edit" color='green' size="32" @click="set_edit(true)")
-      v-icon {{edit_icon}}
+    v-btn(icon v-if="!edit" large @click="set_edit(true)")
+      v-icon(large color="success") {{edit_icon}}
 </template>
 
 <script>

@@ -54,9 +54,9 @@ export const mutations = {
   },
   set_act_lang_domain_data(state, {domain_name, language}) {
     // console.trace()
-    console.log(domain_name, language)
+    // console.log(domain_name, language)
     const domain_base = state.domains.get(domain_name)
-    console.log(domain_base)
+    // console.log(domain_base)
     if (domain_base) {
       let domain_data = domain_base.langs[language]
       if (domain_data) {
@@ -86,7 +86,7 @@ export const actions = {
     const has_domain_lang = getters.has_lang_domain_data(domain_name, language)
     // console.log("set_act_domain_lang")
     if (has_domain_lang) {
-      console.log("SETTING DOMAIN LANG", domain_name, language)
+      // console.log("SETTING DOMAIN LANG", domain_name, language)
       commit("set_act_lang_domain_data", {domain_name, language})
       commit("set_act_domain", domain_name)
       return

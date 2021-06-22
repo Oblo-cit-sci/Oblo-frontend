@@ -26,7 +26,7 @@ import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
 import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
 import NavBaseMixin from "~/components/NavBaseMixin"
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
-import {extract_n_unpack_values} from "~/lib/aspect";
+import {extract_n_unpack_values, pack_value} from "~/lib/aspect";
 import {is_oauth} from "~/lib/actors";
 
 export default {
@@ -44,9 +44,8 @@ export default {
   },
   created() {
     if (this.is_oauth_user) {
-      //
-    } else {
-      // console.log("not an oauth user")
+      this.aspects[0].value = pack_value(this.$store.getters.name)
+      this.aspects[1].value = pack_value("")
     }
     this.$api.actor.init_delete().then(({data}) => {
       this.entries_to_delete = store_received_entries(this.$store, data.data)
@@ -70,7 +69,7 @@ export default {
   methods: {
     delete_account() {
       this.$api.actor.delete_account(extract_n_unpack_values(this.aspects)).then(({data}) => {
-        this.ok_snackbar(data.data)
+        this.ok_snackbar(data.msg)
         this.clear_storage()
         this.$store.dispatch("logout")
         this.home()

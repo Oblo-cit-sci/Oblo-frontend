@@ -113,8 +113,9 @@ export default {
       layer_status: "map/layer_status",
     }),
     map_hidden() {
-      if (this.$vuetify.breakpoint.smAndDown) {
-        this.map_hidden = this.menu_open
+      //
+      if (this.is_small) {
+        return this.menu_open
       }
     },
     packed_layer_status() {
@@ -589,7 +590,7 @@ export default {
       // check since on small screens legend might not be there
       if (this.$refs.legendComponent)
         this.$refs.legendComponent.force_close()
-
+      console.log(event.lngLat)
       // const features = this.map.getSource(MAIN_SOURCE_LAYER)._data.features
       // // console.log(features)
       // for (let f of features) {

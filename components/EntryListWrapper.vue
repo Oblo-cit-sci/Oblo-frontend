@@ -65,7 +65,8 @@ export default {
       this.async_entry_search(search_config, this.entries_uuids.length).then(async ({data}) => {
         const result = data.data
         if (!this.$_.isEmpty(result.entries)) {
-          await this.guarantee_templates_codes(result.entries, this.$store.getters.ui_language)
+          console.log("WAAAITING FOR TEMPLATES")
+          await this.guarantee_templates_codes(result.entries, this.$store.getters.domain_language)
         }
         const entry_uuids = store_received_entries(this.$store, result.entries)
         if (this.$_.isEmpty(this.entries_uuids)) {

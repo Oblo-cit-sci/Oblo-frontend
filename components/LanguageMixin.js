@@ -1,16 +1,14 @@
 import {DOMAIN_LANGUAGE, NO_DOMAIN, UI_LANGUAGE, VALUE} from "~/lib/consts";
-import FilterMixin from "~/components/FilterMixin";
 import {pack_value} from "~/lib/aspect";
 import SettingsChangeMixin from "~/components/global/SettingsChangeMixin";
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin";
 import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
 import EnvMixin from "~/components/global/EnvMixin";
-import OfflineMixin from "~/lib/OfflineMixin";
-import {BUS_MENU_TO_CHANGE} from "~/plugins/bus";
+import LanguageMixin_ from "~/components/downstream/LanguageMixin_";
 
 export default {
   name: "LanguageMxin",
-  mixins: [FilterMixin, SettingsChangeMixin, TriggerSnackbarMixin, PersistentStorageMixin, EnvMixin],
+  mixins: [SettingsChangeMixin, TriggerSnackbarMixin, PersistentStorageMixin, EnvMixin, LanguageMixin_],
   computed: {
     default_language() {
       return this.$nuxt.context.env.DEFAULT_LANGUAGE
@@ -34,7 +32,7 @@ export default {
       //   // console.log(data)
       //   await this.$store.dispatch("domain/add_overviews", data.data)
       // }
-      console.log("change-lang", language)
+      // console.log("change-lang", language)
       await this.change_domain_language(domain_language, update_settings, language !== domain_language)
       // console.log("check have?", language, this.$i18n.availableLocales.includes(language))
       if (!this.$i18n.availableLocales.includes(language)) {
@@ -79,7 +77,7 @@ export default {
     },
     async change_domain_language(domain_language, update_settings = true, snackbar = true) {
       let domain = this.$store.getters["domain/act_domain_name"] // undefined for non-domain
-      console.log("change domain lang", domain, domain_language)
+      // console.log("change domain lang", domain, domain_language)
 
       await this.complete_language_domains(domain, domain_language)
 
@@ -102,7 +100,10 @@ export default {
 
         // UPDATE SEARCH CONFIG
         this.$store.commit("search/replace_in_act_config",
-          Object.assign(this.language_filter_config(),
+          Object.assign({
+              name: "language",
+              t_label: "asp.language.label",
+            },
             {
               value: pack_value([domain_language])
             }))
@@ -117,17 +118,7 @@ export default {
      * @param domain one domain or null, which considers all domain
      * @param language the language required
      */
-    async complete_language_domains(domain, language) {
-      console.log("completing...", domain, language)
 
-      if (this.$store.getters["domain/has_lang_domain_data"](domain, language)) {
-        console.log("got it already", domain, language)
-
-
-        return Promise.resolve()
-      }
-      return this.init_specifics(domain, language)
-    },
     async init_specifics(domains, language) {
       console.log("init_specifics", domains, language)
       if (!Array.isArray(domains)) {

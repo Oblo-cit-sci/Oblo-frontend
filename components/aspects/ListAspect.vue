@@ -4,7 +4,7 @@
       div(v-for="(value, index) in value" :key="index")
         div.py-0(v-if="aspect_is_on_page(index)" :id="panel_id(index)")
           b.m-1(v-if="has_indexTitle") {{titles[index]|| index + 1}}
-          span.float-left(v-if="text_only_item") - &nbsp;
+          span.float-left(v-if="text_only_item && is_view_mode") - &nbsp;
           Aspect.py-0(
             v-bind="list_aspect_props(index)"
             @aspectAction="handleAspectAction($event, index)"
@@ -17,7 +17,8 @@
             v-on:move="move($event)")
       div(v-if="is_view_mode && is_empty")
         .ml-2 {{default_view_text}}
-    div(v-else class="mb-1 mt-1")
+    div.mb-1.mt-1(v-else)
+      // class defined in main.scss
       v-expansion-panels.complex_list_aspect(
         multiple
         v-model="panelState")
@@ -26,7 +27,7 @@
           v-for="(val, index) in value"
           :key="index"
           :id="panel_id(index)")
-          v-expansion-panel-header {{titles[index] || index + 1}}
+          v-expansion-panel-header.my-1 {{titles[index] || index + 1}}
           v-expansion-panel-content
             Aspect(
               v-bind="list_aspect_props(index)"
@@ -41,7 +42,7 @@
       v-if="!is_view_mode && !disabled"
       v-bind="min_max_props")
     .inline(v-if="adding_allowed && !fixed_length")
-      v-btn(:disabled="!more_allowed" @click="add_value()" :color="requieres_more_color") {{$t('comp.list_asp.add', {'item_name': item_label})}}
+      v-btn(:disabled="!more_allowed" @click="add_value()" :color="requieres_more_color") {{$t('comp.list_asp.add', {'item_name': add_item_label})}}
         v-icon mdi-plus
     ListPagination(
       v-if="has_pagination"
@@ -370,6 +371,12 @@ export default {
     },
     is_empty() {
       return this.value.length === 0
+    },
+    add_item_label() {
+      if (this.attr.add_label) {
+        return this.attr.add_label
+      }
+      return this.item_label
     }
   },
   beforeUpdate() {

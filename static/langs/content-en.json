@@ -398,7 +398,7 @@
       "legend": "Legend"
     },
     "list_asp": {
-      "add": "@w.add_item",
+      "add": "@:w.add_item",
       "actions": {
         "delete_item": "delete {item_name}",
         "move_down": "move down",
@@ -469,7 +469,8 @@
       "DEPR_sign_in_with": "Sign in with {service}"
     },
     "previewlist": {
-      "num_entries": "@:w.n_entries"
+      "num_entries": "@:w.n_entries",
+      "filter_change_hint": "Try changing the language or entry type filter"
     },
     "privacy_notification": {
       "h": "Your Privacy",

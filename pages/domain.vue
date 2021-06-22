@@ -41,10 +41,10 @@ export default {
       return !!this.domain_name
     },
     domain_data() {
-      console.log("DD data...", this.has_domain_name)
+      // console.log("DD data...", this.has_domain_name)
       if (!this.has_domain_name)
         return null
-      console.log(this.$store.getters["domain/act_lang_domain_data"])
+      // console.log(this.$store.getters["domain/act_lang_domain_data"])
       return this.$store.getters["domain/act_lang_domain_data"]
       // const language = this.$store.getters["user/settings"].domain_language
       // return this.$store.getters["domain/lang_domain_data"](this.domain_name, language)
@@ -64,6 +64,9 @@ export default {
     if (this.$route.query[QP_F] && !this.is_fixed_domain) {
       this.fix_domain(this.$route.query[QP_F])
     }
+
+    this.$nuxt.$options.head.title = this.domain_data?.title
+    this.show_guidelines()
     // this was the only reliable way to consistently change (and keep) the window title
   },
   mounted() {
@@ -83,16 +86,6 @@ export default {
     }
     this.set_menu_open(false)
     next()
-  },
-  watch: {
-    domain_data: {
-      deep: true,
-      handler: function (data) {
-        console.log("data arrived...")
-        this.$nuxt.$options.head.title = this.domain_data.title
-        this.show_guidelines()
-      }
-    }
   }
 }
 </script>

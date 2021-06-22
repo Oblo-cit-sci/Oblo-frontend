@@ -54,7 +54,7 @@ export default {
   methods: {
     async goto_domain() {
       const language = this.language ? this.language : this.$store.getters.ui_language
-      console.log(language, this.get_domain_language())
+      // console.log(language, this.get_domain_language())
 
       // todo this triggers to many things....?!
       if (this.get_domain_language() !== language) {
