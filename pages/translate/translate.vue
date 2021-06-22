@@ -4,14 +4,13 @@
       v-icon(left) mdi-arrow-left
       span {{$t("page.translate.back")}}
     AspectSet(:aspects="setup_aspects" :values="setup_values" mode="view" compact)
-
     //v-container.pt-1.pb-0(justify-center align-center)
     //  v-row.pl-1()
     //    v-col.py-0(offset=4 cols=6)
     v-row.pb-2
       v-col.py-0(cols=3)
         v-checkbox(v-model="show_only_incomplete" :label="$t('page.translate.only_undone')" hide-details)
-      v-col.py-0(cols=4)
+      v-col.pb-0.pt-4(cols=4 xs="12")
         v-text-field.search_field(
           v-model="search_query"
           :label="$t('comp.search.txt_field_label')"
@@ -20,10 +19,12 @@
           append-icon="mdi-magnify"
           @click:append="search"
           clearable)
-      v-col.py-0
-        v-checkbox(:label="setup_values.src_lang.text" hide-details)
-      v-col.py-0
-        v-checkbox(:label="setup_values.dest_lang.text" hide-details)
+      v-col.pb-0
+        v-btn-toggle(mandatory group v-model="search_in_langs" multiple color="blue")
+          v-btn(tile :disabled="disable_search_lang_selector" :value="setup_values.src_lang.value") {{setup_values.src_lang.text}}
+          v-btn(tile :disabled="disable_search_lang_selector" :value="setup_values.dest_lang.value") {{setup_values.dest_lang.text}}
+      v-col.pb-0(align-self="center")
+        div {{$tc('page.translate.messages', filtered_messages.length)}}
     MessageTranslationBlock(v-for="t in show_translations"
       v-bind="translation_o[t]"
       @update="update_msg(t, $event)"
@@ -33,7 +34,7 @@
       :key="t")
     v-row(justify="center")
       v-col.col-2
-        v-btn(:disabled="disable_submit" @click="submit" color="success" large) {{$t("w.submit")}}
+        v-btn(v-if="page !== 0" :disabled="disable_submit" @click="submit" color="success" large) {{$t("w.submit")}}
     v-sheet(min-height="30px") {{can_change_page_text}}
     SimplePaginate(:total_pages="total_pages" v-model="page" :allow="no_changes")
 </template>
@@ -43,7 +44,7 @@ import {mapGetters} from 'vuex'
 import MessageTranslationBlock from '~/components/language/MessageTranslationBlock'
 import SimplePaginate from '~/components/SimplePaginate'
 import TriggerSnackbarMixin from '~/components/TriggerSnackbarMixin'
-import {DOMAIN, PUBLISHED, SELECT} from '~/lib/consts'
+import {DOMAIN, PUBLISHED} from '~/lib/consts'
 import AspectSet from "~/components/AspectSet";
 import OptionsMixin from "~/components/aspect_utils/OptionsMixin";
 import TranslationSetupMixin from "~/components/language/TranslationSetupMixin";
@@ -74,12 +75,14 @@ export default {
       translation_o,
       search_query: "",
       search_results: null,
+      search_in_langs: []
     }
   },
   created() {
     if (!this.setup.dest_lang) {
       this.$router.push('/translate/setup')
     }
+    this.search_in_langs = [this.src_lang.value, this.dest_lang.value]
   },
   computed: {
     setup_aspects() {
@@ -88,6 +91,15 @@ export default {
         this.domain_select_aspect(), this.entry_select_aspect([this.setup_values["entry"]]),
         this.src_language_select_aspect([this.setup_values["src_lang"]])
       ]
+    },
+    src_lang() {
+      return this.setup_values.src_lang
+    },
+    dest_lang() {
+      return this.setup_values.dest_lang
+    },
+    disable_search_lang_selector() {
+      return !this.search_query
     },
     setup_values() {
       return this.$store.getters['translate/packed_values']
@@ -104,16 +116,16 @@ export default {
       }
     },
     filtered_messages() {
-      let shown_messages = this.message_order
+      let messages = this.message_order
       if (this.show_only_incomplete) {
-        shown_messages = shown_messages.filter((t) =>
+        messages = messages.filter((t) =>
           ['', null].includes(this.translation_o[t].messages[1])
         )
       }
       if (this.search_results !== null) {
-        shown_messages = shown_messages.filter(m => this.search_results.includes(m))
+        messages = messages.filter(m => this.search_results.includes(m))
       }
-      return shown_messages
+      return messages
     },
     total_pages() {
       // console.log("total", this.setups.length, this.setups.length / this.messages_per_page, Math.ceil(this.setups.length / this.messages_per_page))
@@ -134,13 +146,13 @@ export default {
       this.search_results = []
       const query = this.search_query.toLowerCase()
       for (let msg of this.setup.messages) {
-        if (msg[1]) {
+        if (msg[1] && this.search_in_langs.includes(this.src_lang.value)) {
           if (msg[1].toLowerCase().search(query) !== -1) {
             this.search_results.push(msg[0])
             continue
           }
         }
-        if (msg[2]) {
+        if (msg[2] && this.search_in_langs.includes(this.dest_lang.value)) {
           if (msg[2].toLowerCase().search(query) !== -1) {
             this.search_results.push(msg[0])
           }
@@ -302,6 +314,9 @@ export default {
         return
       }
       this.search(query)
+    },
+    search_in_langs() {
+      this.search(this.search_query)
     }
   },
 }
@@ -309,7 +324,7 @@ export default {
 
 <style scoped>
 
-  .search_field {
-    width: 300px;
-  }
+/*.active_class {*/
+/*  background-color: khaki;*/
+/*}*/
 </style>

@@ -58,7 +58,8 @@
     "translate": {
       "back": "back to setup",
       "only_undone": "show only missing or outdated messages",
-      "submit_required": "You have to submit your changes before changing the page"
+      "submit_required": "You have to submit your changes before changing the page",
+      "messages": "no message | 1 message | {n} messages"
     },
     "login": {
       "h1": "@.capitalize:w.login",

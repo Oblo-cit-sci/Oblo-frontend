@@ -113,12 +113,12 @@ export default {
       }
     },
     cols(component) {
-      if (component.attr?.columns) {
-        console.log("custom-cols", component.attr.columns)
-        return component.attr.columns
-      }
-      if(this.$vuetify.breakpoint.mdAndUp) {
-        return this.base_cols/3
+      if (this.$vuetify.breakpoint.mdAndUp) {
+        if (component.attr?.columns) {
+          console.log("custom-cols", component.attr.columns)
+          return component.attr.columns
+        }
+        return this.base_cols / 3
       }
       return this.base_cols
     }
