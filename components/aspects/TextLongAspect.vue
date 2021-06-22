@@ -10,7 +10,8 @@
       :append-outer-icon="clearIcon"
       :hide_details="hide_details"
       @click:append-outer="$emit('aspectAction', {action: 'clear'})"
-
+      :prependIcon="prependIcon"
+      @click:prepend="$emit('aspectAction',{action:'clickPrepend'})"
       :value="value"
       @input="update_value($event)"
       @update:error="$emit('update:error', $event)")
@@ -27,6 +28,9 @@
   export default {
     mixins: [AspectComponentMixin, TextfieldAspect],
     name: "TextLongAspect",
+    props: {
+      prependIcon: String
+    },
     data() {
       return {
         counter:false,

@@ -4,7 +4,7 @@
       v-row.pl-1()
         v-col.pa-0.ma-0(
           v-for="(comp_type, index) in aspect.components" :key="index"
-          alignSelf="stretch" :cols="base_cols" :md="base_cols/3")
+          alignSelf="stretch" :cols="cols(comp_type)")
           Aspect(
             :aspect="comp_type"
             :ext_value="value[comp_type.name]"
@@ -111,6 +111,16 @@ export default {
       for (let component_aspect of Object.values(this.$refs)) {
         component_aspect[0].refresh_original()
       }
+    },
+    cols(component) {
+      if (component.attr?.columns) {
+        console.log("custom-cols", component.attr.columns)
+        return component.attr.columns
+      }
+      if(this.$vuetify.breakpoint.mdAndUp) {
+        return this.base_cols/3
+      }
+      return this.base_cols
     }
   },
   computed: {

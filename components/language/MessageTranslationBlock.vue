@@ -72,7 +72,8 @@ export default {
           attr: {
             max: 90,
             mode,
-            track_change
+            track_change,
+            columns:5
           }
         }
       }
@@ -83,7 +84,7 @@ export default {
       const index_component = {
         name: "index",
         type: "str",
-        attr: {max: 90, mode: VIEW},
+        attr: {max: 90, mode: VIEW, columns:2},
         t_label: "comp.message_translation.index"
       }
       translation_components[1].attr["extra"] = {add_undo: true}

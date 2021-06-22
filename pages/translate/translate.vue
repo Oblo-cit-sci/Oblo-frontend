@@ -4,17 +4,26 @@
       v-icon(left) mdi-arrow-left
       span {{$t("page.translate.back")}}
     AspectSet(:aspects="setup_aspects" :values="setup_values" mode="view" compact)
-    v-checkbox(v-model="show_only_incomplete" :label="$t('page.translate.only_undone')")
-    v-container.pt-1.pb-0(justify-center align-center)
-      v-row.pl-1()
-        v-col.py-0(offset=4 cols=8)
-          v-text-field(
-            v-model="search_query"
-            :label="$t('comp.search.txt_field_label')"
-            solo
-            append-icon="mdi-magnify"
-            @click:append="search"
-            clearable)
+
+    //v-container.pt-1.pb-0(justify-center align-center)
+    //  v-row.pl-1()
+    //    v-col.py-0(offset=4 cols=6)
+    v-row.pb-2
+      v-col.py-0(cols=3)
+        v-checkbox(v-model="show_only_incomplete" :label="$t('page.translate.only_undone')" hide-details)
+      v-col.py-0(cols=4)
+        v-text-field.search_field(
+          v-model="search_query"
+          :label="$t('comp.search.txt_field_label')"
+          solo
+          hide-details
+          append-icon="mdi-magnify"
+          @click:append="search"
+          clearable)
+      v-col.py-0
+        v-checkbox(:label="setup_values.src_lang.text" hide-details)
+      v-col.py-0
+        v-checkbox(:label="setup_values.dest_lang.text" hide-details)
     MessageTranslationBlock(v-for="t in show_translations"
       v-bind="translation_o[t]"
       @update="update_msg(t, $event)"
@@ -299,4 +308,8 @@ export default {
 </script>
 
 <style scoped>
+
+  .search_field {
+    width: 300px;
+  }
 </style>
