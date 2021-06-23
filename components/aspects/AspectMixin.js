@@ -1,13 +1,10 @@
-import {ASP_DISABLED, ASP_SET, ASP_UNSET, EDIT, ENTRY, FLEX, LIST_INDEX, META, REVIEW, VIEW} from "~/lib/consts";
+import {ASP_DISABLED, ASP_SET, ASP_UNSET, EDIT, FLEX, LIST_INDEX, META, REVIEW, VIEW} from "~/lib/consts";
 import {
-  aspect_loc_str2arr,
   aspect_loc_uuid,
   aspect_raw_default_value,
-  check_condition_value, is_editable_mode, loc_prepend,
+   is_editable_mode,
   pack_value, unpack
 } from "~/lib/aspect";
-import {select_aspect_loc} from "~/lib/entry"
-import {recursive_unpack2} from "~/lib/util";
 import AspectConditionChecker from "~/components/aspect_utils/AspectConditionChecker";
 
 

@@ -61,7 +61,7 @@
           v-divider.wide_divider
       v-row()
         v-col(alignSelf="stretch" :cols="base_cols" :style="{padding:0}")
-          AspectSet(v-if="logged_in" :aspects="meta_aspects" :mode="license_privacy_mode" :values.sync="meta_aspects_values" :compact="true")
+          AspectSet(v-if="logged_in" :aspects="meta_aspects" :modes="meta_aspect_modes" :values.sync="meta_aspects_values" :compact="true")
       v-row(v-if="is_creator || is_admin")
         v-col.pb-0(alignSelf="stretch" :cols="base_cols")
           Aspect(:aspect="asp_entry_roles()" :mode="entry_roles_mode" :aspect_loc="aspect_locs[asp_entry_roles().name]" :extra="{entry_is_private: entry.privacy==='private'}" @update:error="update_error('actors', $event)")
@@ -116,7 +116,7 @@ import {CREATOR} from "~/lib/actors"
 import LanguageChip from "~/components/language/LanguageChip";
 import TemplateHelperMixin from "~/components/templates/TemplateHelperMixin";
 import AspectSet from "~/components/AspectSet";
-import {unpack} from "~/lib/aspect";
+import {pack_value, unpack} from "~/lib/aspect";
 import {BUS_DIALOG_OPEN} from "~/plugins/bus";
 
 export default {
@@ -156,7 +156,10 @@ export default {
       router_next: null,
       delete_entry: false,
       disabled_aspects: {},
-      meta_aspects_values: {"privacy": {value: this.entry.privacy}, license: {value: this.entry.license}}
+      meta_aspects_values: {
+        privacy: pack_value(this.entry.privacy),
+        license: pack_value(this.entry.license),
+        language: pack_value(this.entry.language)}
     }
   },
   methods: {
@@ -216,14 +219,6 @@ export default {
     },
     license_aspect() {
       return this.asp_license("license", ["cc_licenses"], null)
-    },
-    // TODO should go to a mixin
-    license_privacy_mode() {
-      if (this.logged_in && this.is_creator || this.$store.getters["user/is_admin"]) {
-        return EDIT
-      } else {
-        return VIEW
-      }
     },
     entry_roles_mode() {
       if (this.is_creator) {

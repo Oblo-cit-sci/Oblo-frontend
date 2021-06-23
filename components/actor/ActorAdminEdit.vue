@@ -65,7 +65,7 @@ export default {
               value: "editor"
             }
           }),
-        this.asp_language(null, undefined, false, {
+        this.asp_language("language", undefined, false, {
           hide_on_disabled: true,
           condition: {
             aspect: "# global_role",

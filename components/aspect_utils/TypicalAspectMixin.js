@@ -157,6 +157,7 @@ export default {
     },
     asp_language(name = LANGUAGE, alt_label_descr = undefined, single_select = true, attr = {}) {
       return {
+        name,
         t_label: this.t_label("asp.language.", alt_label_descr),
         t_description: this.t_description("asp.language.", alt_label_descr),
         type: single_select ? SELECT : MULTISELECT,

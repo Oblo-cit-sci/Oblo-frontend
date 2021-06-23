@@ -7,7 +7,6 @@ import {
   DRAFT,
   EDIT,
   ENTRY,
-  GLOBAL,
   META,
   META_ASPECT_LIST,
   PUBLISHED,
@@ -42,7 +41,8 @@ export default {
   data() {
     return {
       // aspect_locs: {},
-      aspect_extras: {}
+      aspect_extras: {},
+      meta_aspect_modes: {}
     }
   },
   async created() {
@@ -53,7 +53,23 @@ export default {
       // todo be more generic where the licenses come form. user settings...
       // console.log(this.get_meta_aspects(this.entry.domain))
       // todo, allow changing the language if(this.$store.getter.user.editor_config.)
-      return [this.license_aspect, this.asp_privacy()] //this.get_meta_aspects(this.entry.domain) // [this.license_aspect, this.asp_privacy()]
+      let aspects = [this.license_aspect, this.asp_privacy()]
+      for (let aspect of aspects) {
+        this.meta_aspect_modes[aspect.name] = this.license_privacy_mode
+      }
+      if (this.is_review_mode) {
+        const lang_asp = this.asp_language()
+        aspects.push(lang_asp)
+        this.meta_aspect_modes[lang_asp.name] = EDIT
+      }
+      return aspects
+    },
+    license_privacy_mode() {
+      if (this.logged_in && this.is_creator || this.$store.getters["user/is_admin"]) {
+        return EDIT
+      } else {
+        return VIEW
+      }
     },
     uuid() {
       return this.entry.uuid
@@ -91,10 +107,11 @@ export default {
     is_creator() {
       // console.log(this.creator, this.$store.getters.registered_name)
       // there might be no creator in review mode
-      if(this.creator.registered_name === this.username) {
+      if ((this.creator.registered_name === this.username) ===
+        (this.$_.get(this.creator, "registered_name") === this.username)) {
         console.info("todo, should the same and used like this. replace below if persistent")
       } else {
-        console.warn("todo fix this!")
+        console.warn("todo fix this! creator:", this.creator, "username:", this.username)
       }
       return this.$_.get(this.creator, "registered_name") === this.username
     },
@@ -241,7 +258,7 @@ export default {
         return this.template.title
       else {
         let full_title = this.include_etype_in_title ? this.template.title : ""
-        if(this.include_etype_in_title) {
+        if (this.include_etype_in_title) {
           full_title += title ? ": " + title : ""
         } else {
           full_title = title

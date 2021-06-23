@@ -590,7 +590,7 @@ export default {
       // check since on small screens legend might not be there
       if (this.$refs.legendComponent)
         this.$refs.legendComponent.force_close()
-      console.log(event.lngLat)
+      // console.log(event.lngLat)
       // const features = this.map.getSource(MAIN_SOURCE_LAYER)._data.features
       // // console.log(features)
       // for (let f of features) {

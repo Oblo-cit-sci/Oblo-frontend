@@ -7,7 +7,7 @@ export default {
   name: "AspectConditionChecker",
   methods: {
     _condition_fail(aspect, aspect_loc, mode, entry_uuid, conditionals) {
-      console.log("aspect-condition fail check", aspect.name, aspect_loc)
+      // console.log("aspect-condition fail check", aspect.name, aspect_loc)
       if (attr(aspect).hasOwnProperty("condition")) {
         return !this.check_recursive_condition(aspect.attr.condition, aspect_loc, mode, entry_uuid, conditionals)
       } else {

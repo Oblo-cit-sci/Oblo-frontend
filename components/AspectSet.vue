@@ -13,7 +13,7 @@
             @update:state="state[aspect.name] = $event"
             @aspectAction="aspectAction($event)"
             :extra="{clearable:false}"
-            :mode="mode")
+            :mode="aspect_mode(aspect.name)")
     div(v-else)
       v-row(v-for="aspect in aspects" :key="aspect.name")
         v-col.py-0(cols=10)
@@ -49,6 +49,9 @@ export default {
     mode: {
       type: String,
       default: VIEW
+    },
+    modes: {
+      type: Object
     },
     values: {
       type: Object
@@ -139,6 +142,13 @@ export default {
     },
     hide_aspect_col(aspect) {
       return this.state[aspect.name] === 'disabled' && aspect.attr?.hide_on_disabled
+    },
+    aspect_mode(aspect_name) {
+      if(this.modes) {
+        return this.modes[aspect_name] || VIEW
+      } else {
+        return this.mode || VIEW
+      }
     }
   },
   watch: {
