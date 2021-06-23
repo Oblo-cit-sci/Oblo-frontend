@@ -1,5 +1,11 @@
 import {EDIT, REVIEW, VIEW} from "~/lib/consts";
-import {aspect_default_value, aspect_loc_uuid, aspect_raw_default_value, pack_value} from "~/lib/aspect";
+import {
+  aspect_default_value,
+  aspect_loc_uuid,
+  aspect_raw_default_value,
+  is_editable_mode,
+  pack_value
+} from "~/lib/aspect";
 import {mapGetters} from "vuex"
 import AspectBaseMixin from "~/components/aspect_utils/AspectBaseMixin";
 
@@ -79,7 +85,7 @@ export default {
       return this.mode === REVIEW
     },
     is_editable_mode() {
-      return [EDIT, REVIEW].includes(this.mode)
+      return is_editable_mode(this.mode)
     },
     is_view_mode() {
       return this.mode === VIEW

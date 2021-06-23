@@ -1,5 +1,5 @@
 import {settings_loc_privacy_ask, settings_loc_privacy_exact, settings_loc_privacy_random} from "~/lib/settings"
-import {MULTISELECT, SELECT, STR} from "~/lib/consts"
+import {LANGUAGE, MULTISELECT, SELECT, STR} from "~/lib/consts"
 import {pack_value, unpack} from "~/lib/aspect";
 import LanguageMixin from "~/components/LanguageMixin";
 import {object_list2options} from "~/lib/options";
@@ -16,7 +16,7 @@ export default {
     description(base_name, alt_descr) {
       return this.$t(this.t_description(base_name, alt_descr))
     },
-    t_label(base_name, alt_label) {
+    t_label(base_name, alt_label) { // todo: refactor?! same with descr.
       return base_name + (alt_label ? "alt_label." + alt_label : "label")
     },
     t_description(base_name, alt_descr) {
@@ -155,9 +155,8 @@ export default {
         error: true
       }
     },
-    asp_language(name = null, alt_label_descr = undefined, single_select = true, attr = {}) {
+    asp_language(name = LANGUAGE, alt_label_descr = undefined, single_select = true, attr = {}) {
       return {
-        name: name ? name : "language",
         t_label: this.t_label("asp.language.", alt_label_descr),
         t_description: this.t_description("asp.language.", alt_label_descr),
         type: single_select ? SELECT : MULTISELECT,

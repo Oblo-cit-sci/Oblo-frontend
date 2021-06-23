@@ -75,7 +75,7 @@ export default {
   computed: {
     ...mapGetters({connected: "app/connected", logged_in: "user/logged_in"}),
     show_submit() {
-      return !this.is_view_mode && !this.is_review_mode && !this.in_context && this.entry.status !== "rejected"
+      return this.is_edit_mode && this.entry.status !== "rejected"
     },
     disable_submit() {
       if (!this.connected || !this.entry_complete || this.has_errors) {
@@ -91,9 +91,7 @@ export default {
       return this.logged_in && this.allow_download //this.template.rules.download
     },
     save_text() {
-      if (this.in_context) {
-        return this.$t("comp.entry_action_buttons.btn_save.save_n_back")
-      } else if (this.private_local) {
+      if (this.private_local) {
         return this.$t("comp.entry_action_buttons.btn_save.save")
       } else if (this.is_draft) {
         return this.$t("comp.entry_action_buttons.btn_save.save_draft")

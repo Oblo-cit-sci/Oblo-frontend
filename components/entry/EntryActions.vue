@@ -29,7 +29,6 @@ import EntryMixin from "./EntryMixin";
 import {mapGetters} from "vuex"
 import EntryActionButtons from "~/components/entry/EntryActionButtons"
 import {prepare_for_submission} from "~/lib/entry"
-import {base64file_to_blob} from "~/lib/util"
 import AttachedFilesMixin from "~/components/aspect_utils/AttachedFilesMixin";
 import {BUS_DIALOG_OPEN} from "~/plugins/bus";
 

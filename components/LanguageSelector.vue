@@ -21,6 +21,7 @@ import LanguageMixin from "~/components/LanguageMixin";
 import {PAGE_DOMAIN, PAGE_ENTRY} from "~/lib/pages";
 import URLQueryMixin from "~/components/util/URLQueryMixin";
 import {create_option} from "~/lib/options";
+import {is_editable_mode} from "~/lib/aspect"
 
 /**
  * TODO.
@@ -62,7 +63,7 @@ export default {
       return available_languages
     },
     is_disabled() {
-      return (this.$route.name === PAGE_ENTRY && this.entry_mode === EDIT)
+      return (this.$route.name === PAGE_ENTRY && is_editable_mode(this.entry_mode)  )
     },
     language: {
       get: function () {

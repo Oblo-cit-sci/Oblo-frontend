@@ -3,7 +3,7 @@ import {
   aspect_loc_str2arr,
   aspect_loc_uuid,
   aspect_raw_default_value,
-  check_condition_value, loc_prepend,
+  check_condition_value, is_editable_mode, loc_prepend,
   pack_value, unpack
 } from "~/lib/aspect";
 import {select_aspect_loc} from "~/lib/entry"
@@ -124,7 +124,7 @@ export default {
       return this.mode === EDIT
     },
     is_editable_mode() {
-      return [EDIT, REVIEW].includes(this.mode)
+      return is_editable_mode(this.mode)
     },
     show_is_optional() {
       return !this.is_required && this.edit

@@ -341,7 +341,6 @@
     "entry_action_buttons": {
       "btn_save": {
         "save": "@:w.save",
-        "save_n_back": "@:w.save and back",
         "save_draft": "save draft"
       },
       "not_logged_in": {

@@ -1,5 +1,5 @@
 import {get_creator, get_entry_titleAspect, has_parent} from "~/lib/entry";
-import {aspect_loc_str2arr, loc_append, loc_prepend} from "~/lib/aspect";
+import {aspect_loc_str2arr, is_editable_mode, loc_append, loc_prepend} from "~/lib/aspect";
 import {mapGetters} from "vuex"
 
 import {
@@ -52,8 +52,7 @@ export default {
     meta_aspects() {
       // todo be more generic where the licenses come form. user settings...
       // console.log(this.get_meta_aspects(this.entry.domain))
-      // this.license_aspect
-      // this.asp_privacy()
+      // todo, allow changing the language if(this.$store.getter.user.editor_config.)
       return [this.license_aspect, this.asp_privacy()] //this.get_meta_aspects(this.entry.domain) // [this.license_aspect, this.asp_privacy()]
     },
     uuid() {
@@ -61,9 +60,6 @@ export default {
     },
     entry_date() {
       return printDate(new Date(this.entry.creation_ts))
-    },
-    in_context() {
-      return (this.template.rules.context || GLOBAL) !== GLOBAL
     },
     tags_config() {
       return this.$_.get(this.template.rules, "tags_config", [])
@@ -95,6 +91,11 @@ export default {
     is_creator() {
       // console.log(this.creator, this.$store.getters.registered_name)
       // there might be no creator in review mode
+      if(this.creator.registered_name === this.username) {
+        console.info("todo, should the same and used like this. replace below if persistent")
+      } else {
+        console.warn("todo fix this!")
+      }
       return this.$_.get(this.creator, "registered_name") === this.username
     },
     template_slug() {
@@ -180,7 +181,7 @@ export default {
       return this.mode === REVIEW
     },
     is_editable_mode() {
-      return [EDIT, REVIEW].includes(this.mode)
+      return is_editable_mode(this.mode)
     },
     tags() {
       // console.log("template", this.template.entry_refs, this.entry.tags)
