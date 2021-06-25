@@ -215,7 +215,7 @@ export default {
             return this.$t("comp.location_asp.public_loc.options.region")
           }
         } else {
-          console.log("is region")
+          // console.log("is region")
           return this.$t("comp.location_asp.option_region")
         }
       } else {
@@ -344,29 +344,24 @@ export default {
       }
     },
     async search_result_selected(selection) {
-      // console.log("selected_search_result-watch", sel, this.search_results)
+      // console.log("search_result_selected", this.search_results, selection)
       if (!selection) {
         this.snap_to_existing = false
         this.update_value(null)
       } else {
         const feature = this.$_.find(this.search_results, feature => feature.id === selection)
-        // console.log("srs", feature, feature.place_type[0])
-
+        // console.log("search_result_selected-feature", feature)
+        // console.log("search_result_selected-coords", arr2coords(feature.geometry.coordinates))
         // TODO dont call this or only use the first part...
-        this.complete_value({
-          coordinates: arr2coords(feature.geometry.coordinates),
-          location_precision: LOCATION_PRECISION_REGION,
-        }, feature)
-
-
-        // try {
-        //   const place_type = selection.split(".")[0]
-        // } catch (e) {
-        //   console.error(e)
-        // }
-        // precision_options
-        // select the smallest given, which comes from the results...
-        this.selected_prec_option = 2
+        try {
+          this.complete_value({
+            coordinates: arr2coords(feature.geometry.coordinates),
+            location_precision: LOCATION_PRECISION_REGION,
+          }, feature)
+          this.selected_prec_option = 2
+        } catch (e) {
+          console.error(e)
+        }
       }
     },
     /* map */
@@ -482,7 +477,8 @@ export default {
     },
     /* util */
     complete_value(value, features) {
-      console.log(value, features)
+      // console.log(value, features)
+      // debugger
       /*
       value contains just the coordinates
       features should have the results of rev-geoquery of the coordinates
@@ -523,12 +519,8 @@ export default {
       if (!Array.isArray(features)) {
         option = features.text
       }
-      console.log("public pos options", option)
+      // console.log("public pos options", option)
 
-      // if (!this.point_location_precision) {
-      //   // console.log("CC", value.place, value.location_precision, features[0].text)
-      //   option = features[0].text// value.place[value.location_precision].name
-      // } else {
       if (this.privacy_setting === settings_loc_privacy_ask) {
         this.selected_prec_option = 1
       }
@@ -642,6 +634,7 @@ export default {
         delete public_loc.place["place"] // remove lowest resolution for privacy
         public_loc.place_name = place2str(public_loc.place)
       } else {
+        // public_loc.coordinates = value.coordinates
         public_precision = PREC_OPTION_REGION
         public_loc.place = {}
         let add_to_place = false
@@ -649,10 +642,13 @@ export default {
           const place = value.place[place_type]
           // console.log(place_type, place)
           if (place) {
+            // todo beware, name could be the same for city and region
             if (place.name === option) {
               public_loc.location_precision = place_type
-              public_loc.coordinates = place.coordinates
-              add_to_place = true
+              if (place.coordinates) {
+                public_loc.coordinates = place.coordinates
+                add_to_place = true
+              }
             }
             if (add_to_place) {
               public_loc.place[place_type] = place
@@ -660,6 +656,10 @@ export default {
           }
         }
         public_loc.place_name = place2str(public_loc.place)
+        if(!public_loc.coordinates) {
+          console.warn("public location has no coordinates. setting to give location")
+          public_loc.coordinates = value.coordinates
+        }
       }
       return {public_precision, public_loc}
     },
