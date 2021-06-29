@@ -48,13 +48,20 @@
           :mode="mode")
     v-row(v-for="(aspect) in shown_aspects" :key="aspect.name")
       v-col(alignSelf="stretch" :cols="base_cols" :style="{padding:0}")
-        v-scroll-y-transition
+        <!-- TODO how to keep this slimmer ?! -->
+        v-scroll-y-transition(v-if="is_editable_mode")
           Aspect(
             :aspect="aspect"
             :aspect_loc="aspect_locs[aspect.name]"
             :extra="aspect_extras"
             @aspectAction="aspectAction($event)"
             :mode="mode")
+        Aspect(v-else
+          :aspect="aspect"
+          :aspect_loc="aspect_locs[aspect.name]"
+          :extra="aspect_extras"
+          @aspectAction="aspectAction($event)"
+          :mode="mode")
     div(v-if="is_first_page && is_editable_mode")
       v-row
         v-col(:cols="base_cols")
