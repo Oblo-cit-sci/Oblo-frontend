@@ -139,13 +139,13 @@ export default {
       }
     },
     select(item) {
-      // console.log("selected". item)
+      console.log("selected",item)
       // debugger
       if (this.disabled)
         return
       if (item.value === undefined)
         return;
-      if (this.selection && this.selection.value === item.value && this.clearable) {
+      if (this.selection && this.selection.value === item.value) {
         this.emitUp(null)
       } else {
         this.emitUp(item)
