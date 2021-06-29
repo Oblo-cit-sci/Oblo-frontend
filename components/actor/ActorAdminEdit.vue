@@ -33,47 +33,37 @@ export default {
     actor: Object
   },
   data() {
-    return {
-      aspects: [{
-        type: SELECT,
-        t_label: "page.actor.admin.asp_global_role",
-        name: "global_role",
-        attr: {
-          force_view: "select",
-          extra: {
-            rules: [
-              // v => v && v.length >= 4 || 'Username must have at 4 characters',
-            ]
-          }
-        },
-        value: pack_value(),
-        items: [
-          {text: this.$t("comp.global_role.user"), value: USER},
-          {text: this.$t("comp.global_role.editor"), value: EDITOR},
-          {text: this.$t("comp.global_role.admin"), value: ADMIN}
-        ],
-        error: true
-      },
-        this.asp_domain_select("domain",
-          "page.actor.admin.asp_editor_for_domain",
-          true,
-          {
+    const editor_config_aspects = this.asp_set_editor_config()
+    editor_config_aspects.forEach(a => {
+      a.attr.condition = {
+        aspect: "# global_role",
+        value: "editor"
+      }
+    })
+      return {
+        // todo use typicalAspectMixin.asp_set_editor_config
+        aspects: [{
+          type: SELECT,
+          t_label: "page.actor.admin.asp_global_role",
+          name: "global_role",
+          attr: {
             force_view: "select",
-            hide_on_disabled: true,
-            condition: {
-              aspect: "# global_role",
-              value: "editor"
+            extra: {
+              rules: [
+                // v => v && v.length >= 4 || 'Username must have at 4 characters',
+              ]
             }
-          }),
-        this.asp_language("language", undefined, false, {
-          hide_on_disabled: true,
-          condition: {
-            aspect: "# global_role",
-            value: "editor"
-          }
-        })],
-      has_errors: null
-    }
+          },
+          value: pack_value(),
+          items: [
+            {text: this.$t("comp.global_role.user"), value: USER},
+            {text: this.$t("comp.global_role.editor"), value: EDITOR},
+            {text: this.$t("comp.global_role.admin"), value: ADMIN}
+          ],
+          error: true
+        }].concat(editor_config_aspects),
+        has_errors: null
+      }
   },
   created() {
     const user_data = this.$_.cloneDeep(this.actor)

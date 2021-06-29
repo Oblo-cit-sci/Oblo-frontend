@@ -27,6 +27,10 @@
           :ext_value.sync="aspect.value"
           @update:error="$set(aspect, 'error', $event)"
           :mode="mode")
+    <!-- Editor info -->
+    div(v-if="is_editor && mode === 'view'")
+      h2 {{$t('comp.global_role.editor')}}
+      AspectSet(:aspects="editor_config_aspects" :values="editor_config_values" mode="view")
     <!-- Email and Password edit -->
     div(v-if="can_edit_email_password")
       h3 {{$t('page.profile.h_email_password')}}
@@ -98,7 +102,7 @@
 
 
 import Aspect from "../components/Aspect";
-import {DRAFT, EDIT, NO_DOMAIN, VIEW, VISITOR} from "~/lib/consts";
+import {DOMAIN, DRAFT, EDIT, EDITOR, LANGUAGE, NO_DOMAIN, VIEW, VISITOR} from "~/lib/consts";
 
 import {mapGetters} from "vuex"
 import {extract_n_unpack_values, pack_value, set_value_and_error} from "~/lib/aspect";
@@ -162,6 +166,9 @@ export default {
       // todo todo is this??, for which domain? always just on fixed?
       domain_specific_aspects: [],
       domain_specific_aspects_values: {},
+      // set in created, when user is editor
+      editor_config_aspects: null,
+      editor_config_values: null,
 
       waiting: false,
     }
@@ -172,6 +179,15 @@ export default {
     }
     this.language_aspects()
     this.reset_edit_values()
+
+    if (this.is_editor) {
+      this.editor_config_aspects = this.asp_set_editor_config()
+      this.editor_config_values = {
+        [DOMAIN]: pack_value(this.user_data.editor_config.domain),
+        [LANGUAGE]: pack_value(this.user_data.editor_config.language)
+      }
+    }
+    // editor_config_aspects" :values="editor_config_values"
   },
   methods: {
     goto_top() {
@@ -384,6 +400,9 @@ export default {
     // },
     any_invalid() {
       return this.$_.some(this.profile_aspects, (a) => a.hasOwnProperty("error") && a.error)
+    },
+    is_editor() {
+      return this.user_data.global_role === EDITOR
     }
   },
   watch: {

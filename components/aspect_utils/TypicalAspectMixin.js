@@ -1,5 +1,5 @@
 import {settings_loc_privacy_ask, settings_loc_privacy_exact, settings_loc_privacy_random} from "~/lib/settings"
-import {LANGUAGE, MULTISELECT, SELECT, STR} from "~/lib/consts"
+import {ADMIN, EDITOR, LANGUAGE, MULTISELECT, SELECT, STR, USER} from "~/lib/consts"
 import {pack_value, unpack} from "~/lib/aspect";
 import LanguageMixin from "~/components/LanguageMixin";
 import {object_list2options} from "~/lib/options";
@@ -249,6 +249,19 @@ export default {
         t_description: "asp.entry_roles.descr",
         type: "entry_roles"
       }
+    },
+    asp_set_editor_config() {
+      return [
+        this.asp_domain_select("domain",
+          "page.actor.admin.asp_editor_for_domain",
+          true,
+          {
+            force_view: "select",
+            hide_on_disabled: true,
+          }),
+        this.asp_language("language", undefined, false, {
+          hide_on_disabled: true,
+        })]
     }
   }
 }
