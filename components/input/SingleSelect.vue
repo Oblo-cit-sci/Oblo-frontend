@@ -53,6 +53,7 @@ and optional "description"
 
 import SelectGrid from "~/components/aspect_utils/SelectGrid"
 import LanguageCodeFallback from "~/components/aspect_utils/LanguageCodeFallback";
+import ResponsivenessMixin from "~/components/ResponsivenessMixin";
 
 let select_tresh = 6;
 let autocomplet_thresh = 20
@@ -68,6 +69,7 @@ const GRID = "grid"
 
 export default {
   name: "SingleSelect",
+  mixins: [ResponsivenessMixin],
   components: {LanguageCodeFallback, SelectGrid},
   props: {
     options: Array,
@@ -228,7 +230,7 @@ export default {
       return this.$_.find(this.options, (o) => o.description && o.description !== "") !== undefined
     },
     view_clearlist() {
-      return this.viewStyle === CLEAR_LIST
+      return this.viewStyle === CLEAR_LIST || this.is_xsmall
     },
     view_select() {
       return this.viewStyle === SELECT

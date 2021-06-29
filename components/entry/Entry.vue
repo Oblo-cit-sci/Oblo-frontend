@@ -258,7 +258,7 @@ export default {
       return this.entry.tags && Object.keys(this.entry.tags).length > 0
     },
     allow_download() {
-      console.log("allow_download", this.$_.get(this.template.rules, "allow_download", true))
+      // console.log("allow_download", this.$_.get(this.template.rules, "allow_download", true))
       return this.$_.get(this.template.rules, "allow_download", true)
     },
     entry_actions_props() {

@@ -1,5 +1,5 @@
 <template lang="pug">
-  div(v-if="!is_view_mode")
+  div(v-if="is_editable_mode")
     v-list(v-if="list_view")
       <!-- mandatory does only check if min > 1 -->
       v-list-item-group(v-model="selection_index" multiple active-class="in_selection" :mandatory="mandatory" :max="max_vals")
@@ -27,12 +27,13 @@
 <script>
 import SelectMixin from "./SelectMixin";
 import AspectComponentMixin from "./AspectComponentMixin";
+import ResponsivenessMixin from "~/components/ResponsivenessMixin";
 
 // maybe also for v-select:
 // :prepend-inner-icon="!menu_open ? 'mdi-check' : ''"
 export default {
   name: "MultiSelectAspect",
-  mixins: [AspectComponentMixin, SelectMixin],
+  mixins: [AspectComponentMixin, SelectMixin, ResponsivenessMixin],
   data() {
     return {
       init: true,
@@ -58,7 +59,7 @@ export default {
       }
     },
     list_view() {
-      return this.edit_view === "list"
+      return this.edit_view === "list" || this.is_xsmall
     },
     select_view() {
       return this.edit_view === "select"

@@ -6,8 +6,7 @@
     v-list(v-if="has_selection")
       div.ml-3 {{$t('comp.treeleaf_picker.current')}}
       v-list-item(v-for="(node, index) of value", :key="index")
-        v-list-item-content
-          v-list-item-title {{levelname(index)}}: {{node.text}} {{extra_text(node)}}
+        v-list-item-content {{levelname(index)}}: {{node.text}} {{extra_text(node)}}
         v-list-item-action
           v-btn(icon @click="remove(index)")
             v-icon mdi-step-backward
