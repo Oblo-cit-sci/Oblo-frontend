@@ -139,7 +139,7 @@ export default {
       }
     },
     select(item) {
-      console.log("selected",item)
+      // console.log("selected",item)
       // debugger
       if (this.disabled)
         return

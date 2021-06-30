@@ -335,7 +335,14 @@ export default {
               return ec
             }, {})
             if (this.$_.size(entry_counts) <= 5) {
-              popup_html = this.$_.map(entry_counts, f => "<div> &#183; " + f[0] + ", " + this.$tc("comp.map_wrapper.locations", f[1]) + "</div>").join("")
+              popup_html = this.$_.map(entry_counts, f => {
+                let text = `<div> &#183; ${f[0]}`
+                if (f[1] > 1) {
+                  text += `,  ${this.$tc("comp.map_wrapper.locations", f[1])}`
+                }
+                text += "</div>"
+                return text
+              }).join("")
             } else {
               popup_html = `${this.$_.size(entry_counts)} entries`
             }
