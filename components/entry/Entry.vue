@@ -10,7 +10,7 @@
           dc_title
           :title="entry_title"
           header_type="h3"
-          :description="template.description"
+          :description="get_description"
           :mode="mode")
           span.ml-1(:style="{'color': draft_color}") {{is_draft ? "[" + $t('comp.entrypreview.draft') +"]" : ""}}
     v-row
@@ -220,6 +220,12 @@ export default {
       } else {
         return [ENTRY, this.uuid]
       }
+    },
+    get_description() {
+      const long_description = this.template.values?.long_description
+      if (long_description)
+        return long_description
+      return this.template.description
     },
     show_validation_comp() {
       return this.is_edit_mode || this.is_review_mode

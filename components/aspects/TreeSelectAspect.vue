@@ -91,7 +91,10 @@ export default {
     if (this.is_editable_mode) {
       if (this.direct_select) {
         let options = {}
-        if (this.attr.allow_select_levels) {
+        if (this.attr.direct_select_levels) {
+          options.include_levels = this.attr.direct_select_levels
+        }
+        else if (this.attr.allow_select_levels) {
           options.include_levels = this.attr.allow_select_levels
         } else {
           options.include_levels = [this.tree.levels.length - 1]
@@ -110,7 +113,7 @@ export default {
       this.$emit("aspectAction", {action: "clear"})
       this.int_value = []
     },
-    openDialog(short_persistence) {
+    openDialog() {
       if (!this.disabled) {
         this.dialogOpen = true
       }
@@ -118,6 +121,13 @@ export default {
     auto_select(value) {
       const result = this.$_.concat((value.parents || []), [value])
       this.update_value(result)
+      this.int_value = result
+      // if the aspect defines "direct_select_levels" which are different to the "allow_select_levels"
+      // (what can be a value), it might end up in an non-acceptable level, so it should go into the tree-leaf-picker
+      const should_be_in_level = this.attr.allow_select_levels || [this.tree.levels.length - 1]
+      if (!should_be_in_level.includes(result.length)) {
+        this.openDialog()
+      }
     },
     open_if_empty() {
       if (!this.disabled && this.is_empty) {
