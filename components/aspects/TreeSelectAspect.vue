@@ -102,7 +102,7 @@ export default {
         this.flat_options = this.get_flat_options(options)
       }
       // console.log("created", this.extra, this.value)
-      if (this.extra.listitem && this.is_empty) {
+      if (this.extra.listitem && this.is_empty && !this.direct_select) {
         this.dialogOpen = true
       }
     }

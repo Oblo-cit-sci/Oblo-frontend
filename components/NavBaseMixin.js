@@ -79,6 +79,8 @@ export default {
         const {name, query} = this.$route
         this.$store.commit("init_page_path",{name, query})
       }
+      // console.log("has full entry", this.$store.getters["entries/has_full_entry"](uuid))
+      // console.log("checkk", this.$store.getters["entries/get_entry"](uuid))
       this.$router.push(route)
     },
     to_no_entry_route() {

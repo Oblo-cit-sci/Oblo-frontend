@@ -7,9 +7,52 @@ export default {
   computed: {
     ...mapGetters({act_config: "search/get_act_config"})
   },
+  created() {
+    this.debounced_search = this.$_.debounce(this.search_entries, 1000)
+  },
   methods: {
+    search_entries(config, offset = 0) {
+      const prepend = config.required.some(r => r.name === "before_ts")
+      this.$api.entries.search(
+        this.$_.get(config, "page.limit", offset > 0 ? 20 : 40), // initially grab 40 (1page), then always 1 more
+        this.$_.get(config, "page.offset", offset),
+        config)
+        .then(({data}) => {
+          const count = data.data.count
+          const entries = data.data.entries
+          const all_uuids = data.data.all_uuids
+          const entry_uuids = this.store_received_entries(entries)
+          if (all_uuids) {
+            if (prepend) {
+              this.$store.commit("search/add_all_uuids", all_uuids)
+            } else {
+              this.$store.commit("search/set_all_uuids", all_uuids)
+            }
+          }
+          if (offset === 0) {
+            if (prepend) {
+              this.$store.commit("search/prepend_entries", entry_uuids)
+              this.$store.commit("search/increase_search_count", count)
+            } else {
+              this.$store.commit("search/set_entries", entry_uuids)
+              this.$store.commit("search/set_search_count", count)
+            }
+            const ts = data.data.ts
+            this.$store.commit("search/set_searchtime", ts)
+          } else {
+            this.$store.commit("search/append_entries", entry_uuids)
+          }
+          this.$store.commit("search/set_searching", false)
+        }).catch(err => {
+        console.log("search_entries err", err)
+        this.$store.commit("search/set_searching", false)
+      })
+    },
+    debounced_search() {
+      // will be replaced in created...
+    },
     store_received_entries(entries) {
-      this.$store.commit("entries/save_entries", entries)
+      this.$store.dispatch("entries/save_entries", entries)
       return entries.map(e => e.uuid)
     },
     check_missing_meta(uuids) {

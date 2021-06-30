@@ -45,7 +45,6 @@
 
 import {mapGetters, mapMutations} from "vuex"
 import EntryPreviewList from "../entry/EntryPreviewList"
-import {debounced_search, search_entries} from "~/lib/client"
 import FilterMixin from "../FilterMixin";
 import NavBaseMixin from "../NavBaseMixin";
 import PersistentStorageMixin from "../util/PersistentStorageMixin";
@@ -365,9 +364,9 @@ export default {
 
         // const prepend = this.entries().length > 0
         if (debounce) {
-          debounced_search(this.$api, this.$store, config)
+          this.debounced_search(config)
         } else {
-          search_entries(this.$api, this.$store, config)
+          this.search_entries(config)
         }
       }
       // TODO would be nice to have the debounced search work with a promise so we do not need the have done-flags in the store...

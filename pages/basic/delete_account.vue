@@ -19,7 +19,6 @@
 
 <script>
 import Aspect from "~/components/Aspect"
-import {store_received_entries} from "~/lib/client"
 import EntryListWrapper from "~/components/EntryListWrapper"
 import CompactEntryList from "~/components/entry/CompactEntryList"
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
@@ -28,10 +27,11 @@ import NavBaseMixin from "~/components/NavBaseMixin"
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
 import {extract_n_unpack_values, pack_value} from "~/lib/aspect";
 import {is_oauth} from "~/lib/actors";
+import EntrySearchMixin from "~/components/EntrySearchMixin";
 
 export default {
   name: "delete_account",
-  mixins: [TriggerSnackbarMixin, PersistentStorageMixin, NavBaseMixin, TypicalAspectMixin],
+  mixins: [TriggerSnackbarMixin, PersistentStorageMixin, NavBaseMixin, TypicalAspectMixin, EntrySearchMixin],
   components: {CompactEntryList, EntryListWrapper, Aspect},
   props: {},
   data() {
@@ -48,7 +48,7 @@ export default {
       this.aspects[1].value = pack_value("")
     }
     this.$api.actor.init_delete().then(({data}) => {
-      this.entries_to_delete = store_received_entries(this.$store, data.data)
+      this.entries_to_delete = this.store_received_entries(data.data)
     })
   },
   computed: {

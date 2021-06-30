@@ -22,15 +22,10 @@ export const state = () => ({
   edit: null
 })
 
-// commmit
+// commit
 export const mutations = {
   save_entry(state, entry) {
     state.entries.set(entry.uuid, entry)
-  },
-  save_entries(state, entries) {
-    for (let entry of entries) {
-      state.entries.set(entry.uuid, entry)
-    }
   },
   delete_entry(state, uuid) {
     state.entries.delete(uuid)
@@ -57,9 +52,9 @@ export const mutations = {
   set_ref_parent(state, {uuid, ref}) {
     state.entries.get(uuid).refs.parent = ref
   },
-  clear(state, {keep_drafts=true, keep_uuid}) {
+  clear(state, {keep_drafts = true, keep_uuid}) {
     let kept_entry = null
-    if(keep_uuid) {
+    if (keep_uuid) {
       kept_entry = state.entries.get(keep_uuid)
     }
     if (keep_drafts) {
@@ -446,6 +441,13 @@ export const getters = {
 
 // dispatch
 export const actions = {
+  save_entries({state, getters}, entries) {
+    for (let entry of entries) {
+      if (!getters.has_full_entry(entry.uuid)) {
+        state.entries.set(entry.uuid, entry)
+      }
+    }
+  },
   set_entry_value(context, data) {
     context.commit("_set_entry_value", data)
     // context.commit("update")
@@ -463,7 +465,7 @@ export const actions = {
     commit("cancel_entry_edit", uuid)
   },
   save_entry(context, {entry, template}) {
-    context.commit("update_tags", {tags:resolve_tags(entry, template)})
+    context.commit("update_tags", {tags: resolve_tags(entry, template)})
     // todo duplicate of the one below:
     const location = context.getters.entry_location()
     // console.log("update_entry. location",location)

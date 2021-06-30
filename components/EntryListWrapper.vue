@@ -20,7 +20,6 @@
 
 // like Search, but with fixed params (no text field)
 import EntryPreviewList from "./entry/EntryPreviewList"
-import {store_received_entries} from "~/lib/client"
 import TriggerSnackbarMixin from "./TriggerSnackbarMixin"
 import CompactEntryList from "~/components/entry/CompactEntryList"
 import EntrySearchMixin from "~/components/EntrySearchMixin"
@@ -68,7 +67,7 @@ export default {
           console.log("WAAAITING FOR TEMPLATES")
           await this.guarantee_templates_codes(result.entries, this.$store.getters.domain_language)
         }
-        const entry_uuids = store_received_entries(this.$store, result.entries)
+        const entry_uuids = this.store_received_entries(result.entries)
         if (this.$_.isEmpty(this.entries_uuids)) {
           // const local_search_config = this.search_config
           // console.log(local_search_config)

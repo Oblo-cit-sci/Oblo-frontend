@@ -93,7 +93,7 @@
         v-bind="entry_actions_props"
         :page.sync="page"
         @entry-action="entryAction($event)"
-        @mode="mode=$event")
+        @mode="mode=$event") // see FullEntryMixin computed mode
   v-container(v-else)
     div
 </template>

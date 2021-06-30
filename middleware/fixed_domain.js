@@ -1,5 +1,4 @@
 // cant remove that for some weird reason
-import {} from "~/lib/client"
 
 
 export default async function (context) {
