@@ -9,17 +9,21 @@
               div(style="font-size: 1.1rem" v-html='$t("comp.privacy_notification.p")')
             v-col.py-1.pl-0
               v-btn(@click="close") {{$t("comp.privacy_notification.btn")}}
+          v-row
+            FooterContent
 </template>
 
 <script>
+  import Footer from "~/components/global/Footer";
+  import FooterContent from "~/components/global/FooterContent";
   export default {
     name: "ThePrivacySheet",
     mixins: [],
-    components: {},
+    components: {FooterContent, Footer},
     created() {
-      if( process.env.NODE_ENV === "development") {
-        this.$store.commit("app/close_privacy_sheet")
-      }
+      // if( process.env.NODE_ENV === "development") {
+      //   this.$store.commit("app/close_privacy_sheet")
+      // }
     },
     computed: {
       privacy_sheet_open: {

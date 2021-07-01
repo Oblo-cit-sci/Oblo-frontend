@@ -11,7 +11,7 @@
         TheOverlay
         nuxt
     TheSnackbar
-    ThePrivacySheet
+    ThePrivacySheet(v-if="initialized")
     DecisionDialog
 </template>
 
