@@ -34,16 +34,21 @@ export default {
       // todo, should come from the server
     }
   },
-  methods: {
-  },
+  methods: {},
   computed: {
     footer_data() {
-      const no_domain_logos = this.$_.cloneDeep(this.$_.get(this.$store.getters["domain/get_domain_default_lang_data"](NO_DOMAIN),
+      console.log("footer", this.$store.getters["domain/get_any_lang_data"](NO_DOMAIN))
+      const no_domain_logos = this.$_.cloneDeep(this.$_.get(this.$store.getters["domain/get_any_lang_data"](NO_DOMAIN),
         "footer_logos"))
-      no_domain_logos.forEach(i => {
-        i.logo = this.$api.static.url(`assets/domains/${NO_DOMAIN}/${i.logo}`)
-      })
-      return no_domain_logos
+      if (no_domain_logos) {
+        no_domain_logos.forEach(i => {
+          i.logo = this.$api.static.url(`assets/domains/${NO_DOMAIN}/${i.logo}`)
+        })
+        return no_domain_logos
+      }
+      console.warn("temp warning: no footer logos...")
+      console.warn(this.$store.getters["domain/get_domain_default_lang_data"](NO_DOMAIN))
+      return []
     }
   }
 }

@@ -201,6 +201,13 @@ export const getters = {
       return getters.lang_domain_data(domain_name, getters.get_domain_default_language(domain_name))
     }
   },
+  get_any_lang_data(state, getters) {
+    return (domain_name) => {
+      // console.log("get_any_lang_data" ,)
+      // getters.lang_domain_data(domain_name, getters.get_domain_languages(domain_name)[0])
+      return Object.values(getters.domains().find(d => d.name === domain_name).langs)[0]
+    }
+  },
   is_concrete_domain(state) {
     return state.act_domain_name !== NO_DOMAIN
   },
