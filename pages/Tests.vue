@@ -3,6 +3,7 @@
     div {{is_standalone}}
     div {{build_time}}
     v-btn(@click="switch_offline") {{dev_offline_switch_button_label}}
+    v-btn(@click="copy") copy
     //Aspect(:aspect="aspect")
 </template>
 
@@ -69,6 +70,9 @@ export default {
     switch_offline() {
       this.$store.commit("dev_switch_offline")
     },
+    copy() {
+      navigator.clipboard.writeText("heeeetytt")
+    }
   }
 }
 </script>

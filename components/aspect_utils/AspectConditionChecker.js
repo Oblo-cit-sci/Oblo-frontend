@@ -1,4 +1,11 @@
-import {aspect_loc_str2arr, attr, check_condition_value, check_single_condition, loc_prepend} from "~/lib/aspect";
+import {
+  aspect_loc_str2arr,
+  attr,
+  check_condition_value,
+  check_single_condition, fix_index,
+  get_list_index,
+  loc_prepend
+} from "~/lib/aspect";
 import {recursive_unpack2} from "~/lib/util";
 import {select_aspect_loc} from "~/lib/entry";
 import {EDIT, ENTRY} from "~/lib/consts";
@@ -37,7 +44,7 @@ export default {
       } else if (aspect_loc) {
         let aspect_location = loc_prepend(mode === EDIT ? EDIT : ENTRY, entry_uuid,
           aspect_loc_str2arr(condition.aspect))
-        // console.log(aspect_location)
+        fix_index(aspect_location,get_list_index(aspect_loc))
         condition_value = this.$store.getters["entries/value"](aspect_location)
       } else {
         console.log(`condition for aspect ... cannot be checked. no aspect_loc and no conditionals`)

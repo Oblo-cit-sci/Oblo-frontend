@@ -106,7 +106,7 @@ export default {
       } else return !this.$_.get(this.extra, "no_title", false);
     },
     visible() {
-      return !this.disable || !this.attr.hide_on_disabled
+      return this.attr.visible === false || !this.disable || !this.attr.hide_on_disabled
     },
     is_flex() {
       return this.mode === FLEX
