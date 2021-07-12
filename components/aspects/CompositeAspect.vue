@@ -115,7 +115,7 @@ export default {
     cols(component) {
       if (this.$vuetify.breakpoint.mdAndUp) {
         if (component.attr?.columns) {
-          console.log("custom-cols", component.attr.columns)
+          // console.log("custom-cols", component.attr.columns)
           return component.attr.columns
         }
         return this.base_cols / 3

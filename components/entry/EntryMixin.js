@@ -24,10 +24,12 @@ import ExportMixin from "~/components/global/ExportMixin"
 import TemplateHelperMixin from "~/components/templates/TemplateHelperMixin";
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin";
 import EntryMetaAspects from "~/components/EntryMetaAspects";
+import EntryHelperMethodsMixin from "~/components/entry/EntryHelperMethodsMixin";
 
 export default {
   name: "EntryMixin",
-  mixins: [EntryPagesMixin, AspectListMixin, ExportMixin, TemplateHelperMixin, TypicalAspectMixin, EntryMetaAspects],
+  mixins: [EntryPagesMixin, AspectListMixin, ExportMixin, TemplateHelperMixin, TypicalAspectMixin, EntryMetaAspects,
+  EntryHelperMethodsMixin],
   props:
     {
       entry: {
@@ -119,8 +121,7 @@ export default {
       return this.entry.template.slug
     },
     template() {
-      const lang = this.force_entry_language ? this.entry.language : this.$store.getters.domain_language
-      return this.$store.getters["templates/entry_type"](this.template_slug, lang)
+      return this.get_template(this.entry)
     },
     template_color() {
       return this.$_.get(this.template, "rules.marker_color")

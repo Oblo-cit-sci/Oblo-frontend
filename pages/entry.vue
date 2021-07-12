@@ -8,15 +8,16 @@
 
 import PersistentStorageMixin from "../components/util/PersistentStorageMixin";
 import Entry from "../components/entry/Entry";
-import {VIEW} from "~/lib/consts"
+import {DRAFT, VIEW} from "~/lib/consts"
 import URLQueryMixin from "~/components/util/URLQueryMixin";
 import EntryFetchMixin from "~/components/entry/EntryFetchMixin";
 import NavBaseMixin from "~/components/NavBaseMixin";
+import EntryHelperMethodsMixin from "~/components/entry/EntryHelperMethodsMixin";
 
 // todo, use mapgetters with entries context
 export default {
   name: "entry",
-  mixins: [EntryFetchMixin, PersistentStorageMixin, URLQueryMixin, NavBaseMixin],
+  mixins: [EntryFetchMixin, PersistentStorageMixin, URLQueryMixin, NavBaseMixin, EntryHelperMethodsMixin],
   components: {
     Entry
   },
@@ -26,7 +27,7 @@ export default {
     }
   },
   created() {
-    console.log(this.$store.getters["entries/has_full_entry"](this.query_entry_uuid))
+    // console.log(this.$store.getters["entries/has_full_entry"](this.query_entry_uuid))
     this.has_entry = this.$store.getters["entries/has_full_entry"](this.query_entry_uuid)
     if (!this.has_entry) {
       // actually should be home or back. but we should always have it...
@@ -58,7 +59,8 @@ export default {
   },
   beforeRouteLeave(to, from, next) {
     if (this.entry) {
-      if (this.entry.is_draft) {
+      if (this.entry.status === DRAFT) {
+        this.$store.dispatch("entries/save_entry", {entry: this.entry, template: this.get_template(this.entry)})
         this.persist_entries()
       }
     }
