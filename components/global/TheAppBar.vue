@@ -137,9 +137,11 @@ export default {
       this.switch_menu_open()
     },
     open_login() {
+      if(this.$route.name === ENTRY) {
+        this.$router.push({name: "login"})
+        return
+      }
       this.login_dialog_open = true
-      // console.log(this.$refs.login_dialog)
-      // this.$bus.$emit("global_dialog", this.$refs.login_dialog)
     }
   },
 }
