@@ -44,10 +44,13 @@ import {mapGetters} from 'vuex'
 import MessageTranslationBlock from '~/components/language/MessageTranslationBlock'
 import SimplePaginate from '~/components/SimplePaginate'
 import TriggerSnackbarMixin from '~/components/TriggerSnackbarMixin'
-import {DOMAIN, PUBLISHED} from '~/lib/consts'
+import {BACKEND_COMPONENT, DEST_LANG, DOMAIN, ENTRIES, FRONTEND_COMPONENT, PUBLISHED, SRC_LANG} from '~/lib/consts'
 import AspectSet from "~/components/AspectSet";
 import OptionsMixin from "~/components/aspect_utils/OptionsMixin";
 import TranslationSetupMixin from "~/components/language/TranslationSetupMixin";
+import {ENTRY} from "~/components/global/HasMainNavComponentMixin";
+
+
 
 export default {
   name: 'Translate',
@@ -87,9 +90,9 @@ export default {
   computed: {
     setup_aspects() {
       return [
-        this.dest_language_select_aspect([this.setup_values["dest_lang"]]), this.component_select_aspect(),
-        this.domain_select_aspect(), this.entry_select_aspect([this.setup_values["entry"]]),
-        this.src_language_select_aspect([this.setup_values["src_lang"]])
+        this.dest_language_select_aspect([this.setup_values[DEST_LANG]]), this.component_select_aspect(),
+        this.domain_select_aspect(), this.entry_select_aspect([this.setup_values[ENTRY]]),
+        this.src_language_select_aspect([this.setup_values[SRC_LANG]])
       ]
     },
     src_lang() {
@@ -170,7 +173,7 @@ export default {
     },
     async submit() {
       try {
-        if (['fe', 'be'].includes(this.setup.component)) {
+        if ([FRONTEND_COMPONENT, BACKEND_COMPONENT].includes(this.setup.component)) {
           const messages = Array.from(this.changed_messages).map((v) => {
               let dest_msg = this.translation_o[v].messages[1]
               if (dest_msg === "")
@@ -191,7 +194,7 @@ export default {
           for (const m of messages) {
             this.$refs[m[0]][0].refresh_original()
           }
-        } else if (this.setup.component === 'domain') {
+        } else if (this.setup.component === DOMAIN) {
           const messages = this.get_flat_messages()
           try {
             // todo after the 1. submission, the domain- obj is created, and needs to be patched!
@@ -220,7 +223,7 @@ export default {
             console.log(e)
             this.err_error_snackbar(e)
           }
-        } else if (this.setup.component === 'entries') {
+        } else if (this.setup.component === ENTRIES) {
           const messages = this.get_flat_messages()
           try {
             if (this.setup.config.new_o) {
@@ -295,18 +298,6 @@ export default {
           easing: 'easeInOutCubic',
         })
       }, 50)
-    },
-    required_messages: {
-      deep: true,
-      handler(val) {
-        console.log(val)
-      },
-    },
-    translation_o: {
-      deep: true,
-      handler(val) {
-        console.log('ta', val)
-      },
     },
     search_query(query) {
       if ((query?.length || 0) < 4) {

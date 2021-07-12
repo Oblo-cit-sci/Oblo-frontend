@@ -25,7 +25,16 @@
 import OptionsMixin from "~/components/aspect_utils/OptionsMixin";
 import Aspect from "~/components/Aspect";
 import {extract_n_unpack_values, pack_value} from "~/lib/aspect";
-import {ASP_ERROR, ASP_UNSET, PUBLISHED, SELECT} from "~/lib/consts";
+import {
+  ASP_ERROR,
+  ASP_UNSET,
+  BACKEND_COMPONENT, COMPONENT, DEST_LANG,
+  DOMAIN,
+  ENTRIES,
+  FRONTEND_COMPONENT,
+  PUBLISHED,
+  SELECT, SLUG, SRC_LANG
+} from "~/lib/consts";
 import AspectSet from "~/components/AspectSet";
 import LanguageSearch from "~/components/language/LanguageSearch";
 import Dialog from "~/components/dialogs/Dialog";
@@ -40,12 +49,7 @@ import TranslationSetupMixin from "~/components/language/TranslationSetupMixin";
 import LoadFileButton from "~/components/util/LoadFileButton";
 import ExportMixin from "~/components/global/ExportMixin";
 
-
-const FE = "fe"
-const BE = "be"
-const DOMAIN = "domain"
-const ENTRIES = "entries"
-const components = [FE, BE, DOMAIN, ENTRIES]
+const components = [FRONTEND_COMPONENT, BACKEND_COMPONENT, DOMAIN, ENTRIES]
 
 // todo, doesnt refetch the settings from the store at the right moment
 // needs to set them after component is set...
@@ -90,6 +94,9 @@ export default {
   },
   created() {
     this.$bus.$emit(BUS_OVERLAY)
+    if (this.unpacked_values.component === ENTRIES) {
+      this.re_calc_entries_for_domain(this.unpacked_values.domain, this.unpacked_values.dest_lang)
+    }
     this.fetch_init_data().then(() => {
       this.init_fetched = true
       this.$bus.$emit(BUS_HIDE_OVERLAY)
@@ -132,7 +139,7 @@ export default {
           },
           condition: ["and", {
             aspect: "# component",
-            value: [FE, BE],
+            value: [FRONTEND_COMPONENT, BACKEND_COMPONENT],
             compare: "contains"
           }, {
             aspect: "# dest_lang",
@@ -170,7 +177,7 @@ export default {
     },
     disable_csv_upload() {
       for (let aspect in this.setup_value_states) {
-        if (aspect === "src_lang") {
+        if (aspect === SRC_LANG) {
           continue
         }
         if ([ASP_UNSET, ASP_ERROR].includes(this.setup_value_states[aspect])) {
@@ -182,7 +189,7 @@ export default {
     src_language_options() {
       const component = this.unpacked_values.component
       let language_options = []
-      if ([DOMAIN,  ENTRIES].includes(component)) {
+      if ([DOMAIN, ENTRIES].includes(component)) {
         const domain_info = this.domains_metainfos[this.unpacked_values.domain]
         // console.log("domain_info", domain_info)
         if (domain_info) {
@@ -190,7 +197,7 @@ export default {
         } else {
 
         }
-      } else if ([FE, BE].includes(component)) {
+      } else if ([FRONTEND_COMPONENT, BACKEND_COMPONENT].includes(component)) {
         language_options = this.all_added_languages.sort()
           .map(l => ({
             value: l,
@@ -216,7 +223,7 @@ export default {
       let data = null
       const {component, src_lang, dest_lang} = this.unpacked_values
       const languages = [src_lang, dest_lang]
-      if ([FE, BE].includes(component)) {
+      if ([FRONTEND_COMPONENT, BACKEND_COMPONENT].includes(component)) {
         const response = await this.$api.language.get_component_as_csv(component, languages)
         file_name += `_${component}__${languages.join("_")}`
         if (response.data) {
@@ -297,7 +304,7 @@ export default {
     async start() {
       const {component, src_lang, dest_lang, domain, entry} = this.unpacked_values
       const setup = {component, domain, src_lang, dest_lang, unpacked: this.setup_values}
-      if ([FE, BE].includes(component)) {
+      if ([FRONTEND_COMPONENT, BACKEND_COMPONENT].includes(component)) {
         await this.start_message_component(setup)
       } else if (component === DOMAIN) {
         await this.start_domain(domain, setup, src_lang, dest_lang)
@@ -418,11 +425,11 @@ export default {
       }
     },
     add_code_templates(domain, language, entries) {
-      console.log("add", domain, language, entries)
+      // console.log("add", domain, language, entries)
       if (!this.codes_templates_minimal_info.hasOwnProperty(domain)) {
         this.codes_templates_minimal_info[domain] = {}
       }
-      const slug_map = this.$_.keyBy(entries, "slug")
+      const slug_map = this.$_.keyBy(entries, SLUG)
       this.codes_templates_minimal_info[domain][language] = slug_map
       this.code_templates_for_domain_lang = slug_map
     },
@@ -460,7 +467,7 @@ export default {
     },
     from_csv(file) {
       const {component, dest_lang} = this.unpacked_values
-      if ([FE,  BE].includes(component)) {
+      if ([FRONTEND_COMPONENT, BACKEND_COMPONENT].includes(component)) {
         this.$api.language.update_messages_from_csv(component, dest_lang, file).then(({data}) => {
           this.ok_snackbar(data.msg)
         }, err => {
@@ -508,9 +515,9 @@ export default {
         if (new_vals[a] !== old_vals[a]) {
           if (a === "language_active")
             return
-          if (a === "component") {
-            this.setup_values["src_lang"] = pack_value()
-            if ([FE, BE].includes(component) && dest_lang) {
+          if (a === COMPONENT) {
+            this.setup_values[SRC_LANG] = pack_value()
+            if ([FRONTEND_COMPONENT, BACKEND_COMPONENT].includes(component) && dest_lang) {
               const {dest_lang: lang} = new_vals
               // console.log("check language statuses", this.language_statuses, lang)
               const status = await this.get_language_status(lang)
@@ -524,9 +531,9 @@ export default {
             if (component === ENTRIES && domain !== null && dest_lang !== null) {
               this.re_calc_entries_for_domain(domain, dest_lang)
             }
-          } else if (a === "dest_lang") {
+          } else if (a === DEST_LANG) {
             // console.log("dest_lang-language_statuses", this.language_statuses)
-            if ([FE, BE].includes(component)) {
+            if ([FRONTEND_COMPONENT, BACKEND_COMPONENT].includes(component)) {
               const status = await this.get_language_status(dest_lang)
               this.setup_values.language_active = pack_value(status)
             } else if (component === ENTRIES && domain !== null && dest_lang !== null) {
