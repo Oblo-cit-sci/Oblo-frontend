@@ -1,4 +1,4 @@
-import {QP_D, QP_ENTRY_ACCESS_KEY, QP_ENTRY_MODE, QP_F, QP_UUID, VIEW} from "~/lib/consts"
+import {EDIT, QP_D, QP_ENTRY_ACCESS_KEY, QP_ENTRY_MODE, QP_F, QP_UUID, VIEW} from "~/lib/consts"
 
 export default {
   name: "URLQueryMixin",
@@ -28,5 +28,19 @@ export default {
     query_entry_access_key() {
       return this.q[QP_ENTRY_ACCESS_KEY]
     },
+    profile_editing() {
+      // same annoying shit in profile...
+      const e = this.q[EDIT]
+      if (e === undefined) {
+        return false
+      } else {
+        if (typeof (e) === "string") {
+          return e === "true"
+        } else {
+          return e
+        }
+      }
+
+    }
   }
 }
