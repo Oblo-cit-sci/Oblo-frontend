@@ -60,6 +60,9 @@ export default {
         this.home()
         return
       }
+      // no-domain lang data...
+      const no_domain_lang_about = this.$store.getters["domain/lang_domain_data"](NO_DOMAIN).about
+
       let domain_about = act_lang_domain_data.about
       // console.log(domain_about)
       if (!domain_about) {
@@ -67,8 +70,8 @@ export default {
         domain_about = this.$store.getters["domain/get_domain_default_lang_data"](domain_name).about
         // console.log(this.domain_name, domain_about)
       }
-      return domain_about
-      // console.log(domain_about)
+
+      return no_domain_lang_about.concat(domain_about)
     },
     version() {
       return pkg.version
