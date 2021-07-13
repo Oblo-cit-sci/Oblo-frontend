@@ -35,7 +35,7 @@
           if(this.summarize && this.tags[tag_type].length > summary_tag_thresh) {
             result.push({
               summary:true,
-              text:`${tag_type}: ${this.tags[tag_type].length} tags`,
+              text:`${tag_type}: ${this.tags[tag_type].length} ${this.$tc('comp.tags.tag',2)}`,
               hover: this.tags[tag_type]
           })
           } else {

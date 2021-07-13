@@ -497,6 +497,9 @@
     "tagoptions_asp": {
       "used_in": "Used in: "
     },
+    "tags": {
+      "tag": "tag | tags"
+    },
     "translate": {
       "component_select_asp": {
         "label": "Part of the platform",

@@ -406,7 +406,7 @@ export default {
       let config = this.searchConfiguration()
       this.$store.commit("search/set_searching", true)
       const offset = this.$store.getters["search/get_received_entries"]
-      debounced_search(this.$api, this.$store, config, offset)
+      this.debounced_search(config, offset)
     },
     searchConfiguration(before_last = false) {
       let configuration = {

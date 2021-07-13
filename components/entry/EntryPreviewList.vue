@@ -1,8 +1,10 @@
 <template lang="pug">
   #pwlist-container
-    v-row.col-sm-12#pwlist-top(v-if="results_received && !requesting_entries")
-      v-col.pa-0(cols=12) {{$tc("comp.previewlist.num_entries", num_entries)}}
-      v-col.pa-0(cols=12 v-if="show_no_entries_hint") {{$t("comp.previewlist.filter_change_hint")}}
+    v-row.col-sm-12#pwlist-top(v-if="results_received")
+      div(v-if="!requesting_entries")
+        v-col.pa-0(cols=12) {{$tc("comp.previewlist.num_entries", num_entries)}}
+        v-col.pa-0(cols=12 v-if="show_no_entries_hint") {{$t("comp.previewlist.filter_change_hint")}}
+      div(v-else) ...
     #pwlist-wrapper
       v-row.mx-1(v-for="entry in visible_entries"
         :key="entry.uuid")
