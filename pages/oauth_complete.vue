@@ -101,10 +101,9 @@ export default {
     },
   },
   methods: {
-    login(msg) {
+    login() {
       this.$store.dispatch("user/login", this.user_data)
       this.persist_user_data()
-      this.ok_snackbar(msg)
       this.$emit("logged_in")
       this.$bus.$emit(BUS_TRIGGER_SEARCH)
       this.home()
@@ -120,7 +119,8 @@ export default {
     submit() {
       Object.assign(this.user_data, recursive_unpack2(this.aspect_values))
       this.$api.oauth.oauth_register(this.user_data).then(({data}) => {
-        this.login(data.msg)
+        this.login()
+        this.ok_snackbar(data.msg)
       }, err => {
         console.error(err)
       })

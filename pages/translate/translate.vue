@@ -51,7 +51,6 @@ import TranslationSetupMixin from "~/components/language/TranslationSetupMixin";
 import {ENTRY} from "~/components/global/HasMainNavComponentMixin";
 
 
-
 export default {
   name: 'Translate',
   components: {SimplePaginate, MessageTranslationBlock, AspectSet},
@@ -174,91 +173,104 @@ export default {
     async submit() {
       try {
         if ([FRONTEND_COMPONENT, BACKEND_COMPONENT].includes(this.setup.component)) {
-          const messages = Array.from(this.changed_messages).map((v) => {
-              let dest_msg = this.translation_o[v].messages[1]
-              if (dest_msg === "")
-                dest_msg = null
-              return [
-                v,
-                dest_msg,
-              ]
-            }
-          )
-          const {data} = await this.$api.language.update_messages(
-            this.setup.component,
-            this.setup.dest_lang,
-            messages
-          )
-          this.ok_snackbar(data.msg)
-          // console.log("refs", this.$refs)
-          for (const m of messages) {
-            this.$refs[m[0]][0].refresh_original()
-          }
+          await this.submit_message_component()
         } else if (this.setup.component === DOMAIN) {
-          const messages = this.get_flat_messages()
-          try {
-            // todo after the 1. submission, the domain- obj is created, and needs to be patched!
-            if (this.setup.config.new_o) {
-              const {data} = await this.$api.domain.post_from_flat(
-                this.setup.config.domain,
-                this.setup.dest_lang,
-                messages
-              )
-              this.ok_snackbar(data.msg)
-              // todo: this.setup.config.new_o should be changed to false
-            } else {
-              const {data} = await this.$api.domain.patch_from_flat(
-                this.setup.config.domain,
-                this.setup.dest_lang,
-                messages
-              )
-              this.ok_snackbar(data.msg)
-            }
-            // const changed_messages = Object.entries(this.changed_messages)
-            // todo, words??!?!
-            for (const m of this.changed_messages) {
-              this.$refs[m][0].refresh_original()
-            }
-          } catch (e) {
-            console.log(e)
-            this.err_error_snackbar(e)
-          }
+          await this.submit_domain()
         } else if (this.setup.component === ENTRIES) {
-          const messages = this.get_flat_messages()
-          try {
-            if (this.setup.config.new_o) {
-              const {data} = await this.$api.entry.post_from_flat(
-                this.setup.config.entry,
-                this.setup.dest_lang,
-                messages
-              )
-              this.ok_snackbar(data.msg)
-            } else {
-              const {data} = await this.$api.entry.patch_from_flat(
-                this.setup.config.entry,
-                this.setup.dest_lang,
-                messages
-              )
-              this.ok_snackbar(data.msg)
-              const entry = data.data
-              if (entry.status === PUBLISHED) {
-                await this.$store.dispatch("templates/add_templates_codes", [entry])
-              }
-              //
-            }
-            for (const m of this.changed_messages) {
-              this.$refs[m][0].refresh_original()
-            }
-          } catch (e) {
-            console.error(e)
-            this.err_error_snackbar(e)
-          }
+          await this.submit_entry()
         } else {
           console.error('Unknown component', this.setup)
         }
       } catch (err) {
         this.err_error_snackbar(err)
         // console.log(err)
+      }
+    },
+    async submit_message_component() {
+      const messages = Array.from(this.changed_messages).map((v) => {
+          let dest_msg = this.translation_o[v].messages[1]
+          if (dest_msg === "")
+            dest_msg = null
+          return [
+            v,
+            dest_msg,
+          ]
+        }
+      )
+      const {data} = await this.$api.language.update_messages(
+        this.setup.component,
+        this.setup.dest_lang,
+        messages
+      )
+      this.ok_snackbar(data.msg)
+      // console.log("refs", this.$refs)
+      for (const m of messages) {
+        this.$refs[m[0]][0].refresh_original()
+      }
+    },
+    async submit_domain() {
+      const messages = this.get_flat_messages()
+      try {
+        // todo after the 1. submission, the domain- obj is created, and needs to be patched!
+        if (this.setup.config.new_o) {
+          const {data} = await this.$api.domain.post_from_flat(
+            this.setup.config.domain,
+            this.setup.dest_lang,
+            messages
+          )
+          this.ok_snackbar(data.msg)
+          // todo: this.setup.config.new_o should be changed to false
+        } else {
+          const {data} = await this.$api.domain.patch_from_flat(
+            this.setup.config.domain,
+            this.setup.dest_lang,
+            messages
+          )
+          if (data.data) {
+            console.log(data.data)
+            this.$store.commit("domain/add_domains_data", [data.data])
+          }
+          this.ok_snackbar(data.msg)
+        }
+        // const changed_messages = Object.entries(this.changed_messages)
+        // todo, words??!?!
+        for (const m of this.changed_messages) {
+          this.$refs[m][0].refresh_original()
+        }
+      } catch (e) {
+        console.log(e)
+        this.err_error_snackbar(e)
+      }
+    },
+    async submit_entry() {
+      const messages = this.get_flat_messages()
+      try {
+        if (this.setup.config.new_o) {
+          const {data} = await this.$api.entry.post_from_flat(
+            this.setup.config.entry,
+            this.setup.dest_lang,
+            messages
+          )
+          this.ok_snackbar(data.msg)
+        } else {
+          const {data} = await this.$api.entry.patch_from_flat(
+            this.setup.config.entry,
+            this.setup.dest_lang,
+            messages
+          )
+          this.ok_snackbar(data.msg)
+          const entry = data.data
+          if (entry.status === PUBLISHED) {
+            await this.$store.dispatch("templates/add_templates_codes", [entry])
+          }
+          //
+        }
+        for (const m of this.changed_messages) {
+          this.$refs[m][0].refresh_original()
+        }
+      } catch (e) {
+        console.error(e)
+        this.err_error_snackbar(e)
       }
     },
     back() {
@@ -288,7 +300,8 @@ export default {
     update_msg(index, message) {
       this.translation_o[index].messages[1] = message
     },
-  },
+  }
+  ,
   watch: {
     page(current, prev) {
       setTimeout(() => {
@@ -298,18 +311,21 @@ export default {
           easing: 'easeInOutCubic',
         })
       }, 50)
-    },
+    }
+    ,
     search_query(query) {
       if ((query?.length || 0) < 4) {
         this.search_results = null
         return
       }
       this.search(query)
-    },
+    }
+    ,
     search_in_langs() {
       this.search(this.search_query)
     }
-  },
+  }
+  ,
 }
 </script>
 
