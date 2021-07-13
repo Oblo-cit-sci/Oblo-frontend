@@ -2,7 +2,7 @@
   #pwlist-container
     v-row.col-sm-12#pwlist-top(v-if="results_received && !requesting_entries")
       v-col.pa-0(cols=12) {{$tc("comp.previewlist.num_entries", num_entries)}}
-      v-col.pa-0(cols=12 v-if="no_entries") {{$t("comp.previewlist.filter_change_hint")}}
+      v-col.pa-0(cols=12 v-if="show_no_entries_hint") {{$t("comp.previewlist.filter_change_hint")}}
     #pwlist-wrapper
       v-row.mx-1(v-for="entry in visible_entries"
         :key="entry.uuid")
@@ -30,6 +30,7 @@ import SimplePaginate from "../SimplePaginate";
 
 import {mapGetters} from "vuex"
 import {PAGE_DOMAIN} from "~/lib/pages"
+import {DOMAIN} from "~/lib/consts";
 
 export default {
   name: "EntryPreviewList",
@@ -102,8 +103,8 @@ export default {
       else
         return this.entries.length - this.deleted.length
     },
-    no_entries() {
-      return this.num_entries === 0
+    show_no_entries_hint() {
+      return this.num_entries === 0 && this.$route.name === PAGE_DOMAIN
     },
     // could be in some mixin
     // set_of_types() {

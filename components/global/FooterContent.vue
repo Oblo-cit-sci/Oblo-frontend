@@ -37,7 +37,7 @@ export default {
   methods: {},
   computed: {
     footer_data() {
-      console.log("footer", this.$store.getters["domain/get_any_lang_data"](NO_DOMAIN))
+      // console.log("footer", this.$store.getters["domain/get_any_lang_data"](NO_DOMAIN))
       const no_domain_logos = this.$_.cloneDeep(this.$_.get(this.$store.getters["domain/get_any_lang_data"](NO_DOMAIN),
         "footer_logos"))
       if (no_domain_logos) {
