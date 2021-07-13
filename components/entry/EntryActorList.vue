@@ -19,7 +19,7 @@
       ordered_actors() {
         return this.$_.sortBy(this.actors, a => {
           return ordered_entry_roles.indexOf(a.role)
-        });
+        })
       }
     }
   }

@@ -23,9 +23,11 @@
       v-row
         MetaChips(:meta_aspects="meta_aspect_chips")
       v-row
-        EntryActorList.mt-2(:actors="actors")
+        v-col.px-0.py-1(cols=12)
+          EntryActorList.mt-2(:actors="actors")
       v-row
-        Taglist(:tags="tags")
+        v-col.px-0.py-1(cols=12)
+          Taglist(:tags="tags")
       v-row(justify="center" v-if="entry_image")
         v-col(cols=6 sm=4 md=10 alignSelf="center")
           v-img.entry-display-size(
