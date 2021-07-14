@@ -145,7 +145,7 @@ export default {
       }
     }
 
-    this.$bus.$on(BUS_TRIGGER_SEARCH, (before_last=true, debounce=false) => {
+    this.$bus.$on(BUS_TRIGGER_SEARCH, (before_last = true, debounce = false) => {
       this.get_entries(before_last, debounce)
     })
   },
@@ -174,9 +174,16 @@ export default {
         this.$emit("received_search_results", this.entries())
         this.prepend_search = false
         this.$emit("all_received_uuids", this.all_uuids())
+
+        if (this.$store.getters["search/postponed_search"]()) {
+          this.get_entries(false, false)
+          this.$store.commit("search/postponed_search", false)
+        }
       }
     },
     act_config(val, prev_val) {
+      console.log("currently searching", this.$store.state.search.searching)
+
       // console.log("config change", val, prev_val)
       // console.log("act_config", val) //, prev_val, this.$_.isEqual(val, prev_val))
       // todo special treatment here:
@@ -230,10 +237,16 @@ export default {
       if (update_config) {
         this.$store.commit("search/set_act_config", new_config)
       } else {
+        // dont search if search is ongoing...
+        if (this.$store.getters["search/get_searching"]()) {
+          // console.log("searching atm. postponing...")
+          this.$store.commit("search/postponed_search", true)
+          return
+        }
+
         // console.log("config change get entries")
         // if a prominent filter changed debounce
         this.get_entries(false, prominent_filter_changed)
-
       }
     },
     prominent_filter_values: {
@@ -346,7 +359,7 @@ export default {
       }
     },
     get_entries(before_last = false, debounce = true) {
-      // console.log("get_entries", before_last, before_last)
+      console.log("get_entries", "before-last", before_last, "debounce", debounce)
       const select_uuids = this.select_uuids_config()
       if (select_uuids) {
         this.fetch_select_uuids(select_uuids)

@@ -10,7 +10,9 @@ export const state = () => ({
   entry_aspects: [], // result specifics, not used atm
   search_count: 0, // total count in the db, used for requesting more
   searchtime: null, // used to update,
-  all_uuids: null
+  all_uuids: null,
+  // todo maybe use debouce, throttle instead...
+  postponed_search: false // search again after search is done. prevents that several searches happen at the same time...
 });
 
 export const mutations = {
@@ -102,6 +104,9 @@ export const mutations = {
   remove_in_act_config(state, config_name) {
     // console.trace()
     state.act_config = state.act_config.filter(cf => cf.name !== config_name)
+  },
+  postponed_search(state, value) {
+    state.postponed_search = value
   }
 }
 
@@ -136,6 +141,9 @@ export const getters = {
   },
   get_act_config(state) {
     return state.act_config
+  },
+  postponed_search(state) {
+    return () => state.postponed_search
   }
 }
 
