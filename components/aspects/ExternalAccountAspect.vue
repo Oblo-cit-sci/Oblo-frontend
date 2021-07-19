@@ -7,7 +7,7 @@
           a(itemprop="sameAs" :content="repr" :href="repr" target="orcid.widget" rel="me noopener noreferrer" style="vertical-align:top;")
             img(src="https://orcid.org/sites/default/files/images/orcid_16x16.png" style="width:1em;margin-right:.5em;" alt="ORCID iD icon")
             span {{repr}}
-        v-btn validate
+        v-btn(v-if="has_verify") EN:verify
       div(v-else) {{$t("comp.external_account_asp.not_given")}}
 </template>
 
@@ -51,6 +51,10 @@ export default {
         return prefixes[this.service]
       } else
         return ""
+    },
+    has_verify() {
+      // not yet implemented
+      return false // this.attr.verify || false
     },
     valid_service() {
       return services.includes(this.service)

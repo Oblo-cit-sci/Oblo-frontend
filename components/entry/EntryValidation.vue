@@ -129,10 +129,12 @@ export default {
       //   console.log(aspect.name, "disable by condition...")
       //   return [OK]
       // }
-      if (!raw_value) {
+      if (raw_value === null) {
+        console.warn("no raw value", aspect.label, raw_value)
         return [MISSING, ""]
       }
       if (this.$_.isEqual(raw_value, a_default)) {
+        console.warn("aspect validation. raw-value is default", aspect.label, raw_value, a_default)
         return [MISSING, ""]
       } else if ([LIST, ENTRYLIST].includes(aspect.type)) {
         if (this.attr(aspect).min !== null && raw_value.length < this.attr(aspect).min) {
@@ -146,6 +148,7 @@ export default {
             const item_loc = loc_append(aspect_loc, INDEX, item_index)
             const validation = this.validate_aspect(aspect.list_items, item || pack_value(null), item_loc, item_index)
             if (validation[0] !== OK) {
+              console.warn("list item-validation fail", aspect.label, "index:", item_index)
               incomplete_items.push(parseInt(item_index) + 1)
             }
           }
@@ -162,10 +165,12 @@ export default {
           //console.log("-> comp", component.name, raw_value[component.name])
           let component_validations = this.validate_aspect(component, raw_value[component.name] || pack_value(null), comp_loc, item_index, raw_value)
           if (component_validations[0] !== OK) {
+            console.warn("component validation fail: component", component.label, component_validations)
             missing_components.push(component.label)
           }
         }
         if (missing_components.length > 0) {
+          console.warn("component validation fail", aspect.label)
           return [COMPOSITE_INCOMPLETE, missing_components]
         } else {
           return [OK]
