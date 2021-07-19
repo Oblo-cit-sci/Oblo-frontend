@@ -7,7 +7,6 @@
       @input="input($event)"
       dense
       :selection-type="selection_type"
-      item-disabled="dis"
       :selectable="is_edit_mode")
 </template>
 
@@ -33,7 +32,7 @@ export default {
       return this.value || []
     },
     independent() {
-      return this.$_.get(this.attr,"independent", false)
+      return this.$_.get(this.attr, "independent", false)
     },
     allow_select_levels() {
       return this.$_.get(this.attr, "allow_select_levels", null)
