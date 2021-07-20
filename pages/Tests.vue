@@ -4,6 +4,7 @@
     div {{build_time}}
     v-btn(@click="switch_offline") {{dev_offline_switch_button_label}}
     v-btn(@click="copy") copy
+    nuxt-link(to="test/pages") aspect tests
     //Aspect(:aspect="aspect")
 </template>
 

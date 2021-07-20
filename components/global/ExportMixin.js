@@ -1,3 +1,4 @@
+import {REGULAR} from "~/lib/consts";
 
 const FileSaver = require('file-saver')
 
@@ -29,6 +30,15 @@ export default {
         [JSON.stringify(data, null, 2)],
         {type: "text/json;charset=utf-8"})
       FileSaver.saveAs(blob, filename + ".json")
+    },
+    prepare_entry_for_download(entry) {
+      const copy = this.$_.cloneDeep(entry)
+      if (entry.type === REGULAR) {
+        for(let key of ["aspects","rules", "entry_refs", "slug", "local"]) {
+          delete copy[key]
+        }
+      }
+      return copy
     },
     export_data(data, filename, format = "json") {
       if (format === "json") {

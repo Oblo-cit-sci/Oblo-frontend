@@ -268,9 +268,7 @@ export default {
       }
     },
     download() {
-      //   return clone
-      // })
-      this.export_data(this.entry, this.download_title)
+      this.export_data(this.prepare_entry_for_download(this.entry), this.download_title)
     },
     // update_aspect_locs() {
     //   // console.log("update_aspect_locs", this.entry !== null)

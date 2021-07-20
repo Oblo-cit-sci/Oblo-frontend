@@ -67,7 +67,7 @@
     <!-- Research aspects, no_domain aspects -->
     div(v-if="!$_.isEmpty(no_domain_aspects)")
       h2#research_aspects {{$t('page.profile.h_research')}}
-      div {{$t('page.profile.research_info', {platform_title: platform_title})}}
+      div(v-if="edit_mode") {{$t('page.profile.research_info', {platform_title: platform_title})}}
       AspectSet(:aspects="no_domain_aspects" :values.sync="no_domain_values" :mode="mode")
     <!-- domain specific aspects -->
     div(v-if="!$_.isEmpty(domain_specific_aspects)")
@@ -76,7 +76,7 @@
       AspectSet(:aspects="domain_specific_aspects" :values.sync="domain_specific_aspects_values" :mode="mode")
     <!-- BUTTONS -->
     div(v-if="!is_visitor")
-      div(v-if="!edit_mode")
+      div(v-if="view_mode")
         v-btn(color="info" to="/settings" nuxt) {{$t("page.profile.btn_settings")}}
           v-icon(right) mdi-settings
         v-btn(color="info" @click="setEdit()") {{$t("page.profile.btn_edit_profile")}}
@@ -85,7 +85,7 @@
         v-btn(@click="cancelEdit") {{$t('w.cancel')}}
         v-btn(color="success" @click="doneEdit" :disabled="any_invalid") {{$t("page.profile.btn_save")}}
     <!-- ENTRIES -->
-    div(v-if="!edit_mode")
+    div(v-if="view_mode")
       v-divider.wide_divider
       h2 {{$t("page.profile.h_entries")}}
       EntryListWrapper(
@@ -369,6 +369,9 @@ export default {
           return e
         }
       }
+    },
+    view_mode() {
+      return !this.edit_mode
     },
     can_edit_email_password() {
       return this.edit_mode && !this.registered_name.startsWith("oauth_")
