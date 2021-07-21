@@ -11,6 +11,7 @@
           :title="entry_title"
           header_type="h3"
           :description="get_description"
+          description_as_html=true
           :mode="mode")
           span.ml-1(:style="{'color': draft_color}") {{is_draft ? "[" + $t('comp.entrypreview.draft') +"]" : ""}}
     v-row
