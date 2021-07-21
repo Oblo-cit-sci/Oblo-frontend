@@ -26,7 +26,7 @@ export default {
       }
       if (!this.$_.isEmpty(this.entries)) {
         if (this.get_search_time) {
-          config.required.push({name: "before_ts", ts: this.get_search_time})
+          config.required.push({name: "before_ts", value: this.get_search_time})
         }
       }
       try {

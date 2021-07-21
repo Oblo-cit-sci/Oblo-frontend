@@ -424,7 +424,7 @@ export default {
     searchConfiguration(before_last = false) {
       let configuration = {
         required: [],
-        include: {}
+        include: []
       }
       for (let filter of this.search_config) {
         if (filter.source_name !== "local") { // dont add drafts filter
@@ -444,9 +444,11 @@ export default {
             config.value = unpack(filter.value)
             configuration.required.push(config)
           } else if (config.hasOwnProperty("include_as")) {
+            console.log("include as", config)
             // mix if there might be multiple (tags)
-            const existing = configuration.include[config.include_as] || []
-            configuration.include[config.include_as] = this.$_.concat(existing, recursive_unpack2(filter.value))
+            // const existing = configuration.include[config.include_as] || []
+            configuration.include.push({name: config.include_as, value:recursive_unpack2(filter.value)})
+            // configuration.include[config.include_as] = this.$_.concat(existing, )
           } else {
             console.log("error cannot process filter-option", filter.name)
           }
@@ -457,7 +459,7 @@ export default {
       if (before_last) {
         const ts = this.$store.getters["search/get_searchtime"]
         if (ts)
-          configuration.required.push({name: "before_ts", ts: ts})
+          configuration.required.push({name: "before_ts", value: ts})
       }
       if (this.keyword) {
         for (let default_search_part of ["title", "tags", "aspect_search"]) {

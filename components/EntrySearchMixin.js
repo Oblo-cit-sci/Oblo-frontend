@@ -112,13 +112,13 @@ export default {
       }
     },
     build_search_config(filters, keep_local = false) {
-      const search_query = {required: [], include: {}}
+      const search_query = {required: [], include: []}
       for (let filter of filters) {
         if (!keep_local && filter.source_name === "local") {
           continue
         }
         if (filter.include_as) {
-          search_query.include[filter.include_as] = filter.value
+          search_query.include.push({name:filter.include_as, value: filter.value})
         } else {
           search_query.required.push(filter)
         }
