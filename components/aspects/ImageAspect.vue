@@ -54,8 +54,6 @@ import {loc_append, remove_entry_loc} from "~/lib/aspect";
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
 import {common_filesize} from "~/lib/util"
 
-const uuidv4 = require('uuid/v4')
-
 // because of get_entry it only works in entries now
 
 export default {
@@ -79,7 +77,7 @@ export default {
       return this.value
     },
     max_image_size() {
-      return common_filesize(8, "MB")
+      return this.max_file_size()
     },
     selected_img_data() {
       return this.images[this.selected_image_index]
@@ -96,18 +94,7 @@ export default {
   },
   methods: {
     add_image(image_result) {
-      // console.log("add", image_result)
-      const file_uuid = uuidv4()
-      this.$store.commit("files/add_file", {uuid: file_uuid, meta: image_result.meta, data: image_result.data})
-      this.update_value(this.$_.concat(this.value, [{
-        // title: "",
-        // description: "",
-        file_uuid: file_uuid,
-        url: null,
-        date: new Date(),
-        // license: "No license",
-        meta: image_result.meta
-      }]))
+      this.add_file(image_result)
     },
     image_error(error, index) {
       if (this.get_entry().status === DRAFT && this.is_editable_mode) {

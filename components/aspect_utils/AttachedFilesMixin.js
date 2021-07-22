@@ -1,4 +1,4 @@
-import {base64file_to_blob} from "~/lib/util";
+import {base64file_to_blob, common_filesize} from "~/lib/util";
 
 /**
  * this is for aspects like ImageAspect.
@@ -8,6 +8,8 @@ import {base64file_to_blob} from "~/lib/util";
  - loc: array for aspect location
  - url: url
  */
+
+const uuidv4 = require('uuid/v4')
 
 export default {
   name: "AttachedFilesMixin",
@@ -42,6 +44,22 @@ export default {
           })
         }
       }
+    },
+    max_file_size() {
+      return common_filesize(8, "MB")
+    },
+    add_file(file) {
+      const file_uuid = uuidv4()
+      this.$store.commit("files/add_file", {uuid: file_uuid, meta: file.meta, data: file.data})
+      this.update_value(this.$_.concat(this.value, [{
+        // title: "",
+        // description: "",
+        file_uuid: file_uuid,
+        url: null,
+        date: new Date(),
+        // license: "No license",
+        meta: file.meta
+      }]))
     }
   }
 }

@@ -34,7 +34,7 @@ export default {
   },
   computed: {
     language() {
-      return this.$store.getters["app/ui_language"]
+      return this.$store.getters.ui_language
     },
     goto_location() {
       // console.log("map, goto_location, map-store", this.$store.getters["map/goto_location"]())
@@ -216,10 +216,11 @@ export default {
   },
   watch: {
     language(val) {
-      this.map.setLayoutProperty('country-label', 'text-field', [
-        'get',
-        'name_' + val
-      ])
+      // language change doesnt seem with the style
+      // this.map.setLayoutProperty('country-label', 'text-field', [
+      //   'get',
+      //   'name_' + val
+      // ])
     }
   }
 }

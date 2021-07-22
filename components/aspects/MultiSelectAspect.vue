@@ -21,7 +21,8 @@
       @update:error="$emit('update:error', $event)"
       single-line outlined chips multiple clearable)
   div(v-else)
-    p.body-1.readonly-aspect.break_word {{view_text}}
+    p.body-1.readonly-aspect.break_word
+      span.float-left(v-for="s in selection || []") - &nbsp; {{s.text}}
 </template>
 
 <script>
@@ -93,18 +94,19 @@ export default {
       return rules
     },
     view_text() {
-      return this.selection.map(s => s.text).join("; ")
+      return this.selection.map(s => s.text).join("\r\n- ")
     }
   },
   methods: {
     set_selection() {
-      // console.log("this.value", this.value)
+      console.log("this.value", this.value)
       if (this.value) {
         this.selection = this.$_.filter(this.options, (o) => {
           return this.value.indexOf(o.value) > -1
         })
       } else {
         this.init = false
+        // this.selection = []
       }
     },
     option_disabled(option) {
@@ -136,7 +138,7 @@ export default {
         return
       }
       if (this.selection === null)
-        this.update_value(null)
+        this.update_value([])
       else {
         // console.log("selection", this.selection)
         this.update_value(this.selection)
