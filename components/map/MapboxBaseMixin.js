@@ -2,7 +2,6 @@ export default {
   name: "MapboxBaseMixin",
   data() {
     return {
-      // access_token:
     }
   },
   computed: {

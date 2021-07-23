@@ -257,7 +257,7 @@ export default {
         new_profile.domain[this.fixed_domain] = this.domain_specific_aspects_values
       }
       this.$api.actor.post_me(new_profile).then(({data}) => {
-        console.log(data)
+        // console.log(data)
         this.$store.commit("user/set_user_data", data.data)
         this.persist_user_data()
         // this.setEdit(false)

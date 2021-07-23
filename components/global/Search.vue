@@ -444,11 +444,8 @@ export default {
             config.value = unpack(filter.value)
             configuration.required.push(config)
           } else if (config.hasOwnProperty("include_as")) {
-            console.log("include as", config)
-            // mix if there might be multiple (tags)
-            // const existing = configuration.include[config.include_as] || []
+            // console.log("include as", config)
             configuration.include.push({name: config.include_as, value:recursive_unpack2(filter.value)})
-            // configuration.include[config.include_as] = this.$_.concat(existing, )
           } else {
             console.log("error cannot process filter-option", filter.name)
           }
@@ -462,10 +459,11 @@ export default {
           configuration.required.push({name: "before_ts", value: ts})
       }
       if (this.keyword) {
-        for (let default_search_part of ["title", "tags", "aspect_search"]) {
-          configuration.include[default_search_part] = this.keyword
+        for (let default_search_part of ["title", "tags"]) {
+          configuration.include.push({name: default_search_part, value: this.keyword , search_group: "query"})
         }
       }
+      console.log(configuration)
       return configuration
     },
     act_relevant_route_data() {
