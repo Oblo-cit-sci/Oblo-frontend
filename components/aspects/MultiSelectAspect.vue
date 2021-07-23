@@ -22,7 +22,7 @@
       single-line outlined chips multiple clearable)
   div(v-else)
     p.body-1.readonly-aspect.break_word
-      span.float-left(v-for="s in selection || []") - &nbsp; {{s.text}}
+      div(v-for="s in selection || []") - &nbsp;{{s.text}}
 </template>
 
 <script>
@@ -76,7 +76,7 @@ export default {
       }
     },
     mandatory() {
-      return this.$_.get(this.aspect, "attr.min",0) > 0
+      return this.$_.get(this.aspect, "attr.min", 0) > 0
     },
     max_vals() {
       return this.$_.get(this.aspect, "attr.max")
@@ -99,7 +99,7 @@ export default {
   },
   methods: {
     set_selection() {
-      console.log("this.value", this.value)
+      // console.log("this.value", this.value)
       if (this.value) {
         this.selection = this.$_.filter(this.options, (o) => {
           return this.value.indexOf(o.value) > -1
@@ -132,7 +132,7 @@ export default {
   },
   watch: {
     selection() {
-      //console.log("multi-select", this.selection, this.init)
+      console.log("multi-select", this.selection, this.init)
       if (this.init) {
         this.init = false
         return
@@ -140,9 +140,18 @@ export default {
       if (this.selection === null)
         this.update_value([])
       else {
-        // console.log("selection", this.selection)
-        this.update_value(this.selection)
+        if (this.selection !== this.value) {
+          // console.log(this.selection.map(s => s.value), this.value)
+          // console.log(this.$_.isEqual(this.selection.map(s => s.value), this.value))
+          // console.log("selection", this.selection, this.value)
+          if (!this.$_.isEqual(this.selection.map(s => s.value), this.value))
+            this.update_value(this.selection)
+        }
       }
+    },
+    value(value) {
+      console.log("value changed", value)
+      this.set_selection()
     }
   }
 }
