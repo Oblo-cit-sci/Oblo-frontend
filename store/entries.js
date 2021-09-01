@@ -498,6 +498,7 @@ export const actions = {
     const entry = context.state.entries.get(uuid)
     if (entry) {
       context.commit("delete_entry", uuid)
+      context.commit("set_edit", null)
     } else {
       console.log("store: entries DELETE tries to delete some entry that doesnt exist!")
     }
