@@ -25,8 +25,9 @@ const prefixes = {
 }
 
 const regexes = {
-  "orcid": /^(\d){4}-(\d){4}-(\d){4}-(\d){3}[0-9a-z]$/
+  "orcid": /^(\d){4}-(\d){4}-(\d){4}-(\d){3}[0-9a-zA-Z]$/
 }
+
 
 export default {
   name: "ExternalAccountAspect",
