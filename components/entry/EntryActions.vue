@@ -94,12 +94,11 @@ export default {
             confirm_color: "error",
             cancel_text: this.$t(`${base_t_cancel_loc}.cancel_text`),
             confirm_text: this.$t(`${base_t_cancel_loc}.confirm_text`)
-          }, confirm_method: () => {
-            // this.$emit("entry-action", "delete")
-            this.$store.dispatch("entries/delete_entry", this.uuid)
+          }, confirm_method: async () => {
+            await this.$store.dispatch("entries/delete_entry", this.uuid)
             this.back([QP_UUID, QP_ENTRY_ACCESS_KEY, QP_ENTRY_MODE])
             this.ok_snackbar(this.$t("comp.entry_actions.cancel_draft"))
-            this.persist_entries()
+            await this.persist_entries()
           }
         })
       } else {
