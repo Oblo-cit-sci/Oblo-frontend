@@ -61,7 +61,7 @@ export default {
         return
       }
       // no-domain lang data...
-      const no_domain_lang_about = this.$store.getters["domain/lang_domain_data"](NO_DOMAIN).about
+      const no_domain_lang_about = this.$store.getters["domain/lang_domain_data"](NO_DOMAIN, this.$store.getters.ui_language).about
 
       let domain_about = act_lang_domain_data.about
       // console.log(domain_about)
