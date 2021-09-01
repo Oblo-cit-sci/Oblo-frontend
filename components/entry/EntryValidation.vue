@@ -10,8 +10,8 @@
 
 <script>
 import {
-  aspect_default_value, aspect_loc2jsonpath,
-  aspect_raw_default_value, disabled_by_condition,
+  aspect_default_value,
+  aspect_raw_default_value,
   loc_append,
   pack_value
 } from "~/lib/aspect";
@@ -106,7 +106,7 @@ export default {
     attr(aspect) {
       return aspect.attr || {}
     },
-    validate_aspect(aspect, a_w_value, aspect_loc, item_index, root_data) {
+    validate_aspect(aspect, a_w_value, aspect_loc, item_index, conditionals) {
       // console.log(aspect.name, a_w_value, aspect, aspect_loc)
       // console.log("-->", aspect_loc2jsonpath(aspect_loc))
       let required = this.$_.get(aspect, "attr.required", true)
@@ -122,7 +122,12 @@ export default {
       if (this.attr(aspect).IDAspect) {
         return [OK]
       }
-      if (this._condition_fail(aspect, aspect_loc, EDIT, this.entry.uuid, null)) {
+      // test
+      // if (aspect?.attr?.condition) {
+      //   console.log("validator: -> _condition_fail", aspect, aspect_loc, "edit", "uuid", "no-cond")
+      // }
+      // pass the conditionals, for composites not to fail...
+      if (this._condition_fail(aspect, aspect_loc, EDIT, this.entry.uuid, conditionals)) {
         return [OK]
       }
       // if (disabled_by_condition(this.$store, aspect, aspect_loc, item_index, root_data)) {
@@ -162,7 +167,8 @@ export default {
         let missing_components = []
         for (let component of aspect.components) {
           const comp_loc = loc_append(aspect_loc, COMPONENT, component.name)
-          //console.log("-> comp", component.name, raw_value[component.name])
+          // console.log("-> comp", component.name, raw_value)
+          // debugger
           let component_validations = this.validate_aspect(component, raw_value[component.name] || pack_value(null), comp_loc, item_index, raw_value)
           if (component_validations[0] !== OK) {
             // console.warn("component validation fail: component", component.label, component_validations)

@@ -22,6 +22,7 @@ export default {
       }
     },
     check_recursive_condition(condition, aspect_loc, mode, entry_uuid, conditionals) {
+      // console.log("condition check", aspect_loc)
       if (Array.isArray(condition)) {
         const method = condition[0].toLowerCase()
         if (condition.length < 2 || !["and", "or"].includes(method)) {
@@ -42,10 +43,14 @@ export default {
       if (conditionals) {
         condition_value = recursive_unpack2(select_aspect_loc(null, aspect_loc_str2arr(condition.aspect), false, conditionals))
       } else if (aspect_loc) {
+        // console.log("single cond check: cond:", condition.aspect)
         let aspect_location = loc_prepend(mode === EDIT ? EDIT : ENTRY, entry_uuid,
           aspect_loc_str2arr(condition.aspect))
+        // console.log("single cond check: loc:", aspect_loc, aspect_location)
         fix_index(aspect_location,get_list_index(aspect_loc))
+        // console.log("single cond check: loc:", aspect_loc, aspect_location)
         condition_value = this.$store.getters["entries/value"](aspect_location)
+        // console.log("single cond check: val:", condition_value)
       } else {
         console.log(`condition for aspect ... cannot be checked. no aspect_loc and no conditionals`)
         return false
