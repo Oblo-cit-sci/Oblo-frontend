@@ -223,6 +223,9 @@ export default {
       let data = null
       const {component, src_lang, dest_lang} = this.unpacked_values
       const languages = [src_lang, dest_lang]
+      if (!this.all_added_languages.includes(dest_lang)) {
+        await this.$api.language.add_language(dest_lang)
+      }
       if ([FRONTEND_COMPONENT, BACKEND_COMPONENT].includes(component)) {
         const response = await this.$api.language.get_component_as_csv(component, languages)
         file_name += `_${component}__${languages.join("_")}`
@@ -393,11 +396,16 @@ export default {
       this.new_lang_dialog_open = true
     },
     add_language() {
+      /**
+       * when added from the dialog
+       */
+      const new_lang = this.new_language
       this.temporary_additional_languages.push(this.new_language)
       this.new_lang_dialog_open = false
       this.$i18n.mergeLocaleMessage(this.ui_language,
-        {[`lang.${this.new_language.value}`]: this.new_language.text})
-      this.setup_values.dest_lang = this.new_language
+        {[`lang.${new_lang.value}`]: new_lang.text})
+      this.setup_values.dest_lang = new_lang
+      this.language_statuses[new_lang.value] = {active:false, lang_code: this.new_language.value}
     },
     aspectAction(event) {
       if (event.name === "new_lang_dialog") {

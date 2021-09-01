@@ -292,11 +292,11 @@ export default {
     is_required(translation_block) {
       return false
     },
-    get_required_words() {
-      if (this.setup.component === DOMAIN) {
-        return ['title', 'description']
-      } else return []
-    },
+    // get_required_words() {
+    //   if (this.setup.component === DOMAIN) {
+    //     return ['title', 'description']
+    //   } else return []
+    // },
     update_msg(index, message) {
       this.translation_o[index].messages[1] = message
     },
