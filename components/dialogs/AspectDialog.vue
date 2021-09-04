@@ -68,8 +68,10 @@ export default {
       return !isEqual_default_value(this.int_value, this.aspect) //!this.$_.isEqual(this.int_value?.value, aspect_default_value(this.aspect))
     },
     disable_done() {
-      // console.log("disable_done", this.has_value)
-      return this.error || !this.has_value
+      // console.log("disable_done", this.error)
+      // has no value and requires one
+      const value_missing = !this.has_value && (this.aspect?.attr.required || false)
+      return this.error || value_missing
     },
     width() {
       if (this.fix_width)
