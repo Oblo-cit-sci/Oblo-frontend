@@ -94,29 +94,31 @@ export default {
       // })
       await this.get_domain_overviews(i_language)
 
-      const {data: resp} = await this.$api.basic.init_data(query_domains, i_language)
+      const {data: init_data} = await this.$api.basic.init_data(i_language)
+      const only_one_domain = init_data.only_one_domain
+      this.$store.commit("set_available_languages", init_data.languages)
+      this.$store.commit("app/platform_data", init_data.platform)
+      this.$store.commit("app/oauth_services", init_data.oauth_services)
+      if (init_data.user_guide_url) {
+        this.$store.commit("translate/add_user_guide_link", {language_code: language, url: init_data.user_guide_url})
+        this.$store.commit("app/set_menu_to", {name: "user_guide", to: init_data.user_guide_url})
+      }
+      this.$store.commit("map/default_map_style", init_data.map_default_map_style)
+      this.$store.commit("map/access_token", init_data.map_access_token)
+
+      const {data: resp} = await this.$api.basic.domain_basics(query_domains, i_language)
+
       // check if the domain is delivered in the given language:
       const result_domain_language = Object.keys(this.$_.find(resp.data.domains, d => d.name === domain_name).langs)[0]
 
       // todo here call complete_language_domains if on domain-page and domain-lang different than ui-lang
       // console.log(resp)
       console.log("connected")
-      const platform_data = resp.data.platform
-      this.$store.commit("app/platform_data", platform_data)
-      this.$store.commit("app/oauth_services", resp.data.oauth_services)
-
-      // map
-      this.$store.commit("map/default_map_style", resp.data.map_default_map_style)
-      this.$store.commit("map/access_token", resp.data.map_access_token)
-
 
       const domains_data = resp.data.domains
       const language = resp.data.language
 
-      if (resp.data.user_guide_url) {
-        this.$store.commit("translate/add_user_guide_link", {language_code: language, url: resp.data.user_guide_url})
-        this.$store.commit("app/set_menu_to", {name: "user_guide", to: resp.data.user_guide_url})
-      }
+
       // const domains_overview = resp.data.domains_overview
       await this.$store.commit("domain/add_domains_data", domains_data)
 
@@ -137,7 +139,7 @@ export default {
 
       // console.log("template/codes stored")
       // console.log(data.data)
-      this.$store.commit("set_available_languages", resp.data.languages)
+      // this.$store.commit("set_available_languages", resp.data.languages)
 
       if (this.$store.getters.username === VISITOR) {
         const settings = this.$_.cloneDeep(default_settings)
@@ -160,7 +162,7 @@ export default {
 
       await this.$store.dispatch("app/connected")
 
-      const only_one_domain = resp.data.only_one_domain
+      // const only_one_domain = resp.data.only_one_domain
       console.log("multi domains?", only_one_domain, this.has_multiple_domains)
 
       if (only_one_domain) {

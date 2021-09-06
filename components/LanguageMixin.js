@@ -128,7 +128,7 @@ export default {
         && !domains.includes(NO_DOMAIN)) {
         domains.push(NO_DOMAIN)
       }
-      const {data} = await this.$api.basic.init_data(domains, language)
+      const {data} = await this.$api.basic.domain_basics(domains, language)
       // todo this also gets all the messages
       const domains_data = data.data.domains
 

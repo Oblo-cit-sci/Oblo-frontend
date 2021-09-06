@@ -87,8 +87,23 @@ class Basic extends QueryBase {
   //   })
   // }
 
-  init_data(domains, language) {
+  init_data(language) {
     console.log("init_data:requesting language", language)
+    // console.trace()
+    const params = {}
+    if (language) {
+      params.language = language
+    }
+    return this.get_("init_data", {
+      params,
+      paramsSerializer: function (params) {
+        return qs.stringify(params, {arrayFormat: 'repeat'})
+      },
+    })
+  }
+
+  domain_basics(domains, language) {
+    console.log("domain_basics:requesting language", language)
     // console.trace()
     const params = {}
     if (domains) {
@@ -97,7 +112,7 @@ class Basic extends QueryBase {
     if (language) {
       params.language = language
     }
-    return this.get_("init_data", {
+    return this.get_("domain_basics", {
       params,
       paramsSerializer: function (params) {
         return qs.stringify(params, {arrayFormat: 'repeat'})
