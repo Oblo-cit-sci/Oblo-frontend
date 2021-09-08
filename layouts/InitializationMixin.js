@@ -94,7 +94,13 @@ export default {
       // })
       await this.get_domain_overviews(i_language)
 
-      const {data: init_data} = await this.$api.basic.init_data(i_language)
+      // const {data: init_data} = await
+
+      const init_domain_data = await Promise.all([
+        this.$api.basic.init_data(i_language),
+        this.$api.basic.domain_basics(query_domains, i_language)])
+
+      const init_data = init_domain_data[0].data
       const only_one_domain = init_data.only_one_domain
       this.$store.commit("set_available_languages", init_data.languages)
       this.$store.commit("app/platform_data", init_data.platform)
@@ -106,24 +112,24 @@ export default {
       this.$store.commit("map/default_map_style", init_data.map_default_map_style)
       this.$store.commit("map/access_token", init_data.map_access_token)
 
-      const {data: resp} = await this.$api.basic.domain_basics(query_domains, i_language)
+      const domain_data = init_domain_data[1].data
 
       // check if the domain is delivered in the given language:
-      const result_domain_language = Object.keys(this.$_.find(resp.data.domains, d => d.name === domain_name).langs)[0]
+      const result_domain_language = Object.keys(this.$_.find(domain_data.data.domains, d => d.name === domain_name).langs)[0]
 
       // todo here call complete_language_domains if on domain-page and domain-lang different than ui-lang
       // console.log(resp)
       console.log("connected")
 
-      const domains_data = resp.data.domains
-      const language = resp.data.language
+      const domains_data = domain_data.data.domains
+      const language = domain_data.data.language
 
 
       // const domains_overview = resp.data.domains_overview
       await this.$store.commit("domain/add_domains_data", domains_data)
 
       // await this.$store.dispatch("domain/add_overviews", domains_overview)
-      await this.$store.dispatch("templates/add_templates_codes", resp.data.templates_and_codes)
+      await this.$store.dispatch("templates/add_templates_codes", domain_data.data.templates_and_codes)
       // debugger
       await this.change_language(i_language, true, result_domain_language)
 
@@ -151,7 +157,7 @@ export default {
       // console.log("?", language, language !== this.$i18n.fallbackLocale, this.$i18n.fallbackLocale)
       if (language !== this.$i18n.fallbackLocale) {
         console.log("init language != fallback language changing language to", language)
-        this.$i18n.setLocaleMessage(language, resp.data.messages[language])
+        this.$i18n.setLocaleMessage(language, domain_data.data.messages[language])
         // await this.change_language(language, false)
       } else {
         await this.guarantee_default_lang_language_names()
