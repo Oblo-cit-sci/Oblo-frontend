@@ -1,10 +1,11 @@
 <template lang="pug">
   .taglist
+    <!-- use index for key since due to shortened text, there could be duplicates -->
     v-slide-group(v-if="slide" :show-arrows="true" class="custom-chip-group")
-      span(v-for="tag in tag_list" :key="tag.text")
+      span(v-for="(tag,index) in tag_list" :key="index")
         TagChip.mr-1(:tag="tag")
     div(v-else)
-      div.mt-1(v-for="tag in tag_list" :key="tag.text" :style="{display:'inline-block'}")
+      div.mt-1(v-for="(tag, index) in tag_list" :key="index" :style="{display:'inline-block'}")
         TagChip(:tag="tag")
 </template>
 
@@ -30,6 +31,8 @@
     },
     computed: {
       tag_list() {
+        console.log(this.tags)
+
         let result = []
         for (let tag_type in this.tags) {
           if(this.summarize && this.tags[tag_type].length > summary_tag_thresh) {
