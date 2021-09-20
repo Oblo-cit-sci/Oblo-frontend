@@ -100,7 +100,7 @@ export default {
         user_settings = user_data.settings
         this.$store.dispatch("user/login", user_data)
         await this.get_domain_overviews(user_settings.ui_language)
-        this.persist_user_data()
+        await this.persist_user_data()
       } catch (err) {
         console.log(err)
         this.errorMsg = this.$_.get(err, RESPONSE_ERROR_MSG, this.$t(MSG_PATH_SOMETHING_WENT_WRONG))
@@ -113,7 +113,7 @@ export default {
       } finally {
         this.login_loading = false
       }
-
+      debugger
       try {
         await this.change_language(user_settings.ui_language, false, user_settings.domain_language)
         if (user_settings.fixed_domain) {

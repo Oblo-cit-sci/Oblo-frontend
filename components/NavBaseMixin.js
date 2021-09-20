@@ -30,7 +30,15 @@ export default {
           }
         )
       } else {
-        this.$router.push("/")
+        const only_one_domain = this.$_.get(this.$store.getters["app/platform_data"], "only_one_domain", false)
+        if (only_one_domain) {
+          const domain_name = this.get_one_domain_name
+          this.prepare_goto_domain(domain_name, this.$store.getters.ui_language()).then(res => {
+          this.to_domain(domain_name, true, () => {})
+          })
+        } else {
+          this.$router.push("/")
+        }
       }
     },
     to_set_domain() {
@@ -43,7 +51,7 @@ export default {
         })
       }
     },
-    async prepare_goto_domain(domain_name, language, fixed = false ) {
+    async prepare_goto_domain(domain_name, language, fixed = false) {
       console.log("prepare goto", domain_name, fixed, language)
       await this.complete_language_domains(domain_name, language)
       this.$store.commit("domain/set_act_domain", domain_name)
@@ -77,7 +85,7 @@ export default {
       }
       if (log_page) {
         const {name, query} = this.$route
-        this.$store.commit("init_page_path",{name, query})
+        this.$store.commit("init_page_path", {name, query})
       }
       // console.log("has full entry", this.$store.getters["entries/has_full_entry"](uuid))
       // console.log("checkk", this.$store.getters["entries/get_entry"](uuid))

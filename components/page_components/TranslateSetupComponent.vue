@@ -367,12 +367,12 @@ export default {
           this.$api.entry.aspects_as_index_table(entry, setup.src_lang),
           this.$api.entry.aspects_as_index_table(entry, setup.dest_lang)
         ])
-        setup.messages = this.match_messages(resp_src_data.data.data, resp_dest_data.data.data)
-        Object.assign(setup, {config: {entry, new_o: false}})
+        setup.messages = this.match_messages(resp_src_data.data.data.messages, resp_dest_data.data.data.messages)
+        Object.assign(setup, {config: {entry, new_o: false, outdated: resp_dest_data.data.data.outdated}})
       } else {
         const {data} = await this.$api.entry.aspects_as_index_table(entry, setup.src_lang)
-        data.data.forEach(m => m.push(""))
-        Object.assign(setup, {messages: data.data, config: {entry, new_o: true}})
+        data.data.messages.forEach(m => m.push(""))
+        Object.assign(setup, {messages: data.data.messages, config: {entry, new_o: true, outdated: data.data.outdated}})
       }
     },
     async get_language_status(language) {

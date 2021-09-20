@@ -101,7 +101,7 @@ export default {
         this.$api.basic.domain_basics(query_domains, i_language)])
 
       const init_data = init_domain_data[0].data
-      const only_one_domain = init_data.only_one_domain
+      const only_one_domain = init_data.platform.only_one_domain
       this.$store.commit("set_available_languages", init_data.languages)
       this.$store.commit("app/platform_data", init_data.platform)
       this.$store.commit("app/oauth_services", init_data.oauth_services)

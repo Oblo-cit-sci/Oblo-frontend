@@ -57,6 +57,7 @@ export default {
   mixins: [OptionsMixin, TriggerSnackbarMixin, TranslationSetupMixin],
   data() {
     const setup = this.$store.getters['translate/setup_values']
+
     const message_order = setup.messages.map((msg) => msg[0])
     const translation_o = this.$_.keyBy(
       setup.messages.map((msg) => ({
@@ -77,7 +78,8 @@ export default {
       translation_o,
       search_query: "",
       search_results: null,
-      search_in_langs: []
+      search_in_langs: [],
+      outdated: this.$_.get(setup.config, "outdated", false)
     }
   },
   created() {

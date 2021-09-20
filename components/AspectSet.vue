@@ -115,6 +115,9 @@ export default {
     },
     is_complete() {
       for (let aspect of this.aspect_names) {
+        // if(!this.$_.get(this.get_by_name(aspect),"attr.required",true)) {
+        //   continue
+        // }
         if ([ASP_UNSET, ASP_ERROR].includes(this.state[aspect])) {
           return false
         }
@@ -144,12 +147,15 @@ export default {
       return this.state[aspect.name] === 'disabled' && aspect.attr?.hide_on_disabled
     },
     aspect_mode(aspect_name) {
-      if(this.modes) {
+      if (this.modes) {
         return this.modes[aspect_name] || VIEW
       } else {
         return this.mode || VIEW
       }
-    }
+    },
+    get_by_name(aspect_name) {
+      return this.$_.filter(this.aspects, a => a.name === aspect_name)[0]
+    },
   },
   watch: {
     i_values: {
