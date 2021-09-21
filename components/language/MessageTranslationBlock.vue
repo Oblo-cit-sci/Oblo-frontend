@@ -92,7 +92,7 @@ export default {
         delete translation_components[1].attr["max"]
       }
       return {
-        "name": "translation",
+        name: "translation",
         label: "",
         "type": COMPOSITE,
         attr: {compact: true, track_change: true},
@@ -104,7 +104,6 @@ export default {
       const found_param = src_msg.match(parameter_regex)
       const found_refs = src_msg.match(reference_regex)
       const found_counts = src_msg.match(count_regex)
-
       if (found_param) {
 
       }

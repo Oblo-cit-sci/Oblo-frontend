@@ -13,6 +13,7 @@
     v-btn(:disabled="!is_setup_valid"  @click="download_translation_table") DOWNLOAD
       v-icon.ml-2 mdi-download
     v-btn(@click="start"  color='success' :disabled="!is_setup_valid")  {{$t("comp.translate.start")}}
+    v-btn(@click="update_lang_entry" :disabled="!updatable" color="success") {{$t("w.update")}}
     Dialog(:dialog_open.sync="new_lang_dialog_open")
       h3 {{$t("comp.translate.new.descr")}}
       LanguageSearch(v-model="new_language" :filter_out="exclude_from_search")
@@ -172,6 +173,22 @@ export default {
         return
       return !this.$_.find(this.temporary_additional_languages, l => l.value === this.new_language.value)
     },
+    updatable() {
+      // console.log(this.unpacked_values)
+      const {entry, dest_lang} = this.unpacked_values
+      if (entry && dest_lang && this.code_templates_for_domain_lang) {
+        console.log(entry, dest_lang)
+        // console.log(this.code_templates_for_domain_lang)
+        const selected_entry = this.$_.find(this.code_templates_for_domain_lang, e =>
+          e.language === dest_lang && e.slug === entry
+        )
+        if (selected_entry){
+          return selected_entry.template.outdated
+        }
+        // console.log(selected_entry)
+      }
+      return false
+    },
     is_setup_valid() {
       return this.is_aspects_complete && this.setup_values.src_lang.value !== this.setup_values.dest_lang.value
     },
@@ -270,7 +287,10 @@ export default {
       const {domain: domain_name, dest_lang} = this.unpacked_values
       if (domain_name) {
         const {required_entries} = this.domains_metainfos[domain_name]
+        // debugger
+        // console.log(this.code_templates_for_domain_lang)
         options = Object.values(this.code_templates_for_domain_lang).map(e => {
+          console.log(e)
           const res = {value: e.slug, text: e.title}
           if (e.language === dest_lang) {
             if (e.status === PUBLISHED) {
@@ -283,6 +303,9 @@ export default {
             if (e.language !== this.ui_language) {
               res.language = e.language
             }
+          }
+          if (e.template.outdated) {
+            res.description += " - (OUTDATED)"
           }
           if (required_entries.includes(e.slug))
             res.mdi_icon = "mdi-exclamation"
@@ -357,12 +380,9 @@ export default {
       }
     },
     async start_entry(entry, setup) {
-      // console.log(entry)
-      // console.log(setup)
-      // console.log(this.code_templates_for_domain_lang)
       const code_template = this.code_templates_for_domain_lang[entry]
-      // console.log(code_template.language === this.unpacked_values.dest_lang)
       if (code_template.language === this.unpacked_values.dest_lang) {
+        debugger
         const [resp_src_data, resp_dest_data] = await Promise.all([
           this.$api.entry.aspects_as_index_table(entry, setup.src_lang),
           this.$api.entry.aspects_as_index_table(entry, setup.dest_lang)
@@ -391,6 +411,16 @@ export default {
         return Promise.resolve(this.language_statuses[language].active ? "active" : "inactive")
       }
     },
+    async update_lang_entry() {
+      const {component, src_lang, dest_lang, domain, entry} = this.unpacked_values
+      const setup = {component, domain, src_lang, dest_lang, unpacked: this.setup_values}
+      // const code_template = this.code_templates_for_domain_lang[entry]
+      const resp_dest_data = await this.$api.entry.update_aspects_as_index_table(entry, setup.dest_lang)
+      setup.messages = resp_dest_data.data.data.messages
+      Object.assign(setup, {config: {entry, new_o: false, outdated: resp_dest_data.data.data.outdated}})
+      this.$store.commit("translate/setup", setup)
+      await this.$router.push("/translate/update")
+    },
     open_new_lang() {
       this.new_language = null
       this.new_lang_dialog_open = true
@@ -405,7 +435,7 @@ export default {
       this.$i18n.mergeLocaleMessage(this.ui_language,
         {[`lang.${new_lang.value}`]: new_lang.text})
       this.setup_values.dest_lang = new_lang
-      this.language_statuses[new_lang.value] = {active:false, lang_code: this.new_language.value}
+      this.language_statuses[new_lang.value] = {active: false, lang_code: this.new_language.value}
     },
     aspectAction(event) {
       if (event.name === "new_lang_dialog") {
@@ -511,7 +541,7 @@ export default {
         console.log(err)
       })
     },
-    unpacked_values: async function (new_vals, old_vals) {
+    "unpacked_values": async function (new_vals, old_vals) {
       // console.log("watch-unpacked_values")
       if (this.$_.isEqual(new_vals, old_vals)) {
         // console.log("watch-unpacked_values-xxx")

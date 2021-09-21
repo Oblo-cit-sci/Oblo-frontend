@@ -307,7 +307,7 @@
       "outdated": "Created from an outdated version. Some values might change. Download the entry before updating is recommended",
       "view": "@:w.view",
       "edit": "@:w.edit",
-      "update": "update",
+      "update": "@:w.update",
       "review": "review"
     },
     "entry_actions": {

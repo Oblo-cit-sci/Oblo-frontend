@@ -318,6 +318,10 @@ class Entry extends QueryBase {
     return this.get_(`${slug}/aspects_as_index_table`, {params: {language}})
   }
 
+  async update_aspects_as_index_table(slug, language) {
+    return this.get_(`${slug}/update_aspects_as_index_table`, {params: {language}})
+  }
+
   async post_from_flat(slug, language, content) {
     return this.post_(`${slug}/from_flat`, content, {
       params: {language}

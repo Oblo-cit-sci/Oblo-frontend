@@ -86,10 +86,7 @@ export default {
         type: SELECT,
         label: this.$t(`${base}label`),
         description: this.$t(`${base}descr`),
-        items: items,
-        attr: {
-          required: false
-        }
+        items: items
       }
     },
   }

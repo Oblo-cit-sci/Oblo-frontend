@@ -115,9 +115,9 @@ export default {
     },
     is_complete() {
       for (let aspect of this.aspect_names) {
-        // if(!this.$_.get(this.get_by_name(aspect),"attr.required",true)) {
-        //   continue
-        // }
+        if(!this.$_.get(this.get_by_name(aspect),"attr.required",true)) {
+          continue
+        }
         if ([ASP_UNSET, ASP_ERROR].includes(this.state[aspect])) {
           return false
         }
