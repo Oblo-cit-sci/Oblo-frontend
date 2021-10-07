@@ -61,7 +61,7 @@ import {recursive_unpack} from "~/lib/util";
  */
 
 export default {
-  name: 'Update',
+  name: 'Update_Template',
   components: {SimplePaginate, MessageTranslationBlock, Aspect, AspectSet},
   mixins: [OptionsMixin, TriggerSnackbarMixin, TranslationSetupMixin],
   data() {

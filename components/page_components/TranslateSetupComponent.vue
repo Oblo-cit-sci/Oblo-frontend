@@ -419,7 +419,7 @@ export default {
       setup.messages = resp_dest_data.data.data.messages
       Object.assign(setup, {config: {entry, new_o: false, outdated: resp_dest_data.data.data.outdated}})
       this.$store.commit("translate/setup", setup)
-      await this.$router.push("/translate/update")
+      await this.$router.push("/translate/update_template")
     },
     open_new_lang() {
       this.new_language = null

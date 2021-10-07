@@ -113,7 +113,6 @@ export default {
       } finally {
         this.login_loading = false
       }
-      debugger
       try {
         await this.change_language(user_settings.ui_language, false, user_settings.domain_language)
         if (user_settings.fixed_domain) {

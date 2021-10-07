@@ -33,7 +33,7 @@ export default {
         const only_one_domain = this.$_.get(this.$store.getters["app/platform_data"], "only_one_domain", false)
         if (only_one_domain) {
           const domain_name = this.get_one_domain_name
-          this.prepare_goto_domain(domain_name, this.$store.getters.ui_language()).then(res => {
+          this.prepare_goto_domain(domain_name, this.$store.getters.ui_language).then(res => {
           this.to_domain(domain_name, true, () => {})
           })
         } else {
