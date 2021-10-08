@@ -12,7 +12,7 @@
       .scrollable#menu_head(v-if="!menu_mode_fixed" :style="pad_if_over")
         v-tabs(v-model="menu_state" grow active-class="active_tab")
           v-tab {{$t("comp.menucontainer.tab_main")}}
-          v-tab {{$t("comp.menucontainer.tab_domain")}}
+          v-tab(@click="select_entries") {{$t("comp.menucontainer.tab_domain")}}
         NotificationBanner
         v-tabs-items(v-model="menu_state" touchless)
           v-tab-item
@@ -29,7 +29,7 @@ import {MENU_MODE_DOMAIN, MENU_MODE_MAIN} from "~/lib/consts"
 import MainMenuList from "~/components/menu/MainMenuList"
 import DomainMenu from "~/components/menu/DomainMenu"
 import NotificationBanner from "~/components/global/NotificationBanner"
-import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
+import HasMainNavComponentMixin, {ENTRY} from "~/components/global/HasMainNavComponentMixin"
 import ResponsivenessMixin from "~/components/ResponsivenessMixin";
 import URLQueryMixin from "~/components/util/URLQueryMixin";
 
@@ -102,7 +102,17 @@ export default {
       }
     }
   },
-  methods: {},
+  methods: {
+    /**
+     * this is a ux improvement, to switch from entry back to search
+     */
+    select_entries() {
+      // both from HasMainNavComponentMixin
+      if(this.navigation_mode === ENTRY) {
+        this.unselect_entry()
+      }
+    }
+  },
   watch: {
     state() {
       this.$store.commit("menu/menu_width", this.menu_width)
