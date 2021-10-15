@@ -38,7 +38,8 @@
       :total_count="total_count"
       :preview_options="preview_options_search"
       @preview_action="$emit('preview_action',$event)"
-      @request_more="request_more")
+      @request_more="request_more"
+      @download="download_entries(filtered_entries)")
 </template>
 
 <script>
@@ -55,6 +56,7 @@ import EntrySearchMixin from "~/components/EntrySearchMixin"
 import Aspect from "~/components/Aspect"
 import {aspect_default_value, pack_value, unpack} from "~/lib/aspect"
 import {BUS_TRIGGER_SEARCH} from "~/plugins/bus";
+import EntryFetchMixin from "~/components/entry/EntryFetchMixin"
 
 const LOG = false
 
@@ -63,7 +65,7 @@ const relevant_query_keys = [QP_D, QP_SEARCH]
 export default {
   name: "Search",
   components: {Aspect, Filterlist, EntryPreviewList},
-  mixins: [FilterMixin, NavBaseMixin, PersistentStorageMixin, EntrySearchMixin],
+  mixins: [FilterMixin, NavBaseMixin, PersistentStorageMixin, EntrySearchMixin, EntryFetchMixin],
   props: {
     init_clear: Boolean,
     init_full: Boolean,

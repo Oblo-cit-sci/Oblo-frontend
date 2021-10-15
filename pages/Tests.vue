@@ -1,11 +1,13 @@
 <template lang="pug">
   div
-    div {{is_standalone}}
-    div {{build_time}}
-    v-btn(@click="switch_offline") {{dev_offline_switch_button_label}}
-    v-btn(@click="copy") copy
-    nuxt-link(to="test/pages") aspect tests
+    //div {{is_standalone}}
+    //div {{build_time}}
+    //v-btn(@click="switch_offline") {{dev_offline_switch_button_label}}
+    //v-btn(@click="copy") copy
+    //nuxt-link(to="test/pages") aspect tests
     //Aspect(:aspect="aspect")
+    //Aspect(:aspect="video_aspect" :ext_value="video_value" mode="view")
+    Aspect(:aspect="video_aspect" :ext_value.sync="video_value" mode="edit")
 </template>
 
 <script>
@@ -13,6 +15,7 @@
 import EnvMixin from "~/components/global/EnvMixin";
 import OfflineMixin from "~/lib/OfflineMixin";
 import Aspect from "~/components/Aspect"
+import {pack_value} from "~/lib/aspect"
 
 export default {
   name: "tests",
@@ -22,7 +25,13 @@ export default {
     return {
       match: null,
       doc: null,
-      nav: null
+      nav: null,
+      video_aspect: {
+        name: "video",
+        type: "video",
+      },
+      video_value: pack_value("https://www.youtube.com/watch?v=eWTmnZB4ZWQ")
+
     }
   },
   created() {

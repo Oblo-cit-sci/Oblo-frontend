@@ -405,6 +405,9 @@ class Entries extends QueryBase {
     return this.get_("get_codes_templates", {params: {language, full}})
   }
 
+  download(uuids) {
+    return this.post_("download", uuids, {headers:{"Access-Control-Expose-Headers": "content-disposition"}})
+  }
 }
 
 class Actor extends QueryBase {

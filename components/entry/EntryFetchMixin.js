@@ -1,9 +1,10 @@
 import LanguageMixin from "~/components/LanguageMixin";
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin";
+import ExportMixin from "~/components/global/ExportMixin"
 
 export default {
   name: "EntryFetchMixin",
-  mixins: [LanguageMixin, TriggerSnackbarMixin],
+  mixins: [LanguageMixin, TriggerSnackbarMixin, ExportMixin],
   methods: {
     async guarantee_entry(entry_uuid, entry_access_key = null) {
       if (this.$store.getters["entries/has_full_entry"](entry_uuid)) {
@@ -43,6 +44,10 @@ export default {
       //   return resp.data
       // }
       return []
+    },
+    async download_entries(uuids) {
+      const response = await this.$api.entries.download(uuids)
+      this.download_csv(response.data, "entries_download")
     }
   }
 }

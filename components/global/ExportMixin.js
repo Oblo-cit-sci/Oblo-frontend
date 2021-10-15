@@ -46,30 +46,6 @@ export default {
       } else if (format === "csv") {
         this.download_csv(data, filename)
       }
-    },
-    // convert_entry(entry) {
-    //   // get the template in the language
-    //   const template = this.$store.getters["templates/entry_type"](entry.template.slug)
-    //   const columns = this.get_columns(template)
-    //   const values = this.get_column_values(entry)
-    //   return [columns, values].join("\n")
-    // },
-    // get_columns(template_entry) {
-    //   const columns = regular_entry_base_meta_columns.map(c => "meta." + c)
-    //   //["tags", "location", "values"]
-    //
-    //   return columns.join(", ")
-    // },
-    // get_column_values(entry, template_entry) {
-    //   const meta_values = this.convert_meta_values(entry)
-    //   return meta_values
-    // },
-    // convert_meta_values(entry) {
-    //   // let csv = ""
-    //   // for (let c in straight_grab) {
-    //   //   entry
-    //   // }
-    //   return straight_grab.map(c => entry[c]).join(", ")
-    // }
+    }
   }
 }

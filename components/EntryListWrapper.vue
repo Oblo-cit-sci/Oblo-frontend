@@ -9,7 +9,8 @@
       :total_count="total_count"
       :preview_options="preview_options"
       @request_more="request_more()"
-      @preview_action="$emit('preview_action',$event)")
+      @preview_action="$emit('preview_action',$event)"
+      @download="download_entries(entries_uuids)")
     CompactEntryList(v-if="!prepend_query && !normal_mode"
       :entries="entries_uuids"
       :total_count="total_count"
