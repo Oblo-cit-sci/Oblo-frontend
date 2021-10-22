@@ -122,7 +122,7 @@ export default {
       let messages = this.message_order
       if (this.show_only_incomplete) {
         messages = messages.filter((t) =>
-          ['', null].includes(this.translation_o[t].messages[1])
+          (this.translation_o[t].messages[0] !== '' && ['', null].includes(this.translation_o[t].messages[1]))
         )
       }
       if (this.search_results !== null) {

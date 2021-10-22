@@ -382,7 +382,6 @@ export default {
     async start_entry(entry, setup) {
       const code_template = this.code_templates_for_domain_lang[entry]
       if (code_template.language === this.unpacked_values.dest_lang) {
-        debugger
         const [resp_src_data, resp_dest_data] = await Promise.all([
           this.$api.entry.aspects_as_index_table(entry, setup.src_lang),
           this.$api.entry.aspects_as_index_table(entry, setup.dest_lang)
