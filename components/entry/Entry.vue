@@ -56,12 +56,14 @@
           Aspect(
             :aspect="aspect"
             :aspect_loc="aspect_locs[aspect.name]"
+            :conditionals="regular_values"
             :extra="aspect_extras"
             @aspectAction="aspectAction($event)"
             :mode="mode")
         Aspect(v-else
           :aspect="aspect"
           :aspect_loc="aspect_locs[aspect.name]"
+          :conditionals="regular_values"
           :extra="aspect_extras"
           @aspectAction="aspectAction($event)"
           :mode="mode")

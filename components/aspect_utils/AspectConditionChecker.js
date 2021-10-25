@@ -7,15 +7,17 @@ import {
   loc_prepend
 } from "~/lib/aspect";
 import {recursive_unpack2} from "~/lib/util";
-import {select_aspect_loc} from "~/lib/entry";
-import {EDIT, ENTRY} from "~/lib/consts";
+import {new_value_getter, select_aspect_loc} from "~/lib/entry";
+import {EDIT, ENTRY, VALUE} from "~/lib/consts";
 
 export default {
   name: "AspectConditionChecker",
   methods: {
     _condition_fail(aspect, aspect_loc, mode, entry_uuid, conditionals) {
-      // console.log("aspect-condition fail check", aspect.name, aspect_loc)
+      // console.log("aspect-condition fail check", aspect.name)
+      // console.log("...", attr(aspect).condition, aspect_loc, entry_uuid, conditionals)
       if (attr(aspect).hasOwnProperty("condition")) {
+        // console.log("aspect-condition fail check", aspect.name, aspect_loc, entry_uuid, conditionals)
         return !this.check_recursive_condition(aspect.attr.condition, aspect_loc, mode, entry_uuid, conditionals)
       } else {
         return false
@@ -41,9 +43,7 @@ export default {
     check_single_condition(condition, aspect_loc, mode, entry_uuid, conditionals) {
       let condition_value = null
       if (conditionals) {
-        //console.log(aspect_loc_str2arr(condition.aspect))
-        //console.log(select_aspect_loc(null, aspect_loc_str2arr(condition.aspect)))
-        condition_value = recursive_unpack2(select_aspect_loc(null, aspect_loc_str2arr(condition.aspect), false, conditionals))
+        condition_value = this.$_.get(new_value_getter(conditionals, condition.aspect), VALUE)
       } else if (aspect_loc) {
         // console.log("single cond check: cond:", condition.aspect)
         let aspect_location = loc_prepend(mode === EDIT ? EDIT : ENTRY, entry_uuid,

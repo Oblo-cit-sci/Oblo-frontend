@@ -240,6 +240,9 @@ export default {
         aspect_locs[aspect] = loc_append([this.aspect_loc], META, aspect)
       }
       return aspect_locs
+    },
+    regular_values() {
+      return this.entry.values
     }
   },
   // beforeMount() {
@@ -282,6 +285,5 @@ export default {
     //     }
     //   }
     // },
-
   }
 }
