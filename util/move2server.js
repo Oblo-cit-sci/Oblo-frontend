@@ -1,4 +1,4 @@
-server_static_dir = "../opentek_be/app/"
+server_static_dir = "../oblo_be/app/"
 
 remove_entry_images = process.argv[2] ? false : true
 
@@ -18,10 +18,8 @@ if(process.env.SERVER === "local") {
   destination_folder = "fe"
 }
 
-
-console.log("destination", destination_folder)
-
 const destination = server_static_dir + destination_folder
+console.log("destination", destination)
 
 const deleteFolderRecursive = function(path) {
   // if(path === "" ) {
