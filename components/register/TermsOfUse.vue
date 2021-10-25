@@ -38,8 +38,7 @@ export default {
   computed: {
     terms_of_use_section() {
       // make this better so its not destroyed in the translation tables. translations shouldnt touch it.
-      // todo just grab it from the right location. rename p.index from h2 to p.h:terms_of_use and find by that key
-      return this.$_.find(this.$i18n.msg("page.about"), s => s.hasOwnProperty("terms_of_use"))
+      return this.$i18n.msg("page.about")[1]
     },
     i_terms_dialog_open: {
       get: function () {
