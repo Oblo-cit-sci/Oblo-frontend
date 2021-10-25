@@ -56,7 +56,7 @@ export default {
       return this.asp_domain_select("domain", "w.domain", false, {
         hide_on_disabled: true,
         condition: {
-          aspect: "# component",
+          aspect: "$.component",
           value: ["domain", "entries"],
           compare: "contains"
         }
@@ -70,7 +70,7 @@ export default {
           hide_on_disabled: true,
           force_view: "list",
           condition: {
-            aspect: "# component",
+            aspect: "$.component",
             value: "entries"
           }
         },

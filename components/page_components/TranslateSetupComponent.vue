@@ -10,7 +10,7 @@
       @aspectAction="aspectAction($event)")
     LoadFileButton(filetype="csv" :label="$t('comp.translate.from_csv')" @fileload="from_csv($event)"
       :btn_props="{disabled:disable_csv_upload, color:'success'}" :style="{float:'left'}")
-    v-btn(:disabled="!is_setup_valid"  @click="download_translation_table") DOWNLOAD
+    v-btn(:disabled="!is_setup_valid"  @click="download_translation_table") {{$t('w.download')}}
       v-icon.ml-2 mdi-download
     v-btn(@click="start"  color='success' :disabled="!is_setup_valid")  {{$t("comp.translate.start")}}
     v-btn(@click="update_lang_entry" :disabled="!updatable" color="success") {{$t("w.update")}}
@@ -177,7 +177,6 @@ export default {
       // console.log(this.unpacked_values)
       const {entry, dest_lang} = this.unpacked_values
       if (entry && dest_lang && this.code_templates_for_domain_lang) {
-        console.log(entry, dest_lang)
         // console.log(this.code_templates_for_domain_lang)
         const selected_entry = this.$_.find(this.code_templates_for_domain_lang, e =>
           e.language === dest_lang && e.slug === entry
@@ -235,6 +234,10 @@ export default {
     update_aspect_states(states) {
       this.setup_value_states = states
     },
+    /**
+     * download a csv
+     * @returns {Promise<void>}
+     */
     async download_translation_table() {
       let file_name = this.$store.getters["app/platform_data"].title
       let data = null
@@ -251,14 +254,17 @@ export default {
         }
       } else if (component === DOMAIN) {
         const domain_name = this.unpacked_values.domain
-        const response = await this.$api.language.domain_as_csv(domain_name, languages)
+          const response = await this.$api.domain.as_csv(domain_name, languages).catch(err => {
+          console.error(err)
+          this.error_snackbar()
+        })
         file_name += `_${domain_name}__${languages.join("_")}`
         if (response.data) {
           data = response.data
         }
       } else if (component === ENTRIES) {
         const slug = this.unpacked_values.entry
-        const response = await this.$api.language.entry_as_csv(slug, languages)
+        const response = await this.$api.entry.as_csv(slug, languages)
         file_name += `_${slug}__${languages.join("_")}`
         if (response.data) {
           data = response.data
@@ -290,7 +296,6 @@ export default {
         // debugger
         // console.log(this.code_templates_for_domain_lang)
         options = Object.values(this.code_templates_for_domain_lang).map(e => {
-          console.log(e)
           const res = {value: e.slug, text: e.title}
           if (e.language === dest_lang) {
             if (e.status === PUBLISHED) {
@@ -523,6 +528,11 @@ export default {
         const entry_slug = this.unpacked_values.entry
         this.$api.entry.from_csv(entry_slug, dest_lang, file).then(({data}) => {
           this.ok_snackbar(data.msg)
+          const entry = data.data
+          if(entry.status === PUBLISHED) {
+            this.$store.dispatch("templates/add_templates_codes", [entry])
+          }
+          // this.$store.dispatch("templates/add_templates_codes", [entry])
         }, err => {
           console.error(err)
           this.err_error_snackbar(err)

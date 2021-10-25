@@ -12,6 +12,9 @@ export default {
       // this.$store.commit(SNACKBAR, {ok: true, message})
     },
     error_snackbar(message) {
+      if(!message) {
+        message = MSG_PATH_SOMETHING_WENT_WRONG
+      }
       this.$bus.$emit("snackbar", {ok:false, message})
       // this.$store.commit(SNACKBAR, {ok: false, message})
     },

@@ -226,6 +226,14 @@ class Domain extends QueryBase {
     })
   }
 
+  as_csv(domain_name, languages) {
+    return this.get_(`as_csv${domain_name}`, {
+      params: {
+        languages
+      }
+    })
+  }
+
   from_csv(domain_name, language, file) {
     const formData = new FormData();
     let blob = new Blob([file.data], {type: 'text/csv'});
@@ -274,6 +282,14 @@ class Entry extends QueryBase {
 
   patch(entry_data) {
     return this.patch_(`${entry_data.uuid}`, entry_data)
+  }
+
+  as_csv(slug, languages) {
+    return this.get_(`as_csv${slug}`, {
+      params: {
+        languages
+      }
+    })
   }
 
   patch_accept(entry_data) {
@@ -406,7 +422,7 @@ class Entries extends QueryBase {
   }
 
   download(uuids) {
-    return this.post_("download", uuids, {headers:{"Access-Control-Expose-Headers": "content-disposition"}})
+    return this.post_("download", uuids, {headers: {"Access-Control-Expose-Headers": "content-disposition"}})
   }
 }
 
@@ -637,21 +653,6 @@ class Language extends QueryBase {
     })
   }
 
-  entry_as_csv(slug, languages) {
-    return this.get_("entry_as_csv", {
-      params: {
-        slug, languages
-      }
-    })
-  }
-
-  domain_as_csv(domain_name, languages) {
-    return this.get_("domain_as_csv", {
-      params: {
-        domain_name, languages
-      }
-    })
-  }
 }
 
 class Util extends QueryBase {

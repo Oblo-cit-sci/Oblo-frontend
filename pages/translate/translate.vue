@@ -228,7 +228,7 @@ export default {
             messages
           )
           if (data.data) {
-            console.log(data.data)
+            // console.log(data.data)
             this.$store.commit("domain/add_domains_data", [data.data])
           }
           this.ok_snackbar(data.msg)
@@ -301,8 +301,7 @@ export default {
     update_msg(index, message) {
       this.translation_o[index].messages[1] = message
     },
-  }
-  ,
+  },
   watch: {
     page(current, prev) {
       setTimeout(() => {
@@ -312,21 +311,18 @@ export default {
           easing: 'easeInOutCubic',
         })
       }, 50)
-    }
-    ,
+    },
     search_query(query) {
       if ((query?.length || 0) < 4) {
         this.search_results = null
         return
       }
       this.search(query)
-    }
-    ,
+    },
     search_in_langs() {
       this.search(this.search_query)
     }
   }
-  ,
 }
 </script>
 

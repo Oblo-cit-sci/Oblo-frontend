@@ -297,6 +297,7 @@ export default {
         }]
       // for a draft, set the
       if (this.public_location_selector_on && this.has_public_loc) {
+        // console.log("resetting selected_prec_option")
         if (this.point_location_precision &&
           this.value.public_loc.location_precision === LOCATION_PRECISION_POINT &&
           this.$_.isEqual(this.value.coordinates, this.value.public_loc.coordinates)) {
