@@ -227,7 +227,7 @@ class Domain extends QueryBase {
   }
 
   as_csv(domain_name, languages) {
-    return this.get_(`as_csv${domain_name}`, {
+    return this.get_(`${domain_name}/as_csv`, {
       params: {
         languages
       }

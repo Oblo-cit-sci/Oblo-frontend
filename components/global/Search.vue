@@ -361,7 +361,7 @@ export default {
       }
     },
     get_entries(before_last = false, debounce = true) {
-      console.log("get_entries", "before-last", before_last, "debounce", debounce)
+      // console.log("get_entries", "before-last", before_last, "debounce", debounce)
       const select_uuids = this.select_uuids_config()
       if (select_uuids) {
         this.fetch_select_uuids(select_uuids)

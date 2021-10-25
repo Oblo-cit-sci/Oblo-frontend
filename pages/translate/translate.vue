@@ -220,6 +220,10 @@ export default {
             messages
           )
           this.ok_snackbar(data.msg)
+          // data.data contains the domain-data if is published
+          if(data.data) {
+            this.$store.commit("domain/add_domains_data", [data.data])
+          }
           // todo: this.setup.config.new_o should be changed to false
         } else {
           const {data} = await this.$api.domain.patch_from_flat(

@@ -41,6 +41,8 @@ export const mutations = {
       if (!state.domains.has(domain_name)) {
         state.domains.set(domain_name, domain)
       } else {
+        // update languages
+        state.domains.get(domain_name).languages = domain.languages
         const domain_langs = state.domains.get(domain_name).langs
         state.domains.get(domain_name).langs = Object.assign(domain_langs, domain.langs)
         const domain_overviews = state.domains.get(domain_name).overviews

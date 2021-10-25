@@ -31,8 +31,6 @@
     },
     computed: {
       tag_list() {
-        console.log(this.tags)
-
         let result = []
         for (let tag_type in this.tags) {
           if(this.summarize && this.tags[tag_type].length > summary_tag_thresh) {

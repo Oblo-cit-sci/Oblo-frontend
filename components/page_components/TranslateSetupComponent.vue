@@ -520,6 +520,10 @@ export default {
         const domain_name = this.unpacked_values.domain
         this.$api.domain.from_csv(domain_name, dest_lang, file).then(({data}) => {
           this.ok_snackbar(data.msg)
+        // data.data contains the domain-data if is published
+          if(data.data) {
+            this.$store.commit("domain/add_domains_data", [data.data])
+          }
         }, err => {
           console.error(err)
           this.err_error_snackbar(err)
