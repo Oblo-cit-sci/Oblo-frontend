@@ -71,6 +71,8 @@ export const mutations = {
   _set_entry_value(state, {aspect_loc, value}) {
     // console.log("set entry value", aspect_loc, value)
     let select = select_aspect_loc(state, aspect_loc, true)
+    // ld.set()
+    // console.log("_set_entry_value", aspect_loc)
     const final_loc = ld.last(aspect_loc)
     //console.log("final,", final_loc, "select", select, "value", value)
     if (final_loc[0] === ASPECT) {
@@ -91,6 +93,24 @@ export const mutations = {
     } else {
       console.log("ERROR store.entries. final location", final_loc)
     }
+  },
+  new_set_entry_value(state, {uuid, aspect_loc, value}) {
+    let entry = undefined
+    if (uuid === null) {
+      entry = state.edit
+    } else {
+      entry = state.entries.get(uuid)
+    }
+    if([null, undefined].includes(entry)) {
+      logger.error("Cannot retrieve entry for new value setter")
+      return
+    }
+    const values = entry.values
+    // good to have it as jsonpath but thats not needed here
+    if(aspect_loc.substring(0,2) === "$.") {
+      aspect_loc = aspect_loc.substring(2)
+    }
+    ld.set(values, aspect_loc, value)
   },
   _remove_entry_value_index(state, aspect_loc) {
     let select = select_aspect_loc(state, aspect_loc, true)

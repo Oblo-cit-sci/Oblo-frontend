@@ -228,8 +228,10 @@ export default {
       const handle = this.action.properties.handle_result
       if (handle) {
         if (handle.type === "assign_to_aspect") {
-          this.$store.dispatch("entries/set_entry_value", {
-            aspect_loc: this.$_.concat([[EDIT, null]], aspect_loc_str2arr(handle.aspect, this.extra.list_index)),
+          this.$store.commit("entries/new_set_entry_value", {
+            uuid: null,
+            // aspect_loc: this.$_.concat([[EDIT, null]], aspect_loc_str2arr(handle.aspect, this.extra.list_index)),
+            aspect_loc: handle.aspect,
             value: result
           })
         } else {
