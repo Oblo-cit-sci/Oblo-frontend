@@ -1,5 +1,4 @@
 import {aspect_loc_str2arr, check_condition_value} from "~/lib/aspect";
-import {select_aspect_loc} from "~/lib/entry";
 import {ENTRY} from "~/lib/consts";
 import {string_list2options} from "~/lib/options";
 
@@ -82,7 +81,8 @@ export default {
     page_disabled(page) {
       if (page.condition && this.entry) {
         let aspect_loc = this.$_.concat([[ENTRY, this.entry.uuid]], aspect_loc_str2arr(page.condition.aspect))
-        let value = select_aspect_loc(this.$store.state.entries, aspect_loc)
+        console.warn("PaginateMixin: page condition disabled. fix value getter")
+        // let value = select_aspect_loc(this.$store.state.entries, aspect_loc)
         return check_condition_value(value, page.condition)
       } else {
         return true

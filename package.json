@@ -27,6 +27,7 @@
     ]
   },
   "dependencies": {
+    "@babel/core": "^7.15.5",
     "@nuxtjs/axios": "^5.12.2",
     "@nuxtjs/localforage": "^1.1.0",
     "@nuxtjs/pwa": "^2.6.0",

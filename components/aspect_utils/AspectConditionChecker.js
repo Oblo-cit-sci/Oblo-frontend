@@ -41,6 +41,8 @@ export default {
     check_single_condition(condition, aspect_loc, mode, entry_uuid, conditionals) {
       let condition_value = null
       if (conditionals) {
+        //console.log(aspect_loc_str2arr(condition.aspect))
+        //console.log(select_aspect_loc(null, aspect_loc_str2arr(condition.aspect)))
         condition_value = recursive_unpack2(select_aspect_loc(null, aspect_loc_str2arr(condition.aspect), false, conditionals))
       } else if (aspect_loc) {
         // console.log("single cond check: cond:", condition.aspect)

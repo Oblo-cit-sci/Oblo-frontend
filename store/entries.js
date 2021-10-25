@@ -1,5 +1,5 @@
 import {ASPECT, COMPONENT, DRAFT, EDIT, ENTRY, INDEX, META, PRIVATE_LOCAL, VIEW} from "~/lib/consts";
-import {default_values, get_entry_titleAspect, resolve_tags, select_aspect_loc} from "~/lib/entry";
+import {get_entry_titleAspect, resolve_tags, select_aspect_loc} from "~/lib/entry";
 import {
   aspect_loc_str,
   aspect_loc_str2arr,
