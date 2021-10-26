@@ -45,7 +45,6 @@
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
   import {export_data, merge_imported_entries} from "~/lib/import_export";
   import PersistentStorageMixin from "../components/util/PersistentStorageMixin";
-  import EntryPreviewList from "../components/entry/EntryPreviewList";
 
   import {extract_n_unpack_values, pack_value} from "~/lib/aspect"
   import FixDomainMixin from "~/components/global/FixDomainMixin"
@@ -58,7 +57,7 @@
 
   export default {
     name: "settings",
-    components: {EntryPreviewList, LoadFileButton, Aspect},
+    components: {LoadFileButton, Aspect},
     mixins: [TriggerSnackbarMixin, PersistentStorageMixin, AspectListMixin, FixDomainMixin, LanguageMixin, TypicalAspectMixin],
     data() {
       const privacy_aspect = this.asp_privacy("default_privacy", "default")
