@@ -5,7 +5,7 @@
       v-col(offset="5" cols=2)
         v-progress-circular(indeterminate center size="35" color="success")
     EntryPreviewList(v-if="!prepend_query && normal_mode"
-      :entries="entries_uuids"
+      :entries_uuids="entries_uuids"
       :total_count="total_count"
       :preview_options="preview_options"
       @request_more="request_more()"

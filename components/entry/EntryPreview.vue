@@ -4,14 +4,14 @@
   v-card.mx-auto.custom-card(v-else outlined :style="border_style" @mouseover="title_mouseover" @mouseleave="title_mouseleave")
     v-container.pt-0.pb-0
       v-row
-        v-col.main_col.px-2.pb-0(v-bind:class="[show_image ? 'col-8' : 'col-12']")
+        v-col.main_col.px-2.pb-1(v-bind:class="[show_image ? 'col-8' : 'col-12']")
           v-row
             v-col.py-1(class="entry-meta" cols=12)
               p.subtitle-1.mb-1
                 ActorAvatar(:actor="creator")
                 svg.mr-1(height=15 width=15 v-if="!show_entrytype_title")
                   circle(cx=8 cy=8 r=6 :stroke="status_color" :fill="template_color" stroke-width=2)
-                span(@click="goto(entry.uuid, 'view')"  :style="title_style")
+                span(@click="view_entry(entry.uuid, 'view')"  :style="title_style")
                   span {{full_title()}}
                   span(v-if="is_draft" :style="{color:status_color}") &nbsp; [{{$t('comp.entrypreview.draft')}}]
                   span(v-if="is_requires_review" :style="{color:status_color}") &nbsp; [{{$t('comp.entrypreview.requries_review')}}]
@@ -19,6 +19,10 @@
                   v-btn(v-if="show_title_action" @click="goto()" depressed small)
                     v-icon(:class="default_action_icon")
                   LanguageChip.mb-2(v-if="show_language_chip" :language_code="entry.language" small)
+          v-row.pl-3(v-if="is_template_outdated")
+            v-chip.mr-4(:ripple="false" small  color="red" outlined label)
+              v-icon(small) mdi-clipboard-text-clock-outline
+              p.ma-1 outdated
           v-row.pl-3(:style="{'text-align': 'right', 'font-size':'80%'}")
             span.my-auto(v-if="show_date") {{$t("comp.entrypreview.created")}} {{entry_date}}
           v-row.pl-3.py-1(v-if="show_meta_aspects")
@@ -80,12 +84,13 @@ import ActorAvatar from "~/components/actor/ActorAvatar"
 import LanguageCodeFallback from "~/components/aspect_utils/LanguageCodeFallback";
 import LanguageChip from "~/components/language/LanguageChip";
 import {BUS_MAP_MARKER_HIDE, BUS_MAP_MARKER_SHOW} from "~/plugins/bus";
+import TemplateHelperMixin from "~/components/templates/TemplateHelperMixin"
 
 
 export default {
   name: "EntryPreview",
   components: {LanguageChip, LanguageCodeFallback, ActorAvatar, EntryTags, ActorChip, Aspect, MetaChips, Taglist},
-  mixins: [EntryNavMixin, MapJumpMixin, EntryMixin, MapJumpMixin,
+  mixins: [EntryNavMixin, MapJumpMixin, EntryMixin, MapJumpMixin, TemplateHelperMixin,
     PersistentStorageMixin, ChildCreateMixin, EntryActionsMixin],
   data() {
     return {
@@ -257,6 +262,19 @@ export default {
     goto_next_entry_location() {
       if (this.entry.location) {
         this.goto_next_location(this.entry.location, this.uuid)
+      }
+    },
+    async view_entry() {
+      if(this.is_template_outdated) {
+        console.log("outdated... template version", this.entry.template_version)
+        const res = await this.get_template_code_of_version(this.template.slug, this.template.language, this.entry.template_version)
+        // console.log(res)
+        const TEMP_e = this.entry
+        debugger
+        if(this.is_template_outdated) {
+          this.get_template_of_version(this.entry)
+        }
+        // this.goto(this.uuid, VIEW)
       }
     },
     // create_child_action() {

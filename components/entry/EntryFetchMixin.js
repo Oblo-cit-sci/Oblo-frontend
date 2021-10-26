@@ -48,6 +48,7 @@ export default {
     async download_entries(uuids) {
       const response = await this.$api.entries.download(uuids)
       this.download_csv(response.data, "entries_download")
-    }
+    },
+
   }
 }

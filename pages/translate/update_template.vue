@@ -253,9 +253,10 @@ export default {
     },
     async submit_entry() {
       const messages = this.get_flat_messages()
-      console.log(messages)
+      // console.log(messages)
       try {
         if (this.setup.config.new_o) {
+          // TODO this should never be the case (copied over...)
           const {data} = await this.$api.entry.post_from_flat(
             this.setup.config.entry,
             this.setup.dest_lang,

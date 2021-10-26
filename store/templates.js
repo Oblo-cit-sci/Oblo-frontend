@@ -199,6 +199,13 @@ export const getters = {
     return (template_slugs, language) => {
       return template_slugs.map(t => getters.entry_type(t, language))
     }
+  },
+  entry_type_version(state) {
+    return (type_slug, language, version) => {
+      const base_template = state.entry_types.get(type_slug)
+      debugger
+      return base_template["prev_versions"].lang[`${language}-${version.toString()}`]
+    }
   }
 }
 
@@ -263,6 +270,14 @@ export const mutations = {
     state.codes = new Map(templates.codes)
     state.requested = templates.requested
     state.tags = templates.tags
+  },
+  add_template_of_version(state, template) {
+    console.log("add_template_of_version...", template)
+    const entry_type_base = state.entry_types.get(template.slug)
+    console.log(`prev_versions.lang.${template.language}-${template.version.toString()}`)
+    if (entry_type_base) {
+      ld.set(entry_type_base, `prev_versions.lang.${template.language}-${template.version.toString()}`, template)
+    }
   }
 }
 

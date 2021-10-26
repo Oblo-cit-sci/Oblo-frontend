@@ -8,7 +8,7 @@
         h2 {{$t("page.offline_settings.no_data")}}
     div
       h3.text-capitalize {{$t('w.entries')}}
-      EntryPreviewList(:entries="all_entries_uuids" :total_count="num_entries" :preview_options="{show_botton_actions: true}")
+      EntryPreviewList(:entries_uuids="all_entries_uuids" :total_count="num_entries" :preview_options="{show_botton_actions: true}")
 </template>
 
 <script>

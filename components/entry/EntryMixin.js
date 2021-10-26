@@ -25,11 +25,12 @@ import TemplateHelperMixin from "~/components/templates/TemplateHelperMixin";
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin";
 import EntryMetaAspects from "~/components/EntryMetaAspects";
 import EntryHelperMethodsMixin from "~/components/entry/EntryHelperMethodsMixin";
+import URLQueryMixin from "~/components/util/URLQueryMixin"
 
 export default {
   name: "EntryMixin",
   mixins: [EntryPagesMixin, AspectListMixin, ExportMixin, TemplateHelperMixin, TypicalAspectMixin, EntryMetaAspects,
-  EntryHelperMethodsMixin],
+  EntryHelperMethodsMixin, URLQueryMixin],
   props:
     {
       entry: {
@@ -121,6 +122,10 @@ export default {
       return this.entry.template.slug
     },
     template() {
+      // console.log("template on page: ", this.$route.name, this.query_entry_uuid)
+      if(this.is_template_outdated && this.query_entry_uuid) {
+        return this.get_template_of_version(this.entry)
+      }
       return this.get_template(this.entry)
     },
     template_color() {
@@ -174,6 +179,9 @@ export default {
     outdated() {
       return false
       // return this.entry.template_version !== this.template.version
+    },
+    is_template_outdated() {
+      return this.entry.template_version < this.get_template(this.entry).version
     },
     download_title() {
       // todo title, wont update in real time

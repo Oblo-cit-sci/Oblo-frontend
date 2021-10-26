@@ -20,7 +20,7 @@
         v-progress-circular(indeterminate center size="55" color="info")
     v-row.mx-0.px-4(v-show="has_entries")
       v-col.pa-0(cols=9)
-        SimplePaginate(v-if="entries.length > entries_per_page" v-model="page" :total_pages="total_pages" :has_next="has_more_pages" :next_loading="next_loading")
+        SimplePaginate(v-if="entries_uuids.length > entries_per_page" v-model="page" :total_pages="total_pages" :has_next="has_more_pages" :next_loading="next_loading")
       v-spacer.pa-0
       v-col.pa-0(ref="to_top_button")
         v-btn(v-if="show_to_top_button" @click="scroll_to_top" fab x-small outlined)
@@ -34,14 +34,12 @@ import SimplePaginate from "../SimplePaginate";
 
 import {mapGetters} from "vuex"
 import {PAGE_DOMAIN} from "~/lib/pages"
-import {DOMAIN} from "~/lib/consts";
-import ExportMixin from "~/components/global/ExportMixin"
 
 export default {
   name: "EntryPreviewList",
   components: {SimplePaginate, EntryPreview},
   props: {
-    entries: {
+    entries_uuids: {
       type: Array,
       required: true
     },
@@ -84,18 +82,19 @@ export default {
   computed: {
     ...mapGetters({"has_entry": "entries/has_entry"}),
     results_received() {
-      return this.entries !== undefined
+      return this.entries_uuids !== undefined
     },
     next_loading() {
-      return this.requesting_entries && this.entries.length > 0
+      return this.requesting_entries && this.entries_uuids.length > 0
     },
     visible_entries() {
       // console.log("offline- all entries",  this.entries)
       let from_index = (this.page - 1) * this.entries_per_page
       let to_index = from_index + this.entries_per_page
-      const entries = this.entries.slice(from_index, to_index)
+      const entries = this.entries_uuids.slice(from_index, to_index)
       // todo unique is just required cuz the server does often sent less (actor rows problem when querying entries)
       const uuids = this.$_.uniq(this.$_.filter(entries, e => !this.deleted.includes(e)))
+      console.log(this.$_.map(uuids, uuid => this.$store.getters["entries/get_entry"](uuid)).filter(e => e !== undefined))
       return this.$_.map(uuids, uuid => this.$store.getters["entries/get_entry"](uuid)).filter(e => e !== undefined)
     },
     has_entries() {
@@ -106,7 +105,7 @@ export default {
       if (this.total_count !== undefined)
         return this.total_count
       else
-        return this.entries.length - this.deleted.length
+        return this.entries_uuids.length - this.deleted.length
     },
     show_no_entries_hint() {
       return this.num_entries === 0 && this.$route.name === PAGE_DOMAIN
@@ -127,7 +126,7 @@ export default {
       return this.page * this.entries_per_page < this.num_entries
     },
     can_request_more() {
-      return this.entries.length < this.num_entries
+      return this.entries_uuids.length < this.num_entries
     }
   },
   methods: {
@@ -162,14 +161,14 @@ export default {
        * val: boolean
        */
       // TODO, why does it not work with !this.has_entries
-      if (val && !(this.entries.length > 0)) {
+      if (val && !(this.entries_uuids.length > 0)) {
         this.page = 1
       }
     },
     page(page) {
       this.scroll_to_top()
       if (this.can_request_more) {
-        if (page * this.entries_per_page >= this.entries.length) {
+        if (page * this.entries_per_page >= this.entries_uuids.length) {
           this.$emit("request_more")
           // console.log("time for more")
         }

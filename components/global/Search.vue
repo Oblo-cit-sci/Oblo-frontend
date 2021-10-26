@@ -33,13 +33,13 @@
       v-col.py-0(offset="5" cols=2)
         v-progress-circular(indeterminate center size="35" color="success")
     EntryPreviewList(v-if="show_results && !prepend_search"
-      :entries="filtered_entries"
+      :entries_uuids="filtered_entries_uuids"
       :requesting_entries="searching"
       :total_count="total_count"
       :preview_options="preview_options_search"
       @preview_action="$emit('preview_action',$event)"
       @request_more="request_more"
-      @download="download_entries(filtered_entries)")
+      @download="download_entries(filtered_entries_uuids)")
 </template>
 
 <script>
@@ -317,16 +317,17 @@ export default {
         return []
       }
     },
-    filtered_entries() {
-      let result_entries = this.entries() // must be a call
+    filtered_entries_uuids() {
+      let result_entries_uuids = this.entries() // must be a call
       // console.log("allf", this.act_config, this.search_config)
-      result_entries = this.local_entries.concat(result_entries)
+      result_entries_uuids = this.local_entries.concat(result_entries_uuids)
       // console.log("new filtered entries", result_entries)
       if (LOG) {
-        console.log("Search.filtered_entries. entries:", result_entries.length)
-        console.log("e1:", result_entries)
+        console.log("Search.filtered_entries. entries:", result_entries_uuids.length)
+        console.log("e1:", result_entries_uuids)
       }
-      return result_entries
+      // console.log(result_entries_uuids)
+      return result_entries_uuids
     },
     filterlist_options() {
       return this.include_filters

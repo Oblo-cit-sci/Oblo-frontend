@@ -363,6 +363,15 @@ class Entry extends QueryBase {
       }
     })
   }
+
+  async get_entry_of_version(slug, language, version) {
+    return this.get_(`${slug}/get_entry_of_version`, {
+      params: {
+        language,
+        version
+      }
+    })
+  }
 }
 
 class Entries extends QueryBase {
