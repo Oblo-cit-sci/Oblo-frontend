@@ -31,7 +31,7 @@ export default {
   props: {
     value: Boolean, // we use that in the parent to have as v-model
     entry: Object,
-    template_slug: String
+    template: Object,
   },
   components: {},
   mixins: [AspectConditionChecker],
@@ -45,11 +45,11 @@ export default {
     }
   },
   computed: {
-    template() {
-      const lang = this.$store.getters["user/settings"].domain_language
-      return this.$store.getters["templates/entry_type"](this.template_slug, lang)
-    },
     missing() {
+      // console.log(this.template)
+      // if(!this.template) {
+      //   return []
+      // }
       const aspects = this.template.aspects
       // console.log("validation update")
       let missing = []

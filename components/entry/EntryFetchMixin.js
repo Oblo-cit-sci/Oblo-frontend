@@ -1,10 +1,11 @@
 import LanguageMixin from "~/components/LanguageMixin";
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin";
 import ExportMixin from "~/components/global/ExportMixin"
+import TemplateHelperMixin from "~/components/templates/TemplateHelperMixin"
 
 export default {
   name: "EntryFetchMixin",
-  mixins: [LanguageMixin, TriggerSnackbarMixin, ExportMixin],
+  mixins: [LanguageMixin, TriggerSnackbarMixin, ExportMixin, TemplateHelperMixin],
   methods: {
     async guarantee_entry(entry_uuid, entry_access_key = null) {
       if (this.$store.getters["entries/has_full_entry"](entry_uuid)) {
@@ -23,6 +24,7 @@ export default {
             // todo: maybe do more stuff. preparing?
             this.$store.commit("entries/save_entry", entry)
             await this.complete_language_domains(entry.domain, entry.language)
+            await this.guarantee_template_code_of_version(entry)
             return Promise.resolve(entry)
           } else {
             return Promise.reject(entry_response)

@@ -200,11 +200,19 @@ export const getters = {
       return template_slugs.map(t => getters.entry_type(t, language))
     }
   },
+  get_current_template_version(state, getters) {
+    return (slug, language) => {
+      if (getters.has_slug_in_lang(slug, language)) {
+        return getters.entry_type(slug, language).version
+      }
+      return null
+    }
+  },
   entry_type_version(state) {
     return (type_slug, language, version) => {
       const base_template = state.entry_types.get(type_slug)
-      debugger
-      return base_template["prev_versions"].lang[`${language}-${version.toString()}`]
+      // format prev_sion.language-version
+      return ld.get(base_template, `prev_versions.${language}-${version.toString()}`)
     }
   }
 }
@@ -276,7 +284,7 @@ export const mutations = {
     const entry_type_base = state.entry_types.get(template.slug)
     console.log(`prev_versions.lang.${template.language}-${template.version.toString()}`)
     if (entry_type_base) {
-      ld.set(entry_type_base, `prev_versions.lang.${template.language}-${template.version.toString()}`, template)
+      ld.set(entry_type_base, `prev_versions.${template.language}-${template.version.toString()}`, template)
     }
   }
 }

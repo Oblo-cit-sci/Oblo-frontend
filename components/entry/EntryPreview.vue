@@ -20,9 +20,7 @@
                     v-icon(:class="default_action_icon")
                   LanguageChip.mb-2(v-if="show_language_chip" :language_code="entry.language" small)
           v-row.pl-3(v-if="is_template_outdated")
-            v-chip.mr-4(:ripple="false" small  color="red" outlined label)
-              v-icon(small) mdi-clipboard-text-clock-outline
-              p.ma-1 outdated
+            OutdatedChip
           v-row.pl-3(:style="{'text-align': 'right', 'font-size':'80%'}")
             span.my-auto(v-if="show_date") {{$t("comp.entrypreview.created")}} {{entry_date}}
           v-row.pl-3.py-1(v-if="show_meta_aspects")
@@ -85,11 +83,14 @@ import LanguageCodeFallback from "~/components/aspect_utils/LanguageCodeFallback
 import LanguageChip from "~/components/language/LanguageChip";
 import {BUS_MAP_MARKER_HIDE, BUS_MAP_MARKER_SHOW} from "~/plugins/bus";
 import TemplateHelperMixin from "~/components/templates/TemplateHelperMixin"
+import OutdatedChip from "~/components/tag/OutdatedChip"
 
 
 export default {
   name: "EntryPreview",
-  components: {LanguageChip, LanguageCodeFallback, ActorAvatar, EntryTags, ActorChip, Aspect, MetaChips, Taglist},
+  components: {
+    OutdatedChip,
+    LanguageChip, LanguageCodeFallback, ActorAvatar, EntryTags, ActorChip, Aspect, MetaChips, Taglist},
   mixins: [EntryNavMixin, MapJumpMixin, EntryMixin, MapJumpMixin, TemplateHelperMixin,
     PersistentStorageMixin, ChildCreateMixin, EntryActionsMixin],
   data() {
@@ -266,37 +267,10 @@ export default {
     },
     async view_entry() {
       if(this.is_template_outdated) {
-        console.log("outdated... template version", this.entry.template_version)
-        const res = await this.get_template_code_of_version(this.template.slug, this.template.language, this.entry.template_version)
-        // console.log(res)
-        const TEMP_e = this.entry
-        debugger
-        if(this.is_template_outdated) {
-          this.get_template_of_version(this.entry)
-        }
-        // this.goto(this.uuid, VIEW)
+        await this.guarantee_template_code_of_version(this.entry)
       }
+      this.goto(this.uuid, VIEW)
     },
-    // create_child_action() {
-    //   // not sure how/if this still works
-    //   if (this.disabled)
-    //     return
-    //   const index_aspect_loc = this.aspect_loc_for_index(this.value.length)
-    //   //console.log("index_aspect_loc", index_aspect_loc)
-    //   const child = create_entry(this.$store, this.item_type_slug, {}, {
-    //     uuid: this.$store.getters["entries/edit_uuid"],
-    //     aspect_loc: index_aspect_loc,
-    //   })
-    //
-    //   // saving the child, setting refrences, saving this entry(title),
-    //   this.$store.dispatch("entries/save_child_n_ref", {child: child, aspect_loc: index_aspect_loc})
-    //   // TODO this was there before, is it required???
-    //   // this.value_change(this.$_.concat(this.value, [child.uuid]))
-    //   // todo should be just one call
-    //   this.persist_entries()
-    //   this.to_entry(child.uuid, EDIT)
-    //   this.goto_delayed_last_page()
-    // },
     additional_action(action_name) {
       console.log("additional_action", action_name)
       const preview_action = this.$_.find(this.additional_actions, a => a.name === action_name)

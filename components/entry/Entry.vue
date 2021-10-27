@@ -26,6 +26,9 @@
       v-row
         v-col.px-0.py-1(cols=12)
           EntryActorList.mt-2(:actors="actors")
+      v-row(v-if="is_template_outdated")
+        v-col.px-0.py-1(cols=12)
+          OutdatedChip
       v-row
         v-col.px-0.py-1(cols=12)
           Taglist(:tags="tags")
@@ -82,7 +85,7 @@
           v-divider
     div(v-if="show_validation_comp")
       v-row(v-if="last_page")
-        EntryValidation(:entry="entry" :template_slug="template_slug" v-model="entry_complete")
+        EntryValidation(:entry="entry" :template="template" v-model="entry_complete")
       v-row(v-if="is_dirty")
         ChangedAspectNotice(:is_draft="is_draft")
     v-row(v-if="show_visitor_message")
@@ -130,12 +133,14 @@ import TemplateHelperMixin from "~/components/templates/TemplateHelperMixin";
 import AspectSet from "~/components/AspectSet";
 import {pack_value, unpack} from "~/lib/aspect";
 import {BUS_DIALOG_OPEN} from "~/plugins/bus";
+import OutdatedChip from "~/components/tag/OutdatedChip"
 
 export default {
   name: "Entry",
   mixins: [EntryNavMixin, EntryMixin, TriggerSnackbarMixin, TypicalAspectMixin, PersistentStorageMixin,
     FullEntryMixin, AspectSetMixin, TemplateHelperMixin],
   components: {
+    OutdatedChip,
     AspectSet,
     LanguageChip,
     EntryTags,

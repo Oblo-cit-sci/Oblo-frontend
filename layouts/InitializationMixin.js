@@ -133,27 +133,12 @@ export default {
       // debugger
       await this.change_language(i_language, true, result_domain_language)
 
-      // if (result_domain_language !== i_language) {
-      //   debugger
-      //   console.log("init: result_domain_language is != requested languages", result_domain_language, i_language)
-      //   await this.change_language(i_language, true, result_domain_language)
-      // }
-      // debugger
-      // if (this.$route.name === PAGE_DOMAIN && user_settings.domain_language !== user_settings.ui_language) {
-      //   await this.complete_language_domains(domain_name, user_settings.domain_language)
-      // }
-
-      // console.log("template/codes stored")
-      // console.log(data.data)
-      // this.$store.commit("set_available_languages", resp.data.languages)
-
       if (this.$store.getters.username === VISITOR) {
         const settings = this.$_.cloneDeep(default_settings)
         Object.assign(settings, {[DOMAIN_LANGUAGE]: language, [UI_LANGUAGE]: language})
         // todo change_language call
         this.$store.commit("user/change_setting", settings)
       }
-      // console.log("language", language)
       // console.log("?", language, language !== this.$i18n.fallbackLocale, this.$i18n.fallbackLocale)
       if (language !== this.$i18n.fallbackLocale) {
         console.log("init language != fallback language changing language to", language)
@@ -175,17 +160,7 @@ export default {
         console.log("only one domain, completing domain-lang", language)
         const domain_name = this.get_one_domain_name
         await this.prepare_goto_domain(domain_name, language)
-        // await this.complete_language_domains(this.get_one_domain_name, language)
-        // // console.log("1 domain:", this.get_one_domain_name)
-        // this.$store.commit("domain/set_act_domain", this.$store.getters["domain/domain_by_name"](this.get_one_domain_name).name)
-        // this.fix_domain(this.get_one_domain_name)
-        // this.$store.commit("domain/set_act_lang_domain_data", {domain_name: this.get_one_domain_name, language})
-        //
         // // todo, maybe this should be replaces by something in the store
-        // // similar the change of the home route...
-        // default_settings.fixed_domain = this.get_one_domain_name
-        // // console.log("route name", this.$route.name, this.$route.name === PAGE_INDEX)
-        // this.set_home_path_domain(domain_name)
         if (this.$route.name === PAGE_INDEX) {
           // console.log("to domain page",this.get_one_domain_name)
           this.to_domain(domain_name, true, () => {

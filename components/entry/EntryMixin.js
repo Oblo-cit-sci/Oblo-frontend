@@ -253,13 +253,6 @@ export default {
       return this.entry.values
     }
   },
-  // beforeMount() {
-  //   this.update_aspect_locs()
-  // },
-  // beforeUpdate() {
-  //   // console.log("update")
-  //   this.update_aspect_locs()
-  // },
   methods: {
     full_title(title) {
       // debugger
@@ -280,18 +273,6 @@ export default {
     },
     download() {
       this.export_data(this.prepare_entry_for_download(this.entry), this.download_title)
-    },
-    // update_aspect_locs() {
-    //   // console.log("update_aspect_locs", this.entry !== null)
-    //   if (this.entry !== null) {
-    //     for (let aspect of this.template.aspects) {
-    //       this.aspect_locs[aspect.name] = loc_append([this.aspect_loc], ASPECT, aspect.name)
-    //       // console.log(aspect.name, this.aspect_locs[aspect.name])
-    //     }
-    //     for (let aspect of META_ASPECT_LIST) {
-    //       this.aspect_locs[aspect] = loc_append([this.aspect_loc], META, aspect)
-    //     }
-    //   }
-    // },
+    }
   }
 }

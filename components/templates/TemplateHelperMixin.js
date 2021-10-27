@@ -1,8 +1,9 @@
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
+import EntryHelperMethodsMixin from "~/components/entry/EntryHelperMethodsMixin"
 
 export default {
   name: "TemplateHelperMixin",
-  mixins: [TriggerSnackbarMixin],
+  mixins: [TriggerSnackbarMixin, EntryHelperMethodsMixin],
   created() {
     if (!this.template) {
       console.log("TemplateHelperMixin.WARNING: no template in component")
@@ -51,7 +52,20 @@ export default {
     //         }
     //     }
     // }
-    async get_template_code_of_version(slug, language, version) {
+    async guarantee_template_code_of_version(entry) {
+      if (entry.template_version ===
+        this.$store.getters["templates/get_current_template_version"](entry.template.slug, entry.language)) {
+        return
+      }
+      const existing_template_code = this.get_template_of_version(entry)
+      if (existing_template_code) {
+        return Promise.resolve(existing_template_code)
+      } else {
+        // todo could be template.language but that is not included yet...
+        return this.retrieve_template_code_of_version(entry.template.slug, entry.language, entry.template_version)
+      }
+    },
+    async retrieve_template_code_of_version(slug, language, version) {
       return new Promise((resolve, reject) => {
         this.$api.entry.get_entry_of_version(slug, language, version).then(resp => {
           console.log(resp.data)
