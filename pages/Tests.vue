@@ -1,8 +1,8 @@
 <template lang="pug">
   div
-    //EntriesDownloadDialog(:dialog_open.sync="dialog_open")
-    //v-btn(@click="open_dialog") open
-    DialogPage
+    EntriesDownloadDialog(v-model="dialog_open")
+    v-btn(@click="dialog_open=true") open
+    //DialogPage
 </template>
 
 <script>
@@ -11,13 +11,15 @@ import EnvMixin from "~/components/global/EnvMixin";
 import OfflineMixin from "~/lib/OfflineMixin";
 import Aspect from "~/components/Aspect"
 import DialogPage from "~/minimal_working_tests/DialogPage"
+import EntriesDownloadDialog from "~/components/dialogs/EntriesDownloadDialog"
 
 export default {
   name: "tests",
   mixins: [EnvMixin, OfflineMixin],
-  components: {DialogPage, Aspect},
+  components: {EntriesDownloadDialog, DialogPage, Aspect},
   data() {
     return {
+      dialog_open: false
     }
   },
   created() {

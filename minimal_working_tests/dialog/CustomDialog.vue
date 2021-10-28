@@ -5,8 +5,8 @@
 </template>
 
 <script>
-import CustomizableDialogMixin from "~/minimal_working_tests/CustomizableDialogMixin"
-import DialogWrapper from "~/minimal_working_tests/DialogWrapper"
+import CustomizableDialogMixin from "~/minimal_working_tests/dialog/CustomizableDialogMixin"
+import DialogWrapper from "~/minimal_working_tests/dialog/DialogWrapper"
 
 export default {
   name: "CustomDialog",

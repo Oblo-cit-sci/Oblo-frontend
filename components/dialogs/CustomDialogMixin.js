@@ -1,19 +1,9 @@
-<template lang="pug">
-  v-dialog(v-model="dialog_open" :persistent="persistent")
-    v-sheet
-      slot
-</template>
-
-<script>
+// demo minimal_working_tests/CustomizableDialogMixin
 export default {
-  name: "DialogWrapper",
+  name: "DialogMixin",
   mixins: [],
-  components: {},
   props: {
-    value: {
-      type: Boolean,
-      default: false
-    },
+    value: Boolean,
     persistent: Boolean
   },
   data() {
@@ -31,10 +21,8 @@ export default {
     }
   },
   methods: {
+    close() {
+      this.dialog_open = false
+    }
   }
 }
-</script>
-
-<style scoped>
-
-</style>

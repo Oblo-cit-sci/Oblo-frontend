@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import CustomDialog from "~/minimal_working_tests/CustomDialog"
+import CustomDialog from "~/minimal_working_tests/dialog/CustomDialog"
 export default {
   name: "DialogPage",
   mixins: [],
