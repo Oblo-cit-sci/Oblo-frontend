@@ -24,27 +24,19 @@ export default {
   },
   data() {
     return {
-      dialog_open: false
     }
   },
-  computed: {},
+  computed: {
+    dialog_open: {
+      set(open) {
+        this.$emit("input", open)
+      },
+      get() {
+        return this.value
+      }
+    }
+  },
   methods: {
-    // close() {
-    //   console.log("click_outside")
-    // },
-    // click_outside() {
-    //   console.log("click outside")
-    // }
-  },
-  watch: {
-    value(open) {
-      console.log("DialogWrapper.value", open)
-      this.dialog_open = open
-    },
-    dialog_open(open) {
-      console.log("DialogWrapper.dialog_open", open)
-      this.$emit("input", open)
-    }
   }
 }
 </script>
