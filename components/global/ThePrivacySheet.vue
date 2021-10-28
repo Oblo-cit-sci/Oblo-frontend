@@ -21,9 +21,9 @@
     mixins: [],
     components: {FooterContent, Footer},
     created() {
-      // if( process.env.NODE_ENV === "development") {
-      //   this.$store.commit("app/close_privacy_sheet")
-      // }
+      if( process.env.NODE_ENV === "development") {
+        this.$store.commit("app/close_privacy_sheet")
+      }
     },
     computed: {
       privacy_sheet_open: {

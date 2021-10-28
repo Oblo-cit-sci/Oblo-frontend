@@ -1,7 +1,6 @@
 <template lang="pug">
   v-dialog(v-model="dialog_open"
     :width="width"
-
     @click:outside="click_outside"
     persistent)
     v-sheet(color="white")

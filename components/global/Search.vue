@@ -57,6 +57,7 @@ import Aspect from "~/components/Aspect"
 import {aspect_default_value, pack_value, unpack} from "~/lib/aspect"
 import {BUS_TRIGGER_SEARCH} from "~/plugins/bus";
 import EntryFetchMixin from "~/components/entry/EntryFetchMixin"
+import EntriesDownloadDialog from "~/components/dialogs/EntriesDownloadDialog"
 
 const LOG = false
 
@@ -64,7 +65,7 @@ const relevant_query_keys = [QP_D, QP_SEARCH]
 
 export default {
   name: "Search",
-  components: {Aspect, Filterlist, EntryPreviewList},
+  components: {EntriesDownloadDialog, Aspect, Filterlist, EntryPreviewList},
   mixins: [FilterMixin, NavBaseMixin, PersistentStorageMixin, EntrySearchMixin, EntryFetchMixin],
   props: {
     init_clear: Boolean,
@@ -106,7 +107,8 @@ export default {
       prepend_search: false,
       filter_data: [],
       filter_changed: false,
-      prominent_filter_values: prominent_filter_values
+      prominent_filter_values: prominent_filter_values,
+      download_dialog_open: false
     }
   },
   created() {
@@ -474,6 +476,9 @@ export default {
         path: this.$route.path,
         params: this.$_.pick(this.$route.query, relevant_query_keys)
       }
+    },
+    open_entries_download_dialog() {
+      this.download_dialog_open = true
     }
   },
 }
