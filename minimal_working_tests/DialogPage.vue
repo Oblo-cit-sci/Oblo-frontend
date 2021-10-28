@@ -1,7 +1,9 @@
 <template lang="pug">
   div
-    CustomDialog(v-model="dialog_open" :persistent="false")
-    v-btn(@click="open_dialog") open
+    CustomDialog(v-model="dialog_open")
+    v-btn(@click="dialog_open=true") open
+    CustomDialog(v-model="persistent_dialog_open" persistent)
+    v-btn(@click="persistent_dialog_open=true") open persistent
 </template>
 
 <script>
@@ -13,14 +15,12 @@ export default {
   props: {},
   data() {
     return {
-      dialog_open: false
+      dialog_open: false,
+      persistent_dialog_open: false
     }
   },
   computed: {},
   methods: {
-    open_dialog() {
-      this.dialog_open = true
-    }
   }
 }
 </script>

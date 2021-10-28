@@ -7,10 +7,18 @@ export default {
   },
   data() {
     return {
-      dialog_open: false
+      // dialog_open: false
     }
   },
   computed: {
+    dialog_open: {
+      set(open) {
+        this.$emit("input", open)
+      },
+      get() {
+        return this.value
+      }
+    }
 
   },
   methods: {
@@ -19,11 +27,11 @@ export default {
     }
   },
   watch: {
-    dialog_open(open) {
-      this.$emit("input", open)
-    },
-    value(value) {
-      this.dialog_open = value
-    }
+    // dialog_open(open) {
+    //   this.$emit("input", open)
+    // },
+    // value(value) {
+    //   this.dialog_open = value
+    // }
   }
 }
