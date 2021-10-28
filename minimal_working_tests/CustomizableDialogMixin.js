@@ -6,7 +6,7 @@ export default {
       type: Boolean,
       required: true
     },
-    // persistent: Boolean,
+    persistent: Boolean
   },
   data() {
     return {

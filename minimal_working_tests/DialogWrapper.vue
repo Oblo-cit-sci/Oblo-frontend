@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-dialog(v-model="dialog_open")
+  v-dialog(v-model="dialog_open" :persistent="persistent")
     v-sheet
       slot
 </template>
