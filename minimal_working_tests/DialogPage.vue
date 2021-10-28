@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    CustomDialog(:dialog_open.sync="dialog_open" persistent)
+    CustomDialog(v-model="dialog_open" :persistent="false")
     v-btn(@click="open_dialog") open
 </template>
 

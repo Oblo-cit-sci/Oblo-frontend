@@ -2,15 +2,12 @@ export default {
   name: "CustomizableDialogMixin",
   mixins: [],
   props: {
-    dialog_open: {
-      type: Boolean,
-      required: true
-    },
+    value: Boolean,
     persistent: Boolean
   },
   data() {
     return {
-      value: false
+      dialog_open: false
     }
   },
   computed: {
@@ -18,15 +15,15 @@ export default {
   },
   methods: {
     close() {
-      this.value = false
+      this.dialog_open = false
     }
   },
   watch: {
     dialog_open(open) {
-      this.value = open
+      this.$emit("input", open)
     },
     value(value) {
-      this.$emit("update:dialog_open", value)
+      this.dialog_open = value
     }
   }
 }

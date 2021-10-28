@@ -1,5 +1,5 @@
 <template lang="pug">
-  DialogWrapper(v-model="value" @close="close" :persistent="persistent")
+  DialogWrapper(v-model="dialog_open" @close="close" :persistent="persistent")
     div HELLLO
     v-btn(@click="close") close
 </template>
