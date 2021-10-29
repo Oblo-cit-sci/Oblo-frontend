@@ -38,8 +38,7 @@
       :total_count="total_count"
       :preview_options="preview_options_search"
       @preview_action="$emit('preview_action',$event)"
-      @request_more="request_more"
-      @download="download_entries(filtered_entries_uuids)")
+      @request_more="request_more")
 </template>
 
 <script>
@@ -51,7 +50,7 @@ import NavBaseMixin from "../NavBaseMixin";
 import PersistentStorageMixin from "../util/PersistentStorageMixin";
 import {recursive_unpack2, route_change_query} from "~/lib/util";
 import Filterlist from "~/components/util/Filterlist"
-import {LANGUAGE, QP_D, QP_SEARCH, TEMPLATE} from "~/lib/consts"
+import {DOWNLOADING, LANGUAGE, NOT_DOWNLOADING, QP_D, QP_SEARCH, TEMPLATE} from "~/lib/consts"
 import EntrySearchMixin from "~/components/EntrySearchMixin"
 import Aspect from "~/components/Aspect"
 import {aspect_default_value, pack_value, unpack} from "~/lib/aspect"
@@ -107,8 +106,7 @@ export default {
       prepend_search: false,
       filter_data: [],
       filter_changed: false,
-      prominent_filter_values: prominent_filter_values,
-      download_dialog_open: false
+      prominent_filter_values: prominent_filter_values
     }
   },
   created() {
@@ -450,7 +448,7 @@ export default {
             configuration.required.push(config)
           } else if (config.hasOwnProperty("include_as")) {
             // console.log("include as", config)
-            configuration.include.push({name: config.include_as, value:recursive_unpack2(filter.value)})
+            configuration.include.push({name: config.include_as, value: recursive_unpack2(filter.value)})
           } else {
             console.log("error cannot process filter-option", filter.name)
           }
@@ -465,7 +463,7 @@ export default {
       }
       if (this.keyword) {
         for (let default_search_part of ["title", "tags"]) {
-          configuration.include.push({name: default_search_part, value: this.keyword , search_group: "query"})
+          configuration.include.push({name: default_search_part, value: this.keyword, search_group: "query"})
         }
       }
       console.log(configuration)
@@ -480,7 +478,7 @@ export default {
     open_entries_download_dialog() {
       this.download_dialog_open = true
     }
-  },
+  }
 }
 </script>
 

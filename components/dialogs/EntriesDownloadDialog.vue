@@ -16,10 +16,14 @@ import Dialog from "~/components/dialogs/Dialog"
 import DialogWrapper from "~/components/dialogs/DialogWrapper"
 import CustomDialogMixin from "~/components/dialogs/CustomDialogMixin"
 import Aspect from "~/components/Aspect"
-import {SELECT} from "~/lib/consts"
+import {METADATA, SELECT} from "~/lib/consts"
 import AspectSet from "~/components/AspectSet"
 import {pack_value, type_default_value} from "~/lib/aspect"
 import LayoutMixin from "~/components/global/LayoutMixin"
+import {recursive_unpack2} from "~/lib/util"
+
+
+// const DOWNLOAD_DONE = 2
 
 export default {
   name: "EntriesDownloadDialog",
@@ -30,7 +34,8 @@ export default {
     templates: {
       type:Array,
       default: () => []
-    }
+    },
+    download_status: Number
   },
   data() {
     return {
@@ -66,7 +71,7 @@ export default {
         "type": SELECT,
         "items": [
           {
-            "value": "metadata",
+            "value": METADATA,
             "text": this.$t("comp.entries_download_dialog.data_aspect.items.0")
           },
           {
@@ -103,7 +108,7 @@ export default {
   },
   methods: {
     download() {
-      console.log("download")
+      this.$emit("download", recursive_unpack2(this.values))
     }
   },
   watch: {}

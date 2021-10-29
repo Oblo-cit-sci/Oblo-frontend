@@ -2,6 +2,7 @@ import LanguageMixin from "~/components/LanguageMixin";
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin";
 import ExportMixin from "~/components/global/ExportMixin"
 import TemplateHelperMixin from "~/components/templates/TemplateHelperMixin"
+import {DOWNLOADING, METADATA, NOT_DOWNLOADING} from "~/lib/consts"
 
 export default {
   name: "EntryFetchMixin",
@@ -47,9 +48,13 @@ export default {
       // }
       return []
     },
-    async download_entries(uuids) {
-      const response = await this.$api.entries.download(uuids)
-      this.download_csv(response.data, "entries_download")
+    async download_entries(uuids, config) {
+      const meta_only  = config.select_data === METADATA
+      this.download_status = DOWNLOADING
+      this.$api.entries.download(uuids, meta_only).then(response => {
+        this.download_csv(response.data, "entries_download")
+        this.download_status = NOT_DOWNLOADING
+      })
     },
 
   }

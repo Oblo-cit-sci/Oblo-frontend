@@ -1,16 +1,19 @@
 <template lang="pug">
   #pwlist-container
-    v-row.col-sm-12#pwlist-top(v-if="results_received")
-      v-row.pl-3(v-if="!requesting_entries")
-        v-col.pa-0(cols=6) {{$tc("comp.previewlist.num_entries", num_entries)}}
-        v-col.pa-0(cols=12 v-if="show_no_entries_hint") {{$t("comp.previewlist.filter_change_hint")}}
-        v-col.pa-0(cols=4)
-          span(@click="$emit('download')") download
+    v-row.col-sm-12.mx-0.px-0#pwlist-top(v-if="results_received")
+      v-row.pl-4(v-if="!requesting_entries")
+        v-col.py-0.ml-1.d-flex.align-content-center.flex-wrap(cols=3)
+          span {{$tc("comp.previewlist.num_entries", num_entries)}}
+        v-spacer
+        v-col.pa-0(v-if="show_no_entries_hint" cols=12) {{$t("comp.previewlist.filter_change_hint")}}
+        v-col.pa-0(v-else cols=3)
+          v-btn(small @click="download_dialog_open=true") {{$t('w.download')}}
+          EntriesDownloadDialog(v-model="download_dialog_open" @download="download_entries(entries_uuids, $event)")
       div(v-else) ...
     #pwlist-wrapper
       v-row.mx-1(v-for="entry in visible_entries"
         :key="entry.uuid")
-        v-col(cols=12)
+        v-col.px-0(cols=12)
           EntryPreview(
             :entry="entry"
             v-bind="preview_options"
@@ -34,10 +37,14 @@ import SimplePaginate from "../SimplePaginate";
 
 import {mapGetters} from "vuex"
 import {PAGE_DOMAIN} from "~/lib/pages"
+import EntriesDownloadDialog from "~/components/dialogs/EntriesDownloadDialog"
+import EntryFetchMixin from "~/components/entry/EntryFetchMixin"
+import {DOWNLOADING, NOT_DOWNLOADING} from "~/lib/consts"
 
 export default {
   name: "EntryPreviewList",
-  components: {SimplePaginate, EntryPreview},
+  components: {EntriesDownloadDialog, SimplePaginate, EntryPreview},
+  mixins: [EntryFetchMixin],
   props: {
     entries_uuids: {
       type: Array,
@@ -63,7 +70,10 @@ export default {
     return {
       page: 1,
       deleted: [],
-      show_to_top_button: null
+      show_to_top_button: null,
+      // @vuese: dialog for downloading entries
+      download_dialog_open: false,
+      download_status: NOT_DOWNLOADING
     }
   },
   beforeUpdate() {
@@ -94,7 +104,6 @@ export default {
       const entries = this.entries_uuids.slice(from_index, to_index)
       // todo unique is just required cuz the server does often sent less (actor rows problem when querying entries)
       const uuids = this.$_.uniq(this.$_.filter(entries, e => !this.deleted.includes(e)))
-      console.log(this.$_.map(uuids, uuid => this.$store.getters["entries/get_entry"](uuid)).filter(e => e !== undefined))
       return this.$_.map(uuids, uuid => this.$store.getters["entries/get_entry"](uuid)).filter(e => e !== undefined)
     },
     has_entries() {
@@ -172,6 +181,11 @@ export default {
           this.$emit("request_more")
           // console.log("time for more")
         }
+      }
+    },
+    download_status(status, prev_status) {
+      if (prev_status === DOWNLOADING && status === NOT_DOWNLOADING) {
+        this.download_dialog_open = false
       }
     }
   }
