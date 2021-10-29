@@ -132,6 +132,7 @@ export default {
     // initialize update values, if some are not set
     if (this.values) {
       if (this.$_.some(this.i_values, a_name => !this.values.hasOwnProperty(a_name))) {
+        // console.info("AspectSet. emitting up default values:", this.i_values)
         this.$emit("update:values", this.i_values)
       }
     }

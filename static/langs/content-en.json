@@ -348,6 +348,17 @@
         "cc_ref_text": "Read more about CC0."
       }
     },
+    "entries_download_dialog": {
+      "dialog_header": "Download entries",
+      "template_aspect_label": "Select which entry type to download",
+      "data_aspect":{
+        "label": "Only metadata / Complete data",
+        "items": [
+          "Metadata",
+          "Complete entries"
+        ]
+      }
+    },
     "entry_validation": {
       "h1": "Validation",
       "has_missing": "Missing or incomplete aspects:",
@@ -551,6 +562,7 @@
   },
   "w": {
     "login": "login",
+    "close": "close",
     "register": "register",
     "search": "search",
     "entries": "entries",

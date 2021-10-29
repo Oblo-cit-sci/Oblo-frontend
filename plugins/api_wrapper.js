@@ -2,6 +2,7 @@ import Vue from "vue"
 
 const qs = require('qs');
 
+
 class APIWrapper {
 
   constructor() {
@@ -678,5 +679,6 @@ class Util extends QueryBase {
     })
   }
 }
+
 
 Vue.prototype.$api = new APIWrapper()

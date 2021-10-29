@@ -1,13 +1,15 @@
 <template lang="pug">
-  v-dialog(v-model="dialog_open" :width="width" :style="{'overflow-x':'hidden'}")
+  v-dialog(v-model="dialog_open" :style="dialogStyle")
     v-sheet.pa-2(:color="color")
       slot
 </template>
 
 <script>
+import LayoutMixin from "~/components/global/LayoutMixin"
+
 export default {
   name: "DialogWrapper",
-  mixins: [],
+  mixins: [LayoutMixin],
   components: {},
   props: {
     value: {
@@ -33,6 +35,12 @@ export default {
       get() {
         return this.value
       }
+    },
+    dialogStyle() {
+      const default_style = this.main_container_width_style
+      // todo doesnt work
+      default_style["overflow-x"] = 'hidden'
+      return default_style
     }
   },
   methods: {

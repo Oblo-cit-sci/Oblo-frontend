@@ -1,5 +1,5 @@
 import {settings_loc_privacy_ask, settings_loc_privacy_exact, settings_loc_privacy_random} from "~/lib/settings"
-import {ADMIN, EDITOR, LANGUAGE, MULTISELECT, SELECT, STR, USER} from "~/lib/consts"
+import {LANGUAGE, MULTISELECT, SELECT, STR, USER} from "~/lib/consts"
 import {pack_value, unpack} from "~/lib/aspect";
 import LanguageMixin from "~/components/LanguageMixin";
 import {object_list2options} from "~/lib/options";

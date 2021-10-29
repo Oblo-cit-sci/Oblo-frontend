@@ -49,7 +49,10 @@ import {
 import AspectMixin from "./aspects/AspectMixin";
 import AspectAction from "~/components/aspect_utils/AspectAction"
 
-
+/**
+ * @group Aspects
+ * this is the Component for creating all kinds of Aspects
+ */
 export default {
   name: "Aspect",
   components: {
@@ -59,9 +62,15 @@ export default {
   mixins: [AspectMixin],
   data() {
     return {
+      /**
+       * todo remove?
+       */
       flex_mode: null
     }
   },
+  /**
+   * checks if there is a value. and eventually sets the caches
+   */
   created() {
     // todo no idea, why the shortcut below does not work
     // console.log("aspect create", this.aspect.name, this.value)
@@ -83,6 +92,10 @@ export default {
   },
   // boolean check is not required, since "false" is the default
   computed: {
+    /**
+     * if description is html
+     * @returns {bool} if attr.descr_as_html is set
+     */
     descr_as_html() {
       return this.attr.descr_as_html
     },
@@ -93,6 +106,10 @@ export default {
       }
       return merge
     },
+    /**
+     * for flex (todo remove)
+     * @returns {string}
+     */
     flex_switch_icon() {
       return this.flex_mode === VIEW ? "mdi-pencil-outline" : "mdi-check"
     },
@@ -108,9 +125,17 @@ export default {
     visible() {
       return this.attr.visible === false || !this.disable || !this.attr.hide_on_disabled
     },
+    /**
+     * todo remove?
+     * @returns {boolean}
+     */
     is_flex() {
       return this.mode === FLEX
     },
+    /**
+     * remove flex part
+     * @returns {String|string|null|*}
+     */
     real_mode() {
       // console.log("real-mode", this.aspect.name, this.attr)
       if ((this.attr.ref_value) || this.fixed_value) {
@@ -135,6 +160,10 @@ export default {
         return "disabled"
       }
     },
+    /**
+     * the html-element id pased on the location. important for scrolling...
+     * @returns {string}
+     */
     aspect_id() {
       return aspect_loc_str(this.$_.tail(this.aspect_loc))
     },
@@ -146,6 +175,10 @@ export default {
     }
   },
   methods: {
+    /**
+     * execute the action emitted by the concrete aspect-component
+     * @param event
+     */
     aspectAction(event) {
       // console.log("asp-act", event, this.merge_extra.add_undo)
       if (event.action !== "clear" || this.extra.listitem)
@@ -155,6 +188,9 @@ export default {
         this.update_value(pack_value(this.original_value))
       }
     },
+    /**
+     * flip mode (VIEW, EDIT)
+     */
     flip_flex_mode() {
       this.flex_mode = this.flex_mode === VIEW ? EDIT : VIEW
       this.$emit("flex_mode_change", this.flex_mode)
@@ -163,14 +199,13 @@ export default {
     set_flex_mode(mode) {
       this.flex_mode = mode
     },
-    note() {
-      let note_text = ""
-      if (this.aspect_loc) {
-        const aspect_descr_loc = aspect_loc2aspect_descr_loc(this.aspect_loc)
-        note_text = this.$store.getters["templates/note"](aspect_descr_loc)
-      }
-      return {text: note_text, note_class: "note"}
-    },
+    /**
+     * @vuese
+     * return the concrete component based on the type and the mode
+     * @param aspect
+     * @param mode VIEW | EDIT
+     * @returns {any}
+     */
     aspectComponent(aspect, mode) {
       return get_aspect_vue_component(aspect, mode, this.extra)
     }
