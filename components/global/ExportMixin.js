@@ -25,6 +25,18 @@ export default {
         {type: "data:text/csv;charset=utf-8"})
       FileSaver.saveAs(blob, filename + ".csv")
     },
+    download_zip(data, content_disposition) {
+      const filename = content_disposition.match(/filename="(.+)"/)[1]
+
+      let elm = document.createElement('a')
+      elm.style = "display: none"
+      const blob = new Blob([data], {type: "application/zip"})
+      elm.href = window.URL.createObjectURL(blob)
+      console.log(elm.href)
+      elm.setAttribute('download', filename)
+      document.body.appendChild(elm)
+      elm.click()
+    },
     download_json(data, filename) {
       const blob = new Blob(
         [JSON.stringify(data, null, 2)],
@@ -34,7 +46,7 @@ export default {
     prepare_entry_for_download(entry) {
       const copy = this.$_.cloneDeep(entry)
       if (entry.type === REGULAR) {
-        for(let key of ["aspects","rules", "entry_refs", "slug", "local"]) {
+        for (let key of ["aspects", "rules", "entry_refs", "slug", "local"]) {
           delete copy[key]
         }
       }

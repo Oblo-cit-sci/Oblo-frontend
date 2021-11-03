@@ -436,7 +436,12 @@ class Entries extends QueryBase {
       params: {
         meta_only
       },
-      headers: {"Access-Control-Expose-Headers": "content-disposition"}
+      headers: {
+        "Access-Control-Allow-Headers": "Access-Control-Expose-Headers, Access-Control-Request-Headers",
+        "Access-Control-Expose-Headers": "Content-Disposition",
+        "response-type": "arraybuffer"
+        // "Access-Control-Request-Headers": "Content-Disposition"
+      }
     })
   }
 }

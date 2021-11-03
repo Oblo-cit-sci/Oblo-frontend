@@ -52,7 +52,12 @@ export default {
       const meta_only  = config.select_data === METADATA
       this.download_status = DOWNLOADING
       this.$api.entries.download(uuids, meta_only).then(response => {
-        this.download_csv(response.data, "entries_download")
+        if (response.headers["content-type"] === "application/zip") {
+          this.download_zip(response.data, response.request.getResponseHeader('Content-Disposition'))
+        }
+        else {
+          this.download_csv(response.data, "entries_download")
+        }
         this.download_status = NOT_DOWNLOADING
       })
     },

@@ -56,7 +56,6 @@ import Aspect from "~/components/Aspect"
 import {aspect_default_value, pack_value, unpack} from "~/lib/aspect"
 import {BUS_TRIGGER_SEARCH} from "~/plugins/bus";
 import EntryFetchMixin from "~/components/entry/EntryFetchMixin"
-import EntriesDownloadDialog from "~/components/dialogs/EntriesDownloadDialog"
 
 const LOG = false
 
@@ -64,7 +63,7 @@ const relevant_query_keys = [QP_D, QP_SEARCH]
 
 export default {
   name: "Search",
-  components: {EntriesDownloadDialog, Aspect, Filterlist, EntryPreviewList},
+  components: {Aspect, Filterlist, EntryPreviewList},
   mixins: [FilterMixin, NavBaseMixin, PersistentStorageMixin, EntrySearchMixin, EntryFetchMixin],
   props: {
     init_clear: Boolean,

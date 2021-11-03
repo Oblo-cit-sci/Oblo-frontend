@@ -1,6 +1,6 @@
 <template lang="pug">
-  v-dialog(v-model="dialog_open" :style="dialogStyle")
-    v-sheet.pa-2(:color="color")
+  v-dialog(v-model="dialog_open" :style="main_container_width_style")
+    v-sheet.dialog_sheet(:color="color")
       slot
 </template>
 
@@ -35,12 +35,6 @@ export default {
       get() {
         return this.value
       }
-    },
-    dialogStyle() {
-      const default_style = this.main_container_width_style
-      // todo doesnt work
-      default_style["overflow-x"] = 'hidden'
-      return default_style
     }
   },
   methods: {
@@ -57,4 +51,8 @@ export default {
 
 <style scoped>
 
+  .dialog_sheet {
+    overflow-x: hidden;
+    padding: 5px 10px;
+  }
 </style>
