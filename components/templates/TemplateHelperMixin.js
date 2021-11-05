@@ -67,7 +67,7 @@ export default {
     },
     async retrieve_template_code_of_version(slug, language, version) {
       return new Promise((resolve, reject) => {
-        this.$api.entry.get_entry_of_version(slug, language, version).then(resp => {
+        this.$api.template_code.get_entry_of_version(slug, language, version).then(resp => {
           console.log(resp.data)
           this.$store.commit("templates/add_template_of_version", resp.data.data)
           return resolve(resp.data)

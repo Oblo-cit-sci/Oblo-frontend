@@ -533,10 +533,10 @@ export default {
       // console.log("complete", value)
     },
     has_input_option(type) {
-      return (this.aspect.attr.input || []).includes(type)
+      return (this.attr.input || []).includes(type)
     },
     has_output(type) {
-      return (this.aspect.attr.output || default_output).includes(type)
+      return (this.attr.output || default_output).includes(type)
     },
     reset() {
       // console.log("reset")

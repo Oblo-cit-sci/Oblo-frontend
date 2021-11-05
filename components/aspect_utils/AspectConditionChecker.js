@@ -57,6 +57,7 @@ export default {
         console.log(`condition for aspect ... cannot be checked. no aspect_loc and no conditionals`)
         return false
       }
+      // console.log("condition check:", condition, condition_value)
       // console.log("check_single_condition", this.aspect.name, "condition_value", condition_value, check_condition_value(condition_value, condition))
       return check_condition_value(condition_value, condition)
     }

@@ -264,7 +264,7 @@ export default {
         }
       } else if (component === ENTRIES) {
         const slug = this.unpacked_values.entry
-        const response = await this.$api.entry.as_csv(slug, languages)
+        const response = await this.$api.template_code.as_csv(slug, languages)
         file_name += `_${slug}__${languages.join("_")}`
         if (response.data) {
           data = response.data
@@ -388,13 +388,13 @@ export default {
       const code_template = this.code_templates_for_domain_lang[entry]
       if (code_template.language === this.unpacked_values.dest_lang) {
         const [resp_src_data, resp_dest_data] = await Promise.all([
-          this.$api.entry.aspects_as_index_table(entry, setup.src_lang),
-          this.$api.entry.aspects_as_index_table(entry, setup.dest_lang)
+          this.$api.template_code.aspects_as_index_table(entry, setup.src_lang),
+          this.$api.template_code.aspects_as_index_table(entry, setup.dest_lang)
         ])
         setup.messages = this.match_messages(resp_src_data.data.data.messages, resp_dest_data.data.data.messages)
         Object.assign(setup, {config: {entry, new_o: false, outdated: resp_dest_data.data.data.outdated}})
       } else {
-        const {data} = await this.$api.entry.aspects_as_index_table(entry, setup.src_lang)
+        const {data} = await this.$api.template_code.aspects_as_index_table(entry, setup.src_lang)
         data.data.messages.forEach(m => m.push(""))
         Object.assign(setup, {messages: data.data.messages, config: {entry, new_o: true, outdated: data.data.outdated}})
       }
@@ -419,7 +419,7 @@ export default {
       const {component, src_lang, dest_lang, domain, entry} = this.unpacked_values
       const setup = {component, domain, src_lang, dest_lang, unpacked: this.setup_values}
       // const code_template = this.code_templates_for_domain_lang[entry]
-      const resp_dest_data = await this.$api.entry.update_aspects_as_index_table(entry, setup.dest_lang)
+      const resp_dest_data = await this.$api.template_code.update_aspects_as_index_table(entry, setup.dest_lang)
       setup.messages = resp_dest_data.data.data.messages
       Object.assign(setup, {config: {entry, new_o: false, outdated: resp_dest_data.data.data.outdated}})
       this.$store.commit("translate/setup", setup)
@@ -530,7 +530,7 @@ export default {
         })
       } else { // entry
         const entry_slug = this.unpacked_values.entry
-        this.$api.entry.from_csv(entry_slug, dest_lang, file).then(({data}) => {
+        this.$api.template_code.from_csv(entry_slug, dest_lang, file).then(({data}) => {
           this.ok_snackbar(data.msg)
           const entry = data.data
           if(entry.status === PUBLISHED) {

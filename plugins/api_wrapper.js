@@ -22,6 +22,7 @@ class APIWrapper {
     this.static = new Static(this)
     this.domain = new Domain(this)
     this.entry = new Entry(this)
+    this.template_code = new TemplateCode(this)
     this.entries = new Entries(this)
     this.actor = new Actor(this)
     this.language = new Language(this)
@@ -138,7 +139,6 @@ class Basic extends QueryBase {
   }
 
 }
-
 
 class OAuth extends QueryBase {
 
@@ -268,14 +268,6 @@ class Entry extends QueryBase {
     return this.get_(`${uuid}/get_shared/${entry_access_key}`)
   }
 
-  get_slug_lang(slug, language) {
-    return this.get_(`${slug}`, {
-      params: {
-        language
-      }
-    })
-  }
-
   // TODO why this slash?? otherwise it throws a 405 on the server!
   post(entry_data) {
     return this.post_(`${entry_data.uuid}`, entry_data)
@@ -283,14 +275,6 @@ class Entry extends QueryBase {
 
   patch(entry_data) {
     return this.patch_(`${entry_data.uuid}`, entry_data)
-  }
-
-  as_csv(slug, languages) {
-    return this.get_(`as_csv${slug}`, {
-      params: {
-        languages
-      }
-    })
   }
 
   patch_accept(entry_data) {
@@ -331,12 +315,37 @@ class Entry extends QueryBase {
     return this.delete_(`${uuid}/attachment/${file_uuid}`)
   }
 
+}
+
+class TemplateCode extends QueryBase {
+
+  constructor(api_wrapper) {
+    super(api_wrapper, "/entry")
+  }
+
+  // todo: not sure if this is used atm
+  get_slug_lang(slug, language) {
+    return this.get_(`${slug}`, {
+      params: {
+        language
+      }
+    })
+  }
+
   aspects_as_index_table(slug, language) {
     return this.get_(`${slug}/aspects_as_index_table`, {params: {language}})
   }
 
   async update_aspects_as_index_table(slug, language) {
     return this.get_(`${slug}/update_aspects_as_index_table`, {params: {language}})
+  }
+
+  as_csv(slug, languages) {
+    return this.get_(`as_csv${slug}`, {
+      params: {
+        languages
+      }
+    })
   }
 
   async post_from_flat(slug, language, content) {

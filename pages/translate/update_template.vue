@@ -257,14 +257,14 @@ export default {
       try {
         if (this.setup.config.new_o) {
           // TODO this should never be the case (copied over...)
-          const {data} = await this.$api.entry.post_from_flat(
+          const {data} = await this.$api.template_code.post_from_flat(
             this.setup.config.entry,
             this.setup.dest_lang,
             messages
           )
           this.ok_snackbar(data.msg)
         } else {
-          const {data} = await this.$api.entry.patch_from_flat(
+          const {data} = await this.$api.template_code.patch_from_flat(
             this.setup.config.entry,
             this.setup.dest_lang,
             messages
