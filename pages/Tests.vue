@@ -1,8 +1,8 @@
 <template lang="pug">
   div
-    EntriesDownloadDialog(v-model="dialog_open")
-    v-btn(@click="dialog_open=true") open
-    DialogPage
+    v-date-picker(type="month" v-model="i_value" :allowed-dates="until_today")
+    div {{i_value}}
+    div {{typeof (i_value)}}
 </template>
 
 <script>
@@ -12,14 +12,19 @@ import OfflineMixin from "~/lib/OfflineMixin";
 import Aspect from "~/components/Aspect"
 import DialogPage from "~/minimal_working_tests/dialog/DialogPage"
 import EntriesDownloadDialog from "~/components/dialogs/EntriesDownloadDialog"
+import DateAspect from "~/components/aspects/DateAspect"
+import {pack_value} from "~/lib/aspect"
+import MonthAspect from "~/components/aspects/MonthAspect"
 
 export default {
   name: "tests",
   mixins: [EnvMixin, OfflineMixin],
-  components: {EntriesDownloadDialog, DialogPage, Aspect},
+  components: {MonthAspect, EntriesDownloadDialog, DialogPage, Aspect},
   data() {
     return {
-      dialog_open: false
+      dialog_open: false,
+      i_value: null,
+      month: pack_value(null)
     }
   },
   created() {
@@ -38,6 +43,9 @@ export default {
   methods: {
     switch_offline() {
       this.$store.commit("dev_switch_offline")
+    },
+    until_today(d) {
+      return new Date(d)  <= new Date();
     }
   }
 }

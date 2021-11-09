@@ -123,7 +123,8 @@ export default {
       } else return !this.$_.get(this.extra, "no_title", false);
     },
     visible() {
-      return this.attr.visible === false || !this.disable || !this.attr.hide_on_disabled
+      let hide_on_disable = this.$_.get(this.attr, "hide_on_disabled", true)
+      return this.attr.visible === false || !this.disable || !hide_on_disable
     },
     /**
      * todo remove?
