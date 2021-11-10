@@ -153,6 +153,15 @@ export default {
           container: this.map_id
         })
       } else {
+        // bounds from the domain
+        if (this.is_editable_mode) {
+          const this_entry = this.get_entry()
+          const entry_domain = this.$store.getters["domain/cur_act_lang_domain_data"]()
+          const domain_init_map_bounds = this.$_.get(entry_domain.map, "init_map_options.bounds")
+          if(domain_init_map_bounds) {
+            options.bounds = domain_init_map_bounds
+          }
+        }
         return Object.assign(options, {container: this.map_id})
       }
     },
@@ -309,9 +318,6 @@ export default {
             this.selected_prec_option = this.place_parts.indexOf(this.value.public_loc.place_name) + 2
           }
         }
-      }
-      if (this.is_edit_mode) {
-
       }
     }
   },
@@ -656,7 +662,7 @@ export default {
           }
         }
         public_loc.place_name = place2str(public_loc.place)
-        if(!public_loc.coordinates) {
+        if (!public_loc.coordinates) {
           console.warn("public location has no coordinates. setting to give location")
           public_loc.coordinates = value.coordinates
         }
