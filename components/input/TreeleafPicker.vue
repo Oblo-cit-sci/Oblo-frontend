@@ -93,12 +93,12 @@ export default {
       return options
     },
     done_available() {
-      // console.log("done?", this.attr.allow_select_levels, this.act_level)
-      if (this.attr.hasOwnProperty("allow_select_levels")) {
-        return (this.$_.includes(this.attr.allow_select_levels, this.act_level))
-      } else {
-        return this.$_.size(this.act_options) === 0
+      // console.log("done?", this.attr.allow_select_levels, this.act_level, this.act_options)
+      const allow_levels = this.attr.allow_select_levels || 0
+      if (this.$_.includes(allow_levels, this.act_level)) {
+        return true
       }
+      return this.$_.size(this.act_options) === 0
     },
     last_description() {
       if (this.act_level === 0) {
@@ -200,7 +200,7 @@ export default {
     done() {
       this.$emit("selected", pack_value(this.value.map(e => {
         let {text, value, icon, extra_value} = e
-        return {text,value, icon, extra_value}
+        return {text, value, icon, extra_value}
       })))
     },
     level_edit_mode(level) {

@@ -24,7 +24,7 @@ export default {
   },
   beforeRouteEnter(to, from, next) {
     if (!(to.query[QP_D] || to.query[QP_F])) {
-      console.log(to, from, next)
+      // console.log(to, from, next)
       // todo somehow doesn't load...
       next({path: '/'})
     } else {
@@ -51,6 +51,7 @@ export default {
     }
   },
   created() {
+    // change the url for fixed pages to just /:domain_name
     if (this.is_prod && this.$route.query[QP_F] === this.domain_name) {
       window.history.replaceState(null, document.title, `${this.domain_name}`)
     }

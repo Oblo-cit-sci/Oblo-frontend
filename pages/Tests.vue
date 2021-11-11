@@ -1,8 +1,6 @@
 <template lang="pug">
   div
-    v-date-picker(type="month" v-model="i_value" :allowed-dates="until_today")
-    div {{i_value}}
-    div {{typeof (i_value)}}
+    TextCompare
 </template>
 
 <script>
@@ -15,11 +13,12 @@ import EntriesDownloadDialog from "~/components/dialogs/EntriesDownloadDialog"
 import DateAspect from "~/components/aspects/DateAspect"
 import {pack_value} from "~/lib/aspect"
 import MonthAspect from "~/components/aspects/MonthAspect"
+import TextCompare from "~/components/util/TextCompare"
 
 export default {
   name: "tests",
   mixins: [EnvMixin, OfflineMixin],
-  components: {MonthAspect, EntriesDownloadDialog, DialogPage, Aspect},
+  components: {TextCompare, MonthAspect, EntriesDownloadDialog, DialogPage, Aspect},
   data() {
     return {
       dialog_open: false,
