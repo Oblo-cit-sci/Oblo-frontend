@@ -106,7 +106,7 @@ const default_output = [LOCATION, PLACE]
 export default {
   name: "LocationAspect",
   components: {AspectDialog, Mapbox},
-  mixins: [AspectComponentMixin, TriggerSnackbarMixin, MapIncludeMixin, GeocodingMixin, OfflineMixin,
+  mixins: [AspectComponentMixin, TriggerSnackbarMixin, MapIncludeMixin, OfflineMixin,
     MapEntriesMixin, EntrySearchMixin, EntryFetchMixin, ResponsivenessMixin, TypicalAspectMixin, PersistentStorageMixin],
   computed: {
     ...mapGetters({logged_in: "user/logged_in", user_settings: "user/settings", menu_state: "menu/menu_state"}),

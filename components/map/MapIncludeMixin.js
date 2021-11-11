@@ -1,10 +1,10 @@
-import MapboxBaseMixin from "~/components/map/MapboxBaseMixin"
 // BASIC lAYER
 import MapEntriesMixin from "~/components/map/MapEntriesMixin"
+import {default_place_type} from "~/lib/consts"
 
 export default {
   name: "MapIncludeMixin",
-  mixins: [MapboxBaseMixin, MapEntriesMixin],
+  mixins: [ MapEntriesMixin],
   head() {
     return {
       link: [{
@@ -16,6 +16,7 @@ export default {
   data() {
     return {
       map_loaded: false,
+      mapbox_api_url: "https://api.mapbox.com/geocoding/v5/mapbox.places/",
       default_map_options: {
         style: this.$store.getters["map/default_map_style"], //this.default_style_map,
         center: [30, 0],
@@ -33,6 +34,9 @@ export default {
     this.popups = []
   },
   computed: {
+    access_token() {
+      return this.$store.getters["map/access_token"]
+    },
     language() {
       return this.$store.getters.ui_language
     },
@@ -63,6 +67,29 @@ export default {
       //   }
       // });
       this.map.resize()
+    },
+    async rev_geocode(location, params = {
+      place_types: default_place_type
+    }) {
+      let {data} = await this.$axios.get(encodeURI(this.mapbox_api_url + location.lon + "," + location.lat) + ".json",
+        {
+          params: {
+            access_token: this.access_token,
+            types: params.place_types,
+            language: "en"
+          }
+        })
+      return data
+    },
+    async geocode(search_text, params = {types: default_place_type, language: "en"}) {
+      const {data} = await this.$axios.get(encodeURI(this.mapbox_api_url + search_text) + ".json",
+        {
+          params: Object.assign({
+            access_token: this.access_token
+          }, params)
+        }
+      )
+      return data
     },
     add_geolocate_ctrl() {
       const geolocate = new this.mapboxgl.GeolocateControl({

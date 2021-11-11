@@ -41,7 +41,6 @@
   import Aspect from "~/components/Aspect"
 
   import pkg from "~/package"
-  import GeocodingMixin from "~/components/map/GeocodingMixin"
   import AspectSet from "~/components/AspectSet"
   import {ENTRYLINK} from "~/lib/consts"
   import EntrySearchMixin from "~/components/EntrySearchMixin"
@@ -49,7 +48,7 @@
 
   export default {
     name: "Tests",
-    mixins: [TriggerSnackbarMixin, GeocodingMixin, EntrySearchMixin],
+    mixins: [TriggerSnackbarMixin,  EntrySearchMixin],
     components: {ActorChip, AspectSet, Aspect, OptionsAspect, AspectDialog},
     async created() {
       const location_ = {"lon": 24.550781249998096, "lat": 47.405785290060095}
