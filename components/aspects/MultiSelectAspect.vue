@@ -10,11 +10,11 @@
               v-checkbox( color="khaki" :input-value="active" readonly)
     v-select(v-else
     :items="options"
-      v-model="selection"
+      v-model="select_items"
       :readonly="is_view_mode"
       :hide-details="!count_rules"
       :rules="count_rules"
-      @blur="menu_open = !menu_open"
+      @focus="menu_open = !menu_open"
       background-color="khaki"
       :menu-props="{openOnClick:menu_open, offsetY: true}"
       @click="menu_open = !menu_open"
@@ -67,12 +67,16 @@ export default {
     },
     selection_index: {
       get() {
+        console.log("get selection_index", this.value)
         if (this.value) {
-          return this.value.map(v => this.options.findIndex(o => o.value === v))
+          return this.value.map(v => this.options.findIndex(o => o.value === v.value))
         }
       },
       set(val) {
-        this.update_value(this.$_.filter(this.options, (o, i) => val.includes(i)).map(v => v.value))
+        console.log("MultiSelectAspect.set__selection_index", val)
+        const selection = this.$_.filter(this.options, (o, i) => val.includes(i))
+        console.log(selection)
+        this.update_value(selection)
       }
     },
     mandatory() {
@@ -95,14 +99,30 @@ export default {
     },
     view_text() {
       return this.selection.map(s => s.text).join("\r\n- ")
+    },
+    select_items: {
+      get() {
+        if (this.value) {
+          const selection = this.$_.filter(this.options, (o, i) => this.value.includes(o)).map(v => v.value)
+          // console.log("get", this.value, selection)
+          return selection
+        }
+      },
+      set(value) {
+        const selection = value.map(v => this.options.find(o => o.value === v))
+        // console.log("set", value, selection)
+        this.update_value(selection)
+      }
     }
   },
   methods: {
     set_selection() {
+      // console.log("MultiSelectAspect.set_selection", this.value)
       // console.log("this.value", this.value)
       if (this.value) {
+        const values = this.value.map(v => v.value)
         this.selection = this.$_.filter(this.options, (o) => {
-          return this.value.indexOf(o.value) > -1
+          return values.indexOf(o.value) > -1
         })
       } else {
         this.init = false
@@ -123,16 +143,10 @@ export default {
       }
       return false
     }
-    // item_style(option) {
-    //   console.log(option.value, this.option_disabled(option))
-    //   	return {
-    //   	  "background": this.option_disabled(option) ? "#C0C0C0" : ""
-    //     }
-    // }
   },
   watch: {
     selection() {
-      console.log("multi-select", this.selection, this.init)
+      // console.log("MultiSelectAspect.watch__selection", this.selection, this.init)
       if (this.init) {
         this.init = false
         return
@@ -144,13 +158,13 @@ export default {
           // console.log(this.selection.map(s => s.value), this.value)
           // console.log(this.$_.isEqual(this.selection.map(s => s.value), this.value))
           // console.log("selection", this.selection, this.value)
-          if (!this.$_.isEqual(this.selection.map(s => s.value), this.value))
+          if (!this.$_.isEqual(this.selection, this.value))
             this.update_value(this.selection)
         }
       }
     },
     value(value) {
-      console.log("value changed", value)
+      // console.log("MultiSelectAspect.watch__value", value)
       this.set_selection()
     }
   }

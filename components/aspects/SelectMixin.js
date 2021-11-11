@@ -45,6 +45,20 @@ export default {
       console.log("ERROR cannot create options from aspect items", this.aspect.items)
     }
   },
+  methods: {
+    clean_item(item) {
+      const {value, text, icon} = item
+      const obj = {value, text, icon}
+      const clean = {}
+      for (let k_v of Object.entries(obj)) {
+        const [k, v] = k_v
+        if (v !== undefined) {
+          clean[k] = v
+        }
+      }
+      return clean
+    }
+  },
   computed: {
     attr() {
       return this.$_.get(this.aspect, "attr", {})
