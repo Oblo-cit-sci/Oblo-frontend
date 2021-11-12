@@ -32,7 +32,7 @@
 
 import Mapbox from 'mapbox-gl-vue'
 import MapIncludeMixin from "~/components/map/MapIncludeMixin"
-import {review_color, draft_color, cluster_color, VIEW, MENU_MODE_DOMAIN} from "~/lib/consts"
+import {review_color, draft_color, cluster_color, VIEW, MENU_MODE_DOMAIN, TEMPLATE} from "~/lib/consts"
 import {mapGetters} from "vuex"
 import DomainMapMixin from "~/components/map/DomainMapMixin"
 import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
@@ -471,7 +471,7 @@ export default {
         }
       }
 
-      const include_types = this.get_filtered_template_slugs()
+      const include_types = this.$store.getters["search/get_act_config_value_by_name"](TEMPLATE)
       const drafts = this.$_.flatten(this.$store.getters["entries/domain_drafts"](this.domain_name)
         .filter(e => include_types.includes(e.template.slug)).map(e => entry_location2geojson_arr(e, ["status"])))
       for (let i in drafts) {

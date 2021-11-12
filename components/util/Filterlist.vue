@@ -4,8 +4,8 @@
       h4.mb-2 {{$t("comp.filterlist.appliead_filters")}}
       v-list.py-0(dense)
         v-scroll-x-transition(group)
-          v-list-item(v-for="(filter, index) in visible_filter" :key="index")
-            v-list-item-title {{$t(filter.t_label)}}:&nbsp;{{filter_text(filter)}}
+          v-list-item.pl-1.pr-0(v-for="(filter, index) in visible_filter" :key="index")
+            v-list-item-title {{applied_filter_text(filter)}}
             v-btn(fab x-small rounded elevation="2" @click="edit_filter(index)"
               :disabled="not_editable(filter)" :style="filter_edit_button_style(filter)")
               v-icon mdi-filter
@@ -64,7 +64,6 @@ export default {
   },
   computed: {
     available_filter() {
-      // console.log(this.filter_options)
       // console.log("applied", this.applied_filters)
       // allow_multiple pass here, but are checked against their option in the value
       let available_filters = this.$_.cloneDeep(this.filter_options)
@@ -102,7 +101,6 @@ export default {
       return this.$_.find(this.filter_options, f => f.name === name)
     },
     filter_text(filter) {
-
       // console.log(filter.value)
       // todo fix how text is stored for location-agregate marker
       if (filter.text) {
@@ -111,7 +109,7 @@ export default {
       }
       // console.log("vv", filter.value.value)
       // console.log(filter.value.value.map(v => v.text).join(", "))
-      return filter.value.value.map(v => v.text).join(", ")
+      return filter.value.map(v => v.text).join(", ")
     },
     available_filter_label(filter) {
       if (filter.t_label) {
@@ -202,6 +200,13 @@ export default {
           return aspect_default_value(this.filter_option_by_name(name).aspect)
         }
       }
+    },
+    applied_filter_text(filter) {
+      const filter_value_text = this.filter_text(filter)
+      if(filter_value_text !== "") {
+        return `${this.$t(filter.t_label)}: ${filter_value_text}`
+      } else
+        return this.$t(filter.t_label)
     }
   },
   watch: {

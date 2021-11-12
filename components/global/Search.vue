@@ -126,11 +126,11 @@ export default {
       const language = this.$store.getters["user/settings"].domain_language
       const search_config_update = []
       if (this.domain_data) {
-        const generated = this.config_generate(TEMPLATE, this.$_.get(this.domain_data, "search.default_templates", []), language)
+        const generated = this.get_filter_config(TEMPLATE, this.$_.get(this.domain_data, "search.default_templates", []), language)
         search_config_update.push(generated)
       }
       if (!this.act_config_by_name(LANGUAGE)) {
-        search_config_update.push(this.config_generate(LANGUAGE, [language]))
+        search_config_update.push(this.get_filter_config(LANGUAGE, [language]))
       }
       if (this.$_.isEmpty(search_config_update)) {
         // todo maybe that should set before_last: true?
@@ -263,6 +263,7 @@ export default {
           if (!value || this.$_.isEmpty(value)) {
             this.$store.commit("search/remove_in_act_config", filter.search_config.name)
           } else {
+            // TODO refactor
             this.$store.commit("search/replace_in_act_config", Object.assign({value}, filter.search_config))
           }
         }
@@ -450,7 +451,7 @@ export default {
         if (filter_option) {
           const config = filter_option.search_config
           if (config.hasOwnProperty("name")) {
-            config.value = unpack(filter.value.value.map(item => item.value))
+            config.value = unpack(filter.value.map(item => item.value))
             configuration.required.push(config)
           } else if (config.hasOwnProperty("include_as")) {
             // console.log("include as", config)

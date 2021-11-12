@@ -46,7 +46,7 @@ export default {
     const config = this.search_config(this.$route.query.s)
     if (config && config[0].name === TEMPLATE) {
       const language = this.$store.getters["user/settings"].domain_language
-      this.$store.commit("search/replace_in_act_config", this.config_generate(config[0].name, config[0].value, language))
+      this.$store.commit("search/replace_in_act_config", this.get_filter_config(config[0].name, config[0].value, language))
     }
     // get the default templates of the domain
     this.$bus.$on("domain-create_entry", slug => this.create_entry_or_open_dialog(slug))

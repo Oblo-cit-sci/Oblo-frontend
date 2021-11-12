@@ -34,15 +34,6 @@ export default {
     ...mapGetters({domain_language: "user/settings_domain_language"})
   },
   methods: {
-    get_filter_options_by_name(filter_name) {
-      switch (filter_name) {
-        case [TEMPLATE]:
-          return this.get_template_filter_options()
-        case [LANGUAGE]:
-          return this.get_language_filter_options()
-        case [TAGS]:
-      }
-    },
     get_filtered_template_slugs() {
       const template_filter_conf = this.act_config.filter(fc => fc.name === TEMPLATE)[0]
       return unpack(this.$_.get(template_filter_conf, "value", []))
@@ -57,12 +48,6 @@ export default {
       })
     },
     // todo not really a filter. make them all so they dont require params,...
-    get_domain_filter(domain_name) {
-      return {
-        name: DOMAIN,
-        value: domain_name
-      }
-    },
     get_status_filter(statuses = [DRAFT]) {
       return {
         name: STATUS,
@@ -95,9 +80,7 @@ export default {
             min: 1,
           },
         },
-        search_config: {
-          name: "template",
-        }
+        search_config: this._template_filter_config()
       }
     },
     lang_tagged_entry_title(entry, default_lang) {
@@ -176,13 +159,13 @@ export default {
     get_language_filter_options(domain_name) {
       const domain_langs = this.$store.getters["domain/get_domain_languages"](domain_name)
       const options = domain_langs.map(lang => ({"value": lang, "text": this.$t("lang." + lang)}))
-      return Object.assign(this.language_filter_config(), {
-        search_config: {
-          name: "language",
-        },
+      return {
+        name: LANGUAGE,
+        t_label: "asp.language.label",
+        search_config: this._language_filter_config(),
         hide_on_value: [this.domain_language],
         aspect: {
-          name: "language",
+          name: LANGUAGE,
           t_label: "asp.language.label",
           type: "multiselect",
           attr: {
@@ -190,12 +173,6 @@ export default {
           },
           items: options
         }
-      })
-    },
-    language_filter_config() {
-      return {
-        name: "language",
-        t_label: "asp.language.label",
       }
     },
     get_actor_filter(registered_name) {
@@ -233,33 +210,48 @@ export default {
         return entries
       }
     },
-    // todo maybe use a function template_filter_config... e.g. language_filter_config
-    complete_filter_item(filtername, value) {
-      /**
-       * creates a dict (select-item) for a filter-value
-       */
-      if(filtername === TEMPLATE) {
-        return {text: this.$store.getters["templates/template_title"]  (value,this.domain_language), value}
-      } else {
-        logger.error("complete_filter_item not implemented for", filtername)
-      }
-    },
-    config_generate(filtername, filtervalue, language) {
-      /**
-       *
-       */
+    /**
+     * @vuese: they generate the items that put in the search store
+     * @param filtername
+     * @param filtervalue
+     * @returns {{t_label: string, name: string, value: *[]}}
+     */
+    get_filter_config(filtername, filtervalue) {
       if (filtername === TEMPLATE) {
         // const used_templates = this.$store.getters["templates/entry_types_array"](language, true).filter(template => filtervalue.includes(template.slug))
         // filter out slugs that dont exist. todo maybe something on the server?
-        const valid_value = this.validate_filter_value(TEMPLATE, filtervalue)
+        const valid_value = this._validate_template_value(TEMPLATE, filtervalue)
+        const value_items = valid_value.map(slug => ({
+          text: this.$store.getters["templates/template_title"](filtervalue, this.domain_language),
+          value: filtervalue
+        }))
         // console.log("filtermixin.config_generate: valid_value", valid_value)
-        return {
-          "name": TEMPLATE,
-          "t_label": "w.entrytype",
-          "value": pack_value(valid_value.map(template_slug => this.complete_filter_item(TEMPLATE, template_slug))),
-        }
+        return this._template_filter_config(value_items)
       } else if (filtername === LANGUAGE) {
-        return Object.assign(this.language_filter_config(), {value: pack_value(filtervalue)})
+        return this._language_filter_config(filtervalue)
+      } else if(filtername === DOMAIN) {
+        return this._domain_filter_config(filtervalue)
+      }
+    },
+    _language_filter_config(value = []) {
+      return {
+        name: LANGUAGE,
+        t_label: "asp.language.label",
+        value
+      }
+    },
+    _template_filter_config(value = []) {
+      return {
+        name: TEMPLATE,
+        t_label: "w.entrytype",
+        value
+      }
+    },
+    _domain_filter_config(value) {
+      return {
+        name: DOMAIN,
+        t_label: "w.domain",
+        value
       }
     },
     apply_tags_filter(tags_filter, entries) {
@@ -277,7 +269,13 @@ export default {
     has_local_filter(filters) {
       return filters.filter(f => f.source_name === "local").length > 0
     },
-    validate_filter_value(filter_name, value) {
+    /**
+     * todo: this func. is probably not needed if things around it are proper...
+     * @param filter_name
+     * @param value
+     * @returns {*}
+     */
+    _validate_template_value(filter_name, value) {
       if (filter_name === TEMPLATE) {
         const language = this.$store.getters["user/settings_domain_language"]
         return value.filter(val => this.$store.getters["templates/entry_type"](val, language))

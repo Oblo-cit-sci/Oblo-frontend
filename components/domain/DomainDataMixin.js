@@ -4,6 +4,7 @@ import {PUBLIC, USER, VISITOR} from "~/lib/consts";
 import {can_edit_entry} from "~/lib/actors";
 import FilterMixin from "~/components/FilterMixin";
 import URLQueryMixin from "~/components/util/URLQueryMixin";
+import * as DOMAIN from "domain"
 
 export default {
   name: "DomainDataMixin",
@@ -47,7 +48,7 @@ export default {
       return this.$api.static.domain_icon(this.domain_name)
     },
     domain_pre_filter() {
-      return [this.get_domain_filter(this.domain_name)]
+      return [this.get_filter_config(DOMAIN, [this.domain_name])]
     },
     prominent_filters() {
       return this.$_.get(this.domain_data, "filters.prominent_filters")

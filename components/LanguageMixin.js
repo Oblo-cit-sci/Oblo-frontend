@@ -104,9 +104,8 @@ export default {
               name: "language",
               t_label: "asp.language.label",
             },
-            {
-              value: pack_value(this.get_language_options([domain_language]))
-            }))
+            {value: this.get_language_options([domain_language])}
+            ))
       }
 
       if (snackbar) {

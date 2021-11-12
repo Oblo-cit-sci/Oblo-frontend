@@ -37,8 +37,10 @@ export default {
         }
       },
       set(selected_templates) {
+        console.log(selected_templates)
+        console.log(this.templates)
         const result = this.$_.map(selected_templates, (sel, index) => this.templates[sel].value)
-        this.$store.commit("search/replace_in_act_config", this.config_generate(TEMPLATE, result))
+        this.$store.commit("search/replace_in_act_config", this.get_filter_config(TEMPLATE, result))
       }
     }
   },
