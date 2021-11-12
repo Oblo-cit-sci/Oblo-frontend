@@ -64,6 +64,9 @@ export default {
     requesting_entries: {
       type: Boolean,
       default: false
+    },
+    download_config: {
+      type: Object
     }
   },
   data: function () {

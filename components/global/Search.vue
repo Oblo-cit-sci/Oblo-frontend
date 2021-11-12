@@ -37,6 +37,7 @@
       :requesting_entries="searching"
       :total_count="total_count"
       :preview_options="preview_options_search"
+      :download_config="entries_download_config"
       @preview_action="$emit('preview_action',$event)"
       @request_more="request_more")
 </template>
@@ -333,6 +334,12 @@ export default {
     },
     total_count() {
       return this.search_total_count + this.local_entries.length
+    },
+    entries_download_config() {
+      return {
+        entries: this.all_uuids(),
+        config: this.searchConfiguration()
+      }
     }
   },
   methods: {
@@ -465,7 +472,7 @@ export default {
           configuration.include.push({name: default_search_part, value: this.keyword, search_group: "query"})
         }
       }
-      console.log(configuration)
+      // console.log(configuration)
       return configuration
     },
     act_relevant_route_data() {
