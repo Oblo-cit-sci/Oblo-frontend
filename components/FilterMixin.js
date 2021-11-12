@@ -234,6 +234,16 @@ export default {
       }
     },
     // todo maybe use a function template_filter_config... e.g. language_filter_config
+    complete_filter_item(filtername, value) {
+      /**
+       * creates a dict (select-item) for a filter-value
+       */
+      if(filtername === TEMPLATE) {
+        return {text: this.$store.getters["templates/template_title"]  (value,this.domain_language), value}
+      } else {
+        logger.error("complete_filter_item not implemented for", filtername)
+      }
+    },
     config_generate(filtername, filtervalue, language) {
       /**
        *
@@ -242,10 +252,11 @@ export default {
         // const used_templates = this.$store.getters["templates/entry_types_array"](language, true).filter(template => filtervalue.includes(template.slug))
         // filter out slugs that dont exist. todo maybe something on the server?
         const valid_value = this.validate_filter_value(TEMPLATE, filtervalue)
+        // console.log("filtermixin.config_generate: valid_value", valid_value)
         return {
           "name": TEMPLATE,
           "t_label": "w.entrytype",
-          "value": pack_value(valid_value),
+          "value": pack_value(valid_value.map(template_slug => this.complete_filter_item(TEMPLATE, template_slug))),
         }
       } else if (filtername === LANGUAGE) {
         return Object.assign(this.language_filter_config(), {value: pack_value(filtervalue)})

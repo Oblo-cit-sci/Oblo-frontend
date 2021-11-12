@@ -16,6 +16,7 @@ export default {
     },
     get_texts_of_mvalues(mvalue, aspect) {
       /**
+       * TODO deprecated
        * get the values from a list of items (select, multiselect)
        */
         // console.log("mvalue", mvalue)

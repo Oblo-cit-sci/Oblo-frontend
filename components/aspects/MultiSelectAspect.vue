@@ -73,9 +73,9 @@ export default {
         }
       },
       set(val) {
-        console.log("MultiSelectAspect.set__selection_index", val)
+        // console.log("MultiSelectAspect.set__selection_index", val)
         const selection = this.$_.filter(this.options, (o, i) => val.includes(i))
-        console.log(selection)
+        // console.log(selection)
         this.update_value(selection)
       }
     },

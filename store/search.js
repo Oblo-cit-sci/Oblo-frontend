@@ -71,13 +71,12 @@ export const mutations = {
     state.all_uuids = (state.all_uuids || []).concat(uuids)
   },
   set_act_config(state, config) {
-    // console.trace()
     state.act_config = config
+    // console.log("search(store).replace", config_item_s)
   },
   replace_in_act_config(state, config_item_s) {
-    // console.trace()
     // console.log("act_config", state.act_config)
-    // console.log("replace", config_item_s)
+    // console.log("search(store).replace", config_item_s)
     /**
      * replace config item with same name is config_item.
      * ! we cant just manipuate the state.act_config, otherwise the watcher freaks out, and doesnt get the change...

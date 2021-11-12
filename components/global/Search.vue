@@ -443,7 +443,7 @@ export default {
         if (filter_option) {
           const config = filter_option.search_config
           if (config.hasOwnProperty("name")) {
-            config.value = unpack(filter.value)
+            config.value = unpack(filter.value.value.map(item => item.value))
             configuration.required.push(config)
           } else if (config.hasOwnProperty("include_as")) {
             // console.log("include as", config)

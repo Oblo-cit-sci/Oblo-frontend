@@ -102,26 +102,16 @@ export default {
       return this.$_.find(this.filter_options, f => f.name === name)
     },
     filter_text(filter) {
-      if (filter.value.text) {
-        // this is not gonna happen
-        return filter.value.text
-      }
+
+      // console.log(filter.value)
       // todo fix how text is stored for location-agregate marker
       if (filter.text) {
         console.warn("filter-text is filter not in filter.value, ...")
         return filter.text
       }
-      const filter_option = this.filter_option_by_name(filter.name)
-      if (!filter_option) {
-        console.error("Filterlist.filter_text option missing for filter.name", filter.name)
-        return ""
-      }
-      const filter_option_aspect = filter_option.aspect
-      // console.log("filter.value", filter.value)
-      if (filter_option_aspect) {
-        return this.get_texts_of_mvalues(filter.value, filter_option_aspect).join(", ")
-      }
-      // TODO doesnt apply for e.g. requires review
+      // console.log("vv", filter.value.value)
+      // console.log(filter.value.value.map(v => v.text).join(", "))
+      return filter.value.value.map(v => v.text).join(", ")
     },
     available_filter_label(filter) {
       if (filter.t_label) {

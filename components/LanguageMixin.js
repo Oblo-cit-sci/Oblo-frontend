@@ -105,7 +105,7 @@ export default {
               t_label: "asp.language.label",
             },
             {
-              value: pack_value([domain_language])
+              value: pack_value(this.get_language_options([domain_language]))
             }))
       }
 
@@ -145,6 +145,9 @@ export default {
       if (!codes) {
         codes = this.$store.getters["available_languages"]
       }
+      // console.log(codes)
+      // console.trace()
+      // todo there is a nice func for this...
       return codes.map(c => ({value: c, "text": this.$t(`lang.${c}`)}))
     },
     t_lang(lang_code) {
