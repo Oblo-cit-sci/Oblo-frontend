@@ -16,6 +16,7 @@ export default {
   },
   methods: {
     async guarantee_default_lang_language_names() {
+      // console.log("LANG_MIXIN: guarantee_default_lang_language_names")
       if (!this.$i18n.messages.langs) {
         const {data: resp_data} = await this.$api.language.get_language_names(this.default_language)
         this.$i18n.mergeLocaleMessage(this.default_language, resp_data)
@@ -33,6 +34,7 @@ export default {
       //   await this.$store.dispatch("domain/add_overviews", data.data)
       // }
       // console.log("change-lang", language)
+      await this.guarantee_default_lang_language_names()
       await this.change_domain_language(domain_language, update_settings, language !== domain_language)
       // console.log("check have?", language, this.$i18n.availableLocales.includes(language))
       if (!this.$i18n.availableLocales.includes(language)) {
@@ -58,9 +60,7 @@ export default {
       }
       this.$store.commit("app/set_menu_to", {name: "user_guide", to: user_guide_url})
 
-      if (language === this.default_language) {
-        await this.guarantee_default_lang_language_names()
-      }
+
       this.$api.axios.defaults.headers.common["Accept-Language"] = language
       if (update_settings && this.get_ui_language() !== language) {
         this.set_settings_value(UI_LANGUAGE, language)
@@ -105,7 +105,7 @@ export default {
               t_label: "asp.language.label",
             },
             {value: this.get_language_options([domain_language])}
-            ))
+          ))
       }
 
       if (snackbar) {

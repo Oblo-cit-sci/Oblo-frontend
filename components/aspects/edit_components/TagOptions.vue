@@ -57,18 +57,18 @@ export default {
       }
     },
     update_value(value) {
-      // console.log("options.. update", value)
-      this.$emit("update_value", {option: this.selected_option, value, is_mvalue:true})
+      this.$emit("update_value", {option: this.selected_option, value: unpack(value), is_mvalue:true})
     }
   },
   computed: {
     ...mapGetters({domain_language: "user/settings_domain_language"}),
     disabled_options() {
       const template_filter = this.$_.find(this.conditionals, cf => cf.name === TEMPLATE)
+      const template_filter_slugs = unpack(template_filter.value).map(template => template.value)
       // NEW APPROACH: ONLY INCLUDE TAGS THAT ARE INCLUDED IN ALL SELECTED TEMPLATES
       if (template_filter) {
         // console.log("template_filter", template_filter.value)
-        const all_templates_codes = unpack(template_filter.value).map(template_slug => get_code_of_template(this.$store, template_slug, this.domain_language))
+        const all_templates_codes = template_filter_slugs.map(template_slug => get_code_of_template(this.$store, template_slug, this.domain_language))
         return this.options.filter(o => !this.$_.some(all_templates_codes, codes => codes.includes(o.value))).map(o => o.value)
       } else { // actually never happens
         return []

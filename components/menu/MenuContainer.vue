@@ -11,7 +11,7 @@
       app)
       .scrollable#menu_head(v-if="!menu_mode_fixed" :style="pad_if_over")
         v-tabs(v-model="menu_state" grow active-class="active_tab")
-          v-tab {{$t("comp.menucontainer.tab_main")}}
+          v-tab(@click="select_main") {{$t("comp.menucontainer.tab_main")}}
           v-tab(@click="select_entries") {{$t("comp.menucontainer.tab_domain")}}
         NotificationBanner
         v-tabs-items(v-model="menu_state" touchless)
@@ -103,6 +103,14 @@ export default {
     }
   },
   methods: {
+    /**
+     * UX improvement. close menu when small and on main already
+     */
+    select_main() {
+      if (this.is_small && this.menu_state === MENU_MODE_MAIN) {
+        this.menu_open = false
+      }
+    },
     /**
      * this is a ux improvement, to switch from entry back to search
      */

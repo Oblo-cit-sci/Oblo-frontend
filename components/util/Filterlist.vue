@@ -1,6 +1,7 @@
 <template lang="pug">
   div
     div(v-if="has_applied_filters")
+      // APPLIED FILTERS
       h4.mb-2 {{$t("comp.filterlist.appliead_filters")}}
       v-list.py-0(dense)
         v-scroll-x-transition(group)
@@ -33,7 +34,7 @@
 </template>
 
 <script>
-import {aspect_default_value, pack_value} from "~/lib/aspect"
+import {aspect_default_value, pack_value, unpack} from "~/lib/aspect"
 import LayoutMixin from "~/components/global/LayoutMixin"
 import AspectDialog from "~/components/dialogs/AspectDialog"
 import FilterMixin from "~/components/FilterMixin";
@@ -87,13 +88,12 @@ export default {
       return this.available_filter.length === 0
     },
     active_filter_value() {
-      // console.log(this.active_filter)
       if (this.active_filter?.allow_multiple) {
         return pack_value(null)
       }
       const existing = this.$_.get(this.active_filter, 'name') ? this.filter_value(this.$_.get(this.active_filter, 'name')) : null
       // console.log("existing", existing)
-      return existing
+      return pack_value(existing)
     }
   },
   methods: {
@@ -153,17 +153,22 @@ export default {
       }
     },
     set_filter_value(name, value) {
+      const unpacked_value = unpack(value)
+      // console.log("Filterlist.set_filter_value", name,  unpacked_value)
       const new_filters = this.$_.cloneDeep(this.applied_filters)
-      const existing_filter = new_filters.find(f => f.name === name)// && this.$_.get(f.source_name,"regular") === "regular")
+
+      const existing_filter = new_filters.find(f => f.name === name)
+      // && this.$_.get(f.source_name,"regular") === "regular")
+
       if (existing_filter) {
         // allow just once in the list
         if (!this.filter_option_by_name(existing_filter.name).allow_multiple) {
-          existing_filter.value = value
+          existing_filter.value = unpacked_value
           this.$emit("input", new_filters)
           return
         }
-        if (existing_filter.value.option === value.option) {
-          existing_filter.value = value
+        if (existing_filter.value.option === unpacked_value.option) {
+          existing_filter.value = unpacked_value
           this.$emit("input", new_filters)
           return
         }
@@ -171,7 +176,7 @@ export default {
       const new_filter = {
         "name": this.active_filter.name,
         "t_label": this.active_filter.t_label,
-        "value": value
+        "value": unpacked_value
       }
       if (this.active_filter.edit) {
         new_filter.edit = this.active_filter.edit
@@ -180,6 +185,7 @@ export default {
         new_filter.source_name = this.active_filter.source_name
       }
       new_filters.push(new_filter)
+      console.log(new_filters)
       this.$emit("input", new_filters)
       this.dialog_open = false
     },
@@ -202,11 +208,13 @@ export default {
       }
     },
     applied_filter_text(filter) {
+      // console.log("text for filter", filter, this.filter_text(filter))
       const filter_value_text = this.filter_text(filter)
+      const filter_t_label = this.$t(this.filter_option_by_name(filter.name).t_label)
       if(filter_value_text !== "") {
-        return `${this.$t(filter.t_label)}: ${filter_value_text}`
+        return `${filter_t_label}: ${filter_value_text}`
       } else
-        return this.$t(filter.t_label)
+        return filter_t_label
     }
   },
   watch: {

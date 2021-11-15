@@ -220,10 +220,11 @@ export default {
       if (filtername === TEMPLATE) {
         // const used_templates = this.$store.getters["templates/entry_types_array"](language, true).filter(template => filtervalue.includes(template.slug))
         // filter out slugs that dont exist. todo maybe something on the server?
+        // debugger
         const valid_value = this._validate_template_value(TEMPLATE, filtervalue)
         const value_items = valid_value.map(slug => ({
-          text: this.$store.getters["templates/template_title"](filtervalue, this.domain_language),
-          value: filtervalue
+          text: this.$store.getters["templates/template_title"](slug, this.domain_language),
+          value: slug
         }))
         // console.log("filtermixin.config_generate: valid_value", valid_value)
         return this._template_filter_config(value_items)

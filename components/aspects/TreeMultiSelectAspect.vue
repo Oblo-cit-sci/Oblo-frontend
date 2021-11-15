@@ -3,6 +3,7 @@
     v-treeview(:items="root_items"
       item-key="value"
       item-text="text"
+      return-object
       :value="i_value"
       @input="input($event)"
       dense
@@ -62,7 +63,7 @@ export default {
   methods: {
     input(selection) {
       // console.log(selection)
-      this.update_value(selection) // selection.map(id => this.id_name_map[id]))
+      this.update_value(selection.map(s => ({value:s.value, text: s.text}))) // selection.map(id => this.id_name_map[id]))
     }
   }
 }

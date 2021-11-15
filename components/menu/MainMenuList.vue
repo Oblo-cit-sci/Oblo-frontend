@@ -1,14 +1,16 @@
 <template lang="pug">
   div
     v-list
-      v-list-item(v-for="item in filtered_pages" :key="item.icon" :href="item.to" :to="to(item)" :nuxt="is_nuxt(item)" :target="link_target(item)" @click="select(item)")
-        v-list-item-icon()
+      v-list-item(v-for="item in filtered_pages" :key="item.icon"
+        :href="item.to" :to="to(item)" :nuxt="is_nuxt(item)" :target="link_target(item)")
+        v-list-item-icon
           v-icon {{item.icon}}
-        v-list-item-content()
+        v-list-item-content
           v-list-item-title(v-text="$t(item.t_title)")
-        v-list-item-action
-          v-btn(icon small v-if="show_close_btn(item)" @click="close_menu")
-            v-icon  mdi-close
+        // todo fix: triggering item select...
+        //v-list-item-action()
+        //  v-btn(icon small v-if="show_close_btn(item)" @click="close_menu($event)")
+        //    v-icon  mdi-close
     v-divider
     LanguageSelector(v-if="show_language_selector")
     div(v-if="is_dev")
@@ -17,7 +19,7 @@
 
 <script>
 import {all_pages_n_actions, PAGE_ABOUT, PAGE_INDEX} from "~/lib/pages"
-import {DOMAIN, NO_DOMAIN} from "~/lib/consts"
+import {DOMAIN, INDEX, NO_DOMAIN} from "~/lib/consts"
 import LanguageSelector from "~/components/LanguageSelector"
 import URLQueryMixin from "~/components/util/URLQueryMixin"
 import FixDomainMixin from "~/components/global/FixDomainMixin"
@@ -114,14 +116,15 @@ export default {
   methods: {
     ...mapMutations({switch_menu_open: 'menu/switch_open'}),
     show_close_btn(item) {
-      return item.id === 'home' && this.$route.name !== DOMAIN && this.is_small
+      return item.name === INDEX && this.$route.name !== DOMAIN && this.is_small
     },
-    close_menu() {
+    close_menu($event) {
       this.$store.commit("menu/open", false)
     },
-    select(item) {
-      this.close_menu()
-    },
+    // select(item) {
+    //   console.log("sel", item)
+    //   this.close_menu()
+    // },
     is_nuxt(item) {
       if (typeof item.to === "string") {
         if (item.to.startsWith("https://")) {
