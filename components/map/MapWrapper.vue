@@ -113,7 +113,9 @@ export default {
       layer_status: "map/layer_status",
     }),
     map_hidden() {
-      //
+      if (this.$_.get(this.$nuxt.context.env, "DEV_CONFIG.HIDE_MAP", false)) {
+        return true
+      }
       if (this.is_small) {
         return this.menu_open
       }
@@ -172,6 +174,9 @@ export default {
       return this.map_loaded && this.available_layers.length > 0
     },
     show_load_overlay() {
+      if (this.map_hidden) {
+        return false
+      }
       // the upadting flag doesnt work properly since mapbox does it async
       // console.log("e loaded", this.entries_loaded, this.map_loaded, this.initialized)
       return !this.entries_loaded || !this.map_loaded || !this.initialized

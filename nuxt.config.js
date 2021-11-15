@@ -39,7 +39,10 @@ module.exports = {
     DEFAULT_LANGUAGE: process.env.DEFAULT_LANGUAGE || "en", // for the ui... // 639-3
     HOSTNAME: hostname,
     COLLECT_MESSAGE_PATHS: false, // during development. collect all messages path grouped by their page in the store.
-    BUILD_TIME: process.env.BUILD_TIME
+    BUILD_TIME: process.env.BUILD_TIME,
+    DEV_CONFIG: {
+      HIDE_MAP: true
+    }
   },
 
   server: {

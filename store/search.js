@@ -71,16 +71,16 @@ export const mutations = {
     state.all_uuids = (state.all_uuids || []).concat(uuids)
   },
   set_act_config(state, config) {
+    console.log("$store.search.set_act_config", config)
     state.act_config = config
     // console.log("search(store).replace", config_item_s)
   },
   replace_in_act_config(state, config_item_s) {
-    // console.log("act_config", state.act_config)
-    // console.log("search(store).replace", config_item_s)
     /**
      * replace config item with same name is config_item.
      * ! we cant just manipuate the state.act_config, otherwise the watcher freaks out, and doesnt get the change...
      */
+    console.log("$store.search.replace_in_act_config", config_item_s)
     if (!Array.isArray(config_item_s))
       config_item_s = [config_item_s]
 
@@ -102,6 +102,7 @@ export const mutations = {
   },
   remove_in_act_config(state, config_name) {
     // console.trace()
+    console.log("$store.search.remove_in_act_config", config_name)
     state.act_config = state.act_config.filter(cf => cf.name !== config_name)
   },
   postponed_search(state, value) {

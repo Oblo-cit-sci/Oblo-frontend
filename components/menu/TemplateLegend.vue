@@ -31,13 +31,18 @@ export default {
   computed: {
     selected: {
       get: function () {
+        console.log("get", this.$store.getters["search/get_act_config_value_by_name"](TEMPLATE))
+        // todo: there is a new store getter for that:
         const search_conf = this.$store.getters["search/get_act_config"].find(cf => cf.name === TEMPLATE)
         if (search_conf) {
-          return unpack(search_conf.value).map(f => this.$_.findIndex(this.templates, t => t.value === f))
+          console.log(search_conf.value.map(f => this.$_.findIndex(this.templates, t => t.value === f)))
+          return search_conf.value.map(f => this.$_.findIndex(this.templates, t => t.value === f))
         }
       },
       set(selected_templates) {
-        console.log(selected_templates)
+        console.log("set",selected_templates)
+        debugger
+        selected_templates = selected_templates.filter(f => f >= 0)
         console.log(this.templates)
         const result = this.$_.map(selected_templates, (sel, index) => this.templates[sel].value)
         this.$store.commit("search/replace_in_act_config", this.get_filter_config(TEMPLATE, result))

@@ -92,6 +92,7 @@ export default {
       }
     },
     data_source() {
+      // todo generalize. user,domain, configs... urls...
       if (typeof this.aspect.items === "string")
         return this.aspect.items
     },
