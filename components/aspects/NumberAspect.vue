@@ -40,7 +40,7 @@ export default {
       max,
       minmax: value => {
         if (min !== undefined && value < min) {
-          return "value must be at least " + (.min)
+          return "value must be at least " + (min)
         } else if (max !== undefined && value > attr_.max) {
           return "value cannot be higher then " + (attr_.max)
         } else return true
