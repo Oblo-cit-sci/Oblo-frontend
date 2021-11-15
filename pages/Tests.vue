@@ -1,6 +1,7 @@
 <template lang="pug">
   div
-    TextCompare
+    Test_NumberAspect
+    v-btn(to="testAspects" nuxt) Aspect tests...
 </template>
 
 <script>
@@ -14,11 +15,12 @@ import DateAspect from "~/components/aspects/DateAspect"
 import {pack_value} from "~/lib/aspect"
 import MonthAspect from "~/components/aspects/MonthAspect"
 import TextCompare from "~/components/util/TextCompare"
+import Test_NumberAspect from "~/pages/test/aspects/test_NumberAspect"
 
 export default {
   name: "tests",
   mixins: [EnvMixin, OfflineMixin],
-  components: {TextCompare, MonthAspect, EntriesDownloadDialog, DialogPage, Aspect},
+  components: {Test_NumberAspect, TextCompare, MonthAspect, EntriesDownloadDialog, DialogPage, Aspect},
   data() {
     return {
       dialog_open: false,

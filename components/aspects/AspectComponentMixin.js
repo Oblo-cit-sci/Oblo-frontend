@@ -13,6 +13,7 @@ export default {
   name: "AspectComponentMixin",
   mixins: [AspectBaseMixin],
   props: {
+    // todo mvalue only Object
     mvalue: {
       type: [Object, String, Number, Array, Boolean, null],
       required: true
@@ -63,20 +64,21 @@ export default {
       //console.log("AspMix - ", this.aspect.name, this.aspect.type, this.extra)
       return ((this.extra.listitem && this.mode === EDIT) || false) ? "mdi-close" : undefined //this.extra
     },
-    // todo not used atm. also clarify where extra should be, aspect. or aspect.extra
-    rules() {
-      if (this.$_.get(this.attr, "extra.rules")) {
-        return this.attr.extra.rules
-      }
-    },
+    // // todo not used atm. also clarify where extra should be, aspect. or aspect.extra
+    // rules() {
+    //   if (this.$_.get(this.attr, "extra.rules")) {
+    //     return this.attr.extra.rules
+    //   }
+    // },
     is_required() {
-      return this.$_.get(this.aspect, "attr.required", true)
+      return this.$_.get(this.attr, "required", true)
     },
     hint() {
       return this.$_.get(this.attr, "extra.hint", null)
     },
     hide_details() {
-      return !this.hint && !this.$_.get(this.attr, "extra.rules", null)
+      console.log("details?",!this.hint, !this.$_.get(this.attr, "extra.rules", null))
+      return false //!this.hint && !this.$_.get(this.attr, "extra.rules", null)
     },
     is_edit_mode() {
       return this.mode === EDIT
@@ -103,9 +105,6 @@ export default {
     },
     update_mvalue(mvalue) {
       mvalue.is_mvalue = true
-      // if (this.attr.update_raw) {
-      //   mvalue = mvalue.value
-      // }
       this.$emit("update_value", mvalue)
     },
     update_error(has_error) {
@@ -128,6 +127,7 @@ export default {
     reset_value() {
       this.update_value(aspect_raw_default_value(this.aspect))
     },
+    // todo: these methods can go...
     raw_default_value() {
       return aspect_raw_default_value(this.aspect)
     },

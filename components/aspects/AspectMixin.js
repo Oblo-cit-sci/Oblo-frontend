@@ -117,14 +117,11 @@ export default {
     is_required() {
       return this.$_.get(this.attr, "required", true)
     },
-    edit() {
-      return this.mode === EDIT
-    },
     is_editable_mode() {
       return is_editable_mode(this.mode)
     },
     show_is_optional() {
-      return !this.is_required && this.edit
+      return !this.is_required && this.is_editable_mode
     },
     disable() {
       // console.log("Aspect.disable?", this.aspect.name, this.condition_fail)
@@ -167,7 +164,6 @@ export default {
         // todo removed this legacy functionality
         // if (this.attr.IDAspect) {...
         // and...
-        // if (this.attr.ref_value) {
         let value = this.$store.getters["entries/value"](this.aspect_loc)
         if (value === undefined) {
           // console.log("undefined, probably means update", this.aspect, this.extra)

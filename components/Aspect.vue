@@ -13,7 +13,6 @@
       :disabled_text="disabled_text"
       :mode="real_mode")
       span.grey--text(v-if="show_is_optional") &nbsp;({{$t("comp.aspect.optional")}})
-    v-icon.ml-2(v-if="is_flex" color='green' size="32" @click="flip_flex_mode") {{flex_switch_icon}}
     component(
       v-if="!disable"
       :is="aspectComponent(aspect, mode)"
@@ -37,12 +36,11 @@
 
 <script>
 
-import {DRAFT, EDIT, FLEX, VIEW} from "~/lib/consts";
+import {DRAFT, EDIT, VIEW} from "~/lib/consts";
 
 import Title_Description from "./util/Title_Description";
 import {
   aspect_default_value,
-  aspect_loc2aspect_descr_loc,
   aspect_loc_str,
   get_aspect_vue_component, pack_value
 } from "~/lib/aspect";
@@ -62,10 +60,7 @@ export default {
   mixins: [AspectMixin],
   data() {
     return {
-      /**
-       * todo remove?
-       */
-      flex_mode: null
+
     }
   },
   /**
@@ -86,9 +81,6 @@ export default {
         }
       }
     }
-    if (this.is_flex) {
-      this.flex_mode = VIEW
-    }
   },
   // boolean check is not required, since "false" is the default
   computed: {
@@ -106,13 +98,7 @@ export default {
       }
       return merge
     },
-    /**
-     * for flex (todo remove)
-     * @returns {string}
-     */
-    flex_switch_icon() {
-      return this.flex_mode === VIEW ? "mdi-pencil-outline" : "mdi-check"
-    },
+
     // at the moment
     show_title_description() {
       if (((this.attr && this.attr.placeholder) || this.aspect.type === "options") && this.mode === VIEW) {
@@ -126,28 +112,17 @@ export default {
       let hide_on_disable = this.$_.get(this.attr, "hide_on_disabled", true)
       return this.attr.visible === false || !this.disable || !hide_on_disable
     },
+
     /**
-     * todo remove?
-     * @returns {boolean}
-     */
-    is_flex() {
-      return this.mode === FLEX
-    },
-    /**
-     * remove flex part
      * @returns {String|string|null|*}
      */
     real_mode() {
       // console.log("real-mode", this.aspect.name, this.attr)
-      if ((this.attr.ref_value) || this.fixed_value) {
+      if (this.fixed_value) {
         return VIEW
       }
       if (this.attr.mode !== undefined) {
         return this.attr.mode
-      }
-      // console.log("is flex", this.is_flex, this.flex_mode)
-      if (this.is_flex) {
-        return this.flex_mode
       }
       return this.mode
     },
@@ -166,7 +141,11 @@ export default {
      * @returns {string}
      */
     aspect_id() {
-      return aspect_loc_str(this.$_.tail(this.aspect_loc))
+      if(this.aspect_loc) {
+        return aspect_loc_str(this.$_.tail(this.aspect_loc))
+      } else {
+        return `${this.aspect.name}_${this._uid}`
+      }
     },
     fixed_value() {
       return this.attr.hasOwnProperty("value")
@@ -189,17 +168,7 @@ export default {
         this.update_value(pack_value(this.original_value))
       }
     },
-    /**
-     * flip mode (VIEW, EDIT)
-     */
-    flip_flex_mode() {
-      this.flex_mode = this.flex_mode === VIEW ? EDIT : VIEW
-      this.$emit("flex_mode_change", this.flex_mode)
-    },
-    // to be called from parent (with ref)
-    set_flex_mode(mode) {
-      this.flex_mode = mode
-    },
+
     /**
      * @vuese
      * return the concrete component based on the type and the mode
