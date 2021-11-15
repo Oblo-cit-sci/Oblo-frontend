@@ -43,6 +43,7 @@ export default {
   },
   created() {
     this.set_menu_state(MENU_MODE_DOMAIN)
+    // check for search-config in the query params
     const config = this.search_config(this.$route.query.s)
     if (config && config[0].name === TEMPLATE) {
       const language = this.$store.getters["user/settings"].domain_language
