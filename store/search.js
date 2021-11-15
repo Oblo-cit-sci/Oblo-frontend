@@ -81,6 +81,7 @@ export const mutations = {
      * ! we cant just manipuate the state.act_config, otherwise the watcher freaks out, and doesnt get the change...
      */
     console.log("$store.search.replace_in_act_config", config_item_s)
+    // console.trace()
     if (!Array.isArray(config_item_s))
       config_item_s = [config_item_s]
 
