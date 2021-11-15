@@ -1,6 +1,7 @@
 <template lang="pug">
   div
     div(v-if="has_applied_filters")
+      // APPLIED FILTERS
       h4.mb-2 {{$t("comp.filterlist.appliead_filters")}}
       v-list.py-0(dense)
         v-scroll-x-transition(group)
@@ -202,11 +203,13 @@ export default {
       }
     },
     applied_filter_text(filter) {
+      // console.log("text for filter", filter, this.filter_text(filter))
       const filter_value_text = this.filter_text(filter)
+      const filter_t_label = this.$t(this.filter_option_by_name(filter.name).t_label)
       if(filter_value_text !== "") {
-        return `${this.$t(filter.t_label)}: ${filter_value_text}`
+        return `${filter_t_label}: ${filter_value_text}`
       } else
-        return this.$t(filter.t_label)
+        return filter_t_label
     }
   },
   watch: {
