@@ -103,9 +103,9 @@ export default {
     select_items: {
       get() {
         if (this.value) {
-          const selection = this.$_.filter(this.options, (o, i) => this.value.includes(o)).map(v => v.value)
-          // console.log("get", this.value, selection)
-          return selection
+          const values_only = this.$_.map(this.value, "value")
+          const options_values =  this.$_.map(this.options, "value")
+          return this.$_.filter(options_values, o => values_only.includes(o))
         }
       },
       set(value) {

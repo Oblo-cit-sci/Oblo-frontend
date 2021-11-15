@@ -86,15 +86,19 @@ export const mutations = {
 
     const new_config = ld.cloneDeep(state.act_config)
     for (let config_item of config_item_s) {
-      const existing_config = ld.find(state.act_config, cf => cf.name === config_item.name)
+      const clean_config_item = {
+        name: config_item.name,
+        value: config_item.value
+      }
+      const existing_config = ld.find(state.act_config, cf => cf.name === clean_config_item.name)
       // console.log("exi", existing_config)
       if (existing_config) {
-        const index = ld.findIndex(state.act_config, cf => cf.name === config_item.name)
+        const index = ld.findIndex(state.act_config, cf => cf.name === clean_config_item.name)
         // console.log("index", index)
-        $nuxt.$set(new_config, index, config_item)
+        $nuxt.$set(new_config, index, clean_config_item)
         // state.act_config.splice(index, 1, config_item)
       } else {
-        $nuxt.$set(new_config, new_config.length, config_item)
+        $nuxt.$set(new_config, new_config.length, clean_config_item)
       }
     }
     // console.log("->", new_config)

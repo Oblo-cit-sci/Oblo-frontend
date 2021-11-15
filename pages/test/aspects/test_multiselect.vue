@@ -6,6 +6,7 @@
     Aspect(:aspect="aspect2" :ext_value.sync="value2" mode="edit")
     div
       span(v-text="value2")
+    div
 </template>
 
 <script>
@@ -45,6 +46,7 @@ export default {
       aspect2,
       value1: packed_aspect_default_value(aspect1),
       value2: packed_aspect_default_value(aspect2),
+      value3: packed_aspect_default_value(aspect2)
     }
   },
 
