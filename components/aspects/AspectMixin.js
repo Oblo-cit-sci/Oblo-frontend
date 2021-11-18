@@ -2,7 +2,7 @@ import {ASP_DISABLED, ASP_SET, ASP_UNSET, EDIT, FLEX, LIST_INDEX, META, REVIEW, 
 import {
   aspect_loc_uuid,
   aspect_raw_default_value,
-   is_editable_mode,
+  is_editable_mode,
   pack_value, unpack
 } from "~/lib/aspect";
 import AspectConditionChecker from "~/components/aspect_utils/AspectConditionChecker";
@@ -128,10 +128,6 @@ export default {
       return this.condition_fail || this.attr.disable || this.disabled
     },
     condition_fail() {
-            // test... remove again
-      // if (this.aspect?.attr?.condition) {
-      //   console.log("aspect: -> _condition_fail", this.aspect, this.aspect_loc, this.mode,  this.entry_uuid, this.conditionals)
-      // }
       return this._condition_fail(this.aspect, this.aspect_loc, this.mode, this.entry_uuid, this.conditionals)
     },
     has_value() {

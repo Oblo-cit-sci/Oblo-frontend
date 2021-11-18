@@ -98,10 +98,9 @@ export default {
       }
       return merge
     },
-
     // at the moment
     show_title_description() {
-      if (((this.attr && this.attr.placeholder) || this.aspect.type === "options") && this.mode === VIEW) {
+      if (((this.attr && this.attr.placeholder) || this.aspect.type === "options") && !this.is_editable_mode) {
         return false
       }
       if (this.extra.hasOwnProperty("show_title_descr")) {
@@ -112,7 +111,6 @@ export default {
       let hide_on_disable = this.$_.get(this.attr, "hide_on_disabled", true)
       return this.attr.visible === false || !this.disable || !hide_on_disable
     },
-
     /**
      * @returns {String|string|null|*}
      */
@@ -127,13 +125,15 @@ export default {
       return this.mode
     },
     has_action() {
-      return this.attr?.action
+      return this.attr.action !== undefined
     },
     disabled_text() {
-      if (this.condition_fail) {
-        return this.attr.condition.disabled_text
-      } else {
-        return "disabled"
+      if(this.disable) {
+        if (this.condition_fail) {
+          return this.attr.condition.disabled_text
+        } else {
+          return "disabled"
+        }
       }
     },
     /**

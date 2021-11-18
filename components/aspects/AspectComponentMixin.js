@@ -65,11 +65,11 @@ export default {
       return ((this.extra.listitem && this.mode === EDIT) || false) ? "mdi-close" : undefined //this.extra
     },
     // // todo not used atm. also clarify where extra should be, aspect. or aspect.extra
-    // rules() {
-    //   if (this.$_.get(this.attr, "extra.rules")) {
-    //     return this.attr.extra.rules
-    //   }
-    // },
+    rules() {
+      if (this.$_.get(this.attr, "extra.rules")) {
+        return this.attr.extra.rules
+      }
+    },
     is_required() {
       return this.$_.get(this.attr, "required", true)
     },

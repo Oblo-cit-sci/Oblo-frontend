@@ -86,7 +86,7 @@ export default {
       let user_settings = null
       try {
         const {data: response_data} = await this.$api.actor.login(extract_n_unpack_values(this.aspects))
-        console.log(response_data.msg)
+        // console.log(response_data.msg)
 
         this.ok_snackbar(response_data.msg)
         //   // todo could just be index/clear_entries (change name) but needs await

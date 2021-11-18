@@ -138,6 +138,14 @@ class Basic extends QueryBase {
     })
   }
 
+  user_guide(language, name) {
+    return this.get_("user_guide", {
+      params: {
+        language,
+        name
+      }
+    })
+  }
 }
 
 class OAuth extends QueryBase {
@@ -187,7 +195,6 @@ class Domain extends QueryBase {
   constructor(api_wrapper) {
     super(api_wrapper, "/domain")
   }
-
 
   async meta_info(domain_names) {
     return this.get_("meta_info", {

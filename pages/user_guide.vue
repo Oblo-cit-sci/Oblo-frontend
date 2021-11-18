@@ -29,12 +29,7 @@ export default {
   },
   methods: {
     fetch_guide() {
-      this.$api.axios.get("api/basic/user_guide", {
-        params: {
-          language: this.$store.getters.ui_language,
-          user_guide_name: this.guide_name
-        }
-      }).then(resp => {
+      this.$api.basic.user_guide(this.$store.getters.ui_language, this.guide_name).then(resp => {
         this.user_guide_text = MarkdownIt({html: true}).render(resp.data)
       }, err => {
         console.error(err)
