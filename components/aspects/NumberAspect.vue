@@ -11,7 +11,7 @@
       v-on:update:error="error = $event"
       :append-outer-icon="clearIcon"
       @click:append-outer="$emit('aspectAction', {action: 'clear'})"
-      :rules="rules"
+      :rules="validation_rules"
       :mask="mask")
   div(v-else)
     p(class="body-1") {{value}}
@@ -31,7 +31,7 @@ export default {
     const attr = this.$_.get(this.aspect, "attr", {})
     const min = attr.min
     const max = attr.max
-    const rules = [value => {
+    const validation_rules = [value => {
         if (this.num_type === INT) {
           let i = parseInt(value)
           if (isNaN(i) || value % 1 !== 0) {
@@ -63,7 +63,7 @@ export default {
       mask: "",
       suffix: attr.suffix || "",
       num_type: null,
-      rules,
+      validation_rules,
       error: null // just emit it up
     }
   },
