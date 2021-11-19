@@ -11,7 +11,8 @@ window.addEventListener('beforeinstallprompt', (e) => {
   try {
     showInstallPromotion()
   } catch (e) {
-    console.error(e)
+    console.log("cannot show install prompt")
+    // console.error(e)
   }
   // Optionally, send analytics event that PWA install promo was shown.
   console.log(`'beforeinstallprompt' event was fired.`)
