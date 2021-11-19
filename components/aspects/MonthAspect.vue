@@ -1,6 +1,7 @@
 <template lang="pug">
   div
-    v-date-picker(v-if="is_editable_mode" type="month" v-model="i_value" :max="max")
+    v-date-picker(v-if="is_editable_mode" type="month" v-model="i_value"
+      :max="max" full-width)
     div(v-else)
       span(v-text="i_value")
 </template>
@@ -19,12 +20,10 @@ export default {
   created() {
     this.i_value = this.value
   },
-  methods: {
-
-  },
+  methods: {},
   computed: {
     until_now() {
-      return this.$_.get(this.attr,"until_now", true)
+      return this.$_.get(this.attr, "until_now", true)
     },
     max() {
       if (this.until_now) {

@@ -1,4 +1,4 @@
-import {ASP_DISABLED, ASP_SET, ASP_UNSET, EDIT, FLEX, LIST_INDEX, META, REVIEW, VIEW} from "~/lib/consts";
+import {ASP_DISABLED, ASP_SET, ASP_UNSET, EDIT,  META, REVIEW, VIEW} from "~/lib/consts";
 import {
   aspect_loc_uuid,
   aspect_raw_default_value,
@@ -22,7 +22,7 @@ export default {
       type: String,
       default: VIEW,
       validator: (value) => {
-        return [VIEW, EDIT, REVIEW, FLEX].includes(value)
+        return [VIEW, EDIT, REVIEW].includes(value)
       }
     },
     disabled: {

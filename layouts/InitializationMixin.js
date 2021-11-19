@@ -68,6 +68,7 @@ export default {
        */
       try {
         const {data: resp} = await this.$api.actor.validate_session()
+        console.log("validation done")
         if (resp.session_valid) {
           this.$store.dispatch("user/login", resp.data)
         } else {
@@ -75,6 +76,7 @@ export default {
         }
         // this.process_login(me.data)
       } catch (e) {
+        console.error(e)
         console.log("not logged in")
       }
       /*
@@ -92,9 +94,11 @@ export default {
       // this.$api.domain.overviews(i_language).then(({data}) => {
       //   this.$store.commit("domain/add_domains_data", data.data)
       // })
-      await this.get_domain_overviews(i_language)
-
-      // const {data: init_data} = await
+      try{
+        await this.get_domain_overviews(i_language)
+      } catch (e) {
+        console.error("init getting domain overviews failed", e)
+      }
 
       const init_domain_data = await Promise.all([
         this.$api.basic.init_data(i_language),
