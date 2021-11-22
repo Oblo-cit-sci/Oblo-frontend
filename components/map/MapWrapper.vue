@@ -113,7 +113,7 @@ export default {
       layer_status: "map/layer_status",
     }),
     map_hidden() {
-      if (this.$_.get(this.$nuxt.context.env, "DEV_CONFIG.HIDE_MAP", false)) {
+      if (this.is_dev && this.$_.get(this.$nuxt.context.env, "DEV_CONFIG.HIDE_MAP", false)) {
         return true
       }
       if (this.is_small) {
