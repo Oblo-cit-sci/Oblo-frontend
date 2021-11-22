@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    h2 Edit User
+    h2 {{$t("page.actor.admin.edit_user")}}
     v-form
       Aspect(v-for="a of aspects"
         :key="a.name"
@@ -18,7 +18,7 @@ import {ADMIN, EDITOR, SELECT, USER, VALUE} from "~/lib/consts"
 import Aspect from "~/components/Aspect"
 import {object_list2options} from "~/lib/options"
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
-import {aspect_raw_default_value, extract_n_unpack_values, pack_propper_value, pack_value, unpack} from "~/lib/aspect"
+import {aspect_raw_default_value, pack_propper_value, pack_value, unpack} from "~/lib/aspect"
 import AspectSet from "~/components/AspectSet"
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin";
 import {recursive_unpack} from "~/lib/util";

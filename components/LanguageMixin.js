@@ -41,6 +41,7 @@ export default {
         try {
           const {data} = await this.$api.language.get_component("fe", [language])
           this.$i18n.setLocaleMessage(language, data[language])
+          this.$vuetify.lang.current = language
           if (this.is_standalone) {
             await this.persist_messages()
           }
@@ -117,7 +118,6 @@ export default {
      * @param domain one domain or null, which considers all domain
      * @param language the language required
      */
-
     async init_specifics(domains, language) {
       console.log("init_specifics", domains, language)
       if (!Array.isArray(domains)) {
