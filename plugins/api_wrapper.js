@@ -579,7 +579,7 @@ class Actor extends QueryBase {
   }
 
   post_global_role(registered_name, data) {
-    return this.post_(`${registered_name}/global_role`, data)
+    return this.post_(`${registered_name}/admin/global_role`, data)
   }
 
   get_all(details = false) {

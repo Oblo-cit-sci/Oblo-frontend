@@ -17,7 +17,8 @@ export default {
       // console.log("aspect-condition fail check", aspect.name)
       // console.log("...", attr(aspect).condition, aspect_loc, entry_uuid, conditionals)
       if (attr(aspect).hasOwnProperty("condition")) {
-        // console.log("aspect-condition fail check", aspect.name, aspect_loc, entry_uuid, conditionals)
+        // console.log(`aspect-condition fail check '${aspect.name}': loc: ${aspect_loc}, uuid: ${entry_uuid}`)
+        // console.log("conditionals:",conditionals)
         return !this.check_recursive_condition(aspect.attr.condition, aspect_loc, mode, entry_uuid, conditionals)
       } else {
         return false
@@ -42,7 +43,9 @@ export default {
     },
     check_single_condition(condition, aspect_loc, mode, entry_uuid, conditionals) {
       let condition_value = null
+      // debugger
       if (conditionals) {
+        // console.log(new_value_getter(conditionals, condition.aspect))
         condition_value = this.$_.get(new_value_getter(conditionals, condition.aspect), VALUE)
       } else if (aspect_loc) {
         // console.log("single cond check: cond:", condition.aspect)

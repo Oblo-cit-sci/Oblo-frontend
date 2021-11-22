@@ -50,7 +50,7 @@ export default {
           return true
       }]
     if(min !== undefined || max !== undefined) {
-      rules.push(value => {
+      validation_rules.push(value => {
         if (min !== undefined && value < min) {
           return "value must be at least " + (min)
         } else if (max !== undefined && value > max) {

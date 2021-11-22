@@ -2,27 +2,26 @@
   div
     h2 Edit User
     v-form
-      <!--      AspectSet(:aspects="aspects_o" mode="edit" :values="values" @has_error="has_error=$event")-->
-      <!--      div {{has_errors}} jkjk-->
       Aspect(v-for="a of aspects"
         :key="a.name"
         :aspect="a"
         :ext_value.sync="a.value",
         mode="edit"
-        :conditionals="values"
+        :conditionals="packed_values"
         @update:error="a.error = $event")
       v-btn(@click="update()") {{$t("w.update")}}
 </template>
 
 <script>
 
-import {ADMIN, EDITOR, GLOBAL_ROLE, MULTISELECT, SELECT, USER} from "~/lib/consts"
+import {ADMIN, EDITOR, SELECT, USER, VALUE} from "~/lib/consts"
 import Aspect from "~/components/Aspect"
 import {object_list2options} from "~/lib/options"
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
-import {aspect_raw_default_value, extract_n_unpack_values, pack_value, unpack} from "~/lib/aspect"
+import {aspect_raw_default_value, extract_n_unpack_values, pack_propper_value, pack_value, unpack} from "~/lib/aspect"
 import AspectSet from "~/components/AspectSet"
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin";
+import {recursive_unpack} from "~/lib/util";
 
 export default {
   name: "ActorAdminEdit",
@@ -36,45 +35,46 @@ export default {
     const editor_config_aspects = this.asp_set_editor_config()
     editor_config_aspects.forEach(a => {
       a.attr.condition = {
-        aspect: "# global_role",
+        aspect: "$.global_role",
         value: "editor"
       }
     })
-      return {
-        // todo use typicalAspectMixin.asp_set_editor_config
-        aspects: [{
-          type: SELECT,
-          t_label: "page.actor.admin.asp_global_role",
-          name: "global_role",
-          attr: {
-            force_view: "select",
-            extra: {
-              rules: [
-                // v => v && v.length >= 4 || 'Username must have at 4 characters',
-              ]
-            }
-          },
-          value: pack_value(),
-          items: [
-            {text: this.$t("comp.global_role.user"), value: USER},
-            {text: this.$t("comp.global_role.editor"), value: EDITOR},
-            {text: this.$t("comp.global_role.admin"), value: ADMIN}
-          ],
-          error: true
-        }].concat(editor_config_aspects),
-        has_errors: null
-      }
+    console.log(this.actor, this.actor.global_role)
+    return {
+      // todo use typicalAspectMixin.asp_set_editor_config
+      aspects: [{
+        type: SELECT,
+        t_label: "page.actor.admin.asp_global_role",
+        name: "global_role",
+        attr: {
+          force_view: "select",
+          extra: {
+            rules: []
+          }
+        },
+        // need this, otherwise condition doesnt trigger on change
+        value: pack_value(),
+        items: [
+          {text: this.$t("comp.global_role.user"), value: USER},
+          {text: this.$t("comp.global_role.editor"), value: EDITOR},
+          {text: this.$t("comp.global_role.admin"), value: ADMIN}
+        ],
+        error: true
+      }].concat(editor_config_aspects),
+      has_errors: null
+    }
   },
   created() {
     const user_data = this.$_.cloneDeep(this.actor)
+    user_data.editor_config.value.global_role = unpack(user_data.global_role)
+    const editor_config = unpack(user_data.editor_config)
     for (let aspect_name of Object.keys(this.aspect_map)) {
-      const editor_config = unpack(user_data.editor_config)
-      this.aspect_map[aspect_name].value = pack_value(editor_config[aspect_name])
+      this.aspect_map[aspect_name].value = pack_propper_value(editor_config[aspect_name])
     }
   },
   computed: {
-    values() {
-      return extract_n_unpack_values(this.aspects)
+    packed_values() {
+      return this.$_.mapValues(this.aspect_map, VALUE)
     },
     aspect_map() {
       return this.$_.keyBy(this.aspects, "name")
@@ -87,10 +87,11 @@ export default {
       return object_list2options(domains, "title", "name", true)
     },
     update() {
+      const unpacked_values = recursive_unpack(this.aspect_map, true)
       this.$api.actor.post_global_role(
-        this.actor.registered_name.value, this.values).then(({data}) => {
+        this.actor.registered_name.value, unpacked_values).then(({data}) => {
         this.ok_snackbar(data.msg)
-        this.$emit("role_changed", unpack(this.values.global_role))
+        this.$emit("role_changed", unpack(unpacked_values.global_role))
       }, err => {
         this.err_error_snackbar(err)
         console.log(err)

@@ -1,6 +1,6 @@
 <template lang="pug">
   v-list
-    v-list-item(v-for="page in pages" key="page.name" :to="page.to" nuxt)
+    v-list-item(v-for="page in pages" :key="page.name" :to="page.to" nuxt)
       v-list-item-content
         v-list-item-title {{page.name}}
 </template>
@@ -16,6 +16,9 @@ export default {
       pages: [
         {
           to: "/test/aspects/test_NumberAspect", name:"NumberAspect"
+        },
+        {
+          to:"/test/aspects/test_multiselect", name:"MultiSelectAspect"
         }
       ]
 
