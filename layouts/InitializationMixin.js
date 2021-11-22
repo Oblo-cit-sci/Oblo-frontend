@@ -101,6 +101,8 @@ export default {
         this.$api.basic.domain_basics(query_domains, i_language)])
 
       const init_data = init_domain_data[0].data
+      const domain_data = init_domain_data[1].data
+
       const only_one_domain = init_data.platform.only_one_domain
       this.$store.commit("set_available_languages", init_data.languages)
       this.$store.commit("app/platform_data", init_data.platform)
@@ -111,8 +113,6 @@ export default {
       }
       this.$store.commit("map/default_map_style", init_data.map_default_map_style)
       this.$store.commit("map/access_token", init_data.map_access_token)
-
-      const domain_data = init_domain_data[1].data
 
       // check if the domain is delivered in the given language:
       const result_domain_language = Object.keys(this.$_.find(domain_data.data.domains, d => d.name === domain_name).langs)[0]

@@ -142,6 +142,9 @@ export default {
     has_public_loc() {
       return this.location_set && this.value.public_loc
     },
+    force_public_location() {
+      return this.attr.force_public_location
+    },
     map_options() {
       // console.log("map options", this.value, this.value.coordinates)
       const options = this.$_.cloneDeep(this.default_map_options)
@@ -204,11 +207,16 @@ export default {
     point_location_precision() {
       return this.$_.get(this.value, "location_precision") === LOCATION_PRECISION_POINT
     },
+    /**
+     * defines if the public location setter should be visible
+     * @returns {boolean}
+     */
     public_location_selector_on() {
       // console.log("public_location_selector_on", this.location_set, this.point_location_precision, this.privacy_setting, this.custom_privacy_setting)
       return this.location_set &&
         this.point_location_precision &&
         !this.snap_to_existing &&
+        !this.force_public_location &&
         (this.privacy_setting === settings_loc_privacy_ask ||
           this.custom_privacy_setting === settings_loc_privacy_ask)
     },
@@ -628,7 +636,8 @@ export default {
       // todo we need this?
       let public_precision = option
 
-      if (option === PREC_OPTION_EXACT) {
+      if (this.force_public_location || option === PREC_OPTION_EXACT) {
+        public_precision = PREC_OPTION_EXACT
         public_loc.coordinates = value.coordinates
         public_loc.location_precision = LOCATION_PRECISION_POINT
         public_loc.place = this.$_.cloneDeep(value.place)
