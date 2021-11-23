@@ -5,19 +5,19 @@ const ld = require("lodash")
 
 export const state = () => ({
   /**
-   * slug as key
+   * (FOR entry_types AND CODES: slug as key
    * value: slug, domain, langs
    * lang -> where complete templates go in
+   * missing_lang -> Array[string] store, which have been requested, but not returned. in order to avoid repeated requesting
    * lang.en = ...
    */
-
   entry_types: new Map(), // types for creation
   codes: new Map(),
   tags: {},
-  //requested: {} // key: domain, values: Set of lang, to prevent reloading
 })
 
 export const getters = {
+  // todo: should be
   entry_type(state) {
     return (type_slug, language, fallback = true, show_warning = true) => {
       // console.log("getting entry_type for slug", type_slug, state.entry_types)
@@ -34,31 +34,6 @@ export const getters = {
         return base_template.lang[Object.keys(base_template.lang)[0]]
       } else {
         return null
-      }
-    }
-  },
-  has_template_in_lang(state, getters) {
-    return (slug, language) => {
-      return getters.entry_type(slug, language, false, false) !== null
-    }
-  },
-  has_code(state, getters) {
-    return (type_slug, language) => getters.code(type_slug, language) !== null
-  },
-  code(state) {
-    return (slug, language) => {
-      // console.log("getting entry_type for slug", type_slug, state.entry_types)
-      if (!state.codes.has(slug)) {
-        console.log("WARNING, store,entrytype.getters.entry_type. type for slug missing:", slug, "returning null, should be catched earlier")
-        return null
-      }
-      const base_template = state.codes.get(slug)
-      // console.log("code",slug, Object.keys(base_template.lang))
-      if (base_template.lang.hasOwnProperty(language)) {
-        // console.log("->", language)
-        return base_template.lang[language]
-      } else {
-        return base_template.lang[Object.keys(base_template.lang)[0]]
       }
     }
   },
@@ -89,9 +64,36 @@ export const getters = {
       }
     }
   },
+  has_template_in_lang(state, getters) {
+    return (slug, language) => {
+      return getters.entry_type(slug, language, false, false) !== null
+    }
+  },
   has_code_in_lang(state, getters) {
     return (slug, language) => {
       return getters.get_code_in_lang(slug, language, false, false)
+    }
+  },
+  // === has_code_in_lang
+  // has_code(state, getters) {
+  //   return (type_slug, language) => getters.code(type_slug, language) !== null
+  // },
+  // tod === has_code_in_lang, but its sometimes used without lang
+  code(state) {
+    return (slug, language) => {
+      // console.log("getting entry_type for slug", type_slug, state.entry_types)
+      if (!state.codes.has(slug)) {
+        console.log("WARNING, store,entrytype.getters.entry_type. type for slug missing:", slug, "returning null, should be catched earlier")
+        return null
+      }
+      const base_template = state.codes.get(slug)
+      // console.log("code",slug, Object.keys(base_template.lang))
+      if (base_template.lang.hasOwnProperty(language)) {
+        // console.log("->", language)
+        return base_template.lang[language]
+      } else {
+        return base_template.lang[Object.keys(base_template.lang)[0]]
+      }
     }
   },
   has_slug_in_lang(state, getters) {
@@ -104,6 +106,7 @@ export const getters = {
       return Array.from(state.codes.values()).map(c => getters.code(c.slug, language))
     }
   },
+  //
   template_title(state, getters) {
     return (slug, language) => {
       // console.log("typename of ", slug)
@@ -214,6 +217,32 @@ export const getters = {
       // format prev_sion.language-version
       return ld.get(base_template, `prev_versions.${language}-${version.toString()}`)
     }
+  },
+  // not used (yet)
+  has_slug(state) {
+    return slug => {
+      return state.entry_types.has(slug) || state.codes.has(slug)
+    }
+  },
+  get_by_slug(state) {
+    return slug => {
+      if (state.entry_types.has(slug)) {
+        return state.entry_types.get(slug)
+      } else if (state.codes.has(slug)) {
+        return state.codes.get(slug)
+      }
+    }
+  },
+  is_slug_lang_marked_missing(state, getters) {
+    return (slug, language) => {
+      if (!getters.has_slug(slug))
+        return false
+      const base = getters.get_by_slug(slug)
+      if (!base.missing_lang) {
+        return false
+      }
+      return base.missing_lang.includes(language)
+    }
   }
 }
 
@@ -229,7 +258,8 @@ export const mutations = {
         domain: t_c.domain,
         lang: {
           [t_c.language]: t_c
-        }
+        },
+        missing_lang: []
       })
     }
   },
@@ -280,12 +310,18 @@ export const mutations = {
     state.tags = templates.tags
   },
   add_template_of_version(state, template) {
-    console.log("add_template_of_version...", template)
+    // console.log("add_template_of_version...", template)
     const entry_type_base = state.entry_types.get(template.slug)
     console.log(`prev_versions.lang.${template.language}-${template.version.toString()}`)
     if (entry_type_base) {
       ld.set(entry_type_base, `prev_versions.${template.language}-${template.version.toString()}`, template)
     }
+  },
+  add_missing(state, {slug, language}) {
+    if (state.entry_types.has(slug))
+      state.entry_types.get(slug).missing_lang.push(language)
+    else if (state.codes.has(slug))
+      state.codes.get(slug).missing_lang.push(language)
   }
 }
 

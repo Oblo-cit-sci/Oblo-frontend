@@ -1,7 +1,7 @@
 <template lang="pug">
   v-list(dense)
-    template(v-for="uuid in visible_entries")
-      CompactEntry(:passed_uuid="uuid" :key="uuid")
+    template(v-for="entry in visible_entries")
+      CompactEntry(:entry="entry" :key="entry.uuid")
       v-divider
 </template>
 

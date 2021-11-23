@@ -23,6 +23,7 @@ export default {
   },
   computed: {
     source_entry() {
+      // todo : this getter should be replaced... and actually requires a language
       return this.$store.getters["templates/code"](this.source_entry_slug)
     }
   },

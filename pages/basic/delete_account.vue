@@ -48,7 +48,10 @@ export default {
       this.aspects[1].value = pack_value("")
     }
     this.$api.actor.init_delete().then(({data}) => {
-      this.entries_to_delete = this.store_received_entries(data.data)
+      console.log(data.data.entries)
+      const entries = data.data.entries
+      this.store_received_entries(entries)
+      this.entries_to_delete = entries
     })
   },
   computed: {

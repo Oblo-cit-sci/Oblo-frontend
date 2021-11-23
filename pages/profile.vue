@@ -78,7 +78,7 @@
     div(v-if="!is_visitor")
       div(v-if="view_mode")
         v-btn(color="info" to="/settings" nuxt) {{$t("page.profile.btn_settings")}}
-          v-icon(right) mdi-settings
+          v-icon(right) mdi-cog
         v-btn(color="info" @click="setEdit()") {{$t("page.profile.btn_edit_profile")}}
         v-btn(color="error" to="/basic/delete_account" nuxt) {{$t("page.profile.btn_delete")}}
       div(v-else)

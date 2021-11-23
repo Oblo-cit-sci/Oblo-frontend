@@ -52,6 +52,40 @@ export default {
     //         }
     //     }
     // }
+    async guarantee_template_code(slug, language) {
+      const has_template = this.$store.getters["templates/has_template_in_lang"](slug, language)
+      if (has_template) {
+        return Promise.resolve()
+      }
+      console.log("has_template", has_template)
+      const can_request = this.$store.getters["templates/is_slug_lang_marked_missing"](slug, language)
+      console.log("can_request", !can_request)
+      try {
+        const response = await this.$api.template_code.get_slug_lang(slug, language)
+        console.log(response.data)
+      } catch (error) {
+        if(error.response.status === 404) {
+          // console.log("not found...")
+          // something to force inserting the base
+          await this.guarantee_default_language(slug)
+          this.$store.commit("templates/add_missing", {slug, language})
+        }
+      }
+    },
+    async guarantee_default_language(slug) {
+
+      const has_template = this.$store.getters["templates/has_slug"](slug)
+      if(has_template) {
+        return Promise.resolve()
+      }
+      try {
+        const response = await this.$api.template_code.get_slug_lang(slug,"xx",true)
+        console.log(response.data)
+        this.$store.commit("templates/insert_template_code", response.data)
+      } catch (error) {
+        console.error(error)
+      }
+    },
     async guarantee_template_code_of_version(entry) {
       if (entry.template_version ===
         this.$store.getters["templates/get_current_template_version"](entry.template.slug, entry.language)) {

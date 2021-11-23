@@ -1,7 +1,5 @@
 <template lang="pug">
   div
-    Test_NumberAspect
-    v-btn(to="testAspects" nuxt) Aspect tests...
 </template>
 
 <script>
@@ -16,27 +14,20 @@ import {pack_value} from "~/lib/aspect"
 import MonthAspect from "~/components/aspects/MonthAspect"
 import TextCompare from "~/components/util/TextCompare"
 import Test_NumberAspect from "~/pages/test/aspects/test_NumberAspect"
+import TemplateHelperMixin from "~/components/templates/TemplateHelperMixin"
 
 export default {
   name: "tests",
-  mixins: [EnvMixin, OfflineMixin],
-  components: {Test_NumberAspect, TextCompare, MonthAspect, EntriesDownloadDialog, DialogPage, Aspect},
+  mixins: [EnvMixin, OfflineMixin, TemplateHelperMixin],
+  components: {},
   data() {
-    return {
-      dialog_open: false,
-      i_value: null,
-      month: pack_value(null)
-    }
+    return {}
   },
   created() {
-
+    this.guarantee_template_code("cipred", "ko")
   },
-  watch: {
-  },
+  watch: {},
   computed: {
-    // build_time() {
-    //   return process.env.BUILD_TIME || "no build time"
-    // },
     dev_offline_switch_button_label() {
       return this.is_offline ? "S/ON" : "S/OFF"
     },
@@ -46,7 +37,7 @@ export default {
       this.$store.commit("dev_switch_offline")
     },
     until_today(d) {
-      return new Date(d)  <= new Date();
+      return new Date(d) <= new Date();
     }
   }
 }

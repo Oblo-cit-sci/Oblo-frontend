@@ -327,14 +327,15 @@ class Entry extends QueryBase {
 class TemplateCode extends QueryBase {
 
   constructor(api_wrapper) {
-    super(api_wrapper, "/entry")
+    super(api_wrapper, "/slug")
   }
 
   // todo: not sure if this is used atm
-  get_slug_lang(slug, language) {
+  get_slug_lang(slug, language, domain_default_lang_fallback = false) {
     return this.get_(`${slug}`, {
       params: {
-        language
+        language,
+        domain_default_lang_fallback
       }
     })
   }
