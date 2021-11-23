@@ -7,6 +7,7 @@
       @update:page="update_page($event)"
       :total="template.rules.pages.length"
       :named_pages="named_pages"
+      :conditionals="conditionals"
       :entry="entry"
       :pages="template.rules.pages"
       @lastpage="more_follow_page = ($event)")
@@ -52,7 +53,8 @@ export default {
     allow_download: {
       type: Boolean,
       default: true
-    }
+    },
+    conditionals: Object
   },
   data() {
     return {

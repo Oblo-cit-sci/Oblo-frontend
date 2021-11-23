@@ -1,4 +1,5 @@
 import {has_pages} from "~/lib/entry"
+import {attr} from "~/lib/aspect"
 
 export default {
   name: "EntryPagesMixin",
@@ -20,14 +21,15 @@ export default {
     is_first_page() {
       return this.page === 0
     },
-    last_page() {
+    is_last_page() {
       return !this.has_pages || this.page === this.pages.length - 1
     },
     shown_aspects() {
+      // console.log("has_pages", this.has_pages)
       if (this.has_pages) {
         return this.$_.filter(this.aspects, (a) => {
-          return (this.page === 0 && (a.attr.page === 0 || a.attr.page === undefined) ||
-            (this.page > 0 && a.attr.page === this.page))
+          return (this.page === 0 && (attr(a).page === 0 || attr(a).page === undefined) ||
+            (this.page > 0 && attr(a).page === this.page))
         })
       }
       return this.template.aspects

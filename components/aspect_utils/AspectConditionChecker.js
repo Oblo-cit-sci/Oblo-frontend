@@ -24,6 +24,26 @@ export default {
         return false
       }
     },
+    simple_check_recursive_condition(condition, conditionals) {
+      if (Array.isArray(condition)) {
+        const method = condition[0].toLowerCase()
+        if (condition.length < 2 || !["and", "or"].includes(method)) {
+          console.log("Wrong condition format", condition)
+        }
+        const conditions = condition.slice(1)
+        if (method === "and") {
+          return conditions.every(c => this.simple_recursive_condition(c, conditionals))
+        } else {
+          return conditions.some(c => this.simple_recursive_condition(c, conditionals))
+        }
+      } else {
+        return this.simple_check_single_condition(condition, conditionals)
+      }
+    },
+    simple_check_single_condition(condition, conditionals) {
+      const condition_value = this.$_.get(new_value_getter(conditionals, condition.aspect), VALUE)
+      return check_condition_value(condition_value, condition)
+    },
     check_recursive_condition(condition, aspect_loc, mode, entry_uuid, conditionals) {
       // console.log("condition check", aspect_loc)
       if (Array.isArray(condition)) {
@@ -52,7 +72,7 @@ export default {
         let aspect_location = loc_prepend(mode === EDIT ? EDIT : ENTRY, entry_uuid,
           aspect_loc_str2arr(condition.aspect))
         // console.log("single cond check: loc:", aspect_loc, aspect_location)
-        fix_index(aspect_location,get_list_index(aspect_loc))
+        fix_index(aspect_location, get_list_index(aspect_loc))
         // console.log("single cond check: loc:", aspect_loc, aspect_location)
         condition_value = this.$store.getters["entries/value"](aspect_location)
         // console.log("single cond check: val:", condition_value)

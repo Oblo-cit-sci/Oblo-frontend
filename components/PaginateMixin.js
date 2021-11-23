@@ -1,9 +1,9 @@
-import {aspect_loc_str2arr, check_condition_value} from "~/lib/aspect";
-import {ENTRY} from "~/lib/consts";
 import {string_list2options} from "~/lib/options";
+import AspectConditionChecker from "~/components/aspect_utils/AspectConditionChecker"
 
 export default {
   name: "PaginateMixin",
+  mixins: [AspectConditionChecker],
   props: {
     total: Number,
     page: Number,
@@ -28,7 +28,8 @@ export default {
     // It's for conditioning, which depends on aspects of the entry
     entry: {
       type: Object
-    }
+    },
+    conditionals: Object
   },
   computed: {
     more_follow_page() {
@@ -80,10 +81,7 @@ export default {
   methods: {
     page_disabled(page) {
       if (page.condition && this.entry) {
-        let aspect_loc = this.$_.concat([[ENTRY, this.entry.uuid]], aspect_loc_str2arr(page.condition.aspect))
-        console.warn("PaginateMixin: page condition disabled. fix value getter")
-        // let value = select_aspect_loc(this.$store.state.entries, aspect_loc)
-        return check_condition_value(value, page.condition)
+        return this.simple_check_recursive_condition(page.condition, this.conditionals)
       } else {
         return true
       }

@@ -77,7 +77,7 @@ export default {
       return this.$_.get(this.attr, "extra.hint", null)
     },
     hide_details() {
-      console.log("details?",!this.hint, !this.$_.get(this.attr, "extra.rules", null))
+      // console.log("details?",!this.hint, !this.$_.get(this.attr, "extra.rules", null))
       return false //!this.hint && !this.$_.get(this.attr, "extra.rules", null)
     },
     is_edit_mode() {

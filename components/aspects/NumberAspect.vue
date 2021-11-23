@@ -20,6 +20,7 @@
 <script>
 import {INT, FLOAT} from "~/lib/consts";
 import AspectComponentMixin from "./AspectComponentMixin";
+import {resolve_number} from "~/lib/util"
 
 /**
  * details are never hidden. cuz the input could be invalid
@@ -29,8 +30,8 @@ export default {
   mixins: [AspectComponentMixin],
   data() {
     const attr = this.$_.get(this.aspect, "attr", {})
-    const min = attr.min
-    const max = attr.max
+    const min = resolve_number(attr.min)
+    const max = resolve_number(attr.max)
     const validation_rules = [value => {
         if (this.num_type === INT) {
           let i = parseInt(value)

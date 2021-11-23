@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-container.pt-1(justify-center align-center v-if="entry")
+  v-container.pt-1#start(justify-center align-center v-if="entry")
     v-row(v-if="show_back_button")
       v-btn.my-auto(@click="back_button_function" text small)
         v-icon mdi-arrow-left-thick
@@ -64,13 +64,13 @@
             @aspectAction="aspectAction($event)"
             :mode="mode")
         Aspect(v-else
-          :aspect="aspect"
+        :aspect="aspect"
           :aspect_loc="aspect_locs[aspect.name]"
           :conditionals="regular_values"
           :extra="aspect_extras"
           @aspectAction="aspectAction($event)"
           :mode="mode")
-    div(v-if="is_first_page && is_editable_mode")
+    div(v-if="is_last_page && is_editable_mode")
       v-row
         v-col(:cols="base_cols")
           v-divider.wide_divider
@@ -84,7 +84,7 @@
         v-col(alignSelf="stretch" :cols="base_cols")
           v-divider
     div(v-if="show_validation_comp")
-      v-row(v-if="last_page")
+      v-row(v-if="is_last_page")
         EntryValidation(:entry="entry" :template="template" v-model="entry_complete")
       v-row(v-if="is_dirty")
         ChangedAspectNotice(:is_draft="is_draft")
@@ -101,13 +101,13 @@
         v-bind="entry_actions_props"
         :page.sync="page"
         @entry-action="entryAction($event)"
+        :conditionals="regular_values"
         @mode="mode=$event") // see FullEntryMixin computed mode
   v-container(v-else)
     div
 </template>
 
 <script>
-
 import {mapGetters} from "vuex"
 import Aspect from "../Aspect";
 import EntryActions from "./EntryActions";
@@ -134,6 +134,7 @@ import AspectSet from "~/components/AspectSet";
 import {pack_value, unpack} from "~/lib/aspect";
 import {BUS_DIALOG_OPEN} from "~/plugins/bus";
 import OutdatedChip from "~/components/tag/OutdatedChip"
+import goTo from 'vuetify/lib/services/goto'
 
 export default {
   name: "Entry",
@@ -176,7 +177,8 @@ export default {
       meta_aspects_values: {
         privacy: pack_value(this.entry.privacy),
         license: pack_value(this.entry.license),
-        language: pack_value(this.entry.language)}
+        language: pack_value(this.entry.language)
+      }
     }
   },
   methods: {
@@ -222,7 +224,7 @@ export default {
       return draft_color
     },
     show_visitor_message() {
-      return this.is_edit_mode && this.can_edit && !this.logged_in
+      return this.is_last_page && this.is_edit_mode && this.can_edit && !this.logged_in
     },
     aspect_loc() {
       if (this.is_editable_mode) {
@@ -268,7 +270,7 @@ export default {
         color: privacy_color(this.entry.privacy)
       })
       result.push({name: `${this.$t("comp.entry.license")}: ${this.entry.license}`})
-      if(this.entry.status === REJECTED) {
+      if (this.entry.status === REJECTED) {
         result.push({name: this.$t("comp.entry.rejected"), color: "red"})
       }
       result.push({name: this.$t(`lang.${this.entry.language}`), color: "yellow"})
@@ -298,6 +300,11 @@ export default {
     }
   },
   watch: {
+    page() {
+      setTimeout(() => {
+        goTo("#app")
+      }, 200)
+    },
     meta_aspects_values: {
       deep: true,
       handler: function (values) {
