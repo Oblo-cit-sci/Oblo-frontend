@@ -62,7 +62,8 @@ export default {
       console.log("can_request", !can_request)
       try {
         const response = await this.$api.template_code.get_slug_lang(slug, language)
-        console.log(response.data)
+        // console.log(response.data)
+        this.$store.commit("templates/insert_template_code", response.data)
       } catch (error) {
         if(error.response.status === 404) {
           // console.log("not found...")
@@ -73,14 +74,13 @@ export default {
       }
     },
     async guarantee_default_language(slug) {
-
       const has_template = this.$store.getters["templates/has_slug"](slug)
       if(has_template) {
         return Promise.resolve()
       }
       try {
         const response = await this.$api.template_code.get_slug_lang(slug,"xx",true)
-        console.log(response.data)
+        // console.log(response.data)
         this.$store.commit("templates/insert_template_code", response.data)
       } catch (error) {
         console.error(error)

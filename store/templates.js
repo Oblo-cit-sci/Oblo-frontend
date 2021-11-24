@@ -17,7 +17,7 @@ export const state = () => ({
 })
 
 export const getters = {
-  // todo: should be
+  // todo: should be get_template_in_lang
   entry_type(state) {
     return (type_slug, language, fallback = true, show_warning = true) => {
       // console.log("getting entry_type for slug", type_slug, state.entry_types)
@@ -43,7 +43,7 @@ export const getters = {
       const base = state.codes.get(slug)
       if (!base) {
         if (show_warning) {
-          console.log("WARNING, store,templates.get_code_in_lang: code-base for slug missing", slug, "returning null, should be catched earlier")
+          console.warning("store,templates.get_code_in_lang: code-base for slug missing", slug, "returning null, should be catched earlier")
         }
         return null
       }
@@ -56,7 +56,7 @@ export const getters = {
         if (code)
           return code
         else if (show_warning) {
-          console.log("WARNING, store,templates.get_code_in_lang: code for slug missing for fallback lang", slug, default_language, "returning null, should be catched earlier")
+          console.warning("store,templates.get_code_in_lang: code for slug missing for fallback lang", slug, default_language, "returning null, should be catched earlier")
           return null
         }
       } else {
@@ -78,12 +78,12 @@ export const getters = {
   // has_code(state, getters) {
   //   return (type_slug, language) => getters.code(type_slug, language) !== null
   // },
-  // tod === has_code_in_lang, but its sometimes used without lang
+  // todo: function === has_code_in_lang, but its sometimes used without lang
   code(state) {
     return (slug, language) => {
       // console.log("getting entry_type for slug", type_slug, state.entry_types)
       if (!state.codes.has(slug)) {
-        console.log("WARNING, store,entrytype.getters.entry_type. type for slug missing:", slug, "returning null, should be catched earlier")
+        console.warning("store,entrytype.getters.entry_type. type for slug missing:", slug, "returning null, should be catched earlier")
         return null
       }
       const base_template = state.codes.get(slug)
@@ -96,11 +96,13 @@ export const getters = {
       }
     }
   },
+  // todo: like below
   has_slug_in_lang(state, getters) {
     return (slug, language) => {
       return getters.has_template_in_lang(slug, language) || getters.has_code_in_lang(slug, language)
     }
   },
+  // todo. wille change a bit... filter all entries by type: code
   codes_in_language(state, getters) {
     return language => {
       return Array.from(state.codes.values()).map(c => getters.code(c.slug, language))
@@ -218,13 +220,12 @@ export const getters = {
       return ld.get(base_template, `prev_versions.${language}-${version.toString()}`)
     }
   },
-  // not used (yet)
   has_slug(state) {
     return slug => {
       return state.entry_types.has(slug) || state.codes.has(slug)
     }
   },
-  get_by_slug(state) {
+  get_slug(state) {
     return slug => {
       if (state.entry_types.has(slug)) {
         return state.entry_types.get(slug)
@@ -233,15 +234,50 @@ export const getters = {
       }
     }
   },
+  // todo : these 2 methods should replace all other main getters...
+  has_slug_lang(state, getters, rootState, rootGetters) {
+    return (slug, language, fallback_default_language = false) => {
+      if (!getters.has_slug(slug))
+        return false
+      const base = getters.get_slug(slug)
+      const has_entry = base.lang.hasOwnProperty(language)
+      console.log("has_slug_lang", slug, language, has_entry,
+        "fallback",fallback_default_language)
+      if(!fallback_default_language)
+        return has_entry
+      if(!has_entry && fallback_default_language) {
+        const default_language = rootGetters["domain/get_domain_default_language"](base.domain)
+        console.log("trying default language", default_language)
+        return base.lang.hasOwnProperty(default_language)
+      }
+      return has_entry
+    }
+  },
+  get_slug_lang(state, getters, rootState, rootGetters) {
+    return (slug, language, fallback_default_language = false) => {
+      if (!getters.has_slug(slug))
+        return null
+      const base = getters.get_slug(slug)
+      const entry = base.lang[language] || null
+      if (entry) {
+        return entry
+      } else if (fallback_default_language) {
+        const default_language = rootGetters["domain/get_domain_default_language"](base.domain)
+        return getters.get_slug_lang(slug, default_language, false) || null
+      } else {
+        return null
+      }
+    }
+  },
   is_slug_lang_marked_missing(state, getters) {
     return (slug, language) => {
       if (!getters.has_slug(slug))
         return false
-      const base = getters.get_by_slug(slug)
+      const base = getters.get_slug(slug)
       if (!base.missing_lang) {
         return false
       }
-      return base.missing_lang.includes(language)
+      return base.missing_lang.has(language)
     }
   }
 }
@@ -259,7 +295,7 @@ export const mutations = {
         lang: {
           [t_c.language]: t_c
         },
-        missing_lang: []
+        missing_lang: new Set()
       })
     }
   },
@@ -319,9 +355,9 @@ export const mutations = {
   },
   add_missing(state, {slug, language}) {
     if (state.entry_types.has(slug))
-      state.entry_types.get(slug).missing_lang.push(language)
+      state.entry_types.get(slug).missing_lang.add(language)
     else if (state.codes.has(slug))
-      state.codes.get(slug).missing_lang.push(language)
+      state.codes.get(slug).missing_lang.add(language)
   }
 }
 
@@ -333,7 +369,7 @@ export const actions = {
         commit("add_tags_from", t_c)
       }
     }
-    console.log("adding...", entries)
+    // console.log("adding...", entries)
     // commit("add_to_requested", entries)
   }
 }
