@@ -8,16 +8,16 @@
 <script>
 
 export default {
-  name: "TestAspects",
+  name: "teststore",
   mixins: [],
   props: {},
   data() {
-    const base_path = "/test/aspects/test_"
-    const aspects = ["NumberAspect", "MultiselectAspect"]
-    const pages = aspects.map(aspect => {
+    const base_path = "/test/store/test_"
+    const store_module = ["template"]
+    const pages = store_module.map(module => {
       return {
-        name: aspect,
-        to: base_path + aspect
+        name: module,
+        to: base_path + module
       }
     })
     return {
