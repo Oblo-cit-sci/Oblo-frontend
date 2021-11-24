@@ -51,10 +51,8 @@
 
 <script>
 import TreeleafPicker from "../input/TreeleafPicker";
-import {flatten_tree_to_options, get_codes_as_tree} from "~/lib/options";
 import {EDIT} from "~/lib/consts";
 import AspectComponentMixin from "./AspectComponentMixin";
-import GeneralSelectMixin from "~/components/aspect_utils/GeneralSelectMixin"
 import {unpack} from "~/lib/aspect"
 import OptionsMixin from "~/components/aspect_utils/OptionsMixin";
 import LanguageCodeFallback from "~/components/aspect_utils/LanguageCodeFallback";
@@ -76,7 +74,7 @@ the start of a custom value field. but wtf...
 export default {
   name: "TreeSelectAspect",
   components: {LanguageCodeFallback, TreeleafPicker},
-  mixins: [AspectComponentMixin, GeneralSelectMixin, OptionsMixin, SelectMixin, TreeSelectComponentMixin],
+  mixins: [AspectComponentMixin, OptionsMixin, SelectMixin, TreeSelectComponentMixin],
   data() {
     return {
       tree: {},

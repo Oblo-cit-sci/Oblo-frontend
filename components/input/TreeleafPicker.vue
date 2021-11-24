@@ -204,7 +204,7 @@ export default {
       })))
     },
     level_edit_mode(level) {
-      return this.$_.get(this.attr, `edit[${level}]`, "list")
+      return this.$_.get(this.attr, `tree_select_mode[${level}]`, "list")
     },
     close() {
       this.clear()

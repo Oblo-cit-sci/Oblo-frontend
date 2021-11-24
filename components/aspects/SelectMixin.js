@@ -63,6 +63,11 @@ export default {
     attr() {
       return this.$_.get(this.aspect, "attr", {})
     },
+    data_source() {
+      if (typeof this.aspect.items === "string") {
+        return this.aspect.items
+      }
+    }
   },
   watch: {
     "aspect.items": function (items) {
