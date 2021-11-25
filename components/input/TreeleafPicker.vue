@@ -11,6 +11,7 @@
     Title_Description.ml-3(v-if="has_levels" :title="act_levelname" :description="act_level_description" mode="edit")
     .px-3(v-if="has_options")
       SingleSelect.pb-1(v-if="edit_mode_list"
+        :data_source="data_source"
         :options="act_options"
         v-on:selection="select($event)"
         :select_sync="false" :highlight="false")

@@ -2,6 +2,7 @@ import {
   transform_options_list
 } from "~/lib/options";
 import OptionsMixin from "~/components/aspect_utils/OptionsMixin";
+import {TREE} from "~/lib/consts";
 
 export default {
   mixins: [OptionsMixin],
@@ -25,6 +26,10 @@ export default {
     }
   },
   created() {
+    // tree generate a 'tree', which is used instead
+    if (this.aspect.type === TREE) {
+      return
+    }
     if (typeof this.aspect.items === "string") {
       // if (typeof this.aspect.items === "string") {
       this.options = this.get_codes_as_options(this.aspect.items)

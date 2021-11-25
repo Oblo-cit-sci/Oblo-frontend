@@ -205,7 +205,6 @@ export default {
       }
     },
     textarea_placeholder() {
-      console.log(this.aspect.name, "dialog?", this.show_dialog)
       if (this.show_dialog) {
         return this.$t('comp.treeselect_asp.click_to_select')
       } else {
@@ -218,12 +217,12 @@ export default {
     is_empty() {
       return this.$_.isEmpty(this.value)
     },
-    value_icon_style() {
-      return {
-        width: "70px",
-        transform: "translateY(-10px)"
-      }
-    },
+    // value_icon_style() {
+    //   return {
+    //     width: "70px",
+    //     transform: "translateY(-10px)"
+    //   }
+    // },
     value_icon() {
       if (!this.is_empty) {
         const icon_values = this.value.filter(v => v.icon)
@@ -263,7 +262,6 @@ export default {
   watch: {
     dialogOpen(open) {
       if (!open) {
-        console.log(this.int_value, this.value)
         if (!this.$_.isEqual(this.int_value, this.value)) {
           this.int_value = this.value
         }
@@ -280,9 +278,9 @@ export default {
 
 <style scoped>
 
-.pointer:hover {
-  cursor: pointer;
-}
+/*.pointer:hover {*/
+/*  cursor: pointer;*/
+/*}*/
 
 .select_dialog {
   text-transform: none;

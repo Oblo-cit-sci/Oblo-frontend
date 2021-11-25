@@ -15,7 +15,7 @@
           :class="{ marked: marked(item.value) }"
           class="single_select")
           v-list-item-avatar(v-if="option_icon(item)")
-            v-img(:src="option_icon(item)" contain max-height="25")
+            v-img(:src="option_icon(item)" contain max-height="40")
           v-icon(v-if="item.mdi_icon") {{item.mdi_icon}}
           v-list-item-content
             v-list-item-title
