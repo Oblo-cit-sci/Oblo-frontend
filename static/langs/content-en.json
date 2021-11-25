@@ -101,6 +101,7 @@
       "h2": "@.capitalize:w.entries",
       "deactivated": "This user is no longer active",
       "admin": {
+        "edit_user": "Edit User",
         "asp_global_role": "Global role",
         "asp_editor_for_domain": "Editor for @:w.domain"
       }
@@ -549,7 +550,8 @@
       }
     },
     "treeselect_asp": {
-      "click_to_select": "Click to select"
+      "click_to_select": "Click to select",
+      "select_another_value": "Select another value"
     },
     "treeleaf_picker": {
       "current": "Current selection"

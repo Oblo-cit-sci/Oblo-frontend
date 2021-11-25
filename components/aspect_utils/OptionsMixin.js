@@ -22,7 +22,7 @@ export default {
       return [language === code_entry.language, language, code_entry.language]
     },
     get_lang_code_entry(code_slug) {
-            const language = this.$store.getters["user/settings"].domain_language
+      const language = this.$store.getters["user/settings"].domain_language
       return this.get_code_entry(code_slug, language)
     },
     get_codes_as_options(code_slug) {
@@ -117,13 +117,7 @@ export default {
       const options = this.get_options(items)
       return options
     },
-    // items_from_code_entry(entry) {
-    //   if(entry.template.slug === "value_list") {
-    //     return entry.values.list
-    //   } else if(entry.template.slug === "value_tree") {
-    //     return entry.values.root
-    //   }
-    // },
+
     select_from_tree(input_from_tree) {
       // console.log(input)
       const tree_entry = this.get_lang_code_entry(input_from_tree.tree)

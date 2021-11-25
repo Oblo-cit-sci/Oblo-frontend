@@ -43,7 +43,7 @@ export const getters = {
       const base = state.codes.get(slug)
       if (!base) {
         if (show_warning) {
-          console.warning("store,templates.get_code_in_lang: code-base for slug missing", slug, "returning null, should be catched earlier")
+          console.warn("store,templates.get_code_in_lang: code-base for slug missing", slug, "returning null, should be catched earlier")
         }
         return null
       }
@@ -56,7 +56,7 @@ export const getters = {
         if (code)
           return code
         else if (show_warning) {
-          console.warning("store,templates.get_code_in_lang: code for slug missing for fallback lang", slug, default_language, "returning null, should be catched earlier")
+          console.warn("store,templates.get_code_in_lang: code for slug missing for fallback lang", slug, default_language, "returning null, should be catched earlier")
           return null
         }
       } else {
@@ -83,7 +83,7 @@ export const getters = {
     return (slug, language) => {
       // console.log("getting entry_type for slug", type_slug, state.entry_types)
       if (!state.codes.has(slug)) {
-        console.warning("store,entrytype.getters.entry_type. type for slug missing:", slug, "returning null, should be catched earlier")
+        console.warn("store,entrytype.getters.entry_type. type for slug missing:", slug, "returning null, should be catched earlier")
         return null
       }
       const base_template = state.codes.get(slug)

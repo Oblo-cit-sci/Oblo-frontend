@@ -2,7 +2,8 @@
   div
     v-footer
       div
-        v-btn(to="/testStore" name="Test store") Test store
+        v-btn(to="/test/testStore" name="Test store") Test store
+        v-btn(to="/test/testAspect" name="Test aspects") Test aspects
 </template>
 
 <script>
@@ -27,7 +28,7 @@ export default {
     return {}
   },
   created() {
-    this.guarantee_template_code("cipred", "ko")
+    // this.guarantee_template_code("cipred", "ko")
   },
   watch: {},
   computed: {

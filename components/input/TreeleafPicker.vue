@@ -1,9 +1,6 @@
 <template lang="pug">
-  .treeselect
-    div(comment="only in dialog")
-      v-btn(icon small @click="close")
-        v-icon mdi-close
-    v-list(v-if="has_selection")
+  div
+    v-list(v-if="dialog_view && has_selection")
       div.ml-3 {{$t('comp.treeleaf_picker.current')}}
       v-list-item(v-for="(node, index) of value", :key="index")
         v-list-item-content {{levelname(index)}}: {{node.text}} {{extra_text(node)}}
@@ -13,13 +10,16 @@
     v-divider.mb-1(v-if="has_both()")
     Title_Description.ml-3(v-if="has_levels" :title="act_levelname" :description="act_level_description" mode="edit")
     .px-3(v-if="has_options")
-      SingleSelect.pb-1(v-if="edit_mode_list" :options="act_options" v-on:selection="select($event)" :select_sync="false" :highlight="false")
+      SingleSelect.pb-1(v-if="edit_mode_list"
+        :options="act_options"
+        v-on:selection="select($event)"
+        :select_sync="false" :highlight="false")
       LargeSelectList(v-if="edit_mode_large_list" :options="act_options" v-on:selection="select($event)" :select_sync="false" :highlight="false" :data_source="data_source")
       SelectGrid(v-if="edit_mode_matrix" :options="act_options" v-on:selection="select($event)" :data_source="data_source")
       Paginated_Select(v-if="edit_mode_paginated" :options="act_options" :edit_mode="level_edit_mode(act_level + 1)" v-on:selection="select($event)")
     div.mx-4(v-if="last_selection_has_extra")
       Aspect(v-if="extra_aspect" :aspect="extra_aspect" :ext_value.sync="extra_value" mode="edit")
-    v-btn(v-if="done_available" @click="done" color="success") {{$t('w.done')}}
+    v-btn(v-if="done_available && dialog_view" @click="done" color="success") {{$t('w.done')}}
 </template>
 
 <script>
@@ -49,9 +49,10 @@ export default {
     extra_value_name: {
       type: String
     },
-    keep_selection: {
+    // show current selection and done button
+    dialog_view: {
       type: Boolean,
-      default: false
+      default: true
     },
     attr: {
       type: Object,
@@ -94,6 +95,8 @@ export default {
     },
     done_available() {
       // console.log("done?", this.attr.allow_select_levels, this.act_level, this.act_options)
+      // todo not sure about 0, maybe because level is always at least 1.?
+      // could be, if allow_select_levels not set, return false...
       const allow_levels = this.attr.allow_select_levels || 0
       if (this.$_.includes(allow_levels, this.act_level)) {
         return true
@@ -178,6 +181,7 @@ export default {
       else // clicked clear on select
         this.$emit("input", this.value)
     },
+    // currently not called
     clear() {
       this.$emit('clear')
     },
@@ -205,14 +209,6 @@ export default {
     },
     level_edit_mode(level) {
       return this.$_.get(this.attr, `tree_select_mode[${level}]`, "list")
-    },
-    close() {
-      this.clear()
-      // if (this.done_available) {
-      //   this.done()
-      // } else {
-      //   this.clear()
-      // }
     }
   }
 }
@@ -220,10 +216,6 @@ export default {
 
 <style scoped>
 
-.treeselect {
-  text-transform: none;
-  background: white;
-}
 
 #subheader {
   background: white;
