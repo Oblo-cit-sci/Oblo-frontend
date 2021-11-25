@@ -41,7 +41,9 @@ export default {
       }
       if (page !== this.page) {
         this.page = page
-        this.$store.commit("entries/entries_set_local_list_page", {aspect_loc: this.aspect_loc, page: this.page})
+        if (this.aspect_loc) {
+          this.$store.commit("entries/entries_set_local_list_page", {aspect_loc: this.aspect_loc, page: this.page})
+        }
         try {
           if (goto_id) {
             setTimeout(() => {

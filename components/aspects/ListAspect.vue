@@ -74,7 +74,6 @@ import MinMaxIndicators from '../list_components/MinMaxIndicators'
 
 import ListPagination from "../aspect_utils/ListPagination";
 import goTo from 'vuetify/lib/services/goto'
-import {recursive_unpack} from "~/lib/util";
 import AspectComponentMixin from "./AspectComponentMixin";
 import ListitemActions from "../aspect_utils/ListitemActions";
 

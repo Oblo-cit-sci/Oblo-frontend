@@ -3,7 +3,7 @@
     v-list(v-if="list_view")
       <!-- mandatory does only check if min > 1 -->
       v-list-item-group(v-model="selection_index" multiple active-class="in_selection" :mandatory="mandatory" :max="max_vals")
-        v-list-item(v-for="option in computed_list_options" :key="option.value" :disabled="option_disabled(option)")
+        v-list-item(v-for="(option,index) in computed_list_options" :key="index" :disabled="option_disabled(option)")
           template(v-slot:default="{ active }")
             v-list-item-content {{option.text}}
             v-list-item-action
