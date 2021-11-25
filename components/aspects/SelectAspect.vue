@@ -5,7 +5,7 @@
       v-if="select_check"
       v-model="check_box_value"
       :label="check_box_value ? options[1].text : options[0].text")
-    SingleSelect(v-else :options="options"
+    SingleSelect(v-else :options="computed_list_options"
       :selection.sync="selection"
       :force_view="force_view"
       :disabled="disabled"
@@ -58,10 +58,10 @@ export default {
   methods: {
     set_selection() {
       // console.log("SelectAspect", this.value)
-      // debugger
       if (this.value !== null) {
         // console.log(this.value)
-        this.selection = this.$_.find(this.options, (o) => {
+        // todo what is with trees?
+        this.selection = this.$_.find(this.computed_list_options, (o) => {
           return o.value === this.value
         })
         if (this.selection === undefined) {

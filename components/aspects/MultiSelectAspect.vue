@@ -3,7 +3,7 @@
     v-list(v-if="list_view")
       <!-- mandatory does only check if min > 1 -->
       v-list-item-group(v-model="selection_index" multiple active-class="in_selection" :mandatory="mandatory" :max="max_vals")
-        v-list-item(v-for="option in options" :key="option.value" :disabled="option_disabled(option)")
+        v-list-item(v-for="option in computed_list_options" :key="option.value" :disabled="option_disabled(option)")
           template(v-slot:default="{ active }")
             v-list-item-content {{option.text}}
             v-list-item-action
@@ -32,6 +32,10 @@ import ResponsivenessMixin from "~/components/ResponsivenessMixin";
 
 // maybe also for v-select:
 // :prepend-inner-icon="!menu_open ? 'mdi-check' : ''"
+/**
+ * TODO: edge case, see pages/test/extra/SelectOptionsFromSource.vue
+ * when a source value is changing, it behaves weird...
+ */
 export default {
   name: "MultiSelectAspect",
   mixins: [AspectComponentMixin, SelectMixin, ResponsivenessMixin],
@@ -69,12 +73,12 @@ export default {
       get() {
         console.log("get selection_index", this.value)
         if (this.value) {
-          return this.value.map(v => this.options.findIndex(o => o.value === v.value))
+          return this.value.map(v => this.computed_list_options.findIndex(o => o.value === v.value))
         }
       },
       set(val) {
         // console.log("MultiSelectAspect.set__selection_index", val)
-        const selection = this.$_.filter(this.options, (o, i) => val.includes(i))
+        const selection = this.$_.filter(this.computed_list_options, (o, i) => val.includes(i))
         // console.log(selection)
         this.update_value(selection)
       }
@@ -104,12 +108,12 @@ export default {
       get() {
         if (this.value) {
           const values_only = this.$_.map(this.value, "value")
-          const options_values =  this.$_.map(this.options, "value")
+          const options_values =  this.$_.map(this.computed_list_options, "value")
           return this.$_.filter(options_values, o => values_only.includes(o))
         }
       },
       set(value) {
-        const selection = value.map(v => this.options.find(o => o.value === v))
+        const selection = value.map(v => this.computed_list_options.find(o => o.value === v))
         // console.log("set", value, selection)
         this.update_value(selection)
       }
@@ -121,7 +125,7 @@ export default {
       // console.log("this.value", this.value)
       if (this.value) {
         const values = this.value.map(v => v.value)
-        this.selection = this.$_.filter(this.options, (o) => {
+        this.selection = this.$_.filter(this.computed_list_options, (o) => {
           return values.indexOf(o.value) > -1
         })
       } else {

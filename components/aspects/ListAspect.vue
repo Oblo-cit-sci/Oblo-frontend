@@ -37,7 +37,7 @@
               v-on:remove_value="remove_value($event)"
               v-on:move="move($event)")
       div(v-if="is_view_mode && is_empty")
-        .ml-2 {{aspect.attr.default_view_text}}
+        .ml-2 {{default_view_text}}
     MinMaxIndicators(
       v-if="!is_view_mode && !disabled"
       v-bind="min_max_props")

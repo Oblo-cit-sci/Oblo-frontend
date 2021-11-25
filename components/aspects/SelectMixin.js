@@ -4,6 +4,8 @@ import {
 import OptionsMixin from "~/components/aspect_utils/OptionsMixin";
 import {TREE} from "~/lib/consts";
 
+const {JSONPath} = require('jsonpath-plus');
+
 export default {
   mixins: [OptionsMixin],
   props: {
@@ -17,6 +19,8 @@ export default {
       selection: null,
       options: [],
       code: null, // if not null: {name, version}
+      // currently if, items is a object with source. but could also be with filters on items...
+      has_computed_options: false,
       select_check: false, // attr.select = "check"
       check_box_value: null,
       //
@@ -27,27 +31,8 @@ export default {
   },
   created() {
     // tree generate a 'tree', which is used instead
-    if (this.aspect.type === TREE) {
-      return
-    }
-    if (typeof this.aspect.items === "string") {
-      // if (typeof this.aspect.items === "string") {
-      this.options = this.get_codes_as_options(this.aspect.items)
-      // console.log("options from code-entry")
-      this.from_code_entry = true
-      // const match = this.check_language_match(this.aspect.items)
-      // this.code_entry_language_match = match[0]
-      // this.code_entry_language = match[2]
-      // TODO make this a function. str check is reference str begining. however here that should be either
-      // clear or not checked like that...
-    } else if (this.aspect.items instanceof Array) {
-      if (this.attr.hasOwnProperty("select") && this.attr.select === "check") {
-        this.select_check = true
-      }
-      this.options = transform_options_list(this.aspect.items)
-    } else {
-      console.log(this.aspect.name)
-      console.log("ERROR cannot create options from aspect items", this.aspect.items)
+    if (this.aspect.type !== TREE) {
+      this.calculate_list_options()
     }
   },
   methods: {
@@ -62,6 +47,35 @@ export default {
         }
       }
       return clean
+    },
+    calculate_list_options() {
+      if (typeof this.aspect.items === "string") {
+        // if (typeof this.aspect.items === "string") {
+        this.options = this.get_codes_as_options(this.aspect.items)
+        // console.log("options from code-entry")
+        this.from_code_entry = true
+        // const match = this.check_language_match(this.aspect.items)
+        // this.code_entry_language_match = match[0]
+        // this.code_entry_language = match[2]
+        // TODO make this a function. str check is reference str begining. however here that should be either
+        // clear or not checked like that...
+      } else if (Array.isArray(this.aspect.items)) {
+        if (this.attr.hasOwnProperty("select") && this.attr.select === "check") {
+          this.select_check = true
+        }
+        this.options = transform_options_list(this.aspect.items)
+      } else if (this.aspect.items instanceof Object) {
+        const source = this.aspect.items.source
+        if (!source) {
+          console.warn("aspect.items of", this.aspect.name, "should include 'source'")
+          this.has_computed_options = false // aspect is basically broken...
+        } else {
+          this.has_computed_options = true
+        }
+      } else {
+        console.log(this.aspect.name)
+        console.error("cannot create options from aspect items", this.aspect.items)
+      }
     }
   },
   computed: {
@@ -72,6 +86,27 @@ export default {
       if (typeof this.aspect.items === "string") {
         return this.aspect.items
       }
+    },
+    computed_list_options() {
+      if (this.has_computed_options) {
+        if (this.aspect.items instanceof Object) {
+          // source was already validated in calculate_list_options
+          const source = this.aspect.items.source
+          // console.log("source", source)
+          // console.log("checking conditionals", this.conditionals)
+          const value_list = JSONPath({
+            path: source,
+            json: this.conditionals,
+          })
+          // console.log("result", value_list)
+          if (Array.isArray(value_list)) {
+            return transform_options_list(value_list)
+          } else {
+            console.warn("items.source of", this.aspect.name, "doest result in a list, but:", value_list)
+          }
+        }
+      }
+      return this.options
     }
   },
   watch: {
