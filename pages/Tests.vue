@@ -1,9 +1,6 @@
 <template lang="pug">
   div
-    v-footer
-      div
-        v-btn(to="/test/testStore" name="Test store") Test store
-        v-btn(to="/test/testAspect" name="Test aspects") Test aspects
+
 </template>
 
 <script>
