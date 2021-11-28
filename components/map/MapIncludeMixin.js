@@ -50,7 +50,6 @@ export default {
       this.map = map
       this.mapboxgl = require('mapbox-gl/dist/mapbox-gl')
       this.mapboxgl.prewarm()
-      // this.map.prewarm()
       this.map_loaded = true
       this.$emit("map", this.map)
       // todo maybe just in the options?
