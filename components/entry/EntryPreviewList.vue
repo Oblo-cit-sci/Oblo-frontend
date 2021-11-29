@@ -1,14 +1,17 @@
 <template lang="pug">
   #pwlist-container
     v-row.col-sm-12.mx-0.px-0#pwlist-top(v-if="results_received")
-      v-row.pl-4(v-if="!requesting_entries")
-        v-col.py-0.ml-1.d-flex.align-content-center.flex-wrap(cols=3)
+      v-row.pl-4.pr-5(v-if="!requesting_entries")
+        v-col.pl-0.py-0.ml-1.d-flex.align-content-center.flex-wrap(cols=3)
           span {{$tc("comp.previewlist.num_entries", num_entries)}}
         v-spacer
         v-col.pa-0(v-if="show_no_entries_hint" cols=12) {{$t("comp.previewlist.filter_change_hint")}}
         v-col.pa-0(v-else cols=3)
-          v-btn(small @click="download_dialog_open=true") {{$t('w.download')}}
-          EntriesDownloadDialog(v-model="download_dialog_open" @download="download_entries(entries_uuids, $event)")
+          v-btn(small :disabled="!has_entries" @click="download_dialog_open=true") {{$t('w.download')}}
+          EntriesDownloadDialog(
+            v-model="download_dialog_open"
+            :download_config="download_config"
+            @download="download_entries(entries_uuids, $event)")
       div(v-else) ...
     #pwlist-wrapper
       v-row.mx-1(v-for="entry in visible_entries"

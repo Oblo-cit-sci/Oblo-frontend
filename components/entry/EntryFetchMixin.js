@@ -2,7 +2,7 @@ import LanguageMixin from "~/components/LanguageMixin";
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin";
 import ExportMixin from "~/components/global/ExportMixin"
 import TemplateHelperMixin from "~/components/templates/TemplateHelperMixin"
-import {DOWNLOADING, METADATA, NOT_DOWNLOADING} from "~/lib/consts"
+import {DOWNLOADING, LANGUAGE, METADATA, NOT_DOWNLOADING, TEMPLATE} from "~/lib/consts"
 
 export default {
   name: "EntryFetchMixin",
@@ -49,15 +49,38 @@ export default {
       return []
     },
     async download_entries(uuids, config) {
-      const meta_only  = config.select_data === METADATA
+      // const meta_only  = config.select_data === METADATA
+      console.log(config)
+      // todo this whole stuff is not elegant. it should basically do the same as search-filter...
+      config.entries_uuids = uuids
       this.download_status = DOWNLOADING
-      this.$api.entries.download(uuids, meta_only).then(response => {
-        if (response.headers["content-type"] === "application/zip") {
-          this.download_zip(response.data, response.request.getResponseHeader('Content-Disposition'))
-        }
-        else {
-          this.download_csv(response.data, "entries_download")
-        }
+      const search_query = {
+        required: []
+      }
+      if(config.template) {
+        search_query.required.push({
+          name:TEMPLATE,
+          value: [config.template]
+        })
+        delete config.template
+      }
+      if(config.language) {
+        search_query.required.push({
+          name:LANGUAGE,
+          value: {
+            language: [config.language]
+          }
+        })
+        delete config.language
+      }
+      config.search_query = search_query
+      this.$api.entries.download(config).then(response => {
+        // if (response.headers["content-type"] === "application/zip") {
+        //   this.download_zip(response.data, response.request.getResponseHeader('Content-Disposition'))
+        // }
+        // else {
+        this.download_csv(response.data, "entries_download")
+        // }
         this.download_status = NOT_DOWNLOADING
       })
     },

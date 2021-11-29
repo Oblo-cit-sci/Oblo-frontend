@@ -66,7 +66,7 @@ const ADDED_SOURCE = "added_source"
 const ADDED_LAYER = "added_layer"
 
 const default_added_layer_circle_color = '#33796d'
-const hover_circle_color = '#3bb2d0'
+const hover_circle_color = '#faed00'
 
 export default {
   name: "GeometryAspect",
@@ -173,6 +173,13 @@ export default {
     init_edit_layers() {
       const geojson_wrap = (data) => ({type: "geojson", data})
       this.map.addSource(ADDED_SOURCE, geojson_wrap(this.features))
+      this.map.addSource(CURRENT_SOURCE, geojson_wrap({
+        type: "Feature",
+        geometry: {
+          type: POINT,
+          coordinates: []
+        }
+      }))
       // TEST
       this.map.addLayer({
         'id': ADDED_LAYER,
@@ -183,13 +190,6 @@ export default {
           'circle-color': default_added_layer_circle_color
         }
       })
-      this.map.addSource(CURRENT_SOURCE, geojson_wrap({
-        type: "Feature",
-        geometry: {
-          type: POINT,
-          coordinates: []
-        }
-      }))
       this.map.addLayer({
         'id': CURRENT_LAYER,
         'type': 'circle',
@@ -197,6 +197,19 @@ export default {
         paint: {
           'circle-radius': 10,
           'circle-color': '#F84C4C' // red color
+        }
+      })
+      this.map.addLayer({
+        'id': ADDED_LAYER + "_line",
+        'type': 'line',
+        'source': CURRENT_SOURCE,
+        'layout': {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        'paint': {
+          'line-color': '#888',
+          'line-width': 8
         }
       })
     },
@@ -220,7 +233,7 @@ export default {
       })
 
       this.map.on('mouseleave', ADDED_LAYER, (e) => {
-        if(!this.moving_feature) {
+        if (!this.moving_feature) {
           if (this.hover_feature_id !== null) {
             this.map.setFeatureState(
               {source: ADDED_SOURCE, id: this.hover_feature_id},
@@ -252,7 +265,7 @@ export default {
       this.set_map_canvas_cursor('grabbing')
       // get the feature from the added feature with the id as hover_feature_id
       const feature = this.$_.find(this.features.features, f => f.id === this.hover_feature_id)
-      if(feature) {
+      if (feature) {
         feature.geometry.coordinates = [coords.lng, coords.lat]
         console.log()
         this.map.getSource(ADDED_SOURCE).setData(this.features)

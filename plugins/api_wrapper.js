@@ -448,11 +448,8 @@ class Entries extends QueryBase {
     return this.get_("get_codes_templates", {params: {language, full}})
   }
 
-  download(uuids, meta_only) {
-    return this.post_("download", uuids, {
-      params: {
-        meta_only
-      },
+  download(config) {
+    return this.post_("download", config, config = {
       headers: {
         "Access-Control-Allow-Headers": "Access-Control-Expose-Headers, Access-Control-Request-Headers",
         "Access-Control-Expose-Headers": "Content-Disposition",

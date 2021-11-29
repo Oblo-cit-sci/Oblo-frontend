@@ -339,7 +339,7 @@ export default {
     entries_download_config() {
       return {
         entries: this.all_uuids(),
-        config: this.searchConfiguration()
+        config: this.act_config
       }
     }
   },

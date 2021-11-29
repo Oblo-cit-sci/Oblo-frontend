@@ -1,5 +1,5 @@
 import {settings_loc_privacy_ask, settings_loc_privacy_exact, settings_loc_privacy_random} from "~/lib/settings"
-import {LANGUAGE, MULTISELECT, SELECT, STR, USER} from "~/lib/consts"
+import {LANGUAGE, MULTISELECT, SELECT, STR, TEMPLATE, USER} from "~/lib/consts"
 import {pack_value, unpack} from "~/lib/aspect";
 import LanguageMixin from "~/components/LanguageMixin";
 import {object_list2options} from "~/lib/options";
@@ -10,10 +10,10 @@ export default {
   name: "TypicalAspectsMixin",
   mixins: [LanguageMixin],
   methods: {
-    label(base_name, alt_label) {
-      return this.$t(this.t_label(base_name, alt_label))
-    },
-    description(base_name, alt_descr) {
+    // aspect_label(base_name, alt_label) {
+    //   return this.$t(this.t_label(base_name, alt_label))
+    // },
+    aspect_description(base_name, alt_descr) {
       return this.$t(this.t_description(base_name, alt_descr))
     },
     t_label(base_name, alt_label) { // todo: refactor?! same with descr.
@@ -180,12 +180,12 @@ export default {
         type: SELECT,
         items: [{
           text: this.$t("asp.privacy.options.public.text"),
-          description: this.description("asp.privacy.options.public.", alt_label_descr),
+          description: this.aspect_description("asp.privacy.options.public.", alt_label_descr),
           value: "public",
           icon: "images/icons/privacy/earth.png"
         }, {
           text: this.$t("asp.privacy.options.private.text"),
-          description: this.description("asp.privacy.options.private.", alt_label_descr),
+          description: this.aspect_description("asp.privacy.options.private.", alt_label_descr),
           value: "private",
           icon: "images/icons/privacy/lock-outline.png"
         }],
@@ -262,6 +262,19 @@ export default {
         this.asp_language("language", undefined, false, {
           hide_on_disabled: true,
         })]
+    },
+    asp_entry_type(name = TEMPLATE,  single_select = true, attr = {}, items = []) {
+      return {
+        name,
+        t_label: "w.entrytype",
+        //t_description: this.t_description("asp.language.", alt_label_descr),
+        type: single_select ? SELECT : MULTISELECT,
+        attr: attr || {
+          force_view: SELECT
+        },
+        value: pack_value(single_select ? null : []),
+        items
+      }
     }
   }
 }

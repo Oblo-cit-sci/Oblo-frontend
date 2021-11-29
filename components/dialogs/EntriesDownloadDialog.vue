@@ -3,6 +3,7 @@
   //v-dialog(v-model="dialog_open" :persistent="persistent" @click:outside="click_outside")
   DialogWrapper(v-model="dialog_open" @close="close")
     h2 {{$t('comp.entries_download_dialog.dialog_header')}}
+    // METADATA or FULL_ENTRIES
     AspectSet(:aspects="aspects" :values.sync="values" mode="edit" @is_complete="is_complete=$event")
     div.ml-2.mb-3
       v-alert(:color="template_info_color")
@@ -16,24 +17,40 @@ import Dialog from "~/components/dialogs/Dialog"
 import DialogWrapper from "~/components/dialogs/DialogWrapper"
 import CustomDialogMixin from "~/components/dialogs/CustomDialogMixin"
 import Aspect from "~/components/Aspect"
-import {METADATA, SELECT} from "~/lib/consts"
+import {LANGUAGE, METADATA, SELECT, TEMPLATE} from "~/lib/consts"
 import AspectSet from "~/components/AspectSet"
 import {pack_value, type_default_value} from "~/lib/aspect"
 import LayoutMixin from "~/components/global/LayoutMixin"
 import {recursive_unpack2} from "~/lib/util"
-
+import {is_uuid} from "~/lib/props_validators"
+import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
+const ld = require("lodash")
 
 // const DOWNLOAD_DONE = 2
 
 export default {
   name: "EntriesDownloadDialog",
-  mixins: [CustomDialogMixin],
+  mixins: [CustomDialogMixin, TypicalAspectMixin],
   components: {AspectSet, Aspect, DialogWrapper, Dialog},
   props: {
     entries_uuids: Array,
     templates: {
       type:Array,
       default: () => []
+    },
+    download_config: {
+      type: Object,
+      validator: (config) => {
+        let uuids = ld.get(config, "entries",[])
+        if (!uuids) {
+          return false
+        }
+        // just check the 1. one...
+        if(!is_uuid(uuids[0])) {
+          return false
+        }
+        return ld.has(config,"config") && Array.isArray(ld.get(config,"config"))
+      },
     },
     download_status: Number
   },
@@ -47,23 +64,6 @@ export default {
     }
   },
   computed: {
-    // select_template_aspect() {
-    //   return {
-    //     "name": "select_template",
-    //     "t_label": "comp.entries_download_dialog.template_aspect_label",
-    //     "type": SELECT,
-    //     "items": [
-    //       {
-    //         "value": "cool",
-    //         "text": "cool"
-    //       },
-    //       {
-    //         "value": "not cool",
-    //         "text": "not cool"
-    //       }
-    //     ]
-    //   }
-    // },
     select_data_aspect() {
       return {
         "name": "select_data",
@@ -82,7 +82,18 @@ export default {
       }
     },
     aspects() {
-      return [this.select_data_aspect]
+      const base = [this.select_data_aspect]  // metadata or complete
+      for(let conf of this.download_config.config) {
+        // check if conf.name is TEMPLATE and if the value is longer than 1
+        if(conf.name === TEMPLATE && conf.value.length > 1) {
+            base.push(this.asp_entry_type(TEMPLATE, true, {}, conf.value))
+        }
+        // check if conf .name is LANGUAGE and the value more than 1
+        if(conf.name === LANGUAGE && conf.value.length > 1) {
+          base.push(this.asp_language())
+        }
+      }
+      return base
     },
     only_metadata_selected() {
       return this.values.select_data.value === "metadata"

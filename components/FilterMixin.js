@@ -13,13 +13,14 @@ import {
 } from "~/lib/consts"
 import {build_tag_select_list, build_tag_select_tree, find_templates_using_code} from "~/lib/codes"
 import {mapGetters} from "vuex";
-import {pack_value, unpack} from "~/lib/aspect";
+import {unpack} from "~/lib/aspect";
 import {recursive_unpack2} from "~/lib/util";
+import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
 
 
 export default {
   name: "FilterMixin",
-  mixins: [],
+  mixins: [TypicalAspectMixin],
   computed: {
     act_config: {
       get: function () {
@@ -70,17 +71,10 @@ export default {
     },
     get_template_filter_options() {
       return {
-        name: "template",
+        name: TEMPLATE,
         t_label: "w.entrytype",
-        aspect: {
-          name: "template_slug",
-          t_label: "w.entrytype",
-          type: "multiselect",
-          attr: {
-            min: 1,
-          },
-        },
-        search_config: this._template_filter_config()
+        aspect: this.asp_entry_type(TEMPLATE, false, {min: 1}),
+        search_config: this.template_filter_config()
       }
     },
     lang_tagged_entry_title(entry, default_lang) {
@@ -162,8 +156,9 @@ export default {
       return {
         name: LANGUAGE,
         t_label: "asp.language.label",
-        search_config: this._language_filter_config(),
+        search_config: this.language_filter_config(),
         hide_on_value: [this.domain_language],
+        // todo use typicalAspect
         aspect: {
           name: LANGUAGE,
           t_label: "asp.language.label",
@@ -220,33 +215,40 @@ export default {
       if (filtername === TEMPLATE) {
         // const used_templates = this.$store.getters["templates/entry_types_array"](language, true).filter(template => filtervalue.includes(template.slug))
         // filter out slugs that dont exist. todo maybe something on the server?
-        // debugger
         const valid_value = this._validate_template_value(TEMPLATE, filtervalue)
         const value_items = valid_value.map(slug => ({
           text: this.$store.getters["templates/template_title"](slug, this.domain_language),
           value: slug
         }))
         // console.log("filtermixin.config_generate: valid_value", valid_value)
-        return this._template_filter_config(value_items)
+        return this.template_filter_config(value_items)
       } else if (filtername === LANGUAGE) {
-        return this._language_filter_config(filtervalue)
-      } else if(filtername === DOMAIN) {
+        return this.language_filter_config(filtervalue)
+      } else if (filtername === DOMAIN) {
         return this._domain_filter_config(filtervalue)
       }
     },
-    _language_filter_config(value = []) {
-      return {
+    language_filter_config(value = [], include_label = true) {
+      // the download-dialog uses this too but doesnt need the label
+      const result = {
         name: LANGUAGE,
-        t_label: "asp.language.label",
         value
       }
+      if (include_label) {
+        result.t_label = "asp.language.label"
+      }
+      return result
     },
-    _template_filter_config(value = []) {
-      return {
+    template_filter_config(value = [], include_label = true) {
+      // the download-dialog uses this too but doesnt need the label
+      const result = {
         name: TEMPLATE,
-        t_label: "w.entrytype",
         value
       }
+      if (include_label) {
+        result.t_label = "w.entrytype"
+      }
+      return result
     },
     _domain_filter_config(value) {
       return {
