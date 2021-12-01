@@ -1,12 +1,13 @@
 <template lang="pug">
   div
-    v-textarea(v-model="input" solo)
-    v-btn(@click="exec") run
+    v-textarea(v-model="input" solo @keydown="keydown")
+    //v-btn(@click="exec") run
 </template>
 
 <script>
 /**
- * simply put it after an Aspect
+ * simply put it after an Aspect.
+ * shift + Enter to exec
  */
 export default {
   name: "AspectConsole",
@@ -47,7 +48,17 @@ export default {
   },
   methods: {
     exec() {
-      eval(this.input)
+      try {
+        eval(this.input)
+      } catch (e) {
+        console.error(e)
+      }
+
+    },
+    keydown(e) {
+      if(e.shiftKey && e.key === "Enter") {
+        this.exec()
+      }
     }
   }
 }
