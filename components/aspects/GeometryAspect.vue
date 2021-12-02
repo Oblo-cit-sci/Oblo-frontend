@@ -9,15 +9,21 @@
         :map-options="map_options"
         @map-load="aspect_onMapLoaded"
         @click="map_click"
-        @dblclick="map_dbclick"
         :navControl="nav_control_options")
     v-btn-toggle(:disable="!map_loaded" v-model="geo_button_selection")
       v-btn.mx-0(v-for="geo_type in allowed_geometry_types"
-        :key="geo_type.type"
-        @click="new_feature(geo_type.type)")
-        v-icon {{geo_type.icon}}
-        span {{geo_type.type}}
+        :key="geo_type"
+        @click="new_feature(geo_type)")
+        v-icon {{get_geometry_type_icon(geo_type)}}
+        span {{geo_type}}
     div {{added_features}}
+    v-list
+      v-list-item(v-for="feature in added_features.features" :key="feature.id")
+        v-list-item-icon
+          v-icon  {{get_geometry_type_icon(feature.geometry.type)}}
+        v-list-item-content {{feature.properties.place}}
+        v-list-item-icon(@click="delete_feature(feature.id)")
+          v-icon {{"mdi-close"}}
 </template>
 
 <script>
@@ -25,35 +31,11 @@ import AspectComponentMixin from "~/components/aspects/AspectComponentMixin"
 import ResponsivenessMixin from "~/components/ResponsivenessMixin"
 import MapIncludeMixin from "~/components/map/MapIncludeMixin"
 import Mapbox from "mapbox-gl-vue"
+import {LINESTRING, POINT, POLYGON, ALL_GEOMETRY_TYPES} from "~/lib/consts"
+import {arr2coords} from "~/lib/map_utils"
 
-const POINT = "Point"
-const LINESTRING = "LineString"
-const MULTIPOINT = "MultiPoint"
-const POLYGON = "Polygon"
+
 const DELETE = "delete"
-const all_types = [POINT, LINESTRING, POLYGON]
-const geometry_types = [
-  {
-    icon: "mdi-map-marker",
-    type: POINT,
-  },
-  {
-    icon: "mdi-map-marker-multiple",
-    type: MULTIPOINT,
-  },
-  {
-    icon: "mdi-vector-polyline",
-    type: LINESTRING,
-  },
-  {
-    icon: "mdi-vector-polygon",
-    type: POLYGON,
-  },
-  {
-    icon: "delete",
-    type: DELETE
-  }
-]
 
 const ADDED_SOURCE = "added_source"
 const ADDED_LAYER = "added_layer"
@@ -152,8 +134,12 @@ export default {
      * get geometry_type from the current feature
      */
     allowed_geometry_types() {
-      const allowed_type_names = this.$_.get(this.attr, "allowed_geometry_types", all_types)
-      return geometry_types.filter(g => allowed_type_names.includes(g.type))
+      // todo : insert:
+      //       {
+      //   icon: "delete",
+      //   type: DELETE
+      // }
+      return  this.$_.get(this.attr, "allowed_geometry_types", ALL_GEOMETRY_TYPES)
     },
     min_geometries() {
       return this.attr.min || null
@@ -165,6 +151,7 @@ export default {
   methods: {
     aspect_onMapLoaded(map) {
       this.onMapLoaded(map)
+      this.map_loaded = false
       if (this.value) {
         this.add_layer("l1", this.value.source, this.value.layers, this.show_default_layers)
       }
@@ -172,6 +159,7 @@ export default {
         this.init_edit_layers()
         this.init_interaction_functions()
       }
+      this.map_loaded = true
     },
     init_edit_layers() {
       const geojson_wrap = (data) => ({type: "geojson", data})
@@ -300,14 +288,11 @@ export default {
     map_click(map, mapboxEvent) {
       // check if button is selected and if its the delete button
       if (this.geo_button_selection) {
-        if (geometry_types[this.geo_button_selection].type === DELETE) {
-          // todo check if its the layer that and the point there...
-          // delete the point
-
-        }
+        // if (GEOMETRY_ICONS[this.geo_button_selection].type === DELETE) {
+        //   // todo check if its the layer that and the point there...
+        //   // delete the point
+        // }
       }
-    },
-    map_dbclick(map, mapboxEvent) {
     },
     add_layer(name, source, layers = [], show_default_layers = true) {
       this.map.addSource(name, {
@@ -344,8 +329,12 @@ export default {
       }
     },
     // NEW
-    add_feature(feature) {
-      this.added_features.features.push(this.$_.cloneDeep(feature))
+    async add_feature(feature_orig) {
+      const feature = this.$_.cloneDeep(feature_orig)
+      const res = await this.rev_geocode(arr2coords(this.get_single_coordinate(feature)))
+      // todo recalc when point is moved
+      feature.properties.place = res.features[0].place_name
+      this.added_features.features.push(feature)
       this.map.getSource(ADDED_SOURCE).setData(this.added_features)
     },
     /**
@@ -354,11 +343,11 @@ export default {
     new_feature(type) {
       if (type === POINT) {
         this.map.on("click", this.point_create_click)
-      }
-      else if ([LINESTRING, POLYGON].includes(type)) {
+      } else if ([LINESTRING, POLYGON].includes(type)) {
         this.temp_points = {
           type: "Feature",
           id: this.next_feature_id(),
+          properties: {},
           geometry: {
             type: POINT,
             coordinates: []
@@ -376,7 +365,7 @@ export default {
       e.preventDefault()
       this.add_feature(this.$_.cloneDeep(this.create_point_feature([e.lngLat.lng, e.lngLat.lat])))
       this.geo_button_selection = null
-      this.map.off("mouseclick", this.point_create_click)
+      this.map.off("click", this.point_create_click)
     },
     linestring_create_mousemove(e) {
       if (this.temp_points.geometry.type === POINT) {
@@ -384,22 +373,32 @@ export default {
         // console.log(this.temp_points)
         this.map.getSource(TEMP_SOURCE).setData(this.temp_points)
       } else {
-        this.temp_points.geometry.coordinates.pop()
         const coordinates = [e.lngLat.lng, e.lngLat.lat]
-        this.temp_points.geometry.coordinates.push(coordinates)
+        if (this.create_geometry === LINESTRING) {
+          this.temp_points.geometry.coordinates.pop()
+          this.temp_points.geometry.coordinates.push(coordinates)
+        } else if (this.create_geometry === POLYGON) {
+          console.log("poly... points", this.temp_points.geometry.coordinates[0].length)
+          console.log(this.temp_points.geometry.coordinates[0])
+          this.temp_points.geometry.coordinates[0].pop()
+          this.temp_points.geometry.coordinates[0].pop()
+          this.temp_points.geometry.coordinates[0].push(coordinates)
+          this.temp_points.geometry.coordinates[0].push(this.temp_points.geometry.coordinates[0][0])
+        }
+        console.log("poly... points...->", this.temp_points.geometry.coordinates[0].length)
         this.map.getSource(TEMP_SOURCE).setData(this.temp_points)
       }
     },
     linestring_create_click(e) {
-      console.log(e)
+      // console.log(e)
       e.preventDefault()
       const coordinates = [e.lngLat.lng, e.lngLat.lat]
-      // if over the last point -> fiish!
+      // if over the last point -> finish!
       if (this.map.getFeatureState({
         source: TEMP_SOURCE,
         id: this.temp_points.id
       })[state_mark_finish]) {
-        console.log("fin")
+        // console.log("fin")
         this.add_feature(this.temp_points)
         this.create_geometry = null
         this.temp_points = null
@@ -414,24 +413,38 @@ export default {
       // add point and update current source
       this.current_feature.features.push(this.create_point_feature(coordinates))
       this.map.getSource(CURRENT_SINGULAR_POINTS).setData(this.current_feature)
-
       // as long there is only one points, the type is still POINT, change it...
       if (this.temp_points.geometry.type === POINT) {
         console.log("turn to", this.create_geometry)
         this.temp_points.geometry.type = this.create_geometry
-        this.temp_points.geometry.coordinates = []
-      } else {
-        console.log("pop and add new temp")
+        if (this.create_geometry === LINESTRING) {
+          this.temp_points.geometry.coordinates = []
+        } else if (this.create_geometry === POLYGON) {
+          this.temp_points.geometry.coordinates = [[]]
+        }
+      } else { // add another point to exising multipoint geometry
+        // console.log("pop and add new temp")
         // pop, the temp move point away and push the current coordinates twice
-        this.temp_points.geometry.coordinates.pop()
+        if (this.create_geometry === LINESTRING) {
+          this.temp_points.geometry.coordinates.pop()
+        } else if (this.create_geometry === POLYGON) {
+          this.temp_points.geometry.coordinates[0].pop()
+          this.temp_points.geometry.coordinates[0].pop()
+        }
         // since we are immediately inside the circle, we should set the state (as if we entered it)
         this.map.setFeatureState({
           source: TEMP_SOURCE,
           id: this.temp_points.id
         }, {[state_mark_finish]: true})
       }
-      this.temp_points.geometry.coordinates.push(coordinates)
-      this.temp_points.geometry.coordinates.push(coordinates)// new temp point
+      if (this.create_geometry === LINESTRING) {
+        this.temp_points.geometry.coordinates.push(coordinates)
+        this.temp_points.geometry.coordinates.push(coordinates)// new temp point
+      } else if (this.create_geometry === POLYGON) {
+        this.temp_points.geometry.coordinates[0].push(coordinates)
+        this.temp_points.geometry.coordinates[0].push(coordinates)// new temp point
+        this.temp_points.geometry.coordinates[0].push(this.temp_points.geometry.coordinates[0][0])
+      }
       this.map.getSource(TEMP_SOURCE).setData(this.temp_points)
     },
     linestring_create_mouseenter(e) {
@@ -456,6 +469,7 @@ export default {
       return {
         type: "Feature",
         id: this.next_feature_id(),
+        properties: {},
         geometry: {
           type: POINT,
           coordinates: coordinates
@@ -466,6 +480,7 @@ export default {
       return {
         type: "FeatureCollection",
         id: this.next_feature_id(),
+        properties: {},
         features: features
       }
     },
@@ -518,6 +533,10 @@ export default {
     },
     set_map_canvas_cursor(cursor) {
       this.map.getCanvasContainer().style.cursor = cursor
+    },
+    delete_feature(feature_id) {
+      this.added_features.features = this.$_.filter(this.added_features.features, f => f.id !== feature_id)
+      this.map.getSource(ADDED_SOURCE).setData(this.added_features)
     }
   }
 }

@@ -1,6 +1,7 @@
 // BASIC lAYER
 import MapEntriesMixin from "~/components/map/MapEntriesMixin"
-import {default_place_type} from "~/lib/consts"
+import {default_place_type, LINESTRING, MULTIPOINT, POINT, POLYGON} from "~/lib/consts"
+
 
 export default {
   name: "MapIncludeMixin",
@@ -72,22 +73,22 @@ export default {
       place_types: default_place_type
     }) {
       let {data} = await this.$axios.get(encodeURI(this.mapbox_api_url + location.lon + "," + location.lat) + ".json",
-          {
-            params: {
-              access_token: this.access_token,
-              types: params.place_types,
-              language: "en"
-            }
-          })
+        {
+          params: {
+            access_token: this.access_token,
+            types: params.place_types,
+            language: "en"
+          }
+        })
       return data
     },
     async geocode(search_text, params = {types: default_place_type, language: "en"}) {
       const {data} = await this.$axios.get(encodeURI(this.mapbox_api_url + search_text) + ".json",
-          {
-            params: Object.assign({
-              access_token: this.access_token
-            }, params)
-          }
+        {
+          params: Object.assign({
+            access_token: this.access_token
+          }, params)
+        }
       )
       return data
     },
@@ -129,8 +130,8 @@ export default {
         const feature = e.features[0]
         this.act_hoover_id = feature.id
         this.map.setFeatureState(
-            {source: source_name, id: this.act_hoover_id},
-            {hover: true}
+          {source: source_name, id: this.act_hoover_id},
+          {hover: true}
         )
         this.add_popup(feature, e, feature.properties.title)
       })
@@ -138,7 +139,7 @@ export default {
       this.map.on('mouseleave', entries_layer_name, () => {
         if (this.act_hoover_id !== null) {
           this.map.removeFeatureState(
-              {source: source_name, id: this.act_hoover_id}, "hover")
+            {source: source_name, id: this.act_hoover_id}, "hover")
 
           this.act_hoover_id = null
           this.remove_all_popups()
@@ -184,13 +185,13 @@ export default {
     },
     geolocate(control, position) {
       console.log(
-          `User position: ${position.coords.latitude}, ${position.coords.longitude}`
+        `User position: ${position.coords.latitude}, ${position.coords.longitude}`
       )
     },
     download_image() {
       // doesnt contain the marker yet
       let image = this.map.getCanvas().toDataURL("image/png")
-          .replace("image/png", "image/octet-stream")
+        .replace("image/png", "image/octet-stream")
       let a = document.createElement('a')
       a.href = image
       a.download = "neat.png"
@@ -218,8 +219,8 @@ export default {
         coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
       }
       const popup = new this.mapboxgl.Popup()
-          .setLngLat(coordinates)
-          .setHTML(popup_html)
+        .setLngLat(coordinates)
+        .setHTML(popup_html)
 
       popup.addTo(this.map)
       this.popups.push(popup)
@@ -239,6 +240,43 @@ export default {
         popup.remove()
       }
       this.popups = []
+    },
+    get_single_coordinate(feature) {
+      // todo this will not work, if the points are spread around [-180,180] on the Lng...
+      // if the feature.type is POINT just get the coordinates
+      if (feature.geometry.type === POINT) {
+        return feature.geometry.coordinates
+      }
+      // if the feature.type is POLYGON or LINESTRING, get the average of the coordinates
+      const coords_array = feature.geometry.type === LINESTRING ? feature.geometry.coordinates : feature.geometry.coordinates[0]
+      let point = new mapboxgl.Point(0, 0)
+
+      const arr2p = a => new mapboxgl.Point(a[0], a[1])
+      const _2arr = p => [p.x, p.y]
+      if (feature.geometry.type === LINESTRING) {
+        coords_array.forEach(c => point._add(arr2p(c)))
+        return _2arr(point.div(coords_array.length))
+      } else {
+        for (let i = 0; i < coords_array.length - 1; i++) {
+          point._add(arr2p(coords_array[i]))
+        }
+        return _2arr(point.div(coords_array.length - 1))
+      }
+    },
+    get_geometry_type_icon(type) {
+      switch (type) {
+        case POINT:
+          return "mdi-map-marker"
+        case MULTIPOINT:
+          return "mdi-map-marker-multiple"
+        case LINESTRING:
+          return "mdi-vector-polyline"
+        case POLYGON:
+          return "mdi-vector-polygon"
+        default:
+          logger.warn("wrong type for get_geotyype_icon", type)
+          return "mdi-map-marker"
+      }
     }
   },
   watch: {
