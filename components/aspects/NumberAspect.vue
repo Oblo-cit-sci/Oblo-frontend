@@ -61,7 +61,6 @@ export default {
     }
     return {
       // todo what?
-      mask: "",
       suffix: attr.suffix || "",
       num_type: null,
       validation_rules,
@@ -88,6 +87,11 @@ export default {
       //   return
       // }
       this.update_value(val)
+    }
+  },
+  computed: {
+    mask() {
+      return this.extra.mask || ""
     }
   },
   watch: {

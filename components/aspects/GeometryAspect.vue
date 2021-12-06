@@ -16,12 +16,13 @@
         @click="new_feature(geo_type)")
         v-icon {{get_geometry_type_icon(geo_type)}}
         span {{geo_type}}
-    div {{added_features}}
     v-list
       v-list-item(v-for="feature in added_features.features" :key="feature.id")
         v-list-item-icon
           v-icon  {{get_geometry_type_icon(feature.geometry.type)}}
         v-list-item-content {{feature.properties.place}}
+        v-list-item-icon(@click="edit_feature(feature.id)")
+          v-icon {{"mdi-cursor-move"}}
         v-list-item-icon(@click="delete_feature(feature.id)")
           v-icon {{"mdi-close"}}
 </template>
@@ -54,6 +55,16 @@ const color_current_feature = "#fce00c"
 
 const state_mark_finish = "state_mark"
 const state_hover = "state_hover"
+
+const CLICK = "click"
+const MOUSEENTER = "mouseenter"
+const MOUSELEAVE = "mouseleave"
+const TOUCHSTART = "touchstart"
+const MOUSEDOWN = "mousedown"
+const MOUSEMOVE = "mousemove"
+const TOUCHEND = "touchend"
+const TOUCHMOVE = 'touchmove'
+const MOUSEUP = "mouseup"
 
 export default {
   name: "GeometryAspect",
@@ -103,7 +114,7 @@ export default {
       }
     },
     show_map() {
-      return true
+      return false
       // assuming edit mode is only on the entry page
       // if (this.is_editable_mode) {
       //   return true
@@ -139,7 +150,7 @@ export default {
       //   icon: "delete",
       //   type: DELETE
       // }
-      return  this.$_.get(this.attr, "allowed_geometry_types", ALL_GEOMETRY_TYPES)
+      return this.$_.get(this.attr, "allowed_geometry_types", ALL_GEOMETRY_TYPES)
     },
     min_geometries() {
       return this.attr.min || null
@@ -148,18 +159,24 @@ export default {
       return this.attr.max || null
     }
   },
+  created() {
+    console.log("created")
+    this.add_feature(this.create_point_feature([0, 0]))
+  },
   methods: {
     aspect_onMapLoaded(map) {
-      this.onMapLoaded(map)
-      this.map_loaded = false
-      if (this.value) {
-        this.add_layer("l1", this.value.source, this.value.layers, this.show_default_layers)
+      if (this.show_map) {
+        this.onMapLoaded(map)
+        this.map_loaded = false
+        if (this.value) {
+          this.add_layer("l1", this.value.source, this.value.layers, this.show_default_layers)
+        }
+        if (this.is_editable_mode) {
+          this.init_edit_layers()
+          this.init_interaction_functions()
+        }
+        this.map_loaded = true
       }
-      if (this.is_editable_mode) {
-        this.init_edit_layers()
-        this.init_interaction_functions()
-      }
-      this.map_loaded = true
     },
     init_edit_layers() {
       const geojson_wrap = (data) => ({type: "geojson", data})
@@ -226,7 +243,7 @@ export default {
       })
     },
     init_interaction_functions() {
-      this.map.on('mouseenter', ADDED_LAYER, (e) => {
+      this.map_on(MOUSEENTER, ADDED_LAYER, (e) => {
         // unhover all other features
         if (this.hover_feature_id !== null) {
           this.map.setFeatureState(
@@ -241,7 +258,7 @@ export default {
         )
         this.set_map_canvas_cursor("move")
       })
-      this.map.on('mouseleave', ADDED_LAYER, () => {
+      this.map_on(MOUSELEAVE, ADDED_LAYER, () => {
         if (!this.moving_feature) {
           if (this.hover_feature_id !== null) {
             this.map.setFeatureState(
@@ -253,17 +270,17 @@ export default {
           this.map.getCanvasContainer().style.cursor = '';
         }
       })
-      this.map.on('mousedown', ADDED_LAYER, (e) => {
+      this.map_on(MOUSEDOWN, ADDED_LAYER, (e) => {
         e.preventDefault();
         this.set_map_canvas_cursor("grab")
-        this.map.on('mousemove', this._onMove)
-        this.map.once('mouseup', this._onUp)
+        this.map_on(MOUSEMOVE, this._onMove)
+        this.map_once(MOUSEUP, this._onUp)
       })
-      this.map.on('touchstart', ADDED_LAYER, (e) => {
+      this.map_on(TOUCHSTART, ADDED_LAYER, (e) => {
         if (e.points.length !== 1) return;
         e.preventDefault();
-        this.map.on('touchmove', this._onMove)
-        this.map.once('touchend', this._onUp)
+        this.map_on(TOUCHMOVE, this._onMove)
+        this.map_once(TOUCHEND, this._onUp)
       })
     },
     _onMove(e) {
@@ -275,15 +292,15 @@ export default {
         const feature = this.$_.find(this.added_features.features, f => f.id === this.hover_feature_id)
         if (feature) {
           feature.geometry.coordinates = [coords.lng, coords.lat]
-          this.map.getSource(ADDED_SOURCE).setData(this.added_features)
+          this.set_data(ADDED_SOURCE, this.added_features)
         }
       }
     },
     _onUp() {
       this.moving_feature = false
       this.set_map_canvas_cursor('')
-      this.map.off('mousemove', this._onMove);
-      this.map.off('touchmove', this._onMove);
+      this.map_off(MOUSEMOVE, this._onMove);
+      this.map_off(TOUCHMOVE, this._onMove);
     },
     map_click(map, mapboxEvent) {
       // check if button is selected and if its the delete button
@@ -331,18 +348,22 @@ export default {
     // NEW
     async add_feature(feature_orig) {
       const feature = this.$_.cloneDeep(feature_orig)
-      const res = await this.rev_geocode(arr2coords(this.get_single_coordinate(feature)))
-      // todo recalc when point is moved
-      feature.properties.place = res.features[0].place_name
+      try {
+        const res = await this.rev_geocode(arr2coords(this.get_single_coordinate(feature)))
+        // todo replace when point is moved
+        feature.properties.place = res.features[0].place_name
+      } catch (e) {
+        console.log(e)
+      }
       this.added_features.features.push(feature)
-      this.map.getSource(ADDED_SOURCE).setData(this.added_features)
+      this.set_data(ADDED_SOURCE, this.added_features)
     },
     /**
      * start new feature
      */
     new_feature(type) {
       if (type === POINT) {
-        this.map.on("click", this.point_create_click)
+        this.map_on(CLICK, this.point_create_click)
       } else if ([LINESTRING, POLYGON].includes(type)) {
         this.temp_points = {
           type: "Feature",
@@ -355,23 +376,23 @@ export default {
         }
         this.create_geometry = type
         this.current_feature = this.create_feature_collection()
-        this.map.on('mousemove', this.linestring_create_mousemove)
-        this.map.on("click", this.linestring_create_click)
-        this.map.on('mouseenter', CURRENT_POINTS_INVISIBLE, this.linestring_create_mouseenter)
-        this.map.on('mouseleave', CURRENT_POINTS_INVISIBLE, this.linestring_create_mouseleave)
+        this.map_on(MOUSEMOVE, this.linestring_create_mousemove)
+        this.map_on(CLICK, this.linestring_create_click)
+        this.map_on(MOUSEENTER, CURRENT_POINTS_INVISIBLE, this.linestring_create_mouseenter)
+        this.map_on(MOUSELEAVE, CURRENT_POINTS_INVISIBLE, this.linestring_create_mouseleave)
       }
     },
     point_create_click(e) {
       e.preventDefault()
       this.add_feature(this.$_.cloneDeep(this.create_point_feature([e.lngLat.lng, e.lngLat.lat])))
       this.geo_button_selection = null
-      this.map.off("click", this.point_create_click)
+      this.map_off(CLICK, this.point_create_click)
     },
     linestring_create_mousemove(e) {
       if (this.temp_points.geometry.type === POINT) {
         this.temp_points.geometry.coordinates = [e.lngLat.lng, e.lngLat.lat]
         // console.log(this.temp_points)
-        this.map.getSource(TEMP_SOURCE).setData(this.temp_points)
+        this.set_data(TEMP_SOURCE, this.temp_points)
       } else {
         const coordinates = [e.lngLat.lng, e.lngLat.lat]
         if (this.create_geometry === LINESTRING) {
@@ -386,7 +407,7 @@ export default {
           this.temp_points.geometry.coordinates[0].push(this.temp_points.geometry.coordinates[0][0])
         }
         console.log("poly... points...->", this.temp_points.geometry.coordinates[0].length)
-        this.map.getSource(TEMP_SOURCE).setData(this.temp_points)
+        this.set_data(TEMP_SOURCE, this.temp_points)
       }
     },
     linestring_create_click(e) {
@@ -403,17 +424,17 @@ export default {
         this.create_geometry = null
         this.temp_points = null
         this.geo_button_selection = null
-        this.map.off('mousemove', this.linestring_create_mousemove)
-        this.map.off("click", this.linestring_create_click)
-        this.map.off("mouseenter", CURRENT_POINTS_INVISIBLE, this.linestring_create_mouseenter)
-        this.map.off("mouseleave", CURRENT_POINTS_INVISIBLE, this.linestring_create_mouseleave)
+        this.map_off(MOUSEMOVE, this.linestring_create_mousemove)
+        this.map_off(CLICK, this.linestring_create_click)
+        this.map_off(MOUSEENTER, CURRENT_POINTS_INVISIBLE, this.linestring_create_mouseenter)
+        this.map_off(MOUSELEAVE, CURRENT_POINTS_INVISIBLE, this.linestring_create_mouseleave)
         return
       }
 
       // add point and update current source
       this.current_feature.features.push(this.create_point_feature(coordinates))
-      this.map.getSource(CURRENT_SINGULAR_POINTS).setData(this.current_feature)
-      // as long there is only one points, the type is still POINT, change it...
+      this.set_data(CURRENT_SINGULAR_POINTS, this.current_feature)
+      // as long there is only one point, the type is still POINT, change it...
       if (this.temp_points.geometry.type === POINT) {
         console.log("turn to", this.create_geometry)
         this.temp_points.geometry.type = this.create_geometry
@@ -422,9 +443,8 @@ export default {
         } else if (this.create_geometry === POLYGON) {
           this.temp_points.geometry.coordinates = [[]]
         }
-      } else { // add another point to exising multipoint geometry
+      } else { // pop the moving point away (and the repeated first one for polygon)
         // console.log("pop and add new temp")
-        // pop, the temp move point away and push the current coordinates twice
         if (this.create_geometry === LINESTRING) {
           this.temp_points.geometry.coordinates.pop()
         } else if (this.create_geometry === POLYGON) {
@@ -437,15 +457,16 @@ export default {
           id: this.temp_points.id
         }, {[state_mark_finish]: true})
       }
+      // push back temporary moving point
       if (this.create_geometry === LINESTRING) {
-        this.temp_points.geometry.coordinates.push(coordinates)
-        this.temp_points.geometry.coordinates.push(coordinates)// new temp point
+        this.temp_points.geometry.coordinates.push(coordinates) // new point
+        this.temp_points.geometry.coordinates.push(coordinates) // moving point
       } else if (this.create_geometry === POLYGON) {
-        this.temp_points.geometry.coordinates[0].push(coordinates)
-        this.temp_points.geometry.coordinates[0].push(coordinates)// new temp point
-        this.temp_points.geometry.coordinates[0].push(this.temp_points.geometry.coordinates[0][0])
+        this.temp_points.geometry.coordinates[0].push(coordinates) // new point
+        this.temp_points.geometry.coordinates[0].push(coordinates) // moving point
+        this.temp_points.geometry.coordinates[0].push(this.temp_points.geometry.coordinates[0][0]) // repeated first point
       }
-      this.map.getSource(TEMP_SOURCE).setData(this.temp_points)
+      this.set_data(TEMP_SOURCE, this.temp_points)
     },
     linestring_create_mouseenter(e) {
       // console.log("current-feature LE", this.current_feature.features.length)
@@ -534,9 +555,48 @@ export default {
     set_map_canvas_cursor(cursor) {
       this.map.getCanvasContainer().style.cursor = cursor
     },
+    edit_feature(feature_id) {
+      // find the feature
+      const feature = this.added_features.features.find(f => f.id === feature_id)
+      // if its a point set the right listener:
+      if (feature.geometry.type === POINT) {
+        this.map.on(CLICK, feature_id, this.edit_point_click)
+      } else if (feature.geometry.type === LINESTRING) {
+        this.map.on(CLICK, feature_id, this.edit_linestring_click)
+        // this.map.on(MOUSEENTER, feature_id, this.edit_linestring_mouseenter)
+        // this.map.on('mouseleave', feature_id, this.edit_linestring_mouseleave)
+      } else if (feature.geometry.type === POLYGON) {
+        // this.map.on('click', feature_id, this.edit_polygon_click)
+        // this.map.on('mouseenter', feature_id, this.edit_polygon_mouseenter)
+        // this.map.on('mouseleave', feature_id, this.edit_polygon_mouseleave)
+      }
+    },
     delete_feature(feature_id) {
       this.added_features.features = this.$_.filter(this.added_features.features, f => f.id !== feature_id)
-      this.map.getSource(ADDED_SOURCE).setData(this.added_features)
+      this.set_data(ADDED_SOURCE, this.added_features)
+    },
+    map_on(layer_name, id_o_function, function_) {
+      if (this.show_map) {
+        if (function_) {
+          this.map.on(layer_name, id_o_function, function_)
+        } else {
+          this.map.on(layer_name, function_)
+        }
+      }
+    },
+    map_off(layer_name, id_o_function, function_) {
+      if (this.show_map) {
+        if (function_) {
+          this.map.off(layer_name, id_o_function, function_)
+        } else {
+          this.map.off(layer_name, function_)
+        }
+      }
+    },
+    set_data(layer, data) {
+      if (this.show_map) {
+        this.map.getSource(layer).setData(data)
+      }
     }
   }
 }

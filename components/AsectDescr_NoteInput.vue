@@ -13,12 +13,11 @@
 </template>
 
 <script>
-    import TextLongAspect from "./aspects/TextLongAspect";
 
     export default {
         name: "AsectDescr_NoteInput",
         mixins: [],
-        components: {TextLongAspect},
+        components: {},
         props: {
             aspect_descr_loc: {
                 type: Array
