@@ -49,16 +49,17 @@ export default {
   },
   computed: {
     filters() {
+      // template filter
       const template_filter_options = this.get_template_filter_options()
-
       template_filter_options.aspect.items = object_list2options(this.domain_templates(true), "title", "slug", true)
-
+      // tags filter
       const tags_filter_options = this.get_tags_filter_options(this.domain_name)
       // console.log(tags_filter_options)
-      // const uuids_select_option = get_uuids_select_option()
+      // language filter
       const language_filter_options = this.get_language_filter_options(this.domain_name)
 
       const filters = [template_filter_options, tags_filter_options, language_filter_options]
+      // eventually add review filter
       if ([EDITOR, ADMIN].includes(this.$store.getters["user/global_role"])) {
         filters.push(this.get_requires_review_filter())
       }

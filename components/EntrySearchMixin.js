@@ -131,8 +131,12 @@ export default {
      */
     local_search(filters) {
       let local_entries = this.$store.getters["entries/all_entries_array"]()
+      // console.log("local_search with filters", filters)
+      // console.log("local entries num", local_entries.length)
       for (let filter of filters) {
+        // console.log("filter", filter)
         local_entries = this.apply_filter(filter, local_entries)
+        // console.log("after filter", local_entries)
       }
       return local_entries.map(e => e.uuid)
     },

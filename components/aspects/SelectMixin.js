@@ -94,6 +94,10 @@ export default {
           const source = this.aspect.items.source
           // console.log("source", source)
           // console.log("checking conditionals", this.conditionals)
+          // could be used when a source gives no results.
+          // debug logs parent paths of the given, until it finds a parent that results data
+          // console.log(JSONPath.toPathArray(source))
+          // console.log(JSONPath.toPathString(JSONPath.toPathArray(source)))
           const value_list = JSONPath({
             path: source,
             json: this.conditionals,

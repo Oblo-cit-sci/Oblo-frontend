@@ -24,6 +24,7 @@ import LayoutMixin from "~/components/global/LayoutMixin"
 import {recursive_unpack2} from "~/lib/util"
 import {is_uuid} from "~/lib/props_validators"
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
+
 const ld = require("lodash")
 
 // const DOWNLOAD_DONE = 2
@@ -35,21 +36,22 @@ export default {
   props: {
     entries_uuids: Array,
     templates: {
-      type:Array,
+      type: Array,
       default: () => []
     },
     download_config: {
       type: Object,
       validator: (config) => {
-        let uuids = ld.get(config, "entries",[])
-        if (!uuids) {
-          return false
+        let uuids = ld.get(config, "entries")
+        // todo search store module inits and rests all_uuids (which is that value)
+        // to null, which makes this fail...
+        if (uuids !== null) {
+          // just check the 1. one...
+          if (uuids.length > 0 && !is_uuid(uuids[0])) {
+            return false
+          }
         }
-        // just check the 1. one...
-        if(!is_uuid(uuids[0])) {
-          return false
-        }
-        return ld.has(config,"config") && Array.isArray(ld.get(config,"config"))
+        return ld.has(config, "config") && Array.isArray(ld.get(config, "config"))
       },
     },
     download_status: Number
@@ -83,13 +85,13 @@ export default {
     },
     aspects() {
       const base = [this.select_data_aspect]  // metadata or complete
-      for(let conf of this.download_config.config) {
+      for (let conf of this.download_config.config) {
         // check if conf.name is TEMPLATE and if the value is longer than 1
-        if(conf.name === TEMPLATE && conf.value.length > 1) {
-            base.push(this.asp_entry_type(TEMPLATE, true, {}, conf.value))
+        if (conf.name === TEMPLATE && conf.value.length > 1) {
+          base.push(this.asp_entry_type(TEMPLATE, true, {}, conf.value))
         }
         // check if conf .name is LANGUAGE and the value more than 1
-        if(conf.name === LANGUAGE && conf.value.length > 1) {
+        if (conf.name === LANGUAGE && conf.value.length > 1) {
           base.push(this.asp_language())
         }
       }
@@ -99,7 +101,7 @@ export default {
       return this.values.select_data.value === "metadata"
     },
     template_info_color() {
-      if(this.templates.length !== 1 && ! this.only_metadata_selected) {
+      if (this.templates.length !== 1 && !this.only_metadata_selected) {
         return "orange"
       } else {
         return "green"
@@ -107,10 +109,10 @@ export default {
     },
     template_info_message() {
       const num_template_slugs = this.templates.length
-      if(this.only_metadata_selected) {
+      if (this.only_metadata_selected) {
         return "Metadata of all entries will be downloaded"
       }
-      if(num_template_slugs === 0) {
+      if (num_template_slugs === 0) {
         return "Unknown number of entry types. This might result in multiple download files"
       } else {
         return "Several entry types are included. This will result in multiple download files"

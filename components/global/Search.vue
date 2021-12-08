@@ -312,6 +312,7 @@ export default {
     local_entries() {
       const all_filters = this.$_.concat(this.act_config, this.search_config)
       const has_local_filter = this.has_local_filter(all_filters)
+      // console.log("has_local_filter", has_local_filter)
       if (has_local_filter) {
         return this.local_search(all_filters).reverse()
       } else {
@@ -322,7 +323,8 @@ export default {
       let result_entries_uuids = this.entries() // must be a call
       // console.log("allf", this.act_config, this.search_config)
       result_entries_uuids = this.local_entries.concat(result_entries_uuids)
-      // console.log("new filtered entries", result_entries)
+      // console.log("local entries", this.local_entries)
+      // console.log("new filtered entries", result_entries_uuids)
       if (LOG) {
         console.log("Search.filtered_entries. entries:", result_entries_uuids.length)
         console.log("e1:", result_entries_uuids)

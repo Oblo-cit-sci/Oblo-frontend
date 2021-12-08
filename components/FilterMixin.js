@@ -14,7 +14,7 @@ import {
 import {build_tag_select_list, build_tag_select_tree, find_templates_using_code} from "~/lib/codes"
 import {mapGetters} from "vuex";
 import {unpack} from "~/lib/aspect";
-import {recursive_unpack2} from "~/lib/util";
+import {recursive_unpack, recursive_unpack2} from "~/lib/util";
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
 
 
@@ -177,8 +177,8 @@ export default {
       }
     },
     apply_filter(filter, entries) {
-      const filter_value = unpack(filter.value)
-      // console.log(entries)
+      const filter_value = recursive_unpack(filter.value, true)
+      // console.log(filter_value)
       if (filter.name === "select_uuids") {
         return entries.filter(e => filter.value.includes(e.uuid))
       }
