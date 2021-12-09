@@ -7,6 +7,7 @@
           span.float-left(v-if="text_only_item && is_view_mode") - &nbsp;
           Aspect.py-0(
             v-bind="list_aspect_props(index)"
+            :conditionals="conditionals"
             @aspectAction="handleAspectAction($event, index)"
             @update:ext_value="update_index_value(index, $event)"
             v-on:append-outer="remove_value(index)")
@@ -31,6 +32,7 @@
           v-expansion-panel-content
             Aspect(
               v-bind="list_aspect_props(index)"
+              :conditionals="conditionals"
               @aspectAction="handleAspectAction($event, index)")
             ListitemActions(v-if="!is_view_mode"
               v-bind="listitem_actions_prop(index)"

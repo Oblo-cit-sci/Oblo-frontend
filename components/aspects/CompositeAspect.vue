@@ -155,11 +155,22 @@ export default {
     },
     composite_conditionals() {
       if (this.attr.add_components_as_conditionals) {
+        console.warn("composite attribute add_components_as_conditionals is deprecated: " +
+          "use: use_components_as_conditionals")
         return this.value
-      } else {
-        return null
-      }
-    }
+      } else if (this.attr.use_components_as_conditionals) {
+        return this.value
+      } else if (this.attr.merge_in_components_as_conditionals) {
+        Object.keys(this.value).forEach(name => {
+          if (Object.keys(this.conditionals).includes(name)) {
+            console.warn("composite conditionals merge conflict: " +
+              `'${name}' is already defined in conditionals. will overwrite with component value`)
+          }
+        })
+        return Object.assign(this.$_.cloneDeep(this.conditionals), this.value)
+      } else
+        return this.conditionals
+    },
   },
   beforeUpdate() {
     this.update_aspect_locs()
