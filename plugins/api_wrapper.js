@@ -340,6 +340,15 @@ class TemplateCode extends QueryBase {
     })
   }
 
+  get_slug_lang_with_references(slug, language, domain_default_lang_fallback = false) {
+    return this.get_(`${slug}/with_references`, {
+      params: {
+        language,
+        domain_default_lang_fallback
+      }
+    })
+  }
+
   aspects_as_index_table(slug, language) {
     return this.get_(`${slug}/aspects_as_index_table`, {params: {language}})
   }
@@ -349,7 +358,7 @@ class TemplateCode extends QueryBase {
   }
 
   as_csv(slug, languages) {
-    return this.get_(`as_csv${slug}`, {
+    return this.get_(`${slug}/as_csv`, {
       params: {
         languages
       }

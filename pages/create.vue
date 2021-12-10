@@ -5,6 +5,8 @@
 import EntryCreateMixin from "~/components/entry/EntryCreateMixin"
 import EntryNavMixin from "~/components/EntryNavMixin"
 import {EDIT} from "~/lib/consts"
+import TemplateHelperMixin from "~/components/templates/TemplateHelperMixin"
+import URLQueryMixin from "~/components/util/URLQueryMixin"
 
 /**
  * query params
@@ -13,7 +15,7 @@ import {EDIT} from "~/lib/consts"
  */
 export default {
   name: "create",
-  mixins: [EntryCreateMixin, EntryNavMixin],
+  mixins: [EntryCreateMixin, EntryNavMixin, TemplateHelperMixin, URLQueryMixin],
   components: {},
   props: {},
   data() {
@@ -22,12 +24,17 @@ export default {
   created() {
     switch (this.object_type) {
       case "entry": {
-        const entry = this.create_entry(this.$route.query.template)
-        if(entry) {
-          this.to_entry(entry.uuid, EDIT, {}, false)
-        } else {
-          console.log("ups page")
-        }
+        const slug = this.$route.query.template
+        const language = this.query_language || this.$store.getters.ui_language
+        this.guarantee_template_code_with_references(slug, language).then((res) => {
+          console.log("GUARANTEEE", res)
+          const entry = this.create_entry(slug, language)
+          if (entry) {
+            this.to_entry(entry.uuid, EDIT, {}, false)
+          } else {
+            console.log("ups page")
+          }
+        })
       }
     }
   },

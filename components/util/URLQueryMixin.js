@@ -1,4 +1,4 @@
-import {EDIT, QP_D, QP_ENTRY_ACCESS_KEY, QP_ENTRY_MODE, QP_F, QP_UUID, VIEW} from "~/lib/consts"
+import {EDIT, LANGUAGE, QP_D, QP_ENTRY_ACCESS_KEY, QP_ENTRY_MODE, QP_F, QP_UUID, VIEW} from "~/lib/consts"
 
 export default {
   name: "URLQueryMixin",
@@ -24,6 +24,9 @@ export default {
     },
     entry_mode() {
       return this.$_.get(this.q, QP_ENTRY_MODE, VIEW)
+    },
+    query_language() {
+      return this.q[LANGUAGE]
     },
     query_entry_access_key() {
       return this.q[QP_ENTRY_ACCESS_KEY]
