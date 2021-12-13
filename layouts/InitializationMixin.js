@@ -61,9 +61,7 @@ export default {
             console.log("localForage error", err)
           })
         }
-
-      } else {
-        console.warn("NO STORAGE")
+        console.log("storage reloaded")
       }
     },
     add_edit() {
@@ -73,8 +71,7 @@ export default {
         if (this.$_.some(this.$store.getters["entries/all_uuids"]() === edit.uuid)) {
           return
         }
-        // const template = this.$store.getters["templates/entry_type"](edit.template.slug, edit.language)
-        console.log("putting back edit...")
+        // console.log("putting back edit...")
         this.$store.commit("entries/save_entry", edit)
       }
     },
@@ -142,16 +139,13 @@ export default {
       const result_domain_language = Object.keys(this.$_.find(domain_data.data.domains, d => d.name === domain_name).langs)[0]
 
       // todo here call complete_language_domains if on domain-page and domain-lang different than ui-lang
-      // console.log(resp)
       console.log("connected")
 
       const domains_data = domain_data.data.domains
       const language = domain_data.data.language
 
-      // const domains_overview = resp.data.domains_overview
       await this.$store.commit("domain/add_domains_data", domains_data)
 
-      // await this.$store.dispatch("domain/add_overviews", domains_overview)
       await this.$store.dispatch("templates/add_templates_codes", domain_data.data.templates_and_codes)
       // debugger
       await this.change_language(i_language, true, result_domain_language)
@@ -170,13 +164,11 @@ export default {
       } else {
         await this.guarantee_default_lang_language_names()
       }
-      // debugger
-      // todo maybe this part should be handled by the individual page, so it can do its default behaviour
-      // but a wrapper would be good.
 
+      // guarantee entry & template
       if (this.query_entry_uuid) {
         await this.guarantee_entry(this.query_entry_uuid)
-        console.log("query_entry_uuid", this.query_entry_uuid)
+        // console.log("query_entry_uuid", this.query_entry_uuid)
         const entry = this.$store.getters["entries/get_entry"](this.query_entry_uuid)
         await this.guarantee_template_code_with_references(entry.template.slug,  entry.language)
       }
@@ -184,7 +176,7 @@ export default {
       await this.$store.dispatch("app/connected")
 
       // const only_one_domain = resp.data.only_one_domain
-      console.log("multi domains?", only_one_domain, this.has_multiple_domains)
+      // console.log("multi domains?", only_one_domain, this.has_multiple_domains)
 
       if (only_one_domain) {
         console.log("only one domain, completing domain-lang", language)

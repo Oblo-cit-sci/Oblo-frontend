@@ -54,7 +54,6 @@ export default {
     ...mapGetters({"is_admin": "user/is_admin", "username": "user/registered_name"}),
     meta_aspects() {
       // todo be more generic where the licenses come form. user settings...
-      // console.log(this.get_meta_aspects(this.entry.domain))
       // todo, allow changing the language if(this.$store.getter.user.editor_config.)
       let aspects = [this.license_aspect, this.asp_privacy()]
       for (let aspect of aspects) {

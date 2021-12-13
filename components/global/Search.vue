@@ -51,7 +51,7 @@ import NavBaseMixin from "../NavBaseMixin";
 import PersistentStorageMixin from "../util/PersistentStorageMixin";
 import {recursive_unpack2, route_change_query} from "~/lib/util";
 import Filterlist from "~/components/util/Filterlist"
-import {DOWNLOADING, LANGUAGE, NOT_DOWNLOADING, QP_D, QP_SEARCH, TEMPLATE} from "~/lib/consts"
+import {LANGUAGE, QP_D, QP_SEARCH, TEMPLATE} from "~/lib/consts"
 import EntrySearchMixin from "~/components/EntrySearchMixin"
 import Aspect from "~/components/Aspect"
 import {aspect_default_value, pack_value, unpack} from "~/lib/aspect"

@@ -164,7 +164,6 @@ export default {
     this.set_aspects([this.asp_entry_roles()])
     if (this.is_draft && this.is_edit_mode) {
       this.check_creator_switch()
-      // this.check_language_switch()
     }
   },
   data() {
@@ -208,7 +207,7 @@ export default {
             const {public_name, registered_name} = this.user
             // const orig_user = creator.actor.public_name
             creator.actor = {public_name, registered_name}
-            this.$store.commit("entries/_set_entry_value", {
+            this.$store.commit("entries/set_entry_value", {
               aspect_loc: [[EDIT, this.uuid], ["meta", "actors"]],
               value: roles
             })
@@ -314,7 +313,7 @@ export default {
           // console.log(values[aspect_name], prev[aspect_name])
           if (!this.$_.isEqual(values[aspect_name], this.entry[aspect_name])) {
             // console.log(aspect_name)
-            this.$store.commit("entries/_set_entry_value", {
+            this.$store.commit("entries/set_entry_value", {
               aspect_loc: [[EDIT, this.uuid], [META, aspect_name]],
               value: unpack(values[aspect_name])
             })

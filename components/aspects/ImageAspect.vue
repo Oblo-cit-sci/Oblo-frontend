@@ -100,7 +100,7 @@ export default {
       if (this.get_entry().status === DRAFT && this.is_editable_mode) {
         this.ok_snackbar(this.$t("comp.image_asp.not_found_draft"))
         if (this.images[index].file_uuid === this.get_entry().image) {
-          this.$store.commit("entries/_set_entry_value", {
+          this.$store.commit("entries/set_entry_value", {
             aspect_loc: [[EDIT, ""], [META, "image"]]
           })
         }

@@ -14,7 +14,7 @@
             @download="download_entries(entries_uuids, $event)")
       div(v-else) ...
     #pwlist-wrapper
-      v-row.mx-1(v-for="entry in visible_entries"
+      v-row.mx-1(v-for="entry in entries"
         :key="entry.uuid")
         v-col.px-0(cols=12)
           EntryPreview(
@@ -37,17 +37,17 @@
 import EntryPreview from "~/components/entry/EntryPreview";
 import SimplePaginate from "../SimplePaginate";
 
-
 import {mapGetters} from "vuex"
 import {PAGE_DOMAIN} from "~/lib/pages"
 import EntriesDownloadDialog from "~/components/dialogs/EntriesDownloadDialog"
 import EntryFetchMixin from "~/components/entry/EntryFetchMixin"
 import {DOWNLOADING, NOT_DOWNLOADING} from "~/lib/consts"
+import SlugEntryFetcher from "~/components/templates/SlugEntryFetcher";
 
 export default {
   name: "EntryPreviewList",
   components: {EntriesDownloadDialog, SimplePaginate, EntryPreview},
-  mixins: [EntryFetchMixin],
+  mixins: [EntryFetchMixin, SlugEntryFetcher],
   props: {
     entries_uuids: {
       type: Array,
@@ -79,7 +79,8 @@ export default {
       show_to_top_button: null,
       // @vuese: dialog for downloading entries
       download_dialog_open: false,
-      download_status: NOT_DOWNLOADING
+      download_status: NOT_DOWNLOADING,
+      entries: []
     }
   },
   beforeUpdate() {
@@ -103,20 +104,21 @@ export default {
     next_loading() {
       return this.requesting_entries && this.entries_uuids.length > 0
     },
-    visible_entries() {
-      // console.log("offline- all entries",  this.entries)
-      let from_index = (this.page - 1) * this.entries_per_page
-      let to_index = from_index + this.entries_per_page
-      const entries = this.entries_uuids.slice(from_index, to_index)
-      // todo unique is just required cuz the server does often sent less (actor rows problem when querying entries)
-      const uuids = this.$_.uniq(this.$_.filter(entries, e => !this.deleted.includes(e)))
-      return this.$_.map(uuids, uuid => this.$store.getters["entries/get_entry"](uuid)).filter(e => e !== undefined)
-    },
+    //
+    // entries() {
+    //   this.visible_entries.then(
+    //     entries => {
+    //       return entries
+    //     }
+    //   )
+    //   return []
+    // },
     has_entries() {
       return this.num_entries > 0
     },
     num_entries() {
-      // console.log("num_entries", this.total_count)
+      // todo does not consider drafts
+      // console.log("num_entries", this.total_count, this.entries_uuids.length)
       if (this.total_count !== undefined)
         return this.total_count
       else
@@ -125,15 +127,6 @@ export default {
     show_no_entries_hint() {
       return this.num_entries === 0 && this.$route.name === PAGE_DOMAIN
     },
-    // could be in some mixin
-    // set_of_types() {
-    //   //console.log("num entries", this.entries.length)
-    //   return Array.from(
-    //     new Set(
-    //       this.$_.map(
-    //         this.entries,
-    //         e => this.$store.getters["templates/entry_type"](e.template.slug))).values())
-    // },
     total_pages() {
       return Math.ceil(this.num_entries / this.entries_per_page)
     },
@@ -160,17 +153,32 @@ export default {
         options.container = "#menu_head" //".v-navigation-drawer__content"
       }
       setTimeout(() => this.$vuetify.goTo(0, options), 20)
+    },
+    async visible_entries() {
+      // console.log("offline- all entries",  this.entries)
+      let from_index = (this.page - 1) * this.entries_per_page
+      let to_index = from_index + this.entries_per_page
+      let visible_uuids = this.entries_uuids.slice(from_index, to_index)
+      // todo unique is just required cuz the server does often sent less (actor rows problem when querying entries)
+      visible_uuids = this.$_.uniq(this.$_.filter(visible_uuids, e => !this.deleted.includes(e)))
+      const entries = this.$_.map(visible_uuids, uuid => this.$store.getters["entries/get_entry"](uuid)).filter(e => e !== undefined)
+      // todo this should probably be somewhere else
+      const missing_templates = new Set()
+      entries.forEach(e => {
+        const slug = e.template.slug
+        if (!this.$store.getters["templates/has_slug"](slug)) {
+          missing_templates.add(slug)
+        }
+      })
+      // console.log("missing_templates", missing_templates)
+      missing_templates.forEach(async template => {
+        await this.guarantee_default_language(template)
+      })
+      this._async_entries = entries
+      return entries
     }
   },
   watch: {
-    // entries: {
-    //   immediate: true,
-    //   handler(entries) {
-    //     const entry_types = Array.from(new Set(this.$_.map(entries,
-    //       uuid => this.$store.getters["entries/get_entry"](uuid).template.slug)))
-    //     console.log(entry_types)
-    //   }
-    // },
     requesting_entries(val) {
       /**
        * val: boolean
@@ -179,6 +187,14 @@ export default {
       if (val && !(this.entries_uuids.length > 0)) {
         this.page = 1
       }
+    },
+    entries_uuids: {
+      handler() {
+        this.visible_entries().then(entries => {
+          this.entries = entries
+        })
+      },
+      immediate: true
     },
     page(page) {
       this.scroll_to_top()
