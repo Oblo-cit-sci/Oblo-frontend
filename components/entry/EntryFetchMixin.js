@@ -1,12 +1,12 @@
 import LanguageMixin from "~/components/LanguageMixin";
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin";
 import ExportMixin from "~/components/global/ExportMixin"
-import TemplateHelperMixin from "~/components/templates/TemplateHelperMixin"
-import {DOWNLOADING, LANGUAGE, METADATA, NOT_DOWNLOADING, TEMPLATE} from "~/lib/consts"
+import {DOWNLOADING, LANGUAGE, NOT_DOWNLOADING, TEMPLATE} from "~/lib/consts"
+import SlugEntryFetcher from "~/components/templates/SlugEntryFetcher";
 
 export default {
   name: "EntryFetchMixin",
-  mixins: [LanguageMixin, TriggerSnackbarMixin, ExportMixin, TemplateHelperMixin],
+  mixins: [LanguageMixin, TriggerSnackbarMixin, ExportMixin, SlugEntryFetcher],
   methods: {
     async guarantee_entry(entry_uuid, entry_access_key = null) {
       if (this.$store.getters["entries/has_full_entry"](entry_uuid)) {

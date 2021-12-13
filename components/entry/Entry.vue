@@ -129,7 +129,6 @@ import EntryTags from "~/components/entry/EntryTags"
 import AspectSetMixin from "~/components/aspects/AspectSetMixin"
 import {CREATOR} from "~/lib/actors"
 import LanguageChip from "~/components/language/LanguageChip";
-import TemplateHelperMixin from "~/components/templates/TemplateHelperMixin";
 import AspectSet from "~/components/AspectSet";
 import {pack_value, unpack} from "~/lib/aspect";
 import {BUS_DIALOG_OPEN} from "~/plugins/bus";
@@ -139,7 +138,7 @@ import goTo from 'vuetify/lib/services/goto'
 export default {
   name: "Entry",
   mixins: [EntryNavMixin, EntryMixin, TriggerSnackbarMixin, TypicalAspectMixin, PersistentStorageMixin,
-    FullEntryMixin, AspectSetMixin, TemplateHelperMixin],
+    FullEntryMixin, AspectSetMixin],
   components: {
     OutdatedChip,
     AspectSet,

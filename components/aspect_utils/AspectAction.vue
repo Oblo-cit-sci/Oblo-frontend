@@ -18,7 +18,7 @@ import {
   unpack
 } from "~/lib/aspect"
 import {transform_options_list} from "~/lib/options"
-import TemplateAccessMixin from "~/components/templates/TemplateAccessMixin"
+// import TemplateAccessMixin from "~/components/templates/TemplateAccessMixin"
 
 /**
  * attr: {
@@ -38,7 +38,7 @@ import TemplateAccessMixin from "~/components/templates/TemplateAccessMixin"
 // todo maybe trigger.requires_callback can go since its basically always the case for api-query...
 export default {
   name: "AspectAction",
-  mixins: [TriggerSnackbarMixin, TemplateAccessMixin],
+  mixins: [TriggerSnackbarMixin],
   components: {},
   props: {
     aspect: Object,
@@ -96,7 +96,7 @@ export default {
           this.perform_api_query()
           break
         case "emit":
-          this.$emit("aspectAction", {action: "defined_action", name:this.action.name})
+          this.$emit("aspectAction", {action: "defined_action", name: this.action.name})
           // this.$bus.$on("aspect-action-done", () => {
           //   console.log("ll")
           //   this.button_trigger_loading = false
@@ -157,36 +157,6 @@ export default {
         }
       }
       return data
-      // const result = []
-      // for (let i of process) {
-      //   const k = Object.keys(i)[0]
-      //   const v = i[k]
-      //   let read = null
-      //   // if value is just str, the string is the location of a simple value
-      //   // if value is array, first is location, probably to an object, and the 2nd is how the keys are "joined"
-      //   let joined = false
-      //   if (this.$_.isArray(v)) {
-      //     read = this.$_.get(data, v[0])
-      //     joined = true
-      //   } else {
-      //     read = this.$_.get(data, v)
-      //   }
-      //   if (read) {
-      //     if (joined) {
-      //       const join_obj = (val) => {
-      //         const keys_to_join = v[1]
-      //         return this.$_.map(keys_to_join, prop => val[prop]).join(", ")
-      //       }
-      //       if (Array.isArray(read)) {
-      //         read = read.map(i => join_obj(i))
-      //       } else {
-      //         read = join_obj(v)
-      //       }
-      //     }
-      //     result.push({[k]: read})
-      //   }
-      // }
-      // return result
     },
     transform_data(data) {
       const transformer = this.action.properties.transform_result
@@ -214,13 +184,21 @@ export default {
       if (handle) {
         if (handle.type === "assign_to_aspect") {
           const aspect_loc = this.$_.concat([[EDIT, null]], aspect_loc_str2arr(handle.aspect, this.extra.list_index))
-          const aspect = this.aspect_from_location(aspect_loc)
-          this.$store.dispatch("entries/set_entry_value", {
+          // const aspect = this.aspect_from_location(aspect_loc)
+          this.$store.commit("entries/set_entry_value", {
             aspect_loc,
-            value: aspect_default_value(aspect)
+            value: aspect_default_value(this.aspect)
           })
+          this.store_edit()
           // console.log("reset", aspect_loc, aspect)
         }
+      }
+    },
+    // same as in AspectMixin
+    async store_edit() {
+      const edit = this.get_entry()
+      if (edit) {
+        await this.$localforage.setItem("edit_entry", edit)
       }
     },
     handle_result(result) {
@@ -258,7 +236,7 @@ export default {
       immediate: true,
       handler(new_val, prev_val) {
         // catch create call with nothing, and NOT initialized with aspect-default // false if value from aspect-cache
-        if (this.$_.isEqual(new_val,aspect_default_value(this.aspect)) && prev_val === undefined) {
+        if (this.$_.isEqual(new_val, aspect_default_value(this.aspect)) && prev_val === undefined) {
           return
         }
         // todo could also be another default

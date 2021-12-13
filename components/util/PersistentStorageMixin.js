@@ -23,6 +23,15 @@ export default {
       // console.log("persist entries")
       await this.store_value("entries", this.$store.getters["entries/all_drafts"]().map(e => [e.uuid, e]))
     },
+    /** could be used more....
+    instead we have 'store_edit' in several locations
+     **/
+    async persist_edit_entry() {
+      const edit = this.$store.getters["get_edit"]()
+      if (edit) {
+        await this.$localforage.setItem("edit_entry", edit)
+      }
+    },
     async persist_user_key() {
       await this.store_value("user_key", this.$store.getters.user_key)
     },

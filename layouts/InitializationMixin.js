@@ -11,10 +11,12 @@ import URLQueryMixin from "~/components/util/URLQueryMixin";
 import LanguageMixin from "~/components/LanguageMixin";
 import EntryFetchMixin from "~/components/entry/EntryFetchMixin";
 import OfflineMixin from "~/lib/OfflineMixin"
+import SlugEntryFetcher from "~/components/templates/SlugEntryFetcher";
 
 export default {
   name: "InitializationMixin",
-  mixins: [FixDomainMixin, SettingsChangeMixin, HomePathMixin, EnvMixin, URLQueryMixin, LanguageMixin, EntryFetchMixin, OfflineMixin],
+  mixins: [FixDomainMixin, SettingsChangeMixin, HomePathMixin, EnvMixin, URLQueryMixin, LanguageMixin,
+    EntryFetchMixin, OfflineMixin, SlugEntryFetcher],
   created() {
     // console.log("db loaded??", this.db_loaded)
     default_settings.ui_language = this.default_language
@@ -47,6 +49,9 @@ export default {
             if (store_var) {
               // console.log(store_var.constructor)
               this.$store.commit(store_var_descr.store_mutation, store_var)
+              if (store_var_descr.name === "edit_entry") {
+                this.add_edit()
+              }
             }
             remaining.splice(remaining.indexOf(store_var_descr.name), 1);
             if (remaining.length === 0) {
@@ -56,6 +61,21 @@ export default {
             console.log("localForage error", err)
           })
         }
+
+      } else {
+        console.warn("NO STORAGE")
+      }
+    },
+    add_edit() {
+      // check if the edit entry is in entries and add it if not
+      const edit = this.$store.getters["entries/get_edit"]()
+      if (edit) {
+        if (this.$_.some(this.$store.getters["entries/all_uuids"]() === edit.uuid)) {
+          return
+        }
+        // const template = this.$store.getters["templates/entry_type"](edit.template.slug, edit.language)
+        console.log("putting back edit...")
+        this.$store.commit("entries/save_entry", edit)
       }
     },
     async initialize() {
@@ -94,7 +114,7 @@ export default {
       // this.$api.domain.overviews(i_language).then(({data}) => {
       //   this.$store.commit("domain/add_domains_data", data.data)
       // })
-      try{
+      try {
         await this.get_domain_overviews(i_language)
       } catch (e) {
         console.error("init getting domain overviews failed", e)
@@ -128,7 +148,6 @@ export default {
       const domains_data = domain_data.data.domains
       const language = domain_data.data.language
 
-
       // const domains_overview = resp.data.domains_overview
       await this.$store.commit("domain/add_domains_data", domains_data)
 
@@ -154,6 +173,13 @@ export default {
       // debugger
       // todo maybe this part should be handled by the individual page, so it can do its default behaviour
       // but a wrapper would be good.
+
+      if (this.query_entry_uuid) {
+        await this.guarantee_entry(this.query_entry_uuid)
+        console.log("query_entry_uuid", this.query_entry_uuid)
+        const entry = this.$store.getters["entries/get_entry"](this.query_entry_uuid)
+        await this.guarantee_template_code_with_references(entry.template.slug,  entry.language)
+      }
 
       await this.$store.dispatch("app/connected")
 

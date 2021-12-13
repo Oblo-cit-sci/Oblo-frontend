@@ -22,9 +22,9 @@ export default {
         aspect_loc: index_aspect_loc})
 
       const new_value = this.$_.concat(value, [child.uuid])
-      this.$store.dispatch("entries/set_entry_value", {aspect_loc: aspect_loc, value: pack_value(new_value)})
-
-      this.persist_entries()
+      this.$store.commit("entries/set_entry_value", {aspect_loc: aspect_loc, value: pack_value(new_value)})
+      this.persist_entries().then()
+      this.persist_edit_entry().then()
       // goto
       this.to_entry(child.uuid, EDIT)
     },

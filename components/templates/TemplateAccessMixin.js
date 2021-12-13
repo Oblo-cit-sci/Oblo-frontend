@@ -1,5 +1,8 @@
 import {ASPECT, EDIT, ENTRY} from "~/lib/consts"
 
+/**
+ * NOT USED
+ */
 export default {
   name: "TemplateAccessMixin",
   methods: {

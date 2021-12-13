@@ -34,19 +34,8 @@ export const mutations = {
     // turn entries to array, filter by passed uuids; turn back into 2 val array, and rebuild Map
     state.entries = new Map(Array.from(state.entries.values()).filter(e => !uuids.includes(e.uuid)).map(e => [e.uuid, e]))
   },
-  set_downloaded(state, local_id) {
-    let e = state.entries.get(local_id)
-    //console.log("DL ", e, local_id)
-    e.downloaded_version = e.version
-  },
-  add_edit_ref_child(state, {aspect_loc, child_uuid}) {
-    state.edit.refs.children[child_uuid] = aspect_loc
-  },
   add_ref_child(state, {uuid, child_uuid, aspect_loc}) {
     state.entries.get(uuid).refs.children[child_uuid] = aspect_loc
-  },
-  delete_edit_ref_child(state, child_uuid) {
-    delete state.edit.refs.children[child_uuid]
   },
   // todo, shouldnt be needed
   set_ref_parent(state, {uuid, ref}) {
@@ -68,7 +57,7 @@ export const mutations = {
     }
     state.edit = null
   },
-  _set_entry_value(state, {aspect_loc, value}) {
+  set_entry_value(state, {aspect_loc, value}) {
     // console.log("set entry value", aspect_loc, value)
     let select = select_aspect_loc(state, aspect_loc, true)
     // ld.set()
@@ -467,10 +456,6 @@ export const actions = {
         state.entries.set(entry.uuid, entry)
       }
     }
-  },
-  set_entry_value(context, data) {
-    context.commit("_set_entry_value", data)
-    // context.commit("update")
   },
   save_child_n_ref(context, {uuid, child, aspect_loc}) {
     if (!uuid) {

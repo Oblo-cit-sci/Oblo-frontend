@@ -7,19 +7,10 @@
 
 import EnvMixin from "~/components/global/EnvMixin";
 import OfflineMixin from "~/lib/OfflineMixin";
-import Aspect from "~/components/Aspect"
-import DialogPage from "~/minimal_working_tests/dialog/DialogPage"
-import EntriesDownloadDialog from "~/components/dialogs/EntriesDownloadDialog"
-import DateAspect from "~/components/aspects/DateAspect"
-import {pack_value} from "~/lib/aspect"
-import MonthAspect from "~/components/aspects/MonthAspect"
-import TextCompare from "~/components/util/TextCompare"
-import Test_NumberAspect from "~/pages/test/aspects/test_NumberAspect"
-import TemplateHelperMixin from "~/components/templates/TemplateHelperMixin"
 
 export default {
   name: "tests",
-  mixins: [EnvMixin, OfflineMixin, TemplateHelperMixin],
+  mixins: [EnvMixin, OfflineMixin],
   components: {},
   data() {
     return {}

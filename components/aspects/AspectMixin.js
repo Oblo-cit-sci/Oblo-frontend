@@ -78,7 +78,8 @@ export default {
       }
       // console.log("upval", up_value)
       if (this.aspect_loc) {
-        this.$store.dispatch("entries/set_entry_value", {aspect_loc: this.aspect_loc, value: up_value})
+        this.$store.commit("entries/set_entry_value", {aspect_loc: this.aspect_loc, value: up_value})
+        this.store_edit().then()
         if (this.attr.cache) {
           this.$store.commit("add_cache", {
             template: this.get_entry().template.slug,
@@ -92,6 +93,16 @@ export default {
       }
       if (this.attr.titleAspect) {
         this.$store.commit("entries/update_title", {title: up_value.value})
+      }
+    },
+    /**
+     * always called when, a value is changed
+     * @returns {Promise<void>}
+     */
+    async store_edit()   {
+      const edit = this.get_entry()
+      if (edit) {
+        await this.$localforage.setItem("edit_entry", edit)
       }
     },
     toString(value) {

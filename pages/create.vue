@@ -5,8 +5,8 @@
 import EntryCreateMixin from "~/components/entry/EntryCreateMixin"
 import EntryNavMixin from "~/components/EntryNavMixin"
 import {EDIT} from "~/lib/consts"
-import TemplateHelperMixin from "~/components/templates/TemplateHelperMixin"
 import URLQueryMixin from "~/components/util/URLQueryMixin"
+import SlugEntryFetcher from "~/components/templates/SlugEntryFetcher";
 
 /**
  * query params
@@ -15,7 +15,7 @@ import URLQueryMixin from "~/components/util/URLQueryMixin"
  */
 export default {
   name: "create",
-  mixins: [EntryCreateMixin, EntryNavMixin, TemplateHelperMixin, URLQueryMixin],
+  mixins: [EntryCreateMixin, EntryNavMixin, URLQueryMixin, SlugEntryFetcher],
   components: {},
   props: {},
   data() {

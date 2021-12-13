@@ -43,7 +43,7 @@
   import Aspect from "../components/Aspect";
   import LoadFileButton from "../components/util/LoadFileButton";
   import TriggerSnackbarMixin from "../components/TriggerSnackbarMixin";
-  import {export_data, merge_imported_entries} from "~/lib/import_export";
+  import {export_data} from "~/lib/import_export";
   import PersistentStorageMixin from "../components/util/PersistentStorageMixin";
 
   import {extract_n_unpack_values, pack_value} from "~/lib/aspect"
@@ -125,40 +125,6 @@
       show_clear_entries() {
         this.show_dialog = true
         this.dialog_data = this.clear_dialog_data
-      },
-      load_file(event) {
-        if (event.ok) {
-
-          // console.log(event.data.entries, typeof event.data.entries)
-          let entries = event.data.entries
-          // TODO TAKE CARE OF THE OLD FORMAT
-          if (Array.isArray(event.data)) {
-            entries = event.data
-          } else if (!Array.isArray(event.data.entries)) {
-            entries = Object.values(event.data.entries)
-            console.log("trans", entries, typeof entries)
-          }
-          console.log("importing", entries.length)
-
-          entries.forEach(entry => {
-            entry.creation_datetime = new Date(entry.creation_datetime)
-            entry.local = {
-              dirty: false,
-              prev: null,
-            }
-          })
-          const result = merge_imported_entries(this.$store, entries)
-
-          console.log("imported", result.length)
-          // the following part will be usefull to display some results
-          // const sorted = sort_by_type(result)
-          // console.log("sorted", sorted)
-
-          this.persist_entries()
-          this.ok_snackbar("Entries imported")
-        } else {
-          this.error_snackbar(this.$t(MSG_PATH_SOMETHING_WENT_WRONG))
-        }
       },
       dialog_action(event) {
         if (event.id === this.clear_dialog_data.id && event.confirm) {
