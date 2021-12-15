@@ -7,6 +7,9 @@ export default {
     data_source: String
   },
   methods: {
+    has_icon(item) {
+      return item.hasOwnProperty("icon")
+    },
     get_icon_url(icon) {
       if (this.data_source) {
         return this.$api.entry.url_slug_attachment(this.data_source, icon)

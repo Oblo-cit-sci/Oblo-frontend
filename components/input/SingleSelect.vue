@@ -59,7 +59,7 @@ let select_tresh = 6;
 let autocomplet_thresh = 20
 
 const NONE = "none"
-const CLEAR_LIST = "list";
+const LIST = "list";
 const SELECT = "select";
 const AUTOCOMPLETE = "autocomplete"
 
@@ -88,8 +88,9 @@ export default {
     },
     force_view: {
       type: String,
-      default: undefined
-    }, // either (CLEAR_LIST | VUETIFY_SELECT)
+      default: undefined,
+      validator: v => [NONE, LIST, SELECT, AUTOCOMPLETE, RADIOGROUP, GRID, undefined].includes(v)
+    },
     only_value: {
       type: Boolean
     },
@@ -112,7 +113,7 @@ export default {
   },
   data() {
     return {
-      viewStyle: CLEAR_LIST,
+      viewStyle: LIST,
       selected_item: null, // for v-select
       radioselect_test: "view",
       emit_only_value: false
@@ -156,7 +157,7 @@ export default {
       if (sz === 0) {
         this.viewStyle = NONE
       } else if (sz < select_tresh) {
-        this.viewStyle = CLEAR_LIST
+        this.viewStyle = LIST
       } else if (sz < autocomplet_thresh) {
         this.viewStyle = SELECT
       } else {
@@ -178,8 +179,8 @@ export default {
       // todo maybe just one emit?
       // but item might already be string, ...
       const event = this.emit_only_value ?
-        ((typeof item === "string" || item === null) ? item : item.value) :
-        item
+          ((typeof item === "string" || item === null) ? item : item.value) :
+          item
       //console.log("emit", item, this.select_sync)
       if (this.select_sync) {
         this.$emit('update:selection', event) // refactor to use the item
@@ -230,7 +231,7 @@ export default {
       return this.$_.find(this.options, (o) => o.description && o.description !== "") !== undefined
     },
     view_clearlist() {
-      return this.viewStyle === CLEAR_LIST || this.is_xsmall
+      return this.viewStyle === LIST || this.is_xsmall
     },
     view_select() {
       return this.viewStyle === SELECT

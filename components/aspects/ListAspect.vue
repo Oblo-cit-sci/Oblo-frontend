@@ -44,7 +44,9 @@
       v-if="!is_view_mode && !disabled"
       v-bind="min_max_props")
     .inline(v-if="adding_allowed && !fixed_length")
-      v-btn(:disabled="!more_allowed" @click="add_value()" :color="requieres_more_color") {{$t('comp.list_asp.add', {'item_name': add_item_label})}}
+      v-btn(:disabled="!more_allowed"
+        @click="add_value()"
+        :color="requieres_more_color") {{$t('comp.list_asp.add', {'item_name': add_item_label})}}
         v-icon mdi-plus
     ListPagination(
       v-if="has_pagination"

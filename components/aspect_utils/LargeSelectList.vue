@@ -1,13 +1,13 @@
 <template lang="pug">
   v-item-group.pb-2(v-model="selected")
-    v-item.p-2.ml-1.mr-1.select_item(v-for="a in options" :key="a.name" v-slot:default="{ toggle }")
+    v-item.p-2.ml-1.mr-1.select_item(v-for="item in options" :key="item.name" v-slot:default="{ toggle }")
       v-card(@click="toggle" outlined)
         v-row
-          v-col(cols=2 :style="img_col_style")
-            v-img.card_img.ml-1(:src="get_icon_url(a.icon)" :style="img_style")
+          v-col(v-if="has_icon(item)" cols=2 :style="img_col_style")
+            v-img.card_img.ml-1( :src="get_icon_url(item.icon)" :style="img_style")
           v-col.ml-2(:style="text_col_style")
-            h4 {{a.text}}
-            div.card_text {{a.description}}
+            h4 {{item.text}}
+            div.card_text {{item.description}}
 </template>
 
 <script>

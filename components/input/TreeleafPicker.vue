@@ -14,6 +14,7 @@
         :data_source="data_source"
         :options="act_options"
         v-on:selection="select($event)"
+        :force_view="edit_mode_list_force_view"
         :select_sync="false" :highlight="false")
       LargeSelectList(v-if="edit_mode_large_list" :options="act_options" v-on:selection="select($event)" :select_sync="false" :highlight="false" :data_source="data_source")
       SelectGrid(v-if="edit_mode_matrix" :options="act_options" v-on:selection="select($event)" :data_source="data_source")
@@ -21,6 +22,8 @@
     div.mx-4(v-if="last_selection_has_extra")
       Aspect(v-if="extra_aspect" :aspect="extra_aspect" :ext_value.sync="extra_value" mode="edit")
     v-btn(v-if="done_available && dialog_view" @click="done" color="success") {{$t('w.done')}}
+    //v-icon(size="80" color="green") {{"mdi-check"}}
+    // center and show brieflz when done..
 </template>
 
 <script>
@@ -30,14 +33,15 @@
  */
 
 import SingleSelect from "./SingleSelect";
-import {object_list2options} from "~/lib/options";
 import SelectGrid from "../aspect_utils/SelectGrid";
 import Paginated_Select from "../aspect_utils/Paginated_Select";
 import Title_Description from "../util/Title_Description"
 import LargeSelectList from "~/components/aspect_utils/LargeSelectList"
 import {pack_value, unpack} from "~/lib/aspect"
 import Aspect from "~/components/Aspect"
+import {LIST, SELECT} from "~/lib/consts"
 
+const ld = require("lodash")
 
 export default {
   name: "TreeleafPicker",
@@ -59,6 +63,15 @@ export default {
       type: Object,
       default: () => {
         return {}
+      },
+      validator: attr => {
+        if (attr.tree_select_mode) {
+          if (ld.some(attr.tree_select_mode, mode =>
+            !["list", "list.list", "list.select", "large_list", "matrix", "paginated"].includes(mode)
+          ))
+            return false
+        }
+        return true
       }
     }, // OuterRef is for the LICCI aspect, cuz JS messes up loops and events (always takes the
     // this contains the slug of the code entry, in order to calculate the icon routes
@@ -150,10 +163,21 @@ export default {
       return this.levels[Math.min(this.act_level, this.levels.length - 1)].description
     },
     act_edit_mode() {
+      // console.log("level", this.act_level, this.level_edit_mode(this.act_level))
       return this.level_edit_mode(this.act_level)
     },
     edit_mode_list() {
-      return this.act_edit_mode === "list"
+      return ["list", "list.list", "list.select"].includes(this.act_edit_mode)
+    },
+    edit_mode_list_force_view() {
+      if (this.edit_mode_list) {
+        if (this.act_edit_mode === "list.list") {
+          return LIST
+        } else if (this.act_edit_mode === "list.select") {
+          return SELECT
+        }
+      }
+      return null
     },
     edit_mode_large_list() {
       return this.act_edit_mode === "large_list"
