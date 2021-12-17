@@ -1,26 +1,47 @@
 <template lang="pug">
   div
-    v-text-field(v-if="!is_view_mode"
-      :is="component"
-      outlined
-      single-line
-      :value="value"
-      @input="update_value($event)"
-      :readonly="is_view_mode"
-      :disabled="disabled"
-      :placeholder="attr.placeholder"
-      @update:error="$emit('update:error', $event)"
-      :prependIcon="prependIcon"
-      @click:prepend="$emit('aspectAction',{action:'clickPrepend'})"
-      :append-outer-icon="clearIcon"
-      @click:append-outer="$emit('aspectAction', {action: 'clear'})"
-      :hint="hint"
-      :hide-details="hide_details"
-      :rules="rules"
-      :type="attr.component_type === 'password' ? 'password' : 'text'"
-      @keydown="keydown($event)"
-      :auto-grow="auto_grow"
-      :counter="counter")
+    div(v-if="!is_view_mode")
+      v-text-field(v-if="component==='vv-text-field'"
+        outlined
+        single-line
+        :value="value"
+        @input="update_value($event)"
+        :readonly="is_view_mode"
+        :disabled="disabled"
+        :placeholder="attr.placeholder"
+        @update:error="$emit('update:error', $event)"
+        :prependIcon="prependIcon"
+        @click:prepend="$emit('aspectAction',{action:'clickPrepend'})"
+        :append-outer-icon="clearIcon"
+        @click:append-outer="$emit('aspectAction', {action: 'clear'})"
+        :hint="hint"
+        :hide-details="hide_details"
+        :rules="rules"
+        :type="attr.component_type === 'password' ? 'password' : 'text'"
+        @keydown="keydown($event)"
+        :auto-grow="auto_grow"
+        :counter="counter")
+      v-textarea(v-else
+        :is="component"
+        outlined
+        single-line
+        :value="value"
+        @input="update_value($event)"
+        :readonly="is_view_mode"
+        :disabled="disabled"
+        :placeholder="attr.placeholder"
+        @update:error="$emit('update:error', $event)"
+        :prependIcon="prependIcon"
+        @click:prepend="$emit('aspectAction',{action:'clickPrepend'})"
+        :append-outer-icon="clearIcon"
+        @click:append-outer="$emit('aspectAction', {action: 'clear'})"
+        :hint="hint"
+        :hide-details="hide_details"
+        :rules="rules"
+        :type="attr.component_type === 'password' ? 'password' : 'text'"
+        @keydown="keydown($event)"
+        :auto-grow="auto_grow"
+        :counter="counter")
     p.body-1.readonly-aspect.break_word(v-else) {{value}}
 </template>
 
@@ -44,6 +65,7 @@ export default {
   },
   computed: {
     component() {
+      // return "v-text-field"
       if ((this.attr.max || 0) > 100) {
         return "v-textarea"
       } else {
