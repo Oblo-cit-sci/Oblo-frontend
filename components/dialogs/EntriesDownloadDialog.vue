@@ -42,6 +42,8 @@ export default {
     download_config: {
       type: Object,
       validator: (config) => {
+        if (!config)
+          return false
         let uuids = ld.get(config, "entries")
         // todo search store module inits and rests all_uuids (which is that value)
         // to null, which makes this fail...
@@ -51,7 +53,7 @@ export default {
             return false
           }
         }
-        return ld.has(config, "config") && Array.isArray(ld.get(config, "config"))
+        return Array.isArray(ld.get(config, "config", null))
       },
     },
     download_status: Number
@@ -84,6 +86,7 @@ export default {
       }
     },
     aspects() {
+      // console.log("DL config", this.download_config)
       const base = [this.select_data_aspect]  // metadata or complete
       for (let conf of this.download_config.config) {
         // check if conf.name is TEMPLATE and if the value is longer than 1

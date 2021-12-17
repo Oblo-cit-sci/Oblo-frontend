@@ -82,8 +82,8 @@ import ActorAvatar from "~/components/actor/ActorAvatar"
 import LanguageCodeFallback from "~/components/aspect_utils/LanguageCodeFallback";
 import LanguageChip from "~/components/language/LanguageChip";
 import {BUS_MAP_MARKER_HIDE, BUS_MAP_MARKER_SHOW} from "~/plugins/bus";
-import TemplateHelperMixin from "~/components/templates/TemplateHelperMixin"
 import OutdatedChip from "~/components/tag/OutdatedChip"
+import SlugEntryFetcher from "~/components/templates/SlugEntryFetcher";
 
 
 export default {
@@ -91,7 +91,7 @@ export default {
   components: {
     OutdatedChip,
     LanguageChip, LanguageCodeFallback, ActorAvatar, EntryTags, ActorChip, Aspect, MetaChips, Taglist},
-  mixins: [EntryNavMixin, MapJumpMixin, EntryMixin, MapJumpMixin, TemplateHelperMixin,
+  mixins: [EntryNavMixin, MapJumpMixin, EntryMixin, MapJumpMixin, SlugEntryFetcher,
     PersistentStorageMixin, ChildCreateMixin, EntryActionsMixin],
   data() {
     return {

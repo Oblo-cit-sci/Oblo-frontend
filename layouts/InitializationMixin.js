@@ -11,10 +11,12 @@ import URLQueryMixin from "~/components/util/URLQueryMixin";
 import LanguageMixin from "~/components/LanguageMixin";
 import EntryFetchMixin from "~/components/entry/EntryFetchMixin";
 import OfflineMixin from "~/lib/OfflineMixin"
+import SlugEntryFetcher from "~/components/templates/SlugEntryFetcher";
 
 export default {
   name: "InitializationMixin",
-  mixins: [FixDomainMixin, SettingsChangeMixin, HomePathMixin, EnvMixin, URLQueryMixin, LanguageMixin, EntryFetchMixin, OfflineMixin],
+  mixins: [FixDomainMixin, SettingsChangeMixin, HomePathMixin, EnvMixin, URLQueryMixin, LanguageMixin,
+    EntryFetchMixin, OfflineMixin, SlugEntryFetcher],
   created() {
     // console.log("db loaded??", this.db_loaded)
     default_settings.ui_language = this.default_language
@@ -47,6 +49,9 @@ export default {
             if (store_var) {
               // console.log(store_var.constructor)
               this.$store.commit(store_var_descr.store_mutation, store_var)
+              if (store_var_descr.name === "edit_entry") {
+                this.add_edit()
+              }
             }
             remaining.splice(remaining.indexOf(store_var_descr.name), 1);
             if (remaining.length === 0) {
@@ -56,6 +61,18 @@ export default {
             console.log("localForage error", err)
           })
         }
+        console.log("storage reloaded")
+      }
+    },
+    add_edit() {
+      // check if the edit entry is in entries and add it if not
+      const edit = this.$store.getters["entries/get_edit"]()
+      if (edit) {
+        if (this.$_.some(this.$store.getters["entries/all_uuids"]() === edit.uuid)) {
+          return
+        }
+        // console.log("putting back edit...")
+        this.$store.commit("entries/save_entry", edit)
       }
     },
     async initialize() {
@@ -94,7 +111,7 @@ export default {
       // this.$api.domain.overviews(i_language).then(({data}) => {
       //   this.$store.commit("domain/add_domains_data", data.data)
       // })
-      try{
+      try {
         await this.get_domain_overviews(i_language)
       } catch (e) {
         console.error("init getting domain overviews failed", e)
@@ -122,17 +139,13 @@ export default {
       const result_domain_language = Object.keys(this.$_.find(domain_data.data.domains, d => d.name === domain_name).langs)[0]
 
       // todo here call complete_language_domains if on domain-page and domain-lang different than ui-lang
-      // console.log(resp)
       console.log("connected")
 
       const domains_data = domain_data.data.domains
       const language = domain_data.data.language
 
-
-      // const domains_overview = resp.data.domains_overview
       await this.$store.commit("domain/add_domains_data", domains_data)
 
-      // await this.$store.dispatch("domain/add_overviews", domains_overview)
       await this.$store.dispatch("templates/add_templates_codes", domain_data.data.templates_and_codes)
       // debugger
       await this.change_language(i_language, true, result_domain_language)
@@ -151,14 +164,19 @@ export default {
       } else {
         await this.guarantee_default_lang_language_names()
       }
-      // debugger
-      // todo maybe this part should be handled by the individual page, so it can do its default behaviour
-      // but a wrapper would be good.
+
+      // guarantee entry & template
+      if (this.query_entry_uuid) {
+        await this.guarantee_entry(this.query_entry_uuid)
+        // console.log("query_entry_uuid", this.query_entry_uuid)
+        const entry = this.$store.getters["entries/get_entry"](this.query_entry_uuid)
+        await this.guarantee_template_code_with_references(entry.template.slug,  entry.language)
+      }
 
       await this.$store.dispatch("app/connected")
 
       // const only_one_domain = resp.data.only_one_domain
-      console.log("multi domains?", only_one_domain, this.has_multiple_domains)
+      // console.log("multi domains?", only_one_domain, this.has_multiple_domains)
 
       if (only_one_domain) {
         console.log("only one domain, completing domain-lang", language)
