@@ -1,4 +1,4 @@
-import {ADMIN, DOMAIN_LANGUAGE, UI_LANGUAGE, VISITOR} from "~/lib/consts";
+import {ADMIN, DOMAIN_LANGUAGE, EDITOR, UI_LANGUAGE, VISITOR} from "~/lib/consts";
 import {default_settings} from "~/lib/settings"
 
 let default_user_data = {
@@ -8,7 +8,7 @@ let default_user_data = {
   description: "",
   email: null,
   email_validated: false,
-  interested_topics: [],
+  // interested_topics: [],
   // https://stackoverflow.com/questions/1253499/simple-calculations-for-working-with-lat-lon-km-distance
   // of 1 degree will result in error of around 50km per coordinate -0.5, +0.5 degree change around the real location
   // location: "",
@@ -33,8 +33,14 @@ export const getters = {
   global_role(state) {
     return state.user_data.global_role
   },
+  is_editor(state, getters) {
+    return getters.global_role === EDITOR
+  },
   is_admin(state, getters) {
     return getters.global_role === ADMIN
+  },
+  is_editor_or_admin(state, getters) {
+    return getters.is_editor || getters.is_admin
   },
   settings(state) {
     return state.settings
@@ -52,6 +58,9 @@ export const getters = {
   },
   meta_aspects(state) {
     return state.meta_aspects || []
+  },
+  config(state) {
+    return state.user_data.config_share
   }
 }
 

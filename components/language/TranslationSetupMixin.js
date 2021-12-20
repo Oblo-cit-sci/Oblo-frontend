@@ -6,31 +6,31 @@ import LanguageMixin from "~/components/LanguageMixin";
 export default {
   name: "TranslationSetupMixin",
   mixins: [OptionsMixin, TypicalAspectMixin, LanguageMixin],
-  computed: {
-
-  },
+  computed: {},
   methods: {
     dest_language_select_aspect(items) {
       const base = "comp.translate.dest_lang."
-      return {
+      const aspect = {
         name: "dest_lang",
         type: SELECT,
-        attr: {
-          action: {
-            type: "emit",
-            name: "new_lang_dialog",
-            trigger: {
-              type: "button",
-              button_always_enabled: true,
-              button_label: this.$t("comp.translate.new.new_lang"),
-              requires_callback: false
-            }
-          }
-        },
+        attr: {},
         label: this.$t(`${base}label`),
         description: this.$t(`${base}descr`),
         items: items
       }
+      if (this.$store.getters["user/is_admin"]) {
+        aspect.attr.action = {
+          type: "emit",
+          name: "new_lang_dialog",
+          trigger: {
+            type: "button",
+            button_always_enabled: true,
+            button_label: this.$t("comp.translate.new.new_lang"),
+            requires_callback: false
+          }
+        }
+      }
+      return aspect
     },
     component_select_aspect() {
       // console.log("comp-component_select_aspect")
@@ -55,6 +55,8 @@ export default {
       // console.log("comp-domain_select_aspect")
       return this.asp_domain_select("domain", "w.domain", false, {
         hide_on_disabled: true,
+        // TEMP!
+        force_view: SELECT,
         condition: {
           aspect: "$.component",
           value: ["domain", "entries"],

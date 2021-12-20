@@ -87,8 +87,10 @@ export default {
     },
     aspects() {
       // console.log("DL config", this.download_config)
+      if(!this.download_config)
+        return []
       const base = [this.select_data_aspect]  // metadata or complete
-      for (let conf of this.download_config.config) {
+      for (let conf of this.download_config) {
         // check if conf.name is TEMPLATE and if the value is longer than 1
         if (conf.name === TEMPLATE && conf.value.length > 1) {
           base.push(this.asp_entry_type(TEMPLATE, true, {}, conf.value))

@@ -58,7 +58,12 @@
       "back": "back to setup",
       "only_undone": "show only missing or outdated messages",
       "submit_required": "You have to submit your changes before changing the page",
-      "messages": "no message | 1 message | {n} messages"
+      "messages": "no message | 1 message | {n} messages",
+      "item_status": {
+        "completed": "completed",
+        "incomplete": "incomplete",
+        "not_started": "not started"
+      }
     },
     "login": {
       "h1": "@.capitalize:w.login",

@@ -30,7 +30,8 @@ import EnvMixin from "~/components/global/EnvMixin"
 
 let require_login = ["/profile", "/logout"]
 let hide_logged_in = ["/login", "/register"]
-let require_admin = ["/translate/setup"] // "/admin",
+let require_editor = ["/translate/setup"]
+let require_admin = []  // "/admin",
 let hide_no_be = ["/register", "/login"] // if not connected out and if logged in out
 let show_inDev = ["/tests"] //, "Types", "Entrytypes", "Aspectbuild"]
 let hide_if_offline = ["register", "login", "users", "translate", "user_guide", "profile"]
@@ -67,6 +68,9 @@ export default {
         filtered_pages = filtered_pages.filter(p => !hide_logged_in.includes(p.to))
       } else {
         filtered_pages = filtered_pages.filter(p => !require_login.includes(p.to))
+      }
+      if (!this.$store.getters["user/is_editor_or_admin"]) {
+        filtered_pages = filtered_pages.filter(p => !require_editor.includes(p.to))
       }
       if (!this.$store.getters["user/is_admin"]) {
         filtered_pages = filtered_pages.filter(p => !require_admin.includes(p.to))

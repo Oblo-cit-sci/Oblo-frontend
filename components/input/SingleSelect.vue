@@ -10,8 +10,8 @@
       div(v-for="(item,index) of options" :key="index")
         v-subheader(v-if="is_category(item)") {{item.text}}
         v-list-item(v-else
-        @click="select(item)"
-          :disabled="disabled_item(item.value)"
+          @click="select(item)"
+          :disabled="disabled_item(item)"
           :class="{ marked: marked(item.value) }"
           class="single_select")
           v-list-item-avatar(v-if="option_icon(item)")
@@ -27,7 +27,15 @@
             v-icon {{action_icon}}
         v-divider
   div(v-else-if="view_select")
-    v-select(outlined single-line :hide-details="hide_details" :multiple=false v-model="selected_item" :items="select_options" return-object :clearable="clearable" :placeholder="placeholder" :disabled="disabled" )
+    v-select(outlined single-line
+      :hide-details="hide_details"
+      :multiple=false
+      v-model="selected_item"
+      :items="select_options"
+      return-object
+      :clearable="clearable"
+      :placeholder="placeholder"
+      :disabled="disabled")
     div(v-if="selected_item")
       div.mt-1(v-if="selected_item.description") {{$t("comp.select_asp.descr")}}: {{selected_item.description}}
       div.mt-1(v-if="value_icon")
@@ -139,6 +147,9 @@ export default {
         return null
       }
     },
+    option_disabled(item){
+      console.log("disable?", item)
+    },
     select(item) {
       // console.log("selected",item)
       // debugger
@@ -204,11 +215,14 @@ export default {
         }
       }
     },
-    disabled_item(item_value) {
+    disabled_item(item) {
+      if(item.disabled) {
+        return true
+      }
       if (!this.disabled_options) {
         return false
       }
-      return this.disabled_options.includes(item_value)
+      return this.disabled_options.includes(item.value)
     },
     option_icon(item) {
       // console.log(item,  item.icon)

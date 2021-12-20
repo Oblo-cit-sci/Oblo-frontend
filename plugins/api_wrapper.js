@@ -210,12 +210,20 @@ class Domain extends QueryBase {
 
   async post_from_flat(domain_name, language, content) {
     content.push(["language", language])
-    return this.post_(`${domain_name}/from_flat`, content)
+    return this.post_(`${domain_name}/from_flat`, content, {
+      params: {
+        language
+      }
+    })
   }
 
   async patch_from_flat(domain_name, language, content) {
     content.push(["language", language])
-    return this.patch_(`${domain_name}/from_flat`, content)
+    return this.patch_(`${domain_name}/from_flat`, content, {
+      params: {
+        language
+      }
+    })
   }
 
   async overviews(language) {

@@ -49,6 +49,7 @@ import {BUS_HIDE_OVERLAY, BUS_OVERLAY} from "~/plugins/bus";
 import TranslationSetupMixin from "~/components/language/TranslationSetupMixin";
 import LoadFileButton from "~/components/util/LoadFileButton";
 import ExportMixin from "~/components/global/ExportMixin";
+import EditorConfigMixin from "~/components/actor/EditorConfigMixin"
 
 const components = [FRONTEND_COMPONENT, BACKEND_COMPONENT, DOMAIN, ENTRIES]
 
@@ -59,7 +60,7 @@ export default {
   name: "TranslateSetupComponent",
   components: {LoadFileButton, Dialog, LanguageSearch, AspectSet, Aspect},
   mixins: [OptionsMixin, TriggerSnackbarMixin, EntryCreateMixin, ApiHelperMixin, TypicalAspectMixin, LanguageMixin,
-    TranslationSetupMixin, ExportMixin],
+    TranslationSetupMixin, ExportMixin, EditorConfigMixin],
   data() {
     const {
       component,
@@ -114,9 +115,12 @@ export default {
     },
     dest_language_options() {
       return this.all_added_languages.sort()
+        // todo use disabled instead of filter? but doesnt work in domain... :/...
+        .filter(l => this.is_editor_for_language_o_admin(l))
         .map(l => ({
           value: l,
           text: this.$t(`lang.${l}`),
+          // disabled: !this.is_editor_for_language(l)
         })).concat(this.temporary_additional_languages)
     },
     language_active_aspect() {
@@ -181,7 +185,7 @@ export default {
         const selected_entry = this.$_.find(this.code_templates_for_domain_lang, e =>
           e.language === dest_lang && e.slug === entry
         )
-        if (selected_entry){
+        if (selected_entry) {
           return selected_entry.template.outdated
         }
         // console.log(selected_entry)
@@ -235,6 +239,16 @@ export default {
       this.setup_value_states = states
     },
     /**
+     * disabled language because user is editor but not for language...
+     * @param language
+     */
+    is_language_disabled(language) {
+      console.log(this.$store.getters["user/config"])
+      // if(this.$store.getters["user/is_editor"]) {
+      //   return !this.$store.getters["user/is_editor_for_language"](language)
+      // }
+    },
+    /**
      * download a csv
      * @returns {Promise<void>}
      */
@@ -254,7 +268,7 @@ export default {
         }
       } else if (component === DOMAIN) {
         const domain_name = this.unpacked_values.domain
-          const response = await this.$api.domain.as_csv(domain_name, languages).catch(err => {
+        const response = await this.$api.domain.as_csv(domain_name, languages).catch(err => {
           console.error(err)
           this.error_snackbar()
         })
@@ -275,16 +289,21 @@ export default {
       }
     },
     setup_domain_select_aspect() {
-      const domain_select_aspect = this.domain_select_aspect()
+      let domain_select_aspect = this.$_.cloneDeep(this.domain_select_aspect())
       domain_select_aspect.items.forEach(d => {
         const meta_info = this.domains_metainfos[d.value]
         if (meta_info.active_languages.includes(this.unpacked_values.dest_lang))
-          d.description = "completed"
+          d.description = this.$t("page.translate.item_status.completed")
         else if (meta_info.inactive_languages.includes(this.unpacked_values.dest_lang))
-          d.description = "incomplete"
+          d.description = this.$t("page.translate.item_status.incomplete")
         else
-          d.description = "not started"
+          d.description = this.$t("page.translate.item_status.not_started")
+        // deactivate if user not not editor for domain
+        // d.disabled = !this.is_editor_for_domain(d.value)
       })
+      // todo. some weird shit here... we filter because it doesnt want to disable the items (see loop above)
+      // results all have disabled set to false. so we filter...
+      domain_select_aspect.items = domain_select_aspect.items.filter(d => this.is_editor_for_domain_o_admin(d.value))
       return domain_select_aspect
     },
     setup_entry_select_aspect() {
@@ -520,8 +539,8 @@ export default {
         const domain_name = this.unpacked_values.domain
         this.$api.domain.from_csv(domain_name, dest_lang, file).then(({data}) => {
           this.ok_snackbar(data.msg)
-        // data.data contains the domain-data if is published
-          if(data.data) {
+          // data.data contains the domain-data if is published
+          if (data.data) {
             this.$store.commit("domain/add_domains_data", [data.data])
           }
         }, err => {
@@ -533,7 +552,7 @@ export default {
         this.$api.template_code.from_csv(entry_slug, dest_lang, file).then(({data}) => {
           this.ok_snackbar(data.msg)
           const entry = data.data
-          if(entry.status === PUBLISHED) {
+          if (entry.status === PUBLISHED) {
             this.$store.dispatch("templates/add_templates_codes", [entry])
           }
           // this.$store.dispatch("templates/add_templates_codes", [entry])
