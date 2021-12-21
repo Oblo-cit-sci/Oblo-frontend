@@ -212,31 +212,18 @@ export default {
     async submit_domain() {
       const messages = this.get_flat_messages()
       try {
-        // todo after the 1. submission, the domain- obj is created, and needs to be patched!
-        if (this.setup.config.new_o) {
-          const {data} = await this.$api.domain.post_from_flat(
-            this.setup.config.domain,
-            this.setup.dest_lang,
-            messages
-          )
-          this.ok_snackbar(data.msg)
-          // data.data contains the domain-data if is published
-          if(data.data) {
-            this.$store.commit("domain/add_domains_data", [data.data])
-          }
-          // todo: this.setup.config.new_o should be changed to false
-        } else {
-          const {data} = await this.$api.domain.patch_from_flat(
-            this.setup.config.domain,
-            this.setup.dest_lang,
-            messages
-          )
-          if (data.data) {
-            // console.log(data.data)
-            this.$store.commit("domain/add_domains_data", [data.data])
-          }
-          this.ok_snackbar(data.msg)
+        const {data} = await this.$api.domain.post_from_flat(
+          this.setup.config.domain,
+          this.setup.dest_lang,
+          messages
+        )
+        this.ok_snackbar(data.msg)
+        // data.data contains the domain-data if is published
+        if (data.data) {
+          this.$store.commit("domain/add_domains_data", [data.data])
         }
+        // todo: this.setup.config.new_o should be changed to false
+
         // const changed_messages = Object.entries(this.changed_messages)
         // todo, words??!?!
         for (const m of this.changed_messages) {
