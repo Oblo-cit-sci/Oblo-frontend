@@ -2,14 +2,25 @@ import {PUBLISHED, SELECT} from "~/lib/consts";
 import OptionsMixin from "~/components/aspect_utils/OptionsMixin";
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin";
 import LanguageMixin from "~/components/LanguageMixin";
+import EditorConfigMixin from "~/components/actor/EditorConfigMixin"
 
 export default {
   name: "TranslationSetupMixin",
-  mixins: [OptionsMixin, TypicalAspectMixin, LanguageMixin],
+  mixins: [OptionsMixin, TypicalAspectMixin, LanguageMixin, EditorConfigMixin],
   computed: {},
   methods: {
-    dest_language_select_aspect(items) {
+    dest_language_select_aspect(languages) {
       const base = "comp.translate.dest_lang."
+      const items = languages.sort()
+        // todo use disabled instead of filter? but doesnt work in domain... :/...
+        .filter(l => this.is_editor_for_language_o_admin(l))
+        .map(l => ({
+          value: l,
+          text: this.$t(`lang.${l}`),
+          // disabled: !this.is_editor_for_language(l)
+        }))
+
+
       const aspect = {
         name: "dest_lang",
         type: SELECT,
@@ -55,8 +66,6 @@ export default {
       // console.log("comp-domain_select_aspect")
       return this.asp_domain_select("domain", "w.domain", false, {
         hide_on_disabled: true,
-        // TEMP!
-        force_view: SELECT,
         condition: {
           aspect: "$.component",
           value: ["domain", "entries"],
@@ -71,10 +80,18 @@ export default {
         attr: {
           hide_on_disabled: true,
           force_view: "list",
-          condition: {
+          condition: ["and", {
+            aspect: "$.dest_lang",
+            value: null,
+            compare: "unequal"
+          }, {
             aspect: "$.component",
             value: "entries"
-          }
+          }, {
+            aspect: "$.domain",
+            value: null,
+            compare: "unequal"
+          }]
         },
         label: this.$t("comp.translate.entry_select_asp.label"),
         description: this.$t("comp.translate.entry_select_asp.description"),
@@ -88,6 +105,37 @@ export default {
         type: SELECT,
         label: this.$t(`${base}label`),
         description: this.$t(`${base}descr`),
+        attr: {
+          condition: [
+            "or",
+            {
+              aspect: "$.component",
+              contains: ["fe", "be"]
+            }, [
+              "and",
+              {
+                aspect: "$.component",
+                value: "domain"
+              },
+              {
+                aspect: "$.domain",
+                value: null,
+                compare: "unequal"
+              }
+            ], [
+              "and",
+              {
+                aspect: "$.component",
+                value: "entries"
+              },
+              {
+                aspect: "$.entry",
+                value: null,
+                compare: "unequal"
+              }
+            ]
+          ]
+        },
         items: items
       }
     },

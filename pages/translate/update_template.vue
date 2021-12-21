@@ -243,28 +243,13 @@ export default {
       const messages = this.get_flat_messages()
       // console.log(messages)
       try {
-        if (this.setup.config.new_o) {
-          // TODO this should never be the case (copied over...)
-          const {data} = await this.$api.template_code.post_from_flat(
-            this.setup.config.entry,
-            this.setup.dest_lang,
-            messages
-          )
-          this.ok_snackbar(data.msg)
-        } else {
-          const {data} = await this.$api.template_code.patch_from_flat(
-            this.setup.config.entry,
-            this.setup.dest_lang,
-            messages
-          )
-          console.log(data)
-          this.ok_snackbar(data.msg)
-          const entry = data.data
-          if (entry.status === PUBLISHED) {
-            await this.$store.dispatch("templates/add_templates_codes", [entry])
-          }
-          //
-        }
+        // TODO this should never be the case (copied over...)
+        const {data} = await this.$api.template_code.post_from_flat(
+          this.setup.config.entry,
+          this.setup.dest_lang,
+          messages
+        )
+        this.ok_snackbar(data.msg)
         for (const m of this.changed_messages) {
           this.$refs[m][0].$children[0].refresh_original()
         }

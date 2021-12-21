@@ -2,12 +2,11 @@ import {
   aspect_loc_str2arr,
   attr,
   check_condition_value,
-  check_single_condition, fix_index,
+  fix_index,
   get_list_index,
   loc_prepend
 } from "~/lib/aspect";
-import {recursive_unpack2} from "~/lib/util";
-import {new_value_getter, select_aspect_loc} from "~/lib/entry";
+import {new_value_getter} from "~/lib/entry";
 import {EDIT, ENTRY, VALUE} from "~/lib/consts";
 
 export default {
@@ -32,9 +31,9 @@ export default {
         }
         const conditions = condition.slice(1)
         if (method === "and") {
-          return conditions.every(c => this.simple_recursive_condition(c, conditionals))
+          return conditions.every(c => this.simple_check_recursive_condition(c, conditionals))
         } else {
-          return conditions.some(c => this.simple_recursive_condition(c, conditionals))
+          return conditions.some(c => this.simple_check_recursive_condition(c, conditionals))
         }
       } else {
         return this.simple_check_single_condition(condition, conditionals)

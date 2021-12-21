@@ -60,7 +60,7 @@ export default {
   name: "TranslateSetupComponent",
   components: {LoadFileButton, Dialog, LanguageSearch, AspectSet, Aspect},
   mixins: [OptionsMixin, TriggerSnackbarMixin, EntryCreateMixin, ApiHelperMixin, TypicalAspectMixin, LanguageMixin,
-    TranslationSetupMixin, ExportMixin, EditorConfigMixin],
+    TranslationSetupMixin, ExportMixin],
   data() {
     const {
       component,
@@ -108,20 +108,13 @@ export default {
     ...mapGetters({translate_setup: "translate/setup_values", ui_language: "ui_language"}),
     setup_aspects() {
       return [
-        this.dest_language_select_aspect(this.dest_language_options), this.component_select_aspect(this.available_components_options),
+        this.dest_language_select_aspect(this.all_added_languages.concat(this.temporary_additional_languages)),
+        this.component_select_aspect(this.available_components_options),
         this.language_active_aspect,
-        this.setup_domain_select_aspect(), this.setup_entry_select_aspect(), this.src_language_select_aspect(this.src_language_options)
+        this.setup_domain_select_aspect(),
+        this.setup_entry_select_aspect(),
+        this.src_language_select_aspect(this.src_language_options)
       ]
-    },
-    dest_language_options() {
-      return this.all_added_languages.sort()
-        // todo use disabled instead of filter? but doesnt work in domain... :/...
-        .filter(l => this.is_editor_for_language_o_admin(l))
-        .map(l => ({
-          value: l,
-          text: this.$t(`lang.${l}`),
-          // disabled: !this.is_editor_for_language(l)
-        })).concat(this.temporary_additional_languages)
     },
     language_active_aspect() {
       // console.log("comp-language_active_aspect")
@@ -307,7 +300,6 @@ export default {
       return domain_select_aspect
     },
     setup_entry_select_aspect() {
-      // console.log("comp-entry_select_aspect")
       let options = []
       const {domain: domain_name, dest_lang} = this.unpacked_values
       if (domain_name) {
@@ -318,12 +310,12 @@ export default {
           const res = {value: e.slug, text: e.title}
           if (e.language === dest_lang) {
             if (e.status === PUBLISHED) {
-              res.description = "complete"
+              res.description = "complete" // TODO translate
             } else {
-              res.description = "incomplete"
+              res.description = "incomplete" // TODO translate
             }
           } else {
-            res.description = "not started"
+            res.description = "not started" // TODO translate
             if (e.language !== this.ui_language) {
               res.language = e.language
             }
@@ -342,6 +334,7 @@ export default {
       return this.entry_select_aspect(options)
     },
     async fetch_init_data() {
+      console.log("fetching...")
       let [res_domain_metainfo, res_entries_info, res_all_languages] = await Promise.all([
         this.$api.domain.meta_info(),
         this.$api.entries.get_codes_templates(this.ui_language, false),
@@ -573,7 +566,7 @@ export default {
         console.log(err)
       })
     },
-    "unpacked_values": async function (new_vals, old_vals) {
+    unpacked_values: async function (new_vals, old_vals) {
       // console.log("watch-unpacked_values")
       if (this.$_.isEqual(new_vals, old_vals)) {
         // console.log("watch-unpacked_values-xxx")

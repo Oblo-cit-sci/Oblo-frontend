@@ -237,25 +237,15 @@ export default {
     async submit_entry() {
       const messages = this.get_flat_messages()
       try {
-        if (this.setup.config.new_o) {
-          const {data} = await this.$api.template_code.post_from_flat(
-            this.setup.config.entry,
-            this.setup.dest_lang,
-            messages
-          )
-          this.ok_snackbar(data.msg)
-        } else {
-          const {data} = await this.$api.template_code.patch_from_flat(
-            this.setup.config.entry,
-            this.setup.dest_lang,
-            messages
-          )
-          this.ok_snackbar(data.msg)
-          const entry = data.data
-          if (entry.status === PUBLISHED) {
-            await this.$store.dispatch("templates/add_templates_codes", [entry])
-          }
-          //
+        const {data} = await this.$api.template_code.post_from_flat(
+          this.setup.config.entry,
+          this.setup.dest_lang,
+          messages
+        )
+        this.ok_snackbar(data.msg)
+        const entry = data.data
+        if (entry.status === PUBLISHED) {
+          await this.$store.dispatch("templates/add_templates_codes", [entry])
         }
         for (const m of this.changed_messages) {
           this.$refs[m][0].refresh_original()

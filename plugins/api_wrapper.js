@@ -379,11 +379,6 @@ class TemplateCode extends QueryBase {
     })
   }
 
-  async patch_from_flat(slug, language, content) {
-    return this.patch_(`${slug}/from_flat`, content, {
-      params: {language}
-    })
-  }
 
   async from_csv(slug, language, file) {
     const formData = new FormData();
