@@ -108,7 +108,7 @@ export default {
     ...mapGetters({translate_setup: "translate/setup_values", ui_language: "ui_language"}),
     setup_aspects() {
       return [
-        this.dest_language_select_aspect(this.all_added_languages.concat(this.temporary_additional_languages)),
+        this.dest_language_select_aspect(this.dest_lang_options),
         this.component_select_aspect(this.available_components_options),
         this.language_active_aspect,
         this.setup_domain_select_aspect(),
@@ -199,6 +199,16 @@ export default {
       }
       return false
     },
+    dest_lang_options() {
+      // todo use disabled instead of filter? but doesnt work in domain... :/...
+      return this.all_added_languages.concat(this.temporary_additional_languages)
+        .filter(l => this.is_editor_for_language_o_admin(l))
+        .sort()
+        .map(l => ({
+          value: l,
+          text: this.$t(`lang.${l}`),
+        }))
+    },
     src_language_options() {
       const component = this.unpacked_values.component
       let language_options = []
@@ -207,8 +217,6 @@ export default {
         // console.log("domain_info", domain_info)
         if (domain_info) {
           language_options = domain_info.active_languages.sort().map(l => this.create_option(l, this.$t(`lang.${l}`)))
-        } else {
-
         }
       } else if ([FRONTEND_COMPONENT, BACKEND_COMPONENT].includes(component)) {
         language_options = this.all_added_languages.sort()
@@ -216,7 +224,6 @@ export default {
             value: l,
             text: this.$t(`lang.${l}`),
           }))
-      } else {
       }
       return language_options.filter(o => o.value !== this.unpacked_values.dest_lang)
     },

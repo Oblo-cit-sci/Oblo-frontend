@@ -89,7 +89,9 @@ export default {
   },
   computed: {
     setup_aspects() {
+      // console.log("setup_aspects...", this.setup_values, this.setup_values[DEST_LANG])
       return [
+        // todo dest_lang is already an object... not so elegant
         this.dest_language_select_aspect([this.setup_values[DEST_LANG]]), this.component_select_aspect(),
         this.domain_select_aspect(), this.entry_select_aspect([this.setup_values[ENTRY]]),
         this.src_language_select_aspect([this.setup_values[SRC_LANG]])

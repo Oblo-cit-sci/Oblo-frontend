@@ -9,17 +9,9 @@ export default {
   mixins: [OptionsMixin, TypicalAspectMixin, LanguageMixin, EditorConfigMixin],
   computed: {},
   methods: {
-    dest_language_select_aspect(languages) {
+    dest_language_select_aspect(items) {
+      // console.log("dest_language_select_aspect", languages);
       const base = "comp.translate.dest_lang."
-      const items = languages.sort()
-        // todo use disabled instead of filter? but doesnt work in domain... :/...
-        .filter(l => this.is_editor_for_language_o_admin(l))
-        .map(l => ({
-          value: l,
-          text: this.$t(`lang.${l}`),
-          // disabled: !this.is_editor_for_language(l)
-        }))
-
 
       const aspect = {
         name: "dest_lang",
@@ -27,7 +19,7 @@ export default {
         attr: {},
         label: this.$t(`${base}label`),
         description: this.$t(`${base}descr`),
-        items: items
+        items
       }
       if (this.$store.getters["user/is_admin"]) {
         aspect.attr.action = {
@@ -136,7 +128,7 @@ export default {
             ]
           ]
         },
-        items: items
+        items
       }
     },
   }
