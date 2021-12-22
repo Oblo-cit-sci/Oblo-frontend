@@ -79,18 +79,13 @@ export default {
       const settings = Object.assign(this.$_.cloneDeep(this.$store.getters["user/settings"]), overwrite_default_register_settings)
       const send_data = Object.assign(extract_n_unpack_values(this.aspects), {settings})
       this.$api.actor.post_actor(send_data
-        // this.$api.actor.post_actor({
-        //   registered_name: this.aspects.registered_name.value,
-        //   email: this.aspects.email.value,
-        //   password: this.aspects.password.value,
-        //   password_confirm: this.aspects.password_confirm.value,
-        //   settings
       ).then(({data}) => {
         if (data.msg) {
           // this.$router.push({name: PAGE_LOGIN})
+          const email_sent = data.data.email_sent
           this.$router.push({
             path: "/basic/registration_done",
-            query: {username: send_data.registered_name}
+            query: {username: send_data.registered_name, email_sent}
           })
           this.ok_snackbar(data.msg)
         } else {

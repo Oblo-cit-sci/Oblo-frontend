@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import {all_pages_n_actions, PAGE_ABOUT, PAGE_INDEX} from "~/lib/pages"
+import {all_pages_n_actions, PAGE_ABOUT, PAGE_INDEX, PAGE_LOGIN} from "~/lib/pages"
 import {DOMAIN, INDEX, NO_DOMAIN} from "~/lib/consts"
 import LanguageSelector from "~/components/LanguageSelector"
 import URLQueryMixin from "~/components/util/URLQueryMixin"
@@ -28,14 +28,15 @@ import ResponsivenessMixin from "~/components/ResponsivenessMixin"
 import OfflineMixin from "~/lib/OfflineMixin"
 import EnvMixin from "~/components/global/EnvMixin"
 
-let require_login = ["/profile", "/logout"]
-let hide_logged_in = ["/login", "/register"]
-let require_editor = ["/translate/setup"]
+let require_login = ["profile", "logout"]
+let hide_logged_in = ["login", "register"]
+let require_editor = ["translate"]
 let require_admin = []  // "/admin",
-let hide_no_be = ["/register", "/login"] // if not connected out and if logged in out
-let show_inDev = ["/tests"] //, "Types", "Entrytypes", "Aspectbuild"]
-let hide_if_offline = ["register", "login", "users", "translate", "user_guide", "profile"]
+let hide_no_be = ["register", "login"] // if not connected out and if logged in out
+let show_inDev = ["tests"] //, "Types", "Entrytypes", "Aspectbuild"]
+let hide_if_offline = ["register", PAGE_LOGIN, "users", "translate", "user_guide", "profile"]
 let show_in_fixed_domain = []
+let hide_on_login_required = ["users"] // hide these options, if the platform requires login
 
 export default {
   name: "MainMenuList",
@@ -62,26 +63,31 @@ export default {
       // console.log("filter page update")
       let filtered_pages = this.pages
       if (!this.connected) {
-        filtered_pages = filtered_pages.filter(p => !hide_no_be.includes(p.to))
+        filtered_pages = filtered_pages.filter(p => !hide_no_be.includes(p.name))
       }
       if (this.logged_in) {
-        filtered_pages = filtered_pages.filter(p => !hide_logged_in.includes(p.to))
+        filtered_pages = filtered_pages.filter(p => !hide_logged_in.includes(p.name))
       } else {
-        filtered_pages = filtered_pages.filter(p => !require_login.includes(p.to))
+        filtered_pages = filtered_pages.filter(p => !require_login.includes(p.name))
       }
       if (!this.$store.getters["user/is_editor_or_admin"]) {
-        filtered_pages = filtered_pages.filter(p => !require_editor.includes(p.to))
+        filtered_pages = filtered_pages.filter(p => !require_editor.includes(p.name))
       }
       if (!this.$store.getters["user/is_admin"]) {
-        filtered_pages = filtered_pages.filter(p => !require_admin.includes(p.to))
+        filtered_pages = filtered_pages.filter(p => !require_admin.includes(p.name))
       }
       // console.log(this.$nuxt.context.env, this.$store.getters.name)
       if (process.env.NODE_ENV !== "development" && !(this.$nuxt.context.env.SERVER === "staging" && this.$store.getters.name === "admin")) {
-        filtered_pages = filtered_pages.filter(p => !show_inDev.includes(p.to))
+        filtered_pages = filtered_pages.filter(p => !show_inDev.includes(p.name))
       }
 
       if (!this.is_fixed_domain) {
-        filtered_pages = filtered_pages.filter(p => !show_in_fixed_domain.includes(p.to))
+        filtered_pages = filtered_pages.filter(p => !show_in_fixed_domain.includes(p.name))
+      }
+
+      const platform_data = this.$store.getters["app/platform_data"]
+      if(platform_data.login_required && !this.logged_in) {
+        filtered_pages = filtered_pages.filter(p => !hide_on_login_required.includes(p.name))
       }
 
       const about = this.$_.find(filtered_pages, p => p.name === PAGE_ABOUT)

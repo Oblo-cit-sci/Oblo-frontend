@@ -317,18 +317,18 @@ export default {
           const res = {value: e.slug, text: e.title}
           if (e.language === dest_lang) {
             if (e.status === PUBLISHED) {
-              res.description = "complete" // TODO translate
+              res.description = this.$t("page.translate.item_status.completed")
             } else {
-              res.description = "incomplete" // TODO translate
+              res.description = this.$t("page.translate.item_status.incomplete")
             }
           } else {
-            res.description = "not started" // TODO translate
+            res.description = this.$t("page.translate.item_status.not_started")
             if (e.language !== this.ui_language) {
               res.language = e.language
             }
           }
           if (e.template.outdated) {
-            res.description += " - (OUTDATED)"
+            res.description +=` - (${this.$t("page.translate.item_status.outdated")})`
           }
           if (required_entries.includes(e.slug))
             res.mdi_icon = "mdi-exclamation"
@@ -341,7 +341,6 @@ export default {
       return this.entry_select_aspect(options)
     },
     async fetch_init_data() {
-      console.log("fetching...")
       let [res_domain_metainfo, res_entries_info, res_all_languages] = await Promise.all([
         this.$api.domain.meta_info(),
         this.$api.entries.get_codes_templates(this.ui_language, false),

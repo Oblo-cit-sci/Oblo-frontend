@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    v-row
+    v-row(v-if="show_email_send")
       v-col(cols="12" md="6")
         v-alert(color="info")
           h3 {{$t("page.registration_done.h1")}}
@@ -27,6 +27,9 @@ export default {
   computed: {
     username() {
       return this.$route.query.username
+    },
+    show_email_send() {
+      return JSON.parse(this.$route.query.email_sent) || false
     }
   },
   methods: {

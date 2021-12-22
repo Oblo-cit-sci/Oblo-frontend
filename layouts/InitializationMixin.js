@@ -117,107 +117,119 @@ export default {
         console.error("init getting domain overviews failed", e)
       }
 
+      let has_domain_data = true
       const init_domain_data = await Promise.all([
         this.$api.basic.init_data(i_language),
-        this.$api.basic.domain_basics(query_domains, i_language)])
+        this.$api.basic.domain_basics(query_domains, i_language).catch(e => {
+          has_domain_data = false
+        })])
 
       const init_data = init_domain_data[0].data
-      const domain_data = init_domain_data[1].data
+
 
       const only_one_domain = init_data.platform.only_one_domain
       this.$store.commit("set_available_languages", init_data.languages)
       this.$store.commit("app/platform_data", init_data.platform)
       this.$store.commit("app/oauth_services", init_data.oauth_services)
+      // not sure if its always: i_language...
       if (init_data.user_guide_url) {
-        this.$store.commit("translate/add_user_guide_link", {language_code: language, url: init_data.user_guide_url})
+        this.$store.commit("translate/add_user_guide_link", {language_code: i_language, url: init_data.user_guide_url})
         this.$store.commit("app/set_menu_to", {name: "user_guide", to: init_data.user_guide_url})
       }
       this.$store.commit("map/default_map_style", init_data.map_default_map_style)
       this.$store.commit("map/access_token", init_data.map_access_token)
 
-      // check if the domain is delivered in the given language:
-      const result_domain_language = Object.keys(this.$_.find(domain_data.data.domains, d => d.name === domain_name).langs)[0]
+      // login required...
+      if (has_domain_data) {
+        console.log("HAS DOMAIN DATA!...")
+        const domain_data = init_domain_data[1].data
+        // check if the domain is delivered in the given language:
+        const result_domain_language = Object.keys(this.$_.find(domain_data.data.domains, d => d.name === domain_name).langs)[0]
 
-      // todo here call complete_language_domains if on domain-page and domain-lang different than ui-lang
-      console.log("connected")
+        // todo here call complete_language_domains if on domain-page and domain-lang different than ui-lang
+        console.log("connected")
 
-      const domains_data = domain_data.data.domains
-      const language = domain_data.data.language
+        const domains_data = domain_data.data.domains
+        const language = domain_data.data.language
 
-      await this.$store.commit("domain/add_domains_data", domains_data)
+        await this.$store.commit("domain/add_domains_data", domains_data)
 
-      await this.$store.dispatch("templates/add_templates_codes", domain_data.data.templates_and_codes)
-      // debugger
-      await this.change_language(i_language, true, result_domain_language)
+        await this.$store.dispatch("templates/add_templates_codes", domain_data.data.templates_and_codes)
+        // debugger
+        await this.change_language(i_language, true, result_domain_language)
 
-      if (this.$store.getters.username === VISITOR) {
-        const settings = this.$_.cloneDeep(default_settings)
-        Object.assign(settings, {[DOMAIN_LANGUAGE]: language, [UI_LANGUAGE]: language})
-        // todo change_language call
-        this.$store.commit("user/change_setting", settings)
-      }
-      // console.log("?", language, language !== this.$i18n.fallbackLocale, this.$i18n.fallbackLocale)
-      if (language !== this.$i18n.fallbackLocale) {
-        console.log("init language != fallback language changing language to", language)
-        this.$i18n.setLocaleMessage(language, domain_data.data.messages[language])
-        // await this.change_language(language, false)
+        if (this.$store.getters.username === VISITOR) {
+          const settings = this.$_.cloneDeep(default_settings)
+          Object.assign(settings, {[DOMAIN_LANGUAGE]: language, [UI_LANGUAGE]: language})
+          // todo change_language call
+          this.$store.commit("user/change_setting", settings)
+        }
+        // console.log("?", language, language !== this.$i18n.fallbackLocale, this.$i18n.fallbackLocale)
+        if (language !== this.$i18n.fallbackLocale) {
+          console.log("init language != fallback language changing language to", language)
+          this.$i18n.setLocaleMessage(language, domain_data.data.messages[language])
+          // await this.change_language(language, false)
+        } else {
+          await this.guarantee_default_lang_language_names()
+        }
+
+        // guarantee entry & template
+        if (this.query_entry_uuid) {
+          await this.guarantee_entry(this.query_entry_uuid)
+          // console.log("query_entry_uuid", this.query_entry_uuid)
+          const entry = this.$store.getters["entries/get_entry"](this.query_entry_uuid)
+          await this.guarantee_template_code_with_references(entry.template.slug, entry.language)
+        }
+
+        // const only_one_domain = resp.data.only_one_domain
+        // console.log("multi domains?", only_one_domain, this.has_multiple_domains)
+
+        if (only_one_domain) {
+          console.log("only one domain, completing domain-lang", language)
+          const domain_name = this.get_one_domain_name
+          await this.prepare_goto_domain(domain_name, language)
+          // // todo, maybe this should be replaces by something in the store
+          if (this.$route.name === PAGE_INDEX) {
+            // console.log("to domain page",this.get_one_domain_name)
+            this.to_domain(domain_name, true, () => {
+              this.set_init_done()
+            })
+          } else {
+            // todo not sure why this is here- just one domain anyway
+            const domain_name = this.$store.getters["user/settings"].fixed_domain || NO_DOMAIN
+            this.$store.commit("domain/set_act_domain", domain_name)
+            this.set_init_done()
+          }
+        } else {
+          const fixed_domain = this.$store.getters["user/settings"].fixed_domain || NO_DOMAIN
+          // if (fixed_domain) {
+          //   domain_name = fixed_domain
+          // }
+          // console.log(`user fixed-domain: ${fixed_domain}`)
+
+          await this.$store.dispatch("domain/set_act_domain_lang", {
+            domain_name: domain_name,
+            language
+          })
+          if (this.$route.name === PAGE_INDEX) {
+            // console.log("to domain page",this.get_one_domain_name)
+            if (fixed_domain !== NO_DOMAIN) {
+              this.to_domain(fixed_domain, true, () => {
+                this.set_init_done()
+              })
+            } else {
+              this.set_init_done()
+            }
+          } else {
+            this.set_init_done()
+          }
+        }
       } else {
-        await this.guarantee_default_lang_language_names()
-      }
-
-      // guarantee entry & template
-      if (this.query_entry_uuid) {
-        await this.guarantee_entry(this.query_entry_uuid)
-        // console.log("query_entry_uuid", this.query_entry_uuid)
-        const entry = this.$store.getters["entries/get_entry"](this.query_entry_uuid)
-        await this.guarantee_template_code_with_references(entry.template.slug,  entry.language)
+        this.set_init_done()
       }
 
       await this.$store.dispatch("app/connected")
 
-      // const only_one_domain = resp.data.only_one_domain
-      // console.log("multi domains?", only_one_domain, this.has_multiple_domains)
-
-      if (only_one_domain) {
-        console.log("only one domain, completing domain-lang", language)
-        const domain_name = this.get_one_domain_name
-        await this.prepare_goto_domain(domain_name, language)
-        // // todo, maybe this should be replaces by something in the store
-        if (this.$route.name === PAGE_INDEX) {
-          // console.log("to domain page",this.get_one_domain_name)
-          this.to_domain(domain_name, true, () => {
-            this.set_init_done()
-          })
-        } else {
-          // todo not sure why this is here- just one domain anyway
-          const domain_name = this.$store.getters["user/settings"].fixed_domain || NO_DOMAIN
-          this.$store.commit("domain/set_act_domain", domain_name)
-          this.set_init_done()
-        }
-      } else {
-        const fixed_domain = this.$store.getters["user/settings"].fixed_domain || NO_DOMAIN
-        // if (fixed_domain) {
-        //   domain_name = fixed_domain
-        // }
-        // console.log(`user fixed-domain: ${fixed_domain}`)
-
-        await this.$store.dispatch("domain/set_act_domain_lang", {
-          domain_name: domain_name,
-          language
-        })
-        if (this.$route.name === PAGE_INDEX) {
-          // console.log("to domain page",this.get_one_domain_name)
-          if (fixed_domain !== NO_DOMAIN) {
-            this.to_domain(fixed_domain, true, () => {
-              this.set_init_done()
-            })
-          } else {
-            this.set_init_done()
-          }
-        } else {
-          this.set_init_done()
-        }
-      }
       // console.log("done")
       return Promise.resolve()
     },
