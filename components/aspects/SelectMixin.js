@@ -83,7 +83,15 @@ export default {
       return this.$_.get(this.aspect, "attr", {})
     },
     data_source() {
+      if(this.attr.data_source) {
+        return this.attr.data_source
+      }
       if (typeof this.aspect.items === "string") {
+        const code_entry = this.get_lang_code_entry(this.aspect.items)
+        const external_source = code_entry.rules.data_source
+        if (external_source) {
+          return external_source
+        }
         return this.aspect.items
       }
     },
