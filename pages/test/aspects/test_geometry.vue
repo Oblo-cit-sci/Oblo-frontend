@@ -1,7 +1,7 @@
 <template lang="pug">
   div
-    Aspect(:aspect="aspect1" :ext_value.sync="value1" mode="view")
-    Aspect(:aspect="aspect2" :ext_value.sync="value2" mode="view")
+    Aspect(:aspect="aspect1" :ext_value.sync="value1" mode="edit")
+    //Aspect(:aspect="aspect2" :ext_value.sync="value2" mode="view")
 </template>
 
 <script>
@@ -20,45 +20,16 @@ export default {
       aspect1: {
         name: "default",
         type: GEOMETRY,
+        features: [
+          {
+            "type":["Point"],
+            "name":"risk",
+            "label":"Risk",
+            // style
+          }
+        ]
       },
-      value1: pack_value({
-        source: {
-          "type": "FeatureCollection",
-          "features": [
-            {
-              "type": "Feature",
-              "properties": {},
-              "geometry": {
-                "type": "Polygon",
-                "coordinates": [
-                  [
-                    [
-                      54.140625,
-                      54.36775852406841
-                    ],
-                    [
-                      71.015625,
-                      40.17887331434696
-                    ],
-                    [
-                      105.46875,
-                      53.330872983017066
-                    ],
-                    [
-                      105.8203125,
-                      65.2198939361321
-                    ],
-                    [
-                      54.140625,
-                      54.36775852406841
-                    ]
-                  ]
-                ]
-              }
-            }
-          ]
-        }
-      }),
+      value1: pack_value(),
       aspect2: {
         name: "special_layer",
         type: GEOMETRY,

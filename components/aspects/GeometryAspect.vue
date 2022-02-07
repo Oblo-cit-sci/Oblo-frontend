@@ -8,23 +8,21 @@
         :access-token="access_token"
         :map-options="map_options"
         @map-load="aspect_onMapLoaded"
-        @click="map_click"
         :navControl="nav_control_options")
-    v-btn-toggle(:disable="!map_loaded" v-model="geo_button_selection")
-      v-btn.mx-0(v-for="geo_type in allowed_geometry_types"
-        :key="geo_type"
-        @click="new_feature(geo_type)")
-        v-icon {{get_geometry_type_icon(geo_type)}}
-        span {{geo_type}}
     v-list
-      v-list-item(v-for="feature in added_features.features" :key="feature.id")
-        v-list-item-icon
-          v-icon  {{get_geometry_type_icon(feature.geometry.type)}}
-        v-list-item-content {{feature.properties.place}}
-        v-list-item-icon(@click="edit_feature(feature.id)")
-          v-icon {{"mdi-cursor-move"}}
-        v-list-item-icon(@click="delete_feature(feature.id)")
-          v-icon {{"mdi-close"}}
+      div(v-for="(feature, index) in features_list" :key="feature.name")
+        v-list-item.my-2(style="border:1px solid #ccc; border-radius:2px;")
+          v-list-item-content.pb-1
+            div
+              v-list-item-title.font-weight-bold {{feature.label}}
+            v-btn-toggle(v-if="feature.name === current_feature_todo_name" :disable="!map_loaded" v-model="geo_button_selection")
+              v-btn.mx-0(v-for="geo_type in allowed_geometry_types"
+                :key="geo_type"
+                @click="new_feature(geo_type)")
+                v-icon {{get_geometry_type_icon(geo_type)}}
+                span {{geo_type}}
+            div
+              v-list-item-content.pb-1(v-if="is_features_added(index)") {{added_feature(index).properties.place}}
 </template>
 
 <script>
@@ -114,24 +112,24 @@ export default {
       }
     },
     show_map() {
-      return false
+      // return false
       // assuming edit mode is only on the entry page
-      // if (this.is_editable_mode) {
-      //   return true
-      // } else {
-      //   if (this.value === null) {
-      //     return false
-      //   }
-      //   if (this.$route.name === ENTRY) {
-      //     return true
-      //   } else { // DOMAIN
-      //     if (this.is_mdAndUp) {
-      //       return false
-      //     } else {
-      //       return this.menu_state === MENU_MODE_DOMAIN
-      //     }
-      //   }
-      // }
+      if (this.is_editable_mode) {
+        return true
+      } else {
+        if (this.value === null) {
+          return false
+        }
+        if (this.$route.name === ENTRY) {
+          return true
+        } else { // DOMAIN
+          if (this.is_mdAndUp) {
+            return false
+          } else {
+            return this.menu_state === MENU_MODE_DOMAIN
+          }
+        }
+      }
     },
     nav_control_options() {
       if (this.map_loaded)
@@ -145,27 +143,56 @@ export default {
      * get geometry_type from the current feature
      */
     allowed_geometry_types() {
+      return this.current_feature_todo.type || ALL_GEOMETRY_TYPES
       // todo : insert:
       //       {
       //   icon: "delete",
       //   type: DELETE
       // }
-      return this.$_.get(this.attr, "allowed_geometry_types", ALL_GEOMETRY_TYPES)
+      // return this.$_.get(this.attr, "allowed_geometry_types", ALL_GEOMETRY_TYPES)
     },
     min_geometries() {
       return this.attr.min || null
     },
     max_geometries() {
       return this.attr.max || null
+    },
+    /**
+     * the aspect can have a geometries key, which describes what geometries are allowed
+     * e.g.
+     *           {
+     *             "type":["Point"],
+     *             "name":"risk",
+     *             "label":"Risk",
+     *             // style
+     *           }
+     */
+    features_list() {
+      console.log(this.aspect)
+      const features = this.aspect.features || []
+      return features
+    },
+    current_feature_todo() {
+      const features = this.aspect.features || []
+      const added_features = this.added_features.features
+      if (added_features.length < features.length) {
+        return this.aspect.features[added_features.length]
+      }
+    },
+    current_feature_todo_name() {
+      if(this.current_feature_todo) {
+        return this.current_feature_todo.name
+      }
     }
   },
   created() {
-    console.log("created")
-    this.add_feature(this.create_point_feature([0, 0]))
+    // console.log("GeometryAspect created")
+    // this.add_feature(this.create_point_feature([0, 0]))
   },
   methods: {
     aspect_onMapLoaded(map) {
       if (this.show_map) {
+        this.map_loaded = false
         this.onMapLoaded(map)
         this.map_loaded = false
         if (this.value) {
@@ -270,18 +297,18 @@ export default {
           this.map.getCanvasContainer().style.cursor = '';
         }
       })
-      this.map_on(MOUSEDOWN, ADDED_LAYER, (e) => {
-        e.preventDefault();
-        this.set_map_canvas_cursor("grab")
-        this.map_on(MOUSEMOVE, this._onMove)
-        this.map_once(MOUSEUP, this._onUp)
-      })
-      this.map_on(TOUCHSTART, ADDED_LAYER, (e) => {
-        if (e.points.length !== 1) return;
-        e.preventDefault();
-        this.map_on(TOUCHMOVE, this._onMove)
-        this.map_once(TOUCHEND, this._onUp)
-      })
+      // this.map_on(MOUSEDOWN, ADDED_LAYER, (e) => {
+      //   e.preventDefault();
+      //   this.set_map_canvas_cursor("grab")
+      //   this.map_on(MOUSEMOVE, this._onMove)
+      //   this.map_once(MOUSEUP, this._onUp)
+      // })
+      // this.map_on(TOUCHSTART, ADDED_LAYER, (e) => {
+      //   if (e.points.length !== 1) return;
+      //   e.preventDefault();
+      //   this.map_on(TOUCHMOVE, this._onMove)
+      //   this.map_once(TOUCHEND, this._onUp)
+      // })
     },
     _onMove(e) {
       if (this.hover_feature_id) {
@@ -302,15 +329,16 @@ export default {
       this.map_off(MOUSEMOVE, this._onMove);
       this.map_off(TOUCHMOVE, this._onMove);
     },
-    map_click(map, mapboxEvent) {
-      // check if button is selected and if its the delete button
-      if (this.geo_button_selection) {
-        // if (GEOMETRY_ICONS[this.geo_button_selection].type === DELETE) {
-        //   // todo check if its the layer that and the point there...
-        //   // delete the point
-        // }
-      }
-    },
+    // map_click(map, mapboxEvent) {
+    //   console.log("mapclick")
+    //   // check if button is selected and if its the delete button
+    //   if (this.geo_button_selection) {
+    //     // if (GEOMETRY_ICONS[this.geo_button_selection].type === DELETE) {
+    //     //   // todo check if its the layer that and the point there...
+    //     //   // delete the point
+    //     // }
+    //   }
+    // },
     add_layer(name, source, layers = [], show_default_layers = true) {
       this.map.addSource(name, {
         'type': 'geojson',
@@ -378,11 +406,12 @@ export default {
         this.current_feature = this.create_feature_collection()
         this.map_on(MOUSEMOVE, this.linestring_create_mousemove)
         this.map_on(CLICK, this.linestring_create_click)
-        this.map_on(MOUSEENTER, CURRENT_POINTS_INVISIBLE, this.linestring_create_mouseenter)
-        this.map_on(MOUSELEAVE, CURRENT_POINTS_INVISIBLE, this.linestring_create_mouseleave)
+        this.map_on_feature_id(MOUSEENTER, CURRENT_POINTS_INVISIBLE, this.linestring_create_mouseenter)
+        this.map_on_feature_id(MOUSELEAVE, CURRENT_POINTS_INVISIBLE, this.linestring_create_mouseleave)
       }
     },
     point_create_click(e) {
+      console.log("point_create_click")
       e.preventDefault()
       this.add_feature(this.$_.cloneDeep(this.create_point_feature([e.lngLat.lng, e.lngLat.lat])))
       this.geo_button_selection = null
@@ -426,8 +455,8 @@ export default {
         this.geo_button_selection = null
         this.map_off(MOUSEMOVE, this.linestring_create_mousemove)
         this.map_off(CLICK, this.linestring_create_click)
-        this.map_off(MOUSEENTER, CURRENT_POINTS_INVISIBLE, this.linestring_create_mouseenter)
-        this.map_off(MOUSELEAVE, CURRENT_POINTS_INVISIBLE, this.linestring_create_mouseleave)
+        this.map_off_feature_id(MOUSEENTER, CURRENT_POINTS_INVISIBLE, this.linestring_create_mouseenter)
+        this.map_off_feature_id(MOUSELEAVE, CURRENT_POINTS_INVISIBLE, this.linestring_create_mouseleave)
         return
       }
 
@@ -575,28 +604,41 @@ export default {
       this.added_features.features = this.$_.filter(this.added_features.features, f => f.id !== feature_id)
       this.set_data(ADDED_SOURCE, this.added_features)
     },
-    map_on(layer_name, id_o_function, function_) {
+    map_on(layer_name, function_) {
       if (this.show_map) {
-        if (function_) {
-          this.map.on(layer_name, id_o_function, function_)
-        } else {
-          this.map.on(layer_name, function_)
-        }
+        this.map.on(layer_name, function_)
       }
     },
-    map_off(layer_name, id_o_function, function_) {
+    map_on_feature_id(layer_name, feature_id, function_) {
       if (this.show_map) {
-        if (function_) {
-          this.map.off(layer_name, id_o_function, function_)
-        } else {
-          this.map.off(layer_name, function_)
-        }
+        this.map.on(layer_name, feature_id, function_)
+      }
+    },
+    map_off(layer_name, function_) {
+      if (this.show_map) {
+        this.map.off(layer_name, function_)
+      }
+    },
+    map_off_feature_id(layer_name, feature_id, function_) {
+      if (this.show_map) {
+        this.map.off(layer_name, feature_id, function_)
       }
     },
     set_data(layer, data) {
       if (this.show_map) {
         this.map.getSource(layer).setData(data)
       }
+    },
+    //
+    /**
+     *
+     * @param index
+     */
+    is_features_added(index) {
+      return this.added_features.features.length > index
+    },
+    added_feature(index) {
+      return this.added_features.features[index]
     }
   }
 }
