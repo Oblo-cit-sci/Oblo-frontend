@@ -7,6 +7,8 @@
       .buttongroup.shift_anim(:style="button_group_shift")
         v-btn(v-if="show_layer_menu_button" dark color="green" fab @click="open_layer_dialog")
           v-icon mdi-layers-outline
+        v-btn(v-if="show_style_menu_button" dark color="orange" fab @click="open_style_dialog")
+          v-icon mdi-earth-box
         v-sheet.ml-3(color="grey" v-if="is_dev")
           span.pl-1 {{act_zoom}}
       .central_button(v-if="show_center_create_button")
@@ -172,6 +174,9 @@ export default {
     },
     show_layer_menu_button() {
       return this.map_loaded && this.available_layers.length > 0
+    },
+    show_style_menu_button() {
+      return false
     },
     show_load_overlay() {
       if (this.map_hidden) {
@@ -483,6 +488,14 @@ export default {
         drafts[i].id = filtered_entries.features.length + parseInt(i)
       }
       filtered_entries.features = filtered_entries.features.concat(drafts)
+      // console.log(this.map.style.stylesheet.layers)
+      // for (let layer of this.map.style.stylesheet.layers) {
+      //   if(layer.metadata) {
+      //     console.log(layer.id, layer.metadata["mapbox:group"])
+      //   } else {
+      //     console.log(layer.id, layer.metadata)
+      //   }
+      // }
       if (!this.map.getSource(MAIN_SOURCE_LAYER)) {
         this.map.addSource(MAIN_SOURCE_LAYER, {
           type: "geojson",
@@ -639,6 +652,9 @@ export default {
     open_layer_dialog() {
       this.aspectdialog_data.aspect.items = this.available_layers
       this.aspectdialog_data.dialog_open = true
+    },
+    open_style_dialog() {
+
     },
     store_cam_options() {
       // console.log("storing cam map options")

@@ -22,13 +22,33 @@ export default {
   },
   methods: {
     set_layer_visibility(active_layers = []) {
+      /**
+       * this now works with group:...
+       * but does it still work with additional?
+       * otherwise, additional can maybe be kicked out, in favor of groups only
+       * @type {Dictionary<unknown>}
+       */
       // instead of transform_options_list, map_loaded uses 'get'
+      // console.log("active_layers", active_layers)
       const options_layer_map = this.$_.keyBy(transform_options_list(this.available_layers), "value")
       for (let layer_name of Object.keys(options_layer_map)) {
-        const visibility = active_layers.includes(layer_name) ? "visible" : "none"
+        const visibility = this.$_.map(active_layers,"value").includes(layer_name) ? "visible" : "none"
+        // console.log("--", layer_name, visibility)
         const layerIds = this.$_.get(options_layer_map[layer_name], "additional", [layer_name])
         for (let layerId of layerIds) {
-          this.map.setLayoutProperty(layerId, 'visibility', visibility)
+          if (layerId.startsWith("group:")) {
+            const group_id = layerId.split(":")[1]
+            // console.log("matching", group_id)764
+            for (let layer of this.map.style.stylesheet.layers) {
+              const layer_group_id = this.$_.get(layer.metadata, "mapbox:group", undefined)
+              if (layer_group_id === group_id) {
+                // console.log(layer.id, "--", visibility)
+                this.map.setLayoutProperty(layer.id, 'visibility', visibility)
+              }
+            }
+          } else {
+            this.map.setLayoutProperty(layerId, 'visibility', visibility)
+          }
         }
       }
       this.$store.commit("map/set_layer_status", active_layers)

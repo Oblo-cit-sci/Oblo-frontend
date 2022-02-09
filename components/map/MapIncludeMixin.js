@@ -27,7 +27,8 @@ export default {
         maxPitch: 0,
         dragRotate: false,
         act_hoover_id: null,
-        projection: 'naturalEarth'
+        projection: 'naturalEarth',
+        minZoom:2.5
         // scaleControl: null
       },
     }
