@@ -30,7 +30,7 @@ import AspectComponentMixin from "~/components/aspects/AspectComponentMixin"
 import ResponsivenessMixin from "~/components/ResponsivenessMixin"
 import MapIncludeMixin from "~/components/map/MapIncludeMixin"
 import Mapbox from "mapbox-gl-vue"
-import {LINESTRING, POINT, POLYGON, ALL_GEOMETRY_TYPES} from "~/lib/consts"
+import {LINESTRING, POINT, POLYGON, ALL_GEOMETRY_TYPES, ENTRY, MENU_MODE_DOMAIN} from "~/lib/consts"
 import {arr2coords} from "~/lib/map_utils"
 
 
@@ -149,7 +149,6 @@ export default {
       //   icon: "delete",
       //   type: DELETE
       // }
-      // return this.$_.get(this.attr, "allowed_geometry_types", ALL_GEOMETRY_TYPES)
     },
     min_geometries() {
       return this.attr.min || null
@@ -168,15 +167,14 @@ export default {
      *           }
      */
     features_list() {
-      console.log(this.aspect)
-      const features = this.aspect.features || []
-      return features
+      // console.log(this.aspect)
+      return  this.aspect.geo_features || []
     },
     current_feature_todo() {
-      const features = this.aspect.features || []
+      const features = this.aspect.geo_features || []
       const added_features = this.added_features.features
       if (added_features.length < features.length) {
-        return this.aspect.features[added_features.length]
+        return this.aspect.geo_features[added_features.length]
       }
     },
     current_feature_todo_name() {
@@ -188,6 +186,9 @@ export default {
   created() {
     // console.log("GeometryAspect created")
     // this.add_feature(this.create_point_feature([0, 0]))
+    if(this.value !== null) {
+      this.added_features = this.value
+    }
   },
   methods: {
     aspect_onMapLoaded(map) {
@@ -383,8 +384,12 @@ export default {
       } catch (e) {
         console.log(e)
       }
+      // this.current_feature_todo_name
+
       this.added_features.features.push(feature)
+      this.update_value(this.added_features)
       this.set_data(ADDED_SOURCE, this.added_features)
+
     },
     /**
      * start new feature
@@ -629,7 +634,6 @@ export default {
         this.map.getSource(layer).setData(data)
       }
     },
-    //
     /**
      *
      * @param index

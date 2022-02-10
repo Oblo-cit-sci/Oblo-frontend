@@ -254,14 +254,15 @@ export default {
   },
   methods: {
     full_title(title) {
-      // debugger
+      // console.log(title, this.entry, this.template)
       if (!title) {
         title = this.entry.title
       }
-      if (title === "")
-        return this.template.title
-      else {
-        let full_title = this.include_etype_in_title ? this.template.title : ""
+      // todo template sometimes missing... before loaded?
+      if (title === ""){
+        return this?.template?.title || ""
+      } else {
+        let full_title = this.include_etype_in_title ? this?.template?.title : ""
         if (this.include_etype_in_title) {
           full_title += title ? ": " + title : ""
         } else {

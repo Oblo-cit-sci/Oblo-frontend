@@ -14,15 +14,13 @@ let hostname = "https://opentek.eu"
 if (process.env.SERVER === "liccion") {
   console.log("building for liccion")
   hostname = "https://oblo.network"
-}
-
-else if (process.env.SERVER === "staging") {
+} else if (process.env.SERVER === "staging") {
   console.log("building for staging")
   hostname = "https://staging.opentek.eu"
 } else if (process.env.SERVER === "production") {
   console.log("building for production")
   hostname = "https://opentek.eu"
-}  else {//if (process.env.NODE_ENV === "development" || process.env.SERVER === "local") {
+} else {//if (process.env.NODE_ENV === "development" || process.env.SERVER === "local") {
   console.log("building for localhost")
   hostname = "http://localhost:8100"
 }
@@ -143,10 +141,10 @@ module.exports = {
         return qs.stringify(params, {arrayFormat: 'repeat'})
       }
     },
-     proxyHeaders: true,
+    proxyHeaders: true,
   },
   proxy: {
-   // '/api': 'http://localhost:8100'
+    // '/api': 'http://localhost:8100'
   },
   /*
   ** Build configuration
@@ -159,6 +157,7 @@ module.exports = {
         import: ["~assets/style/variables.styl"]
       }
     },
+
     extractCSS: true,
     plugins: [
       new webpack.ProvidePlugin({
