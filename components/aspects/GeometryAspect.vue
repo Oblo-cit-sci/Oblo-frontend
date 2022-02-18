@@ -15,14 +15,14 @@
           v-list-item-content.pb-1
             div
               v-list-item-title.font-weight-bold {{feature.label}}
-            v-btn-toggle(v-if="feature.name === current_feature_todo_name" :disable="!map_loaded" v-model="geo_button_selection")
+            v-btn-toggle(v-if="show_geo_type_buttons(feature.name)" :disable="!map_loaded" v-model="geo_button_selection")
               v-btn.mx-0(v-for="geo_type in allowed_geometry_types"
                 :key="geo_type"
                 @click="new_feature(geo_type)")
                 v-icon {{get_geometry_type_icon(geo_type)}}
                 span {{geo_type}}
             div
-              v-list-item-content.pb-1(v-if="is_features_added(index)") {{added_feature(index).properties.place}}
+              v-list-item-content.pb-1(v-if="is_features_added(index)") {{feature_place_label(index)}}
 </template>
 
 <script>
@@ -32,37 +32,22 @@ import MapIncludeMixin from "~/components/map/MapIncludeMixin"
 import Mapbox from "mapbox-gl-vue"
 import {LINESTRING, POINT, POLYGON, ALL_GEOMETRY_TYPES, ENTRY, MENU_MODE_DOMAIN} from "~/lib/consts"
 import {arr2coords} from "~/lib/map_utils"
+import {
+  ADDED_LAYER,
+  ADDED_LINE_LAYER,
+  ADDED_SOURCE,
+  CLICK, color_current_feature, color_default_added_layer, color_hover_circle,
+  CURRENT_POINTS_INVISIBLE,
+  CURRENT_SINGULAR_POINTS, geojson_wrap,
+  MOUSEENTER,
+  MOUSELEAVE,
+  MOUSEMOVE, state_hover, state_mark_finish,
+  TEMP_LINE_LAYER,
+  TEMP_POINT_LAYER,
+  TEMP_SOURCE,
+  TOUCHMOVE
+} from "~/components/aspect_utils/GeometryAspectConsts"
 
-
-const DELETE = "delete"
-
-const ADDED_SOURCE = "added_source"
-const ADDED_LAYER = "added_layer"
-const ADDED_LINE_LAYER = "added_line_layer"
-
-const TEMP_SOURCE = "temp_points_source"
-const TEMP_POINT_LAYER = "temp_points_layer"
-const TEMP_LINE_LAYER = "temp_line_layer"
-
-const CURRENT_SINGULAR_POINTS = "current_singular_points"
-const CURRENT_POINTS_INVISIBLE = "current_points_invisible"
-
-const color_default_added_layer = '#33796d'
-const color_hover_circle = '#faed00'
-const color_current_feature = "#fce00c"
-
-const state_mark_finish = "state_mark"
-const state_hover = "state_hover"
-
-const CLICK = "click"
-const MOUSEENTER = "mouseenter"
-const MOUSELEAVE = "mouseleave"
-const TOUCHSTART = "touchstart"
-const MOUSEDOWN = "mousedown"
-const MOUSEMOVE = "mousemove"
-const TOUCHEND = "touchend"
-const TOUCHMOVE = 'touchmove'
-const MOUSEUP = "mouseup"
 
 export default {
   name: "GeometryAspect",
@@ -120,7 +105,8 @@ export default {
         if (this.value === null) {
           return false
         }
-        if (this.$route.name === ENTRY) {
+        // TODO TEST
+        if (this.$route.name === ENTRY || this.$route.name === "test-aspects-test_GeometryAspect") {
           return true
         } else { // DOMAIN
           if (this.is_mdAndUp) {
@@ -167,8 +153,7 @@ export default {
      *           }
      */
     features_list() {
-      // console.log(this.aspect)
-      return  this.aspect.geo_features || []
+      return this.aspect.geo_features || []
     },
     current_feature_todo() {
       const features = this.aspect.geo_features || []
@@ -178,15 +163,45 @@ export default {
       }
     },
     current_feature_todo_name() {
-      if(this.current_feature_todo) {
+      if (this.current_feature_todo) {
         return this.current_feature_todo.name
       }
-    }
+    },
+    use_default_style() {
+      return this.$_.get(this.attr, "use_default_style", true)
+    },
+    default_style_layers() {
+      return [
+        {
+          'id': ADDED_LAYER,
+          'type': 'circle',
+          'source': ADDED_SOURCE,
+          paint: {
+            'circle-radius': 10,
+            'circle-color': ["case", ['boolean', ['feature-state', state_hover], false],
+              color_hover_circle, color_default_added_layer]
+          }
+        },
+        {
+          id: ADDED_LINE_LAYER,
+          type: 'line',
+          source: ADDED_SOURCE,
+          layout: {
+            'line-join': 'round',
+            'line-cap': 'round'
+          },
+          paint: {
+            'line-color': color_default_added_layer,
+            'line-width': 3
+          }
+        }
+      ]
+    },
   },
   created() {
     // console.log("GeometryAspect created")
     // this.add_feature(this.create_point_feature([0, 0]))
-    if(this.value !== null) {
+    if (this.value !== null) {
       this.added_features = this.value
     }
   },
@@ -196,8 +211,18 @@ export default {
         this.map_loaded = false
         this.onMapLoaded(map)
         this.map_loaded = false
+        this.map.addSource(ADDED_SOURCE, geojson_wrap(this.added_features))
+
+        if (this.use_default_style) {
+          for (let style of this.default_style_layers) {
+            this.map.addLayer(style)
+          }
+        } else {
+          // make sure that each feature has a style (key)
+          this.add_aspect_feature_style_layer()
+        }
         if (this.value) {
-          this.add_layer("l1", this.value.source, this.value.layers, this.show_default_layers)
+          this.add_existing_value()
         }
         if (this.is_editable_mode) {
           this.init_edit_layers()
@@ -206,33 +231,44 @@ export default {
         this.map_loaded = true
       }
     },
-    init_edit_layers() {
-      const geojson_wrap = (data) => ({type: "geojson", data})
-      this.map.addSource(ADDED_SOURCE, geojson_wrap(this.added_features))
-      this.map.addLayer({
-        'id': ADDED_LAYER,
-        'type': 'circle',
-        'source': ADDED_SOURCE,
-        paint: {
-          'circle-radius': 10,
-          'circle-color': ["case", ['boolean', ['feature-state', state_hover], false],
-            color_hover_circle, color_default_added_layer]
-        }
-      })
-      this.map.addLayer({
-        id: ADDED_LINE_LAYER,
-        type: 'line',
-        source: ADDED_SOURCE,
-        layout: {
-          'line-join': 'round',
-          'line-cap': 'round'
-        },
-        paint: {
-          'line-color': color_default_added_layer,
-          'line-width': 3
-        }
-      })
+    add_aspect_feature_style_layer() {
+// 'filter': ['==', '$type', 'Point']
+      this.features_list.forEach(feature => {
 
+        // can be either directly the stlye or another object, with the keys ["Point",LineString",Polygon"]
+        // in which case several layers are added with more filters...
+        const style_keys = Object.keys(feature.style)
+        if (style_keys.includes(POINT) || style_keys.includes(LINESTRING)) {
+          // console.log("adding style layer", feature.style)
+          for (const typedStyle of Object.entries(feature.style)) {
+            const g_type = typedStyle[0]
+            const g_style = typedStyle[1]
+            const layer_style = {
+              id: `${feature.name}_${g_type}_layer`,
+              filter: ["all",['==', 'name', feature.name], ["==","$type", g_type] ],
+              source: ADDED_SOURCE
+            }
+            Object.assign(layer_style, g_style)
+            console.log(layer_style)
+            this.map.addLayer(layer_style)
+          }
+        } else {
+          const layer_style = {
+            id: `${feature.name}_layer`,
+            filter: ['==', 'name', feature.name],
+            source: ADDED_SOURCE
+          }
+          Object.assign(layer_style, feature.style)
+          console.log(layer_style)
+          // TODO check if there is a 'circle-color' in style.paint and replace it with something like this:
+          // from the default
+          // 'circle-color': ["case", ['boolean', ['feature-state', state_hover], false],
+          //         color_hover_circle, <HERE THE GIVEN COLOR>]
+          this.map.addLayer(layer_style)
+        }
+      })
+    },
+    init_edit_layers() {
       this.map.addSource(TEMP_SOURCE, geojson_wrap(this.create_feature_collection()))
       this.map.addLayer({
         id: TEMP_POINT_LAYER,
@@ -258,7 +294,6 @@ export default {
           'line-width': 3
         }
       })
-
       this.map.addSource(CURRENT_SINGULAR_POINTS, geojson_wrap(this.create_point_feature([])))
       this.map.addLayer({
         id: CURRENT_POINTS_INVISIBLE,
@@ -340,17 +375,16 @@ export default {
     //     // }
     //   }
     // },
+    // TODO Deprecated
     add_layer(name, source, layers = [], show_default_layers = true) {
       this.map.addSource(name, {
         'type': 'geojson',
         'data': source
       })
-
       for (let layer of layers) {
         layer.source = name
         this.map.addLayer(layer)
       }
-
       if (show_default_layers) {
         this.map.addLayer({
           'id': name,
@@ -375,6 +409,17 @@ export default {
       }
     },
     // NEW
+    show_geo_type_buttons(feature_name) {
+      return feature_name === this.current_feature_todo_name && this.is_editable_mode
+    },
+    feature_place_label(index) {
+      console.log("label?", index, this.added_features)
+      if (this.added_feature.length >= index) {
+        return this.added_feature(index).properties.place
+      } else {
+        return this.$t("comp.geometry_asp.no_place")
+      }
+    },
     async add_feature(feature_orig) {
       const feature = this.$_.cloneDeep(feature_orig)
       try {
@@ -385,11 +430,9 @@ export default {
         console.log(e)
       }
       // this.current_feature_todo_name
-
       this.added_features.features.push(feature)
       this.update_value(this.added_features)
       this.set_data(ADDED_SOURCE, this.added_features)
-
     },
     /**
      * start new feature
@@ -643,6 +686,19 @@ export default {
     },
     added_feature(index) {
       return this.added_features.features[index]
+    },
+    add_existing_value() {
+      // const given_features = Object.keys(this.value)
+      // const named_order = this.features_list.map(f => f.name)
+      // const feature_order = this.$_.sortBy(given_features, f => named_order.indexOf(f))
+      // for(let feature_name of feature_order) {
+      //   // const feature_name = f_name__feature[0]
+      //   // const feature = f_name__feature[1]
+      //   // console.log(f_name__feature)
+      // }
+      this.added_features = this.value
+      // this.update_value(this.added_features)
+      this.set_data(ADDED_SOURCE, this.added_features)
     }
   }
 }

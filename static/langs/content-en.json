@@ -438,6 +438,9 @@
       "option_region": "The location's administrative unit (region).",
       "show entries": "Show my entries"
     },
+    "geometry_asp": {
+      "no_place": "@:comp.location_asp.no_loc"
+    },
     "map_wrapper": {
       "locations": "@:w.n_locations",
       "several_countries": "Several countries",
