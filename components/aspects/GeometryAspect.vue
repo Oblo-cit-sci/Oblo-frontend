@@ -15,6 +15,8 @@
           v-list-item-content.pb-1
             div
               v-list-item-title.font-weight-bold {{feature.label}}
+              svg.mr-1(height=15 width=15)
+                circle(cx=8 cy=8 r=6 :fill="feature_color(index)" stroke-width=0)
             v-btn-toggle(v-if="show_geo_type_buttons(feature.name)" :disable="!map_loaded" v-model="geo_button_selection")
               v-btn.mx-0(v-for="geo_type in allowed_geometry_types"
                 :key="geo_type"
@@ -239,9 +241,9 @@ export default {
         // make sure that each feature has a style (key)
         this.add_aspect_feature_style_layer()
       }
-      if (this.value) {
-        this.add_existing_value()
-      }
+      // if (this.value) {
+      //   this.add_existing_value()
+      // }
     },
     add_aspect_feature_style_layer() {
       this.features_list.forEach(feature => {
@@ -712,16 +714,7 @@ export default {
       return this.added_features.features[index]
     },
     add_existing_value() {
-      // const given_features = Object.keys(this.value)
-      // const named_order = this.features_list.map(f => f.name)
-      // const feature_order = this.$_.sortBy(given_features, f => named_order.indexOf(f))
-      // for(let feature_name of feature_order) {
-      //   // const feature_name = f_name__feature[0]
-      //   // const feature = f_name__feature[1]
-      //   // console.log(f_name__feature)
-      // }
       this.added_features = this.value
-      // this.update_value(this.added_features)
       this.set_data(ADDED_SOURCE, this.added_features)
     },
     /**
@@ -747,6 +740,14 @@ export default {
     },
     beforeDestroy() {
       console.log("GeometryAspect beforeDestroy")
+    },
+    feature_color(feauture_index) {
+      if (this.use_default_style) {
+        return color_default_added_layer
+      } else {
+        const feature = this.aspect.geo_features[feauture_index]
+        return this.$_.get(feature,"marker_color", color_default_added_layer)
+      }
     }
   }
 }
