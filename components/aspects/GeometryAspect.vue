@@ -30,7 +30,7 @@ import AspectComponentMixin from "~/components/aspects/AspectComponentMixin"
 import ResponsivenessMixin from "~/components/ResponsivenessMixin"
 import MapIncludeMixin from "~/components/map/MapIncludeMixin"
 import Mapbox from "mapbox-gl-vue"
-import {LINESTRING, POINT, POLYGON, ALL_GEOMETRY_TYPES, ENTRY, MENU_MODE_DOMAIN} from "~/lib/consts"
+import {LINESTRING, POINT, POLYGON, ALL_GEOMETRY_TYPES, ENTRY, MENU_MODE_DOMAIN, DOMAIN} from "~/lib/consts"
 import {arr2coords} from "~/lib/map_utils"
 import {
   ADDED_LAYER,
@@ -47,7 +47,15 @@ import {
   TEMP_SOURCE,
   TOUCHMOVE
 } from "~/components/aspect_utils/GeometryAspectConsts"
+import {ADD_LAYER_TO_MAP, ADD_SOURCE_TO_MAP, BUS_MAP_LOADED} from "~/plugins/bus"
 
+/**
+ *
+ * HOW TO STYLE Geometries
+ * geo_features (in the aspect) can include a 'style' property.
+ * that is a object, where the
+ *
+ */
 
 export default {
   name: "GeometryAspect",
@@ -142,16 +150,6 @@ export default {
     max_geometries() {
       return this.attr.max || null
     },
-    /**
-     * the aspect can have a geometries key, which describes what geometries are allowed
-     * e.g.
-     *           {
-     *             "type":["Point"],
-     *             "name":"risk",
-     *             "label":"Risk",
-     *             // style
-     *           }
-     */
     features_list() {
       return this.aspect.geo_features || []
     },
@@ -204,26 +202,26 @@ export default {
     if (this.value !== null) {
       this.added_features = this.value
     }
+    // console.log("geoaspect created", this.show_map, this.$route.name)
+
+    if (!this.show_map && this.$route.name === DOMAIN) {
+      if (this.$store.getters["map/is_map_loaded"]) {
+        this.add_existing_data()
+      } else {
+        this.$bus.$on(BUS_MAP_LOADED, () => {
+          this.add_existing_data()
+        })
+      }
+    }
   },
   methods: {
     aspect_onMapLoaded(map) {
+      console.log("geo-aspect onMapLoaded. show map?", this.show_map)
       if (this.show_map) {
         this.map_loaded = false
         this.onMapLoaded(map)
         this.map_loaded = false
-        this.map.addSource(ADDED_SOURCE, geojson_wrap(this.added_features))
-
-        if (this.use_default_style) {
-          for (let style of this.default_style_layers) {
-            this.map.addLayer(style)
-          }
-        } else {
-          // make sure that each feature has a style (key)
-          this.add_aspect_feature_style_layer()
-        }
-        if (this.value) {
-          this.add_existing_value()
-        }
+        this.add_existing_data()
         if (this.is_editable_mode) {
           this.init_edit_layers()
           this.init_interaction_functions()
@@ -231,26 +229,51 @@ export default {
         this.map_loaded = true
       }
     },
+    add_existing_data() {
+      this.add_source_to_map(ADDED_SOURCE, this.added_features)
+      if (this.use_default_style) {
+        for (let style of this.default_style_layers) {
+          this.add_layer_to_map(style)
+        }
+      } else {
+        // make sure that each feature has a style (key)
+        this.add_aspect_feature_style_layer()
+      }
+      if (this.value) {
+        this.add_existing_value()
+      }
+    },
     add_aspect_feature_style_layer() {
-// 'filter': ['==', '$type', 'Point']
       this.features_list.forEach(feature => {
-
         // can be either directly the stlye or another object, with the keys ["Point",LineString",Polygon"]
         // in which case several layers are added with more filters...
         const style_keys = Object.keys(feature.style)
-        if (style_keys.includes(POINT) || style_keys.includes(LINESTRING)) {
+        if (style_keys.includes(POINT) || style_keys.includes(LINESTRING) || style_keys.includes(POLYGON)) {
           // console.log("adding style layer", feature.style)
+          const added_layers = []
+          const postponed_layers = []
           for (const typedStyle of Object.entries(feature.style)) {
-            const g_type = typedStyle[0]
+            let g_type = typedStyle[0]
             const g_style = typedStyle[1]
+            if (typeof g_style === "string") {
+              postponed_layers.push(g_type)
+              continue
+            }
             const layer_style = {
               id: `${feature.name}_${g_type}_layer`,
-              filter: ["all",['==', 'name', feature.name], ["==","$type", g_type] ],
+              filter: ["all", ['==', 'name', feature.name], ["==", "$type", g_type]],
               source: ADDED_SOURCE
             }
             Object.assign(layer_style, g_style)
-            console.log(layer_style)
-            this.map.addLayer(layer_style)
+            added_layers.push(layer_style)
+          }
+          for (let postponed of postponed_layers) {
+            const g_type = feature.style[postponed]
+            const extend_layer = this.$_.find(added_layers, layer => layer.id === `${feature.name}_${g_type}_layer`)
+            extend_layer.filter = ["all", ['==', 'name', feature.name], ["any", ["==", "$type", g_type], ["==", "$type", postponed]]]
+          }
+          for (const layer of added_layers) {
+            this.add_layer_to_map(layer)
           }
         } else {
           const layer_style = {
@@ -258,13 +281,14 @@ export default {
             filter: ['==', 'name', feature.name],
             source: ADDED_SOURCE
           }
+
           Object.assign(layer_style, feature.style)
           console.log(layer_style)
           // TODO check if there is a 'circle-color' in style.paint and replace it with something like this:
           // from the default
           // 'circle-color': ["case", ['boolean', ['feature-state', state_hover], false],
           //         color_hover_circle, <HERE THE GIVEN COLOR>]
-          this.map.addLayer(layer_style)
+          this.add_layer_to_map(layer_style)
         }
       })
     },
@@ -699,6 +723,30 @@ export default {
       this.added_features = this.value
       // this.update_value(this.added_features)
       this.set_data(ADDED_SOURCE, this.added_features)
+    },
+    /**
+     * these 2 functions do the right method depending if its the view or the entry on the main page
+     * @param id
+     * @param source
+     */
+    add_source_to_map(id, source) {
+      console.log("adding source", id, source)
+      if (this.$route.name === ENTRY || this.$route.name === "test-aspects-test_GeometryAspect") {
+        this.map.addSource(id, geojson_wrap(source))
+      } else {
+        this.$bus.$emit(ADD_SOURCE_TO_MAP, id, source)
+      }
+    },
+    add_layer_to_map(layer) {
+      console.log("adding layer", layer)
+      if (this.$route.name === ENTRY || this.$route.name === "test-aspects-test_GeometryAspect") {
+        this.map.addLayer(layer)
+      } else {
+        this.$bus.$emit(ADD_LAYER_TO_MAP, layer)
+      }
+    },
+    beforeDestroy() {
+      console.log("GeometryAspect beforeDestroy")
     }
   }
 }

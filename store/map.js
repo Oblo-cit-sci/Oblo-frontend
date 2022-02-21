@@ -13,6 +13,7 @@ export const state = () => ({
   search_time: null,
   default_map_style: null,
   access_token: null,
+  domain_map_loaded: false
 })
 
 export const mutations = {
@@ -70,6 +71,9 @@ export const mutations = {
   },
   access_token(state, access_token) {
     state.access_token = access_token
+  },
+  map_loaded(state, loaded) {
+    state.domain_map_loaded = loaded
   }
 }
 
@@ -150,6 +154,9 @@ export const getters = {
   },
   can_show_map(state) {
     return state.default_map_style && state.access_token
+  },
+  is_map_loaded(state) {
+    return state.domain_map_loaded
   }
 }
 

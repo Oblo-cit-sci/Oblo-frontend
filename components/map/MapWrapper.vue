@@ -50,7 +50,13 @@ import CreateEntryButton from "~/components/CreateEntryButton";
 import ResponsivenessMixin from "~/components/ResponsivenessMixin";
 import EnvMixin from "~/components/global/EnvMixin"
 import {pack_value, unpack} from "~/lib/aspect";
-import {BUS_MAP_MARKER_HIDE, BUS_MAP_MARKER_SHOW, BUS_TRIGGER_SEARCH} from "~/plugins/bus";
+import {
+  ADD_LAYER_TO_MAP, ADD_SOURCE_TO_MAP, BUS_MAP_LOADED,
+  BUS_MAP_MARKER_HIDE,
+  BUS_MAP_MARKER_SHOW,
+  BUS_TRIGGER_SEARCH,
+  REMOVE_LAYER_FROM_MAP, REMOVE_SOURCE_FROM_MAP
+} from "~/plugins/bus";
 
 const cluster_layer_name = LAYER_BASE_ID + '_clusters'
 const show_cluster_place_name = false
@@ -107,7 +113,9 @@ export default {
       initialized: false,
       layers_created: false,
       actual_markers: [],
-      last_map_options: {} // this is for small screen, which dont seem to recall a computed prop when showing the map again
+      last_map_options: {}, // this is for small screen, which dont seem to recall a computed prop when showing the map again
+      added_entry_source_layer_ids: [],
+      added_entry_layer_ids: [],
     }
   },
   computed: {
@@ -215,6 +223,26 @@ export default {
     this.$bus.$on(BUS_TRIGGER_SEARCH, () => {
       this.load_map_entries(this.domain_name)
     })
+
+    this.$bus.$on(ADD_SOURCE_TO_MAP, (layer_id, data) => {
+      this.map.addSource(layer_id, {type: "geojson", data: data})
+      this.added_entry_source_layer_ids.push(layer_id)
+    })
+
+    this.$bus.$on(ADD_LAYER_TO_MAP, (layer_data) => {
+      this.map.addLayer(layer_data)
+      this.added_entry_layer_ids.push(layer_data.id)
+    })
+
+    this.$bus.$on(REMOVE_SOURCE_FROM_MAP, (layer_id) => {
+        this.map.removeSource(layer_id)
+      }
+    )
+
+    this.$bus.$on(REMOVE_LAYER_FROM_MAP, (layer_id) => {
+        this.removeLayer(layer_id)
+      }
+    )
   },
   methods: {
     map_options() {
@@ -708,23 +736,31 @@ export default {
     trigger_dl() {
       this.set_dl = true
       this.map.triggerRepaint()
+    },
+    remove_entry_layers() {
+      for (let src_layer_id of this.added_entry_source_layer_ids) {
+        this.map.removeSource(src_layer_id)
+      }
+      for (let layer_id of this.added_entry_layer_ids) {
+        this.map.removeLayer(layer_id)
+      }
+      this.added_entry_source_layer_ids = []
+      this.added_entry_source_layer_ids = []
     }
   },
   beforeDestroy() {
     // todo consider padding from menu
     if (this.map) {
-      // console.log("destroy map")
-      // try {
-      //   this.map.remove()
-      // } catch (e) {
-      //   console.log(e)
-      // }
+      this.$store.commit("map/map_loaded", false)
     }
-
     this.store_cam_options()
-    this.$bus.$off(BUS_MAP_MARKER_SHOW)
-    this.$bus.$off(BUS_MAP_MARKER_HIDE)
-    this.$bus.$off(BUS_TRIGGER_SEARCH)
+    for (const event_name of [
+      BUS_MAP_MARKER_SHOW, BUS_MAP_MARKER_HIDE, BUS_TRIGGER_SEARCH, ADD_SOURCE_TO_MAP,
+      ADD_LAYER_TO_MAP, REMOVE_SOURCE_FROM_MAP, REMOVE_LAYER_FROM_MAP
+    ]) {
+      this.$bus.$off(event_name)
+    }
+    this.remove_entry_layers()
   },
   watch: {
     map_hidden(hidden) {
@@ -743,6 +779,8 @@ export default {
     },
     map_loaded() {
       this.check_entries_map_done()
+      this.$store.commit("map/map_loaded", true)
+      this.$bus.$emit(BUS_MAP_LOADED)
     },
     menu_open() {
       this.check_hide_map()
@@ -765,6 +803,7 @@ export default {
       // console.log("MapWrapper.watch.selected_entry", uuid, old_uuid)
       if (old_uuid) {
         this.change_entry_markers_mode(old_uuid, false)
+        this.remove_entry_layers()
       }
       if (uuid) {
         this.change_entry_markers_mode(uuid, true)
