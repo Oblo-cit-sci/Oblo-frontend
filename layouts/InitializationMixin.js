@@ -141,7 +141,7 @@ export default {
 
       // login required...
       if (has_domain_data) {
-        console.log("HAS DOMAIN DATA!...")
+        // console.log("HAS DOMAIN DATA!...")
         const domain_data = init_domain_data[1].data
         // check if the domain is delivered in the given language:
         const result_domain_language = Object.keys(this.$_.find(domain_data.data.domains, d => d.name === domain_name).langs)[0]
@@ -175,7 +175,12 @@ export default {
 
         // guarantee entry & template
         if (this.query_entry_uuid) {
-          await this.guarantee_entry(this.query_entry_uuid)
+          console.log("ENTRY!!?")
+          if(this.query_entry_access_key) {
+            await this.guarantee_entry(this.query_entry_uuid, this.query_entry_access_key)
+          } else {
+            await this.guarantee_entry(this.query_entry_uuid)
+          }
           // console.log("query_entry_uuid", this.query_entry_uuid)
           const entry = this.$store.getters["entries/get_entry"](this.query_entry_uuid)
           await this.guarantee_template_code_with_references(entry.template.slug, entry.language)
