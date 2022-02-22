@@ -24,6 +24,9 @@
           @click="accept"
           :disabled="disable_submit"
           :loading="sending") {{$t('comp.entry_actions.review.accept')}}
+        v-btn(v-if="show_share" @click="share") {{$t('comp.entry_actions.sharing.share')}}
+          v-icon.ml-2 mdi-share-variant
+        v-btn(v-if="show_revoke_share" @click="revoke_share") {{$t('comp.entry_actions.sharing.revoke_share')}}
         v-btn(
           v-if="is_review_mode"
           color="warning"
@@ -39,7 +42,7 @@
 
 import {mapGetters} from "vuex"
 
-import {EDIT, REQUIRES_REVIEW, REVIEW, VIEW} from "~/lib/consts"
+import {EDIT, PUBLISHED, REJECTED, REQUIRES_REVIEW, REVIEW, VIEW} from "~/lib/consts"
 import EntryMixin from "~/components/entry/EntryMixin"
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
 import EntryNavMixin from "~/components/EntryNavMixin"
@@ -75,7 +78,13 @@ export default {
   computed: {
     ...mapGetters({connected: "app/connected", logged_in: "user/logged_in"}),
     show_submit() {
-      return this.is_edit_mode && this.entry.status !== "rejected"
+      return this.is_edit_mode && this.entry.status !== REJECTED
+    },
+    show_share() {
+      return this.entry.status === PUBLISHED && this.is_view_mode && this.connected && this.can_edit
+    },
+    show_revoke_share() {
+      return this.entry.rules?.has_entry_access_hash || false
     },
     disable_submit() {
       if (!this.connected || !this.entry_complete || this.has_errors) {
@@ -131,6 +140,12 @@ export default {
     },
     async reject() {
       this.$emit("entry-action", "reject")
+    },
+    async share() {
+      this.$emit("entry-action", "share")
+    },
+    async revoke_share() {
+      this.$emit("entry-action", "revoke_share")
     }
   }
 }

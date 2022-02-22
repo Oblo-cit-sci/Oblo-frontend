@@ -341,6 +341,11 @@
       "review": {
         "accept": "accept",
         "reject": "reject"
+      },
+      "sharing": {
+        "share": "Share",
+        "revoke_share": "Revoke sharing link",
+        "access_revoked": "Access revoked"
       }
     },
     "entry_action_buttons": {

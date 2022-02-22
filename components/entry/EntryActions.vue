@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import {EDIT, QP_ENTRY_ACCESS_KEY, QP_ENTRY_MODE, QP_UUID, REVIEW, VIEW} from "~/lib/consts";
+import {EDIT, PRIVATE, PUBLIC, QP_ENTRY_ACCESS_KEY, QP_ENTRY_MODE, QP_UUID, REVIEW, VIEW} from "~/lib/consts";
 import Paginate from "../global/Paginate";
 
 import EntryNavMixin from "../EntryNavMixin";
@@ -81,6 +81,12 @@ export default {
           break
         case "delete":
           this.delete()
+          break
+        case "share":
+          this.share()
+          break
+        case "revoke_share":
+          this.revoke_share()
           break
       }
       this.$emit('entry-action', action)
@@ -218,6 +224,34 @@ export default {
           }).catch(err => {
             this.err_error_snackbar(err)
           })
+        }
+      })
+    },
+    async share() {
+      let text = `${process.env.HOSTNAME}/domain?d=${this.entry.domain}&uuid=${this.entry.uuid}&entry_mode=view`
+      if (this.entry.privacy === PRIVATE) {
+        const response = await this.$api.entry.share(this.entry.uuid)
+        text = response.data.data.url
+      }
+      this.$store.commit("entries/save_entry", Object.assign(this.entry, {rules: {has_entry_access_hash: true}}))
+      this.$bus.$emit(BUS_DIALOG_OPEN, {
+        data: {
+          text,
+          show_cancel: false
+        }, confirm_method: () => {
+          navigator.clipboard.writeText(text)
+        }
+      })
+    },
+    async revoke_share() {
+      const response = await this.$api.entry.revoke_share(this.entry.uuid)
+      // todo doesnt seem to remove it really...
+      delete this.entry.rules.has_entry_access_hash
+      this.$store.commit("entries/save_entry", this.entry)
+      this.$bus.$emit(BUS_DIALOG_OPEN, {
+        data: {
+          text: response.data.msg,
+          show_cancel: false
         }
       })
     },

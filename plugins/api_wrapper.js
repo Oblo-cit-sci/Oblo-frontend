@@ -330,6 +330,13 @@ class Entry extends QueryBase {
     return this.delete_(`${uuid}/attachment/${file_uuid}`)
   }
 
+  async share(uuid){
+    return await this.post_(`${uuid}/share`)
+  }
+
+  async revoke_share(uuid) {
+    return await this.post_(`${uuid}/revoke_share`)
+  }
 }
 
 class TemplateCode extends QueryBase {
