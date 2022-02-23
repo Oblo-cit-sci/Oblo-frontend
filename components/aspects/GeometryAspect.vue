@@ -23,8 +23,12 @@
                 @click="new_feature(geo_type)")
                 v-icon {{get_geometry_type_icon(geo_type)}}
                 span {{geo_type}}
-            div
-              v-list-item-content.pb-1(v-if="is_features_added(index)") {{feature_place_label(index)}}
+            v-sheet(v-for="(feature_value, index) in feature_values(feature.name)" :key="index"
+              @click="click_feauture_value(feature.name, index)")
+              v-list-item-content.pb-1(v-if="is_features_added(index) && show_place_name(feature.name)") {{place_name(index)}}
+              Aspect(v-for="property in feature_properties(feature)" :key="property.name"
+                :aspect="property" :mode="mode" :ext_value="feature_property_value(index, property.name)")
+              v-divider(v-if="index < feature_values(feature.name).length - 1")
 </template>
 
 <script>
@@ -50,6 +54,8 @@ import {
   TOUCHMOVE
 } from "~/components/aspect_utils/GeometryAspectConsts"
 import {ADD_LAYER_TO_MAP, ADD_SOURCE_TO_MAP, BUS_MAP_LOADED} from "~/plugins/bus"
+import Aspect from "~/components/Aspect"
+import {pack_value} from "~/lib/aspect"
 
 /**
  *
@@ -62,7 +68,7 @@ import {ADD_LAYER_TO_MAP, ADD_SOURCE_TO_MAP, BUS_MAP_LOADED} from "~/plugins/bus
 export default {
   name: "GeometryAspect",
   mixins: [AspectComponentMixin, MapIncludeMixin, ResponsivenessMixin],
-  components: {Mapbox},
+  components: {Mapbox, Aspect},
   props: {},
   data() {
     return {
@@ -438,10 +444,18 @@ export default {
     show_geo_type_buttons(feature_name) {
       return feature_name === this.current_feature_todo_name && this.is_editable_mode
     },
-    feature_place_label(index) {
-      console.log("label?", index, this.added_features)
-      if (this.added_feature.length >= index) {
-        return this.added_feature(index).properties.place
+    show_place_name(feature_name) {
+      const show_place_name_feature = this.$_.find(this.features_list, f => f.name === feature_name).show_place_name || null
+      if (show_place_name_feature) {
+        return show_place_name_feature
+      } else {
+        return this.$_.get(this.attr, "show_place_name", true)
+      }
+    },
+    place_name(index) {
+      // console.log("label?", index, this.added_features)
+      if (this.added_features.length >= index) {
+        return this.get_added_feature(index).properties.place
       } else {
         return this.$t("comp.geometry_asp.no_place")
       }
@@ -710,8 +724,15 @@ export default {
     is_features_added(index) {
       return this.added_features.features.length > index
     },
-    added_feature(index) {
+    feature_values(feature_name) {
+      return this.$_.filter(this.added_features.features, f => f.properties.name === feature_name)
+    },
+    get_added_feature(index) {
       return this.added_features.features[index]
+    },
+    click_feauture_value(feature_name, index) {
+      const value = this.feature_values(feature_name)[index]
+      console.log("click_feauture_value", value)
     },
     add_existing_value() {
       this.added_features = this.value
@@ -746,9 +767,16 @@ export default {
         return color_default_added_layer
       } else {
         const feature = this.aspect.geo_features[feauture_index]
-        return this.$_.get(feature,"marker_color", color_default_added_layer)
+        return this.$_.get(feature, "marker_color", color_default_added_layer)
       }
-    }
+    },
+    feature_properties(feature) {
+      return this.$_.get(feature, "properties", [])
+    },
+    feature_property_value(index, property) {
+      const feature_value = this.get_added_feature(index)
+      return this.$_.get(feature_value, "properties." + property, pack_value())
+    },
   }
 }
 
