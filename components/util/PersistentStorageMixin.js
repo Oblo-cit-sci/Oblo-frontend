@@ -24,12 +24,30 @@ export default {
       await this.store_value("entries", this.$store.getters["entries/all_drafts"]().map(e => [e.uuid, e]))
     },
     /** could be used more....
-    instead we have 'store_edit' in several locations
+     instead we have 'store_edit' in several locations
      **/
     async persist_edit_entry() {
-      const edit = this.$store.getters["get_edit"]()
+      const edit = this.$store.getters["entries/get_edit"]()
       if (edit) {
         await this.$localforage.setItem("edit_entry", edit)
+      }
+    },
+    /**
+     * Remove the edit-entry. If uuid is passed, it is only removed when the uuid matches
+     * @param {string} uuid
+     * @returns {Promise<any>}
+     */
+    async remove_edit_entry(uuid = null) {
+      if (!uuid) {
+        await this.remove_from_storage("edit_entry")
+      } else {
+        this.$localforage.getItem("edit_entry").then(async edit_entry_stored => {
+          if (edit_entry_stored) {
+            if (edit_entry_stored.uuid === uuid) {
+              await this.remove_from_storage("edit_entry")
+            }
+          }
+        })
       }
     },
     async persist_user_key() {

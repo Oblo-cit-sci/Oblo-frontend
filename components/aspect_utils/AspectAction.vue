@@ -18,6 +18,7 @@ import {
   unpack
 } from "~/lib/aspect"
 import {transform_options_list} from "~/lib/options"
+import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
 // import TemplateAccessMixin from "~/components/templates/TemplateAccessMixin"
 
 /**
@@ -38,7 +39,7 @@ import {transform_options_list} from "~/lib/options"
 // todo maybe trigger.requires_callback can go since its basically always the case for api-query...
 export default {
   name: "AspectAction",
-  mixins: [TriggerSnackbarMixin],
+  mixins: [TriggerSnackbarMixin, PersistentStorageMixin],
   components: {},
   props: {
     aspect: Object,
@@ -153,7 +154,6 @@ export default {
         const {name, value} = process
         if (name === "list_filter_index") {
           // console.log(data)
-          debugger
         }
       }
       return data
@@ -189,16 +189,9 @@ export default {
             aspect_loc,
             value: aspect_default_value(this.aspect)
           })
-          this.store_edit()
+          this.persist_edit_entry()
           // console.log("reset", aspect_loc, aspect)
         }
-      }
-    },
-    // same as in AspectMixin
-    async store_edit() {
-      const edit = this.get_entry()
-      if (edit) {
-        await this.$localforage.setItem("edit_entry", edit)
       }
     },
     handle_result(result) {

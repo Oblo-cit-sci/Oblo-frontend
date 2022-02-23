@@ -78,7 +78,7 @@ export default {
         const cached_value = this.$store.getters["get_aspect_cache"](entry.template.slug, this.aspect.name)
         if (cached_value) {
           this.$store.commit("entries/set_entry_value", {aspect_loc: this.aspect_loc, value: cached_value})
-          this.store_edit()
+          this.persist_edit_entry().then()
         }
       }
     }

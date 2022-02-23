@@ -344,8 +344,7 @@
       },
       "sharing": {
         "share": "Share",
-        "revoke_share": "Revoke sharing link",
-        "access_revoked": "Access revoked"
+        "revoke_share": "Revoke sharing link"
       }
     },
     "entry_action_buttons": {

@@ -94,6 +94,8 @@ export default {
     cancel_draft() {
       if (this.is_draft) {
         const base_t_cancel_loc = "comp.entry_actions.dialogs.cancel"
+        // delete it from store
+        this.remove_edit_entry(this.entry.uuid)
         this.$bus.$emit(BUS_DIALOG_OPEN, {
           data: {
             title: this.$t(`${base_t_cancel_loc}.title`),
@@ -244,10 +246,13 @@ export default {
       })
     },
     async revoke_share() {
+      // console.log("REVOKE??:",this.entry)
       const response = await this.$api.entry.revoke_share(this.entry.uuid)
       // todo doesnt seem to remove it really...
+
       delete this.entry.rules.has_entry_access_hash
-      this.$store.commit("entries/save_entry", this.entry)
+
+      this.$store.commit("entries/save_entry", this.$_.cloneDeep(this.entry))
       this.$bus.$emit(BUS_DIALOG_OPEN, {
         data: {
           text: response.data.msg,
