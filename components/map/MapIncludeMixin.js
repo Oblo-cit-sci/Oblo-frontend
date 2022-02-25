@@ -1,6 +1,7 @@
 // BASIC lAYER
 import MapEntriesMixin from "~/components/map/MapEntriesMixin"
-import {default_place_type, LINESTRING, MULTIPOINT, POINT, POLYGON} from "~/lib/consts"
+import {default_place_type, ENTRY, FEATURE_COLLECTION, LINESTRING, MULTIPOINT, POINT, POLYGON} from "~/lib/consts"
+import {BUS_MAP_FIT_BOUNDS, BUS_MAP_FLY_TO} from "~/plugins/bus"
 
 
 export default {
@@ -28,7 +29,7 @@ export default {
         dragRotate: false,
         act_hoover_id: null,
         projection: 'naturalEarth',
-        minZoom:2.5
+        minZoom: 2.5
         // scaleControl: null
       },
     }
@@ -172,6 +173,10 @@ export default {
       }, [])
     },
     transform_loc(loc) {
+      // console.log("transform_loc", loc)
+      if (Array.isArray(loc) && loc.length === 2) {
+        return loc
+      }
       // todo take the NaN check out and filter earlier...
       if (loc.hasOwnProperty("lon") && loc.lat && !isNaN(loc.lon) && !isNaN(loc.lat)) {
         return [loc.lon, loc.lat]
@@ -199,16 +204,40 @@ export default {
       a.download = "neat.png"
       a.click()
     },
+    map_goto_geometry_feature_value(value) {
+      // console.log("map_goto_geometry_feature_value", value)
+      // todo clean location_aspect to be a geojson as well
+      // console.log([POLYGON, LINESTRING, POINT].includes(value.geometry.type))
+      if ([FEATURE_COLLECTION].includes(value.type)) {
+        if ((value.bbox || []).length === 4) {
+          this.map_fitBounds(value.bbox)
+        }
+      } else {
+        // TODO NOT USED YET
+        this.map_goto_location({coordinates: value.geometry.coordinates})
+      }
+    },
     map_goto_location(location) {
       // console.log("MapIncldeMixin.map_goto_location", location)
       // debugger
       const center = this.transform_loc(location.coordinates)
+      console.log("map_goto_location", center)
       this.map.easeTo({
         center: center,
         duration: 2000, // make the flying slow
-        padding: this.center_padding || 0// comes from the implementing class
+        padding: 400 // this.center_padding || 0// comes from the implementing class
       })
       this.$store.dispatch("map/goto_done")
+    },
+    map_fitBounds(bbox) {
+      // todo whats this math stuff....? offset is not proper. and requires more padding
+      console.log("should have offset:", this.center_padding.left || 0)
+      this.map.fitBounds(new mapboxgl.LngLatBounds(bbox), {
+        linear: false,
+        maxZoom: 15,
+        //offset: new mapboxgl.Point(-(this.center_padding.left || 0) ,0),
+        padding: 400 //this.center_padding
+      })
     },
     add_popup(feature, e, popup_html, remove_existing = true) {
       if (remove_existing) {

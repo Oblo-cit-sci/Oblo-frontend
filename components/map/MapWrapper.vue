@@ -51,11 +51,17 @@ import ResponsivenessMixin from "~/components/ResponsivenessMixin";
 import EnvMixin from "~/components/global/EnvMixin"
 import {pack_value, unpack} from "~/lib/aspect";
 import {
-  ADD_LAYER_TO_MAP, ADD_SOURCE_TO_MAP, BUS_MAP_LOADED,
+  BUS_ADD_LAYER_TO_MAP,
+  BUS_ADD_SOURCE_TO_MAP,
+  BUS_MAP_LOADED,
   BUS_MAP_MARKER_HIDE,
   BUS_MAP_MARKER_SHOW,
   BUS_TRIGGER_SEARCH,
-  REMOVE_LAYER_FROM_MAP, REMOVE_SOURCE_FROM_MAP
+  BUS_REMOVE_LAYER_FROM_MAP,
+  BUS_REMOVE_SOURCE_FROM_MAP,
+  BUS_MAP_FLY_TO,
+  BUS_MAP_FIT_BOUNDS,
+  BUS_MAP_GOTO_GEOMETRY_FEATURE_VALUE
 } from "~/plugins/bus";
 
 const cluster_layer_name = LAYER_BASE_ID + '_clusters'
@@ -202,6 +208,7 @@ export default {
     }
   },
   created() {
+    console.log("map created...")
     if (this.domain_name) {
       this.load_map_entries(this.domain_name)
     } else {
@@ -224,25 +231,39 @@ export default {
       this.load_map_entries(this.domain_name)
     })
 
-    this.$bus.$on(ADD_SOURCE_TO_MAP, (layer_id, data) => {
+    this.$bus.$on(BUS_ADD_SOURCE_TO_MAP, (layer_id, data) => {
+      // console.log("BUS_ADD_SOURCE_TO_MAP", layer_id, data)
       this.map.addSource(layer_id, {type: "geojson", data: data})
       this.added_entry_source_layer_ids.push(layer_id)
     })
 
-    this.$bus.$on(ADD_LAYER_TO_MAP, (layer_data) => {
+    this.$bus.$on(BUS_ADD_LAYER_TO_MAP, (layer_data) => {
+      // console.log("BUS_ADD_LAYER_TO_MAP", layer_data)
       this.map.addLayer(layer_data)
       this.added_entry_layer_ids.push(layer_data.id)
     })
 
-    this.$bus.$on(REMOVE_SOURCE_FROM_MAP, (layer_id) => {
+    this.$bus.$on(BUS_REMOVE_SOURCE_FROM_MAP, (layer_id) => {
         this.map.removeSource(layer_id)
       }
     )
 
-    this.$bus.$on(REMOVE_LAYER_FROM_MAP, (layer_id) => {
+    this.$bus.$on(BUS_REMOVE_LAYER_FROM_MAP, (layer_id) => {
         this.removeLayer(layer_id)
       }
     )
+
+    this.$bus.$on(BUS_MAP_GOTO_GEOMETRY_FEATURE_VALUE, value => {
+      this.map_goto_geometry_feature_value(value)
+    })
+
+    this.$bus.$on(BUS_MAP_FLY_TO, coordinates => {
+      this.map_goto_location(coordinates)
+    })
+
+    this.$bus.$on(BUS_MAP_FIT_BOUNDS, bbox => {
+      this.map_fitBounds(bbox)
+    })
   },
   methods: {
     map_options() {
@@ -577,19 +598,6 @@ export default {
         // const features = this.map.getSource(MAIN_SOURCE_LAYER)._data.features
       }
 
-      // we use marker now, deprecated
-      // for (let f of relevant_features) {
-      //   if (selected) {
-      //     // console.log("found entry", f.id)
-      //     this.map.setFeatureState(
-      //       {source: MAIN_SOURCE_LAYER, id: f.id},
-      //       {"selected": true}
-      //     )
-      //   } else {
-      //     this.map.removeFeatureState(
-      //       {source: MAIN_SOURCE_LAYER, id: f.id}, "selected")
-      //   }
-      // }
     },
     async check_cluster_states(clusters) {
       const cluster_ids = clusters.map(c => c.id)
@@ -738,11 +746,19 @@ export default {
       this.map.triggerRepaint()
     },
     remove_entry_layers() {
-      for (let src_layer_id of this.added_entry_source_layer_ids) {
-        this.map.removeSource(src_layer_id)
-      }
       for (let layer_id of this.added_entry_layer_ids) {
-        this.map.removeLayer(layer_id)
+        if (!this.map.getLayer(layer_id)) {
+          console.warn("Layer not found", layer_id)
+        } else {
+          this.map.removeLayer(layer_id)
+        }
+      }
+      for (let src_layer_id of this.added_entry_source_layer_ids) {
+        if (!this.map.getSource(src_layer_id)) {
+          console.warn("Source layer not found", src_layer_id)
+        } else {
+          this.map.removeSource(src_layer_id)
+        }
       }
       this.added_entry_source_layer_ids = []
       this.added_entry_source_layer_ids = []
@@ -755,8 +771,9 @@ export default {
     }
     this.store_cam_options()
     for (const event_name of [
-      BUS_MAP_MARKER_SHOW, BUS_MAP_MARKER_HIDE, BUS_TRIGGER_SEARCH, ADD_SOURCE_TO_MAP,
-      ADD_LAYER_TO_MAP, REMOVE_SOURCE_FROM_MAP, REMOVE_LAYER_FROM_MAP
+      BUS_MAP_MARKER_SHOW, BUS_MAP_MARKER_HIDE, BUS_TRIGGER_SEARCH, BUS_ADD_SOURCE_TO_MAP,
+      BUS_ADD_LAYER_TO_MAP, BUS_REMOVE_SOURCE_FROM_MAP, BUS_REMOVE_LAYER_FROM_MAP, BUS_MAP_FLY_TO, BUS_MAP_FIT_BOUNDS,
+      BUS_MAP_GOTO_GEOMETRY_FEATURE_VALUE
     ]) {
       this.$bus.$off(event_name)
     }
@@ -800,6 +817,7 @@ export default {
       this.check_hide_map()
     },
     selected_entry(uuid, old_uuid) {
+      console.log("selected_entry", uuid, old_uuid)
       // console.log("MapWrapper.watch.selected_entry", uuid, old_uuid)
       if (old_uuid) {
         this.change_entry_markers_mode(old_uuid, false)

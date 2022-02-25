@@ -7,6 +7,9 @@ import EntryActionsMixin from "~/components/entry/EntryActionsMixin"
 import URLQueryMixin from "~/components/util/URLQueryMixin"
 import {mapGetters} from "vuex"
 
+import {JSONPath} from 'jsonpath-plus';
+import {BUS_MAP_GOTO_GEOMETRY_FEATURE_VALUE} from "~/plugins/bus"
+
 export default {
   mixins: [TriggerSnackbarMixin, NavBaseMixin, EntryActionsMixin, EntryActionsMixin, URLQueryMixin],
   methods: {
@@ -83,9 +86,23 @@ export default {
       this.map_goto(uuid)
     },
     map_goto(entry_uuid) {
-      const entry_loc = this.$store.getters["entries/get_entry"](entry_uuid).location
+      const entry = this.$store.getters["entries/get_entry"](entry_uuid)
+      const entry_loc = entry.location
       if (entry_loc && entry_loc.length > 0) {
         this.$store.commit("map/goto_location", entry_loc[0])
+        return
+      }
+      console.log("MAP-GOTO!!")
+      if(this.template) {
+        const geometry_aspect = this.template.rules.geometry_aspect
+        if(geometry_aspect) {
+          const geometry_value = JSONPath({path: geometry_aspect, json: entry.values})
+          console.log(geometry_value)
+          // todo check what the result is if not found. or defined or empty
+          if(geometry_value.length > 0) {
+            this.$bus.$emit(BUS_MAP_GOTO_GEOMETRY_FEATURE_VALUE, geometry_value[0].value)
+          }
+        }
       }
     },
     to_parent(to_last_element = true, mode = VIEW) {

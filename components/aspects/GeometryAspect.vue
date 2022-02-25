@@ -10,13 +10,13 @@
         @map-load="aspect_onMapLoaded"
         :navControl="nav_control_options")
     v-list
-      div(v-for="(feature, index) in features_list" :key="feature.name")
+      div(v-for="(feature, index) in feature_definitions" :key="feature.name")
         v-list-item.my-2(style="border:1px solid #ccc; border-radius:2px;")
           v-list-item-content.pb-1
             div
               v-list-item-title.font-weight-bold {{feature.label}}
-              svg.mr-1(height=15 width=15)
-                circle(cx=8 cy=8 r=6 :fill="feature_color(index)" stroke-width=0)
+                svg.mr-1(height=15 width=15)
+                  circle(cx=8 cy=8 r=6 :fill="feature_color(feature)" stroke-width=0)
             v-btn-toggle(v-if="show_geo_type_buttons(feature.name)" :disable="!map_loaded" v-model="geo_button_selection")
               v-btn.mx-0(v-for="geo_type in allowed_geometry_types"
                 :key="geo_type"
@@ -25,7 +25,10 @@
                 span {{geo_type}}
             v-sheet(v-for="(feature_value, index) in feature_values(feature.name)" :key="index"
               @click="click_feauture_value(feature.name, index)")
-              v-list-item-content.pb-1(v-if="is_features_added(index) && show_place_name(feature.name)") {{place_name(index)}}
+              v-list-item-content.pb-1(v-if="is_features_added(index)")
+                div
+                  v-icon.mt-1 {{get_geometry_type_icon(feature_value.geometry.type)}}
+                  span(v-if="show_place_name(feature)" style={'margin-left':'5px', 'vertical-align':'sub'}) {{place_name(index)}}
               Aspect(v-for="property in feature_properties(feature)" :key="property.name"
                 :aspect="property" :mode="mode" :ext_value="feature_property_value(index, property.name)")
               v-divider(v-if="index < feature_values(feature.name).length - 1")
@@ -53,7 +56,13 @@ import {
   TEMP_SOURCE,
   TOUCHMOVE
 } from "~/components/aspect_utils/GeometryAspectConsts"
-import {ADD_LAYER_TO_MAP, ADD_SOURCE_TO_MAP, BUS_MAP_LOADED} from "~/plugins/bus"
+import {
+  BUS_ADD_LAYER_TO_MAP,
+  BUS_ADD_SOURCE_TO_MAP,
+  BUS_MAP_FIT_BOUNDS,
+  BUS_MAP_FLY_TO,
+  BUS_MAP_LOADED
+} from "~/plugins/bus"
 import Aspect from "~/components/Aspect"
 import {pack_value} from "~/lib/aspect"
 
@@ -158,7 +167,8 @@ export default {
     max_geometries() {
       return this.attr.max || null
     },
-    features_list() {
+    // todo rename to make it clearer. "feature_definitions"
+    feature_definitions() {
       return this.aspect.geo_features || []
     },
     current_feature_todo() {
@@ -247,12 +257,9 @@ export default {
         // make sure that each feature has a style (key)
         this.add_aspect_feature_style_layer()
       }
-      // if (this.value) {
-      //   this.add_existing_value()
-      // }
     },
     add_aspect_feature_style_layer() {
-      this.features_list.forEach(feature => {
+      this.feature_definitions.forEach(feature => {
         // can be either directly the stlye or another object, with the keys ["Point",LineString",Polygon"]
         // in which case several layers are added with more filters...
         const style_keys = Object.keys(feature.style)
@@ -444,10 +451,12 @@ export default {
     show_geo_type_buttons(feature_name) {
       return feature_name === this.current_feature_todo_name && this.is_editable_mode
     },
-    show_place_name(feature_name) {
-      const show_place_name_feature = this.$_.find(this.features_list, f => f.name === feature_name).show_place_name || null
-      if (show_place_name_feature) {
-        return show_place_name_feature
+    get_feature_definition_by_name(feature_name) {
+      return this.$_.find(this.feature_definitions, f => f.name === feature_name)
+    },
+    show_place_name(feature_definition) {
+      if (feature_definition.show_place_name || undefined) {
+        return feature_definition.show_place_name
       } else {
         return this.$_.get(this.attr, "show_place_name", true)
       }
@@ -733,6 +742,7 @@ export default {
     click_feauture_value(feature_name, index) {
       const value = this.feature_values(feature_name)[index]
       console.log("click_feauture_value", value)
+      this.fly_to_feature(value)
     },
     add_existing_value() {
       this.added_features = this.value
@@ -744,30 +754,33 @@ export default {
      * @param source
      */
     add_source_to_map(id, source) {
-      console.log("adding source", id, source)
+      // console.log("adding source", id, source)
       if (this.$route.name === ENTRY || this.$route.name === "test-aspects-test_GeometryAspect") {
         this.map.addSource(id, geojson_wrap(source))
       } else {
-        this.$bus.$emit(ADD_SOURCE_TO_MAP, id, source)
+        this.$bus.$emit(BUS_ADD_SOURCE_TO_MAP, id, source)
       }
     },
     add_layer_to_map(layer) {
-      console.log("adding layer", layer)
+      // console.log("adding layer", layer)
       if (this.$route.name === ENTRY || this.$route.name === "test-aspects-test_GeometryAspect") {
         this.map.addLayer(layer)
       } else {
-        this.$bus.$emit(ADD_LAYER_TO_MAP, layer)
+        this.$bus.$emit(BUS_ADD_LAYER_TO_MAP, layer)
       }
     },
     beforeDestroy() {
       console.log("GeometryAspect beforeDestroy")
     },
-    feature_color(feauture_index) {
+    destroy() {
+      console.log("GeometryAspect destroy")
+    },
+    feature_color(feature_definition) {
+      console.log("feature_color", feature_definition, this.use_default_style)
       if (this.use_default_style) {
         return color_default_added_layer
       } else {
-        const feature = this.aspect.geo_features[feauture_index]
-        return this.$_.get(feature, "marker_color", color_default_added_layer)
+        return this.$_.get(feature_definition, "marker_color", color_default_added_layer)
       }
     },
     feature_properties(feature) {
@@ -777,6 +790,25 @@ export default {
       const feature_value = this.get_added_feature(index)
       return this.$_.get(feature_value, "properties." + property, pack_value())
     },
+    fly_to_feature(value) {
+      // console.log(value)
+      // TODO CHECK IF BBOX EXISTS
+      // TODO: JUST PASS GEOMETRY TO GOTO FUNCTION WHICH CHECKS THE TYPE...
+      console.log([POLYGON, LINESTRING, POINT].includes(value.geometry.type))
+      if ([POLYGON, LINESTRING].includes(value.geometry.type)) {
+        if (this.$route.name === ENTRY || this.$route.name === "test-aspects-test_GeometryAspect") {
+          this.map_fitBounds(value.bbox)
+        } else {
+          this.$bus.$emit(BUS_MAP_FIT_BOUNDS, value.bbox)
+        }
+      } else {
+        if (this.$route.name === ENTRY || this.$route.name === "test-aspects-test_GeometryAspect") {
+          this.map_goto_location({coordinates: value.geometry.coordinates})
+        } else {
+          this.$bus.$emit(BUS_MAP_FLY_TO, {coordinates: value.geometry.coordinates})
+        }
+      }
+    }
   }
 }
 
