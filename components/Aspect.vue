@@ -36,7 +36,7 @@
 
 <script>
 
-import {DRAFT, EDIT, VIEW} from "~/lib/consts";
+import {DRAFT, VIEW} from "~/lib/consts";
 
 import Title_Description from "./util/Title_Description";
 import {

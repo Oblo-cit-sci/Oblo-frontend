@@ -215,14 +215,13 @@ export default {
     },
   },
   created() {
-    // console.log("GeometryAspect created")
-    // this.add_feature(this.create_point_feature([0, 0]))
+    // console.log("GeometryAspect created", this.mvalue)
     if (this.value !== null) {
+      // console.log("setting added_features", this.value)
       this.added_features = this.value
     }
-    // console.log("geoaspect created", this.show_map, this.$route.name)
-
     if (!this.show_map && this.$route.name === DOMAIN) {
+      // console.log("GeometryAspect created, check map loade d", this.$store.getters["map/is_map_loaded"])
       if (this.$store.getters["map/is_map_loaded"]) {
         this.add_existing_data()
       } else {
@@ -234,7 +233,7 @@ export default {
   },
   methods: {
     aspect_onMapLoaded(map) {
-      console.log("geo-aspect onMapLoaded. show map?", this.show_map)
+      // console.log("geo-aspect onMapLoaded. show map?", this.show_map)
       if (this.show_map) {
         this.map_loaded = false
         this.onMapLoaded(map)
@@ -249,6 +248,7 @@ export default {
     },
     add_existing_data() {
       this.add_source_to_map(ADDED_SOURCE, this.added_features)
+      // console.log("add_existing_data", this.added_features)
       if (this.use_default_style) {
         for (let style of this.default_style_layers) {
           this.add_layer_to_map(style)
@@ -562,7 +562,7 @@ export default {
       this.set_data(CURRENT_SINGULAR_POINTS, this.current_feature)
       // as long there is only one point, the type is still POINT, change it...
       if (this.temp_points.geometry.type === POINT) {
-        console.log("turn to", this.create_geometry)
+        // console.log("turn to", this.create_geometry)
         this.temp_points.geometry.type = this.create_geometry
         if (this.create_geometry === LINESTRING) {
           this.temp_points.geometry.coordinates = []
@@ -726,10 +726,6 @@ export default {
         this.map.getSource(layer).setData(data)
       }
     },
-    /**
-     *
-     * @param index
-     */
     is_features_added(index) {
       return this.added_features.features.length > index
     },
@@ -769,14 +765,8 @@ export default {
         this.$bus.$emit(BUS_ADD_LAYER_TO_MAP, layer)
       }
     },
-    beforeDestroy() {
-      console.log("GeometryAspect beforeDestroy")
-    },
-    destroy() {
-      console.log("GeometryAspect destroy")
-    },
     feature_color(feature_definition) {
-      console.log("feature_color", feature_definition, this.use_default_style)
+      // console.log("feature_color", feature_definition, this.use_default_style)
       if (this.use_default_style) {
         return color_default_added_layer
       } else {
@@ -794,7 +784,7 @@ export default {
       // console.log(value)
       // TODO CHECK IF BBOX EXISTS
       // TODO: JUST PASS GEOMETRY TO GOTO FUNCTION WHICH CHECKS THE TYPE...
-      console.log([POLYGON, LINESTRING, POINT].includes(value.geometry.type))
+      // console.log([POLYGON, LINESTRING, POINT].includes(value.geometry.type))
       if ([POLYGON, LINESTRING].includes(value.geometry.type)) {
         if (this.$route.name === ENTRY || this.$route.name === "test-aspects-test_GeometryAspect") {
           this.map_fitBounds(value.bbox)

@@ -161,10 +161,12 @@ export default {
     }
   },
   created() {
+    // console.log("Entry - created", this.entry.uuid)
     this.set_aspects([this.asp_entry_roles()])
     if (this.is_draft && this.is_edit_mode) {
       this.check_creator_switch()
     }
+    this.map_goto(this.uuid)
   },
   data() {
     return {

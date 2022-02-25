@@ -152,7 +152,7 @@ export const getters = {
   },
   get_act_config_value_by_name(state, getters) {
     return (filtername) => {
-      console.log(filtername, getters.get_act_config)
+      // console.log(filtername, getters.get_act_config)
       const config_item = ld.find(getters.get_act_config, cf => cf.name === filtername)
       if (config_item) {
         return config_item.value

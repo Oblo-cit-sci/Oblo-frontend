@@ -240,6 +240,7 @@ export default {
     },
     aspect_locs() {
       const aspect_locs = {}
+      // console.log("ENTRY_ ASPECT-LOC", this.aspect_loc)
       for (let aspect of this.aspects) {
         aspect_locs[aspect.name] = loc_append([this.aspect_loc], ASPECT, aspect.name)
       }

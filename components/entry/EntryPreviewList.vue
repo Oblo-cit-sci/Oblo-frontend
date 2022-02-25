@@ -203,17 +203,13 @@ export default {
         // console.log("page changed", page, "can_request_more!")
         if (page * this.entries_per_page >= this.entries_uuids.length) {
           this.$emit("request_more")
+
           // console.log("time for more")
-        } else {
-          this.visible_entries().then(entries => {
-            this.entries = entries
-          })
         }
-      } else {
-        this.visible_entries().then(entries => {
-          this.entries = entries
-        })
       }
+      this.visible_entries().then(entries => {
+        this.entries = entries
+      })
     },
     download_status(status, prev_status) {
       if (prev_status === DOWNLOADING && status === NOT_DOWNLOADING) {

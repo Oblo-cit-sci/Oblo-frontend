@@ -11,7 +11,7 @@ const ld = require('lodash')
 
 export const mutations = {
   init_page_path(state, route) {
-    console.log(route)
+    // console.log(route)
     // todo, maybe it required more!?! check getter
     state.page_path = [route]
     //  state.page_path = [{

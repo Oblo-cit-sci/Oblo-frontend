@@ -269,10 +269,11 @@ export default {
       if(this.is_template_outdated) {
         await this.guarantee_template_code_of_version(this.entry)
       }
+      // console.log("EntryPreview.view_entry", this.uuid)
       this.goto(this.uuid, VIEW)
     },
     additional_action(action_name) {
-      console.log("additional_action", action_name)
+      // console.log("additional_action", action_name)
       const preview_action = this.$_.find(this.additional_actions, a => a.name === action_name)
       // why?
       // if (this.template) {

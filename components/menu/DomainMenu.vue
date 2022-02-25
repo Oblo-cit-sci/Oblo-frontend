@@ -28,7 +28,7 @@ import {object_list2options} from "~/lib/options"
 import FixDomainMixin from "~/components/global/FixDomainMixin"
 import FilterMixin from "~/components/FilterMixin"
 import DomainDataMixin from "~/components/domain/DomainDataMixin";
-import {ADMIN, EDITOR, REQUIRES_REVIEW} from "~/lib/consts";
+import {ADMIN, EDITOR} from "~/lib/consts";
 import URLQueryMixin from "~/components/util/URLQueryMixin";
 import EntryFetchMixin from "~/components/entry/EntryFetchMixin";
 
@@ -79,15 +79,20 @@ export default {
     }
   },
   watch: {
+    // selected_entry(e) {
+    //   console.log("selected_entry", e)
+    // },
     query_entry_uuid: {
       immediate: true,
       handler: async function (uuid) {
+        this.selected_entry = null
         // console.log("watch-query_entry_uuid", uuid)
         if (uuid) {
           try {
-            this.selected_entry = await this.guarantee_entry(uuid, this.query_entry_access_key)
-            // console.log("ee", this.selected_entry)
-            return this.selected_entry
+            const entry = await this.guarantee_entry(uuid, this.query_entry_access_key)
+            // console.log("ee", entry.uuid)
+            this.selected_entry = entry
+            // return this.selected_entry
           } catch (e) {
             this.err_error_snackbar(e)
             this.to_no_entry_route()

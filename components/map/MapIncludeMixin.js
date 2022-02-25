@@ -231,7 +231,7 @@ export default {
     },
     map_fitBounds(bbox) {
       // todo whats this math stuff....? offset is not proper. and requires more padding
-      console.log("should have offset:", this.center_padding.left || 0)
+      // console.log("should have offset:", this.center_padding.left || 0)
       this.map.fitBounds(new mapboxgl.LngLatBounds(bbox), {
         linear: false,
         maxZoom: 15,

@@ -254,6 +254,7 @@ export default {
     )
 
     this.$bus.$on(BUS_MAP_GOTO_GEOMETRY_FEATURE_VALUE, value => {
+      // console.log("map received goto-geometry-feature-value", value)
       this.map_goto_geometry_feature_value(value)
     })
 
@@ -817,7 +818,7 @@ export default {
       this.check_hide_map()
     },
     selected_entry(uuid, old_uuid) {
-      console.log("selected_entry", uuid, old_uuid)
+      // console.log("selected_entry", uuid, old_uuid)
       // console.log("MapWrapper.watch.selected_entry", uuid, old_uuid)
       if (old_uuid) {
         this.change_entry_markers_mode(old_uuid, false)
