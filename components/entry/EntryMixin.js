@@ -21,7 +21,6 @@ import {check_str_is_uuid, printDate} from "~/lib/util";
 import EntryPagesMixin from "~/components/entry/EntryPagesMixin"
 import AspectListMixin from "~/components/global/AspectListMixin"
 import ExportMixin from "~/components/global/ExportMixin"
-import TemplateHelperMixin from "~/components/templates/TemplateHelperMixin";
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin";
 import EntryMetaAspects from "~/components/EntryMetaAspects";
 import EntryHelperMethodsMixin from "~/components/entry/EntryHelperMethodsMixin";
@@ -29,7 +28,7 @@ import URLQueryMixin from "~/components/util/URLQueryMixin"
 
 export default {
   name: "EntryMixin",
-  mixins: [EntryPagesMixin, AspectListMixin, ExportMixin, TemplateHelperMixin, TypicalAspectMixin, EntryMetaAspects,
+  mixins: [EntryPagesMixin, AspectListMixin, ExportMixin, TypicalAspectMixin, EntryMetaAspects,
   EntryHelperMethodsMixin, URLQueryMixin],
   props:
     {

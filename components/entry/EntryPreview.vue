@@ -91,7 +91,7 @@ export default {
   components: {
     OutdatedChip,
     LanguageChip, LanguageCodeFallback, ActorAvatar, EntryTags, ActorChip, Aspect, MetaChips, Taglist},
-  mixins: [EntryNavMixin, MapJumpMixin, EntryMixin, MapJumpMixin, SlugEntryFetcher,
+  mixins: [EntryNavMixin, MapJumpMixin, EntryMixin, SlugEntryFetcher,
     PersistentStorageMixin, ChildCreateMixin, EntryActionsMixin],
   data() {
     return {

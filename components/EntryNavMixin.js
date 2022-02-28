@@ -11,7 +11,7 @@ import {JSONPath} from 'jsonpath-plus';
 import {BUS_MAP_GOTO_GEOMETRY_FEATURE_VALUE} from "~/plugins/bus"
 
 export default {
-  mixins: [TriggerSnackbarMixin, NavBaseMixin, EntryActionsMixin, EntryActionsMixin, URLQueryMixin],
+  mixins: [TriggerSnackbarMixin, NavBaseMixin, EntryActionsMixin, URLQueryMixin],
   methods: {
     // why does has_entry call get entry
     goto(uuid, force_mode) {

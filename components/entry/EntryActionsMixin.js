@@ -1,5 +1,5 @@
-import {can_edit, can_edit_entry} from "~/lib/actors"
-import {ADMIN, EDIT, REQUIRES_REVIEW, REVIEW, VIEW} from "~/lib/consts"
+import {can_edit_entry} from "~/lib/actors"
+import {EDIT, REQUIRES_REVIEW, REVIEW, VIEW} from "~/lib/consts"
 
 export default {
   name: "EntryActionsMixin",
