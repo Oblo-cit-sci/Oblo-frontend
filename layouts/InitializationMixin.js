@@ -101,10 +101,11 @@ export default {
        */
       const user_settings = this.$store.getters["user/settings"]
       const qp_lang = this.$route.query[QP_lang]
-      const i_language = qp_lang || user_settings.ui_language || this.default_language
+      let i_language = qp_lang || user_settings.ui_language || this.default_language
 
       const domain_name = this.query_param_domain_name || user_settings.fixed_domain || NO_DOMAIN
       const query_domains = [NO_DOMAIN].concat((domain_name !== NO_DOMAIN ? [domain_name] : []))
+
       console.log(`init with domain: ${query_domains}, lang: ${i_language}`)
 
       // this.$store.commit("domains/add_overview_language",i_language)
@@ -112,7 +113,12 @@ export default {
       //   this.$store.commit("domain/add_domains_data", data.data)
       // })
       try {
-        await this.get_domain_overviews(i_language)
+        const overview_data = await this.get_domain_overviews(i_language)
+        const domain_overview = this.$_.filter(overview_data, domain => domain.name === domain_name)[0]
+        if(!domain_overview.languages.includes(i_language)) {
+          i_language = domain_overview.default_language
+        }
+        // console.log(domain_overview)
       } catch (e) {
         console.error("init getting domain overviews failed", e)
       }
@@ -125,7 +131,6 @@ export default {
         })])
 
       const init_data = init_domain_data[0].data
-
 
       const only_one_domain = init_data.platform.only_one_domain
       this.$store.commit("set_available_languages", init_data.languages)
@@ -175,8 +180,7 @@ export default {
 
         // guarantee entry & template
         if (this.query_entry_uuid) {
-          console.log("ENTRY!!?")
-          if(this.query_entry_access_key) {
+          if (this.query_entry_access_key) {
             await this.guarantee_entry(this.query_entry_uuid, this.query_entry_access_key)
           } else {
             await this.guarantee_entry(this.query_entry_uuid)

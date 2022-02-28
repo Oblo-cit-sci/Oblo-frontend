@@ -130,7 +130,7 @@ export default {
         search_config_update.push(generated)
       }
       if (!this.act_config_by_name(LANGUAGE)) {
-        search_config_update.push(this.get_filter_config(LANGUAGE, [language]))
+        search_config_update.push(this.get_filter_config(LANGUAGE, this.get_language_options([language])))
       }
       if (this.$_.isEmpty(search_config_update)) {
         // todo maybe that should set before_last: true?
@@ -184,7 +184,7 @@ export default {
       }
     },
     act_config(val, prev_val) {
-      console.log("currently searching", this.$store.state.search.searching)
+      // console.log("currently searching", this.$store.state.search.searching)
 
       // console.log("config change", val, prev_val)
       // console.log("act_config", val) //, prev_val, this.$_.isEqual(val, prev_val))
@@ -290,9 +290,11 @@ export default {
     },
     act_config: {
       get: function () {
+        // console.log("Search.get_act_config", this.$store.getters["search/get_act_config"])
         return this.$store.getters["search/get_act_config"]
       },
       set: function (val) {
+        // console.log("Search.set_act_config", val)
         this.filter_changed = true
         this.$store.commit("search/set_act_config", val)
       }
@@ -385,7 +387,7 @@ export default {
         this.$store.commit("search/set_route", this.act_relevant_route_data())
         this.$store.commit("search/set_searching", true)
 
-        // console.log("config", config)
+        // console.log("search with config", config)
 
         // const prepend = this.entries().length > 0
         if (debounce) {

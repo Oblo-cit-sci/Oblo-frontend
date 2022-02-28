@@ -74,7 +74,10 @@ export default {
       if (requires_overviews) {
         const {data} = await this.$api.domain.overviews(language)
         this.$store.commit("domain/add_domains_data", data.data)
+        return data.data
       }
+      // TODO maybe return existing overview
+      // this.$store.getters["domain/get_requested_overviews"]().delete(language)
     },
     async change_domain_language(domain_language, update_settings = true, snackbar = true) {
       let domain = this.$store.getters["domain/act_domain_name"] // undefined for non-domain
