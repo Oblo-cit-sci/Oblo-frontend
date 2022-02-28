@@ -7,7 +7,6 @@
 </template>
 
 <script>
-  import AspectMixin from "../AspectMixin";
   import AspectComponentMixin from "~/components/aspects/AspectComponentMixin"
   export default {
     name: "UrlView",
