@@ -18,7 +18,7 @@ export default ({app}) => {
 
     // Set the fallback locale in case the current locale can't be found
     fallbackLocale: lang,
-
+    silentTranslationWarn: app.context.env.NODE_ENV === "development" && app.context.env.DEV_CONFIG.HIDE_TRANSLATION_WARNING,
     warnHtmlInMessage: true,
     // Associate each locale to a content file
     messages: {

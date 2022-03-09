@@ -9,6 +9,10 @@
           v-icon mdi-layers-outline
         v-btn(v-if="show_style_menu_button" dark color="orange" fab @click="open_style_dialog")
           v-icon mdi-earth-box
+        v-btn(v-if="show_location_search_button" dark color="yellow" fab @click="show_location_search_field=!show_location_search_field")
+          v-icon mdi-magnify
+        v-text-field.mt-1(solo hide-details v-if="show_location_search_field" v-model="search_location_text" @keyup.enter="search_location")
+        v-select.mt-1(v-if="show_search_results" autofocus solo hide-details return-object :items="search_options" item-text="place_name" item-value="id" @input="goto_result($event)")
         v-sheet.ml-3(color="grey" v-if="is_dev")
           span.pl-1 {{act_zoom}}
       .central_button(v-if="show_center_create_button")
@@ -122,6 +126,10 @@ export default {
       last_map_options: {}, // this is for small screen, which dont seem to recall a computed prop when showing the map again
       added_entry_source_layer_ids: [],
       added_entry_layer_ids: [],
+      show_location_search_field: false,
+      show_search_results: false,
+      search_options: [],
+      search_location_text: "",
     }
   },
   computed: {
@@ -189,6 +197,9 @@ export default {
     show_layer_menu_button() {
       return this.map_loaded && this.available_layers.length > 0
     },
+    show_location_search_button(){
+      return this.map_loaded
+    },
     show_style_menu_button() {
       return false
     },
@@ -208,7 +219,7 @@ export default {
     }
   },
   created() {
-    console.log("map created...")
+    // console.log("map created...")
     if (this.domain_name) {
       this.load_map_entries(this.domain_name)
     } else {
@@ -286,7 +297,7 @@ export default {
     },
     check_entries_map_done() {
       if (this.entries_loaded && this.entries.features && this.map_loaded && this.get_all_uuids) {
-        // console.log("all good")
+
         this.init_map_source_and_layers()
         this.initialized = true
         if (this.$route.query.uuid) {
@@ -689,6 +700,26 @@ export default {
     open_layer_dialog() {
       this.aspectdialog_data.aspect.items = this.available_layers
       this.aspectdialog_data.dialog_open = true
+    },
+    search_location() {
+      this.geocode(this.search_location_text).then(data => {
+        if(data.features.length > 0) {
+          this.show_search_results = true
+          this.search_options = data.features
+        } else {
+          this.search_options = []
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    goto_result(selected_place) {
+      if(selected_place) {
+        this.map_fitBounds(selected_place.bbox)
+      }
+      this.search_location_text = ""
+      this.show_search_results = false
+      this.show_location_search_field = false
     },
     open_style_dialog() {
 

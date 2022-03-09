@@ -11,7 +11,12 @@ import {
   TEMPLATE,
   TREEMULTISELECT
 } from "~/lib/consts"
-import {build_tag_select_list, build_tag_select_tree, find_templates_using_code} from "~/lib/codes"
+import {
+  build_tag_select_list,
+  build_tag_select_tree,
+  find_templates_using_code,
+  tree_code_has_tag_rule
+} from "~/lib/codes"
 import {mapGetters} from "vuex";
 import {unpack} from "~/lib/aspect";
 import {recursive_unpack, recursive_unpack2} from "~/lib/util";
@@ -111,14 +116,20 @@ export default {
           description: this.$t("comp.tagoptions_asp.used_in") + " " + used_in_templates_titles.join(", "),
           attr: {}
         }
+
         if (code.rules.code_schema === "value_tree") {
-          const tag_tree = build_tag_select_tree(this.$_.cloneDeep(code))
-          options_aspects.push(Object.assign(base_aspect, {
-              type: TREEMULTISELECT,
-              items: tag_tree
-            })
-          )
+          if (tree_code_has_tag_rule(code)) {
+            const tag_tree = build_tag_select_tree(this.$_.cloneDeep(code))
+            if (tag_tree.length > 0) {
+              options_aspects.push(Object.assign(base_aspect, {
+                  type: TREEMULTISELECT,
+                  items: tag_tree
+                })
+              )
+            }
+          }
         } else if (code.rules.code_schema === "value_list") {
+          // all values are taken as tags
           const tag_list = build_tag_select_list(this.$_.cloneDeep(code))
           options_aspects.push(Object.assign(base_aspect, {
               type: MULTISELECT,

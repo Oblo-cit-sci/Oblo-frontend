@@ -120,7 +120,10 @@ export default {
         }
         // console.log(domain_overview)
       } catch (e) {
-        console.error("init getting domain overviews failed", e)
+        // console.error("init getting domain overviews failed", e)
+        this.$router.push({name: "home"})
+        // todo check if this really helps... we need to load the rest...
+        return
       }
 
       let has_domain_data = true

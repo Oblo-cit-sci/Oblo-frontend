@@ -53,7 +53,7 @@ export const mutations = {
       state.dev_offline = !state.dev_offline
     }
   }
-};
+}
 
 export const getters = {
   is_visitor(state) {

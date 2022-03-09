@@ -61,7 +61,6 @@ export default {
       }
       this.$store.commit("app/set_menu_to", {name: "user_guide", to: user_guide_url})
 
-
       this.$api.axios.defaults.headers.common["Accept-Language"] = language
       if (update_settings && this.get_ui_language() !== language) {
         this.set_settings_value(UI_LANGUAGE, language)
@@ -81,7 +80,7 @@ export default {
     },
     async change_domain_language(domain_language, update_settings = true, snackbar = true) {
       let domain = this.$store.getters["domain/act_domain_name"] // undefined for non-domain
-      // console.log("change domain lang", domain, domain_language)
+      // console.log("change domain lang", domain_language, update_settings)
 
       await this.complete_language_domains(domain, domain_language)
 
@@ -91,7 +90,7 @@ export default {
         language: domain_language
       })
       const has_domain_lang = this.$store.getters["domain/has_lang_domain_data"](domain, domain_language)
-
+      // console.log("has domain lang?", domain, has_domain_lang)
       if (this.is_standalone) {
         await this.persist_domains()
         await this.persist_templates()
@@ -122,7 +121,7 @@ export default {
      * @param language the language required
      */
     async init_specifics(domains, language) {
-      console.log("init_specifics", domains, language)
+      // console.log("init_specifics", domains, language)
       if (!Array.isArray(domains)) {
         domains = [domains]
       }

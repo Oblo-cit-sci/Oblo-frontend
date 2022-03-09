@@ -44,11 +44,6 @@ export default {
     has_multiple_languages() {
       return this.available_languages.length > 1
     },
-    // message() {
-    //   if (this.is_disabled) {
-    //     return "You cannot change the language during entry creation"
-    //   }
-    // },
     available_languages() {
       const available_languages_codes = this.$store.getters["available_languages"]
       let available_languages = available_languages_codes.map(l => create_option(l, this.$t("lang." + l)))
@@ -82,7 +77,7 @@ export default {
         if (available_languages_codes.includes(language)) {
           await this.change_language(language)
         } else {
-          await this.change_domain_language(language,true,true)
+          await this.change_domain_language(language, true, true)
           // this.change_language(this.setting(UI_LANGUAGE), true, language, true)
         }
       }

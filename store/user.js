@@ -78,6 +78,7 @@ export const mutations = {
     state.settings = settings
   },
   change_setting(state, data) {
+    // console.log("change_setting", data)
     for (let key in data) {
       $nuxt.$set(state.settings, key, data[key])
     }
