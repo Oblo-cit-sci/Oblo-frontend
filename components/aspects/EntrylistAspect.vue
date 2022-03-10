@@ -153,7 +153,7 @@
         if (this.disabled)
           return
         this.persist_entries()
-        this.$store.dispatch("entries/update_entry", this.entry_uuid())
+        this.$store.dispatch("entries/update_entry", this.entry_uuid)
         if (!this.has_entry(item.uuid))
           this.fetch_and_nav(item.uuid)
         else {

@@ -1,7 +1,7 @@
 <template lang="pug">
   v-container.pt-1#start(justify-center align-center v-if="entry")
     v-row(v-if="show_back_button")
-      v-btn.my-auto(@click="back_button_function" text small)
+      v-btn.my-auto(@click="back_button_function" outlined raised)
         v-icon mdi-arrow-left-thick
       span.my-auto {{template.title}}
     v-row
@@ -56,13 +56,18 @@
           Aspect(
             :aspect="aspect"
             :aspect_loc="aspect_locs[aspect.name]"
+            :ext_value="aspect_mvalue(aspect.name)"
+            :entry_uuid="uuid"
             :conditionals="regular_values"
             :extra="aspect_extras"
             @aspectAction="aspectAction($event)"
+            @update:ext_value="update_ext_value(aspect.name, $event)"
             :mode="mode")
         Aspect(v-else
-        :aspect="aspect"
+          :aspect="aspect"
           :aspect_loc="aspect_locs[aspect.name]"
+          :entry_uuid="uuid"
+          :ext_value="aspect_mvalue(aspect.name)"
           :conditionals="regular_values"
           :extra="aspect_extras"
           @aspectAction="aspectAction($event)"
@@ -73,10 +78,24 @@
           v-divider.wide_divider
       v-row()
         v-col(alignSelf="stretch" :cols="base_cols" :style="{padding:0}")
-          AspectSet(v-if="logged_in" :aspects="meta_aspects" :modes="meta_aspect_modes" :values.sync="meta_aspects_values" :compact="true")
-      v-row(v-if="is_creator || is_admin")
-        v-col.pb-0(alignSelf="stretch" :cols="base_cols")
-          Aspect(:aspect="asp_entry_roles()" :mode="entry_roles_mode" :aspect_loc="aspect_locs[asp_entry_roles().name]" :extra="{entry_is_private: entry.privacy==='private'}" @update:error="update_error('actors', $event)")
+          AspectSet(
+            v-if="logged_in"
+            :aspects="meta_aspects"
+            :modes="meta_aspect_modes"
+            :values.sync="meta_aspects_values"
+            entry_uuid="uuid"
+            :compact="true")
+      //v-row(v-if="is_creator || is_admin")
+      //  v-col.pb-0(alignSelf="stretch" :cols="base_cols")
+      //    Aspect(
+      //      :aspect="asp_entry_roles()"
+      //      :mode="entry_roles_mode"
+      //      :aspect_loc="aspect_locs[asp_entry_roles().name]"
+      //      :entry_uuid="uuid"
+      //      :is_entry_meta="true"
+      //      :ext_value="entry.actors"
+      //      :extra="{entry_is_private: entry.privacy==='private'}"
+      //      @update:error="update_error('actors', $event)")
       v-row
         v-col(alignSelf="stretch" :cols="base_cols")
           v-divider
@@ -116,7 +135,7 @@ import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
 import PersistentStorageMixin from "../util/PersistentStorageMixin";
 import EntryValidation from "./EntryValidation";
 import {draft_color, EDIT, ENTRY, META, REJECTED, VIEW} from "~/lib/consts";
-import {privacy_color, privacy_icon} from "~/lib/util";
+import {privacy_color, privacy_icon, recursive_unpack2} from "~/lib/util";
 import ChangedAspectNotice from "./ChangedAspectNotice";
 import MetaChips from "./MetaChips";
 import EntryActorList from "./EntryActorList";
@@ -181,6 +200,13 @@ export default {
   methods: {
     aspectAction(aspect_action) {
     },
+    aspect_mvalue(aspect_name){
+      return this.entry.values[aspect_name]
+    },
+    update_ext_value(aspect_name, value){
+      // console.log("update_ext_value", aspect_name, value)
+      this.$store.commit("entries/new_set_edit_entry_value", {aspect_name, value})
+    },
     entryAction(action) {
       // console.log("received entry-A", action)
       if (action === "delete") {
@@ -214,14 +240,12 @@ export default {
         })
       }
     },
-
   },
   computed: {
     ...mapGetters({logged_in: "user/logged_in", user: "user"}),
     draft_color() {
       return draft_color
     },
-
     show_visitor_message() {
       return this.is_last_page && this.is_edit_mode && this.can_edit && !this.logged_in
     },
@@ -253,7 +277,6 @@ export default {
     },
     // maybe also consider:
     // https://github.com/edisdev/download-json-data/blob/develop/src/components/Download.vue
-
     // wrong, create should be for all that are not local/saved or published
     meta_aspect_chips() {
       let result = []
@@ -301,16 +324,12 @@ export default {
     meta_aspects_values: {
       deep: true,
       handler: function (values) {
-        // todo why does prev, return the same as values
-        // console.log(values.privacy.value, prev.privacy)
-        for (let aspect_name of Object.keys(values)) {
-          // console.log(aspect_name)
-          // console.log(values[aspect_name], prev[aspect_name])
-          if (!this.$_.isEqual(values[aspect_name], this.entry[aspect_name])) {
-            // console.log(aspect_name)
-            this.$store.commit("entries/set_entry_value", {
-              aspect_loc: [[EDIT, this.uuid], [META, aspect_name]],
-              value: unpack(values[aspect_name])
+        const unpacked_values = recursive_unpack2(values)
+        for (let aspect_name of Object.keys(unpacked_values)) {
+          if (!this.$_.isEqual(unpacked_values[aspect_name], this.entry[aspect_name])) {
+            this.$store.commit("entries/set_edit_meta_value", {
+              meta_aspect_name: aspect_name,
+              value: unpacked_values[aspect_name]
             })
           }
         }

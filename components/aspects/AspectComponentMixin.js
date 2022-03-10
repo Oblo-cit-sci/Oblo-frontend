@@ -36,6 +36,9 @@ export default {
     aspect_loc: { // when not passed on, it is some kind of anonymous aspect, probably defined on that page (e.g. register)
       type: Array, // for composites and lists pass it down...
     },
+    entry_uuid: {
+      type: String
+    },
     conditionals: {
       type: [Array, Object]
     },
@@ -110,16 +113,9 @@ export default {
     update_error(has_error) {
       this.$emit("has_error", has_error)
     },
-    entry_uuid() {
-      if (this.aspect_loc) {
-        return aspect_loc_uuid(this.aspect_loc)
-      } else
-        return null
-    },
     get_entry() {
-      const entry_uuid = this.entry_uuid()
-      if (entry_uuid) {
-        return this.$store.getters["entries/get_entry"](entry_uuid)
+      if (this.entry_uuid) {
+        return this.$store.getters["entries/get_entry"](this.entry_uuid)
       } else {
         return null
       }

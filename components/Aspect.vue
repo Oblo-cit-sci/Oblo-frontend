@@ -19,6 +19,7 @@
       :mvalue="mvalue"
       :aspect="aspect"
       :aspect_loc="aspect_loc"
+      :entry_uuid="entry_uuid"
       :disabled="disable"
       :mode="real_mode"
       :extra="merge_extra"
@@ -42,8 +43,7 @@ import {ASP_DISABLED, ASP_SET, ASP_UNSET, DRAFT, EDIT, META, REVIEW, VIEW} from 
 
 import Title_Description from "./util/Title_Description";
 import {
-  aspect_default_value,
-  aspect_loc_str, aspect_loc_uuid, aspect_raw_default_value,
+  aspect_default_value, aspect_raw_default_value,
   get_aspect_vue_component, is_editable_mode, pack_value, unpack
 } from "~/lib/aspect";
 import AspectAction from "~/components/aspect_utils/AspectAction"
@@ -77,6 +77,10 @@ export default {
         return [VIEW, EDIT, REVIEW].includes(value)
       }
     },
+    is_entry_meta: {
+      type: Boolean,
+      default: false
+    },
     disabled: {
       type: Boolean,
       default: false
@@ -84,6 +88,7 @@ export default {
     aspect_loc: { // when not passed on, it is some kind of anonymous aspect, probably defined on that page (e.g. register)
       type: Array, // for composites and lists pass it down...
     },
+    entry_uuid: String,
     conditionals: {
       type: [Array, Object]
     },
@@ -119,7 +124,9 @@ export default {
       if (entry.version === 0 && entry.status === DRAFT && this.$_.isEqual(this.mvalue, aspect_default_value(this.aspect))) {
         const cached_value = this.$store.getters["get_aspect_cache"](entry.template.slug, this.aspect.name)
         if (cached_value) {
-          this.$store.commit("entries/set_entry_value", {aspect_loc: this.aspect_loc, value: cached_value})
+          // cleaner to call emit otherwise we end up in an endless loop
+          // this.update_value(cached_value)
+          this.$emit("update:ext_value", cached_value)
           this.persist_edit_entry().then()
         }
       }
@@ -147,7 +154,7 @@ export default {
       return this.condition_fail || this.attr.disable || this.disabled
     },
     condition_fail() {
-      return this._condition_fail(this.aspect, this.aspect_loc, this.mode, this.entry_uuid, this.conditionals)
+      return this._condition_fail(this.aspect, null, this.mode, this.entry_uuid, this.conditionals)
     },
     has_value() {
       return this.mvalue !== undefined || false
@@ -167,56 +174,20 @@ export default {
       // ERROR?
     },
     mvalue() {
-      if (!this.aspect_loc) {
-        if (this.ext_value !== undefined) {
-          return this.ext_value
-        } else {
-          const raw = aspect_raw_default_value(this.aspect)
-          console.log("no aspect-loc and no ext_value using default value", raw)
-          return {value: raw}
-        }
+      if (this.ext_value !== undefined) {
+        return this.ext_value
       } else {
-        // todo removed this legacy functionality
-        // if (this.attr.IDAspect) {...
-        // and...
-        let value = this.$store.getters["entries/value"](this.aspect_loc)
-        if (value === undefined) {
-          // console.log("undefined, probably means update", this.aspect, this.extra)
-          let raw__new_value = aspect_raw_default_value(this.aspect)
+        const raw = aspect_raw_default_value(this.aspect)
+        console.log("no aspect-loc and no ext_value using default value", raw)
+        return {value: raw}
+      }
 
-          this.update_value(raw__new_value)
-          // if (this.is_unpacked)
-          //   return raw__new_value
-          // else
-          return pack_value(raw__new_value)
-        }
-        if (this.is_meta) {
-          return pack_value(value)
-        }
-        // console.log(this.aspect.name, this.aspect_loc, value)
-        return value
-      }
     },
-    is_meta() {
-      // maybe just for entries
-      if (this.aspect_loc) {
-        for (let a_v of this.aspect_loc) {
-          if (a_v[0] === META) {
-            return true
-          }
-        }
-      }
-      return false
-    },
+
     value() {
       return unpack(this.mvalue)
     },
-    entry_uuid() {
-      if (!this.aspect_loc) {
-        return null
-      }
-      return aspect_loc_uuid(this.aspect_loc)
-    },
+
     i_is_set() {
       return this.value !== aspect_raw_default_value(this.aspect)
     },
@@ -229,7 +200,7 @@ export default {
      * if description is html
      */
     descr_as_html() {
-      return this.$_.get(this.attr,"descr_as_html", false)
+      return this.$_.get(this.attr, "descr_as_html", false)
     },
     merge_extra() {
       const merge = Object.assign(Object.assign({}, this.extra), this.attr.extra)
@@ -281,11 +252,7 @@ export default {
      * @returns {string}
      */
     aspect_id() {
-      if (this.aspect_loc) {
-        return aspect_loc_str(this.$_.tail(this.aspect_loc))
-      } else {
-        return `${this.aspect.name}_${this._uid}`
-      }
+      return `${this.aspect.name}_${this._uid}`
     },
     fixed_value() {
       return this.attr.hasOwnProperty("value")
@@ -307,31 +274,29 @@ export default {
 
       let up_value = mvalue
       // debugger
-      if (!(this.is_meta || is_mvalue)) {
-        // console.log("packing")
-        up_value = pack_value(value)
-      }
+      // if (!(this.is_meta || is_mvalue)) {
+      //   // console.log("packing")
+      //   up_value = pack_value(value)
+      // }
       if (mvalue.only_value) {
         up_value = value.value
       }
       // console.log("upval", up_value)
-      if (this.aspect_loc) {
-        this.$store.commit("entries/set_entry_value", {aspect_loc: this.aspect_loc, value: up_value})
-        this.persist_edit_entry().then()
-        if (this.attr.cache) {
-          this.$store.commit("add_cache", {
-            template: this.get_entry().template.slug,
-            aspect: this.aspect.name,
-            mvalue: up_value
-          })
-        }
-      } else {
-        // console.log("aspect update.ext", up_value)
-        this.$emit("update:ext_value", up_value)
+      this.persist_edit_entry().then()
+      if (this.attr.cache) {
+        this.$store.commit("add_cache", {
+          template: this.get_entry().template.slug,
+          aspect: this.aspect.name,
+          mvalue: up_value
+        })
       }
-      if (this.attr.titleAspect) {
-        this.$store.commit("entries/update_title", {title: up_value.value})
-      }
+      // } else {
+      // console.log("aspect update.ext", up_value)
+      this.$emit("update:ext_value", up_value)
+      // }
+      // if (this.attr.titleAspect) {
+      //   this.$store.commit("entries/update_title", {title: up_value.value})
+      // }
     },
     toString(value) {
       return value || ""

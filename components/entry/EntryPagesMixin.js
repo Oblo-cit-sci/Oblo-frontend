@@ -15,13 +15,12 @@ export default {
     },
     has_defined_pages() {
       if (this.one_aspect_per_page) {
-        console.warn("one_aspect_per_page is set. ignores defined pages")
         return false
       }
       return (this.template.rules?.pages || []).length > 0
     },
     has_pages() {
-      return this.has_defined_pages || this.one_aspect_per_page
+      return this.is_editable_mode && (this.has_defined_pages || this.one_aspect_per_page)
     },
     active_aspects() {
       return this.$_.filter(this.aspects, a => !this.aspect_disabled(a))
@@ -61,17 +60,20 @@ export default {
     },
     shown_aspects() {
       // console.log("has_pages", this.has_pages)
-      if (this.one_aspect_per_page) {
-        if (this.is_last_page) {
-          return []
+      // not set on view-mode
+      if(this.has_pages) {
+        if (this.one_aspect_per_page) {
+          if (this.is_last_page) {
+            return []
+          }
+          return [this.active_aspects[this.page]]
         }
-        return [this.active_aspects[this.page]]
-      }
-      if (this.has_defined_pages) {
-        return this.$_.filter(this.aspects, (a) => {
-          return (this.page === 0 && (attr(a).page === 0 || attr(a).page === undefined) ||
-            (this.page > 0 && attr(a).page === this.page))
-        })
+        if (this.has_defined_pages) {
+          return this.$_.filter(this.aspects, (a) => {
+            return (this.page === 0 && (attr(a).page === 0 || attr(a).page === undefined) ||
+              (this.page > 0 && attr(a).page === this.page))
+          })
+        }
       }
       return this.template.aspects
     },

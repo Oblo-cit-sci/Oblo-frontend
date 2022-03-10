@@ -37,10 +37,6 @@ export const mutations = {
   add_ref_child(state, {uuid, child_uuid, aspect_loc}) {
     state.entries.get(uuid).refs.children[child_uuid] = aspect_loc
   },
-  // todo, shouldnt be needed
-  set_ref_parent(state, {uuid, ref}) {
-    state.entries.get(uuid).refs.parent = ref
-  },
   clear(state, {keep_drafts = true, keep_uuid}) {
     let kept_entry = null
     if (keep_uuid) {
@@ -56,6 +52,9 @@ export const mutations = {
       state.entries.set(kept_entry.uuid, kept_entry)
     }
     state.edit = null
+  },
+  new_set_edit_entry_value(state, {aspect_name, value}) {
+    state.edit.values[aspect_name] = value
   },
   set_entry_value(state, {aspect_loc, value}) {
     // console.log("set entry value", aspect_loc, value)
@@ -126,6 +125,9 @@ export const mutations = {
   set_edit(state, entry_data) {
     state.edit = entry_data
   },  // todo template for all kinds of computed meta-aspects
+  set_edit_meta_value(state, {meta_aspect_name, value}) {
+    state.edit[meta_aspect_name] = value
+  },
   update_title(state, {uuid, title}) {
     if (!uuid) {
       state.edit.title = title

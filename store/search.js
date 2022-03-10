@@ -71,7 +71,7 @@ export const mutations = {
     state.all_uuids = (state.all_uuids || []).concat(uuids)
   },
   set_act_config(state, config) {
-    console.log("$store.search.set_act_config", config)
+    // console.log("$store.search.set_act_config", config)
     state.act_config = config
     // console.log("search(store).replace", config_item_s)
   },

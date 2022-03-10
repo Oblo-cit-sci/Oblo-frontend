@@ -8,6 +8,7 @@
           alignSelf="stretch" :cols="compact_cols")
           Aspect(:aspect="aspect"
             :ext_value.sync="i_values[aspect.name]"
+            :entry_uuid="entry_uuid"
             :conditionals="i_values"
             @update:error="errors[aspect.name] = $event"
             @update:state="state[aspect.name] = $event"
@@ -20,6 +21,7 @@
           Aspect(:aspect="aspect"
             :ext_value.sync="i_values[aspect.name]"
             :conditionals="i_values"
+            :entry_uuid="entry_uuid"
             @update:error="errors[aspect.name] = $event"
             @update:state="state[aspect.name] = $event"
             @aspectAction="aspectAction($event)"
@@ -49,6 +51,9 @@ export default {
     mode: {
       type: String,
       default: VIEW
+    },
+    entry_uuid: {
+      type: String,
     },
     modes: {
       type: Object

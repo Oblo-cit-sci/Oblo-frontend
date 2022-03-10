@@ -117,7 +117,7 @@ export default {
       this.selected_image_index = -1
     },
     set_cover_image(index) {
-      console.log(this.entry_uuid())
+      // console.log(this.entry_uuid)
       this.cover_image_index = index
       console.log("set_cover_image", index, this.images.index)
       this.$store.commit("entries/update_image", this.images[index].file_uuid)
@@ -136,7 +136,7 @@ export default {
         if (img_data) {
           return img_data.data
         } else {
-          return this.$api.entry.url_uuid_attachment(this.entry_uuid(), (this.images[index].file_uuid))
+          return this.$api.entry.url_uuid_attachment(this.entry_uuid, (this.images[index].file_uuid))
         }
       } else {
         return this.images[index].url
@@ -149,7 +149,7 @@ export default {
       if (this.is_editable_mode) {
         this.selected_image_index = -1
         const entry = this.get_entry()
-        const entry_uuid = this.entry_uuid()
+        const entry_uuid = this.entry_uuid
         const file_uuid = this.images[index].file_uuid
         // console.log(entry)
 
@@ -167,7 +167,7 @@ export default {
             del_all()
           } else {
             const file_uuid = this.value[index].file_uuid
-            this.$api.entry.delete_attachment(this.entry_uuid(), file_uuid).then(resp => {
+            this.$api.entry.delete_attachment(this.entry_uuid, file_uuid).then(resp => {
               del_all()
             }).catch(err => {
             })
@@ -180,7 +180,8 @@ export default {
     mode: {
       immediate: true,
       handler() {
-        const entry_image = this.$store.getters["entries/get_entry"](this.entry_uuid()).image
+        // console.log("image aspect--", this.entry_uuid())
+        const entry_image = this.$store.getters["entries/get_entry"](this.entry_uuid).image
         if (entry_image) {
           this.cover_image_index = this.images.findIndex(img => img.file_uuid === entry_image)
         }

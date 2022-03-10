@@ -65,6 +65,7 @@ export default {
       // debugger
       if (conditionals) {
         // console.log(new_value_getter(conditionals, condition.aspect))
+        console.log("new condition checker", condition.aspect)
         condition_value = this.$_.get(new_value_getter(conditionals, condition.aspect), VALUE)
       } else if (aspect_loc) {
         // console.log("single cond check: cond:", condition.aspect)
@@ -72,7 +73,7 @@ export default {
           aspect_loc_str2arr(condition.aspect))
         // console.log("single cond check: loc:", aspect_loc, aspect_location)
         fix_index(aspect_location, get_list_index(aspect_loc))
-        // console.log("single cond check: loc:", aspect_loc, aspect_location)
+        console.log("single cond check: loc:", aspect_loc, aspect_location)
         condition_value = this.$store.getters["entries/value"](aspect_location)
         // console.log("single cond check: val:", condition_value)
       } else {

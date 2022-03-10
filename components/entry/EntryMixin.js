@@ -1,4 +1,4 @@
-import {get_creator, get_entry_titleAspect} from "~/lib/entry";
+import {get_creator, get_entry_titleAspect, new_value_getter} from "~/lib/entry";
 import {aspect_loc_str2arr, is_editable_mode, loc_append, loc_prepend} from "~/lib/aspect";
 import {mapGetters} from "vuex"
 
@@ -114,8 +114,8 @@ export default {
         if (!titleAspect) {
           return this.entry.title
         }
-        // todo maybe it would be cleaner to add "entry "+uuid , so that  aspect_loc_str2arr/is wrapped around
-        let title = this.$store.getters["entries/value"](loc_prepend(EDIT, this.uuid, aspect_loc_str2arr(titleAspect)))
+        // console.log("titleAspect", titleAspect)
+        let title = new_value_getter(this.regular_values,titleAspect)
         title = this.$_.get(title, "value", "")
         return this.full_title(title)
       } else { // VIEW
@@ -246,5 +246,10 @@ export default {
     download() {
       this.export_data(this.prepare_entry_for_download(this.entry), this.download_title)
     }
+  },
+  watch: {
+    entry_title(new_title) {
+      this.$store.commit("entries/update_title", {title: new_title})
+    },
   }
 }
