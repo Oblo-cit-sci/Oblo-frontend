@@ -51,7 +51,7 @@ export default {
         const domain_languages = this.$store.getters["domain/get_domain_languages"](this.$store.getters["domain/act_domain_name"])
         for (const domain_lang of domain_languages) {
           if (!available_languages_codes.includes(domain_lang)) {
-            available_languages.push(create_option(domain_lang, `${this.$t("lang." + domain_lang)} (domain)`))
+            available_languages.push(create_option(domain_lang, `${this.$t("lang." + domain_lang)} (${"w.domain"})`))
           }
         }
       }

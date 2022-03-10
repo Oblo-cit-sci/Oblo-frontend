@@ -1,4 +1,4 @@
-import {PUBLISHED, SELECT} from "~/lib/consts";
+import {SELECT} from "~/lib/consts";
 import OptionsMixin from "~/components/aspect_utils/OptionsMixin";
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin";
 import LanguageMixin from "~/components/LanguageMixin";
@@ -44,7 +44,7 @@ export default {
         attr: {
           hide_on_disabled: true,
           condition: {
-            aspect: "# dest_lang",
+            aspect: "$.dest_lang",
             compare: "unequal",
             value: null
           }
@@ -102,7 +102,8 @@ export default {
             "or",
             {
               aspect: "$.component",
-              contains: ["fe", "be"]
+              value: ["fe", "be"],
+              compare: "contains"
             }, [
               "and",
               {

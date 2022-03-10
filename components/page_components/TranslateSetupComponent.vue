@@ -136,11 +136,11 @@ export default {
             },
           },
           condition: ["and", {
-            aspect: "# component",
+            aspect: "$.component",
             value: [FRONTEND_COMPONENT, BACKEND_COMPONENT],
             compare: "contains"
           }, {
-            aspect: "# dest_lang",
+            aspect: "$.dest_lang",
             value: null,
             compare: "unequal"
           }]
