@@ -154,7 +154,7 @@ export default {
       return this.condition_fail || this.attr.disable || this.disabled
     },
     condition_fail() {
-      return this._condition_fail(this.aspect, null, this.mode, this.entry_uuid, this.conditionals)
+      return this._condition_fail(this.aspect, this.conditionals)
     },
     has_value() {
       return this.mvalue !== undefined || false

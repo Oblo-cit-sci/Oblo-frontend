@@ -127,7 +127,7 @@ export default {
       //   console.log("validator: -> _condition_fail", aspect, aspect_loc, "edit", "uuid", "no-cond")
       // }
       // pass the conditionals, for composites not to fail...
-      if (this._condition_fail(aspect, aspect_loc, EDIT, this.entry.uuid, conditionals)) {
+      if (this._condition_fail(aspect, conditionals)) {
         return [OK]
       }
       // if (disabled_by_condition(this.$store, aspect, aspect_loc, item_index, root_data)) {

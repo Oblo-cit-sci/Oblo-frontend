@@ -83,8 +83,7 @@ export default {
       // console.log("aspect_disabled", aspect.name, this._condition_fail(aspect, this.aspect_locs[aspect.name],
       //     this.mode, this.uuid, this.regular_values) ||
       //   (attr(aspect).disabled || false))
-      return this._condition_fail(aspect, this.aspect_locs[aspect.name],
-          this.mode, this.uuid, this.regular_values) ||
+      return this._condition_fail(aspect, this.regular_values) ||
         (attr(aspect).disabled || false) || ((attr(aspect).visible === false) || false)
     }
   }

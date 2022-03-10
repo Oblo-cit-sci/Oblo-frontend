@@ -42,7 +42,6 @@
           :aspect="comp_type"
           :ext_value="value[comp_type.name]"
           @update:ext_value="update_component_value(comp_type.name, $event)"
-          :aspect_loc="aspect_locs[comp_type.name]"
           :mode="mode"
           :disabled="disabled"
           :ref="comp_type.name"
@@ -65,9 +64,7 @@ export default {
   components: {Aspect},
   mixins: [AspectComponentMixin, AspectListMixin],
   data() {
-    // return {
-    //   aspect_locs: {}
-    // }
+    return {}
   },
   created() {
     if (typeof this.value !== "object") {
@@ -99,7 +96,7 @@ export default {
     // },
     update_component_value(component_name, value) {
       // console.log("composite_update_component_value")
-      this.update_value(Object.assign(this.value, {[component_name]: value}))
+      this.update_value(Object.assign(this.$_.cloneDeep(this.value), {[component_name]: value}))
     },
     has_changed(comp_name, event) {
       // console.log("composition.has_changed", comp_name, event)

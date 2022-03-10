@@ -33,6 +33,7 @@
             Aspect(
               v-bind="list_aspect_props(index)"
               :conditionals="conditionals"
+              @update:ext_value="update_index_value(index, $event)"
               @aspectAction="handleAspectAction($event, index)")
             ListitemActions(v-if="!is_view_mode"
               v-bind="listitem_actions_prop(index)"
