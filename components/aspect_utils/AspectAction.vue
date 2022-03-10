@@ -190,7 +190,6 @@ export default {
             value: aspect_default_value(this.aspect)
           })
           this.persist_edit_entry()
-          // console.log("reset", aspect_loc, aspect)
         }
       }
     },

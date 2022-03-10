@@ -100,9 +100,7 @@ export default {
       if (this.get_entry().status === DRAFT && this.is_editable_mode) {
         this.ok_snackbar(this.$t("comp.image_asp.not_found_draft"))
         if (this.images[index].file_uuid === this.get_entry().image) {
-          this.$store.commit("entries/set_entry_value", {
-            aspect_loc: [[EDIT, ""], [META, "image"]]
-          })
+          this.$store.commit("entries/set_edit_meta_value",{meta_aspect_name: "image", value: null})
         }
       } else {
         console.log("err", error)
@@ -119,7 +117,7 @@ export default {
     set_cover_image(index) {
       // console.log(this.entry_uuid)
       this.cover_image_index = index
-      console.log("set_cover_image", index, this.images.index)
+      // console.log("set_cover_image", index, this.images.index)
       this.$store.commit("entries/update_image", this.images[index].file_uuid)
     },
     unset_cover_image() {
@@ -141,9 +139,6 @@ export default {
       } else {
         return this.images[index].url
       }
-    },
-    image_location(index) {
-      return loc_append(remove_entry_loc(this.aspect_loc), INDEX, index)
     },
     delete_image(index) {
       if (this.is_editable_mode) {
@@ -196,7 +191,7 @@ export default {
             this.set_cover_image(0)
           }
           this.add_file_attachment(null, "image",
-            this.images[new_img_index].file_uuid, this.image_location(new_img_index))
+            this.images[new_img_index].file_uuid, new_img_index)
         }
       }
     }

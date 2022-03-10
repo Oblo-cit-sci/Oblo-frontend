@@ -9,7 +9,6 @@
             :aspect="comp_type"
             :ext_value="value[comp_type.name]"
             @update:ext_value="update_component_value(comp_type.name, $event)"
-            :aspect_loc="aspect_locs[comp_type.name]"
             :mode="mode"
             :disabled="disabled"
             :ref="comp_type.name"
@@ -29,7 +28,6 @@
                 :aspect="comp_type"
                 :ext_value="value[comp_type.name]"
                 @update:ext_value="update_component_value(comp_type.name, $event)"
-                :aspect_loc="aspect_locs[comp_type.name]"
                 :mode="mode"
                 :disabled="disable"
                 :ref="comp_type.name"
@@ -67,16 +65,16 @@ export default {
   components: {Aspect},
   mixins: [AspectComponentMixin, AspectListMixin],
   data() {
-    return {
-      aspect_locs: {}
-    }
+    // return {
+    //   aspect_locs: {}
+    // }
   },
   created() {
     if (typeof this.value !== "object") {
       console.log("warning. wrong value for composite (probably due to template update- resetting to default", this.mvalue)
       this.reset_value()
     }
-    this.update_aspect_locs()
+    // this.update_aspect_locs()
   },
   methods: {
     comp_extras(comp_type) {
@@ -94,11 +92,11 @@ export default {
       }
       return xtra_copy
     },
-    update_aspect_locs() {
-      for (let component of this.aspect.components) {
-        this.aspect_locs[component.name] = this.aspect_loc ? loc_append(this.aspect_loc, COMPONENT, component.name) : undefined
-      }
-    },
+    // update_aspect_locs() {
+    //   for (let component of this.aspect.components) {
+    //     this.aspect_locs[component.name] = this.aspect_loc ? loc_append(this.aspect_loc, COMPONENT, component.name) : undefined
+    //   }
+    // },
     update_component_value(component_name, value) {
       // console.log("composite_update_component_value")
       this.update_value(Object.assign(this.value, {[component_name]: value}))
@@ -172,9 +170,9 @@ export default {
         return this.conditionals
     },
   },
-  beforeUpdate() {
-    this.update_aspect_locs()
-  }
+  // beforeUpdate() {
+  //   this.update_aspect_locs()
+  // }
 }
 </script>
 

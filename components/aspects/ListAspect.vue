@@ -139,10 +139,11 @@ export default {
     }
     const entry = this.get_entry()
     if (entry && this.$_.get(entry, "local.list_pages")) {
-      const loc_str = aspect_loc_str(remove_entry_loc(this.aspect_loc))
-      if (entry.local.list_pages[loc_str] !== undefined) {
-        this.set_page(entry.local.list_pages[loc_str])
-      }
+      console.warn("ListAspect dont store page... check ListMixin.set_page and ListMixin.goto_stored_page")
+      // const loc_str = aspect_loc_str(remove_entry_loc(this.aspect_loc))
+      // if (entry.local.list_pages[loc_str] !== undefined) {
+      //   this.set_page(entry.local.list_pages[loc_str])
+      // }
     }
   },
   methods: {
@@ -176,11 +177,11 @@ export default {
         extra: this.list_extra(index)
       }
 
-      if (this.aspect_loc) {
-        data.aspect_loc = this.item_aspect_loc(index)
-      } else {
+      // if (this.aspect_loc) {
+      //   // data.aspect_loc = this.item_aspect_loc(index)
+      // } else {
         data.ext_value = this.value[index]
-      }
+      // }
       return data
     },
     listitem_actions_prop(index) {
@@ -220,9 +221,9 @@ export default {
         easing: "easeOutCubic"
       })
     },
-    item_aspect_loc(index) {
-      return this.$_.concat(this.aspect_loc, [[INDEX, index, this.item_aspect.name]])
-    },
+    // item_aspect_loc(index) {
+    //   return this.$_.concat(this.aspect_loc, [[INDEX, index, this.item_aspect.name]])
+    // },
     indexed_item_aspect(index) {
       let aspect = {...this.item_aspect}
       aspect.name = "" + (index + 1)
@@ -248,7 +249,7 @@ export default {
       return extra
     },
     panel_id(index) {
-      return "L-" + aspect_loc_str(this.$_.slice(this.$_.concat(this.aspect_loc, [[INDEX, index]]), 1))
+      return "L-" + aspect_loc_str(this.$_.slice(this.$_.concat(this._uid, [[INDEX, index]]), 1))
     },
     index_on_act_page(index) {
       return index >= this.page * this.pagination_tresh && index < (this.page + 1) * this.pagination_tresh

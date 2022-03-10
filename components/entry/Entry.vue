@@ -55,7 +55,6 @@
         v-scroll-y-transition(v-if="is_editable_mode")
           Aspect(
             :aspect="aspect"
-            :aspect_loc="aspect_locs[aspect.name]"
             :ext_value="aspect_mvalue(aspect.name)"
             :entry_uuid="uuid"
             :conditionals="regular_values"
@@ -65,7 +64,6 @@
             :mode="mode")
         Aspect(v-else
           :aspect="aspect"
-          :aspect_loc="aspect_locs[aspect.name]"
           :entry_uuid="uuid"
           :ext_value="aspect_mvalue(aspect.name)"
           :conditionals="regular_values"

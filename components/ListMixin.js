@@ -28,9 +28,9 @@ export default {
       }
     },
     goto_stored_page() {
-      const entry = this.get_entry()
-      const loc_str = aspect_loc_str(remove_entry_loc(this.aspect_loc))
-      return this.$_.get(entry, "local.list_pages." + loc_str, 0)
+      // const entry = this.get_entry()
+      // const loc_str = aspect_loc_str(remove_entry_loc(this.aspect_loc))
+      // return this.$_.get(entry, "local.list_pages." + loc_str, 0)
     },
     set_page(page, goto_id) {
       // console.log("set page", page)
@@ -41,9 +41,9 @@ export default {
       }
       if (page !== this.page) {
         this.page = page
-        if (this.aspect_loc) {
-          this.$store.commit("entries/entries_set_local_list_page", {aspect_loc: this.aspect_loc, page: this.page})
-        }
+        // if (this.aspect_loc) {
+        //   this.$store.commit("entries/entries_set_local_list_page", {aspect_loc: this.aspect_loc, page: this.page})
+        // }
         try {
           if (goto_id) {
             setTimeout(() => {

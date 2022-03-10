@@ -109,35 +109,35 @@ export default {
         }
       }
     },
-    to_parent(to_last_element = true, mode = VIEW) {
-      if (this.entry.entry_refs.parent) {
-        let parent_entry_type_slug = this.$store.getters["entries/get_entry"](parent_ref.uuid).templates.slug
-
-        const uuid = parent_ref.uuid
-
-        // TODO this loc stuff will work different in the future
-        const aspect_def = this.$store.getters["templates/get_aspect_def"]({
-          type_slug: parent_entry_type_slug,
-          aspect_name: parent_ref.aspect_loc[0][1]
-        })
-        let query = {
-          page: aspect_def.attr.page,
-        }
-        if (to_last_element) {
-          const aspect_id = aspect_loc_str(parent_ref.aspect_loc)
-          query.goTo = (aspect_id ? aspect_id : "")
-        }
-        this.$store.commit("pop_last_page_path")
-        this.to_entry(uuid, mode, query)
-      } else {
-        if (this.domain.value === NO_DOMAIN) {
-          this.home()
-        } else {
-          // todo could be a bit nicer (named router, route param...)
-          this.$router.push("/domain/" + this.domain.value)
-        }
-      }
-    }
+    // to_parent(to_last_element = true, mode = VIEW) {
+    //   if (this.entry.entry_refs.parent) {
+    //     let parent_entry_type_slug = this.$store.getters["entries/get_entry"](parent_ref.uuid).templates.slug
+    //
+    //     const uuid = parent_ref.uuid
+    //
+    //     // TODO this loc stuff will work different in the future
+    //     const aspect_def = this.$store.getters["templates/get_aspect_def"]({
+    //       type_slug: parent_entry_type_slug,
+    //       aspect_name: parent_ref.aspect_loc[0][1]
+    //     })
+    //     let query = {
+    //       page: aspect_def.attr.page,
+    //     }
+    //     if (to_last_element) {
+    //       const aspect_id = aspect_loc_str(parent_ref.aspect_loc)
+    //       query.goTo = (aspect_id ? aspect_id : "")
+    //     }
+    //     this.$store.commit("pop_last_page_path")
+    //     this.to_entry(uuid, mode, query)
+    //   } else {
+    //     if (this.domain.value === NO_DOMAIN) {
+    //       this.home()
+    //     } else {
+    //       // todo could be a bit nicer (named router, route param...)
+    //       this.$router.push("/domain/" + this.domain.value)
+    //     }
+    //   }
+    // }
   },
   computed: {
     ...mapGetters({has_entry: "entries/has_entry", has_full_entry: "entries/has_full_entry"})

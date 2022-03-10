@@ -1,7 +1,6 @@
 import {EDIT, REVIEW, VIEW} from "~/lib/consts";
 import {
   aspect_default_value,
-  aspect_loc_uuid,
   aspect_raw_default_value,
   is_editable_mode,
   pack_value
@@ -65,13 +64,12 @@ export default {
     },
     clearIcon() {
       //console.log("AspMix - ", this.aspect.name, this.aspect.type, this.extra)
-      return ((this.extra.listitem && this.mode === EDIT) || false) ? "mdi-close" : undefined //this.extra
+      return ((this.extra.listitem && this.is_editable_mode) || false) ? "mdi-close" : undefined //this.extra
     },
     // // todo not used atm. also clarify where extra should be, aspect. or aspect.extra
     rules() {
-      if (this.$_.get(this.attr, "extra.rules")) {
-        return this.attr.extra.rules
-      }
+      // crashes with null instead undefined
+      return this.$_.get(this.attr, "extra.rules", undefined)
     },
     is_required() {
       return this.$_.get(this.attr, "required", true)
@@ -122,10 +120,6 @@ export default {
     },
     reset_value() {
       this.update_value(aspect_raw_default_value(this.aspect))
-    },
-    // todo: these methods can go...
-    raw_default_value() {
-      return aspect_raw_default_value(this.aspect)
     },
     raw_aspect_default_value(aspect) {
       return aspect_raw_default_value(aspect)
