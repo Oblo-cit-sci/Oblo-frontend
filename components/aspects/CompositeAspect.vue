@@ -71,7 +71,6 @@ export default {
       console.log("warning. wrong value for composite (probably due to template update- resetting to default", this.mvalue)
       this.reset_value()
     }
-    // this.update_aspect_locs()
   },
   methods: {
     comp_extras(comp_type) {
@@ -89,11 +88,6 @@ export default {
       }
       return xtra_copy
     },
-    // update_aspect_locs() {
-    //   for (let component of this.aspect.components) {
-    //     this.aspect_locs[component.name] = this.aspect_loc ? loc_append(this.aspect_loc, COMPONENT, component.name) : undefined
-    //   }
-    // },
     update_component_value(component_name, value) {
       // console.log("composite_update_component_value")
       this.update_value(Object.assign(this.$_.cloneDeep(this.value), {[component_name]: value}))
@@ -166,10 +160,7 @@ export default {
       } else
         return this.conditionals
     },
-  },
-  // beforeUpdate() {
-  //   this.update_aspect_locs()
-  // }
+  }
 }
 </script>
 

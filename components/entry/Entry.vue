@@ -88,7 +88,6 @@
           Aspect(
             :aspect="asp_entry_roles()"
             :mode="entry_roles_mode"
-            :aspect_loc="aspect_locs[asp_entry_roles().name]"
             :entry_uuid="uuid"
             :is_entry_meta="true"
             :ext_value.sync="actors_value"
@@ -131,7 +130,7 @@ import EntryMixin from "./EntryMixin";
 import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
 import PersistentStorageMixin from "../util/PersistentStorageMixin";
 import EntryValidation from "./EntryValidation";
-import {draft_color, EDIT, ENTRY, META, REJECTED, VIEW} from "~/lib/consts";
+import {ACTORS, draft_color, EDIT, ENTRY, META, REJECTED, VIEW} from "~/lib/consts";
 import {privacy_color, privacy_icon, recursive_unpack2} from "~/lib/util";
 import ChangedAspectNotice from "./ChangedAspectNotice";
 import MetaChips from "./MetaChips";
@@ -236,8 +235,8 @@ export default {
             const {public_name, registered_name} = this.user
             // const orig_user = creator.actor.public_name
             creator.actor = {public_name, registered_name}
-            this.$store.commit("entries/set_entry_value", {
-              aspect_loc: [[EDIT, this.uuid], ["meta", "actors"]],
+            this.$store.commit("entries/set_edit_meta_value", {
+              meta_aspect_name: ACTORS,
               value: roles
             })
           }
@@ -281,15 +280,6 @@ export default {
     },
     show_visitor_message() {
       return this.is_last_page && this.is_edit_mode && this.can_edit && !this.logged_in
-    },
-    aspect_loc() {
-      console.warn("Entry Aspect_loc")
-      console.trace()
-      if (this.is_editable_mode) {
-        return [EDIT, this.uuid]
-      } else {
-        return [ENTRY, this.uuid]
-      }
     },
     get_description() {
       const long_description = this.template.values?.long_description

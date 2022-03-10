@@ -43,7 +43,6 @@ export default {
     },
   data() {
     return {
-      // aspect_locs: {},
       aspect_extras: {},
       meta_aspect_modes: {}
     }
@@ -82,9 +81,6 @@ export default {
     tags_config() {
       return this.$_.get(this.template.rules, "tags_config", [])
     },
-    // has_parent() {
-    //   // return has_parent(this.entry)
-    // },
     actors() {
       return this.entry.actors
     },
@@ -217,17 +213,6 @@ export default {
     },
     aspects() {
       return this.template.aspects
-    },
-    aspect_locs() {
-      const aspect_locs = {}
-      // console.log("ENTRY_ ASPECT-LOC", this.aspect_loc)
-      for (let aspect of this.aspects) {
-        aspect_locs[aspect.name] = loc_append([this.aspect_loc], ASPECT, aspect.name)
-      }
-      for (let aspect of META_ASPECT_LIST) {
-        aspect_locs[aspect] = loc_append([this.aspect_loc], META, aspect)
-      }
-      return aspect_locs
     },
     regular_values() {
       return this.entry.values

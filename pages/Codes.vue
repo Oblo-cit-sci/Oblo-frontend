@@ -3,9 +3,7 @@
     Aspect(v-for="aspect in shown_aspects"
       :key="aspect.name"
       :aspect="aspect"
-      mode="view"
-      :aspect_loc="aspect_locs(aspect)")
-
+      mode="view")
 </template>
 
 <script>

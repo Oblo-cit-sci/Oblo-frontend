@@ -18,7 +18,6 @@
       :is="aspectComponent(aspect, mode)"
       :mvalue="mvalue"
       :aspect="aspect"
-      :aspect_loc="aspect_loc"
       :entry_uuid="entry_uuid"
       :disabled="disable"
       :mode="real_mode"
@@ -84,9 +83,6 @@ export default {
     disabled: {
       type: Boolean,
       default: false
-    },
-    aspect_loc: { // when not passed on, it is some kind of anonymous aspect, probably defined on that page (e.g. register)
-      type: Array, // for composites and lists pass it down...
     },
     entry_uuid: String,
     conditionals: {
