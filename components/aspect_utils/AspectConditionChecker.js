@@ -68,6 +68,7 @@ export default {
         console.log("new condition checker", condition.aspect)
         condition_value = this.$_.get(new_value_getter(conditionals, condition.aspect), VALUE)
       } else if (aspect_loc) {
+        console.warn("check_single_condition without conditionals")
         // console.log("single cond check: cond:", condition.aspect)
         let aspect_location = loc_prepend(mode === EDIT ? EDIT : ENTRY, entry_uuid,
           aspect_loc_str2arr(condition.aspect))

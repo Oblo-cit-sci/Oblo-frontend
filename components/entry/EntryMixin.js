@@ -1,8 +1,9 @@
 import {get_creator, get_entry_titleAspect, new_value_getter} from "~/lib/entry";
-import {aspect_loc_str2arr, is_editable_mode, loc_append, loc_prepend} from "~/lib/aspect";
+import {aspect_loc_str2arr, is_editable_mode, loc_append, loc_prepend, pack_value} from "~/lib/aspect";
 import {mapGetters} from "vuex"
 
 import {
+  ACTORS,
   ASPECT,
   DRAFT,
   EDIT,
@@ -86,6 +87,14 @@ export default {
     // },
     actors() {
       return this.entry.actors
+    },
+    actors_value: {
+      get() {
+        return pack_value(this.actors)
+      },
+      set(actors) {
+        this.$store.commit("entries/set_edit_meta_value",{meta_aspect_name: ACTORS, value: actors})
+      }
     },
     creator() {
       return get_creator(this.entry)

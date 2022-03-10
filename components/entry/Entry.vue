@@ -63,7 +63,7 @@
             @update:ext_value="update_ext_value(aspect.name, $event)"
             :mode="mode")
         Aspect(v-else
-          :aspect="aspect"
+        :aspect="aspect"
           :entry_uuid="uuid"
           :ext_value="aspect_mvalue(aspect.name)"
           :conditionals="regular_values"
@@ -83,17 +83,17 @@
             :values.sync="meta_aspects_values"
             entry_uuid="uuid"
             :compact="true")
-      //v-row(v-if="is_creator || is_admin")
-      //  v-col.pb-0(alignSelf="stretch" :cols="base_cols")
-      //    Aspect(
-      //      :aspect="asp_entry_roles()"
-      //      :mode="entry_roles_mode"
-      //      :aspect_loc="aspect_locs[asp_entry_roles().name]"
-      //      :entry_uuid="uuid"
-      //      :is_entry_meta="true"
-      //      :ext_value="entry.actors"
-      //      :extra="{entry_is_private: entry.privacy==='private'}"
-      //      @update:error="update_error('actors', $event)")
+      v-row(v-if="is_creator || is_admin")
+        v-col.pb-0(alignSelf="stretch" :cols="base_cols")
+          Aspect(
+            :aspect="asp_entry_roles()"
+            :mode="entry_roles_mode"
+            :aspect_loc="aspect_locs[asp_entry_roles().name]"
+            :entry_uuid="uuid"
+            :is_entry_meta="true"
+            :ext_value.sync="actors_value"
+            :extra="{entry_is_private: entry.privacy==='private'}"
+            @update:error="update_error('actors', $event)")
       v-row
         v-col(alignSelf="stretch" :cols="base_cols")
           v-divider
@@ -128,7 +128,6 @@ import EntryActions from "./EntryActions";
 import Title_Description from "../util/Title_Description";
 import EntryNavMixin from "../EntryNavMixin";
 import EntryMixin from "./EntryMixin";
-import FullEntryMixin from "./FullEntryMixin";
 import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
 import PersistentStorageMixin from "../util/PersistentStorageMixin";
 import EntryValidation from "./EntryValidation";
@@ -148,11 +147,12 @@ import {pack_value, unpack} from "~/lib/aspect";
 import {BUS_DIALOG_OPEN} from "~/plugins/bus";
 import OutdatedChip from "~/components/tag/OutdatedChip"
 import goTo from 'vuetify/lib/services/goto'
+import {unsaved_changes_default_dialog} from "~/lib/dialogs"
 
 export default {
   name: "Entry",
   mixins: [EntryNavMixin, EntryMixin, TriggerSnackbarMixin, TypicalAspectMixin, PersistentStorageMixin,
-    FullEntryMixin, AspectSetMixin],
+    AspectSetMixin],
   components: {
     OutdatedChip,
     AspectSet,
@@ -172,6 +172,11 @@ export default {
     show_back_button: Boolean,
     back_button_function: {
       type: Function
+    },
+    entry_navigation_props: {
+      type: Object,
+      default: () => {
+      }
     }
   },
   created() {
@@ -192,16 +197,17 @@ export default {
         privacy: pack_value(this.entry.privacy),
         license: pack_value(this.entry.license),
         language: pack_value(this.entry.language)
-      }
+      },
+      unsaved_changes_dialog: unsaved_changes_default_dialog,
     }
   },
   methods: {
     aspectAction(aspect_action) {
     },
-    aspect_mvalue(aspect_name){
+    aspect_mvalue(aspect_name) {
       return this.entry.values[aspect_name]
     },
-    update_ext_value(aspect_name, value){
+    update_ext_value(aspect_name, value) {
       // console.log("update_ext_value", aspect_name, value)
       this.$store.commit("entries/new_set_edit_entry_value", {aspect_name, value})
     },
@@ -244,10 +250,41 @@ export default {
     draft_color() {
       return draft_color
     },
+    mode: {
+      get() {
+        return this.$route.query.entry_mode || VIEW
+      },
+      set(mode) {
+        if (mode === EDIT) {
+          if (this.entry.language !== this.$store.getters.domain_language) {
+            this.$bus.$emit(BUS_DIALOG_OPEN, {
+              data: {
+                cancel_text: this.$t("comp.entry.language_switch_dialog.cancel_text"),
+                title: this.$t("comp.entry.language_switch_dialog.title"),
+                text: this.$t("comp.entry.language_switch_dialog.text",
+                  {language: this.$t("lang." + this.entry.language)})
+              },
+              cancel_method: () => {
+              },
+              confirm_method: async () => {
+                await this.change_language(this.entry.language)
+                this.to_entry(this.uuid, mode, {}, true)
+              }
+            })
+          } else {
+            this.to_entry(this.uuid, mode, {}, true)
+          }
+        } else {
+          this.to_entry(this.uuid, mode, {}, true)
+        }
+      }
+    },
     show_visitor_message() {
       return this.is_last_page && this.is_edit_mode && this.can_edit && !this.logged_in
     },
     aspect_loc() {
+      console.warn("Entry Aspect_loc")
+      console.trace()
       if (this.is_editable_mode) {
         return [EDIT, this.uuid]
       } else {
@@ -295,6 +332,12 @@ export default {
     },
     show_tags() {
       return this.entry.tags && Object.keys(this.entry.tags).length > 0
+    },
+    meta_aspects_privacy() {
+      let result = []
+      result.push({icon: privacy_icon(this.entry.privacy), name: this.entry.privacy})
+      result.push({name: "License: " + this.entry.license})
+      return result
     },
     allow_download() {
       // console.log("allow_download", this.$_.get(this.template.rules, "allow_download", true))
