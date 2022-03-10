@@ -311,11 +311,6 @@ export const getters = {
       }
     }
   },
-  get_parent(state, getters) {
-    return (uuid) => {
-      return getters.get_entry(getters.get_entry(uuid).refs.parent.uuid)
-    }
-  },
   value(state, getters) {
     return (aspect_loc) => {
       const first_atype = aspect_loc[0][0]

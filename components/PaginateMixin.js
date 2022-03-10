@@ -74,8 +74,7 @@ export default {
       return this.active_pages.length
     },
     page_index() {
-      const title = this.pages[this.page].title
-      return 1 + this.$_.findIndex(this.active_pages, p => p.title === title)
+      return 1 + this.page
     }
   },
   methods: {

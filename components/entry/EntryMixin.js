@@ -1,4 +1,4 @@
-import {get_creator, get_entry_titleAspect, has_parent} from "~/lib/entry";
+import {get_creator, get_entry_titleAspect} from "~/lib/entry";
 import {aspect_loc_str2arr, is_editable_mode, loc_append, loc_prepend} from "~/lib/aspect";
 import {mapGetters} from "vuex"
 
@@ -81,40 +81,17 @@ export default {
     tags_config() {
       return this.$_.get(this.template.rules, "tags_config", [])
     },
-    has_parent() {
-      return has_parent(this.entry)
-    },
-    parents() {
-      let act = this.entry
-      let result = []
-      while (act.refs.parent) {
-        act = this.$store.getters["entries/get_parent"](act.uuid)
-        result.push({
-          text: act.title,
-          href: 'breadcrumbs_dashboard',
-        })
-      }
-      return result
-    },
+    // has_parent() {
+    //   // return has_parent(this.entry)
+    // },
     actors() {
       return this.entry.actors
     },
     creator() {
-      // todo this is just a workaround, for strange be behaviour
-      // should be
-      // console.log(this.entry.actors.filter(er => er.role === "creator")[0].actor)
       return get_creator(this.entry)
     },
     is_creator() {
-      // console.log(this.creator, this.$store.getters.registered_name)
-      // there might be no creator in review mode
-      if ((this.creator.registered_name === this.username) ===
-        (this.$_.get(this.creator, "registered_name") === this.username)) {
-        console.info("todo, should the same and used like this. replace below if persistent")
-      } else {
-        console.warn("todo fix this! creator:", this.creator, "username:", this.username)
-      }
-      return this.$_.get(this.creator, "registered_name") === this.username
+      return this.creator.registered_name === this.username
     },
     template_slug() {
       return this.entry.template.slug
@@ -162,11 +139,6 @@ export default {
           return null
         }
       }
-    },
-    parent_title() {
-      // console.log("getting parent title", this)
-      // todo not necessarily available for remote entries. should be included?
-      return this.$store.getters["entries/get_parent"](this.uuid).title
     },
     type_name() {
       return this.template.title

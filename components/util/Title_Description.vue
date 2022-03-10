@@ -86,7 +86,6 @@
             return this.aspect.name
           }
         }
-        console.log("no title nor aspect given for title_descr of an aspect")
         return ""
       },
       icon_part() {

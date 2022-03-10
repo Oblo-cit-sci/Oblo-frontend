@@ -15,9 +15,6 @@
           :mode="mode")
           span.ml-1(:style="{'color': draft_color}") {{is_draft ? "[" + $t('comp.entrypreview.draft') +"]" : ""}}
     v-row
-      v-col(v-if="has_parent")
-        span This entry is part of:&nbsp
-        a(@click="to_parent(true, mode)") {{parent_title}}
     .ml-3(v-if="is_view_mode")
       v-row(:style="{'text-align': 'right', 'font-size':'80%'}")
         span.my-auto {{$t("comp.entrypreview.created")}} {{entry_date}}
@@ -46,11 +43,11 @@
       v-col(:cols="base_cols")
         v-divider.wide_divider(v-if="is_first_page")
     v-row
-      div(v-if="has_pages")
+      div(v-if="has_defined_pages")
         Title_Description(
-          :title="page_info.title"
+          :title="current_page_info.title"
           header_type="h2"
-          :description="page_info.description"
+          :description="current_page_info.description"
           :mode="mode")
     v-row(v-for="(aspect) in shown_aspects" :key="aspect.name")
       v-col(alignSelf="stretch" :cols="base_cols" :style="{padding:0}")
@@ -216,13 +213,15 @@ export default {
           }
         })
       }
-    }
+    },
+
   },
   computed: {
     ...mapGetters({logged_in: "user/logged_in", user: "user"}),
     draft_color() {
       return draft_color
     },
+
     show_visitor_message() {
       return this.is_last_page && this.is_edit_mode && this.can_edit && !this.logged_in
     },
@@ -254,13 +253,7 @@ export default {
     },
     // maybe also consider:
     // https://github.com/edisdev/download-json-data/blob/develop/src/components/Download.vue
-    page_info() {
-      //console.log(this.template, this.page, this.template.rules.pages[this.page])
-      if (this.has_pages)
-        return this.template.rules.pages[this.page]
-      else
-        return null
-    },
+
     // wrong, create should be for all that are not local/saved or published
     meta_aspect_chips() {
       let result = []

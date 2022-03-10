@@ -71,7 +71,7 @@ export default {
     },
     selection_index: {
       get() {
-        console.log("get selection_index", this.value)
+        // console.log("get selection_index", this.value)
         if (this.value) {
           return this.value.map(v => this.computed_list_options.findIndex(o => o.value === v.value))
         }

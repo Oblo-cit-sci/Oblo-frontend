@@ -362,9 +362,9 @@
       "dialog_header": "Download entries",
       "template_aspect_label": "Select which entry type to download",
       "data_aspect": {
-        "label": "Only metadata / Complete data",
+        "label": "Only @:w.metadata / Complete data",
         "items": [
-          "Metadata",
+          "@.capitalize:w.metadata",
           "Complete entries"
         ]
       }
@@ -601,6 +601,7 @@
     "edit": "edit",
     "done": "done",
     "save": "save",
+    "metadata": "metadata",
     "settings": "settings",
     "cancel": "cancel",
     "entrytype": "Entry type",

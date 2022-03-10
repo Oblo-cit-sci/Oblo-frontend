@@ -55,7 +55,7 @@ export default {
     this.templates = object_list2options(this.domain_templates(true),
       "title", "slug", true,
       [{"color": "rules.marker_color"}])
-    console.log("legend: templates", this.templates)
+    // console.log("legend: templates", this.templates)
   }
 }
 </script>

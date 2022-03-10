@@ -5,11 +5,11 @@
       v-if="has_pages"
       :page="page"
       @update:page="update_page($event)"
-      :total="template.rules.pages.length"
+      :total="total_pages"
       :named_pages="named_pages"
       :conditionals="conditionals"
       :entry="entry"
-      :pages="template.rules.pages"
+      :pages="pages"
       @lastpage="more_follow_page = ($event)")
     EntryActionButtons(
       v-bind="entry_action_buttons_props"
@@ -32,11 +32,12 @@ import EntryActionButtons from "~/components/entry/EntryActionButtons"
 import {prepare_for_submission} from "~/lib/entry"
 import AttachedFilesMixin from "~/components/aspect_utils/AttachedFilesMixin";
 import {BUS_DIALOG_OPEN} from "~/plugins/bus";
+import EntryPagesMixin from "~/components/entry/EntryPagesMixin"
 
 export default {
   name: "EntryActions",
   components: {EntryActionButtons, Paginate},
-  mixins: [EntryNavMixin, TriggerSnackbarMixin, PersistentStorageMixin, EntryMixin, AttachedFilesMixin],
+  mixins: [EntryNavMixin, TriggerSnackbarMixin, PersistentStorageMixin, EntryMixin, AttachedFilesMixin, EntryPagesMixin],
   props: {
     mode: {
       type: String,
