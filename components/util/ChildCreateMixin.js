@@ -21,10 +21,11 @@ export default {
         child: child,
         aspect_loc: index_aspect_loc})
 
-      const new_value = this.$_.concat(value, [child.uuid])
-      this.$store.commit("entries/set_entry_value", {aspect_loc: aspect_loc, value: pack_value(new_value)})
-      this.persist_entries().then()
-      this.persist_edit_entry().then()
+      // TODO. needed depracated set_entry_value removed
+      // const new_value = this.$_.concat(value, [child.uuid])
+      // this.$store.commit("entries/set_entry_value", {aspect_loc: aspect_loc, value: pack_value(new_value)})
+      // this.persist_entries().then()
+      // this.persist_edit_entry().then()
       // goto
       this.to_entry(child.uuid, EDIT)
     },
