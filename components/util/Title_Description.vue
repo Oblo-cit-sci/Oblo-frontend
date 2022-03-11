@@ -20,6 +20,7 @@
 
 <script>
   import {VIEW} from "~/lib/consts";
+  import {is_editable_mode, attr} from "~/lib/aspect"
 
   /*
     put 2 times behind the header component
@@ -69,7 +70,7 @@
     },
     computed: {
       label() {
-        if(this.no_title) {
+        if(this.no_title || (is_editable_mode(this.mode) && attr(this.aspect).hide_label_on_edit)) {
           return
         }
         // todo, is only be the case for ui aspects
