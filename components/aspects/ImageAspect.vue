@@ -118,11 +118,11 @@ export default {
       // console.log(this.entry_uuid)
       this.cover_image_index = index
       // console.log("set_cover_image", index, this.images.index)
-      this.$store.commit("entries/update_image", this.images[index].file_uuid)
+      this.$store.commit("entries/set_edit_meta_value",{meta_aspect_name: "image", value: this.images[index].file_uuid})
     },
     unset_cover_image() {
       this.cover_image_index = -1
-      this.$store.commit("entries/update_image", null)
+      this.$store.commit("entries/set_edit_meta_value",{meta_aspect_name: "image", value: null})
     },
     // todo needs to be called from the ImageCard component
     make_selected_cover(index = this.selected_image_index) {

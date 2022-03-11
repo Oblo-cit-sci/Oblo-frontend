@@ -101,8 +101,7 @@ export default {
     update_value(value) {
       this.$emit("update_value", pack_value(value))
     },
-    update_mvalue(mvalue) {
-      mvalue.is_mvalue = true
+    update_packed_value(mvalue) {
       this.$emit("update_value", mvalue)
     },
     update_error(has_error) {

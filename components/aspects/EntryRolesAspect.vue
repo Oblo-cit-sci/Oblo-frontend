@@ -94,10 +94,10 @@ export default {
   },
   methods: {
     role_set(role, actors) {
-      let ungruouped_actors = []
+      let ungrouped_actors = []
       for (let [role, role_actors] of Object.entries(this.grouped_roles)) {
         if (Array.isArray(role_actors)) {
-          ungruouped_actors = this.$_.concat(ungruouped_actors, role_actors.map(a => {
+          ungrouped_actors = this.$_.concat(ungrouped_actors, role_actors.map(a => {
               return {
                 role, actor: a
               }
@@ -105,11 +105,12 @@ export default {
           )
         } else {
           if (role_actors) {
-            ungruouped_actors = this.$_.concat(ungruouped_actors, {role, actor: role_actors})
+            ungrouped_actors = this.$_.concat(ungrouped_actors, {role, actor: role_actors})
           }
         }
       }
-      this.update_mvalue(ungruouped_actors)
+      // we call this, cuz we know its meta-aspect
+      this.update_packed_value(ungrouped_actors)
     }
   }
 }

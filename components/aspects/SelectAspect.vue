@@ -131,7 +131,7 @@ export default {
         if (this.attr.only_value) {
           send_value = this.selection
         }
-        this.update_mvalue(send_value)
+        this.update_packed_value(send_value)
       }
     },
     check_box_value(val) {
