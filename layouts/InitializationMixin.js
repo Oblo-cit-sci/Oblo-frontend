@@ -190,6 +190,9 @@ export default {
           }
           // console.log("query_entry_uuid", this.query_entry_uuid)
           const entry = this.$store.getters["entries/get_entry"](this.query_entry_uuid)
+          if(!entry){
+            console.error("entry not found", this.query_entry_uuid)
+          }
           await this.guarantee_template_code_with_references(entry.template.slug, entry.language)
         }
 

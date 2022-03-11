@@ -563,7 +563,8 @@
     },
     "treeselect_asp": {
       "click_to_select": "Click to select",
-      "select_another_value": "Select another value"
+      "select_another_value": "Select another value",
+      "select_another_with_level": "Select a {level_title}"
     },
     "treeleaf_picker": {
       "current": "Current selection"
