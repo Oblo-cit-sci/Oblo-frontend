@@ -13,7 +13,6 @@
       :value="value"
       :hide-details="hide_details"
       @change="auto_select($event)"
-      :aspect_loc="aspect_loc"
       :prependIcon="prependIcon"
       @click:prepend="openDialog()")
     div(v-if="show_textarea")
@@ -201,7 +200,9 @@ export default {
     },
     error_messages() {
       if (this.has_error && this.value.length > 0) {
-        return this.$t('comp.treeselect_asp.select_another_value')
+        return this.$t('comp.treeselect_asp.select_another_with_level',{
+          level_title: this.tree.levels[this.value.length - 1].text
+        })
       }
     },
     textarea_placeholder() {
