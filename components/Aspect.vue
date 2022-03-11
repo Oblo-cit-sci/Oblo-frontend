@@ -59,7 +59,7 @@ export default {
     AspectAction,
     Title_Description
   },
-  mixins: [AspectConditionChecker, PersistentStorageMixin],
+  mixins: [AspectConditionChecker],
   props: {
     aspect: {
       type: Object,
@@ -123,7 +123,6 @@ export default {
           // cleaner to call emit otherwise we end up in an endless loop
           // this.update_value(cached_value)
           this.$emit("update:ext_value", cached_value)
-          this.persist_edit_entry().then()
         }
       }
     }
@@ -177,13 +176,10 @@ export default {
         console.log("no aspect-loc and no ext_value using default value", raw)
         return {value: raw}
       }
-
     },
-
     value() {
       return unpack(this.mvalue)
     },
-
     i_is_set() {
       return this.value !== aspect_raw_default_value(this.aspect)
     },
@@ -258,41 +254,21 @@ export default {
     }
   },
   methods: {
-    // debounce to not to store contantly while typing
-    update_value(mvalue) {
-      // console.log(mvalue)
-      // value could be "" or 0 in case of strings, numbers
-      const value = mvalue.value === undefined ? null : mvalue.value
-      const is_mvalue = mvalue.is_mvalue
-      if (is_mvalue) {
-        delete mvalue.is_mvalue
+    update_value(packed_value) {
+      // console.log(packed_value)
+      let up_value = packed_value
+      if (packed_value.only_value) {
+        up_value = packed_value.value === undefined ? null : packed_value.value
       }
-
-      let up_value = mvalue
-      // debugger
-      // if (!(this.is_meta || is_mvalue)) {
-      //   // console.log("packing")
-      //   up_value = pack_value(value)
-      // }
-      if (mvalue.only_value) {
-        up_value = value.value
-      }
-      // console.log("upval", up_value)
-      this.persist_edit_entry().then()
+      // todo this does not make a lot of sense yet...
       if (this.attr.cache) {
         this.$store.commit("add_cache", {
           template: this.get_entry().template.slug,
           aspect: this.aspect.name,
-          mvalue: up_value
+          mvalue: packed_value
         })
       }
-      // } else {
-      // console.log("aspect update.ext", up_value)
       this.$emit("update:ext_value", up_value)
-      // }
-      // if (this.attr.titleAspect) {
-      //   this.$store.commit("entries/update_title", {title: up_value.value})
-      // }
     },
     toString(value) {
       return value || ""

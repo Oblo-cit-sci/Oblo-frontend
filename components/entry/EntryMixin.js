@@ -1,5 +1,5 @@
 import {get_creator, get_entry_titleAspect, new_value_getter} from "~/lib/entry";
-import {aspect_loc_str2arr, is_editable_mode, loc_append, loc_prepend, pack_value} from "~/lib/aspect";
+import {aspect_loc_str2arr, is_editable_mode, pack_value} from "~/lib/aspect";
 import {mapGetters} from "vuex"
 
 import {
@@ -7,12 +7,12 @@ import {
   ASPECT,
   DRAFT,
   EDIT,
-  ENTRY,
+  ENTRY, LOCATION,
   META,
   META_ASPECT_LIST,
   PUBLISHED,
   REQUIRES_REVIEW,
-  REVIEW, TAG,
+  REVIEW, TAG, TITLE,
   VIEW
 } from "~/lib/consts";
 
@@ -30,7 +30,7 @@ import URLQueryMixin from "~/components/util/URLQueryMixin"
 export default {
   name: "EntryMixin",
   mixins: [EntryPagesMixin, AspectListMixin, ExportMixin, TypicalAspectMixin, EntryMetaAspects,
-  EntryHelperMethodsMixin, URLQueryMixin],
+    EntryHelperMethodsMixin, URLQueryMixin],
   props:
     {
       entry: {
@@ -89,7 +89,7 @@ export default {
         return pack_value(this.actors)
       },
       set(actors) {
-        this.$store.commit("entries/set_edit_meta_value",{meta_aspect_name: ACTORS, value: actors})
+        this.$store.commit("entries/set_edit_meta_value", {meta_aspect_name: ACTORS, value: actors})
       }
     },
     creator() {
@@ -103,7 +103,7 @@ export default {
     },
     template() {
       // console.log("template on page: ", this.$route.name, this.query_entry_uuid)
-      if(this.is_template_outdated && this.query_entry_uuid) {
+      if (this.is_template_outdated && this.query_entry_uuid) {
         return this.get_template_of_version(this.entry)
       }
       return this.get_template(this.entry)
@@ -120,7 +120,7 @@ export default {
           return this.entry.title
         }
         // console.log("titleAspect", titleAspect)
-        let title = new_value_getter(this.regular_values,titleAspect)
+        let title = new_value_getter(this.regular_values, titleAspect)
         title = this.$_.get(title, "value", "")
         return this.full_title(title)
       } else { // VIEW
@@ -145,6 +145,16 @@ export default {
         }
       }
     },
+    entry_location() {
+      const locationAspect = this.$_.get(this.template.rules, "locationAspect")
+      if (locationAspect) {
+        let location = new_value_getter(this.regular_values, locationAspect)
+        if (!Array.isArray(location)) {
+          location = [location]
+        }
+        return location
+      }
+    },
     type_name() {
       return this.template.title
     },
@@ -159,9 +169,7 @@ export default {
       return this.entry.template_version < this.get_template(this.entry).version
     },
     download_title() {
-      // todo title, wont update in real time
-      const entry_title = this.$store.getters["entries/get_entry_title"](this.uuid)
-      return (this.type_name + "_" + entry_title).replace(" ", "_")
+      return (this.type_name + "_" + this.entry.title).replace(" ", "_")
     },
     is_draft() {
       return this.entry.status === DRAFT
@@ -225,7 +233,7 @@ export default {
         title = this.entry.title
       }
       // todo template sometimes missing... before loaded?
-      if (title === ""){
+      if (title === "") {
         return this?.template?.title || ""
       } else {
         let full_title = this.include_etype_in_title ? this?.template?.title : ""
@@ -243,7 +251,16 @@ export default {
   },
   watch: {
     entry_title(new_title) {
-      this.$store.commit("entries/update_title", {title: new_title})
+      this.$store.commit("entries/set_edit_meta_value", {
+        meta_aspect_name: TITLE,
+        value: new_title
+      })
     },
+    entry_location(location) {
+      this.$store.commit("entries/set_edit_meta_value", {
+        meta_aspect_name: LOCATION,
+        value: location
+      })
+    }
   }
 }

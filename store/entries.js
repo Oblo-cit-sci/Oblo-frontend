@@ -56,32 +56,6 @@ export const mutations = {
   new_set_edit_entry_value(state, {aspect_name, value}) {
     state.edit.values[aspect_name] = value
   },
-  set_entry_value(state, {aspect_loc, value}) {
-    // console.log("set entry value", aspect_loc, value)
-    let select = select_aspect_loc(state, aspect_loc, true)
-    // ld.set()
-    // console.log("_set_entry_value", aspect_loc)
-    const final_loc = ld.last(aspect_loc)
-    //console.log("final,", final_loc, "select", select, "value", value)
-    if (final_loc[0] === ASPECT) {
-      $nuxt.$set(select, [final_loc[1]], value)
-    } else if (final_loc[0] === COMPONENT) {
-      select.value[final_loc[1]] = value
-    } else if (final_loc[0] === META) {
-      //TODO (fix later) we need this cuz just entries, already goes to values
-      // debugger
-      if (aspect_loc[0][0] === EDIT) {
-        select = state.edit
-      } else {
-        select = state.entries.get(aspect_loc[0][1])
-      }
-      select[final_loc[1]] = value
-    } else if (final_loc[0] === INDEX) {
-      Vue.set(select.value, final_loc[1], value)
-    } else {
-      console.log("ERROR store.entries. final location", final_loc)
-    }
-  },
   new_set_entry_value(state, {uuid, aspect_loc, value}) {
     let entry = undefined
     if (uuid === null) {
@@ -100,11 +74,7 @@ export const mutations = {
     }
     ld.set(values, aspect_loc, value)
   },
-  _remove_entry_value_index(state, aspect_loc) {
-    let select = select_aspect_loc(state, aspect_loc, true)
-    const final_loc = ld.last(aspect_loc)
-    select.value = ld.filter(select.value, (_, index) => index !== final_loc[1])
-  },
+
   _remove_entry_ref_index(state, {uuid, child_uuid, aspect_loc}) {
     let children = state.entries.get(uuid).refs.children
     delete state.entries.get(uuid).refs.children[child_uuid]
@@ -128,13 +98,6 @@ export const mutations = {
   set_edit_meta_value(state, {meta_aspect_name, value}) {
     state.edit[meta_aspect_name] = value
   },
-  update_title(state, {uuid, title}) {
-    if (!uuid) {
-      state.edit.title = title
-    } else {
-      state.entries.get(uuid).title = title
-    }
-  },
   update_location(state, {uuid, location}) {
     // todo, this shouldnt be here. the licci reviews are wrongly converted sometimes. into {lon:{}, lat:{}}
     location = ld.filter(location, loc => (loc && typeof loc.coordinates.lat === "number"))
@@ -152,9 +115,6 @@ export const mutations = {
       // console.log("update tags", tags)
       state.entries.get(uuid).tags = tags
     }
-  },
-  update_image(state, image_url) {
-    state.edit.image = image_url
   },
   entries_set_local_list_page(state, {aspect_loc, page}) {
     let entry = state.entries.get(aspect_loc_uuid(aspect_loc))
@@ -227,9 +187,6 @@ export const getters = {
   all_uuids(state, getters) {
     return () => getters.all_entries_array().map(e => e.uuid)
   },
-  get_size(state) {
-    return state.entries.size
-  },
   get_edit(state) {
     return () => {
       return state.edit
@@ -290,11 +247,6 @@ export const getters = {
       return ld.filter(getters.all_entries_array(), e => ld.includes(uuids, e.uuid))
     }
   },
-  get_children(state) {
-    return (entry) => {
-      return ld.map(entry.entry_refs.children, ref => state.entries.get(ref.uuid))
-    }
-  },
   get_own_entries_uuids(state, getters) {
     let result = []
     for (let e of state.entries.values()) {
@@ -311,15 +263,6 @@ export const getters = {
       } else {
         return VIEW
       }
-    }
-  },
-  value(state, getters) {
-    return (aspect_loc) => {
-      const first_atype = aspect_loc[0][0]
-      if (![ENTRY, EDIT].includes(first_atype)) {
-        aspect_loc = ld.concat([[EDIT, getters.edit_uuid]], aspect_loc)
-      }
-      return select_aspect_loc(state, aspect_loc)
     }
   },
   get_recursive_entries(state, getters) {
@@ -349,28 +292,6 @@ export const getters = {
         return null
       } else {
         return entry_type
-      }
-    }
-  },
-  // todo: get edit title, but will be simpler...?
-  get_entry_title: function (state, getters) {
-    return (uuid) => {
-      // console.log("get entry title ", uuid)
-      const entry = getters.get_entry(uuid)
-      const type = getters.get_entry_type(entry.template.slug)
-      let titleAspect = get_entry_titleAspect(type)
-      if (!titleAspect) {
-        //console.log("entries.get_entry_title TODO, use default title for type")
-        return entry.title
-      }
-      // todo maybe it would be cleaner to add "entry "+uuid , so that  aspect_loc_str2arr/is wrapped around
-      const title = select_aspect_loc(state, loc_prepend(ENTRY, uuid, aspect_loc_str2arr(titleAspect)))
-      //console.log("get_entry_title", title)
-      if (title && title.value)
-        return title.value
-      else {
-        //console.log("entries.get_entry_title TODO, use default title for type")
-        return entry.title
       }
     }
   },
@@ -436,12 +357,6 @@ export const getters = {
       }
       return all_tags
     }
-  },
-  all_entries_of_type(state, getters) {
-    return type_slug => getters.all_entries_array().filter(e => e.template.slug === type_slug)
-  },
-  get_orphans(state, getters) {
-    ld.filter(getters.all_entries_array(), e => e.state === "orphan")
   }
 }
 
