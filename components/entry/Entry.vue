@@ -209,6 +209,8 @@ export default {
     update_ext_value(aspect_name, value) {
       // console.log("update_ext_value", aspect_name, value)
       this.$store.commit("entries/new_set_edit_entry_value", {aspect_name, value})
+      // todo maybe bounce...
+      this.persist_edit_entry().then()
     },
     entryAction(action) {
       // console.log("received entry-A", action)

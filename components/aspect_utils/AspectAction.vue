@@ -185,8 +185,8 @@ export default {
         if (handle.type === "assign_to_aspect") {
           const aspect_loc = this.$_.concat([[EDIT, null]], aspect_loc_str2arr(handle.aspect, this.extra.list_index))
           // const aspect = this.aspect_from_location(aspect_loc)
-          this.$store.commit("entries/set_entry_value", {
-            aspect_loc,
+          this.$store.commit("entries/new_set_entry_value", {
+            aspect_loc: handle.aspect,
             value: aspect_default_value(this.aspect)
           })
           this.persist_edit_entry()
