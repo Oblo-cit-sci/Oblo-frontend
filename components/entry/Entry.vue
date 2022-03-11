@@ -8,7 +8,7 @@
       v-col.pt-2(xs12 md12)
         Title_Description(
           dc_title
-          :title="entry_title"
+          :title="full_title()"
           header_type="h3"
           :description="get_description"
           description_as_html=true
@@ -58,6 +58,7 @@
             :ext_value="aspect_mvalue(aspect.name)"
             :entry_uuid="uuid"
             :conditionals="regular_values"
+            :question_only="edit_mode_question_only"
             :extra="aspect_extras"
             @aspectAction="aspectAction($event)"
             @update:ext_value="update_ext_value(aspect.name, $event)"
@@ -346,6 +347,9 @@ export default {
         is_dirty: this.is_dirty,
         allow_download: this.allow_download
       }
+    },
+    edit_mode_question_only() {
+      return this.is_editable_mode && this.$_.get(this.template.rules,"edit_mode_question_only",true)
     }
   },
   watch: {

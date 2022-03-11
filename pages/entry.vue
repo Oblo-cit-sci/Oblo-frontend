@@ -1,6 +1,6 @@
 <template lang="pug">
   div(v-if="entry")
-    Entry(:entry="entry" :mode="entry_mode" include_etype_in_title)
+    Entry(:entry="entry" :mode="entry_mode")
 </template>
 
 <script>

@@ -24,7 +24,7 @@ export default {
       // console.log("type of template_slug",template)
 
       const user_data = this.$store.getters.user
-      const title = init.title || template.title
+      const title = init.title || ""
 
       const license = template.rules.license ? template.rules.license :
         (template.rules.privacy === PRIVATE_LOCAL ? "None" : this.$store.getters["user/settings_value"]("default_license"))

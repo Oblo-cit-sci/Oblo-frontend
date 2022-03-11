@@ -8,6 +8,7 @@
       :aspect="aspect"
       :no_title="extra.no_title"
       :description_as_html="descr_as_html"
+      :question_only="question_only"
       :note=note
       :disabled="disable"
       :disabled_text="disabled_text"
@@ -95,6 +96,9 @@ export default {
       }
     },
     is_set: {
+      type: Boolean
+    },
+    question_only: {
       type: Boolean
     }
   },

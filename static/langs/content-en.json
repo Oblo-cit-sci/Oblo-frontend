@@ -295,6 +295,7 @@
       "template_not_in_lang": "The entrytype is not available in {language}",
       "rejected": "Rejected",
       "license": "@.capitalize:w.license",
+      "no_title": "NO TITLE",
       "creator_switch_dialog": {
         "cancel_text": "Back",
         "title": "Creator changed",

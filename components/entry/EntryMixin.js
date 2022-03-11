@@ -36,9 +36,6 @@ export default {
       entry: {
         type: Object,
         required: true
-      },
-      include_etype_in_title: {
-        type: Boolean
       }
     },
   data() {
@@ -111,6 +108,7 @@ export default {
     template_color() {
       return this.$_.get(this.template, "rules.marker_color")
     },
+    // todo cleaner?
     entry_title() {
       if (this.is_editable_mode) {
         // todo dirty. do this similar to new tag schema. have "titleAspect" in the attr of the actual aspect that
@@ -122,9 +120,9 @@ export default {
         // console.log("titleAspect", titleAspect)
         let title = new_value_getter(this.regular_values, titleAspect)
         title = this.$_.get(title, "value", "")
-        return this.full_title(title)
+        return title
       } else { // VIEW
-        return this.full_title()
+        return this.entry.title
       }
     },
     entry_image() {
@@ -227,23 +225,10 @@ export default {
     }
   },
   methods: {
-    full_title(title) {
-      // console.log(title, this.entry, this.template)
-      if (!title) {
-        title = this.entry.title
-      }
-      // todo template sometimes missing... before loaded?
-      if (title === "") {
-        return this?.template?.title || ""
-      } else {
-        let full_title = this.include_etype_in_title ? this?.template?.title : ""
-        if (this.include_etype_in_title) {
-          full_title += title ? ": " + title : ""
-        } else {
-          full_title = title
-        }
-        return full_title
-      }
+    full_title(include_etype_title=true) {
+      let result = include_etype_title ? this.type_name + ": " : ""
+      result += this.entry.title === "" ? `[${this.$t("comp.entry.no_title")}]` : this.entry.title
+      return result
     },
     download() {
       this.export_data(this.prepare_entry_for_download(this.entry), this.download_title)
