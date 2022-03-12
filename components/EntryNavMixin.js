@@ -22,25 +22,6 @@ export default {
       // console.log("has full", has_full_entry)
       const mode = force_mode ? force_mode : this.proper_mode
       // console.log("full?", has_full_entry)
-      // if (!has_full_entry) { // todo replace values by entry.local.is_full: Boolean
-      //   // console.log("grabbing")
-      //   // console.log("fetching...")
-      //   // todo, wanted to use this.fetch but doesnt work...
-      //   this.$api.entry.get(this.entry.uuid).then(({data}) => {
-      //     if (data.data) {
-      //       const entry = data.data
-      //       this.$store.commit("entries/save_entry", entry)
-      //       // console.log("prevent change", this.prevent_view_page_change)
-      //       if (this.prevent_view_page_change && mode === VIEW) {
-      //         this.show_in_route(uuid, mode)
-      //       } else {
-      //         this.to_entry(uuid, mode)
-      //       }
-      //     }
-      //   }).catch(err => {
-      //     console.log("error fetching entry")
-      //   })
-      // } else {
       // console.log("straight")
       // console.log(!this.prevent_view_page_change, mode === EDIT)
       if (!this.prevent_view_page_change || mode === EDIT) {
@@ -109,35 +90,6 @@ export default {
         }
       }
     },
-    // to_parent(to_last_element = true, mode = VIEW) {
-    //   if (this.entry.entry_refs.parent) {
-    //     let parent_entry_type_slug = this.$store.getters["entries/get_entry"](parent_ref.uuid).templates.slug
-    //
-    //     const uuid = parent_ref.uuid
-    //
-    //     // TODO this loc stuff will work different in the future
-    //     const aspect_def = this.$store.getters["templates/get_aspect_def"]({
-    //       type_slug: parent_entry_type_slug,
-    //       aspect_name: parent_ref.aspect_loc[0][1]
-    //     })
-    //     let query = {
-    //       page: aspect_def.attr.page,
-    //     }
-    //     if (to_last_element) {
-    //       const aspect_id = aspect_loc_str(parent_ref.aspect_loc)
-    //       query.goTo = (aspect_id ? aspect_id : "")
-    //     }
-    //     this.$store.commit("pop_last_page_path")
-    //     this.to_entry(uuid, mode, query)
-    //   } else {
-    //     if (this.domain.value === NO_DOMAIN) {
-    //       this.home()
-    //     } else {
-    //       // todo could be a bit nicer (named router, route param...)
-    //       this.$router.push("/domain/" + this.domain.value)
-    //     }
-    //   }
-    // }
   },
   computed: {
     ...mapGetters({has_entry: "entries/has_entry", has_full_entry: "entries/has_full_entry"})

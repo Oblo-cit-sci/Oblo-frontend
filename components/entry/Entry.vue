@@ -6,13 +6,7 @@
       span.my-auto {{template.title}}
     v-row
       v-col.pt-2(xs12 md12)
-        Title_Description(
-          dc_title
-          :title="full_title()"
-          header_type="h3"
-          :description="get_description"
-          description_as_html=true
-          :mode="mode")
+        Title_Description(v-bind="entry_title_description_props")
           span.ml-1(:style="{'color': draft_color}") {{is_draft ? "[" + $t('comp.entrypreview.draft') +"]" : ""}}
     v-row
     .ml-3(v-if="is_view_mode")
@@ -44,33 +38,19 @@
         v-divider.wide_divider(v-if="is_first_page")
     v-row
       div(v-if="has_defined_pages")
-        Title_Description(
-          :title="current_page_info.title"
-          header_type="h2"
-          :description="current_page_info.description"
-          :mode="mode")
+        Title_Description(v-bind="page_title_description_props(current_page_info)")
     v-row(v-for="(aspect) in shown_aspects" :key="aspect.name")
       v-col(alignSelf="stretch" :cols="base_cols" :style="{padding:0}")
         <!-- TODO how to keep this slimmer ?! -->
         v-scroll-y-transition(v-if="is_editable_mode")
           Aspect(
-            :aspect="aspect"
-            :ext_value="aspect_mvalue(aspect.name)"
-            :entry_uuid="uuid"
-            :conditionals="regular_values"
-            :question_only="edit_mode_question_only"
-            :extra="aspect_extras"
+            v-bind="edit_regular_aspect_props(aspect)"
             @aspectAction="aspectAction($event)"
-            @update:ext_value="update_ext_value(aspect.name, $event)"
-            :mode="mode")
+            @update:ext_value="update_ext_value(aspect.name, $event)")
         Aspect(v-else
-        :aspect="aspect"
-          :entry_uuid="uuid"
-          :ext_value="aspect_mvalue(aspect.name)"
-          :conditionals="regular_values"
-          :extra="aspect_extras"
+          v-bind="view_regular_aspect_props(aspect)"
           @aspectAction="aspectAction($event)"
-          :mode="mode")
+        )
     div(v-if="is_last_page && is_editable_mode")
       v-row
         v-col(:cols="base_cols")
@@ -115,7 +95,6 @@
         v-bind="entry_actions_props"
         :page.sync="page"
         @entry-action="entryAction($event)"
-        :conditionals="regular_values"
         @mode="mode=$event") // see FullEntryMixin computed mode
   v-container(v-else)
     div
@@ -131,7 +110,7 @@ import EntryMixin from "./EntryMixin";
 import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
 import PersistentStorageMixin from "../util/PersistentStorageMixin";
 import EntryValidation from "./EntryValidation";
-import {ACTORS, draft_color, EDIT, ENTRY, META, REJECTED, VIEW} from "~/lib/consts";
+import {ACTORS, ASP_INIT, draft_color, EDIT, ENTRY, META, REJECTED, VIEW} from "~/lib/consts";
 import {privacy_color, privacy_icon, recursive_unpack2} from "~/lib/util";
 import ChangedAspectNotice from "./ChangedAspectNotice";
 import MetaChips from "./MetaChips";
@@ -189,6 +168,7 @@ export default {
   },
   data() {
     return {
+      aspect_states: [],
       entry_complete: false,
       router_next: null,
       delete_entry: false,
@@ -246,6 +226,35 @@ export default {
         })
       }
     },
+    page_title_description_props(page) {
+      return {
+        title: page.title,
+        header_type: "h2",
+        description: page.description,
+        mode: this.mode
+      }
+    },
+    edit_regular_aspect_props(aspect) {
+      return {
+        aspect,
+        ext_value: this.aspect_mvalue(aspect.name),
+        entry_uuid: this.uuid,
+        conditionals: this.regular_values,
+        question_only: this.edit_mode_question_only,
+        extra: this.aspect_extras,
+        mode: EDIT
+      }
+    },
+    view_regular_aspect_props(aspect) {
+      return {
+        aspect,
+        entry_uuid: this.uuid,
+        ext_value: this.aspect_mvalue(aspect.name),
+        conditionals: this.regular_values,
+        extra: this.aspect_extras,
+        mode: VIEW
+      }
+    }
   },
   computed: {
     ...mapGetters({logged_in: "user/logged_in", user: "user"}),
@@ -336,6 +345,16 @@ export default {
       // console.log("allow_download", this.$_.get(this.template.rules, "allow_download", true))
       return this.$_.get(this.template.rules, "allow_download", true)
     },
+    entry_title_description_props() {
+      return {
+        dc_title: true,
+        title: this.full_title(),
+        header_type: "h3",
+        description: this.get_description,
+        descr_as_html: true,
+        mode: this.mode
+      }
+    },
     entry_actions_props() {
       // console.log("update actions props")
       return {
@@ -345,11 +364,12 @@ export default {
         // todo not great cuz the mixin for that is AspectSetMixin is in Entry
         has_errors: this.has_errors,
         is_dirty: this.is_dirty,
-        allow_download: this.allow_download
+        allow_download: this.allow_download,
+        conditionals: this.regular_values
       }
     },
     edit_mode_question_only() {
-      return this.is_editable_mode && this.$_.get(this.template.rules,"edit_mode_question_only",true)
+      return this.is_editable_mode && this.$_.get(this.template.rules, "edit_mode_question_only", true)
     }
   },
   watch: {

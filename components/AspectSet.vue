@@ -11,7 +11,7 @@
             :entry_uuid="entry_uuid"
             :conditionals="i_values"
             @update:error="errors[aspect.name] = $event"
-            @update:state="state[aspect.name] = $event"
+            @update:state="aspect_states[aspect.name] = $event"
             @aspectAction="aspectAction($event)"
             :extra="{clearable:false}"
             :mode="aspect_mode(aspect.name)")
@@ -23,13 +23,13 @@
             :conditionals="i_values"
             :entry_uuid="entry_uuid"
             @update:error="errors[aspect.name] = $event"
-            @update:state="state[aspect.name] = $event"
+            @update:state="aspect_states[aspect.name] = $event"
             @aspectAction="aspectAction($event)"
             :extra="{clearable:false}"
             :mode="mode")
     slot(name="pre_validation")
     v-row.mt-2(v-if="show_validation")
-      AspectSetValidation(:aspects="aspects" :aspects_state="state")
+      AspectSetValidation(:aspects="aspects" :aspects_state="aspect_states")
 </template>
 
 <script>
@@ -123,7 +123,7 @@ export default {
         if(!this.$_.get(this.get_by_name(aspect),"attr.required",true)) {
           continue
         }
-        if ([ASP_UNSET, ASP_ERROR].includes(this.state[aspect])) {
+        if ([ASP_UNSET, ASP_ERROR].includes(this.aspect_states[aspect])) {
           return false
         }
       }
@@ -150,7 +150,7 @@ export default {
       this.$emit("aspectAction", event)
     },
     hide_aspect_col(aspect) {
-      return this.state[aspect.name] === 'disabled' && aspect.attr?.hide_on_disabled
+      return this.aspect_states[aspect.name] === 'disabled' && aspect.attr?.hide_on_disabled
     },
     aspect_mode(aspect_name) {
       if (this.modes) {
@@ -177,12 +177,12 @@ export default {
         this.$emit("has_errors", has_errs)
       }
     },
-    state: {
+    aspect_states: {
       immediate: true,
       deep: true,
-      handler: function (state) {
+      handler: function (aspect_states) {
         // console.log("set state", state)
-        this.$emit("update:state", state)
+        this.$emit("update:state", aspect_states)
       }
     },
     is_complete: {

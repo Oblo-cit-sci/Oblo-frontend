@@ -1,4 +1,4 @@
-import {attr} from "~/lib/aspect"
+import {aspect_raw_default_value, attr, unpack} from "~/lib/aspect"
 import AspectConditionChecker from "~/components/aspect_utils/AspectConditionChecker"
 
 export default {
@@ -37,7 +37,7 @@ export default {
     },
     pages() {
       if (this.one_aspect_per_page) {
-        const aspect_pages = this.$_.map(this.active_aspects, a => ({"title" : a.label}))
+        const aspect_pages = this.$_.map(this.active_aspects, a => ({"title": a.label}))
         aspect_pages.push({title: this.$_.capitalize(this.$t("w.metadata"))})
         return aspect_pages
       }
@@ -61,7 +61,7 @@ export default {
     shown_aspects() {
       // console.log("has_pages", this.has_pages)
       // not set on view-mode
-      if(this.has_pages) {
+      if (this.has_pages) {
         if (this.one_aspect_per_page) {
           if (this.is_last_page) {
             return []
@@ -74,8 +74,15 @@ export default {
               (this.page > 0 && attr(a).page === this.page))
           })
         }
+      } else {
+        if (this.is_view_mode) {
+          return this.$_.filter(this.aspects, a => !this.$_.isEqual(
+            unpack(this.regular_values[a.name]),
+            aspect_raw_default_value(a)))
+        } else {
+          return this.aspects
+        }
       }
-      return this.template.aspects
     },
   },
   methods: {

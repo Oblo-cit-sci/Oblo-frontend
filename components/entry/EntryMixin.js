@@ -4,12 +4,9 @@ import {mapGetters} from "vuex"
 
 import {
   ACTORS,
-  ASPECT,
   DRAFT,
   EDIT,
   ENTRY, LOCATION,
-  META,
-  META_ASPECT_LIST,
   PUBLISHED,
   REQUIRES_REVIEW,
   REVIEW, TAG, TITLE,
@@ -225,7 +222,7 @@ export default {
     }
   },
   methods: {
-    full_title(include_etype_title=true) {
+    full_title(include_etype_title = true) {
       let result = include_etype_title ? this.type_name + ": " : ""
       result += this.entry.title === "" ? `[${this.$t("comp.entry.no_title")}]` : this.entry.title
       return result

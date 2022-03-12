@@ -54,8 +54,6 @@
   import AspectComponentMixin from "./AspectComponentMixin";
   import EntryCreateMixin from "~/components/entry/EntryCreateMixin";
 
-
-
   export default {
     name: "EntrylistAspect",
     components: {ListPagination},

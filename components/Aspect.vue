@@ -218,9 +218,6 @@ export default {
       let hide_on_disable = this.$_.get(this.attr, "hide_on_disabled", true)
       return this.attr.visible === false || !this.disable || !hide_on_disable
     },
-    /**
-     * @returns {String|string|null|*}
-     */
     real_mode() {
       // console.log("real-mode", this.aspect.name, this.attr)
       if (this.fixed_value) {
@@ -299,7 +296,6 @@ export default {
         this.update_value(pack_value(this.original_value))
       }
     },
-
     /**
      * @vuese
      * return the concrete component based on the type and the mode
