@@ -85,6 +85,7 @@ export default {
     return {
       i_values: i_values,
       // state should replace, error including: unset, set, error, disabled
+      aspect_states: this.$_.mapValues(aspectMap, a => null),
       errors: this.$_.mapValues(aspectMap, () => null),
       state: this.$_.mapValues(aspectMap, () => null),
       initial_values: null,
