@@ -168,7 +168,6 @@ export default {
   },
   data() {
     return {
-      aspect_states: [],
       entry_complete: false,
       router_next: null,
       delete_entry: false,

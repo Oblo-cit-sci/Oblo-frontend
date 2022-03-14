@@ -3,7 +3,7 @@
     v-icon.mr-1.mb-1(v-if="icon_part") {{icon_part}}
     component(:is="header_type" :style="{display:'inline'}") {{label}}
       span(v-if="disabled") &nbsp;({{disabled_text}})
-      slot
+      slot(v-if="!question_only")
     div(v-if="multiple_descriptions && !is_view_mode")
       div(v-for="(description_part, index) in description" :key="index")
         div(v-if="index===0") {{description_part}}
@@ -11,7 +11,9 @@
     div(v-else)
       div(v-if="description_as_html")
         div(v-html="first_description")
-      div.pb-1(v-else :class="{'font-weight-bold':question_only}") {{first_description}}
+      div.pb-1(v-else :class="{'font-weight-bold':question_only}")
+        span {{first_description}}
+        slot(v-if="question_only")
   div(v-else)
     v-icon.mr-1.mb-1(v-if="icon_part") {{icon_part}}
     component(:is="header_type" :style="{display:'inline'}") {{label}}

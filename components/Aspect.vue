@@ -153,7 +153,11 @@ export default {
       return this.condition_fail || this.attr.disable || this.disabled
     },
     condition_fail() {
-      return this._condition_fail(this.aspect, this.conditionals)
+      // console.log(this.aspect.name, this.aspect.condition, this.conditionals)
+      if(this.attr.condition) {
+        return this._condition_fail(this.aspect, this.conditionals)
+      }
+      return false
     },
     has_value() {
       return this.mvalue !== undefined || false

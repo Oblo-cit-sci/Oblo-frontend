@@ -176,7 +176,7 @@ export default {
       }
     },
     marked(key) {
-      // console.log(this.selection, key)
+      // console.log("marked?", this.selection, key, this.highlight)
       if (this.selection)
         return key === this.selection.value && this.highlight;
     },
@@ -291,8 +291,9 @@ export default {
       }
     },
     selected_item(item) {
-      // console.log("watchers: selected_item", item)
-      this.emitUp(item)
+      if(item?.value !== this.selected_item?.value) {
+        this.emitUp(item)
+      }
     },
     selection() {
       this.set_selected_item()

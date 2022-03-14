@@ -63,7 +63,8 @@ export default {
           const a_w_value = this.entry.values[aspect.name] || aspect_default_value(aspect)
           let a_value = a_w_value.value
           const base_aspect_loc = loc_append([[EDIT, this.entry.uuid]], ASPECT, aspect.name)
-          const validation = this.validate_aspect(aspect, a_w_value, base_aspect_loc)
+          // debugger
+          const validation = this.validate_aspect(aspect, a_w_value, this.entry.values)
           const valid = validation[0]
           // console.log(valid)
           const invalid_message = validation[1]
@@ -106,7 +107,7 @@ export default {
     attr(aspect) {
       return aspect.attr || {}
     },
-    validate_aspect(aspect, a_w_value, aspect_loc, item_index, conditionals) {
+    validate_aspect(aspect, a_w_value, conditionals) {
       // console.log(aspect.name, a_w_value, aspect, aspect_loc)
       // console.log("-->", aspect_loc2jsonpath(aspect_loc))
       let required = this.$_.get(aspect, "attr.required", true)
@@ -151,7 +152,7 @@ export default {
           for (let item_index in raw_value) {
             const item = raw_value[item_index]
             const item_loc = loc_append(aspect_loc, INDEX, item_index)
-            const validation = this.validate_aspect(aspect.list_items, item || pack_value(null), item_loc, item_index)
+            const validation = this.validate_aspect(aspect.list_items, item || pack_value(null),this.entry.values)
             if (validation[0] !== OK) {
               // console.warn("list item-validation fail", aspect.label, "index:", item_index)
               incomplete_items.push(parseInt(item_index) + 1)
@@ -169,7 +170,7 @@ export default {
           const comp_loc = loc_append(aspect_loc, COMPONENT, component.name)
           // console.log("-> comp", component.name, raw_value)
           // debugger
-          let component_validations = this.validate_aspect(component, raw_value[component.name] || pack_value(null), comp_loc, item_index, raw_value)
+          let component_validations = this.validate_aspect(component, raw_value[component.name] || pack_value(null), this.entry.values)
           if (component_validations[0] !== OK) {
             // console.warn("component validation fail: component", component.label, component_validations)
             missing_components.push(component.label)

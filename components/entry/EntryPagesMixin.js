@@ -1,5 +1,6 @@
 import {aspect_raw_default_value, attr, unpack} from "~/lib/aspect"
 import AspectConditionChecker from "~/components/aspect_utils/AspectConditionChecker"
+import {named_pages, one_aspect_per_page, pages, view_mode_hide_unset_values} from "~/lib/template_code_entries"
 
 export default {
   name: "EntryPagesMixin",
@@ -11,15 +12,16 @@ export default {
   },
   computed: {
     one_aspect_per_page() {
-      return this.$_.get(this.template.rules, "one_aspect_per_page", false)
+      return one_aspect_per_page(this.template)
     },
     has_defined_pages() {
       if (this.one_aspect_per_page) {
         return false
       }
-      return (this.template.rules?.pages || []).length > 0
+      return pages(this.template).length > 0
     },
     has_pages() {
+      // console.log("HAS pages?", this.is_editable_mode, this.has_defined_pages)
       return this.is_editable_mode && (this.has_defined_pages || this.one_aspect_per_page)
     },
     active_aspects() {
@@ -33,7 +35,7 @@ export default {
       }
     },
     named_pages() {
-      return this.template.rules.hasOwnProperty("named_pages") || false
+      return named_pages(this.template)
     },
     pages() {
       if (this.one_aspect_per_page) {
@@ -41,7 +43,7 @@ export default {
         aspect_pages.push({title: this.$_.capitalize(this.$t("w.metadata"))})
         return aspect_pages
       }
-      return this.template.rules.pages || []
+      return pages(this.template)
     },
     total_pages() {
       // console.log("EntryAction total_pages", this.template.rules.one_aspect_per_page)
@@ -61,6 +63,7 @@ export default {
     shown_aspects() {
       // console.log("has_pages", this.has_pages)
       // not set on view-mode
+      // console.log("shown-aspects. pages?", this.has_pages)
       if (this.has_pages) {
         if (this.one_aspect_per_page) {
           if (this.is_last_page) {
@@ -75,7 +78,7 @@ export default {
           })
         }
       } else {
-        if (this.is_view_mode) {
+        if (this.is_view_mode && view_mode_hide_unset_values(this.template)) {
           return this.$_.filter(this.aspects, a => !this.$_.isEqual(
             unpack(this.regular_values[a.name]),
             aspect_raw_default_value(a)))
@@ -83,7 +86,7 @@ export default {
           return this.aspects
         }
       }
-    },
+    }
   },
   methods: {
     aspect_disabled(aspect) {

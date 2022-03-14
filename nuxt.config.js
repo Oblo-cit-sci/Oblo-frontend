@@ -39,7 +39,7 @@ module.exports = {
     COLLECT_MESSAGE_PATHS: false, // during development. collect all messages path grouped by their page in the store.
     BUILD_TIME: process.env.BUILD_TIME,
     DEV_CONFIG: {
-      HIDE_MAP: false,
+      HIDE_MAP: true,
       HIDE_TRANSLATION_WARNING: true,
     }
   },

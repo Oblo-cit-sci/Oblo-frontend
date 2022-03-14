@@ -3,27 +3,24 @@
     v-list(v-if="dialog_view && has_selection")
       div.ml-3 {{$t('comp.treeleaf_picker.current')}}
       v-list-item(v-for="(node, index) of value", :key="index")
-        v-list-item-content {{levelname(index)}}: {{node.text}} {{extra_text(node)}}
+        v-list-item-content {{levelname(index)}}: {{node.text}}
         v-list-item-action
           v-btn(icon @click="remove(index)")
             v-icon mdi-step-backward
     v-divider.mb-1(v-if="has_both()")
-    Title_Description.ml-3(v-if="has_levels" :title="act_levelname" :description="act_level_description" mode="edit")
-    .px-3(v-if="has_options")
-      SingleSelect.pb-1(v-if="edit_mode_list"
-        :data_source="data_source"
-        :options="act_options"
-        v-on:selection="select($event)"
-        :force_view="edit_mode_list_force_view"
-        :select_sync="false" :highlight="false")
-      LargeSelectList(v-if="edit_mode_large_list" :options="act_options" v-on:selection="select($event)" :select_sync="false" :highlight="false" :data_source="data_source")
-      SelectGrid(v-if="edit_mode_matrix" :options="act_options" v-on:selection="select($event)" :data_source="data_source")
-      Paginated_Select(v-if="edit_mode_paginated" :options="act_options" :edit_mode="level_edit_mode(act_level + 1)" v-on:selection="select($event)")
+    div(v-for="level in shown_levels")
+      Title_Description.ml-3(:title="level.title" :description="level.description" mode="edit")
+      .px-3(v-if="has_level_options(level.index)")
+        SingleSelect.pb-1(v-if="edit_mode_list(level.index)"
+          v-bind="select_props(level.index)"
+          :selection="level_value(level.index)"
+          @update:selection="select(level.index,$event)"
+          :force_view="edit_mode_list_force_view(level.index)")
+        LargeSelectList(v-if="edit_mode_large_list(level.index)" v-bind="select_props(level.index)" v-on:selection="select(level.index,$event)" :select_sync="false" :highlight="false")
+        SelectGrid(v-if="edit_mode_matrix(level.index)" v-bind="select_props(level.index)" v-on:selection="select(level.index,$event)")
+        Paginated_Select(v-if="edit_mode_paginated(level.index)" v-bind="select_props(level.index)" :edit_mode="level_edit_mode(level.index + 1)" v-on:selection="select(level.index,$event)")
     div.mx-4(v-if="last_selection_has_extra")
-      Aspect(v-if="extra_aspect" :aspect="extra_aspect" :ext_value.sync="extra_value" mode="edit")
     v-btn(v-if="done_available && dialog_view" @click="done" color="success") {{$t('w.done')}}
-    //v-icon(size="80" color="green") {{"mdi-check"}}
-    // center and show brieflz when done..
 </template>
 
 <script>
@@ -51,9 +48,6 @@ export default {
       type: Object
     },
     value: Array,
-    extra_value_name: {
-      type: String
-    },
     // show current selection and done button
     dialog_view: {
       type: Boolean,
@@ -80,32 +74,31 @@ export default {
   data: function () {
     return {
       // selection: [], // indices of children
-      levels: false,
+      levels: [],
     }
   },
   computed: {
+    show_all_levels() {
+      return false
+    },
+    shown_levels() {
+      if(this.act_level === this.levels.length)
+        return []
+      const max_level = Math.min(this.act_level, this.levels.length - 1)
+      // console.log(this.act_level, this.levels.length)
+      if (!this.show_all_levels) {
+        const levels = [this.levels[max_level]]
+        levels[0].index = this.act_level
+        return levels
+      }
+      const levels = []
+      for (let l = 0; l <= max_level; l++) {
+        levels.push(this.levels[l])
+      }
+      return levels
+    },
     act_level() {
       return this.value ? this.value.length : 0
-    },
-    extra_value: {
-      get: function () {
-        return this.value[this.value.length - 1].extra_value || ""
-      },
-      set: function (val) {
-        this.value[this.value.length - 1].extra_value = val
-      }
-    },
-    act_options() {
-      let options = this.tree.root.children
-      for (let val of this.value) {
-        options = this.$_.get(options.find(o => o.value === val.value), "children", [])
-      }
-      options = this.$_.cloneDeep(options)
-      for (let index in options) {
-        let node = options[index]
-        node["id"] = parseInt(index)
-      }
-      return options
     },
     done_available() {
       // console.log("done?", this.attr.allow_select_levels, this.act_level, this.act_options)
@@ -115,7 +108,7 @@ export default {
       if (this.$_.includes(allow_levels, this.act_level)) {
         return true
       }
-      return this.$_.size(this.act_options) === 0
+      return this.$_.size(this.last_level_options) === 0
     },
     last_description() {
       if (this.act_level === 0) {
@@ -125,93 +118,80 @@ export default {
       }
     },
     has_levels() {
-      return this.levels && this.$_.size(this.act_options) > 0;
+      return this.levels && this.$_.size(this.last_level_options) > 0;
     },
     has_selection() {
-      // debugger
       return this.act_level > 0
     },
-    has_options() {
-      return this.act_options.length > 0
+    last_level_options() {
+      return this.level_options(this.act_level)
     },
+    // @ deprecated
     last_selection_has_extra() {
-      return this.has_selection && this.value[this.act_level - 1].extra || false
-    },
-    extra_aspect() {
-      if (this.last_selection_has_extra) {
-        const last_extra = this.value[this.act_level - 1].extra
-        if (last_extra.type === "text") {
-          return {
-            name: last_extra.text,
-            type: "str",
-            attr: {
-              max: 90
-            }
-          }
-        } else {
-          return null
-        }
+      if (this.has_selection && this.value[this.act_level - 1].extra || false) {
+        console.warn("last_selection_has_extra returns true, but is depracated. returning false")
+        return false
       }
-    },
-    act_levelname() {
-      // console.log("act_levelname", this.act_level)
-      return this.levelname(this.act_level)
-    },
-    act_level_description() {
-      // console.log("act_level_description", this.levels, this.act_level)
-      //return "act l descr."
-      return this.levels[Math.min(this.act_level, this.levels.length - 1)].description
-    },
-    act_edit_mode() {
-      // console.log("level", this.act_level, this.level_edit_mode(this.act_level))
-      return this.level_edit_mode(this.act_level)
-    },
-    edit_mode_list() {
-      return ["list", "list.list", "list.select"].includes(this.act_edit_mode)
-    },
-    edit_mode_list_force_view() {
-      if (this.edit_mode_list) {
-        if (this.act_edit_mode === "list.list") {
-          return LIST
-        } else if (this.act_edit_mode === "list.select") {
-          return SELECT
-        }
-      }
-      return null
-    },
-    edit_mode_large_list() {
-      return this.act_edit_mode === "large_list"
-    },
-    edit_mode_matrix() {
-      return this.act_edit_mode === "matrix"
-    },
-    edit_mode_paginated() {
-      return this.act_edit_mode === "paginated"
     }
   },
   created() {
     this.levels = this.tree.levels
   },
   methods: {
-    select(selection) {
+    select(level_index, selection) {
       // console.log("TLP", selection)
-      if (selection)
-        this.$emit("input", this.$_.concat(this.value || [], [{
+      if (selection) {
+        let def_value = this.$_.cloneDeep(this.value) || []
+        let insert_new_value = {
           value: selection.value,
           text: selection.text,
-          extra: selection.extra,
           icon: selection.icon,
-          index: this.$_.findIndex(this.act_options, o => o.value === selection.value)
-        }]))
-      else // clicked clear on select
+          index: this.$_.findIndex(this.level_options(level_index), o => o.value === selection.value)
+        }
+        if (def_value.length === level_index) {
+          this.$emit("input", this.$_.concat(def_value, [insert_new_value]))
+        } else {
+          def_value[level_index] = insert_new_value
+          this.$emit("input", this.$_.slice(def_value, 0, level_index + 1))
+        }
+      } else // clicked clear on select
         this.$emit("input", this.value)
     },
     // currently not called
     clear() {
       this.$emit('clear')
     },
-    extra_text(node) {
-      return node.extra_value ? ' / ' + unpack(node.extra_value.value) : ''
+    level_options(level_index) {
+      // console.log("level_options", level_index)
+      let options = this.tree.root.children
+      let level_i = 0
+      for (let val of this.value) {
+        if (level_i === level_index) {
+          break
+        }
+        options = this.$_.get(options.find(o => o.value === val.value), "children", [])
+        // console.log(level_i, val, options)
+        level_i++
+      }
+      options = this.$_.cloneDeep(options)
+      // console.log(options)
+      for (let index in options) {
+        let node = options[index]
+        node["id"] = parseInt(index)
+      }
+      return options
+    },
+    has_level_options(level_index) {
+      return this.level_options.length > 0
+    },
+    select_props(level_index) {
+      return {
+        data_source: this.data_source,
+        options: this.level_options(level_index)
+      }
+    },
+    level_value(level_index) {
+      return this.value[level_index]
     },
     levelname(index) {
       if (index >= this.levels.length) {
@@ -220,16 +200,38 @@ export default {
       }
       return this.levels[index].text
     },
+    edit_mode_list(level_index) {
+      return ["list", "list.list", "list.select"].includes(this.level_edit_mode(level_index))
+    },
+    edit_mode_list_force_view(level_index) {
+      if (this.edit_mode_list(level_index)) {
+        if (this.level_edit_mode(level_index) === "list.list") {
+          return LIST
+        } else if (this.level_edit_mode(level_index) === "list.select") {
+          return SELECT
+        }
+      }
+      return null
+    },
+    edit_mode_large_list(level_index) {
+      return this.level_edit_mode(level_index) === "large_list"
+    },
+    edit_mode_matrix(level_index) {
+      return this.level_edit_mode(level_index) === "matrix"
+    },
+    edit_mode_paginated(level_index) {
+      return this.level_edit_mode(level_index) === "paginated"
+    },
     remove(index) {
       this.$emit("input", this.value.slice(0, index))
     },
     has_both() {
-      return this.has_selection && this.act_options.length > 0
+      return this.has_selection && this.last_level_options.length > 0
     },
     done() {
       this.$emit("selected", pack_value(this.value.map(e => {
-        let {text, value, icon, extra_value} = e
-        return {text, value, icon, extra_value}
+        let {text, value, icon} = e
+        return {text, value, icon}
       })))
     },
     level_edit_mode(level) {

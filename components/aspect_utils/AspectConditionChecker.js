@@ -1,18 +1,21 @@
 import {
-  aspect_loc_str2arr,
   attr,
-  check_condition_value,
-  fix_index,
-  get_list_index,
-  loc_prepend
+  check_condition_value, unpack
 } from "~/lib/aspect";
 import {new_value_getter} from "~/lib/entry";
-import {EDIT, ENTRY, VALUE} from "~/lib/consts";
+import { VALUE} from "~/lib/consts";
+
+ import {JSONPath} from 'jsonpath-plus';
 
 export default {
   name: "AspectConditionChecker",
   methods: {
     _condition_fail(aspect, conditionals) {
+      // console.log("_condition_fail", conditionals)
+      if(conditionals === undefined) {
+        console.trace()
+        debugger
+      }
       // console.log("aspect-condition fail check", aspect.name)
       // console.log("...", attr(aspect).condition, aspect_loc, entry_uuid, conditionals)
       if (attr(aspect).hasOwnProperty("condition")) {
@@ -61,11 +64,8 @@ export default {
       }
     },
     check_single_condition(condition, conditionals) {
-      let condition_value = null
-      // console.log(new_value_getter(conditionals, condition.aspect))
-      condition_value = this.$_.get(new_value_getter(conditionals, condition.aspect), VALUE)
-      // console.log("condition check:", condition, condition_value)
-      // console.log("check_single_condition", this.aspect.name, "condition_value", condition_value, check_condition_value(condition_value, condition))
+      const packed_values = new_value_getter(conditionals, condition.aspect)
+      const condition_value = this.$_.get(packed_values, VALUE)
       return check_condition_value(condition_value, condition)
     }
   }
