@@ -52,6 +52,37 @@ export default {
         }
       }
       this.$store.commit("map/set_layer_status", active_layers)
+    },
+    load_additional_layers(layers) {
+      for (const layer of layers) {
+        if (layer.type === "raster") {
+          const source_layer_name = layer.name + "_source"
+          this.map.addSource(source_layer_name, {
+            'type': "image",
+            'url': this.$api.static.domain_asset(this.domain_name, layer.url),
+            'coordinates': layer.coordinates
+          })
+          this.map.addLayer({
+            id: layer.name + '_layer',
+            'type': 'raster',
+            'source': source_layer_name,
+            'paint': layer.paint || {}
+          })
+        } else if (layer.type === "symbol") {
+          const source_layer_name = layer.name + "_source"
+          this.map.addSource(source_layer_name, {
+            'type': "geojson",
+            'data': layer.data
+          })
+          this.map.addLayer({
+            id: layer.name + '_layer',
+            'type': 'symbol',
+            'source': source_layer_name,
+            'paint': layer.paint || {},
+            "layout": layer.layout || {}
+          })
+        }
+      }
     }
   },
   watch: {
@@ -61,8 +92,12 @@ export default {
         // sometimes {value, text} sometimes just a string
         const available_layer_names = this.available_layers.map(l => this.$_.get(l, "value", l))
         // we just need this cuz mapbox doesnt give me the initial state of a layer. see method call below
-        const default_active_layers = this.$_.get(this.domain_data, "map.default_active_layers", []).filter(l => available_layer_names.includes(l))
+        const default_active_layers = this.$_.get(this._domain_data, "map.default_active_layers", []).filter(l => available_layer_names.includes(l))
         this.set_layer_visibility(default_active_layers)
+        console.log(this._domain_data)
+        if(this._domain_data.map.additional_layers) {
+          this.load_additional_layers(this._domain_data.map.additional_layers)
+        }
       }
     }
   }

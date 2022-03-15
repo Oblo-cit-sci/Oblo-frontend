@@ -5,8 +5,6 @@ import {
 import {new_value_getter} from "~/lib/entry";
 import { VALUE} from "~/lib/consts";
 
- import {JSONPath} from 'jsonpath-plus';
-
 export default {
   name: "AspectConditionChecker",
   methods: {
@@ -14,7 +12,6 @@ export default {
       // console.log("_condition_fail", conditionals)
       if(conditionals === undefined) {
         console.trace()
-        debugger
       }
       // console.log("aspect-condition fail check", aspect.name)
       // console.log("...", attr(aspect).condition, aspect_loc, entry_uuid, conditionals)

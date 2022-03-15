@@ -197,7 +197,7 @@ export default {
     show_layer_menu_button() {
       return this.map_loaded && this.available_layers.length > 0
     },
-    show_location_search_button(){
+    show_location_search_button() {
       return this.map_loaded
     },
     show_style_menu_button() {
@@ -703,7 +703,7 @@ export default {
     },
     search_location() {
       this.geocode(this.search_location_text).then(data => {
-        if(data.features.length > 0) {
+        if (data.features.length > 0) {
           this.show_search_results = true
           this.search_options = data.features
         } else {
@@ -714,7 +714,8 @@ export default {
       })
     },
     goto_result(selected_place) {
-      if(selected_place) {
+      if (selected_place) {
+        console.log(selected_place)
         this.map_fitBounds(selected_place.bbox)
       }
       this.search_location_text = ""

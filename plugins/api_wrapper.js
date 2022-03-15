@@ -188,6 +188,10 @@ class Static extends QueryBase {
   domain_icon(domain_name) {
     return `${this.base}/images/domains/${domain_name}/icon.png`
   }
+
+  domain_asset(domain_name, asset_name) {
+    return `${this.base}/assets/domains/${domain_name}/${asset_name}`
+  }
 }
 
 class Domain extends QueryBase {
