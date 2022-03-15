@@ -22,6 +22,7 @@
       :entry_uuid="entry_uuid"
       :disabled="disable"
       :mode="real_mode"
+      :question_only="question_only"
       :extra="merge_extra"
       v-bind="merge_extra"
       :conditionals="conditionals"

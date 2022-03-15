@@ -2,7 +2,7 @@
   div
     div.d-flex.flex-wrap
       .cell(v-for="(c, i) in options" :key="i" :style="cell_style"
-        :class="{cell_border: cell_border}")
+        :class="{cell_border: cell_border, cell_selected: is_selected(i)}")
         v-container.pt-1
           v-row.mt-1.mb-1.justify-center
             v-img.sel_cursor(v-if="c.icon" :src="get_icon_url(c.icon)" :style="img_style" contain @click="select(c)" class="")
@@ -13,10 +13,11 @@
 <script>
 import SelectComponentMixin from "~/components/aspect_utils/SelectComponentMixin"
 import ResponsivenessMixin from "~/components/ResponsivenessMixin"
+import SingleSelectMixin from "~/components/aspects/SingleSelectMixin"
 
 export default {
   name: "SelectGrid",
-  mixins: [SelectComponentMixin, ResponsivenessMixin],
+  mixins: [SelectComponentMixin, SingleSelectMixin, ResponsivenessMixin],
   components: {},
   props: {
     options: Array, // of objects: text, value, icon (url)
@@ -42,7 +43,7 @@ export default {
   computed: {
     cell_style() {
       return {
-        "max-width": (this.is_xsmall ? 90 : this.is_small ? 120 : 160) + "px",
+        "max-width": (this.is_xsmall ? 90 : this.is_small ? 120 : 160) + "px"
       }
     },
     img_style() {
@@ -84,7 +85,11 @@ export default {
   max-height: 80px;
 }
 
-.cell_border{
+.cell_border {
   border: 1px grey solid;
+}
+
+.cell_selected {
+  background: khaki;
 }
 </style>

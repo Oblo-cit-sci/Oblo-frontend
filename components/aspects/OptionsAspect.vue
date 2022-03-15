@@ -12,6 +12,7 @@
         span {{$t("w.back")}}
       Aspect(
         :aspect="selected_aspect"
+        :question_only="question_only"
         :ext_value="i_value"
         @update:ext_value="update_value($event)"
         :extra="extra"

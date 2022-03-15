@@ -8,6 +8,7 @@
           Aspect.py-0(
             v-bind="list_aspect_props(index)"
             :conditionals="conditionals"
+            :question_only="question_only"
             @aspectAction="handleAspectAction($event, index)"
             @update:ext_value="update_index_value(index, $event)"
             v-on:append-outer="remove_value(index)")
@@ -33,6 +34,7 @@
             Aspect(
               v-bind="list_aspect_props(index)"
               :conditionals="conditionals"
+              :question_only="question_only"
               @update:ext_value="update_index_value(index, $event)"
               @aspectAction="handleAspectAction($event, index)")
             ListitemActions(v-if="!is_view_mode"
@@ -243,7 +245,7 @@ export default {
       return extra
     },
     panel_id(index) {
-      return "L-" + this.aspect.name + "_" + str(index)
+      return "L-" + this.aspect.name + "_" + index
     },
     index_on_act_page(index) {
       return index >= this.page * this.pagination_tresh && index < (this.page + 1) * this.pagination_tresh

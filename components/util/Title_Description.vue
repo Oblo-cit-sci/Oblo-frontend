@@ -99,6 +99,9 @@ export default {
     },
     description_() {
       if (this.description) {
+        if(this.question_only && this.description === ""){
+          return this.title
+        }
         return this.description
       }
       if (this.aspect) {

@@ -1,7 +1,7 @@
 <template lang="pug">
   v-item-group.pb-2(v-model="selected")
-    v-item.p-2.ml-1.mr-1.select_item(v-for="item in options" :key="item.name" v-slot:default="{ toggle }")
-      v-card(@click="toggle" outlined)
+    v-item.p-2.ml-1.mr-1.select_item(v-for="(item,i) in options" :key="item.name" v-slot:default="{ toggle }")
+      v-card(@click="toggle" outlined :class="{cell_selected: is_selected(i)}")
         v-row
           v-col(v-if="has_icon(item)" cols=2 :style="img_col_style")
             v-img.card_img.ml-1( :src="get_icon_url(item.icon)" :style="img_style")
@@ -13,12 +13,12 @@
 <script>
 import SelectComponentMixin from "~/components/aspect_utils/SelectComponentMixin"
 import ResponsivenessMixin from "~/components/ResponsivenessMixin"
+import SingleSelectMixin from "~/components/aspects/SingleSelectMixin"
 
 export default {
   name: "LargeSelectList",
-  mixins: [SelectComponentMixin, ResponsivenessMixin],
+  mixins: [SelectComponentMixin, SingleSelectMixin, ResponsivenessMixin],
   props: {
-    options: Array, // of objects: text, value, icon (url)
   },
   data() {
     return {
@@ -70,5 +70,9 @@ export default {
 .card_text {
   margin-top: 2%;
   clear: left;
+}
+
+.cell_selected {
+  background: khaki;
 }
 </style>

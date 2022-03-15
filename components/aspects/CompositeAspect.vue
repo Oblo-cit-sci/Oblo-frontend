@@ -44,6 +44,7 @@
           @update:ext_value="update_component_value(comp_type.name, $event)"
           :mode="mode"
           :disabled="disabled"
+          :question_only="question_only"
           :ref="comp_type.name"
           :conditionals="composite_conditionals"
           @has_changed="has_changed(comp_type.name, $event)"
@@ -121,6 +122,7 @@ export default {
     panel_header() {
       const title_component = this.attr.titleComponent || this.aspect.components[0].name
       const comp_value = this.value[title_component]
+      console.log(comp_value)
       let text = ""
       if (comp_value.text) {
         text = comp_value.text

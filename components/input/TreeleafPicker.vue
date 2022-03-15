@@ -16,8 +16,8 @@
           :selection="level_value(level.index)"
           @update:selection="select(level.index,$event)"
           :force_view="edit_mode_list_force_view(level.index)")
-        LargeSelectList(v-if="edit_mode_large_list(level.index)" v-bind="select_props(level.index)" v-on:selection="select(level.index,$event)" :select_sync="false" :highlight="false")
-        SelectGrid(v-if="edit_mode_matrix(level.index)" v-bind="select_props(level.index)" v-on:selection="select(level.index,$event)")
+        LargeSelectList(v-if="edit_mode_large_list(level.index)" :selection="level_value(level.index)" v-bind="select_props(level.index)" v-on:selection="select(level.index,$event)" :select_sync="false" :highlight="false")
+        SelectGrid(v-if="edit_mode_matrix(level.index)" :selection="level_value(level.index)" v-bind="select_props(level.index)" v-on:selection="select(level.index,$event)")
         Paginated_Select(v-if="edit_mode_paginated(level.index)" v-bind="select_props(level.index)" :edit_mode="level_edit_mode(level.index + 1)" v-on:selection="select(level.index,$event)")
     div.mx-4(v-if="last_selection_has_extra")
     v-btn(v-if="done_available && dialog_view" @click="done" color="success") {{$t('w.done')}}
@@ -79,11 +79,11 @@ export default {
   },
   computed: {
     show_all_levels() {
-      return false
+      return true
     },
     shown_levels() {
-      if(this.act_level === this.levels.length)
-        return []
+      // if (this.act_level === this.levels.length)
+      //   return []
       const max_level = Math.min(this.act_level, this.levels.length - 1)
       // console.log(this.act_level, this.levels.length)
       if (!this.show_all_levels) {
@@ -93,7 +93,7 @@ export default {
       }
       const levels = []
       for (let l = 0; l <= max_level; l++) {
-        levels.push(this.levels[l])
+        levels.push(Object.assign({index: l}, this.levels[l]))
       }
       return levels
     },
@@ -139,7 +139,7 @@ export default {
   },
   methods: {
     select(level_index, selection) {
-      // console.log("TLP", selection)
+      // console.log("TLP", level_index, selection)
       if (selection) {
         let def_value = this.$_.cloneDeep(this.value) || []
         let insert_new_value = {
@@ -191,7 +191,11 @@ export default {
       }
     },
     level_value(level_index) {
-      return this.value[level_index]
+      if(level_index < this.value.length) {
+        return this.value[level_index]
+      } else {
+        return pack_value()
+      }
     },
     levelname(index) {
       if (index >= this.levels.length) {

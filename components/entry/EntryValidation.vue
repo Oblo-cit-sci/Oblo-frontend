@@ -11,9 +11,10 @@
 <script>
 import {
   aspect_raw_default_value,
-  pack_value, unpack
+  pack_value, unpack,
+  attr
 } from "~/lib/aspect";
-import { COMPOSITE, ENTRYLIST, LIST} from "~/lib/consts";
+import {COMPOSITE, ENTRYLIST, LIST} from "~/lib/consts";
 import {item_count_name} from "~/lib/listaspects";
 import AspectConditionChecker from "~/components/aspect_utils/AspectConditionChecker";
 
@@ -49,7 +50,7 @@ export default {
       let missing = []
       for (let aspect of aspects) {
         // let required = true
-        let required =  this.$_.get(attr(aspect), "required", true)
+        let required = this.$_.get(attr(aspect), "required", true)
         // console.log(aspect.name,  required)
         if (required) {
           const unpacked_value = unpack(this.entry.values[aspect.name]) || aspect_raw_default_value(aspect)
@@ -92,9 +93,6 @@ export default {
     }
   },
   methods: {
-    attr(aspect) {
-      return aspect.attr || {}
-    },
     validate_aspect(aspect, unpacked_value, conditionals) {
       let required = this.$_.get(attr(aspect), "required", true)
 
@@ -104,7 +102,7 @@ export default {
       // const raw_value = unpack(packed_values)
 
       const a_default = aspect_raw_default_value(aspect)
-      if (this.attr(aspect).IDAspect) {
+      if (attr(aspect).IDAspect) {
         return [OK]
       }
 
@@ -112,7 +110,7 @@ export default {
         return [OK]
       }
 
-      if (raw_value === null) {
+      if (unpacked_value === null) {
         // console.warn("no raw value", aspect.label, raw_value)
         return [MISSING, ""]
       }
@@ -120,7 +118,7 @@ export default {
         // console.warn("aspect validation. raw-value is default", aspect.label, raw_value, a_default)
         return [MISSING, ""]
       } else if ([LIST, ENTRYLIST].includes(aspect.type)) {
-        if (this.attr(aspect).min !== null && unpacked_value.length < this.attr(aspect).min) {
+        if (attr(aspect).min !== null && unpacked_value.length < attr(aspect).min) {
           return [LIST_NOT_ENOUGH, ""]
         }
         if (aspect.type === LIST) {
@@ -128,7 +126,7 @@ export default {
           let incomplete_items = []
           for (let item_index in unpacked_value) {
             const item = unpacked_value[item_index]
-            const validation = this.validate_aspect(aspect.list_items, item || pack_value(null),conditionals)
+            const validation = this.validate_aspect(aspect.list_items, item || pack_value(null), conditionals)
             if (validation[0] !== OK) {
               incomplete_items.push(parseInt(item_index) + 1)
             }
@@ -143,9 +141,9 @@ export default {
         let missing_components = []
         for (let component of aspect.components) {
           let comp_conditionals = this.entry.values
-          if(attr(aspect).use_components_as_conditionals) {
+          if (attr(aspect).use_components_as_conditionals) {
             comp_conditionals = unpacked_value
-          } else if(attr(aspect).merge_in_components_as_conditionals) {
+          } else if (attr(aspect).merge_in_components_as_conditionals) {
             comp_conditionals = Object.assign(this.$_.cloneDeep(unpacked_value), conditionals)
           }
           const component_value = unpack(unpacked_value[component.name]) || aspect_raw_default_value(component)

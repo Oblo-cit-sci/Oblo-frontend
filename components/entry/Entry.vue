@@ -48,7 +48,7 @@
             @aspectAction="aspectAction($event)"
             @update:ext_value="update_ext_value(aspect.name, $event)")
         Aspect(v-else
-          v-bind="view_regular_aspect_props(aspect)"
+        v-bind="view_regular_aspect_props(aspect)"
           @aspectAction="aspectAction($event)"
         )
     div(v-if="is_last_page && is_editable_mode")
@@ -59,20 +59,13 @@
         v-col(alignSelf="stretch" :cols="base_cols" :style="{padding:0}")
           AspectSet(
             v-if="logged_in"
-            :aspects="meta_aspects"
-            :modes="meta_aspect_modes"
-            :values.sync="meta_aspects_values"
-            entry_uuid="uuid"
-            :compact="true")
+            v-bind="meta_aspects_props"
+            :values.sync="meta_aspects_values")
       v-row(v-if="is_creator || is_admin")
         v-col.pb-0(alignSelf="stretch" :cols="base_cols")
           Aspect(
-            :aspect="asp_entry_roles()"
-            :mode="entry_roles_mode"
-            :entry_uuid="uuid"
-            :is_entry_meta="true"
+            v-bind="meta_aspect_actors_props"
             :ext_value.sync="actors_value"
-            :extra="{entry_is_private: entry.privacy==='private'}"
             @update:error="update_error('actors', $event)")
       v-row
         v-col(alignSelf="stretch" :cols="base_cols")
@@ -110,7 +103,7 @@ import EntryMixin from "./EntryMixin";
 import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
 import PersistentStorageMixin from "../util/PersistentStorageMixin";
 import EntryValidation from "./EntryValidation";
-import {ACTORS, ASP_INIT, draft_color, EDIT, ENTRY, META, REJECTED, VIEW} from "~/lib/consts";
+import {ACTORS, ASP_INIT, draft_color, EDIT, ENTRY, META, PRIVATE, REJECTED, VIEW} from "~/lib/consts";
 import {privacy_color, privacy_icon, recursive_unpack2} from "~/lib/util";
 import ChangedAspectNotice from "./ChangedAspectNotice";
 import MetaChips from "./MetaChips";
@@ -127,7 +120,7 @@ import {BUS_DIALOG_OPEN} from "~/plugins/bus";
 import OutdatedChip from "~/components/tag/OutdatedChip"
 import goTo from 'vuetify/lib/services/goto'
 import {unsaved_changes_default_dialog} from "~/lib/dialogs"
-import {locationAspect} from "~/lib/template_code_entries"
+import {allow_download, locationAspect} from "~/lib/template_code_entries"
 
 export default {
   name: "Entry",
@@ -188,15 +181,6 @@ export default {
       return this.entry.values[aspect_name]
     },
     update_ext_value(aspect_name, value) {
-      // console.log("update_ext_value", aspect_name, value)
-      // const _locationAspect = locationAspect(this.template)
-      // console.log(this.template.rules)
-      // console.log(_locationAspect)
-      // if(_locationAspect) {
-      //   if(_locationAspect.startsWith(`$.${aspect_name}`)){
-      //     console.log("location-update")
-      //   }
-      // }
       this.$store.commit("entries/new_set_edit_entry_value", {aspect_name, value})
       // todo maybe bounce...
       this.persist_edit_entry().then()
@@ -320,6 +304,25 @@ export default {
         return VIEW
       }
     },
+    meta_aspects_props() {
+      return {
+        aspects: this.meta_aspects,
+        modes: this.meta_aspect_modes,
+        entry_uuid: this.uuid,
+        compact: true
+      }
+    },
+    meta_aspect_actors_props() {
+      return {
+        aspect: this.asp_entry_roles(),
+        mode: this.entry_roles_mode,
+        entry_uuid: this.uuid,
+        is_entry_meta: true,
+        extra: {
+          entry_is_private: this.entry.privacy === PRIVATE
+        }
+      }
+    },
     // maybe also consider:
     // https://github.com/edisdev/download-json-data/blob/develop/src/components/Download.vue
     // wrong, create should be for all that are not local/saved or published
@@ -350,8 +353,7 @@ export default {
       return result
     },
     allow_download() {
-      // console.log("allow_download", this.$_.get(this.template.rules, "allow_download", true))
-      return this.$_.get(this.template.rules, "allow_download", true)
+      return allow_download(this.template)
     },
     entry_title_description_props() {
       return {

@@ -44,6 +44,9 @@ export default {
         return {}
       }
     },
+    question_only: {
+      type: Boolean,
+    },
     change_status: {
       type: Boolean,
       default: false
