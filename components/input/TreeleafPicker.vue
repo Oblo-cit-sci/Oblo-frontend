@@ -239,7 +239,11 @@ export default {
       })))
     },
     level_edit_mode(level) {
-      return this.$_.get(this.attr, `tree_select_mode[${level}]`, "list")
+      if(this.attr.tree_select_mode) {
+        console.warn("aspect.attr.tree_select_mode is deprecated. use 'mode' in the levels instead")
+        return this.$_.get(this.attr, `tree_select_mode[${level}]`, "list")
+      }
+      return this.levels[level].mode || "list"
     }
   }
 }
