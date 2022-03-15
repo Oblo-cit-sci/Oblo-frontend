@@ -5,13 +5,11 @@
 
 <script>
 
-import {EDIT} from "~/lib/consts"
 
 import axios from "axios"
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
 import {
   aspect_default_value,
-  aspect_loc_str2arr,
   aspect_raw_default_value,
   is_packed,
   pack_value,
@@ -19,7 +17,6 @@ import {
 } from "~/lib/aspect"
 import {transform_options_list} from "~/lib/options"
 import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
-// import TemplateAccessMixin from "~/components/templates/TemplateAccessMixin"
 
 /**
  * attr: {
@@ -183,8 +180,6 @@ export default {
       const handle = this.action.properties.handle_result
       if (handle) {
         if (handle.type === "assign_to_aspect") {
-          const aspect_loc = this.$_.concat([[EDIT, null]], aspect_loc_str2arr(handle.aspect, this.extra.list_index))
-          // const aspect = this.aspect_from_location(aspect_loc)
           this.$store.commit("entries/new_set_entry_value", {
             aspect_loc: handle.aspect,
             value: aspect_default_value(this.aspect)

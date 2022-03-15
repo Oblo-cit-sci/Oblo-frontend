@@ -446,8 +446,9 @@ export default {
       const feature = features[0]
       const entry_uuid = feature.properties.uuid
       this.guarantee_entry(entry_uuid).then(() => {
-        const location = this.$store.getters["entries/entry_location"](entry_uuid)
-        console.log(location)
+        // const location = this.$store.getters["entries/entry_location"](entry_uuid)
+        // console.log(location)
+        const location = this.get_entry().location
         this.update_value(unpack(location[this.$_.get(feature, "properties.l_id", 0)]))
         this.snap_to_existing = true
       })

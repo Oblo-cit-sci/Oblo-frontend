@@ -1,5 +1,5 @@
 import {get_creator, get_entry_titleAspect, new_value_getter} from "~/lib/entry";
-import {aspect_loc_str2arr, is_editable_mode, pack_value} from "~/lib/aspect";
+import {is_editable_mode, pack_value, unpack} from "~/lib/aspect";
 import {mapGetters} from "vuex"
 
 import {
@@ -23,6 +23,7 @@ import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin";
 import EntryMetaAspects from "~/components/EntryMetaAspects";
 import EntryHelperMethodsMixin from "~/components/entry/EntryHelperMethodsMixin";
 import URLQueryMixin from "~/components/util/URLQueryMixin"
+import {locationAspect} from "~/lib/template_code_entries"
 
 export default {
   name: "EntryMixin",
@@ -141,13 +142,18 @@ export default {
       }
     },
     entry_location() {
-      const locationAspect = this.$_.get(this.template.rules, "locationAspect")
-      if (locationAspect) {
-        let location = new_value_getter(this.regular_values, locationAspect)
-        if (!Array.isArray(location)) {
-          location = [location]
+      // console.log("calc location")
+      const _locationAspect = locationAspect(this.template)
+      if (_locationAspect) {
+        let location = new_value_getter(this.regular_values, _locationAspect)
+        if(location) {
+          location = unpack(location)
+          // console.log(location)
+          if (!Array.isArray(location)) {
+            location = [location]
+          }
+          return location
         }
-        return location
       }
     },
     type_name() {
@@ -239,6 +245,10 @@ export default {
       })
     },
     entry_location(location) {
+      if(this.$_.isEqual(location, this.entry.location)) {
+        return
+      }
+      // console.log("set new location", location)
       this.$store.commit("entries/set_edit_meta_value", {
         meta_aspect_name: LOCATION,
         value: location

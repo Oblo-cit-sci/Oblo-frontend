@@ -1,4 +1,4 @@
-import {aspect_default_value, aspect_loc_str, remove_entry_loc} from "../lib/aspect";
+import {aspect_default_value} from "../lib/aspect";
 
 const PAGINATION_TRESH = 5
 

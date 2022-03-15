@@ -127,6 +127,7 @@ import {BUS_DIALOG_OPEN} from "~/plugins/bus";
 import OutdatedChip from "~/components/tag/OutdatedChip"
 import goTo from 'vuetify/lib/services/goto'
 import {unsaved_changes_default_dialog} from "~/lib/dialogs"
+import {locationAspect} from "~/lib/template_code_entries"
 
 export default {
   name: "Entry",
@@ -188,6 +189,14 @@ export default {
     },
     update_ext_value(aspect_name, value) {
       // console.log("update_ext_value", aspect_name, value)
+      // const _locationAspect = locationAspect(this.template)
+      // console.log(this.template.rules)
+      // console.log(_locationAspect)
+      // if(_locationAspect) {
+      //   if(_locationAspect.startsWith(`$.${aspect_name}`)){
+      //     console.log("location-update")
+      //   }
+      // }
       this.$store.commit("entries/new_set_edit_entry_value", {aspect_name, value})
       // todo maybe bounce...
       this.persist_edit_entry().then()

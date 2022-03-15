@@ -49,10 +49,8 @@ import LoadFileButton from "../util/LoadFileButton";
 import ImageCard from "../aspect_utils/ImageCard";
 import AttachedFilesMixin from "../aspect_utils/AttachedFilesMixin";
 import AspectComponentMixin from "./AspectComponentMixin";
-import {DRAFT, EDIT, INDEX, META} from "~/lib/consts";
-import {loc_append, remove_entry_loc} from "~/lib/aspect";
+import {DRAFT} from "~/lib/consts";
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
-import {common_filesize} from "~/lib/util"
 
 // because of get_entry it only works in entries now
 

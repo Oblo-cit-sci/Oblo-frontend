@@ -12,7 +12,7 @@
         span {{$t("w.back")}}
       Aspect(
         :aspect="selected_aspect"
-        :aspect_loc="aspect_loc"
+        :ext_value="i_value"
         @update:ext_value="update_value($event)"
         :extra="extra"
         mode="edit")
@@ -21,15 +21,15 @@
       p No option selected
     div(v-if="selected_option")
       Aspect(
+        :ext_value="mvalue"
         :aspect="selected_aspect"
-        :aspect_loc="aspect_loc"
         :extra="extra")
 </template>
 
 <script>
 
 import Aspect from "../Aspect"
-import {aspect_default_value} from "~/lib/aspect";
+import {aspect_default_value, get_aspect_by_name, pack_value} from "~/lib/aspect";
 import SingleSelect from "../input/SingleSelect";
 import {OPTION} from "~/lib/consts";
 import {object_list2options} from "~/lib/options";
@@ -53,6 +53,16 @@ export default {
       this.option_selected(this.mvalue.option, false)
     }
   },
+  computed: {
+    i_value() {
+      // console.log(this.mvalue, this.value)
+      if(!this.value){
+        return this.aspect_default_value(this.selected_aspect)
+      } else {
+        return this.value
+      }
+    }
+  },
   methods: {
     option_selected(option, selected = true) {
       this.selected_option = option
@@ -71,6 +81,7 @@ export default {
     },
     update_value(value) {
       // console.log("options.. update", value)
+      // debugger
       this.$emit("update_value", {option: this.selected_option, value: value})
     }
   }

@@ -65,14 +65,13 @@
 
 import EntryNavMixin from "../EntryNavMixin";
 import {privacy_color, privacy_icon} from "~/lib/util"
-import {review_color, draft_color,EDIT, ENTRY, REVIEW, VIEW} from "~/lib/consts"
+import {review_color, draft_color,EDIT,  REVIEW, VIEW} from "~/lib/consts"
 import MetaChips from "./MetaChips"
 import Taglist from "../global/Taglist"
 import MapJumpMixin from "../map/MapJumpMixin";
 import EntryMixin from "./EntryMixin";
 import PersistentStorageMixin from "../util/PersistentStorageMixin";
 import ChildCreateMixin from "../util/ChildCreateMixin";
-import {aspect_loc_str2arr, loc_prepend} from "~/lib/aspect";
 import Aspect from "../Aspect";
 
 import ActorChip from "../actor/ActorChip"
@@ -218,15 +217,16 @@ export default {
         if (pw_action.title === undefined)
           pw_action.title = pw_action.name
         if (pw_action.type === "create_child") {
-          const action_aspect_loc = aspect_loc_str2arr(pw_action.aspect)
-          const aspect_loc = loc_prepend(ENTRY, this.entry.uuid, action_aspect_loc)
-          const value = this.$store.getters["entries/value"](aspect_loc)
-          if (!value) {
-            console.log("child action cannot be added, aspect location doesnt exist for action:", pw_action.name)
-            continue
-          }
-          if (value.length === 0)
-            continue
+          console.warn("Create child action currently not active cuz of aspect_loc refactoring...")
+          // const action_aspect_loc = aspect_loc_str2arr(pw_action.aspect)
+          // const aspect_loc = loc_prepend(ENTRY, this.entry.uuid, action_aspect_loc)
+          // const value = this.$store.getters["entries/value"](aspect_loc)
+          // if (!value) {
+          //   console.log("child action cannot be added, aspect location doesnt exist for action:", pw_action.name)
+          //   continue
+          // }
+          // if (value.length === 0)
+          //   continue
         } else if (pw_action.type === "download") {
           // show_actions.push(pw_action)
         } else if (pw_action.type === "upload") {
@@ -284,9 +284,10 @@ export default {
       const a_type = preview_action.type
       switch (a_type) {
         case "create_child":
-          const action_aspect_loc = aspect_loc_str2arr(preview_action.aspect)
-          const aspect_loc = loc_prepend(ENTRY, this.entry.uuid, action_aspect_loc)
-          this.create_child(aspect_loc, this.entry.language, preview_action.child_type_slug)
+          console.warn("create child action not active... aspect_loc refactoring...")
+          // const action_aspect_loc = aspect_loc_str2arr(preview_action.aspect)
+          // const aspect_loc = loc_prepend(ENTRY, this.entry.uuid, action_aspect_loc)
+          // this.create_child(aspect_loc, this.entry.language, preview_action.child_type_slug)
           break
         case "download":
           this.download()

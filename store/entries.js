@@ -1,18 +1,7 @@
-import {ASPECT, COMPONENT, DRAFT, EDIT, ENTRY, INDEX, META, PRIVATE_LOCAL, VIEW} from "~/lib/consts";
-import {get_entry_titleAspect, resolve_tags, select_aspect_loc} from "~/lib/entry";
-import {
-  aspect_loc_str,
-  aspect_loc_str2arr,
-  aspect_loc_uuid,
-  last_loc_value,
-  loc_prepend,
-  loc_remove_last,
-  remove_entry_loc
-} from "~/lib/aspect";
+import {DRAFT, EDIT, PRIVATE_LOCAL, VIEW} from "~/lib/consts";
+import {resolve_tags, select_aspect_loc} from "~/lib/entry";
 
-
-import Vue from "vue"
-import {filter_empty, guarantee_array, recursive_unpack} from "~/lib/util";
+import {guarantee_array, recursive_unpack} from "~/lib/util";
 
 
 const ld = require("lodash")
@@ -63,32 +52,18 @@ export const mutations = {
     } else {
       entry = state.entries.get(uuid)
     }
-    if([null, undefined].includes(entry)) {
+    if ([null, undefined].includes(entry)) {
       logger.error("Cannot retrieve entry for new value setter")
       return
     }
     const values = entry.values
     // good to have it as jsonpath but thats not needed here
-    if(aspect_loc.substring(0,2) === "$.") {
+    if (aspect_loc.substring(0, 2) === "$.") {
       aspect_loc = aspect_loc.substring(2)
     }
     ld.set(values, aspect_loc, value)
   },
 
-  _remove_entry_ref_index(state, {uuid, child_uuid, aspect_loc}) {
-    let children = state.entries.get(uuid).refs.children
-    delete state.entries.get(uuid).refs.children[child_uuid]
-    const pre_aspect_loc = loc_remove_last(aspect_loc)
-    const shift_index = last_loc_value(aspect_loc)
-    for (let other_child_uuid in children) {
-      const other_aspect_loc = children[other_child_uuid]
-      if (ld.isEqual(loc_remove_last(other_aspect_loc), pre_aspect_loc)) {
-        if (other_aspect_loc[other_aspect_loc.length - 1][1] > shift_index) {
-          other_aspect_loc[other_aspect_loc.length - 1][1]--
-        }
-      }
-    }
-  },
   set_from_array(state, uuid_entry_array) {
     state.entries = new Map(uuid_entry_array)
   },
@@ -115,20 +90,6 @@ export const mutations = {
       // console.log("update tags", tags)
       state.entries.get(uuid).tags = tags
     }
-  },
-  entries_set_local_list_page(state, {aspect_loc, page}) {
-    let entry = state.entries.get(aspect_loc_uuid(aspect_loc))
-    // todo, later out, should be there from the creation
-    if (!ld.get(entry, "local.list_pages")) {
-      if (!entry.hasOwnProperty("local")) {
-        entry.local = {}
-      }
-      entry.local.list_pages = {}
-    }
-    const loc_str = aspect_loc_str(remove_entry_loc(aspect_loc))
-    entry.local.list_pages[loc_str] = page
-    //let entry =
-    //remove_entry_loc
   },
   insert_missing_default_values(state, {uuid, type_default_values}) {
     let values = state.entries.get(uuid).values
@@ -295,32 +256,6 @@ export const getters = {
       }
     }
   },
-  // todo this is more of an meta-aspect generator function
-  entry_location: function (state, getters) {
-    return (uuid) => {
-      const entry = uuid ? getters.get_entry(uuid) : getters.get_edit()
-      const entry_type = getters.get_entry_type(entry.template.slug)
-      const locationAspect = entry_type.rules.locationAspect
-      if (!locationAspect) {
-        return null
-      }
-      let location = null
-      if (locationAspect) {
-        if (uuid) {
-          location = select_aspect_loc(state, loc_prepend(ENTRY, uuid, aspect_loc_str2arr(locationAspect)))
-        } else {
-          location = select_aspect_loc(state, loc_prepend(EDIT, entry.uuid, aspect_loc_str2arr(locationAspect)))
-        }
-        // this is weird
-        if (location && location.value)
-          location = location.value
-      }
-      if (!Array.isArray(location)) {
-        location = [location]
-      }
-      return location
-    }
-  },
   get_search_entries: function (state) {
     return (state.entries)
   },
@@ -345,7 +280,7 @@ export const getters = {
       const all_tags = {}
       for (let tags_type in tagsAspect) {
         const aspect_tag_location = tagsAspect[tags_type]
-        let tags = select_aspect_loc(state, loc_prepend(ENTRY, uuid, aspect_loc_str2arr(aspect_tag_location)))
+        let tags = select_aspect_loc(state, aspect_tag_location)
         tags = recursive_unpack(tags)
         tags = guarantee_array(tags)
         tags = ld.flattenDeep(tags)
@@ -383,27 +318,26 @@ export const actions = {
   },
   save_entry(context, {entry, template}) {
     context.commit("update_tags", {tags: resolve_tags(entry, template)})
-    // todo duplicate of the one below:
-    const location = context.getters.entry_location()
+    // const location = context.getters.entry_location()
     // console.log("update_entry. location",location)
-    if (location) {
-      // console.log(recursive_unpack(location))
-      const simple_location = filter_empty(recursive_unpack(location))
-      context.commit("update_location", {location: simple_location})
-    }
+    // if (location) {
+    //   // console.log(recursive_unpack(location))
+    //   const simple_location = filter_empty(recursive_unpack(location))
+    //   context.commit("update_location", {location: simple_location})
+    // }
     context.commit("save_entry", context.getters.get_edit())
   },
-  update_entry(context, uuid) {
-    //const entry_title = context.getters.get_entry_title(uuid)
-    // context.commit("update_title", {uuid, title: entry_title})
-    const location = context.getters.entry_location(uuid)
-    // console.log("update_entry. location",location)
-    if (location) {
-      // console.log(recursive_unpack(location))
-      const simple_location = filter_empty(recursive_unpack(location))
-      context.commit("update_location", {uuid, location: simple_location})
-    }
-  },
+  // update_entry(context, uuid) {
+  //const entry_title = context.getters.get_entry_title(uuid)
+  // context.commit("update_title", {uuid, title: entry_title})
+  // const location = context.getters.entry_location(uuid)
+  // // console.log("update_entry. location",location)
+  // if (location) {
+  //   // console.log(recursive_unpack(location))
+  //   const simple_location = filter_empty(recursive_unpack(location))
+  //   context.commit("update_location", {uuid, location: simple_location})
+  // }
+  // },
   set_edit(context, uuid) {
     if (!context.state.edit || context.state.edit.uuid !== uuid) {
       const entry = context.getters.get_entry(uuid)

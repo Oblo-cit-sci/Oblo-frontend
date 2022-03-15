@@ -62,17 +62,10 @@
 
 import Aspect from "../Aspect";
 import ListMixin from "../ListMixin";
-import {COMPOSITE, EDIT, FLOAT, INDEX, INT, SELECT, SIMPLE_TYPE, STR, TREE} from "~/lib/consts";
+import {COMPOSITE, EDIT, FLOAT, INT, SELECT, SIMPLE_TYPE, STR, TREE} from "~/lib/consts";
 import {
-  aspect_loc_str,
-  aspect_loc_str2arr,
-  aspect_loc_uuid,
-  aspect_raw_default_value,
-  complete_aspect_loc,
   get_aspect_vue_component,
-  pack_value,
-  packed_aspect_default_value,
-  remove_entry_loc
+  packed_aspect_default_value
 } from "~/lib/aspect";
 import Paginate from "../global/Paginate";
 import MinMaxIndicators from '../list_components/MinMaxIndicators'
@@ -250,7 +243,7 @@ export default {
       return extra
     },
     panel_id(index) {
-      return "L-" + aspect_loc_str(this.$_.slice(this.$_.concat(this._uid, [[INDEX, index]]), 1))
+      return "L-" + this.aspect.name + "_" + str(index)
     },
     index_on_act_page(index) {
       return index >= this.page * this.pagination_tresh && index < (this.page + 1) * this.pagination_tresh

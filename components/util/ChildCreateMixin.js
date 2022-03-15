@@ -1,6 +1,4 @@
-import {aspect_loc_uuid, pack_value} from "~/lib/aspect";
 import {EDIT, ENTRY_INDEX} from "~/lib/consts";
-import EntryCreateMixin from "~/components/entry/EntryCreateMixin";
 
 export default {
   name: "ChildCreateMixin",
@@ -8,7 +6,8 @@ export default {
   // mixins: [EntryCreateMixin],
   methods: {
     create_child(aspect_loc, language, child_type_slug) {
-      const entry_uuid = aspect_loc_uuid(aspect_loc)
+      console.warn("create_child requires entry_uuid")
+      const entry_uuid = null
       const value = this.$store.getters["entries/value"](aspect_loc).value
       const index_aspect_loc = this.aspect_loc_for_index(aspect_loc, value.length)
       const child = this.create_entry(child_type_slug, language, {}, {

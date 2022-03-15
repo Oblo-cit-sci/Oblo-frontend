@@ -10,12 +10,10 @@
 
 <script>
 import {
-  aspect_default_value,
   aspect_raw_default_value,
-  loc_append,
-  pack_value
+  pack_value, unpack
 } from "~/lib/aspect";
-import {ASPECT, COMPONENT, COMPOSITE, EDIT, ENTRYLIST, INDEX, LIST} from "~/lib/consts";
+import { COMPOSITE, ENTRYLIST, LIST} from "~/lib/consts";
 import {item_count_name} from "~/lib/listaspects";
 import AspectConditionChecker from "~/components/aspect_utils/AspectConditionChecker";
 
@@ -46,27 +44,17 @@ export default {
   },
   computed: {
     missing() {
-      // console.log(this.template)
-      // if(!this.template) {
-      //   return []
-      // }
       const aspects = this.template.aspects
       // console.log("validation update")
       let missing = []
       for (let aspect of aspects) {
         // let required = true
-        let required = this.$_.get(aspect, "attr.required", true)
+        let required =  this.$_.get(attr(aspect), "required", true)
         // console.log(aspect.name,  required)
         if (required) {
-          // todo, value thing not so elegant...
-          // todo not always packed
-          const a_w_value = this.entry.values[aspect.name] || aspect_default_value(aspect)
-          let a_value = a_w_value.value
-          const base_aspect_loc = loc_append([[EDIT, this.entry.uuid]], ASPECT, aspect.name)
-          // debugger
-          const validation = this.validate_aspect(aspect, a_w_value, this.entry.values)
+          const unpacked_value = unpack(this.entry.values[aspect.name]) || aspect_raw_default_value(aspect)
+          const validation = this.validate_aspect(aspect, unpacked_value, this.entry.values)
           const valid = validation[0]
-          // console.log(valid)
           const invalid_message = validation[1]
           let add_text = ""
           const aspect_label = aspect.label
@@ -75,8 +63,8 @@ export default {
           } else if (valid === LIST_NOT_ENOUGH) {
             add_text = this.$t("comp.entry_validation.msgs.list_not_enough", {
               aspect_label,
-              item_name: item_count_name(aspect, a_value.length)
-            }) + " (" + a_value.length + "/" + aspect.attr.min + ")"
+              item_name: item_count_name(aspect, unpacked_value.length)
+            }) + " (" + unpacked_value.length + "/" + aspect.attr.min + ")"
           } else if (valid === COMPOSITE_INCOMPLETE) {
             add_text = this.$t("comp.entry_validation.msgs.composite_incomplete", {
               aspect_label,
@@ -90,7 +78,7 @@ export default {
           }
           if (add_text) {
             if (this.has_pages) {
-              let page = (aspect.attr.page || 0) + 1
+              let page = (attr(aspect).page || 0) + 1
               add_text += `, page: ${page}`
             }
             missing.push(add_text)
@@ -107,54 +95,41 @@ export default {
     attr(aspect) {
       return aspect.attr || {}
     },
-    validate_aspect(aspect, a_w_value, conditionals) {
-      // console.log(aspect.name, a_w_value, aspect, aspect_loc)
-      // console.log("-->", aspect_loc2jsonpath(aspect_loc))
-      let required = this.$_.get(aspect, "attr.required", true)
+    validate_aspect(aspect, unpacked_value, conditionals) {
+      let required = this.$_.get(attr(aspect), "required", true)
 
       if (!required) {
         return [OK]
       }
-      const raw_value = a_w_value.value
-      //console.log(raw_value)
-      //console.log("val", aspect.name, aspect_loc)
+      // const raw_value = unpack(packed_values)
 
       const a_default = aspect_raw_default_value(aspect)
       if (this.attr(aspect).IDAspect) {
         return [OK]
       }
-      // test
-      // if (aspect?.attr?.condition) {
-      //   console.log("validator: -> _condition_fail", aspect, aspect_loc, "edit", "uuid", "no-cond")
-      // }
-      // pass the conditionals, for composites not to fail...
+
       if (this._condition_fail(aspect, conditionals)) {
         return [OK]
       }
-      // if (disabled_by_condition(this.$store, aspect, aspect_loc, item_index, root_data)) {
-      //   console.log(aspect.name, "disable by condition...")
-      //   return [OK]
-      // }
+
       if (raw_value === null) {
         // console.warn("no raw value", aspect.label, raw_value)
         return [MISSING, ""]
       }
-      if (this.$_.isEqual(raw_value, a_default)) {
+      if (this.$_.isEqual(unpacked_value, a_default)) {
         // console.warn("aspect validation. raw-value is default", aspect.label, raw_value, a_default)
         return [MISSING, ""]
       } else if ([LIST, ENTRYLIST].includes(aspect.type)) {
-        if (this.attr(aspect).min !== null && raw_value.length < this.attr(aspect).min) {
+        if (this.attr(aspect).min !== null && unpacked_value.length < this.attr(aspect).min) {
           return [LIST_NOT_ENOUGH, ""]
         }
         if (aspect.type === LIST) {
           //let item_validations = []
           let incomplete_items = []
-          for (let item_index in raw_value) {
-            const item = raw_value[item_index]
-            const item_loc = loc_append(aspect_loc, INDEX, item_index)
-            const validation = this.validate_aspect(aspect.list_items, item || pack_value(null),this.entry.values)
+          for (let item_index in unpacked_value) {
+            const item = unpacked_value[item_index]
+            const validation = this.validate_aspect(aspect.list_items, item || pack_value(null),conditionals)
             if (validation[0] !== OK) {
-              // console.warn("list item-validation fail", aspect.label, "index:", item_index)
               incomplete_items.push(parseInt(item_index) + 1)
             }
           }
@@ -167,12 +142,15 @@ export default {
       } else if (aspect.type === COMPOSITE) {
         let missing_components = []
         for (let component of aspect.components) {
-          const comp_loc = loc_append(aspect_loc, COMPONENT, component.name)
-          // console.log("-> comp", component.name, raw_value)
-          // debugger
-          let component_validations = this.validate_aspect(component, raw_value[component.name] || pack_value(null), this.entry.values)
+          let comp_conditionals = this.entry.values
+          if(attr(aspect).use_components_as_conditionals) {
+            comp_conditionals = unpacked_value
+          } else if(attr(aspect).merge_in_components_as_conditionals) {
+            comp_conditionals = Object.assign(this.$_.cloneDeep(unpacked_value), conditionals)
+          }
+          const component_value = unpack(unpacked_value[component.name]) || aspect_raw_default_value(component)
+          let component_validations = this.validate_aspect(component, component_value, comp_conditionals)
           if (component_validations[0] !== OK) {
-            // console.warn("component validation fail: component", component.label, component_validations)
             missing_components.push(component.label)
           }
         }

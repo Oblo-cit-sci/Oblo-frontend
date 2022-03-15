@@ -6,9 +6,7 @@
 </template>
 
 <script>
-import {aspect_loc_str2arr, loc_prepend} from "~/lib/aspect"
-import {EDIT} from "~/lib/consts"
-import {direct_select, select_aspect_loc} from "~/lib/entry"
+import {direct_select} from "~/lib/entry"
 
 export default {
   name: "AspectLocationPrope",

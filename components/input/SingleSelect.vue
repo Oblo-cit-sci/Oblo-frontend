@@ -201,7 +201,7 @@ export default {
       }
     },
     set_selected_item() {
-      // console.log("set_selected_item", this.selected_item, this.only_value, this.selection)
+      // console.log("set_selected_item", this.selected_item, this.selection)
       if (this.emit_only_value) {
         this.selected_item = this.selection
       } else {
@@ -291,11 +291,17 @@ export default {
       }
     },
     selected_item(item) {
-      if(item?.value !== this.selected_item?.value) {
+      // console.log("selected_item", item?.value,  this.selected_item?.value, this.view_select)
+      if(this.view_select) {
         this.emitUp(item)
+      } else {
+        if (item?.value !== this.selected_item?.value) {
+          this.emitUp(item)
+        }
       }
     },
     selection() {
+      // console.log("selection changed", this.selection)
       this.set_selected_item()
     },
     disabled_options(options) {

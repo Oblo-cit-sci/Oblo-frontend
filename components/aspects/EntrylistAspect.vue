@@ -42,12 +42,10 @@
 
 <script>
   import {
-    EDIT,
-    ENTRY_INDEX
+    EDIT
   } from "~/lib/consts";
   import EntryNavMixin from "../EntryNavMixin";
   import ListMixin from "../ListMixin";
-  import {aspect_loc_str} from "~/lib/aspect";
   import {no_duplicate_texts} from "~/lib/options";
   import ListPagination from "../aspect_utils/ListPagination";
   import PersistentStorageMixin from "../util/PersistentStorageMixin";
@@ -142,16 +140,16 @@
         this.goto_delayed_last_page()
       },
       aspect_loc_for_index(index) {
-        return this.$_.concat(this.$_.drop(this.aspect_loc), [[ENTRY_INDEX, index]])
+        return index
       },
       aspect_loc_str(index) {
-        return aspect_loc_str(this.aspect_loc_for_index(index))
+        return str(index)
       },
       open_item(item) {
         if (this.disabled)
           return
         this.persist_entries()
-        this.$store.dispatch("entries/update_entry", this.entry_uuid)
+        // this.$store.dispatch("entries/update_entry", this.entry_uuid)
         if (!this.has_entry(item.uuid))
           this.fetch_and_nav(item.uuid)
         else {

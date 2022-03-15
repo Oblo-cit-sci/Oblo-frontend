@@ -3,7 +3,7 @@ import uuidv4 from "uuid/v4"
 import pkg from "~/package"
 import {DRAFT, EDIT, PRIVATE_LOCAL, REGULAR} from "~/lib/consts"
 
-import {default_values, set_titleAspect} from "~/lib/entry"
+import {default_values} from "~/lib/entry"
 import {CREATOR, user_ref} from "~/lib/actors"
 import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
 
