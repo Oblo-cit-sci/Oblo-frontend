@@ -75,7 +75,8 @@ export default {
   },
   methods: {
     create_entry() {
-      if (this.can_create_multiple_etypes) {
+      console.log("create entry")
+      if (this.create_templates_options.length > 1) {
         this.$bus.$emit("domain-create_entry")
         // this.$bus.$emit("create_entry")
       } else {

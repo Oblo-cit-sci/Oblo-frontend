@@ -1,6 +1,6 @@
 <template lang="pug">
   v-card.mb-4.pb-1.cardheight(outlined :width="550" @click="goto_domain()" :ripple="false")
-    v-img(:src="domain_image" :max-height="img_max_height")
+    v-img(:src="domain_banner_url" :max-height="img_max_height")
       v-card-title.align-end.shadow {{domain_title}}
       v-hover(v-for="lang in lang_ordered"
         :key="lang")
@@ -10,7 +10,7 @@
           @click="selected_language = lang"
           slot-scope="{ hover }") {{$t("lang." + lang)}}
     v-card-text.pb-2(:style="{'min-height':'80px'}")
-      v-img.float-left.mr-3.mb-1(:src="domain_icon" left width="40" height="40")
+      v-img.float-left.mr-3.mb-1(:src="domain_icon_url" left width="40" height="40")
       div {{domain_description}}
 </template>
 
@@ -21,6 +21,7 @@ import LanguageMixin from "~/components/LanguageMixin";
 import ResponsivenessMixin from "~/components/ResponsivenessMixin";
 import {PAGE_DOMAIN} from "~/lib/pages"
 import {QP_D, QP_lang} from "~/lib/consts"
+import {domain_banner_url, domain_description, domain_icon_url, domain_title} from "~/lib/domain_data"
 
 export default {
   name: "DomainCard",
@@ -47,7 +48,19 @@ export default {
       } else {
         return "172px"
       }
-    }
+    },
+    domain_title() {
+      return domain_title(this.domain_data)
+    },
+    domain_description() {
+      return domain_description(this.domain_data)
+    },
+    domain_banner_url() {
+      return domain_banner_url(this.$api, this.domain_name)
+    },
+    domain_icon_url() {
+      return domain_icon_url(this.$api, this.domain_name)
+    },
   },
   methods: {
     async goto_domain() {

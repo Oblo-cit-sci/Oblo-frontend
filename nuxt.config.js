@@ -9,11 +9,12 @@ const webpack = require('webpack')
 
 console.log("NUXT:CONFIG. env:server", process.env.SERVER)
 
-let hostname = "https://opentek.eu"
+let description = pkg.description
 
 if (process.env.SERVER === "liccion") {
   console.log("building for liccion")
   hostname = "https://oblo.network"
+  description = "LICCION is a network of research and civil society partners supporting Indigenous peoples and local communities to document and communicate local-level climate change impacts."
 } else if (process.env.SERVER === "staging") {
   console.log("building for staging")
   hostname = "https://staging.opentek.eu"
@@ -58,7 +59,7 @@ module.exports = {
     meta: [
       {charset: 'utf-8'},
       {name: 'viewport', content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'},
-      {hid: 'description', name: 'description', content: pkg.description}
+      {hid: 'description', name: 'description', content: description},
     ],
     // link: [
     //   {rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'}

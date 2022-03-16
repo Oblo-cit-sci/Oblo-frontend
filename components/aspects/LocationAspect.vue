@@ -89,6 +89,8 @@ import AspectDialog from "~/components/dialogs/AspectDialog"
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
 import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
 import OfflineMixin from "~/lib/OfflineMixin"
+import DomainMapMixin from "~/components/map/DomainMapMixin"
+// import DomainMapMixin from "~/components/map/DomainMapMixin"
 
 // "attr.input" options
 const DEVICE = "device"
@@ -104,7 +106,7 @@ const default_output = [LOCATION, PLACE]
 export default {
   name: "LocationAspect",
   components: {AspectDialog, Mapbox},
-  mixins: [AspectComponentMixin, TriggerSnackbarMixin, MapIncludeMixin, OfflineMixin,
+  mixins: [AspectComponentMixin,DomainMapMixin, TriggerSnackbarMixin, MapIncludeMixin, OfflineMixin,
     MapEntriesMixin, EntrySearchMixin, EntryFetchMixin, ResponsivenessMixin, TypicalAspectMixin, PersistentStorageMixin],
   computed: {
     ...mapGetters({logged_in: "user/logged_in", user_settings: "user/settings", menu_state: "menu/menu_state"}),

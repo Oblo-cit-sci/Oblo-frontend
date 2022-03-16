@@ -16,7 +16,7 @@
             span {{$t('w.login')}}
     v-spacer
     LanguageSelector(v-if="show_language_selector")
-    CreateEntryButton(v-if="show_create_entry_button" :style="create_button_style" :domain_data="act_lang_domain_data")
+    CreateEntryButton(v-if="show_create_entry_button" :style="create_button_style")
     Dialog(:dialog_open.sync="login_dialog_open")
       LoginComponent(:go_home="false" @logged_in="login_dialog_open=false" @page_change="login_dialog_open=false")
 </template>

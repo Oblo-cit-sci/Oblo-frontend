@@ -8,7 +8,7 @@ export const state = () => ({
   // todo, could be managed by the $bus
   goto_location: null,
   last_goto_location: null,
-  layer_status: null,
+  layer_status: null, // ? what?
   cached_camera_options: {},
   search_time: null,
   default_map_style: null,
