@@ -1,6 +1,6 @@
 import {aspect_raw_default_value, attr, unpack} from "~/lib/aspect"
 import AspectConditionChecker from "~/components/aspect_utils/AspectConditionChecker"
-import {named_pages, one_aspect_per_page, pages, view_mode_hide_unset_values} from "~/lib/template_code_entries"
+import {named_pages, one_aspect_per_page, pages, view_mode_hide_unset_values} from "~/lib/template"
 
 export default {
   name: "EntryPagesMixin",
@@ -61,7 +61,7 @@ export default {
       return !this.has_pages || this.page === this.pages.length - 1
     },
     shown_aspects() {
-      // console.log("has_pages", this.has_pages)
+      console.log("shown_aspects: has_pages?", this.has_pages, "is_view_mode?",this.is_view_mode)
       // not set on view-mode
       // console.log("shown-aspects. pages?", this.has_pages)
       if (this.has_pages) {
@@ -78,7 +78,9 @@ export default {
           })
         }
       } else {
+        // console.log(this.$_.map(this.aspects, a => attr(a).page || 0))
         if (this.is_view_mode && view_mode_hide_unset_values(this.template)) {
+          // filter aspects, which have a value
           return this.$_.filter(this.aspects, a => !this.$_.isEqual(
             unpack(this.regular_values[a.name]),
             aspect_raw_default_value(a)))

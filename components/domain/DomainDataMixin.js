@@ -2,7 +2,7 @@ import EntryCreateMixin from "~/components/entry/EntryCreateMixin";
 import {mapGetters} from "vuex";
 import FilterMixin from "~/components/FilterMixin";
 import URLQueryMixin from "~/components/util/URLQueryMixin";
-import {create_template_options} from "~/lib/template_code_entries"
+import {create_template_options} from "~/lib/template"
 
 export default {
   name: "DomainDataMixin",

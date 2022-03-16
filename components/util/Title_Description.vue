@@ -1,9 +1,9 @@
 <template lang="pug">
   div(v-if="!is_view_mode")
     v-icon.mr-1.mb-1(v-if="icon_part") {{icon_part}}
-    component(:is="header_type" :style="{display:'inline'}") {{label}}
+    component(:is="header_type" :style="{display:'inline'}") {{_title}}
       span(v-if="disabled") &nbsp;({{disabled_text}})
-      slot(v-if="!question_only")
+      slot
     div(v-if="multiple_descriptions && !is_view_mode")
       div(v-for="(description_part, index) in description" :key="index")
         div(v-if="index===0") {{description_part}}
@@ -11,18 +11,16 @@
     div(v-else)
       div(v-if="description_as_html")
         div(v-html="first_description")
-      div.pb-1(v-else :class="{'font-weight-bold':question_only}")
+      div.pb-1(v-else)
         span {{first_description}}
-        slot(v-if="question_only")
   div(v-else)
     v-icon.mr-1.mb-1(v-if="icon_part") {{icon_part}}
-    component(:is="header_type" :style="{display:'inline'}") {{label}}
+    component(:is="header_type" :style="{display:'inline'}") {{_title}}
     slot
 </template>
 
 <script>
 import {VIEW} from "~/lib/consts";
-import {is_editable_mode, attr} from "~/lib/aspect"
 
 /*
   put 2 times behind the header component
@@ -35,12 +33,12 @@ export default {
     aspect: {
       type: Object
     },
+    t_title: {
+      type: String,
+    },
     title: {
       type: String,
       default: ""
-    },
-    dc_title: {
-      type: Boolean
     },
     icon: {
       type: String
@@ -50,14 +48,14 @@ export default {
       type: String,
       default: "h3"
     },
+    t_description: {
+      type: [String, Array]
+    },
     description: {
       type: [String, Array],
       default: ""
     },
     description_as_html: {
-      type: Boolean
-    },
-    question_only: {
       type: Boolean
     },
     disabled: {
@@ -74,55 +72,40 @@ export default {
     }
   },
   computed: {
-    label() {
-      if (this.no_title || this.question_only) {
+    _title() {
+      if (this.no_title) {
         return
       }
-      // todo, is only be the case for ui aspects
-      if (this.title) {
-        return this.title
+      if (this.t_title) {
+        return this.$t(this.t_title)
       }
-      if (this.aspect) {
-        if (this.aspect.t_label) {
-          return this.$t(this.aspect.t_label)
-        }
-        if (this.aspect.label !== undefined) {
-          return this.aspect.label
-        } else {
-          return this.aspect.name
-        }
-      }
-      return ""
+      return this.title
     },
     icon_part() {
-      return this.icon ? this.icon : this.$_.get(this.aspect, "icon")
+      return this.icon
     },
-    description_() {
-      if (this.description) {
-        if(this.question_only && this.description === ""){
-          return this.title
-        }
-        return this.description
+    _description() {
+      if (this.t_description) {
+        return this.$t(this.t_description)
       }
-      if (this.aspect) {
-        if (this.aspect.t_description) {
-          return this.$t(this.aspect.t_description)
-        }
-        return this.aspect.description
-      }
-      return ""
+      return this.description
     },
     multiple_descriptions() {
-      return (this.description || "").constructor === Array
+      return Array.isArray(this.t_description || "") ||
+        Array.isArray(this.description || "")
     },
     is_view_mode() {
       return this.mode === VIEW
     },
     first_description() {
-      if (this.multiple_descriptions)
-        return this.description[0]
-      else
-        return this.description_
+      if (this.multiple_descriptions) {
+        if (this.t_description) {
+          return this.$t(this.t_description[0])
+        } else {
+          return this.description[0]
+        }
+      } else
+        return this._description
     }
   }
 }
@@ -135,7 +118,4 @@ export default {
   padding-right: 5%;
 }
 
-.note {
-  color: #1da1f2;
-}
 </style>

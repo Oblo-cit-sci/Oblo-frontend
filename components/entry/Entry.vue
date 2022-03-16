@@ -37,9 +37,9 @@
       v-col(:cols="base_cols")
         v-divider.wide_divider(v-if="is_first_page")
     v-row
-      div(v-if="has_defined_pages")
+      div(v-if="has_defined_pages && is_editable_mode")
         Title_Description(v-bind="page_title_description_props(current_page_info)")
-    v-row(v-for="(aspect) in shown_aspects" :key="aspect.name")
+    v-row(v-for="(aspect, aspect_index) in shown_aspects" :key="aspect.name")
       v-col(alignSelf="stretch" :cols="base_cols" :style="{padding:0}")
         <!-- TODO how to keep this slimmer ?! -->
         v-scroll-y-transition(v-if="is_editable_mode")
@@ -47,10 +47,12 @@
             v-bind="edit_regular_aspect_props(aspect)"
             @aspectAction="aspectAction($event)"
             @update:ext_value="update_ext_value(aspect.name, $event)")
-        Aspect(v-else
-        v-bind="view_regular_aspect_props(aspect)"
-          @aspectAction="aspectAction($event)"
-        )
+        <!-- VIEW MODE -->
+        div(v-else)
+          Title_Description.ml-2(v-bind="view_page_title_description_props(aspect_index)")
+          Aspect(
+            v-bind="view_regular_aspect_props(aspect)"
+            @aspectAction="aspectAction($event)")
     div(v-if="is_last_page && is_editable_mode")
       v-row
         v-col(:cols="base_cols")
@@ -103,7 +105,7 @@ import EntryMixin from "./EntryMixin";
 import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
 import PersistentStorageMixin from "../util/PersistentStorageMixin";
 import EntryValidation from "./EntryValidation";
-import {ACTORS, ASP_INIT, draft_color, EDIT, ENTRY, META, PRIVATE, REJECTED, VIEW} from "~/lib/consts";
+import {ACTORS, draft_color, EDIT, PRIVATE, REJECTED, VIEW} from "~/lib/consts";
 import {privacy_color, privacy_icon, recursive_unpack2} from "~/lib/util";
 import ChangedAspectNotice from "./ChangedAspectNotice";
 import MetaChips from "./MetaChips";
@@ -112,14 +114,13 @@ import Taglist from "~/components/global/Taglist"
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
 import EntryTags from "~/components/entry/EntryTags"
 import AspectSetMixin from "~/components/aspects/AspectSetMixin"
-import {CREATOR} from "~/lib/actors"
 import LanguageChip from "~/components/language/LanguageChip";
 import AspectSet from "~/components/AspectSet";
-import {pack_value, unpack} from "~/lib/aspect";
+import {pack_value, attr} from "~/lib/aspect";
 import {BUS_DIALOG_OPEN} from "~/plugins/bus";
 import OutdatedChip from "~/components/tag/OutdatedChip"
 import goTo from 'vuetify/lib/services/goto'
-import {allow_download, locationAspect} from "~/lib/template_code_entries"
+import {allow_download} from "~/lib/template"
 import {get_creator} from "~/lib/entry"
 
 export default {
@@ -222,6 +223,17 @@ export default {
         header_type: "h2",
         description: page.description,
         mode: this.mode
+      }
+    },
+    view_page_title_description_props(aspect_index) {
+      if(aspect_index === 0) {
+        return this.page_title_description_props(this.pages[0])
+      }
+      const aspect_page= a_index => attr(this.shown_aspects[a_index]).page || 0
+      const prev_aspect_page = aspect_page(aspect_index - 1)
+      const current_aspect_page = aspect_page(aspect_index)
+      if(current_aspect_page - prev_aspect_page === 1) {
+        return this.page_title_description_props(this.pages[current_aspect_page])
       }
     },
     edit_regular_aspect_props(aspect) {
@@ -355,7 +367,6 @@ export default {
     },
     entry_title_description_props() {
       return {
-        dc_title: true,
         title: this.full_title(),
         header_type: "h3",
         description: this.get_description,

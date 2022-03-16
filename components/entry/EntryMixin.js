@@ -23,7 +23,7 @@ import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin";
 import EntryMetaAspects from "~/components/EntryMetaAspects";
 import EntryHelperMethodsMixin from "~/components/entry/EntryHelperMethodsMixin";
 import URLQueryMixin from "~/components/util/URLQueryMixin"
-import {locationAspect, template_titleAspect} from "~/lib/template_code_entries"
+import {locationAspect, template_titleAspect} from "~/lib/template"
 
 export default {
   name: "EntryMixin",
