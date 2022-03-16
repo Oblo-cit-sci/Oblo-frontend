@@ -103,23 +103,23 @@ export default {
       // console.log(all_codes)
       // filter_codes = object_list2options(filter_codes, "title", "slug")
       const options_aspects = []
-      for (let code of filter_codes) {
-        const used_in_templates = find_templates_using_code(this.$store, code.slug, this.domain_language)
+      for (let code_entry of filter_codes) {
+        const used_in_templates = find_templates_using_code(this.$store, code_entry.slug, this.domain_language)
         const used_in_templates_titles =
           used_in_templates.map(template => this.lang_tagged_entry_title(template, this.domain_language))
-        let text = this.lang_tagged_entry_title(code, this.domain_language)
+        let text = this.lang_tagged_entry_title(code_entry, this.domain_language)
         // maybe the options-aspect should not take the label as text
         const base_aspect = {
-          name: code.slug,
+          name: code_entry.slug,
           text,
-          label: code.title,
+          label: code_entry.title,
           description: this.$t("comp.tagoptions_asp.used_in") + " " + used_in_templates_titles.join(", "),
           attr: {}
         }
 
-        if (code.rules.code_schema === "value_tree") {
-          if (tree_code_has_tag_rule(code)) {
-            const tag_tree = build_tag_select_tree(this.$_.cloneDeep(code))
+        if (code_entry.rules.code_schema === "value_tree") {
+          if (tree_code_has_tag_rule(code_entry)) {
+            const tag_tree = build_tag_select_tree(this.$_.cloneDeep(code_entry))
             if (tag_tree.length > 0) {
               options_aspects.push(Object.assign(base_aspect, {
                   type: TREEMULTISELECT,
@@ -128,16 +128,16 @@ export default {
               )
             }
           }
-        } else if (code.rules.code_schema === "value_list") {
+        } else if (code_entry.rules.code_schema === "value_list") {
           // all values are taken as tags
-          const tag_list = build_tag_select_list(this.$_.cloneDeep(code))
+          const tag_list = build_tag_select_list(this.$_.cloneDeep(code_entry))
           options_aspects.push(Object.assign(base_aspect, {
               type: MULTISELECT,
               items: tag_list
             })
           )
         } else {
-          console.log(`unknown code template for ${code.title}, template slug: ${code.template.slug}`)
+          console.log(`unknown code template for ${code_entry.title}, template slug: ${code_entry.template.slug}`)
         }
       }
       return {

@@ -1,4 +1,4 @@
-import {get_creator, get_entry_titleAspect, new_value_getter} from "~/lib/entry";
+import {get_creator,  new_value_getter} from "~/lib/entry";
 import {is_editable_mode, pack_value, unpack} from "~/lib/aspect";
 import {mapGetters} from "vuex"
 
@@ -23,7 +23,7 @@ import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin";
 import EntryMetaAspects from "~/components/EntryMetaAspects";
 import EntryHelperMethodsMixin from "~/components/entry/EntryHelperMethodsMixin";
 import URLQueryMixin from "~/components/util/URLQueryMixin"
-import {locationAspect} from "~/lib/template_code_entries"
+import {locationAspect, template_titleAspect} from "~/lib/template_code_entries"
 
 export default {
   name: "EntryMixin",
@@ -111,7 +111,7 @@ export default {
       if (this.is_editable_mode) {
         // todo dirty. do this similar to new tag schema. have "titleAspect" in the attr of the actual aspect that
         // sets the title
-        let titleAspect = get_entry_titleAspect(this.template)
+        let titleAspect = template_titleAspect(this.template)
         if (!titleAspect) {
           return this.entry.title
         }

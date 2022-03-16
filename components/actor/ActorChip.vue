@@ -8,7 +8,7 @@
 
 <script>
   import ActorMixin from "~/components/actor/ActorMixin"
-  import {COLLABORATOR, CREATOR, REVIEWER, ROLE_ICONS, SHARED} from "~/lib/actors";
+  import {ROLE_ICONS} from "~/lib/actors";
 
   export default {
     name: "ActorChip",

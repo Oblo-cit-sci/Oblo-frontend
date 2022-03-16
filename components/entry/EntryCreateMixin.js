@@ -3,11 +3,11 @@ import uuidv4 from "uuid/v4"
 import pkg from "~/package"
 import {DRAFT, EDIT, PRIVATE_LOCAL, REGULAR} from "~/lib/consts"
 
-import {default_values} from "~/lib/entry"
 import {CREATOR, user_ref} from "~/lib/actors"
 import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
 
 import NavBaseMixin from "~/components/NavBaseMixin"
+import {template_default_values} from "~/lib/template_code_entries"
 
 export default {
   name: "EntryCreateMixin",
@@ -45,7 +45,7 @@ export default {
           slug: template_slug
         },
         template_version: template.version,
-        values: init.values || default_values(template),
+        values: init.values || template_default_values(template),
         type: REGULAR,
         license: license,
         privacy: privacy,

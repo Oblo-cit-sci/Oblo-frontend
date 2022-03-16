@@ -119,8 +119,8 @@ import {pack_value, unpack} from "~/lib/aspect";
 import {BUS_DIALOG_OPEN} from "~/plugins/bus";
 import OutdatedChip from "~/components/tag/OutdatedChip"
 import goTo from 'vuetify/lib/services/goto'
-import {unsaved_changes_default_dialog} from "~/lib/dialogs"
 import {allow_download, locationAspect} from "~/lib/template_code_entries"
+import {get_creator} from "~/lib/entry"
 
 export default {
   name: "Entry",
@@ -170,8 +170,7 @@ export default {
         privacy: pack_value(this.entry.privacy),
         license: pack_value(this.entry.license),
         language: pack_value(this.entry.language)
-      },
-      unsaved_changes_dialog: unsaved_changes_default_dialog,
+      }
     }
   },
   methods: {
@@ -186,30 +185,29 @@ export default {
       this.persist_edit_entry().then()
     },
     entryAction(action) {
-      // console.log("received entry-A", action)
       if (action === "delete") {
         this.delete_entry = true
       }
     },
     check_creator_switch() {
       const roles = this.$_.cloneDeep(this.entry.actors)
-      const creator = roles.find(ea => ea.role === CREATOR)
-      if (creator.actor.registered_name !== this.username) {
+      const creator = get_creator(this.entry)
+      if (creator.registered_name !== this.username) {
         // ${creator.actor.public_name}
         this.$bus.$emit(BUS_DIALOG_OPEN, {
           data: {
             cancel_text: this.$t("comp.entry.creator_switch_dialog.cancel_text"),
             title: this.$t("comp.entry.creator_switch_dialog.title"),
             text: this.$t("comp.entry.creator_switch_dialog.text",
-              {original: creator.actor.public_name, user: this.user.public_name})
+              {original: creator.public_name, user: this.user.public_name})
           },
           cancel_method: () => {
             this.$router.back()
           },
           confirm_method: () => {
             const {public_name, registered_name} = this.user
-            // const orig_user = creator.actor.public_name
-            creator.actor = {public_name, registered_name}
+            creator.public_name = public_name
+            creator.registered_name = registered_name
             this.$store.commit("entries/set_edit_meta_value", {
               meta_aspect_name: ACTORS,
               value: roles
