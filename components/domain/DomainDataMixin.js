@@ -1,10 +1,10 @@
 import EntryCreateMixin from "~/components/entry/EntryCreateMixin";
 import {mapGetters} from "vuex";
-import {PUBLIC, USER, VISITOR} from "~/lib/consts";
+import {DOMAIN, PUBLIC, USER, VISITOR} from "~/lib/consts";
 import {can_edit_entry} from "~/lib/actors";
 import FilterMixin from "~/components/FilterMixin";
 import URLQueryMixin from "~/components/util/URLQueryMixin";
-import * as DOMAIN from "domain"
+import {create_options} from "~/lib/template_code_entries"
 
 export default {
   name: "DomainDataMixin",
@@ -31,36 +31,37 @@ export default {
         return this.domain_data
       }
     },
-    title() {
+    domain_title() {
       return this.domain_data.title
     },
-    description() {
+    domain_description() {
       return this.domain_data.description
     },
     create_templates_options() {
+      return create_options(this.domain_templates(true),this.$store.getters.user)
       // todo needs refinement, what if this can be changed per user...
-      return this.domain_templates(true).filter(t => {
-        const create_rule = this.$_.get(t, "rules.create", "public")
-        return (
-          create_rule === PUBLIC ||
-          (create_rule === USER && this.$store.getters["username"] !== VISITOR) ||
-          can_edit_entry(this.$store.getters.user, t))
-      })
-      // console.log(templates)
+      // return this.domain_templates(true).filter(t => {
+      //   const create_rule = this.$_.get(t, "rules.create", "public")
+      //   return (
+      //     create_rule === PUBLIC ||
+      //     (create_rule === USER && this.$store.getters["username"] !== VISITOR) ||
+      //     can_edit_entry(this.$store.getters.user, t))
+      // })
     },
     can_create_multiple_etypes() {
       return this.create_templates_options.length > 1
     },
-    // todo can go to DomainMixin
-    image() {
+    domain_image() {
       return this.$api.static.domain_banner(this.domain_name)
     },
-    icon() {
+    domain_icon() {
       return this.$api.static.domain_icon(this.domain_name)
     },
-    domain_pre_filter() {
-      return [this.get_filter_config(DOMAIN, [this.domain_name])]
-    },
+   // todo not used
+    // domain_pre_filter() {
+    //   return [this.get_filter_config(DOMAIN, [this.domain_name])]
+    // },
+    // todo. only used in DomainMenu
     prominent_filters() {
       return this.$_.get(this.domain_data, "filters.prominent_filters")
     },
@@ -70,7 +71,6 @@ export default {
       /**
        * include: include those entries which are listed in the 'include_entries' field of the domain-meta.
        * these are templates which are coming from other domains
-       *
        */
       const language = this.$store.getters["user/settings"].domain_language
       let domain_templates = this.all_domains_templates(this.domain_name, language)

@@ -1,7 +1,7 @@
 <template lang="pug">
   v-card.mb-4.pb-1.cardheight(outlined :width="550" @click="goto_domain()" :ripple="false")
-    v-img(:src="image" :max-height="img_max_height")
-      v-card-title.align-end.shadow {{title}}
+    v-img(:src="domain_image" :max-height="img_max_height")
+      v-card-title.align-end.shadow {{domain_title}}
       v-hover(v-for="lang in lang_ordered"
         :key="lang")
         v-chip.mt-2.ml-2(
@@ -10,8 +10,8 @@
           @click="selected_language = lang"
           slot-scope="{ hover }") {{$t("lang." + lang)}}
     v-card-text.pb-2(:style="{'min-height':'80px'}")
-      v-img.float-left.mr-3.mb-1(:src="icon" left width="40" height="40")
-      div {{description}}
+      v-img.float-left.mr-3.mb-1(:src="domain_icon" left width="40" height="40")
+      div {{domain_description}}
 </template>
 
 <script>
@@ -45,7 +45,7 @@ export default {
       if (this.is_small) {
         return "120px"
       } else {
-        return "auto"
+        return "172px"
       }
     }
   },

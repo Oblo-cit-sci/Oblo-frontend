@@ -78,7 +78,6 @@ import TriggerSnackbarMixin from "../TriggerSnackbarMixin";
 import AspectComponentMixin from "./AspectComponentMixin";
 import MapIncludeMixin from "~/components/map/MapIncludeMixin"
 import {arr2coords, context_get_place_type, convert_to_2d_arr} from "~/lib/map_utils"
-import GeocodingMixin from "~/components/map/GeocodingMixin"
 import {mapGetters} from "vuex"
 import {settings_loc_privacy_ask, settings_loc_privacy_exact, settings_loc_privacy_random} from "~/lib/settings"
 import EntrySearchMixin from "~/components/EntrySearchMixin"
@@ -89,7 +88,6 @@ import ResponsivenessMixin from "~/components/ResponsivenessMixin";
 import AspectDialog from "~/components/dialogs/AspectDialog"
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
 import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
-import EnvMixin from "~/components/global/EnvMixin"
 import OfflineMixin from "~/lib/OfflineMixin"
 
 // "attr.input" options
