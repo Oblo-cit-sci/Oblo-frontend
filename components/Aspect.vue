@@ -5,14 +5,7 @@
     Title_Description(
       :style="{'display': 'inline-block'}"
       v-if="show_title_description"
-      :aspect="aspect"
-      :no_title="extra.no_title"
-      :description_as_html="descr_as_html"
-      :question_only="question_only"
-      :note=note
-      :disabled="disable"
-      :disabled_text="disabled_text"
-      :mode="real_mode")
+      v-bind="title_description_props")
       span.grey--text(v-if="show_is_optional") &nbsp;({{$t("comp.aspect.optional")}})
     component(
       v-if="!disable"
@@ -155,7 +148,7 @@ export default {
     },
     condition_fail() {
       // console.log(this.aspect.name, this.aspect.condition, this.conditionals)
-      if(this.attr.condition) {
+      if (this.attr.condition) {
         return this._condition_fail(this.aspect, this.conditionals)
       }
       return false
@@ -212,12 +205,38 @@ export default {
     },
     // at the moment
     show_title_description() {
-      if (((this.attr && this.attr.placeholder) || this.aspect.type === "options") && !this.is_editable_mode) {
+      if (this.attr && this.attr.placeholder && !this.is_editable_mode) {
         return false
       }
       if (this.extra.hasOwnProperty("show_title_descr")) {
         return this.extra.show_title_descr
       } else return !this.$_.get(this.extra, "no_title", false);
+    },
+    title_description_props() {
+      let title = this.aspect.label
+      let t_title = this.aspect.t_label
+      let description = this.aspect.description
+      let t_description = this.aspect.t_description
+      if(this.extra.no_title) {
+        title = ""
+        t_title = null
+      }
+      if(this.question_only){
+        title = this.aspect.description || this.aspect.label
+        t_title = this.aspect.t_description  || this.aspect.t_label
+        description = ""
+        t_description = null
+      }
+      return {
+        title: title,
+        description: description,
+        t_title: t_title,
+        t_description: t_description,
+        description_as_html: this.descr_as_html,
+        disabled: this.disable,
+        disabled_text: this.disabled_text,
+        mode: this.real_mode
+      }
     },
     visible() {
       let hide_on_disable = this.$_.get(this.attr, "hide_on_disabled", true)

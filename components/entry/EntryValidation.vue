@@ -14,7 +14,7 @@ import {
   pack_value, unpack,
   attr
 } from "~/lib/aspect";
-import {COMPOSITE, ENTRYLIST, LIST} from "~/lib/consts";
+import {COMPOSITE, LIST} from "~/lib/consts";
 import {item_count_name} from "~/lib/listaspects";
 import AspectConditionChecker from "~/components/aspect_utils/AspectConditionChecker";
 
@@ -117,7 +117,7 @@ export default {
       if (this.$_.isEqual(unpacked_value, a_default)) {
         // console.warn("aspect validation. raw-value is default", aspect.label, raw_value, a_default)
         return [MISSING, ""]
-      } else if ([LIST, ENTRYLIST].includes(aspect.type)) {
+      } else if ([LIST].includes(aspect.type)) {
         if (attr(aspect).min !== null && unpacked_value.length < attr(aspect).min) {
           return [LIST_NOT_ENOUGH, ""]
         }

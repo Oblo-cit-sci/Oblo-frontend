@@ -1,5 +1,5 @@
 <template lang="pug">
-  div(v-if="!is_view_mode")
+  div(v-if="is_editable_mode")
     div(v-if="is_editable_mode && !selected_aspect")
       SingleSelect(
         :options="options"
@@ -19,7 +19,7 @@
         mode="edit")
   div(v-else)
     div(v-if="!selected_aspect")
-      p No option selected
+      p {{$t("comp.option_asp.no_option_selected")}}
     div(v-if="selected_option")
       Aspect(
         :ext_value="mvalue"

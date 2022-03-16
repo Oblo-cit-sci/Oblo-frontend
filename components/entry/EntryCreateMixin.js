@@ -7,7 +7,7 @@ import {CREATOR, user_ref} from "~/lib/actors"
 import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
 
 import NavBaseMixin from "~/components/NavBaseMixin"
-import {template_default_values} from "~/lib/template_code_entries"
+import {template_default_values} from "~/lib/template"
 
 export default {
   name: "EntryCreateMixin",

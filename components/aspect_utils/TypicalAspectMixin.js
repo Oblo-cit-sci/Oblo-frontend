@@ -44,6 +44,7 @@ export default {
       return {
         type: STR,
         t_label: "asp.user_query.label",
+        // label: this.$t("asp.user_query.label"),
         name: "user_query",
         attr: {
           max: 90,

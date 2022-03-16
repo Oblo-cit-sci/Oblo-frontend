@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    Title_Description(header_type="h4" title="Navigate")
+    Title_Description(header_type="h4" t_title="comp.paginate.navigate")
     div
       v-btn(:disabled="!more_prev_pages" @click="change_page(-1)" large outlined color="blue") {{prev_page_text}}
       v-btn(:disabled="!more_follow_page" @click="change_page(1)" large outlined color="blue") {{next_page_text}}
