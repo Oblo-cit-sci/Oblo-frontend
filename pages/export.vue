@@ -13,9 +13,8 @@
 
 <script>
 
-  import {export_data} from "../lib/import_export";
-  import {get_from_store_location} from "../lib/aspect";
-  import {mapToJson, printDateHours} from "../lib/util";
+  import {export_data} from "~/lib/import_export";
+  import {printDateHours} from "~/lib/util";
 
   const ld = require("lodash")
 

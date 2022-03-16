@@ -8,7 +8,7 @@
       @input="input($event)"
       dense
       :selection-type="selection_type"
-      :selectable="is_edit_mode")
+      :selectable="is_editable_mode")
 </template>
 
 <script>

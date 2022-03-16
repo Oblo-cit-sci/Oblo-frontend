@@ -13,11 +13,14 @@
 
 <script>
 import Aspect from "~/components/Aspect"
-import {pack_value} from "~/lib/aspect"
+import {is_editable_mode, pack_value} from "~/lib/aspect"
 import AspectBaseMixin from "~/components/aspect_utils/AspectBaseMixin"
 import {EDIT, VIEW} from "~/lib/consts"
 import AspectSet from "~/components/AspectSet"
 
+/**
+ * I DON'T KNOW WHAT THIS IS FOR
+ */
 export default {
   name: "DirectAspectCreator",
   mixins: [AspectBaseMixin],
@@ -44,7 +47,7 @@ export default {
   },
   computed: {
     show_view() {
-      return this.mode === EDIT && this.value !== this.default_value()
+      return is_editable_mode(this.mode) && this.value !== this.default_value()
     }
   },
   methods: {

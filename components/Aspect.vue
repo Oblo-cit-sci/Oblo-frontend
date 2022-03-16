@@ -1,6 +1,6 @@
 <template lang="pug">
   div.pa-2(
-    :class="[{composite: (aspect.type === 'composite' && mode === 'edit'),  disabled: disable, invisible_class: invisible_class}]"
+    :class="[{composite: (aspect.type === 'composite' && is_editable_mode),  disabled: disable, invisible_class: invisible_class}]"
     :id="aspect_id" v-if="visible && has_value")
     Title_Description(
       :style="{'display': 'inline-block'}"

@@ -11,7 +11,7 @@
 <script>
 import {MONTH} from "~/lib/consts"
 import Aspect from "~/components/Aspect"
-import {packed_aspect_default_value, type_default_value} from "~/lib/aspect"
+import {packed_aspect_default_value} from "~/lib/aspect"
 
 export default {
   name: "test_monthAspect",

@@ -63,9 +63,8 @@
 
 <script>
 import TreeleafPicker from "../input/TreeleafPicker";
-import {EDIT} from "~/lib/consts";
 import AspectComponentMixin from "./AspectComponentMixin";
-import {unpack} from "~/lib/aspect"
+import {is_editable_mode, unpack} from "~/lib/aspect"
 import OptionsMixin from "~/components/aspect_utils/OptionsMixin";
 import LanguageCodeFallback from "~/components/aspect_utils/LanguageCodeFallback";
 import SelectMixin from "~/components/aspects/SelectMixin";
@@ -269,7 +268,7 @@ export default {
       }
     },
     mode(new_mode) {
-      if (new_mode === EDIT && this.$_.isEmpty(this.tree)) {
+      if (is_editable_mode(new_mode) && this.$_.isEmpty(this.tree)) {
         this.calc_options()
       }
     }

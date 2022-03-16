@@ -18,7 +18,7 @@ import {ADMIN, EDITOR, SELECT, USER, VALUE} from "~/lib/consts"
 import Aspect from "~/components/Aspect"
 import {object_list2options} from "~/lib/options"
 import TriggerSnackbarMixin from "~/components/TriggerSnackbarMixin"
-import {aspect_raw_default_value, pack_propper_value, pack_value, unpack} from "~/lib/aspect"
+import {aspect_raw_default_value, pack_array_values, pack_value, unpack} from "~/lib/aspect"
 import AspectSet from "~/components/AspectSet"
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin";
 import {recursive_unpack} from "~/lib/util";
@@ -69,7 +69,7 @@ export default {
     user_data.editor_config.value.global_role = unpack(user_data.global_role)
     const editor_config = unpack(user_data.editor_config)
     for (let aspect_name of Object.keys(this.aspect_map)) {
-      this.aspect_map[aspect_name].value = pack_propper_value(editor_config[aspect_name])
+      this.aspect_map[aspect_name].value = pack_array_values(editor_config[aspect_name])
     }
   },
   computed: {

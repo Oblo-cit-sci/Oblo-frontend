@@ -8,6 +8,7 @@ import {mapGetters} from "vuex"
 
 import {JSONPath} from 'jsonpath-plus';
 import {BUS_MAP_GOTO_GEOMETRY_FEATURE_VALUE} from "~/plugins/bus"
+import {is_editable_mode} from "~/lib/aspect"
 
 export default {
   mixins: [TriggerSnackbarMixin, NavBaseMixin, EntryActionsMixin, URLQueryMixin],
@@ -23,7 +24,7 @@ export default {
       // console.log("full?", has_full_entry)
       // console.log("straight")
       // console.log(!this.prevent_view_page_change, mode === EDIT)
-      if (!this.prevent_view_page_change || mode === EDIT) {
+      if (!this.prevent_view_page_change || is_editable_mode(mode)) {
         // console.log("straight & nav")
         this.to_entry(uuid, mode)
       } else {
