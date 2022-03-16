@@ -9,7 +9,7 @@
             v-icon mdi-step-backward
     v-divider.mb-1(v-if="has_both()")
     div(v-for="level in shown_levels")
-      Title_Description.ml-3(:title="level.title" :description="level.description" mode="edit")
+      Title_Description.ml-3(:title="level.title" :description="level.description")
       .px-3(v-if="has_level_options(level.index)")
         SingleSelect.pb-1(v-if="edit_mode_list(level.index)"
           v-bind="select_props(level.index)"

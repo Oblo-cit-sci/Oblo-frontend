@@ -1,10 +1,10 @@
 <template lang="pug">
-  div(v-if="!is_view_mode")
+  div
     v-icon.mr-1.mb-1(v-if="icon_part") {{icon_part}}
     component(:is="header_type" :style="{display:'inline'}") {{_title}}
       span(v-if="disabled") &nbsp;({{disabled_text}})
       slot
-    div(v-if="multiple_descriptions && !is_view_mode")
+    div(v-if="multiple_descriptions")
       div(v-for="(description_part, index) in description" :key="index")
         div(v-if="index===0") {{description_part}}
         div(v-else class="secondary_descr") {{description_part}}
@@ -13,10 +13,6 @@
         div(v-html="first_description")
       div.pb-1(v-else)
         span {{first_description}}
-  div(v-else)
-    v-icon.mr-1.mb-1(v-if="icon_part") {{icon_part}}
-    component(:is="header_type" :style="{display:'inline'}") {{_title}}
-    slot
 </template>
 
 <script>
@@ -30,9 +26,6 @@ import {VIEW} from "~/lib/consts";
 export default {
   name: "Title_Description",
   props: {
-    aspect: {
-      type: Object
-    },
     t_title: {
       type: String,
     },
@@ -89,9 +82,6 @@ export default {
     multiple_descriptions() {
       return Array.isArray(this.t_description || "") ||
         Array.isArray(this.description || "")
-    },
-    is_view_mode() {
-      return this.mode === VIEW
     },
     first_description() {
       if (this.multiple_descriptions) {

@@ -1,7 +1,7 @@
 <template lang="pug">
   div
     div.mt-2(v-for="role in available_roles" :key="role.name")
-      Title_Description(:t_title="role.t_title" :t_description="role.t_description" mode="edit" header_type="h4")
+      Title_Description(:t_title="role.t_title" :t_description="role.t_description" header_type="h4")
       ActorSearch(
         :multiple="role.name !== 'creator'"
         v-model="grouped_roles[role.name]"

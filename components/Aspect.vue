@@ -215,8 +215,8 @@ export default {
     title_description_props() {
       let title = this.aspect.label
       let t_title = this.aspect.t_label
-      let description = this.aspect.description
-      let t_description = this.aspect.t_description
+      let description = this.is_editable_mode ? this.aspect.description : ""
+      let t_description = this.is_editable_mode ? this.aspect.t_description : ""
       if(this.extra.no_title) {
         title = ""
         t_title = null
