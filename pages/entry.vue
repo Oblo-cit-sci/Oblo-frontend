@@ -8,8 +8,7 @@
 
 
 import PersistentStorageMixin from "../components/util/PersistentStorageMixin";
-import Entry from "../components/entry/Entry";
-import {DRAFT, VIEW} from "~/lib/consts"
+import {DRAFT} from "~/lib/consts"
 import URLQueryMixin from "~/components/util/URLQueryMixin";
 import EntryFetchMixin from "~/components/entry/EntryFetchMixin";
 import NavBaseMixin from "~/components/NavBaseMixin";
@@ -23,8 +22,7 @@ export default {
   mixins: [EntryFetchMixin, PersistentStorageMixin, URLQueryMixin, NavBaseMixin, EntryHelperMethodsMixin],
   components: {
     EntryFullEdit,
-    EntryFullView,
-    Entry
+    EntryFullView
   },
   data() {
     return {

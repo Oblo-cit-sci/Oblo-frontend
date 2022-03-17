@@ -66,7 +66,7 @@ import EntryActions from "~/components/entry/EntryActions"
 export default {
   name: "EntryFullView",
   mixins: [EntryFullMixin],
-  components: {Aspect, EntryActions,EntryActorList,MetaChips, OutdatedChip, Taglist, Title_Description},
+  components: {Aspect, EntryActions, EntryActorList, MetaChips, OutdatedChip, Taglist, Title_Description},
   props: {
     show_back_button: Boolean,
     back_button_function: {
@@ -93,6 +93,9 @@ export default {
       result.push({name: this.$t(`lang.${this.entry.language}`), color: "yellow"})
       return result
     },
+  },
+  created() {
+    this.map_goto(this.uuid)
   },
   methods: {
     view_page_title_description_props(aspect_index) {

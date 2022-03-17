@@ -22,7 +22,6 @@
 <script>
 import Search from "~/components/global/Search"
 import MapNavigationMixin from "~/components/map/MapNavigationMixin"
-import Entry from "~/components/entry/Entry"
 import HasMainNavComponentMixin from "~/components/global/HasMainNavComponentMixin"
 import {object_list2options} from "~/lib/options"
 import FixDomainMixin from "~/components/global/FixDomainMixin"
@@ -36,7 +35,7 @@ import EntryFullView from "~/components/entry/EntryFullView"
 export default {
   name: "DomainMenu",
   mixins: [MapNavigationMixin, URLQueryMixin, HasMainNavComponentMixin, EntryFetchMixin, FixDomainMixin, FilterMixin, DomainDataMixin],
-  components: {EntryFullView, Entry, Search},
+  components: {EntryFullView, Search},
   props: {
     domain_data: {
       type: Object,

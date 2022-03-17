@@ -46,6 +46,12 @@ export default {
       return this.template.description
     },
   },
+  created() {
+    if (this.is_draft && this.is_edit_mode) {
+      this.check_creator_switch()
+    }
+    this.map_goto(this.uuid)
+  },
   methods: {
     aspect_mvalue(aspect_name) {
       return this.entry.values[aspect_name]

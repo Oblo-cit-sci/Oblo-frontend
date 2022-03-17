@@ -77,6 +77,8 @@ import EntryValidation from "~/components/entry/EntryValidation"
 import ChangedAspectNotice from "~/components/entry/ChangedAspectNotice"
 import EntryNavMixin from "~/components/EntryNavMixin"
 import EntryActions from "~/components/entry/EntryActions"
+import {recursive_unpack2} from "~/lib/util"
+import {edit_mode_question_only} from "~/lib/template"
 
 /***
  * EntryNavMixin only for the can_edit
@@ -102,7 +104,7 @@ export default {
   computed: {
     ...mapGetters({is_admin: "user/is_admin", logged_in: "user/logged_in"}),
     edit_mode_question_only() {
-      return this.is_editable_mode && this.$_.get(this.template.rules, "edit_mode_question_only", true)
+      return edit_mode_question_only(this.template)
     },
     entry_roles_mode() {
       if (this.is_creator) {
@@ -134,6 +136,11 @@ export default {
       return this.is_last_page && this.is_edit_mode && this.can_edit && !this.logged_in
     },
   },
+  created() {
+    if (this.is_draft) {
+      this.check_creator_switch()
+    }
+  },
   methods: {
     aspectAction(aspect_action) {
     },
@@ -157,6 +164,27 @@ export default {
       // todo maybe bounce...
       this.persist_edit_entry().then()
     },
+  },
+  watch: {
+    page() {
+      setTimeout(() => {
+        goTo("#app")
+      }, 200)
+    },
+    meta_aspects_values: {
+      deep: true,
+      handler: function (values) {
+        const unpacked_values = recursive_unpack2(values)
+        for (let aspect_name of Object.keys(unpacked_values)) {
+          if (!this.$_.isEqual(unpacked_values[aspect_name], this.entry[aspect_name])) {
+            this.$store.commit("entries/set_edit_meta_value", {
+              meta_aspect_name: aspect_name,
+              value: unpacked_values[aspect_name]
+            })
+          }
+        }
+      }
+    }
   }
 }
 </script>
