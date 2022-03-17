@@ -62,10 +62,12 @@ import Title_Description from "~/components/util/Title_Description"
 import {attr} from "~/lib/aspect"
 import Aspect from "~/components/Aspect"
 import EntryActions from "~/components/entry/EntryActions"
+import EntryNavMixin from "~/components/EntryNavMixin"
 
 export default {
   name: "EntryFullView",
-  mixins: [EntryFullMixin],
+  // EntryNavMixin just for the map goto...
+  mixins: [EntryFullMixin, EntryNavMixin],
   components: {Aspect, EntryActions, EntryActorList, MetaChips, OutdatedChip, Taglist, Title_Description},
   props: {
     show_back_button: Boolean,

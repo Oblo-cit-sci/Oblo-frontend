@@ -69,7 +69,7 @@ import EntryFullMixin from "~/components/entry/EntryFullMixin"
 import Aspect from "~/components/Aspect"
 import EntryActorList from "~/components/entry/EntryActorList"
 import Title_Description from "~/components/util/Title_Description"
-import {EDIT, PRIVATE, VIEW} from "~/lib/consts"
+import {ACTORS, EDIT, PRIVATE, VIEW} from "~/lib/consts"
 import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
 import {pack_value} from "~/lib/aspect"
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
@@ -79,6 +79,9 @@ import EntryNavMixin from "~/components/EntryNavMixin"
 import EntryActions from "~/components/entry/EntryActions"
 import {recursive_unpack2} from "~/lib/util"
 import {edit_mode_question_only} from "~/lib/template"
+import {BUS_DIALOG_OPEN} from "~/plugins/bus"
+import {get_creator} from "~/lib/entry"
+import {CREATOR} from "~/lib/actors"
 
 /***
  * EntryNavMixin only for the can_edit
@@ -102,7 +105,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({is_admin: "user/is_admin", logged_in: "user/logged_in"}),
+    ...mapGetters({is_admin: "user/is_admin", logged_in: "user/logged_in", user: "user"}),
     edit_mode_question_only() {
       return edit_mode_question_only(this.template)
     },
@@ -143,6 +146,36 @@ export default {
   },
   methods: {
     aspectAction(aspect_action) {
+    },
+    check_creator_switch() {
+      const creator = get_creator(this.entry)
+      // todo, was just this.username (how do we get that? which mixin?)
+      if (creator.registered_name !== this.user.registered_name) {
+        // ${creator.actor.public_name}
+        this.$bus.$emit(BUS_DIALOG_OPEN, {
+          data: {
+            cancel_text: this.$t("comp.entry.creator_switch_dialog.cancel_text"),
+            title: this.$t("comp.entry.creator_switch_dialog.title"),
+            text: this.$t("comp.entry.creator_switch_dialog.text",
+              {original: creator.public_name, user: this.user.public_name})
+          },
+          cancel_method: () => {
+            this.$router.back()
+          },
+          confirm_method: () => {
+            const roles = this.$_.cloneDeep(this.entry.actors)
+            const creator_role = roles.find(entry_role => entry_role.role === CREATOR)
+            const {public_name, registered_name} = this.user
+            const rrr = {public_name, registered_name} = this.user
+            console.log(rrr)
+            creator_role.actor = {public_name, registered_name}
+            this.$store.commit("entries/set_edit_meta_value", {
+              meta_aspect_name: ACTORS,
+              value: roles
+            })
+          }
+        })
+      }
     },
     edit_regular_aspect_props(aspect) {
       return {
