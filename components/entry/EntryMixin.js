@@ -115,7 +115,6 @@ export default {
         if (!titleAspect) {
           return this.entry.title
         }
-        // console.log("titleAspect", titleAspect)
         let title = new_value_getter(this.regular_values, titleAspect)
         title = this.$_.get(title, "value", "")
         return title
