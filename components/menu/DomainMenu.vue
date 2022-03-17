@@ -16,7 +16,7 @@
     div(v-if="nav_mode_entry && selected_entry")
       v-row
         v-col.py-0
-          Entry(:entry="selected_entry" show_back_button :back_button_function="back_from_entry")
+          EntryFullView(:entry="selected_entry" show_back_button :back_button_function="back_from_entry")
 </template>
 
 <script>
@@ -31,11 +31,12 @@ import DomainDataMixin from "~/components/domain/DomainDataMixin";
 import {ADMIN, EDITOR} from "~/lib/consts";
 import URLQueryMixin from "~/components/util/URLQueryMixin";
 import EntryFetchMixin from "~/components/entry/EntryFetchMixin";
+import EntryFullView from "~/components/entry/EntryFullView"
 
 export default {
   name: "DomainMenu",
   mixins: [MapNavigationMixin, URLQueryMixin, HasMainNavComponentMixin, EntryFetchMixin, FixDomainMixin, FilterMixin, DomainDataMixin],
-  components: {Entry, Search},
+  components: {EntryFullView, Entry, Search},
   props: {
     domain_data: {
       type: Object,

@@ -13,12 +13,11 @@
       @lastpage="more_follow_page = ($event)")
     EntryActionButtons(
       v-bind="entry_action_buttons_props"
-      @entry-action="entryAction($event)"
-      @mode="$emit('mode', $event)")
+      @entry-action="entryAction($event)")
 </template>
 
 <script>
-import {EDIT, PRIVATE, PUBLIC, QP_ENTRY_ACCESS_KEY, QP_ENTRY_MODE, QP_UUID, REVIEW, VIEW} from "~/lib/consts";
+import {EDIT, PRIVATE, QP_ENTRY_ACCESS_KEY, QP_ENTRY_MODE, QP_UUID, REVIEW, VIEW} from "~/lib/consts";
 import Paginate from "../global/Paginate";
 
 import EntryNavMixin from "../EntryNavMixin";
@@ -76,6 +75,9 @@ export default {
           break
         case "accept":
           this.review(true)
+          break
+        case "edit_entry":
+          this.edit_entry()
           break
         case "reject":
           this.review(false)
@@ -167,6 +169,26 @@ export default {
           // todo for entry exists already, there could be a change in the button label, but maybe the data of that entry should be fetched
           this.err_error_snackbar(err)
         }
+      }
+    },
+    edit_entry() {
+      if (this.entry.language !== this.$store.getters.domain_language) {
+        this.$bus.$emit(BUS_DIALOG_OPEN, {
+          data: {
+            cancel_text: this.$t("comp.entry.language_switch_dialog.cancel_text"),
+            title: this.$t("comp.entry.language_switch_dialog.title"),
+            text: this.$t("comp.entry.language_switch_dialog.text",
+              {language: this.$t("lang." + this.entry.language)})
+          },
+          cancel_method: () => {
+          },
+          confirm_method: async () => {
+            await this.change_language(this.entry.language)
+            this.to_entry(this.uuid, EDIT, {}, true)
+          }
+        })
+      } else {
+        this.to_entry(this.uuid, EDIT, {}, true)
       }
     },
     async review(accept) {

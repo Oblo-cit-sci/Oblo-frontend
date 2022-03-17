@@ -1,4 +1,3 @@
-import {ASP_INIT} from "~/lib/consts"
 
 export default {
   name: "AspectListMixin",

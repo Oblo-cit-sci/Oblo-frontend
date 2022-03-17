@@ -25,6 +25,9 @@ const LIST_NOT_ENOUGH = 2
 const COMPOSITE_INCOMPLETE = 3
 const LISTITEM_INCOMPLETE = 4
 
+/**
+ * Requires EntryMixin?
+ */
 export default {
   name: "EntryValidation",
   props: {

@@ -1,6 +1,7 @@
 <template lang="pug">
   div(v-if="entry")
-    Entry(:entry="entry" :mode="entry_mode")
+    EntryFullView(v-if="entry_mode === 'view'" :entry="entry" :mode="entry_mode")
+    EntryFullEdit(v-else :entry="entry" :mode="entry_mode")
 </template>
 
 <script>
@@ -13,12 +14,16 @@ import URLQueryMixin from "~/components/util/URLQueryMixin";
 import EntryFetchMixin from "~/components/entry/EntryFetchMixin";
 import NavBaseMixin from "~/components/NavBaseMixin";
 import EntryHelperMethodsMixin from "~/components/entry/EntryHelperMethodsMixin";
+import EntryFullView from "~/components/entry/EntryFullView"
+import EntryFullEdit from "~/components/entry/EntryFullEdit"
 
 // todo, use mapgetters with entries context
 export default {
   name: "entry",
   mixins: [EntryFetchMixin, PersistentStorageMixin, URLQueryMixin, NavBaseMixin, EntryHelperMethodsMixin],
   components: {
+    EntryFullEdit,
+    EntryFullView,
     Entry
   },
   data() {
@@ -47,9 +52,6 @@ export default {
     } else {
       next()
     }
-  },
-  mounted() {
-
   },
   computed: {
     entry() {

@@ -1,4 +1,4 @@
-import {get_creator,  new_value_getter} from "~/lib/entry";
+import {get_creator, new_value_getter} from "~/lib/entry";
 import {is_editable_mode, pack_value, unpack} from "~/lib/aspect";
 import {mapGetters} from "vuex"
 
@@ -146,7 +146,7 @@ export default {
       const _locationAspect = locationAspect(this.template)
       if (_locationAspect) {
         let location = new_value_getter(this.regular_values, _locationAspect)
-        if(location) {
+        if (location) {
           location = unpack(location)
           // console.log(location)
           if (!Array.isArray(location)) {
@@ -245,7 +245,7 @@ export default {
       })
     },
     entry_location(location) {
-      if(this.$_.isEqual(location, this.entry.location)) {
+      if (this.$_.isEqual(location, this.entry.location)) {
         return
       }
       // console.log("set new location", location)

@@ -41,7 +41,6 @@
         Title_Description(v-bind="page_title_description_props(current_page_info)")
     v-row(v-for="(aspect, aspect_index) in shown_aspects" :key="aspect.name")
       v-col(alignSelf="stretch" :cols="base_cols" :style="{padding:0}")
-        <!-- TODO how to keep this slimmer ?! -->
         v-scroll-y-transition(v-if="is_editable_mode")
           Aspect(
             v-bind="edit_regular_aspect_props(aspect)"
@@ -72,7 +71,7 @@
       v-row
         v-col(alignSelf="stretch" :cols="base_cols")
           v-divider
-    div(v-if="show_validation_comp")
+    div(v-if="is_editable_mode")
       v-row(v-if="is_last_page")
         EntryValidation(:entry="entry" :template="template" v-model="entry_complete")
       v-row(v-if="is_dirty")
@@ -85,12 +84,11 @@
             span {{$t("comp.entry_action_buttons.not_logged_in.text")}}
             a(href="https://creativecommons.org/share-your-work/public-domain/cc0/" target="_blank")  {{$t("comp.entry_action_buttons.not_logged_in.cc_ref_text")}}
     v-row
-      // checkout FullEntryMixin for the mode switch (eventually changing language)
       EntryActions(
         v-bind="entry_actions_props"
         :page.sync="page"
         @entry-action="entryAction($event)"
-        @mode="mode=$event") // see FullEntryMixin computed mode
+        @mode="mode=$event")
   v-container(v-else)
     div
 </template>
@@ -222,17 +220,6 @@ export default {
         title: page.title,
         header_type: "h2",
         description: this.is_editable_mode ? page.description : ""
-      }
-    },
-    view_page_title_description_props(aspect_index) {
-      if(aspect_index === 0) {
-        return this.page_title_description_props(this.pages[0])
-      }
-      const aspect_page= a_index => attr(this.shown_aspects[a_index]).page || 0
-      const prev_aspect_page = aspect_page(aspect_index - 1)
-      const current_aspect_page = aspect_page(aspect_index)
-      if(current_aspect_page - prev_aspect_page === 1) {
-        return this.page_title_description_props(this.pages[current_aspect_page])
       }
     },
     view_page_title_description_props(aspect_index) {

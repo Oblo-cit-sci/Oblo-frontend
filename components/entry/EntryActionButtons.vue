@@ -121,7 +121,7 @@ export default {
   },
   methods: {
     to_proper_mode() {
-      this.$emit("mode", this.proper_mode)
+      this.$emit("entry-action", "edit_entry")
     },
     cancel() {
       this.$emit("entry-action","cancel_draft")
