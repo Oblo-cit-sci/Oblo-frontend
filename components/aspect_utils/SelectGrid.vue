@@ -5,9 +5,9 @@
         :class="{cell_border: cell_border, cell_selected: is_selected(i)}")
         v-container.pt-1
           v-row.mt-1.mb-1.justify-center
-            v-img.sel_cursor(v-if="c.icon" :src="get_icon_url(c.icon)" :style="img_style" contain @click="select(c)" class="")
+            v-img.sel_cursor(v-if="c.icon" @click="select(c,'img')" :src="get_icon_url(c.icon)" :style="img_style" contain)
           v-row.mt-2.mb-2.justify-center
-            div.sel_cursor.px-1(@click="select(c)" :style="text_size(c)") {{c.text}}
+            div.sel_cursor.px-1(@click="select(c,'text')" :style="text_size(c)") {{c.text}}
 </template>
 
 <script>
@@ -56,8 +56,15 @@ export default {
     }
   },
   methods: {
-    select(value) {
-      this.$emit("selection", value)
+    select(value, src) {
+      console.log("SelectGrid", value, src)
+      // console.trace()
+      if (value.value === this.selection.value) {
+        console.log("emit null")
+        this.$emit("selection", null)
+      } else {
+        this.$emit("selection", value)
+      }
     },
     text_size(item) {
       let resp_size = (this.is_xsmall ? 80 : this.is_small ? 90 : 100)

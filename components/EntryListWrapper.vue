@@ -10,6 +10,7 @@
       :preview_options="preview_options"
       @request_more="request_more()"
       @preview_action="$emit('preview_action',$event)"
+      :download_config="download_config"
       @download="download_entries(entries_uuids)")
     CompactEntryList(v-if="!prepend_query && !normal_mode"
       :entries="entries_uuids"
@@ -39,8 +40,7 @@ export default {
     search_config: Array,
     init_request: Boolean,
     wait: Boolean, // created but parent still waits for other data, so show loading,
-    preview_options: Object,
-    templates_codes_loaded: false
+    preview_options: Object
   },
   data() {
     return {
@@ -98,6 +98,14 @@ export default {
     },
     query_config() {
       return this.configuration.filter(f, f.source !== "local")
+    },
+    download_config() {
+      // console.log("search config.", this.search_config)
+      // todo: problem... missing/unclear language and template
+      return {
+        entries: this.entries_uuids,
+        config: []
+      }
     }
   },
   watch: {

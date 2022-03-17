@@ -11,7 +11,10 @@
           slot-scope="{ hover }") {{$t("lang." + lang)}}
     v-card-text.pb-2(:style="{'min-height':'80px'}")
       v-img.float-left.mr-3.mb-1(:src="domain_icon_url" left width="40" height="40")
-      div {{domain_description}}
+      div
+        LanguageChip.mr-1(v-if="alternative_language"  :style="{top:'-4px'}"
+          :language_code="alternative_language" :full_name="false" small)
+        span {{domain_description}}
 </template>
 
 <script>
@@ -22,9 +25,11 @@ import ResponsivenessMixin from "~/components/ResponsivenessMixin";
 import {PAGE_DOMAIN} from "~/lib/pages"
 import {QP_D, QP_lang} from "~/lib/consts"
 import {domain_banner_url, domain_description, domain_icon_url, domain_title} from "~/lib/domain_data"
+import LanguageChip from "~/components/language/LanguageChip";
 
 export default {
   name: "DomainCard",
+  components: {LanguageChip},
   mixins: [DomainDataMixin, LanguageMixin, ResponsivenessMixin],
   data() {
     return {
@@ -61,6 +66,16 @@ export default {
     domain_icon_url() {
       return domain_icon_url(this.$api, this.domain_name)
     },
+    /**
+     * returns if the title/description differ from the UI language. in that case a chip with teh lang is shown
+     * @returns null if its the same as the UI lang, otherwise return the language
+     */
+    alternative_language() {
+      if (this.languages[0] !== this.$store.getters.ui_language) {
+        return this.languages[0]
+      }
+      return null
+    }
   },
   methods: {
     async goto_domain() {
