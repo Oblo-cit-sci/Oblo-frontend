@@ -61,7 +61,7 @@ export default {
       return !this.has_pages || this.page === this.pages.length - 1
     },
     shown_aspects() {
-      console.log("shown_aspects: has_pages?", this.has_pages, "is_view_mode?",this.is_view_mode)
+      // console.log("shown_aspects: has_pages?", this.has_pages, "is_view_mode?",this.is_view_mode)
       // not set on view-mode
       // console.log("shown-aspects. pages?", this.has_pages)
       if (this.has_pages) {

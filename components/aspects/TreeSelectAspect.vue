@@ -19,7 +19,7 @@
       v-textarea.treeselect_textarea(
         :flat="!is_empty"
         :solo="!is_empty"
-        :hide-details="show_dialog"
+        :hide-details="!show_dialog"
         :error="has_error"
         :error-messages="error_messages"
         readonly
@@ -143,7 +143,7 @@ export default {
       }
     },
     selected(val) {
-      // console.log("TSA selected", val)
+      console.log("TSA selected", val)
       this.dialogOpen = false;
       if (val) {
         this.update_value(val.value)
@@ -180,12 +180,13 @@ export default {
       else {
         // taken from TreeleafPicker
         const allow_levels = this.attr.allow_select_levels || 0
+        const clean_value = this.value || []
         // console.log(allow_levels, this.value.length, this.$_.includes(allow_levels, this.value.length))
-        if (this.$_.includes(allow_levels, this.value.length)) {
+        if (this.$_.includes(allow_levels, clean_value)) {
           return false
         }
         let options = this.tree.root.children
-        for (let val of this.value) {
+        for (let val of clean_value) {
           options = this.$_.get(options.find(o => o.value === val.value), "children", [])
         }
         options = this.$_.cloneDeep(options)
@@ -198,7 +199,7 @@ export default {
       }
     },
     error_messages() {
-      if (this.has_error && this.value.length > 0) {
+      if (this.has_error && this.show_dialog && this.value.length > 0) {
         return this.$t('comp.treeselect_asp.select_another_with_level',{
           level_title: this.tree.levels[this.value.length - 1].text
         })

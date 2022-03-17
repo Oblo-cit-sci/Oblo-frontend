@@ -235,17 +235,6 @@ export default {
         return this.page_title_description_props(this.pages[current_aspect_page])
       }
     },
-    view_page_title_description_props(aspect_index) {
-      if(aspect_index === 0) {
-        return this.page_title_description_props(this.pages[0])
-      }
-      const aspect_page= a_index => attr(this.shown_aspects[a_index]).page || 0
-      const prev_aspect_page = aspect_page(aspect_index - 1)
-      const current_aspect_page = aspect_page(aspect_index)
-      if(current_aspect_page - prev_aspect_page === 1) {
-        return this.page_title_description_props(this.pages[current_aspect_page])
-      }
-    },
     edit_regular_aspect_props(aspect) {
       return {
         aspect,
