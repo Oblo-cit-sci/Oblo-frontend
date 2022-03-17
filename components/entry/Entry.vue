@@ -116,7 +116,7 @@ import EntryTags from "~/components/entry/EntryTags"
 import AspectSetMixin from "~/components/aspects/AspectSetMixin"
 import LanguageChip from "~/components/language/LanguageChip";
 import AspectSet from "~/components/AspectSet";
-import {pack_value, attr, is_editable_mode} from "~/lib/aspect";
+import {pack_value, attr} from "~/lib/aspect";
 import {BUS_DIALOG_OPEN} from "~/plugins/bus";
 import OutdatedChip from "~/components/tag/OutdatedChip"
 import goTo from 'vuetify/lib/services/goto'
@@ -222,6 +222,17 @@ export default {
         title: page.title,
         header_type: "h2",
         description: this.is_editable_mode ? page.description : ""
+      }
+    },
+    view_page_title_description_props(aspect_index) {
+      if(aspect_index === 0) {
+        return this.page_title_description_props(this.pages[0])
+      }
+      const aspect_page= a_index => attr(this.shown_aspects[a_index]).page || 0
+      const prev_aspect_page = aspect_page(aspect_index - 1)
+      const current_aspect_page = aspect_page(aspect_index)
+      if(current_aspect_page - prev_aspect_page === 1) {
+        return this.page_title_description_props(this.pages[current_aspect_page])
       }
     },
     view_page_title_description_props(aspect_index) {
