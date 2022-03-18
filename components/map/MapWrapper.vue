@@ -185,8 +185,8 @@ export default {
       return this.all_map_entries(this.domain_name)
     },
     show_legend() {
-      if (!this.$_.isEmpty(this.domain_templates_color_list)) {
-        return (this.is_md && !this.menu_open) || this.is_large
+      if (!this.$_.isEmpty(this.domain_templates_color_list) && this.can_create_multiple_etypes) {
+        return ((this.is_md && !this.menu_open) || this.is_large)
       }
     },
     map_height() {

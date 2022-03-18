@@ -1,11 +1,13 @@
 <template lang="pug">
   div(v-if="is_editable_mode")
-    v-list(v-if="list_view")
+    v-list(v-if="list_view" :three-line="has_some_description")
       <!-- mandatory does only check if min > 1 -->
       v-list-item-group(v-model="selection_index" multiple active-class="in_selection" :mandatory="mandatory" :max="max_vals")
         v-list-item(v-for="(option,index) in computed_list_options" :key="index" :disabled="option_disabled(option)")
           template(v-slot:default="{ active }")
-            v-list-item-content {{option.text}}
+            v-list-item-content
+              v-list-item-title {{option.text}}
+              v-list-item-subtitle {{item.description}}
             v-list-item-action
               v-checkbox( color="khaki" :input-value="active" readonly)
     v-select(v-else
@@ -108,7 +110,7 @@ export default {
       get() {
         if (this.value) {
           const values_only = this.$_.map(this.value, "value")
-          const options_values =  this.$_.map(this.computed_list_options, "value")
+          const options_values = this.$_.map(this.computed_list_options, "value")
           return this.$_.filter(options_values, o => values_only.includes(o))
         }
       },
@@ -117,7 +119,10 @@ export default {
         // console.log("set", value, selection)
         this.update_value(selection)
       }
-    }
+    },
+    has_some_description() {
+      return this.$_.find(this.options, (o) => o.description && o.description !== "") !== undefined
+    },
   },
   methods: {
     set_selection() {

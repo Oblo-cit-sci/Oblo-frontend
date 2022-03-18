@@ -82,6 +82,7 @@ import {edit_mode_question_only} from "~/lib/template"
 import {BUS_DIALOG_OPEN} from "~/plugins/bus"
 import {get_creator} from "~/lib/entry"
 import {CREATOR} from "~/lib/actors"
+import AspectSet from "~/components/AspectSet"
 
 /***
  * EntryNavMixin only for the can_edit
@@ -89,7 +90,7 @@ import {CREATOR} from "~/lib/actors"
 
 export default {
   name: "EntryFullEdit",
-  components: {Aspect, ChangedAspectNotice, EntryActions, EntryActorList, EntryValidation, Title_Description},
+  components: {Aspect, AspectSet, ChangedAspectNotice, EntryActions, EntryActorList, EntryValidation, Title_Description},
   mixins: [EntryFullMixin, EntryNavMixin, PersistentStorageMixin, TypicalAspectMixin],
   props: {
     is_dirty: Boolean,
@@ -166,8 +167,6 @@ export default {
             const roles = this.$_.cloneDeep(this.entry.actors)
             const creator_role = roles.find(entry_role => entry_role.role === CREATOR)
             const {public_name, registered_name} = this.user
-            const rrr = {public_name, registered_name} = this.user
-            console.log(rrr)
             creator_role.actor = {public_name, registered_name}
             this.$store.commit("entries/set_edit_meta_value", {
               meta_aspect_name: ACTORS,

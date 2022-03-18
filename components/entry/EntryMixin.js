@@ -46,6 +46,9 @@ export default {
   },
   computed: {
     ...mapGetters({"is_admin": "user/is_admin", "username": "user/registered_name"}),
+    license_aspect() {
+      return this.asp_license("license", ["cc_licenses"], null)
+    },
     meta_aspects() {
       // todo be more generic where the licenses come form. user settings...
       // todo, allow changing the language if(this.$store.getter.user.editor_config.)

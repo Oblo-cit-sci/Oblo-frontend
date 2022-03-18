@@ -1,7 +1,7 @@
 <template lang="pug">
   div
     div.mt-2(v-for="role in available_roles" :key="role.name")
-      Title_Description(:t_title="role.t_title" :t_description="role.t_description" header_type="h4")
+      Title_Description(:t_title="role.t_title" :t_description="role.t_description" :icon="role.icon" header_type="h4")
       ActorSearch(
         :multiple="role.name !== 'creator'"
         v-model="grouped_roles[role.name]"
@@ -66,8 +66,8 @@ export default {
         roles.unshift(
           {
             name: CREATOR,
-            label: this.$t(base_path + "creator.label"),
-            description: this.$t(base_path + "creator.descr"),
+            t_title: base_path + "creator.label",
+            description: base_path + "creator.descr",
             icon: ROLE_ICONS[CREATOR]
           }
         )
@@ -75,8 +75,8 @@ export default {
       if (this.entry_is_private) {
         roles.push({
           name: SHARED,
-          label: this.$t(base_path + "shared.label"),
-          description: this.$t(base_path + "shared.descr"),
+          t_title: base_path + "shared.label",
+          t_description: base_path + "shared.descr",
           icon: ROLE_ICONS[SHARED]
         })
       }
