@@ -57,6 +57,7 @@ export default {
         // console.log(aspect.name,  required)
         if (required) {
           const unpacked_value = unpack(this.entry.values[aspect.name]) || aspect_raw_default_value(aspect)
+          // THAT'S THE SPICE
           const validation = this.validate_aspect(aspect, unpacked_value, this.entry.values)
           const valid = validation[0]
           const invalid_message = validation[1]
@@ -128,7 +129,7 @@ export default {
           //let item_validations = []
           let incomplete_items = []
           for (let item_index in unpacked_value) {
-            const item = unpacked_value[item_index]
+            const item = unpack(unpacked_value[item_index])
             const validation = this.validate_aspect(aspect.list_items, item || pack_value(null), conditionals)
             if (validation[0] !== OK) {
               incomplete_items.push(parseInt(item_index) + 1)
@@ -149,14 +150,16 @@ export default {
           } else if (attr(aspect).merge_in_components_as_conditionals) {
             comp_conditionals = Object.assign(this.$_.cloneDeep(unpacked_value), conditionals)
           }
+          debugger
           const component_value = unpack(unpacked_value[component.name]) || aspect_raw_default_value(component)
+          // console.log("validate-component",aspect.name, component.name, component_value, comp_conditionals)
           let component_validations = this.validate_aspect(component, component_value, comp_conditionals)
           if (component_validations[0] !== OK) {
             missing_components.push(component.label)
           }
         }
         if (missing_components.length > 0) {
-          // console.warn("component validation fail", aspect.label)
+          console.warn("component validation fail", aspect.name, missing_components)
           return [COMPOSITE_INCOMPLETE, missing_components]
         } else {
           return [OK]
