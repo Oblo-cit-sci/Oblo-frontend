@@ -71,7 +71,7 @@ export default {
      * @returns null if its the same as the UI lang, otherwise return the language
      */
     alternative_language() {
-      if (this.languages[0] !== this.$store.getters.ui_language) {
+      if (this.domain_data.language !== this.$store.getters.ui_language) {
         return this.languages[0]
       }
       return null

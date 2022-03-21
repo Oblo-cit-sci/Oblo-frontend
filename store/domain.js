@@ -161,11 +161,14 @@ export const getters = {
       // console.log(domain_name, getters.get_domain_languages(domain_name),getters.get_domain_default_language(domain_name))
       // console.log(getters.get_domain_languages(domain_name).includes(language))
       if (getters.get_domain_languages(domain_name).includes(language) || !with_default)
-        return Object.assign({name: domain_name},
+        return Object.assign({name: domain_name, language},
           getters.domain_by_name(domain_name).overviews[language])
-      else
-        return Object.assign({name: domain_name},
-          getters.domain_by_name(domain_name).overviews[getters.get_domain_default_language(domain_name)])
+      else{
+        const default_lang = getters.get_domain_default_language(domain_name)
+        console.log(domain_name, default_lang)
+        return Object.assign({name: domain_name, language:default_lang},
+          getters.domain_by_name(domain_name).overviews[default_lang])
+      }
     }
   },
   all_domains_overview(state, getters) {

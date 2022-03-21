@@ -25,14 +25,6 @@
 
 <script>
 
-/*
-prev else to
-domaincard
-            v-row(v-else)
-              div
-                v-img.float-left.mr-3.mb-1(:src="domain_icon(domain.name)" left width="40" height="40")
-                span {{$t("page.index.domain_only_available_in_langs", {domain_name: domain.name, languages: language_names(domain)})}}
- */
 
 import {mapGetters} from "vuex"
 
