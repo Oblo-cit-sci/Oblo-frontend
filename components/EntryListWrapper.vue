@@ -64,10 +64,10 @@ export default {
       const search_config = this.build_search_config(this.search_config)
       this.async_entry_search(search_config, this.entries_uuids.length).then(async ({data}) => {
         const result = data.data
-        if (!this.$_.isEmpty(result.entries)) {
-          console.log("WAAAITING FOR TEMPLATES")
-          await this.guarantee_templates_codes(result.entries, this.$store.getters.domain_language)
-        }
+        // if (!this.$_.isEmpty(result.entries)) {
+        //   // TODO maybe put this back...? now its in EntryPreviewList.visible_entries
+        //   // await this.guarantee_templates_codes(result.entries, this.$store.getters.domain_language)
+        // }
         const entry_uuids = this.store_received_entries(result.entries)
         if (this.$_.isEmpty(this.entries_uuids)) {
           // const local_search_config = this.search_config

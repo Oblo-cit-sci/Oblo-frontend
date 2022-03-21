@@ -1,7 +1,7 @@
 <template lang="pug">
   div
     v-list-item(v-if="can_fix_domain" :style="{'background-color':'#00A0A080'}")
-      v-list-item-content {{$t('comp.domain_menu.fix_label', {domain_title:title})}}
+      v-list-item-content {{$t('comp.domain_menu.fix_label', {domain_title:domain_title})}}
       v-list-item-action
         v-btn(small @click="fix_domain(domain_name)")
           v-icon mdi-book-lock

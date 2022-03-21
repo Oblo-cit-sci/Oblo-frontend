@@ -7,7 +7,7 @@
           template(v-slot:default="{ active }")
             v-list-item-content
               v-list-item-title {{option.text}}
-              v-list-item-subtitle {{item.description}}
+              v-list-item-subtitle {{option.description}}
             v-list-item-action
               v-checkbox( color="khaki" :input-value="active" readonly)
     v-select(v-else

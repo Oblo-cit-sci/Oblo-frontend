@@ -69,18 +69,18 @@ import EntryFullMixin from "~/components/entry/EntryFullMixin"
 import Aspect from "~/components/Aspect"
 import EntryActorList from "~/components/entry/EntryActorList"
 import Title_Description from "~/components/util/Title_Description"
-import {ACTORS, EDIT, PRIVATE, VIEW} from "~/lib/consts"
+import {ACTORS, EDIT, LOCATION, PRIVATE, TITLE, VIEW} from "~/lib/consts"
 import PersistentStorageMixin from "~/components/util/PersistentStorageMixin"
-import {pack_value} from "~/lib/aspect"
+import {pack_value, unpack} from "~/lib/aspect"
 import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin"
 import EntryValidation from "~/components/entry/EntryValidation"
 import ChangedAspectNotice from "~/components/entry/ChangedAspectNotice"
 import EntryNavMixin from "~/components/EntryNavMixin"
 import EntryActions from "~/components/entry/EntryActions"
 import {recursive_unpack2} from "~/lib/util"
-import {edit_mode_question_only} from "~/lib/template"
+import {edit_mode_question_only, locationAspect, template_titleAspect} from "~/lib/template"
 import {BUS_DIALOG_OPEN} from "~/plugins/bus"
-import {get_creator} from "~/lib/entry"
+import {get_creator, new_value_getter} from "~/lib/entry"
 import {CREATOR} from "~/lib/actors"
 import AspectSet from "~/components/AspectSet"
 
@@ -90,7 +90,15 @@ import AspectSet from "~/components/AspectSet"
 
 export default {
   name: "EntryFullEdit",
-  components: {Aspect, AspectSet, ChangedAspectNotice, EntryActions, EntryActorList, EntryValidation, Title_Description},
+  components: {
+    Aspect,
+    AspectSet,
+    ChangedAspectNotice,
+    EntryActions,
+    EntryActorList,
+    EntryValidation,
+    Title_Description
+  },
   mixins: [EntryFullMixin, EntryNavMixin, PersistentStorageMixin, TypicalAspectMixin],
   props: {
     is_dirty: Boolean,
@@ -138,6 +146,37 @@ export default {
     },
     show_visitor_message() {
       return this.is_last_page && this.is_edit_mode && this.can_edit && !this.logged_in
+    },
+    // todo cleaner?
+    entry_title() {
+      if (this.is_editable_mode) {
+        // todo dirty. do this similar to new tag schema. have "titleAspect" in the attr of the actual aspect that
+        // sets the title
+        let titleAspect = template_titleAspect(this.template)
+        if (!titleAspect) {
+          return this.entry.title
+        }
+        let title = new_value_getter(this.regular_values, titleAspect)
+        title = this.$_.get(title, "value", "")
+        return title
+      } else { // VIEW
+        return this.entry.title
+      }
+    },
+    entry_location() {
+      // console.log("calc location")
+      const _locationAspect = locationAspect(this.template)
+      if (_locationAspect) {
+        let location = new_value_getter(this.regular_values, _locationAspect)
+        if (location) {
+          location = unpack(location)
+          // console.log(location)
+          if (!Array.isArray(location)) {
+            location = [location]
+          }
+          return location
+        }
+      }
     },
   },
   created() {
@@ -216,6 +255,22 @@ export default {
           }
         }
       }
+    },
+    entry_title(new_title) {
+      this.$store.commit("entries/set_edit_meta_value", {
+        meta_aspect_name: TITLE,
+        value: new_title
+      })
+    },
+    entry_location(location) {
+      if (this.$_.isEqual(location, this.entry.location)) {
+        return
+      }
+      // console.log("set new location", location)
+      this.$store.commit("entries/set_edit_meta_value", {
+        meta_aspect_name: LOCATION,
+        value: location
+      })
     }
   }
 }

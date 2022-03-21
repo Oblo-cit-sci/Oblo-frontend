@@ -1,4 +1,4 @@
-import {get_creator, new_value_getter} from "~/lib/entry";
+import {get_creator} from "~/lib/entry";
 import {is_editable_mode, pack_value, unpack} from "~/lib/aspect";
 import {mapGetters} from "vuex"
 
@@ -9,7 +9,7 @@ import {
   ENTRY, LOCATION,
   PUBLISHED,
   REQUIRES_REVIEW,
-  REVIEW, TAG, TITLE,
+  REVIEW, TAG,
   VIEW
 } from "~/lib/consts";
 
@@ -109,22 +109,6 @@ export default {
     template_color() {
       return this.$_.get(this.template, "rules.marker_color")
     },
-    // todo cleaner?
-    entry_title() {
-      if (this.is_editable_mode) {
-        // todo dirty. do this similar to new tag schema. have "titleAspect" in the attr of the actual aspect that
-        // sets the title
-        let titleAspect = template_titleAspect(this.template)
-        if (!titleAspect) {
-          return this.entry.title
-        }
-        let title = new_value_getter(this.regular_values, titleAspect)
-        title = this.$_.get(title, "value", "")
-        return title
-      } else { // VIEW
-        return this.entry.title
-      }
-    },
     entry_image() {
       if (this.entry.image) {
         if (this.entry.image.startsWith("http")) {
@@ -140,21 +124,6 @@ export default {
           }
         } else {
           return null
-        }
-      }
-    },
-    entry_location() {
-      // console.log("calc location")
-      const _locationAspect = locationAspect(this.template)
-      if (_locationAspect) {
-        let location = new_value_getter(this.regular_values, _locationAspect)
-        if (location) {
-          location = unpack(location)
-          // console.log(location)
-          if (!Array.isArray(location)) {
-            location = [location]
-          }
-          return location
         }
       }
     },
@@ -239,22 +208,4 @@ export default {
       this.export_data(this.prepare_entry_for_download(this.entry), this.download_title)
     }
   },
-  watch: {
-    entry_title(new_title) {
-      this.$store.commit("entries/set_edit_meta_value", {
-        meta_aspect_name: TITLE,
-        value: new_title
-      })
-    },
-    entry_location(location) {
-      if (this.$_.isEqual(location, this.entry.location)) {
-        return
-      }
-      // console.log("set new location", location)
-      this.$store.commit("entries/set_edit_meta_value", {
-        meta_aspect_name: LOCATION,
-        value: location
-      })
-    }
-  }
 }

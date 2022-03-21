@@ -1,7 +1,7 @@
 import EntryMixin from "~/components/entry/EntryMixin"
 import {draft_color} from "~/lib/consts"
 import AspectSetMixin from "~/components/aspects/AspectSetMixin"
-import {allow_download} from "~/lib/template"
+import {allow_download, locationAspect} from "~/lib/template"
 
 export default {
   name: "EntryFullMixin",
@@ -44,7 +44,7 @@ export default {
       if (long_description)
         return long_description
       return this.template.description
-    },
+    }
   },
   created() {
     if (this.is_draft && this.is_edit_mode) {
@@ -62,6 +62,7 @@ export default {
       }
     },
     page_title_description_props(page) {
+      // console.log(page)
       return {
         title: page.title,
         header_type: "h2",

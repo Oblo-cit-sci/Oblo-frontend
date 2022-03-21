@@ -61,7 +61,6 @@ export default {
         console.error(error)
       }
     },
-
     async guarantee_template_code_of_version(entry) {
       if (entry.template_version ===
         this.$store.getters["templates/get_current_template_version"](entry.template.slug, entry.language)) {

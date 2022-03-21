@@ -104,15 +104,7 @@ export default {
     next_loading() {
       return this.requesting_entries && this.entries_uuids.length > 0
     },
-    //
-    // entries() {
-    //   this.visible_entries.then(
-    //     entries => {
-    //       return entries
-    //     }
-    //   )
-    //   return []
-    // },
+
     has_entries() {
       return this.num_entries > 0
     },
@@ -172,9 +164,11 @@ export default {
         }
       })
       // console.log("missing_templates", missing_templates)
-      missing_templates.forEach(async template => {
-        await this.guarantee_default_language(template)
+      const fetch_missing_template_promises = []
+      missing_templates.forEach(template => {
+        fetch_missing_template_promises.push(this.guarantee_default_language(template))
       })
+      await Promise.all(fetch_missing_template_promises)
       this._async_entries = entries
       return entries
     }

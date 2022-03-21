@@ -21,7 +21,7 @@ export default {
       return pages(this.template).length > 0
     },
     has_pages() {
-      console.log("HAS pages?", this.mode, this.is_editable_mode, this.has_defined_pages)
+      // console.log("HAS pages?", this.mode, this.is_editable_mode, this.has_defined_pages)
       return this.is_editable_mode && (this.has_defined_pages || this.one_aspect_per_page)
     },
     active_aspects() {

@@ -27,6 +27,9 @@ export default {
     domain_name() {
       return this.get_domain_data.name
     },
+    domain_title(){
+      return this.get_domain_data.title
+    },
     get_domain_data() {
       if (this.domain_data) {
         return this.domain_data

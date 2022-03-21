@@ -36,7 +36,7 @@
     v-row(v-for="(aspect, aspect_index) in shown_aspects" :key="aspect.name")
       v-col(alignSelf="stretch" :cols="base_cols" :style="{padding:0}")
         div
-          Title_Description.ml-2(v-bind="view_page_title_description_props(aspect_index)")
+          Title_Description.ml-2(v-if="has_defined_pages" v-bind="view_page_title_description_props(aspect_index)")
           Aspect(
             v-bind="view_regular_aspect_props(aspect)"
             @aspectAction="aspectAction($event)")
