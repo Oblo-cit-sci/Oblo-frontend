@@ -378,7 +378,7 @@
       "msgs": {
         "missing": "{aspect_label}: missing",
         "list_not_enough": "{aspect_label}: requires more {item_name}",
-        "composite_incomplete": "  is not complete: missing components: {invalid_components_msgs}",
+        "composite_incomplete": "{aspect_label}: not complete: {invalid_components_msgs}",
         "listitem_incomplete": "{aspect_label}: has at least one incomplete item: {invalid_item_msgs}",
         "invalid_value": "{aspect_label}: invalid value"
       }
