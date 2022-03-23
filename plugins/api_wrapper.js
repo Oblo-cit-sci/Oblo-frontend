@@ -240,12 +240,6 @@ class Domain extends QueryBase {
     })
   }
 
-  async multi_d_get_codes_templates(domain_names, language, full) {
-    return this.get_("get_codes_templates", {
-      params: {domain_names, language, full}
-    })
-  }
-
   as_csv(domain_name, languages) {
     return this.get_(`${domain_name}/as_csv`, {
       params: {
