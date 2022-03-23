@@ -181,12 +181,12 @@ export default {
         type: SELECT,
         items: [{
           text: this.$t("asp.privacy.options.public.text"),
-          description: this.aspect_description("asp.privacy.options.public.", alt_label_descr),
+          description: this.alt_description("asp.privacy.options.public.", alt_label_descr),
           value: "public",
           icon: "images/icons/privacy/earth.png"
         }, {
           text: this.$t("asp.privacy.options.private.text"),
-          description: this.aspect_description("asp.privacy.options.private.", alt_label_descr),
+          description: this.alt_description("asp.privacy.options.private.", alt_label_descr),
           value: "private",
           icon: "images/icons/privacy/lock-outline.png"
         }],

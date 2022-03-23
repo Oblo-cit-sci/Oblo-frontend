@@ -21,6 +21,7 @@
 import {INT, FLOAT} from "~/lib/consts";
 import AspectComponentMixin from "./AspectComponentMixin";
 import {resolve_number} from "~/lib/util"
+import {attr} from "~/lib/aspect";
 
 /**
  * details are never hidden. cuz the input could be invalid
@@ -29,9 +30,9 @@ export default {
   name: "NumberAspect",
   mixins: [AspectComponentMixin],
   data() {
-    const attr = this.$_.get(this.aspect, "attr", {})
-    const min = resolve_number(attr.min)
-    const max = resolve_number(attr.max)
+    const attr_ = attr(this.aspect)
+    const min = resolve_number(attr_.min)
+    const max = resolve_number(attr_.max)
     const validation_rules = [value => {
         if (this.num_type === INT) {
           let i = parseInt(value)
@@ -60,8 +61,7 @@ export default {
       })
     }
     return {
-      // todo what?
-      suffix: attr.suffix || "",
+      suffix: attr_.suffix || "",
       num_type: null,
       validation_rules,
       error: null // just emit it up

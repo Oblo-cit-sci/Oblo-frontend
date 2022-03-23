@@ -17,6 +17,7 @@ import {
 import {COMPOSITE, LIST} from "~/lib/consts";
 import {item_count_name} from "~/lib/listaspects";
 import AspectConditionChecker from "~/components/aspect_utils/AspectConditionChecker";
+import AspectValueValidation from "~/components/aspect_utils/AspectValueValidation";
 
 
 const OK = 0
@@ -24,6 +25,7 @@ const MISSING = 1
 const LIST_NOT_ENOUGH = 2
 const COMPOSITE_INCOMPLETE = 3
 const LISTITEM_INCOMPLETE = 4
+const INVALID_VALUE = 5
 
 /**
  * Requires EntryMixin?
@@ -36,7 +38,7 @@ export default {
     template: Object,
   },
   components: {},
-  mixins: [AspectConditionChecker],
+  mixins: [AspectConditionChecker, AspectValueValidation],
   data() {
     return {}
   },
@@ -63,7 +65,10 @@ export default {
           const invalid_message = validation[1]
           let add_text = ""
           const aspect_label = aspect.label
-          if (valid === MISSING) {
+          if (valid === OK ){
+            // nothing to do
+          }
+          else if (valid === MISSING) {
             add_text = this.$t("comp.entry_validation.msgs.missing", {aspect_label})
           } else if (valid === LIST_NOT_ENOUGH) {
             add_text = this.$t("comp.entry_validation.msgs.list_not_enough", {
@@ -80,6 +85,12 @@ export default {
               aspect_label,
               invalid_item_msgs: invalid_message.join(", ")
             })
+          } else if (valid === INVALID_VALUE) {
+            add_text = this.$t("comp.entry_validation.msgs.invalid_value", {
+              aspect_label
+            })
+          } else {
+            console.error("Unknown Validation result", validation)
           }
           if (add_text) {
             if (this.has_pages) {
@@ -99,19 +110,20 @@ export default {
   methods: {
     validate_aspect(aspect, unpacked_value, conditionals) {
       let required = this.$_.get(attr(aspect), "required", true)
-
+      debugger
       if (!required) {
         return [OK]
       }
-      // const raw_value = unpack(packed_values)
 
       const a_default = aspect_raw_default_value(aspect)
-      if (attr(aspect).IDAspect) {
-        return [OK]
-      }
 
       if (this._condition_fail(aspect, conditionals)) {
         return [OK]
+      }
+
+      const value_validation = this.aspect_value_validation(aspect, unpacked_value)
+      if (value_validation !== null) {
+        return [INVALID_VALUE, value_validation]
       }
 
       if (unpacked_value === null) {
