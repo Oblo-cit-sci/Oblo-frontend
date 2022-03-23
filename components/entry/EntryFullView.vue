@@ -5,31 +5,29 @@
         v-icon mdi-arrow-left-thick
       span.my-auto {{template.title}}
     v-row
-      v-col.pt-2(xs12 md12)
+      v-col.pt-2.pb-0(xs12 md12)
         Title_Description(v-bind="entry_title_description_props")
           span.ml-1(:style="{'color': draft_color}") {{is_draft ? "[" + $t('comp.entrypreview.draft') +"]" : ""}}
-    v-row
-    .ml-3
-      v-row(:style="{'text-align': 'right', 'font-size':'80%'}")
-        span.my-auto {{$t("comp.entrypreview.created")}} {{entry_date}}
-      v-row
+    v-row.pl-3(:style="{'font-size':'80%'}")
+      span.my-auto {{$t("comp.entrypreview.created")}} {{entry_date}}
+    v-row.pl-3.py-1
         MetaChips(:meta_aspects="meta_aspect_chips")
-      v-row
-        v-col.px-0.py-1(cols=12)
-          EntryActorList.mt-2(:actors="actors")
-      v-row(v-if="is_template_outdated")
-        v-col.px-0.py-1(cols=12)
-          OutdatedChip
-      v-row
-        v-col.px-0.py-1(cols=12)
-          Taglist(:tags="tags")
-      v-row(justify="center" v-if="entry_image")
-        v-col(cols=6 sm=4 md=10 alignSelf="center")
-          v-img.entry-display-size(
-            position="left"
-            contain
-            :src="entry_image"
-            max-height="300")
+    v-row
+      v-col.pl-2.py-0(cols=12)
+        EntryActorList.mt-2(:actors="actors")
+    v-row(v-if="is_template_outdated")
+      v-col.px-0.py-1(cols=12)
+        OutdatedChip
+    v-row
+      v-col.px-0.py-1(cols=12)
+        Taglist(:tags="tags")
+    v-row(justify="center" v-if="entry_image")
+      v-col(cols=6 sm=4 md=10 alignSelf="center")
+        v-img.entry-display-size(
+          position="left"
+          contain
+          :src="entry_image"
+          max-height="300")
     v-row
       v-col(:cols="base_cols")
         v-divider.wide_divider(v-if="is_first_page")

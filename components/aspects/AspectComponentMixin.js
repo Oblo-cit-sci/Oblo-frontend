@@ -12,9 +12,8 @@ export default {
   name: "AspectComponentMixin",
   mixins: [AspectBaseMixin],
   props: {
-    // todo mvalue only Object
     mvalue: {
-      type: [Object, String, Number, Array, Boolean, null],
+      type: Object,
       required: true
     },
     aspect: {

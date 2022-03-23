@@ -221,7 +221,6 @@ export default {
       // console.log("MapIncldeMixin.map_goto_location", location)
       // debugger
       const center = this.transform_loc(location.coordinates)
-      console.log("map_goto_location", center)
       this.map.easeTo({
         center: center,
         duration: 2000, // make the flying slow

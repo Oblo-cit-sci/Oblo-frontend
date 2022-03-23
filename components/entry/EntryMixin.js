@@ -6,7 +6,7 @@ import {
   ACTORS,
   DRAFT,
   EDIT,
-  ENTRY, LOCATION,
+  ENTRY,
   PUBLISHED,
   REQUIRES_REVIEW,
   REVIEW, TAG,
@@ -23,7 +23,6 @@ import TypicalAspectMixin from "~/components/aspect_utils/TypicalAspectMixin";
 import EntryMetaAspects from "~/components/EntryMetaAspects";
 import EntryHelperMethodsMixin from "~/components/entry/EntryHelperMethodsMixin";
 import URLQueryMixin from "~/components/util/URLQueryMixin"
-import {locationAspect, template_titleAspect} from "~/lib/template"
 
 export default {
   name: "EntryMixin",
@@ -101,6 +100,7 @@ export default {
     },
     template() {
       // console.log("template on page: ", this.$route.name, this.query_entry_uuid)
+      // console.log("is_template_outdated?", this.is_template_outdated)
       if (this.is_template_outdated && this.query_entry_uuid) {
         return this.get_template_of_version(this.entry)
       }
@@ -128,7 +128,10 @@ export default {
       }
     },
     type_name() {
-      return this.template.title
+      if (!this.template) {
+        console.warn("cannot load template for ", this.entry.uuid, this.entry.template_version)
+      }
+      return this.template?.title || ""
     },
     aspect_loc() {
       return [ENTRY, this.uuid, this.template_slug]
@@ -138,6 +141,8 @@ export default {
       // return this.entry.template_version !== this.template.version
     },
     is_template_outdated() {
+      // console.log("check template outdated...")
+      // console.log(this.entry.template_version, this.get_template(this.entry).version)
       return this.entry.template_version < this.get_template(this.entry).version
     },
     download_title() {
