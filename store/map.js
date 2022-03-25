@@ -1,4 +1,3 @@
-import {entry_location2geojson_arr} from "~/lib/location"
 
 const ld = require("lodash")
 

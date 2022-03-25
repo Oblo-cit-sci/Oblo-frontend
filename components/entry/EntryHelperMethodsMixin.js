@@ -6,7 +6,7 @@ export default {
       return this.$store.getters["templates/entry_type"](entry.template.slug, lang)
     },
     get_template_of_version(entry) {
-      console.log("checking if outdated version exists")
+      // console.log("checking if outdated version exists")
       return this.$store.getters["templates/entry_type_version"](entry.template.slug, entry.language, entry.template_version)
     }
   }

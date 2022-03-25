@@ -67,6 +67,7 @@ import {
   BUS_MAP_FIT_BOUNDS,
   BUS_MAP_GOTO_GEOMETRY_FEATURE_VALUE
 } from "~/plugins/bus";
+import {recursive_unpack, recursive_unpack2} from "~/lib/util";
 
 const cluster_layer_name = LAYER_BASE_ID + '_clusters'
 const show_cluster_place_name = false
@@ -116,6 +117,7 @@ export default {
         ext_value: {value: null},
         dialog_open: false
       },
+      map_goto_action: null, // only for storing locations before the map is loaded...
       act_cluster: null,
       act_cluster_expansion_zoom: null,
       act_zoom: null,
@@ -264,17 +266,21 @@ export default {
       }
     )
 
+    // TODO : unite the following functions...
     this.$bus.$on(BUS_MAP_GOTO_GEOMETRY_FEATURE_VALUE, value => {
       // console.log("map received goto-geometry-feature-value", value)
-      this.map_goto_geometry_feature_value(value)
+      // this.map_goto_geometry_feature_value(value)
+      this.map_goto_action = [BUS_MAP_GOTO_GEOMETRY_FEATURE_VALUE, value]
     })
 
     this.$bus.$on(BUS_MAP_FLY_TO, coordinates => {
-      this.map_goto_location(coordinates)
+      // this.map_goto_location(coordinates)
+      this.map_goto_action = [BUS_MAP_FLY_TO, coordinates]
     })
 
     this.$bus.$on(BUS_MAP_FIT_BOUNDS, bbox => {
-      this.map_fitBounds(bbox)
+      // this.map_fitBounds(bbox)
+      this.map_goto_action = [BUS_MAP_FIT_BOUNDS, bbox]
     })
   },
   methods: {
@@ -542,9 +548,10 @@ export default {
         }
       }
 
-      const include_types = this.$store.getters["search/get_act_config_value_by_name"](TEMPLATE)
+      const include_types = recursive_unpack(this.$store.getters["search/get_act_config_value_by_name"](TEMPLATE))
       const drafts = this.$_.flatten(this.$store.getters["entries/domain_drafts"](this.domain_name)
-        .filter(e => include_types.includes(e.template.slug)).map(e => entry_location2geojson_arr(e, ["status"])))
+        .filter(e => include_types.includes(e.template.slug)).map(e =>
+          entry_location2geojson_arr(e, ["status"], `[${this.$t("comp.entry.no_title")}]`)))
       for (let i in drafts) {
         drafts[i].id = filtered_entries.features.length + parseInt(i)
       }
@@ -831,6 +838,20 @@ export default {
       this.check_entries_map_done()
       this.$store.commit("map/map_loaded", true)
       this.$bus.$emit(BUS_MAP_LOADED)
+      if (this.map_goto_action) {
+        const value = this.map_goto_action[1]
+        switch (this.map_goto_action[0]) {
+          case BUS_MAP_GOTO_GEOMETRY_FEATURE_VALUE:
+            this.map_goto_geometry_feature_value(value)
+            break
+          case BUS_MAP_FLY_TO:
+            this.map_goto_location(value)
+            break
+          case BUS_MAP_FIT_BOUNDS:
+            this.map_fitBounds(value)
+            break
+        }
+      }
     },
     menu_open() {
       this.check_hide_map()

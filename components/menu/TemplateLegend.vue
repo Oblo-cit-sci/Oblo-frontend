@@ -17,6 +17,7 @@ import {TEMPLATE} from "~/lib/consts"
 import {unpack} from "~/lib/aspect";
 import FilterMixin from "~/components/FilterMixin";
 import DomainDataMixin from "~/components/domain/DomainDataMixin";
+import {recursive_unpack} from "~/lib/util";
 
 export default {
   name: "TemplateLegend",
@@ -33,7 +34,7 @@ export default {
       get: function () {
         const search_conf_template_value = this.$store.getters["search/get_act_config_value_by_name"](TEMPLATE)
         if (search_conf_template_value) {
-          const conf_values  = search_conf_template_value.map(template => template.value)
+          const conf_values  = recursive_unpack(search_conf_template_value)
           const all_templates_values = this.templates.map(template => template.value)
           return conf_values.map(f => this.$_.findIndex(all_templates_values, t => t === f))
         }

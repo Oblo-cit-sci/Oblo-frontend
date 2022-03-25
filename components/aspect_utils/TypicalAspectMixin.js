@@ -16,10 +16,10 @@ export default {
     aspect_description(base_name, alt_descr) {
       return this.$t(this.t_description(base_name, alt_descr))
     },
-    t_label(base_name, alt_label) { // todo: refactor?! same with descr.
+    alt_label(base_name, alt_label) {
       return base_name + (alt_label ? "alt_label." + alt_label : "label")
     },
-    t_description(base_name, alt_descr) {
+    alt_description(base_name, alt_descr) {
       return base_name + (alt_descr ? "alt_descr." + alt_descr : "descr")
     },
     asp_registered_name() {
@@ -118,7 +118,7 @@ export default {
       return {
         type: "str",
         name: name ? name : "password",
-        t_label: this.t_label("asp.password.", alt_label),
+        t_label: this.alt_label("asp.password.", alt_label),
         attr,
         value: pack_value(""),
         error: true
@@ -142,7 +142,7 @@ export default {
       return {
         type: "str",
         name: "password_confirm",
-        t_label: this.t_label("asp.password.", alt_label),
+        t_label: this.alt_label("asp.password.", alt_label),
         attr: {
           max: 40,
           component_type: "password",
@@ -159,8 +159,8 @@ export default {
     asp_language(name = LANGUAGE, alt_label_descr = undefined, single_select = true, attr = {}) {
       return {
         name,
-        t_label: this.t_label("asp.language.", alt_label_descr),
-        t_description: this.t_description("asp.language.", alt_label_descr),
+        t_label: this.alt_label("asp.language.", alt_label_descr),
+        t_description: this.alt_description("asp.language.", alt_label_descr),
         type: single_select ? SELECT : MULTISELECT,
         attr: attr || {
           force_view: SELECT
@@ -172,8 +172,8 @@ export default {
     asp_privacy(name = null, alt_label_descr = undefined) {
       return {
         name: name ? name : "privacy",
-        t_label: this.t_label("asp.privacy.", alt_label_descr),
-        t_description: this.t_description("asp.privacy.", alt_label_descr),
+        t_label: this.alt_label("asp.privacy.", alt_label_descr),
+        t_description: this.alt_description("asp.privacy.", alt_label_descr),
         attr: {
           only_value: true,
           // update_raw: true
@@ -181,12 +181,12 @@ export default {
         type: SELECT,
         items: [{
           text: this.$t("asp.privacy.options.public.text"),
-          description: this.aspect_description("asp.privacy.options.public.", alt_label_descr),
+          description: this.alt_description("asp.privacy.options.public.", alt_label_descr),
           value: "public",
           icon: "images/icons/privacy/earth.png"
         }, {
           text: this.$t("asp.privacy.options.private.text"),
-          description: this.aspect_description("asp.privacy.options.private.", alt_label_descr),
+          description: this.alt_description("asp.privacy.options.private.", alt_label_descr),
           value: "private",
           icon: "images/icons/privacy/lock-outline.png"
         }],
@@ -201,8 +201,8 @@ export default {
     asp_license(name = null, include = [], exclude, alt_label_descr = undefined) {
       return {
         name: name ? name : "license",
-        t_label: this.t_label("asp.license.", alt_label_descr),
-        t_description: this.t_description("asp.license.", alt_label_descr),
+        t_label: this.alt_label("asp.license.", alt_label_descr),
+        t_description: this.alt_description("asp.license.", alt_label_descr),
         type: SELECT,
         attr: {
           descr_as_html: true,
