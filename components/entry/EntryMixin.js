@@ -128,7 +128,7 @@ export default {
       }
     },
     type_name() {
-      return this.template.title
+      return this.template?.title
     },
     aspect_loc() {
       return [ENTRY, this.uuid, this.template_slug]

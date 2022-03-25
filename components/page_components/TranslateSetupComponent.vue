@@ -565,6 +565,7 @@ export default {
   watch: {
     '$store.state.user.settings.ui_language': async function (ui_language) {
       // console.log(ui_language)
+      // this is quite an heavy endpoint... all entries in the given language
       this.$api.entries.get_codes_templates(ui_language).then(({data}) => {
         // console.log(data)
         this.all_entries_in_ui_lang = data.data
