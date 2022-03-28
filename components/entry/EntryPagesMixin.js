@@ -81,9 +81,8 @@ export default {
         // console.log(this.$_.map(this.aspects, a => attr(a).page || 0))
         if (this.is_view_mode && view_mode_hide_unset_values(this.template)) {
           // filter aspects, which have a value
-          return this.$_.filter(this.aspects, a => !this.$_.isEqual(
-            unpack(this.regular_values[a.name]),
-            aspect_raw_default_value(a)))
+          // todo there is a method for that... lib/aspects.isEqual_default_value
+          return this.$_.filter(this.aspects, a => !this.$_.isEqual(this.regular_values[a.name], a))
         } else {
           return this.aspects
         }

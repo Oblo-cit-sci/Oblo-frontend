@@ -239,7 +239,7 @@ export default {
   watch: {
     page() {
       setTimeout(() => {
-        goTo("#app")
+        this.$vuetify.goTo("#app")
       }, 200)
     },
     meta_aspects_values: {

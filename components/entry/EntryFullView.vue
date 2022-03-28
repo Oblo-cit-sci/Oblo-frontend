@@ -11,7 +11,7 @@
     v-row.pl-3(:style="{'font-size':'80%'}")
       span.my-auto {{$t("comp.entrypreview.created")}} {{entry_date}}
     v-row.pl-3.py-1
-        MetaChips(:meta_aspects="meta_aspect_chips")
+      MetaChips(:meta_aspects="meta_aspect_chips")
     v-row
       v-col.pl-2.py-0(cols=12)
         EntryActorList.mt-2(:actors="actors")
@@ -61,6 +61,7 @@ import {attr} from "~/lib/aspect"
 import Aspect from "~/components/Aspect"
 import EntryActions from "~/components/entry/EntryActions"
 import EntryNavMixin from "~/components/EntryNavMixin"
+import {view_mode_hide_unset_values} from "~/lib/template"
 
 export default {
   name: "EntryFullView",
@@ -115,7 +116,9 @@ export default {
         entry_uuid: this.uuid,
         ext_value: this.aspect_mvalue(aspect.name),
         conditionals: this.regular_values,
-        extra: this.aspect_extras,
+        extra: Object.assign({
+          view_mode_hide_unset_values: this.is_view_mode && view_mode_hide_unset_values(this.template)
+        }, this.aspect_extras),
         mode: VIEW
       }
     }

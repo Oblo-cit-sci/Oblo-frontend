@@ -36,7 +36,7 @@
                 @aspectAction="$emit('aspectAction',$event)"
                 :extra="comp_extras(comp_type)")
       v-flex(v-else
-      v-for="(comp_type, index) in aspect.components" :key="index"
+      v-for="(comp_type, index) in shown_components" :key="index"
         :class="layoutClasses")
         Aspect(
           :aspect="comp_type"
@@ -58,6 +58,7 @@ import Aspect from "../Aspect";
 import {INT, FLOAT} from "~/lib/consts";
 import AspectComponentMixin from "./AspectComponentMixin";
 import AspectListMixin from "~/components/global/AspectListMixin"
+import {isEqual_default_value} from "~/lib/aspect"
 
 export default {
   name: "CompositeAspect",
@@ -113,6 +114,15 @@ export default {
     }
   },
   computed: {
+    shown_components() {
+      if(this.extra.view_mode_hide_unset_values) {
+        return this.$_.filter(this.aspect.components, (comp) => {
+          return !isEqual_default_value(this.value[comp.name], comp)
+        })
+      } else {
+        return this.aspect.components
+      }
+    },
     compact() {
       return this.attr.compact
     },
