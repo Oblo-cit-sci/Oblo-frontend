@@ -8,7 +8,7 @@
           v-btn(icon @click="remove(index)")
             v-icon mdi-step-backward
     v-divider.mb-1(v-if="has_both()")
-    div(v-for="level in shown_levels")
+    div(:id="level_start_id(level)" v-for="level in shown_levels")
       div.ml-3.my-3(v-if="is_last_level(level.index)" :style="{color:'red'}") {{error_messages}}
       Title_Description.ml-3(:title="level.title" :description="level.description")
       .px-3(v-if="has_level_options(level.index)")
@@ -193,6 +193,7 @@ export default {
         } else {
           def_value[level_index] = insert_new_value
           this.$emit("input", this.$_.slice(def_value, 0, level_index + 1))
+          this.scroll_to_level(level_index + 1)
         }
       } else { // clicked clear on select
         const result = this.$_.slice(def_value, 0, level_index)
@@ -289,6 +290,26 @@ export default {
     },
     is_last_level(level_index) {
       return level_index === Math.min(this.act_level, this.levels.length - 1)
+    },
+    level_start_id(level) {
+      return "level_start_id_" + level.index
+    },
+    scroll_to_level(level) {
+      if (level < this.levels.length) {
+        // console.log("level_start_id_" + level)
+        try {
+          setTimeout(() => {
+            this.$vuetify.goTo("#level_start_id_" + level, {easing: "easeInCubic", offset: 40, duration: 400})
+          }, 50)
+        } catch (e) {
+          console.error(e)
+        }
+      }
+    }
+  },
+  watch: {
+    act_level(level) {
+      this.scroll_to_level(level)
     }
   }
 }

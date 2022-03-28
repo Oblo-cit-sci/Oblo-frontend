@@ -57,7 +57,7 @@ export default {
   },
   methods: {
     select(value, src) {
-      console.log("SelectGrid", value, src)
+      // console.log("SelectGrid", value, src)
       // console.trace()
       if (value.value === this.selection.value) {
         console.log("emit null")
