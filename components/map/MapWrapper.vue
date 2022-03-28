@@ -200,7 +200,7 @@ export default {
       return this.map_loaded && this.available_layers.length > 0
     },
     show_location_search_button() {
-      return this.map_loaded
+      return false // todo add back later, when using the auto-complete: this.map_loaded
     },
     show_style_menu_button() {
       return false
