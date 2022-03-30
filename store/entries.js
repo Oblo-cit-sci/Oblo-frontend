@@ -63,7 +63,6 @@ export const mutations = {
     }
     ld.set(values, aspect_loc, value)
   },
-
   set_from_array(state, uuid_entry_array) {
     state.entries = new Map(uuid_entry_array)
   },

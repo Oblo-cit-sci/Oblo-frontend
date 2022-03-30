@@ -75,7 +75,7 @@ export default {
   },
   methods: {
     create_entry() {
-      console.log("create entry")
+      // console.log("create entry")
       if (this.create_templates_options.length > 1) {
         this.$bus.$emit("domain-create_entry")
         // this.$bus.$emit("create_entry")

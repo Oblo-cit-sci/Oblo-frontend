@@ -267,6 +267,7 @@ export default {
         return
       }
       // console.log("set new location", location)
+      //console.log("entry-location", location)
       this.$store.commit("entries/set_edit_meta_value", {
         meta_aspect_name: LOCATION,
         value: location

@@ -282,6 +282,7 @@ export default {
       // this.map_fitBounds(bbox)
       this.map_goto_action = [BUS_MAP_FIT_BOUNDS, bbox]
     })
+    //console.log("map created with goto action", this.map_goto_action)
   },
   methods: {
     map_options() {
@@ -326,11 +327,11 @@ export default {
       // console.log("l",this.map.getLayer(entries_layer_name))
       if (!this.$_.isEmpty(this.domain_templates_color_list)) {
         this.add_entry_layer(source_name, entries_layer_name, {
-          'circle-color': [
+          'circle-color': ["case",["has","marker-clr"], ["get","marker-clr"],[
             'match',
             ['get', "template"],
             ...this.domain_templates_color_list,
-            '#ccc'],
+            '#ccc']],
           "circle-opacity": 0.8,
           "circle-radius": [
             'case',
@@ -863,6 +864,7 @@ export default {
       }
     },
     goto_location(location) {
+      console.log("watch goto_locatio", location)
       if (location) {
         this.map_goto_location(location)
       }

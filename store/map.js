@@ -1,4 +1,3 @@
-
 const ld = require("lodash")
 
 export const state = () => ({
@@ -21,9 +20,6 @@ export const mutations = {
       $nuxt.$set(state.entries, domain, {type: "FeatureCollection", features: []})
     }
   },
-  // add_entries(state, {domain, entries}) {
-  //   state.entries[domain].features.push(...entries.features)
-  // },
   clear(state) {
     state.entries_loaded = false // probably not required
     state.entries = {}
@@ -49,9 +45,6 @@ export const mutations = {
   set_entries_loaded(state, loaded) {
     state.entries_loaded = loaded
   },
-  // set_filter_config(state, filter_config) {
-  //   state.filter_config = filter_config
-  // },
   set_entry_feature(state, {domain_name, uuid, feature}) {
     const f_index = state.entries[domain_name].features.findIndex(f => f.properties.uuid === uuid)
     state.entries[domain_name].features[f_index] = feature
@@ -73,6 +66,9 @@ export const mutations = {
   },
   map_loaded(state, loaded) {
     state.domain_map_loaded = loaded
+  },
+  remove_entry(state, {domain_name, uuid}) {
+    state.entries[domain_name] = state.entries[domain_name].features.filter(f => f.properties.uuid !== uuid)
   }
 }
 
@@ -109,9 +105,6 @@ export const getters = {
       return state.cached_camera_options[domain]
     }
   },
-  // get_filter_config(state) {
-  //   return state.filter_config
-  // },
   get_by_uuids(state) {
     return (uuids) => {
       let map_entries = []
@@ -176,10 +169,7 @@ export const actions = {
     context.commit("_last_goto_location", goto_loc)
     context.commit("goto_location", null)
   },
-  // reset_goto_locations(context) {
-  //   context.commit("_last_goto_location", null)
-  //   context.commit("goto_location", null)
-  // },
+  // NOT USED ATM
   set_entry_feature(context, {uuid, property_name, value}) {
     const res = context.getters.get_entry_and_domain_by_uuid(uuid)
     if (!res) {

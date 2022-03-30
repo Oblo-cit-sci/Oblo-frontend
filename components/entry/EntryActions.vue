@@ -110,11 +110,13 @@ export default {
           }, confirm_method: async () => {
             await this.$store.dispatch("entries/delete_entry", this.uuid)
             this.back([QP_UUID, QP_ENTRY_ACCESS_KEY, QP_ENTRY_MODE])
+            //this.$store.commit("map/remove_entry", {domain_name: this.entry.domain, uuid: this.uuid})
             this.ok_snackbar(this.$t("comp.entry_actions.cancel_draft"))
             await this.persist_entries()
           }
         })
       } else {
+        console.log("going back")
         this.back()
       }
     },
@@ -148,9 +150,10 @@ export default {
       }
       if (method) {
         try {
+
           const {data: resp} = await this.$api.entry[method](sending_entry)
           this.sending = false
-
+          debugger
           const attachments_data = this.get_attachments_to_post(sending_entry)
           this.send_attachments(attachments_data, this.entry.uuid)
           this.ok_snackbar(resp.msg)
@@ -161,8 +164,15 @@ export default {
             domain: this.entry.domain,
             entry_features: resp.data.map_features
           })
+          // console.log(resp.data.entry)
           this.back(["search"])
-          this.persist_entries()
+          // debugger
+          // console.log("clear edit")
+          this.$store.commit("entries/set_edit",null)
+          // await this.$store.dispatch("entries/save_entry", {entry: this.entry, template: this.template})
+          // debugger
+          await this.persist_entries()
+          await this.persist_edit_entry()
         } catch (err) {
           console.log(err)
           this.sending = false
@@ -188,6 +198,7 @@ export default {
           }
         })
       } else {
+        console.log("to edit..")
         this.to_entry(this.uuid, EDIT, {}, true)
       }
     },
