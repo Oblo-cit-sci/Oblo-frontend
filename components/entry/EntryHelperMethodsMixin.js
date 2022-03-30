@@ -3,6 +3,7 @@ export default {
   methods: {
     get_template(entry) {
       const lang = this.$store.getters.domain_language
+      // console.log("getting template...", entry,  lang)
       return this.$store.getters["templates/entry_type"](entry.template.slug, lang)
     },
     get_template_of_version(entry) {

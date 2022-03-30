@@ -1,4 +1,3 @@
-import {EDIT} from "~/lib/consts";
 import TriggerSnackbarMixin from "./TriggerSnackbarMixin";
 import NavBaseMixin from "./NavBaseMixin";
 

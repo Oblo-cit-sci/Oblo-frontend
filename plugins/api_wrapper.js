@@ -105,7 +105,7 @@ class Basic extends QueryBase {
   }
 
   domain_basics(domains, language) {
-    console.log("domain_basics:requesting language", language)
+    // console.log("domain_basics:requesting language", language)
     // console.trace()
     const params = {}
     if (domains) {

@@ -100,6 +100,7 @@ export default {
     },
     template() {
       // console.log("template on page: ", this.$route.name, this.query_entry_uuid)
+      // console.log("template...", this.is_template_outdated)
       if (this.is_template_outdated && this.query_entry_uuid) {
         return this.get_template_of_version(this.entry)
       }
@@ -137,6 +138,7 @@ export default {
       // return this.entry.template_version !== this.template.version
     },
     is_template_outdated() {
+      // console.log("is_template_outdated", this.entry)
       return this.entry.template_version < this.get_template(this.entry).version
     },
     download_title() {

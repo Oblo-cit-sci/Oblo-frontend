@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-container(fluid)
+  v-container.pb-0(fluid)
     div(v-if="initialized")
       div(v-if="!logged_in")
         v-row.mb-2.mb-sm-5.pb-3.pb-md-1(align="center")

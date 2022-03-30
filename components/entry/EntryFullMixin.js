@@ -30,7 +30,7 @@ export default {
     },
     entry_title_description_props() {
       return {
-        title: this.full_title(false),
+        title: this.full_title(this.is_editable_mode),
         header_type: "h3",
         description: this.is_editable_mode ? this.get_description : "",
         descr_as_html: true
@@ -50,7 +50,7 @@ export default {
     if (this.is_draft && this.is_edit_mode) {
       this.check_creator_switch()
     }
-    this.map_goto(this.uuid)
+
   },
   methods: {
     aspect_mvalue(aspect_name) {

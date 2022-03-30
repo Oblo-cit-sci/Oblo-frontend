@@ -1,5 +1,8 @@
+import EntryHelperMethodsMixin from "~/components/entry/EntryHelperMethodsMixin"
+
 export default {
   name: "slugentryfetcher",
+  mixins:[EntryHelperMethodsMixin],
   methods: {
     async guarantee_template_code_with_references(slug, language) {
       const has_template = this.$store.getters["templates/has_template_in_lang"](slug, language)

@@ -2,7 +2,11 @@ import {is_standalone} from "~/lib/pwa";
 
 export default {
   name: "EnvMixin",
-  methods: {},
+  methods: {
+    get_env_dev_variable(name, default_value = false) {
+      return this.$_.get(this.$nuxt.context.env, `DEV_CONFIG.${name}`, default_value)
+    },
+  },
   computed: {
     env() {
       return process.env.NODE_ENV

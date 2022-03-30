@@ -49,9 +49,9 @@ export default {
     },
     img_max_height() {
       if (this.is_small) {
-        return "120px"
+        return "110px"
       } else {
-        return "172px"
+        return "160px"
       }
     },
     domain_title() {

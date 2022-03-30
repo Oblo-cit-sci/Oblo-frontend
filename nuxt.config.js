@@ -43,6 +43,7 @@ module.exports = {
       IGNORE_OFFLINE: true,
       HIDE_MAP: false,
       HIDE_TRANSLATION_WARNING: true,
+      HIDE_PRIVACY_SHEET: true
     }
   },
 

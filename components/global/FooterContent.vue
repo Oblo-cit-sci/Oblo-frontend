@@ -27,11 +27,6 @@ export default {
   mixins: [ResponsivenessMixin],
   data() {
     return {
-      version: pkg.version,
-      privacy: {
-        title: 'Privacy Policy'
-      }
-      // todo, should come from the server
     }
   },
   methods: {},
@@ -46,8 +41,8 @@ export default {
         })
         return no_domain_logos
       }
-      console.warn("temp warning: no footer logos...")
-      console.warn(this.$store.getters["domain/get_domain_default_lang_data"](NO_DOMAIN))
+      // console.warn("temp warning: no footer logos...")
+      // console.warn(this.$store.getters["domain/get_domain_default_lang_data"](NO_DOMAIN))
       return []
     }
   }

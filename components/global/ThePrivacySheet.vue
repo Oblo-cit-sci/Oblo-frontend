@@ -9,38 +9,45 @@
               div(style="font-size: 1.1rem" v-html='$t("comp.privacy_notification.p")')
             v-col.py-1.pl-0
               v-btn(@click="close") {{$t("comp.privacy_notification.btn")}}
-          v-row
+          v-row(v-if="show_footer_content")
             FooterContent
 </template>
 
 <script>
-  import Footer from "~/components/global/Footer";
-  import FooterContent from "~/components/global/FooterContent";
-  export default {
-    name: "ThePrivacySheet",
-    mixins: [],
-    components: {FooterContent, Footer},
-    created() {
-      if( process.env.NODE_ENV === "development") {
+import Footer from "~/components/global/Footer";
+import FooterContent from "~/components/global/FooterContent";
+import {PAGE_INDEX} from "~/lib/pages"
+import {DEVELOPMENT} from "~/lib/consts"
+import EnvMixin from "~/components/global/EnvMixin"
+
+export default {
+  name: "ThePrivacySheet",
+  mixins: [],
+  components: {FooterContent, Footer, EnvMixin},
+  created() {
+    if (this.is_dev && this.get_env_dev_variable("HIDE_PRIVACY_SHEET")) {
+      this.$store.commit("app/close_privacy_sheet")
+    }
+  },
+  computed: {
+    privacy_sheet_open: {
+      get: function () {
+        return this.$store.getters["app/privacy_sheet_open"]
+      },
+      set: function (val) {
         this.$store.commit("app/close_privacy_sheet")
       }
     },
-    computed: {
-      privacy_sheet_open: {
-        get: function () {
-          return this.$store.getters["app/privacy_sheet_open"]
-        },
-        set: function (val) {
-          this.$store.commit("app/close_privacy_sheet")
-        }
-      }
-    },
-    methods: {
-      close() {
-        this.privacy_sheet_open = false
-      }
+    show_footer_content() {
+      return this.$route.name !== PAGE_INDEX
+    }
+  },
+  methods: {
+    close() {
+      this.privacy_sheet_open = false
     }
   }
+}
 </script>
 
 <style scoped>
