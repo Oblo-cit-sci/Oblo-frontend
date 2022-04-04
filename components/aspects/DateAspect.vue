@@ -19,7 +19,6 @@
           single-line
           clearable
           @input="clear_date"
-          :label="aspect.name"
           :hide_details="hide_details"
           prepend-icon="mdi-calendar"
           readonly

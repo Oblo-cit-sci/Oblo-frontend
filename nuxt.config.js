@@ -39,8 +39,8 @@ module.exports = {
     HOSTNAME: hostname,
     COLLECT_MESSAGE_PATHS: false, // during development. collect all messages path grouped by their page in the store.
     BUILD_TIME: process.env.BUILD_TIME,
-    DEV_CONFIG: {
-      IGNORE_OFFLINE: true,
+    DEV_CONFIG: { // default(normal behaviour) should be false
+      IGNORE_OFFLINE: false,
       HIDE_MAP: false,
       HIDE_TRANSLATION_WARNING: true,
       HIDE_PRIVACY_SHEET: true

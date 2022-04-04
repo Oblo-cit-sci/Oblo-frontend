@@ -14,7 +14,7 @@
       :rules="validation_rules"
       :mask="mask")
   div(v-else)
-    p(class="body-1") {{value}}
+    p.body-1 {{value}}
 </template>
 
 <script>
@@ -75,17 +75,6 @@ export default {
   },
   methods: {
     input(val) {
-      // console.log(val, this.error, this.minmax(val), this.valid_num_type(val))
-      // const minmax_val = this.minmax(val)
-      // console.log("MM", typeof minmax_val === "string", !minmax_val)
-      // if (typeof minmax_val === "string" || (typeof minmax_val === "boolean" && !minmax_val)) {
-        // console.log("MM")
-        // return
-      // }
-      // const valid_num_type_val = this.valid_num_type(val)
-      // if (typeof valid_num_type_val === "string" || typeof valid_num_type_val === "boolean" && !valid_num_type_val) {
-      //   return
-      // }
       this.update_value(val)
     }
   },

@@ -1,12 +1,11 @@
 <template lang="pug">
   div
     div(v-if="!is_view_mode")
-      v-text-field(v-if="component==='vv-text-field'"
+      v-text-field(v-if="component==='v-text-field'"
         outlined
         single-line
         :value="value"
         @input="update_value($event)"
-        :readonly="is_view_mode"
         :disabled="disabled"
         :placeholder="attr.placeholder"
         @update:error="$emit('update:error', $event)"
@@ -16,7 +15,7 @@
         @click:append-outer="$emit('aspectAction', {action: 'clear'})"
         :hint="hint"
         :hide-details="hide_details"
-        :rules="rules"
+        :rules="text_rules"
         :type="attr.component_type === 'password' ? 'password' : 'text'"
         @keydown="keydown($event)"
         :auto-grow="auto_grow"
@@ -27,7 +26,6 @@
         single-line
         :value="value"
         @input="update_value($event)"
-        :readonly="is_view_mode"
         :disabled="disabled"
         :placeholder="attr.placeholder"
         @update:error="$emit('update:error', $event)"
@@ -76,6 +74,24 @@ export default {
       if (this.component === "v-textarea") {
         return this.aspect.attr.max || false;
       }
+    },
+    text_rules() {
+      return this.$_.concat([(v) => {
+        // console.log(v)
+        if(v) {
+          if (this.attr.min && v.length < this.attr.min) {
+            //`Must be at least ${this.attr.min} characters`
+            return this.$t("comp.string_asp.min_rule",{number: this.attr.min})
+          }
+          if (this.attr.max && v.length > this.attr.max) {
+            //`Must be no more than ${this.attr.max} characters`
+            return this.$t("comp.string_asp.max_rule",{number: this.attr.max})
+          }
+          return true
+        }
+        return true
+        // v && this.attr.max && v.length < this.attr.max || "nope"
+      }])
     },
     auto_grow() {
       return this.component === "v-textarea"

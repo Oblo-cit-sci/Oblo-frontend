@@ -525,6 +525,10 @@
     "snackbar": {
       "something_went_wrong": "Something went wrong"
     },
+    "string_asp": {
+      "min_rule": "@:comp.min_max_indicator.min",
+      "max_rule": "@:comp.min_max_indicator.max"
+    },
     "tagoptions_asp": {
       "used_in": "Used in: "
     },
